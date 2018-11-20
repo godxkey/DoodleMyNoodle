@@ -1,0 +1,11 @@
+{
+    "name": "CCCUI",
+    "references": [
+        "CCCCore",
+        "Unity.TextMeshPro"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

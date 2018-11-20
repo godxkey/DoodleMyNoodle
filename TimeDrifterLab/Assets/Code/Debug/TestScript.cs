@@ -8,6 +8,5 @@ public class TestScript : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(CMath.Area2DWithinTriangle(points[0].position, points[1].position, points[2].position));
     }
 }
