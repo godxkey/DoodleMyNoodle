@@ -1,12 +1,13 @@
 {
-    "name": "CCCUI",
+    "name": "Examples",
     "references": [
-        "CCCCore",
-        "Unity.TextMeshPro",
-        "DOTweenModules"
+        "Game",
+        "CCCCore"
     ],
     "optionalUnityReferences": [],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false
 }

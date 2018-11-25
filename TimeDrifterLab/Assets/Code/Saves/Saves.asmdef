@@ -1,9 +1,7 @@
 {
-    "name": "CCCUI",
+    "name": "Saves",
     "references": [
-        "CCCCore",
-        "Unity.TextMeshPro",
-        "DOTweenModules"
+        "CCCCore"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

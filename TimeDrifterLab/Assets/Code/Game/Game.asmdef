@@ -1,9 +1,8 @@
 {
-    "name": "CCCUI",
+    "name": "Game",
     "references": [
         "CCCCore",
-        "Unity.TextMeshPro",
-        "DOTweenModules"
+        "Saves"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
