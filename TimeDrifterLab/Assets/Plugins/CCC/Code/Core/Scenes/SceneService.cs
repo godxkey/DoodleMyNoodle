@@ -25,9 +25,10 @@ public class SceneService : MonoCoreService<SceneService>
 
     List<ScenePromise> pendingScenePromises = new List<ScenePromise>();
 
-    void Awake()
+    public override void Initialize(Action onComplete)
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        onComplete();
     }
 
     protected override void OnDestroy()

@@ -3,25 +3,41 @@ using UnityEngine;
 
 public abstract class MonoCoreService<T> : MonoBehaviour, ICoreService where T : MonoCoreService<T>
 {
-    static public T Instance { get; private set; }
+    static public T Instance
+    {
+        get { return instance; }
+        protected set
+        {
+            instance = value;
+            if(instance != null)
+            {
+                DontDestroyOnLoad(instance.gameObject);
+            }
+        }
+    }
+
+    static private T instance;
 
     protected virtual void OnDestroy()
     {
-        if(ReferenceEquals(this, Instance))
+        if (ReferenceEquals(this, Instance))
         {
             Instance = null;
         }
     }
 
-    public virtual void Initialize(Action onComplete) { onComplete(); }
+    public abstract void Initialize(Action onComplete);
 
-    public ICoreService ProvideOfficialInstance() // Can be overriden
+    public virtual ICoreService ProvideOfficialInstance() // Can be overriden
     {
-        GameObject newServiceGameObject = Instantiate(gameObject);
-        newServiceGameObject.name = "CoreService: " + name;
-        DontDestroyOnLoad(newServiceGameObject);
+        if (Instance == null)
+        {
+            GameObject newServiceGameObject = Instantiate(gameObject);
+            newServiceGameObject.name = "CoreService: " + name;
+            DontDestroyOnLoad(newServiceGameObject);
 
-        Instance = (T)newServiceGameObject.GetComponent(GetType());
+            Instance = (T)newServiceGameObject.GetComponent(GetType());
+        }
 
         return Instance;
     }

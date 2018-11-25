@@ -27,16 +27,7 @@ public class DataSaverEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        if (GUILayout.Button("Open Save Location"))
-        {
-            string path = Application.persistentDataPath.Replace('/', '\\');
-
-            if (Directory.Exists(path))
-            {
-                System.Diagnostics.Process.Start("explorer.exe", path);
-            }
-        }
-
+        EditorHelper.DrawOpenFileLocation(Application.persistentDataPath);
 
         base.OnInspectorGUI();
 

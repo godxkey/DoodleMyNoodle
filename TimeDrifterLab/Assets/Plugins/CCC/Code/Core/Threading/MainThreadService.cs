@@ -10,7 +10,7 @@ public class MainThreadService : MonoCoreService<MainThreadService>
     {
         get
         {
-            if(mainThreadIdSet == false)
+            if (mainThreadIdSet == false)
             {
                 Debug.LogError("The main thread Id has not been set yet. Please create an instance of " + nameof(MainThreadService) + " first.");
             }
@@ -26,9 +26,10 @@ public class MainThreadService : MonoCoreService<MainThreadService>
     static private bool mainThreadIdSet = false;
     static private int mainThreadId;
 
-    void Awake()
+    public override void Initialize(Action onComplete)
     {
         MainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+        onComplete();
     }
 
     void Update()

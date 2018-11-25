@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class SaveService : MonoCoreService<SaveService>
 {
+    public override void Initialize(Action onComplete) => onComplete();
+
     public void ThreadSave(string path, object graph, Action onComplete = null)
     {
         if (Application.isPlaying)
@@ -90,5 +92,4 @@ public class SaveService : MonoCoreService<SaveService>
     {
         return SaveHelper.DeleteFile(path);
     }
-
 }

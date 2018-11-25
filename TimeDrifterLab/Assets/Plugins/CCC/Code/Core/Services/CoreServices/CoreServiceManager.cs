@@ -11,7 +11,7 @@ public class CoreServiceManager
     static List<Action> initializationCallbacks = new List<Action>();
     static public CoreServiceManager Instance { get; private set; }
 
-    static void AddInitializationCallback(Action onComplete)
+    static public void AddInitializationCallback(Action onComplete)
     {
         if (onComplete == null)
         {

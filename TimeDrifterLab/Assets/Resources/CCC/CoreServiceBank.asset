@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Name: CoreServiceBank
   m_EditorClassIdentifier: 
   coreServices:
+  - {fileID: 1375431694202818, guid: edd67de39eed1f14699da898a2fbdcd6, type: 2}
   - {fileID: 1900913777497302, guid: 41b35fbcdc0bf8246b2eee43972a28f5, type: 2}
+  - {fileID: 1061548378669230, guid: a81e9921fe903d74bbff7bf447ce2557, type: 2}
   - {fileID: 1348883835922856, guid: 074f498b47c141142b30c966cc4972d2, type: 2}
+  - {fileID: 1704603521536276, guid: 092c5604b8b93e8449094a5962ce0169, type: 2}
+  - {fileID: 1572038115993394, guid: 531b14d5c39485d40bb94466d4d47776, type: 2}
