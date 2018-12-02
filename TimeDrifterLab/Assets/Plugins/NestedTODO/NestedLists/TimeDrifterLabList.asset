@@ -1,0 +1,187 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b86855237364b348ac0ddfcfc91163a, type: 3}
+  m_Name: TimeDrifterLabList
+  m_EditorClassIdentifier: 
+  idCount: 7
+  list:
+  - title: Root Node
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 0
+    priority: 0
+    tag: 0
+    nodeID: 0
+    depth: 0
+    parentID: 0
+    childIds: 0100000006000000
+    lineIndex: 0
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Example Task
+    notes: This is a really simple task
+    linkedFile: {fileID: 11500000, guid: cd98ebc9efe44e6438d15419112dcfce, type: 3}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 0
+    priority: 0
+    tag: 0
+    nodeID: 1
+    depth: 1
+    parentID: 0
+    childIds: 0200000004000000
+    lineIndex: 1
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Exemple SubTask
+    notes: 
+    linkedFile: {fileID: 11500000, guid: cd98ebc9efe44e6438d15419112dcfce, type: 3}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 0
+    priority: 0
+    tag: 0
+    nodeID: 2
+    depth: 2
+    parentID: 1
+    childIds: 0300000005000000
+    lineIndex: 2
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Yet Another Subtask
+    notes: 
+    linkedFile: {fileID: 11500000, guid: cd98ebc9efe44e6438d15419112dcfce, type: 3}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 0
+    category: 0
+    priority: 0
+    tag: 0
+    nodeID: 3
+    depth: 3
+    parentID: 2
+    childIds: 
+    lineIndex: 3
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Exemple second subtask
+    notes: 
+    linkedFile: {fileID: 11500000, guid: cd98ebc9efe44e6438d15419112dcfce, type: 3}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 0
+    category: 0
+    priority: 0
+    tag: 0
+    nodeID: 4
+    depth: 2
+    parentID: 1
+    childIds: 
+    lineIndex: 5
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Yet again
+    notes: 
+    linkedFile: {fileID: 11500000, guid: cd98ebc9efe44e6438d15419112dcfce, type: 3}
+    completed: 1
+    setToRewrite: 0
+    showChilds: 0
+    category: 0
+    priority: 0
+    tag: 0
+    nodeID: 5
+    depth: 3
+    parentID: 2
+    childIds: 
+    lineIndex: 4
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: New Exemple Task
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 0
+    category: 0
+    priority: 0
+    tag: 0
+    nodeID: 6
+    depth: 1
+    parentID: 0
+    childIds: 
+    lineIndex: 6
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  listConfig:
+    autoComplete: 1
+    autoCategory: 1
+    autoPriority: 1
+    autoTag: 1
+    inheritPriority: 1
+    inheritCategory: 1
+    inheritTag: 1
+    inheritLinkedFile: 1
+    confirmParentDelete: 1
+    autoSelectNewTask: 1
+    showExtendedToolbar: 0
+    scrollToActiveTask: 1
+    hideParents: 0
+    hideNotes: 0
+    hideProgressBars: 0
+    hidePriorityLevels: 0
+    hideCategories: 0
+    hideTags: 0
+    categories:
+    - Categories/Code
+    - Categories/Design
+    - Categories/R&D
+    priorities:
+    - priorityText: Priorities/Normal
+      priorityColor: {r: 0, g: 1, b: 0, a: 1}
+    - priorityText: Priorities/Low
+      priorityColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    - priorityText: Priorities/High
+      priorityColor: {r: 1, g: 0, b: 0, a: 1}
+    tags:
+    - Tags/Untagged
+    skinColors:
+    - {r: 0.83137256, g: 0.83137256, b: 0.83137256, a: 1}
+    - {r: 0.27450982, g: 0.27450982, b: 0.27450982, a: 1}
+    - {r: 0.49411765, g: 0.49411765, b: 0.49411765, a: 1}
+    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: 0.7058824, g: 0.7058824, b: 0.7058824, a: 1}
+    - {r: 0, g: 0, b: 0, a: 1}
+    - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    csvSeparator: ','
+    exportProgress: 1
+    exportCategory: 1
+    exportPriority: 1
+    exportTags: 1
+    encodingCode: 65001
+  boards:
+  - title: Backlog
+    wip: 0
+  - title: To Do
+    wip: 0
+  - title: In Progress
+    wip: 0
+  - title: Completed
+    wip: 0
+  burndownData:
+    date:
+    - 2018-12-01
+    dateValues:
+    - 0
