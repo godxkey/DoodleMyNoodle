@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using CCC.GraphHidden;
 
 namespace CCC.Graph
 {

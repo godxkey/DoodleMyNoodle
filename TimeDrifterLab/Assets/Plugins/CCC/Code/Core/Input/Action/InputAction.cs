@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CCC.Input.Action;
+using CCC.Hidden;
 
 
 [CreateAssetMenu(menuName = "CCC/Input/Input Action", fileName = "IA_NewAction")]

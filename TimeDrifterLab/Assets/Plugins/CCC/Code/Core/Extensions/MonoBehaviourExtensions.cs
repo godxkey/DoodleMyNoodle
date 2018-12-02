@@ -9,7 +9,7 @@ public static class MonoBehaviourExtensions
     {
         return source.StartCoroutine(DelayedCallTo(action, 0.00001f, true));
     }
-    public static Coroutine DelayedCall(this MonoBehaviour source, Action action, float delay, bool realTime = false)
+    public static Coroutine DelayedCall(this MonoBehaviour source, float delay, Action action, bool realTime = false)
     {
         return source.StartCoroutine(DelayedCallTo(action, delay, realTime));
     }

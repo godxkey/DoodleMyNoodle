@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace CCC.Input.Axis
+namespace CCC.Hidden
 {
     [System.Serializable]
     public class KeyAxis : BaseAxis

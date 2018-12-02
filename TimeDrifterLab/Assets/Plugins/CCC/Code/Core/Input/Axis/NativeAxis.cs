@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace CCC.Input.Axis
+namespace CCC.Hidden
 {
     [System.Serializable]
     public class NativeAxis : BaseAxis

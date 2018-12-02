@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CCC.Input.Axis;
+using CCC.Hidden;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -53,7 +53,7 @@ public class InputAxis : ScriptableObject
     }
 }
 
-namespace CCC.Input.Axis
+namespace CCC.Hidden
 {
 #if UNITY_EDITOR
     [CustomEditor(typeof(InputAxis))]

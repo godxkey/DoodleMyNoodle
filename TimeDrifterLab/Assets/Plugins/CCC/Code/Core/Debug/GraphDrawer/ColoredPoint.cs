@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CCC.Graph
+namespace CCC.GraphHidden
 {
     [System.Serializable]
     public struct ColoredPoint

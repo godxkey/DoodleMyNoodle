@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CCC.Input.Action
+namespace CCC.Hidden
 {
     [System.Serializable]
     public struct KeyCombination

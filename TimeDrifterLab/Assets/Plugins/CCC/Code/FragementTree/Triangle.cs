@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CCC.FragmentTree
+namespace CCC.FragmentTreeHidden
 {
     public class Triangle
     {

@@ -1,6 +1,8 @@
 {
     "name": "CCCCore",
-    "references": [],
+    "references": [
+        "DOTweenModules"
+    ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],

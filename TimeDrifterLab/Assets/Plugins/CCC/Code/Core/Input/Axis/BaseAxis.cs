@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace CCC.Input.Axis
+﻿namespace CCC.Hidden
 {
     [System.Serializable]
     public abstract class BaseAxis
