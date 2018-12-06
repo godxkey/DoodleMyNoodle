@@ -27,7 +27,7 @@ public class SaveService : MonoCoreService<SaveService>
         bf.Serialize(file, graph);
         file.Close();
 
-        MainThreadService.AddCallbackFromThread(onComplete);
+        MainThreadService.AddMainThreadCallbackFromThread(onComplete);
     }
 
     public void ThreadLoad(string path, Action<object> onComplete)
@@ -65,7 +65,7 @@ public class SaveService : MonoCoreService<SaveService>
 
 
         if (onComplete != null)
-            MainThreadService.AddCallbackFromThread(delegate ()
+            MainThreadService.AddMainThreadCallbackFromThread(delegate ()
             {
                 onComplete(obj);
             });

@@ -36,11 +36,11 @@ public class MainThreadService : MonoCoreService<MainThreadService>
     {
         while (mainThreadCallbacks.Count > 0)
         {
-            mainThreadCallbacks.Dequeue().Invoke();
+            mainThreadCallbacks.Dequeue().SafeInvokeInEditor();
         }
     }
 
-    static public void AddCallbackFromThread(Action action)
+    static public void AddMainThreadCallbackFromThread(Action action)
     {
         if (action == null)
             return;

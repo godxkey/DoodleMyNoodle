@@ -21,7 +21,7 @@ public class FPSCounter : MonoBehaviour
             cummulatedFPS = 0;
         }
 
-        cummulatedFPS += GetFPS();
+        cummulatedFPS += FPSHelper.CurrentFPS;
     }
 
     void OnValidate()
@@ -32,15 +32,5 @@ public class FPSCounter : MonoBehaviour
     private void PushToDisplay()
     {
         textDisplay.text = (cummulatedFPS / frameCounter).ToString();
-    }
-
-    public static float GetFPS()
-    {
-        return 1f / Time.deltaTime;
-    }
-
-    public static float GetFixedFPS()
-    {
-        return 1f / Time.fixedDeltaTime;
     }
 }

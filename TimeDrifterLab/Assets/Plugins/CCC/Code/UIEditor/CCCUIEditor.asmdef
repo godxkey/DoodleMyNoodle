@@ -1,13 +1,13 @@
 {
-    "name": "Game",
+    "name": "CCCUIEditor",
     "references": [
-        "CCCCore",
-        "Saves",
         "CCCUI",
-        "CCCDebug"
+        "CCCCoreEditor"
     ],
     "optionalUnityReferences": [],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false
 }

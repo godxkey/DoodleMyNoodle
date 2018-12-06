@@ -21,8 +21,14 @@ namespace CCC.Hidden
 
         void OnClick()
         {
-            //if (clip == null)
-            //else
+            if(clip == null)
+            {
+                DefaultAudioSourceService.Instance.PlayStaticSFX(audioAsset);
+            }
+            else
+            {
+                DefaultAudioSourceService.Instance.PlayStaticSFX(clip);
+            }
         }
     }
 }

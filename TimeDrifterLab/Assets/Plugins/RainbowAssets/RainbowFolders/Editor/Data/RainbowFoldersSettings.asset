@@ -31,15 +31,6 @@ MonoBehaviour:
     IsBackgroundRecursive: 0
     IsBackgroundCustom: 0
   - Type: 0
-    Key: Editor
-    SmallIcon: {fileID: 2800000, guid: ec2951dbd8c22234c8fdf92529d860fd, type: 3}
-    LargeIcon: {fileID: 2800000, guid: ad4412933c34d994a9a6daafb8202f4a, type: 3}
-    IsIconRecursive: 0
-    IsIconCustom: 0
-    Background: {fileID: 0}
-    IsBackgroundRecursive: 0
-    IsBackgroundCustom: 0
-  - Type: 0
     Key: Data
     SmallIcon: {fileID: 2800000, guid: 97efd597cd18c564aadb45280476b23a, type: 3}
     LargeIcon: {fileID: 2800000, guid: 650a564eae901434e86dcb456fcc046a, type: 3}
@@ -115,9 +106,9 @@ MonoBehaviour:
     Key: Prefabs
     SmallIcon: {fileID: 2800000, guid: 483d693b3f9d5704b89409016b40bc74, type: 3}
     LargeIcon: {fileID: 2800000, guid: fac7470563f79024ebc244b39080448d, type: 3}
-    IsIconRecursive: 0
+    IsIconRecursive: 1
     IsIconCustom: 0
-    Background: {fileID: 0}
+    Background: {fileID: 2800000, guid: 6dc9ea4311ebb184494f51560ed772fc, type: 3}
     IsBackgroundRecursive: 0
     IsBackgroundCustom: 0
   - Type: 0
@@ -142,18 +133,18 @@ MonoBehaviour:
     Key: Resources
     SmallIcon: {fileID: 2800000, guid: 97efd597cd18c564aadb45280476b23a, type: 3}
     LargeIcon: {fileID: 2800000, guid: 650a564eae901434e86dcb456fcc046a, type: 3}
-    IsIconRecursive: 0
+    IsIconRecursive: 1
     IsIconCustom: 0
-    Background: {fileID: 0}
+    Background: {fileID: 2800000, guid: b7b3f29f05e8a994c9f03db2151b1b42, type: 3}
     IsBackgroundRecursive: 0
-    IsBackgroundCustom: 0
+    IsBackgroundCustom: 1
   - Type: 0
     Key: Scenes
     SmallIcon: {fileID: 2800000, guid: 40ff06f7c381dcf4391ca8342d04260c, type: 3}
     LargeIcon: {fileID: 2800000, guid: f9d86cd8e960f584a9aa5a8ee61c4115, type: 3}
     IsIconRecursive: 0
     IsIconCustom: 0
-    Background: {fileID: 0}
+    Background: {fileID: 2800000, guid: 2c67267a9ec0ffd408962c49ac7ae426, type: 3}
     IsBackgroundRecursive: 0
     IsBackgroundCustom: 0
   - Type: 0
@@ -291,3 +282,30 @@ MonoBehaviour:
     Background: {fileID: 0}
     IsBackgroundRecursive: 0
     IsBackgroundCustom: 0
+  - Type: 1
+    Key: Assets/ScriptableObjects
+    SmallIcon: {fileID: 0}
+    LargeIcon: {fileID: 0}
+    IsIconRecursive: 0
+    IsIconCustom: 0
+    Background: {fileID: 2800000, guid: 8881012100f780549bf19fa3f332be69, type: 3}
+    IsBackgroundRecursive: 0
+    IsBackgroundCustom: 0
+  - Type: 1
+    Key: Assets/AudioClips
+    SmallIcon: {fileID: 2800000, guid: 4372cfb8a7d3b5b4d9b899147b193270, type: 3}
+    LargeIcon: {fileID: 2800000, guid: 65e13c9890ffa26478506eda78683d5c, type: 3}
+    IsIconRecursive: 0
+    IsIconCustom: 0
+    Background: {fileID: 2800000, guid: 4bbe0df18cd67424a92c74fbfe94f740, type: 3}
+    IsBackgroundRecursive: 0
+    IsBackgroundCustom: 0
+  - Type: 1
+    Key: Assets/Editor
+    SmallIcon: {fileID: 0}
+    LargeIcon: {fileID: 0}
+    IsIconRecursive: 0
+    IsIconCustom: 0
+    Background: {fileID: 2800000, guid: b7b3f29f05e8a994c9f03db2151b1b42, type: 3}
+    IsBackgroundRecursive: 0
+    IsBackgroundCustom: 1

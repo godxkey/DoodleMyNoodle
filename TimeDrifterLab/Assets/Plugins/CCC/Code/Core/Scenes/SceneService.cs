@@ -16,18 +16,19 @@ public class SceneService : MonoCoreService<SceneService>
         public string name;
         public event Action<Scene> Callbacks;
         public Scene scene;
-        public void SafeInvokeCallback()
+        public void InvokeCallback()
         {
-            if (Callbacks?.Target != null)
-                Callbacks.Invoke(scene);
+            Callbacks?.SafeInvoke(scene);
         }
     }
 
-    List<ScenePromise> pendingScenePromises = new List<ScenePromise>();
+    List<ScenePromise> loadingScenePromises = new List<ScenePromise>();
+    List<ScenePromise> unloadingScenePromises = new List<ScenePromise>();
 
     public override void Initialize(Action onComplete)
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        //SceneManager.sceneUnloaded += OnSceneUnloaded;
         onComplete();
     }
 
@@ -35,6 +36,7 @@ public class SceneService : MonoCoreService<SceneService>
     {
         base.OnDestroy();
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        //SceneManager.sceneUnloaded -= OnSceneUnloaded;
     }
 
     #region Load/Unload Methods
@@ -45,7 +47,7 @@ public class SceneService : MonoCoreService<SceneService>
             return;
 
         ScenePromise scenePromise = new ScenePromise(name, callback);
-        pendingScenePromises.Add(scenePromise);
+        loadingScenePromises.Add(scenePromise);
         SceneManager.LoadScene(name, mode);
     }
     public void Load(SceneInfo sceneInfo, Action<Scene> callback = null)
@@ -59,7 +61,7 @@ public class SceneService : MonoCoreService<SceneService>
             return;
 
         ScenePromise scenePromise = new ScenePromise(name, callback);
-        pendingScenePromises.Add(scenePromise);
+        loadingScenePromises.Add(scenePromise);
         SceneManager.LoadSceneAsync(name, mode);
     }
     public void LoadAsync(SceneInfo sceneInfo, Action<Scene> callback = null)
@@ -69,7 +71,7 @@ public class SceneService : MonoCoreService<SceneService>
 
     private bool _HandleUniqueLoad(string sceneName, Action<Scene> callback)
     {
-        ScenePromise scenePromise = GetLoadingScene(sceneName);
+        ScenePromise scenePromise = GetLoadingScenePromise(sceneName);
         if (scenePromise != null) // means the scene is currently being loaded
         {
             scenePromise.Callbacks += callback;
@@ -109,9 +111,9 @@ public class SceneService : MonoCoreService<SceneService>
 
     public bool IsBeingLoaded(string sceneName)
     {
-        for (int i = 0; i < pendingScenePromises.Count; i++)
+        for (int i = 0; i < loadingScenePromises.Count; i++)
         {
-            if (pendingScenePromises[i].name == sceneName) return true;
+            if (loadingScenePromises[i].name == sceneName) return true;
         }
         return false;
     }
@@ -152,7 +154,7 @@ public class SceneService : MonoCoreService<SceneService>
     }
     public int LoadingSceneCount
     {
-        get { return pendingScenePromises.Count; }
+        get { return loadingScenePromises.Count; }
     }
 
     #endregion
@@ -161,13 +163,27 @@ public class SceneService : MonoCoreService<SceneService>
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        ScenePromise promise = GetLoadingScene(scene.name);
-        if (promise == null) return;
+        ScenePromise promise = GetLoadingScenePromise(scene.name);
+        if (promise == null)
+            return;
 
         promise.scene = scene;
 
         if (!scene.isLoaded)
             StartCoroutine(WaitForSceneLoad(scene, promise));
+        else
+            Execute(promise);
+    }
+    void OnSceneUnloaded(Scene scene)
+    {
+        ScenePromise promise = GetUnloadingScenePromise(scene.name);
+        if (promise == null)
+            return;
+
+        promise.scene = scene;
+
+        if (scene.isLoaded)
+            StartCoroutine(WaitForSceneUnload(scene, promise));
         else
             Execute(promise);
     }
@@ -179,20 +195,35 @@ public class SceneService : MonoCoreService<SceneService>
         Execute(promise);
     }
 
+    IEnumerator WaitForSceneUnload(Scene scene, ScenePromise promise)
+    {
+        while (scene.isLoaded)
+            yield return null;
+        Execute(promise);
+    }
+
     void Execute(ScenePromise promise)
     {
-        promise.SafeInvokeCallback();
+        promise.InvokeCallback();
 
-        pendingScenePromises.Remove(promise);
+        loadingScenePromises.Remove(promise);
     }
 
     #endregion
 
     #region Internal Utility
 
-    ScenePromise GetLoadingScene(string name)
+    ScenePromise GetLoadingScenePromise(string name)
     {
-        foreach (ScenePromise scene in pendingScenePromises)
+        foreach (ScenePromise scene in loadingScenePromises)
+        {
+            if (scene.name == name) return scene;
+        }
+        return null;
+    }
+    ScenePromise GetUnloadingScenePromise(string name)
+    {
+        foreach (ScenePromise scene in unloadingScenePromises)
         {
             if (scene.name == name) return scene;
         }

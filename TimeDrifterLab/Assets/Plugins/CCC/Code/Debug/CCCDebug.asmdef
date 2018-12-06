@@ -1,10 +1,8 @@
 {
-    "name": "Game",
+    "name": "CCCDebug",
     "references": [
         "CCCCore",
-        "Saves",
-        "CCCUI",
-        "CCCDebug"
+        "DOTweenModules"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

@@ -64,10 +64,7 @@ public class CoreServiceManager
 
         foreach (Action callback in initializationCallbacks)
         {
-            if (callback.Target != null)
-            {
-                callback.Invoke();
-            }
+            callback?.SafeInvoke();
         }
 
         initializationCallbacks.Clear();
