@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: ExempleAchievementsInfo
+  m_EditorClassIdentifier: CCCCore:CCC.Achievements:AchievementInfo
+  achievementList:
+  - nameIdentifier: 
+    achievementID: 0
+    SteamAchievementID: 
+    Ps4AchievementID: 
+    XboxAchievementID: 
+  achievementFlagSaver: {fileID: 0}
+  achievementFlagList:
+  - nameIdentifier: 
+    flagID: 0
+    flagState: 0

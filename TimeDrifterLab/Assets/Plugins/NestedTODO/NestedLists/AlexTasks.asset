@@ -1,0 +1,478 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b86855237364b348ac0ddfcfc91163a, type: 3}
+  m_Name: AlexTasks
+  m_EditorClassIdentifier: 
+  idCount: 25
+  list:
+  - title: Root Node
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 0
+    priority: 0
+    tag: 0
+    nodeID: 0
+    depth: 0
+    parentID: 0
+    childIds: 01000000090000000a0000000c0000000e00000011000000
+    lineIndex: 0
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Localisation
+    notes: Create a system in Unity that deals with the localisation of any text
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 0
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 1
+    depth: 1
+    parentID: 0
+    childIds: 02000000030000000500000006000000
+    lineIndex: 1
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Finish the fonctionnalities of the Localised Text Type
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 2
+    depth: 2
+    parentID: 1
+    childIds: 
+    lineIndex: 2
+    points: 1
+    boardPosition: {x: 0, y: 0}
+  - title: Create a custom inspector for the Localised Text Type Type
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 0
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 3
+    depth: 2
+    parentID: 1
+    childIds: 04000000
+    lineIndex: 3
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Add Button to add the text to the project
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 4
+    depth: 3
+    parentID: 3
+    childIds: 
+    lineIndex: 4
+    points: 1
+    boardPosition: {x: 0, y: 1}
+  - title: Create A Window containing all added localised Text
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 0
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 5
+    depth: 2
+    parentID: 1
+    childIds: 0700000008000000
+    lineIndex: 4
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Create a component that use a localised text in the game
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 6
+    depth: 2
+    parentID: 1
+    childIds: 
+    lineIndex: 5
+    points: 1
+    boardPosition: {x: 0, y: 2}
+  - title: We can export the list to as CSV
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 7
+    depth: 3
+    parentID: 5
+    childIds: 
+    lineIndex: 6
+    points: 1
+    boardPosition: {x: 0, y: 3}
+  - title: We can impot a csv to the list
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 8
+    depth: 3
+    parentID: 5
+    childIds: 
+    lineIndex: 7
+    points: 1
+    boardPosition: {x: 0, y: 4}
+  - title: Achievements
+    notes: System that make us able to unlock achievements
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 9
+    depth: 1
+    parentID: 0
+    childIds: 1600000017000000
+    lineIndex: 2
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Build Machine
+    notes: Setup a build machine so its easy to build whenever we want and periodicly
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 0
+    category: 3
+    priority: 0
+    tag: 2
+    nodeID: 10
+    depth: 1
+    parentID: 0
+    childIds: 0b000000
+    lineIndex: 5
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Help Fred setup the build farm
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 2
+    nodeID: 11
+    depth: 2
+    parentID: 10
+    childIds: 
+    lineIndex: 11
+    points: 1
+    boardPosition: {x: 1, y: 2}
+  - title: Documentation Support
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 2
+    nodeID: 12
+    depth: 1
+    parentID: 0
+    childIds: 0d00000018000000
+    lineIndex: 6
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Make Sure to that every push need to have a documentation
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 2
+    nodeID: 13
+    depth: 2
+    parentID: 12
+    childIds: 
+    lineIndex: 7
+    points: 1
+    boardPosition: {x: 1, y: 0}
+  - title: Game Analytics
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 0
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 14
+    depth: 1
+    parentID: 0
+    childIds: 0f00000010000000
+    lineIndex: 9
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Make a front end system the game can interact with
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 15
+    depth: 2
+    parentID: 14
+    childIds: 
+    lineIndex: 14
+    points: 1
+    boardPosition: {x: 0, y: 6}
+  - title: Link everything to a backend and choose an API that it's gonna use
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 16
+    depth: 2
+    parentID: 14
+    childIds: 
+    lineIndex: 15
+    points: 1
+    boardPosition: {x: 0, y: 7}
+  - title: Game Design Tool
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 0
+    category: 3
+    priority: 0
+    tag: 2
+    nodeID: 17
+    depth: 1
+    parentID: 0
+    childIds: 12000000
+    lineIndex: 10
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Make a tool to easily edit any game data or stats
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 2
+    nodeID: 18
+    depth: 2
+    parentID: 17
+    childIds: 130000001400000015000000
+    lineIndex: 15
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: CSV or Window to create a data list containing everything we want
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 2
+    nodeID: 19
+    depth: 3
+    parentID: 18
+    childIds: 
+    lineIndex: 16
+    points: 1
+    boardPosition: {x: 0, y: 8}
+  - title: Game data is contained in a .json when packaging
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 2
+    nodeID: 20
+    depth: 3
+    parentID: 18
+    childIds: 
+    lineIndex: 17
+    points: 1
+    boardPosition: {x: 0, y: 9}
+  - title: Game gets its data inside the .json
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 2
+    nodeID: 21
+    depth: 3
+    parentID: 18
+    childIds: 
+    lineIndex: 18
+    points: 1
+    boardPosition: {x: 0, y: 10}
+  - title: Add Window to edit current achievements
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 22
+    depth: 2
+    parentID: 9
+    childIds: 
+    lineIndex: 3
+    points: 1
+    boardPosition: {x: 0, y: 5}
+  - title: Utility script to unlock and deal with achievements
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 1
+    nodeID: 23
+    depth: 2
+    parentID: 9
+    childIds: 
+    lineIndex: 4
+    points: 1
+    boardPosition: {x: 1, y: 3}
+  - title: Test Markdown Documentation in Github
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 3
+    priority: 0
+    tag: 2
+    nodeID: 24
+    depth: 2
+    parentID: 12
+    childIds: 
+    lineIndex: 8
+    points: 1
+    boardPosition: {x: 1, y: 1}
+  listConfig:
+    autoComplete: 1
+    autoCategory: 1
+    autoPriority: 1
+    autoTag: 1
+    inheritPriority: 1
+    inheritCategory: 1
+    inheritTag: 1
+    inheritLinkedFile: 1
+    confirmParentDelete: 1
+    autoSelectNewTask: 1
+    showExtendedToolbar: 0
+    scrollToActiveTask: 1
+    hideParents: 0
+    hideNotes: 0
+    hideProgressBars: 0
+    hidePriorityLevels: 0
+    hideCategories: 0
+    hideTags: 0
+    categories:
+    - Categories/None
+    - Categories/Design
+    - Categories/Scripting
+    - Categories/CCC
+    priorities:
+    - priorityText: Priorities/Normal
+      priorityColor: {r: 0, g: 1, b: 0, a: 1}
+    - priorityText: Priorities/High
+      priorityColor: {r: 1, g: 0, b: 0, a: 1}
+    - priorityText: Priorities/Low
+      priorityColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    tags:
+    - Tags/Untagged
+    - Tags/Code
+    - Tags/Project
+    skinColors:
+    - {r: 0.83137256, g: 0.83137256, b: 0.83137256, a: 1}
+    - {r: 0.27450982, g: 0.27450982, b: 0.27450982, a: 1}
+    - {r: 0.49411765, g: 0.49411765, b: 0.49411765, a: 1}
+    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: 0.7058824, g: 0.7058824, b: 0.7058824, a: 1}
+    - {r: 0, g: 0, b: 0, a: 1}
+    - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    csvSeparator: ','
+    exportProgress: 1
+    exportCategory: 1
+    exportPriority: 1
+    exportTags: 1
+    encodingCode: 65001
+  boards:
+  - title: Backlog
+    wip: 0
+  - title: To Do
+    wip: 0
+  - title: In Progress
+    wip: 0
+  - title: Completed
+    wip: 0
+  burndownData:
+    date:
+    - 2018-12-15
+    dateValues:
+    - 15
