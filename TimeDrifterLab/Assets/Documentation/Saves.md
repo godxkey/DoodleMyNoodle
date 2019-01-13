@@ -9,7 +9,7 @@ code for writing/reading data process. That's where the Saves come into play. Th
 
 Using the existing Service system, add the "SaveService.cs" as a new service to the bank 
 
-![(Here is the link to the file)](https://gitlab.com/PlaymindIP/playlib/blob/master/Saves/SaveService.cs) 
+![(Here is the link to the file)](https://github.com/msfredb7/TimeDrifterLab/blob/master/TimeDrifterLab/Assets/Plugins/CCC/Code/Core/Saves/SaveService.cs) 
 
 This will enable the whole process of saving data into files for your game. If you don't do that first step, nothing will work. 
 
