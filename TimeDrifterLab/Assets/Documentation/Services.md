@@ -27,7 +27,7 @@ service inside the bank list !
 CoreServiceManagerBootstrap is a MonoBehaviour that will create a CoreServiceManager on Awake. As the constructor execute itself, it'll get the list of service prefabs, instantiate them as
 don't destroy on load and initialize them. When everything is completed, we trigger the event system related to the completion of the whole process.
 
-![](https://github.com/msfredb7/TimeDrifterLab/blob/master/TimeDrifterLab/Assets/Documentation/Image/servicetuto1.PNG)
+![](https://github.com/msfredb7/TimeDrifterLab/blob/master/TimeDrifterLab/Assets/Documentation/Images/servicetuto1.PNG)
 
 ![](https://github.com/msfredb7/TimeDrifterLab/blob/master/TimeDrifterLab/Assets/Documentation/Images/servicetuto5.PNG)
 
