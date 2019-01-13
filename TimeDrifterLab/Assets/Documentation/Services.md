@@ -12,11 +12,9 @@ For every service and to make the creation of them really easy you'll need to se
 1. Setup the Bank
 
 In order to initialize every service available, we need to have a bank containing them. A scriptable object named "CoreServiceBank" is used for this. Create it within the Asset Menu and
-make sure to place it in the Resources directory and then at "PlayLib/ServiceBank" inside it. Unity doesn't really support the resources directory and ask developer to not use it, but it's 
+make sure to place it in the Resources directory. Unity doesn't really support the resources directory and ask developer to not use it, but it's 
 a powerful tool and a workaround reflection. In this case, it gives us the power to return the bank dynamicly in a scriptable object static function. Don't forget to add the prefab of your
 service inside the bank list !
-
-![](https://github.com/msfredb7/TimeDrifterLab/blob/master/TimeDrifterLab/Assets/Documentation/Images/servicetuto2.png)
 
 ![](https://github.com/msfredb7/TimeDrifterLab/blob/master/TimeDrifterLab/Assets/Documentation/Images/servicetuto3.PNG)
 
