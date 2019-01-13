@@ -4,7 +4,8 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -204,7 +205,7 @@ MonoBehaviour:
     childIds: 
     lineIndex: 11
     points: 1
-    boardPosition: {x: 1, y: 2}
+    boardPosition: {x: 2, y: 0}
   - title: Documentation Support
     notes: 
     linkedFile: {fileID: 0}
@@ -236,7 +237,7 @@ MonoBehaviour:
     childIds: 
     lineIndex: 7
     points: 1
-    boardPosition: {x: 1, y: 0}
+    boardPosition: {x: 2, y: 1}
   - title: Game Analytics
     notes: 
     linkedFile: {fileID: 0}
@@ -314,7 +315,7 @@ MonoBehaviour:
     depth: 2
     parentID: 17
     childIds: 130000001400000015000000
-    lineIndex: 15
+    lineIndex: 11
     points: 1
     boardPosition: {x: 0, y: -1}
   - title: CSV or Window to create a data list containing everything we want
@@ -330,7 +331,7 @@ MonoBehaviour:
     depth: 3
     parentID: 18
     childIds: 
-    lineIndex: 16
+    lineIndex: 12
     points: 1
     boardPosition: {x: 0, y: 8}
   - title: Game data is contained in a .json when packaging
@@ -346,7 +347,7 @@ MonoBehaviour:
     depth: 3
     parentID: 18
     childIds: 
-    lineIndex: 17
+    lineIndex: 13
     points: 1
     boardPosition: {x: 0, y: 9}
   - title: Game gets its data inside the .json
@@ -362,7 +363,7 @@ MonoBehaviour:
     depth: 3
     parentID: 18
     childIds: 
-    lineIndex: 18
+    lineIndex: 14
     points: 1
     boardPosition: {x: 0, y: 10}
   - title: Add Window to edit current achievements
@@ -395,8 +396,8 @@ MonoBehaviour:
     parentID: 9
     childIds: 
     lineIndex: 4
-    points: 1
-    boardPosition: {x: 1, y: 3}
+    points: 0
+    boardPosition: {x: 3, y: 0}
   - title: Test Markdown Documentation in Github
     notes: 
     linkedFile: {fileID: 0}
@@ -412,7 +413,7 @@ MonoBehaviour:
     childIds: 
     lineIndex: 8
     points: 1
-    boardPosition: {x: 1, y: 1}
+    boardPosition: {x: 1, y: 0}
   listConfig:
     autoComplete: 1
     autoCategory: 1
@@ -474,5 +475,57 @@ MonoBehaviour:
   burndownData:
     date:
     - 2018-12-15
+    - 2018-12-16
+    - 2018-12-17
+    - 2018-12-18
+    - 2018-12-19
+    - 2018-12-20
+    - 2018-12-21
+    - 2018-12-22
+    - 2018-12-23
+    - 2018-12-24
+    - 2018-12-25
+    - 2018-12-26
+    - 2018-12-27
+    - 2018-12-28
+    - 2018-12-29
+    - 2018-12-30
+    - 2018-12-31
+    - 2019-01-01
+    - 2019-01-02
+    - 2019-01-03
+    - 2019-01-04
+    - 2019-01-05
+    - 2019-01-06
+    - 2019-01-07
+    - 2019-01-08
+    - 2019-01-09
+    - 2019-01-10
     dateValues:
-    - 15
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
