@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Debug/DebugScreenMessage.unity
     guid: 4d44f4fa44d2f9747b60d122c490e5e0
+  - enabled: 1
+    path: Assets/New Scene.unity
+    guid: 41ce4f0c2feec7b4cac6584b041bc060
   m_configObjects: {}

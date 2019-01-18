@@ -5,6 +5,6 @@ public partial class AsyncOperationJoin
     public TweenCallback RegisterTweenOperation()
     {
         count++;
-        return OnCompleteAnyInit;
+        return OnCompleteAnyOperation;
     }
 }

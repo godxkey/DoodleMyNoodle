@@ -15,7 +15,7 @@ public partial class AsyncOperationJoin
     public Action RegisterOperation()
     {
         count++;
-        return OnCompleteAnyInit;
+        return OnCompleteAnyOperation;
     }
     public void MarkEnd()
     {
@@ -23,7 +23,7 @@ public partial class AsyncOperationJoin
         CheckCompletion();
     }
 
-    void OnCompleteAnyInit()
+    void OnCompleteAnyOperation()
     {
         count--;
         CheckCompletion();
