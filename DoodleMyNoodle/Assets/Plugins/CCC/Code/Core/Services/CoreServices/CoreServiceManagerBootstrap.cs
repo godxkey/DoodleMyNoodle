@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CoreServiceManagerBootstrap : MonoBehaviour
+public static class CoreServiceManagerBootstrap
 {
-    void Awake()
+    [RuntimeInitializeOnLoadMethod]
+    static void OnRuntimeMethodLoad() // Executed after scene is loaded and game is running
     {
-        if(CoreServiceManager.Instance == null)
+        if (CoreServiceManager.Instance == null)
         {
             new CoreServiceManager();
         }
