@@ -9,9 +9,9 @@ namespace CCC.Achievements
     {
         public AchievementInfo achievements;
 
-        public override void Initialize(Action onComplete)
+        public override void Initialize(Action<ICoreService> onComplete)
         {
-            achievements.Init(onComplete);
+            achievements.Init(() => onComplete(this));
         }
 
         public void Unlock(int achievementID)

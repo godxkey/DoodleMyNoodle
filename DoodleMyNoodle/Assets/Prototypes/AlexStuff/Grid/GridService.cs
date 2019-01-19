@@ -45,7 +45,7 @@ public class GridService : MonoCoreService<GridService>
         Instance = this;
     }
 
-    public override void Initialize(Action onComplete)
+    public override void Initialize(Action<ICoreService> onComplete)
     {
         // If neither starting corners exist, we need default values
         if(data == null || cornerA == null || cornerB == null)
@@ -61,6 +61,8 @@ public class GridService : MonoCoreService<GridService>
         Grid grid = null;
         new GridBuilder(ref grid,data, cornerALocation, cornerBLocation);
         gridTools = new GridTools(grid);
+
+        onComplete(this);
     }
 
     // Debug

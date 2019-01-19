@@ -14,15 +14,15 @@ public class AudioMixerService : MonoCoreService<AudioMixerService>
     public AudioMixer AudioMixer { get { return mixerSaver.AudioMixer; } }
     public AudioMixerSaver AudioMixerSaver { get { return mixerSaver; } }
 
-    public override void Initialize(Action onComplete)
+    public override void Initialize(Action<ICoreService> onComplete)
     {
         if (loadAsyncOnStart)
         {
-            mixerSaver.LoadAsync(onComplete);
+            mixerSaver.LoadAsync(()=> onComplete(this));
         }
         else
         {
-            mixerSaver.Load(onComplete);
+            mixerSaver.Load(() => onComplete(this));
         }
     }
 }

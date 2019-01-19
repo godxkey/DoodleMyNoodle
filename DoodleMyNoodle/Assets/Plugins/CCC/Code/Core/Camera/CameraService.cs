@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraService : MonoCoreService<CameraService>
@@ -25,9 +23,10 @@ public class CameraService : MonoCoreService<CameraService>
     public CameraSet ActiveCameraSet { get; private set; }
     public AudioListener ActiveAudioListener { get { return ActiveCameraSet.AudioListener; } }
     public Camera ActiveCamera { get { return ActiveCameraSet.Camera; } }
+    public static event Action OnInitComplete;
 
 
-    public override void Initialize(Action onComplete)
+    public override void Initialize(Action<ICoreService> onComplete)
     {
         if (BackupCamera.Instance == null)
         {
@@ -36,7 +35,7 @@ public class CameraService : MonoCoreService<CameraService>
 
         ReevaluateActiveCamera();
 
-        onComplete();
+        onComplete(this);
     }
 
     public void AdjustCameraPriority(Camera camera, int priority)

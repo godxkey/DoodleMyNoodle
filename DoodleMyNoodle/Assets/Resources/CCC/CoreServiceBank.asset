@@ -4,7 +4,8 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -12,10 +13,11 @@ MonoBehaviour:
   m_Name: CoreServiceBank
   m_EditorClassIdentifier: 
   coreServices:
-  - {fileID: 1375431694202818, guid: edd67de39eed1f14699da898a2fbdcd6, type: 2}
-  - {fileID: 1900913777497302, guid: 41b35fbcdc0bf8246b2eee43972a28f5, type: 2}
-  - {fileID: 1061548378669230, guid: a81e9921fe903d74bbff7bf447ce2557, type: 2}
-  - {fileID: 1348883835922856, guid: 074f498b47c141142b30c966cc4972d2, type: 2}
-  - {fileID: 1704603521536276, guid: 092c5604b8b93e8449094a5962ce0169, type: 2}
-  - {fileID: 1572038115993394, guid: 531b14d5c39485d40bb94466d4d47776, type: 2}
-  - {fileID: 1551427093590724, guid: 9edfe1894160de04cba12f9539894895, type: 2}
+  - {fileID: 1375431694202818, guid: edd67de39eed1f14699da898a2fbdcd6, type: 3}
+  - {fileID: 1900913777497302, guid: 41b35fbcdc0bf8246b2eee43972a28f5, type: 3}
+  - {fileID: 1061548378669230, guid: a81e9921fe903d74bbff7bf447ce2557, type: 3}
+  - {fileID: 1348883835922856, guid: 074f498b47c141142b30c966cc4972d2, type: 3}
+  - {fileID: 1704603521536276, guid: 092c5604b8b93e8449094a5962ce0169, type: 3}
+  - {fileID: 1572038115993394, guid: 531b14d5c39485d40bb94466d4d47776, type: 3}
+  - {fileID: 1551427093590724, guid: 9edfe1894160de04cba12f9539894895, type: 3}
+  - {fileID: 3880174357331742853, guid: b8e98f1e132d37f40a0f5d6985688fa0, type: 3}

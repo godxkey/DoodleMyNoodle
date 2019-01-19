@@ -26,10 +26,10 @@ public class MainThreadService : MonoCoreService<MainThreadService>
     static private bool mainThreadIdSet = false;
     static private int mainThreadId;
 
-    public override void Initialize(Action onComplete)
+    public override void Initialize(Action<ICoreService> onComplete)
     {
         MainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
-        onComplete();
+        onComplete(this);
     }
 
     void Update()

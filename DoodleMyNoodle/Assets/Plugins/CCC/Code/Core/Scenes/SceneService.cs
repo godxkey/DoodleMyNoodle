@@ -25,11 +25,11 @@ public class SceneService : MonoCoreService<SceneService>
     List<ScenePromise> loadingScenePromises = new List<ScenePromise>();
     List<ScenePromise> unloadingScenePromises = new List<ScenePromise>();
 
-    public override void Initialize(Action onComplete)
+    public override void Initialize(Action<ICoreService> onComplete)
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         //SceneManager.sceneUnloaded += OnSceneUnloaded;
-        onComplete();
+        onComplete(this);
     }
 
     protected override void OnDestroy()
@@ -174,19 +174,19 @@ public class SceneService : MonoCoreService<SceneService>
         else
             Execute(promise);
     }
-    void OnSceneUnloaded(Scene scene)
-    {
-        ScenePromise promise = GetUnloadingScenePromise(scene.name);
-        if (promise == null)
-            return;
+    //void OnSceneUnloaded(Scene scene)
+    //{
+    //    ScenePromise promise = GetUnloadingScenePromise(scene.name);
+    //    if (promise == null)
+    //        return;
 
-        promise.scene = scene;
+    //    promise.scene = scene;
 
-        if (scene.isLoaded)
-            StartCoroutine(WaitForSceneUnload(scene, promise));
-        else
-            Execute(promise);
-    }
+    //    if (scene.isLoaded)
+    //        StartCoroutine(WaitForSceneUnload(scene, promise));
+    //    else
+    //        Execute(promise);
+    //}
 
     IEnumerator WaitForSceneLoad(Scene scene, ScenePromise promise)
     {
@@ -195,12 +195,12 @@ public class SceneService : MonoCoreService<SceneService>
         Execute(promise);
     }
 
-    IEnumerator WaitForSceneUnload(Scene scene, ScenePromise promise)
-    {
-        while (scene.isLoaded)
-            yield return null;
-        Execute(promise);
-    }
+    //IEnumerator WaitForSceneUnload(Scene scene, ScenePromise promise)
+    //{
+    //    while (scene.isLoaded)
+    //        yield return null;
+    //    Execute(promise);
+    //}
 
     void Execute(ScenePromise promise)
     {

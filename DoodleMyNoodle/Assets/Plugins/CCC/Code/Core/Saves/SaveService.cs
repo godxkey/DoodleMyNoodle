@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SaveService : MonoCoreService<SaveService>
 {
-    public override void Initialize(Action onComplete) => onComplete();
+    public override void Initialize(Action<ICoreService> onComplete) => onComplete(this);
 
     public void ThreadSave(string path, object graph, Action onComplete = null)
     {

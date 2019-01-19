@@ -7,11 +7,11 @@ public class GameSavesManager : MonoCoreService<GameSavesManager>
 {
     [SerializeField, HideInInspector] private DataSaver[] dataSavers = new DataSaver[Enum.GetValues(typeof(GameSaveCategory)).Length];
 
-    public override void Initialize(Action onComplete)
+    public override void Initialize(Action<ICoreService> onComplete)
     {
         VerifyArrayIntegrity();
 
-        AsyncOperationJoin join = new AsyncOperationJoin(onComplete);
+        AsyncOperationJoin join = new AsyncOperationJoin(() => onComplete(this));
         for (int i = 0; i < dataSavers.Length; i++)
         {
             dataSavers[i].Load(join.RegisterOperation());

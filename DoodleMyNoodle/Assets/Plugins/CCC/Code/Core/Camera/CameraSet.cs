@@ -5,7 +5,7 @@ public class CameraSet
     public CameraSet(Camera camera, AudioListener audioListener) { Camera = camera; AudioListener = audioListener; }
     public Camera Camera { get; set; }
     public AudioListener AudioListener { get; set; }
-    public Camera zCamera;
+
     public void Activate()
     {
         SetActive(true);

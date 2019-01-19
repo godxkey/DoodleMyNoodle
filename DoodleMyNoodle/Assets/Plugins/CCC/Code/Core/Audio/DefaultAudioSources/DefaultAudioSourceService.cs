@@ -17,9 +17,9 @@ public class DefaultAudioSourceService : MonoCoreService<DefaultAudioSourceServi
     List<Coroutine> musicTransitionCalls = new List<Coroutine>();
     List<Tween> musicTransitionTweens = new List<Tween>();
 
-    public override void Initialize(Action onComplete)
+    public override void Initialize(Action<ICoreService> onComplete)
     {
-        onComplete();
+        onComplete(this);
     }
 
     /// <summary>

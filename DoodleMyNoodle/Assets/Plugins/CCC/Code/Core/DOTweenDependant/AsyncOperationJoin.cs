@@ -8,3 +8,12 @@ public partial class AsyncOperationJoin
         return OnCompleteAnyInit;
     }
 }
+
+public partial class AsyncOperationJoin<T>
+{
+    public TweenCallback<T> RegisterTweenOperation()
+    {
+        count++;
+        return OnCompleteAnyInit;
+    }
+}
