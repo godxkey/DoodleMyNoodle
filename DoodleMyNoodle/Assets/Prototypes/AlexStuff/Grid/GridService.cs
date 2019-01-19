@@ -13,8 +13,8 @@ public class GridService : MonoCoreService<GridService>
     public Location cornerA;
     public Location cornerB;
 
-    private Vector3 cornerALocation = new Vector3(-10,5,0);
-    private Vector3 cornerBLocation = new Vector3(10,-5,0);
+    private Vector3 cornerALocation = new Vector3(-10, 5, 0);
+    private Vector3 cornerBLocation = new Vector3(10, -5, 0);
 
     // Accessible Grid Tool
 
@@ -24,11 +24,12 @@ public class GridService : MonoCoreService<GridService>
     {
         get
         {
-            if(gridTools == null)
+            if (gridTools == null)
             {
                 Debug.LogError("GridTools doesn't exist");
                 return null;
-            } else
+            }
+            else
             {
                 return gridTools;
             }
@@ -48,10 +49,11 @@ public class GridService : MonoCoreService<GridService>
     public override void Initialize(Action<ICoreService> onComplete)
     {
         // If neither starting corners exist, we need default values
-        if(data == null || cornerA == null || cornerB == null)
+        if (data == null || cornerA == null || cornerB == null)
         {
             data = new GridData(GridData.defaultGridTileSize);
-        } else
+        }
+        else
         {
             cornerALocation = cornerA.transform.position;
             cornerBLocation = cornerB.transform.position;
@@ -59,7 +61,7 @@ public class GridService : MonoCoreService<GridService>
 
         // Create Grid and pass it to Tools (the one using it)
         Grid grid = null;
-        new GridBuilder(ref grid,data, cornerALocation, cornerBLocation);
+        GridBuilder.BuildTiles(ref grid, data, cornerALocation, cornerBLocation);
         gridTools = new GridTools(grid);
 
         onComplete(this);
@@ -67,8 +69,28 @@ public class GridService : MonoCoreService<GridService>
 
     // Debug
 
-    void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
-        // Show the potentiel grid
+        // If neither starting corners exist, we need default values
+        if (data == null || cornerA == null || cornerB == null)
+        {
+            data = new GridData(GridData.defaultGridTileSize);
+        }
+        else
+        {
+            cornerALocation = cornerA.transform.position;
+            cornerBLocation = cornerB.transform.position;
+        }
+
+        List<Vector3> tilesPos = new List<Vector3>();
+        GridBuilder.GetAllPositions(ref tilesPos, data, cornerALocation, cornerBLocation);
+
+        for (int i = 0; i < tilesPos.Count; i++)
+        {
+            Gizmos.color = Color.blue;
+            float sizeX = ((Mathf.Abs(cornerALocation.x) + Mathf.Abs(cornerBLocation.x)) / data.gridSize);
+            float sizeY = ((Mathf.Abs(cornerALocation.y) + Mathf.Abs(cornerBLocation.y)) / data.gridSize);
+            Gizmos.DrawWireCube(tilesPos[i], new Vector3(sizeX, sizeY, 1));
+        }
     }
 }

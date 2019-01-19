@@ -4,19 +4,71 @@ using UnityEngine;
 
 public class GridBuilder
 {
-    public GridBuilder(ref Grid grid, GridData data, Vector3 cornerA, Vector3 cornerB)
+    public static void GetAllPositions(ref List<Vector3> gridPos, GridData data, Vector3 cornerA, Vector3 cornerB)
+    {
+        float previousPosX = cornerA.x;
+        float previousPosY = cornerA.y;
+
+        float deltaX = ((Mathf.Abs(cornerA.x) + Mathf.Abs(cornerB.x)) / data.gridSize);
+        float deltaY = ((Mathf.Abs(cornerA.y) + Mathf.Abs(cornerB.y)) / data.gridSize);
+
+        // For each tile
+        for (int i = 0; i < (data.gridSize * data.gridSize); i++)
+        {
+            // What column number and row number are we (prevent having 2 for inside of each other)
+            int column = (i % data.gridSize) + 1;
+            int row;
+            if ((i + 1) > data.gridSize)
+                row = Mathf.CeilToInt((i / data.gridSize)) + 1;
+            else
+                row = 1;
+
+            // Calculate the position of the tile
+            float posX;
+            float posY;
+
+            if (column == 1)
+            {
+                posX = (cornerA.x + (deltaX / 2));
+            } else
+            {
+                posX = (previousPosX + deltaX);
+            }
+            
+            if(row == 1)
+            {
+                posY = (cornerA.y - (deltaY / 2));
+            } else
+            {
+                posY = (cornerA.y - (deltaY / 2)) - (deltaY * (row - 1));
+            }
+
+            previousPosX = posX;
+            previousPosY = posY;
+
+            gridPos.Add(new Vector3(posX, posY, 0));
+        }
+    }
+
+
+    public static void BuildTiles(ref Grid grid, GridData data, Vector3 cornerA, Vector3 cornerB)
     {
         // Stock the number of tiles in the grid
         grid.tileAmount = data.gridSize * data.gridSize;
 
         // Tiles must be squares
-        if((cornerA.x + cornerB.x) != (cornerA.y + cornerB.y))
+        if((Mathf.Abs(cornerA.x) + Mathf.Abs(cornerB.x)) != (Mathf.Abs(cornerA.y) + Mathf.Abs(cornerB.y)))
         {
             Debug.LogWarning("Grid Tiles won't be squares because your 2 corners aren't correctly place (distance between their x and y must be equal)");
         }
 
+        if(cornerA.z != 0 || cornerB.z != 0)
+        {
+            Debug.LogError("Grid should be at 0. Move the corners");
+        }
+
         // Calculate the size of the tiles
-        grid.tileSize = (cornerA.x + cornerB.x) / data.gridSize;
+        grid.tileSize = (Mathf.Abs(cornerA.x) + Mathf.Abs(cornerB.x)) / data.gridSize;
 
         // Stock the gridSize
         grid.gridSize = data.gridSize;
@@ -42,7 +94,7 @@ public class GridBuilder
         SetupNeighborhood(ref grid);
     }
 
-    void SetupNeighborhood(ref Grid grid)
+    static void SetupNeighborhood(ref Grid grid)
     {
         // For each tile
         for (int i = 0; i < grid.tileAmount; i++)

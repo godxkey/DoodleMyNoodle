@@ -7,22 +7,6 @@ public class Tile
     public Vector2 position;
 
     public List<Tile> neighbors;
-    public GameObject entityOnTop;
-
-    public GameObject entity
-    {
-        get
-        {
-            return entityOnTop;
-        }
-        set
-        {
-            if (value != null)
-                entityOnTop = value;
-            else
-                return;
-        }
-    }
 
     public Tile(Vector2 position)
     {
