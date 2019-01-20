@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c1238920c2b34488ea243fe57cede2, type: 3}
   m_Name: GridTestData
   m_EditorClassIdentifier: 
+  usingTileData: 0
+  height: 0
   gridSize: 16
+  cornerALocation: {x: 0, y: 0, z: 0}
+  cornerBLocation: {x: 0, y: 0, z: 0}

@@ -4,16 +4,18 @@ using UnityEngine;
 
 public class Location : MonoBehaviour
 {
-    [HideInInspector]
+    [ReadOnly]
     public Vector3 pos;
 
-    void Start()
+    void Awake()
     {
         pos = transform.position;
     }
 
+    // Debug Display
     void OnDrawGizmos()
     {
+        pos = transform.position;
         Gizmos.color = new Color(0, 1, 0, 0.75f);
         Gizmos.DrawSphere(transform.position, 0.25f);
     }

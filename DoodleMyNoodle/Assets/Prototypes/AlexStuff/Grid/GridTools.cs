@@ -4,30 +4,23 @@ using UnityEngine;
 
 public class GridTools
 {
-    Grid grid;
-
-    public GridTools(Grid grid)
+    public static List<Vector3> FindPath(int startTileID, int endTileID)
     {
-        this.grid = grid;
+        return null;
     }
 
-    public List<Vector3> GetAllTileLocation()
+    public static List<Vector3> GetCornerPos()
     {
-        List<Vector3> result = new List<Vector3>();
-        for (int i = 0; i < grid.tileAmount; i++)
-        {
-            result.Add(grid.tiles[GetColumnNumber(i)][GetRowNumber(i)].position);
-        }
-        return result;
+        return null;
     }
 
-    int GetColumnNumber(int currentTileNumber)
+    public static List<Vector3> GetNextTileInDirection(int tileID, Vector2 direction)
     {
-        return currentTileNumber % grid.gridSize;
+        return null;
     }
 
-    int GetRowNumber(int currentTileNumber)
+    public static List<Vector3> GetAllTileAround(int tileID, int tileRange)
     {
-        return currentTileNumber / grid.gridSize;
+        return null;
     }
 }

@@ -5,17 +5,62 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Assets/Create/DMN/GridData")]
 public class GridData : ScriptableObject
 {
-    public int gridSize; // Amount of Tile
+    public bool usingTileData;
 
-    public static int defaultGridTileSize = 16;
+    // General Info
+    [Header("GENERAL INFO")]
+    public int height = 0;
 
-    public GridData(int gridTileSize)
+    // Grid Info
+    [HideIf("usingTileData"),Header("GRID INFO"), Space]
+    public int gridSize = 16; // Amount of Tile
+    [HideInInspector]
+    public Vector3 cornerALocation;
+    [HideInInspector]
+    public Vector3 cornerBLocation;
+
+    // Tile Info
+    [HideIf("usingTileData"), Header("TILE INFO"), Space]
+
+
+    // Local Info
+    float deltaX;
+    float deltaY;
+
+    // Default Constructor for when you didn't link a GridData
+    public GridData()
     {
-        this.gridSize = gridTileSize;
+        // Get All Data
+        usingTileData = false;
+        gridSize = 16;
+        cornerALocation = new Vector3(-10, 5, 0);
+        cornerBLocation = new Vector3(10, -5, 0);
     }
 
-    // a single grid tile objects data structure
+    // Fill with data when you link a GridData
+    public void SetData(Location cornerA, Location cornerB)
+    {
+        cornerALocation = cornerA.pos;
+        cornerBLocation = cornerB.pos;
+    }
 
-    // add button to open level design window
-    // in this window we can say what is on the tile at start
+    // Ask the grid builder to build everything together, and put it into the grid
+    public void SetGridValues()
+    {
+        GridBuilder.SetupGrid(this, usingTileData);
+    }
+
+    // SetGridValues is a one timer, this force it
+    private void ForceSetGridValues()
+    {
+        Grid.hasBeenSetup = false;
+        GridBuilder.SetupGrid(this, usingTileData);
+    }
+
+    // If you modify something in the editor update the system
+    void OnValidate()
+    {
+        if (Application.isPlaying)
+            ForceSetGridValues();
+    }
 }

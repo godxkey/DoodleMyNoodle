@@ -13,84 +13,68 @@ public class GridService : MonoCoreService<GridService>
     public Location cornerA;
     public Location cornerB;
 
-    private Vector3 cornerALocation = new Vector3(-10, 5, 0);
-    private Vector3 cornerBLocation = new Vector3(10, -5, 0);
-
-    // Accessible Grid Tool
-
-    GridTools gridTools;
-
-    public GridTools tools
-    {
-        get
-        {
-            if (gridTools == null)
-            {
-                Debug.LogError("GridTools doesn't exist");
-                return null;
-            }
-            else
-            {
-                return gridTools;
-            }
-        }
-
-        set
-        {
-            return;
-        }
-    }
-
+    // On Awake, if GridService is already in the scene, set instance and init
+    // or else, Service system is going to create it from a prefab made in the project
     void Awake()
     {
         Instance = this;
+        Initialize(null);
     }
 
+    // Init function
     public override void Initialize(Action<ICoreService> onComplete)
     {
-        // If neither starting corners exist, we need default values
-        if (data == null || cornerA == null || cornerB == null)
-        {
-            data = new GridData(GridData.defaultGridTileSize);
-        }
-        else
-        {
-            cornerALocation = cornerA.transform.position;
-            cornerBLocation = cornerB.transform.position;
-        }
+        // Be sure to have a GridData
+        SetupValues();
 
-        // Create Grid and pass it to Tools (the one using it)
-        Grid grid = null;
-        GridBuilder.BuildTiles(ref grid, data, cornerALocation, cornerBLocation);
-        gridTools = new GridTools(grid);
+        // Setup the data inside the grid
+        data.SetGridValues();
 
-        onComplete(this);
+        // We're ready ! Awake calls the init so we need to check for null
+        if(onComplete != null)
+            onComplete(this);
     }
 
-    // Debug
+    // Data from the service is normally put into the data
+    void SetupValues()
+    {
+        // Setup Default Values if we don't have data
+        if (data == null)
+        {
+            // we create a data with defaults values
+            data = new GridData();
+        } else
+        {
+            data.SetData(cornerA, cornerB);
+        }
+    }
+
+    // Debug Display before hitting Play
+
+    [Space,Header("Debug Gizmo Display")]
+    public bool usingTileInfo = false;
 
     void OnDrawGizmos()
     {
-        // If neither starting corners exist, we need default values
-        if (data == null || cornerA == null || cornerB == null)
-        {
-            data = new GridData(GridData.defaultGridTileSize);
-        }
-        else
-        {
-            cornerALocation = cornerA.transform.position;
-            cornerBLocation = cornerB.transform.position;
-        }
+        // Be sure service data is send into the GridData
+        SetupValues();
 
-        List<Vector3> tilesPos = new List<Vector3>();
-        GridBuilder.GetAllPositions(ref tilesPos, data, cornerALocation, cornerBLocation);
-
-        for (int i = 0; i < tilesPos.Count; i++)
+        // There is 2 types of Grid Generation
+        if (usingTileInfo)
         {
-            Gizmos.color = Color.blue;
-            float sizeX = ((Mathf.Abs(cornerALocation.x) + Mathf.Abs(cornerBLocation.x)) / data.gridSize);
-            float sizeY = ((Mathf.Abs(cornerALocation.y) + Mathf.Abs(cornerBLocation.y)) / data.gridSize);
-            Gizmos.DrawWireCube(tilesPos[i], new Vector3(sizeX, sizeY, 1));
+
+        } else
+        {
+            List<Vector3> tilesPos = new List<Vector3>();
+            GridBuilder.GetAllPositions(ref tilesPos, data, cornerA.transform.position, cornerB.transform.position);
+
+            for (int i = 0; i < tilesPos.Count; i++)
+            {
+                Gizmos.color = Color.blue;
+                float sizeX = ((Mathf.Abs(cornerA.transform.position.x) + Mathf.Abs(cornerB.transform.position.x)) / data.gridSize);
+                float sizeY = ((Mathf.Abs(cornerA.transform.position.y) + Mathf.Abs(cornerB.transform.position.y)) / data.gridSize);
+                Gizmos.DrawWireCube(tilesPos[i], new Vector3(sizeX, sizeY, 1));
+            }
         }
     }
 }

@@ -3,18 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AlexTextScript : MonoBehaviour {
+public class AlexTestScript : MonoBehaviour {
 
-    public LocalisedText text = "";
-    Text currentText;
+    public int tileID = 1;
 
-    public void Start()
+    void Update()
     {
-        string temp = text;
-
-
-        currentText.text = text;
+        transform.position = Grid.GetTilePosition(tileID);
     }
-
-
 }
