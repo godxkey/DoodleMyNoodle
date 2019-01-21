@@ -16,18 +16,18 @@ make sure to place it in the Resources directory. Unity doesn't really support t
 a powerful tool and a workaround reflection. In this case, it gives us the power to return the bank dynamicly in a scriptable object static function. Don't forget to add the prefab of your
 service inside the bank list !
 
-![](https://github.com/msfredb7/TimeDrifterLab/blob/master/TimeDrifterLab/Assets/Documentation/Images/servicetuto3.PNG)
+![](https://github.com/msfredb7/DoodleMyNoodle/edit/master/DoodleMyNoodle/Assets/Documentation/Images/servicetuto3.PNG)
 
-![](https://github.com/msfredb7/TimeDrifterLab/blob/master/TimeDrifterLab/Assets/Documentation/Images/servicetuto4.PNG)
+![](https://github.com/msfredb7/DoodleMyNoodle/edit/master/DoodleMyNoodle/Assets/Documentation/Images/servicetuto4.PNG)
 
 2. Add the CoreServiceManagerBootstrapper
 
 CoreServiceManagerBootstrap is a MonoBehaviour that will create a CoreServiceManager on Awake. As the constructor execute itself, it'll get the list of service prefabs, instantiate them as
 don't destroy on load and initialize them. When everything is completed, we trigger the event system related to the completion of the whole process.
 
-![](https://github.com/msfredb7/TimeDrifterLab/blob/master/TimeDrifterLab/Assets/Documentation/Images/servicetuto1.PNG)
+![](https://github.com/msfredb7/DoodleMyNoodle/edit/master/DoodleMyNoodle/Assets/Documentation/Images/servicetuto1.PNG)
 
-![](https://github.com/msfredb7/TimeDrifterLab/blob/master/TimeDrifterLab/Assets/Documentation/Images/servicetuto5.PNG)
+![](https://github.com/msfredb7/DoodleMyNoodle/edit/master/DoodleMyNoodle/Assets/Documentation/Images/servicetuto5.PNG)
 
 3. Getting a Service
 
