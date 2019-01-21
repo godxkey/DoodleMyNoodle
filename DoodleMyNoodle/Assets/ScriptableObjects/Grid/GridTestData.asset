@@ -15,5 +15,5 @@ MonoBehaviour:
   usingTileData: 0
   height: 0
   gridSize: 16
-  cornerALocation: {x: 0, y: 0, z: 0}
-  cornerBLocation: {x: 0, y: 0, z: 0}
+  cornerALocation: {x: -10, y: 5, z: 0}
+  cornerBLocation: {x: 10, y: -5, z: 0}
