@@ -23,8 +23,6 @@ public class CameraService : MonoCoreService<CameraService>
     public CameraSet ActiveCameraSet { get; private set; }
     public AudioListener ActiveAudioListener { get { return ActiveCameraSet.AudioListener; } }
     public Camera ActiveCamera { get { return ActiveCameraSet.Camera; } }
-    public static event Action OnInitComplete;
-
 
     public override void Initialize(Action<ICoreService> onComplete)
     {
