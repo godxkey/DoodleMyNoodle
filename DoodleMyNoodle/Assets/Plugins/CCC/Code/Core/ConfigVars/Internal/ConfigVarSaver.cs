@@ -22,7 +22,7 @@ namespace CCC.ConfigVarInterals
                         st.WriteLine("{0} \"{1}\"", cvar.name, cvar.Value);
                 }
             }
-            CDebug.Log("saved config vars: " + filename);
+            DebugService.Log("saved config vars: " + filename);
         }
     }
 }

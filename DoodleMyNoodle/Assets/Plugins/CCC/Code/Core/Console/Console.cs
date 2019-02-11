@@ -11,7 +11,7 @@ public class Console
     {
         if (s_ConsoleUI != null)
         {
-            CDebug.LogError("Initializing the Console for a second time.");
+            DebugService.LogError("Initializing the Console for a second time.");
             return;
         }
 

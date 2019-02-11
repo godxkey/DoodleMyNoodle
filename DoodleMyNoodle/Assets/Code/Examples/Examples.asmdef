@@ -2,12 +2,20 @@
     "name": "Examples",
     "references": [
         "Game",
-        "CCCCore"
+        "CCCCore",
+        "Unity.Networking.Transport",
+        "Unity.Mathematics",
+        "Unity.TextMeshPro",
+        "Unity.Collections"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
     ],
     "excludePlatforms": [],
-    "allowUnsafeCode": false
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
 }

@@ -20,12 +20,12 @@ namespace CCC.ConfigVarInterals
                             continue;
                         if (!field.IsStatic)
                         {
-                            CDebug.LogError("Cannot use " + nameof(ConfigVarType) + " attribute on non-static fields");
+                            DebugService.LogError("Cannot use " + nameof(ConfigVarType) + " attribute on non-static fields");
                             continue;
                         }
                         if (field.FieldType != typeof(ConfigVarType))
                         {
-                            CDebug.LogError("Cannot use " + nameof(ConfigVarType) + " attribute on fields not of type " + nameof(ConfigVarType) + "");
+                            DebugService.LogError("Cannot use " + nameof(ConfigVarType) + " attribute on fields not of type " + nameof(ConfigVarType) + "");
                             continue;
                         }
                         var attr = field.GetCustomAttributes(typeof(ConfigVarAttributeType), false)[0] as ConfigVarAttributeType;
@@ -33,7 +33,7 @@ namespace CCC.ConfigVarInterals
                         var cvar = field.GetValue(null) as ConfigVarType;
                         if (cvar != null)
                         {
-                            CDebug.LogError("ConfigVars (" + name + ") should not be initialized from code; just marked with attribute");
+                            DebugService.LogError("ConfigVars (" + name + ") should not be initialized from code; just marked with attribute");
                             continue;
                         }
                         cvar = varBuilder(name, attr.Description, attr.Flags);

@@ -21,8 +21,8 @@ public class ConfigVarService : MonoCoreService<ConfigVarService>
         ConfigVar.DirtyFlags = ConfigVarFlag.None;
         
         // add commands to load/save user configs
-        Console.AddCommand("saveconfig", (string[] obj) => LoadUserConfigs(), "Save the user config variables");
-        Console.AddCommand("loadconfig", (string[] obj) => SaveUserConfigs(), "Load the user config variables");
+        Console.AddCommand("saveconfig", (string[] obj) => SaveUserConfigs(), "Save the user config variables");
+        Console.AddCommand("loadconfig", (string[] obj) => LoadUserConfigs(), "Load the user config variables");
 
         onComplete(this);
     }

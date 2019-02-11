@@ -51,7 +51,6 @@ public class ConsoleTextWin : IConsoleUI
         }
         m_PreviousOutput = System.Console.Out;
         SetConsoleTitle(m_ConsoleTitle);
-        System.Console.BackgroundColor = System.ConsoleColor.Black;
         System.Console.Clear();
         System.Console.SetOut(new StreamWriter(System.Console.OpenStandardOutput()) { AutoFlush = true });
         m_CurrentLine = "";
@@ -143,7 +142,6 @@ public class ConsoleTextWin : IConsoleUI
     {
         System.Console.CursorLeft = 0;
         System.Console.CursorTop = System.Console.BufferHeight - 1;
-        System.Console.BackgroundColor = System.ConsoleColor.Black;
         System.Console.Write(new string(' ', System.Console.BufferWidth - 1));
         System.Console.CursorLeft = 0;
     }
@@ -155,6 +153,7 @@ public class ConsoleTextWin : IConsoleUI
         System.Console.BackgroundColor = System.ConsoleColor.Blue;
         System.Console.Write(m_CurrentLine + new string(' ', System.Console.BufferWidth - m_CurrentLine.Length - 1));
         System.Console.CursorLeft = m_CurrentLine.Length;
+        System.Console.ResetColor();
     }
 
     bool m_RestoreFocus;

@@ -13,12 +13,12 @@ namespace CCC.ConfigVarInterals
         {
             if (ConfigVars.ContainsKey(cvar.name))
             {
-                CDebug.LogError("Trying to register cvar " + cvar.name + " twice");
+                DebugService.LogError("Trying to register cvar " + cvar.name + " twice");
                 return;
             }
             if (!validVarNameRegex.IsMatch(cvar.name))
             {
-                CDebug.LogError("Trying to register cvar with invalid name: " + cvar.name);
+                DebugService.LogError("Trying to register cvar with invalid name: " + cvar.name);
                 return;
             }
             ConfigVars.Add(cvar.name, cvar);

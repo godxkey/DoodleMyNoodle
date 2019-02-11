@@ -1,38 +1,49 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-//
-// Logging of messages
-//
-// There are three different types of messages:
-//
-// Debug.Log/Warn/Error coming from unity (or code, e.g. packages, not using GameDebug)
-//    These get caught here and sent onto the console and into our log file
-// GameDebug.Log/Warn/Error coming from game
-//    These gets sent onto the console and into our log file
-//    *IF* we are in editor, they are also sent to Debug.* so they show up in editor Console window
-// Console.Write
-//    Only used for things that should not be logged. Typically reponses to user commands. Only shown on Console.
-//
-
-public static class CDebug
+public class DebugService : MonoCoreService<DebugService>
 {
     static bool forwardToNativeUnityDebug = true;
     static System.IO.StreamWriter logFile = null;
 
-    public static void Init(string logfilePath, string logBaseName)
+    public override void Initialize(Action<ICoreService> onComplete)
     {
         forwardToNativeUnityDebug = Application.isEditor;
         Application.logMessageReceived += LogCallback;
 
-        // Try creating logName; attempt a number of suffixxes
+        InitLogFile();
+
+        onComplete(this);
+    }
+
+    void InitLogFile()
+    {
+        List<string> commandLineArgs = new List<string>(Environment.GetCommandLineArgs());
+
+#if UNITY_STANDALONE_LINUX
+        bool isHeadless = true;
+#else
+        bool isHeadless = commandLineArgs.Contains("-batchmode");
+#endif
+        string logBaseName = isHeadless ? "serverLog_" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss_fff") : "clientLog";
+
+        // If -logfile was passed, we try to put our own logs next to the engine's logfile
+        string engineLogFileLocation = ".";
+        int logfileArgIdx = commandLineArgs.IndexOf("-logfile");
+        if (logfileArgIdx >= 0 && commandLineArgs.Count >= logfileArgIdx)
+        {
+            engineLogFileLocation = System.IO.Path.GetDirectoryName(commandLineArgs[logfileArgIdx + 1]);
+        }
+
+        // Try creating logName; attempt a number of suffixes
         string name = "";
         for (var i = 0; i < 10; i++)
         {
             name = logBaseName + (i == 0 ? "" : "_" + i) + ".log";
             try
             {
-                logFile = System.IO.File.CreateText(logfilePath + "/" + name);
+                logFile = System.IO.File.CreateText(engineLogFileLocation + "/" + name);
                 logFile.AutoFlush = true;
                 break;
             }
@@ -41,15 +52,17 @@ public static class CDebug
                 name = "<none>";
             }
         }
-        CDebug.Log("GameDebug initialized. Logging to " + logfilePath + "/" + name);
+        DebugService.Log("GameDebug initialized. Logging to " + engineLogFileLocation + "/" + name);
     }
 
-    public static void Shutdown()
+    protected override void OnDestroy()
     {
         Application.logMessageReceived -= LogCallback;
         if (logFile != null)
             logFile.Close();
         logFile = null;
+
+        base.OnDestroy();
     }
 
     static void LogCallback(string message, string stack, LogType logtype)
@@ -58,13 +71,13 @@ public static class CDebug
         {
             default:
             case LogType.Log:
-                CDebug._Log(message);
+                DebugService._Log(message);
                 break;
             case LogType.Warning:
-                CDebug._LogWarning(message);
+                DebugService._LogWarning(message);
                 break;
             case LogType.Error:
-                CDebug._LogError(message);
+                DebugService._LogError(message);
                 break;
         }
     }
