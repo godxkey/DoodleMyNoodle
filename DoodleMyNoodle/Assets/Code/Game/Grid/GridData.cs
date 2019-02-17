@@ -45,16 +45,17 @@ public class GridData : ScriptableObject
     }
 
     // Ask the grid builder to build everything together, and put it into the grid
-    public void SetGridValues()
+    public void SetGridValues(ref Grid grid)
     {
-        GridBuilder.SetupGrid(this, usingTileData);
+        // Using gridbuilder to setup/build the grid
+        GridBuilder.SetupGrid(this, ref grid, usingTileData);
     }
 
     // SetGridValues is a one timer, this force it
     private void ForceSetGridValues()
     {
-        Grid.hasBeenSetup = false;
-        GridBuilder.SetupGrid(this, usingTileData);
+        //Grid.hasBeenSetup = false;
+        //GridBuilder.SetupGrid(this, usingTileData);
     }
 
     // If you modify something in the editor update the system

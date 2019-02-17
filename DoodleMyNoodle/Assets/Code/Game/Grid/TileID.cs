@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileID : MonoBehaviour
+// class not use at the moment...
+public class TileID
 {
     // Data
 
@@ -14,12 +15,12 @@ public class TileID : MonoBehaviour
     TileID(int tileNumber)
     {
         this.tileNumber = tileNumber;
-        gridLocation = Grid.GetGridLocationFromID(tileNumber); 
+        //gridLocation = Grid.GetGridLocationFromID(tileNumber); 
     }
 
     TileID(Vector2 gridLocation)
     {
-        tileNumber = Grid.GetTileNumberFromGridLocation(gridLocation);
+        //tileNumber = Grid.GetTileNumberFromGridLocation(gridLocation);
         this.gridLocation = gridLocation;
     }
 

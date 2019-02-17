@@ -6,23 +6,25 @@ public class Grid
 {
     // Grid Data
 
-    public static Vector3 centerPoint;
+    public Vector3 centerPoint;
 
-    public static Vector3 cornerPosA;
-    public static Vector3 cornerPosB;
+    public Vector3 cornerPosA;
+    public Vector3 cornerPosB;
 
-    public static int tileAmount;
-    public static int gridSize;
+    public int tileAmount;
+    public int gridSize;
 
-    public static float deltaX;
-    public static float deltaY;
+    public float tileSizeX;
+    public float tileSizeY;
 
     // prevent constant updates of data
-    public static bool hasBeenSetup = false;
+    public bool hasBeenSetup = false;
+
+    public Grid(){}
 
     // Interacting and Asking for Info
 
-    public static Vector3 GetTilePosition(TileID tileID)
+    public Vector3 GetTilePosition(int tileID)
     {
         if (tileID > tileAmount)
             Debug.LogWarning("TileID is out of bound");
@@ -33,7 +35,7 @@ public class Grid
         return GetTilePosition(column, row);
     }
 
-    private static Vector3 GetTilePosition(int columnNumber, int rowNumber)
+    private Vector3 GetTilePosition(int columnNumber, int rowNumber)
     {
         // Calculate the position of the tile
         float posX;
@@ -41,26 +43,26 @@ public class Grid
 
         if (columnNumber == 1)
         {
-            posX = (cornerPosA.x + (deltaX / 2));
+            posX = (cornerPosA.x + (tileSizeX / 2));
         }
         else
         {
-            posX = (cornerPosA.x + (deltaX / 2)) + (deltaX * (columnNumber - 1));
+            posX = (cornerPosA.x + (tileSizeX / 2)) + (tileSizeX * (columnNumber - 1));
         }
 
         if (rowNumber == 1)
         {
-            posY = (cornerPosA.y - (deltaY / 2));
+            posY = (cornerPosA.y - (tileSizeY / 2));
         }
         else
         {
-            posY = (cornerPosA.y - (deltaY / 2)) - (deltaY * (rowNumber - 1));
+            posY = (cornerPosA.y - (tileSizeY / 2)) - (tileSizeY * (rowNumber - 1));
         }
 
         return new Vector3(posX, posY, 0);
     }
 
-    private static int GetColumnFromID(int tileID)
+    private int GetColumnFromID(int tileID)
     {
         if (tileID > tileAmount)
             Debug.LogWarning("TileID is out of bound");
@@ -68,7 +70,7 @@ public class Grid
         return (tileID % gridSize) + 1;
     }
 
-    private static int GetRowFromID(int tileID)
+    private int GetRowFromID(int tileID)
     {
         if (tileID > tileAmount)
             Debug.LogWarning("TileID is out of bound");
@@ -82,13 +84,8 @@ public class Grid
         return row;
     }
 
-    public static Vector2 GetGridLocationFromID(int tileID)
+    public Vector2 GetGridLocationFromID(int tileID)
     {
         return new Vector2(GetColumnFromID(tileID), GetRowFromID(tileID));
-    }
-
-    public static int GetTileNumberFromGridLocation(Vector2 gridLocation)
-    {
-        return Mathf.RoundToInt(gridLocation.x * gridLocation.y);
     }
 }

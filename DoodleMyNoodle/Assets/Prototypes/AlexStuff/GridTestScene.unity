@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 1773348681}
   - component: {fileID: 1773348683}
   m_Layer: 0
-  m_Name: Test
+  m_Name: TestCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -204,6 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89c58c9ab352e82449a436c668f0768a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tileID: 1
 --- !u!1001 &1357274174981950198
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -274,7 +275,7 @@ PrefabInstance:
     - target: {fileID: 1357274174050118528, guid: 3574e5ba13e521844825c728301ed971,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10
+      value: -6.57
       objectReference: {fileID: 0}
     - target: {fileID: 1357274174050118528, guid: 3574e5ba13e521844825c728301ed971,
         type: 3}
@@ -284,7 +285,7 @@ PrefabInstance:
     - target: {fileID: 1357274175083576621, guid: 3574e5ba13e521844825c728301ed971,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10
+      value: 7.31
       objectReference: {fileID: 0}
     - target: {fileID: 1357274175083576621, guid: 3574e5ba13e521844825c728301ed971,
         type: 3}
