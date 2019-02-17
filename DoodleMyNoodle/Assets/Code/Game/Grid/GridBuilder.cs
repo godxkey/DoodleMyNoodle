@@ -57,8 +57,8 @@ public class GridBuilder
         grid.tileAmount = calculatedData.tileAmount;
         grid.gridSize = data.gridSize;
 
-        grid.deltaX = calculatedData.deltaX;
-        grid.deltaY = calculatedData.deltaY;
+        grid.tileSizeX = calculatedData.deltaX;
+        grid.tileSizeY = calculatedData.deltaY;
 
         grid.hasBeenSetup = true;
     }

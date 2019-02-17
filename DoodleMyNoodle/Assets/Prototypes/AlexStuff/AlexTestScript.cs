@@ -9,6 +9,15 @@ public class AlexTestScript : MonoBehaviour {
 
     void Update()
     {
-        transform.position = GridService.Instance.grid.GetTilePosition(tileID);
+        transform.position = TestGridService.Instance.grid.GetTilePosition(tileID);
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 pos = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
+            int newTileID = GridTools.FindTileClosestToPosition(TestGridService.Instance.grid, new Vector2(pos.x, pos.y));
+            Debug.Log(newTileID);
+            tileID = newTileID;
+        }
+            
     }
 }

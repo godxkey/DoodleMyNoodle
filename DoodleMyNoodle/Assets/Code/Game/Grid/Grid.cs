@@ -14,8 +14,8 @@ public class Grid
     public int tileAmount;
     public int gridSize;
 
-    public float deltaX;
-    public float deltaY;
+    public float tileSizeX;
+    public float tileSizeY;
 
     // prevent constant updates of data
     public bool hasBeenSetup = false;
@@ -43,20 +43,20 @@ public class Grid
 
         if (columnNumber == 1)
         {
-            posX = (cornerPosA.x + (deltaX / 2));
+            posX = (cornerPosA.x + (tileSizeX / 2));
         }
         else
         {
-            posX = (cornerPosA.x + (deltaX / 2)) + (deltaX * (columnNumber - 1));
+            posX = (cornerPosA.x + (tileSizeX / 2)) + (tileSizeX * (columnNumber - 1));
         }
 
         if (rowNumber == 1)
         {
-            posY = (cornerPosA.y - (deltaY / 2));
+            posY = (cornerPosA.y - (tileSizeY / 2));
         }
         else
         {
-            posY = (cornerPosA.y - (deltaY / 2)) - (deltaY * (rowNumber - 1));
+            posY = (cornerPosA.y - (tileSizeY / 2)) - (tileSizeY * (rowNumber - 1));
         }
 
         return new Vector3(posX, posY, 0);
@@ -87,10 +87,5 @@ public class Grid
     public Vector2 GetGridLocationFromID(int tileID)
     {
         return new Vector2(GetColumnFromID(tileID), GetRowFromID(tileID));
-    }
-
-    public int GetTileNumberFromGridLocation(Vector2 gridLocation)
-    {
-        return Mathf.RoundToInt(gridLocation.x * gridLocation.y);
     }
 }

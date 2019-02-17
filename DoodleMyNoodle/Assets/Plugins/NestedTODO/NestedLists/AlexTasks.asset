@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b86855237364b348ac0ddfcfc91163a, type: 3}
   m_Name: AlexTasks
   m_EditorClassIdentifier: 
-  idCount: 25
+  idCount: 29
   list:
   - title: Root Node
     notes: 
@@ -26,7 +26,7 @@ MonoBehaviour:
     nodeID: 0
     depth: 0
     parentID: 0
-    childIds: 01000000090000000a0000000c0000000e00000011000000
+    childIds: 01000000090000000a0000000c0000000e0000001100000019000000
     lineIndex: 0
     points: 1
     boardPosition: {x: 0, y: -1}
@@ -163,7 +163,7 @@ MonoBehaviour:
     linkedFile: {fileID: 0}
     completed: 0
     setToRewrite: 0
-    showChilds: 1
+    showChilds: 0
     category: 3
     priority: 0
     tag: 1
@@ -187,7 +187,7 @@ MonoBehaviour:
     depth: 1
     parentID: 0
     childIds: 0b000000
-    lineIndex: 5
+    lineIndex: 3
     points: 1
     boardPosition: {x: 0, y: -1}
   - title: Help Fred setup the build farm
@@ -211,7 +211,7 @@ MonoBehaviour:
     linkedFile: {fileID: 0}
     completed: 0
     setToRewrite: 0
-    showChilds: 1
+    showChilds: 0
     category: 3
     priority: 0
     tag: 2
@@ -219,7 +219,7 @@ MonoBehaviour:
     depth: 1
     parentID: 0
     childIds: 0d00000018000000
-    lineIndex: 6
+    lineIndex: 4
     points: 1
     boardPosition: {x: 0, y: -1}
   - title: Make Sure to that every push need to have a documentation
@@ -235,7 +235,7 @@ MonoBehaviour:
     depth: 2
     parentID: 12
     childIds: 
-    lineIndex: 7
+    lineIndex: 5
     points: 1
     boardPosition: {x: 2, y: 1}
   - title: Game Analytics
@@ -251,7 +251,7 @@ MonoBehaviour:
     depth: 1
     parentID: 0
     childIds: 0f00000010000000
-    lineIndex: 9
+    lineIndex: 5
     points: 1
     boardPosition: {x: 0, y: -1}
   - title: Make a front end system the game can interact with
@@ -267,7 +267,7 @@ MonoBehaviour:
     depth: 2
     parentID: 14
     childIds: 
-    lineIndex: 14
+    lineIndex: 6
     points: 1
     boardPosition: {x: 0, y: 6}
   - title: Link everything to a backend and choose an API that it's gonna use
@@ -283,7 +283,7 @@ MonoBehaviour:
     depth: 2
     parentID: 14
     childIds: 
-    lineIndex: 15
+    lineIndex: 7
     points: 1
     boardPosition: {x: 0, y: 7}
   - title: Game Design Tool
@@ -299,7 +299,7 @@ MonoBehaviour:
     depth: 1
     parentID: 0
     childIds: 12000000
-    lineIndex: 10
+    lineIndex: 6
     points: 1
     boardPosition: {x: 0, y: -1}
   - title: Make a tool to easily edit any game data or stats
@@ -315,7 +315,7 @@ MonoBehaviour:
     depth: 2
     parentID: 17
     childIds: 130000001400000015000000
-    lineIndex: 11
+    lineIndex: 7
     points: 1
     boardPosition: {x: 0, y: -1}
   - title: CSV or Window to create a data list containing everything we want
@@ -331,7 +331,7 @@ MonoBehaviour:
     depth: 3
     parentID: 18
     childIds: 
-    lineIndex: 12
+    lineIndex: 8
     points: 1
     boardPosition: {x: 0, y: 8}
   - title: Game data is contained in a .json when packaging
@@ -347,7 +347,7 @@ MonoBehaviour:
     depth: 3
     parentID: 18
     childIds: 
-    lineIndex: 13
+    lineIndex: 9
     points: 1
     boardPosition: {x: 0, y: 9}
   - title: Game gets its data inside the .json
@@ -363,7 +363,7 @@ MonoBehaviour:
     depth: 3
     parentID: 18
     childIds: 
-    lineIndex: 14
+    lineIndex: 10
     points: 1
     boardPosition: {x: 0, y: 10}
   - title: Add Window to edit current achievements
@@ -385,7 +385,7 @@ MonoBehaviour:
   - title: Utility script to unlock and deal with achievements
     notes: 
     linkedFile: {fileID: 0}
-    completed: 0
+    completed: 1
     setToRewrite: 0
     showChilds: 1
     category: 3
@@ -401,7 +401,7 @@ MonoBehaviour:
   - title: Test Markdown Documentation in Github
     notes: 
     linkedFile: {fileID: 0}
-    completed: 0
+    completed: 1
     setToRewrite: 0
     showChilds: 1
     category: 3
@@ -411,9 +411,73 @@ MonoBehaviour:
     depth: 2
     parentID: 12
     childIds: 
+    lineIndex: 6
+    points: 0
+    boardPosition: {x: 3, y: 1}
+  - title: Grid
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 0
+    priority: 0
+    tag: 1
+    nodeID: 25
+    depth: 1
+    parentID: 0
+    childIds: 1a0000001b0000001c000000
+    lineIndex: 7
+    points: 1
+    boardPosition: {x: 0, y: -1}
+  - title: Change TileID
+    notes: Tile ID should be adaptable to extend, just an INT
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 0
+    priority: 0
+    tag: 1
+    nodeID: 26
+    depth: 2
+    parentID: 25
+    childIds: 
     lineIndex: 8
     points: 1
-    boardPosition: {x: 1, y: 0}
+    boardPosition: {x: 2, y: 2}
+  - title: Support Clicking Tile
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 1
+    setToRewrite: 0
+    showChilds: 1
+    category: 0
+    priority: 0
+    tag: 1
+    nodeID: 27
+    depth: 2
+    parentID: 25
+    childIds: 
+    lineIndex: 9
+    points: 0
+    boardPosition: {x: 3, y: 2}
+  - title: Ajust the system to support Z
+    notes: 
+    linkedFile: {fileID: 0}
+    completed: 0
+    setToRewrite: 0
+    showChilds: 1
+    category: 0
+    priority: 0
+    tag: 1
+    nodeID: 28
+    depth: 2
+    parentID: 25
+    childIds: 
+    lineIndex: 10
+    points: 1
+    boardPosition: {x: 0, y: -1}
   listConfig:
     autoComplete: 1
     autoCategory: 1
@@ -533,7 +597,19 @@ MonoBehaviour:
     - 2019-02-09
     - 2019-02-10
     - 2019-02-11
+    - 2019-02-12
+    - 2019-02-13
+    - 2019-02-14
+    - 2019-02-15
+    - 2019-02-16
+    - 2019-02-17
     dateValues:
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
     - 14
     - 14
     - 14
