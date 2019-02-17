@@ -4,7 +4,8 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -266,8 +267,8 @@ MonoBehaviour:
     IsBackgroundCustom: 0
   - Type: 1
     Key: Assets/Code
-    SmallIcon: {fileID: 2800000, guid: ed89c5b2588683046989a2a138f3b343, type: 3}
-    LargeIcon: {fileID: 2800000, guid: 9fca1a811da70484494d9e10d46e0636, type: 3}
+    SmallIcon: {fileID: 2800000, guid: 36e0a02c0316e0b40bd7ffc8eb437a7f, type: 3}
+    LargeIcon: {fileID: 2800000, guid: ce20e3678b7748244854c06fcd7d7d00, type: 3}
     IsIconRecursive: 1
     IsIconCustom: 0
     Background: {fileID: 2800000, guid: ff40d61e544214d49991c4602c16ec44, type: 3}
@@ -284,11 +285,11 @@ MonoBehaviour:
     IsBackgroundCustom: 0
   - Type: 1
     Key: Assets/ScriptableObjects
-    SmallIcon: {fileID: 0}
-    LargeIcon: {fileID: 0}
+    SmallIcon: {fileID: 2800000, guid: 8d50cf779e5b4f54a831bdefc32b044c, type: 3}
+    LargeIcon: {fileID: 2800000, guid: 5c32cf9ad519d0c4aacb16805c45eab3, type: 3}
     IsIconRecursive: 0
     IsIconCustom: 0
-    Background: {fileID: 2800000, guid: 8881012100f780549bf19fa3f332be69, type: 3}
+    Background: {fileID: 2800000, guid: ca4530bd51581dc47847c3e5b35f4c91, type: 3}
     IsBackgroundRecursive: 0
     IsBackgroundCustom: 0
   - Type: 1
@@ -309,3 +310,30 @@ MonoBehaviour:
     Background: {fileID: 2800000, guid: b7b3f29f05e8a994c9f03db2151b1b42, type: 3}
     IsBackgroundRecursive: 0
     IsBackgroundCustom: 1
+  - Type: 1
+    Key: Assets/Editor/Code
+    SmallIcon: {fileID: 2800000, guid: ed89c5b2588683046989a2a138f3b343, type: 3}
+    LargeIcon: {fileID: 2800000, guid: 9fca1a811da70484494d9e10d46e0636, type: 3}
+    IsIconRecursive: 1
+    IsIconCustom: 0
+    Background: {fileID: 0}
+    IsBackgroundRecursive: 0
+    IsBackgroundCustom: 0
+  - Type: 1
+    Key: Assets/Sprites
+    SmallIcon: {fileID: 2800000, guid: 27bb0c12d809b1e4fb2851723d50cde6, type: 3}
+    LargeIcon: {fileID: 2800000, guid: f61940b61bdca1843bed2dbc93de9038, type: 3}
+    IsIconRecursive: 1
+    IsIconCustom: 0
+    Background: {fileID: 2800000, guid: 59d8a9cd11eb88946a0ed2cddad51fe6, type: 3}
+    IsBackgroundRecursive: 0
+    IsBackgroundCustom: 0
+  - Type: 1
+    Key: Assets/Prototypes
+    SmallIcon: {fileID: 2800000, guid: ec2951dbd8c22234c8fdf92529d860fd, type: 3}
+    LargeIcon: {fileID: 2800000, guid: ad4412933c34d994a9a6daafb8202f4a, type: 3}
+    IsIconRecursive: 1
+    IsIconCustom: 0
+    Background: {fileID: 0}
+    IsBackgroundRecursive: 0
+    IsBackgroundCustom: 0

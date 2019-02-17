@@ -2,12 +2,19 @@
     "name": "Game",
     "references": [
         "CCCCore",
-        "Saves",
         "CCCUI",
-        "CCCDebug"
+        "CCCDebug",
+        "Unity.Networking.Transport",
+        "Unity.Jobs",
+        "Unity.Collections",
+        "Unity.TextMeshPro"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
 }
