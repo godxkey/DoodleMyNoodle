@@ -9,6 +9,6 @@ public class AlexTestScript : MonoBehaviour {
 
     void Update()
     {
-        transform.position = Grid.GetTilePosition(tileID);
+        transform.position = GridService.Instance.grid.GetTilePosition(tileID);
     }
 }

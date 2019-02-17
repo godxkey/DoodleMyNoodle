@@ -18,9 +18,9 @@ public class GridBuilder
     }
 
     // Setup the info we'll send to the grid
-    public static void SetupGrid(GridData data, bool useTileData)
+    public static void SetupGrid(GridData data, ref Grid grid, bool useTileData)
     {
-        if (!Grid.hasBeenSetup)
+        if (!grid.hasBeenSetup)
         {
             GridCalculatedData newData = new GridCalculatedData();
 
@@ -37,30 +37,30 @@ public class GridBuilder
             }
 
             // Apply to grid object
-            UpdateGrid(newData,data);
+            UpdateGrid(newData,data, ref grid);
 
         }
         else
         {
-            Debug.LogWarning("There's already a grid system");
+            Debug.LogWarning("This grid has already been initialize");
         }
     }
 
     // Put all data inside the Grid
-    private static void UpdateGrid(GridCalculatedData calculatedData, GridData data)
+    private static void UpdateGrid(GridCalculatedData calculatedData, GridData data, ref Grid grid)
     {
-        Grid.centerPoint = calculatedData.centerPoint;
+        grid.centerPoint = calculatedData.centerPoint;
 
-        Grid.cornerPosA = data.cornerALocation;
-        Grid.cornerPosB = data.cornerBLocation;
+        grid.cornerPosA = data.cornerALocation;
+        grid.cornerPosB = data.cornerBLocation;
 
-        Grid.tileAmount = calculatedData.tileAmount;
-        Grid.gridSize = data.gridSize;
+        grid.tileAmount = calculatedData.tileAmount;
+        grid.gridSize = data.gridSize;
 
-        Grid.deltaX = calculatedData.deltaX;
-        Grid.deltaY = calculatedData.deltaY;
+        grid.deltaX = calculatedData.deltaX;
+        grid.deltaY = calculatedData.deltaY;
 
-        Grid.hasBeenSetup = true;
+        grid.hasBeenSetup = true;
     }
 
     // This function is for debugging. You can get all positions from a potential grid created from 2 corners and some data

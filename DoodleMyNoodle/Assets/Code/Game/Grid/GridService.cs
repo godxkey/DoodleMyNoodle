@@ -8,10 +8,13 @@ public class GridService : MonoCoreService<GridService>
     // Initialisation Data
 
     [SerializeField]
-    private GridData data;
+    private GridData data; // manually put data
 
+    // Debug Corner Tool
     public Location cornerA;
     public Location cornerB;
+
+    public Grid grid;
 
     // On Awake, if GridService is already in the scene, set instance and init
     // or else, Service system is going to create it from a prefab made in the project
@@ -28,7 +31,8 @@ public class GridService : MonoCoreService<GridService>
         SetupValues();
 
         // Setup the data inside the grid
-        data.SetGridValues();
+        grid = new Grid(); // creating grid
+        data.SetGridValues(ref grid); // setup grid with our data
 
         // We're ready ! Awake calls the init so we need to check for null
         if(onComplete != null)
