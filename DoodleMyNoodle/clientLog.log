@@ -1,8 +1,0 @@
-0: GameDebug initialized. Logging to ./clientLog.log
-
-0: Client Start
-
-0: We are now connected to the server
-
-1: We got a value back from the server: 3
-
