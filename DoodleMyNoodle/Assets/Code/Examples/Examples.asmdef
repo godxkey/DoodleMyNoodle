@@ -3,7 +3,6 @@
     "references": [
         "Game",
         "CCCCore",
-        "Unity.Networking.Transport",
         "Unity.Mathematics",
         "Unity.TextMeshPro",
         "Unity.Collections"

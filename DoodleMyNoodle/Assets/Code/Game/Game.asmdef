@@ -4,7 +4,6 @@
         "CCCCore",
         "CCCUI",
         "CCCDebug",
-        "Unity.Networking.Transport",
         "Unity.Jobs",
         "Unity.Collections",
         "Unity.TextMeshPro"
