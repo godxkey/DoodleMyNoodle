@@ -426,7 +426,7 @@ MonoBehaviour:
     nodeID: 25
     depth: 1
     parentID: 0
-    childIds: 1a0000001b0000001c000000
+    childIds: 1b0000001c000000
     lineIndex: 7
     points: 1
     boardPosition: {x: 0, y: -1}
@@ -434,7 +434,7 @@ MonoBehaviour:
     notes: Tile ID should be adaptable to extend, just an INT
     linkedFile: {fileID: 0}
     completed: 0
-    setToRewrite: 0
+    setToRewrite: 1
     showChilds: 1
     category: 0
     priority: 0
@@ -445,7 +445,7 @@ MonoBehaviour:
     childIds: 
     lineIndex: 8
     points: 1
-    boardPosition: {x: 2, y: 2}
+    boardPosition: {x: 0, y: -1}
   - title: Support Clicking Tile
     notes: 
     linkedFile: {fileID: 0}
@@ -459,7 +459,7 @@ MonoBehaviour:
     depth: 2
     parentID: 25
     childIds: 
-    lineIndex: 9
+    lineIndex: 8
     points: 0
     boardPosition: {x: 3, y: 2}
   - title: Ajust the system to support Z
@@ -475,9 +475,9 @@ MonoBehaviour:
     depth: 2
     parentID: 25
     childIds: 
-    lineIndex: 10
+    lineIndex: 9
     points: 1
-    boardPosition: {x: 0, y: -1}
+    boardPosition: {x: 0, y: 11}
   listConfig:
     autoComplete: 1
     autoCategory: 1
@@ -603,7 +603,35 @@ MonoBehaviour:
     - 2019-02-15
     - 2019-02-16
     - 2019-02-17
+    - 2019-02-18
+    - 2019-02-19
+    - 2019-02-20
+    - 2019-02-21
+    - 2019-02-22
+    - 2019-02-23
+    - 2019-02-24
+    - 2019-02-25
+    - 2019-02-26
+    - 2019-02-27
+    - 2019-02-28
+    - 2019-03-01
+    - 2019-03-02
+    - 2019-03-03
     dateValues:
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
+    - 14
     - 14
     - 14
     - 14

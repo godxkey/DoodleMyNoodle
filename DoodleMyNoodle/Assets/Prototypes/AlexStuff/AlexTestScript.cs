@@ -9,12 +9,12 @@ public class AlexTestScript : MonoBehaviour {
 
     void Update()
     {
-        transform.position = TestGridService.Instance.grid.GetTilePosition(tileID);
+        transform.position = DungeonGridService.Instance.grid.GetTilePosition(tileID);
 
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 pos = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
-            int newTileID = GridTools.FindTileClosestToPosition(TestGridService.Instance.grid, new Vector2(pos.x, pos.y));
+            int newTileID = GridTools.FindTileClosestToPosition(DungeonGridService.Instance.grid, new Vector2(pos.x, pos.y));
             Debug.Log(newTileID);
             tileID = newTileID;
         }

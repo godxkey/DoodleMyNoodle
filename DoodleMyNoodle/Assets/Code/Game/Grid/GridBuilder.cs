@@ -37,7 +37,7 @@ public class GridBuilder
             }
 
             // Apply to grid object
-            UpdateGrid(newData,data, ref grid);
+            UpdateGridData(newData,data, ref grid);
 
         }
         else
@@ -47,7 +47,7 @@ public class GridBuilder
     }
 
     // Put all data inside the Grid
-    private static void UpdateGrid(GridCalculatedData calculatedData, GridData data, ref Grid grid)
+    private static void UpdateGridData(GridCalculatedData calculatedData, GridData data, ref Grid grid)
     {
         grid.centerPoint = calculatedData.centerPoint;
 
