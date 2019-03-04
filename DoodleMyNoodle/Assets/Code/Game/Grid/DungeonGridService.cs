@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestGridService : MonoCoreService<TestGridService>
+public class DungeonGridService : MonoCoreService<DungeonGridService>
 {
     // Initialisation Data
 
@@ -28,7 +28,7 @@ public class TestGridService : MonoCoreService<TestGridService>
     public override void Initialize(Action<ICoreService> onComplete)
     {
         // Be sure to have a GridData
-        SetupValues();
+        VerifyDataValues();
 
         // Setup the data inside the grid
         grid = new Grid(); // creating grid
@@ -40,7 +40,7 @@ public class TestGridService : MonoCoreService<TestGridService>
     }
 
     // Data from the service is normally put into the data
-    void SetupValues()
+    void VerifyDataValues()
     {
         // Setup Default Values if we don't have data
         if (data == null)
@@ -61,7 +61,7 @@ public class TestGridService : MonoCoreService<TestGridService>
     void OnDrawGizmos()
     {
         // Be sure service data is send into the GridData
-        SetupValues();
+        VerifyDataValues();
 
         // There is 2 types of Grid Generation
         if (usingTileInfo)
