@@ -57,11 +57,11 @@ data.SetGridValues(ref grid); // setup grid with our data
 
 What's important here is the data. A GridData type variable (here name data) is used to setup the grid correctly.
 For that to work you'll need to make sure you got the right data for the grid you want. Note that 
-you'll use one of the two grid data type explained previously (Grid vs Tile, look up). Information can be provied
+you'll use one of the two grid data type explained previously (Grid vs Tile, look up). Information can be provide
 within a scene or just with constant. If data comes from the scene, you'll need to find a way
 to give the reference to your script that instantiate the grid.
 
-In the end, when you call those two lines, here's the road we're taking :
+When you call those two lines, here's the road we're taking :
 
 ![Graph](./Images/gridSystemFlow.PNG)
 
