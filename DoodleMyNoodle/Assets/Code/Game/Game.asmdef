@@ -4,16 +4,26 @@
         "CCCCore",
         "CCCUI",
         "CCCDebug",
+        "CCCOnline",
         "Unity.Jobs",
         "Unity.Collections",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "BoltKit"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
-    "excludePlatforms": [],
+    "excludePlatforms": [
+        "tvOS"
+    ],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "bolt.dll",
+        "bolt.user.dll",
+        "udpkit.dll",
+        "udpkit.common.dll",
+        "udpkit.platform.photon.dll"
+    ],
     "autoReferenced": true,
     "defineConstraints": []
 }
