@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
 [Serializable]
-public abstract class BaseSortedList<T>
+public abstract class BaseSortedList<T> : IEnumerable<T>
 {
     private List<T> list;
 
@@ -80,4 +81,14 @@ public abstract class BaseSortedList<T>
     public int Count { get { return list.Count; } }
 
     public ReadOnlyCollection<T> GetInternalList() { return list.AsReadOnly(); }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        return list.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return list.GetEnumerator();
+    }
 }
