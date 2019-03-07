@@ -224,7 +224,7 @@ public class WindowAnimation : MonoBehaviour
 
     private void UnloadScene()
     {
-        SceneService.Instance.UnloadAsync(gameObject.scene.name);
+        SceneService.UnloadAsync(gameObject.scene.name);
     }
 
     public bool IsOpen() { return isOpen; }

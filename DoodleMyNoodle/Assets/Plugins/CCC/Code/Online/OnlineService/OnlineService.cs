@@ -1,15 +1,15 @@
 ﻿using System;
 using UnityEngine;
 
-public abstract class OnlineService : MonoBehaviour
+public abstract class OnlineService : MonoCoreService<OnlineService>
 {
     protected abstract NetworkInterface CreateNetworkInterface();
     protected abstract INetMessageFactory CreateNetMessageFactory();
 
 
-    public static NetworkInterface NetworkInterface => _instance._networkInterface;
+    public static NetworkInterface NetworkInterface => Instance._networkInterface;
 
-    public static OnlineInterface OnlineInterface => _instance._onlineInterface;
+    public static OnlineInterface OnlineInterface => Instance._onlineInterface;
     public static OnlineClientInterface ClientInterface => OnlineInterface as OnlineClientInterface;
     public static OnlineServerInterface ServerInterface => OnlineInterface as OnlineServerInterface;
 
@@ -40,13 +40,14 @@ public abstract class OnlineService : MonoBehaviour
         }
     }
 
-    void Awake()
+    public override void Initialize(Action<ICoreService> onComplete)
     {
-        _instance = this;
         _networkInterface = CreateNetworkInterface();
         NetMessageFactory.instance = CreateNetMessageFactory();
 
         _networkInterface.OnShutdownBegin += OnNetworkInterfaceShutdownBegin;
+
+        onComplete(this);
     }
 
     void OnNetworkInterfaceShutdownBegin()
@@ -112,7 +113,7 @@ public abstract class OnlineService : MonoBehaviour
         if (success)
         {
             if (ClientInterface == null)
-                _instance._onlineInterface = new OnlineClientInterface(NetworkInterface);
+                Instance._onlineInterface = new OnlineClientInterface(NetworkInterface);
         }
     }
 
@@ -121,11 +122,10 @@ public abstract class OnlineService : MonoBehaviour
         if (success)
         {
             if (ServerInterface == null)
-                _instance._onlineInterface = new OnlineServerInterface(NetworkInterface);
+                Instance._onlineInterface = new OnlineServerInterface(NetworkInterface);
         }
     }
 
     NetworkInterface _networkInterface;
     OnlineInterface _onlineInterface;
-    static OnlineService _instance;
 }

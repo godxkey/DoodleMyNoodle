@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class DirtyValue<T>
+public struct DirtyValue<T>
 {
     bool forceDirty;
 

@@ -22,8 +22,8 @@ public class SceneService : MonoCoreService<SceneService>
         }
     }
 
-    List<ScenePromise> loadingScenePromises = new List<ScenePromise>();
-    List<ScenePromise> unloadingScenePromises = new List<ScenePromise>();
+    List<ScenePromise> _loadingScenePromises = new List<ScenePromise>();
+    List<ScenePromise> _unloadingScenePromises = new List<ScenePromise>();
 
     public override void Initialize(Action<ICoreService> onComplete)
     {
@@ -41,35 +41,35 @@ public class SceneService : MonoCoreService<SceneService>
 
     #region Load/Unload Methods
 
-    public void Load(string name, LoadSceneMode mode = LoadSceneMode.Single, Action<Scene> callback = null, bool allowMultiple = true)
+    public static void Load(string name, LoadSceneMode mode = LoadSceneMode.Single, Action<Scene> callback = null, bool allowMultiple = true)
     {
         if (!allowMultiple && _HandleUniqueLoad(name, callback))
             return;
 
         ScenePromise scenePromise = new ScenePromise(name, callback);
-        loadingScenePromises.Add(scenePromise);
+        Instance._loadingScenePromises.Add(scenePromise);
         SceneManager.LoadScene(name, mode);
     }
-    public void Load(SceneInfo sceneInfo, Action<Scene> callback = null)
+    public static void Load(SceneInfo sceneInfo, Action<Scene> callback = null)
     {
         Load(sceneInfo.SceneName, sceneInfo.LoadMode, callback, sceneInfo.AllowMultiple);
     }
 
-    public void LoadAsync(string name, LoadSceneMode mode = LoadSceneMode.Single, Action<Scene> callback = null, bool allowMultiple = true)
+    public static void LoadAsync(string name, LoadSceneMode mode = LoadSceneMode.Single, Action<Scene> callback = null, bool allowMultiple = true)
     {
         if (!allowMultiple && _HandleUniqueLoad(name, callback))
             return;
 
         ScenePromise scenePromise = new ScenePromise(name, callback);
-        loadingScenePromises.Add(scenePromise);
+        Instance._loadingScenePromises.Add(scenePromise);
         SceneManager.LoadSceneAsync(name, mode);
     }
-    public void LoadAsync(SceneInfo sceneInfo, Action<Scene> callback = null)
+    public static void LoadAsync(SceneInfo sceneInfo, Action<Scene> callback = null)
     {
         LoadAsync(sceneInfo.SceneName, sceneInfo.LoadMode, callback, sceneInfo.AllowMultiple);
     }
 
-    private bool _HandleUniqueLoad(string sceneName, Action<Scene> callback)
+    private static bool _HandleUniqueLoad(string sceneName, Action<Scene> callback)
     {
         ScenePromise scenePromise = GetLoadingScenePromise(sceneName);
         if (scenePromise != null) // means the scene is currently being loaded
@@ -85,44 +85,44 @@ public class SceneService : MonoCoreService<SceneService>
         return false;
     }
 
-    public void UnloadAsync(Scene scene)
+    public static void UnloadAsync(Scene scene)
     {
         SceneManager.UnloadSceneAsync(scene);
     }
-    public void UnloadAsync(string name)
+    public static void UnloadAsync(string name)
     {
         SceneManager.UnloadSceneAsync(name);
     }
-    public void UnloadAsync(SceneInfo sceneInfo)
+    public static void UnloadAsync(SceneInfo sceneInfo)
     {
         UnloadAsync(sceneInfo.SceneName);
     }
 
-    public bool IsActiveOrBeingLoaded(string sceneName)
+    public static bool IsActiveOrBeingLoaded(string sceneName)
     {
         if (IsActive(sceneName) || IsBeingLoaded(sceneName))
             return true;
         return false;
     }
-    public bool IsActiveOrBeingLoaded(SceneInfo sceneInfo)
+    public static bool IsActiveOrBeingLoaded(SceneInfo sceneInfo)
     {
         return IsActiveOrBeingLoaded(sceneInfo.SceneName);
     }
 
-    public bool IsBeingLoaded(string sceneName)
+    public static bool IsBeingLoaded(string sceneName)
     {
-        for (int i = 0; i < loadingScenePromises.Count; i++)
+        for (int i = 0; i < Instance._loadingScenePromises.Count; i++)
         {
-            if (loadingScenePromises[i].name == sceneName) return true;
+            if (Instance._loadingScenePromises[i].name == sceneName) return true;
         }
         return false;
     }
-    public bool IsBeingLoaded(SceneInfo sceneInfo)
+    public static bool IsBeingLoaded(SceneInfo sceneInfo)
     {
         return IsBeingLoaded(sceneInfo.SceneName);
     }
 
-    public bool IsActive(string sceneName)
+    public static bool IsActive(string sceneName)
     {
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
@@ -130,12 +130,12 @@ public class SceneService : MonoCoreService<SceneService>
         }
         return false;
     }
-    public bool IsActive(SceneInfo sceneInfo)
+    public static bool IsActive(SceneInfo sceneInfo)
     {
         return IsActive(sceneInfo.SceneName);
     }
 
-    public Scene GetActive(string sceneName)
+    public static Scene GetActive(string sceneName)
     {
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
@@ -143,25 +143,25 @@ public class SceneService : MonoCoreService<SceneService>
         }
         throw new Exception("No active scene by that name: " + sceneName);
     }
-    public Scene GetActive(SceneInfo sceneInfo)
+    public static Scene GetActive(SceneInfo sceneInfo)
     {
         return GetActive(sceneInfo.SceneName);
     }
 
-    public int ActiveSceneCount
+    public static int ActiveSceneCount
     {
         get { return SceneManager.sceneCount; }
     }
-    public int LoadingSceneCount
+    public static int LoadingSceneCount
     {
-        get { return loadingScenePromises.Count; }
+        get { return Instance._loadingScenePromises.Count; }
     }
 
     #endregion
 
     #region InLoading Events
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         ScenePromise promise = GetLoadingScenePromise(scene.name);
         if (promise == null)
@@ -170,7 +170,7 @@ public class SceneService : MonoCoreService<SceneService>
         promise.scene = scene;
 
         if (!scene.isLoaded)
-            StartCoroutine(WaitForSceneLoad(scene, promise));
+            Instance.StartCoroutine(WaitForSceneLoad(scene, promise));
         else
             Execute(promise);
     }
@@ -188,7 +188,7 @@ public class SceneService : MonoCoreService<SceneService>
     //        Execute(promise);
     //}
 
-    IEnumerator WaitForSceneLoad(Scene scene, ScenePromise promise)
+    static IEnumerator WaitForSceneLoad(Scene scene, ScenePromise promise)
     {
         while (!scene.isLoaded)
             yield return null;
@@ -202,28 +202,28 @@ public class SceneService : MonoCoreService<SceneService>
     //    Execute(promise);
     //}
 
-    void Execute(ScenePromise promise)
+    static void Execute(ScenePromise promise)
     {
         promise.InvokeCallback();
 
-        loadingScenePromises.Remove(promise);
+        Instance._loadingScenePromises.Remove(promise);
     }
 
     #endregion
 
     #region Internal Utility
 
-    ScenePromise GetLoadingScenePromise(string name)
+    static ScenePromise GetLoadingScenePromise(string name)
     {
-        foreach (ScenePromise scene in loadingScenePromises)
+        foreach (ScenePromise scene in Instance._loadingScenePromises)
         {
             if (scene.name == name) return scene;
         }
         return null;
     }
-    ScenePromise GetUnloadingScenePromise(string name)
+    static ScenePromise GetUnloadingScenePromise(string name)
     {
-        foreach (ScenePromise scene in unloadingScenePromises)
+        foreach (ScenePromise scene in Instance._unloadingScenePromises)
         {
             if (scene.name == name) return scene;
         }

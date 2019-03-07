@@ -30,7 +30,7 @@ public class LoadSceneComponent : MonoBehaviour
     }
     public void Load(Action<Scene> callback)
     {
-        if (dontLoadDuplicate && SceneService.Instance.IsActiveOrBeingLoaded(sceneInfo))
+        if (dontLoadDuplicate && SceneService.IsActiveOrBeingLoaded(sceneInfo))
             return;
 
         Action<Scene> localCallback = (scene) =>
@@ -40,8 +40,8 @@ public class LoadSceneComponent : MonoBehaviour
         };
 
         if (loadAsync)
-            SceneService.Instance.LoadAsync(sceneInfo, localCallback);
+            SceneService.LoadAsync(sceneInfo, localCallback);
         else
-            SceneService.Instance.Load(sceneInfo, localCallback);
+            SceneService.Load(sceneInfo, localCallback);
     }
 }

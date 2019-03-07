@@ -54,7 +54,7 @@ public class DebugScreenMessage : MonoBehaviour
         IsDisplayingMessages = true;
 
         // load scene
-        SceneService.Instance.LoadAsync(SCENENAME, LoadSceneMode.Additive, (scene) =>
+        SceneService.LoadAsync(SCENENAME, LoadSceneMode.Additive, (scene) =>
         {
             // show message
             scene.FindRootObject<DebugScreenMessage>().DisplayText(queuedMessages.Dequeue(), ()=>
@@ -109,7 +109,7 @@ public class DebugScreenMessage : MonoBehaviour
 
         sq.OnComplete(() =>
         {
-            SceneService.Instance.UnloadAsync(gameObject.scene);
+            SceneService.UnloadAsync(gameObject.scene);
             onComplete();
         });
     }
