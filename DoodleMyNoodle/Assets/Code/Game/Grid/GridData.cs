@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Assets/Create/DMN/GridData")]
+[CreateAssetMenu(menuName = "DoodleMyNoodle/GridData")]
 public class GridData : ScriptableObject
 {
     public bool usingTileData;

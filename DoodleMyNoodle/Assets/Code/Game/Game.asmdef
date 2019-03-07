@@ -8,7 +8,8 @@
         "Unity.Jobs",
         "Unity.Collections",
         "Unity.TextMeshPro",
-        "BoltKit"
+        "BoltKit",
+        "DOTweenModules"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
@@ -22,7 +23,8 @@
         "bolt.user.dll",
         "udpkit.dll",
         "udpkit.common.dll",
-        "udpkit.platform.photon.dll"
+        "udpkit.platform.photon.dll",
+        "DOTween.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": []
