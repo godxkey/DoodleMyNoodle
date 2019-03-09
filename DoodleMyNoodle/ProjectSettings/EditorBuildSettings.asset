@@ -6,12 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: 
-    guid: 638fe0fa75ca9f84b95e2fd3e4b3a4b8
-  - enabled: 1
-    path: Assets/Scenes/Debug/DebugScreenMessage.unity
-    guid: 4d44f4fa44d2f9747b60d122c490e5e0
-  - enabled: 1
-    path: Assets/Scenes/GenericUI/WaitSpinner.unity
-    guid: 9df75fae5f33e4a408c2641ab9dc1e24
+    path: Assets/Scenes/OnlineFlow/OnlineRoleChoice.unity
+    guid: 7c2acb5dea68c0f49ac848ac0d7bcdaa
   m_configObjects: {}

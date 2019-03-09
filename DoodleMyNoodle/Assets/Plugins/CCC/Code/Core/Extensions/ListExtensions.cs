@@ -5,6 +5,18 @@ using UnityEngine;
 
 public static class ListExtensions
 {
+    public static int RemoveFirst<T>(this List<T> list, Predicate<T> predicate)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (predicate(list[i]))
+            {
+                list.RemoveAt(i);
+                return i;
+            }
+        }
+        return -1;
+    }
     public static int RemoveNulls<T>(this List<T> list)
     {
         return list.RemoveAll((x) => x == null);

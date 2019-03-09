@@ -7,13 +7,13 @@ public class OnlineRoleChoice : MonoBehaviour
 {
     public void LaunchClient()
     {
-        WaitSpinner.Enable(this);
+        WaitSpinnerService.Enable(this);
 
         this.DelayedCall(3, LaunchServer);
     }
 
     public void LaunchServer()
     {
-        WaitSpinner.Disable(this);
+        WaitSpinnerService.Disable(this);
     }
 }
