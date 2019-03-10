@@ -50,11 +50,27 @@ public class OnlineRoleChoice : MonoBehaviour
         }
         else
         {
-            if (OnlineService.CurrentRole != OnlineRole.None)
+            if (IsRoleChangeComplete())
             {
                 WaitSpinnerService.Disable(this);
                 OnRoleChangeComplete();
             }
+        }
+    }
+
+    bool IsRoleChangeComplete()
+    {
+        if (OnlineService.IsChangingRole)
+            return false;
+
+        switch (OnlineService.TargetRole)
+        {
+            case OnlineRole.Client:
+                return OnlineService.ClientInterface != null;
+            case OnlineRole.Server:
+                return OnlineService.ServerInterface != null;
+            default:
+                return false;
         }
     }
 

@@ -12,7 +12,7 @@ public class WaitSpinnerService : MonoCoreService<WaitSpinnerService>
     /// </summary>
     public static void Enable(object key, bool blockInput = true)
     {
-        if (Instance.GetIndexOfKey(key) != -1)
+        if (Instance.GetIndexOfKey(key) == -1)
         {
             Instance._requests.Add(new Request() { key = key, blockInput = blockInput });
             Instance.OnRequestsChange();
