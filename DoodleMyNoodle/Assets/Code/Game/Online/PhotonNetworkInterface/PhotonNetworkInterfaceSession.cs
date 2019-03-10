@@ -1,20 +1,23 @@
 ﻿using System;
 using UdpKit;
 
-public class PhotonNetworkInterfaceSession : INetworkInterfaceSession
+namespace Internals.PhotonNetwokInterface
 {
-    public PhotonNetworkInterfaceSession(UdpSession udpSession)
+    public class PhotonNetworkInterfaceSession : INetworkInterfaceSession
     {
-        UdpSession = udpSession;
+        public PhotonNetworkInterfaceSession(UdpSession udpSession)
+        {
+            UdpSession = udpSession;
+        }
+
+        public UdpSession UdpSession { get; private set; }
+
+        public Guid Id => UdpSession.Id;
+
+        public int ConnectionsMax => UdpSession.ConnectionsMax;
+
+        public int ConnectionsCurrent => UdpSession.ConnectionsCurrent;
+
+        public string HostName => UdpSession.HostName;
     }
-
-    public UdpSession UdpSession { get; private set; }
-
-    public Guid Id => UdpSession.Id;
-
-    public int ConnectionsMax => UdpSession.ConnectionsMax;
-
-    public int ConnectionsCurrent => UdpSession.ConnectionsCurrent;
-
-    public string HostName => UdpSession.HostName;
 }

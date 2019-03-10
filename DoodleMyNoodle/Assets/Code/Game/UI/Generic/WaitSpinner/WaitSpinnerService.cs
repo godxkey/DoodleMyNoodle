@@ -7,18 +7,39 @@ public class WaitSpinnerService : MonoCoreService<WaitSpinnerService>
 {
     public override void Initialize(Action<ICoreService> onComplete) => onComplete(this);
 
+    /// <summary>
+    /// If the key already exists, calling this method will not do anything 
+    /// </summary>
     public static void Enable(object key, bool blockInput = true)
     {
-        Instance._requests.Add(new Request() { key = key, blockInput = blockInput });
-
-        Instance.OnRequestsChange();
+        if (Instance.GetIndexOfKey(key) != -1)
+        {
+            Instance._requests.Add(new Request() { key = key, blockInput = blockInput });
+            Instance.OnRequestsChange();
+        }
     }
 
     public static void Disable(object key)
     {
-        Instance._requests.RemoveFirst((x) => x.key == key);
+        int keyIndex = Instance.GetIndexOfKey(key);
+        if (keyIndex != -1)
+        {
+            Instance._requests.RemoveAt(keyIndex);
+            Instance.OnRequestsChange();
+        }
+    }
 
-        Instance.OnRequestsChange();
+    int GetIndexOfKey(object key)
+    {
+        for (int i = 0; i < _requests.Count; i++)
+        {
+            if (_requests[i].key == key)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     State EvaluateState()

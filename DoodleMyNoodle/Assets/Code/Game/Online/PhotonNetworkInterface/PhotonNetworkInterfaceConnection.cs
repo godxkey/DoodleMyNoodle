@@ -1,13 +1,15 @@
-﻿using System;
-
-class PhotonNetworkInterfaceConnection : INetworkInterfaceConnection
+﻿
+namespace Internals.PhotonNetwokInterface
 {
-    public BoltConnection BoltConnection { get; private set; }
-
-    public PhotonNetworkInterfaceConnection(BoltConnection boltConnection)
+    class PhotonNetworkInterfaceConnection : INetworkInterfaceConnection
     {
-        BoltConnection = boltConnection;
-    }
+        public BoltConnection BoltConnection { get; private set; }
 
-    public uint Id => BoltConnection.ConnectionId;
+        public PhotonNetworkInterfaceConnection(BoltConnection boltConnection)
+        {
+            BoltConnection = boltConnection;
+        }
+
+        public uint Id => BoltConnection.ConnectionId;
+    }
 }

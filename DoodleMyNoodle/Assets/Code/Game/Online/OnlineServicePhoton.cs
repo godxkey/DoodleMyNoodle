@@ -1,16 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using Internals.PhotonNetwokInterface;
 
-public class OnlineServicePhoton : OnlineService
+namespace Internals.OnlineServiceImpl
 {
-    protected override INetMessageFactory CreateNetMessageFactory()
+    public class OnlineServicePhoton : OnlineService
     {
-        return new NetMessageFactoryImpl();
-    }
+        protected override INetMessageFactory CreateNetMessageFactory()
+        {
+            return new NetMessageFactoryImpl();
+        }
 
-    protected override NetworkInterface CreateNetworkInterface()
-    {
-        return new PhotonNetworkInterface();
+        protected override NetworkInterface CreateNetworkInterface()
+        {
+            return new PhotonNetworkInterface();
+        }
     }
 }

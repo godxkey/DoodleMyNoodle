@@ -3,40 +3,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NetMessageFactoryImpl : INetMessageFactory
+namespace Internals.OnlineServiceImpl
 {
-    static Dictionary<Type, ushort> netMessageToId = new Dictionary<Type, ushort>();
-
-    public NetMessageFactoryImpl()
+    public class NetMessageFactoryImpl : INetMessageFactory
     {
-        netMessageToId.Clear();
+        static Dictionary<Type, ushort> netMessageToId = new Dictionary<Type, ushort>();
 
-        // Net message -> id
-        foreach (Type netMessageType in NetMessageRegistry.types)
+        public NetMessageFactoryImpl()
         {
-            netMessageToId[netMessageType] = (ushort)netMessageToId.Count;
+            netMessageToId.Clear();
+
+            // Net message -> id
+            foreach (Type netMessageType in NetMessageRegistry.types)
+            {
+                netMessageToId[netMessageType] = (ushort)netMessageToId.Count;
+            }
+
+            if (netMessageToId.Count > ushort.MaxValue)
+            {
+                Debug.LogError("To many NetMessage types for a UInt16.");
+            }
         }
 
-        if (netMessageToId.Count > ushort.MaxValue)
+        public ushort GetNetMessageTypeId(NetMessage message)
         {
-            Debug.LogError("To many NetMessage types for a UInt16.");
+            return netMessageToId[message.GetType()];
         }
-    }
 
-    public ushort GetNetMessageTypeId(NetMessage message)
-    {
-        return netMessageToId[message.GetType()];
-    }
-
-    public NetMessage CreateNetMessage(ushort messageType)
-    {
-        try
+        public NetMessage CreateNetMessage(ushort messageType)
         {
-            return NetMessageRegistry.factory.CreateValue(messageType);
-        }
-        catch
-        {
-            return null;
+            try
+            {
+                return NetMessageRegistry.factory.CreateValue(messageType);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

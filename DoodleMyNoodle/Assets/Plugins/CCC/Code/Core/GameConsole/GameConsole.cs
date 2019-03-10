@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
+using Internals.GameConsoleInterals;
 
-
-public class Console
+public class GameConsole
 {
-    static IConsoleUI s_ConsoleUI;
+    static IGameConsoleUI s_ConsoleUI;
 
-    public static void Init(IConsoleUI consoleUI)
+    public static void Init(IGameConsoleUI consoleUI)
     {
         if (s_ConsoleUI != null)
         {
@@ -340,7 +340,7 @@ public class Console
         {
             // write list of possible completions
             for (var i = 0; i < matches.Count; i++)
-                Console.Write(" " + matches[i]);
+                GameConsole.Write(" " + matches[i]);
         }
         else
         {

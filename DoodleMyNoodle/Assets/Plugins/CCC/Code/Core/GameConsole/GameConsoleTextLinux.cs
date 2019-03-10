@@ -1,58 +1,52 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using System;
+using System.Threading.Tasks;
+using System.Threading;
 
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_LINUX
 
 using System.IO;
 using System.Runtime.InteropServices;
 
-public class ConsoleTextWin : IConsoleUI
+namespace Internals.GameConsoleInterals
 {
-    [DllImport("Kernel32.dll")]
-    private static extern bool AttachConsole(uint processId);
-
-    [DllImport("Kernel32.dll")]
-    private static extern bool AllocConsole();
-
-    [DllImport("Kernel32.dll")]
-    private static extern bool FreeConsole();
-
-    [DllImport("Kernel32.dll")]
-    private static extern bool SetConsoleTitle(string title);
-
-    [DllImport("Kernel32.dll")]
-    private static extern IntPtr GetConsoleWindow();
-
-    [DllImport("user32.dll")]
-    static extern IntPtr GetForegroundWindow();
-
-    [DllImport("user32.dll")]
-    static extern bool SetForegroundWindow(IntPtr hwnd);
-
-    [DllImport("user32.dll")]
-    static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-    public ConsoleTextWin(string consoleTitle, bool restoreFocus)
+public class GameConsoleTextLinux : IConsoleUI
+{
+    bool IsDumb()
     {
-        m_RestoreFocus = restoreFocus;
-        m_ConsoleTitle = consoleTitle;
+        return System.Console.BufferWidth == 0 || System.Console.IsInputRedirected || System.Console.IsOutputRedirected;
     }
 
+    void ReaderThread()
+    {
+
+    }
+
+    char[] buf = new char[1024];
     public void Init()
     {
-        if (!AttachConsole(0xffffffff))
+        System.Console.WriteLine("Dumb console: " + IsDumb());
+        if (IsDumb())
         {
-            if (m_RestoreFocus)
+            m_ReaderThread = new Thread(() =>
             {
-                m_ForegroundWindow = GetForegroundWindow();
-                m_ResetWindowTime = Time.time + 1;
-            }
-            AllocConsole();
+                Thread.CurrentThread.IsBackground = true;
+                while (true)
+                {
+                    var read = System.Console.In.Read(buf, 0, buf.Length);
+                    if (read > 0)
+                    {
+                        m_CurrentLine += new string(buf, 0, read);
+                    }
+                    else
+                        break;
+                }
+            });
+            m_ReaderThread.Start();
         }
-        m_PreviousOutput = System.Console.Out;
-        SetConsoleTitle(m_ConsoleTitle);
         System.Console.Clear();
-        System.Console.SetOut(new StreamWriter(System.Console.OpenStandardOutput()) { AutoFlush = true });
         m_CurrentLine = "";
         DrawInputline();
     }
@@ -60,17 +54,22 @@ public class ConsoleTextWin : IConsoleUI
     public void Shutdown()
     {
         OutputString("Console shutdown");
-        System.Console.SetOut(m_PreviousOutput);
-        FreeConsole();
     }
 
     public void ConsoleUpdate()
     {
-        if(m_ForegroundWindow != IntPtr.Zero && Time.time > m_ResetWindowTime)
+        // Handling for cases where the terminal is 'dumb', i.e. cursor etc.
+        // and no individual keys fired
+        if (IsDumb())
         {
-            ShowWindow(m_ForegroundWindow, 9);
-            SetForegroundWindow(m_ForegroundWindow);
-            m_ForegroundWindow = IntPtr.Zero;
+            var lines = m_CurrentLine.Split('\n');
+            if (lines.Length > 1)
+            {
+                for (int i = 0; i < lines.Length - 1; i++)
+                    GameConsole.EnqueueCommand(lines[i]);
+                m_CurrentLine = lines[lines.Length - 1];
+            }
+            return;
         }
 
         if (!System.Console.KeyAvailable)
@@ -81,7 +80,7 @@ public class ConsoleTextWin : IConsoleUI
         switch (keyInfo.Key)
         {
             case ConsoleKey.Enter:
-                Console.EnqueueCommand(m_CurrentLine);
+                GameConsole.EnqueueCommand(m_CurrentLine);
                 m_CurrentLine = "";
                 DrawInputline();
                 break;
@@ -95,15 +94,15 @@ public class ConsoleTextWin : IConsoleUI
                 DrawInputline();
                 break;
             case ConsoleKey.UpArrow:
-                m_CurrentLine = Console.HistoryUp(m_CurrentLine);
+                m_CurrentLine = GameConsole.HistoryUp(m_CurrentLine);
                 DrawInputline();
                 break;
             case ConsoleKey.DownArrow:
-                m_CurrentLine = Console.HistoryDown();
+                m_CurrentLine = GameConsole.HistoryDown();
                 DrawInputline();
                 break;
             case ConsoleKey.Tab:
-                m_CurrentLine = Console.TabComplete(m_CurrentLine);
+                m_CurrentLine = GameConsole.TabComplete(m_CurrentLine);
                 DrawInputline();
                 break;
             default:
@@ -130,7 +129,17 @@ public class ConsoleTextWin : IConsoleUI
     public void OutputString(string message)
     {
         ClearInputLine();
-        System.Console.WriteLine(message);
+
+        if (!IsDumb() && message.Length > 0 && message[0] == '>')
+        {
+            var oldColor = System.Console.ForegroundColor;
+            System.Console.ForegroundColor = System.ConsoleColor.Green;
+            System.Console.WriteLine(message);
+            System.Console.ForegroundColor = oldColor;
+        }
+        else
+            System.Console.WriteLine(message);
+
         DrawInputline();
     }
 
@@ -140,6 +149,9 @@ public class ConsoleTextWin : IConsoleUI
 
     void ClearInputLine()
     {
+        if (IsDumb())
+            return;
+
         System.Console.CursorLeft = 0;
         System.Console.CursorTop = System.Console.BufferHeight - 1;
         System.Console.Write(new string(' ', System.Console.BufferWidth - 1));
@@ -148,20 +160,18 @@ public class ConsoleTextWin : IConsoleUI
 
     void DrawInputline()
     {
+        if (IsDumb())
+            return;
+
         System.Console.CursorLeft = 0;
         System.Console.CursorTop = System.Console.BufferHeight - 1;
-        System.Console.BackgroundColor = System.ConsoleColor.Blue;
         System.Console.Write(m_CurrentLine + new string(' ', System.Console.BufferWidth - m_CurrentLine.Length - 1));
         System.Console.CursorLeft = m_CurrentLine.Length;
-        System.Console.ResetColor();
     }
 
-    bool m_RestoreFocus;
-    string m_ConsoleTitle;
-    float m_ResetWindowTime;
-    IntPtr m_ForegroundWindow;
-
     string m_CurrentLine;
-    TextWriter m_PreviousOutput;
+    private Thread m_ReaderThread;
+    //TextWriter m_PreviousOutput;
+}
 }
 #endif

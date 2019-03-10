@@ -52,7 +52,7 @@ public class DebugService : MonoCoreService<DebugService>
                 name = "<none>";
             }
         }
-        DebugService.Log("GameDebug initialized. Logging to " + engineLogFileLocation + "/" + name);
+        DebugService.Log("DebugServervice initialized. Logging to " + engineLogFileLocation + "/" + name);
     }
 
     protected override void OnDestroy()
@@ -71,13 +71,13 @@ public class DebugService : MonoCoreService<DebugService>
         {
             default:
             case LogType.Log:
-                DebugService._Log(message);
+                _Log(message);
                 break;
             case LogType.Warning:
-                DebugService._LogWarning(message);
+                _LogWarning(message);
                 break;
             case LogType.Error:
-                DebugService._LogError(message);
+                _LogError(message);
                 break;
         }
     }
@@ -92,9 +92,12 @@ public class DebugService : MonoCoreService<DebugService>
 
     static void _Log(string message)
     {
-        Console.Write(FrameService.FrameCount + ": " + message);
+        string result = FrameService.FrameCount + ": " + message;
+
+        GameConsole.Write(result); // console GUI 
+
         if (logFile != null)
-            logFile.WriteLine(FrameService.FrameCount + ": " + message + "\n");
+            logFile.WriteLine(result + "\n");
     }
 
     public static void LogError(string message)
@@ -105,11 +108,17 @@ public class DebugService : MonoCoreService<DebugService>
             _LogError(message);
     }
 
-    static void _LogError(string message)
+    static void _LogError(string message, bool stackTrace = true)
     {
-        Console.Write(FrameService.FrameCount + ": [ERR] " + message);
+        string result = FrameService.FrameCount + ": [ERR] " + message;
+        if (stackTrace)
+        {
+            result += '\n' + StackTraceUtility.ExtractStackTrace();
+        }
+
+        GameConsole.Write(result);
         if (logFile != null)
-            logFile.WriteLine("[ERR] " + message + "\n");
+            logFile.WriteLine(result + "\n");
     }
 
     public static void LogWarning(string message)
@@ -122,8 +131,11 @@ public class DebugService : MonoCoreService<DebugService>
 
     static void _LogWarning(string message)
     {
-        Console.Write(FrameService.FrameCount + ": [WARN] " + message);
+        string result = FrameService.FrameCount + ": [WARN] " + message;
+
+        GameConsole.Write(result);
+
         if (logFile != null)
-            logFile.WriteLine("[WARN] " + message + "\n");
+            logFile.WriteLine(result + "\n");
     }
 }
