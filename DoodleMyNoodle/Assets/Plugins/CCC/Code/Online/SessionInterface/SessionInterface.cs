@@ -6,12 +6,12 @@ using UnityEngine;
 
 public abstract class SessionInterface : IDisposable
 {
-    public abstract bool IsServerType { get; }
-    public bool IsClientType => !IsServerType;
-    public INetworkInterfaceSession SessionInfo => _networkInterface.ConnectedSessionInfo;
-    public ReadOnlyCollection<INetworkInterfaceConnection> Connections => _networkInterface.Connections;
-    public event Action OnTerminate;
-    public Action<NetMessage, INetworkInterfaceConnection> NetMessageReceiver;
+    public abstract bool isServerType { get; }
+    public bool isClientType => !isServerType;
+    public INetworkInterfaceSession sessionInfo => _networkInterface.connectedSessionInfo;
+    public ReadOnlyCollection<INetworkInterfaceConnection> connections => _networkInterface.connections;
+    public event Action onTerminate;
+    public Action<NetMessage, INetworkInterfaceConnection> netMessageReceiver;
 
     public SessionInterface(NetworkInterface networkInterface)
     {
@@ -23,7 +23,7 @@ public abstract class SessionInterface : IDisposable
     public void Dispose()
     {
         Debug.Log("Session interface terminating");
-        OnTerminate?.Invoke();
+        onTerminate?.Invoke();
     }
 
     public virtual void Update()
@@ -40,11 +40,15 @@ public abstract class SessionInterface : IDisposable
         // Act on received net messages
         foreach (MessageAndConnection msg in _netMessagesReceived)
         {
-            NetMessageReceiver?.Invoke(msg.message, msg.connection);
+            netMessageReceiver?.Invoke(msg.message, msg.connection);
         }
         _netMessagesReceived.Clear();
     }
 
+    public void Disconnect()
+    {
+        _networkInterface.DisconnectFromSession(null);
+    }
 
     protected virtual void OnReceiveMessage(INetworkInterfaceConnection source, byte[] data, int messageSize)
     {

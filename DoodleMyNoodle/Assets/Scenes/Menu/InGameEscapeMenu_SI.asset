@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35853ace5228d364e8cd9cc4f9e840ec, type: 3}
-  m_Name: OnlineRoleChoice_SI
+  m_Name: InGameEscapeMenu_SI
   m_EditorClassIdentifier: 
-  scene: {fileID: 102900000, guid: 7c2acb5dea68c0f49ac848ac0d7bcdaa, type: 3}
-  sceneName: OnlineRoleChoice
-  loadMode: 0
+  scene: {fileID: 102900000, guid: 526cbea577512dc42a4c0e329783b3b0, type: 3}
+  sceneName: InGameEsacpeMenu
+  loadMode: 1
   allowMultiple: 0

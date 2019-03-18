@@ -12,15 +12,17 @@ namespace Internals.PhotonNetwokInterface
 {
     public class PhotonNetworkInterface : NetworkInterface
     {
-        public override event Action OnDisconnectedFromSession;
-        public override event Action OnShutdownBegin;
-        public override event Action<INetworkInterfaceConnection> OnDisconnect;
+        public override event Action onDisconnectedFromSession;
+        public override event Action onShutdownBegin;
+        public override event Action<INetworkInterfaceConnection> onDisconnect;
+        public override event Action onSessionListUpdated;
 
-        public override bool IsServer => BoltNetwork.IsServer;
-        public override ReadOnlyCollection<INetworkInterfaceConnection> Connections { get; }
-        public override INetworkInterfaceSession ConnectedSessionInfo => _connectedSessionInfo;
+        public override bool isServer => BoltNetwork.IsServer;
+        public override ReadOnlyCollection<INetworkInterfaceConnection> connections { get; }
+        public override INetworkInterfaceSession connectedSessionInfo => _connectedSessionInfo;
         public override void GetSessions(ref List<INetworkInterfaceSession> list)
         {
+            list.Clear();
             foreach (KeyValuePair<Guid, UdpSession> session in BoltNetwork.SessionList)
             {
                 list.Add(new PhotonNetworkInterfaceSession(session.Value));
@@ -29,33 +31,33 @@ namespace Internals.PhotonNetwokInterface
 
         public PhotonNetworkInterface()
         {
-            Connections = _connections.AsReadOnly();
+            connections = _connections.AsReadOnly();
             CreateBoltListener();
         }
 
         public override void LaunchClient(OperationResultCallback onComplete)
         {
             _operationCallbackLaunch = onComplete;
-            State = NetworkState.Launching;
+            state = NetworkState.Launching;
             BoltLauncher.StartClient();
         }
         public override void LaunchServer(OperationResultCallback onComplete)
         {
             _operationCallbackLaunch = onComplete;
-            State = NetworkState.Launching;
+            state = NetworkState.Launching;
             BoltLauncher.StartServer();
         }
 
         public override void Shutdown(OperationResultCallback onComplete)
         {
             _operationCallbackShutdown = onComplete;
-            State = NetworkState.ShuttingDown;
+            state = NetworkState.ShuttingDown;
             BoltLauncher.Shutdown();
         }
 
         public override void CreateSession(string sessionName, OperationResultCallback onComplete)
         {
-            if (State != NetworkState.Running)
+            if (state != NetworkState.Running)
             {
                 DebugService.Log("[PhotonNetworkInterface] Cannot create session if not in running state");
                 return;
@@ -100,7 +102,7 @@ namespace Internals.PhotonNetwokInterface
 
         public override void Update()
         {
-            if (!IsServer)
+            if (!isServer)
             {
                 if (_sessionClearTimer < 0 && BoltNetwork.IsRunning)
                 {
@@ -112,9 +114,9 @@ namespace Internals.PhotonNetwokInterface
                 _sessionClearTimer -= Time.deltaTime;
             }
 
-            if (State == NetworkState.ShuttingDown && !BoltNetwork.IsRunning)
+            if (state == NetworkState.ShuttingDown && !BoltNetwork.IsRunning)
             {
-                State = NetworkState.Stopped;
+                state = NetworkState.Stopped;
 
                 if (_connections.Count != 0)
                 {
@@ -125,7 +127,7 @@ namespace Internals.PhotonNetwokInterface
                 if (_connectedSessionInfo != null)
                 {
                     _connectedSessionInfo = null;
-                    OnDisconnectedFromSession?.Invoke();
+                    onDisconnectedFromSession?.Invoke();
                 }
 
                 ConcludeOperationCallback(ref _operationCallbackDisconnectedFromSession, true, null);
@@ -166,7 +168,7 @@ namespace Internals.PhotonNetwokInterface
 
         public void Event_BoltStartDone()
         {
-            State = NetworkState.Running;
+            state = NetworkState.Running;
             DebugService.Log("[PhotonNetworkInterface] BoltStartDone");
 
             _operationCallbackLaunch?.Invoke(true, null);
@@ -174,7 +176,7 @@ namespace Internals.PhotonNetwokInterface
 
         public void Event_BoltStartFailed()
         {
-            State = NetworkState.Stopped;
+            state = NetworkState.Stopped;
             DebugService.Log("[PhotonNetworkInterface] BoltStartFailed");
 
             _operationCallbackLaunch?.Invoke(false, "Bolt failed to start");
@@ -182,10 +184,10 @@ namespace Internals.PhotonNetwokInterface
 
         public void Event_BoltShutdownBegin(AddCallback registerDoneCallback)
         {
-            State = NetworkState.ShuttingDown;
+            state = NetworkState.ShuttingDown;
             DebugService.Log("[PhotonNetworkInterface] BoltShutdownBegin");
 
-            OnShutdownBegin?.Invoke();
+            onShutdownBegin?.Invoke();
         }
 
         public void Event_Connected(BoltConnection connection)
@@ -214,13 +216,13 @@ namespace Internals.PhotonNetwokInterface
                 }
             }
 
-            OnDisconnect?.Invoke(connectionInterface);
+            onDisconnect?.Invoke(connectionInterface);
 
-            if (IsClient && _connections.Count == 0 && _connectedSessionInfo != null)
+            if (isClient && _connections.Count == 0 && _connectedSessionInfo != null)
             {
                 ConcludeOperationCallback(ref _operationCallbackDisconnectedFromSession, true, null);
 
-                OnDisconnectedFromSession?.Invoke();
+                onDisconnectedFromSession?.Invoke();
                 _connectedSessionInfo = null;
             }
         }
@@ -253,6 +255,7 @@ namespace Internals.PhotonNetwokInterface
         {
             // will clear the session list in X seconds
             _sessionClearTimer = SESSION_CLEAR_TIMEOUT;
+            onSessionListUpdated?.Invoke();
         }
 
         public void Event_SessionConnectFailed(UdpSession session, IProtocolToken token)

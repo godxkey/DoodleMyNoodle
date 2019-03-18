@@ -14,4 +14,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OnlineFlow/OnlineClientSessionChoice.unity
     guid: 8604ebda00836304f802fc028ca9979a
+  - enabled: 1
+    path: Assets/Scenes/Debug/DebugScreenMessage.unity
+    guid: 4d44f4fa44d2f9747b60d122c490e5e0
+  - enabled: 1
+    path: Assets/Scenes/Game/GameRoot.unity
+    guid: b3695b8f43019e040858a9dfdbc524f7
+  - enabled: 1
+    path: Assets/Scenes/Menu/InGameEsacpeMenu.unity
+    guid: 526cbea577512dc42a4c0e329783b3b0
   m_configObjects: {}

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35853ace5228d364e8cd9cc4f9e840ec, type: 3}
-  m_Name: OnlineRoleChoice_SI
+  m_Name: GameRoot_SI
   m_EditorClassIdentifier: 
-  scene: {fileID: 102900000, guid: 7c2acb5dea68c0f49ac848ac0d7bcdaa, type: 3}
-  sceneName: OnlineRoleChoice
+  scene: {fileID: 102900000, guid: b3695b8f43019e040858a9dfdbc524f7, type: 3}
+  sceneName: GameRoot
   loadMode: 0
   allowMultiple: 0

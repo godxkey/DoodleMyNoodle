@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OnlineRoleChoice : MonoBehaviour
+public class MenuOnlineRoleChoice : MonoBehaviour
 {
     [SerializeField] float _roleTransitionTimeout = 10f;
 
@@ -38,7 +38,7 @@ public class OnlineRoleChoice : MonoBehaviour
 
     void Update()
     {
-        if (OnlineService.IsChangingRole)
+        if (OnlineService.isChangingRole)
         {
             _requestTimeoutRemaining -= Time.deltaTime;
 
@@ -60,15 +60,15 @@ public class OnlineRoleChoice : MonoBehaviour
 
     bool IsRoleChangeComplete()
     {
-        if (OnlineService.IsChangingRole)
+        if (OnlineService.isChangingRole)
             return false;
 
-        switch (OnlineService.TargetRole)
+        switch (OnlineService.targetRole)
         {
             case OnlineRole.Client:
-                return OnlineService.ClientInterface != null;
+                return OnlineService.clientInterface != null;
             case OnlineRole.Server:
-                return OnlineService.ServerInterface != null;
+                return OnlineService.serverInterface != null;
             default:
                 return false;
         }
@@ -76,7 +76,7 @@ public class OnlineRoleChoice : MonoBehaviour
 
     void OnRoleChangeComplete()
     {
-        if(OnlineService.CurrentRole == OnlineRole.Client)
+        if(OnlineService.currentRole == OnlineRole.Client)
         {
             // Client flow: the client needs to pick a session to join
             SceneService.Load(_onlineSessionChoice);

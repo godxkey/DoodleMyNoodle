@@ -6,16 +6,17 @@ using OperationResult = System.Action<bool, string>;
 
 public abstract class NetworkInterface : IDisposable
 {
-    public abstract event Action OnDisconnectedFromSession;
-    public abstract event Action OnShutdownBegin;
-    public abstract event Action<INetworkInterfaceConnection> OnDisconnect;
+    public abstract event Action onDisconnectedFromSession;
+    public abstract event Action onShutdownBegin;
+    public abstract event Action<INetworkInterfaceConnection> onDisconnect;
+    public abstract event Action onSessionListUpdated;
 
-    public NetworkState State { get; protected set; } = NetworkState.Stopped;
+    public NetworkState state { get; protected set; } = NetworkState.Stopped;
 
-    public abstract bool IsServer { get; }
-    public bool IsClient => !IsServer;
-    public abstract INetworkInterfaceSession ConnectedSessionInfo { get; }
-    public abstract ReadOnlyCollection<INetworkInterfaceConnection> Connections { get; }
+    public abstract bool isServer { get; }
+    public bool isClient => !isServer;
+    public abstract INetworkInterfaceSession connectedSessionInfo { get; }
+    public abstract ReadOnlyCollection<INetworkInterfaceConnection> connections { get; }
     public abstract void GetSessions(ref List<INetworkInterfaceSession> list);
 
     public abstract void LaunchClient(OperationResult onComplete = null);

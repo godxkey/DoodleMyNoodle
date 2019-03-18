@@ -143,7 +143,7 @@ MonoBehaviour:
     Key: Scenes
     SmallIcon: {fileID: 2800000, guid: 40ff06f7c381dcf4391ca8342d04260c, type: 3}
     LargeIcon: {fileID: 2800000, guid: f9d86cd8e960f584a9aa5a8ee61c4115, type: 3}
-    IsIconRecursive: 0
+    IsIconRecursive: 1
     IsIconCustom: 0
     Background: {fileID: 2800000, guid: 2c67267a9ec0ffd408962c49ac7ae426, type: 3}
     IsBackgroundRecursive: 0
