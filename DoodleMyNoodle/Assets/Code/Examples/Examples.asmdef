@@ -1,8 +1,11 @@
 {
     "name": "Examples",
     "references": [
+        "CCC.Core",
+        "CCC.Debug",
+        "CCC.UI",
+        "CCC.Online",
         "Game",
-        "CCCCore",
         "Unity.Mathematics",
         "Unity.TextMeshPro",
         "Unity.Collections"

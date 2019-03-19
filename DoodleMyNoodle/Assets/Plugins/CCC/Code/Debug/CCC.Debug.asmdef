@@ -1,8 +1,7 @@
 {
-    "name": "CCCUI",
+    "name": "CCC.Debug",
     "references": [
-        "CCCCore",
-        "Unity.TextMeshPro",
+        "CCC.Core",
         "DOTweenModules"
     ],
     "optionalUnityReferences": [],

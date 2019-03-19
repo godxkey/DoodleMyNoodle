@@ -1,10 +1,13 @@
 {
-    "name": "CCCOnline",
+    "name": "CCC.Online.Editor",
     "references": [
-        "CCCCore"
+        "CCC.Core",
+        "CCC.Online"
     ],
     "optionalUnityReferences": [],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

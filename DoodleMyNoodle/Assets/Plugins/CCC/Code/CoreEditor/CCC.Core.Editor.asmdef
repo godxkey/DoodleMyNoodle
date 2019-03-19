@@ -1,8 +1,7 @@
 {
-    "name": "CCCUIEditor",
+    "name": "CCC.Core.Editor",
     "references": [
-        "CCCUI",
-        "CCCCoreEditor"
+        "CCC.Core"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [

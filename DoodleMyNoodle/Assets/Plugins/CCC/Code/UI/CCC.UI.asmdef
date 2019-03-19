@@ -1,13 +1,12 @@
 {
-    "name": "CCCOnlineEditor",
+    "name": "CCC.UI",
     "references": [
-        "CCCCore",
-        "CCCOnline"
+        "Unity.TextMeshPro",
+        "DOTweenModules",
+        "CCC.Core"
     ],
     "optionalUnityReferences": [],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
