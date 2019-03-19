@@ -9,7 +9,8 @@
         "Unity.TextMeshPro",
         "BoltKit",
         "DOTweenModules",
-        "CCC.Debug"
+        "CCC.Debug",
+        "Game.Data"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
