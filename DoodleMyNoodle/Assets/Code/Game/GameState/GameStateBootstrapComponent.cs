@@ -13,9 +13,9 @@ public class GameStateBootstrapComponent : MonoBehaviour
 
     void OnGameStateManagerInit()
     {
-        if(GameStateManager.Instance.targetGameState == null && gameStateSettings != null)
+        if(GameStateManager.targetGameState == null && gameStateSettings != null)
         {
-            GameStateManager.Instance.TransitionToState(gameStateSettings);
+            GameStateManager.TransitionToState(gameStateSettings);
         }
     }
 }

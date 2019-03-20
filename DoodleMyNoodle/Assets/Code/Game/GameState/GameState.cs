@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public abstract class GameState
 {
-    public GameStateManager gameStateManager { get; set; }
     public GameStateSettings settings { get; private set; }
     
     public virtual void SetSettings(GameStateSettings settings)
@@ -14,7 +13,7 @@ public abstract class GameState
 
     public virtual void Enter()
     {
-        if(settings.sceneToLoadOnEnter != null)
+        if (settings.sceneToLoadOnEnter != null && !SceneService.IsActiveOrBeingLoaded(settings.sceneToLoadOnEnter))
         {
             SceneService.Load(settings.sceneToLoadOnEnter, settings.sceneLoadSettings, OnDefaultSceneLoaded);
         }
@@ -38,5 +37,16 @@ public abstract class GameState
     public virtual bool IsExitComplete()
     {
         return true;
+    }
+}
+
+public abstract class GameState<SettingsClass> : GameState where SettingsClass : GameStateSettings
+{
+    public SettingsClass specificSettings { get; private set; }
+
+    public override void SetSettings(GameStateSettings settings)
+    {
+        base.SetSettings(settings);
+        specificSettings = (SettingsClass)settings;
     }
 }

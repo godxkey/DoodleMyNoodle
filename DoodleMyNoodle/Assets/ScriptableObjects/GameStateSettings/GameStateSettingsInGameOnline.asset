@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 444deb04b21ff93429f2354c4d157df3, type: 3}
   m_Name: GameStateSettingsInGameOnline
   m_EditorClassIdentifier: 
-  _sceneToLoadOnEnter: {fileID: 0}
+  _sceneToLoadOnEnter: {fileID: 11400000, guid: 1e0f441a225be4f42850efe56176f282,
+    type: 2}
   _sceneLoadSettings:
     async: 0
     additive: 0
     allowMultiple: 0
+  gameStateIfDisconnect: {fileID: 11400000, guid: a2bcadba14b6db14cb75c84271b01619,
+    type: 2}

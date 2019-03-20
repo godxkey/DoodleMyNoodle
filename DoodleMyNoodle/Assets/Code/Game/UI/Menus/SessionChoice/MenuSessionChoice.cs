@@ -47,8 +47,11 @@ public class MenuSessionChoice : MonoBehaviour
 
     void OnDestroy()
     {
-        ClearClientInterface();
-        WaitSpinnerService.Disable(this);
+        if (ApplicationUtilityService.ApplicationIsQuitting == false)
+        {
+            ClearClientInterface();
+            WaitSpinnerService.Disable(this);
+        }
     }
 
     void FetchClientInterface()
@@ -95,7 +98,7 @@ public class MenuSessionChoice : MonoBehaviour
     void OnClick_Return()
     {
         ClearClientInterface();
-        OnlineService.RequestRole(OnlineRole.None); // close online connection
+        OnlineService.SetTargetRole(OnlineRole.None); // close online connection
         SceneService.Load(_onlineRoleChoiceScene);
     }
 

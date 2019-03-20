@@ -5,7 +5,7 @@ using DG.Tweening;
 using System.Collections.Generic;
 using System;
 
-public class DebugScreenMessage : MonoBehaviour
+public class DebugScreenMessage : MonoCoreService<DebugScreenMessage>
 {
     [SerializeField, Header("Links")]
     private Text text;
@@ -24,24 +24,21 @@ public class DebugScreenMessage : MonoBehaviour
     [SerializeField]
     private Ease hideEase = Ease.InSine;
 
-    private Vector2 destinedSizeDelta;
+    private float bgNormalAlpha;
 
-    private const float BASE_DURATION = 0.5f;
-    private const float EXTRA_DURATION_PER_CHARACTER = 0.05f;
-    private const string SCENENAME = "DebugScreenMessage";
-
-
+    const float BASE_DURATION = 0.5f;
+    const float EXTRA_DURATION_PER_CHARACTER = 0.05f;
 
     static Queue<string> queuedMessages = new Queue<string>();
-    static bool IsDisplayingMessages { get; set; } = false;
+    static bool isDisplayingMessages = false;
 
     public static void DisplayMessage(string message)
     {
         queuedMessages.Enqueue(message);
 
-        if (IsDisplayingMessages == false)
+        if (Instance != null && isDisplayingMessages == false)
         {
-            ProcessPendingMessages();
+            Instance.ProcessPendingMessages();
         }
     }
     public static void DisplayMessageFromThread(string message)
@@ -49,48 +46,53 @@ public class DebugScreenMessage : MonoBehaviour
         MainThreadService.AddMainThreadCallbackFromThread(() => DisplayMessage(message));
     }
 
-    static private void ProcessPendingMessages()
+
+    void ProcessPendingMessages()
     {
-        IsDisplayingMessages = true;
+        isDisplayingMessages = true;
 
-        // load scene
-        SceneService.LoadAsync(SCENENAME, LoadSceneMode.Additive, (scene) =>
+        // show message
+        DisplayText(queuedMessages.Dequeue(), () =>
         {
-            // show message
-            scene.FindRootObject<DebugScreenMessage>().DisplayText(queuedMessages.Dequeue(), ()=>
+            // repeat ?
+            if (queuedMessages.Count > 0)
             {
-                // repeat ?
-                if(queuedMessages.Count > 0)
-                {
-                    ProcessPendingMessages();
-                }
-                else
-                {
-                    IsDisplayingMessages = false;
-                }
-            });
-
-        }, allowMultiple: true);
+                ProcessPendingMessages();
+            }
+            else
+            {
+                isDisplayingMessages = false;
+            }
+        });
     }
 
     private void Awake()
     {
         RectTransform imageRT = bgImage.rectTransform;
-        destinedSizeDelta = imageRT.sizeDelta;
 
-        imageRT.sizeDelta -= new Vector2(((1 - startHorizontal) * imageRT.rect.size.x), imageRT.sizeDelta.y);
+        bgNormalAlpha = bgImage.color.a;
 
-        text.color = text.color.ChangedAlpha(0);
+        gameObject.SetActive(false);
+
+        if (isDisplayingMessages == false && queuedMessages.Count > 0)
+        {
+            ProcessPendingMessages();
+        }
     }
 
-    private void DisplayText(string message, Action onComplete)
+    void DisplayText(string message, Action onComplete)
     {
+        gameObject.SetActive(true);
+
         text.text = message;
+        text.color = text.color.ChangedAlpha(0);
+        bgImage.rectTransform.localScale = new Vector3(startHorizontal, 0, 1);
 
         Sequence sq = DOTween.Sequence();
 
         //Bg appear
-        sq.Append(bgImage.rectTransform.DOSizeDelta(destinedSizeDelta, openDuration).SetEase(openEase));
+        sq.Append(bgImage.rectTransform.DOScale(1, openDuration).SetEase(openEase));
+        sq.Join(bgImage.DOFade(bgNormalAlpha, openDuration));
 
         //Text fade in
         sq.Insert(openDuration * 0.6f, text.DOFade(1, openDuration * 0.4f));
@@ -109,8 +111,13 @@ public class DebugScreenMessage : MonoBehaviour
 
         sq.OnComplete(() =>
         {
-            SceneService.UnloadAsync(gameObject.scene);
+            gameObject.SetActive(false);
             onComplete();
         });
+    }
+
+    public override void Initialize(Action<ICoreService> onComplete)
+    {
+        onComplete(this);
     }
 }

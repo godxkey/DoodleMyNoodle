@@ -36,7 +36,7 @@ public class MenuInGameEscape : MonoBehaviour
 
     public void ExitSession()
     {
-        OnlineService.RequestRole(OnlineRole.None);
+        OnlineService.SetTargetRole(OnlineRole.None);
         SceneService.Load(_onlineRoleChoiceMenu);
     }
 

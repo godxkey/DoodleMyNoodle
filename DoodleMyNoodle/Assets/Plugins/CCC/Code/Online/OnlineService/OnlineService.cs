@@ -30,7 +30,7 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
 
     public static bool isChangingRole => targetRole != currentRole;
 
-    public static void RequestRole(OnlineRole role)
+    public static void SetTargetRole(OnlineRole role)
     {
         if (targetRole != role)
         {

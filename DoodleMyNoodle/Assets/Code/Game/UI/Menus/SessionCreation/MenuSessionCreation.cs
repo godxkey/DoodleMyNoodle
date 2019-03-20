@@ -79,7 +79,7 @@ public class MenuSessionCreation : MonoBehaviour
     void OnClick_Return()
     {
         ClearServerInterface();
-        OnlineService.RequestRole(OnlineRole.None); // close online connection
+        OnlineService.SetTargetRole(OnlineRole.None); // close online connection
         SceneService.Load(_onlineRoleChoiceScene);
 
     }

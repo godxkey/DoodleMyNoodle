@@ -3,10 +3,17 @@
 
 public class GameStateManager : MonoCoreService<GameStateManager>
 {
-    public GameState currentGameState { get; private set; }
-    public GameState targetGameState { get; private set; } = null;
-    public bool isTransitioningState => currentGameState != targetGameState;
+    static public void TransitionToState(GameStateSettings gameStateSettings)
+    {
+        Instance.Internal_TransitionToState(gameStateSettings);
+    }
 
+    static public GameState currentGameState => Instance._currentGameState;
+    static public GameState targetGameState => Instance._targetGameState;
+    static public bool isTransitioningState => currentGameState != targetGameState;
+
+    GameState _currentGameState;
+    GameState _targetGameState;
     GameStateFactory _gameStateFactory = new GameStateFactory();
 
     public override void Initialize(Action<ICoreService> onComplete)
@@ -14,9 +21,9 @@ public class GameStateManager : MonoCoreService<GameStateManager>
         onComplete(this);
     }
 
-    public void TransitionToState(GameStateSettings gameStateSettings)
+    void Internal_TransitionToState(GameStateSettings gameStateSettings)
     {
-        if(gameStateSettings == null)
+        if (gameStateSettings == null)
         {
             DebugService.LogError("[GameStateManager] Trying to transition to a null GameState");
             return;
@@ -25,37 +32,48 @@ public class GameStateManager : MonoCoreService<GameStateManager>
         GameState newGameState = _gameStateFactory.CreateGameState(gameStateSettings);
         newGameState.SetSettings(gameStateSettings);
 
-        if(newGameState == null)
+        if (newGameState == null)
         {
             DebugService.LogError("[GameStateManager] Failed to create a GameState from gameStateSettings: " + gameStateSettings.GetType()
                 + ". You may have forgot to register it in the factory.");
             return;
         }
 
-        targetGameState = newGameState;
+        _targetGameState = newGameState;
 
-        DebugService.Log("[GameStateManager] Transitioning from "+ GetPrintGameStateName(currentGameState) + " to " + GetPrintGameStateName(targetGameState) + "...");
-        currentGameState?.BeginExit();
+        DebugService.Log("[GameStateManager] Transitioning from " + GetPrintGameStateName(_currentGameState) + " to " + GetPrintGameStateName(_targetGameState) + "...");
+        _currentGameState?.BeginExit();
     }
 
     void Update()
     {
-        if (isTransitioningState)
+        bool repeat = true;
+        while (repeat)
         {
-            if (currentGameState != null && currentGameState.IsExitComplete())
-            {
-                currentGameState = null;
-            }
+            repeat = false;
 
-            if (currentGameState == null)
+            if (isTransitioningState)
             {
-                currentGameState = targetGameState;
-                DebugService.Log("[GameStateManager] Entering " + GetPrintGameStateName(currentGameState));
-                currentGameState?.Enter();
+                if (_currentGameState != null && _currentGameState.IsExitComplete())
+                {
+                    _currentGameState = null;
+                }
+
+                if (_currentGameState == null)
+                {
+                    _currentGameState = _targetGameState;
+                    DebugService.Log("[GameStateManager] Entering " + GetPrintGameStateName(_currentGameState));
+                    _currentGameState?.Enter();
+
+                    if (isTransitioningState)
+                    {
+                        repeat = true;
+                    }
+                }
             }
         }
 
-        currentGameState?.Update();
+        _currentGameState?.Update();
     }
 
     string GetPrintGameStateName(GameState gameState)

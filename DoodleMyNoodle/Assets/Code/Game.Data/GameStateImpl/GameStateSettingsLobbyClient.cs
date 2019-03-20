@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "DoodleMyNoodle/GameState Settings/LobbyClient")]
-public class GameStateSettingsLobbyClient : GameStateSettings
+public class GameStateSettingsLobbyClient : GameStateSettingsLobbyBase
 {
+    public GameStateSettings gameStateIfJoinSession;
 }
