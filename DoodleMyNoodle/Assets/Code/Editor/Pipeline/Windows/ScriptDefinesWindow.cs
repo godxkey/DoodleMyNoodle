@@ -41,7 +41,10 @@ public class ScriptDefinesWindowContent
     {
         for (int i = 0; i < symbolValues.Length; i++)
         {
-            symbolValues[i] = GUILayout.Toggle(symbolValues[i], SymbolToString((Symbol)i));
+            bool isMandatory = IsSymbolMandatory((Symbol)i);
+            GUI.enabled = !isMandatory;
+            symbolValues[i] = GUILayout.Toggle(symbolValues[i] || isMandatory, SymbolToString((Symbol)i));
+            GUI.enabled = true;
         }
 
         GUILayout.BeginHorizontal();
@@ -116,9 +119,8 @@ public class ScriptDefinesWindowContent
     ////////////////////////////////////////////////////////////////////////////////////////
     enum Symbol
     {
-        SERVER,
-        LOGGING,
-        TEST,
+        BOLT_CLOUD,
+        DEBUG_BUILD,
         max,
         none
     }
@@ -139,5 +141,14 @@ public class ScriptDefinesWindowContent
         {
             return Symbol.none;
         }
+    }
+
+    bool IsSymbolMandatory(Symbol symbol)
+    {
+        if(symbol == Symbol.BOLT_CLOUD)
+        {
+            return true;
+        }
+        return false;
     }
 }

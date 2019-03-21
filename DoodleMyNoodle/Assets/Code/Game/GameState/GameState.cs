@@ -34,6 +34,13 @@ public abstract class GameState
 
     }
 
+#if DEBUG_BUILD
+    public virtual void OnDebugPanelGUI()
+    {
+
+    }
+#endif
+
     public virtual bool IsExitComplete()
     {
         return true;

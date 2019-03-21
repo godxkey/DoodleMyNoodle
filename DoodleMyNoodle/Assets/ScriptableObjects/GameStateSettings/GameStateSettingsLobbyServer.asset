@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de625ab510e58da408da98b64b2313d9, type: 3}
   m_Name: GameStateSettingsLobbyServer
   m_EditorClassIdentifier: 
-  _sceneToLoadOnEnter: {fileID: 0}
+  _sceneToLoadOnEnter: {fileID: 11400000, guid: a80bbc13b98c8be48a317cd958c17ace,
+    type: 2}
   _sceneLoadSettings:
     async: 0
     additive: 0
     allowMultiple: 0
+  gameStateIfReturn: {fileID: 11400000, guid: a2bcadba14b6db14cb75c84271b01619, type: 2}
+  gameStateIfCreateSession: {fileID: 11400000, guid: 92c654db093d7424d8920fb637e8563b,
+    type: 2}

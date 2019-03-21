@@ -52,8 +52,12 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
 
     void OnNetworkInterfaceShutdownBegin()
     {
-        _onlineInterface?.Dispose();
-        _onlineInterface = null;
+        if(ApplicationUtilityService.ApplicationIsQuitting == false)
+        {
+            // If we're exiting the application (or pressing stop in the editor), we don't care about this
+            _onlineInterface?.Dispose();
+            _onlineInterface = null;
+        }
     }
 
     void Update()

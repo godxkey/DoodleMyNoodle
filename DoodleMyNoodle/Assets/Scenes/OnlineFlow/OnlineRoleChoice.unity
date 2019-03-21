@@ -269,11 +269,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1127ea22503dde547b0a5d3d059b8ddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _roleTransitionTimeout: 10
-  _onlineSessionChoice: {fileID: 11400000, guid: 5e8a457555253df4490fde83f9d587a0,
-    type: 2}
-  _onlineSessionCreation: {fileID: 11400000, guid: a80bbc13b98c8be48a317cd958c17ace,
-    type: 2}
 --- !u!1 &858945102
 GameObject:
   m_ObjectHideFlags: 0

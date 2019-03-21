@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Internals.MenuSessionChoice;
-using UnityEngine.SceneManagement;
 
 public class MenuSessionChoice : MonoBehaviour
 {
@@ -15,11 +13,9 @@ public class MenuSessionChoice : MonoBehaviour
 
     [Header("Join")]
     [SerializeField] Button _joinButton;
-    [SerializeField] SceneInfo _gameScene;
 
     [Header("Return")]
     [SerializeField] Button _returnButton;
-    [SerializeField] SceneInfo _onlineRoleChoiceScene;
 
     List<SessionButton> _sessionButtons = new List<SessionButton>();
     List<INetworkInterfaceSession> _sessions = new List<INetworkInterfaceSession>();
@@ -42,16 +38,15 @@ public class MenuSessionChoice : MonoBehaviour
             FetchClientInterface();
         }
 
-        _joinButton.interactable = _selectedSession != null;
+        _joinButton.interactable = 
+            _selectedSession != null &&
+            _clientInterface != null &&
+            _clientInterface.isConnectingSession == false;
     }
 
     void OnDestroy()
     {
-        if (ApplicationUtilityService.ApplicationIsQuitting == false)
-        {
-            ClearClientInterface();
-            WaitSpinnerService.Disable(this);
-        }
+        ClearClientInterface();
     }
 
     void FetchClientInterface()
@@ -75,59 +70,6 @@ public class MenuSessionChoice : MonoBehaviour
             _clientInterface.onSessionListUpdated -= OnSessionListUpdated;
             _clientInterface.onTerminate -= OnOnlineInterfaceTerminated;
             _clientInterface = null;
-        }
-    }
-
-    void OnOnlineInterfaceTerminated()
-    {
-        ClearClientInterface();
-
-        if (ApplicationUtilityService.ApplicationIsQuitting == false)
-        {
-            DebugScreenMessage.DisplayMessage("The online interface was terminated. Check your connection.");
-        }
-    }
-
-    void OnSessionListUpdated()
-    {
-        _spinnerIcon.SetActive(false);
-        _clientInterface?.GetAvailableSessions(ref _sessions);
-        UpdateSessionButtonList();
-    }
-
-    void OnClick_Return()
-    {
-        ClearClientInterface();
-        OnlineService.SetTargetRole(OnlineRole.None); // close online connection
-        SceneService.Load(_onlineRoleChoiceScene);
-    }
-
-    void OnClick_Join()
-    {
-        if (_selectedSession != null)
-        {
-            OnlineService.clientInterface.ConnectToSession(_selectedSession, OnConnectingToSessionComplete);
-            WaitSpinnerService.Enable(this);
-        }
-        else
-        {
-            string message = "Cannot join null session";
-            DebugScreenMessage.DisplayMessage(message);
-            DebugService.LogError(message);
-        }
-    }
-
-    void OnConnectingToSessionComplete(bool success, string message)
-    {
-        WaitSpinnerService.Disable(this);
-        if (success)
-        {
-            SceneService.Load(_gameScene);
-        }
-        else
-        {
-            DebugScreenMessage.DisplayMessage(message);
-            DebugService.LogError(message);
         }
     }
 
@@ -168,7 +110,38 @@ public class MenuSessionChoice : MonoBehaviour
         }
     }
 
-    private void OnSessionButtonClick(SessionButton button)
+    void OnOnlineInterfaceTerminated()
+    {
+        ClearClientInterface();
+    }
+
+    void OnSessionListUpdated()
+    {
+        _spinnerIcon.SetActive(false);
+        _clientInterface?.GetAvailableSessions(ref _sessions);
+        UpdateSessionButtonList();
+    }
+
+    void OnClick_Return()
+    {
+        ((GameStateLobbyClient)GameStateManager.currentGameState).Return();
+    }
+
+    void OnClick_Join()
+    {
+        if (_selectedSession != null)
+        {
+            ((GameStateLobbyClient)GameStateManager.currentGameState).JoinSession(_selectedSession, null);
+        }
+        else
+        {
+            string message = "Cannot join null session";
+            DebugScreenMessage.DisplayMessage(message);
+            DebugService.LogError(message);
+        }
+    }
+
+    void OnSessionButtonClick(SessionButton button)
     {
         _selectedSession = button.session;
         UpdateSessionButtonList();

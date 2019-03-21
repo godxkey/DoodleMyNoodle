@@ -7,7 +7,6 @@ public class MenuOnlineRoleChoice : MonoBehaviour
 {
     public void LaunchClient()
     {
-        Debug.Log(GameStateManager.currentGameState);
         ((GameStateRootMenu)GameStateManager.currentGameState).JoinLobbyAsClient();
     }
 

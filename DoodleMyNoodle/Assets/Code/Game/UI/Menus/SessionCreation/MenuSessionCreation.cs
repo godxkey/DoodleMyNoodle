@@ -9,15 +9,10 @@ public class MenuSessionCreation : MonoBehaviour
     [Header("Create")]
     [SerializeField] Button _createButton;
     [SerializeField] TMPro.TMP_InputField _sessionNameInputField;
-    [SerializeField] SceneInfo _gameScene;
 
     [Header("Return")]
     [SerializeField] Button _returnButton;
-    [SerializeField] SceneInfo _onlineRoleChoiceScene;
 
-
-    OnlineServerInterface _serverInterface;
-    bool _creatingSession;
 
     void Start()
     {
@@ -28,83 +23,23 @@ public class MenuSessionCreation : MonoBehaviour
 
     void Update()
     {
-        if (_serverInterface == null)
-        {
-            FetchServerInterface();
-        }
+        OnlineServerInterface serverInterface = OnlineService.serverInterface;
 
-        _sessionNameInputField.interactable = _serverInterface != null;
+        _sessionNameInputField.interactable = serverInterface != null;
 
-        _createButton.interactable = 
-            _serverInterface != null && 
-            _serverInterface.isCreatingSession == false && 
+        _createButton.interactable =
+            serverInterface != null &&
+            serverInterface.isCreatingSession == false &&
             _sessionNameInputField.text.Length > 0;
-    }
-
-    void OnDestroy()
-    {
-        ClearServerInterface();
-        WaitSpinnerService.Disable(this);
-    }
-
-    void FetchServerInterface()
-    {
-        _serverInterface = OnlineService.serverInterface;
-
-        if (_serverInterface != null)
-        {
-            _serverInterface.onTerminate += OnOnlineInterfaceTerminated;
-        }
-    }
-
-    void ClearServerInterface()
-    {
-        if (_serverInterface != null)
-        {
-            _serverInterface.onTerminate -= OnOnlineInterfaceTerminated;
-            _serverInterface = null;
-        }
-    }
-
-    void OnOnlineInterfaceTerminated()
-    {
-        ClearServerInterface();
-
-        if (ApplicationUtilityService.ApplicationIsQuitting == false)
-        {
-            DebugScreenMessage.DisplayMessage("The online interface was terminated. Check your connection.");
-        }
     }
 
     void OnClick_Return()
     {
-        ClearServerInterface();
-        OnlineService.SetTargetRole(OnlineRole.None); // close online connection
-        SceneService.Load(_onlineRoleChoiceScene);
-
+        ((GameStateLobbyServer)GameStateManager.currentGameState).Return();
     }
 
     void OnClick_Create()
     {
-        if (_serverInterface.isCreatingSession == false)
-        {
-            WaitSpinnerService.Enable(this);
-            _serverInterface.CreateSession(_sessionNameInputField.text, OnSessionCreationComplete);
-        }
-    }
-
-    void OnSessionCreationComplete(bool success, string message)
-    {
-        WaitSpinnerService.Disable(this);
-
-        if (success)
-        {
-            ClearServerInterface();
-            SceneService.Load(_gameScene);
-        }
-        else
-        {
-            DebugScreenMessage.DisplayMessage("Failed to create session: " + message);
-        }
+        ((GameStateLobbyServer)GameStateManager.currentGameState).CreateSession(_sessionNameInputField.text, null);
     }
 }

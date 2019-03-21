@@ -36,7 +36,7 @@ public class GameStateLobbyClient : GameStateLobbyOnlineBase<GameStateSettingsLo
 
     void OnJoinSessionResult(bool success, string message)
     {
-        _joinSessionCallback(success, message);
+        _joinSessionCallback?.Invoke(success, message);
         WaitSpinnerService.Disable(this);
 
         if (success)
