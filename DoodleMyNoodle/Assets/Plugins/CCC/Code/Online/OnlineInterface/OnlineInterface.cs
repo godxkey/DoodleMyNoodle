@@ -16,7 +16,7 @@ public abstract class OnlineInterface : IDisposable
 
         _network.onDisconnectedFromSession += OnDisconnectFromSession;
 
-        Debug.Log("Online interface created");
+        DebugService.Log("Online interface created");
     }
 
     public void Update()
@@ -35,7 +35,7 @@ public abstract class OnlineInterface : IDisposable
         sessionInterface?.Dispose();
         _network.onDisconnectedFromSession -= OnDisconnectFromSession;
 
-        Debug.Log("Online interface terminating");
+        DebugService.Log("Online interface terminating");
 
         onTerminate?.Invoke();
     }

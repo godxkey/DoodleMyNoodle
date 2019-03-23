@@ -13,7 +13,7 @@ public class BitStreamWriter : BitStreamHead
     {
         if (bitCount <= 0 || bitCount > 32)
         {
-            Debug.LogError("BitStreamWriter: cannot write value because bitCount == (" + bitCount + ')');
+            DebugService.LogError("BitStreamWriter: cannot write value because bitCount == (" + bitCount + ')');
             return;
         }
 
@@ -34,7 +34,7 @@ public class BitStreamWriter : BitStreamHead
         {
             if (ByteIndex >= m_buffer.Length)
             {
-                Debug.LogError("Trying to write beyond the buffer length");
+                DebugService.LogError("Trying to write beyond the buffer length");
                 break;
             }
 
@@ -51,7 +51,7 @@ public class BitStreamWriter : BitStreamHead
     {
         if (ByteIndex >= m_buffer.Length)
         {
-            Debug.LogError("Trying to write beyond the buffer length");
+            DebugService.LogError("Trying to write beyond the buffer length");
             return;
         }
 

@@ -3,6 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "DoodleMyNoodle/GameState Settings/InGameLocal")]
-public class GameStateSettingsInGameLocal : GameStateSettings
+public class GameStateSettingsInGameLocal : GameStateSettingsInGameBase
 {
 }

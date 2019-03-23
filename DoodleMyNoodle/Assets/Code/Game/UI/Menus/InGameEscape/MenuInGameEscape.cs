@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 public class MenuInGameEscape : MonoBehaviour
 {
-    [SerializeField] SceneInfo _sessionCreationMenu;
-    [SerializeField] SceneInfo _sessionSelectionMenu;
-    [SerializeField] SceneInfo _onlineRoleChoiceMenu;
     [SerializeField] Button _exitApplicationButton;
     [SerializeField] Button _exitSessionButton;
     [SerializeField] Button _returnButton;
@@ -36,12 +33,11 @@ public class MenuInGameEscape : MonoBehaviour
 
     public void ExitSession()
     {
-        OnlineService.SetTargetRole(OnlineRole.None);
-        SceneService.Load(_onlineRoleChoiceMenu);
+        ((IGameStateInGameBase)GameStateManager.currentGameState).ReturnToMenu();
     }
 
     public void ExitApplication()
     {
-        Application.Quit();
+        ((IGameStateInGameBase)GameStateManager.currentGameState).ExitApplication();
     }
 }

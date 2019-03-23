@@ -17,12 +17,12 @@ public abstract class SessionInterface : IDisposable
     {
         _networkInterface = networkInterface;
         _networkInterface.SetMessageReader(OnReceiveMessage);
-        Debug.Log("Session interface created");
+        DebugService.Log("Session interface created");
     }
 
     public void Dispose()
     {
-        Debug.Log("Session interface terminating");
+        DebugService.Log("Session interface terminating");
         onTerminate?.Invoke();
     }
 

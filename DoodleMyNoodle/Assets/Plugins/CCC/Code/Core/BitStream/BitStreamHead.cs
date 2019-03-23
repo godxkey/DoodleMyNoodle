@@ -48,7 +48,7 @@ public abstract class BitStreamHead
 
         if(ByteIndex < 0)
         {
-            Debug.LogError("BitStreamHead - Trying to move head below 0");
+            DebugService.LogError("BitStreamHead - Trying to move head below 0");
             ByteIndex = 0;
         }
     }

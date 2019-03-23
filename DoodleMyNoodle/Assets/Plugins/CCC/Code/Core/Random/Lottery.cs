@@ -110,7 +110,7 @@ public class Lottery<T>
 
         if (list.Count <= 0)
         {
-            Debug.LogError("No lottery item to pick from. Add some before picking.");
+            DebugService.LogError("No lottery item to pick from. Add some before picking.");
             return default(T);
         }
 
@@ -128,7 +128,7 @@ public class Lottery<T>
             }
         }
 
-        Debug.LogError("Error in lottery.");
+        DebugService.LogError("Error in lottery.");
         return default(T);
     }
 

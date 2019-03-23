@@ -25,7 +25,7 @@ public class TransformAnimationClick : MonoBehaviour, IPointerDownHandler, IPoin
     {
         if (GetComponent<RectTransform>() == null)
         {
-            Debug.LogError("Cannot put TransformAnimationClick on a non-UI gameObject");
+            DebugService.LogError("Cannot put TransformAnimationClick on a non-UI gameObject");
             enabled = false;
             return;
         }

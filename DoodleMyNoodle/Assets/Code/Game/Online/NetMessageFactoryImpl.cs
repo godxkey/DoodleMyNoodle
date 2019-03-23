@@ -21,7 +21,7 @@ namespace Internals.OnlineServiceImpl
 
             if (netMessageToId.Count > ushort.MaxValue)
             {
-                Debug.LogError("To many NetMessage types for a UInt16.");
+                DebugService.LogError("To many NetMessage types for a UInt16.");
             }
         }
 

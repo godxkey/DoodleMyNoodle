@@ -97,7 +97,7 @@ namespace Internals.PhotonNetwokInterface
         public override void DisconnectFromSession(OperationResultCallback onComplete)
         {
             _connectedSessionInfo = null;
-            BoltNetwork.Connect(null);
+            Shutdown(onComplete); // with bolt, we have no way of returning to 'lobby' state
         }
 
         public override void Update()
@@ -139,7 +139,7 @@ namespace Internals.PhotonNetwokInterface
         {
             if (connection == null)
             {
-                Debug.LogError("[PhotonNetworkInterface] Cannot send message to null connection");
+                DebugService.LogError("[PhotonNetworkInterface] Cannot send message to null connection");
                 return;
             }
 

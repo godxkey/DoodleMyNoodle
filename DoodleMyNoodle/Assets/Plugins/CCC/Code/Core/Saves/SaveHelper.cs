@@ -28,7 +28,7 @@ public static class SaveHelper
         }
         catch (Exception e)
         {
-            Debug.LogError("Failed to deserialize the following file:\n" + path + "\n\nError:\n" + e.Message);
+            DebugService.LogError("Failed to deserialize the following file:\n" + path + "\n\nError:\n" + e.Message);
         }
 
         file.Close();

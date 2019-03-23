@@ -14,7 +14,7 @@ public class BitStreamReader : BitStreamHead
     {
         if (bitCount <= 0 || bitCount > 32)
         {
-            Debug.LogError("BitStreamReader: cannot read value because bitCount == (" + bitCount + ')');
+            DebugService.LogError("BitStreamReader: cannot read value because bitCount == (" + bitCount + ')');
             return 0;
         }
 
@@ -25,7 +25,7 @@ public class BitStreamReader : BitStreamHead
         {
             if (ByteIndex >= m_buffer.Length)
             {
-                Debug.LogError("Trying to read beyond the buffer length");
+                DebugService.LogError("Trying to read beyond the buffer length");
                 break;
             }
 
@@ -61,7 +61,7 @@ public class BitStreamReader : BitStreamHead
     {
         if (ByteIndex >= m_buffer.Length)
         {
-            Debug.LogError("Trying to read beyond the buffer length");
+            DebugService.LogError("Trying to read beyond the buffer length");
             return false;
         }
 
