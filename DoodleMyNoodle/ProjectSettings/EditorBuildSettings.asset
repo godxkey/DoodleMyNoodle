@@ -6,13 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/OnlineFlow/OnlineRoleChoice.unity
+    path: Assets/Scenes/Menu/OnlineFlow/OnlineRoleChoice.unity
     guid: 7c2acb5dea68c0f49ac848ac0d7bcdaa
   - enabled: 1
-    path: Assets/Scenes/OnlineFlow/OnlineServerSessionCreation.unity
+    path: Assets/Scenes/Menu/OnlineFlow/OnlineServerSessionCreation.unity
     guid: cb80e7a3f25cdd34aa78b7b55273f4df
   - enabled: 1
-    path: Assets/Scenes/OnlineFlow/OnlineClientSessionChoice.unity
+    path: Assets/Scenes/Menu/OnlineFlow/OnlineClientSessionChoice.unity
     guid: 8604ebda00836304f802fc028ca9979a
   - enabled: 1
     path: Assets/Scenes/Game/GameRoot.unity

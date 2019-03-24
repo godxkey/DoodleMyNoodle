@@ -90,35 +90,12 @@ public class DebugService : MonoCoreService<DebugService>
             _Log(message);
     }
 
-    static void _Log(string message)
-    {
-        string result = FrameService.FrameCount + ": " + message;
-
-        GameConsole.Write(result); // console GUI 
-
-        if (logFile != null)
-            logFile.WriteLine(result + "\n");
-    }
-
     public static void LogError(string message)
     {
         if (forwardToNativeUnityDebug)
             Debug.LogError(message);
         else
             _LogError(message);
-    }
-
-    static void _LogError(string message, bool stackTrace = true)
-    {
-        string result = FrameService.FrameCount + ": [ERR] " + message;
-        if (stackTrace)
-        {
-            result += '\n' + StackTraceUtility.ExtractStackTrace();
-        }
-
-        GameConsole.Write(result);
-        if (logFile != null)
-            logFile.WriteLine(result + "\n");
     }
 
     public static void LogWarning(string message)
@@ -129,11 +106,34 @@ public class DebugService : MonoCoreService<DebugService>
             _LogWarning(message);
     }
 
+    static void _Log(string message)
+    {
+        string result = FrameService.FrameCount + ": " + message;
+
+        GameConsole.Write(result, GameConsole.LineColor.Normal); // console GUI 
+
+        if (logFile != null)
+            logFile.WriteLine(result + "\n");
+    }
+
+    static void _LogError(string message, bool stackTrace = true)
+    {
+        string result = FrameService.FrameCount + ": [ERR] " + message;
+        if (stackTrace)
+        {
+            result += '\n' + StackTraceUtility.ExtractStackTrace();
+        }
+
+        GameConsole.Write(result, GameConsole.LineColor.Error);
+        if (logFile != null)
+            logFile.WriteLine(result + "\n");
+    }
+
     static void _LogWarning(string message)
     {
         string result = FrameService.FrameCount + ": [WARN] " + message;
 
-        GameConsole.Write(result);
+        GameConsole.Write(result, GameConsole.LineColor.Warning);
 
         if (logFile != null)
             logFile.WriteLine(result + "\n");

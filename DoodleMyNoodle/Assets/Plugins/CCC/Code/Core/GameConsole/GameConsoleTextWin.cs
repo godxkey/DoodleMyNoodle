@@ -61,7 +61,7 @@ namespace Internals.GameConsoleInterals
 
         public void Shutdown()
         {
-            OutputString("Console shutdown");
+            OutputString("Console shutdown", GameConsole.LineColor.Normal);
             System.Console.SetOut(m_PreviousOutput);
             FreeConsole();
         }
@@ -129,9 +129,10 @@ namespace Internals.GameConsoleInterals
             return true;
         }
 
-        public void OutputString(string message)
+        public void OutputString(string message, GameConsole.LineColor lineColor)
         {
             ClearInputLine();
+            Console.ForegroundColor = LineColorToConsoleColor(lineColor);
             System.Console.WriteLine(message);
             DrawInputline();
         }
@@ -156,6 +157,23 @@ namespace Internals.GameConsoleInterals
             System.Console.Write(m_CurrentLine + new string(' ', System.Console.BufferWidth - m_CurrentLine.Length - 1));
             System.Console.CursorLeft = m_CurrentLine.Length;
             System.Console.ResetColor();
+        }
+
+        ConsoleColor LineColorToConsoleColor(GameConsole.LineColor lineColor)
+        {
+            switch (lineColor)
+            {
+                case GameConsole.LineColor.Normal:
+                    return ConsoleColor.White;
+                case GameConsole.LineColor.Command:
+                    return ConsoleColor.Cyan;
+                case GameConsole.LineColor.Warning:
+                    return ConsoleColor.Yellow;
+                case GameConsole.LineColor.Error:
+                    return ConsoleColor.Red;
+                default:
+                    return ConsoleColor.White;
+            }
         }
 
         bool m_RestoreFocus;

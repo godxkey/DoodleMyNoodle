@@ -5,7 +5,7 @@ namespace Internals.GameConsoleInterals
     {
         void Init();
         void Shutdown();
-        void OutputString(string message);
+        void OutputString(string message, GameConsole.LineColor lineColor);
         bool IsOpen();
         void SetOpen(bool open);
         void ConsoleUpdate();

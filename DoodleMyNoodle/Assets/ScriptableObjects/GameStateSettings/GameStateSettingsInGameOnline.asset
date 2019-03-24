@@ -18,5 +18,6 @@ MonoBehaviour:
     async: 0
     additive: 0
     allowMultiple: 0
+  gameStateIfReturn: {fileID: 11400000, guid: a2bcadba14b6db14cb75c84271b01619, type: 2}
   gameStateIfDisconnect: {fileID: 11400000, guid: a2bcadba14b6db14cb75c84271b01619,
     type: 2}
