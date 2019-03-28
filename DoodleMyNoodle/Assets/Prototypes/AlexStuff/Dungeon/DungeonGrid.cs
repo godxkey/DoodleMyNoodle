@@ -29,6 +29,12 @@ public class DungeonGrid : MonoBehaviour
         Grid grid = new Grid(); // creating grid
         data.SetGridValues(ref grid); // setup grid with our data
 
+        for (int i = 0; i < grid.tileAmount; i++)
+        {
+            Debug.DrawLine(grid.GetTilePosition(i), new Vector3(grid.GetTilePosition(i).x + 1, grid.GetTilePosition(i).y));
+        }
+        
+
         room.SetGrid(grid);
     }
 
