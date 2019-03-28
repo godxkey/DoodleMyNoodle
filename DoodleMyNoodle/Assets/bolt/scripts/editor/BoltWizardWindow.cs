@@ -156,6 +156,8 @@ public partial class BoltWizardWindow : EditorWindow
 	[MenuItem("Bolt/Wizard", priority = 100)]
 	public static void Open()
 	{
+        return;
+
 		if (Application.isPlaying)
 		{
 			return;
