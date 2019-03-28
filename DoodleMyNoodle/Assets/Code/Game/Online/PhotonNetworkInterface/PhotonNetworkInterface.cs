@@ -12,15 +12,17 @@ namespace Internals.PhotonNetwokInterface
 {
     public class PhotonNetworkInterface : NetworkInterface
     {
-        public override event Action OnDisconnectedFromSession;
-        public override event Action OnShutdownBegin;
-        public override event Action<INetworkInterfaceConnection> OnDisconnect;
+        public override event Action onDisconnectedFromSession;
+        public override event Action onShutdownBegin;
+        public override event Action<INetworkInterfaceConnection> onDisconnect;
+        public override event Action onSessionListUpdated;
 
-        public override bool IsServer => BoltNetwork.IsServer;
-        public override ReadOnlyCollection<INetworkInterfaceConnection> Connections { get; }
-        public override INetworkInterfaceSession ConnectedSessionInfo => _connectedSessionInfo;
+        public override bool isServer => BoltNetwork.IsServer;
+        public override ReadOnlyCollection<INetworkInterfaceConnection> connections { get; }
+        public override INetworkInterfaceSession connectedSessionInfo => _connectedSessionInfo;
         public override void GetSessions(ref List<INetworkInterfaceSession> list)
         {
+            list.Clear();
             foreach (KeyValuePair<Guid, UdpSession> session in BoltNetwork.SessionList)
             {
                 list.Add(new PhotonNetworkInterfaceSession(session.Value));
@@ -29,41 +31,41 @@ namespace Internals.PhotonNetwokInterface
 
         public PhotonNetworkInterface()
         {
-            Connections = _connections.AsReadOnly();
+            connections = _connections.AsReadOnly();
             CreateBoltListener();
         }
 
         public override void LaunchClient(OperationResultCallback onComplete)
         {
             _operationCallbackLaunch = onComplete;
-            State = NetworkState.Launching;
+            state = NetworkState.Launching;
             BoltLauncher.StartClient();
         }
         public override void LaunchServer(OperationResultCallback onComplete)
         {
             _operationCallbackLaunch = onComplete;
-            State = NetworkState.Launching;
+            state = NetworkState.Launching;
             BoltLauncher.StartServer();
         }
 
         public override void Shutdown(OperationResultCallback onComplete)
         {
             _operationCallbackShutdown = onComplete;
-            State = NetworkState.ShuttingDown;
+            state = NetworkState.ShuttingDown;
             BoltLauncher.Shutdown();
         }
 
         public override void CreateSession(string sessionName, OperationResultCallback onComplete)
         {
-            if (State != NetworkState.Running)
+            if (state != NetworkState.Running)
             {
-                BoltConsole.Write("[PhotonNetworkInterface] Cannot create session if not in running state");
+                DebugService.Log("[PhotonNetworkInterface] Cannot create session if not in running state");
                 return;
             }
 
             if (!BoltNetwork.IsServer)
             {
-                BoltConsole.Write("[PhotonNetworkInterface] Cannot create session if not of type server");
+                DebugService.Log("[PhotonNetworkInterface] Cannot create session if not of type server");
                 return;
             }
 
@@ -78,7 +80,7 @@ namespace Internals.PhotonNetwokInterface
             // Create the Photon Room
             BoltNetwork.SetServerInfo(sessionName, roomProperties);
 
-            BoltConsole.Write("[Mine] Session creation begun...");
+            DebugService.Log("[PhotonNetworkInterface] Session creation begun...");
         }
 
         public override void ConnectToSession(INetworkInterfaceSession session, OperationResultCallback onComplete)
@@ -95,12 +97,12 @@ namespace Internals.PhotonNetwokInterface
         public override void DisconnectFromSession(OperationResultCallback onComplete)
         {
             _connectedSessionInfo = null;
-            BoltNetwork.Connect(null);
+            Shutdown(onComplete); // with bolt, we have no way of returning to 'lobby' state
         }
 
         public override void Update()
         {
-            if (!IsServer)
+            if (!isServer)
             {
                 if (_sessionClearTimer < 0 && BoltNetwork.IsRunning)
                 {
@@ -112,20 +114,20 @@ namespace Internals.PhotonNetwokInterface
                 _sessionClearTimer -= Time.deltaTime;
             }
 
-            if (State == NetworkState.ShuttingDown && !BoltNetwork.IsRunning)
+            if (state == NetworkState.ShuttingDown && !BoltNetwork.IsRunning)
             {
-                State = NetworkState.Stopped;
+                state = NetworkState.Stopped;
 
                 if (_connections.Count != 0)
                 {
                     _connections.Clear();
-                    BoltConsole.Write("[Mine] Shut down complete weirdness: m_connections.Count > 0");
+                    DebugService.Log("[PhotonNetworkInterface] Shut down complete weirdness: m_connections.Count > 0");
                 }
 
                 if (_connectedSessionInfo != null)
                 {
                     _connectedSessionInfo = null;
-                    OnDisconnectedFromSession?.Invoke();
+                    onDisconnectedFromSession?.Invoke();
                 }
 
                 ConcludeOperationCallback(ref _operationCallbackDisconnectedFromSession, true, null);
@@ -137,7 +139,7 @@ namespace Internals.PhotonNetwokInterface
         {
             if (connection == null)
             {
-                Debug.LogError("[PhotonNetworkInterface] Cannot send message to null connection");
+                DebugService.LogError("[PhotonNetworkInterface] Cannot send message to null connection");
                 return;
             }
 
@@ -160,37 +162,37 @@ namespace Internals.PhotonNetwokInterface
         #region Event Handling
         public void Event_BoltStartBegin()
         {
-            BoltConsole.Write("[Mine] BoltStartBegin");
+            DebugService.Log("[PhotonNetworkInterface] BoltStartBegin");
             RegisterTokenClasses();
         }
 
         public void Event_BoltStartDone()
         {
-            State = NetworkState.Running;
-            BoltConsole.Write("[Mine] BoltStartDone");
+            state = NetworkState.Running;
+            DebugService.Log("[PhotonNetworkInterface] BoltStartDone");
 
             _operationCallbackLaunch?.Invoke(true, null);
         }
 
         public void Event_BoltStartFailed()
         {
-            State = NetworkState.Stopped;
-            BoltConsole.Write("[Mine] BoltStartFailed");
+            state = NetworkState.Stopped;
+            DebugService.Log("[PhotonNetworkInterface] BoltStartFailed");
 
             _operationCallbackLaunch?.Invoke(false, "Bolt failed to start");
         }
 
         public void Event_BoltShutdownBegin(AddCallback registerDoneCallback)
         {
-            State = NetworkState.ShuttingDown;
-            BoltConsole.Write("[Mine] BoltShutdownBegin");
+            state = NetworkState.ShuttingDown;
+            DebugService.Log("[PhotonNetworkInterface] BoltShutdownBegin");
 
-            OnShutdownBegin?.Invoke();
+            onShutdownBegin?.Invoke();
         }
 
         public void Event_Connected(BoltConnection connection)
         {
-            BoltConsole.Write("[Mine] Connected: " + connection.ToString());
+            DebugService.Log("[PhotonNetworkInterface] Connected: " + connection.ToString());
             _connections.Add(new PhotonNetworkInterfaceConnection(connection));
 
             // NOTE: this event will get called for each new connection
@@ -201,7 +203,7 @@ namespace Internals.PhotonNetwokInterface
 
         public void Event_Disconnected(BoltConnection connection)
         {
-            BoltConsole.Write("[Mine] Disconnected: " + connection.ToString());
+            DebugService.Log("[PhotonNetworkInterface] Disconnected: " + connection.ToString());
 
             INetworkInterfaceConnection connectionInterface = null;
 
@@ -214,57 +216,58 @@ namespace Internals.PhotonNetwokInterface
                 }
             }
 
-            OnDisconnect?.Invoke(connectionInterface);
+            onDisconnect?.Invoke(connectionInterface);
 
-            if (IsClient && _connections.Count == 0 && _connectedSessionInfo != null)
+            if (isClient && _connections.Count == 0 && _connectedSessionInfo != null)
             {
                 ConcludeOperationCallback(ref _operationCallbackDisconnectedFromSession, true, null);
 
-                OnDisconnectedFromSession?.Invoke();
+                onDisconnectedFromSession?.Invoke();
                 _connectedSessionInfo = null;
             }
         }
 
         public void Event_ConnectAttempt(UdpEndPoint endpoint, IProtocolToken token)
         {
-            BoltConsole.Write("[Mine] ConnectAttempt: " + endpoint.Address + "  port: " + endpoint.Port);
+            DebugService.Log("[PhotonNetworkInterface] ConnectAttempt: " + endpoint.Address + "  port: " + endpoint.Port);
         }
 
         public void Event_ConnectFailed(UdpEndPoint endpoint, IProtocolToken token)
         {
-            BoltConsole.Write("[Mine] ConnectFailed: " + endpoint.Address + "  port: " + endpoint.Port);
+            DebugService.Log("[PhotonNetworkInterface] ConnectFailed: " + endpoint.Address + "  port: " + endpoint.Port);
 
             ConcludeOperationCallback(ref _operationCallbackSessionConnected, false, "Connection failed");
         }
 
         public void Event_ConnectRefused(UdpEndPoint endpoint, IProtocolToken token)
         {
-            BoltConsole.Write("[Mine] ConnectRefused: " + endpoint.Address + "  port: " + endpoint.Port);
+            DebugService.Log("[PhotonNetworkInterface] ConnectRefused: " + endpoint.Address + "  port: " + endpoint.Port);
 
             ConcludeOperationCallback(ref _operationCallbackSessionConnected, false, "Connection refused");
         }
 
         public void Event_ConnectRequest(UdpEndPoint endpoint, IProtocolToken token)
         {
-            BoltConsole.Write("[Mine] ConnectRequest: " + endpoint.Address + "  port: " + endpoint.Port);
+            DebugService.Log("[PhotonNetworkInterface] ConnectRequest: " + endpoint.Address + "  port: " + endpoint.Port);
         }
 
         public void Event_SessionListUpdated(Map<Guid, UdpSession> sessionList)
         {
             // will clear the session list in X seconds
             _sessionClearTimer = SESSION_CLEAR_TIMEOUT;
+            onSessionListUpdated?.Invoke();
         }
 
         public void Event_SessionConnectFailed(UdpSession session, IProtocolToken token)
         {
-            BoltConsole.Write("[Mine] SessionConnectFailed: " + session.Id + "  name: " + session.HostName);
+            DebugService.Log("[PhotonNetworkInterface] SessionConnectFailed: " + session.Id + "  name: " + session.HostName);
 
             ConcludeOperationCallback(ref _operationCallbackSessionConnected, false, null);
         }
 
         public void Event_SessionCreated(UdpSession session)
         {
-            BoltConsole.Write("[Mine] SessionCreated: " + session.Id + "  name: " + session.HostName);
+            DebugService.Log("[PhotonNetworkInterface] SessionCreated: " + session.Id + "  name: " + session.HostName);
             _connectedSessionInfo = new PhotonNetworkInterfaceSession(session);
 
             ConcludeOperationCallback(ref _operationCallbackSessionCreated, true, null);
@@ -272,7 +275,7 @@ namespace Internals.PhotonNetwokInterface
 
         public void Event_SessionCreationFailed(UdpSession session)
         {
-            BoltConsole.Write("[Mine] SessionCreationFailed: " + session.Id + "  name: " + session.HostName);
+            DebugService.Log("[PhotonNetworkInterface] SessionCreationFailed: " + session.Id + "  name: " + session.HostName);
 
             ConcludeOperationCallback(ref _operationCallbackSessionCreated, false, null);
         }
@@ -283,11 +286,11 @@ namespace Internals.PhotonNetwokInterface
 
             if (connection == null)
             {
-                BoltConsole.Write("[Mine] Failed to find who raised the event: " + evnt.GetType() + " / " + evnt.RaisedBy);
+                DebugService.Log("[PhotonNetworkInterface] Failed to find who raised the event: " + evnt.GetType() + " / " + evnt.RaisedBy);
                 return;
             }
 
-            BoltConsole.Write("[Mine] OnEvent: (length)" + evnt.BinaryData.Length);
+            DebugService.Log("[PhotonNetworkInterface] OnEvent: (length)" + evnt.BinaryData.Length);
             _messageReader?.Invoke(connection, evnt.BinaryData, evnt.BinaryData.Length);
         }
         #endregion

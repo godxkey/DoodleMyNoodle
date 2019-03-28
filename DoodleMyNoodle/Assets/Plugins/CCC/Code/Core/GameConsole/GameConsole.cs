@@ -5,6 +5,14 @@ using Internals.GameConsoleInterals;
 
 public class GameConsole
 {
+    public enum LineColor
+    {
+        Normal,
+        Command,
+        Warning,
+        Error
+    }
+
     static IGameConsoleUI s_ConsoleUI;
 
     public static void Init(IGameConsoleUI consoleUI)
@@ -17,10 +25,10 @@ public class GameConsole
 
         s_ConsoleUI = consoleUI;
         s_ConsoleUI.Init();
-        AddCommand("help", CmdHelp, "Show available commands");
-        AddCommand("vars", CmdVars, "Show available variables");
-        AddCommand("exec", CmdExec, "Executes commands from file");
-        Write("Console ready");
+        AddCommand("help", Cmd_Help, "Show available commands");
+        AddCommand("vars", Cmd_Vars, "Show available variables");
+        AddCommand("exec", Cmd_Exec, "Executes commands from file");
+        Write("Console ready", LineColor.Normal);
     }
 
     public static void Shutdown()
@@ -28,15 +36,15 @@ public class GameConsole
         s_ConsoleUI.Shutdown();
     }
 
-    static void OutputString(string message)
+    static void OutputString(string message, LineColor lineColor)
     {
         if (s_ConsoleUI != null)
-            s_ConsoleUI.OutputString(message);
+            s_ConsoleUI.OutputString(message, lineColor);
     }
 
     static string lastMsg = "";
     static double timeLastMsg;
-    public static void Write(string msg)
+    public static void Write(string msg, LineColor lineColor)
     {
         // Have to condition on cvar being null as this may run before cvar system is initialized
         if (consoleShowLastLine != null && consoleShowLastLine.IntValue > 0)
@@ -44,7 +52,7 @@ public class GameConsole
             lastMsg = msg;
             timeLastMsg = Time.time; // Game.frameTime;
         }
-        OutputString(msg);
+        OutputString(msg, lineColor);
     }
 
     public static void AddCommand(string name, Action<string[]> method, string description, int tag = 0)
@@ -52,7 +60,7 @@ public class GameConsole
         name = name.ToLower();
         if (s_Commands.ContainsKey(name))
         {
-            OutputString("Cannot add command " + name + " twice");
+            OutputString("Cannot add command " + name + " twice", LineColor.Error);
             return;
         }
         s_Commands.Add(name, new ConsoleCommand(name, method, description, tag));
@@ -79,7 +87,7 @@ public class GameConsole
     {
         // Process arguments that have '+' prefix as console commands. Ignore all other arguments
 
-        OutputString("ProcessCommandLineArguments: " + string.Join(" ", arguments));
+        OutputString("ProcessCommandLineArguments: " + string.Join(" ", arguments), LineColor.Normal);
 
         var commands = new List<string>();
 
@@ -127,7 +135,7 @@ public class GameConsole
             // Remove before executing as we may hit an 'exec' command that wants to insert commands
             var cmd = s_PendingCommands[0];
             s_PendingCommands.RemoveAt(0);
-            ExecuteCommand(cmd);
+            ExecuteCommand(cmd, LineColor.Command);
         }
     }
 
@@ -195,13 +203,13 @@ public class GameConsole
         return res;
     }
 
-    public static void ExecuteCommand(string command)
+    public static void ExecuteCommand(string command, LineColor lineColor)
     {
         var tokens = Tokenize(command);
         if (tokens.Count < 1)
             return;
 
-        OutputString('>' + command);
+        OutputString('>' + command, lineColor);
         var commandName = tokens[0].ToLower();
 
         ConsoleCommand consoleCommand;
@@ -221,39 +229,39 @@ public class GameConsole
             else if (tokens.Count == 1)
             {
                 // Print value
-                OutputString(string.Format("{0} = {1}", configVar.name, configVar.Value));
+                OutputString(string.Format("{0} = {1}", configVar.name, configVar.Value), LineColor.Normal);
             }
             else
             {
-                OutputString("Too many arguments");
+                OutputString("Too many arguments", LineColor.Warning);
             }
         }
         else
         {
-            OutputString("Unknown command: " + tokens[0]);
+            OutputString("Unknown command: " + tokens[0], LineColor.Warning);
         }
     }
 
-    static void CmdHelp(string[] arguments)
+    static void Cmd_Help(string[] arguments)
     {
-        OutputString("Available commands:");
+        OutputString("Available commands:", LineColor.Normal);
 
         foreach (var c in s_Commands)
-            OutputString(c.Value.name + ": " + c.Value.description);
+            OutputString(c.Value.name + ": " + c.Value.description, LineColor.Normal);
     }
 
-    static void CmdVars(string[] arguments)
+    static void Cmd_Vars(string[] arguments)
     {
         var varNames = new List<string>(ConfigVarService.Instance.configVarRegistry.ConfigVars.Keys);
         varNames.Sort();
         foreach (var v in varNames)
         {
             var cv = ConfigVarService.Instance.configVarRegistry.ConfigVars[v];
-            OutputString(string.Format("{0} = {1}", cv.name, cv.Value));
+            OutputString(string.Format("{0} = {1}", cv.name, cv.Value), LineColor.Normal);
         }
     }
 
-    static void CmdExec(string[] arguments)
+    static void Cmd_Exec(string[] arguments)
     {
         bool silent = false;
         string filename = "";
@@ -268,7 +276,7 @@ public class GameConsole
         }
         else
         {
-            OutputString("Usage: exec [-s] <filename>");
+            OutputString("Usage: exec [-s] <filename>", LineColor.Normal);
             return;
         }
 
@@ -279,13 +287,13 @@ public class GameConsole
             if (s_PendingCommands.Count > 128)
             {
                 s_PendingCommands.Clear();
-                OutputString("Command overflow. Flushing pending commands!!!");
+                OutputString("Command overflow. Flushing pending commands!!!", LineColor.Warning);
             }
         }
         catch (Exception e)
         {
             if(!silent)
-                OutputString("Exec failed: " + e.Message);
+                OutputString("Exec failed: " + e.Message, LineColor.Error);
         }
     }
 
@@ -340,7 +348,7 @@ public class GameConsole
         {
             // write list of possible completions
             for (var i = 0; i < matches.Count; i++)
-                GameConsole.Write(" " + matches[i]);
+                GameConsole.Write(" " + matches[i], LineColor.Normal);
         }
         else
         {

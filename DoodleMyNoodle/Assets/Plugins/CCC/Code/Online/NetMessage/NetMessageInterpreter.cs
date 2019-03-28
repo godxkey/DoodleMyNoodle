@@ -11,7 +11,7 @@ public static class NetMessageInterpreter
 
         if(messageData.Length < 4)
         {
-            Debug.LogError("[NetMessageInterpreter] Error interpreting: data size to small.");
+            DebugService.LogError("[NetMessageInterpreter] Error interpreting: data size to small.");
             return null;
         }
 
@@ -21,7 +21,7 @@ public static class NetMessageInterpreter
 
         if(message == null)
         {
-            Debug.LogError("[NetMessageInterpreter] Error interpreting: failed to create message of type " + messageType);
+            DebugService.LogError("[NetMessageInterpreter] Error interpreting: failed to create message of type " + messageType);
             return null;
         }
 
@@ -36,7 +36,7 @@ public static class NetMessageInterpreter
 
         if(data.Length > 512)
         {
-            Debug.LogError("The net message is exceeding the 512 byte capacity. Message fragmentation is a feature to be added.");
+            DebugService.LogError("The net message is exceeding the 512 byte capacity. Message fragmentation is a feature to be added.");
         }
 
         BitStreamWriter writer = new BitStreamWriter(data);

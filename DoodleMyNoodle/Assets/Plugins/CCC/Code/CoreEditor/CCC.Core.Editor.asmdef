@@ -1,0 +1,12 @@
+{
+    "name": "CCC.Core.Editor",
+    "references": [
+        "CCC.Core"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

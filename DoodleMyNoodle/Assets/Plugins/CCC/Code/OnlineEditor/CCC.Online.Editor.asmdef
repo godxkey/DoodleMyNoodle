@@ -1,0 +1,17 @@
+{
+    "name": "CCC.Online.Editor",
+    "references": [
+        "CCC.Core",
+        "CCC.Online"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

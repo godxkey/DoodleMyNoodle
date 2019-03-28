@@ -50,7 +50,7 @@ public class CameraService : MonoCoreService<CameraService>
         }
         else
         {
-            Debug.LogError("Failed to adjust camera priority. It appears it was not added to the camera service (" + camera.gameObject.name + ")");
+            DebugService.LogError("Failed to adjust camera priority. It appears it was not added to the camera service (" + camera.gameObject.name + ")");
         }
     }
 
@@ -64,7 +64,7 @@ public class CameraService : MonoCoreService<CameraService>
         {
             if (GetCameraEntryFromCamera(cameraSet.Camera) != null)
             {
-                Debug.LogError("Tried to add the same camera twice in the CameraService (" + cameraSet.Camera.gameObject.name + ")");
+                DebugService.LogError("Tried to add the same camera twice in the CameraService (" + cameraSet.Camera.gameObject.name + ")");
                 return;
             }
         }

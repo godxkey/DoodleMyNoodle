@@ -7,34 +7,34 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
     protected abstract INetMessageFactory CreateNetMessageFactory();
 
 
-    public static NetworkInterface NetworkInterface => Instance._networkInterface;
+    public static NetworkInterface networkInterface => Instance._networkInterface;
 
-    public static OnlineInterface OnlineInterface => Instance._onlineInterface;
-    public static OnlineClientInterface ClientInterface => OnlineInterface as OnlineClientInterface;
-    public static OnlineServerInterface ServerInterface => OnlineInterface as OnlineServerInterface;
+    public static OnlineInterface onlineInterface => Instance._onlineInterface;
+    public static OnlineClientInterface clientInterface => onlineInterface as OnlineClientInterface;
+    public static OnlineServerInterface serverInterface => onlineInterface as OnlineServerInterface;
 
-    public static OnlineRole TargetRole { get; private set; } = OnlineRole.None;
-    public static OnlineRole CurrentRole
+    public static OnlineRole targetRole { get; private set; } = OnlineRole.None;
+    public static OnlineRole currentRole
     {
         get
         {
-            if (NetworkInterface.State != NetworkState.Running)
+            if (networkInterface.state != NetworkState.Running)
                 return OnlineRole.None;
 
-            if (NetworkInterface.IsClient)
+            if (networkInterface.isClient)
                 return OnlineRole.Client;
             else
                 return OnlineRole.Server;
         }
     }
 
-    public static bool IsChangingRole => TargetRole != CurrentRole;
+    public static bool isChangingRole => targetRole != currentRole;
 
-    public static void RequestRole(OnlineRole role)
+    public static void SetTargetRole(OnlineRole role)
     {
-        if (TargetRole != role)
+        if (targetRole != role)
         {
-            TargetRole = role;
+            targetRole = role;
 
             ProcessRoleChange();
         }
@@ -45,15 +45,19 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
         _networkInterface = CreateNetworkInterface();
         NetMessageFactory.instance = CreateNetMessageFactory();
 
-        _networkInterface.OnShutdownBegin += OnNetworkInterfaceShutdownBegin;
+        _networkInterface.onShutdownBegin += OnNetworkInterfaceShutdownBegin;
 
         onComplete(this);
     }
 
     void OnNetworkInterfaceShutdownBegin()
     {
-        _onlineInterface?.Dispose();
-        _onlineInterface = null;
+        if(ApplicationUtilityService.ApplicationIsQuitting == false)
+        {
+            // If we're exiting the application (or pressing stop in the editor), we don't care about this
+            _onlineInterface?.Dispose();
+            _onlineInterface = null;
+        }
     }
 
     void Update()
@@ -61,7 +65,7 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
         _networkInterface.Update();
         _onlineInterface?.Update();
 
-        if (IsChangingRole)
+        if (isChangingRole)
         {
             ProcessRoleChange();
         }
@@ -69,39 +73,39 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
 
     static void ProcessRoleChange()
     {
-        switch (TargetRole)
+        switch (targetRole)
         {
             case OnlineRole.Client:
                 {
-                    if (NetworkInterface.State == NetworkState.Running && NetworkInterface.IsServer)
+                    if (networkInterface.state == NetworkState.Running && networkInterface.isServer)
                     {
-                        NetworkInterface.Shutdown();
+                        networkInterface.Shutdown();
                     }
 
-                    if (NetworkInterface.State == NetworkState.Stopped)
+                    if (networkInterface.state == NetworkState.Stopped)
                     {
-                        NetworkInterface.LaunchClient(OnLaunchClientResult);
+                        networkInterface.LaunchClient(OnLaunchClientResult);
                     }
                 }
                 break;
             case OnlineRole.Server:
                 {
-                    if (NetworkInterface.State == NetworkState.Running && NetworkInterface.IsClient)
+                    if (networkInterface.state == NetworkState.Running && networkInterface.isClient)
                     {
-                        NetworkInterface.Shutdown();
+                        networkInterface.Shutdown();
                     }
 
-                    if (NetworkInterface.State == NetworkState.Stopped)
+                    if (networkInterface.state == NetworkState.Stopped)
                     {
-                        NetworkInterface.LaunchServer(OnLaunchServerResult);
+                        networkInterface.LaunchServer(OnLaunchServerResult);
                     }
                 }
                 break;
             case OnlineRole.None:
                 {
-                    if (NetworkInterface.State == NetworkState.Running)
+                    if (networkInterface.state == NetworkState.Running)
                     {
-                        NetworkInterface.Shutdown();
+                        networkInterface.Shutdown();
                     }
                 }
                 break;
@@ -112,8 +116,8 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
     {
         if (success)
         {
-            if (ClientInterface == null)
-                Instance._onlineInterface = new OnlineClientInterface(NetworkInterface);
+            if (clientInterface == null)
+                Instance._onlineInterface = new OnlineClientInterface(networkInterface);
         }
     }
 
@@ -121,8 +125,8 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
     {
         if (success)
         {
-            if (ServerInterface == null)
-                Instance._onlineInterface = new OnlineServerInterface(NetworkInterface);
+            if (serverInterface == null)
+                Instance._onlineInterface = new OnlineServerInterface(networkInterface);
         }
     }
 

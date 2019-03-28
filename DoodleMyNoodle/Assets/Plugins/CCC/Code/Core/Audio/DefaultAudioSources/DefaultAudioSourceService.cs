@@ -327,7 +327,7 @@ public class DefaultAudioSourceService : MonoCoreService<DefaultAudioSourceServi
     {
         if (musicSource0 == null || musicSource1 == null)
         {
-            Debug.LogError("Il manque 1 ou 2 AudioSource de musique sur l'instance de SoundManager");
+            DebugService.LogError("Il manque 1 ou 2 AudioSource de musique sur l'instance de SoundManager");
             return false;
         }
 
@@ -337,7 +337,7 @@ public class DefaultAudioSourceService : MonoCoreService<DefaultAudioSourceServi
     {
         if (voiceSource == null)
         {
-            Debug.LogError("Aucune 'Voice' AudioSource sur l'instance de SoundManager");
+            DebugService.LogError("Aucune 'Voice' AudioSource sur l'instance de SoundManager");
             return false;
         }
 
@@ -347,7 +347,7 @@ public class DefaultAudioSourceService : MonoCoreService<DefaultAudioSourceServi
     {
         if (SFXSource == null)
         {
-            Debug.LogError("Aucune 'SFX' AudioSource sur l'instance de SoundManager");
+            DebugService.LogError("Aucune 'SFX' AudioSource sur l'instance de SoundManager");
             return false;
         }
 

@@ -24,7 +24,7 @@ namespace Internals.GameConsoleInterals
             return false;
         }
 
-        public void OutputString(string message)
+        public void OutputString(string message, GameConsole.LineColor lineColor)
         {
         }
 

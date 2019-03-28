@@ -1,0 +1,11 @@
+{
+    "name": "CCC.Debug",
+    "references": [
+        "CCC.Core",
+        "DOTweenModules"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

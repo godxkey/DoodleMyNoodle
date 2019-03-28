@@ -1,0 +1,17 @@
+{
+    "name": "CCC.UI.Editor",
+    "references": [
+        "CCC.UI",
+        "CCC.Core.Editor"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

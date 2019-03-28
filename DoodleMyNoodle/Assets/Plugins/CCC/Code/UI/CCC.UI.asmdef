@@ -1,0 +1,16 @@
+{
+    "name": "CCC.UI",
+    "references": [
+        "Unity.TextMeshPro",
+        "DOTweenModules",
+        "CCC.Core"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

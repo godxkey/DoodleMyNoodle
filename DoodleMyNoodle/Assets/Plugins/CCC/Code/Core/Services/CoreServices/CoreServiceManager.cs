@@ -40,7 +40,7 @@ public class CoreServiceManager
     {
         if (onComplete == null)
         {
-            Debug.LogError("CoreServiceManager.AddInitializationCallback: Received a null callback.");
+            DebugService.LogError("CoreServiceManager.AddInitializationCallback: Received a null callback.");
             return;
         }
 
@@ -88,7 +88,7 @@ public class CoreServiceManager
     {
         if (onComplete == null)
         {
-            Debug.LogError("CoreServiceManager.AddInitializationCallback: Received a null callback.");
+            DebugService.LogError("CoreServiceManager.AddInitializationCallback: Received a null callback.");
             return;
         }
 

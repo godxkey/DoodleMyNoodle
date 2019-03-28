@@ -41,9 +41,20 @@ public class SceneService : MonoCoreService<SceneService>
 
     #region Load/Unload Methods
 
+    public static void Load(SceneInfo sceneInfo, SceneLoadSettings loadSettings, Action<Scene> callback = null)
+    {
+        if (loadSettings.async)
+        {
+            LoadAsync(sceneInfo.SceneName, loadSettings.additive ? LoadSceneMode.Additive : LoadSceneMode.Single, callback, loadSettings.allowMultiple);
+        }
+        else
+        {
+            Load(sceneInfo.SceneName, loadSettings.additive ? LoadSceneMode.Additive : LoadSceneMode.Single, callback, loadSettings.allowMultiple);
+        }
+    }
     public static void Load(string name, LoadSceneMode mode = LoadSceneMode.Single, Action<Scene> callback = null, bool allowMultiple = true)
     {
-        if (!allowMultiple && _HandleUniqueLoad(name, callback))
+        if (!allowMultiple && TryHandleUniqueLoad(name, callback))
             return;
 
         ScenePromise scenePromise = new ScenePromise(name, callback);
@@ -57,7 +68,7 @@ public class SceneService : MonoCoreService<SceneService>
 
     public static void LoadAsync(string name, LoadSceneMode mode = LoadSceneMode.Single, Action<Scene> callback = null, bool allowMultiple = true)
     {
-        if (!allowMultiple && _HandleUniqueLoad(name, callback))
+        if (!allowMultiple && TryHandleUniqueLoad(name, callback))
             return;
 
         ScenePromise scenePromise = new ScenePromise(name, callback);
@@ -69,7 +80,7 @@ public class SceneService : MonoCoreService<SceneService>
         LoadAsync(sceneInfo.SceneName, sceneInfo.LoadMode, callback, sceneInfo.AllowMultiple);
     }
 
-    private static bool _HandleUniqueLoad(string sceneName, Action<Scene> callback)
+    private static bool TryHandleUniqueLoad(string sceneName, Action<Scene> callback)
     {
         ScenePromise scenePromise = GetLoadingScenePromise(sceneName);
         if (scenePromise != null) // means the scene is currently being loaded

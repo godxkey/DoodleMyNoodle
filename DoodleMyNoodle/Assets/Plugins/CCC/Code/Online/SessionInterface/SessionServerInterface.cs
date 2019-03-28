@@ -7,7 +7,7 @@ public class SessionServerInterface : SessionInterface
 {
     public SessionServerInterface(NetworkInterface networkInterface) : base(networkInterface) { }
 
-    public override bool IsServerType => true;
+    public override bool isServerType => true;
 
     public void SendNetMessage(INetworkInterfaceConnection connection, NetMessage netMessage)
     {

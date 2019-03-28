@@ -1,0 +1,17 @@
+{
+    "name": "Game.Debug",
+    "references": [
+        "Game",
+        "Game.Data",
+        "CCC.Core",
+        "CCC.Debug"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

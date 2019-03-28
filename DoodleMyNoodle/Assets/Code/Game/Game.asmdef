@@ -1,21 +1,20 @@
 {
     "name": "Game",
     "references": [
-        "CCCCore",
-        "CCCUI",
-        "CCCDebug",
-        "CCCOnline",
+        "CCC.Core",
+        "CCC.UI",
+        "CCC.Online",
         "Unity.Jobs",
         "Unity.Collections",
         "Unity.TextMeshPro",
         "BoltKit",
-        "DOTweenModules"
+        "DOTweenModules",
+        "CCC.Debug",
+        "Game.Data"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
-    "excludePlatforms": [
-        "tvOS"
-    ],
+    "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [

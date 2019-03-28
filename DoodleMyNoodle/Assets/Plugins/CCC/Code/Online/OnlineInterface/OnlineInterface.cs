@@ -4,40 +4,40 @@ using UnityEngine;
 
 public abstract class OnlineInterface : IDisposable
 {
-    public event Action OnTerminate;
-    public SessionInterface SessionInterface { get; protected set; }
+    public event Action onTerminate;
+    public SessionInterface sessionInterface { get; protected set; }
 
-    public abstract bool IsServerType { get; }
-    public bool IsClientType => !IsServerType;
+    public abstract bool isServerType { get; }
+    public bool isClientType => !isServerType;
 
     public OnlineInterface(NetworkInterface network)
     {
         _network = network;
 
-        _network.OnDisconnectedFromSession += OnDisconnectFromSession;
+        _network.onDisconnectedFromSession += OnDisconnectFromSession;
 
-        Debug.Log("Online interface created");
+        DebugService.Log("Online interface created");
     }
 
     public void Update()
     {
-        SessionInterface?.Update();
+        sessionInterface?.Update();
     }
 
     protected virtual void OnDisconnectFromSession()
     {
-        SessionInterface?.Dispose();
-        SessionInterface = null;
+        sessionInterface?.Dispose();
+        sessionInterface = null;
     }
 
     public virtual void Dispose()
     {
-        SessionInterface?.Dispose();
-        _network.OnDisconnectedFromSession -= OnDisconnectFromSession;
+        sessionInterface?.Dispose();
+        _network.onDisconnectedFromSession -= OnDisconnectFromSession;
 
-        Debug.Log("Online interface terminating");
+        DebugService.Log("Online interface terminating");
 
-        OnTerminate?.Invoke();
+        onTerminate?.Invoke();
     }
 
     protected NetworkInterface _network;

@@ -3,19 +3,21 @@ using System.Collections.Generic;
 
 public class OnlineClientInterface : OnlineInterface
 {
-    public override bool IsServerType => false;
+    public override bool isServerType => false;
 
-    public bool IsConnectingSession { get; private set; }
+    public event Action onSessionListUpdated;
+    public bool isConnectingSession { get; private set; }
 
     public OnlineClientInterface(NetworkInterface network)
         : base(network)
     {
+        network.onSessionListUpdated += OnSessionListUpdated;
     }
 
     public void GetAvailableSessions(ref List<INetworkInterfaceSession> sessionList) => _network.GetSessions(ref sessionList);
     public void ConnectToSession(INetworkInterfaceSession session, Action<bool, string> onComplete = null)
     {
-        IsConnectingSession = true;
+        isConnectingSession = true;
 
         _onConnectToSessionsCallback = onComplete;
         _network.ConnectToSession(session, OnConnectToSessionComplete);
@@ -23,14 +25,27 @@ public class OnlineClientInterface : OnlineInterface
 
     void OnConnectToSessionComplete(bool success, string message)
     {
-        IsConnectingSession = false;
+        isConnectingSession = false;
 
         if (success)
         {
-            SessionInterface = new SessionClientInterface(_network);
+            sessionInterface = new SessionClientInterface(_network);
         }
 
         _onConnectToSessionsCallback?.Invoke(success, message);
+    }
+
+    void OnSessionListUpdated()
+    {
+        onSessionListUpdated?.Invoke();
+    }
+
+    public override void Dispose()
+    {
+        if (_network != null)
+            _network.onSessionListUpdated -= OnSessionListUpdated;
+
+        base.Dispose();
     }
 
 

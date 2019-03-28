@@ -142,6 +142,5 @@ public static class ObjectExtensions
     {
         yield return new WaitForEndOfFrame();
         DestroyImmediate(go);
-        Debug.Log("destroy");
     }
 }
