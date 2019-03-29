@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface INetMessageFactory
 {
-    ushort GetNetMessageTypeId(NetMessage message);
-    NetMessage CreateNetMessage(ushort messageType);
+    ushort GetNetMessageTypeId(INetSerializable message);
+    INetSerializable CreateNetMessage(ushort messageType);
 }

@@ -41,6 +41,22 @@ public static class IntExtensions
         return Mathf.Clamp(value, min, max);
     }
 
+    public static int CeiledTo(this int value, int stepSize)
+    {
+        int extra = (value % stepSize);
+        if (extra != 0)
+        {
+            return value + (stepSize - (value % stepSize));
+        }
+
+        return value;
+    }
+
+    public static int FlooredTo(this int value, int stepSize)
+    {
+        return value - (value % stepSize);
+    }
+
     public static int Mod(this int value, int modulo)
     {
         if (modulo < 1)
@@ -61,7 +77,7 @@ public static class IntExtensions
     {
         if (value < 0)
             value = -value;
-        
+
         int newVal = value;
         while (newVal != 0)
         {

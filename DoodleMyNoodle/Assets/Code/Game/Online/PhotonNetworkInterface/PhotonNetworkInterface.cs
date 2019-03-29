@@ -15,6 +15,7 @@ namespace Internals.PhotonNetwokInterface
         public override event Action onDisconnectedFromSession;
         public override event Action onShutdownBegin;
         public override event Action<INetworkInterfaceConnection> onDisconnect;
+        public override event Action<INetworkInterfaceConnection> onConnect;
         public override event Action onSessionListUpdated;
 
         public override bool isServer => BoltNetwork.IsServer;
@@ -199,6 +200,8 @@ namespace Internals.PhotonNetwokInterface
             //     client: called once when we join the session
             //     server: called multiple times
             ConcludeOperationCallback(ref _operationCallbackSessionConnected, true, null);
+
+            onConnect?.Invoke(_connections.Last());
         }
 
         public void Event_Disconnected(BoltConnection connection)

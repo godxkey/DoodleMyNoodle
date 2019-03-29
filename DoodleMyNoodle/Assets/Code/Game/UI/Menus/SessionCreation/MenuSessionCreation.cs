@@ -16,6 +16,8 @@ public class MenuSessionCreation : MonoBehaviour
 
     void Start()
     {
+        _sessionNameInputField.text = Environment.UserName + "'s server";
+
         _returnButton.onClick.AddListener(OnClick_Return);
         _createButton.onClick.AddListener(OnClick_Create);
         _sessionNameInputField.Select();

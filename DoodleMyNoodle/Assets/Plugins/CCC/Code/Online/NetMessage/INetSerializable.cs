@@ -2,7 +2,7 @@
 
 public interface INetSerializable
 {
-    int NetByteSize { get; }
+    int GetNetBitSize();
     void NetSerialize(BitStreamWriter writer);
     void NetDeserialize(BitStreamReader reader);
 }

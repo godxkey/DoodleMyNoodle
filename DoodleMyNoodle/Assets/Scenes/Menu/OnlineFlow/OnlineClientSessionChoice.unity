@@ -238,7 +238,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0000018277203}
+  m_AnchoredPosition: {x: 0, y: 0.000017630806}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &163546868
@@ -342,8 +342,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 853494410}
   m_HandleRect: {fileID: 853494409}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.99999994
+  m_Value: 0
+  m_Size: 0.9999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -399,6 +399,7 @@ GameObject:
   - component: {fileID: 454701410}
   - component: {fileID: 454701409}
   - component: {fileID: 454701408}
+  - component: {fileID: 454701411}
   m_Layer: 5
   m_Name: Join Button
   m_TagString: Untagged
@@ -423,7 +424,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -63.6, y: 137.85}
+  m_AnchoredPosition: {x: -63.600098, y: 137.84998}
   m_SizeDelta: {x: 612, y: 72.5}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &454701408
@@ -505,6 +506,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 454701406}
   m_CullTransparentMesh: 0
+--- !u!114 &454701411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454701406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b0f72f5cc2c7554db5e1c8a0754ce2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keyCode: 13
+  _button: {fileID: 454701408}
 --- !u!1 &455489942
 GameObject:
   m_ObjectHideFlags: 0
@@ -628,10 +643,7 @@ MonoBehaviour:
   _spinnerIcon: {fileID: 99131574}
   _refreshButton: {fileID: 784532095082411863}
   _joinButton: {fileID: 454701408}
-  _gameScene: {fileID: 11400000, guid: 1e0f441a225be4f42850efe56176f282, type: 2}
   _returnButton: {fileID: 1397316419}
-  _onlineRoleChoiceScene: {fileID: 11400000, guid: 1ae106bd01f5bf74e8ecbecbe99bdb37,
-    type: 2}
 --- !u!1 &693837297
 GameObject:
   m_ObjectHideFlags: 0

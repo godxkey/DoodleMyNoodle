@@ -16,9 +16,7 @@ public static class NetMessageRegistryCodeGenerator
     [MenuItem("Tools/Code Generation/NetMessage Registry/Generate")]
     static void Generate()
     {
-        ReadOnlyCollection<Type> netMessageTypes = GetNetMessageTypes();
-
-        GenerateCode(netMessageTypes);
+        GenerateCode(NetMessageCodeGenerationUtility.GetNetMessageTypes());
 
         AssetDatabase.Refresh();
     }
@@ -29,29 +27,6 @@ public static class NetMessageRegistryCodeGenerator
         GenerateCode(new ReadOnlyCollection<Type>(new List<Type>()));
 
         AssetDatabase.Refresh();
-    }
-
-    static ReadOnlyCollection<Type> GetNetMessageTypes()
-    {
-        Func<Type, Type, int> typeComparer = (t1, t2) =>
-        {
-            return string.Compare(t1.FullName, t2.FullName);
-        };
-
-        ManualSortedList<Type> netMessageTypes = new ManualSortedList<Type>(typeComparer, 128);
-
-        foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-        {
-            foreach (Type type in assembly.GetTypes())
-            {
-                if (type.IsSubclassOf(typeof(NetMessage)))
-                {
-                    netMessageTypes.Add(type);
-                }
-            }
-        }
-
-        return netMessageTypes.GetInternalList();
     }
 
     static ulong GetHashFromNetMessageTypes(ReadOnlyCollection<Type> netMessageTypes)
@@ -123,7 +98,7 @@ public static class NetMessageRegistryCodeGenerator
                 writer.WriteLine();
 
 
-                writer.WriteLine("    public static readonly Factory<UInt16, NetMessage> factory = new Factory<UInt16, NetMessage>(new ValueTuple<UInt16, Func<NetMessage>>[]");
+                writer.WriteLine("    public static readonly Factory<UInt16, INetSerializable> factory = new Factory<UInt16, INetSerializable>(new ValueTuple<UInt16, Func<INetSerializable>>[]");
                 writer.WriteLine("    {");
                 addComma = false;
                 for (int i = 0; i < netMessageTypes.Count; i++)

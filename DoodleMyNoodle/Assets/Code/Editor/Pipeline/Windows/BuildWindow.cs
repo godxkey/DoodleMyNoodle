@@ -14,7 +14,7 @@ public class BuildWindow : EditorWindow
     }
 
     // Open the window
-    [MenuItem("Tools/Pipeline/Build")]
+    [MenuItem("Tools/Pipeline/Build #&b")]
     public static void ShowWindow()
     {
         GetWindow<BuildWindow>(false, "Build", true);

@@ -89,7 +89,7 @@ public class MenuSessionChoice : MonoBehaviour
             }
 
             _sessionButtons[i].session = _sessions[i];
-            _sessionButtons[i].selected = _selectedSession == _sessions[i];
+            _sessionButtons[i].selected = _selectedSession != null && (_selectedSession.Id == _sessions[i].Id);
             if (_sessionButtons[i].selected)
             {
                 oneItemIsSelected = true;

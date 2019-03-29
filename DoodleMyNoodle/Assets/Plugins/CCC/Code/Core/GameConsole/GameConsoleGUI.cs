@@ -12,6 +12,17 @@ namespace Internals.GameConsoleInterals
         {
             _lines = new LineList(_linePoolSize);
             _inputField.onEndEdit.AddListener(OnSubmit);
+
+        }
+
+        void Start()
+        {
+            RectTransform canvas = GetComponent<RectTransform>();
+            float minSizeY = canvas.sizeDelta.y;
+            if (_panel.sizeDelta.y > minSizeY)
+            {
+                _panel.sizeDelta = new Vector2(_panel.sizeDelta.x, minSizeY);
+            }
         }
 
         public void Init()
@@ -26,7 +37,12 @@ namespace Internals.GameConsoleInterals
 
         public void OutputString(string s, GameConsole.LineColor lineColor)
         {
-            _lines.AddLine(new Line(s, LineColorToUnityColor(lineColor)));
+            Color color = LineColorToUnityColor(lineColor);
+            string[] linesToAdd = s.Split('\n');
+            for (int i = 0; i < linesToAdd.Length; i++)
+            {
+                _lines.AddLine(new Line(linesToAdd[i], color));
+            }
         }
 
         public bool IsOpen()
@@ -186,7 +202,7 @@ namespace Internals.GameConsoleInterals
         float _mouseScrollSpeed = 0;
 
         [Header("Links")]
-        [SerializeField] Transform _panel;
+        [SerializeField] RectTransform _panel;
         [SerializeField] InputField _inputField;
         [SerializeField] Text _buildIdText;
         [SerializeField] Text[] _textComponents;

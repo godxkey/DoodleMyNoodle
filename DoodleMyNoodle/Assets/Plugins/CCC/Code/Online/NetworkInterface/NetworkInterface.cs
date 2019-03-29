@@ -9,6 +9,7 @@ public abstract class NetworkInterface : IDisposable
     public abstract event Action onDisconnectedFromSession;
     public abstract event Action onShutdownBegin;
     public abstract event Action<INetworkInterfaceConnection> onDisconnect;
+    public abstract event Action<INetworkInterfaceConnection> onConnect;
     public abstract event Action onSessionListUpdated;
 
     public NetworkState state { get; protected set; } = NetworkState.Stopped;

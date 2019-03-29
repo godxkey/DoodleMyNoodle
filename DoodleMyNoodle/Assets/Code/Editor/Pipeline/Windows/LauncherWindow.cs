@@ -14,7 +14,7 @@ public class LauncherWindow : EditorWindow
     }
 
     // Open the window
-    [MenuItem("Tools/Pipeline/Launcher")]
+    [MenuItem("Tools/Pipeline/Launcher #&l")]
     public static void ShowWindow()
     {
         GetWindow<LauncherWindow>(false, "Launcher", true);

@@ -76,8 +76,11 @@ public class DebugService : MonoCoreService<DebugService>
             case LogType.Warning:
                 _LogWarning(message);
                 break;
+            case LogType.Assert:
+            case LogType.Exception:
             case LogType.Error:
                 _LogError(message);
+                _LogError(stack);
                 break;
         }
     }

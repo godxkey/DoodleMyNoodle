@@ -29,6 +29,8 @@ public class GameConsole
         AddCommand("vars", Cmd_Vars, "Show available variables");
         AddCommand("exec", Cmd_Exec, "Executes commands from file");
         Write("Console ready", LineColor.Normal);
+
+        VariousCommandLines.RegisterCommands();
     }
 
     public static void Shutdown()

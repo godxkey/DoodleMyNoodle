@@ -11,6 +11,7 @@ public class GameStateManager : MonoCoreService<GameStateManager>
     static public GameState currentGameState => Instance._currentGameState;
     static public GameState targetGameState => Instance._targetGameState;
     static public bool isTransitioningState => currentGameState != targetGameState;
+    static public T GetCurrentGameState<T>() where T : GameState => currentGameState == null ? null : currentGameState as T;
 
     GameState _currentGameState;
     GameState _targetGameState;
