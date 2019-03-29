@@ -26,7 +26,22 @@ public class Player : MonoBehaviour
         {
             Vector3 pos = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
             int newTileID = GridTools.FindTileClosestToPosition(currentRoom.Grid, new Vector2(pos.x, pos.y));
-            tileID = newTileID;
+
+            if(currentRoom.Tiles != null)
+            {
+                BaseTile tileToStepOn = currentRoom.Tiles.GetTileByID(newTileID);
+                if (tileToStepOn)
+                {
+                    if (currentRoom.Tiles.GetTileByID(newTileID).CanStepOnTile())
+                    {
+                        tileID = newTileID;
+                    }
+                }
+                else
+                {
+                    tileID = newTileID;
+                }
+            }
         }
     }
 

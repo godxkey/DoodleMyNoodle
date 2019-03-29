@@ -4,15 +4,31 @@ using UnityEngine;
 
 public class BaseTile : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private int tileID;
+    public int TileID { get { return tileID; } }
+
+    public void SetTileID(int tileID)
     {
-        
+        this.tileID = tileID;
     }
 
-    // Update is called once per frame
-    void Update()
+    public virtual void OnStepOnTile(GameObject newObjectOnTile)
     {
-        
+
+    }
+
+    public virtual bool CanStepOnTile()
+    {
+        return true;
+    }
+
+    public virtual Color GetTileEditorColor()
+    {
+        return Color.black;
+    }
+
+    public virtual string GetTileEditorName()
+    {
+        return "DefaultTile";
     }
 }
