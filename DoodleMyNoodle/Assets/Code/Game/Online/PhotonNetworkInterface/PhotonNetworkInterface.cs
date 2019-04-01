@@ -21,6 +21,7 @@ namespace Internals.PhotonNetwokInterface
         public override bool isServer => BoltNetwork.IsServer;
         public override ReadOnlyCollection<INetworkInterfaceConnection> connections { get; }
         public override INetworkInterfaceSession connectedSessionInfo => _connectedSessionInfo;
+        public override ReadOnlyCollection<INetworkInterfaceSession> sessions { get; }
         public override void GetSessions(ref List<INetworkInterfaceSession> list)
         {
             list.Clear();
@@ -33,6 +34,7 @@ namespace Internals.PhotonNetwokInterface
         public PhotonNetworkInterface()
         {
             connections = _connections.AsReadOnly();
+            sessions = _sessions.AsReadOnly();
             CreateBoltListener();
         }
 
@@ -258,6 +260,13 @@ namespace Internals.PhotonNetwokInterface
         {
             // will clear the session list in X seconds
             _sessionClearTimer = SESSION_CLEAR_TIMEOUT;
+
+            _sessions.Clear();
+            foreach (KeyValuePair<Guid, UdpSession> session in BoltNetwork.SessionList)
+            {
+                _sessions.Add(new PhotonNetworkInterfaceSession(session.Value));
+            }
+
             onSessionListUpdated?.Invoke();
         }
 
@@ -334,6 +343,7 @@ namespace Internals.PhotonNetwokInterface
 
         Action<INetworkInterfaceConnection, byte[], int> _messageReader;
         List<INetworkInterfaceConnection> _connections = new List<INetworkInterfaceConnection>();
+        List<INetworkInterfaceSession> _sessions = new List<INetworkInterfaceSession>();
         INetworkInterfaceSession _connectedSessionInfo;
         GameObject _photonCallbackListener;
         float _sessionClearTimer; // used to clear the session list after a timeout

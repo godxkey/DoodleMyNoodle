@@ -3,26 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameStateLobbyClient : GameStateLobbyOnlineBase<GameStateSettingsLobbyClient>
+public class GameStateLobbyClient : GameStateLobbyOnlineBase<GameStateDefinitionLobbyClient>
 {
     Action<bool, string> _joinSessionCallback;
 
-    public override void Enter()
+    public override void Enter(GameStateParam[] parameters)
     {
-        base.Enter();
+        base.Enter(parameters);
 
         if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.isClientType == false)
         {
-            GameStateManager.TransitionToState(specificSettings.gameStateIfReturn);
+            GameStateManager.TransitionToState(specificDefinition.gameStateIfReturn);
             DebugService.LogError("[GameStateLobbyClient] The available onlineInterface is of type Server. " +
                 "This game state requires a Client type.");
             return;
         }
     }
 
-    public override void BeginExit()
+    public override void BeginExit(GameStateParam[] parameters)
     {
-        base.BeginExit();
+        base.BeginExit(parameters);
 
         WaitSpinnerService.Disable(this);
     }
@@ -41,7 +41,7 @@ public class GameStateLobbyClient : GameStateLobbyOnlineBase<GameStateSettingsLo
 
         if (success)
         {
-            GameStateManager.TransitionToState(specificSettings.gameStateIfJoinSession);
+            GameStateManager.TransitionToState(specificDefinition.gameStateIfJoinSession);
         }
         else
         {

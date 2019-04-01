@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+/*
 public class PlayerRepertoireClient : PlayerRepertoire_ToDelete
 {
     List<PlayerInfo> _playerInfos;
@@ -57,3 +57,4 @@ public class PlayerRepertoireClient : PlayerRepertoire_ToDelete
         _playerInfos.Clear();
     }
 }
+*/

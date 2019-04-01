@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Misc/LoadingScreen.unity
+    guid: 92ee440d69c9efe4ab4fab7a571a1558
+  - enabled: 1
     path: Assets/Scenes/Menu/OnlineFlow/OnlineRoleChoice.unity
     guid: 7c2acb5dea68c0f49ac848ac0d7bcdaa
   - enabled: 1

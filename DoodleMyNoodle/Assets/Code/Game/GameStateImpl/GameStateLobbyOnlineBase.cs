@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class GameStateLobbyOnlineBase<SettingsClass> : GameState<SettingsClass>
-    where SettingsClass : GameStateSettingsLobbyBase
+    where SettingsClass : GameStateDefinitionLobbyBase
 {
-    public override void Enter()
+    public override void Enter(GameStateParam[] parameters)
     {
-        base.Enter();
+        base.Enter(parameters);
 
         if (OnlineService.onlineInterface == null)
         {
-            GameStateManager.TransitionToState(specificSettings.gameStateIfReturn);
+            GameStateManager.TransitionToState(specificDefinition.gameStateIfReturn);
             DebugService.LogError("[" + ToString() + "] Failed to get onlineInterface." +
                 "This game state should be reachable if a valid onlineInterface is available.");
             return;
@@ -21,9 +21,9 @@ public abstract class GameStateLobbyOnlineBase<SettingsClass> : GameState<Settin
         OnlineService.onlineInterface.onTerminate += OnOnlineInterfaceTerminate;
     }
 
-    public override void BeginExit()
+    public override void BeginExit(GameStateParam[] parameters)
     {
-        base.BeginExit();
+        base.BeginExit(parameters);
 
         if (OnlineService.onlineInterface != null)
         {
@@ -33,12 +33,12 @@ public abstract class GameStateLobbyOnlineBase<SettingsClass> : GameState<Settin
 
     public virtual void Return()
     {
-        GameStateManager.TransitionToState(specificSettings.gameStateIfReturn);
+        GameStateManager.TransitionToState(specificDefinition.gameStateIfReturn);
     }
 
     protected virtual void OnOnlineInterfaceTerminate()
     {
-        GameStateManager.TransitionToState(specificSettings.gameStateIfReturn);
+        GameStateManager.TransitionToState(specificDefinition.gameStateIfReturn);
 
         DebugScreenMessage.DisplayMessage("Disconnected from online service. Check your connection.");
         DebugService.LogWarning("[" + ToString() + "] OnlineInterface has terminated itself without user intent.");

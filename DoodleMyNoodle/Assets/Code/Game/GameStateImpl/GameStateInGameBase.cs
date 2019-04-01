@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameStateInGameBase<SettingsClass> : GameState<SettingsClass>, IGameStateInGameBase
-    where SettingsClass : GameStateSettingsInGameBase
+    where SettingsClass : GameStateDefinitionInGameBase
 {
-
     public virtual void ReturnToMenu()
     {
-        GameStateManager.TransitionToState(specificSettings.gameStateIfReturn);
+        GameStateManager.TransitionToState(specificDefinition.gameStateIfReturn);
     }
 
     public virtual void ExitApplication()

@@ -13,6 +13,36 @@ public static  class ArrayExtensions
         return false;
     }
 
+    public static bool Contains<T>(this T[] array, Predicate<T> predicate)
+    {
+        for (int i = 0; i < array.Length; i++)
+            if (predicate(array[i]))
+                return true;
+        return false;
+    }
+    public static bool Contains<T>(this Array array)
+    {
+        for (int i = 0; i < array.Length; i++)
+            if (array.GetValue(i) is T)
+                return true;
+        return false;
+    }
+
+    public static T Find<T>(this T[] array, Predicate<T> predicate)
+    {
+        for (int i = 0; i < array.Length; i++)
+            if (predicate(array[i]))
+                return array[i];
+        return default;
+    }
+    public static T Find<T>(this Array array)
+    {
+        for (int i = 0; i < array.Length; i++)
+            if (array.GetValue(i) is T)
+                return (T)array.GetValue(i);
+        return default;
+    }
+
     public static T Last<T>(this T[] list)
     {
         return list[list.Length - 1];

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameStateRootMenu : GameState<GameStateSettingsRootMenu>
+public class GameStateRootMenu : GameState<GameStateDefinitionRootMenu>
 {
     enum Role
     {
@@ -15,9 +15,9 @@ public class GameStateRootMenu : GameState<GameStateSettingsRootMenu>
 
     float _requestTimeoutRemaining;
 
-    public override void Enter()
+    public override void Enter(GameStateParam[] parameters)
     {
-        base.Enter();
+        base.Enter(parameters);
         OnlineService.SetTargetRole(OnlineRole.None); // disconnect if we were connected
     }
 
@@ -27,7 +27,7 @@ public class GameStateRootMenu : GameState<GameStateSettingsRootMenu>
 
         WaitSpinnerService.Enable(this);
         OnlineService.SetTargetRole(OnlineRole.Client); // connect as client
-        _requestTimeoutRemaining = specificSettings.onlineRolePickTimeout;
+        _requestTimeoutRemaining = specificDefinition.onlineRolePickTimeout;
     }
 
     public void JoinLobbyAsServer()
@@ -35,7 +35,7 @@ public class GameStateRootMenu : GameState<GameStateSettingsRootMenu>
         chosenRole = Role.Server;
         WaitSpinnerService.Enable(this);
         OnlineService.SetTargetRole(OnlineRole.Server); // connect as server
-        _requestTimeoutRemaining = specificSettings.onlineRolePickTimeout;
+        _requestTimeoutRemaining = specificDefinition.onlineRolePickTimeout;
     }
 
     public void JoinLobbyAsSolo()
@@ -60,7 +60,7 @@ public class GameStateRootMenu : GameState<GameStateSettingsRootMenu>
                 {
                     if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.isClientType)
                     {
-                        GameStateManager.TransitionToState(specificSettings.gameStateIfClient);
+                        GameStateManager.TransitionToState(specificDefinition.gameStateIfClient);
                     }
                 }
                 break;
@@ -73,19 +73,19 @@ public class GameStateRootMenu : GameState<GameStateSettingsRootMenu>
                 {
                     if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.isServerType)
                     {
-                        GameStateManager.TransitionToState(specificSettings.gameStateIfServer);
+                        GameStateManager.TransitionToState(specificDefinition.gameStateIfServer);
                     }
                 }
                 break;
             case Role.Local:
-                GameStateManager.TransitionToState(specificSettings.gameStateIfLocal);
+                GameStateManager.TransitionToState(specificDefinition.gameStateIfLocal);
                 break;
         }
     }
 
-    public override void BeginExit()
+    public override void BeginExit(GameStateParam[] parameters)
     {
-        base.BeginExit();
+        base.BeginExit(parameters);
         WaitSpinnerService.Disable(this);
     }
 
@@ -93,7 +93,7 @@ public class GameStateRootMenu : GameState<GameStateSettingsRootMenu>
     {
         chosenRole = Role.None;
         DebugService.LogError("[GameStateRootMenu] Timeout: Failed to change online role" +
-            " within " + specificSettings.onlineRolePickTimeout + " seconds.");
+            " within " + specificDefinition.onlineRolePickTimeout + " seconds.");
         WaitSpinnerService.Disable(this);
     }
 }

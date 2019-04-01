@@ -18,6 +18,7 @@ public abstract class NetworkInterface : IDisposable
     public bool isClient => !isServer;
     public abstract INetworkInterfaceSession connectedSessionInfo { get; }
     public abstract ReadOnlyCollection<INetworkInterfaceConnection> connections { get; }
+    public abstract ReadOnlyCollection<INetworkInterfaceSession> sessions { get; }
     public abstract void GetSessions(ref List<INetworkInterfaceSession> list);
 
     public abstract void LaunchClient(OperationResult onComplete = null);

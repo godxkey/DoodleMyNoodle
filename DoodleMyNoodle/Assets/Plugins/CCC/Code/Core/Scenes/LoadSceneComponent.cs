@@ -30,7 +30,7 @@ public class LoadSceneComponent : MonoBehaviour
     }
     public void Load(Action<Scene> callback)
     {
-        if (dontLoadDuplicate && SceneService.IsActiveOrBeingLoaded(sceneInfo))
+        if (dontLoadDuplicate && SceneService.IsLoadedOrBeingLoaded(sceneInfo))
             return;
 
         Action<Scene> localCallback = (scene) =>

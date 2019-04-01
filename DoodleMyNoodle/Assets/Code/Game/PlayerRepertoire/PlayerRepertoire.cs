@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public abstract class PlayerRepertoire_ToDelete : MonoBehaviour
 {
     public abstract PlayerInfo GetLocalPlayerInfo();
@@ -29,7 +29,7 @@ public abstract class PlayerRepertoire_ToDelete : MonoBehaviour
 
     void FetchSessionInterface()
     {
-        GameStateInGameOnline gameStateOnline = GameStateManager.GetCurrentGameState<GameStateInGameOnline>();
+        IGameStateInGameOnline gameStateOnline = GameStateManager.GetCurrentGameState<IGameStateInGameOnline>();
 
         if (gameStateOnline != null && gameStateOnline.sessionInterface != null)
         {
@@ -81,3 +81,4 @@ public abstract class PlayerRepertoire_ToDelete : MonoBehaviour
     protected virtual void OnConnectionAdded(INetworkInterfaceConnection newConnection) { }
     protected virtual void OnConnectionRemoved(INetworkInterfaceConnection obj) { }
 }
+*/

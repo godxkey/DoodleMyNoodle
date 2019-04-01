@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class VariousShortcuts
 {
-    [MenuItem("Tools/Shortcuts #&p")]
+    [MenuItem("Tools/Shortcuts/Open Presistent Data Path #&p")]
     public static void OpenPersistentDataPath()
     {
         string path = Application.persistentDataPath;

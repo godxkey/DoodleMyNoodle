@@ -6,12 +6,13 @@ public class TestScript : MonoBehaviour
 {
     void Awake()
     {
-        OnlineService.onlineInterface.sessionInterface.RegisterNetMessageReceiver<NetMessageExample>(OnNetMessageReceived);
+        if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.sessionInterface != null)
+            OnlineService.onlineInterface.sessionInterface.RegisterNetMessageReceiver<NetMessageExample>(OnNetMessageReceived);
     }
 
     void OnDestroy()
     {
-        if(OnlineService.onlineInterface != null && OnlineService.onlineInterface.sessionInterface != null)
+        if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.sessionInterface != null)
             OnlineService.onlineInterface.sessionInterface.UnregisterNetMessageReceiver<NetMessageExample>(OnNetMessageReceived);
     }
 

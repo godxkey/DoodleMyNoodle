@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameStateBootstrapComponent : MonoBehaviour
 {
-    public GameStateSettings gameStateSettings;
+    public GameStateDefinition gameStateSettings;
 
     void Awake()
     {
