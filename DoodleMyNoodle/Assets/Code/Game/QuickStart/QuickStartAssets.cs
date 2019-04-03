@@ -25,7 +25,7 @@ public class QuickStartAssets : ScriptableObject
         get
         {
             if (_instance == null)
-                _instance = (QuickStartAssets)Resources.Load("QuickStartSettings");
+                _instance = (QuickStartAssets)Resources.Load("QuickStartAssets");
 
             return _instance;
         }

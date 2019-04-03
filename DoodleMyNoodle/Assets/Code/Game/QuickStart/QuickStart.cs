@@ -30,6 +30,9 @@ public static class QuickStart
 
         switch (settings.playMode)
         {
+            case QuickStartSettings.PlayMode.None:
+                yield return StartNone(settings);
+                break;
             case QuickStartSettings.PlayMode.Local:
                 yield return StartLocal(settings);
                 break;
@@ -40,6 +43,12 @@ public static class QuickStart
                 yield return StartServer(settings);
                 break;
         }
+    }
+
+    static IEnumerator StartNone(QuickStartSettings settings)
+    {
+        GameStateManager.TransitionToState(assets.rootMenu);
+        yield return null;
     }
 
     static IEnumerator StartLocal(QuickStartSettings settings)

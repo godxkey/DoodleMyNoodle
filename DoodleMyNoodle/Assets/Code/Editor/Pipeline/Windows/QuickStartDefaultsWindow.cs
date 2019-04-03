@@ -13,7 +13,7 @@ public class QuickStartDefaultsWindow : EditorWindow
     }
 
     // Open the window
-    [MenuItem("Tools/Pipeline/QuickStart Defaults")]
+    [MenuItem("Tools/Pipeline/Extra/QuickStart Defaults Window")]
     public static void ShowWindow()
     {
         GetWindow<QuickStartDefaultsWindow>(false, "QuickStart Defaults", true);

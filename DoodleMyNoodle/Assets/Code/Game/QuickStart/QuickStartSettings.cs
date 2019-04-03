@@ -6,9 +6,11 @@ public struct QuickStartSettings
 {
     public enum PlayMode
     {
-        Local,
-        OnlineClient,
-        OnlineServer
+        // do not change the values
+        None = 0,
+        Local = 1,
+        OnlineClient = 2,
+        OnlineServer = 3,
     }
 
     public PlayMode playMode;
