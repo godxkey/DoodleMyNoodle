@@ -4,21 +4,33 @@ using UnityEngine;
 
 public static class QuickStart
 {
+    public static bool hasEverQuickStarted { get; private set; } = false;
+
     static QuickStartAssets assets => QuickStartAssets.instance;
 
 
     public static void Start(QuickStartSettings settings)
     {
+        hasEverQuickStarted = true;
         CoreServiceManager.AddInitializationCallback(() =>
         {
+            DebugService.Log("QuickStart: " + settings.ToString());
             CoroutineLauncherService.Instance.StartCoroutine(StartRoutine(settings));
+        });
+    }
+
+    public static void StartFromScratch()
+    {
+        hasEverQuickStarted = true;
+        CoreServiceManager.AddInitializationCallback(() =>
+        {
+            DebugService.Log("QuickStart: from scratch");
+            GameStateManager.TransitionToState(assets.rootMenu);
         });
     }
 
     static IEnumerator StartRoutine(QuickStartSettings settings)
     {
-        DebugService.Log("QuickStart: " + settings.ToString());
-
         SceneService.Load(assets.emptyScene);
 
         yield return null;
@@ -30,9 +42,6 @@ public static class QuickStart
 
         switch (settings.playMode)
         {
-            case QuickStartSettings.PlayMode.None:
-                yield return StartNone(settings);
-                break;
             case QuickStartSettings.PlayMode.Local:
                 yield return StartLocal(settings);
                 break;
@@ -43,12 +52,6 @@ public static class QuickStart
                 yield return StartServer(settings);
                 break;
         }
-    }
-
-    static IEnumerator StartNone(QuickStartSettings settings)
-    {
-        GameStateManager.TransitionToState(assets.rootMenu);
-        yield return null;
     }
 
     static IEnumerator StartLocal(QuickStartSettings settings)

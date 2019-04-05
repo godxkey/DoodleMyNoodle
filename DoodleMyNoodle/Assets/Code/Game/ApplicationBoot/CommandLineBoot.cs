@@ -19,18 +19,17 @@ public class CommandLineBoot : MonoBehaviour
         int playModeValue;
         if (CommandLine.TryGetInt("-playmode", out playModeValue))
         {
+            CommandLine.TryGetString("-playername", out quickStartSettings.playerName);
+            CommandLine.TryGetString("-servername", out quickStartSettings.serverName);
+            CommandLine.TryGetString("-level", out quickStartSettings.level);
+
+            QuickStart.Start(quickStartSettings);
+
             quickStartSettings.playMode = (QuickStartSettings.PlayMode)playModeValue;
         }
         else
         {
-            quickStartSettings.playMode = QuickStartSettings.PlayMode.None;
+            QuickStart.StartFromScratch();
         }
-
-        CommandLine.TryGetString("-playername", out quickStartSettings.playerName);
-        CommandLine.TryGetString("-servername", out quickStartSettings.serverName);
-        CommandLine.TryGetString("-level", out quickStartSettings.level);
-
-
-        QuickStart.Start(quickStartSettings);
     }
 }

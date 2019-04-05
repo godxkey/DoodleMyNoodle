@@ -7,10 +7,9 @@ public struct QuickStartSettings
     public enum PlayMode
     {
         // do not change the values
-        None = 0,
-        Local = 1,
-        OnlineClient = 2,
-        OnlineServer = 3,
+        Local = 0,
+        OnlineClient = 1,
+        OnlineServer = 2,
     }
 
     public PlayMode playMode;
@@ -20,6 +19,6 @@ public struct QuickStartSettings
 
     public override string ToString()
     {
-        return string.Format("PlayMode[%s]  PlayerName[%s]  ServerName[%s]  Level[%s]", playMode.ToString(), playerName, serverName, level);
+        return string.Format("PlayMode[{0}]  PlayerName[{1}]  ServerName[{2}]  Level[{3}]", playMode.ToString(), playerName, serverName, level);
     }
 }

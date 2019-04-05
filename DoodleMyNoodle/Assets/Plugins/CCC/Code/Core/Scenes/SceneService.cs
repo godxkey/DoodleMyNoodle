@@ -25,6 +25,9 @@ public class SceneService : MonoCoreService<SceneService>
     List<ScenePromise> _loadingScenePromises = new List<ScenePromise>();
     List<ScenePromise> _unloadingScenePromises = new List<ScenePromise>();
 
+    // useful to know if we're the first scene in the game
+    public static int totalSceneLoadCount { get; private set; } 
+
     public override void Initialize(Action<ICoreService> onComplete)
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -177,6 +180,7 @@ public class SceneService : MonoCoreService<SceneService>
 
     static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        totalSceneLoadCount++;
         ScenePromise promise = GetLoadingScenePromise(scene.name);
         if (promise == null)
             return;

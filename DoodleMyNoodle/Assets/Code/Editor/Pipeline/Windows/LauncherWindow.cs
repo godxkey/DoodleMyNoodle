@@ -66,12 +66,9 @@ public class LauncherWindowContent
         {
             QuickStartSettings quickStartSettings = QuickStartAssets.instance.defaultSettings;
 
-            if (quickStartSettings.playMode != QuickStartSettings.PlayMode.None)
-            {
-                finalArguments.Append("-playmode ");
-                finalArguments.Append((int)quickStartSettings.playMode);
-                finalArguments.Append(' ');
-            }
+            finalArguments.Append("-playmode ");
+            finalArguments.Append((int)quickStartSettings.playMode);
+            finalArguments.Append(' ');
 
             if (quickStartSettings.level.IsNullOrEmpty() == false)
             {
