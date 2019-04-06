@@ -6,8 +6,9 @@ Here is the replication flow of players in a game:
 
 ## Classes involved (pseudo-code)
 
-###Data structures
+*Data structures*
 
+~~~~
 class PlayerId
 {
 	int id;
@@ -29,10 +30,11 @@ class PlayerRepertoire
 {
 	list<PlayerInfo> players;
 }
+~~~~
 
+*Net Messages*
 
-###Net Messages
-
+~~~~
 // sent by client
 class NetMessageClientHello : NetMessage
 {
@@ -62,3 +64,4 @@ class NetMessagePlayerLeft : NetMessage
 {
 	PlayerId playerId;
 }
+~~~~
