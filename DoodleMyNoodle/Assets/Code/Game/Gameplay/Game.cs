@@ -137,8 +137,22 @@ public class Game : MonoBehaviour
             if (_ready)
             {
                 // invoke 'OnReady' callbacks
+
                 _preReady?.Invoke(); // useful so that certain systems set themselves up
+
+                foreach (GameMonoBehaviour b in GameMonoBehaviour.registeredBehaviours)
+                {
+                    b.OnGamePreReady();
+                }
+
                 _onReady?.Invoke();
+
+                foreach (GameMonoBehaviour b in GameMonoBehaviour.registeredBehaviours)
+                {
+                    b.OnGameReady();
+                }
+
+                _preReady = null;
                 _onReady = null;
             }
         }

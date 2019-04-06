@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using UnityEngine;
 
-public abstract class PlayerRepertoire : MonoBehaviour
+public abstract class PlayerRepertoire : GameMonoBehaviour
 {
     public ReadOnlyCollection<PlayerInfo> players { get; private set; }
 
@@ -11,22 +10,9 @@ public abstract class PlayerRepertoire : MonoBehaviour
     protected List<PlayerInfo> _players { get; private set; } = new List<PlayerInfo>();
     protected PlayerInfo _localPlayerInfo { get; private set; }
 
-    void Awake()
+    public override void OnGamePreReady()
     {
         players = _players.AsReadOnly();
-        Game.AddPreReadyCallback(PreGameReady);
-    }
-
-    void OnDisable()
-    {
-        if (!ApplicationUtilityService.ApplicationIsQuitting && _sessionInterface != null)
-        {
-            UnbindFromSession();
-        }
-    }
-
-    void PreGameReady()
-    {
         _localPlayerInfo = new PlayerInfo();
         _localPlayerInfo.playerName = PlayerProfileService.Instance.playerName;
 
@@ -39,6 +25,14 @@ public abstract class PlayerRepertoire : MonoBehaviour
         }
 
         OnPreReady();
+    }
+
+    public override void OnSafeDestroy()
+    {
+        if(_sessionInterface != null)
+        {
+            UnbindFromSession();
+        }
     }
 
     void BindToSession()
