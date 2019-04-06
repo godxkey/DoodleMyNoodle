@@ -2,7 +2,7 @@
 
 Here is the replication flow of players in a game:
 
-![](./Images/PlayerRepertoireSynchronization.PNG)
+![](./Images/PlayerRepertoireSynchronization.png)
 
 ## Classes involved (pseudo-code)
 
