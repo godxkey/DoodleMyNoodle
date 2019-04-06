@@ -8,7 +8,7 @@ Here is the replication flow of players in a game:
 
 *Data structures*
 
-```c++
+```c#
 class PlayerId
 {
     int id;
