@@ -37,7 +37,7 @@ public class TestScript : MonoBehaviour
             netMessageExample.listOfNetSerializableValue.Add(2);
             netMessageExample.listOfNetSerializableValue.Add(1);
 
-            sessionInterface.SendNetMessage(sessionInterface.connections[0], netMessageExample);
+            sessionInterface.SendNetMessage(netMessageExample, sessionInterface.connections[0]);
 
 
             DebugScreenMessage.DisplayMessage("Message sent");
