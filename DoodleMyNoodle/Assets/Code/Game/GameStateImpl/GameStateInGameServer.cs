@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameStateInGameServer : GameStateInGameOnline<GameStateDefinitionInGameServer>
+public class GameStateInGameServer : GameStateInGameOnline
 {
     public override void Enter(GameStateParam[] parameters)
     {

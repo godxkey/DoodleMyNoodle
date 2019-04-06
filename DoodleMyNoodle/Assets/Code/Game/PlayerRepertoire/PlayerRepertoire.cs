@@ -1,22 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
-/*
-public abstract class PlayerRepertoire_ToDelete : MonoBehaviour
+
+public abstract class PlayerRepertoire : MonoBehaviour
 {
-    public abstract PlayerInfo GetLocalPlayerInfo();
-    public abstract PlayerInfo GetPlayerInfo(PlayerId playerId);
+    public ReadOnlyCollection<PlayerInfo> players { get; private set; }
 
+    protected SessionInterface _sessionInterface { get; private set; }
+    protected List<PlayerInfo> _players { get; private set; } = new List<PlayerInfo>();
+    protected PlayerInfo _localPlayerInfo { get; private set; }
 
-
-    protected SessionInterface _sessionInterface;
-
-    void Update()
+    void Awake()
     {
-        if (_sessionInterface == null)
-        {
-            FetchSessionInterface();
-        }
+        players = _players.AsReadOnly();
+        Game.AddPreReadyCallback(PreGameReady);
     }
 
     void OnDisable()
@@ -27,23 +25,25 @@ public abstract class PlayerRepertoire_ToDelete : MonoBehaviour
         }
     }
 
-    void FetchSessionInterface()
+    void PreGameReady()
     {
-        IGameStateInGameOnline gameStateOnline = GameStateManager.GetCurrentGameState<IGameStateInGameOnline>();
+        _localPlayerInfo = new PlayerInfo();
+        _localPlayerInfo.playerName = PlayerProfileService.Instance.playerName;
+
+        GameStateInGameOnline gameStateOnline = GameStateManager.GetCurrentGameState<GameStateInGameOnline>();
 
         if (gameStateOnline != null && gameStateOnline.sessionInterface != null)
         {
             _sessionInterface = gameStateOnline.sessionInterface;
             BindToSession();
         }
+
+        OnPreReady();
     }
 
     void BindToSession()
     {
-        _sessionInterface.onConnectionAdded += OnConnectionAdded;
-        _sessionInterface.onConnectionRemoved += OnConnectionRemoved;
         _sessionInterface.onTerminate += OnSessionInterfaceTerminating;
-        _sessionInterface.RegisterNetMessageReceiver<PlayerInfo>(OnReceivePlayerInfo);
 
         OnBindedToSession();
     }
@@ -52,33 +52,30 @@ public abstract class PlayerRepertoire_ToDelete : MonoBehaviour
     {
         OnUnbindedFromSession();
 
-        _sessionInterface.onConnectionAdded -= OnConnectionAdded;
-        _sessionInterface.onConnectionRemoved -= OnConnectionRemoved;
         _sessionInterface.onTerminate -= OnSessionInterfaceTerminating;
-        _sessionInterface.UnregisterNetMessageReceiver<PlayerInfo>(OnReceivePlayerInfo);
         _sessionInterface = null;
     }
-
 
     void OnSessionInterfaceTerminating()
     {
         _sessionInterface = null;
     }
 
-    protected PlayerInfo MakePlayerInfoFromLocalPlayerProfile()
+    public PlayerInfo GetLocalPlayerInfo()
     {
-        PlayerInfo playerInfo = new PlayerInfo();
-        playerInfo.playerId = PlayerId.invalid;
-        playerInfo.playerName = PlayerProfileService.Instance.playerName;
-
-        return playerInfo;
+        return _localPlayerInfo;
     }
-
+    public PlayerInfo GetPlayerInfo(PlayerId playerId)
+    {
+        for (int i = 0; i < _players.Count; i++)
+        {
+            if (_players[i].playerId == playerId)
+                return _players[i];
+        }
+        return null;
+    }
 
     protected virtual void OnBindedToSession() { }
     protected virtual void OnUnbindedFromSession() { }
-    protected virtual void OnReceivePlayerInfo(PlayerInfo playerInfo, INetworkInterfaceConnection source) { }
-    protected virtual void OnConnectionAdded(INetworkInterfaceConnection newConnection) { }
-    protected virtual void OnConnectionRemoved(INetworkInterfaceConnection obj) { }
+    protected virtual void OnPreReady() { }
 }
-*/

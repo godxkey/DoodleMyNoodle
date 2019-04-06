@@ -33,11 +33,11 @@ public class MenuInGameEscape : MonoBehaviour
 
     public void ExitSession()
     {
-        ((IGameStateInGameBase)GameStateManager.currentGameState).ReturnToMenu();
+        ((GameStateInGameBase)GameStateManager.currentGameState).ReturnToMenu();
     }
 
     public void ExitApplication()
     {
-        ((IGameStateInGameBase)GameStateManager.currentGameState).ExitApplication();
+        ((GameStateInGameBase)GameStateManager.currentGameState).ExitApplication();
     }
 }

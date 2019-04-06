@@ -46,14 +46,3 @@ public abstract class GameState
         return true;
     }
 }
-
-public abstract class GameState<SettingsClass> : GameState where SettingsClass : GameStateDefinition
-{
-    public SettingsClass specificDefinition { get; private set; }
-
-    public override void SetDefinition(GameStateDefinition settings)
-    {
-        base.SetDefinition(settings);
-        specificDefinition = (SettingsClass)settings;
-    }
-}

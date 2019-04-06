@@ -10,7 +10,7 @@ public partial struct PlayerId : INetSerializable
 
     public UInt16 value;
 
-    public bool IsValid => value != invalid.value;
+    public bool isValid => value != invalid.value;
 
     #region Overloads
     public static bool operator ==(PlayerId obj1, PlayerId obj2) => obj1.value == obj2.value;

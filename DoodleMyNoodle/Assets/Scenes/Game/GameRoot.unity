@@ -293,6 +293,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5991d682ad1e5ef42aee4a3bf4e8776a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _localSpecificScene: {fileID: 11400000, guid: 0bac4367accfd084d884cd480928eb4e,
+    type: 2}
+  _serverSpecificScene: {fileID: 11400000, guid: 7f62b43737c15934f9dbf27f3b6f8b9a,
+    type: 2}
+  _clientSpecificScene: {fileID: 11400000, guid: 0cf57b9d42bfbc74884bc375910f00d3,
+    type: 2}
   _escapeMenuScene: {fileID: 11400000, guid: 8051a069fc8d1184ab823eb9ca5b0675, type: 2}
 --- !u!4 &346844344
 Transform:

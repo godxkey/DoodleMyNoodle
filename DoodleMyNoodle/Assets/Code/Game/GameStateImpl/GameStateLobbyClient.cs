@@ -3,9 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameStateLobbyClient : GameStateLobbyOnlineBase<GameStateDefinitionLobbyClient>
+public class GameStateLobbyClient : GameStateLobbyOnlineBase
 {
     Action<bool, string> _joinSessionCallback;
+    GameStateDefinitionLobbyClient _specificDefinition;
+
+    public override void SetDefinition(GameStateDefinition definition)
+    {
+        base.SetDefinition(definition);
+
+        _specificDefinition = (GameStateDefinitionLobbyClient)definition;
+    }
 
     public override void Enter(GameStateParam[] parameters)
     {
@@ -13,7 +21,7 @@ public class GameStateLobbyClient : GameStateLobbyOnlineBase<GameStateDefinition
 
         if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.isClientType == false)
         {
-            GameStateManager.TransitionToState(specificDefinition.gameStateIfReturn);
+            GameStateManager.TransitionToState(_specificDefinition.gameStateIfReturn);
             DebugService.LogError("[GameStateLobbyClient] The available onlineInterface is of type Server. " +
                 "This game state requires a Client type.");
             return;
@@ -41,7 +49,7 @@ public class GameStateLobbyClient : GameStateLobbyOnlineBase<GameStateDefinition
 
         if (success)
         {
-            GameStateManager.TransitionToState(specificDefinition.gameStateIfJoinSession);
+            GameStateManager.TransitionToState(_specificDefinition.gameStateIfJoinSession);
         }
         else
         {

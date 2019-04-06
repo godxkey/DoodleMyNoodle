@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameStateInGameLocal : GameStateInGameBase<GameStateDefinitionInGameLocal>
+public class GameStateInGameLocal : GameStateInGameBase
 {
     public override void Enter(GameStateParam[] parameters)
     {

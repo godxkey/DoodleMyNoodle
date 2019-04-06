@@ -86,7 +86,7 @@ public abstract class SessionInterface : IDisposable
         _networkInterface.DisconnectFromSession(null);
     }
 
-    public void SendNetMessage(INetworkInterfaceConnection connection, INetSerializable netMessage)
+    public void SendNetMessage(INetSerializable netMessage, INetworkInterfaceConnection connection)
     {
         _netMessagesToSend.Add(new MessageAndConnection()
         {

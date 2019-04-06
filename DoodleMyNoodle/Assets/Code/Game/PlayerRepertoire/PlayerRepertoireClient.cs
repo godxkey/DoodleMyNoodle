@@ -1,60 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
-/*
-public class PlayerRepertoireClient : PlayerRepertoire_ToDelete
+
+public class PlayerRepertoireClient : PlayerRepertoire
 {
-    List<PlayerInfo> _playerInfos;
-    PlayerInfo _localPlayerInfo;
-    bool _iHaveSentMyInfo = false;
-
-    public override PlayerInfo GetLocalPlayerInfo()
-    {
-        return _playerInfos[0];
-    }
-
-    public override PlayerInfo GetPlayerInfo(PlayerId playerId)
-    {
-        for (int i = 0; i < _playerInfos.Count; i++)
-        {
-            if(_playerInfos[i].playerId == playerId)
-            {
-                return _playerInfos[i];
-            }
-        }
-        return null;
-    }
+    SessionClientInterface _clientSession;
 
     protected override void OnBindedToSession()
     {
-        base.OnBindedToSession();
+        _clientSession = (SessionClientInterface)_sessionInterface;
+        _clientSession.RegisterNetMessageReceiver<NetMessagePlayerIdAssignment>(OnMsg_PlayerIdAssignement);
+        _clientSession.RegisterNetMessageReceiver<NetMessagePlayerRepertoireSync>(OnMsg_NetMessagePlayerRepertoireSync);
+        _clientSession.RegisterNetMessageReceiver<NetMessagePlayerJoined>(OnMsg_NetMessagePlayerJoined);
+        _clientSession.RegisterNetMessageReceiver<NetMessagePlayerLeft>(OnMsg_NetMessagePlayerLeft);
+    }
 
-        _localPlayerInfo = MakePlayerInfoFromLocalPlayerProfile();
+    protected override void OnUnbindedFromSession()
+    {
+        _clientSession.UnregisterNetMessageReceiver<NetMessagePlayerIdAssignment>(OnMsg_PlayerIdAssignement);
+        _clientSession.UnregisterNetMessageReceiver<NetMessagePlayerRepertoireSync>(OnMsg_NetMessagePlayerRepertoireSync);
+        _clientSession.UnregisterNetMessageReceiver<NetMessagePlayerJoined>(OnMsg_NetMessagePlayerJoined);
+        _clientSession.UnregisterNetMessageReceiver<NetMessagePlayerLeft>(OnMsg_NetMessagePlayerLeft);
+        _clientSession = null;
+    }
 
-        foreach (INetworkInterfaceConnection connection in _sessionInterface.connections)
+    protected override void OnPreReady()
+    {
+        _localPlayerInfo.isServer = false;
+        _localPlayerInfo.playerId = PlayerId.invalid;
+
+        // Say hello to server ! (this should initiate the process of being added to valid players)
+        NetMessageClientHello helloMessage = new NetMessageClientHello()
         {
-            OnConnectionAdded(connection);
+            playerName = _localPlayerInfo.playerName
+        };
+        _clientSession.SendNetMessageToServer(helloMessage);
+    }
+
+    void OnMsg_PlayerIdAssignement(NetMessagePlayerIdAssignment message, INetworkInterfaceConnection source)
+    {
+        _localPlayerInfo.playerId = message.playerId;
+    }
+
+    void OnMsg_NetMessagePlayerRepertoireSync(NetMessagePlayerRepertoireSync message, INetworkInterfaceConnection source)
+    {
+        _players.Clear();
+        foreach (var playerInfo in message.players)
+        {
+            _players.Add(new PlayerInfo(playerInfo));
         }
     }
 
-    protected override void OnConnectionAdded(INetworkInterfaceConnection newConnection)
+    void OnMsg_NetMessagePlayerJoined(NetMessagePlayerJoined message, INetworkInterfaceConnection source)
     {
-        base.OnConnectionAdded(newConnection);
-
-        if (_iHaveSentMyInfo)
-        {
-            DebugService.LogWarning("[PlayerRepertoireClient] We're sending our info twice. " +
-                "It appears we have been connected to more than one entity, which should not happen when we're a client");
-        }
-
-        _sessionInterface.SendNetMessage(newConnection, _localPlayerInfo);
-        _iHaveSentMyInfo = true;
+        _players.Add(new PlayerInfo(message.playerInfo));
     }
 
-    protected override void OnConnectionRemoved(INetworkInterfaceConnection obj)
+    void OnMsg_NetMessagePlayerLeft(NetMessagePlayerLeft message, INetworkInterfaceConnection source)
     {
-        base.OnConnectionRemoved(obj);
-
-        _playerInfos.Clear();
+        _players.RemoveFirst((p) => p.playerId == message.playerId);
     }
 }
-*/

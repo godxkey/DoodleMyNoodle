@@ -2,10 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameStateInGameOnline<SettingsClass> : GameStateInGameBase<SettingsClass>, IGameStateInGameOnline
-    where SettingsClass : GameStateDefinitionInGameOnline
+public class GameStateInGameOnline : GameStateInGameBase
 {
     public SessionInterface sessionInterface { get; private set; }
+
+    GameStateDefinitionInGameOnline specificDefinition;
+
+    public override void SetDefinition(GameStateDefinition definition)
+    {
+        base.SetDefinition(definition);
+        specificDefinition = (GameStateDefinitionInGameOnline)definition;
+    }
 
     public override void Enter(GameStateParam[] parameters)
     {
@@ -54,10 +61,4 @@ public class GameStateInGameOnline<SettingsClass> : GameStateInGameBase<Settings
             sessionInterface = null;
         }
     }
-}
-
-
-public interface IGameStateInGameOnline
-{
-    SessionInterface sessionInterface { get; }
 }

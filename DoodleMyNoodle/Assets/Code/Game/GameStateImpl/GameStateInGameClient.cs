@@ -2,6 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameStateInGameClient : GameStateInGameOnline<GameStateDefinitionInGameClient>
+public class GameStateInGameClient : GameStateInGameOnline
 {
 }
