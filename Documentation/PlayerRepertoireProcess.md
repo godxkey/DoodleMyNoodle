@@ -11,57 +11,57 @@ Here is the replication flow of players in a game:
 ```c++
 class PlayerId
 {
-	int id;
+    int id;
 }
 
 class PlayerInfo
 {
-	PlayerId id;
-	string	 name;
-	
-	// extras
-	bool isServer;
-	int ping;
-	etc.
+    PlayerId id;
+    string	 name;
+    
+    // extras
+    bool isServer;
+    int ping;
+    etc.
 }
 
 
 class PlayerRepertoire
 {
-	list<PlayerInfo> players;
+    list<PlayerInfo> players;
 }
 ```
 
 *Net Messages*
 
-~~~~
+```c#
 // sent by client
 class NetMessageClientHello : NetMessage
 {
-	string playerName;
+    string playerName;
 }
 
 // sent by server
 class NetMessagePlayerIdAssignment : NetMessage
 {
-	PlayerId id;
+    PlayerId id;
 }
 
 // sent by server
 class NetMessagePlayerRepertoireSync : NetMessage
 {
-	list<PlayerInfo> players;
+    list<PlayerInfo> players;
 }
 
 // sent by server
 class NetMessagePlayerJoined : NetMessage
 {
-	PlayerInfo player;
+    PlayerInfo player;
 }
 
 // sent by server
 class NetMessagePlayerLeft : NetMessage
 {
-	PlayerId playerId;
+    PlayerId playerId;
 }
-~~~~
+```
