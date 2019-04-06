@@ -8,7 +8,7 @@ Here is the replication flow of players in a game:
 
 *Data structures*
 
-~~~~
+```c++
 class PlayerId
 {
 	int id;
@@ -30,7 +30,7 @@ class PlayerRepertoire
 {
 	list<PlayerInfo> players;
 }
-~~~~
+```
 
 *Net Messages*
 
