@@ -17,7 +17,7 @@ class PlayerId
 class PlayerInfo
 {
     PlayerId id;
-    string	 name;
+    string name;
     
     // extras
     bool isServer;
