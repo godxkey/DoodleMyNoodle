@@ -3,7 +3,8 @@
 /// <summary>
 /// The client sends this message to the server upon joining the game
 /// </summary>
-public partial class NetMessageClientHello : NetMessage
+[NetMessage]
+public struct NetMessageClientHello
 {
     public string playerName;
 }

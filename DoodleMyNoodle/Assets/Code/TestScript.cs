@@ -31,11 +31,12 @@ public class TestScript : MonoBehaviour
             netMessageExample.valueUShort = 33;     // 2
             netMessageExample.valueBool = true;     // 0.2
             netMessageExample.valueByte = 12;       // 1
-            netMessageExample.listOfNetSerializableValue.Add(5);
-            netMessageExample.listOfNetSerializableValue.Add(4);
-            netMessageExample.listOfNetSerializableValue.Add(3);
-            netMessageExample.listOfNetSerializableValue.Add(2);
-            netMessageExample.listOfNetSerializableValue.Add(1);
+            netMessageExample.listOnInts = new int[5];
+            netMessageExample.listOnInts[0] = 5;
+            netMessageExample.listOnInts[1] = 4;
+            netMessageExample.listOnInts[2] = 3;
+            netMessageExample.listOnInts[3] = 2;
+            netMessageExample.listOnInts[4] = 1;
 
             sessionInterface.SendNetMessage(netMessageExample, sessionInterface.connections[0]);
 
@@ -57,7 +58,7 @@ public class TestScript : MonoBehaviour
         stringBuilder.AppendLine(netMessageExample.valueBool.ToString());
         stringBuilder.AppendLine(netMessageExample.valueByte.ToString());
 
-        foreach (var item in netMessageExample.listOfNetSerializableValue)
+        foreach (var item in netMessageExample.listOnInts)
         {
             stringBuilder.AppendLine(item.ToString());
         }

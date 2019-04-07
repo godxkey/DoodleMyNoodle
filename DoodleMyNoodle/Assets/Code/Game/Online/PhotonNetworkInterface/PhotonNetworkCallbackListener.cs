@@ -8,6 +8,8 @@ namespace Internals.PhotonNetwokInterface
     {
         public PhotonNetworkInterface photonNetworkInterface;
 
+        public override bool PersistBetweenStartupAndShutdown() => true;
+
         public override void BoltStartBegin() => photonNetworkInterface.Event_BoltStartBegin();
         public override void BoltStartDone() => photonNetworkInterface.Event_BoltStartDone();
         public override void BoltStartFailed() => photonNetworkInterface.Event_BoltStartFailed();

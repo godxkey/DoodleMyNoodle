@@ -24,12 +24,8 @@ public class SessionClientInterface : SessionInterface
         }
     }
 
-    public void SendNetMessageToServer(INetSerializable netMessage)
+    public void SendNetMessageToServer(object netMessage)
     {
-        _netMessagesToSend.Add(new MessageAndConnection()
-        {
-            connection = serverConnection,
-            message = netMessage
-        });
+        SendNetMessage(netMessage, serverConnection);
     }
 }

@@ -34,15 +34,18 @@ public class PlayerRepertoireClient : PlayerRepertoire
             playerName = _localPlayerInfo.playerName
         };
         _clientSession.SendNetMessageToServer(helloMessage);
+        DebugService.Log("[PlayerRepertoireClient] Hello sent");
     }
 
     void OnMsg_PlayerIdAssignement(NetMessagePlayerIdAssignment message, INetworkInterfaceConnection source)
     {
+        DebugService.Log("[PlayerRepertoireClient] OnMsg_PlayerIdAssignement");
         _localPlayerInfo.playerId = message.playerId;
     }
 
     void OnMsg_NetMessagePlayerRepertoireSync(NetMessagePlayerRepertoireSync message, INetworkInterfaceConnection source)
     {
+        DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessagePlayerRepertoireSync");
         _players.Clear();
         foreach (var playerInfo in message.players)
         {
@@ -52,11 +55,13 @@ public class PlayerRepertoireClient : PlayerRepertoire
 
     void OnMsg_NetMessagePlayerJoined(NetMessagePlayerJoined message, INetworkInterfaceConnection source)
     {
+        DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessagePlayerJoined");
         _players.Add(new PlayerInfo(message.playerInfo));
     }
 
     void OnMsg_NetMessagePlayerLeft(NetMessagePlayerLeft message, INetworkInterfaceConnection source)
     {
+        DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessagePlayerLeft");
         _players.RemoveFirst((p) => p.playerId == message.playerId);
     }
 }

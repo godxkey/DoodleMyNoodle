@@ -16,7 +16,7 @@ public static class NetMessageRegistryCodeGenerator
     [MenuItem("Tools/Code Generation/NetMessage Registry/Generate")]
     static void Generate()
     {
-        GenerateCode(NetMessageCodeGenerationUtility.GetNetMessageTypes());
+        GenerateCode(NetMessageCodeGenUtility.GetNetMessageTypes());
 
         AssetDatabase.Refresh();
     }
@@ -73,6 +73,7 @@ public static class NetMessageRegistryCodeGenerator
                 writer.WriteLine("// DO NOT MODIFY IT");
                 writer.WriteLine();
                 writer.WriteLine("using System;");
+                writer.WriteLine("using System.Collections.Generic;");
                 writer.WriteLine();
                 writer.WriteLine("public static class NetMessageRegistry");
                 writer.WriteLine("{");
@@ -87,9 +88,8 @@ public static class NetMessageRegistryCodeGenerator
                 foreach (Type type in netMessageTypes)
                 {
                     if (addComma)
-                        writer.WriteLine("        ,typeof(" + GetNiceTypeName(type) + ")");
-                    else
-                        writer.WriteLine("        typeof(" + GetNiceTypeName(type) + ")");
+                        writer.WriteLine("        ,");
+                    writer.WriteLine("        typeof(" + GetNiceTypeName(type) + ")");
                     addComma = true;
                 }
                 writer.WriteLine("    };");
@@ -98,18 +98,68 @@ public static class NetMessageRegistryCodeGenerator
                 writer.WriteLine();
 
 
-                writer.WriteLine("    public static readonly Factory<UInt16, INetSerializable> factory = new Factory<UInt16, INetSerializable>(new ValueTuple<UInt16, Func<INetSerializable>>[]");
+                writer.WriteLine("    public static readonly Dictionary<UInt16, Func<object, int>> netBitSizeMap = new Dictionary<UInt16, Func<object, int>>()");
                 writer.WriteLine("    {");
                 addComma = false;
                 for (int i = 0; i < netMessageTypes.Count; i++)
                 {
+                    Type t = netMessageTypes[i];
+
                     if (addComma)
-                        writer.WriteLine("        ,(" + i + ", ()=> new " + GetNiceTypeName(netMessageTypes[i]) + "())");
-                    else
-                        writer.WriteLine("        (" + i + ", ()=> new " + GetNiceTypeName(netMessageTypes[i]) + "())");
+                        writer.WriteLine("        ,");
+                    writer.WriteLine("        [" + i + "] = (obj) =>");
+                    writer.WriteLine("        {");
+                    writer.WriteLine("            " + GetNiceTypeName(t) + " castedObj = (" + GetNiceTypeName(t) + ")obj;");
+                    writer.WriteLine("            return " + NetMessageCodeGenUtility.GetSerializerNameFromType(t) + ".GetNetBitSize(ref castedObj);");
+                    writer.WriteLine("        }");
                     addComma = true;
                 }
-                writer.WriteLine("    });");
+                writer.WriteLine("    };");
+
+
+                writer.WriteLine();
+
+
+                writer.WriteLine("    public static readonly Dictionary<UInt16, Action<object, BitStreamWriter>> serializationMap = new Dictionary<UInt16, Action<object, BitStreamWriter>>()");
+                writer.WriteLine("    {");
+                addComma = false;
+                for (int i = 0; i < netMessageTypes.Count; i++)
+                {
+                    Type t = netMessageTypes[i];
+
+                    if (addComma)
+                        writer.WriteLine("        ,");
+                    writer.WriteLine("        [" + i + "] = (obj, writer) =>");
+                    writer.WriteLine("        {");
+                    writer.WriteLine("            " + GetNiceTypeName(t) + " castedObj = (" + GetNiceTypeName(t) + ")obj;");
+                    writer.WriteLine("            " + NetMessageCodeGenUtility.GetSerializerNameFromType(t) + ".NetSerialize(ref castedObj, writer);");
+                    writer.WriteLine("        }");
+                    addComma = true;
+                }
+                writer.WriteLine("    };");
+
+
+                writer.WriteLine();
+
+
+                writer.WriteLine("    public static readonly Dictionary<UInt16, Func<BitStreamReader, object>> deserializationMap = new Dictionary<UInt16, Func<BitStreamReader, object>>()");
+                writer.WriteLine("    {");
+                addComma = false;
+                for (int i = 0; i < netMessageTypes.Count; i++)
+                {
+                    Type t = netMessageTypes[i];
+
+                    if (addComma)
+                        writer.WriteLine("        ,");
+                    writer.WriteLine("        [" + i + "] = (reader) =>");
+                    writer.WriteLine("        {");
+                    writer.WriteLine("            " + GetNiceTypeName(t) + " obj = default;");
+                    writer.WriteLine("            " + NetMessageCodeGenUtility.GetSerializerNameFromType(t) + ".NetDeserialize(ref obj, reader);");
+                    writer.WriteLine("            return obj;");
+                    writer.WriteLine("        }");
+                    addComma = true;
+                }
+                writer.WriteLine("    };");
 
 
                 writer.WriteLine("}");
@@ -120,6 +170,6 @@ public static class NetMessageRegistryCodeGenerator
 
     static string GetNiceTypeName(Type type)
     {
-        return type.FullName.Replace('+', '.');
+        return type.Name; //return type.FullName.Replace('+', '.');
     }
 }

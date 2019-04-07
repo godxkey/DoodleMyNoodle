@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-public partial class PlayerInfo : NetMessage
+[NetMessage]
+public class PlayerInfo
 {
     public PlayerInfo() { }
     public PlayerInfo(PlayerInfo other)

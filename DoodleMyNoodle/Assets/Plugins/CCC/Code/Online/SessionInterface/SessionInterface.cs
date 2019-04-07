@@ -35,30 +35,10 @@ public abstract class SessionInterface : IDisposable
 
     public virtual void Update()
     {
-        // Send net messages
-        foreach (MessageAndConnection msg in _netMessagesToSend)
-        {
-            byte[] messageData;
-            NetMessageInterpreter.GetDataFromMessage(msg.message, out messageData);
-            _networkInterface.SendMessage(msg.connection, messageData, messageData.Length);
-        }
-        _netMessagesToSend.Clear();
-
-        // Act on received net messages
-        foreach (MessageAndConnection msg in _netMessagesReceived)
-        {
-            Type t = msg.message.GetType();
-
-            if (_netMessageReceivers.ContainsKey(t))
-            {
-                _netMessageReceivers[t].OnReceive(msg.message, msg.connection);
-            }
-        }
-        _netMessagesReceived.Clear();
+        // nothing to do
     }
 
     public void RegisterNetMessageReceiver<NetMessageType>(Action<NetMessageType, INetworkInterfaceConnection> callback)
-        where NetMessageType : INetSerializable
     {
         Type t = typeof(NetMessageType);
 
@@ -71,7 +51,6 @@ public abstract class SessionInterface : IDisposable
     }
 
     public void UnregisterNetMessageReceiver<NetMessageType>(Action<NetMessageType, INetworkInterfaceConnection> callback)
-        where NetMessageType : INetSerializable
     {
         Type t = typeof(NetMessageType);
 
@@ -86,13 +65,12 @@ public abstract class SessionInterface : IDisposable
         _networkInterface.DisconnectFromSession(null);
     }
 
-    public void SendNetMessage(INetSerializable netMessage, INetworkInterfaceConnection connection)
+    public void SendNetMessage(object netMessage, INetworkInterfaceConnection connection)
     {
-        _netMessagesToSend.Add(new MessageAndConnection()
-        {
-            connection = connection,
-            message = netMessage
-        });
+        byte[] messageData;
+        NetMessageInterpreter.GetDataFromMessage(netMessage, out messageData);
+        _networkInterface.SendMessage(connection, messageData, messageData.Length);
+        DebugService.Log("[Session] Send message to : " + connection.Id);
     }
 
     void Interface_OnConnect(INetworkInterfaceConnection connection)
@@ -107,33 +85,30 @@ public abstract class SessionInterface : IDisposable
 
     protected virtual void OnReceiveMessage(INetworkInterfaceConnection source, byte[] data, int messageSize)
     {
-        INetSerializable netMessage = NetMessageInterpreter.GetMessageFromData(data);
+        object netMessage = NetMessageInterpreter.GetMessageFromData(data);
 
         if(netMessage != null)
         {
-            // FOR NOW, we don't care about the messageSize
-            _netMessagesReceived.Add(new MessageAndConnection()
+            Type t = netMessage.GetType();
+
+            if (_netMessageReceivers.ContainsKey(t))
             {
-                connection = source,
-                message = NetMessageInterpreter.GetMessageFromData(data)
-            });
+                _netMessageReceivers[t].OnReceive(netMessage, source);
+            }
         }
     }
 
     protected NetworkInterface _networkInterface;
-    protected List<MessageAndConnection> _netMessagesToSend = new List<MessageAndConnection>();
-    protected List<MessageAndConnection> _netMessagesReceived = new List<MessageAndConnection>();
     protected Dictionary<Type, NetMessageReceiverList> _netMessageReceivers = new Dictionary<Type, NetMessageReceiverList>();
 
     protected abstract class NetMessageReceiverList
     {
-        public abstract void OnReceive(INetSerializable netMessage, INetworkInterfaceConnection source);
+        public abstract void OnReceive(object netMessage, INetworkInterfaceConnection source);
         public abstract void AddListener(object callback);
         public abstract void RemoveListener(object callback);
     }
 
     protected class NetMessageReceiverList<NetMessageType> : NetMessageReceiverList
-        where NetMessageType : INetSerializable
     {
         public List<Action<NetMessageType, INetworkInterfaceConnection>> _listeners = new List<Action<NetMessageType, INetworkInterfaceConnection>>();
 
@@ -147,7 +122,7 @@ public abstract class SessionInterface : IDisposable
             _listeners.Remove((Action<NetMessageType, INetworkInterfaceConnection>)callback);
         }
 
-        public override void OnReceive(INetSerializable netMessage, INetworkInterfaceConnection source)
+        public override void OnReceive(object netMessage, INetworkInterfaceConnection source)
         {
             NetMessageType castedMessage = (NetMessageType)netMessage;
             for (int i = _listeners.Count - 1; i >= 0; i--)
@@ -155,11 +130,5 @@ public abstract class SessionInterface : IDisposable
                 _listeners[i].Invoke(castedMessage, source);
             }
         }
-    }
-
-    protected struct MessageAndConnection
-    {
-        public INetworkInterfaceConnection connection;
-        public INetSerializable message;
     }
 }

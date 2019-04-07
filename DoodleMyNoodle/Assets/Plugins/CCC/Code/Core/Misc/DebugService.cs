@@ -52,7 +52,7 @@ public class DebugService : MonoCoreService<DebugService>
                 name = "<none>";
             }
         }
-        DebugService.Log("DebugServervice initialized. Logging to " + engineLogFileLocation + "/" + name);
+        DebugService.Log("DebugService initialized. Logging to " + engineLogFileLocation + "/" + name);
     }
 
     protected override void OnDestroy()

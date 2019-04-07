@@ -4,7 +4,7 @@ namespace Internals.OnlineServiceImpl
 {
     public class OnlineServicePhoton : OnlineService
     {
-        protected override INetMessageFactory CreateNetMessageFactory()
+        protected override INetMessageFactoryImpl CreateNetMessageFactory()
         {
             return new NetMessageFactoryImpl();
         }

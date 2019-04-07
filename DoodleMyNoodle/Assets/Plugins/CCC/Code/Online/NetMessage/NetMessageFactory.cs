@@ -6,8 +6,10 @@ using UnityEngine;
 
 public static class NetMessageFactory
 {
-    internal static INetMessageFactory instance;
+    internal static INetMessageFactoryImpl impl;
 
-    public static ushort GetNetMessageTypeId(INetSerializable message) => instance.GetNetMessageTypeId(message);
-    public static INetSerializable CreateNetMessage(ushort messageType) => instance.CreateNetMessage(messageType);
+    public static ushort GetNetMessageTypeId(object message)                                        => impl.GetNetMessageTypeId(message);
+    public static int GetMessageBitSize(ushort messageType, object message)                         => impl.GetMessageBitSize(messageType, message);
+    public static void SerializeMessage(ushort messageType, object message, BitStreamWriter writer) => impl.SerializeMessage(messageType, message, writer);
+    public static object DeserializeMessage(ushort messageType, BitStreamReader reader)             => impl.DeserializeMessage(messageType, reader);
 }

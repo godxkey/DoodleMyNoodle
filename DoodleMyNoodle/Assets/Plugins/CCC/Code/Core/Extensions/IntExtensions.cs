@@ -41,7 +41,7 @@ public static class IntExtensions
         return Mathf.Clamp(value, min, max);
     }
 
-    public static int CeiledTo(this int value, int stepSize)
+    public static int CeiledToStep(this int value, int stepSize)
     {
         int extra = (value % stepSize);
         if (extra != 0)
@@ -52,7 +52,7 @@ public static class IntExtensions
         return value;
     }
 
-    public static int FlooredTo(this int value, int stepSize)
+    public static int FlooredToStep(this int value, int stepSize)
     {
         return value - (value % stepSize);
     }

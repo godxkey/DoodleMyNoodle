@@ -4,16 +4,49 @@ using System.Collections.ObjectModel;
 
 public abstract class PlayerRepertoire : GameMonoBehaviour
 {
+    public static PlayerRepertoire instance { get; private set; }
+
     public ReadOnlyCollection<PlayerInfo> players { get; private set; }
+
+    public PlayerInfo GetLocalPlayerInfo()
+    {
+        return _localPlayerInfo;
+    }
+    public PlayerInfo GetPlayerInfo(PlayerId playerId)
+    {
+        for (int i = 0; i < _players.Count; i++)
+        {
+            if (_players[i].playerId == playerId)
+            {
+                return _players[i];
+            }
+        }
+        return null;
+    }
+    public bool IsLocalPlayer(PlayerId id)
+    {
+        return id.isValid && _localPlayerInfo.playerId == id;
+    }
 
     protected SessionInterface _sessionInterface { get; private set; }
     protected List<PlayerInfo> _players { get; private set; } = new List<PlayerInfo>();
-    protected PlayerInfo _localPlayerInfo { get; private set; }
+    protected PlayerInfo _localPlayerInfo = new PlayerInfo();
+
+    protected override void Awake()
+    {
+        base.Awake();
+        instance = this;
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        instance = null;
+    }
 
     public override void OnGamePreReady()
     {
         players = _players.AsReadOnly();
-        _localPlayerInfo = new PlayerInfo();
         _localPlayerInfo.playerName = PlayerProfileService.Instance.playerName;
 
         GameStateInGameOnline gameStateOnline = GameStateManager.GetCurrentGameState<GameStateInGameOnline>();
@@ -53,20 +86,6 @@ public abstract class PlayerRepertoire : GameMonoBehaviour
     void OnSessionInterfaceTerminating()
     {
         _sessionInterface = null;
-    }
-
-    public PlayerInfo GetLocalPlayerInfo()
-    {
-        return _localPlayerInfo;
-    }
-    public PlayerInfo GetPlayerInfo(PlayerId playerId)
-    {
-        for (int i = 0; i < _players.Count; i++)
-        {
-            if (_players[i].playerId == playerId)
-                return _players[i];
-        }
-        return null;
     }
 
     protected virtual void OnBindedToSession() { }

@@ -3,7 +3,8 @@
 /// <summary>
 /// The server sends this message to all clients when a player left the game
 /// </summary>
-public partial class NetMessagePlayerLeft : NetMessage
+[NetMessage]
+public struct NetMessagePlayerLeft
 {
     public PlayerId playerId;
 }

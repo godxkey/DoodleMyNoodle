@@ -17,6 +17,9 @@ public class PlayerRepertoireServer : PlayerRepertoire
 
         _localPlayerInfo.playerId = new PlayerId(_playerIdCounter++);
         _localPlayerInfo.isServer = true;
+
+        _players.Add(_localPlayerInfo);
+        _playerConnections.Add(null);
     }
 
 
@@ -42,6 +45,7 @@ public class PlayerRepertoireServer : PlayerRepertoire
 
     void OnClientHello(NetMessageClientHello message, INetworkInterfaceConnection clientConnection)
     {
+        DebugService.Log("[PlayerRepertoireServer] OnClientHello");
         int index = _newConnectionsNotYetPlayers.IndexOf(clientConnection);
         if(index == -1)
         {
@@ -53,7 +57,7 @@ public class PlayerRepertoireServer : PlayerRepertoire
 
         
         // Add new player to list
-        PlayerInfo newPlayerInfo = new PlayerInfo
+        PlayerInfo newPlayerInfo = new PlayerInfo()
         {
             playerId = new PlayerId(_playerIdCounter++),
             isServer = false,
@@ -70,18 +74,21 @@ public class PlayerRepertoireServer : PlayerRepertoire
             playerInfo = newPlayerInfo
         };
         _serverSession.SendNetMessage(playerJoinedMessage, _playerConnections);
+        DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerJoined");
 
 
         // Sync all the players to the new one
         NetMessagePlayerRepertoireSync syncMessage = new NetMessagePlayerRepertoireSync()
         {
-            players = _players
+            players = _players.ToArray()
         };
         _serverSession.SendNetMessage(syncMessage, clientConnection);
+        DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerRepertoireSync");
     }
 
     void OnConnectionRemoved(INetworkInterfaceConnection oldConnection)
     {
+        DebugService.Log("[PlayerRepertoireServer] OnConnectionRemoved: " + oldConnection.Id);
         _newConnectionsNotYetPlayers.Remove(oldConnection);
 
         int playerIndex = _playerConnections.IndexOf(oldConnection);
@@ -104,5 +111,6 @@ public class PlayerRepertoireServer : PlayerRepertoire
             playerId = playerId
         };
         _serverSession.SendNetMessage(playerLeftMessage, _playerConnections);
+        DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerLeft");
     }
 }
