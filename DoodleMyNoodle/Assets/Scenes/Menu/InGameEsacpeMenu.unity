@@ -748,6 +748,7 @@ GameObject:
   - component: {fileID: 1808635482}
   - component: {fileID: 1808635481}
   - component: {fileID: 1808635485}
+  - component: {fileID: 1808635486}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -848,15 +849,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcbdbc1efc233a1408bc605a6f0e18a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sessionCreationMenu: {fileID: 11400000, guid: a80bbc13b98c8be48a317cd958c17ace,
-    type: 2}
-  _sessionSelectionMenu: {fileID: 11400000, guid: 5e8a457555253df4490fde83f9d587a0,
-    type: 2}
-  _onlineRoleChoiceMenu: {fileID: 11400000, guid: 1ae106bd01f5bf74e8ecbecbe99bdb37,
-    type: 2}
   _exitApplicationButton: {fileID: 802338837}
   _exitSessionButton: {fileID: 2000144935}
   _returnButton: {fileID: 5556184056140178821}
+--- !u!114 &1808635486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1808635480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0030b9bd1e116ba41b0aeedd0fed433b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overridePlayMode: 0
+  playMode: 0
+  overridePlayerName: 0
+  playerName: 
+  overrideServerName: 0
+  serverName: 
+  overrideLevel: 0
+  level: 
 --- !u!1001 &2000144933
 PrefabInstance:
   m_ObjectHideFlags: 0

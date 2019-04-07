@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 public class OnlineClientInterface : OnlineInterface
 {
@@ -14,6 +15,7 @@ public class OnlineClientInterface : OnlineInterface
         network.onSessionListUpdated += OnSessionListUpdated;
     }
 
+    public ReadOnlyCollection<INetworkInterfaceSession> availableSessions => _network.sessions;
     public void GetAvailableSessions(ref List<INetworkInterfaceSession> sessionList) => _network.GetSessions(ref sessionList);
     public void ConnectToSession(INetworkInterfaceSession session, Action<bool, string> onComplete = null)
     {

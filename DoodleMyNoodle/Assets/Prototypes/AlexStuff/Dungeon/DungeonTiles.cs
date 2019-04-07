@@ -98,6 +98,7 @@ public class DungeonTiles : MonoBehaviour
     }
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(DungeonTiles))]
 public class DungeonTilesEditor : Editor
 {
@@ -154,3 +155,4 @@ public class DungeonTilesEditor : Editor
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
     }
 }
+#endif

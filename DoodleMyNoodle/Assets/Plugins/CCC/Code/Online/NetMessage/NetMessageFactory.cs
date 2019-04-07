@@ -8,6 +8,6 @@ public static class NetMessageFactory
 {
     internal static INetMessageFactory instance;
 
-    public static ushort GetNetMessageTypeId(NetMessage message) => instance.GetNetMessageTypeId(message);
-    public static NetMessage CreateNetMessage(ushort messageType) => instance.CreateNetMessage(messageType);
+    public static ushort GetNetMessageTypeId(INetSerializable message) => instance.GetNetMessageTypeId(message);
+    public static INetSerializable CreateNetMessage(ushort messageType) => instance.CreateNetMessage(messageType);
 }

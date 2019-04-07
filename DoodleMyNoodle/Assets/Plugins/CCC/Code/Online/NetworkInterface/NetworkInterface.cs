@@ -9,6 +9,7 @@ public abstract class NetworkInterface : IDisposable
     public abstract event Action onDisconnectedFromSession;
     public abstract event Action onShutdownBegin;
     public abstract event Action<INetworkInterfaceConnection> onDisconnect;
+    public abstract event Action<INetworkInterfaceConnection> onConnect;
     public abstract event Action onSessionListUpdated;
 
     public NetworkState state { get; protected set; } = NetworkState.Stopped;
@@ -17,6 +18,7 @@ public abstract class NetworkInterface : IDisposable
     public bool isClient => !isServer;
     public abstract INetworkInterfaceSession connectedSessionInfo { get; }
     public abstract ReadOnlyCollection<INetworkInterfaceConnection> connections { get; }
+    public abstract ReadOnlyCollection<INetworkInterfaceSession> sessions { get; }
     public abstract void GetSessions(ref List<INetworkInterfaceSession> list);
 
     public abstract void LaunchClient(OperationResult onComplete = null);

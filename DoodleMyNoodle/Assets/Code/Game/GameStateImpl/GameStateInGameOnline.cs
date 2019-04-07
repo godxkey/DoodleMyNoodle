@@ -2,44 +2,63 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameStateInGameOnline : GameStateInGameBase<GameStateSettingsInGameOnline>
+public class GameStateInGameOnline : GameStateInGameBase
 {
-    public override void Enter()
-    {
-        base.Enter();
+    public SessionInterface sessionInterface { get; private set; }
 
-        if(OnlineService.onlineInterface == null)
+    GameStateDefinitionInGameOnline specificDefinition;
+
+    public override void SetDefinition(GameStateDefinition definition)
+    {
+        base.SetDefinition(definition);
+        specificDefinition = (GameStateDefinitionInGameOnline)definition;
+    }
+
+    public override void Enter(GameStateParam[] parameters)
+    {
+        base.Enter(parameters);
+
+        if (OnlineService.onlineInterface == null)
         {
-            GameStateManager.TransitionToState(specificSettings.gameStateIfDisconnect);
+            GameStateManager.TransitionToState(specificDefinition.gameStateIfDisconnect);
             DebugService.LogError("[GameStateInGameOnline] This game state requires an onlineInterface.");
             return;
         }
 
-        if (OnlineService.onlineInterface.sessionInterface == null)
+        sessionInterface = OnlineService.onlineInterface.sessionInterface;
+
+        if (sessionInterface == null)
         {
-            GameStateManager.TransitionToState(specificSettings.gameStateIfDisconnect);
+            GameStateManager.TransitionToState(specificDefinition.gameStateIfDisconnect);
             DebugService.LogError("[GameStateInGameOnline] This game state requires a session interface.");
             return;
         }
 
-        OnlineService.onlineInterface.sessionInterface.onTerminate += OnSessionInterfaceTerminated;
+        sessionInterface = OnlineService.onlineInterface.sessionInterface;
+        sessionInterface.onTerminate += OnSessionInterfaceTerminated;
     }
 
 
-    public override void BeginExit()
+    public override void BeginExit(GameStateParam[] parameters)
     {
-        if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.sessionInterface != null)
-        {
-            // remove listener
-            OnlineService.onlineInterface.sessionInterface.onTerminate -= OnSessionInterfaceTerminated;
-        }
-
-        base.BeginExit();
+        ClearSessionInterface();
+        base.BeginExit(parameters);
     }
 
     void OnSessionInterfaceTerminated()
     {
+        ClearSessionInterface();
+
         DebugScreenMessage.DisplayMessage("You were disconnected from the game.");
-        GameStateManager.TransitionToState(specificSettings.gameStateIfDisconnect);
+        GameStateManager.TransitionToState(specificDefinition.gameStateIfDisconnect);
+    }
+
+    void ClearSessionInterface()
+    {
+        if (sessionInterface != null)
+        {
+            sessionInterface.onTerminate -= OnSessionInterfaceTerminated;
+            sessionInterface = null;
+        }
     }
 }

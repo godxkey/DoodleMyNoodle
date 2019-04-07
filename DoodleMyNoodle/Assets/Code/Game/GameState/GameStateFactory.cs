@@ -2,7 +2,7 @@
 
 public class GameStateFactory
 {
-    public GameState CreateGameState(GameStateSettings settings)
+    public GameState CreateGameState(GameStateDefinition settings)
     {
         return _factory.CreateValue(settings.GetType());
     }
@@ -15,12 +15,13 @@ public class GameStateFactory
         // default empty state
         //Register<Internals.GameStateManager.GameStateEmpty, GameStateSettings>();
 
-        Register<GameStateInGameLocal, GameStateSettingsInGameLocal>();
-        Register<GameStateInGameOnline, GameStateSettingsInGameOnline>();
-        Register<GameStateLobbyClient, GameStateSettingsLobbyClient>();
-        Register<GameStateLobbyLocal, GameStateSettingsLobbyLocal>();
-        Register<GameStateLobbyServer, GameStateSettingsLobbyServer>();
-        Register<GameStateRootMenu, GameStateSettingsRootMenu>();
+        Register<GameStateInGameClient, GameStateDefinitionInGameClient>();
+        Register<GameStateInGameLocal, GameStateDefinitionInGameLocal>();
+        Register<GameStateInGameServer, GameStateDefinitionInGameServer>();
+        Register<GameStateLobbyClient, GameStateDefinitionLobbyClient>();
+        Register<GameStateLobbyLocal, GameStateDefinitionLobbyLocal>();
+        Register<GameStateLobbyServer, GameStateDefinitionLobbyServer>();
+        Register<GameStateRootMenu, GameStateDefinitionRootMenu>();
     }
 
     void Register<LogicClass, SettingsClass>() where LogicClass : GameState, new()

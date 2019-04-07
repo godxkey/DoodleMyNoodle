@@ -5,11 +5,11 @@ using UnityEngine;
 
 public static class NetMessageInterpreter
 {
-    public static NetMessage GetMessageFromData(byte[] messageData)
+    public static INetSerializable GetMessageFromData(byte[] messageData)
     {
         BitStreamReader reader = new BitStreamReader(messageData);
 
-        if(messageData.Length < 4)
+        if (messageData.Length < 4)
         {
             DebugService.LogError("[NetMessageInterpreter] Error interpreting: data size to small.");
             return null;
@@ -17,9 +17,9 @@ public static class NetMessageInterpreter
 
         ushort messageType = reader.ReadUInt16();
 
-        NetMessage message = NetMessageFactory.CreateNetMessage(messageType);
+        INetSerializable message = NetMessageFactory.CreateNetMessage(messageType);
 
-        if(message == null)
+        if (message == null)
         {
             DebugService.LogError("[NetMessageInterpreter] Error interpreting: failed to create message of type " + messageType);
             return null;
@@ -30,11 +30,14 @@ public static class NetMessageInterpreter
         return message;
     }
 
-    public static void GetDataFromMessage(NetMessage message, out byte[] data)
+    public static void GetDataFromMessage(INetSerializable message, out byte[] data)
     {
-        data = new byte[message.NetByteSize + 2 /* for the messageType*/ ];
+        int netBitSize = message.GetNetBitSize();
+        int messageSizeByte = netBitSize.CeiledTo(8) / 8; // this will ceil the size to a multiple of 8
 
-        if(data.Length > 512)
+        data = new byte[messageSizeByte + 2 /* for the messageType*/ ];
+
+        if (data.Length > 512)
         {
             DebugService.LogError("The net message is exceeding the 512 byte capacity. Message fragmentation is a feature to be added.");
         }

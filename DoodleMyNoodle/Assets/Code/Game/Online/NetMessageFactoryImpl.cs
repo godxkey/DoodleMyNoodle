@@ -25,12 +25,22 @@ namespace Internals.OnlineServiceImpl
             }
         }
 
-        public ushort GetNetMessageTypeId(NetMessage message)
+        public ushort GetNetMessageTypeId(INetSerializable message)
         {
+            if (Debug.isDebugBuild)
+            {
+                if (!netMessageToId.ContainsKey(message.GetType()))
+                {
+                    DebugService.LogError("Cannot get typeId for netMessage of type " + message.GetType()
+                        + ".  It has not been registered. Try re-running the registration code-gen");
+                    return ushort.MaxValue;
+                }
+            }
+
             return netMessageToId[message.GetType()];
         }
 
-        public NetMessage CreateNetMessage(ushort messageType)
+        public INetSerializable CreateNetMessage(ushort messageType)
         {
             try
             {

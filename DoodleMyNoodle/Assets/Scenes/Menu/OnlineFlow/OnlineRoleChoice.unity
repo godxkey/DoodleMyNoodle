@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 48559215}
   - component: {fileID: 48559214}
   m_Layer: 0
-  m_Name: Game State Bootstrap
+  m_Name: QuickStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -138,10 +138,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 48559213}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65544e29b3643064788ae5c8382261fc, type: 3}
+  m_Script: {fileID: 11500000, guid: 0030b9bd1e116ba41b0aeedd0fed433b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameStateSettings: {fileID: 11400000, guid: a2bcadba14b6db14cb75c84271b01619, type: 2}
+  startFromScratch: 1
+  overridePlayMode: 0
+  playMode: 0
+  overridePlayerName: 0
+  playerName: 
+  overrideServerName: 0
+  serverName: 
+  overrideLevel: 0
+  level: 
 --- !u!4 &48559215
 Transform:
   m_ObjectHideFlags: 0

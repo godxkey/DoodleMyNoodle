@@ -10,7 +10,8 @@
         "BoltKit",
         "DOTweenModules",
         "CCC.Debug",
-        "Game.Data"
+        "Game.Data",
+        "Model"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29d778c9b97c7e542b64a5ceecabde2f, type: 3}
+  m_Name: QuickStartAssets
+  m_EditorClassIdentifier: 
+  emptyScene: {fileID: 11400000, guid: 126b1df2698669e43acb34d79b34ab61, type: 2}
+  inGameLocal: {fileID: 11400000, guid: 484c5451124e27d46a731b87b5073a9b, type: 2}
+  inGameClient: {fileID: 11400000, guid: 07934a0cb6742454ca8d778027d755e5, type: 2}
+  inGameServer: {fileID: 11400000, guid: 23a7b481f84cfb044906e1f4f380fba5, type: 2}
+  lobbyLocal: {fileID: 11400000, guid: a0dcc1f2f19fc234999be53597e8602d, type: 2}
+  lobbyServer: {fileID: 11400000, guid: d47945710aca9f743a4bab70d1f34829, type: 2}
+  lobbyClient: {fileID: 11400000, guid: bf39b08c256e7ea4d84154544a987abf, type: 2}
+  rootMenu: {fileID: 11400000, guid: a2bcadba14b6db14cb75c84271b01619, type: 2}
+  searchForSeverTimeout: 10
+  defaultSettings:
+    playMode: 2
+    playerName: fred
+    serverName: pogoizm
+    level: 

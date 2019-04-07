@@ -7,9 +7,9 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
     protected abstract INetMessageFactory CreateNetMessageFactory();
 
 
-    public static NetworkInterface networkInterface => Instance._networkInterface;
+    public static NetworkInterface networkInterface => Instance?._networkInterface;
 
-    public static OnlineInterface onlineInterface => Instance._onlineInterface;
+    public static OnlineInterface onlineInterface => Instance?._onlineInterface;
     public static OnlineClientInterface clientInterface => onlineInterface as OnlineClientInterface;
     public static OnlineServerInterface serverInterface => onlineInterface as OnlineServerInterface;
 
@@ -52,7 +52,7 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
 
     void OnNetworkInterfaceShutdownBegin()
     {
-        if(ApplicationUtilityService.ApplicationIsQuitting == false)
+        if (ApplicationUtilityService.ApplicationIsQuitting == false)
         {
             // If we're exiting the application (or pressing stop in the editor), we don't care about this
             _onlineInterface?.Dispose();

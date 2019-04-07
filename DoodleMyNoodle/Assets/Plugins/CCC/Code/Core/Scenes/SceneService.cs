@@ -25,6 +25,9 @@ public class SceneService : MonoCoreService<SceneService>
     List<ScenePromise> _loadingScenePromises = new List<ScenePromise>();
     List<ScenePromise> _unloadingScenePromises = new List<ScenePromise>();
 
+    // useful to know if we're the first scene in the game
+    public static int totalSceneLoadCount { get; private set; } 
+
     public override void Initialize(Action<ICoreService> onComplete)
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -88,9 +91,9 @@ public class SceneService : MonoCoreService<SceneService>
             scenePromise.Callbacks += callback;
             return true;
         }
-        else if (IsActive(sceneName))
+        else if (IsLoaded(sceneName))
         {
-            callback?.Invoke(GetActive(sceneName));
+            callback?.Invoke(GetLoaded(sceneName));
             return true;
         }
         return false;
@@ -109,18 +112,18 @@ public class SceneService : MonoCoreService<SceneService>
         UnloadAsync(sceneInfo.SceneName);
     }
 
-    public static bool IsActiveOrBeingLoaded(string sceneName)
+    public static bool IsLoadedOrLoading(string sceneName)
     {
-        if (IsActive(sceneName) || IsBeingLoaded(sceneName))
+        if (IsLoaded(sceneName) || IsLoading(sceneName))
             return true;
         return false;
     }
-    public static bool IsActiveOrBeingLoaded(SceneInfo sceneInfo)
+    public static bool IsLoadedOrBeingLoaded(SceneInfo sceneInfo)
     {
-        return IsActiveOrBeingLoaded(sceneInfo.SceneName);
+        return IsLoadedOrLoading(sceneInfo.SceneName);
     }
 
-    public static bool IsBeingLoaded(string sceneName)
+    public static bool IsLoading(string sceneName)
     {
         for (int i = 0; i < Instance._loadingScenePromises.Count; i++)
         {
@@ -128,12 +131,12 @@ public class SceneService : MonoCoreService<SceneService>
         }
         return false;
     }
-    public static bool IsBeingLoaded(SceneInfo sceneInfo)
+    public static bool IsLoading(SceneInfo sceneInfo)
     {
-        return IsBeingLoaded(sceneInfo.SceneName);
+        return IsLoading(sceneInfo.SceneName);
     }
 
-    public static bool IsActive(string sceneName)
+    public static bool IsLoaded(string sceneName)
     {
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
@@ -141,12 +144,12 @@ public class SceneService : MonoCoreService<SceneService>
         }
         return false;
     }
-    public static bool IsActive(SceneInfo sceneInfo)
+    public static bool IsLoaded(SceneInfo sceneInfo)
     {
-        return IsActive(sceneInfo.SceneName);
+        return IsLoaded(sceneInfo.SceneName);
     }
 
-    public static Scene GetActive(string sceneName)
+    public static Scene GetLoaded(string sceneName)
     {
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
@@ -154,16 +157,19 @@ public class SceneService : MonoCoreService<SceneService>
         }
         throw new Exception("No active scene by that name: " + sceneName);
     }
-    public static Scene GetActive(SceneInfo sceneInfo)
+    public static Scene GetLoaded(SceneInfo sceneInfo)
     {
-        return GetActive(sceneInfo.SceneName);
+        return GetLoaded(sceneInfo.SceneName);
     }
 
-    public static int ActiveSceneCount
+    public static Scene GetActiveScene() => SceneManager.GetActiveScene();
+    public static void SetActiveScene(Scene scene) => SceneManager.SetActiveScene(scene);
+
+    public static int loadedSceneCount
     {
         get { return SceneManager.sceneCount; }
     }
-    public static int LoadingSceneCount
+    public static int loadingSceneCount
     {
         get { return Instance._loadingScenePromises.Count; }
     }
@@ -174,6 +180,7 @@ public class SceneService : MonoCoreService<SceneService>
 
     static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        totalSceneLoadCount++;
         ScenePromise promise = GetLoadingScenePromise(scene.name);
         if (promise == null)
             return;

@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Misc/ApplicationBoot.unity
+    guid: 3ecf88b34e92221408ccd16b8746997c
+  - enabled: 1
+    path: Assets/Scenes/Misc/LoadingScreen.unity
+    guid: 92ee440d69c9efe4ab4fab7a571a1558
+  - enabled: 1
     path: Assets/Scenes/Menu/OnlineFlow/OnlineRoleChoice.unity
     guid: 7c2acb5dea68c0f49ac848ac0d7bcdaa
   - enabled: 1
@@ -20,4 +26,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Menu/InGameEsacpeMenu.unity
     guid: 526cbea577512dc42a4c0e329783b3b0
+  - enabled: 1
+    path: Assets/Scenes/Game/GameRootClient.unity
+    guid: 89c09be2ea7a787418bc64f4cdb83b20
+  - enabled: 1
+    path: Assets/Scenes/Game/GameRootServer.unity
+    guid: fa9ca71823e5fc44c8096a44b275a0a9
+  - enabled: 1
+    path: Assets/Scenes/Game/GameRootLocal.unity
+    guid: 6832c9c496e32854086ae3c970b86b4f
   m_configObjects: {}

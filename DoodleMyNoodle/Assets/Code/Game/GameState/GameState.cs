@@ -4,18 +4,18 @@ using UnityEngine.SceneManagement;
 
 public abstract class GameState
 {
-    public GameStateSettings settings { get; private set; }
+    public GameStateDefinition definition { get; private set; }
     
-    public virtual void SetSettings(GameStateSettings settings)
+    public virtual void SetDefinition(GameStateDefinition definition)
     {
-        this.settings = settings;
+        this.definition = definition;
     }
 
-    public virtual void Enter()
+    public virtual void Enter(GameStateParam[] parameters)
     {
-        if (settings.sceneToLoadOnEnter != null && !SceneService.IsActiveOrBeingLoaded(settings.sceneToLoadOnEnter))
+        if (definition.sceneToLoadOnEnter != null && !SceneService.IsLoadedOrBeingLoaded(definition.sceneToLoadOnEnter))
         {
-            SceneService.Load(settings.sceneToLoadOnEnter, settings.sceneLoadSettings, OnDefaultSceneLoaded);
+            SceneService.Load(definition.sceneToLoadOnEnter, definition.sceneLoadSettings, OnDefaultSceneLoaded);
         }
     }
 
@@ -29,7 +29,7 @@ public abstract class GameState
 
     }
 
-    public virtual void BeginExit()
+    public virtual void BeginExit(GameStateParam[] parameters)
     {
 
     }
@@ -44,16 +44,5 @@ public abstract class GameState
     public virtual bool IsExitComplete()
     {
         return true;
-    }
-}
-
-public abstract class GameState<SettingsClass> : GameState where SettingsClass : GameStateSettings
-{
-    public SettingsClass specificSettings { get; private set; }
-
-    public override void SetSettings(GameStateSettings settings)
-    {
-        base.SetSettings(settings);
-        specificSettings = (SettingsClass)settings;
     }
 }

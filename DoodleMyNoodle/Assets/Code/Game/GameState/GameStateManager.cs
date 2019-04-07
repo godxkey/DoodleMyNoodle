@@ -1,27 +1,43 @@
 ﻿using System;
-
+using UnityEngine;
 
 public class GameStateManager : MonoCoreService<GameStateManager>
 {
-    static public void TransitionToState(GameStateSettings gameStateSettings)
+    static public void TransitionToState(GameStateDefinition gameStateSettings, params GameStateParam[] parameters)
     {
-        Instance.Internal_TransitionToState(gameStateSettings);
+        Instance.Internal_TransitionToState(gameStateSettings, parameters);
     }
 
     static public GameState currentGameState => Instance._currentGameState;
     static public GameState targetGameState => Instance._targetGameState;
     static public bool isTransitioningState => currentGameState != targetGameState;
+    static public T GetCurrentGameState<T>() where T : GameState => currentGameState == null ? null : currentGameState as T;
 
     GameState _currentGameState;
     GameState _targetGameState;
     GameStateFactory _gameStateFactory = new GameStateFactory();
+    GameStateDefinitionGraph _graph;
+
+    [SerializeField]
+    [Reorderable]
+    GameStateDefinition[] _gameStateDefinitions = new GameStateDefinition[0];
+    GameStateParam[] _parameters;
 
     public override void Initialize(Action<ICoreService> onComplete)
     {
         onComplete(this);
+
+        _graph = new GameStateDefinitionGraph(_gameStateDefinitions);
+
+        //var path = _graph.FindPathToGameState(_graph.root.gameStateDefinition, _gameStateDefinitions.Last());
+
+        //foreach (var item in path)
+        //{
+        //    Debug.Log(item);
+        //}
     }
 
-    void Internal_TransitionToState(GameStateSettings gameStateSettings)
+    void Internal_TransitionToState(GameStateDefinition gameStateSettings, GameStateParam[] parameters)
     {
         if (gameStateSettings == null)
         {
@@ -29,8 +45,10 @@ public class GameStateManager : MonoCoreService<GameStateManager>
             return;
         }
 
+        _parameters = parameters;
+
         GameState newGameState = _gameStateFactory.CreateGameState(gameStateSettings);
-        newGameState.SetSettings(gameStateSettings);
+        newGameState.SetDefinition(gameStateSettings);
 
         if (newGameState == null)
         {
@@ -42,7 +60,7 @@ public class GameStateManager : MonoCoreService<GameStateManager>
         _targetGameState = newGameState;
 
         DebugService.Log("[GameStateManager] Transitioning from " + GetPrintGameStateName(_currentGameState) + " to " + GetPrintGameStateName(_targetGameState) + "...");
-        _currentGameState?.BeginExit();
+        _currentGameState?.BeginExit(_parameters);
     }
 
     void Update()
@@ -63,7 +81,7 @@ public class GameStateManager : MonoCoreService<GameStateManager>
                 {
                     _currentGameState = _targetGameState;
                     DebugService.Log("[GameStateManager] Entering " + GetPrintGameStateName(_currentGameState));
-                    _currentGameState?.Enter();
+                    _currentGameState?.Enter(_parameters);
 
                     if (isTransitioningState)
                     {

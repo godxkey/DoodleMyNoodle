@@ -76,34 +76,52 @@ public class DebugService : MonoCoreService<DebugService>
             case LogType.Warning:
                 _LogWarning(message);
                 break;
+            case LogType.Assert:
+            case LogType.Exception:
             case LogType.Error:
                 _LogError(message);
+                _LogError(stack);
                 break;
         }
     }
 
-    public static void Log(string message)
+    public static void Log(string message, bool displayOnScreen = false)
     {
         if (forwardToNativeUnityDebug)
             Debug.Log(message);
         else
             _Log(message);
+
+        if (displayOnScreen)
+        {
+            DebugScreenMessage.DisplayMessage(message);
+        }
     }
 
-    public static void LogError(string message)
+    public static void LogError(string message, bool displayOnScreen = false)
     {
         if (forwardToNativeUnityDebug)
             Debug.LogError(message);
         else
             _LogError(message);
+
+        if (displayOnScreen)
+        {
+            DebugScreenMessage.DisplayMessage(message);
+        }
     }
 
-    public static void LogWarning(string message)
+    public static void LogWarning(string message, bool displayOnScreen = false)
     {
         if (forwardToNativeUnityDebug)
             Debug.LogWarning(message);
         else
             _LogWarning(message);
+
+        if (displayOnScreen)
+        {
+            DebugScreenMessage.DisplayMessage(message);
+        }
     }
 
     static void _Log(string message)

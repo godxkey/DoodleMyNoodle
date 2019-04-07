@@ -2,23 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameStateInGameBase<SettingsClass> : GameState<SettingsClass>, IGameStateInGameBase
-    where SettingsClass : GameStateSettingsInGameBase
+public class GameStateInGameBase : GameState
 {
-
     public virtual void ReturnToMenu()
     {
-        GameStateManager.TransitionToState(specificSettings.gameStateIfReturn);
+        GameStateManager.TransitionToState(((GameStateDefinitionInGameBase)definition).gameStateIfReturn);
     }
 
     public virtual void ExitApplication()
     {
         Application.Quit();
     }
-}
-
-public interface IGameStateInGameBase
-{
-    void ReturnToMenu();
-    void ExitApplication();
 }

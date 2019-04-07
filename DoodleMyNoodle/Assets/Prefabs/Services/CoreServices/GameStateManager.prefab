@@ -43,3 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0943889956ea968449cd6a840867053b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameStateDefinitions:
+  - {fileID: 11400000, guid: a2bcadba14b6db14cb75c84271b01619, type: 2}
+  - {fileID: 11400000, guid: bf39b08c256e7ea4d84154544a987abf, type: 2}
+  - {fileID: 11400000, guid: a0dcc1f2f19fc234999be53597e8602d, type: 2}
+  - {fileID: 11400000, guid: d47945710aca9f743a4bab70d1f34829, type: 2}
+  - {fileID: 11400000, guid: 484c5451124e27d46a731b87b5073a9b, type: 2}
+  - {fileID: 11400000, guid: 23a7b481f84cfb044906e1f4f380fba5, type: 2}
+  - {fileID: 11400000, guid: 07934a0cb6742454ca8d778027d755e5, type: 2}
