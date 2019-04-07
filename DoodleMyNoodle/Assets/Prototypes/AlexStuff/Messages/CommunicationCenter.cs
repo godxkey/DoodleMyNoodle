@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class CommunicationCenter : MonoCoreService<CommunicationCenter>
 {
-    List<Listeners> listeners;
-    List<IncommingTransmission> transmissions;
+    private List<Listeners> listeners;
+    private List<IncommingTransmission> transmissions;
 
     public struct Listeners
     {
@@ -42,6 +42,7 @@ public class CommunicationCenter : MonoCoreService<CommunicationCenter>
                 }
             }
         }
+        transmissions.Clear();
     }
 
     // SENDING
@@ -66,14 +67,21 @@ public class CommunicationCenter : MonoCoreService<CommunicationCenter>
     {
         IncommingTransmission currentTransmission = new IncommingTransmission();
         currentTransmission.channel = channel;
-        currentTransmission.message = null;
+        currentTransmission.message = message;
         return currentTransmission;
     }
 
     // LISTENNING
 
-    public void Listen()
+    public void Listen(ICommunicationInterface listener, CommunicationChannel channel)
     {
+        if(listener != null)
+        {
+            Listeners newListener;
+            newListener.listener = listener;
+            newListener.channel = channel;
 
+            listeners.Add(newListener);
+        }
     }
 }

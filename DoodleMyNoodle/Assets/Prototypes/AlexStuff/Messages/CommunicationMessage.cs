@@ -13,7 +13,13 @@ public class CommunicationMessage
 
     public T GetFirstInformationOfType<T>()
     {
-        // TODO
+        for (int i = 0; i < informations.Length; i++)
+        {
+            if(informations[i].GetType() == typeof(string))
+            {
+                return (T)informations[i];
+            }
+        }
 
         return default(T);
     }
@@ -22,7 +28,13 @@ public class CommunicationMessage
     {
         List<T> result = new List<T>();
 
-        // TODO
+        for (int i = 0; i < informations.Length; i++)
+        {
+            if (informations[i].GetType() == typeof(string))
+            {
+                result.Add((T)informations[i]);
+            }
+        }
 
         return result;
     }

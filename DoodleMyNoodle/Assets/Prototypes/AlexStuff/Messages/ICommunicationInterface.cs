@@ -4,6 +4,5 @@ using UnityEngine;
 
 public interface ICommunicationInterface
 {
-    void RegisterChannelListenner();
     void OnReceive(CommunicationMessage message);
 }
