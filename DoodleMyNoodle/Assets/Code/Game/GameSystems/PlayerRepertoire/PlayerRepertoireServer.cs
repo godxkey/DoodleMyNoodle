@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class PlayerRepertoireServer : PlayerRepertoire
+public class PlayerRepertoireServer : PlayerRepertoireSystem
 {
     SessionServerInterface _serverSession;
     ushort _playerIdCounter;
@@ -11,7 +11,9 @@ public class PlayerRepertoireServer : PlayerRepertoire
     // This list should match the _players list
     List<INetworkInterfaceConnection> _playerConnections = new List<INetworkInterfaceConnection>();
 
-    protected override void OnPreReady()
+    public override bool isSystemReady => true;
+
+    protected override void Internal_OnGameReady()
     {
         // when we're the server, we assign ourself our Id (which is 0)
 

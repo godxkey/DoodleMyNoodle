@@ -8,41 +8,6 @@ public class Game : MonoBehaviour
     public static bool playModeClient { get; private set; }
     public static bool playModeServer { get; private set; }
 
-    public static void AddOnReadyCallback(Action cb)
-    {
-        if (_instance == null)
-        {
-            DebugService.LogError("[AddOnReadyCallback] Game instance is null. Cannot add callback");
-            return;
-        }
-
-        if (_instance._ready)
-        {
-            cb();
-        }
-        else
-        {
-            _instance._onReady += cb;
-        }
-    }
-    public static void AddPreReadyCallback(Action cb)
-    {
-        if (_instance == null)
-        {
-            DebugService.LogError("[AddOnReadyCallback] Game instance is null. Cannot add callback");
-            return;
-        }
-
-        if (_instance._ready)
-        {
-            cb();
-        }
-        else
-        {
-            _instance._preReady += cb;
-        }
-    }
-
     [SerializeField] SceneInfo _localSpecificScene;
     [SerializeField] SceneInfo _serverSpecificScene;
     [SerializeField] SceneInfo _clientSpecificScene;
@@ -50,10 +15,9 @@ public class Game : MonoBehaviour
     static Game _instance;
 
     bool _ready;
+    bool _started;
     bool _playModeSpecificSceneRequested = false;
     bool _playModeSpecificSceneLoaded = false;
-    event Action _preReady;
-    event Action _onReady;
 
     void Awake()
     {
@@ -68,36 +32,8 @@ public class Game : MonoBehaviour
         _instance = null;
     }
 
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    //      THIS IS UGLY TEMPORARY CODE                                 
-    ////////////////////////////////////////////////////////////////////////////////////////
-    [SerializeField] SceneInfo _escapeMenuScene;
-
-    MenuInGameEscape _menuInGameEscape;
-
-    void Start()
-    {
-        SceneService.LoadAsync(_escapeMenuScene, OnEscapeMenuSceneLoaded);
-    }
-    void OnEscapeMenuSceneLoaded(Scene scene)
-    {
-        _menuInGameEscape = scene.FindRootObject<MenuInGameEscape>();
-    }
-
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            _menuInGameEscape?.Open();
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        //      END OF UGLY CODE                                 
-        ////////////////////////////////////////////////////////////////////////////////////////
-
         if (!_playModeSpecificSceneRequested)
         {
             switch (GameStateManager.currentGameState)
@@ -138,22 +74,32 @@ public class Game : MonoBehaviour
             {
                 // invoke 'OnReady' callbacks
 
-                _preReady?.Invoke(); // useful so that certain systems set themselves up
-
-                foreach (GameMonoBehaviour b in GameMonoBehaviour.registeredBehaviours)
-                {
-                    b.OnGamePreReady();
-                }
-
-                _onReady?.Invoke();
-
                 foreach (GameMonoBehaviour b in GameMonoBehaviour.registeredBehaviours)
                 {
                     b.OnGameReady();
                 }
+            }
+        }
 
-                _preReady = null;
-                _onReady = null;
+        if(_ready && !_started)
+        {
+            for (int i = 0; i < GameSystem.unreadySystems.Count; i++)
+            {
+                if (GameSystem.unreadySystems[i].isSystemReady)
+                {
+                    GameSystem.unreadySystems.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            if(GameSystem.unreadySystems.Count == 0)
+            {
+                _started = true;
+
+                foreach (GameMonoBehaviour b in GameMonoBehaviour.registeredBehaviours)
+                {
+                    b.OnGameStart();
+                }
             }
         }
 

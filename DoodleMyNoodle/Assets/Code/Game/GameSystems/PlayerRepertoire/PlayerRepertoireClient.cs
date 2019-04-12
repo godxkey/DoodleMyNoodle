@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class PlayerRepertoireClient : PlayerRepertoire
+public class PlayerRepertoireClient : PlayerRepertoireSystem
 {
     SessionClientInterface _clientSession;
+
+    bool _localPlayerIdAssigned = false;
+    bool _playerListSyncReceived = false;
+
+    public override bool isSystemReady => _localPlayerIdAssigned && _playerListSyncReceived;
 
     protected override void OnBindedToSession()
     {
@@ -23,7 +28,7 @@ public class PlayerRepertoireClient : PlayerRepertoire
         _clientSession = null;
     }
 
-    protected override void OnPreReady()
+    protected override void Internal_OnGameReady()
     {
         _localPlayerInfo.isServer = false;
         _localPlayerInfo.playerId = PlayerId.invalid;
@@ -41,6 +46,8 @@ public class PlayerRepertoireClient : PlayerRepertoire
     {
         DebugService.Log("[PlayerRepertoireClient] OnMsg_PlayerIdAssignement");
         _localPlayerInfo.playerId = message.playerId;
+
+        _localPlayerIdAssigned = true;
     }
 
     void OnMsg_NetMessagePlayerRepertoireSync(NetMessagePlayerRepertoireSync message, INetworkInterfaceConnection source)
@@ -51,6 +58,8 @@ public class PlayerRepertoireClient : PlayerRepertoire
         {
             _players.Add(new PlayerInfo(playerInfo));
         }
+
+        _playerListSyncReceived = true;
     }
 
     void OnMsg_NetMessagePlayerJoined(NetMessagePlayerJoined message, INetworkInterfaceConnection source)

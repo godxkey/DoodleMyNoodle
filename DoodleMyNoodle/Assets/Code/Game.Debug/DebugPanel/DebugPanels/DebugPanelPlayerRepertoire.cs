@@ -5,11 +5,11 @@ using UnityEngine;
 public class DebugPanelPlayerRepertoire : DebugPanel
 {
     public override string Title => "Player Repertoire";
-    public override bool CanBeDisplayed => PlayerRepertoire.instance != null;
+    public override bool CanBeDisplayed => PlayerRepertoireSystem.instance != null;
 
     public override void OnGUI()
     {
-        PlayerRepertoire repertoire = PlayerRepertoire.instance;
+        PlayerRepertoireSystem repertoire = PlayerRepertoireSystem.instance;
         var players = repertoire.players;
 
         GUILayout.BeginHorizontal();
@@ -62,7 +62,7 @@ public class DebugPanelPlayerRepertoire : DebugPanel
 
     static void ApplyPlayerTextColor(PlayerInfo playerInfo)
     {
-        GUI.color = PlayerRepertoire.instance.IsLocalPlayer(playerInfo.playerId) ? Color.yellow : Color.white;
+        GUI.color = PlayerRepertoireSystem.instance.IsLocalPlayer(playerInfo.playerId) ? Color.yellow : Color.white;
     }
     static void ResetTextColor()
     {

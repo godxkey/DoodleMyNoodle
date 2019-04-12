@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-public abstract class PlayerRepertoire : GameMonoBehaviour
+public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem>
 {
-    public static PlayerRepertoire instance { get; private set; }
-
     public ReadOnlyCollection<PlayerInfo> players { get; private set; }
 
     public PlayerInfo GetLocalPlayerInfo()
@@ -32,19 +30,7 @@ public abstract class PlayerRepertoire : GameMonoBehaviour
     protected List<PlayerInfo> _players { get; private set; } = new List<PlayerInfo>();
     protected PlayerInfo _localPlayerInfo = new PlayerInfo();
 
-    protected override void Awake()
-    {
-        base.Awake();
-        instance = this;
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        instance = null;
-    }
-
-    public override void OnGamePreReady()
+    public override void OnGameReady()
     {
         players = _players.AsReadOnly();
         _localPlayerInfo.playerName = PlayerProfileService.Instance.playerName;
@@ -57,7 +43,7 @@ public abstract class PlayerRepertoire : GameMonoBehaviour
             BindToSession();
         }
 
-        OnPreReady();
+        Internal_OnGameReady();
     }
 
     public override void OnSafeDestroy()
@@ -90,5 +76,5 @@ public abstract class PlayerRepertoire : GameMonoBehaviour
 
     protected virtual void OnBindedToSession() { }
     protected virtual void OnUnbindedFromSession() { }
-    protected virtual void OnPreReady() { }
+    protected virtual void Internal_OnGameReady() { }
 }

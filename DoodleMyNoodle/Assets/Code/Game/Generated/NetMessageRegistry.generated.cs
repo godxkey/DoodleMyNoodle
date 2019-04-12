@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class NetMessageRegistry
 {
-    public static readonly ulong crc = 16144657265599703864;
+    public static readonly ulong crc = 6789699048536780675;
 
     public static readonly Type[] types = new Type[]
     {
@@ -25,10 +25,6 @@ public static class NetMessageRegistry
         typeof(PlayerId)
         ,
         typeof(PlayerInfo)
-        ,
-        typeof(Popo)
-        ,
-        typeof(Testo)
     };
 
     public static readonly Dictionary<UInt16, Func<object, int>> netBitSizeMap = new Dictionary<UInt16, Func<object, int>>()
@@ -80,18 +76,6 @@ public static class NetMessageRegistry
             PlayerInfo castedObj = (PlayerInfo)obj;
             return NetSerializer_PlayerInfo.GetNetBitSize(ref castedObj);
         }
-        ,
-        [8] = (obj) =>
-        {
-            Popo castedObj = (Popo)obj;
-            return NetSerializer_Popo.GetNetBitSize(ref castedObj);
-        }
-        ,
-        [9] = (obj) =>
-        {
-            Testo castedObj = (Testo)obj;
-            return NetSerializer_Testo.GetNetBitSize(ref castedObj);
-        }
     };
 
     public static readonly Dictionary<UInt16, Action<object, BitStreamWriter>> serializationMap = new Dictionary<UInt16, Action<object, BitStreamWriter>>()
@@ -142,18 +126,6 @@ public static class NetMessageRegistry
         {
             PlayerInfo castedObj = (PlayerInfo)obj;
             NetSerializer_PlayerInfo.NetSerialize(ref castedObj, writer);
-        }
-        ,
-        [8] = (obj, writer) =>
-        {
-            Popo castedObj = (Popo)obj;
-            NetSerializer_Popo.NetSerialize(ref castedObj, writer);
-        }
-        ,
-        [9] = (obj, writer) =>
-        {
-            Testo castedObj = (Testo)obj;
-            NetSerializer_Testo.NetSerialize(ref castedObj, writer);
         }
     };
 
@@ -212,20 +184,6 @@ public static class NetMessageRegistry
         {
             PlayerInfo obj = default;
             NetSerializer_PlayerInfo.NetDeserialize(ref obj, reader);
-            return obj;
-        }
-        ,
-        [8] = (reader) =>
-        {
-            Popo obj = default;
-            NetSerializer_Popo.NetDeserialize(ref obj, reader);
-            return obj;
-        }
-        ,
-        [9] = (reader) =>
-        {
-            Testo obj = default;
-            NetSerializer_Testo.NetDeserialize(ref obj, reader);
             return obj;
         }
     };
