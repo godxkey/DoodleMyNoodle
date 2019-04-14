@@ -10,6 +10,7 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
     {
         return _localPlayerInfo;
     }
+    public abstract PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection);
     public PlayerInfo GetPlayerInfo(PlayerId playerId)
     {
         for (int i = 0; i < _players.Count; i++)
@@ -24,6 +25,16 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
     public bool IsLocalPlayer(PlayerId id)
     {
         return id.isValid && _localPlayerInfo.playerId == id;
+    }
+    public PlayerInfo GetServerPlayerInfo()
+    {
+        for (int i = 0; i < _players.Count; i++)
+        {
+            if (_players[i].isServer)
+                return _players[i];
+        }
+
+        return null;
     }
 
     protected SessionInterface _sessionInterface { get; private set; }

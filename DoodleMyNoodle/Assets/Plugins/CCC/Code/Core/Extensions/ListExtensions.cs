@@ -46,6 +46,30 @@ public static class ListExtensions
         list.RemoveAt(lastIndex);
     }
 
+    public static void SwapWithLast<T>(this List<T> list, int index)
+    {
+        if (list.Count <= 1)
+            return;
+
+        int lastIndex = list.Count - 1;
+        T temp = list[lastIndex];
+
+        //Swap chosen element with element at end of list
+        list[lastIndex] = list[index];
+        list[index] = temp;
+    }
+
+    public static void MoveLast<T>(this List<T> list, int index)
+    {
+        if (list.Count <= 1)
+            return;
+
+        T temp = list[index];
+
+        list.RemoveAt(index);
+        list.Add(temp);
+    }
+
     public static T Last<T>(this List<T> list)
     {
         return list[list.Count - 1];

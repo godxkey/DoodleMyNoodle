@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class OnlineServerInterface : OnlineInterface
 {
     public override bool isServerType => true;
+    public SessionServerInterface sessionServerInterface => sessionInterface == null ? null : (SessionServerInterface)sessionInterface;
 
     public bool isCreatingSession { get; private set; }
 

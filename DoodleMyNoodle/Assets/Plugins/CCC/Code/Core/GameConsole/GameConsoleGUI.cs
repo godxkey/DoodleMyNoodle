@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 namespace Internals.GameConsoleInterals
 {
@@ -12,7 +13,6 @@ namespace Internals.GameConsoleInterals
         {
             _lines = new LineList(_linePoolSize);
             _inputField.onEndEdit.AddListener(OnSubmit);
-
         }
 
         void Start()
@@ -57,6 +57,11 @@ namespace Internals.GameConsoleInterals
             if (open)
             {
                 _inputField.ActivateInputField();
+            }
+            else
+            {
+                if (EventSystem.current.currentSelectedGameObject == _inputField.gameObject)
+                    EventSystem.current.SetSelectedGameObject(null);
             }
         }
 

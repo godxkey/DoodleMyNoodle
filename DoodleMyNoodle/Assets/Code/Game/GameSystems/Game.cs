@@ -81,7 +81,7 @@ public class Game : MonoBehaviour
             }
         }
 
-        if(_ready && !_started)
+        if (_ready && !_started)
         {
             for (int i = 0; i < GameSystem.unreadySystems.Count; i++)
             {
@@ -92,7 +92,7 @@ public class Game : MonoBehaviour
                 }
             }
 
-            if(GameSystem.unreadySystems.Count == 0)
+            if (GameSystem.unreadySystems.Count == 0)
             {
                 _started = true;
 
@@ -103,6 +103,27 @@ public class Game : MonoBehaviour
             }
         }
 
+
+        if (_started)
+        {
+            foreach (GameMonoBehaviour b in GameMonoBehaviour.registeredBehaviours)
+            {
+#if DEBUG_BUILD
+                try
+                {
+#endif
+                    if (b.isActiveAndEnabled)
+                        b.OnGameUpdate();
+#if DEBUG_BUILD
+                }
+                catch (Exception e)
+                {
+                    DebugService.LogError(e.Message);
+                }
+#endif
+
+            }
+        }
     }
 
     void OnPlayModeSpecificSceneLoaded(Scene scene)

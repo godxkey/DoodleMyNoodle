@@ -23,6 +23,6 @@ MonoBehaviour:
   searchForSeverTimeout: 10
   defaultSettings:
     playMode: 2
-    playerName: fredClient
+    playerName: fred
     serverName: pogoizm
     level: 

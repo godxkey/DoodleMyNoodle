@@ -3,12 +3,26 @@ using System.Collections.Generic;
 
 public class PlayerRepertoireClient : PlayerRepertoireSystem
 {
+    public static new PlayerRepertoireClient instance => (PlayerRepertoireClient)GameSystem<PlayerRepertoireSystem>.instance;
+
     SessionClientInterface _clientSession;
 
     bool _localPlayerIdAssigned = false;
     bool _playerListSyncReceived = false;
 
     public override bool isSystemReady => _localPlayerIdAssigned && _playerListSyncReceived;
+
+    public override PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection)
+    {
+        if(_clientSession != null && _clientSession.serverConnection != null && _clientSession.serverConnection.Id == connection.Id)
+        {
+            return GetServerPlayerInfo();
+        }
+        else
+        {
+            return null;
+        }
+    }
 
     protected override void OnBindedToSession()
     {

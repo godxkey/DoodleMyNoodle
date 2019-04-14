@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 public class PlayerRepertoireServer : PlayerRepertoireSystem
 {
+    public static new PlayerRepertoireServer instance => (PlayerRepertoireServer)GameSystem<PlayerRepertoireSystem>.instance;
+
     SessionServerInterface _serverSession;
     ushort _playerIdCounter;
 
@@ -10,11 +13,26 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
 
     // This list should match the _players list
     List<INetworkInterfaceConnection> _playerConnections = new List<INetworkInterfaceConnection>();
+    public ReadOnlyCollection<INetworkInterfaceConnection> playerConnections;
 
     public override bool isSystemReady => true;
 
+    public override PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection)
+    {
+        for (int i = 0; i < _playerConnections.Count; i++)
+        {
+            if(_playerConnections[i] != null && _playerConnections[i].Id == connection.Id)
+            {
+                return _players[i];
+            }
+        }
+        return null;
+    }
+
     protected override void Internal_OnGameReady()
     {
+        playerConnections = _playerConnections.AsReadOnly();
+
         // when we're the server, we assign ourself our Id (which is 0)
 
         _localPlayerInfo.playerId = new PlayerId(_playerIdCounter++);
@@ -68,6 +86,14 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
 
         _players.Add(newPlayerInfo);
         _playerConnections.Add(clientConnection);
+
+        // Assign id to the new player
+        NetMessagePlayerIdAssignment playerIdAssignementMessage = new NetMessagePlayerIdAssignment
+        {
+            playerId = newPlayerInfo.playerId
+        };
+        _serverSession.SendNetMessage(playerIdAssignementMessage, clientConnection);
+        DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerIdAssignment");
 
 
         // Notify other players

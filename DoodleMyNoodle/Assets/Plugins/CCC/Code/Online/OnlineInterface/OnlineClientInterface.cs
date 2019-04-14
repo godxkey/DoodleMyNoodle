@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 public class OnlineClientInterface : OnlineInterface
 {
     public override bool isServerType => false;
+    public SessionClientInterface sessionClientInterface => sessionInterface == null ? null : (SessionClientInterface)sessionInterface;
 
     public event Action onSessionListUpdated;
     public bool isConnectingSession { get; private set; }
