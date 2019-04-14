@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class RushManager : MonoBehaviour
 {
@@ -17,15 +18,31 @@ public class RushManager : MonoBehaviour
 
     public List<Transform> aiPlacingZone = new List<Transform>();
 
+    private int myHP = 5;
+    private int ennemyHP = 5;
+
     private RushToy currentlySpawnedToy;
+
+    private bool progressInTurn = true;
+
+    private bool isGameOver = false;
+
+    void Start()
+    {
+        ui.ModifyMyHealthDisplay(myHP);
+        ui.ModifyEnnemyHealthDisplay(ennemyHP);
+    }
 
     public void SpawnNewToy()
     {
-        RushToy newToy = Instantiate(toyPrefab, entityContainer).GetComponent<RushToy>();
-        currentlySpawnedToy = newToy;
-        currentlySpawnedToy.team = 0;
-        newToy.Spawn(this);
-        inputManager.currentlyPlacingAToy = true;
+        if (inputManager.inputEnable)
+        {
+            RushToy newToy = Instantiate(toyPrefab, entityContainer).GetComponent<RushToy>();
+            currentlySpawnedToy = newToy;
+            currentlySpawnedToy.team = 0;
+            newToy.Spawn(this);
+            inputManager.currentlyPlacingAToy = true;
+        }
     }
 
     public void SpawnAINewToy()
@@ -64,17 +81,64 @@ public class RushManager : MonoBehaviour
 
     public void StartNewTurn()
     {
-        Debug.Log("StartNewTurn");
+        if (inputManager.inputEnable)
+        {
+            Debug.Log("StartNewTurn");
 
-        inputManager.inputEnable = false;
+            inputManager.inputEnable = false;
 
-        ResolveAITurn();
+            ResolveAITurn();
 
-        ResolveTurn();
-        //StartCoroutine(ResolveTurn());
+            StartCoroutine(ResolveTurn());
+        }
     }
 
-    private void ResolveTurn()
+    public void ToyReachedOutside(RushToy toy)
+    {
+        if (toy.team == 0)
+        {
+            ennemyHP -= toy.power;
+        }
+        else
+        {
+            myHP -= toy.power;
+        }
+
+        UpdateHealthDisplay();
+
+        if ((ennemyHP <= 0) || (myHP <= 0))
+        {
+            isGameOver = true;
+        }
+
+        grid.ToyHasBeenDestroyed(toy);
+        Destroy(toy.gameObject);
+    }
+
+    private void GameOver()
+    {
+        this.DelayedCall(5, () =>
+         {
+             ui.ResetUI();
+             ennemyHP = 5;
+             myHP = 5;
+             UpdateHealthDisplay();
+             grid.ResetGrid();
+             ui.NextTurnToyListAnimation(() => {
+                 isGameOver = false;
+                 inputManager.inputEnable = true;
+             });
+         });
+
+    }
+
+    private void UpdateHealthDisplay()
+    {
+        ui.ModifyMyHealthDisplay(myHP);
+        ui.ModifyEnnemyHealthDisplay(ennemyHP);
+    }
+
+    private IEnumerator ResolveTurn()
     {
         Debug.Log("ResolvingTurn");
 
@@ -85,7 +149,7 @@ public class RushManager : MonoBehaviour
 
             Debug.Log("Resolving - " + x + "," + firstTileToTrigger.y);
 
-            ResolveToyTurn(currentTileToy);
+            yield return ResolveToyTurn(currentTileToy);
         }
 
         // Resolve Other Rows
@@ -101,12 +165,12 @@ public class RushManager : MonoBehaviour
 
                 if (playerOneToy == null)
                 {
-                    ResolveToyTurn(playerTwoToy);
+                    yield return StartCoroutine(ResolveToyTurn(playerTwoToy));
                     continue;
                 }
                 else if (playerTwoToy == null)
                 {
-                    ResolveToyTurn(playerOneToy);
+                    yield return StartCoroutine(ResolveToyTurn(playerOneToy));
                     continue;
                 }
                 else
@@ -123,14 +187,18 @@ public class RushManager : MonoBehaviour
                             if (result.winner == playerOneToy)
                             {
                                 KillToy(playerTwoToy);
-                                playerOneToy.Move();
+                                progressInTurn = false;
+                                playerOneToy.Move(ProgressTurn);
+                                StartCoroutine(WaitUntilTweenIsCompleted());
                                 playerOneToy.resolvedThisTurn = true;
                                 continue;
                             }
                             else
                             {
                                 KillToy(playerOneToy);
-                                playerTwoToy.Move();
+                                progressInTurn = false;
+                                playerTwoToy.Move(ProgressTurn);
+                                StartCoroutine(WaitUntilTweenIsCompleted());
                                 playerTwoToy.resolvedThisTurn = true;
                                 continue;
                             }
@@ -144,11 +212,8 @@ public class RushManager : MonoBehaviour
                     }
                     else
                     {
-                        // IF POSITION IS OUT OF GAME WORLD
-                        // IS IT ON THE ENEMY BASE ? YES THEN WIN CONDITION HERE
-
-                        ResolveToyTurn(playerOneToy);
-                        ResolveToyTurn(playerTwoToy);
+                        yield return StartCoroutine(ResolveToyTurn(playerOneToy));
+                        yield return StartCoroutine(ResolveToyTurn(playerTwoToy));
                     }
                 }
             }
@@ -159,81 +224,104 @@ public class RushManager : MonoBehaviour
 
     private void OnTurnCompleted()
     {
-        grid.UnresolveAll();
-        inputManager.inputEnable = true;
+        if (isGameOver)
+        {
+            if (ennemyHP <= 0)
+            {
+                isGameOver = true;
+                ui.DisplayYouWin();
+                GameOver();
+            }
+            else if (myHP <= 0)
+            {
+                isGameOver = true;
+                ui.DisplayEnnemyWin();
+                GameOver();
+            }
+        }
+        else
+        {
+            grid.UnresolveAll();
+            ui.NextTurnToyListAnimation(() => { inputManager.inputEnable = true; });
+        }
     }
 
     private void ResolveAITurn()
     {
         SpawnAINewToy();
-        PlaceNewToy(aiPlacingZone[Random.Range(0, aiPlacingZone.Count-1)].localPosition);
+        PlaceNewToy(aiPlacingZone[Random.Range(0, aiPlacingZone.Count - 1)].localPosition);
     }
 
-    private void ResolveToyTurn(RushToy toy)
+    private IEnumerator ResolveToyTurn(RushToy toy)
     {
         RushToy currentTileToy = toy;
-        if (currentTileToy == null)
+        if (currentTileToy != null)
         {
-            return;
-        }
-
-        if (currentTileToy.resolvedThisTurn)
-        {
-            return;
-        }
-
-        Vector2 calculatedNewPosition = currentTileToy.GetNextPosition();
-
-        // IF POSITION IS OUT OF GAME WORLD
-        // IS IT ON THE ENEMY BASE ? YES THEN WIN CONDITION HERE
-
-        RushToy toyOnDestination = grid.GetToyAt(calculatedNewPosition);
-        if (toyOnDestination != null)
-        {
-            if (toyOnDestination.team != currentTileToy.team)
+            if (!currentTileToy.resolvedThisTurn)
             {
-                RushCombatResolver.CombatResult result = combatResolver.ResolveConflict(currentTileToy, toyOnDestination);
-                if (result.winner != null)
+                Vector2 calculatedNewPosition = currentTileToy.GetNextPosition();
+
+                RushToy toyOnDestination = grid.GetToyAt(calculatedNewPosition);
+                if (toyOnDestination != null)
                 {
-                    if (result.winner == currentTileToy)
+                    if (toyOnDestination.team != currentTileToy.team)
                     {
-                        currentTileToy.Move();
-                        currentTileToy.resolvedThisTurn = true;
-                        toyOnDestination.resolvedThisTurn = true;
-                        KillToy(toyOnDestination);
-                        feedbacks.SpawnBattleFeedbackOnTile(calculatedNewPosition);
-                        return;
+                        RushCombatResolver.CombatResult result = combatResolver.ResolveConflict(currentTileToy, toyOnDestination);
+                        if (result.winner != null)
+                        {
+                            if (result.winner == currentTileToy)
+                            {
+                                progressInTurn = false;
+                                currentTileToy.Move(ProgressTurn);
+                                yield return StartCoroutine(WaitUntilTweenIsCompleted());
+                                currentTileToy.resolvedThisTurn = true;
+                                toyOnDestination.resolvedThisTurn = true;
+                                KillToy(toyOnDestination);
+                                feedbacks.SpawnBattleFeedbackOnTile(calculatedNewPosition);
+                            }
+                            else
+                            {
+                                currentTileToy.resolvedThisTurn = true;
+                                KillToy(currentTileToy);
+                                feedbacks.SpawnBattleFeedbackOnTile(currentTileToy.transform.localPosition);
+                            }
+                        }
+                        else
+                        {
+                            currentTileToy.resolvedThisTurn = true;
+                            toyOnDestination.resolvedThisTurn = true;
+                            KillToy(currentTileToy);
+                            KillToy(toyOnDestination);
+                            feedbacks.SpawnBattleFeedbackOnTile(calculatedNewPosition);
+                        }
                     }
                     else
                     {
+                        // ALLY IN THE WAY
                         currentTileToy.resolvedThisTurn = true;
-                        KillToy(currentTileToy);
-                        feedbacks.SpawnBattleFeedbackOnTile(currentTileToy.transform.localPosition);
-                        return;
                     }
                 }
                 else
                 {
+                    progressInTurn = false;
+                    currentTileToy.Move(ProgressTurn);
+                    yield return StartCoroutine(WaitUntilTweenIsCompleted());
                     currentTileToy.resolvedThisTurn = true;
-                    toyOnDestination.resolvedThisTurn = true;
-                    KillToy(currentTileToy);
-                    KillToy(toyOnDestination);
-                    feedbacks.SpawnBattleFeedbackOnTile(calculatedNewPosition);
-                    return;
                 }
             }
-            else
-            {
-                // ALLY IN THE WAY
-                currentTileToy.resolvedThisTurn = true;
-                return;
-            }
         }
-        else
+    }
+
+    IEnumerator WaitUntilTweenIsCompleted()
+    {
+        while (!progressInTurn)
         {
-            currentTileToy.Move();
-            currentTileToy.resolvedThisTurn = true;
-            return;
+            yield return new WaitForEndOfFrame();
         }
+    }
+
+    void ProgressTurn()
+    {
+        progressInTurn = true;
     }
 }

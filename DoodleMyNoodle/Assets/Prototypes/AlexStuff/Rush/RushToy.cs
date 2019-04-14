@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
 
 public class RushToy : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class RushToy : MonoBehaviour
     public bool resolvedThisTurn = false;
 
     public SpriteRenderer teamIdentifier;
+
+    public float movementSpeed = 0.1f;
 
     private bool isBeingPlaced = false;
 
@@ -51,16 +54,53 @@ public class RushToy : MonoBehaviour
         transform.position = position;
     }
 
-    public void Move()
+    public void Move(System.Action onComplete)
     {
+        Tween currentTween;
         if(team == 0)
         {
-            transform.localPosition = new Vector2(transform.localPosition.x, transform.localPosition.y + 1);
+            currentTween = transform.DOLocalMove(new Vector2(transform.localPosition.x, transform.localPosition.y + 1), movementSpeed).OnComplete(()=> 
+            {
+                if (team == 0)
+                {
+                    if (transform.localPosition.y > gameManager.inputManager.borderTopRight.localPosition.y)
+                    {
+                        gameManager.ToyReachedOutside(this);
+                    }
+                }
+                else
+                {
+                    if (transform.localPosition.y < gameManager.inputManager.borderBottomLeft.localPosition.y)
+                    {
+                        gameManager.ToyReachedOutside(this);
+                    }
+                }
+                onComplete?.Invoke();
+            });
         }
         else
         {
-            transform.localPosition = new Vector2(transform.localPosition.x, transform.localPosition.y - 1);
+            currentTween = transform.DOLocalMove(new Vector2(transform.localPosition.x, transform.localPosition.y - 1), movementSpeed).OnComplete(() => 
+            {
+                if (team == 0)
+                {
+                    if (transform.localPosition.y > gameManager.inputManager.borderTopRight.localPosition.y)
+                    {
+                        gameManager.ToyReachedOutside(this);
+                    }
+                }
+                else
+                {
+                    if (transform.localPosition.y < gameManager.inputManager.borderBottomLeft.localPosition.y)
+                    {
+                        gameManager.ToyReachedOutside(this);
+                    }
+                }
+                onComplete?.Invoke();
+            });
         }
+
+        currentTween.Play();
     }
 
     public Vector2 GetNextPosition()

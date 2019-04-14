@@ -36,4 +36,13 @@ public class RushGrid : MonoBehaviour
         }
         return null;
     }
+
+    public void ResetGrid()
+    {
+        foreach (RushToy toy in toysOnGrid)
+        {
+            Destroy(toy.gameObject);
+        }
+        toysOnGrid.Clear();
+    }
 }
