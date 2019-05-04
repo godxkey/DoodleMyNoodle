@@ -1,30 +1,36 @@
 ﻿using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System;
-using UnityEngine;
+using System.Runtime.Serialization;
 
 public static class SaveHelper
 {
     static public void InstantSave(string path, object graph)
     {
-        BinaryFormatter bf = new BinaryFormatter();
+        InstantSave(path, graph, new BinaryFormatter());
+    }
+    static public void InstantSave(string path, object graph, IFormatter formatter)
+    {
         FileStream file = File.Open(path, FileMode.OpenOrCreate);
-        bf.Serialize(file, graph);
+        formatter.Serialize(file, graph);
         file.Close();
     }
 
     static public object InstantLoad(string path)
     {
+        return InstantLoad(path, new BinaryFormatter());
+    }
+    static public object InstantLoad(string path, IFormatter formatter)
+    {
         if (!FileExists(path))
             return null;
 
         object obj = null;
-        BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(path, FileMode.Open);
 
         try
         {
-            obj = bf.Deserialize(file);
+            obj = formatter.Deserialize(file);
         }
         catch (Exception e)
         {

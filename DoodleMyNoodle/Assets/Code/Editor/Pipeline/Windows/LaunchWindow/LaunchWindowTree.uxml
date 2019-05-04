@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xmlns:upm="UnityEditor.PackageManager.UI"
+
+xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd"
+>
+  <engine:ScrollView>
+    <engine:VisualElement class="category">
+      <engine:Label text="Build" class="title"/>
+      <engine:Label name="buildTarget" text="Building for:"/>
+      <engine:Toggle name="developmentBuild" label="Development Build"/>
+      <engine:Toggle name="allowDebugging" label="Allow Debugging"/>
+
+      <engine:VisualElement name="buildButtonsContainer">
+        <engine:Button name="buildGame" class="buildButton" text="Build Game"/>
+        <engine:VisualElement name="buildButtonSpacing" />
+        <engine:Button name="buildScripts" class="buildButton" text="Build ONLY Scripts"/>
+      </engine:VisualElement>
+      <engine:Button name="openBuildFolder" text="Open Build Folder"/>
+
+    </engine:VisualElement>
+
+    <engine:Button text="Refresh" name="refreshButton"/>
+
+    <engine:VisualElement class="category">
+      <engine:Label text="Launch" class="title"/>
+      <engine:TextField label="Level" name="level"/>
+      <engine:TextField label="Server Name" name="serverName"/>
+      <engine:Toggle label="Play Online" name="online"/>
+      <engine:IMGUIContainer name="whoIsServer"/>
+      <engine:Foldout name="advFoldout">
+        <engine:Toggle label="Server is headless" name="headless"/>
+        <engine:TextField label="Extra arguments" name="extraArgs"/>
+      </engine:Foldout>
+      <engine:VisualElement name="profilesContainer"/>
+    </engine:VisualElement>
+  </engine:ScrollView>
+</engine:UXML>

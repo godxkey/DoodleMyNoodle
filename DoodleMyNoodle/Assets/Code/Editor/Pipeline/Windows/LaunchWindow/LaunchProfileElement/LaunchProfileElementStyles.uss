@@ -1,0 +1,48 @@
+.container {
+    padding: 5px;
+    margin: 3px;
+}
+
+.category {
+    flex: auto;
+}
+
+#profileName {
+    margin: 3px;
+}
+
+.header {
+    -unity-font-style: bold;
+    font-size: 15px;
+}
+
+.buttonContainer {
+    flex: auto;
+}
+
+.categoryContainer {
+    flex: auto;
+    flex-direction: row;
+}
+
+.button {
+    flex: auto;
+}
+
+.stopButton {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    top: 0px;
+    visibility: hidden;
+    -unity-background-image-tint-color: rgb(255, 210, 210);
+}
+
+.playButton {
+    -unity-background-image-tint-color: rgb(210, 255, 210);
+}
+
+.serverHighlight {
+    -unity-background-image-tint-color: rgb(234, 188, 255);
+}

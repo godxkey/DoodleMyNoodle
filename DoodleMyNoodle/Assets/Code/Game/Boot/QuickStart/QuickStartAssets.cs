@@ -2,9 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//#if UNITY_EDITOR
+//using UnityEditor;
+//#endif
+
 [CreateAssetMenu(menuName = "DoodleMyNoodle/QuickStart Assets")]
 public class QuickStartAssets : ScriptableObject
 {
+    public static QuickStartAssets instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = (QuickStartAssets)Resources.Load("QuickStartAssets");
+
+            return _instance;
+        }
+    }
+    static QuickStartAssets _instance;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public SceneInfo emptyScene;
 
     [Header("GameStates")]
@@ -18,18 +37,4 @@ public class QuickStartAssets : ScriptableObject
 
     [Header("Settings")]
     public float searchForSeverTimeout = -1;
-    public QuickStartSettings defaultSettings;
-
-    public static QuickStartAssets instance
-    {
-        get
-        {
-            if (_instance == null)
-                _instance = (QuickStartAssets)Resources.Load("QuickStartAssets");
-
-            return _instance;
-        }
-    }
-    static QuickStartAssets _instance;
-
 }

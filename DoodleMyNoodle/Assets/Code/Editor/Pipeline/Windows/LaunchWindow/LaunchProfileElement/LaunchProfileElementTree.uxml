@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xmlns:upm="UnityEditor.PackageManager.UI"
+
+xsi:noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd"
+>
+  <engine:Box class="container" name="container">
+    <engine:TextField label="Profile" name="profileName"/>
+
+    <engine:VisualElement class="categoryContainer">
+      <engine:Box class="container category">
+        <engine:Label text="Editor" class="header"/>
+        <engine:VisualElement class="buttonContainer">
+          <engine:Button text="Play" name="playEditor" class="button playButton"/>
+          <engine:Button text="Stop" name="stopEditor" class="button stopButton"/>
+        </engine:VisualElement>
+      </engine:Box>
+
+      <engine:Box class="container category">
+        <engine:Label text="Standalone" class="header"/>
+        <engine:VisualElement class="buttonContainer">
+          <engine:Button text="Play" name="playStandalone" class="button playButton "/>
+          <engine:Button text="Stop" name="stopStandalone" class="button stopButton"/>
+        </engine:VisualElement>
+      </engine:Box>
+    </engine:VisualElement>
+  </engine:Box>
+
+</engine:UXML>

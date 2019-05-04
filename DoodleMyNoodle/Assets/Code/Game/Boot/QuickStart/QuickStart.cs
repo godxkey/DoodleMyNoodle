@@ -21,13 +21,14 @@ public static class QuickStart
         });
     }
 
-    public static void StartFromScratch()
+    public static void StartFromScratch(int playerProfileLocalId = 0)
     {
         hasEverQuickStarted = true;
         CoreServiceManager.AddInitializationCallback(() =>
         {
-            DebugService.Log("QuickStart: from scratch");
+            DebugService.Log("QuickStart: from scratch - profile:" + playerProfileLocalId);
             StopRoutine();
+            PlayerProfileService.Instance.SetPlayerProfile(playerProfileLocalId);
             GameStateManager.TransitionToState(assets.rootMenu);
         });
     }
@@ -46,10 +47,7 @@ public static class QuickStart
 
         yield return null;
 
-        if (string.IsNullOrEmpty(settings.playerName) == false)
-        {
-            PlayerProfileService.Instance.playerName = settings.playerName;
-        }
+        PlayerProfileService.Instance.SetPlayerProfile(settings.localProfileId);
 
         switch (settings.playMode)
         {
@@ -113,7 +111,9 @@ public static class QuickStart
             IEnumerator WaitForServerToAppear()
             {
                 float elapsedTime = 0;
-                while (foundSession == null && (elapsedTime < assets.searchForSeverTimeout || assets.searchForSeverTimeout == -1))
+                while (foundSession == null 
+                    && (elapsedTime < assets.searchForSeverTimeout || assets.searchForSeverTimeout == -1)
+                    && OnlineService.clientInterface != null)
                 {
                     foreach (INetworkInterfaceSession session in OnlineService.clientInterface.availableSessions)
                     {

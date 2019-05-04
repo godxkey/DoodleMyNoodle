@@ -21,8 +21,11 @@ MonoBehaviour:
   lobbyClient: {fileID: 11400000, guid: bf39b08c256e7ea4d84154544a987abf, type: 2}
   rootMenu: {fileID: 11400000, guid: a2bcadba14b6db14cb75c84271b01619, type: 2}
   searchForSeverTimeout: 10
+  editorProfile:
+    playerName: 
+  standaloneProfiles: []
   defaultSettings:
     playMode: 2
-    playerName: fred
-    serverName: pogoizm
-    level: 
+    playerName: bobo
+    serverName: Fred's game
+    level: w

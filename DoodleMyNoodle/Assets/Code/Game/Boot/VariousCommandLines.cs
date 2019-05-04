@@ -24,6 +24,6 @@ internal static class VariousCommandLines
 
     static void Cmd_Menu(string[] args)
     {
-        QuickStart.StartFromScratch();
+        GameStateManager.TransitionToState(QuickStartAssets.instance.rootMenu);
     }
 }

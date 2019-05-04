@@ -80,7 +80,7 @@ public class SaveService : MonoCoreService<SaveService>
 
     public object InstantLoad(string path)
     {
-        return   SaveHelper.InstantLoad(path);
+        return SaveHelper.InstantLoad(path);
     }
 
     public bool FileExists(string path)

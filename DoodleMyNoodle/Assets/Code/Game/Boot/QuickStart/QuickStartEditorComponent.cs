@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class QuickStartEditorComponent : MonoBehaviour
 {
     public bool startFromScratch;
@@ -9,12 +13,6 @@ public class QuickStartEditorComponent : MonoBehaviour
     [ShowIf("CanShowPlayMode", HideShowBaseAttribute.Type.Property)]
     public QuickStartSettings.PlayMode playMode;
     bool CanShowPlayMode => !startFromScratch && overridePlayMode;
-
-    [HideIf("startFromScratch")]
-    public bool overridePlayerName;
-    [ShowIf("CanShowPlayerName", HideShowBaseAttribute.Type.Property)]
-    public string playerName;
-    bool CanShowPlayerName => !startFromScratch && overridePlayerName;
 
     [HideIf("startFromScratch")]
     public bool overrideServerName;
@@ -32,7 +30,7 @@ public class QuickStartEditorComponent : MonoBehaviour
     void Awake()
     {
         // Fred - maybe this is not necessary
-        if(SceneService.totalSceneLoadCount == 0)
+        if (SceneService.totalSceneLoadCount == 0)
         {
             CoreServiceManager.AddInitializationCallback(OnServicesReady);
         }
@@ -40,21 +38,34 @@ public class QuickStartEditorComponent : MonoBehaviour
 
     void OnServicesReady()
     {
-        if(QuickStart.hasEverQuickStarted == false)
+        if (QuickStart.hasEverQuickStarted == false)
         {
             if (startFromScratch)
             {
-                QuickStart.StartFromScratch();
+                QuickStart.StartFromScratch(EditorLaunchData.profileLocalId);
             }
             else
             {
-                QuickStartSettings settings = QuickStartAssets.instance.defaultSettings;
+                QuickStartSettings settings = new QuickStartSettings()
+                {
+                    localProfileId = EditorLaunchData.profileLocalId,
+                    level = EditorLaunchData.level,
+                    serverName = EditorLaunchData.serverName
+                };
+
+                if (EditorLaunchData.playOnline)
+                {
+                    settings.playMode = EditorLaunchData.whoIsServerId == EditorLaunchData.profileLocalId ?
+                        QuickStartSettings.PlayMode.OnlineServer :
+                        QuickStartSettings.PlayMode.OnlineClient;
+                }
+                else
+                {
+                    settings.playMode = QuickStartSettings.PlayMode.Local;
+                }
 
                 if (overridePlayMode)
                     settings.playMode = playMode;
-
-                if (overridePlayerName)
-                    settings.playerName = playerName;
 
                 if (overrideServerName)
                     settings.serverName = serverName;

@@ -24,8 +24,10 @@
         "udpkit.dll",
         "udpkit.common.dll",
         "udpkit.platform.photon.dll",
-        "DOTween.dll"
+        "DOTween.dll",
+        "Newtonsoft.Json.dll"
     ],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": []
 }

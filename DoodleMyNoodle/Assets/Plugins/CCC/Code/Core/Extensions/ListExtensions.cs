@@ -29,6 +29,19 @@ public static class ListExtensions
             list.RemoveAt(index);
         }
     }
+    public static bool RemoveWithLastSwap<T>(this List<T> list, T value)
+    {
+        int index = list.IndexOf(value);
+        if (index >= 0)
+        {
+            list.RemoveWithLastSwap(index);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public static void RemoveWithLastSwap<T>(this List<T> list, int index)
     {
         int lastIndex = list.Count - 1;

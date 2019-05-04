@@ -28,9 +28,9 @@ public class CoreServiceManager
 
     Dictionary<Type, ICoreService> services = new Dictionary<Type, ICoreService>();
 
-    public static bool InitializationComplete { get; private set; } = false;
+    public static bool initializationComplete { get; private set; } = false;
 
-    static public CoreServiceManager Instance { get; private set; }
+    static public CoreServiceManager instance { get; private set; }
 
     static InitEvent onAllInitComplete = new InitEvent();
     static Dictionary<Type, InitEvent> initializationCallbackMap = new Dictionary<Type, InitEvent>();
@@ -44,7 +44,7 @@ public class CoreServiceManager
             return;
         }
 
-        if (InitializationComplete)
+        if (initializationComplete)
         {
             onComplete();
         }
@@ -71,7 +71,7 @@ public class CoreServiceManager
     }
     static public void RemoveInitializationCallback<T>(Action onComplete) where T : ICoreService
     {
-        if(InitializationComplete == false)
+        if(initializationComplete == false)
         {
             InitEvent safeEvent;
             if (initializationCallbackMap.TryGetValue(typeof(T), out safeEvent))
@@ -92,7 +92,7 @@ public class CoreServiceManager
             return;
         }
 
-        if (InitializationComplete)
+        if (initializationComplete)
         {
             onComplete();
         }
@@ -111,8 +111,8 @@ public class CoreServiceManager
 
     public CoreServiceManager()
     {
-        Debug.Assert(Instance == null);
-        Instance = this;
+        Debug.Assert(instance == null);
+        instance = this;
 
         CoreServiceBank bank = CoreServiceBank.LoadBank();
 
@@ -151,7 +151,7 @@ public class CoreServiceManager
 
     void OnInitializationComplete()
     {
-        InitializationComplete = true;
+        initializationComplete = true;
 
         onAllInitComplete.callbacks.SafeInvoke();
         onAllInitComplete.callbacksHaveBeenSent = true;
