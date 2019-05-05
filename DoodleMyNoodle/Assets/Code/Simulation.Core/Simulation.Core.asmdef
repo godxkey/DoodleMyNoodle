@@ -1,3 +1,15 @@
-﻿{
-	"name": "Simulation.Core"
+{
+    "name": "Simulation.Core",
+    "references": [
+        "GUID:737e1c04c3dd3e046bedb5be72aec1d7"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
 }

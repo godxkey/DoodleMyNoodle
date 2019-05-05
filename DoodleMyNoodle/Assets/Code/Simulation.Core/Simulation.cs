@@ -27,4 +27,6 @@ public class Simulation : IDisposable
             input.Execute(instance.world);
         }
     }
+
+    public static readonly Fix64 deltaTime = (Fix64)0.25m; // 40 ticks per seconds
 }
