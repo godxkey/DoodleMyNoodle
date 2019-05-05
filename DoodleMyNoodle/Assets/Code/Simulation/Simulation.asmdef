@@ -1,5 +1,5 @@
 {
-    "name": "Model",
+    "name": "Simulation",
     "references": [
         "CCC.Core",
         "CCC.Online"
@@ -11,5 +11,6 @@
     "overrideReferences": true,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": []
 }

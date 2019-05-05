@@ -11,7 +11,7 @@
         "DOTweenModules",
         "CCC.Debug",
         "Game.Data",
-        "Model"
+        "Simulation.Core"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
