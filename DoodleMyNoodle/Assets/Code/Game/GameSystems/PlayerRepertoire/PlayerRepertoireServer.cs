@@ -87,6 +87,8 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
         _players.Add(newPlayerInfo);
         _playerConnections.Add(clientConnection);
 
+        ChatSystem.instance.SubmitMessage(newPlayerInfo.playerName + " has joined the game.");
+
         // Assign id to the new player
         NetMessagePlayerIdAssignment playerIdAssignementMessage = new NetMessagePlayerIdAssignment
         {
@@ -125,6 +127,8 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
             // The connection was not yet a valid player. Nothing else to do
             return;
         }
+
+        ChatSystem.instance.SubmitMessage(_players[playerIndex].playerName + " has left the game.");
 
         PlayerId playerId = _players[playerIndex].playerId;
 

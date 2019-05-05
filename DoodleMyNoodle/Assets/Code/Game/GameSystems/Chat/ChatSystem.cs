@@ -33,6 +33,6 @@ public abstract class ChatSystem : GameSystem<ChatSystem>
 
     protected void AddNewLine(ChatLine chatLine)
     {
-        onNewLine.Invoke(chatLine);
+        onNewLine?.Invoke(chatLine);
     }
 }
