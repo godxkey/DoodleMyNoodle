@@ -1,0 +1,17 @@
+{
+    "name": "Simulation.Impl",
+    "references": [
+        "GUID:737e1c04c3dd3e046bedb5be72aec1d7",
+        "GUID:a695b5a3e8c39e14fb9d86d3205fadf9",
+        "GUID:a00d64d0edbb5e74485770968c429238"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

@@ -1,13 +1,15 @@
 {
-    "name": "Simulation",
+    "name": "FixMath.Editor",
     "references": [
         "GUID:737e1c04c3dd3e046bedb5be72aec1d7"
     ],
     "optionalUnityReferences": [],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
-    "allowUnsafeCode": true,
-    "overrideReferences": true,
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],

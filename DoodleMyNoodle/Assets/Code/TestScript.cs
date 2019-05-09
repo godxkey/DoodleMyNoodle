@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TestScript : MonoBehaviour
 {
+    public Fix64 test;
+    public float testFloat;
+
     void Awake()
     {
         if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.sessionInterface != null)

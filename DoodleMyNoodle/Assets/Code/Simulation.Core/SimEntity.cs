@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-public struct SimTickData
+public class SimEntity
 {
-    public SimInput[] inputs;
 }

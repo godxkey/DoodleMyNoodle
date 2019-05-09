@@ -22,10 +22,14 @@ public class Simulation : IDisposable
 
     public static void Tick(SimTickData tickData)
     {
+        instance.world.Tick_PreInput();
+
         foreach (SimInput input in tickData.inputs)
         {
             input.Execute(instance.world);
         }
+
+        instance.world.Tick_PostInput();
     }
 
     public static readonly Fix64 deltaTime = (Fix64)0.2m; // 50 ticks per seconds

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class SimInput
+public class SimPlayerInput
 {
-    public abstract void Execute(SimWorld world);
+    public SimPlayerId simPlayerId;
 }
