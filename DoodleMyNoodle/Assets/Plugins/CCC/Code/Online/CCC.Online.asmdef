@@ -1,7 +1,8 @@
 {
     "name": "CCC.Online",
     "references": [
-        "CCC.Core"
+        "CCC.Core",
+        "CCC.NetSerializer"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
@@ -10,5 +11,6 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": []
 }

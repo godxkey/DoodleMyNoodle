@@ -1,0 +1,15 @@
+{
+    "name": "CCC.NetSerializer",
+    "references": [
+        "GUID:c886ee09f9545f74f85dd4e7b076b17c"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

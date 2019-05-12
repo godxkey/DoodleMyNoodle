@@ -13,7 +13,7 @@ public static class ArrayNetSerializer_PlayerInfo
         int result = 1 + sizeof(UInt16) * 8;
         for (int i = 0; i < obj.Length; i++)
         {
-            result += NetSerializer_PlayerInfo.GetNetBitSize(ref obj[i]);
+            result += StaticNetSerializer_PlayerInfo.GetNetBitSize_Class(obj[i]);
         }
         return result;
     }
@@ -29,7 +29,7 @@ public static class ArrayNetSerializer_PlayerInfo
         writer.WriteUInt16((UInt16)obj.Length);
         for (int i = 0; i < obj.Length; i++)
         {
-            NetSerializer_PlayerInfo.NetSerialize(ref obj[i], writer);
+            StaticNetSerializer_PlayerInfo.NetSerialize_Class(obj[i], writer);
         }
     }
 
@@ -43,7 +43,7 @@ public static class ArrayNetSerializer_PlayerInfo
         obj = new PlayerInfo[reader.ReadUInt16()];
         for (int i = 0; i < obj.Length; i++)
         {
-            NetSerializer_PlayerInfo.NetDeserialize(ref obj[i], reader);
+            obj[i] = StaticNetSerializer_PlayerInfo.NetDeserialize_Class(reader);
         }
     }
 }

@@ -4,7 +4,9 @@
         "Game",
         "Game.Data",
         "CCC.Core",
-        "CCC.Debug"
+        "CCC.Debug",
+        "CCC.Online",
+        "CCC.NetSerializer"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
@@ -15,5 +17,6 @@
     "autoReferenced": true,
     "defineConstraints": [
         "DEBUG_BUILD"
-    ]
+    ],
+    "versionDefines": []
 }

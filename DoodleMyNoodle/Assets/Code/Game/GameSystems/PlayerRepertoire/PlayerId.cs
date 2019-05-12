@@ -2,7 +2,7 @@
 
 using System;
 
-[NetMessage]
+[NetSerializable]
 public partial struct PlayerId
 {
     public static readonly PlayerId invalid = new PlayerId(UInt16.MaxValue);

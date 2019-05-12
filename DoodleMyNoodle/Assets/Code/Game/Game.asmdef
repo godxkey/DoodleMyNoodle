@@ -1,17 +1,18 @@
 {
     "name": "Game",
     "references": [
+        "BoltKit",
         "CCC.Core",
-        "CCC.UI",
+        "CCC.Debug",
+        "CCC.NetSerializer",
         "CCC.Online",
+        "CCC.UI",
+        "DOTweenModules",
+        "Game.Data",
+        "Simulation.Core",
         "Unity.Jobs",
         "Unity.Collections",
-        "Unity.TextMeshPro",
-        "BoltKit",
-        "DOTweenModules",
-        "CCC.Debug",
-        "Game.Data",
-        "Simulation.Core"
+        "Unity.TextMeshPro"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
@@ -21,11 +22,11 @@
     "precompiledReferences": [
         "bolt.dll",
         "bolt.user.dll",
+        "DOTween.dll",
+        "Newtonsoft.Json.dll",
         "udpkit.dll",
         "udpkit.common.dll",
-        "udpkit.platform.photon.dll",
-        "DOTween.dll",
-        "Newtonsoft.Json.dll"
+        "udpkit.platform.photon.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

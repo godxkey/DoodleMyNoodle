@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Simulation : IDisposable
+public partial class Simulation : IDisposable
 {
     public static Simulation instance;
     public Simulation() { instance = this; }
     public void Dispose()
     {
+        world.Dispose();
         if (instance == this)
             instance = null;
     }

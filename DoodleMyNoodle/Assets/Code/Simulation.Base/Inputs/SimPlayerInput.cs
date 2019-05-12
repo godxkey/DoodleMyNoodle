@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class SimPlayerInput
+public class SimPlayerInput : SimInput
 {
     public SimPlayerId simPlayerId;
+
+    public override void Execute(SimWorld world)
+    {
+    }
 }

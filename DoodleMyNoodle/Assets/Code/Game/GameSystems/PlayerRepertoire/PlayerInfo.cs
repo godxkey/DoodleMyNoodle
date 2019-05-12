@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-[NetMessage]
+[NetSerializable]
 public class PlayerInfo
 {
     public PlayerInfo() { }

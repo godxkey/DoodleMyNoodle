@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-[NetMessage]
+[NetSerializable]
 public class NetMessageExample
 {
     public string valueString;
@@ -12,6 +12,6 @@ public class NetMessageExample
     public byte valueByte;
     public int[] listOnInts;
 
-    [NetMessageAttributes.Ignore]
+    [NotNetSerialized]
     public bool ignoreThisField;
 }
