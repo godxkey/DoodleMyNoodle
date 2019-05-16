@@ -7,6 +7,7 @@ public static class NetSerializationCodeGenSettings
     {
         { "Game", "Assets/Code/Game/Generated/NetMessageSerializers"}
         , {"mscorlib", "Assets/Plugins/CCC/Code/NetSerializer/Generated/NetMessageSerializers"}
+        , {"CCC.FixMath", "Assets/Plugins/CCC/Code/FixMath/Generated/NetMessageSerializers"}
         //, {"Examples", "Assets/Code/Examples/Generated/NetMessageSerializers"}
     };
 

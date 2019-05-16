@@ -3,6 +3,8 @@
 /// <summary>
 /// Provides XNA-like 4-component vector math.
 /// </summary>
+[NetSerializable]
+[Serializable]
 public struct FixVector4 : IEquatable<FixVector4>
 {
     /// <summary>

@@ -29,6 +29,18 @@ public static class BitStreamWriterExtensions
     {
         writer.WriteBits(value, 32);
     }
+    public static void WriteInt64(this BitStreamWriter writer, long value)
+    {
+        BitConverterX.UInt64ToUInt32((ulong)value, out uint left, out uint right);
+        writer.WriteUInt32(left);
+        writer.WriteUInt32(right);
+    }
+    public static void WriteUInt64(this BitStreamWriter writer, ulong value)
+    {
+        BitConverterX.UInt64ToUInt32(value, out uint left, out uint right);
+        writer.WriteUInt32(left);
+        writer.WriteUInt32(right);
+    }
 
     public static void WriteFloat32(this BitStreamWriter writer, float value)
     {

@@ -1,6 +1,8 @@
 ﻿/// <summary>
 /// 2 row, 3 column matrix.
 /// </summary>
+[NetSerializable]
+[System.Serializable]
 public struct FixMatrix2x3
 {
     /// <summary>

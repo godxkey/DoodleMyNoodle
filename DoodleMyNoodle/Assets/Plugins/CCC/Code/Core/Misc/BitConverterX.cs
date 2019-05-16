@@ -2,11 +2,24 @@
 
 public static class BitConverterX
 {
+    public static unsafe void UInt64ToUInt32(ulong value, out uint left, out uint right)
+    {
+        left = (uint)(value >> 32);
+        right = (uint)value;
+    }
+
     public static unsafe uint Int32ToUInt32(int value) => *(uint*)(&value);
     public static unsafe float Int32ToFloat32(int value) => *(float*)(&value);
 
     public static unsafe int UInt32ToInt32(uint value) => *(int*)(&value);
     public static unsafe float UInt32ToFloat32(uint value) => *(float*)(&value);
+    public static unsafe ulong UInt32ToUInt64(uint valueLeft, uint valueRight)
+    {
+        ulong result = valueLeft;
+        result <<= 32;
+        result |= valueRight;
+        return result;
+    }
 
     public static unsafe int Float32ToInt32(float value) => *(int*)(&value);
     public static unsafe uint Float32ToUInt32(float value) => *(uint*)(&value);

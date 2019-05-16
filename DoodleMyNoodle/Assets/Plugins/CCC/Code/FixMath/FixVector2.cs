@@ -3,6 +3,8 @@
 /// <summary>
 /// Provides XNA-like 2D vector math.
 /// </summary>
+[NetSerializable]
+[Serializable]
 public struct FixVector2 : IEquatable<FixVector2>
 {
     /// <summary>

@@ -3,6 +3,24 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
+public static class StaticNetSerializer_Int64
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize(ref Int64 value) => sizeof(Int64) * 8;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetSerialize(ref Int64 value, BitStreamWriter writer) => writer.WriteInt64(value);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetDeserialize(ref Int64 value, BitStreamReader reader) => value = reader.ReadInt64();
+}
+public static class StaticNetSerializer_UInt64
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize(ref UInt64 value) => sizeof(UInt64) * 8;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetSerialize(ref UInt64 value, BitStreamWriter writer) => writer.WriteUInt64(value);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetDeserialize(ref UInt64 value, BitStreamReader reader) => value = reader.ReadUInt64();
+}
 public static class StaticNetSerializer_Int32
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

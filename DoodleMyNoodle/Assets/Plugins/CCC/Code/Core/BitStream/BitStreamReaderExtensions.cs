@@ -30,6 +30,18 @@ public static class BitStreamReaderExtensions
     {
         return BitConverterX.Int32ToUInt32(reader.ReadBits(32));
     }
+    public static long ReadInt64(this BitStreamReader reader)
+    {
+        uint left = reader.ReadUInt32();
+        uint right = reader.ReadUInt32();
+        return (long)BitConverterX.UInt32ToUInt64(left, right);
+    }
+    public static ulong ReadUInt64(this BitStreamReader reader)
+    {
+        uint left = reader.ReadUInt32();
+        uint right = reader.ReadUInt32();
+        return BitConverterX.UInt32ToUInt64(left, right);
+    }
 
     public static float ReadFloat32(this BitStreamReader reader)
     {

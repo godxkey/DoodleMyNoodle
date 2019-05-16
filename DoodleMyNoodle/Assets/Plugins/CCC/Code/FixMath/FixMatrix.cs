@@ -3,6 +3,8 @@
 /// <summary>
 /// Provides XNA-like 4x4 matrix math.
 /// </summary>
+[NetSerializable]
+[Serializable]
 public struct FixMatrix
 {
     /// <summary>

@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 /// Represents a Q31.32 fixed-point number.
 /// </summary>
 [Serializable]
+[NetSerializable]
 public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64>
 {
     [UnityEngine.SerializeField]public long m_rawValue; // should be read-only but we leave it like that for unity serialization
