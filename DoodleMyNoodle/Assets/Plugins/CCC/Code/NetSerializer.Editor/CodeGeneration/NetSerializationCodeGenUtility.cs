@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -19,7 +19,7 @@ public static class NetSerializationCodeGenUtility
         }
     }
 
-    public static ReadOnlyCollection<Type> GetNetSerializableTypes()
+    public static List<Type> GetNetSerializableTypes()
     {
         Func<Type, Type, int> typeComparer = (t1, t2) =>
         {
@@ -39,7 +39,7 @@ public static class NetSerializationCodeGenUtility
             }
         }
 
-        return netMessageTypes.GetInternalList();
+        return netMessageTypes.internalList;
     }
 
     public static bool ConsideredAsValueType(Type type)

@@ -32,7 +32,7 @@ public static partial class NetSerializerCodeGenerator
 
             Type baseClass = type.BaseType == typeof(object) || type.BaseType == typeof(ValueType) ? null : type.BaseType;
             bool couldBeDynamic = !NetSerializationCodeGenUtility.ConsideredAsValueType(type);
-            bool isDynamicType = serializableAttribute != null ? serializableAttribute.isBaseClass : false;
+            bool isDynamicType = serializableAttribute != null ? serializableAttribute.baseClass : false;
             string methodObjParameter_Rcv = couldBeDynamic ?
                 (type.Name + " obj") :
                 ("ref " + type.Name + " obj");

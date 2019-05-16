@@ -6,31 +6,30 @@ using System.Reflection;
 using System.Text;
 using UnityEditor;
 
-public static class NetMessageRegistryCodeGenerator
+public static class DynamicNetSerializationRegistryCodeGenerator
 {
-    const string FilePath = "Assets/Code/Game/Generated";
-    const string ClassName = "DynamicNetSerializationRegistry";
-    const string FileName = ClassName + ".generated.cs";
-    static readonly string CompletePath = FilePath + '/' + FileName;
+    static readonly string CompletePath = NetSerializationCodeGenSettings.Registry_FilePath + '/' + NetSerializationCodeGenSettings.Registry_FileName;
 
 
-    [MenuItem("Tools/Code Generation/Net Serialization Registry/Generate")]
-    static void Generate()
+    [MenuItem(NetSerializationCodeGenSettings.MenuName_Generate_Registry)]
+    public static void Generate()
     {
-        GenerateCode(NetSerializationCodeGenUtility.GetNetSerializableTypes());
+        var types = NetSerializationCodeGenUtility.GetNetSerializableTypes();
+        types.RemoveAll((t) => t.IsAbstract);
+        GenerateCode(types.ToArray());
 
         AssetDatabase.Refresh();
     }
 
-    [MenuItem("Tools/Code Generation/Net Serialization Registry/Clear")]
-    static void Clear()
+    [MenuItem(NetSerializationCodeGenSettings.MenuName_Clear_Registry)]
+    public static void Clear()
     {
-        GenerateCode(new ReadOnlyCollection<Type>(new List<Type>()));
+        GenerateCode(new Type[0]);
 
         AssetDatabase.Refresh();
     }
 
-    static ulong GetHashFromNetMessageTypes(ReadOnlyCollection<Type> netMessageTypes)
+    static ulong GetHashFromNetMessageTypes(Type[] netMessageTypes)
     {
         StringBuilder concatenatedNamesBuilder = new StringBuilder();
         foreach (var t in netMessageTypes)
@@ -50,13 +49,13 @@ public static class NetMessageRegistryCodeGenerator
         return Crc64.Compute(crcData);
     }
 
-    static void GenerateCode(ReadOnlyCollection<Type> netMessageTypes)
+    static void GenerateCode(Type[] netMessageTypes)
     {
         ulong crc = GetHashFromNetMessageTypes(netMessageTypes);
 
-        if (!Directory.Exists(FilePath))
+        if (!Directory.Exists(NetSerializationCodeGenSettings.Registry_FilePath))
         {
-            Directory.CreateDirectory(FilePath);
+            Directory.CreateDirectory(NetSerializationCodeGenSettings.Registry_FilePath);
         }
 
         if (!File.Exists(CompletePath))
@@ -76,7 +75,7 @@ public static class NetMessageRegistryCodeGenerator
                 writer.WriteLine("using System;");
                 writer.WriteLine("using System.Collections.Generic;");
                 writer.WriteLine();
-                writer.WriteLine("public static class " + ClassName);
+                writer.WriteLine("public static class " + NetSerializationCodeGenSettings.Registry_ClassName);
                 writer.WriteLine("{");
 
                 writer.WriteLine("    public static readonly ulong crc = " + crc + ";");
@@ -102,7 +101,7 @@ public static class NetMessageRegistryCodeGenerator
                 writer.WriteLine("    public static readonly Dictionary<Type, Func<object, int>> map_GetBitSize = new Dictionary<Type, Func<object, int>>()");
                 writer.WriteLine("    {");
                 addComma = false;
-                for (int i = 0; i < netMessageTypes.Count; i++)
+                for (int i = 0; i < netMessageTypes.Length; i++)
                 {
                     Type t = netMessageTypes[i];
 
@@ -127,7 +126,7 @@ public static class NetMessageRegistryCodeGenerator
                 writer.WriteLine("    public static readonly Dictionary<Type, Action<object, BitStreamWriter>> map_Serialize = new Dictionary<Type, Action<object, BitStreamWriter>>()");
                 writer.WriteLine("    {");
                 addComma = false;
-                for (int i = 0; i < netMessageTypes.Count; i++)
+                for (int i = 0; i < netMessageTypes.Length; i++)
                 {
                     Type t = netMessageTypes[i];
 
@@ -152,7 +151,7 @@ public static class NetMessageRegistryCodeGenerator
                 writer.WriteLine("    public static readonly Dictionary<UInt16, Func<BitStreamReader, object>> map_Deserialize = new Dictionary<UInt16, Func<BitStreamReader, object>>()");
                 writer.WriteLine("    {");
                 addComma = false;
-                for (int i = 0; i < netMessageTypes.Count; i++)
+                for (int i = 0; i < netMessageTypes.Length; i++)
                 {
                     Type t = netMessageTypes[i];
 

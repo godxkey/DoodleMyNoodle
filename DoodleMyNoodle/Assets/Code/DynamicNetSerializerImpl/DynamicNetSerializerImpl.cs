@@ -7,6 +7,27 @@ namespace Internals.OnlineServiceImpl
 {
     public class DynamicNetSerializerImpl : IDynamicNetSerializerImpl
     {
+
+        // This is to setup the online service's factory. 
+        // It's a little weird, but it's necessary because the OnlineService doesn't have access to this class directly
+        static bool init = false;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void OnRuntimeInitialize()
+        {
+            if (init)
+                return;
+            init = true;
+
+            OnlineServicePhoton.factoryCreator = () => new DynamicNetSerializerImpl();
+        }
+
+
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         static Dictionary<Type, ushort> netMessageToId = new Dictionary<Type, ushort>();
 
         public DynamicNetSerializerImpl()

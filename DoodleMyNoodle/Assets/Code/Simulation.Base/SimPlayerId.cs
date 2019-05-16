@@ -1,5 +1,6 @@
 ﻿using System;
 
+[NetSerializable]
 public struct SimPlayerId
 {
     public static readonly SimPlayerId invalid = new SimPlayerId(UInt16.MaxValue);

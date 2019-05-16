@@ -80,7 +80,7 @@ public abstract class BaseSortedList<T> : IEnumerable<T>
 
     public int Count { get { return list.Count; } }
 
-    public ReadOnlyCollection<T> GetInternalList() { return list.AsReadOnly(); }
+    public List<T> internalList => list;
 
     public IEnumerator<T> GetEnumerator()
     {

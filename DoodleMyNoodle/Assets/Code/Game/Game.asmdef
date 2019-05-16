@@ -12,7 +12,8 @@
         "Simulation.Core",
         "Unity.Jobs",
         "Unity.Collections",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "CCC.FixMath"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

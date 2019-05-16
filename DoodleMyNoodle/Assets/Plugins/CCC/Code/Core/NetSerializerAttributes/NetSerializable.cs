@@ -8,5 +8,5 @@ public class NetSerializableAttribute : Attribute
     {
     }
 
-    public bool isBaseClass;
+    public bool baseClass;
 }

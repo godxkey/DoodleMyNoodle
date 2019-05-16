@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
+[NetSerializable(baseClass = true)]
 public abstract class SimInput
 {
     public abstract void Execute(SimWorld world);

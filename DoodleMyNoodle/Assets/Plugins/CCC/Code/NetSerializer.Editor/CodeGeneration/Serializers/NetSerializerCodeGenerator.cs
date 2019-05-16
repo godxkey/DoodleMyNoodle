@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Reflection;
-using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,14 +10,14 @@ public static partial class NetSerializerCodeGenerator
     static HashSet<Type> generateArrayCode = new HashSet<Type>();
 
 
-    [MenuItem(NetSerializationCodeGenSettings.MenuName_Generate)]
-    static void Generate()
+    [MenuItem(NetSerializationCodeGenSettings.MenuName_Generate_Serializers)]
+    public static void Generate()
     {
         Generate(false);
     }
 
-    [MenuItem(NetSerializationCodeGenSettings.MenuName_Clear)]
-    static void Clear()
+    [MenuItem(NetSerializationCodeGenSettings.MenuName_Clear_Serializers)]
+    public static void Clear()
     {
         Generate(true);
     }
@@ -30,7 +27,7 @@ public static partial class NetSerializerCodeGenerator
         doNoRegenerate = new HashSet<Type>(pregeneratedSerializers);
         generateArrayCode.Clear();
 
-        ReadOnlyCollection<Type> netMessageTypes = NetSerializationCodeGenUtility.GetNetSerializableTypes();
+        List<Type> netMessageTypes = NetSerializationCodeGenUtility.GetNetSerializableTypes();
 
         foreach (Type type in netMessageTypes)
         {
