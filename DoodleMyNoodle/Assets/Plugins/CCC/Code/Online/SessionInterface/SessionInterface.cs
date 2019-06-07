@@ -6,6 +6,8 @@ using UnityEngine;
 
 public abstract class SessionInterface : IDisposable
 {
+    const bool log = false;
+
     public abstract bool isServerType { get; }
     public bool isClientType => !isServerType;
     public INetworkInterfaceSession sessionInfo => _networkInterface.connectedSessionInfo;
@@ -21,12 +23,15 @@ public abstract class SessionInterface : IDisposable
 
         _networkInterface.onDisconnect += InterfaceOnDisconnect;
         _networkInterface.onConnect += Interface_OnConnect;
-        DebugService.Log("Session interface created");
+
+        if (log)
+            DebugService.Log("Session interface created");
     }
 
     public void Dispose()
     {
-        DebugService.Log("Session interface terminating");
+        if (log)
+            DebugService.Log("Session interface terminating");
         onTerminate?.Invoke();
 
         _networkInterface.onDisconnect -= InterfaceOnDisconnect;
@@ -70,7 +75,8 @@ public abstract class SessionInterface : IDisposable
         byte[] messageData;
         NetMessageInterpreter.GetDataFromMessage(netMessage, out messageData);
         _networkInterface.SendMessage(connection, messageData, messageData.Length);
-        DebugService.Log("[Session] Send message to : " + connection.Id);
+        if (log)
+            DebugService.Log("[Session] Send message to : " + connection.Id);
     }
 
     void Interface_OnConnect(INetworkInterfaceConnection connection)
@@ -87,7 +93,7 @@ public abstract class SessionInterface : IDisposable
     {
         object netMessage = NetMessageInterpreter.GetMessageFromData(data);
 
-        if(netMessage != null)
+        if (netMessage != null)
         {
             Type t = netMessage.GetType();
 

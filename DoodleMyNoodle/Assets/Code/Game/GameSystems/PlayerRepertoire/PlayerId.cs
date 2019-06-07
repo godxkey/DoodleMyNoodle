@@ -5,7 +5,8 @@ using System;
 [NetSerializable]
 public partial struct PlayerId
 {
-    public static readonly PlayerId invalid = new PlayerId(UInt16.MaxValue);
+    public static readonly PlayerId invalid = new PlayerId();
+    public static readonly PlayerId firstValid = new PlayerId(1);
 
     public PlayerId(PlayerId other) { this.value = other.value; }
     public PlayerId(UInt16 value) { this.value = value; }

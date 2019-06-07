@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DebugService : MonoCoreService<DebugService>
 {
+    const bool log = false;
+
     static bool forwardToNativeUnityDebug = true;
     static System.IO.StreamWriter logFile = null;
 
@@ -52,7 +54,8 @@ public class DebugService : MonoCoreService<DebugService>
                 name = "<none>";
             }
         }
-        DebugService.Log("DebugService initialized. Logging to " + engineLogFileLocation + "/" + name);
+        if (log)
+            DebugService.Log("DebugService initialized. Logging to " + engineLogFileLocation + "/" + name);
     }
 
     protected override void OnDestroy()

@@ -8,7 +8,7 @@ public partial class Simulation : IDisposable
     public Simulation() { instance = this; }
     public void Dispose()
     {
-        world.Dispose();
+        m_world.Dispose();
         if (instance == this)
             instance = null;
     }
@@ -17,19 +17,29 @@ public partial class Simulation : IDisposable
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    public SimWorld world;
+    public SimWorld m_world;
+    public uint m_tickId = 0;
 
+    public void ChangeWorld(SimWorld world)
+    {
+        m_world?.Dispose();
+        m_world = world;
+    }
+
+    public static SimWorld world => instance.m_world;
+    public static uint tickId => instance.m_tickId;
 
     public static void Tick(SimTickData tickData)
     {
-        instance.world.Tick_PreInput();
+        world.Tick_PreInput();
 
         foreach (SimInput input in tickData.inputs)
         {
-            input.Execute(instance.world);
+            input.Execute(world);
         }
 
-        instance.world.Tick_PostInput();
+        world.Tick_PostInput();
+        instance.m_tickId++;
     }
 
     public static readonly Fix64 deltaTime = (Fix64)0.2m; // 50 ticks per seconds

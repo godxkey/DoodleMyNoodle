@@ -8,6 +8,9 @@ public class Game : MonoBehaviour
     public static bool playModeClient { get; private set; }
     public static bool playModeServer { get; private set; }
 
+    public static bool ready => _instance && _instance._ready;
+    public static bool started => _instance && _instance._started;
+
     [SerializeField] SceneInfo _localSpecificScene;
     [SerializeField] SceneInfo _serverSpecificScene;
     [SerializeField] SceneInfo _clientSpecificScene;

@@ -7,7 +7,7 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
     public static new PlayerRepertoireServer instance => (PlayerRepertoireServer)GameSystem<PlayerRepertoireSystem>.instance;
 
     SessionServerInterface _serverSession;
-    ushort _playerIdCounter;
+    ushort _playerIdCounter = PlayerId.firstValid.value;
 
     List<INetworkInterfaceConnection> _newConnectionsNotYetPlayers = new List<INetworkInterfaceConnection>();
 
@@ -33,7 +33,7 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
     {
         playerConnections = _playerConnections.AsReadOnly();
 
-        // when we're the server, we assign ourself our Id (which is 0)
+        // when we're the server, we assign ourself our Id (which is 1)
 
         _localPlayerInfo.playerId = new PlayerId(_playerIdCounter++);
         _localPlayerInfo.isServer = true;

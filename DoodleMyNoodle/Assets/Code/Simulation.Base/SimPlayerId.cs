@@ -3,7 +3,8 @@
 [NetSerializable]
 public struct SimPlayerId
 {
-    public static readonly SimPlayerId invalid = new SimPlayerId(UInt16.MaxValue);
+    public static readonly SimPlayerId invalid = new SimPlayerId();
+    public static readonly SimPlayerId firstValid = new SimPlayerId(1);
 
     public SimPlayerId(SimPlayerId other) { value = other.value; }
     public SimPlayerId(UInt16 value) { this.value = value; }

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class GameStateManager : MonoCoreService<GameStateManager>
 {
+    const bool log = false;
+
     static public void TransitionToState(GameStateDefinition gameStateSettings, params GameStateParam[] parameters)
     {
         Instance.Internal_TransitionToState(gameStateSettings, parameters);
@@ -59,7 +61,8 @@ public class GameStateManager : MonoCoreService<GameStateManager>
 
         _targetGameState = newGameState;
 
-        DebugService.Log("[GameStateManager] Transitioning from " + GetPrintGameStateName(_currentGameState) + " to " + GetPrintGameStateName(_targetGameState) + "...");
+        if (log)
+            DebugService.Log("[GameStateManager] Transitioning from " + GetPrintGameStateName(_currentGameState) + " to " + GetPrintGameStateName(_targetGameState) + "...");
         _currentGameState?.BeginExit(_parameters);
     }
 
@@ -80,7 +83,8 @@ public class GameStateManager : MonoCoreService<GameStateManager>
                 if (_currentGameState == null)
                 {
                     _currentGameState = _targetGameState;
-                    DebugService.Log("[GameStateManager] Entering " + GetPrintGameStateName(_currentGameState));
+                    if (log)
+                        DebugService.Log("[GameStateManager] Entering " + GetPrintGameStateName(_currentGameState));
                     _currentGameState?.Enter(_parameters);
 
                     if (isTransitioningState)

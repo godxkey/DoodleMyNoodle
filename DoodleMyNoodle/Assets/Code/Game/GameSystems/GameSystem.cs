@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 /// <summary>
 /// A Game System is a singleton logic class accessible ingame. The game will only start when all GameSystems are ready

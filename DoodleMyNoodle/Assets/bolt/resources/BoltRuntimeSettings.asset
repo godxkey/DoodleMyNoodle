@@ -44,10 +44,10 @@ MonoBehaviour:
     connectionRequestAttempts: 20
     disableAutoSceneLoading: 0
     EnableIPv6: 0
-  debugClientCount: 2
+  debugClientCount: 5
   debugStartPort: 50538
-  debugStartMapName: PhotonGame
-  debugPlayAsServer: 0
+  debugStartMapName: GameRoot
+  debugPlayAsServer: 1
   showDebugInfo: 0
   overrideTimeScale: 1
   logUncaughtExceptions: 0

@@ -14,10 +14,10 @@ public static class NetSerializationCodeGenSettings
         //, {"Examples", "Assets/Code/Examples/Generated/NetMessageSerializers"}
     };
 
-    public const string MenuName_Generate_All                = "Tools/Code Generation/Net Serialization/Generate";
+    public const string MenuName_Generate_All                = "Tools/Code Generation/Net Serialization/Generate %#c";
     public const string MenuName_Generate_Serializers        = "Tools/Code Generation/Net Serialization/Advanced/Generate Serializers";
     public const string MenuName_Generate_Registry           = "Tools/Code Generation/Net Serialization/Advanced/Generate Dynamic Registry";
-    public const string MenuName_Clear_All                   = "Tools/Code Generation/Net Serialization/Clear";
+    public const string MenuName_Clear_All                   = "Tools/Code Generation/Net Serialization/Clear %#x";
     public const string MenuName_Clear_Serializers           = "Tools/Code Generation/Net Serialization/Advanced/Clear Serializers";
     public const string MenuName_Clear_Registry              = "Tools/Code Generation/Net Serialization/Advanced/Clear Dynamic Registry";
 

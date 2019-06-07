@@ -9,7 +9,7 @@ public class PlayerRepertoireLocal : PlayerRepertoireSystem
 
     protected override void Internal_OnGameReady()
     {
-        _localPlayerInfo.playerId = new PlayerId(0);
+        _localPlayerInfo.playerId = PlayerId.firstValid;
         _localPlayerInfo.isServer = true;
     }
 }

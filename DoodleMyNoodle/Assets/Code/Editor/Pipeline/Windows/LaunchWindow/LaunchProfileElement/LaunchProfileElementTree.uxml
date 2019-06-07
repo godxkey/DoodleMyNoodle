@@ -12,18 +12,17 @@ xsi:noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.
 
     <engine:VisualElement class="categoryContainer">
       <engine:Box class="container category">
-        <engine:Label text="Editor" class="header"/>
-        <engine:VisualElement class="buttonContainer">
-          <engine:Button text="Play" name="playEditor" class="button playButton"/>
-          <engine:Button text="Stop" name="stopEditor" class="button stopButton"/>
-        </engine:VisualElement>
-      </engine:Box>
-
-      <engine:Box class="container category">
         <engine:Label text="Standalone" class="header"/>
         <engine:VisualElement class="buttonContainer">
           <engine:Button text="Play" name="playStandalone" class="button playButton "/>
           <engine:Button text="Stop" name="stopStandalone" class="button stopButton"/>
+        </engine:VisualElement>
+      </engine:Box>
+      <engine:Box class="container category">
+        <engine:Label text="Editor" class="header"/>
+        <engine:VisualElement class="buttonContainer">
+          <engine:Button text="Play" name="playEditor" class="button playButton"/>
+          <engine:Button text="Stop" name="stopEditor" class="button stopButton"/>
         </engine:VisualElement>
       </engine:Box>
     </engine:VisualElement>

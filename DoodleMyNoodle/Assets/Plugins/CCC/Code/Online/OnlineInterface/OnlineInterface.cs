@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class OnlineInterface : IDisposable
 {
+    const bool log = false;
+
     public event Action onTerminate;
     public SessionInterface sessionInterface { get; protected set; }
 
@@ -16,7 +18,8 @@ public abstract class OnlineInterface : IDisposable
 
         _network.onDisconnectedFromSession += OnDisconnectFromSession;
 
-        DebugService.Log("Online interface created");
+        if (log)
+            DebugService.Log("Online interface created");
     }
 
     public void Update()
@@ -35,7 +38,8 @@ public abstract class OnlineInterface : IDisposable
         sessionInterface?.Dispose();
         _network.onDisconnectedFromSession -= OnDisconnectFromSession;
 
-        DebugService.Log("Online interface terminating");
+        if (log)
+            DebugService.Log("Online interface terminating");
 
         onTerminate?.Invoke();
     }
