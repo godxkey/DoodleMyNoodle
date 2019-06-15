@@ -23,7 +23,9 @@ public class SimGameObjectBlueprint : SimBlueprint
         SimComponentView[] componentViews = gameObject.GetComponents<SimComponentView>();
         for (int i = 0; i < componentViews.Length; i++)
         {
-            entity.components.Add(componentViews[i].serializedComponent);
+            SimComponent simComp = componentViews[i].GetComponentFromSerializedData();
+            simComp.entity = entity;
+            entity.components.Add(simComp);
         }
     }
 

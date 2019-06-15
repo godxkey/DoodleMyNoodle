@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using UnityEngine;
 
 [System.Serializable]
 public class SimEntity : SimObject
@@ -20,6 +21,7 @@ public class SimEntity : SimObject
     {
         // Create component
         T comp = new T();
+        comp.entity = this;
         components.Add(comp);
 
         // Create view
@@ -58,7 +60,7 @@ public class SimEntity : SimObject
     public void RemoveComponent_Internal(int index)
     {
         SimComponent component = components[index];
-
+        
         // Fire event
         SimHelpers.EventHelper.FireEventOnComponent_OnDestroy(component);
 
@@ -72,6 +74,13 @@ public class SimEntity : SimObject
         }
 
         // Remove from list
+        component.entity = null;
         components.RemoveAt(index);
+    }
+
+
+    public static implicit operator bool(SimEntity e)
+    {
+        return e != null && e.world != null;
     }
 }

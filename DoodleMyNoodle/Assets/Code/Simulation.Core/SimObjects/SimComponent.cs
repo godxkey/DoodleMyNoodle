@@ -12,4 +12,10 @@ public class SimComponent : SimObject
     {
         return $"<{GetType()}> on entity {(entity == null ? "" : entity.name)}";
     }
+
+
+    public static implicit operator bool(SimComponent c)
+    {
+        return c != null && c.entity;
+    }
 }

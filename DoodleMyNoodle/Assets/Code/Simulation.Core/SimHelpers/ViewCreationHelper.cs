@@ -9,11 +9,10 @@ namespace SimHelpers
             if (entity.blueprintId.isValid)
             {
                 SimBlueprint blueprint = blueprintBank.GetBlueprint(entity.blueprintId);
-                // todo
 
-                SimEntity discardEntity;
+                SimEntity dummyEntity;
                 SimEntityView entityView;
-                blueprint.InstantiateEntityAndView(out discardEntity, out entityView);
+                blueprint.InstantiateEntityAndView(out dummyEntity, out entityView);
 
                 ViewAttachingHelper.DetachEntityAndComponents(entityView);
 
@@ -41,7 +40,7 @@ namespace SimHelpers
 
         private static SimComponentView CreateViewForComponent(GameObject viewGameObject, SimComponent component)
         {
-            return (SimComponentView)viewGameObject.AddComponent(typeof(SimComponentView).MakeGenericType(component.GetType()));
+            return (SimComponentView)viewGameObject.AddComponent(SimComponentViewRegistry.GetViewTypeForComponent(component.GetType()));
         }
 
         public static void DestroyViewForEntityAndComponents(SimEntityView view)

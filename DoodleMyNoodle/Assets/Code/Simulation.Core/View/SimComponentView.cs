@@ -2,14 +2,9 @@
 using UnityEngine;
 
 
-public class SimComponentView<T> : SimComponentView
+public abstract class SimComponentView<T> : SimComponentView
     where T : SimComponent
 {
-    [SerializeField]
-    T m_serializedComponent;
-    internal override SimComponent serializedComponent => m_serializedComponent;
-
-
     public T specificComponent => (T)simComponent;
     public override Type simComponentType => typeof(T);
 
@@ -22,13 +17,11 @@ public class SimComponentView<T> : SimComponentView
     public override void OnAttached()
     {
         base.OnAttached();
-        m_serializedComponent = specificComponent;
     }
 
     public override void OnDetached()
     {
         base.OnDetached();
-        m_serializedComponent = null;
     }
 }
 
@@ -36,5 +29,8 @@ public abstract class SimComponentView : SimObjectView
 {
     public SimComponent simComponent => (SimComponent)simObject;
     public abstract Type simComponentType { get; }
-    internal abstract SimComponent serializedComponent { get; }
+
+    protected abstract SimComponent CreateComponentFromSerializedData();
+
+    internal SimComponent GetComponentFromSerializedData() => CreateComponentFromSerializedData();
 }

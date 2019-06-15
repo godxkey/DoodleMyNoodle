@@ -1,0 +1,19 @@
+{
+    "name": "Simulation.Impl.View",
+    "references": [
+        "GUID:737e1c04c3dd3e046bedb5be72aec1d7",
+        "GUID:a00d64d0edbb5e74485770968c429238",
+        "GUID:1615f552c20d8694c823bd987a7805d0",
+        "GUID:a695b5a3e8c39e14fb9d86d3205fadf9",
+        "GUID:f5823330910b6a446a2095347107fb53"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

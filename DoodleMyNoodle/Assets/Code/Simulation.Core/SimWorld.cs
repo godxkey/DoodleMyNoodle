@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+
 
 [Serializable]
 public class SimWorld : IDisposable
@@ -9,7 +12,11 @@ public class SimWorld : IDisposable
     [NonSerialized]
     public ISimBlueprintBank blueprintBank;
 
-    internal List<SimEntity> entities = new List<SimEntity>();
+    [NonSerialized]
+    ReadOnlyCollection<SimEntity> m_entitiesReadOnly;
+    public ReadOnlyCollection<SimEntity> entities => m_entitiesReadOnly ?? (m_entitiesReadOnly = m_entities.AsReadOnly());
+
+    List<SimEntity> m_entities = new List<SimEntity>();
 
     public SimEntity InstantiateEntity(string name)
     {
@@ -21,7 +28,7 @@ public class SimWorld : IDisposable
         };
 
         // add entity to list
-        entities.Add(entity);
+        m_entities.Add(entity);
 
         // Create view
         SimEntityView view = SimHelpers.ViewCreationHelper.CreateViewForEntity(entity, blueprintBank);
@@ -61,7 +68,7 @@ public class SimWorld : IDisposable
         entity.blueprintId = blueprintId;
 
         // add entity to list
-        entities.Add(entity);
+        m_entities.Add(entity);
 
         // bind view with sim
         SimHelpers.ViewAttachingHelper.AttachEntityAndComponents(entity, view);
@@ -74,14 +81,14 @@ public class SimWorld : IDisposable
 
     public void DestroyEntity(SimEntity entity)
     {
-        int i = entities.IndexOf(entity);
+        int i = m_entities.IndexOf(entity);
         if (i >= 0)
             DestroyEntityAt(i);
     }
 
     void DestroyEntityAt(int index)
     {
-        SimEntity entity = entities[index];
+        SimEntity entity = m_entities[index];
 
         // Fire 'OnAwake' event
         SimHelpers.EventHelper.FireEventOnEntityAndComponents_OnDestroy(entity);
@@ -97,9 +104,16 @@ public class SimWorld : IDisposable
             SimHelpers.ViewCreationHelper.DestroyViewForEntityAndComponents(entityView);
         }
 
+        // remove references (marking them as destroyed)
+        entity.world = null;
+        for (int i = 0; i < entity.components.Count; i++)
+        {
+            entity.components[i].entity = null;
+        }
+
         // remove from lists
         entity.components.Clear();
-        entities.RemoveAt(index);
+        m_entities.RemoveAt(index);
     }
 
     public virtual void Tick_PreInput() { }
@@ -108,7 +122,7 @@ public class SimWorld : IDisposable
     public void Dispose()
     {
         // reverse loop to save cpu
-        for (int i = entities.Count - 1; i >= 0; i--)
+        for (int i = m_entities.Count - 1; i >= 0; i--)
         {
             DestroyEntityAt(i);
         }

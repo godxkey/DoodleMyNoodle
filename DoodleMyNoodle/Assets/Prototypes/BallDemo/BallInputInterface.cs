@@ -1,24 +1,11 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using UnityEngine;
 
-public class TestScript : MonoBehaviour
+public class BallInputInterface : GameMonoBehaviour
 {
-    internal bool test;
-    [NonSerialized]
-    private Location locationComponent;
-
-    private void Start()
+    public override void OnGameUpdate()
     {
-    }
-
-    public void Update()
-    {
-        if (Game.started == false)
-            return;
-
         if (Input.GetKeyDown(KeyCode.L))
         {
             SimulationController.instance.SubmitInput(new SimInputLog() { message = "hello!" });
