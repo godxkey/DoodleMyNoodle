@@ -33,7 +33,6 @@ public class SimComponentViewTransform2D : SimComponentView<SimComponentTransfor
     {
         if (simTransform != null)
         {
-            Debug.Log("update pos");
             tr.position = new Vector3((float)simTransform.position.X, height, (float)simTransform.position.Y);
         }
     }
@@ -50,11 +49,11 @@ public class SimComponentViewTransform2D : SimComponentView<SimComponentTransfor
     {
         if (Application.isPlaying)
         {
-            Debug.Log("validate");
             UpdateSimFromSerializedData();
         }
     }
 
+    // should be called by our custom inspector OnUpdate (todo)
     void UpdateSerializedDataFromSim()
     {
         SimComponentTransform2D comp = specificComponent;

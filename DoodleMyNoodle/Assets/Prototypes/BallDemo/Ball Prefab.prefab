@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6919793754341045539}
   - component: {fileID: 6919793754341045538}
   - component: {fileID: 6919793754341045536}
-  - component: {fileID: 7364910666858626132}
   - component: {fileID: 3565781171271418068}
   m_Layer: 0
   m_Name: Ball Prefab
@@ -94,26 +93,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   destroyOnDetach: 0
   destroyDelay: 0
---- !u!114 &7364910666858626132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6919793754341045567}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 955e1201f389e744bacf56d6a9413495, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  height: 0
-  position:
-    X:
-      m_rawValue: 0
-    Y:
-      m_rawValue: 0
-  rotation:
-    m_rawValue: 0
 --- !u!114 &3565781171271418068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,7 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 955e1201f389e744bacf56d6a9413495, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 0
+  height: 1
   position:
     X:
       m_rawValue: 0

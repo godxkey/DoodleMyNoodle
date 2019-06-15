@@ -29,4 +29,27 @@ public class TestScript : MonoBehaviour
             SimulationController.instance.SubmitInput(new SimInputInstantiate() { blueprintId = new SimBlueprintId(1) });
         }
     }
+
+    private void FixedUpdate()
+    {
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            SimulationController.instance.SubmitInput(new SimInputMoveBall() { moveDirection = FixVector2.right });
+        }
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            SimulationController.instance.SubmitInput(new SimInputMoveBall() { moveDirection = FixVector2.left });
+        }
+
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            SimulationController.instance.SubmitInput(new SimInputMoveBall() { moveDirection = FixVector2.up });
+        }
+
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            SimulationController.instance.SubmitInput(new SimInputMoveBall() { moveDirection = FixVector2.down });
+        }
+    }
 }

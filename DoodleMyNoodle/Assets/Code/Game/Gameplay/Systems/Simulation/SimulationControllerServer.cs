@@ -11,24 +11,30 @@ public class SimulationControllerServer : SimulationController
         base.OnGameReady();
 
         _session = OnlineService.serverInterface.sessionServerInterface;
-        _session.RegisterNetMessageReceiver<NetMessageInputSubmission>(OnNetMessageChatMessageSubmission);
+        _session.RegisterNetMessageReceiver<NetMessageInputSubmission>(OnNetMessageInputSubmission);
     }
 
     public override void OnSafeDestroy()
     {
         base.OnSafeDestroy();
 
-        _session?.UnregisterNetMessageReceiver<NetMessageInputSubmission>(OnNetMessageChatMessageSubmission);
+        _session?.UnregisterNetMessageReceiver<NetMessageInputSubmission>(OnNetMessageInputSubmission);
         _session = null;
     }
 
     public override void SubmitInput(SimInput input)
     {
+        if (input == null)
+        {
+            DebugService.LogError("Trying to submit a null input");
+            return;
+        }
+
         PlayerInfo localPlayer = PlayerRepertoireSystem.instance.GetLocalPlayerInfo();
         QueueInput(input, localPlayer, new InputSubmissionId(0));
     }
 
-    void OnNetMessageChatMessageSubmission(NetMessageInputSubmission submission, INetworkInterfaceConnection source)
+    void OnNetMessageInputSubmission(NetMessageInputSubmission submission, INetworkInterfaceConnection source)
     {
         // A client wants to submit a new message
         PlayerInfo sourcePlayer = PlayerRepertoireSystem.instance.GetPlayerInfo(source);

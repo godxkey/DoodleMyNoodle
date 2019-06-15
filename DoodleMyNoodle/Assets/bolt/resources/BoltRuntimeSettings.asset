@@ -39,7 +39,7 @@ MonoBehaviour:
     simulatedPingMean: 400
     simulatedPingJitter: 10
     simulatedRandomFunction: 0
-    connectionTimeout: 10000
+    connectionTimeout: 100000000
     connectionRequestTimeout: 500
     connectionRequestAttempts: 20
     disableAutoSceneLoading: 0
