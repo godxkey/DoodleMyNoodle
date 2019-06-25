@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-
+[DisallowMultipleComponent]
 public class SimEntityView : SimObjectView
 {
     public bool destroyOnDetach;
@@ -10,11 +10,6 @@ public class SimEntityView : SimObjectView
     public float destroyDelay = 0;
 
     public SimEntity simEntity => (SimEntity)simObject;
-
-    public SimComponentView<T> GetComponentView<T>() where T : SimComponent
-    {
-        return GetComponent<SimComponentView<T>>();
-    }
 
     public SimComponentView[] GetComponentViews()
     {

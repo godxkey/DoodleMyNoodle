@@ -1,36 +1,34 @@
 ﻿using System;
 using UnityEngine;
 
-
-public abstract class SimComponentView<T> : SimComponentView
-    where T : SimComponent
-{
-    public T specificComponent => (T)simComponent;
-    public override Type simComponentType => typeof(T);
-
-
-    public override string ToString()
-    {
-        return $"ComponentView<{typeof(T)}>({gameObject.name})";
-    }
-
-    public override void OnAttached()
-    {
-        base.OnAttached();
-    }
-
-    public override void OnDetached()
-    {
-        base.OnDetached();
-    }
-}
-
+[RequireComponent(typeof(SimEntityView))]
 public abstract class SimComponentView : SimObjectView
 {
-    public SimComponent simComponent => (SimComponent)simObject;
+    public SimComponent simComponent => attachedToSim ? (SimComponent)simObject : null;
     public abstract Type simComponentType { get; }
 
     protected abstract SimComponent CreateComponentFromSerializedData();
 
     internal SimComponent GetComponentFromSerializedData() => CreateComponentFromSerializedData();
+
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (Application.isPlaying && attachedToSim)
+        {
+            UpdateSimFromSerializedData();
+        }
+    }
+    public void UpdateSerializedDataFromSim()
+    {
+        ApplySimToSerializedData(simComponent);
+    }
+    public void UpdateSimFromSerializedData()
+    {
+        ApplySerializedDataToSim(simComponent);
+    }
+    public virtual void ApplySimToSerializedData(SimComponent comp) { }
+#endif
+    public virtual void ApplySerializedDataToSim(SimComponent comp) { }
 }

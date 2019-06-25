@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimComponentViewTransform2D : SimComponentView<SimComponentTransform2D>
+public class SimComponentViewTransform2D : SimComponentView
 {
     public float height;
 
@@ -20,7 +21,7 @@ public class SimComponentViewTransform2D : SimComponentView<SimComponentTransfor
     public override void OnAttached()
     {
         base.OnAttached();
-        simTransform = specificComponent;
+        simTransform = (SimComponentTransform2D)simComponent;
     }
 
     public override void OnDetached()
@@ -44,44 +45,30 @@ public class SimComponentViewTransform2D : SimComponentView<SimComponentTransfor
     [SerializeField] FixVector2 position;
     [SerializeField] Fix64 rotation;
 
-#if UNITY_EDITOR
-    private void OnValidate()
-    {
-        if (Application.isPlaying)
-        {
-            UpdateSimFromSerializedData();
-        }
-    }
-
-    // should be called by our custom inspector OnUpdate (todo)
-    void UpdateSerializedDataFromSim()
-    {
-        SimComponentTransform2D comp = specificComponent;
-        if (comp)
-        {
-            position = comp.position;
-            rotation = comp.rotation;
-        }
-    }
-
-    void UpdateSimFromSerializedData()
-    {
-        SimComponentTransform2D comp = specificComponent;
-        if (comp)
-        {
-            comp.position = position;
-            comp.rotation = rotation;
-        }
-    }
-#endif
+    public override Type simComponentType => typeof(SimComponentTransform2D);
 
     protected override SimComponent CreateComponentFromSerializedData()
     {
         SimComponentTransform2D comp = new SimComponentTransform2D();
 
-        comp.position = position;
-        comp.rotation = rotation;
+        ApplySerializedDataToSim(comp);
 
         return comp;
     }
+
+#if UNITY_EDITOR
+    public override void ApplySimToSerializedData(SimComponent baseComp)
+    {
+        SimComponentTransform2D comp = (SimComponentTransform2D)baseComp;
+        position = comp.position;
+        rotation = comp.rotation;
+    }
+#endif
+    public override void ApplySerializedDataToSim(SimComponent baseComp)
+    {
+        SimComponentTransform2D comp = (SimComponentTransform2D)baseComp;
+        comp.position = position;
+        comp.rotation = rotation;
+    }
+
 }

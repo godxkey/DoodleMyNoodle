@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class SimObjectView : MonoBehaviour
 {
+    [field: NonSerialized]
     public SimObject simObject { get; internal set; }
     public bool attachedToSim => simObject != null;
 
