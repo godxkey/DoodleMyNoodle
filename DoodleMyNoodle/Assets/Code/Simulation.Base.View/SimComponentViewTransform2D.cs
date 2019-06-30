@@ -57,14 +57,14 @@ public class SimComponentViewTransform2D : SimComponentView
     }
 
 #if UNITY_EDITOR
-    public override void ApplySimToSerializedData(SimComponent baseComp)
+    protected override void ApplySimToSerializedData(SimComponent baseComp)
     {
         SimComponentTransform2D comp = (SimComponentTransform2D)baseComp;
         position = comp.position;
         rotation = comp.rotation;
     }
 #endif
-    public override void ApplySerializedDataToSim(SimComponent baseComp)
+    protected override void ApplySerializedDataToSim(SimComponent baseComp)
     {
         SimComponentTransform2D comp = (SimComponentTransform2D)baseComp;
         comp.position = position;

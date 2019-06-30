@@ -85,14 +85,14 @@ public class {viewClassName} : {viewBaseClassName}
     }}
 
 #if UNITY_EDITOR
-    public override void ApplySimToSerializedData(SimComponent baseComp)
+    protected override void ApplySimToSerializedData(SimComponent baseComp)
     {{
         base.ApplySimToSerializedData(baseComp);
         {simClassName} comp = ({simClassName})baseComp;
 {fieldApplyFromSim}
     }}
 #endif
-    public override void ApplySerializedDataToSim(SimComponent baseComp)
+    protected override void ApplySerializedDataToSim(SimComponent baseComp)
     {{
         base.ApplySerializedDataToSim(baseComp);
         {simClassName} comp = ({simClassName})baseComp;

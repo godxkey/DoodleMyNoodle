@@ -13,13 +13,6 @@ public abstract class SimComponentView : SimObjectView
 
 
 #if UNITY_EDITOR
-    private void OnValidate()
-    {
-        if (Application.isPlaying && attachedToSim)
-        {
-            UpdateSimFromSerializedData();
-        }
-    }
     public void UpdateSerializedDataFromSim()
     {
         ApplySimToSerializedData(simComponent);
@@ -28,7 +21,7 @@ public abstract class SimComponentView : SimObjectView
     {
         ApplySerializedDataToSim(simComponent);
     }
-    public virtual void ApplySimToSerializedData(SimComponent comp) { }
+    protected virtual void ApplySimToSerializedData(SimComponent comp) { }
 #endif
-    public virtual void ApplySerializedDataToSim(SimComponent comp) { }
+    protected virtual void ApplySerializedDataToSim(SimComponent comp) { }
 }

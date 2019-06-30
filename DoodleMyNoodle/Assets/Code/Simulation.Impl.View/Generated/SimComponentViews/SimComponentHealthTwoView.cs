@@ -20,7 +20,7 @@ public class SimComponentHealthTwoView : SimComponentHealthView
     }
 
 #if UNITY_EDITOR
-    public override void ApplySimToSerializedData(SimComponent baseComp)
+    protected override void ApplySimToSerializedData(SimComponent baseComp)
     {
         base.ApplySimToSerializedData(baseComp);
         SimComponentHealthTwo comp = (SimComponentHealthTwo)baseComp;
@@ -28,7 +28,7 @@ public class SimComponentHealthTwoView : SimComponentHealthView
 
     }
 #endif
-    public override void ApplySerializedDataToSim(SimComponent baseComp)
+    protected override void ApplySerializedDataToSim(SimComponent baseComp)
     {
         base.ApplySerializedDataToSim(baseComp);
         SimComponentHealthTwo comp = (SimComponentHealthTwo)baseComp;
