@@ -33,7 +33,7 @@ public class SpriteGroup : MonoBehaviour
         {
             for (int i = 0; i < childRenderers.Length; i++)
             {
-                defaultAlphas[i] = (childRenderers[i].color.a / alpha).MaximalValue(1);
+                defaultAlphas[i] = (childRenderers[i].color.a / alpha).MaxLimit(1);
             }
             ApplyAlphaToChildren();
         }

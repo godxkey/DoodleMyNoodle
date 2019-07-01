@@ -1,10 +1,8 @@
 ﻿using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [CustomPropertyDrawer(typeof(Fix64))]
-public class IngredientDrawerUIE : PropertyDrawer
+public class Fix64Drawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {

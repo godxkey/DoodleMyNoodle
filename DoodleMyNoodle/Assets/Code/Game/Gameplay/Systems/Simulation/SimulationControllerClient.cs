@@ -6,6 +6,16 @@ public class SimulationControllerClient : SimulationController
 {
     SessionClientInterface _session;
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        pendingSimTicks = new SelfRegulatingDropper<NetMessageSimTick>(
+            normalDeltaTime          : (float)Simulation.deltaTime,
+            expectedQueueLength      : GameConstants.EXPECTED_CLIENT_SIM_TICK_QUEUE_LENGTH,
+            speedIncreasePerExtraItem: GameConstants.CLIENT_SIM_TICK_CATCH_UP_FACTOR);
+    }
+
     public override void OnGameReady()
     {
         base.OnGameReady();
@@ -24,7 +34,7 @@ public class SimulationControllerClient : SimulationController
 
     public override void SubmitInput(SimInput input)
     {
-        if(input == null)
+        if (input == null)
         {
             DebugService.LogError("Trying to submit a null input");
             return;
@@ -59,4 +69,21 @@ public class SimulationControllerClient : SimulationController
 
         Simulation.Tick(tickData);
     }
+
+    private void FixedUpdate()
+    {
+        TickSimIfNeeded();
+    }
+
+    private void Update()
+    {
+        TickSimIfNeeded();
+    }
+
+    void TickSimIfNeeded()
+    {
+    }
+
+    SelfRegulatingDropper<NetMessageSimTick> pendingSimTicks;
+    float lastTickTime = -1;
 }

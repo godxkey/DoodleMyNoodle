@@ -40,11 +40,11 @@ public static class FloatExtensions
         return Mathf.Sign(value);
     }
 
-    public static float MaximalValue(this float value, float max)
+    public static float MaxLimit(this float value, float max)
     {
         return Mathf.Min(value, max);
     }
-    public static float MinimalValue(this float value, float min)
+    public static float MinLimit(this float value, float min)
     {
         return Mathf.Max(value, min);
     }
@@ -52,6 +52,24 @@ public static class FloatExtensions
     public static float Clamped(this float value, float min, float max)
     {
         return Mathf.Clamp(value, min, max);
+    }
+
+
+    public static float Floored(this float value)
+    {
+        return Mathf.Floor(value);
+    }
+    public static int FlooredToInt(this float value)
+    {
+        return Mathf.FloorToInt(value);
+    }
+    public static float Ceiled(this float value)
+    {
+        return Mathf.Ceil(value);
+    }
+    public static int CeiledToInt(this float value)
+    {
+        return Mathf.CeilToInt(value);
     }
 
     public static float MovedTowards(this float value, float target, float delta)

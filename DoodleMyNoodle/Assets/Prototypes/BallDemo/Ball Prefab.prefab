@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6919793754341045536}
   - component: {fileID: 3565781171271418068}
   - component: {fileID: 8137609649881145066}
+  - component: {fileID: -727587754854166860}
   m_Layer: 0
   m_Name: Ball Prefab
   m_TagString: Untagged
@@ -129,3 +130,19 @@ MonoBehaviour:
   maxHealth: 20
   minHealth: 0
   currentHealth: 0
+--- !u!114 &-727587754854166860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6919793754341045567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7212a6ed22b84f418d5a4fc7acc0d26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 0
+  minHealth: 0
+  currentHealth: 0
+  specialStuff: 0

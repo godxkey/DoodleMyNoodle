@@ -42,5 +42,5 @@ public partial class Simulation : IDisposable
         instance.m_tickId++;
     }
 
-    public static readonly Fix64 deltaTime = (Fix64)0.2m; // 50 ticks per seconds
+    public static readonly Fix64 deltaTime = SimulationConstants.TIME_STEP; // 50 ticks per seconds
 }

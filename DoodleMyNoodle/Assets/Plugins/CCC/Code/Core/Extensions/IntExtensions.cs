@@ -13,7 +13,7 @@ public static class IntExtensions
     /// <summary>
     /// Reduis potentiellement la valeur
     /// </summary>
-    public static int Capped(this int value, int max)
+    public static int MaxLimit(this int value, int max)
     {
         return Mathf.Min(value, max);
     }
@@ -21,7 +21,7 @@ public static class IntExtensions
     /// <summary>
     /// Augmente potentiellement la valeur
     /// </summary>
-    public static int Raised(this int value, int min)
+    public static int MinLimit(this int value, int min)
     {
         return Mathf.Max(value, min);
     }

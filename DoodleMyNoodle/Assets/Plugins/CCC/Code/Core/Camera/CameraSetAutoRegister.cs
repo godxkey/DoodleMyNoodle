@@ -7,8 +7,8 @@ public class CameraSetAutoRegister : MonoBehaviour
 {
     [SerializeField] RegisterOptions registerSetting;
     [SerializeField] UnregisterOptions unregisterSetting;
-    [SerializeField] new Camera camera;
-    [SerializeField] AudioListener audioListener;
+    [AutoFetch] [SerializeField] new Camera camera;
+    [AutoFetch] [SerializeField] AudioListener audioListener;
     [SerializeField] int priority;
 
     bool registered;
