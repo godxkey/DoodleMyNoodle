@@ -5,10 +5,14 @@ using UnityEngine;
 public static class GameConstants
 {
     public static readonly float ONLINE_PACKETS_PER_SECOND = 20; // must match Bolt settings
+    public static readonly float ONLINE_PACKET_TIME_INTERVAL = 1f / ONLINE_PACKETS_PER_SECOND;
 
-    public static readonly int EXPECTED_CLIENT_SIM_TICK_QUEUE_LENGTH = 
-        ((float)SimulationConstants.TICK_RATE / ONLINE_PACKETS_PER_SECOND).CeiledToInt();
 
-    // For every extra sim tick the player has in its queue, it will play the simulation 10% faster
-    public static readonly float CLIENT_SIM_TICK_CATCH_UP_FACTOR = .1f;
+    public static readonly float CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED = 3f;
+    public static readonly float CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE =
+        (float)SimulationConstants.TIME_STEP * Mathf.Ceil(((float)SimulationConstants.TICK_RATE / ONLINE_PACKETS_PER_SECOND) - 1);
+        // 0.02 * ceil(50/20 - 1)
+        // 0.02 * ceil(2.5 - 1)
+        // 0.02 * 2
+        // 0.04
 }

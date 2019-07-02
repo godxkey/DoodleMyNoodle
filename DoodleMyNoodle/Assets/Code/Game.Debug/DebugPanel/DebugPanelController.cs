@@ -33,7 +33,8 @@ public class DebugPanelController
     static DebugPanel[] panels = new DebugPanel[]
     {
         new DebugPanelGameState(),
-        new DebugPanelPlayerRepertoire()
+        new DebugPanelPlayerRepertoire(),
+        new DebugPanelClientSimController()
     };
 
 
@@ -49,9 +50,14 @@ public class DebugPanelController
         {
             DebugPanelStyles.ApplyStyles();
 
-            GUI.Box(new Rect(Vector2.zero, new Vector2(Screen.width, Screen.height)), "");
+            Rect screenRect = new Rect(Vector2.zero, new Vector2(Screen.width, Screen.height));
+
+            GUI.Box(screenRect, "");
 
             var stdColor = GUI.color;
+
+            GUILayout.BeginArea(new Rect(Vector2.zero, new Vector2(350, Screen.height)));
+
             for (int i = 0; i < panels.Length; i++)
             {
                 if (panels[i].CanBeDisplayed)
@@ -63,6 +69,7 @@ public class DebugPanelController
                 }
             }
 
+            GUILayout.EndArea();
 
             DebugPanelStyles.RevertStyles();
         }

@@ -5,26 +5,43 @@ using UnityEngine;
 /// <summary>
 /// This dropper class will regulate the drop speed depending on the current queue length.
 /// <para/>
-/// If queue length is less than or equal to 'expected': speed = 1
-/// <para/>
-/// If queue length 2x 'expected': speed = maxSpeed
+/// If queue length longer than 'expected': speed = catchUpSpeed
 /// </summary>
+[System.Serializable]
 public class SelfRegulatingDropper<T> : Dropper<T>
 {
-    public float speedIncreasePerExtraItem { get; set; }
-    public int expectedQueueLength { get; set; }
+    public float maximalCatchUpSpeed = 4;
+    public float maximalExpectedTimeInQueue = 2;
 
-    public SelfRegulatingDropper(float normalDeltaTime, int expectedQueueLength, float speedIncreasePerExtraItem = 1.25f)
-        : base(normalDeltaTime)
+    float timeLimitForLastItem;
+
+    public SelfRegulatingDropper(float maximalExpectedTimeInQueue, float maximalCatchUpSpeed = 4)
     {
-        this.speedIncreasePerExtraItem = speedIncreasePerExtraItem;
-        this.expectedQueueLength = expectedQueueLength;
+        this.maximalCatchUpSpeed = maximalCatchUpSpeed;
+        this.maximalExpectedTimeInQueue = maximalExpectedTimeInQueue;
     }
 
-    public void UpdateSpeed()
+    public override void Update(float deltaTime)
     {
-        int extraItems = (queueLength - expectedQueueLength).MinLimit(0);
+        if (queue.Count > 0)
+        {
+            float timeUntilQueueEmpty = lastEnqueuedElement.scheduledDrop - currentTime;
+            speed = (timeUntilQueueEmpty / timeLimitForLastItem).Clamped(1, maximalCatchUpSpeed);
+        }
+        else
+        {
+            speed = 1;
+        }
 
-        speed = speed + (extraItems * speedIncreasePerExtraItem);
+
+        timeLimitForLastItem -= deltaTime;
+        timeLimitForLastItem = timeLimitForLastItem.MinLimit(0.0001f);
+        base.Update(deltaTime);
+    }
+
+    public override void Enqueue(T item, float deltaTime)
+    {
+        base.Enqueue(item, deltaTime);
+        timeLimitForLastItem = maximalExpectedTimeInQueue;
     }
 }

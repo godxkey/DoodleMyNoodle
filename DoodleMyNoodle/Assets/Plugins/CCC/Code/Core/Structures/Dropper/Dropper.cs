@@ -2,8 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Dropper<T>
 {
+    protected struct Element
+    {
+        public T value;
+        public float scheduledDrop;
+    }
+
     /// <summary>
     /// 2 = double drop speed
     /// <para/>
@@ -11,45 +18,45 @@ public class Dropper<T>
     /// <para/>
     /// 0 = no more drops
     /// </summary>
-    public float speed { get; set; } = 1;
-    public float normalDeltaTime { get; set; }
+    public float speed;
     public int queueLength => queue.Count;
 
-    float lastDropTime = -1;
-    Queue<T> queue = new Queue<T>();
+    protected float currentTime { get; private set; } = 0;
+    protected Element lastEnqueuedElement { get; private set; } = new Element() { value = default, scheduledDrop = float.MinValue };
+    Queue<Element> _queue;
 
-    float speedAffectedDeltaTime => normalDeltaTime / speed;
-    float expectedNextDropTime => lastDropTime + speedAffectedDeltaTime;
-
-    public Dropper(float normalDeltaTime)
+    public virtual void Update(float deltaTime)
     {
-        this.normalDeltaTime = normalDeltaTime;
+        currentTime += deltaTime * speed;
     }
 
-    public bool IsReadyForDrop(float time)
+    public bool IsReadyForDrop()
     {
-        float timeElapsedSinceLastDrop = time - lastDropTime;
-        return timeElapsedSinceLastDrop >= speedAffectedDeltaTime;
+        if (queue.Count == 0)
+            return false;
+
+        return currentTime >= queue.Peek().scheduledDrop;
     }
 
-    public void Enqueue(T item) => queue.Enqueue(item);
-
-    public bool TryDrop(float time, out T droppedItem)
+    public virtual void Enqueue(T item, float deltaTime)
     {
-        if (IsReadyForDrop(time) && queue.Count > 0)
+        float scheduleBase = lastEnqueuedElement.scheduledDrop;
+
+        lastEnqueuedElement = new Element()
         {
-            droppedItem = queue.Dequeue();
+            value = item,
+            scheduledDrop = (scheduleBase + deltaTime).MinLimit(currentTime)
+        };
 
+        queue.Enqueue(lastEnqueuedElement);
 
-            // this is to account for irregularities
-            // For example, if we want 1 drop per second, it's not going to happen like this:
-            //          18.00s - 19.00s - 20.00s - 21.00s ...
-            // It's going to happen like this:
-            //          18.00s - 19.04s - 20.09s - 21.12s ...
-            // To make sure those irregularities don't add up, we fake that the drop actually happened on time
-            //   (fake) 18.00s - 19.00s - 20.00s - 21.00s ...
-            //   (real) 18.03s - 19.01s - 20.04s - 21.02s ...
-            lastDropTime = Mathf.Max(expectedNextDropTime, time - speedAffectedDeltaTime);
+    }
+
+    public bool TryDrop(out T droppedItem)
+    {
+        if (IsReadyForDrop())
+        {
+            droppedItem = queue.Dequeue().value;
 
             return true;
         }
@@ -59,4 +66,17 @@ public class Dropper<T>
             return false;
         }
     }
+
+
+    // this is necessary to avoid null reference exceptions in unity because it can't serialize a queue it's always null by default
+    protected Queue<Element> queue
+    {
+        get
+        {
+            if (_queue == null)
+                _queue = new Queue<Element>();
+            return _queue;
+        }
+    }
+
 }

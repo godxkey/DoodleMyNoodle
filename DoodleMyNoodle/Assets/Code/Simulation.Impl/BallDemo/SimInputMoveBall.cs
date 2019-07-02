@@ -5,6 +5,8 @@ using UnityEngine;
 [NetSerializable]
 public class SimInputMoveBall : SimInput
 {
+    static readonly Fix64 speed = 6;
+
     public FixVector2 moveDirection;
 
     // fbessette:   This should be changed, we should not have an Execute method here
@@ -15,7 +17,7 @@ public class SimInputMoveBall : SimInput
         world.FindEntityWithComponent(out ballTransform);
         if(ballTransform)
         {
-            ballTransform.position += moveDirection * Simulation.deltaTime;
+            ballTransform.position += moveDirection * Simulation.deltaTime * speed;
         }
     }
 }

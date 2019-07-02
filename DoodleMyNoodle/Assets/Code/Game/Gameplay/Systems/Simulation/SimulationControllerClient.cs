@@ -4,16 +4,18 @@ using UnityEngine;
 
 public class SimulationControllerClient : SimulationController
 {
+    public int simTicksInQueue => _pendingSimTicks.queueLength;
+
     SessionClientInterface _session;
+    SelfRegulatingDropper<NetMessageSimTick> _pendingSimTicks;
 
     protected override void Awake()
     {
         base.Awake();
 
-        pendingSimTicks = new SelfRegulatingDropper<NetMessageSimTick>(
-            normalDeltaTime          : (float)Simulation.deltaTime,
-            expectedQueueLength      : GameConstants.EXPECTED_CLIENT_SIM_TICK_QUEUE_LENGTH,
-            speedIncreasePerExtraItem: GameConstants.CLIENT_SIM_TICK_CATCH_UP_FACTOR);
+        _pendingSimTicks = new SelfRegulatingDropper<NetMessageSimTick>(
+            maximalCatchUpSpeed         : GameConstants.CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED,
+            maximalExpectedTimeInQueue  : GameConstants.CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE);
     }
 
     public override void OnGameReady()
@@ -50,12 +52,21 @@ public class SimulationControllerClient : SimulationController
     void OnNetMessageSimTick(NetMessageSimTick tick, INetworkInterfaceConnection source)
     {
         // The server has sent a tick message
+        _pendingSimTicks.Enqueue(tick, (float)SimulationConstants.TIME_STEP);
+    }
 
-        // fbessette:   we should probably store this tick in a queue that will later be executed. That way, we can keep
-        //              the simulation ticking at a somewhat constant rate
+    private void Update()
+    {
+        _pendingSimTicks.Update(Time.deltaTime);
 
+        while (_pendingSimTicks.TryDrop(out NetMessageSimTick tick))
+        {
+            ExecuteTick(tick);
+        }
+    }
 
-        // Tick the simulation locally
+    void ExecuteTick(NetMessageSimTick tick)
+    {
         SimInput[] simInputs = new SimInput[tick.inputs.Length];
         for (int i = 0; i < tick.inputs.Length; i++)
         {
@@ -69,21 +80,4 @@ public class SimulationControllerClient : SimulationController
 
         Simulation.Tick(tickData);
     }
-
-    private void FixedUpdate()
-    {
-        TickSimIfNeeded();
-    }
-
-    private void Update()
-    {
-        TickSimIfNeeded();
-    }
-
-    void TickSimIfNeeded()
-    {
-    }
-
-    SelfRegulatingDropper<NetMessageSimTick> pendingSimTicks;
-    float lastTickTime = -1;
 }
