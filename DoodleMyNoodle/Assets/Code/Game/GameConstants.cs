@@ -9,8 +9,15 @@ public static class GameConstants
 
 
     public static readonly float CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED = 3f;
-    public static readonly float CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE =
-        (float)SimulationConstants.TIME_STEP * Mathf.Ceil(((float)SimulationConstants.TICK_RATE / ONLINE_PACKETS_PER_SECOND) - 1);
+
+
+    /// <summary>
+    /// AUGMENTER cette variable augmente la stabilité du 'playback' de la simulation. Ce qui veux dire qu'elle parait plus fluide
+    /// <para/>
+    /// DIMINUER cette variable augmente la 'responsiveness' de la simulation. Les ticks reçu par le serveur passe moins de temps en file d'attente
+    /// </summary>
+    public static readonly float CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE = 0.07f; // devrais être entre 0.04 et genre 0.1
+        //(float)SimulationConstants.TIME_STEP * Mathf.Ceil(((float)SimulationConstants.TICK_RATE / ONLINE_PACKETS_PER_SECOND) - 1);
         // 0.02 * ceil(50/20 - 1)
         // 0.02 * ceil(2.5 - 1)
         // 0.02 * 2

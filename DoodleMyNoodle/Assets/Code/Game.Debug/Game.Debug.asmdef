@@ -1,12 +1,13 @@
 {
     "name": "Game.Debug",
     "references": [
-        "Game",
-        "Game.Data",
         "CCC.Core",
         "CCC.Debug",
         "CCC.Online",
-        "CCC.NetSerializer"
+        "CCC.NetSerializer",
+        "Game",
+        "Game.Data",
+        "Simulation.Core"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

@@ -4,7 +4,12 @@ using UnityEngine;
 
 public abstract class DebugPanel
 {
-    public abstract string Title { get; }
-    public abstract bool CanBeDisplayed { get; }
+    public bool isDisplayed { get; set; }
+
+    public abstract string title { get; }
+    public abstract bool canBeDisplayed { get; }
+
     public abstract void OnGUI();
+    public virtual void OnStartDisplay() { }
+    public virtual void OnStopDisplay() { }
 }

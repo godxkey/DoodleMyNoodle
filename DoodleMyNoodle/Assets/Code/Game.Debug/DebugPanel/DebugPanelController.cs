@@ -60,12 +60,26 @@ public class DebugPanelController
 
             for (int i = 0; i < panels.Length; i++)
             {
-                if (panels[i].CanBeDisplayed)
+                if (panels[i].canBeDisplayed)
                 {
-                    GUILayout.Label(panels[i].Title, DebugPanelStyles.title);
+                    if (!panels[i].isDisplayed)
+                    {
+                        panels[i].isDisplayed = true;
+                        panels[i].OnStartDisplay();
+                    }
+
+                    GUILayout.Label(panels[i].title, DebugPanelStyles.title);
                     panels[i].OnGUI();
                     GUILayout.Space(12);
                     GUI.color = stdColor;
+                }
+                else
+                {
+                    if (panels[i].isDisplayed)
+                    {
+                        panels[i].isDisplayed = false;
+                        panels[i].OnStopDisplay();
+                    }
                 }
             }
 

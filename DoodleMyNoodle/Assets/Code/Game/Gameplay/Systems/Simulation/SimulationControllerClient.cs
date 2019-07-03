@@ -14,8 +14,8 @@ public class SimulationControllerClient : SimulationController
         base.Awake();
 
         _pendingSimTicks = new SelfRegulatingDropper<NetMessageSimTick>(
-            maximalCatchUpSpeed         : GameConstants.CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED,
-            maximalExpectedTimeInQueue  : GameConstants.CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE);
+            maximalCatchUpSpeed: GameConstants.CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED,
+            maximalExpectedTimeInQueue: GameConstants.CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE);
     }
 
     public override void OnGameReady()
@@ -55,9 +55,9 @@ public class SimulationControllerClient : SimulationController
         _pendingSimTicks.Enqueue(tick, (float)SimulationConstants.TIME_STEP);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        _pendingSimTicks.Update(Time.deltaTime);
+        _pendingSimTicks.Update(Time.fixedDeltaTime);
 
         while (_pendingSimTicks.TryDrop(out NetMessageSimTick tick))
         {
