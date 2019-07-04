@@ -43,7 +43,6 @@ public class LaunchProfileElement : VisualElement
     public LaunchProfileElement(PlayerProfile playerProfile)
     {
         this.playerProfile = playerProfile;
-        BindToStandaloneProcessFromProfile();
 
         RegisterCallback<DetachFromPanelEvent>(OnDetach, TrickleDown.TrickleDown);
 
@@ -73,6 +72,7 @@ public class LaunchProfileElement : VisualElement
         content_playStandalone.clickable.clicked += LaunchStandalone;
         content_stopStandalone.clickable.clicked += StopStandalone;
 
+        BindToStandaloneProcessFromProfile();
         CoreServiceManager.AddInitializationCallback(OnEditorGameLaunch);
         UpdateContent();
     }
@@ -106,7 +106,7 @@ public class LaunchProfileElement : VisualElement
 
 
         content_playEditor.style.visibility = Visible(!myEditorIsRunning);
-        content_playEditor.SetEnabled(!anyEditorIsRunning);
+        content_playEditor.SetEnabled(!anyEditorIsRunning && !myStandaloneIsRunning);
         content_playStandalone.style.visibility = Visible(!myStandaloneIsRunning);
         content_playStandalone.SetEnabled(!myEditorIsRunning);
         content_stopEditor.style.visibility = Visible(myEditorIsRunning);
@@ -120,7 +120,7 @@ public class LaunchProfileElement : VisualElement
     {
         ReceiveUpdates(false);
 
-        if(PlayerProfileService.Instance != null)
+        if (PlayerProfileService.Instance != null)
         {
             PlayerProfileService.Instance.onChangeProfile -= UpdateContent;
         }
@@ -177,8 +177,7 @@ public class LaunchProfileElement : VisualElement
         process.StartInfo.WorkingDirectory = buildPath;
         process.Start();
 
-        ProcessHandle processHandle = new ProcessHandle(process);
-        processHandle.id = playerProfile.localId;
+        ProcessHandle processHandle = new ProcessHandle(process, customId: playerProfile.localId);
         BindToStandaloneProcess(processHandle);
 
         UpdateContent();
@@ -200,21 +199,18 @@ public class LaunchProfileElement : VisualElement
 
     void BindToStandaloneProcessFromProfile()
     {
-        ProcessHandle.RegisterOnInitCallback(() =>
-        {
-            if (playerProfile == null)
-                return;
+        if (playerProfile == null)
+            return;
 
-            foreach (ProcessHandle handle in ProcessHandle.activeHandles)
+        foreach (ProcessHandle handle in ProcessHandle.activeHandles)
+        {
+            ProcessHandle standaloneProcessHandle = handle as ProcessHandle;
+            if (standaloneProcessHandle != null && handle.customId == playerProfile.localId)
             {
-                ProcessHandle standaloneProcessHandle = handle as ProcessHandle;
-                if (standaloneProcessHandle != null && handle.id == playerProfile.localId)
-                {
-                    BindToStandaloneProcess(standaloneProcessHandle);
-                    return;
-                }
+                BindToStandaloneProcess(standaloneProcessHandle);
+                return;
             }
-        });
+        }
     }
 
     void BindToStandaloneProcess(ProcessHandle processHandle)

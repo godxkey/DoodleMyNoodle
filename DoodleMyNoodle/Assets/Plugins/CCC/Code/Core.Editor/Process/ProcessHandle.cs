@@ -6,12 +6,13 @@ using System.Diagnostics;
 public class ProcessHandle : IDisposable
 {
     public Action onExitAction { get; set; }
-    public int id { get; set; }
+    public int customId { get; private set; }
     public Process process { get; }
     public bool hasExited => process.HasExited;
 
-    public ProcessHandle(Process process)
+    public ProcessHandle(Process process, int customId = -1)
     {
+        this.customId = customId;
         this.process = process ?? throw new NullReferenceException();
 
         process.Refresh();
@@ -29,6 +30,12 @@ public class ProcessHandle : IDisposable
         ProcessHandleManager.UnregisterHandle(this);
     }
 
-    public static ReadOnlyCollection<ProcessHandle> activeHandles => ProcessHandleManager.handlesReadOnly;
-    public static void RegisterOnInitCallback(Action callback) => ProcessHandleManager.RegisterOnInitCallback(callback);
+    public static ReadOnlyCollection<ProcessHandle> activeHandles
+    {
+        get
+        {
+            ProcessHandleManager.InitIfNeeded();
+            return ProcessHandleManager.handlesReadOnly;
+        }
+    }
 }

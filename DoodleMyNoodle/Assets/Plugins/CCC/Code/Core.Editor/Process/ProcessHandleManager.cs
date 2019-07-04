@@ -53,43 +53,52 @@ internal class ProcessHandleManager
             }
         }
     }
+    /*
+     * Save schema:
+     * 
+     * -- ProcessHandleCount {process count} --
+     * ProcessHandleCount 4
+     * 
+     * -- ProcessHandleProcessId-{i} {windows process id} --
+     * ProcessHandleProcessId-0 86119
+     * ProcessHandleProcessId-1 34887
+     * ProcessHandleProcessId-2 67870
+     * ProcessHandleProcessId-3 12844
+     * 
+     * -- ProcessHandleCustomId-{i} {the id our editor system attributed to it} --
+     * ProcessHandleCustomId-0 12
+     * ProcessHandleCustomId-1 2
+     * ProcessHandleCustomId-2 3
+     * ProcessHandleCustomId-3 5
+     * 
+     * */
 
     static void Save()
     {
+        EditorPrefs.SetInt("ProcessHandleCount", handles.Count);
         for (int i = 0; i < handles.Count; i++)
         {
-            EditorPrefs.SetInt("ProcessHandle-" + i, handles[i].process.Id);
+            EditorPrefs.SetInt($"ProcessHandleProcessId-{i}", handles[i].process.Id);
+            EditorPrefs.SetInt($"ProcessHandleCustomId-{i}", handles[i].customId);
+            //UnityEngine.Debug.Log($"Saved:  ProcessHandleProcessId-{i}: {handles[i].process.Id} |   ProcessHandleCustomId-{i}: {handles[i].customId}");
         }
-        EditorPrefs.SetInt("ProcessHandle-" + handles.Count, 0);
     }
 
-    static List<int> loadList = new List<int>();
     static void Load()
     {
-        loadList.Clear();
-
-        int i = 0;
-        while (true)
-        {
-            int savedId = EditorPrefs.GetInt("ProcessHandle-" + i, 0);
-
-            if (savedId == 0)
-                break;
-
-            loadList.Add(savedId);
-            i++;
-        }
-
+        int processHandleCount = EditorPrefs.GetInt("ProcessHandleCount", defaultValue: 0);
 
         Process[] runningProcesses = Process.GetProcesses();
-
-        foreach (int processId in loadList)
+        for (int i = 0; i < processHandleCount; i++)
         {
+            int processId = EditorPrefs.GetInt($"ProcessHandleProcessId-{i}");
+            int customId = EditorPrefs.GetInt($"ProcessHandleCustomId-{i}");
+            //UnityEngine.Debug.Log($"Loaded:  ProcessHandleProcessId-{i}: {processId} |   ProcessHandleCustomId-{i}: {customId}");
             Process process = runningProcesses.Find((x) => x.Id == processId);
 
             if (process != null)
             {
-                new ProcessHandle(process);
+                ProcessHandle processHandle = new ProcessHandle(process, customId);
             }
         }
 
@@ -98,23 +107,11 @@ internal class ProcessHandleManager
 
 
     static bool hasInit = false;
-    static Action onInit;
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    static void OnRuntimeMethodLoad()
+    public static void InitIfNeeded()
     {
         if (hasInit)
             return;
         hasInit = true;
         Load();
-
-        onInit?.Invoke();
-    }
-
-    public static void RegisterOnInitCallback(Action callback)
-    {
-        if (hasInit)
-            callback();
-        else
-            onInit += callback;
     }
 }
