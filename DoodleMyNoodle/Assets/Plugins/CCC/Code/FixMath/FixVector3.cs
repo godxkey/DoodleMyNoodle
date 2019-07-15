@@ -397,137 +397,6 @@ public struct FixVector3 : IEquatable<FixVector3>
     }
 
     /// <summary>
-    /// Gets the zero vector.
-    /// </summary>
-    public static FixVector3 Zero
-    {
-        get
-        {
-            return new FixVector3();
-        }
-    }
-
-    /// <summary>
-    /// Gets the up vector (0,1,0).
-    /// </summary>
-    public static FixVector3 Up
-    {
-        get
-        {
-            return new FixVector3()
-            {
-                X = F64.C0,
-                Y = F64.C1,
-                Z = F64.C0
-            };
-        }
-    }
-
-    /// <summary>
-    /// Gets the down vector (0,-1,0).
-    /// </summary>
-    public static FixVector3 Down
-    {
-        get
-        {
-            return new FixVector3()
-            {
-                X = F64.C0,
-                Y = -1,
-                Z = F64.C0
-            };
-        }
-    }
-
-    /// <summary>
-    /// Gets the right vector (1,0,0).
-    /// </summary>
-    public static FixVector3 Right
-    {
-        get
-        {
-            return new FixVector3()
-            {
-                X = F64.C1,
-                Y = F64.C0,
-                Z = F64.C0
-            };
-        }
-    }
-
-    /// <summary>
-    /// Gets the left vector (-1,0,0).
-    /// </summary>
-    public static FixVector3 Left
-    {
-        get
-        {
-            return new FixVector3()
-            {
-                X = -1,
-                Y = F64.C0,
-                Z = F64.C0
-            };
-        }
-    }
-
-    /// <summary>
-    /// Gets the forward vector (0,0,-1).
-    /// </summary>
-    public static FixVector3 Forward
-    {
-        get
-        {
-            return new FixVector3()
-            {
-                X = F64.C0,
-                Y = F64.C0,
-                Z = -1
-            };
-        }
-    }
-
-    /// <summary>
-    /// Gets the back vector (0,0,1).
-    /// </summary>
-    public static FixVector3 Backward
-    {
-        get
-        {
-            return new FixVector3()
-            {
-                X = F64.C0,
-                Y = F64.C0,
-                Z = F64.C1
-            };
-        }
-    }
-
-    /// <summary>
-    /// Gets a vector pointing along the X axis.
-    /// </summary>
-    public static FixVector3 UnitX
-    {
-        get { return new FixVector3 { X = F64.C1 }; }
-    }
-
-    /// <summary>
-    /// Gets a vector pointing along the Y axis.
-    /// </summary>
-    public static FixVector3 UnitY
-    {
-        get { return new FixVector3 { Y = F64.C1 }; }
-    }
-
-    /// <summary>
-    /// Gets a vector pointing along the Z axis.
-    /// </summary>
-    public static FixVector3 UnitZ
-    {
-        get { return new FixVector3 { Z = F64.C1 }; }
-    }
-
-    /// <summary>
     /// Computes the cross product between two vectors.
     /// </summary>
     /// <param name="a">First vector.</param>
@@ -742,4 +611,14 @@ public struct FixVector3 : IEquatable<FixVector3>
         Hermite(ref value1, ref tangent1, ref value2, ref tangent2, interpolationAmount, out toReturn);
         return toReturn;
     }
+
+
+    public static readonly FixVector3 zero     = new FixVector3 { };
+    public static readonly FixVector3 one      = new FixVector3 { X =  F64.C1, Y = F64.C1, Z = F64.C1 };
+    public static readonly FixVector3 right    = new FixVector3 { X =  F64.C1 };
+    public static readonly FixVector3 left     = new FixVector3 { X = -F64.C1 };
+    public static readonly FixVector3 up       = new FixVector3 { Y =  F64.C1 };
+    public static readonly FixVector3 down     = new FixVector3 { Y = -F64.C1 };
+    public static readonly FixVector3 forward  = new FixVector3 { Z =  F64.C1 };
+    public static readonly FixVector3 backward = new FixVector3 { Z = -F64.C1 };
 }

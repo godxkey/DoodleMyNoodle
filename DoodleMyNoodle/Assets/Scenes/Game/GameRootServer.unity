@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f3679d75f998c84aa72a7c72f0366d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _blueprintBank: {fileID: 11400000, guid: af7435bf434a06b41944e52c05a9e76a, type: 2}
 --- !u!4 &599286791
 Transform:
   m_ObjectHideFlags: 0

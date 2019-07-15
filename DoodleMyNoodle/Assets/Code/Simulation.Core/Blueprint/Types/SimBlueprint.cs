@@ -5,7 +5,14 @@
 /// Base class for our blueprint types
 /// </summary>
 [System.Serializable]
-public abstract class SimBlueprint
+public class SimBlueprint
 {
-    public abstract void InstantiateEntityAndView(out SimEntity entity, out SimEntityView view);
+    public SimBlueprint(SimBlueprintId id, SimEntity prefab)
+    {
+        this.id = id;
+        this.prefab = prefab;
+    }
+
+    public readonly SimBlueprintId id;
+    public readonly SimEntity prefab;
 }

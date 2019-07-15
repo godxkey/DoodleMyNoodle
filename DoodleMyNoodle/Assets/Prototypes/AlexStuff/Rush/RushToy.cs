@@ -20,13 +20,13 @@ public class RushToy : MonoBehaviour
 
     public float movementSpeed = 0.1f;
 
-    private bool isBeingPlaced = false;
+    //private bool isBeingPlaced = false; // fbessette: j'lai commenté pour enlevé le warning de l'editeur comme quoi elle était 'unused'
 
     public void Spawn(RushManager gameManager)
     {
         powerText.text = "" + power;
         this.gameManager = gameManager;
-        isBeingPlaced = true;
+        //isBeingPlaced = true;
 
         if(team == 0)
         {
@@ -41,7 +41,7 @@ public class RushToy : MonoBehaviour
     public void Place(Vector2 position)
     {
         transform.localPosition = position;
-        isBeingPlaced = false;
+        //isBeingPlaced = false;
     }
 
     public void SetPosition(Vector2 position)

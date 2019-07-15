@@ -138,34 +138,6 @@ public struct FixVector2 : IEquatable<FixVector2>
     }
 
     /// <summary>
-    /// Gets the zero vector.
-    /// </summary>
-    public static FixVector2 Zero
-    {
-        get
-        {
-            return new FixVector2();
-        }
-    }
-
-    /// <summary>
-    /// Gets a vector pointing along the X axis.
-    /// </summary>
-    public static FixVector2 UnitX
-    {
-        get { return new FixVector2 { X = F64.C1 }; }
-    }
-
-    /// <summary>
-    /// Gets a vector pointing along the Y axis.
-    /// </summary>
-    public static FixVector2 UnitY
-    {
-        get { return new FixVector2 { Y = F64.C1 }; }
-    }
-
-
-    /// <summary>
     /// Normalizes the vector.
     /// </summary>
     /// <param name="v">Vector to normalize.</param>
@@ -446,6 +418,7 @@ public struct FixVector2 : IEquatable<FixVector2>
         return X.GetHashCode() + Y.GetHashCode();
     }
 
+    public static readonly FixVector2 zero = new FixVector2(0, 0);
     public static readonly FixVector2 right = new FixVector2(1, 0);
     public static readonly FixVector2 left = new FixVector2(-1, 0);
     public static readonly FixVector2 up = new FixVector2(0, 1);

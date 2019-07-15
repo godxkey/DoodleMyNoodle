@@ -781,7 +781,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
         }
         else
         {
-            axis = FixVector3.Up;
+            axis = FixVector3.up;
             angle = F64.C0;
         }
     }

@@ -8,9 +8,17 @@ public static class StaticNetSerializer_Int64
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Int64 value) => sizeof(Int64) * 8;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize() => sizeof(Int64) * 8;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetSerialize(ref Int64 value, BitStreamWriter writer) => writer.WriteInt64(value);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetSerialize(Int64 value, BitStreamWriter writer) => writer.WriteInt64(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Int64 value, BitStreamReader reader) => value = reader.ReadInt64();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Int64 NetDeserialize(BitStreamReader reader) => reader.ReadInt64();
 }
 public static class StaticNetSerializer_UInt64
 {
@@ -26,63 +34,119 @@ public static class StaticNetSerializer_Int32
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Int32 value) => sizeof(Int32) * 8;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize() => sizeof(Int32) * 8;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetSerialize(ref Int32 value, BitStreamWriter writer) => writer.WriteInt32(value);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetSerialize(Int32 value, BitStreamWriter writer) => writer.WriteInt32(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Int32 value, BitStreamReader reader) => value = reader.ReadInt32();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Int32 NetDeserialize(BitStreamReader reader) => reader.ReadInt32();
 }
 public static class StaticNetSerializer_UInt32
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref UInt32 value) => sizeof(UInt32) * 8;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize() => sizeof(UInt32) * 8;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetSerialize(ref UInt32 value, BitStreamWriter writer) => writer.WriteUInt32(value);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetSerialize(UInt32 value, BitStreamWriter writer) => writer.WriteUInt32(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref UInt32 value, BitStreamReader reader) => value = reader.ReadUInt32();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static UInt32 NetDeserialize(BitStreamReader reader) => reader.ReadUInt32();
 }
 public static class StaticNetSerializer_Int16
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Int16 value) => sizeof(Int16) * 8;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize() => sizeof(Int16) * 8;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetSerialize(ref Int16 value, BitStreamWriter writer) => writer.WriteInt16(value);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetSerialize(Int16 value, BitStreamWriter writer) => writer.WriteInt16(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Int16 value, BitStreamReader reader) => value = reader.ReadInt16();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Int16 NetDeserialize(BitStreamReader reader) => reader.ReadInt16();
 }
 public static class StaticNetSerializer_UInt16
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref UInt16 value) => sizeof(UInt16) * 8;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize() => sizeof(UInt16) * 8;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetSerialize(ref UInt16 value, BitStreamWriter writer) => writer.WriteUInt16(value);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetSerialize(UInt16 value, BitStreamWriter writer) => writer.WriteUInt16(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref UInt16 value, BitStreamReader reader) => value = reader.ReadUInt16();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static UInt16 NetDeserialize(BitStreamReader reader) => reader.ReadUInt16();
 }
 public static class StaticNetSerializer_Byte
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Byte value) => sizeof(Byte) * 8;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize() => sizeof(Byte) * 8;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetSerialize(ref Byte value, BitStreamWriter writer) => writer.WriteByte(value);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetSerialize(Byte value, BitStreamWriter writer) => writer.WriteByte(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Byte value, BitStreamReader reader) => value = reader.ReadByte();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Byte NetDeserialize(BitStreamReader reader) => reader.ReadByte();
 }
 public static class StaticNetSerializer_Single
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Single value) => sizeof(Single) * 8;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize() => sizeof(Single) * 8;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetSerialize(ref Single value, BitStreamWriter writer) => writer.WriteFloat32(value);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetSerialize(Single value, BitStreamWriter writer) => writer.WriteFloat32(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Single value, BitStreamReader reader) => value = reader.ReadFloat32();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Single NetDeserialize(BitStreamReader reader) => reader.ReadFloat32();
 }
 public static class StaticNetSerializer_Boolean
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Boolean value) => 1;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize() => 1;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetSerialize(ref Boolean value, BitStreamWriter writer) => writer.WriteBool(value);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetSerialize(Boolean value, BitStreamWriter writer) => writer.WriteBool(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Boolean value, BitStreamReader reader) => value = reader.ReadBool();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Boolean NetDeserialize(BitStreamReader reader) => reader.ReadBool();
 }
 public static class StaticNetSerializer_String
 {

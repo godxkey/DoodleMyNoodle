@@ -4,42 +4,51 @@ using System.Collections.Generic;
 
 public partial class Simulation : IDisposable
 {
-    public static Simulation instance;
-    public Simulation() { instance = this; }
+    private static Simulation _instance;
+    public Simulation() { _instance = this; }
     public void Dispose()
     {
-        m_world.Dispose();
-        if (instance == this)
-            instance = null;
+        _world.Dispose();
+        if (_instance == this)
+            _instance = null;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    public SimWorld m_world;
-    public uint m_tickId = 0;
+    public ISimBlueprintBank _blueprintBank;
+    public SimWorld _world;
+    public uint _tickId = 0;
 
     public void ChangeWorld(SimWorld world)
     {
-        m_world?.Dispose();
-        m_world = world;
+        _world?.Dispose();
+        _world = world;
     }
 
-    public static SimWorld world => instance.m_world;
-    public static uint tickId => instance.m_tickId;
+    public static bool isValid => _instance != null;
+    public static ISimBlueprintBank blueprintBank => _instance?._blueprintBank;
+    public static SimWorld world => _instance?._world;
+    public static uint tickId => _instance == null ? 0 : _instance._tickId;
 
     public static void Tick(SimTickData tickData)
     {
-        world.Tick_PreInput();
-
         foreach (SimInput input in tickData.inputs)
         {
-            input.Execute(world);
+            SimCommand simCommand = input as SimCommand;
+            if (simCommand != null)
+            {
+                simCommand.Execute(world);
+            }
+            else
+            {
+                // TODO
+            }
         }
 
         world.Tick_PostInput();
-        instance.m_tickId++;
+        _instance._tickId++;
     }
 
     public static readonly Fix64 deltaTime = SimulationConstants.TIME_STEP; // 50 ticks per seconds

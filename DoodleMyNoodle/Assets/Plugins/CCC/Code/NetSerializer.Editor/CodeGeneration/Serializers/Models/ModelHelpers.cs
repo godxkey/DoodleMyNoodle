@@ -10,57 +10,69 @@ public static partial class NetSerializerCodeGenerator
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetSerializerFieldLine_GetNetBitSizeBaseClass(Type baseType)
         {
-            return "result += " + NetSerializationCodeGenUtility.GetSerializerNameFromType(baseType) + ".GetNetBitSize(obj);";
+            return $"result += {NetSerializationCodeGenUtility.GetSerializerNameFromType(baseType)}.GetNetBitSize(obj);";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetSerializerFieldLine_GetNetBitSize(Type fieldType, string fieldAccessor)
         {
+            if (fieldType.IsEnum)
+            {
+                return $"result += {NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.GetNetBitSize();";
+            }
             if (NetSerializationCodeGenUtility.ConsideredAsValueType(fieldType))
             {
-                return "result += " + NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType) + ".GetNetBitSize(ref obj" + fieldAccessor + ");";
+                return $"result += {NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.GetNetBitSize(ref obj{fieldAccessor});";
             }
             else
             {
-                return "result += " + NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType) + ".GetNetBitSize_Class(obj" + fieldAccessor + ");";
+                return $"result += {NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.GetNetBitSize_Class(obj{fieldAccessor});";
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetSerializerFieldLine_SerializeBaseClass(Type baseType)
         {
-            return NetSerializationCodeGenUtility.GetSerializerNameFromType(baseType) + ".NetSerialize(obj, writer);";
+            return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(baseType)}.NetSerialize(obj, writer);";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetSerializerFieldLine_Serialize(Type fieldType, string fieldAccessor)
         {
+            if (fieldType.IsEnum)
+            {
+                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetSerialize(({fieldType.GetEnumUnderlyingType()})obj{fieldAccessor}, writer);";
+            }
             if (NetSerializationCodeGenUtility.ConsideredAsValueType(fieldType))
             {
-                return NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType) + ".NetSerialize(ref obj" + fieldAccessor + ", writer);";
+                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetSerialize(ref obj{fieldAccessor}, writer);";
             }
             else
             {
-                return NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType) + ".NetSerialize_Class(obj" + fieldAccessor + ", writer);";
+                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetSerialize_Class(obj{fieldAccessor}, writer);";
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetSerializerFieldLine_DeserializeBaseClass(Type baseType)
         {
-            return NetSerializationCodeGenUtility.GetSerializerNameFromType(baseType) + ".NetDeserialize(obj, reader);";
+            return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(baseType)}.NetDeserialize(obj, reader);";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetSerializerFieldLine_Deserialize(Type fieldType, string fieldAccessor)
         {
-            if (NetSerializationCodeGenUtility.ConsideredAsValueType(fieldType))
+            if (fieldType.IsEnum)
             {
-                return NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType) + ".NetDeserialize(ref obj" + fieldAccessor + ", reader);";
+                return $"obj{fieldAccessor} = ({fieldType.FullName.Replace('+', '.')}){NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetDeserialize(reader);";
+            }
+            else if (NetSerializationCodeGenUtility.ConsideredAsValueType(fieldType))
+            {
+                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetDeserialize(ref obj{fieldAccessor}, reader);";
             }
             else
             {
-                return "obj" + fieldAccessor + " = " + NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType) + ".NetDeserialize_Class(reader);";
+                return $"obj{fieldAccessor} = {NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetDeserialize_Class(reader);";
             }
         }
     }

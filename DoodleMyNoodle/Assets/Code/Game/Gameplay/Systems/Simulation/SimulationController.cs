@@ -5,16 +5,20 @@ using UnityEngine;
 
 public abstract class SimulationController : GameSystem<SimulationController>
 {
+    [SerializeField] SimBlueprintBank _blueprintBank;
+
     public override bool isSystemReady => true;
 
     public abstract void SubmitInput(SimInput input);
 
 
-    protected Simulation simulation => m_simulation;
-    Simulation m_simulation = new Simulation();
+    protected Simulation simulation => _simulation;
+    Simulation _simulation = new Simulation();
 
     public override void OnGameReady()
     {
+        _simulation._blueprintBank = _blueprintBank;
+
         base.OnGameReady();
 
         ChangeSimWorld(new SimWorld());
@@ -22,15 +26,13 @@ public abstract class SimulationController : GameSystem<SimulationController>
 
     void ChangeSimWorld(SimWorld world)
     {
-        m_simulation.ChangeWorld(world);
-        if (m_simulation.m_world != null)
-            m_simulation.m_world.blueprintBank = StupidSimBlueprintBank.instance; // temporary
+        _simulation.ChangeWorld(world);
     }
 
     public override void OnSafeDestroy()
     {
         base.OnSafeDestroy();
 
-        m_simulation.Dispose();
+        _simulation.Dispose();
     }
 }

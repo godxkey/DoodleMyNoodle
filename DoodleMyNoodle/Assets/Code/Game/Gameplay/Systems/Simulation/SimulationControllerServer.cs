@@ -46,7 +46,7 @@ public class SimulationControllerServer : SimulationController
     bool ValidateInputSubmission(NetMessageInputSubmission submission, PlayerInfo playerInfo)
     {
         // This should eventually evolve into a full validation check (prevent cheating)
-        if (simulation.m_world == null)
+        if (simulation._world == null)
             return false;
 
         if (playerInfo == null)
@@ -70,7 +70,7 @@ public class SimulationControllerServer : SimulationController
         if (!Game.started)
             return;
 
-        if (simulation.m_world != null)
+        if (simulation._world != null)
         {
             ApprovedSimInput[] inputsForThisTick = inputQueue.ToArray();
             inputQueue.Clear();

@@ -10,6 +10,8 @@ public class TestScript : MonoBehaviour
     [NonSerialized]
     private Location locationComponent;
 
+    public SimBlueprintId ballBlueprint;
+
     private void Start()
     {
     }
@@ -21,12 +23,12 @@ public class TestScript : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L))
         {
-            SimulationController.instance.SubmitInput(new SimInputLog() { message = "hello!" });
+            SimulationController.instance.SubmitInput(new SimCommandLog() { message = "hello!" });
         }
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            SimulationController.instance.SubmitInput(new SimInputInstantiate() { blueprintId = new SimBlueprintId(1) });
+            SimulationController.instance.SubmitInput(new SimCommandInjectBlueprint() { blueprintId = ballBlueprint });
         }
     }
 
@@ -34,22 +36,22 @@ public class TestScript : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            SimulationController.instance.SubmitInput(new SimInputMoveBall() { moveDirection = FixVector2.right });
+            SimulationController.instance.SubmitInput(new SimCommandMoveBall() { moveDirection = FixVector3.right });
         }
 
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            SimulationController.instance.SubmitInput(new SimInputMoveBall() { moveDirection = FixVector2.left });
+            SimulationController.instance.SubmitInput(new SimCommandMoveBall() { moveDirection = FixVector3.left });
         }
 
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            SimulationController.instance.SubmitInput(new SimInputMoveBall() { moveDirection = FixVector2.up });
+            SimulationController.instance.SubmitInput(new SimCommandMoveBall() { moveDirection = FixVector3.forward });
         }
 
         if (Input.GetKey(KeyCode.DownArrow))
         {
-            SimulationController.instance.SubmitInput(new SimInputMoveBall() { moveDirection = FixVector2.down });
+            SimulationController.instance.SubmitInput(new SimCommandMoveBall() { moveDirection = FixVector3.backward });
         }
     }
 }

@@ -8,17 +8,20 @@ public static class StaticNetSerializer_SimBlueprintId
     public static int GetNetBitSize(ref SimBlueprintId obj)
     {
         int result = 0;
-        result += StaticNetSerializer_UInt16.GetNetBitSize(ref obj.value);
+        result += StaticNetSerializer_Byte.GetNetBitSize();
+        result += StaticNetSerializer_String.GetNetBitSize(ref obj.value);
         return result;
     }
 
     public static void NetSerialize(ref SimBlueprintId obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_UInt16.NetSerialize(ref obj.value, writer);
+        StaticNetSerializer_Byte.NetSerialize((System.Byte)obj.type, writer);
+        StaticNetSerializer_String.NetSerialize(ref obj.value, writer);
     }
 
     public static void NetDeserialize(ref SimBlueprintId obj, BitStreamReader reader)
     {
-        StaticNetSerializer_UInt16.NetDeserialize(ref obj.value, reader);
+        obj.type = (SimBlueprintId.Type)StaticNetSerializer_Byte.NetDeserialize(reader);
+        StaticNetSerializer_String.NetDeserialize(ref obj.value, reader);
     }
 }

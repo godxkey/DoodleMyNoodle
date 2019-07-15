@@ -17,7 +17,6 @@ public class DebugPanelClientSimController : DebugPanel
     DirtyValue<uint> m_currentSimTick;
     bool[] m_offsettedSimTicks = new bool[60];
     int m_offsettedSimTicksIterator = 0;
-    float m_stabilityScore01 = 0;
     int m_totalOffsettedSimTicks;
 
     public override void OnGUI()
@@ -44,7 +43,7 @@ public class DebugPanelClientSimController : DebugPanel
 
     void OnFixedUpdate()
     {
-        if (Simulation.instance == null)
+        if (!Simulation.isValid)
             return;
 
         m_currentSimTick.Value = Simulation.tickId;

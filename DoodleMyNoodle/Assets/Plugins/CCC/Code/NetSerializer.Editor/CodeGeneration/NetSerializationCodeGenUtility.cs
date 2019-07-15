@@ -13,6 +13,10 @@ public static class NetSerializationCodeGenUtility
         {
             return "ArrayNetSerializer_" + type.GetElementType().Name;
         }
+        else if (type.IsEnum)
+        {
+            return "StaticNetSerializer_" + type.GetEnumUnderlyingType().Name;
+        }
         else
         {
             return "StaticNetSerializer_" + type.Name;

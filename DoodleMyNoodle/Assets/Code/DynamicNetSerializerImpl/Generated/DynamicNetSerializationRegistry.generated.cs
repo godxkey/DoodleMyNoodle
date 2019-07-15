@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class DynamicNetSerializationRegistry
 {
-    public static readonly ulong crc = 14801455099116939352;
+    public static readonly ulong crc = 11136010393318084564;
 
     public static readonly Type[] types = new Type[]
     {
@@ -60,11 +60,13 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(SimBlueprintId)
         ,
-        typeof(SimInputInstantiate)
+        typeof(SimCommandInjectBlueprint)
         ,
-        typeof(SimInputLog)
+        typeof(SimCommandLog)
         ,
-        typeof(SimInputMoveBall)
+        typeof(SimCommandMoveBall)
+        ,
+        typeof(SimEntityId)
         ,
         typeof(SimPlayerId)
         ,
@@ -229,22 +231,28 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_SimBlueprintId.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(SimInputInstantiate)] = (obj) =>
+        [typeof(SimCommandInjectBlueprint)] = (obj) =>
         {
-            SimInputInstantiate castedObj = (SimInputInstantiate)obj;
-            return StaticNetSerializer_SimInputInstantiate.GetNetBitSize(castedObj);
+            SimCommandInjectBlueprint castedObj = (SimCommandInjectBlueprint)obj;
+            return StaticNetSerializer_SimCommandInjectBlueprint.GetNetBitSize(castedObj);
         }
         ,
-        [typeof(SimInputLog)] = (obj) =>
+        [typeof(SimCommandLog)] = (obj) =>
         {
-            SimInputLog castedObj = (SimInputLog)obj;
-            return StaticNetSerializer_SimInputLog.GetNetBitSize(castedObj);
+            SimCommandLog castedObj = (SimCommandLog)obj;
+            return StaticNetSerializer_SimCommandLog.GetNetBitSize(castedObj);
         }
         ,
-        [typeof(SimInputMoveBall)] = (obj) =>
+        [typeof(SimCommandMoveBall)] = (obj) =>
         {
-            SimInputMoveBall castedObj = (SimInputMoveBall)obj;
-            return StaticNetSerializer_SimInputMoveBall.GetNetBitSize(castedObj);
+            SimCommandMoveBall castedObj = (SimCommandMoveBall)obj;
+            return StaticNetSerializer_SimCommandMoveBall.GetNetBitSize(castedObj);
+        }
+        ,
+        [typeof(SimEntityId)] = (obj) =>
+        {
+            SimEntityId castedObj = (SimEntityId)obj;
+            return StaticNetSerializer_SimEntityId.GetNetBitSize(ref castedObj);
         }
         ,
         [typeof(SimPlayerId)] = (obj) =>
@@ -430,22 +438,28 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_SimBlueprintId.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(SimInputInstantiate)] = (obj, writer) =>
+        [typeof(SimCommandInjectBlueprint)] = (obj, writer) =>
         {
-            SimInputInstantiate castedObj = (SimInputInstantiate)obj;
-            StaticNetSerializer_SimInputInstantiate.NetSerialize(castedObj, writer);
+            SimCommandInjectBlueprint castedObj = (SimCommandInjectBlueprint)obj;
+            StaticNetSerializer_SimCommandInjectBlueprint.NetSerialize(castedObj, writer);
         }
         ,
-        [typeof(SimInputLog)] = (obj, writer) =>
+        [typeof(SimCommandLog)] = (obj, writer) =>
         {
-            SimInputLog castedObj = (SimInputLog)obj;
-            StaticNetSerializer_SimInputLog.NetSerialize(castedObj, writer);
+            SimCommandLog castedObj = (SimCommandLog)obj;
+            StaticNetSerializer_SimCommandLog.NetSerialize(castedObj, writer);
         }
         ,
-        [typeof(SimInputMoveBall)] = (obj, writer) =>
+        [typeof(SimCommandMoveBall)] = (obj, writer) =>
         {
-            SimInputMoveBall castedObj = (SimInputMoveBall)obj;
-            StaticNetSerializer_SimInputMoveBall.NetSerialize(castedObj, writer);
+            SimCommandMoveBall castedObj = (SimCommandMoveBall)obj;
+            StaticNetSerializer_SimCommandMoveBall.NetSerialize(castedObj, writer);
+        }
+        ,
+        [typeof(SimEntityId)] = (obj, writer) =>
+        {
+            SimEntityId castedObj = (SimEntityId)obj;
+            StaticNetSerializer_SimEntityId.NetSerialize(ref castedObj, writer);
         }
         ,
         [typeof(SimPlayerId)] = (obj, writer) =>
@@ -658,54 +672,61 @@ public static class DynamicNetSerializationRegistry
         ,
         [25] = (reader) =>
         {
-            SimInputInstantiate obj = new SimInputInstantiate();
-            StaticNetSerializer_SimInputInstantiate.NetDeserialize(obj, reader);
+            SimCommandInjectBlueprint obj = new SimCommandInjectBlueprint();
+            StaticNetSerializer_SimCommandInjectBlueprint.NetDeserialize(obj, reader);
             return obj;
         }
         ,
         [26] = (reader) =>
         {
-            SimInputLog obj = new SimInputLog();
-            StaticNetSerializer_SimInputLog.NetDeserialize(obj, reader);
+            SimCommandLog obj = new SimCommandLog();
+            StaticNetSerializer_SimCommandLog.NetDeserialize(obj, reader);
             return obj;
         }
         ,
         [27] = (reader) =>
         {
-            SimInputMoveBall obj = new SimInputMoveBall();
-            StaticNetSerializer_SimInputMoveBall.NetDeserialize(obj, reader);
+            SimCommandMoveBall obj = new SimCommandMoveBall();
+            StaticNetSerializer_SimCommandMoveBall.NetDeserialize(obj, reader);
             return obj;
         }
         ,
         [28] = (reader) =>
+        {
+            SimEntityId obj = new SimEntityId();
+            StaticNetSerializer_SimEntityId.NetDeserialize(ref obj, reader);
+            return obj;
+        }
+        ,
+        [29] = (reader) =>
         {
             SimPlayerId obj = new SimPlayerId();
             StaticNetSerializer_SimPlayerId.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
-        [29] = (reader) =>
+        [30] = (reader) =>
         {
             TestMessage obj = new TestMessage();
             StaticNetSerializer_TestMessage.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [30] = (reader) =>
+        [31] = (reader) =>
         {
             TestMessageAnimal obj = new TestMessageAnimal();
             StaticNetSerializer_TestMessageAnimal.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [31] = (reader) =>
+        [32] = (reader) =>
         {
             TestMessageCat obj = new TestMessageCat();
             StaticNetSerializer_TestMessageCat.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [32] = (reader) =>
+        [33] = (reader) =>
         {
             TestMessageDog obj = new TestMessageDog();
             StaticNetSerializer_TestMessageDog.NetDeserialize(obj, reader);

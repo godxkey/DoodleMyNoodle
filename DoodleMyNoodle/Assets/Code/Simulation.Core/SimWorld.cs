@@ -2,129 +2,140 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-
-[Serializable]
 public class SimWorld : IDisposable
 {
-    [NonSerialized]
-    public ISimBlueprintBank blueprintBank;
+    public ReadOnlyCollection<SimEntity> entities => _entitiesReadOnly ?? (_entitiesReadOnly = _entities.AsReadOnly());
 
     [NonSerialized]
-    ReadOnlyCollection<SimEntity> m_entitiesReadOnly;
-    public ReadOnlyCollection<SimEntity> entities => m_entitiesReadOnly ?? (m_entitiesReadOnly = m_entities.AsReadOnly());
+    ReadOnlyCollection<SimEntity> _entitiesReadOnly;
 
-    List<SimEntity> m_entities = new List<SimEntity>();
+    readonly List<SimEntity> _entities = new List<SimEntity>();
+    SimEntityId _nextEntityId = SimEntityId.firstValid;
 
-    public SimEntity InstantiateEntity(string name)
+    [NonSerialized]
+    readonly List<SimComponent> _simComponentBuffer = new List<SimComponent>();
+
+    [NonSerialized]
+    readonly List<ISimTickable> _tickables = new List<ISimTickable>();
+
+
+
+    public void LoadScene(string sceneName)
     {
-        // Create entity
-        SimEntity entity = new SimEntity(name)
-        {
-            world = this,
-            blueprintId = SimBlueprintId.invalid
-        };
-
-        // add entity to list
-        m_entities.Add(entity);
-
-        // Create view
-        SimEntityView view = SimHelpers.ViewCreationHelper.CreateViewForEntity(entity, blueprintBank);
-
-        // Bind view with sim
-        SimHelpers.ViewAttachingHelper.AttachEntityAndComponents(entity, view);
-
-        // Fire events
-        SimHelpers.EventHelper.FireEventOnEntityAndComponents_OnAwake(entity);
-
-        return entity;
+        throw new NotImplementedException();
     }
 
-    public SimEntity InstantiateEntity(SimBlueprintId blueprintId)
+    public SimEntity Instantiate(SimBlueprint original)
     {
-        if (blueprintBank == null)
-        {
-            DebugService.LogError("Cannot spawn blueprint: Blueprint bank is null");
-            return null;
-        }
-
-        if (blueprintId.isValid == false)
-        {
-            DebugService.LogError("Cannot spawn blueprint: Blueprint id is invalid");
-            return null;
-        }
-
-        SimBlueprint blueprint = blueprintBank.GetBlueprint(blueprintId);
-
-        // Create entity & View
-        SimEntity entity;
-        SimEntityView view;
-        blueprint.InstantiateEntityAndView(out entity, out view);
-
-        // fill basic info
-        entity.world = this;
-        entity.blueprintId = blueprintId;
-
-        // add entity to list
-        m_entities.Add(entity);
-
-        // bind view with sim
-        SimHelpers.ViewAttachingHelper.AttachEntityAndComponents(entity, view);
-
-        // Fire 'OnAwake' event
-        SimHelpers.EventHelper.FireEventOnEntityAndComponents_OnAwake(entity);
-
-        return entity;
+        GameObject newGameObject = GameObject.Instantiate(original.prefab.gameObject);
+        return OnInstantiated_Internal(original, newGameObject); ;
+    }
+    public SimEntity Instantiate(SimBlueprint original, Transform parent)
+    {
+        GameObject newGameObject = GameObject.Instantiate(original.prefab.gameObject, parent);
+        return OnInstantiated_Internal(original, newGameObject);
+    }
+    public SimEntity Instantiate(SimBlueprint original, FixVector3 position, FixQuaternion rotation)
+    {
+        GameObject newGameObject = GameObject.Instantiate(original.prefab.gameObject, position.ToUnityVec(), rotation.ToUnityQuat());
+        return OnInstantiated_Internal(original, newGameObject, ref position, ref rotation);
+    }
+    public SimEntity Instantiate(SimBlueprint original, FixVector3 position, FixQuaternion rotation, SimTransform parent)
+    {
+        GameObject newGameObject = GameObject.Instantiate(original.prefab.gameObject, position.ToUnityVec(), rotation.ToUnityQuat(), parent.unityTransform);
+        return OnInstantiated_Internal(original, newGameObject, ref position, ref rotation);
     }
 
-    public void DestroyEntity(SimEntity entity)
+    SimEntity OnInstantiated_Internal(SimBlueprint original, GameObject newGameObject, ref FixVector3 position, ref FixQuaternion rotation)
     {
-        int i = m_entities.IndexOf(entity);
-        if (i >= 0)
-            DestroyEntityAt(i);
-    }
-
-    void DestroyEntityAt(int index)
-    {
-        SimEntity entity = m_entities[index];
-
-        // Fire 'OnAwake' event
-        SimHelpers.EventHelper.FireEventOnEntityAndComponents_OnDestroy(entity);
-
-        if(entity.attachedToView)
+        SimTransform simTransform = newGameObject.GetComponent<SimTransform>();
+        if (simTransform)
         {
-            SimEntityView entityView = (SimEntityView)entity.view;
-
-            // detach view from sim
-            SimHelpers.ViewAttachingHelper.DetachEntityAndComponents(entity);
-
-            // destroy view
-            SimHelpers.ViewCreationHelper.DestroyViewForEntityAndComponents(entityView);
+            simTransform.localPosition = position;
+            simTransform.localRotation = rotation;
         }
 
-        // remove references (marking them as destroyed)
-        entity.world = null;
-        for (int i = 0; i < entity.components.Count; i++)
-        {
-            entity.components[i].entity = null;
-        }
-
-        // remove from lists
-        entity.components.Clear();
-        m_entities.RemoveAt(index);
+        return OnInstantiated_Internal(original, newGameObject);
     }
-
-    public virtual void Tick_PreInput() { }
-    public virtual void Tick_PostInput() { }
-
-    public void Dispose()
+    SimEntity OnInstantiated_Internal(SimBlueprint original, GameObject newGameObject)
     {
-        // reverse loop to save cpu
-        for (int i = m_entities.Count - 1; i >= 0; i--)
+        SimEntity newEntity = newGameObject.GetComponent<SimEntity>();
+        newEntity.blueprintId = original.id;
+        newEntity.entityId = _nextEntityId;
+        _nextEntityId.Increment();
+
+        AddToEntityList(newEntity);
+        OnAllSimComponents(newEntity, (x) => x.OnSimAwake());
+
+        return newEntity;
+    }
+
+    int _expectingDestructions = 0;
+    public void Destroy(SimEntity entity)
+    {
+        OnAllSimComponents(entity, (x) => x.OnSimDestroy());
+
+        _expectingDestructions++;
+        GameObject.Destroy(entity.gameObject);
+        _expectingDestructions--;
+    }
+    internal void OnDestroyEntity(SimEntity entity)
+    {
+        if (_expectingDestructions == 0)
         {
-            DestroyEntityAt(i);
+            DebugService.LogWarning("A SimEntity is getting incorrectly destroyed. Please call SimWorld.Destroy() to destroy simualation entities.");
+        }
+        RemoveFromEntityList(entity);
+    }
+
+
+    void AddToEntityList(SimEntity simEntity)
+    {
+        _entities.Add(simEntity);
+        OnAllSimComponents(simEntity, (x) =>
+        {
+            if (x is ISimTickable)
+            {
+                _tickables.Add((ISimTickable)x);
+            }
+            x.OnAddedToEntityList();
+        });
+    }
+    void RemoveFromEntityList(SimEntity simEntity)
+    {
+        OnAllSimComponents(simEntity, (x) =>
+        {
+            if (x is ISimTickable)
+            {
+                _tickables.Remove((ISimTickable)x);
+            }
+            x.OnRemovingFromEntityList();
+        });
+        _entities.Remove(simEntity);
+    }
+
+    void OnAllSimComponents(SimEntity entity, Action<SimComponent> action)
+    {
+        entity.GetComponents(_simComponentBuffer);
+        for (int i = 0; i < _simComponentBuffer.Count; i++)
+        {
+            action(_simComponentBuffer[i]);
+        }
+        _simComponentBuffer.Clear();
+    }
+
+    internal void Tick_PostInput()
+    {
+        for (int i = 0; i < _tickables.Count; i++)
+        {
+            if (_tickables[i].isActiveAndEnabled)
+            {
+                _tickables[i].OnSimTick();
+            }
         }
     }
+    public void Dispose() { }
 }
