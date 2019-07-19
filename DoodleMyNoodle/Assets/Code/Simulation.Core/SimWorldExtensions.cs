@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 public static class SimWorldExtensions
@@ -38,5 +39,17 @@ public static class SimWorldExtensions
 
         comp = default;
         return null;
+    }
+
+    public static void ForEveryEntityWithComponent<T>(this SimWorld world, Action<T> action) where T : SimComponent
+    {
+        var entities = world.entities;
+        T comp = null;
+        for (int i = 0; i < entities.Count; i++)
+        {
+            comp = entities[i].GetComponent<T>();
+            if (comp != null)
+                action(comp);
+        }
     }
 }

@@ -59,7 +59,7 @@ public class SimulationControllerClient : SimulationController
     {
         _pendingSimTicks.Update(Time.fixedDeltaTime);
 
-        while (_pendingSimTicks.TryDrop(out NetMessageSimTick tick))
+        while (simulation.canBeTicked && _pendingSimTicks.TryDrop(out NetMessageSimTick tick))
         {
             ExecuteTick(tick);
         }
@@ -78,6 +78,6 @@ public class SimulationControllerClient : SimulationController
             inputs = simInputs
         };
 
-        Simulation.Tick(tickData);
+        simulation.Tick(tickData);
     }
 }

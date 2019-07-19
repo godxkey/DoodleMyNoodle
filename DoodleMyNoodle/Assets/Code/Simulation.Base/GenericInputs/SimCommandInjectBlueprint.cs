@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// CETTE INPUT EST TEMPORAIRE ET NE DEVRAIS LOGIQUEMENT PAS ÊTRE UTILISÉ DANS LE JEU FINALE
+/// <para/>
+/// (world.Instantiate(blueprint) devrait être appelé de l'intérieur de la simulation)
+/// </summary>
 [NetSerializable]
 public class SimCommandInjectBlueprint : SimCommand
 {

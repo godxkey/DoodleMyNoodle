@@ -70,7 +70,7 @@ public class SimulationControllerServer : SimulationController
         if (!Game.started)
             return;
 
-        if (simulation._world != null)
+        if (simulation._world != null && simulation.canBeTicked)
         {
             ApprovedSimInput[] inputsForThisTick = inputQueue.ToArray();
             inputQueue.Clear();
@@ -97,7 +97,7 @@ public class SimulationControllerServer : SimulationController
                 inputs = simInputs
             };
 
-            Simulation.Tick(tickData);
+            simulation.Tick(tickData);
         }
         else
         {

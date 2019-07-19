@@ -13,11 +13,9 @@ public class SimCommandMoveBall : SimCommand
     //              The logic should be done on a component on the ball.
     public override void Execute(SimWorld world)
     {
-        SimTransform ballTransform;
-        world.FindEntityWithComponent(out ballTransform);
-        if(ballTransform)
+        world.ForEveryEntityWithComponent<SimTransform>((ballTransform) =>
         {
             ballTransform.localPosition += moveDirection * Simulation.deltaTime * speed;
-        }
+        });
     }
 }

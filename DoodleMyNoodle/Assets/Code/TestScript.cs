@@ -6,15 +6,9 @@ using UnityEngine;
 
 public class TestScript : MonoBehaviour
 {
-    internal bool test;
-    [NonSerialized]
-    private Location locationComponent;
+    public SceneInfo ballpitScene;
 
     public SimBlueprintId ballBlueprint;
-
-    private void Start()
-    {
-    }
 
     public void Update()
     {
@@ -24,6 +18,11 @@ public class TestScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.L))
         {
             SimulationController.instance.SubmitInput(new SimCommandLog() { message = "hello!" });
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            SimulationController.instance.SubmitInput(new SimCommandLoadScene() { sceneName = ballpitScene.SceneName });
         }
 
         if (Input.GetKeyDown(KeyCode.B))

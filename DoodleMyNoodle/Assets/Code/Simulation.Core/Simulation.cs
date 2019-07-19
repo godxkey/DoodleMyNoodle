@@ -27,12 +27,15 @@ public partial class Simulation : IDisposable
         _world = world;
     }
 
-    public static bool isValid => _instance != null;
-    public static ISimBlueprintBank blueprintBank => _instance?._blueprintBank;
-    public static SimWorld world => _instance?._world;
-    public static uint tickId => _instance == null ? 0 : _instance._tickId;
+    public static bool isValid => _instance != null && _instance._world != null;
+    public static ISimBlueprintBank blueprintBank => _instance._blueprintBank;
+    public static SimWorld world => _instance._world;
+    public static uint tickId => _instance._tickId;
 
-    public static void Tick(SimTickData tickData)
+    public bool canBeTicked => _world.canBeTicked;
+    public bool canBeSaved => _world.canBeSaved;
+
+    public void Tick(SimTickData tickData)
     {
         foreach (SimInput input in tickData.inputs)
         {

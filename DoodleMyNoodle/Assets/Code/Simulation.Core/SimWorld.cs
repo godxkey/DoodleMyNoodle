@@ -7,42 +7,81 @@ using UnityEngine.SceneManagement;
 
 public class SimWorld : IDisposable
 {
-    public ReadOnlyCollection<SimEntity> entities => _entitiesReadOnly ?? (_entitiesReadOnly = _entities.AsReadOnly());
-
-    [NonSerialized]
-    ReadOnlyCollection<SimEntity> _entitiesReadOnly;
-
     readonly List<SimEntity> _entities = new List<SimEntity>();
     SimEntityId _nextEntityId = SimEntityId.firstValid;
 
     [NonSerialized]
-    readonly List<SimComponent> _simComponentBuffer = new List<SimComponent>();
+    ReadOnlyCollection<SimEntity> _entitiesReadOnly;
 
     [NonSerialized]
     readonly List<ISimTickable> _tickables = new List<ISimTickable>();
 
+    [NonSerialized]
+    int pendingSceneLoads = 0;
 
 
+    public ReadOnlyCollection<SimEntity> entities => _entitiesReadOnly ?? (_entitiesReadOnly = _entities.AsReadOnly());
+    public bool canBeTicked => pendingSceneLoads == 0;
+    public bool canBeSaved => pendingSceneLoads == 0;
+
+    /// <summary>
+    /// Instantiate all gameobjects in the given scene and inject them all into the simulation
+    /// <para/>
+    /// NB: not called if reloading/reconstructing a saved game
+    /// </summary>
     public void LoadScene(string sceneName)
     {
-        throw new NotImplementedException();
+        // fbessette: eventually, we'll want to have a preloading mechanism outside of the simulation so we don't have a CPU spike here.
+        pendingSceneLoads++;
+        SceneService.Load(sceneName, LoadSceneMode.Additive, (scene) =>
+        {
+            pendingSceneLoads--;
+            foreach (GameObject gameObject in scene.GetRootGameObjects())
+            {
+                SimEntity newEntity = gameObject.GetComponent<SimEntity>();
+                if (newEntity)
+                {
+                    InjectNewEntityIntoSim(newEntity, new SimBlueprintId(SimBlueprintId.Type.SceneGameObject, "TODO"));
+                }
+            }
+        });
     }
 
+    /// <summary>
+    /// Instantiate entity from the blueprint and inject it into the simulation
+    /// <para/>
+    /// NB: not called if reloading/reconstructing a saved game
+    /// </summary>
     public SimEntity Instantiate(SimBlueprint original)
     {
         GameObject newGameObject = GameObject.Instantiate(original.prefab.gameObject);
         return OnInstantiated_Internal(original, newGameObject); ;
     }
+    /// <summary>
+    /// Instantiate entity from the blueprint and inject it into the simulation
+    /// <para/>
+    /// NB: not called if reloading/reconstructing a saved game
+    /// </summary>
     public SimEntity Instantiate(SimBlueprint original, Transform parent)
     {
         GameObject newGameObject = GameObject.Instantiate(original.prefab.gameObject, parent);
         return OnInstantiated_Internal(original, newGameObject);
     }
+    /// <summary>
+    /// Instantiate entity from the blueprint and inject it into the simulation
+    /// <para/>
+    /// NB: not called if reloading/reconstructing a saved game
+    /// </summary>
     public SimEntity Instantiate(SimBlueprint original, FixVector3 position, FixQuaternion rotation)
     {
         GameObject newGameObject = GameObject.Instantiate(original.prefab.gameObject, position.ToUnityVec(), rotation.ToUnityQuat());
         return OnInstantiated_Internal(original, newGameObject, ref position, ref rotation);
     }
+    /// <summary>
+    /// Instantiate entity from the blueprint and inject it into the simulation
+    /// <para/>
+    /// NB: not called if reloading/reconstructing a saved game
+    /// </summary>
     public SimEntity Instantiate(SimBlueprint original, FixVector3 position, FixQuaternion rotation, SimTransform parent)
     {
         GameObject newGameObject = GameObject.Instantiate(original.prefab.gameObject, position.ToUnityVec(), rotation.ToUnityQuat(), parent.unityTransform);
@@ -63,25 +102,47 @@ public class SimWorld : IDisposable
     SimEntity OnInstantiated_Internal(SimBlueprint original, GameObject newGameObject)
     {
         SimEntity newEntity = newGameObject.GetComponent<SimEntity>();
-        newEntity.blueprintId = original.id;
+        InjectNewEntityIntoSim(newEntity, original.id);
+        return newEntity;
+    }
+
+
+    /// <summary>
+    /// All newly created entities go through here.
+    /// <para/>
+    /// NB: not called if reloading/reconstructing a saved game
+    /// </summary>
+    void InjectNewEntityIntoSim(SimEntity newEntity, SimBlueprintId blueprintId)
+    {
+        newEntity.blueprintId = blueprintId;
         newEntity.entityId = _nextEntityId;
         _nextEntityId.Increment();
 
         AddToEntityList(newEntity);
-        OnAllSimComponents(newEntity, (x) => x.OnSimAwake());
-
-        return newEntity;
+        foreach (SimComponent comp in newEntity.GetComponents<SimComponent>())
+        {
+            comp.OnSimAwake();
+        }
     }
 
     int _expectingDestructions = 0;
+    /// <summary>
+    /// Permanently destroys the entity from the simulation
+    /// </summary>
     public void Destroy(SimEntity entity)
     {
-        OnAllSimComponents(entity, (x) => x.OnSimDestroy());
+        foreach (SimComponent comp in entity.GetComponents<SimComponent>())
+        {
+            comp.OnSimDestroy();
+        }
 
         _expectingDestructions++;
         GameObject.Destroy(entity.gameObject);
         _expectingDestructions--;
     }
+    /// <summary>
+    /// This should be called by the entity itself upon destruction. 
+    /// </summary>
     internal void OnDestroyEntity(SimEntity entity)
     {
         if (_expectingDestructions == 0)
@@ -92,39 +153,35 @@ public class SimWorld : IDisposable
     }
 
 
+    /// <summary>
+    /// Add the entity to the entity-list
+    /// <para/>
+    /// NB: also called when reloading/reconstructing a saved game
+    /// </summary>
     void AddToEntityList(SimEntity simEntity)
     {
         _entities.Add(simEntity);
-        OnAllSimComponents(simEntity, (x) =>
+
+        foreach (SimComponent comp in simEntity.GetComponents<SimComponent>())
         {
-            if (x is ISimTickable)
+            if (comp is ISimTickable)
             {
-                _tickables.Add((ISimTickable)x);
+                _tickables.Add((ISimTickable)comp);
             }
-            x.OnAddedToEntityList();
-        });
+            comp.OnAddedToEntityList();
+        }
     }
     void RemoveFromEntityList(SimEntity simEntity)
     {
-        OnAllSimComponents(simEntity, (x) =>
+        foreach (SimComponent comp in simEntity.GetComponents<SimComponent>())
         {
-            if (x is ISimTickable)
+            if (comp is ISimTickable)
             {
-                _tickables.Remove((ISimTickable)x);
+                _tickables.Remove((ISimTickable)comp);
             }
-            x.OnRemovingFromEntityList();
-        });
-        _entities.Remove(simEntity);
-    }
-
-    void OnAllSimComponents(SimEntity entity, Action<SimComponent> action)
-    {
-        entity.GetComponents(_simComponentBuffer);
-        for (int i = 0; i < _simComponentBuffer.Count; i++)
-        {
-            action(_simComponentBuffer[i]);
+            comp.OnRemovingFromEntityList();
         }
-        _simComponentBuffer.Clear();
+        _entities.Remove(simEntity);
     }
 
     internal void Tick_PostInput()
