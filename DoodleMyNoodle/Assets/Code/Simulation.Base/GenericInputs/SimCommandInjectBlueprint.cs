@@ -12,13 +12,13 @@ public class SimCommandInjectBlueprint : SimCommand
 {
     public SimBlueprintId blueprintId;
 
-    public override void Execute(SimWorld world)
+    public override void Execute()
     {
-        SimBlueprint blueprint = Simulation.blueprintBank.GetBlueprint(blueprintId);
+        SimBlueprint blueprint = Simulation.GetBlueprint(blueprintId);
 
         if (blueprint != null)
         {
-            world.Instantiate(blueprint);
+            Simulation.Instantiate(blueprint);
         }
         else
         {

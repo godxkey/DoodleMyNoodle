@@ -10,6 +10,7 @@ public class TestScript : MonoBehaviour
 
     public SimBlueprintId ballBlueprint;
 
+
     public void Update()
     {
         if (Game.started == false)

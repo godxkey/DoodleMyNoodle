@@ -43,7 +43,7 @@ public class DebugPanelClientSimController : DebugPanel
 
     void OnFixedUpdate()
     {
-        if (!Simulation.isValid)
+        if (!Simulation.isInitialized)
             return;
 
         m_currentSimTick.Value = Simulation.tickId;

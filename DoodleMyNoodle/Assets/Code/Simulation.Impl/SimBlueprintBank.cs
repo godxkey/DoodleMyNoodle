@@ -6,7 +6,7 @@ using UnityEngine;
 /// Banque de blueprint utilisé pour nos premier test
 /// </summary>
 [CreateAssetMenu(fileName ="New SimBlueprint Bank", menuName = "DoodleMyNoodle/SimBlueprint Bank")]
-public class SimBlueprintBank : ScriptableObject, ISimBlueprintBank
+public class SimBlueprintBank : ScriptableObject, ISimModuleBlueprintBank
 {
     [System.Serializable]
     class PrefabAndBlueprintPair
@@ -18,7 +18,7 @@ public class SimBlueprintBank : ScriptableObject, ISimBlueprintBank
     [SerializeField]
     private List<PrefabAndBlueprintPair> prefabBlueprints;
 
-    public SimBlueprint GetBlueprint(SimBlueprintId blueprintId)
+    public SimBlueprint GetBlueprint(in SimBlueprintId blueprintId)
     {
         switch (blueprintId.type)
         {

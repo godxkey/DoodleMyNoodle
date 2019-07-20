@@ -24,7 +24,7 @@ public class SimEntity : SimComponent
     {
         if (isPartOfSimulation && !ApplicationUtilityService.ApplicationIsQuitting)
         {
-            Simulation.world.OnDestroyEntity(this);
+            SimModules.entityManager.OnDestroyEntity(this);
         }
     }
 }

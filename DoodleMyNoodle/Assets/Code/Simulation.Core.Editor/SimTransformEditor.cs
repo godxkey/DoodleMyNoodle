@@ -33,9 +33,9 @@ public class SimTransformEditor : Editor
             }
             else
             {
-                FixVector3 localPosition = unityTransform.localPosition.ToFixVecCopy();
-                FixQuaternion localRotation = unityTransform.localRotation.ToFixQuatCopy();
-                FixVector3 localScale = unityTransform.localScale.ToFixVecCopy();
+                FixVector3 localPosition = unityTransform.localPosition.ToFixVec();
+                FixQuaternion localRotation = unityTransform.localRotation.ToFixQuat();
+                FixVector3 localScale = unityTransform.localScale.ToFixVec();
 
                 bool change = localPosition != simTransform.localPosition
                             || localRotation != simTransform.localRotation

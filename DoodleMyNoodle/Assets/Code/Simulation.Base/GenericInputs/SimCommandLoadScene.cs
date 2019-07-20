@@ -12,8 +12,8 @@ public class SimCommandLoadScene : SimCommand
 {
     public string sceneName;
 
-    public override void Execute(SimWorld world)
+    public override void Execute()
     {
-        world.LoadScene(sceneName);
+        Simulation.LoadScene(sceneName);
     }
 }

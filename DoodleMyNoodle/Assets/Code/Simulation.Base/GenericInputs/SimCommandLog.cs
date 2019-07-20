@@ -7,7 +7,7 @@ public class SimCommandLog : SimCommand
 {
     public string message;
 
-    public override void Execute(SimWorld world)
+    public override void Execute()
     {
         DebugService.Log(message);
     }

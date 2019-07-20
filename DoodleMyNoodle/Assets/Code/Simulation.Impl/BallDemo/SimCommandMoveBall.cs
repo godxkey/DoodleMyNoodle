@@ -11,9 +11,9 @@ public class SimCommandMoveBall : SimCommand
 
     // fbessette:   This should be changed, we should not have an Execute method here
     //              The logic should be done on a component on the ball.
-    public override void Execute(SimWorld world)
+    public override void Execute()
     {
-        world.ForEveryEntityWithComponent<SimTransform>((ballTransform) =>
+        Simulation.ForEveryEntityWithComponent<SimTransform>((ballTransform) =>
         {
             ballTransform.localPosition += moveDirection * Simulation.deltaTime * speed;
         });

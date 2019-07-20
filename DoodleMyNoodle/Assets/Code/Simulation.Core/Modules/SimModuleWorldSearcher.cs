@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
-public static class SimWorldExtensions
+public class SimModuleWorldSearcher
 {
-    public static SimEntity FindEntityWithName(this SimWorld world, string name)
+    internal SimEntity FindEntityWithName(string name)
     {
-        var entities = world.entities;
+        var entities = SimModules.world.entities;
         for (int i = 0; i < entities.Count; i++)
         {
-            if (entities[i].name == name)
+            if (entities[i].gameObject.name == name)
                 return entities[i];
         }
         return null;
     }
 
-    public static SimEntity FindEntityWithComponent<T>(this SimWorld world) where T : SimComponent
+    internal SimEntity FindEntityWithComponent<T>() where T : SimComponent
     {
-        var entities = world.entities;
+        var entities = SimModules.world.entities;
         for (int i = 0; i < entities.Count; i++)
         {
             T comp = entities[i].GetComponent<T>();
@@ -27,9 +25,9 @@ public static class SimWorldExtensions
         return null;
     }
 
-    public static SimEntity FindEntityWithComponent<T>(this SimWorld world, out T comp) where T : SimComponent
+    internal SimEntity FindEntityWithComponent<T>(out T comp) where T : SimComponent
     {
-        var entities = world.entities;
+        var entities = SimModules.world.entities;
         for (int i = 0; i < entities.Count; i++)
         {
             comp = entities[i].GetComponent<T>();
@@ -41,9 +39,9 @@ public static class SimWorldExtensions
         return null;
     }
 
-    public static void ForEveryEntityWithComponent<T>(this SimWorld world, Action<T> action) where T : SimComponent
+    internal void ForEveryEntityWithComponent<T>(Action<T> action) where T : SimComponent
     {
-        var entities = world.entities;
+        var entities = SimModules.world.entities;
         T comp = null;
         for (int i = 0; i < entities.Count; i++)
         {
