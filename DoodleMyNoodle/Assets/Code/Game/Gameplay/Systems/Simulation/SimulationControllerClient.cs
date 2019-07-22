@@ -57,10 +57,19 @@ public class SimulationControllerClient : SimulationController
 
     private void FixedUpdate()
     {
+        if (!Simulation.isInitialized)
+            return;
+
         _pendingSimTicks.Update(Time.fixedDeltaTime);
 
         while (Simulation.canBeTicked && _pendingSimTicks.TryDrop(out NetMessageSimTick tick))
         {
+            if(Simulation.tickId != tick.tickId)
+            {
+                Simulation.ForceSetTickId(tick.tickId);
+                DebugService.LogWarning($"[Temporary Hack] We forcefully set the next simulation's stick at {tick.tickId} to match with the server. " +
+                    $"This should eventually be replaced by the 'join in progress' feature. NB: This message should only appear once per session!");
+            }
             ExecuteTick(tick);
         }
     }

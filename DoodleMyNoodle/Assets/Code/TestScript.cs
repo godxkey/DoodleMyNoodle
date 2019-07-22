@@ -10,11 +10,33 @@ public class TestScript : MonoBehaviour
 
     public SimBlueprintId ballBlueprint;
 
+    //FixVector3[] dirs = new FixVector3[500];
+    //Color[] colrs = new Color[500];
+
+    //private void Start()
+    //{
+    //    FixRandom random = new FixRandom();
+    //    for (int i = 0; i < dirs.Length; i++)
+    //    {
+    //        dirs[i] = new FixVector3(random.RandomDirection2D(), 0);
+    //        colrs[i] = ColorHSV.ToColor(new ColorHSV(UnityEngine.Random.value, 1, 1));
+    //    }
+    //}
+
+    //private void OnDrawGizmos()
+    //{
+    //    for (int i = 0; i < dirs.Length; i++)
+    //    {
+    //        Gizmos.color = colrs[i];
+    //        Gizmos.DrawLine(Vector3.zero, dirs[i].ToUnityVec());
+    //    }
+    //}
 
     public void Update()
     {
         if (Game.started == false)
             return;
+
 
         if (Input.GetKeyDown(KeyCode.L))
         {
@@ -29,6 +51,11 @@ public class TestScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.B))
         {
             SimulationController.instance.SubmitInput(new SimCommandInjectBlueprint() { blueprintId = ballBlueprint });
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SimulationController.instance.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.Space });
         }
     }
 

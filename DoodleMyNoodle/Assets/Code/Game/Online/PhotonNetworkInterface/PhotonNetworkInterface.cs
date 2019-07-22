@@ -12,7 +12,7 @@ namespace Internals.PhotonNetwokInterface
 {
     public class PhotonNetworkInterface : NetworkInterface
     {
-        const bool log = false;
+        const bool log = true;
 
         public override event Action onDisconnectedFromSession;
         public override event Action onShutdownBegin;

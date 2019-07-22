@@ -7,8 +7,10 @@ public static class Simulation
 {
     public static void Initialize(ISimModuleBlueprintBank blueprintBank)
     {
+        // garder en horde alphabétique svp
         SimModules.blueprintBank = blueprintBank;
         SimModules.entityManager = new SimModuleEntityManager();
+        SimModules.random = new SimModuleRandom();
         SimModules.sceneLoader = new SimModuleSceneLoader();
         SimModules.serializer = new SimModuleSerializer();
         SimModules.ticker = new SimModuleTicker();
@@ -18,14 +20,20 @@ public static class Simulation
 
     public static void Shutdown()
     {
+        // garder en horde alphabétique svp
         SimModules.blueprintBank = null;
         SimModules.entityManager = null;
+        SimModules.random = null;
         SimModules.sceneLoader = null;
         SimModules.serializer = null;
         SimModules.ticker = null;
         SimModules.world = null;
         SimModules.worldSearcher = null;
     }
+    /// <summary>
+    /// Set the next time id the sim will execute
+    /// </summary>
+    public static void ForceSetTickId(uint tickId) => SimModules.world.tickId = tickId;
 
     /// <summary>
     /// Is the simulation ready to run ?
@@ -86,7 +94,28 @@ public static class Simulation
     public static SimBlueprint GetBlueprint(in SimBlueprintId blueprintId) => SimModules.blueprintBank.GetBlueprint(blueprintId);
 
     public static SimEntity FindEntityWithName(string name) => SimModules.worldSearcher.FindEntityWithName(name);
-    public static SimEntity FindEntityWithComponent<T>() where T : SimComponent => SimModules.worldSearcher.FindEntityWithComponent<T>();
-    public static SimEntity FindEntityWithComponent<T>(out T comp) where T : SimComponent => SimModules.worldSearcher.FindEntityWithComponent(out comp);
-    public static void ForEveryEntityWithComponent<T>(Action<T> action) where T : SimComponent => SimModules.worldSearcher.ForEveryEntityWithComponent(action);
+    public static SimEntity FindEntityWithComponent<T>() => SimModules.worldSearcher.FindEntityWithComponent<T>();
+    public static SimEntity FindEntityWithComponent<T>(out T comp) => SimModules.worldSearcher.FindEntityWithComponent(out comp);
+    public static void ForEveryEntityWithComponent<T>(Action<T> action) => SimModules.worldSearcher.ForEveryEntityWithComponent(action);
+    /// <summary>
+    /// Return false to stop the iteration
+    /// </summary>
+    public static void ForEveryEntityWithComponent<T>(Func<T, bool> action) => SimModules.worldSearcher.ForEveryEntityWithComponent(action);
+
+    public static class Random
+    {
+        public static int Int() => SimModules.random.RandomInt();
+        public static uint UInt() => SimModules.random.RandomUInt();
+        public static bool Bool() => SimModules.random.RandomBool();
+        public static Fix64 Range01() => SimModules.random.Random01();
+        public static Fix64 Range(in Fix64 min, in Fix64 max) => SimModules.random.RandomRange(min, max);
+        /// <summary>
+        /// Vector will be normalized
+        /// </summary>
+        public static FixVector2 Direction2D() => SimModules.random.RandomDirection2D();
+        /// <summary>
+        /// Vector will be normalized
+        /// </summary>
+        public static FixVector3 Direction3D() => SimModules.random.RandomDirection3D();
+    }
 }

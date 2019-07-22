@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ISimInputHandler
+[NetSerializable]
+public class SimInputKeycode : SimInput
 {
-    bool HandleInput(SimInput input);
+    public KeyCode keyCode;
 }

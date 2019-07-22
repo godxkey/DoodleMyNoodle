@@ -22,7 +22,7 @@ public class SimEntity : SimComponent
 
     private void OnDestroy()
     {
-        if (isPartOfSimulation && !ApplicationUtilityService.ApplicationIsQuitting)
+        if (isPartOfSimulation && !ApplicationUtilityService.ApplicationIsQuitting && Simulation.isInitialized)
         {
             SimModules.entityManager.OnDestroyEntity(this);
         }
