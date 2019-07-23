@@ -25,6 +25,7 @@ public class GameMonoBehaviour : MonoBehaviour
     }
 
     public virtual void OnGameUpdate() { }
+    public virtual void OnGameFixedUpdate() { }
     public virtual void OnGameReady() { }
     public virtual void OnGameStart() { }
     public virtual void OnSafeDestroy() { }

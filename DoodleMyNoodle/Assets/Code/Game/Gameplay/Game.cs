@@ -129,6 +129,30 @@ public class Game : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        if (_started)
+        {
+            foreach (GameMonoBehaviour b in GameMonoBehaviour.registeredBehaviours)
+            {
+#if DEBUG_BUILD
+                try
+                {
+#endif
+                    if (b.isActiveAndEnabled)
+                        b.OnGameFixedUpdate();
+#if DEBUG_BUILD
+                }
+                catch (Exception e)
+                {
+                    DebugService.LogError(e.Message);
+                }
+#endif
+
+            }
+        }
+    }
+
     void OnPlayModeSpecificSceneLoaded(Scene scene)
     {
         _playModeSpecificSceneLoaded = true;

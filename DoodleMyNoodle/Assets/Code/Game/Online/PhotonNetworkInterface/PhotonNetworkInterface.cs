@@ -13,6 +13,7 @@ namespace Internals.PhotonNetwokInterface
     public class PhotonNetworkInterface : NetworkInterface
     {
         const bool log = true;
+        const bool intenseLog = false;
 
         public override event Action onDisconnectedFromSession;
         public override event Action onShutdownBegin;
@@ -322,7 +323,7 @@ namespace Internals.PhotonNetwokInterface
                 return;
             }
 
-            if (log)
+            if (intenseLog)
                 DebugService.Log("[PhotonNetworkInterface] OnEvent: (length)" + evnt.BinaryData.Length);
             _messageReader?.Invoke(connection, evnt.BinaryData, evnt.BinaryData.Length);
         }

@@ -17,6 +17,9 @@ public class SimModuleTicker
 
         isTicking = true;
 
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      INPUTS                                 
+        ////////////////////////////////////////////////////////////////////////////////////////
         foreach (SimInput input in tickData.inputs)
         {
             SimCommand simCommand = input as SimCommand;
@@ -41,6 +44,9 @@ public class SimModuleTicker
             }
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      TICK                                 
+        ////////////////////////////////////////////////////////////////////////////////////////
         for (int i = 0; i < tickables.Count; i++)
         {
             if (tickables[i].isActiveAndEnabled)
@@ -50,6 +56,8 @@ public class SimModuleTicker
         }
 
         SimModules.world.tickId++;
+
+
         isTicking = false;
     }
 

@@ -6,6 +6,9 @@ public class SimulationControllerServer : SimulationController
     SessionServerInterface _session;
     Queue<ApprovedSimInput> inputQueue = new Queue<ApprovedSimInput>();
 
+
+    public bool allowSimToTick = false;
+
     public override void OnGameReady()
     {
         base.OnGameReady();
@@ -57,6 +60,9 @@ public class SimulationControllerServer : SimulationController
 
     void QueueInput(SimInput input, PlayerInfo playerInfo, InputSubmissionId submissionId)
     {
+        if (!allowSimToTick)
+            return;
+
         inputQueue.Enqueue(new ApprovedSimInput()
         {
             input = input,
@@ -70,7 +76,7 @@ public class SimulationControllerServer : SimulationController
         if (!Game.started)
             return;
 
-        if (Simulation.canBeTicked)
+        if (Simulation.canBeTicked && allowSimToTick)
         {
             ApprovedSimInput[] inputsForThisTick = inputQueue.ToArray();
             inputQueue.Clear();

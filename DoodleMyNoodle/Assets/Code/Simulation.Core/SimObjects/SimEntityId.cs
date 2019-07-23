@@ -16,4 +16,26 @@ public struct SimEntityId
     {
         value++;
     }
+
+    public bool isValid => this != invalid;
+
+    #region Overloads
+    public static bool operator ==(SimEntityId obj1, SimEntityId obj2) => obj1.value == obj2.value;
+    public static bool operator !=(SimEntityId obj1, SimEntityId obj2) => obj1.value != obj2.value;
+    public override bool Equals(object obj)
+    {
+        if (!(obj is SimEntityId))
+        {
+            return false;
+        }
+
+        var objPlayerId = (SimEntityId)obj;
+        return value == objPlayerId.value;
+    }
+
+    public override int GetHashCode()
+    {
+        return -1584136870 + value.GetHashCode();
+    }
+    #endregion
 }

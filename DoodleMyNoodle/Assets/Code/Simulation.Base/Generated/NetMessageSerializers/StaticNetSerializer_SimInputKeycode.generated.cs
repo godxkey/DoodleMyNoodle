@@ -16,6 +16,7 @@ public static class StaticNetSerializer_SimInputKeycode
     {
         int result = 0;
         result += StaticNetSerializer_Int32.GetNetBitSize();
+        result += StaticNetSerializer_Int32.GetNetBitSize();
         result += StaticNetSerializer_SimInput.GetNetBitSize(obj);
         return result;
     }
@@ -32,6 +33,7 @@ public static class StaticNetSerializer_SimInputKeycode
     }
     public static void NetSerialize(SimInputKeycode obj, BitStreamWriter writer)
     {
+        StaticNetSerializer_Int32.NetSerialize((System.Int32)obj.state, writer);
         StaticNetSerializer_Int32.NetSerialize((System.Int32)obj.keyCode, writer);
         StaticNetSerializer_SimInput.NetSerialize(obj, writer);
     }
@@ -48,6 +50,7 @@ public static class StaticNetSerializer_SimInputKeycode
     }
     public static void NetDeserialize(SimInputKeycode obj, BitStreamReader reader)
     {
+        obj.state = (SimInputKeycode.State)StaticNetSerializer_Int32.NetDeserialize(reader);
         obj.keyCode = (UnityEngine.KeyCode)StaticNetSerializer_Int32.NetDeserialize(reader);
         StaticNetSerializer_SimInput.NetDeserialize(obj, reader);
     }
