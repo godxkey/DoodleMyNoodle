@@ -9,7 +9,6 @@ public static class NetSerializationCodeGenSettings
         , {"mscorlib", "Assets/Plugins/CCC/Code/NetSerializer" + Serializers_AssemblyGenerationFolder}
         , {"CCC.FixMath", "Assets/Plugins/CCC/Code/FixMath" + Serializers_AssemblyGenerationFolder}
         , {"Simulation.Core", "Assets/Code/Simulation.Core" + Serializers_AssemblyGenerationFolder}
-        , {"Simulation.Base", "Assets/Code/Simulation.Base" + Serializers_AssemblyGenerationFolder}
         , {"Simulation.Impl", "Assets/Code/Simulation.Impl" + Serializers_AssemblyGenerationFolder}
         //, {"Examples", "Assets/Code/Examples/Generated/NetMessageSerializers"}
     };

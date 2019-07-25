@@ -43,10 +43,10 @@ public class DebugPanelClientSimController : DebugPanel
 
     void OnFixedUpdate()
     {
-        if (!Simulation.isInitialized)
+        if (!SimulationPublic.isInitialized)
             return;
 
-        m_currentSimTick.Value = Simulation.tickId;
+        m_currentSimTick.Value = SimulationPublic.tickId;
 
         // 'not dirty' means no change. That means the simulation has NOT played a sim tick this past fixed update
         m_offsettedSimTicks[m_offsettedSimTicksIterator] = !m_currentSimTick.IsDirty;

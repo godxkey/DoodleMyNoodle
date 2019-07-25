@@ -57,16 +57,16 @@ public class SimulationControllerClient : SimulationController
 
     private void FixedUpdate()
     {
-        if (!Simulation.isInitialized)
+        if (!SimulationPublic.isInitialized)
             return;
 
         _pendingSimTicks.Update(Time.fixedDeltaTime);
 
-        while (Simulation.canBeTicked && _pendingSimTicks.TryDrop(out NetMessageSimTick tick))
+        while (SimulationPublic.canBeTicked && _pendingSimTicks.TryDrop(out NetMessageSimTick tick))
         {
-            if(Simulation.tickId != tick.tickId)
+            if(SimulationPublic.tickId != tick.tickId)
             {
-                Simulation.ForceSetTickId(tick.tickId);
+                SimulationPublic.ForceSetTickId(tick.tickId);
                 DebugService.LogWarning($"[Temporary Hack] We forcefully set the next simulation's stick at {tick.tickId} to match with the server. " +
                     $"This should eventually be replaced by the 'join in progress' feature. NB: This message should only appear once per session!");
             }
@@ -87,6 +87,6 @@ public class SimulationControllerClient : SimulationController
             inputs = simInputs
         };
 
-        Simulation.Tick(tickData);
+        SimulationPublic.Tick(tickData);
     }
 }

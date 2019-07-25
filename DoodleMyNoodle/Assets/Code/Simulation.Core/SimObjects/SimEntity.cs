@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -22,7 +23,7 @@ public class SimEntity : SimComponent
 
     private void OnDestroy()
     {
-        if (isPartOfSimulation && !ApplicationUtilityService.ApplicationIsQuitting && Simulation.isInitialized)
+        if (isPartOfSimulation && !ApplicationUtilityService.ApplicationIsQuitting && SimModules.isInitialized)
         {
             SimModules.entityManager.OnDestroyEntity(this);
         }

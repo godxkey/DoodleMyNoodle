@@ -13,7 +13,7 @@ public abstract class SimulationController : GameSystem<SimulationController>
 
     public override void OnGameReady()
     {
-        Simulation.Initialize(_blueprintBank);
+        SimulationPublic.Initialize(_blueprintBank);
 
         base.OnGameReady();
     }
@@ -23,6 +23,6 @@ public abstract class SimulationController : GameSystem<SimulationController>
     {
         base.OnSafeDestroy();
 
-        Simulation.Shutdown();
+        SimulationPublic.Shutdown();
     }
 }

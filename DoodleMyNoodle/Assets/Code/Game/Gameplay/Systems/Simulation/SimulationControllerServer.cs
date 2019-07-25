@@ -49,7 +49,7 @@ public class SimulationControllerServer : SimulationController
     bool ValidateInputSubmission(NetMessageInputSubmission submission, PlayerInfo playerInfo)
     {
         // This should eventually evolve into a full validation check (prevent cheating)
-        if (!Simulation.isInitialized)
+        if (!SimulationPublic.isInitialized)
             return false;
 
         if (playerInfo == null)
@@ -76,7 +76,7 @@ public class SimulationControllerServer : SimulationController
         if (!Game.started)
             return;
 
-        if (Simulation.canBeTicked && allowSimToTick)
+        if (SimulationPublic.canBeTicked && allowSimToTick)
         {
             ApprovedSimInput[] inputsForThisTick = inputQueue.ToArray();
             inputQueue.Clear();
@@ -84,7 +84,7 @@ public class SimulationControllerServer : SimulationController
             // Send tick to clients!
             NetMessageSimTick netMessage = new NetMessageSimTick()
             {
-                tickId = Simulation.tickId,
+                tickId = SimulationPublic.tickId,
                 inputs = inputsForThisTick
             };
 
@@ -103,7 +103,7 @@ public class SimulationControllerServer : SimulationController
                 inputs = simInputs
             };
 
-            Simulation.Tick(tickData);
+            SimulationPublic.Tick(tickData);
         }
         else
         {
