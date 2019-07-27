@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 /// </summary>
 [Serializable]
 [NetSerializable]
-public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64>
+public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64>, IFormattable
 {
     [UnityEngine.SerializeField]public long m_rawValue; // should be read-only but we leave it like that for unity serialization
 
@@ -978,6 +978,11 @@ public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64>
     {
         // Up to 10 decimal places
         return ((decimal)this).ToString("0.##########");
+    }
+
+    public string ToString(string format, IFormatProvider formatProvider)
+    {
+        return ((decimal)this).ToString(format, formatProvider);
     }
 
     public static Fix64 FromRaw(long rawValue)

@@ -10,7 +10,14 @@ public class SimTransformEditor : Editor
     {
         if (Application.isPlaying)
         {
+            EditorGUI.BeginChangeCheck();
+
             base.OnInspectorGUI();
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                ((SimTransform)target).Editor_DirtyCachedAllValues();
+            }
         }
         else
         {

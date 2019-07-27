@@ -79,9 +79,9 @@ public struct FixMatrix2x2
     public static void Add(ref FixMatrix a, ref FixMatrix2x2 b, out FixMatrix2x2 result)
     {
         Fix64 m11 = a.M11 + b.M11;
-        Fix64 m12 = a.M12 + b.M12;
+        Fix64 m12 = a.M21 + b.M12;
 
-        Fix64 m21 = a.M21 + b.M21;
+        Fix64 m21 = a.M12 + b.M21;
         Fix64 m22 = a.M22 + b.M22;
 
         result.M11 = m11;
@@ -100,9 +100,9 @@ public struct FixMatrix2x2
     public static void Add(ref FixMatrix2x2 a, ref FixMatrix b, out FixMatrix2x2 result)
     {
         Fix64 m11 = a.M11 + b.M11;
-        Fix64 m12 = a.M12 + b.M12;
+        Fix64 m12 = a.M12 + b.M21;
 
-        Fix64 m21 = a.M21 + b.M21;
+        Fix64 m21 = a.M21 + b.M12;
         Fix64 m22 = a.M22 + b.M22;
 
         result.M11 = m11;
@@ -121,9 +121,9 @@ public struct FixMatrix2x2
     public static void Add(ref FixMatrix a, ref FixMatrix b, out FixMatrix2x2 result)
     {
         Fix64 m11 = a.M11 + b.M11;
-        Fix64 m12 = a.M12 + b.M12;
+        Fix64 m12 = a.M21 + b.M21;
 
-        Fix64 m21 = a.M21 + b.M21;
+        Fix64 m21 = a.M12 + b.M12;
         Fix64 m22 = a.M22 + b.M22;
 
         result.M11 = m11;
@@ -198,11 +198,11 @@ public struct FixMatrix2x2
     /// <param name="result">Product of the multiplication.</param>
     public static void Multiply(ref FixMatrix2x2 a, ref FixMatrix b, out FixMatrix2x2 result)
     {
-        Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M21;
-        Fix64 resultM12 = a.M11 * b.M12 + a.M12 * b.M22;
+        Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M12;
+        Fix64 resultM12 = a.M11 * b.M21 + a.M12 * b.M22;
 
-        Fix64 resultM21 = a.M21 * b.M11 + a.M22 * b.M21;
-        Fix64 resultM22 = a.M21 * b.M12 + a.M22 * b.M22;
+        Fix64 resultM21 = a.M21 * b.M11 + a.M22 * b.M12;
+        Fix64 resultM22 = a.M21 * b.M21 + a.M22 * b.M22;
 
         result.M11 = resultM11;
         result.M12 = resultM12;
@@ -219,11 +219,11 @@ public struct FixMatrix2x2
     /// <param name="result">Product of the multiplication.</param>
     public static void Multiply(ref FixMatrix a, ref FixMatrix2x2 b, out FixMatrix2x2 result)
     {
-        Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M21;
-        Fix64 resultM12 = a.M11 * b.M12 + a.M12 * b.M22;
+        Fix64 resultM11 = a.M11 * b.M11 + a.M21 * b.M21;
+        Fix64 resultM12 = a.M11 * b.M12 + a.M21 * b.M22;
 
-        Fix64 resultM21 = a.M21 * b.M11 + a.M22 * b.M21;
-        Fix64 resultM22 = a.M21 * b.M12 + a.M22 * b.M22;
+        Fix64 resultM21 = a.M12 * b.M11 + a.M22 * b.M21;
+        Fix64 resultM22 = a.M12 * b.M12 + a.M22 * b.M22;
 
         result.M11 = resultM11;
         result.M12 = resultM12;

@@ -36,6 +36,9 @@ EditorBuildSettings:
     path: Assets/Scenes/GameRoot/GameRootLocal.unity
     guid: 6832c9c496e32854086ae3c970b86b4f
   - enabled: 1
-    path: Assets/Scenes/GameLevels/Gym_Ballpit.unity
+    path: Assets/Scenes/GameLevels/Lvl_Ballpit.unity
     guid: f5a2b98580807744584ddf179221a3d5
+  - enabled: 1
+    path: Assets/Scenes/GameLevels/Lvl_GridBattle.unity
+    guid: 4c8245514883b6c4ba63476b942bba11
   m_configObjects: {}

@@ -59,7 +59,7 @@ static class FixMatrix3x6
         return true;
     }
 
-    public static bool Invert(ref FixMatrix3x3 m, out FixMatrix3x3 r)
+    public static bool Invert(in FixMatrix3x3 m, out FixMatrix3x3 r)
     {
         if (FixMatrix == null)
             FixMatrix = new Fix64[3, 6];

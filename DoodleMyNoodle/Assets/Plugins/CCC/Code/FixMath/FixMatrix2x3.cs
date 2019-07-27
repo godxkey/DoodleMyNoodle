@@ -114,13 +114,13 @@ public struct FixMatrix2x3
     /// <param name="result">Product of the multiplication.</param>
     public static void Multiply(ref FixMatrix2x3 a, ref FixMatrix b, out FixMatrix2x3 result)
     {
-        Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31;
-        Fix64 resultM12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32;
-        Fix64 resultM13 = a.M11 * b.M13 + a.M12 * b.M23 + a.M13 * b.M33;
+        Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M12 + a.M13 * b.M13;
+        Fix64 resultM12 = a.M11 * b.M21 + a.M12 * b.M22 + a.M13 * b.M23;
+        Fix64 resultM13 = a.M11 * b.M31 + a.M12 * b.M32 + a.M13 * b.M33;
 
-        Fix64 resultM21 = a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31;
-        Fix64 resultM22 = a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32;
-        Fix64 resultM23 = a.M21 * b.M13 + a.M22 * b.M23 + a.M23 * b.M33;
+        Fix64 resultM21 = a.M21 * b.M11 + a.M22 * b.M12 + a.M23 * b.M13;
+        Fix64 resultM22 = a.M21 * b.M21 + a.M22 * b.M22 + a.M23 * b.M23;
+        Fix64 resultM23 = a.M21 * b.M31 + a.M22 * b.M32 + a.M23 * b.M33;
 
         result.M11 = resultM11;
         result.M12 = resultM12;

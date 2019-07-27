@@ -243,7 +243,7 @@ public struct FixMatrix3x3
     /// <param name="a">First matrix to add.</param>
     /// <param name="b">Second matrix to add.</param>
     /// <param name="result">Sum of the two matrices.</param>
-    public static void Add(ref FixMatrix3x3 a, ref FixMatrix3x3 b, out FixMatrix3x3 result)
+    public static void Add(in FixMatrix3x3 a, in FixMatrix3x3 b, out FixMatrix3x3 result)
     {
         Fix64 m11 = a.M11 + b.M11;
         Fix64 m12 = a.M12 + b.M12;
@@ -276,18 +276,18 @@ public struct FixMatrix3x3
     /// <param name="a">First matrix to add.</param>
     /// <param name="b">Second matrix to add.</param>
     /// <param name="result">Sum of the two matrices.</param>
-    public static void Add(ref FixMatrix a, ref FixMatrix3x3 b, out FixMatrix3x3 result)
+    public static void Add(in FixMatrix a, in FixMatrix3x3 b, out FixMatrix3x3 result)
     {
         Fix64 m11 = a.M11 + b.M11;
-        Fix64 m12 = a.M12 + b.M12;
-        Fix64 m13 = a.M13 + b.M13;
+        Fix64 m12 = a.M21 + b.M12;
+        Fix64 m13 = a.M31 + b.M13;
 
-        Fix64 m21 = a.M21 + b.M21;
+        Fix64 m21 = a.M12 + b.M21;
         Fix64 m22 = a.M22 + b.M22;
-        Fix64 m23 = a.M23 + b.M23;
+        Fix64 m23 = a.M32 + b.M23;
 
-        Fix64 m31 = a.M31 + b.M31;
-        Fix64 m32 = a.M32 + b.M32;
+        Fix64 m31 = a.M13 + b.M31;
+        Fix64 m32 = a.M23 + b.M32;
         Fix64 m33 = a.M33 + b.M33;
 
         result.M11 = m11;
@@ -309,18 +309,18 @@ public struct FixMatrix3x3
     /// <param name="a">First matrix to add.</param>
     /// <param name="b">Second matrix to add.</param>
     /// <param name="result">Sum of the two matrices.</param>
-    public static void Add(ref FixMatrix3x3 a, ref FixMatrix b, out FixMatrix3x3 result)
+    public static void Add(in FixMatrix3x3 a, in FixMatrix b, out FixMatrix3x3 result)
     {
         Fix64 m11 = a.M11 + b.M11;
-        Fix64 m12 = a.M12 + b.M12;
-        Fix64 m13 = a.M13 + b.M13;
+        Fix64 m12 = a.M12 + b.M21;
+        Fix64 m13 = a.M13 + b.M31;
 
-        Fix64 m21 = a.M21 + b.M21;
+        Fix64 m21 = a.M21 + b.M12;
         Fix64 m22 = a.M22 + b.M22;
-        Fix64 m23 = a.M23 + b.M23;
+        Fix64 m23 = a.M23 + b.M32;
 
-        Fix64 m31 = a.M31 + b.M31;
-        Fix64 m32 = a.M32 + b.M32;
+        Fix64 m31 = a.M31 + b.M13;
+        Fix64 m32 = a.M32 + b.M23;
         Fix64 m33 = a.M33 + b.M33;
 
         result.M11 = m11;
@@ -342,18 +342,18 @@ public struct FixMatrix3x3
     /// <param name="a">First matrix to add.</param>
     /// <param name="b">Second matrix to add.</param>
     /// <param name="result">Sum of the two matrices.</param>
-    public static void Add(ref FixMatrix a, ref FixMatrix b, out FixMatrix3x3 result)
+    public static void Add(in FixMatrix a, in FixMatrix b, out FixMatrix3x3 result)
     {
         Fix64 m11 = a.M11 + b.M11;
-        Fix64 m12 = a.M12 + b.M12;
-        Fix64 m13 = a.M13 + b.M13;
+        Fix64 m12 = a.M21 + b.M21;
+        Fix64 m13 = a.M31 + b.M31;
 
-        Fix64 m21 = a.M21 + b.M21;
+        Fix64 m21 = a.M12 + b.M12;
         Fix64 m22 = a.M22 + b.M22;
-        Fix64 m23 = a.M23 + b.M23;
+        Fix64 m23 = a.M32 + b.M32;
 
-        Fix64 m31 = a.M31 + b.M31;
-        Fix64 m32 = a.M32 + b.M32;
+        Fix64 m31 = a.M13 + b.M13;
+        Fix64 m32 = a.M23 + b.M23;
         Fix64 m33 = a.M33 + b.M33;
 
         result.M11 = m11;
@@ -374,7 +374,7 @@ public struct FixMatrix3x3
     /// </summary>
     /// <param name="v">Vector to base the matrix on.</param>
     /// <param name="result">Skew-symmetric matrix result.</param>
-    public static void CreateCrossProduct(ref FixVector3 v, out FixMatrix3x3 result)
+    public static void CreateCrossProduct(in FixVector3 v, out FixMatrix3x3 result)
     {
         result.M11 = F64.C0;
         result.M12 = -v.Z;
@@ -392,18 +392,18 @@ public struct FixMatrix3x3
     /// </summary>
     /// <param name="matrix4X4">FixMatrix to extract a 3x3 matrix from.</param>
     /// <param name="matrix3X3">Upper 3x3 matrix extracted from the XNA matrix.</param>
-    public static void CreateFromMatrix(ref FixMatrix matrix4X4, out FixMatrix3x3 matrix3X3)
+    public static void CreateFromMatrix(in FixMatrix matrix4X4, out FixMatrix3x3 matrix3X3)
     {
         matrix3X3.M11 = matrix4X4.M11;
-        matrix3X3.M12 = matrix4X4.M12;
-        matrix3X3.M13 = matrix4X4.M13;
+        matrix3X3.M12 = matrix4X4.M21;
+        matrix3X3.M13 = matrix4X4.M31;
 
-        matrix3X3.M21 = matrix4X4.M21;
+        matrix3X3.M21 = matrix4X4.M12;
         matrix3X3.M22 = matrix4X4.M22;
-        matrix3X3.M23 = matrix4X4.M23;
+        matrix3X3.M23 = matrix4X4.M32;
 
-        matrix3X3.M31 = matrix4X4.M31;
-        matrix3X3.M32 = matrix4X4.M32;
+        matrix3X3.M31 = matrix4X4.M13;
+        matrix3X3.M32 = matrix4X4.M23;
         matrix3X3.M33 = matrix4X4.M33;
     }
     /// <summary>
@@ -415,15 +415,15 @@ public struct FixMatrix3x3
     {
         FixMatrix3x3 matrix3X3;
         matrix3X3.M11 = matrix4X4.M11;
-        matrix3X3.M12 = matrix4X4.M12;
-        matrix3X3.M13 = matrix4X4.M13;
+        matrix3X3.M12 = matrix4X4.M21;
+        matrix3X3.M13 = matrix4X4.M31;
 
-        matrix3X3.M21 = matrix4X4.M21;
+        matrix3X3.M21 = matrix4X4.M12;
         matrix3X3.M22 = matrix4X4.M22;
-        matrix3X3.M23 = matrix4X4.M23;
+        matrix3X3.M23 = matrix4X4.M32;
 
-        matrix3X3.M31 = matrix4X4.M31;
-        matrix3X3.M32 = matrix4X4.M32;
+        matrix3X3.M31 = matrix4X4.M13;
+        matrix3X3.M32 = matrix4X4.M23;
         matrix3X3.M33 = matrix4X4.M33;
         return matrix3X3;
     }
@@ -454,7 +454,7 @@ public struct FixMatrix3x3
     /// </summary>
     /// <param name="scale">Values defining the axis scales.</param>
     /// <param name="matrix">Scaling matrix.</param>
-    public static void CreateScale(ref FixVector3 scale, out FixMatrix3x3 matrix)
+    public static void CreateScale(in FixVector3 scale, out FixMatrix3x3 matrix)
     {
         matrix = new FixMatrix3x3 { M11 = scale.X, M22 = scale.Y, M33 = scale.Z };
     }
@@ -464,7 +464,7 @@ public struct FixMatrix3x3
     /// </summary>
     /// <param name="scale">Values defining the axis scales.</param>
     /// <returns>Scaling matrix.</returns>
-    public static FixMatrix3x3 CreateScale(ref FixVector3 scale)
+    public static FixMatrix3x3 CreateScale(in FixVector3 scale)
     {
         var matrix = new FixMatrix3x3 { M11 = scale.X, M22 = scale.Y, M33 = scale.Z };
         return matrix;
@@ -502,9 +502,9 @@ public struct FixMatrix3x3
     /// <param name="matrix">FixMatrix to be inverted.</param>
     /// <param name="result">Inverted matrix.</param>
     /// <returns>false if matrix is singular, true otherwise</returns>
-    public static bool Invert(ref FixMatrix3x3 matrix, out FixMatrix3x3 result)
+    public static bool Invert(in FixMatrix3x3 matrix, out FixMatrix3x3 result)
     {
-        return FixMatrix3x6.Invert(ref matrix, out result);
+        return FixMatrix3x6.Invert(in matrix, out result);
     }
 
     /// <summary>
@@ -515,7 +515,7 @@ public struct FixMatrix3x3
     public static FixMatrix3x3 Invert(FixMatrix3x3 matrix)
     {
         FixMatrix3x3 toReturn;
-        Invert(ref matrix, out toReturn);
+        Invert(in matrix, out toReturn);
         return toReturn;
     }
 
@@ -524,10 +524,10 @@ public struct FixMatrix3x3
     /// </summary>
     /// <param name="matrix">FixMatrix to be inverted.</param>
     /// <param name="result">Inverted matrix.</param>
-    public static void AdaptiveInvert(ref FixMatrix3x3 matrix, out FixMatrix3x3 result)
+    public static void AdaptiveInvert(in FixMatrix3x3 matrix, out FixMatrix3x3 result)
     {
         // Perform full Gauss-invert and return if successful
-        if (Invert(ref matrix, out result))
+        if (Invert(in matrix, out result))
             return;
 
         int submatrix;
@@ -638,7 +638,7 @@ public struct FixMatrix3x3
     /// </summary>
     /// <param name="matrix">FixMatrix to compute the adjugate transpose of.</param>
     /// <param name="result">Adjugate transpose of the input matrix.</param>
-    public static void AdjugateTranspose(ref FixMatrix3x3 matrix, out FixMatrix3x3 result)
+    public static void AdjugateTranspose(in FixMatrix3x3 matrix, out FixMatrix3x3 result)
     {
         //Despite the relative obscurity of the operation, this is a fairly straightforward operation which is actually faster than a true invert (by virtue of cancellation).
         //Conceptually, this is implemented as transpose(det(M) * invert(M)), but that's perfectly acceptable:
@@ -682,7 +682,7 @@ public struct FixMatrix3x3
     public static FixMatrix3x3 AdjugateTranspose(FixMatrix3x3 matrix)
     {
         FixMatrix3x3 toReturn;
-        AdjugateTranspose(ref matrix, out toReturn);
+        AdjugateTranspose(in matrix, out toReturn);
         return toReturn;
     }
 
@@ -695,7 +695,7 @@ public struct FixMatrix3x3
     public static FixMatrix3x3 operator *(FixMatrix3x3 a, FixMatrix3x3 b)
     {
         FixMatrix3x3 result;
-        FixMatrix3x3.Multiply(ref a, ref b, out result);
+        FixMatrix3x3.Multiply(in a, in b, out result);
         return result;
     }
 
@@ -708,7 +708,7 @@ public struct FixMatrix3x3
     public static FixMatrix3x3 operator *(FixMatrix3x3 m, Fix64 f)
     {
         FixMatrix3x3 result;
-        Multiply(ref m, f, out result);
+        Multiply(in m, f, out result);
         return result;
     }
 
@@ -721,7 +721,7 @@ public struct FixMatrix3x3
     public static FixMatrix3x3 operator *(Fix64 f, FixMatrix3x3 m)
     {
         FixMatrix3x3 result;
-        Multiply(ref m, f, out result);
+        Multiply(in m, f, out result);
         return result;
     }
 
@@ -731,7 +731,7 @@ public struct FixMatrix3x3
     /// <param name="a">First matrix to multiply.</param>
     /// <param name="b">Second matrix to multiply.</param>
     /// <param name="result">Product of the multiplication.</param>
-    public static void Multiply(ref FixMatrix3x3 a, ref FixMatrix3x3 b, out FixMatrix3x3 result)
+    public static void Multiply(in FixMatrix3x3 a, in FixMatrix3x3 b, out FixMatrix3x3 result)
     {
         Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31;
         Fix64 resultM12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32;
@@ -764,19 +764,19 @@ public struct FixMatrix3x3
     /// <param name="a">First matrix to multiply.</param>
     /// <param name="b">Second matrix to multiply.</param>
     /// <param name="result">Product of the multiplication.</param>
-    public static void Multiply(ref FixMatrix3x3 a, ref FixMatrix b, out FixMatrix3x3 result)
+    public static void Multiply(in FixMatrix3x3 a, in FixMatrix b, out FixMatrix3x3 result)
     {
-        Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31;
-        Fix64 resultM12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32;
-        Fix64 resultM13 = a.M11 * b.M13 + a.M12 * b.M23 + a.M13 * b.M33;
+        Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M12 + a.M13 * b.M13;
+        Fix64 resultM12 = a.M11 * b.M21 + a.M12 * b.M22 + a.M13 * b.M23;
+        Fix64 resultM13 = a.M11 * b.M31 + a.M12 * b.M32 + a.M13 * b.M33;
 
-        Fix64 resultM21 = a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31;
-        Fix64 resultM22 = a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32;
-        Fix64 resultM23 = a.M21 * b.M13 + a.M22 * b.M23 + a.M23 * b.M33;
+        Fix64 resultM21 = a.M21 * b.M11 + a.M22 * b.M12 + a.M23 * b.M13;
+        Fix64 resultM22 = a.M21 * b.M21 + a.M22 * b.M22 + a.M23 * b.M23;
+        Fix64 resultM23 = a.M21 * b.M31 + a.M22 * b.M32 + a.M23 * b.M33;
 
-        Fix64 resultM31 = a.M31 * b.M11 + a.M32 * b.M21 + a.M33 * b.M31;
-        Fix64 resultM32 = a.M31 * b.M12 + a.M32 * b.M22 + a.M33 * b.M32;
-        Fix64 resultM33 = a.M31 * b.M13 + a.M32 * b.M23 + a.M33 * b.M33;
+        Fix64 resultM31 = a.M31 * b.M11 + a.M32 * b.M12 + a.M33 * b.M13;
+        Fix64 resultM32 = a.M31 * b.M21 + a.M32 * b.M22 + a.M33 * b.M23;
+        Fix64 resultM33 = a.M31 * b.M31 + a.M32 * b.M32 + a.M33 * b.M33;
 
         result.M11 = resultM11;
         result.M12 = resultM12;
@@ -797,19 +797,19 @@ public struct FixMatrix3x3
     /// <param name="a">First matrix to multiply.</param>
     /// <param name="b">Second matrix to multiply.</param>
     /// <param name="result">Product of the multiplication.</param>
-    public static void Multiply(ref FixMatrix a, ref FixMatrix3x3 b, out FixMatrix3x3 result)
+    public static void Multiply(in FixMatrix a, in FixMatrix3x3 b, out FixMatrix3x3 result)
     {
-        Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31;
-        Fix64 resultM12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32;
-        Fix64 resultM13 = a.M11 * b.M13 + a.M12 * b.M23 + a.M13 * b.M33;
+        Fix64 resultM11 = a.M11 * b.M11 + a.M21 * b.M21 + a.M31 * b.M31;
+        Fix64 resultM12 = a.M11 * b.M12 + a.M21 * b.M22 + a.M31 * b.M32;
+        Fix64 resultM13 = a.M11 * b.M13 + a.M21 * b.M23 + a.M31 * b.M33;
 
-        Fix64 resultM21 = a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31;
-        Fix64 resultM22 = a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32;
-        Fix64 resultM23 = a.M21 * b.M13 + a.M22 * b.M23 + a.M23 * b.M33;
+        Fix64 resultM21 = a.M12 * b.M11 + a.M22 * b.M21 + a.M32 * b.M31;
+        Fix64 resultM22 = a.M12 * b.M12 + a.M22 * b.M22 + a.M32 * b.M32;
+        Fix64 resultM23 = a.M12 * b.M13 + a.M22 * b.M23 + a.M32 * b.M33;
 
-        Fix64 resultM31 = a.M31 * b.M11 + a.M32 * b.M21 + a.M33 * b.M31;
-        Fix64 resultM32 = a.M31 * b.M12 + a.M32 * b.M22 + a.M33 * b.M32;
-        Fix64 resultM33 = a.M31 * b.M13 + a.M32 * b.M23 + a.M33 * b.M33;
+        Fix64 resultM31 = a.M13 * b.M11 + a.M23 * b.M21 + a.M33 * b.M31;
+        Fix64 resultM32 = a.M13 * b.M12 + a.M23 * b.M22 + a.M33 * b.M32;
+        Fix64 resultM33 = a.M13 * b.M13 + a.M23 * b.M23 + a.M33 * b.M33;
 
         result.M11 = resultM11;
         result.M12 = resultM12;
@@ -831,7 +831,7 @@ public struct FixMatrix3x3
     /// <param name="matrix">FixMatrix to be multiplied.</param>
     /// <param name="transpose">FixMatrix to be transposed and multiplied.</param>
     /// <param name="result">Product of the multiplication.</param>
-    public static void MultiplyTransposed(ref FixMatrix3x3 transpose, ref FixMatrix3x3 matrix, out FixMatrix3x3 result)
+    public static void MultiplyTransposed(in FixMatrix3x3 transpose, in FixMatrix3x3 matrix, out FixMatrix3x3 result)
     {
         Fix64 resultM11 = transpose.M11 * matrix.M11 + transpose.M21 * matrix.M21 + transpose.M31 * matrix.M31;
         Fix64 resultM12 = transpose.M11 * matrix.M12 + transpose.M21 * matrix.M22 + transpose.M31 * matrix.M32;
@@ -864,7 +864,7 @@ public struct FixMatrix3x3
     /// <param name="matrix">FixMatrix to be multiplied.</param>
     /// <param name="transpose">FixMatrix to be transposed and multiplied.</param>
     /// <param name="result">Product of the multiplication.</param>
-    public static void MultiplyByTransposed(ref FixMatrix3x3 matrix, ref FixMatrix3x3 transpose, out FixMatrix3x3 result)
+    public static void MultiplyByTransposed(in FixMatrix3x3 matrix, in FixMatrix3x3 transpose, out FixMatrix3x3 result)
     {
         Fix64 resultM11 = matrix.M11 * transpose.M11 + matrix.M12 * transpose.M12 + matrix.M13 * transpose.M13;
         Fix64 resultM12 = matrix.M11 * transpose.M21 + matrix.M12 * transpose.M22 + matrix.M13 * transpose.M23;
@@ -897,7 +897,7 @@ public struct FixMatrix3x3
     /// <param name="matrix">FixMatrix to scale.</param>
     /// <param name="scale">Amount to scale.</param>
     /// <param name="result">Scaled matrix.</param>
-    public static void Multiply(ref FixMatrix3x3 matrix, Fix64 scale, out FixMatrix3x3 result)
+    public static void Multiply(in FixMatrix3x3 matrix, Fix64 scale, out FixMatrix3x3 result)
     {
         result.M11 = matrix.M11 * scale;
         result.M12 = matrix.M12 * scale;
@@ -917,7 +917,7 @@ public struct FixMatrix3x3
     /// </summary>
     /// <param name="matrix">FixMatrix to negate.</param>
     /// <param name="result">Negated matrix.</param>
-    public static void Negate(ref FixMatrix3x3 matrix, out FixMatrix3x3 result)
+    public static void Negate(in FixMatrix3x3 matrix, out FixMatrix3x3 result)
     {
         result.M11 = -matrix.M11;
         result.M12 = -matrix.M12;
@@ -938,7 +938,7 @@ public struct FixMatrix3x3
     /// <param name="a">First matrix to subtract.</param>
     /// <param name="b">Second matrix to subtract.</param>
     /// <param name="result">Difference of the two matrices.</param>
-    public static void Subtract(ref FixMatrix3x3 a, ref FixMatrix3x3 b, out FixMatrix3x3 result)
+    public static void Subtract(in FixMatrix3x3 a, in FixMatrix3x3 b, out FixMatrix3x3 result)
     {
         Fix64 m11 = a.M11 - b.M11;
         Fix64 m12 = a.M12 - b.M12;
@@ -970,30 +970,30 @@ public struct FixMatrix3x3
     /// </summary>
     /// <param name="a">3x3 matrix.</param>
     /// <param name="b">Created 4x4 matrix.</param>
-    public static void ToMatrix4X4(ref FixMatrix3x3 a, out FixMatrix b)
+    public static void ToMatrix4X4(in FixMatrix3x3 a, out FixMatrix b)
     {
 #if !WINDOWS
         b = new FixMatrix();
 #endif
         b.M11 = a.M11;
-        b.M12 = a.M12;
-        b.M13 = a.M13;
+        b.M21 = a.M12;
+        b.M31 = a.M13;
 
-        b.M21 = a.M21;
+        b.M12 = a.M21;
         b.M22 = a.M22;
-        b.M23 = a.M23;
+        b.M32 = a.M23;
 
-        b.M31 = a.M31;
-        b.M32 = a.M32;
+        b.M13 = a.M31;
+        b.M23 = a.M32;
         b.M33 = a.M33;
 
         b.M44 = F64.C1;
-        b.M14 = F64.C0;
-        b.M24 = F64.C0;
-        b.M34 = F64.C0;
         b.M41 = F64.C0;
         b.M42 = F64.C0;
         b.M43 = F64.C0;
+        b.M14 = F64.C0;
+        b.M24 = F64.C0;
+        b.M34 = F64.C0;
     }
 
     /// <summary>
@@ -1009,24 +1009,24 @@ public struct FixMatrix3x3
             FixMatrix b;
 #endif
         b.M11 = a.M11;
-        b.M12 = a.M12;
-        b.M13 = a.M13;
+        b.M21 = a.M12;
+        b.M31 = a.M13;
 
-        b.M21 = a.M21;
+        b.M12 = a.M21;
         b.M22 = a.M22;
-        b.M23 = a.M23;
+        b.M32 = a.M23;
 
-        b.M31 = a.M31;
-        b.M32 = a.M32;
+        b.M13 = a.M31;
+        b.M23 = a.M32;
         b.M33 = a.M33;
 
         b.M44 = F64.C1;
-        b.M14 = F64.C0;
-        b.M24 = F64.C0;
-        b.M34 = F64.C0;
         b.M41 = F64.C0;
         b.M42 = F64.C0;
         b.M43 = F64.C0;
+        b.M14 = F64.C0;
+        b.M24 = F64.C0;
+        b.M34 = F64.C0;
         return b;
     }
 
@@ -1036,7 +1036,7 @@ public struct FixMatrix3x3
     /// <param name="v">FixVector3 to transform.</param>
     /// <param name="matrix">FixMatrix to use as the transformation.</param>
     /// <param name="result">Product of the transformation.</param>
-    public static void Transform(ref FixVector3 v, ref FixMatrix3x3 matrix, out FixVector3 result)
+    public static void Transform(in FixVector3 v, in FixMatrix3x3 matrix, out FixVector3 result)
     {
         Fix64 vX = v.X;
         Fix64 vY = v.Y;
@@ -1078,7 +1078,7 @@ public struct FixMatrix3x3
     /// <param name="v">FixVector3 to transform.</param>
     /// <param name="matrix">FixMatrix to use as the transformation transpose.</param>
     /// <param name="result">Product of the transformation.</param>
-    public static void TransformTranspose(ref FixVector3 v, ref FixMatrix3x3 matrix, out FixVector3 result)
+    public static void TransformTranspose(in FixVector3 v, in FixMatrix3x3 matrix, out FixVector3 result)
     {
         Fix64 vX = v.X;
         Fix64 vY = v.Y;
@@ -1117,7 +1117,7 @@ public struct FixMatrix3x3
     /// </summary>
     /// <param name="matrix">FixMatrix to transpose.</param>
     /// <param name="result">Transposed matrix.</param>
-    public static void Transpose(ref FixMatrix3x3 matrix, out FixMatrix3x3 result)
+    public static void Transpose(in FixMatrix3x3 matrix, out FixMatrix3x3 result)
     {
         Fix64 m21 = matrix.M12;
         Fix64 m31 = matrix.M13;
@@ -1142,14 +1142,14 @@ public struct FixMatrix3x3
     /// </summary>
     /// <param name="matrix">FixMatrix to transpose.</param>
     /// <param name="result">Transposed matrix.</param>
-    public static void Transpose(ref FixMatrix matrix, out FixMatrix3x3 result)
+    public static void Transpose(in FixMatrix matrix, out FixMatrix3x3 result)
     {
-        Fix64 m21 = matrix.M12;
-        Fix64 m31 = matrix.M13;
-        Fix64 m12 = matrix.M21;
-        Fix64 m32 = matrix.M23;
-        Fix64 m13 = matrix.M31;
-        Fix64 m23 = matrix.M32;
+        Fix64 m21 = matrix.M21;
+        Fix64 m31 = matrix.M31;
+        Fix64 m12 = matrix.M12;
+        Fix64 m32 = matrix.M32;
+        Fix64 m13 = matrix.M13;
+        Fix64 m23 = matrix.M23;
 
         result.M11 = matrix.M11;
         result.M12 = m12;
@@ -1253,7 +1253,7 @@ public struct FixMatrix3x3
     /// </summary>
     /// <param name="quaternion">FixQuaternion to use to create a matrix.</param>
     /// <param name="result">FixMatrix representing the quaternion's orientation.</param>
-    public static void CreateFromQuaternion(ref FixQuaternion quaternion, out FixMatrix3x3 result)
+    public static void CreateFromQuaternion(in FixQuaternion quaternion, out FixMatrix3x3 result)
     {
         Fix64 qX2 = quaternion.X + quaternion.X;
         Fix64 qY2 = quaternion.Y + quaternion.Y;
@@ -1289,7 +1289,7 @@ public struct FixMatrix3x3
     public static FixMatrix3x3 CreateFromQuaternion(FixQuaternion quaternion)
     {
         FixMatrix3x3 result;
-        CreateFromQuaternion(ref quaternion, out result);
+        CreateFromQuaternion(in quaternion, out result);
         return result;
     }
 
@@ -1299,7 +1299,7 @@ public struct FixMatrix3x3
     /// <param name="a">First vector.</param>
     /// <param name="b">Second vector.</param>
     /// <param name="result">Outer product result.</param>
-    public static void CreateOuterProduct(ref FixVector3 a, ref FixVector3 b, out FixMatrix3x3 result)
+    public static void CreateOuterProduct(in FixVector3 a, in FixVector3 b, out FixMatrix3x3 result)
     {
         result.M11 = a.X * b.X;
         result.M12 = a.X * b.Y;
@@ -1323,7 +1323,7 @@ public struct FixMatrix3x3
     public static FixMatrix3x3 CreateFromAxisAngle(FixVector3 axis, Fix64 angle)
     {
         FixMatrix3x3 toReturn;
-        CreateFromAxisAngle(ref axis, angle, out toReturn);
+        CreateFromAxisAngle(in axis, angle, out toReturn);
         return toReturn;
     }
 
@@ -1333,7 +1333,7 @@ public struct FixMatrix3x3
     /// <param name="axis">Axis around which to rotate.</param>
     /// <param name="angle">Amount to rotate.</param>
     /// <param name="result">FixMatrix representing the rotation.</param>
-    public static void CreateFromAxisAngle(ref FixVector3 axis, Fix64 angle, out FixMatrix3x3 result)
+    public static void CreateFromAxisAngle(in FixVector3 axis, Fix64 angle, out FixMatrix3x3 result)
     {
         Fix64 xx = axis.X * axis.X;
         Fix64 yy = axis.Y * axis.Y;
