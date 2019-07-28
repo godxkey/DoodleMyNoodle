@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameStateInGameServer : GameStateInGameOnline
 {
+    public string levelToPlay { get; private set; }
+
     public override void Enter(GameStateParam[] parameters)
     {
         base.Enter(parameters);
@@ -13,7 +15,7 @@ public class GameStateInGameServer : GameStateInGameOnline
         if (levelNameParam != null)
         {
             // do something?
-            Debug.Log("level name: " + levelNameParam.levelName);
+            levelToPlay = levelNameParam.levelName;
         }
     }
 }

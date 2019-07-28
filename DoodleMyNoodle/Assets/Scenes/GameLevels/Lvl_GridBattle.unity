@@ -194,13 +194,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab2341fce43c39488a3dd653efeb6b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _localScale:
-    X:
-      m_rawValue: 4294967296
-    Y:
-      m_rawValue: 4294967296
-    Z:
-      m_rawValue: 4294967296
   _localPosition:
     X:
       m_rawValue: 0
@@ -217,6 +210,13 @@ MonoBehaviour:
       m_rawValue: 0
     W:
       m_rawValue: 0
+  _localScale:
+    X:
+      m_rawValue: 4294967296
+    Y:
+      m_rawValue: 4294967296
+    Z:
+      m_rawValue: 4294967296
 --- !u!114 &1249288065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,6 +255,7 @@ GameObject:
   - component: {fileID: 1276550480}
   - component: {fileID: 1276550479}
   - component: {fileID: 1276550478}
+  - component: {fileID: 1276550481}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -327,6 +328,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1276550481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276550477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7667665ba7837f1488f9eb23212ecac2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  registerSetting: 0
+  unregisterSetting: 0
+  camera: {fileID: 1276550479}
+  audioListener: {fileID: 1276550478}
+  priority: 1
 --- !u!1 &1819510686
 GameObject:
   m_ObjectHideFlags: 0
@@ -1502,3 +1520,53 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &2091116005
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2091116007}
+  - component: {fileID: 2091116006}
+  m_Layer: 0
+  m_Name: Quick Start
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2091116006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091116005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0030b9bd1e116ba41b0aeedd0fed433b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startFromScratch: 0
+  overridePlayMode: 0
+  playMode: 0
+  overrideServerName: 0
+  serverName: 
+  overrideLevel: 1
+  level: {fileID: 11400000, guid: 86c1e1e0cf2ebf04fa71c5bdeca709ab, type: 2}
+--- !u!4 &2091116007
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091116005}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

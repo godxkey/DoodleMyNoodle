@@ -74,14 +74,7 @@ public static class QuickStart
             yield return null;
         }
 
-        if (settings.level.IsNullOrEmpty())
-        {
-            GameStateManager.TransitionToState(assets.lobbyLocal);
-        }
-        else
-        {
-            GameStateManager.TransitionToState(assets.inGameLocal, new GameStateParamLevelName(settings.level));
-        }
+        GameStateManager.TransitionToState(assets.inGameLocal, new GameStateParamLevelName(settings.level));
     }
 
 
@@ -111,7 +104,7 @@ public static class QuickStart
             IEnumerator WaitForServerToAppear()
             {
                 float elapsedTime = 0;
-                while (foundSession == null 
+                while (foundSession == null
                     && (elapsedTime < assets.searchForSeverTimeout || assets.searchForSeverTimeout == -1)
                     && OnlineService.clientInterface != null)
                 {
@@ -218,7 +211,7 @@ public static class QuickStart
             {
                 // success!
                 LoadingScreenUIController.displayedStatus = "Loading ...";
-                GameStateManager.TransitionToState(assets.inGameServer);
+                GameStateManager.TransitionToState(assets.inGameServer, new GameStateParamLevelName(settings.level));
             }
         }
     }

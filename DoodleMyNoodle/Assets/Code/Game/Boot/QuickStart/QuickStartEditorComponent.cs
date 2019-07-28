@@ -23,7 +23,7 @@ public class QuickStartEditorComponent : MonoBehaviour
     [HideIf("startFromScratch")]
     public bool overrideLevel;
     [ShowIf("CanShowLevel", HideShowBaseAttribute.Type.Property)]
-    public string level;
+    public SceneInfo level;
     bool CanShowLevel => !startFromScratch && overrideLevel;
 
 #if UNITY_EDITOR
@@ -71,7 +71,7 @@ public class QuickStartEditorComponent : MonoBehaviour
                     settings.serverName = serverName;
 
                 if (overrideLevel)
-                    settings.level = level;
+                    settings.level = level ? level.SceneName : "";
 
                 QuickStart.Start(settings);
             }

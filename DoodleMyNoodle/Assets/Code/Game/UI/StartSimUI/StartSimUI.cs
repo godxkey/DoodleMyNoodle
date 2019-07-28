@@ -15,20 +15,45 @@ public class StartSimUI : GameMonoBehaviour
     {
         base.OnGameStart();
 
-        startSimButton.onClick.AddListener(OnStartClick);
+        string levelToPlay = null;
 
-        levelToLoadField.text = PlayerPrefs.GetString("startLevel", "");
+        switch (GameStateManager.currentGameState)
+        {
+            case GameStateInGameServer serverGameState:
+                levelToPlay = serverGameState.levelToPlay;
+                break;
+
+            case GameStateInGameLocal localGameState:
+                levelToPlay = localGameState.levelToPlay;
+                break;
+        }
+
+
+        if (levelToPlay.IsNullOrEmpty() == false)
+        {
+            StartSimWithLevel(levelToPlay);
+        }
+        else
+        {
+            startSimButton.onClick.AddListener(OnStartClick);
+            levelToLoadField.text = PlayerPrefs.GetString("startLevel", "");
+        }
     }
 
     void OnStartClick()
     {
+        StartSimWithLevel(levelToLoadField.text);
+    }
+
+    void StartSimWithLevel(string level)
+    {
         ((SimulationControllerServer)SimulationControllerServer.instance).allowSimToTick = true;
-        if (levelToLoadField.text != "")
+        if (!level.IsNullOrEmpty())
         {
-            SimulationControllerServer.instance.SubmitInput(new SimCommandLoadScene() { sceneName = levelToLoadField.text });
+            SimulationControllerServer.instance.SubmitInput(new SimCommandLoadScene() { sceneName = level });
         }
 
-        PlayerPrefs.SetString("startLevel", levelToLoadField.text);
+        PlayerPrefs.SetString("startLevel", level);
         PlayerPrefs.Save();
 
         gameObject.SetActive(false);
