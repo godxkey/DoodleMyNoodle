@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public static class SimulationPublic
+public class SimulationPublic
 {
     public static void Initialize(ISimModuleBlueprintBank blueprintBank) => SimModules.Initialize(blueprintBank);
     public static void Shutdown() => SimModules.Shutdown();
@@ -30,6 +31,11 @@ public static class SimulationPublic
     /// The simulation tick delta time. Should be constant for the simulation to stay deterministic
     /// </summary>
     public static readonly Fix64 deltaTime = SimulationConstants.TIME_STEP; // 50 ticks per seconds
+
+    /// <summary>
+    /// All registered entites in the simulation
+    /// </summary>
+    public static List<SimEntity> entities => SimModules.world.entities;
 
     /// <summary>
     /// The current simulation tick id. Increments by 1 every Tick()

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class SimTransform : SimComponent
+public class SimTransform : SimBehaviour
 {
     [SerializeField]
     FixVector3 _localPosition;
@@ -39,8 +39,27 @@ public class SimTransform : SimComponent
     {
         get
         {
-            UpdateLocalToWorldMatrix();
-            return FixMatrix.TransformPoint(_localPosition, _localToWorldMatrix.val);
+            if(parent == null)
+            {
+                return _localPosition;
+            }
+            else
+            {
+                UpdateLocalToWorldMatrix();
+                return FixMatrix.TransformPoint(_localPosition, _localToWorldMatrix.val);
+            }
+        }
+        set
+        {
+            if (parent == null)
+            {
+                _localPosition = value;
+            }
+            else
+            {
+                UpdateWorldToLocalMatrix();
+                _localPosition =  FixMatrix.TransformPoint(value, _worldToLocalMatrix.val);
+            }
         }
     }
 

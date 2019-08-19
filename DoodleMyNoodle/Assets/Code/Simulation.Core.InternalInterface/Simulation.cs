@@ -1,18 +1,8 @@
 ﻿using System;
 using UnityEngine;
 
-public static class Simulation
+public class Simulation : SimulationPublic
 {
-    /// <summary>
-    /// The simulation tick delta time. Should be constant for the simulation to stay deterministic
-    /// </summary>
-    public static readonly Fix64 deltaTime = SimulationConstants.TIME_STEP; // 50 ticks per seconds
-
-    /// <summary>
-    /// The current simulation tick id. Increments by 1 every Tick()
-    /// </summary>
-    public static uint tickId => SimModules.world.tickId;
-
     /// <summary>
     /// Instantiate entity from the blueprint and inject it into the simulation
     /// <para/>
@@ -43,11 +33,6 @@ public static class Simulation
     /// </summary>
     public static void LoadScene(string sceneName) => SimModules.sceneLoader.LoadScene(sceneName);
 
-    public static SimBlueprint GetBlueprint(in SimBlueprintId blueprintId) => SimModules.blueprintBank.GetBlueprint(blueprintId);
-
-    public static SimEntity FindEntityWithName(string name) => SimModules.worldSearcher.FindEntityWithName(name);
-    public static SimEntity FindEntityWithComponent<T>() => SimModules.worldSearcher.FindEntityWithComponent<T>();
-    public static SimEntity FindEntityWithComponent<T>(out T comp) => SimModules.worldSearcher.FindEntityWithComponent(out comp);
     public static void ForEveryEntityWithComponent<T>(Action<T> action) => SimModules.worldSearcher.ForEveryEntityWithComponent(action);
     /// <summary>
     /// Return false to stop the iteration

@@ -10,15 +10,15 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <summary>
     /// X component of the vector.
     /// </summary>
-    public Fix64 X;
+    public Fix64 x;
     /// <summary>
     /// Y component of the vector.
     /// </summary>
-    public Fix64 Y;
+    public Fix64 y;
     /// <summary>
     /// Z component of the vector.
     /// </summary>
-    public Fix64 Z;
+    public Fix64 z;
 
     /// <summary>
     /// Constructs a new 3d vector.
@@ -26,11 +26,11 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="x">X component of the vector.</param>
     /// <param name="y">Y component of the vector.</param>
     /// <param name="z">Z component of the vector.</param>
-    public FixVector3(Fix64 x, Fix64 y, Fix64 z)
+    public FixVector3(in Fix64 x, in Fix64 y, in Fix64 z)
     {
-        this.X = x;
-        this.Y = y;
-        this.Z = z;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     /// <summary>
@@ -38,11 +38,11 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// </summary>
     /// <param name="xy">X and Y components of the vector.</param>
     /// <param name="z">Z component of the vector.</param>
-    public FixVector3(FixVector2 xy, Fix64 z)
+    public FixVector3(in FixVector2 xy, in Fix64 z)
     {
-        this.X = xy.X;
-        this.Y = xy.Y;
-        this.Z = z;
+        this.x = xy.x;
+        this.y = xy.y;
+        this.z = z;
     }
 
     /// <summary>
@@ -50,40 +50,46 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// </summary>
     /// <param name="x">X component of the vector.</param>
     /// <param name="yz">Y and Z components of the vector.</param>
-    public FixVector3(Fix64 x, FixVector2 yz)
+    public FixVector3(in Fix64 x, in FixVector2 yz)
     {
-        this.X = x;
-        this.Y = yz.X;
-        this.Z = yz.Y;
+        this.x = x;
+        this.y = yz.x;
+        this.z = yz.y;
     }
 
     /// <summary>
     /// Computes the squared length of the vector.
     /// </summary>
     /// <returns>Squared length of the vector.</returns>
-    public Fix64 LengthSquared()
-    {
-        return X * X + Y * Y + Z * Z;
-    }
+    public Fix64 lengthSquared => x * x + y * y + z * z;
 
     /// <summary>
     /// Computes the length of the vector.
     /// </summary>
     /// <returns>Length of the vector.</returns>
-    public Fix64 Length()
-    {
-        return Fix64.Sqrt(X * X + Y * Y + Z * Z);
-    }
+    public Fix64 length => Fix64.Sqrt(x * x + y * y + z * z);
 
     /// <summary>
     /// Normalizes the vector.
     /// </summary>
     public void Normalize()
     {
-        Fix64 inverse = F64.C1 / Fix64.Sqrt(X * X + Y * Y + Z * Z);
-        X *= inverse;
-        Y *= inverse;
-        Z *= inverse;
+        Fix64 inverse = F64.C1 / Fix64.Sqrt(x * x + y * y + z * z);
+        x *= inverse;
+        y *= inverse;
+        z *= inverse;
+    }
+
+    /// <summary>
+    /// Returns a normalized version of the vector.
+    /// </summary>
+    public FixVector3 normalized
+    {
+        get
+        {
+            Fix64 inverse = F64.C1 / Fix64.Sqrt(x * x + y * y + z * z);
+            return new FixVector3(x * inverse, y * inverse, z * inverse);
+        }
     }
 
     /// <summary>
@@ -92,7 +98,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <returns>String representing the vector.</returns>
     public override string ToString()
     {
-        return "{" + X + ", " + Y + ", " + Z + "}";
+        return "{" + x + ", " + y + ", " + z + "}";
     }
 
     /// <summary>
@@ -101,9 +107,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="a">First vector in the product.</param>
     /// <param name="b">Second vector in the product.</param>
     /// <returns>Resulting dot product.</returns>
-    public static Fix64 Dot(FixVector3 a, FixVector3 b)
+    public static Fix64 Dot(in FixVector3 a, in FixVector3 b)
     {
-        return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+        return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
     /// <summary>
@@ -114,7 +120,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="product">Resulting dot product.</param>
     public static void Dot(in FixVector3 a, in FixVector3 b, out Fix64 product)
     {
-        product = a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+        product = a.x * b.x + a.y * b.y + a.z * b.z;
     }
     /// <summary>
     /// Adds two vectors together.
@@ -124,9 +130,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="sum">Sum of the two vectors.</param>
     public static void Add(in FixVector3 a, in FixVector3 b, out FixVector3 sum)
     {
-        sum.X = a.X + b.X;
-        sum.Y = a.Y + b.Y;
-        sum.Z = a.Z + b.Z;
+        sum.x = a.x + b.x;
+        sum.y = a.y + b.y;
+        sum.z = a.z + b.z;
     }
     /// <summary>
     /// Subtracts two vectors.
@@ -136,9 +142,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="difference">Result of the subtraction.</param>
     public static void Subtract(in FixVector3 a, in FixVector3 b, out FixVector3 difference)
     {
-        difference.X = a.X - b.X;
-        difference.Y = a.Y - b.Y;
-        difference.Z = a.Z - b.Z;
+        difference.x = a.x - b.x;
+        difference.y = a.y - b.y;
+        difference.z = a.z - b.z;
     }
     /// <summary>
     /// Scales a vector.
@@ -146,11 +152,11 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="v">Vector to scale.</param>
     /// <param name="scale">Amount to scale.</param>
     /// <param name="result">Scaled vector.</param>
-    public static void Multiply(in FixVector3 v, Fix64 scale, out FixVector3 result)
+    public static void Multiply(in FixVector3 v, in Fix64 scale, out FixVector3 result)
     {
-        result.X = v.X * scale;
-        result.Y = v.Y * scale;
-        result.Z = v.Z * scale;
+        result.x = v.x * scale;
+        result.y = v.y * scale;
+        result.z = v.z * scale;
     }
 
     /// <summary>
@@ -161,9 +167,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="result">Result of the componentwise multiplication.</param>
     public static void Multiply(in FixVector3 a, in FixVector3 b, out FixVector3 result)
     {
-        result.X = a.X * b.X;
-        result.Y = a.Y * b.Y;
-        result.Z = a.Z * b.Z;
+        result.x = a.x * b.x;
+        result.y = a.y * b.y;
+        result.z = a.z * b.z;
     }
 
     /// <summary>
@@ -172,12 +178,12 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="v">Vector to divide.</param>
     /// <param name="divisor">Value to divide the vector's components.</param>
     /// <param name="result">Result of the division.</param>
-    public static void Divide(in FixVector3 v, Fix64 divisor, out FixVector3 result)
+    public static void Divide(in FixVector3 v, in Fix64 divisor, out FixVector3 result)
     {
         Fix64 inverse = F64.C1 / divisor;
-        result.X = v.X * inverse;
-        result.Y = v.Y * inverse;
-        result.Z = v.Z * inverse;
+        result.x = v.x * inverse;
+        result.y = v.y * inverse;
+        result.z = v.z * inverse;
     }
     /// <summary>
     /// Scales a vector.
@@ -185,12 +191,12 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="v">Vector to scale.</param>
     /// <param name="f">Amount to scale.</param>
     /// <returns>Scaled vector.</returns>
-    public static FixVector3 operator *(FixVector3 v, Fix64 f)
+    public static FixVector3 operator *(in FixVector3 v, in Fix64 f)
     {
         FixVector3 toReturn;
-        toReturn.X = v.X * f;
-        toReturn.Y = v.Y * f;
-        toReturn.Z = v.Z * f;
+        toReturn.x = v.x * f;
+        toReturn.y = v.y * f;
+        toReturn.z = v.z * f;
         return toReturn;
     }
 
@@ -200,12 +206,12 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="v">Vector to scale.</param>
     /// <param name="f">Amount to scale.</param>
     /// <returns>Scaled vector.</returns>
-    public static FixVector3 operator *(Fix64 f, FixVector3 v)
+    public static FixVector3 operator *(in Fix64 f, in FixVector3 v)
     {
         FixVector3 toReturn;
-        toReturn.X = v.X * f;
-        toReturn.Y = v.Y * f;
-        toReturn.Z = v.Z * f;
+        toReturn.x = v.x * f;
+        toReturn.y = v.y * f;
+        toReturn.z = v.z * f;
         return toReturn;
     }
 
@@ -215,7 +221,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="a">First vector to multiply.</param>
     /// <param name="b">Second vector to multiply.</param>
     /// <returns>Result of the componentwise multiplication.</returns>
-    public static FixVector3 operator *(FixVector3 a, FixVector3 b)
+    public static FixVector3 operator *(in FixVector3 a, in FixVector3 b)
     {
         FixVector3 result;
         Multiply(in a, in b, out result);
@@ -228,13 +234,13 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="v">Vector to divide.</param>
     /// <param name="f">Value to divide the vector's components.</param>
     /// <returns>Result of the division.</returns>
-    public static FixVector3 operator /(FixVector3 v, Fix64 f)
+    public static FixVector3 operator /(in FixVector3 v, Fix64 f)
     {
         FixVector3 toReturn;
         f = F64.C1 / f;
-        toReturn.X = v.X * f;
-        toReturn.Y = v.Y * f;
-        toReturn.Z = v.Z * f;
+        toReturn.x = v.x * f;
+        toReturn.y = v.y * f;
+        toReturn.z = v.z * f;
         return toReturn;
     }
     /// <summary>
@@ -243,12 +249,12 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="a">Vector to subtract from.</param>
     /// <param name="b">Vector to subtract from the first vector.</param>
     /// <returns>Result of the subtraction.</returns>
-    public static FixVector3 operator -(FixVector3 a, FixVector3 b)
+    public static FixVector3 operator -(in FixVector3 a, in FixVector3 b)
     {
         FixVector3 v;
-        v.X = a.X - b.X;
-        v.Y = a.Y - b.Y;
-        v.Z = a.Z - b.Z;
+        v.x = a.x - b.x;
+        v.y = a.y - b.y;
+        v.z = a.z - b.z;
         return v;
     }
     /// <summary>
@@ -257,12 +263,12 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="a">First vector to add.</param>
     /// <param name="b">Second vector to add.</param>
     /// <returns>Sum of the two vectors.</returns>
-    public static FixVector3 operator +(FixVector3 a, FixVector3 b)
+    public static FixVector3 operator +(in FixVector3 a, in FixVector3 b)
     {
         FixVector3 v;
-        v.X = a.X + b.X;
-        v.Y = a.Y + b.Y;
-        v.Z = a.Z + b.Z;
+        v.x = a.x + b.x;
+        v.y = a.y + b.y;
+        v.z = a.z + b.z;
         return v;
     }
 
@@ -272,12 +278,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// </summary>
     /// <param name="v">Vector to negate.</param>
     /// <returns>Negated vector.</returns>
-    public static FixVector3 operator -(FixVector3 v)
+    public static FixVector3 operator -(in FixVector3 v)
     {
-        v.X = -v.X;
-        v.Y = -v.Y;
-        v.Z = -v.Z;
-        return v;
+        return new FixVector3(-v.x, -v.y, -v.z);
     }
     /// <summary>
     /// Tests two vectors for componentwise equivalence.
@@ -285,9 +288,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="a">First vector to test for equivalence.</param>
     /// <param name="b">Second vector to test for equivalence.</param>
     /// <returns>Whether the vectors were equivalent.</returns>
-    public static bool operator ==(FixVector3 a, FixVector3 b)
+    public static bool operator ==(in FixVector3 a, in FixVector3 b)
     {
-        return a.X == b.X && a.Y == b.Y && a.Z == b.Z;
+        return a.x == b.x && a.y == b.y && a.z == b.z;
     }
     /// <summary>
     /// Tests two vectors for componentwise inequivalence.
@@ -295,9 +298,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="a">First vector to test for inequivalence.</param>
     /// <param name="b">Second vector to test for inequivalence.</param>
     /// <returns>Whether the vectors were inequivalent.</returns>
-    public static bool operator !=(FixVector3 a, FixVector3 b)
+    public static bool operator !=(in FixVector3 a, in FixVector3 b)
     {
-        return a.X != b.X || a.Y != b.Y || a.Z != b.Z;
+        return a.x != b.x || a.y != b.y || a.z != b.z;
     }
 
     /// <summary>
@@ -309,7 +312,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="other">An object to compare with this object.</param>
     public bool Equals(FixVector3 other)
     {
-        return X == other.X && Y == other.Y && Z == other.Z;
+        return x == other.x && y == other.y && z == other.z;
     }
 
     /// <summary>
@@ -337,7 +340,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <filterpriority>2</filterpriority>
     public override int GetHashCode()
     {
-        return X.GetHashCode() + Y.GetHashCode() + Z.GetHashCode();
+        return x.GetHashCode() + y.GetHashCode() + z.GetHashCode();
     }
 
 
@@ -349,9 +352,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="distanceSquared">Squared distance between the two vectors.</param>
     public static void DistanceSquared(in FixVector3 a, in FixVector3 b, out Fix64 distanceSquared)
     {
-        Fix64 x = a.X - b.X;
-        Fix64 y = a.Y - b.Y;
-        Fix64 z = a.Z - b.Z;
+        Fix64 x = a.x - b.x;
+        Fix64 y = a.y - b.y;
+        Fix64 z = a.z - b.z;
         distanceSquared = x * x + y * y + z * z;
     }
 
@@ -361,11 +364,11 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="a">First vector.</param>
     /// <param name="b">Second vector.</param>
     /// <returns>Squared distance between the two vectors.</returns>
-    public static Fix64 DistanceSquared(FixVector3 a, FixVector3 b)
+    public static Fix64 DistanceSquared(in FixVector3 a, in FixVector3 b)
     {
-        Fix64 x = a.X - b.X;
-        Fix64 y = a.Y - b.Y;
-        Fix64 z = a.Z - b.Z;
+        Fix64 x = a.x - b.x;
+        Fix64 y = a.y - b.y;
+        Fix64 z = a.z - b.z;
         return x * x + y * y + z * z;
     }
 
@@ -378,9 +381,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="distance">Distance between the two vectors.</param>
     public static void Distance(in FixVector3 a, in FixVector3 b, out Fix64 distance)
     {
-        Fix64 x = a.X - b.X;
-        Fix64 y = a.Y - b.Y;
-        Fix64 z = a.Z - b.Z;
+        Fix64 x = a.x - b.x;
+        Fix64 y = a.y - b.y;
+        Fix64 z = a.z - b.z;
         distance = Fix64.Sqrt(x * x + y * y + z * z);
     }
     /// <summary>
@@ -389,7 +392,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="a">First vector.</param>
     /// <param name="b">Second vector.</param>
     /// <returns>Distance between the two vectors.</returns>
-    public static Fix64 Distance(FixVector3 a, FixVector3 b)
+    public static Fix64 Distance(in FixVector3 a, in FixVector3 b)
     {
         Fix64 toReturn;
         Distance(in a, in b, out toReturn);
@@ -402,7 +405,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="a">First vector.</param>
     /// <param name="b">Second vector.</param>
     /// <returns>Cross product of the two vectors.</returns>
-    public static FixVector3 Cross(FixVector3 a, FixVector3 b)
+    public static FixVector3 Cross(in FixVector3 a, in FixVector3 b)
     {
         FixVector3 toReturn;
         FixVector3.Cross(in a, in b, out toReturn);
@@ -416,12 +419,12 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="result">Cross product of the two vectors.</param>
     public static void Cross(in FixVector3 a, in FixVector3 b, out FixVector3 result)
     {
-        Fix64 resultX = a.Y * b.Z - a.Z * b.Y;
-        Fix64 resultY = a.Z * b.X - a.X * b.Z;
-        Fix64 resultZ = a.X * b.Y - a.Y * b.X;
-        result.X = resultX;
-        result.Y = resultY;
-        result.Z = resultZ;
+        Fix64 resultX = a.y * b.z - a.z * b.y;
+        Fix64 resultY = a.z * b.x - a.x * b.z;
+        Fix64 resultZ = a.x * b.y - a.y * b.x;
+        result.x = resultX;
+        result.y = resultY;
+        result.z = resultZ;
     }
 
     /// <summary>
@@ -429,7 +432,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// </summary>
     /// <param name="v">Vector to normalize.</param>
     /// <returns>Normalized vector.</returns>
-    public static FixVector3 Normalize(FixVector3 v)
+    public static FixVector3 Normalize(in FixVector3 v)
     {
         FixVector3 toReturn;
         FixVector3.Normalize(in v, out toReturn);
@@ -443,10 +446,10 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="result">Normalized vector.</param>
     public static void Normalize(in FixVector3 v, out FixVector3 result)
     {
-        Fix64 inverse = F64.C1 / Fix64.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
-        result.X = v.X * inverse;
-        result.Y = v.Y * inverse;
-        result.Z = v.Z * inverse;
+        Fix64 inverse = F64.C1 / Fix64.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+        result.x = v.x * inverse;
+        result.y = v.y * inverse;
+        result.z = v.z * inverse;
     }
 
     /// <summary>
@@ -456,9 +459,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="negated">Negated vector.</param>
     public static void Negate(in FixVector3 v, out FixVector3 negated)
     {
-        negated.X = -v.X;
-        negated.Y = -v.Y;
-        negated.Z = -v.Z;
+        negated.x = -v.x;
+        negated.y = -v.y;
+        negated.z = -v.z;
     }
 
     /// <summary>
@@ -468,18 +471,18 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="result">Vector with nonnegative elements.</param>
     public static void Abs(in FixVector3 v, out FixVector3 result)
     {
-        if (v.X < F64.C0)
-            result.X = -v.X;
+        if (v.x < F64.C0)
+            result.x = -v.x;
         else
-            result.X = v.X;
-        if (v.Y < F64.C0)
-            result.Y = -v.Y;
+            result.x = v.x;
+        if (v.y < F64.C0)
+            result.y = -v.y;
         else
-            result.Y = v.Y;
-        if (v.Z < F64.C0)
-            result.Z = -v.Z;
+            result.y = v.y;
+        if (v.z < F64.C0)
+            result.z = -v.z;
         else
-            result.Z = v.Z;
+            result.z = v.z;
     }
 
     /// <summary>
@@ -487,7 +490,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// </summary>
     /// <param name="v">Vector to take the absolute value of.</param>
     /// <returns>Vector with nonnegative elements.</returns>
-    public static FixVector3 Abs(FixVector3 v)
+    public static FixVector3 Abs(in FixVector3 v)
     {
         FixVector3 result;
         Abs(in v, out result);
@@ -502,9 +505,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="min">Vector containing the lesser values of each vector.</param>
     public static void Min(in FixVector3 a, in FixVector3 b, out FixVector3 min)
     {
-        min.X = a.X < b.X ? a.X : b.X;
-        min.Y = a.Y < b.Y ? a.Y : b.Y;
-        min.Z = a.Z < b.Z ? a.Z : b.Z;
+        min.x = a.x < b.x ? a.x : b.x;
+        min.y = a.y < b.y ? a.y : b.y;
+        min.z = a.z < b.z ? a.z : b.z;
     }
 
     /// <summary>
@@ -513,7 +516,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="a">First input vector to compare values from.</param>
     /// <param name="b">Second input vector to compare values from.</param>
     /// <returns>Vector containing the lesser values of each vector.</returns>
-    public static FixVector3 Min(FixVector3 a, FixVector3 b)
+    public static FixVector3 Min(in FixVector3 a, in FixVector3 b)
     {
         FixVector3 result;
         Min(in a, in b, out result);
@@ -529,9 +532,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="max">Vector containing the greater values of each vector.</param>
     public static void Max(in FixVector3 a, in FixVector3 b, out FixVector3 max)
     {
-        max.X = a.X > b.X ? a.X : b.X;
-        max.Y = a.Y > b.Y ? a.Y : b.Y;
-        max.Z = a.Z > b.Z ? a.Z : b.Z;
+        max.x = a.x > b.x ? a.x : b.x;
+        max.y = a.y > b.y ? a.y : b.y;
+        max.z = a.z > b.z ? a.z : b.z;
     }
 
     /// <summary>
@@ -540,7 +543,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="a">First input vector to compare values from.</param>
     /// <param name="b">Second input vector to compare values from.</param>
     /// <returns>Vector containing the greater values of each vector.</returns>
-    public static FixVector3 Max(FixVector3 a, FixVector3 b)
+    public static FixVector3 Max(in FixVector3 a, in FixVector3 b)
     {
         FixVector3 result;
         Max(in a, in b, out result);
@@ -554,7 +557,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="end">Ending location of the interpolation.</param>
     /// <param name="interpolationAmount">Amount of the end location to use.</param>
     /// <returns>Interpolated intermediate state.</returns>
-    public static FixVector3 Lerp(FixVector3 start, FixVector3 end, Fix64 interpolationAmount)
+    public static FixVector3 Lerp(in FixVector3 start, in FixVector3 end, in Fix64 interpolationAmount)
     {
         FixVector3 toReturn;
         Lerp(in start, in end, interpolationAmount, out toReturn);
@@ -570,9 +573,9 @@ public struct FixVector3 : IEquatable<FixVector3>
     public static void Lerp(in FixVector3 start, in FixVector3 end, Fix64 interpolationAmount, out FixVector3 result)
     {
         Fix64 startAmount = F64.C1 - interpolationAmount;
-        result.X = start.X * startAmount + end.X * interpolationAmount;
-        result.Y = start.Y * startAmount + end.Y * interpolationAmount;
-        result.Z = start.Z * startAmount + end.Z * interpolationAmount;
+        result.x = start.x * startAmount + end.x * interpolationAmount;
+        result.y = start.y * startAmount + end.y * interpolationAmount;
+        result.z = start.z * startAmount + end.z * interpolationAmount;
     }
 
     /// <summary>
@@ -584,7 +587,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="tangent2">Tangent associated with the second position.</param>
     /// <param name="interpolationAmount">Amount of the second point to use.</param>
     /// <param name="result">Interpolated intermediate state.</param>
-    public static void Hermite(in FixVector3 value1, in FixVector3 tangent1, in FixVector3 value2, in FixVector3 tangent2, Fix64 interpolationAmount, out FixVector3 result)
+    public static void Hermite(in FixVector3 value1, in FixVector3 tangent1, in FixVector3 value2, in FixVector3 tangent2, in Fix64 interpolationAmount, out FixVector3 result)
     {
         Fix64 weightSquared = interpolationAmount * interpolationAmount;
         Fix64 weightCubed = interpolationAmount * weightSquared;
@@ -592,9 +595,9 @@ public struct FixVector3 : IEquatable<FixVector3>
         Fix64 tangent1Blend = weightCubed - F64.C2 * weightSquared + interpolationAmount;
         Fix64 value2Blend = -2 * weightCubed + F64.C3 * weightSquared;
         Fix64 tangent2Blend = weightCubed - weightSquared;
-        result.X = value1.X * value1Blend + value2.X * value2Blend + tangent1.X * tangent1Blend + tangent2.X * tangent2Blend;
-        result.Y = value1.Y * value1Blend + value2.Y * value2Blend + tangent1.Y * tangent1Blend + tangent2.Y * tangent2Blend;
-        result.Z = value1.Z * value1Blend + value2.Z * value2Blend + tangent1.Z * tangent1Blend + tangent2.Z * tangent2Blend;
+        result.x = value1.x * value1Blend + value2.x * value2Blend + tangent1.x * tangent1Blend + tangent2.x * tangent2Blend;
+        result.y = value1.y * value1Blend + value2.y * value2Blend + tangent1.y * tangent1Blend + tangent2.y * tangent2Blend;
+        result.z = value1.z * value1Blend + value2.z * value2Blend + tangent1.z * tangent1Blend + tangent2.z * tangent2Blend;
     }
     /// <summary>
     /// Computes an intermediate location using hermite interpolation.
@@ -605,7 +608,7 @@ public struct FixVector3 : IEquatable<FixVector3>
     /// <param name="tangent2">Tangent associated with the second position.</param>
     /// <param name="interpolationAmount">Amount of the second point to use.</param>
     /// <returns>Interpolated intermediate state.</returns>
-    public static FixVector3 Hermite(FixVector3 value1, FixVector3 tangent1, FixVector3 value2, FixVector3 tangent2, Fix64 interpolationAmount)
+    public static FixVector3 Hermite(in FixVector3 value1, in FixVector3 tangent1, in FixVector3 value2, in FixVector3 tangent2, in Fix64 interpolationAmount)
     {
         FixVector3 toReturn;
         Hermite(in value1, in tangent1, in value2, in tangent2, interpolationAmount, out toReturn);
@@ -613,12 +616,12 @@ public struct FixVector3 : IEquatable<FixVector3>
     }
 
 
-    public static readonly FixVector3 zero     = new FixVector3 { };
-    public static readonly FixVector3 one      = new FixVector3 { X =  F64.C1, Y = F64.C1, Z = F64.C1 };
-    public static readonly FixVector3 right    = new FixVector3 { X =  F64.C1 };
-    public static readonly FixVector3 left     = new FixVector3 { X = -F64.C1 };
-    public static readonly FixVector3 up       = new FixVector3 { Y =  F64.C1 };
-    public static readonly FixVector3 down     = new FixVector3 { Y = -F64.C1 };
-    public static readonly FixVector3 forward  = new FixVector3 { Z =  F64.C1 };
-    public static readonly FixVector3 backward = new FixVector3 { Z = -F64.C1 };
+    public static readonly FixVector3 zero = new FixVector3 { };
+    public static readonly FixVector3 one = new FixVector3 { x = F64.C1, y = F64.C1, z = F64.C1 };
+    public static readonly FixVector3 right = new FixVector3 { x = F64.C1 };
+    public static readonly FixVector3 left = new FixVector3 { x = -F64.C1 };
+    public static readonly FixVector3 up = new FixVector3 { y = F64.C1 };
+    public static readonly FixVector3 down = new FixVector3 { y = -F64.C1 };
+    public static readonly FixVector3 forward = new FixVector3 { z = F64.C1 };
+    public static readonly FixVector3 backward = new FixVector3 { z = -F64.C1 };
 }

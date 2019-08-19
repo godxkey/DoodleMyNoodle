@@ -19,19 +19,19 @@ public static class VectorExtensions
                 Mathf.Clamp(v.z, min.z, max.z));
     }
 
-    public static Vector2 MaximalValues(this in Vector2 v, in Vector2 max)
+    public static Vector2 MaxLimit(this in Vector2 v, in Vector2 max)
     {
         return new Vector2(Mathf.Min(v.x, max.x), Mathf.Min(v.y, max.y));
     }
-    public static Vector3 MaximalValues(this in Vector3 v, in Vector3 max)
+    public static Vector3 MaxLimit(this in Vector3 v, in Vector3 max)
     {
         return new Vector3(Mathf.Min(v.x, max.x), Mathf.Min(v.y, max.y), Mathf.Min(v.z, max.z));
     }
-    public static Vector2 MinimalValues(this in Vector2 v, in Vector2 min)
+    public static Vector2 MinLimit(this in Vector2 v, in Vector2 min)
     {
         return new Vector2(Mathf.Max(v.x, min.x), Mathf.Max(v.y, min.y));
     }
-    public static Vector3 MinimalValues(this in Vector3 v, in Vector3 min)
+    public static Vector3 MinLimit(this in Vector3 v, in Vector3 min)
     {
         return new Vector3(Mathf.Max(v.x, min.x), Mathf.Max(v.y, min.y), Mathf.Max(v.z, min.z));
     }
@@ -55,25 +55,7 @@ public static class VectorExtensions
         return v;
     }
 
-    public static Vector2 MinimalLength(this in Vector2 v, float minLength)
-    {
-        float mag = v.magnitude;
-        if (mag < minLength)
-        {
-            return v * (minLength / mag);
-        }
-        return v;
-    }
-    public static Vector3 MinimalLength(this in Vector3 v, float minLength)
-    {
-        float mag = v.magnitude;
-        if (mag < minLength)
-        {
-            return v * (minLength / mag);
-        }
-        return v;
-    }
-    public static Vector2 MaximalLength(this in Vector2 v, float maximalLength)
+    public static Vector2 MaxLength(this in Vector2 v, float maximalLength)
     {
         float mag = v.magnitude;
         if (mag > maximalLength)
@@ -82,12 +64,30 @@ public static class VectorExtensions
         }
         return v;
     }
-    public static Vector3 MaximalLength(this in Vector3 v, float maximalLength)
+    public static Vector3 MaxLength(this in Vector3 v, float maximalLength)
     {
         float mag = v.magnitude;
         if (mag > maximalLength)
         {
             return v * (maximalLength / mag);
+        }
+        return v;
+    }
+    public static Vector2 MinLength(this in Vector2 v, float minLength)
+    {
+        float mag = v.magnitude;
+        if (mag < minLength)
+        {
+            return v * (minLength / mag);
+        }
+        return v;
+    }
+    public static Vector3 MinLength(this in Vector3 v, float minLength)
+    {
+        float mag = v.magnitude;
+        if (mag < minLength)
+        {
+            return v * (minLength / mag);
         }
         return v;
     }

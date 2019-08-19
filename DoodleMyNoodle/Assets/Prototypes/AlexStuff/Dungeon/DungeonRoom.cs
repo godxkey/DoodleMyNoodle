@@ -6,8 +6,8 @@ using UnityEngine.Events;
 public class DungeonRoom : MonoBehaviour
 {
     [SerializeField]
-    private Grid grid;
-    public Grid Grid { get { return grid; } }
+    private GridAlex grid;
+    public GridAlex Grid { get { return grid; } }
 
     [SerializeField]
     private Tiles tiles;
@@ -15,7 +15,7 @@ public class DungeonRoom : MonoBehaviour
 
     public UnityEvent onGridInitialize = new UnityEvent();
 
-    public void SetGrid(Grid grid)
+    public void SetGrid(GridAlex grid)
     {
         this.grid = grid;
         onGridInitialize.Invoke();

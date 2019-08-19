@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GridTools
 {
-    public static int FindTileClosestToPosition(Grid grid, Vector2 pos)
+    public static int FindTileClosestToPosition(GridAlex grid, Vector2 pos)
     {
         int currentTile = Mathf.RoundToInt(grid.tileAmount / 2);
         Vector3 currentPos = grid.GetTilePosition(currentTile);
@@ -109,7 +109,7 @@ public class GridTools
                y <= (tilePos.y + (sizeY / 2));
     }
 
-    public static List<Vector3> FindPath(Grid grid, int startTileID, int endTileID)
+    public static List<Vector3> FindPath(GridAlex grid, int startTileID, int endTileID)
     {
         return null;
     }

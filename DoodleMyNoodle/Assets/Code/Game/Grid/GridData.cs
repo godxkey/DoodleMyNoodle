@@ -45,7 +45,7 @@ public class GridData : ScriptableObject
     }
 
     // Ask the grid builder to build everything together, and put it into the grid
-    public void SetGridValues(ref Grid grid)
+    public void SetGridValues(ref GridAlex grid)
     {
         // Using gridbuilder to setup/build the grid
         GridBuilder.SetupGrid(this, ref grid, usingTileData);

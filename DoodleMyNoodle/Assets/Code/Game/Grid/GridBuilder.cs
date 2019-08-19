@@ -18,7 +18,7 @@ public class GridBuilder
     }
 
     // Setup the info we'll send to the grid
-    public static void SetupGrid(GridData data, ref Grid grid, bool useTileData)
+    public static void SetupGrid(GridData data, ref GridAlex grid, bool useTileData)
     {
         if (!grid.hasBeenSetup)
         {
@@ -47,7 +47,7 @@ public class GridBuilder
     }
 
     // Put all data inside the Grid
-    private static void UpdateGridData(GridCalculatedData calculatedData, GridData data, ref Grid grid)
+    private static void UpdateGridData(GridCalculatedData calculatedData, GridData data, ref GridAlex grid)
     {
         grid.centerPoint = calculatedData.centerPoint;
 

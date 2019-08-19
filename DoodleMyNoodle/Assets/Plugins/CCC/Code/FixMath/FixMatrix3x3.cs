@@ -99,16 +99,16 @@ public struct FixMatrix3x3
 #else
                 FixVector3 vector;
 #endif
-            vector.X = M31;
-            vector.Y = M32;
-            vector.Z = M33;
+            vector.x = M31;
+            vector.y = M32;
+            vector.z = M33;
             return vector;
         }
         set
         {
-            M31 = value.X;
-            M32 = value.Y;
-            M33 = value.Z;
+            M31 = value.x;
+            M32 = value.y;
+            M33 = value.z;
         }
     }
 
@@ -124,16 +124,16 @@ public struct FixMatrix3x3
 #else
                 FixVector3 vector;
 #endif
-            vector.X = -M21;
-            vector.Y = -M22;
-            vector.Z = -M23;
+            vector.x = -M21;
+            vector.y = -M22;
+            vector.z = -M23;
             return vector;
         }
         set
         {
-            M21 = -value.X;
-            M22 = -value.Y;
-            M23 = -value.Z;
+            M21 = -value.x;
+            M22 = -value.y;
+            M23 = -value.z;
         }
     }
 
@@ -149,16 +149,16 @@ public struct FixMatrix3x3
 #else
                 FixVector3 vector;
 #endif
-            vector.X = -M31;
-            vector.Y = -M32;
-            vector.Z = -M33;
+            vector.x = -M31;
+            vector.y = -M32;
+            vector.z = -M33;
             return vector;
         }
         set
         {
-            M31 = -value.X;
-            M32 = -value.Y;
-            M33 = -value.Z;
+            M31 = -value.x;
+            M32 = -value.y;
+            M33 = -value.z;
         }
     }
 
@@ -174,16 +174,16 @@ public struct FixMatrix3x3
 #else
                 FixVector3 vector;
 #endif
-            vector.X = -M11;
-            vector.Y = -M12;
-            vector.Z = -M13;
+            vector.x = -M11;
+            vector.y = -M12;
+            vector.z = -M13;
             return vector;
         }
         set
         {
-            M11 = -value.X;
-            M12 = -value.Y;
-            M13 = -value.Z;
+            M11 = -value.x;
+            M12 = -value.y;
+            M13 = -value.z;
         }
     }
 
@@ -199,16 +199,16 @@ public struct FixMatrix3x3
 #else
                 FixVector3 vector;
 #endif
-            vector.X = M11;
-            vector.Y = M12;
-            vector.Z = M13;
+            vector.x = M11;
+            vector.y = M12;
+            vector.z = M13;
             return vector;
         }
         set
         {
-            M11 = value.X;
-            M12 = value.Y;
-            M13 = value.Z;
+            M11 = value.x;
+            M12 = value.y;
+            M13 = value.z;
         }
     }
 
@@ -224,16 +224,16 @@ public struct FixMatrix3x3
 #else
                 FixVector3 vector;
 #endif
-            vector.X = M21;
-            vector.Y = M22;
-            vector.Z = M23;
+            vector.x = M21;
+            vector.y = M22;
+            vector.z = M23;
             return vector;
         }
         set
         {
-            M21 = value.X;
-            M22 = value.Y;
-            M23 = value.Z;
+            M21 = value.x;
+            M22 = value.y;
+            M23 = value.z;
         }
     }
 
@@ -377,13 +377,13 @@ public struct FixMatrix3x3
     public static void CreateCrossProduct(in FixVector3 v, out FixMatrix3x3 result)
     {
         result.M11 = F64.C0;
-        result.M12 = -v.Z;
-        result.M13 = v.Y;
-        result.M21 = v.Z;
+        result.M12 = -v.z;
+        result.M13 = v.y;
+        result.M21 = v.z;
         result.M22 = F64.C0;
-        result.M23 = -v.X;
-        result.M31 = -v.Y;
-        result.M32 = v.X;
+        result.M23 = -v.x;
+        result.M31 = -v.y;
+        result.M32 = v.x;
         result.M33 = F64.C0;
     }
 
@@ -456,7 +456,7 @@ public struct FixMatrix3x3
     /// <param name="matrix">Scaling matrix.</param>
     public static void CreateScale(in FixVector3 scale, out FixMatrix3x3 matrix)
     {
-        matrix = new FixMatrix3x3 { M11 = scale.X, M22 = scale.Y, M33 = scale.Z };
+        matrix = new FixMatrix3x3 { M11 = scale.x, M22 = scale.y, M33 = scale.z };
     }
 
     /// <summary>
@@ -466,7 +466,7 @@ public struct FixMatrix3x3
     /// <returns>Scaling matrix.</returns>
     public static FixMatrix3x3 CreateScale(in FixVector3 scale)
     {
-        var matrix = new FixMatrix3x3 { M11 = scale.X, M22 = scale.Y, M33 = scale.Z };
+        var matrix = new FixMatrix3x3 { M11 = scale.x, M22 = scale.y, M33 = scale.z };
         return matrix;
     }
 
@@ -1038,15 +1038,15 @@ public struct FixMatrix3x3
     /// <param name="result">Product of the transformation.</param>
     public static void Transform(in FixVector3 v, in FixMatrix3x3 matrix, out FixVector3 result)
     {
-        Fix64 vX = v.X;
-        Fix64 vY = v.Y;
-        Fix64 vZ = v.Z;
+        Fix64 vX = v.x;
+        Fix64 vY = v.y;
+        Fix64 vZ = v.z;
 #if !WINDOWS
         result = new FixVector3();
 #endif
-        result.X = vX * matrix.M11 + vY * matrix.M21 + vZ * matrix.M31;
-        result.Y = vX * matrix.M12 + vY * matrix.M22 + vZ * matrix.M32;
-        result.Z = vX * matrix.M13 + vY * matrix.M23 + vZ * matrix.M33;
+        result.x = vX * matrix.M11 + vY * matrix.M21 + vZ * matrix.M31;
+        result.y = vX * matrix.M12 + vY * matrix.M22 + vZ * matrix.M32;
+        result.z = vX * matrix.M13 + vY * matrix.M23 + vZ * matrix.M33;
     }
 
 
@@ -1062,13 +1062,13 @@ public struct FixMatrix3x3
 #if !WINDOWS
         result = new FixVector3();
 #endif
-        Fix64 vX = v.X;
-        Fix64 vY = v.Y;
-        Fix64 vZ = v.Z;
+        Fix64 vX = v.x;
+        Fix64 vY = v.y;
+        Fix64 vZ = v.z;
 
-        result.X = vX * matrix.M11 + vY * matrix.M21 + vZ * matrix.M31;
-        result.Y = vX * matrix.M12 + vY * matrix.M22 + vZ * matrix.M32;
-        result.Z = vX * matrix.M13 + vY * matrix.M23 + vZ * matrix.M33;
+        result.x = vX * matrix.M11 + vY * matrix.M21 + vZ * matrix.M31;
+        result.y = vX * matrix.M12 + vY * matrix.M22 + vZ * matrix.M32;
+        result.z = vX * matrix.M13 + vY * matrix.M23 + vZ * matrix.M33;
         return result;
     }
 
@@ -1080,15 +1080,15 @@ public struct FixMatrix3x3
     /// <param name="result">Product of the transformation.</param>
     public static void TransformTranspose(in FixVector3 v, in FixMatrix3x3 matrix, out FixVector3 result)
     {
-        Fix64 vX = v.X;
-        Fix64 vY = v.Y;
-        Fix64 vZ = v.Z;
+        Fix64 vX = v.x;
+        Fix64 vY = v.y;
+        Fix64 vZ = v.z;
 #if !WINDOWS
         result = new FixVector3();
 #endif
-        result.X = vX * matrix.M11 + vY * matrix.M12 + vZ * matrix.M13;
-        result.Y = vX * matrix.M21 + vY * matrix.M22 + vZ * matrix.M23;
-        result.Z = vX * matrix.M31 + vY * matrix.M32 + vZ * matrix.M33;
+        result.x = vX * matrix.M11 + vY * matrix.M12 + vZ * matrix.M13;
+        result.y = vX * matrix.M21 + vY * matrix.M22 + vZ * matrix.M23;
+        result.z = vX * matrix.M31 + vY * matrix.M32 + vZ * matrix.M33;
     }
 
     /// <summary>
@@ -1099,16 +1099,16 @@ public struct FixMatrix3x3
     /// <returns>Product of the transformation.</returns>
     public static FixVector3 TransformTranspose(FixVector3 v, FixMatrix3x3 matrix)
     {
-        Fix64 vX = v.X;
-        Fix64 vY = v.Y;
-        Fix64 vZ = v.Z;
+        Fix64 vX = v.x;
+        Fix64 vY = v.y;
+        Fix64 vZ = v.z;
         FixVector3 result;
 #if !WINDOWS
         result = new FixVector3();
 #endif
-        result.X = vX * matrix.M11 + vY * matrix.M12 + vZ * matrix.M13;
-        result.Y = vX * matrix.M21 + vY * matrix.M22 + vZ * matrix.M23;
-        result.Z = vX * matrix.M31 + vY * matrix.M32 + vZ * matrix.M33;
+        result.x = vX * matrix.M11 + vY * matrix.M12 + vZ * matrix.M13;
+        result.y = vX * matrix.M21 + vY * matrix.M22 + vZ * matrix.M23;
+        result.z = vX * matrix.M31 + vY * matrix.M32 + vZ * matrix.M33;
         return result;
     }
 
@@ -1255,18 +1255,18 @@ public struct FixMatrix3x3
     /// <param name="result">FixMatrix representing the quaternion's orientation.</param>
     public static void CreateFromQuaternion(in FixQuaternion quaternion, out FixMatrix3x3 result)
     {
-        Fix64 qX2 = quaternion.X + quaternion.X;
-        Fix64 qY2 = quaternion.Y + quaternion.Y;
-        Fix64 qZ2 = quaternion.Z + quaternion.Z;
-        Fix64 XX = qX2 * quaternion.X;
-        Fix64 YY = qY2 * quaternion.Y;
-        Fix64 ZZ = qZ2 * quaternion.Z;
-        Fix64 XY = qX2 * quaternion.Y;
-        Fix64 XZ = qX2 * quaternion.Z;
-        Fix64 XW = qX2 * quaternion.W;
-        Fix64 YZ = qY2 * quaternion.Z;
-        Fix64 YW = qY2 * quaternion.W;
-        Fix64 ZW = qZ2 * quaternion.W;
+        Fix64 qX2 = quaternion.x + quaternion.x;
+        Fix64 qY2 = quaternion.y + quaternion.y;
+        Fix64 qZ2 = quaternion.z + quaternion.z;
+        Fix64 XX = qX2 * quaternion.x;
+        Fix64 YY = qY2 * quaternion.y;
+        Fix64 ZZ = qZ2 * quaternion.z;
+        Fix64 XY = qX2 * quaternion.y;
+        Fix64 XZ = qX2 * quaternion.z;
+        Fix64 XW = qX2 * quaternion.w;
+        Fix64 YZ = qY2 * quaternion.z;
+        Fix64 YW = qY2 * quaternion.w;
+        Fix64 ZW = qZ2 * quaternion.w;
 
         result.M11 = F64.C1 - YY - ZZ;
         result.M21 = XY - ZW;
@@ -1301,17 +1301,17 @@ public struct FixMatrix3x3
     /// <param name="result">Outer product result.</param>
     public static void CreateOuterProduct(in FixVector3 a, in FixVector3 b, out FixMatrix3x3 result)
     {
-        result.M11 = a.X * b.X;
-        result.M12 = a.X * b.Y;
-        result.M13 = a.X * b.Z;
+        result.M11 = a.x * b.x;
+        result.M12 = a.x * b.y;
+        result.M13 = a.x * b.z;
 
-        result.M21 = a.Y * b.X;
-        result.M22 = a.Y * b.Y;
-        result.M23 = a.Y * b.Z;
+        result.M21 = a.y * b.x;
+        result.M22 = a.y * b.y;
+        result.M23 = a.y * b.z;
 
-        result.M31 = a.Z * b.X;
-        result.M32 = a.Z * b.Y;
-        result.M33 = a.Z * b.Z;
+        result.M31 = a.z * b.x;
+        result.M32 = a.z * b.y;
+        result.M33 = a.z * b.z;
     }
 
     /// <summary>
@@ -1335,26 +1335,26 @@ public struct FixMatrix3x3
     /// <param name="result">FixMatrix representing the rotation.</param>
     public static void CreateFromAxisAngle(in FixVector3 axis, Fix64 angle, out FixMatrix3x3 result)
     {
-        Fix64 xx = axis.X * axis.X;
-        Fix64 yy = axis.Y * axis.Y;
-        Fix64 zz = axis.Z * axis.Z;
-        Fix64 xy = axis.X * axis.Y;
-        Fix64 xz = axis.X * axis.Z;
-        Fix64 yz = axis.Y * axis.Z;
+        Fix64 xx = axis.x * axis.x;
+        Fix64 yy = axis.y * axis.y;
+        Fix64 zz = axis.z * axis.z;
+        Fix64 xy = axis.x * axis.y;
+        Fix64 xz = axis.x * axis.z;
+        Fix64 yz = axis.y * axis.z;
 
         Fix64 sinAngle = Fix64.Sin(angle);
         Fix64 oneMinusCosAngle = F64.C1 - Fix64.Cos(angle);
 
         result.M11 = F64.C1 + oneMinusCosAngle * (xx - F64.C1);
-        result.M21 = -axis.Z * sinAngle + oneMinusCosAngle * xy;
-        result.M31 = axis.Y * sinAngle + oneMinusCosAngle * xz;
+        result.M21 = -axis.z * sinAngle + oneMinusCosAngle * xy;
+        result.M31 = axis.y * sinAngle + oneMinusCosAngle * xz;
 
-        result.M12 = axis.Z * sinAngle + oneMinusCosAngle * xy;
+        result.M12 = axis.z * sinAngle + oneMinusCosAngle * xy;
         result.M22 = F64.C1 + oneMinusCosAngle * (yy - F64.C1);
-        result.M32 = -axis.X * sinAngle + oneMinusCosAngle * yz;
+        result.M32 = -axis.x * sinAngle + oneMinusCosAngle * yz;
 
-        result.M13 = -axis.Y * sinAngle + oneMinusCosAngle * xz;
-        result.M23 = axis.X * sinAngle + oneMinusCosAngle * yz;
+        result.M13 = -axis.y * sinAngle + oneMinusCosAngle * xz;
+        result.M23 = axis.x * sinAngle + oneMinusCosAngle * yz;
         result.M33 = F64.C1 + oneMinusCosAngle * (zz - F64.C1);
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(SimTransform))]
+[CustomEditor(typeof(SimTransform), editorForChildClasses: true)]
 public class SimTransformEditor : Editor
 {
     public override void OnInspectorGUI()

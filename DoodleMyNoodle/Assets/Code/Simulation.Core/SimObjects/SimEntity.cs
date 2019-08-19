@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class SimEntity : SimComponent
+public class SimEntity : SimObject
 {
     public SimEntityId entityId { get; internal set; }
     public SimBlueprintId blueprintId { get; internal set; }

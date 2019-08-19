@@ -26,7 +26,7 @@ public class DungeonGrid : MonoBehaviour
         VerifyDataValues();
 
         // Setup the data inside the grid
-        Grid grid = new Grid(); // creating grid
+        GridAlex grid = new GridAlex(); // creating grid
         data.SetGridValues(ref grid); // setup grid with our data
 
         for (int i = 0; i < grid.tileAmount; i++)

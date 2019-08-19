@@ -6,8 +6,8 @@ public class FixFixVector2Drawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        SerializedProperty xProp = property.FindPropertyRelative("X").FindPropertyRelative("m_rawValue");
-        SerializedProperty yProp = property.FindPropertyRelative("Y").FindPropertyRelative("m_rawValue");
+        SerializedProperty xProp = property.FindPropertyRelative("x").FindPropertyRelative("m_rawValue");
+        SerializedProperty yProp = property.FindPropertyRelative("y").FindPropertyRelative("m_rawValue");
 
         Fix64 xVal;
         Fix64 yVal;
@@ -29,11 +29,16 @@ public class FixFixVector2Drawer : PropertyDrawer
         {
             FixVector2 newFixVec = newVec.ToFixVec();
 
-            xProp.longValue = newFixVec.X.m_rawValue;
-            yProp.longValue = newFixVec.Y.m_rawValue;
+            xProp.longValue = newFixVec.x.m_rawValue;
+            yProp.longValue = newFixVec.y.m_rawValue;
         }
 
 
         EditorGUI.EndProperty();
+    }
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return EditorGUI.GetPropertyHeight(SerializedPropertyType.Vector2, label);
     }
 }

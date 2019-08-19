@@ -192,9 +192,9 @@ public struct FixMatrix2x3
 #if !WINDOWS
         result = new FixVector3();
 #endif
-        result.X = v.X * matrix.M11 + v.Y * matrix.M21;
-        result.Y = v.X * matrix.M12 + v.Y * matrix.M22;
-        result.Z = v.X * matrix.M13 + v.Y * matrix.M23;
+        result.x = v.x * matrix.M11 + v.y * matrix.M21;
+        result.y = v.x * matrix.M12 + v.y * matrix.M22;
+        result.z = v.x * matrix.M13 + v.y * matrix.M23;
     }
 
     /// <summary>
@@ -208,8 +208,8 @@ public struct FixMatrix2x3
 #if !WINDOWS
         result = new FixVector2();
 #endif
-        result.X = matrix.M11 * v.X + matrix.M12 * v.Y + matrix.M13 * v.Z;
-        result.Y = matrix.M21 * v.X + matrix.M22 * v.Y + matrix.M23 * v.Z;
+        result.x = matrix.M11 * v.x + matrix.M12 * v.y + matrix.M13 * v.z;
+        result.y = matrix.M21 * v.x + matrix.M22 * v.y + matrix.M23 * v.z;
     }
 
 

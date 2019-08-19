@@ -17,9 +17,17 @@ public class SimModuleSceneLoader
         SceneService.Load(sceneName, LoadSceneMode.Additive, (scene) =>
         {
             pendingSceneLoads--;
-            foreach (GameObject gameObject in scene.GetRootGameObjects())
+
+            GameObject[] gameobjects = scene.GetRootGameObjects();
+
+            // fbessette: Apparently, in standalone build, the hierarchy is reversed ... Do a reverse loop
+#if UNITY_EDITOR
+            for (int i = 0; i < gameobjects.Length; i++)
+#else
+            for (int i = gameobjects.Length - 1; i >= 0; i--)
+#endif
             {
-                SimEntity newEntity = gameObject.GetComponent<SimEntity>();
+                SimEntity newEntity = gameobjects[i].GetComponent<SimEntity>();
                 if (newEntity)
                 {
                     SimModules.entityManager.InjectNewEntityIntoSim(newEntity, new SimBlueprintId(SimBlueprintId.Type.SceneGameObject, "TODO"));

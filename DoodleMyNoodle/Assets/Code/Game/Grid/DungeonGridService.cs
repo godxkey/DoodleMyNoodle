@@ -14,7 +14,7 @@ public class DungeonGridService : MonoCoreService<DungeonGridService>
     public Location cornerA;
     public Location cornerB;
 
-    public Grid grid;
+    public GridAlex grid;
 
     // On Awake, if GridService is already in the scene, set instance and init
     // or else, Service system is going to create it from a prefab made in the project
@@ -31,7 +31,7 @@ public class DungeonGridService : MonoCoreService<DungeonGridService>
         VerifyDataValues();
 
         // Setup the data inside the grid
-        grid = new Grid(); // creating grid
+        grid = new GridAlex(); // creating grid
         data.SetGridValues(ref grid); // setup grid with our data
 
         // We're ready ! Awake calls the init so we need to check for null

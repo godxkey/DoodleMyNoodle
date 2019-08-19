@@ -17,6 +17,10 @@ public static class ListExtensions
         }
         return -1;
     }
+    public static void RemoveFirst<T>(this List<T> list)
+    {
+        list.RemoveAt(0);
+    }
     public static int RemoveNulls<T>(this List<T> list)
     {
         return list.RemoveAll((x) => x == null);

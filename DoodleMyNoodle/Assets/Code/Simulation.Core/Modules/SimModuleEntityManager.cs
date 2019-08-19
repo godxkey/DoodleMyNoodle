@@ -75,9 +75,9 @@ public class SimModuleEntityManager
         SimModules.world.nextEntityId.Increment();
 
         AddToEntityList(newEntity);
-        foreach (SimComponent comp in newEntity.GetComponents<SimComponent>())
+        foreach (SimObject obj in newEntity.GetComponents<SimObject>())
         {
-            comp.OnSimAwake();
+            obj.OnSimAwake();
         }
     }
 
@@ -87,9 +87,9 @@ public class SimModuleEntityManager
     /// </summary>
     internal void Destroy(SimEntity entity)
     {
-        foreach (SimComponent comp in entity.GetComponents<SimComponent>())
+        foreach (SimObject obj in entity.GetComponents<SimObject>())
         {
-            comp.OnSimDestroy();
+            obj.OnSimDestroy();
         }
 
         _expectingDestructions++;
@@ -118,18 +118,18 @@ public class SimModuleEntityManager
     {
         SimModules.world.entities.Add(simEntity);
 
-        foreach (SimComponent comp in simEntity.GetComponents<SimComponent>())
+        foreach (SimObject obj in simEntity.GetComponents<SimObject>())
         {
-            SimModules.ticker.OnAddSimComponentToSim(comp);
-            comp.OnAddedToEntityList();
+            SimModules.ticker.OnAddSimObjectToSim(obj);
+            obj.OnAddedToEntityList();
         }
     }
     void RemoveFromEntityList(SimEntity simEntity)
     {
-        foreach (SimComponent comp in simEntity.GetComponents<SimComponent>())
+        foreach (SimObject obj in simEntity.GetComponents<SimObject>())
         {
-            comp.OnRemovingFromEntityList();
-            SimModules.ticker.OnRemovingSimComponentToSim(comp);
+            obj.OnRemovingFromEntityList();
+            SimModules.ticker.OnRemovingSimObjectFromSim(obj);
         }
         SimModules.world.entities.Remove(simEntity);
     }

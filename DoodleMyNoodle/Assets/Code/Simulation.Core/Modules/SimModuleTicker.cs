@@ -33,7 +33,7 @@ public class SimModuleTicker
                 // TEMPORAIRE
                 SimModules.worldSearcher.ForEveryEntityWithComponent<ISimInputHandler>((handler) =>
                 {
-                    if(handler is SimComponent c && !c.isActiveAndEnabled)
+                    if(handler is SimObject c && !c.isActiveAndEnabled)
                     {
                         return true; // continue
                     }
@@ -61,19 +61,19 @@ public class SimModuleTicker
         isTicking = false;
     }
 
-    internal void OnAddSimComponentToSim(SimComponent comp)
+    internal void OnAddSimObjectToSim(SimObject obj)
     {
-        if (comp is ISimTickable)
+        if (obj is ISimTickable)
         {
-            tickables.Add((ISimTickable)comp);
+            tickables.Add((ISimTickable)obj);
         }
     }
 
-    internal void OnRemovingSimComponentToSim(SimComponent comp)
+    internal void OnRemovingSimObjectFromSim(SimObject obj)
     {
-        if (comp is ISimTickable)
+        if (obj is ISimTickable)
         {
-            tickables.Remove((ISimTickable)comp);
+            tickables.Remove((ISimTickable)obj);
         }
     }
 }

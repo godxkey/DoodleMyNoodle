@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grid
+public class GridAlex // J'ai du renommé la class parce que Unity a déjà une class qui s'appelle Grid
 {
     // Grid Data
 
@@ -20,7 +20,7 @@ public class Grid
     // prevent constant updates of data
     public bool hasBeenSetup = false;
 
-    public Grid(){}
+    public GridAlex(){}
 
     // Interacting and Asking for Info
 

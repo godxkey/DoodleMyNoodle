@@ -109,7 +109,7 @@ public class DungeonTilesEditor : Editor
 
         DungeonTiles tiles = target as DungeonTiles;
 
-        Grid grid = new Grid();
+        GridAlex grid = new GridAlex();
         tiles.DungeonGrid.Data.SetGridValues(ref grid);
 
         GUILayout.BeginHorizontal();

@@ -6,10 +6,10 @@ public class FixQuaternionDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        SerializedProperty xProp = property.FindPropertyRelative("X").FindPropertyRelative("m_rawValue");
-        SerializedProperty yProp = property.FindPropertyRelative("Y").FindPropertyRelative("m_rawValue");
-        SerializedProperty zProp = property.FindPropertyRelative("Z").FindPropertyRelative("m_rawValue");
-        SerializedProperty wProp = property.FindPropertyRelative("W").FindPropertyRelative("m_rawValue");
+        SerializedProperty xProp = property.FindPropertyRelative("x").FindPropertyRelative("m_rawValue");
+        SerializedProperty yProp = property.FindPropertyRelative("y").FindPropertyRelative("m_rawValue");
+        SerializedProperty zProp = property.FindPropertyRelative("z").FindPropertyRelative("m_rawValue");
+        SerializedProperty wProp = property.FindPropertyRelative("w").FindPropertyRelative("m_rawValue");
 
         Fix64 xVal;
         Fix64 yVal;
@@ -35,13 +35,18 @@ public class FixQuaternionDrawer : PropertyDrawer
         {
             FixQuaternion newQuat = Quaternion.Euler(newEuler.x, newEuler.y, newEuler.z).ToFixQuat();
 
-            xProp.longValue = newQuat.X.m_rawValue;
-            yProp.longValue = newQuat.Y.m_rawValue;
-            zProp.longValue = newQuat.Z.m_rawValue;
-            wProp.longValue = newQuat.W.m_rawValue;
+            xProp.longValue = newQuat.x.m_rawValue;
+            yProp.longValue = newQuat.y.m_rawValue;
+            zProp.longValue = newQuat.z.m_rawValue;
+            wProp.longValue = newQuat.w.m_rawValue;
         }
 
 
         EditorGUI.EndProperty();
+    }
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return EditorGUI.GetPropertyHeight(SerializedPropertyType.Vector3, label);
     }
 }

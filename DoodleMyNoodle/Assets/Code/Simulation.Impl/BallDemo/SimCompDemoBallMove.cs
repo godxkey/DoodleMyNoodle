@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimCompDemoBallMove : SimComponent, ISimInputHandler, ISimTickable
+public class SimCompDemoBallMove : SimBehaviour, ISimInputHandler, ISimTickable
 {
     static readonly Fix64 speed = 6;
 

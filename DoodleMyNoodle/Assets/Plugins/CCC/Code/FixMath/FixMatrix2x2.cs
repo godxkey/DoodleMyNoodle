@@ -297,13 +297,13 @@ public struct FixMatrix2x2
     /// <param name="result">Product of the transformation.</param>
     public static void Transform(ref FixVector2 v, ref FixMatrix2x2 matrix, out FixVector2 result)
     {
-        Fix64 vX = v.X;
-        Fix64 vY = v.Y;
+        Fix64 vX = v.x;
+        Fix64 vY = v.y;
 #if !WINDOWS
         result = new FixVector2();
 #endif
-        result.X = vX * matrix.M11 + vY * matrix.M21;
-        result.Y = vX * matrix.M12 + vY * matrix.M22;
+        result.x = vX * matrix.M11 + vY * matrix.M21;
+        result.y = vX * matrix.M12 + vY * matrix.M22;
     }
 
     /// <summary>

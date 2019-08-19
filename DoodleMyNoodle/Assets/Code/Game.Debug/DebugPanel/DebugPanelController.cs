@@ -25,20 +25,6 @@ public class DebugPanelController
         }
     }
 
-
-    static DebugPanelGameState panel_gameState = new DebugPanelGameState();
-    static DebugPanelPlayerRepertoire panel_playerRepertoire = new DebugPanelPlayerRepertoire();
-
-
-    static DebugPanel[] panels = new DebugPanel[]
-    {
-        new DebugPanelGameState(),
-        new DebugPanelPlayerRepertoire(),
-        new DebugPanelClientSimController()
-    };
-
-
-
     static void OnGUI()
     {
         if (!DebugPanelStyles.initialized)
@@ -57,6 +43,8 @@ public class DebugPanelController
             var stdColor = GUI.color;
 
             GUILayout.BeginArea(new Rect(Vector2.zero, new Vector2(350, Screen.height)));
+
+            DebugPanel[] panels = DebugPanelRegistry.registeredPanels;
 
             for (int i = 0; i < panels.Length; i++)
             {
