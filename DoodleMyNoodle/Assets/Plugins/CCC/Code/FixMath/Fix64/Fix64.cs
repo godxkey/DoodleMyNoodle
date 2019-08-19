@@ -106,6 +106,14 @@ public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64>, IFormattabl
     /// Rounds a value to the nearest integral value.
     /// If the value is halfway between an even and an uneven value, returns the even value.
     /// </summary>
+    public static int RoundToInt(Fix64 value)
+    {
+        return (int)Round(value);
+    }
+    /// <summary>
+    /// Rounds a value to the nearest integral value.
+    /// If the value is halfway between an even and an uneven value, returns the even value.
+    /// </summary>
     public static Fix64 Round(Fix64 value)
     {
         var fractionalPart = value.m_rawValue & 0x00000000FFFFFFFF;

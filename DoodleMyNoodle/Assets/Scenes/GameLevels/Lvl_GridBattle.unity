@@ -162,7 +162,7 @@ Transform:
   m_Children:
   - {fileID: 2077477580}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1249288062
 GameObject:
@@ -242,7 +242,7 @@ Transform:
   m_Children:
   - {fileID: 2041417613}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1276550477
 GameObject:
@@ -326,7 +326,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1276550481
 MonoBehaviour:
@@ -401,7 +401,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2041417612
 GameObject:
@@ -1494,6 +1494,24 @@ Tilemap:
       e31: 0
       e32: 0
       e33: 1
+  - m_RefCount: 0
+    m_Data:
+      e00: -2.0340414e-25
+      e01: NaN
+      e02: 0
+      e03: -2.0340394e-25
+      e10: 1.72e-43
+      e11: NaN
+      e12: 7.34684e-40
+      e13: 1.72e-43
+      e20: 0
+      e21: 6e-45
+      e22: 2.3262082e+26
+      e23: 0
+      e30: 0
+      e31: 7e-45
+      e32: 4.5904e-41
+      e33: 0
   m_TileColorArray:
   - m_RefCount: 100
     m_Data: {r: 1, g: 1, b: 1, a: 1}
@@ -1568,5 +1586,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
