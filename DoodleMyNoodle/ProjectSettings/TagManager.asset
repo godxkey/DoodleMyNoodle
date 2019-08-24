@@ -41,6 +41,9 @@ TagManager:
   - name: Ground
     uniqueID: 984740141
     locked: 0
+  - name: TileHighlight
+    uniqueID: 3513164091
+    locked: 0
   - name: PlayerCharacters
     uniqueID: 3005221959
     locked: 0

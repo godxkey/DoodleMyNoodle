@@ -48,4 +48,11 @@ public class SimulationPublic
     public static SimEntity FindEntityWithName(string name) => SimModules.worldSearcher.FindEntityWithName(name);
     public static SimEntity FindEntityWithComponent<T>() => SimModules.worldSearcher.FindEntityWithComponent<T>();
     public static SimEntity FindEntityWithComponent<T>(out T comp) => SimModules.worldSearcher.FindEntityWithComponent(out comp);
+
+    public static void ForEveryEntityWithComponent<T>(Action<T> action) => SimModules.worldSearcher.ForEveryEntityWithComponent(action);
+    public static void ForEveryEntityWithComponent<T1, T2>(Action<T1, T2> action) => SimModules.worldSearcher.ForEveryEntityWithComponent(action);
+    /// <summary>
+    /// Return false to stop the iteration
+    /// </summary>
+    public static void ForEveryEntityWithComponent<T>(Func<T, bool> action) => SimModules.worldSearcher.ForEveryEntityWithComponent(action);
 }

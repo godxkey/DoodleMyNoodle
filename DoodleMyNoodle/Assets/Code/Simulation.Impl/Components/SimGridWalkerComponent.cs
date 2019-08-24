@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SimCompGridTransform))]
-public class SimCompGridWalker : SimBehaviour, ISimTickable, /*temporary*/ ISimInputHandler
+[RequireComponent(typeof(SimGridTransformComponent))]
+public class SimGridWalkerComponent : SimBehaviour, ISimTickable, /*temporary*/ ISimInputHandler
 {
     static bool goRight = true;
 
@@ -131,10 +131,10 @@ public class SimCompGridWalker : SimBehaviour, ISimTickable, /*temporary*/ ISimI
 
 
 
-    SimCompGridTransform gridTr;
+    SimGridTransformComponent gridTr;
     public override void OnAddedToEntityList()
     {
         base.OnAddedToEntityList();
-        gridTr = GetComponent<SimCompGridTransform>();
+        gridTr = GetComponent<SimGridTransformComponent>();
     }
 }

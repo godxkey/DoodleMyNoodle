@@ -16,14 +16,34 @@ public struct SimTileId
         this.y = y;
     }
 
-    public FixVector2 GetWorldPosition2D()
-    {
-        return new FixVector2(x, y);
-    }
-    public FixVector3 GetWorldPosition3D()
-    {
-        return new FixVector3(x, y, 0);
-    }
+    #region Positioning
+    /// <summary>
+    /// Returns the center of the tile
+    /// </summary>
+    public FixVector2 GetWorldPosition2D() => new FixVector2(x, y);
+    /// <summary>
+    /// Returns the center of the tile
+    /// </summary>
+    public FixVector3 GetWorldPosition3D() => new FixVector3(x, y, 0);
+
+    public FixVector2 GetTopLeftWorldPosition2D()      => new FixVector2(x - (Fix64)0.5, y + (Fix64)0.5);
+    public FixVector2 GetTopCenterWorldPosition2D()    => new FixVector2(x             , y + (Fix64)0.5);
+    public FixVector2 GetTopRightWorldPosition2D()     => new FixVector2(x + (Fix64)0.5, y + (Fix64)0.5);
+    public FixVector2 GetMiddleLeftWorldPosition2D()   => new FixVector2(x - (Fix64)0.5, y             );
+    public FixVector2 GetMiddleRightWorldPosition2D()  => new FixVector2(x + (Fix64)0.5, y             );
+    public FixVector2 GetBottomLeftWorldPosition2D()   => new FixVector2(x - (Fix64)0.5, y - (Fix64)0.5);
+    public FixVector2 GetBottomCenterWorldPosition2D() => new FixVector2(x             , y - (Fix64)0.5);
+    public FixVector2 GetBottomRightWorldPosition2D()  => new FixVector2(x + (Fix64)0.5, y - (Fix64)0.5);
+
+    public FixVector3 GetTopLeftWorldPosition3D()      => new FixVector3(x - (Fix64)0.5, y + (Fix64)0.5, 0);
+    public FixVector3 GetTopCenterWorldPosition3D()    => new FixVector3(x             , y + (Fix64)0.5, 0);
+    public FixVector3 GetTopRightWorldPosition3D()     => new FixVector3(x + (Fix64)0.5, y + (Fix64)0.5, 0);
+    public FixVector3 GetMiddleLeftWorldPosition3D()   => new FixVector3(x - (Fix64)0.5, y             , 0);
+    public FixVector3 GetMiddleRightWorldPosition3D()  => new FixVector3(x + (Fix64)0.5, y             , 0);
+    public FixVector3 GetBottomLeftWorldPosition3D()   => new FixVector3(x - (Fix64)0.5, y - (Fix64)0.5, 0);
+    public FixVector3 GetBottomCenterWorldPosition3D() => new FixVector3(x             , y - (Fix64)0.5, 0);
+    public FixVector3 GetBottomRightWorldPosition3D()  => new FixVector3(x + (Fix64)0.5, y - (Fix64)0.5, 0);
+    #endregion
 
     // Used to calculate directions
     public static Vector2Int operator -(in SimTileId a, in SimTileId b)

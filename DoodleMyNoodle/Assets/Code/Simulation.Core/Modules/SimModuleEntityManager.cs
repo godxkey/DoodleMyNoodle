@@ -38,7 +38,7 @@ public class SimModuleEntityManager
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal SimEntity Instantiate(SimBlueprint original, in FixVector3 position, in FixQuaternion rotation, SimTransform parent)
+    internal SimEntity Instantiate(SimBlueprint original, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
     {
         GameObject newGameObject = GameObject.Instantiate(original.prefab.gameObject, position.ToUnityVec(), rotation.ToUnityQuat(), parent.unityTransform);
         return OnInstantiated_Internal(original, newGameObject, position, rotation);
@@ -46,7 +46,7 @@ public class SimModuleEntityManager
 
     SimEntity OnInstantiated_Internal(SimBlueprint original, GameObject newGameObject, in FixVector3 position, in FixQuaternion rotation)
     {
-        SimTransform simTransform = newGameObject.GetComponent<SimTransform>();
+        SimTransformComponent simTransform = newGameObject.GetComponent<SimTransformComponent>();
         if (simTransform)
         {
             simTransform.localPosition = position;

@@ -42,12 +42,25 @@ public class SimModuleWorldSearcher
     internal void ForEveryEntityWithComponent<T>(Action<T> action)
     {
         var entities = SimModules.world.entities;
-        T comp = default;
         for (int i = 0; i < entities.Count; i++)
         {
-            comp = entities[i].GetComponent<T>();
+            T comp = entities[i].GetComponent<T>();
             if (comp != null)
                 action(comp);
+        }
+    }
+    internal void ForEveryEntityWithComponent<T1, T2>(Action<T1, T2> action)
+    {
+        var entities = SimModules.world.entities;
+        for (int i = 0; i < entities.Count; i++)
+        {
+            T1 comp1 = entities[i].GetComponent<T1>();
+            if (comp1 == null)
+                continue;
+            T2 comp2 = entities[i].GetComponent<T2>();
+            if (comp1 == null)
+                continue;
+            action(comp1, comp2);
         }
     }
 

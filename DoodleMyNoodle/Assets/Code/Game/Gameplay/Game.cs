@@ -121,7 +121,7 @@ public class Game : MonoBehaviour
                 }
                 catch (Exception e)
                 {
-                    DebugService.LogError(e.Message);
+                    DebugService.LogError(e.Message + " - stack:\n " + e.StackTrace);
                 }
 #endif
 
@@ -145,7 +145,7 @@ public class Game : MonoBehaviour
                 }
                 catch (Exception e)
                 {
-                    DebugService.LogError(e.Message);
+                    DebugService.LogError(e.Message + " - stack:\n " + e.StackTrace);
                 }
 #endif
 

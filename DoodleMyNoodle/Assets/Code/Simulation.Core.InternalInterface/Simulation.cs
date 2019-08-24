@@ -26,18 +26,12 @@ public class Simulation : SimulationPublic
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    public static SimEntity Instantiate(SimBlueprint original, in FixVector3 position, in FixQuaternion rotation, SimTransform parent) => SimModules.entityManager.Instantiate(original, position, rotation, parent);
+    public static SimEntity Instantiate(SimBlueprint original, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent) => SimModules.entityManager.Instantiate(original, position, rotation, parent);
 
     /// <summary>
     /// Load the given scene and inject all gameobjects with the SimEntity component into the simulation
     /// </summary>
     public static void LoadScene(string sceneName) => SimModules.sceneLoader.LoadScene(sceneName);
-
-    public static void ForEveryEntityWithComponent<T>(Action<T> action) => SimModules.worldSearcher.ForEveryEntityWithComponent(action);
-    /// <summary>
-    /// Return false to stop the iteration
-    /// </summary>
-    public static void ForEveryEntityWithComponent<T>(Func<T, bool> action) => SimModules.worldSearcher.ForEveryEntityWithComponent(action);
 
     public static class Random
     {

@@ -129,8 +129,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 256883002}
+  - component: {fileID: 256883003}
   m_Layer: 0
-  m_Name: Tile Highlighter
+  m_Name: Tile Highlight Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -150,6 +151,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &256883003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256883001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dbcb22869238e649860035d0647f866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightPrefab: {fileID: 8589829087157937559, guid: d1542b07390bf3d4e8b8151bd28471f4,
+    type: 3}
 --- !u!1 &398550682
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,7 +358,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1289745337
-  m_SortingLayer: -1
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 94da83634ef632240af61bb24390d5a5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -476,7 +491,7 @@ MonoBehaviour:
     z:
       m_rawValue: 0
     w:
-      m_rawValue: 0
+      m_rawValue: 4294967296
   _localScale:
     x:
       m_rawValue: 4294967296
@@ -781,7 +796,7 @@ GameObject:
   - component: {fileID: 1819510688}
   - component: {fileID: 1819510687}
   m_Layer: 0
-  m_Name: Tile Manager
+  m_Name: Sim Tile Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -894,7 +909,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1289745337
-  m_SortingLayer: -1
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 94da83634ef632240af61bb24390d5a5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -975,7 +990,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 984740141
-  m_SortingLayer: -2
+  m_SortingLayer: -3
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}

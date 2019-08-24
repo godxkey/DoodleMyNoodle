@@ -33,13 +33,13 @@ public abstract class SimObject : MonoBehaviour
     public virtual void OnRemovingFromEntityList() { }
 
     public Transform unityTransform => gameObject.transform;
-    public SimTransform simTransform
+    public SimTransformComponent simTransform
     {
         get
         {
             if (_cachedSimTransform == null)
             {
-                _cachedSimTransform = GetComponent<SimTransform>();
+                _cachedSimTransform = GetComponent<SimTransformComponent>();
             }
 
             return _cachedSimTransform;
@@ -47,5 +47,5 @@ public abstract class SimObject : MonoBehaviour
     }
 
     [NonSerialized]
-    SimTransform _cachedSimTransform;
+    SimTransformComponent _cachedSimTransform;
 }

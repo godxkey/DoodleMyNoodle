@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class SimTransform : SimBehaviour
+public class SimTransformComponent : SimBehaviour
 {
     [SerializeField]
     FixVector3 _localPosition;
@@ -63,7 +63,7 @@ public class SimTransform : SimBehaviour
         }
     }
 
-    public SimTransform parent => unityTransform.parent?.GetComponent<SimTransform>();
+    public SimTransformComponent parent => unityTransform.parent?.GetComponent<SimTransformComponent>();
 
     void Update()
     {
@@ -96,7 +96,7 @@ public class SimTransform : SimBehaviour
 
         UpdateMatrix(); // needed for calculations
 
-        SimTransform parentTr = parent;
+        SimTransformComponent parentTr = parent;
         if (parentTr != null)
         {
             _localToWorldMatrix.val = _matrix.val * parentTr.localToWorldMatrix;
@@ -150,7 +150,7 @@ public class SimTransform : SimBehaviour
     {
         for (int i = 0; i < unityTransform.childCount; i++)
         {
-            SimTransform childSimTr = unityTransform.GetChild(i).GetComponent<SimTransform>();
+            SimTransformComponent childSimTr = unityTransform.GetChild(i).GetComponent<SimTransformComponent>();
             if (childSimTr)
             {
                 childSimTr.DirtyCachedRelativeToParentValues();

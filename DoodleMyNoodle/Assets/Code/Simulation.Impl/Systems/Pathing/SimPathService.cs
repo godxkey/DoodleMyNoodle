@@ -5,7 +5,7 @@ using UnityEngine;
 public class SimPathService : SimCompSingleton<SimPathService>
 {
     // fbesette: should use pooling for list of tiles
-    public bool GetPathTo(SimCompGridWalker walker, in SimTileId destination, ref List<SimTileId> result)
+    public bool GetPathTo(SimGridWalkerComponent walker, in SimTileId destination, ref List<SimTileId> result)
     {
         // The algo here is pretty dumb. It's not a real pathfinder. We should implement one eventually
         if (result == null)

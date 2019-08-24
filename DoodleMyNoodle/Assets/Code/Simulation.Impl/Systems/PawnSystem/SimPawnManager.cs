@@ -7,7 +7,7 @@ public class SimPawnManager : SimCompSingleton<SimPawnManager>
     {
         SimEntity pawn = null;
 
-        Simulation.ForEveryEntityWithComponent((SimCompGridTransform gridTr) =>
+        Simulation.ForEveryEntityWithComponent((SimGridTransformComponent gridTr) =>
         {
             if(gridTr.tileId == tileId)
             {

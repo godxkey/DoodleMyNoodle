@@ -2,13 +2,13 @@
 {
     public static bool CanEntityWalkGoOntoTile(SimEntity entity, in SimTileId tile)
     {
-        SimCompGridWalker walkerComponent = entity.GetComponent<SimCompGridWalker>();
+        SimGridWalkerComponent walkerComponent = entity.GetComponent<SimGridWalkerComponent>();
         if (walkerComponent == null)
             return false;
         return CanEntityWalkGoOntoTile(walkerComponent, tile);
     }
 
-    public static bool CanEntityWalkGoOntoTile(SimCompGridWalker walker, in SimTileId tile)
+    public static bool CanEntityWalkGoOntoTile(SimGridWalkerComponent walker, in SimTileId tile)
     {
         return SimTileManager.instance.IsTileWalkable(tile)
             && SimPawnManager.instance.GetPawnOnTile(tile) == null;

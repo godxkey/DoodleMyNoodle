@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(SimTransform), editorForChildClasses: true)]
+[CustomEditor(typeof(SimTransformComponent), editorForChildClasses: true)]
 public class SimTransformEditor : Editor
 {
     public override void OnInspectorGUI()
@@ -16,7 +16,7 @@ public class SimTransformEditor : Editor
 
             if (EditorGUI.EndChangeCheck())
             {
-                ((SimTransform)target).Editor_DirtyCachedAllValues();
+                ((SimTransformComponent)target).Editor_DirtyCachedAllValues();
             }
         }
         else
@@ -25,7 +25,7 @@ public class SimTransformEditor : Editor
 
             base.OnInspectorGUI();
 
-            SimTransform simTransform = (SimTransform)target;
+            SimTransformComponent simTransform = (SimTransformComponent)target;
             Transform unityTransform = simTransform.gameObject.transform;
 
             if (EditorGUI.EndChangeCheck())
