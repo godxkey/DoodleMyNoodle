@@ -3,35 +3,12 @@
     margin: 3px;
 }
 
-.category {
-    flex: auto;
-}
-
 #profileName {
-    margin: 3px;
 }
 
-.header {
-    -unity-font-style: bold;
-    font-size: 15px;
-}
-
-.buttonContainer {
-    flex: auto;
-}
-
-.categoryContainer {
-    flex: auto;
-    flex-direction: row;
-}
-
-.button {
-    flex: auto;
-}
-
-.stopButton {
+.stopButton { /* this needs to be done if we want the play & stop to overlap */
     position: absolute;
-    left: 0px;
+    left: 150px;
     right: 0px;
     bottom: 0px;
     top: 0px;
@@ -43,6 +20,23 @@
     -unity-background-image-tint-color: rgb(210, 255, 210);
 }
 
-.serverHighlight {
-    -unity-background-image-tint-color: rgb(234, 188, 255);
+.button {
+    flex: auto;
+}
+
+
+.tag {
+    flex: auto;
+    padding: 2px 2px 2px 2px;
+    -unity-text-align: middle-left;
+    color: #0080b9;
+}
+
+.horizontalContainer {
+    flex-direction: row;
+}
+
+#tagsContainer {
+    flex-direction: row;
+    width: 150px;
 }

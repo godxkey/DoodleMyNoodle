@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -23,25 +22,25 @@ public class LaunchWindow : EditorWindow
         Rebuild();
     }
 
-    List<PlayerProfile> localPlayerProfiles;
-    List<LaunchProfileElement> profileElements = new List<LaunchProfileElement>();
-    string[] localPlayerProfileNames;
+    List<PlayerProfile> _localPlayerProfiles;
+    List<LaunchProfileElement> _profileElements = new List<LaunchProfileElement>();
+    string[] _localPlayerProfileNames;
 
     void Rebuild()
     {
-        localPlayerProfiles = PlayerProfileService.LoadProfilesOnDisk();
+        _localPlayerProfiles = PlayerProfileService.LoadProfilesOnDisk();
 
-        localPlayerProfileNames = new string[localPlayerProfiles.Count + 1];
-        for (int i = 0; i < localPlayerProfiles.Count; i++)
+        _localPlayerProfileNames = new string[_localPlayerProfiles.Count + 1];
+        for (int i = 0; i < _localPlayerProfiles.Count; i++)
         {
-            localPlayerProfileNames[i] = localPlayerProfiles[i].playerName;
+            _localPlayerProfileNames[i] = _localPlayerProfiles[i].playerName;
         }
-        localPlayerProfileNames[localPlayerProfiles.Count] = "- none -";
+        _localPlayerProfileNames[_localPlayerProfiles.Count] = "- none -";
 
 
         VisualElement root = rootVisualElement;
         root.Clear();
-        profileElements.Clear();
+        _profileElements.Clear();
 
         StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(path + "LaunchWindowStyles.uss");
         VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path + "LaunchWindowTree.uxml");
@@ -121,22 +120,6 @@ public class LaunchWindow : EditorWindow
                     EditorLaunchData.playOnline = changeEvent.newValue;
                 });
         }
-        {
-            var element = root.Q<IMGUIContainer>(name: "whoIsServer");
-            element.onGUIHandler = () =>
-            {
-                int currentIndex = EditorLaunchData.whoIsServerId;
-                int newIndex = EditorGUILayout.Popup("Who is Server", currentIndex, localPlayerProfileNames);
-                if (newIndex != currentIndex)
-                {
-                    EditorLaunchData.whoIsServerId = newIndex;
-                    if (newIndex < profileElements.Count)
-                        profileElements[newIndex].isServer = true;
-                    if (currentIndex < profileElements.Count)
-                        profileElements[currentIndex].isServer = false;
-                }
-            };
-        }
 
         {
             var element = root.Q<Foldout>(name: "advFoldout");
@@ -168,19 +151,70 @@ public class LaunchWindow : EditorWindow
             var element = root.Q<VisualElement>(name: "profilesContainer");
 
             int whoIsServer = EditorLaunchData.whoIsServerId;
-            for (int i = 0; i < localPlayerProfiles.Count; i++)
+            int whoIsEditor = EditorLaunchData.whoIsEditorId;
+            for (int i = 0; i < _localPlayerProfiles.Count; i++)
             {
-                PlayerProfile profile = localPlayerProfiles[i];
+                PlayerProfile profile = _localPlayerProfiles[i];
                 LaunchProfileElement newElement = new LaunchProfileElement(profile)
                 {
-                    isServer = whoIsServer == i
+                    isMarkedAsServer = (whoIsServer == profile.localId),
+                    isMarkedAsEditor = (whoIsEditor == profile.localId),
                 };
 
-                profileElements.Add(newElement);
+                newElement.RegisterCallback((ContextualMenuPopulateEvent evt) =>
+                {
+                    evt.menu.AppendAction("Set As Server", (DropdownMenuAction action) =>
+                    {
+                        if (newElement.isMarkedAsServer)
+                        {
+                            SetAsServer(null);
+                        }
+                        else
+                        {
+                            SetAsServer(newElement);
+                        }
+                    }, status: newElement.isMarkedAsServer ? DropdownMenuAction.Status.Checked : DropdownMenuAction.Status.Normal);
+                    evt.menu.AppendAction("Set As Editor", (DropdownMenuAction action) =>
+                    {
+                        if (newElement.isMarkedAsEditor)
+                        {
+                            SetAsEditor(null);
+                        }
+                        else
+                        {
+                            SetAsEditor(newElement);
+                        }
+                    }, status: newElement.isMarkedAsEditor ? DropdownMenuAction.Status.Checked : DropdownMenuAction.Status.Normal);
+                });
+
+                newElement.focusable = true;
+                newElement.pickingMode = PickingMode.Position;
+                newElement.Add(new TextField());
+
+                _profileElements.Add(newElement);
                 element.Add(newElement);
             }
         }
+    }
 
+    void SetAsServer(LaunchProfileElement newServer)
+    {
+        int newId = newServer != null ? newServer.playerProfile.localId : -1;
+        EditorLaunchData.whoIsServerId = newId;
+        foreach (LaunchProfileElement launchProfileElement in _profileElements)
+        {
+            launchProfileElement.isMarkedAsServer = (launchProfileElement.playerProfile.localId == newId);
+        }
+    }
+
+    void SetAsEditor(LaunchProfileElement newEditor)
+    {
+        int newId = newEditor != null ? newEditor.playerProfile.localId : -1;
+        EditorLaunchData.whoIsEditorId = newId;
+        foreach (LaunchProfileElement launchProfileElement in _profileElements)
+        {
+            launchProfileElement.isMarkedAsEditor = (launchProfileElement.playerProfile.localId == newId);
+        }
     }
 
 

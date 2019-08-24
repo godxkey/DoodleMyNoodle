@@ -14,8 +14,10 @@ public class LaunchProfileElement : VisualElement
 
     public PlayerProfile playerProfile { get; private set; }
 
-    bool _isServer;
-    public bool isServer { get => _isServer; set { _isServer = value; UpdateContent(); } }
+    bool _isMarkedAsServer;
+    bool _isMarkedAsEditor;
+    public bool isMarkedAsServer { get => _isMarkedAsServer; set { _isMarkedAsServer = value; UpdateContent(); } }
+    public bool isMarkedAsEditor { get => _isMarkedAsEditor; set { _isMarkedAsEditor = value; UpdateContent(); } }
 
     bool myStandaloneIsRunning
         => _standaloneProcessHandle != null
@@ -29,16 +31,15 @@ public class LaunchProfileElement : VisualElement
         && PlayerProfileService.Instance != null
         && PlayerProfileService.Instance.currentProfile == playerProfile;
 
-    TextField content_profileName;
-    VisualElement content_container;
-    Button content_playEditor;
-    Button content_playStandalone;
-    Button content_stopEditor;
-    Button content_stopStandalone;
+    readonly TextField _content_profileName;
+    readonly Button _content_play;
+    readonly Button _content_stop;
+    readonly TextElement _content_tag_editor;
+    readonly TextElement _content_tag_server;
 
     ProcessHandle _standaloneProcessHandle;
 
-    bool subscribedToUpdate = false;
+    bool _subscribedToUpdate = false;
 
     public LaunchProfileElement(PlayerProfile playerProfile)
     {
@@ -52,25 +53,22 @@ public class LaunchProfileElement : VisualElement
 
         visualTree.CloneTree(this);
 
-        content_profileName = this.Q<TextField>("profileName");
-        content_container = this.Q<VisualElement>("container");
-        content_playEditor = this.Q<Button>("playEditor");
-        content_stopEditor = this.Q<Button>("stopEditor");
-        content_playStandalone = this.Q<Button>("playStandalone");
-        content_stopStandalone = this.Q<Button>("stopStandalone");
+        _content_profileName = this.Q<TextField>("profileName");
+        _content_play = this.Q<Button>("play");
+        _content_stop = this.Q<Button>("stop");
+        _content_tag_editor = this.Q<TextElement>("editorTag");
+        _content_tag_server = this.Q<TextElement>("serverTag");
 
-        content_profileName.SetEnabled(false);
-        content_profileName.RegisterValueChangedCallback(
+        _content_profileName.SetEnabled(false);
+        _content_profileName.RegisterValueChangedCallback(
             (s) =>
             {
                 if (playerProfile != null)
                     playerProfile.playerName = s.newValue;
             });
 
-        content_playEditor.clickable.clicked += LaunchEditor;
-        content_stopEditor.clickable.clicked += StopEditor;
-        content_playStandalone.clickable.clicked += LaunchStandalone;
-        content_stopStandalone.clickable.clicked += StopStandalone;
+        _content_play.clickable.clicked += Play;
+        _content_stop.clickable.clicked += Stop;
 
         BindToStandaloneProcessFromProfile();
         CoreServiceManager.AddInitializationCallback(OnEditorGameLaunch);
@@ -93,24 +91,12 @@ public class LaunchProfileElement : VisualElement
     public void UpdateContent()
     {
         if (playerProfile != null)
-            content_profileName.value = playerProfile.playerName;
+            _content_profileName.value = playerProfile.playerName;
 
-        if (isServer)
-        {
-            content_container.AddToClassList("serverHighlight");
-        }
-        else
-        {
-            content_container.RemoveFromClassList("serverHighlight");
-        }
-
-
-        content_playEditor.style.visibility = Visible(!myEditorIsRunning);
-        content_playEditor.SetEnabled(!anyEditorIsRunning && !myStandaloneIsRunning);
-        content_playStandalone.style.visibility = Visible(!myStandaloneIsRunning);
-        content_playStandalone.SetEnabled(!myEditorIsRunning);
-        content_stopEditor.style.visibility = Visible(myEditorIsRunning);
-        content_stopStandalone.style.visibility = Visible(myStandaloneIsRunning);
+        _content_tag_editor.style.visibility = Visible(isMarkedAsEditor);
+        _content_tag_server.style.visibility = Visible(isMarkedAsServer && EditorLaunchData.playOnline);
+        _content_play.style.visibility = Visible(!myEditorIsRunning && !myStandaloneIsRunning);
+        _content_stop.style.visibility = Visible(myEditorIsRunning || myStandaloneIsRunning);
 
         ReceiveUpdates(anyEditorIsRunning || myStandaloneIsRunning);
     }
@@ -136,9 +122,9 @@ public class LaunchProfileElement : VisualElement
 
     void ReceiveUpdates(bool value)
     {
-        if (subscribedToUpdate == value)
+        if (_subscribedToUpdate == value)
             return;
-        subscribedToUpdate = value;
+        _subscribedToUpdate = value;
 
         if (value)
             EditorApplication.update += OnUpdate;
@@ -151,13 +137,38 @@ public class LaunchProfileElement : VisualElement
         return value ? new StyleEnum<Visibility>(Visibility.Visible) : new StyleEnum<Visibility>(Visibility.Hidden);
     }
 
+    void Play()
+    {
+        if (isMarkedAsEditor)
+        {
+            LaunchEditor();
+        }
+        else
+        {
+            LaunchStandalone();
+        }
+    }
+
+    void Stop()
+    {
+        if (myStandaloneIsRunning)
+        {
+            StopMyStandalone();
+        }
+
+        if (myEditorIsRunning)
+        {
+            StopMyEditor();
+        }
+    }
+
     void LaunchEditor()
     {
         EditorLaunchData.profileLocalId = playerProfile.localId;
         EditorApplication.isPlaying = true;
     }
 
-    void StopEditor()
+    void StopMyEditor()
     {
         EditorApplication.isPlaying = false;
     }
@@ -189,7 +200,7 @@ public class LaunchProfileElement : VisualElement
         UpdateContent();
     }
 
-    void StopStandalone()
+    void StopMyStandalone()
     {
         if (_standaloneProcessHandle != null)
         {
@@ -224,7 +235,7 @@ public class LaunchProfileElement : VisualElement
     {
         if (EditorLaunchData.playOnline)
         {
-            return isServer ? QuickStartSettings.PlayMode.OnlineServer : QuickStartSettings.PlayMode.OnlineClient;
+            return isMarkedAsServer ? QuickStartSettings.PlayMode.OnlineServer : QuickStartSettings.PlayMode.OnlineClient;
         }
         else
         {

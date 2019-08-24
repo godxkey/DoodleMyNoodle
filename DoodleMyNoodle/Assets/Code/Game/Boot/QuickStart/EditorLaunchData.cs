@@ -59,5 +59,11 @@ public class EditorLaunchData
         get => EditorPrefs.GetInt("EditorLaunch-whoIsServerId", 0);
         set => EditorPrefs.SetInt("EditorLaunch-whoIsServerId", value);
     }
+
+    public static int whoIsEditorId
+    {
+        get => EditorPrefs.GetInt("EditorLaunch-whoIsEditorId", 0);
+        set => EditorPrefs.SetInt("EditorLaunch-whoIsEditorId", value);
+    }
 }
 #endif

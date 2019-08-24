@@ -30,7 +30,6 @@ xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd
       <engine:TextField label="Level" name="level"/>
       <engine:TextField label="Server Name" name="serverName"/>
       <engine:Toggle label="Play Online" name="online"/>
-      <engine:IMGUIContainer name="whoIsServer"/>
       <engine:Foldout name="advFoldout">
         <engine:Toggle label="Server is headless" name="headless"/>
         <engine:TextField label="Extra arguments" name="extraArgs"/>

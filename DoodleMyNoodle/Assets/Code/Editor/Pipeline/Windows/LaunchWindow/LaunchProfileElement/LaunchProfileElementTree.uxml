@@ -8,24 +8,18 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd"
 >
   <engine:Box class="container" name="container">
+
     <engine:TextField label="Profile" name="profileName"/>
 
-    <engine:VisualElement class="categoryContainer">
-      <engine:Box class="container category">
-        <engine:Label text="Standalone" class="header"/>
-        <engine:VisualElement class="buttonContainer">
-          <engine:Button text="Play" name="playStandalone" class="button playButton "/>
-          <engine:Button text="Stop" name="stopStandalone" class="button stopButton"/>
-        </engine:VisualElement>
-      </engine:Box>
-      <engine:Box class="container category">
-        <engine:Label text="Editor" class="header"/>
-        <engine:VisualElement class="buttonContainer">
-          <engine:Button text="Play" name="playEditor" class="button playButton"/>
-          <engine:Button text="Stop" name="stopEditor" class="button stopButton"/>
-        </engine:VisualElement>
-      </engine:Box>
+    <engine:VisualElement class="horizontalContainer">
+      <engine:VisualElement name="tagsContainer">
+        <engine:TextElement text="✓ IsServer" name="serverTag" class="tag"/>
+        <engine:TextElement text="✓ IsEditor" name="editorTag" class="tag"/>
+      </engine:VisualElement>
+      <engine:Button text="Play" name="play" class="button playButton"/>
+      <engine:Button text="Stop" name="stop" class="button stopButton"/>
     </engine:VisualElement>
-  </engine:Box>
+  
+</engine:Box>
 
 </engine:UXML>
