@@ -4,18 +4,18 @@ using UnityEngine.SceneManagement;
 
 public abstract class GameState
 {
-    public GameStateDefinition definition { get; private set; }
+    public GameStateDefinition Definition { get; private set; }
     
     public virtual void SetDefinition(GameStateDefinition definition)
     {
-        this.definition = definition;
+        this.Definition = definition;
     }
 
     public virtual void Enter(GameStateParam[] parameters)
     {
-        if (definition.sceneToLoadOnEnter != null && !SceneService.IsLoadedOrBeingLoaded(definition.sceneToLoadOnEnter))
+        if (Definition.sceneToLoadOnEnter != null && !SceneService.IsLoadedOrBeingLoaded(Definition.sceneToLoadOnEnter))
         {
-            SceneService.Load(definition.sceneToLoadOnEnter, definition.sceneLoadSettings, OnDefaultSceneLoaded);
+            SceneService.Load(Definition.sceneToLoadOnEnter, Definition.sceneLoadSettings, OnDefaultSceneLoaded);
         }
     }
 

@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class GameStateInGameOnline : GameStateInGameBase
 {
-    public SessionInterface sessionInterface { get; private set; }
+    public SessionInterface SessionInterface { get; private set; }
 
-    GameStateDefinitionInGameOnline specificDefinition;
+    GameStateDefinitionInGameOnline _specificDefinition;
 
     public override void SetDefinition(GameStateDefinition definition)
     {
         base.SetDefinition(definition);
-        specificDefinition = (GameStateDefinitionInGameOnline)definition;
+        _specificDefinition = (GameStateDefinitionInGameOnline)definition;
     }
 
     public override void Enter(GameStateParam[] parameters)
@@ -20,22 +20,22 @@ public class GameStateInGameOnline : GameStateInGameBase
 
         if (OnlineService.onlineInterface == null)
         {
-            GameStateManager.TransitionToState(specificDefinition.gameStateIfDisconnect);
+            GameStateManager.TransitionToState(_specificDefinition.gameStateIfDisconnect);
             DebugService.LogError("[GameStateInGameOnline] This game state requires an onlineInterface.");
             return;
         }
 
-        sessionInterface = OnlineService.onlineInterface.SessionInterface;
+        SessionInterface = OnlineService.onlineInterface.SessionInterface;
 
-        if (sessionInterface == null)
+        if (SessionInterface == null)
         {
-            GameStateManager.TransitionToState(specificDefinition.gameStateIfDisconnect);
+            GameStateManager.TransitionToState(_specificDefinition.gameStateIfDisconnect);
             DebugService.LogError("[GameStateInGameOnline] This game state requires a session interface.");
             return;
         }
 
-        sessionInterface = OnlineService.onlineInterface.SessionInterface;
-        sessionInterface.OnTerminate += OnSessionInterfaceTerminated;
+        SessionInterface = OnlineService.onlineInterface.SessionInterface;
+        SessionInterface.OnTerminate += OnSessionInterfaceTerminated;
     }
 
 
@@ -50,15 +50,15 @@ public class GameStateInGameOnline : GameStateInGameBase
         ClearSessionInterface();
 
         DebugScreenMessage.DisplayMessage("You were disconnected from the game.");
-        GameStateManager.TransitionToState(specificDefinition.gameStateIfDisconnect);
+        GameStateManager.TransitionToState(_specificDefinition.gameStateIfDisconnect);
     }
 
     void ClearSessionInterface()
     {
-        if (sessionInterface != null)
+        if (SessionInterface != null)
         {
-            sessionInterface.OnTerminate -= OnSessionInterfaceTerminated;
-            sessionInterface = null;
+            SessionInterface.OnTerminate -= OnSessionInterfaceTerminated;
+            SessionInterface = null;
         }
     }
 }

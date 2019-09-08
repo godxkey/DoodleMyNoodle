@@ -45,8 +45,9 @@ public class GameStateRootMenu : GameState
         _requestTimeoutRemaining = _specificDefinition.onlineRolePickTimeout;
     }
 
-    public void JoinLobbyAsSolo()
+    public void JoinLobbyAsLocal()
     {
+        OnlineService.SetTargetRole(OnlineRole.None);
         chosenRole = Role.Local;
     }
 

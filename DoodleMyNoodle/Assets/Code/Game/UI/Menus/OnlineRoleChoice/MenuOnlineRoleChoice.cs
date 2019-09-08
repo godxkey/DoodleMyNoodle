@@ -14,4 +14,9 @@ public class MenuOnlineRoleChoice : MonoBehaviour
     {
         ((GameStateRootMenu)GameStateManager.currentGameState).JoinLobbyAsServer();
     }
+
+    public void LaunchLocal()
+    {
+        ((GameStateRootMenu)GameStateManager.currentGameState).JoinLobbyAsLocal();
+    }
 }

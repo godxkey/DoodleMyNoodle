@@ -15,7 +15,7 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
 
     public override bool SystemReady => _localPlayerIdAssigned && _playerListSyncReceived;
 
-    public override PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection)
+    public PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection)
     {
         if (_clientSession != null && _clientSession.serverConnection != null && _clientSession.serverConnection.Id == connection.Id)
         {

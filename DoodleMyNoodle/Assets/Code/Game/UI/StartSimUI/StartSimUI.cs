@@ -20,11 +20,11 @@ public class StartSimUI : GameMonoBehaviour
         switch (GameStateManager.currentGameState)
         {
             case GameStateInGameServer serverGameState:
-                levelToPlay = serverGameState.levelToPlay;
+                levelToPlay = serverGameState.LevelToPlay;
                 break;
 
             case GameStateInGameLocal localGameState:
-                levelToPlay = localGameState.levelToPlay;
+                levelToPlay = localGameState.LevelToPlay;
                 break;
         }
 
@@ -47,10 +47,10 @@ public class StartSimUI : GameMonoBehaviour
 
     void StartSimWithLevel(string level)
     {
-        ((SimulationControllerServer)SimulationControllerServer.Instance).allowSimToTick = true;
+        ((SimulationControllerMaster)SimulationControllerMaster.Instance).AllowSimToTick = true;
         if (!level.IsNullOrEmpty())
         {
-            SimulationControllerServer.Instance.SubmitInput(new SimCommandLoadScene() { sceneName = level });
+            SimulationControllerMaster.Instance.SubmitInput(new SimCommandLoadScene() { sceneName = level });
         }
 
         PlayerPrefs.SetString("startLevel", level);

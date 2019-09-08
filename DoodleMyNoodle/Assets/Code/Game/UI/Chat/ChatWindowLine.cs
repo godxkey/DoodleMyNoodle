@@ -12,8 +12,8 @@ public class ChatWindowLine : MonoBehaviour
     public void Fill(ChatLine chatLine)
     {
         text.text = string.Format("<color=#{2}>{0}:</color> <color=#{3}>{1}</color>",
-            chatLine.playerName,
-            chatLine.message,
+            chatLine.ChatterName,
+            chatLine.Message,
             ColorUtility.ToHtmlStringRGBA(playerNameColor),
             ColorUtility.ToHtmlStringRGBA(textColor));
     }

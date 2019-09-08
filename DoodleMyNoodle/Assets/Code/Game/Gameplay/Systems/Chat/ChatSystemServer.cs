@@ -31,7 +31,7 @@ public class ChatSystemServer : ChatSystem
     void OnNetMessageChatMessageSubmission(NetMessageChatMessageSubmission submission, INetworkInterfaceConnection source)
     {
         // A client wants to submit a new message
-        PlayerInfo sourcePlayer = PlayerRepertoireSystem.Instance.GetPlayerInfo(source);
+        PlayerInfo sourcePlayer = PlayerRepertoireServer.Instance.GetPlayerInfo(source);
 
         if (sourcePlayer != null)
             AddNewMessage(submission.message, sourcePlayer);
@@ -41,8 +41,8 @@ public class ChatSystemServer : ChatSystem
     {
         AddNewLine(new ChatLine()
         {
-            playerName = playerInfo.PlayerName,
-            message = message
+            ChatterName = playerInfo.PlayerName,
+            Message = message
         });
 
 

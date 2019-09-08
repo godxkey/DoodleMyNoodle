@@ -21,4 +21,4 @@ MonoBehaviour:
   onlineRolePickTimeout: 10
   gameStateIfClient: {fileID: 11400000, guid: bf39b08c256e7ea4d84154544a987abf, type: 2}
   gameStateIfServer: {fileID: 11400000, guid: d47945710aca9f743a4bab70d1f34829, type: 2}
-  gameStateIfLocal: {fileID: 11400000, guid: a0dcc1f2f19fc234999be53597e8602d, type: 2}
+  gameStateIfLocal: {fileID: 11400000, guid: 484c5451124e27d46a731b87b5073a9b, type: 2}

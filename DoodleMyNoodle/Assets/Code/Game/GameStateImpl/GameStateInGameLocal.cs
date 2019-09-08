@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameStateInGameLocal : GameStateInGameBase
 {
-    public string levelToPlay { get; private set; }
+    public string LevelToPlay { get; private set; }
 
     public override void Enter(GameStateParam[] parameters)
     {
@@ -15,7 +15,7 @@ public class GameStateInGameLocal : GameStateInGameBase
 
         if (levelNameParam != null)
         {
-            levelToPlay = levelNameParam.levelName;
+            LevelToPlay = levelNameParam.levelName;
         }
     }
 }

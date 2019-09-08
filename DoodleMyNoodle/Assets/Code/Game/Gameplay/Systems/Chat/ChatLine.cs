@@ -4,6 +4,6 @@ using UnityEngine;
 
 public struct ChatLine
 {
-    public string message;
-    public string playerName;
+    public string Message;
+    public string ChatterName;
 }

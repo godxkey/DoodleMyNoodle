@@ -10,7 +10,7 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
     {
         return _localPlayerInfo;
     }
-    public abstract PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection);
+
     public PlayerInfo GetPlayerInfo(PlayerId playerId)
     {
         for (int i = 0; i < _players.Count; i++)
@@ -22,10 +22,12 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
         }
         return null;
     }
+
     public bool IsLocalPlayer(PlayerId id)
     {
         return id.IsValid && _localPlayerInfo.PlayerId == id;
     }
+
     public PlayerInfo GetServerPlayerInfo()
     {
         for (int i = 0; i < _players.Count; i++)
@@ -35,6 +37,17 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
         }
 
         return null;
+    }
+
+    protected int GetIndexOfPlayer(in PlayerId playerId)
+    {
+        for (int i = 0; i < _players.Count; i++)
+        {
+            if (_players[i].PlayerId == playerId)
+                return i;
+        }
+
+        return -1;
     }
 
     protected SessionInterface SessionInterface { get; private set; }
@@ -48,9 +61,9 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
 
         GameStateInGameOnline gameStateOnline = GameStateManager.GetCurrentGameState<GameStateInGameOnline>();
 
-        if (gameStateOnline != null && gameStateOnline.sessionInterface != null)
+        if (gameStateOnline != null && gameStateOnline.SessionInterface != null)
         {
-            SessionInterface = gameStateOnline.sessionInterface;
+            SessionInterface = gameStateOnline.SessionInterface;
             BindToSession();
         }
 

@@ -51,7 +51,7 @@ public class Game : MonoBehaviour
                     break;
                 case GameStateInGameLocal localState:
                     SceneService.LoadAsync(_localSpecificScene.SceneName, LoadSceneMode.Additive, OnPlayModeSpecificSceneLoaded);
-                    _ready = true;
+                    playModeLocal = true;
                     break;
             }
             _playModeSpecificSceneRequested = true;
@@ -63,10 +63,10 @@ public class Game : MonoBehaviour
             switch (GameStateManager.currentGameState)
             {
                 case GameStateInGameClient clientState:
-                    _ready = clientState.sessionInterface != null;
+                    _ready = clientState.SessionInterface != null;
                     break;
                 case GameStateInGameServer serverState:
-                    _ready = serverState.sessionInterface != null;
+                    _ready = serverState.SessionInterface != null;
                     break;
                 case GameStateInGameLocal localState:
                     _ready = true;

@@ -14,10 +14,15 @@ public class ChatWindowController : GameMonoBehaviour
     {
         if (ChatSystem.Instance != null)
         {
-            ChatSystem.Instance.onNewLine += OnNewLine;
+            ChatSystem.Instance.OnNewLine += OnNewLine;
             _chatWindow = _chatWindowPrefab.DuplicateGO();
             _chatWindow.displayed = false;
             _chatWindow.focused = false;
+        }
+        else
+        {
+            // if we have no chat system, destroy the chat window controller (for now, this happens when playing in 'local' mode)
+            Destroy(gameObject);
         }
     }
 
@@ -29,7 +34,6 @@ public class ChatWindowController : GameMonoBehaviour
 
     public override void OnGameUpdate()
     {
-
         if (Input.GetKeyDown(KeyCode.Return))
         {
             if (_chatWindow.focused)

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class PlayerRepertoireServer : PlayerRepertoireSystem
+public class PlayerRepertoireServer : PlayerRepertoireMaster
 {
     public static new PlayerRepertoireServer Instance => (PlayerRepertoireServer)GameSystem<PlayerRepertoireSystem>.Instance;
 
     SessionServerInterface _serverSession;
-    ushort _playerIdCounter = PlayerId.FirstValid.Value;
 
     List<INetworkInterfaceConnection> _newConnectionsNotYetPlayers = new List<INetworkInterfaceConnection>();
 
@@ -16,7 +15,7 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
 
     public override bool SystemReady => true;
 
-    public override PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection)
+    public PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection)
     {
         for (int i = 0; i < _playerConnections.Count; i++)
         {
@@ -28,36 +27,24 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
         return null;
     }
 
-    public void AssignSimPlayerToPlayer(in PlayerId playerId, in SimPlayerId simPlayerId)
+    protected override void Internal_OnGameReady()
     {
-        PlayerInfo playerInfo = GetPlayerInfo(playerId);
+        base.Internal_OnGameReady();
 
-        if (playerInfo == null)
-        {
-            DebugService.LogError("Trying to assign a SimPlayerId to a player that does not exist: " + playerId);
-            return;
-        }
+        _playerConnections.Add(null); // connection for local player
+    }
 
-        playerInfo.SimPlayerId = simPlayerId;
+    protected override void OnAssignSimPlayerToPlayer(PlayerInfo playerInfo, in SimPlayerId simPlayerId)
+    {
+        base.OnAssignSimPlayerToPlayer(playerInfo, simPlayerId);
 
+        // notify other players
         NetMessageSimPlayerIdAssignement message = new NetMessageSimPlayerIdAssignement();
         message.SimPlayerId = simPlayerId;
-        message.PlayerId = playerId;
+        message.PlayerId = playerInfo.PlayerId;
 
         _serverSession.SendNetMessage(message, _playerConnections);
     }
-
-    protected override void Internal_OnGameReady()
-    {
-        // when we're the server, we assign ourself our Id (which is 1)
-
-        _localPlayerInfo.PlayerId = new PlayerId(_playerIdCounter++);
-        _localPlayerInfo.IsServer = true;
-
-        _players.Add(_localPlayerInfo);
-        _playerConnections.Add(null);
-    }
-
 
     protected override void OnBindedToSession()
     {
@@ -93,14 +80,7 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
 
 
         // Add new player to list
-        PlayerInfo newPlayerInfo = new PlayerInfo()
-        {
-            PlayerId = new PlayerId(_playerIdCounter++),
-            IsServer = false,
-            PlayerName = message.playerName
-        };
-
-        ChatSystem.Instance.SubmitMessage(newPlayerInfo.PlayerName + " has joined the game.");
+        PlayerInfo newPlayerInfo = CreateNewPlayer(message.playerName, false);
 
         // Notify other players
         NetMessagePlayerJoined playerJoinedMessage = new NetMessagePlayerJoined
@@ -110,8 +90,7 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
         _serverSession.SendNetMessage(playerJoinedMessage, _playerConnections);
         DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerJoined");
 
-        // add to list
-        _players.Add(newPlayerInfo);
+        // add new connection
         _playerConnections.Add(clientConnection);
 
         // Assign id to the new player
@@ -144,13 +123,13 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
             return;
         }
 
-        ChatSystem.Instance.SubmitMessage(_players[playerIndex].PlayerName + " has left the game.");
-
         PlayerId playerId = _players[playerIndex].PlayerId;
 
-        // remove player from lists
+        // destroy
+        DestroyPlayer(playerId);
+
+        // remove connection
         _playerConnections.RemoveAt(playerIndex);
-        _players.RemoveAt(playerIndex);
 
 
         // Notify other players

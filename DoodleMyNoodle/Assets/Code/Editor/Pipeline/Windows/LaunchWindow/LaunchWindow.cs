@@ -118,6 +118,9 @@ public class LaunchWindow : EditorWindow
                 (ChangeEvent<bool> changeEvent) =>
                 {
                     EditorLaunchData.playOnline = changeEvent.newValue;
+
+                    for (int i = 0; i < _profileElements.Count; i++)
+                        _profileElements[i].UpdateContent();
                 });
         }
 

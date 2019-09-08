@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class ChatSystem : GameSystem<ChatSystem>
 {
     public override bool SystemReady => true;
-    public event Action<ChatLine> onNewLine;
+    public event Action<ChatLine> OnNewLine;
 
     public override void OnGameReady()
     {
@@ -33,6 +33,6 @@ public abstract class ChatSystem : GameSystem<ChatSystem>
 
     protected void AddNewLine(ChatLine chatLine)
     {
-        onNewLine?.Invoke(chatLine);
+        OnNewLine?.Invoke(chatLine);
     }
 }

@@ -78,7 +78,6 @@ public class SimPawnManager : SimComponentRegistrySingleton<SimPawnManager, SimP
         _playerPawns.Remove(eventData.SimPlayerId);
     }
 
-
     internal void AssignPawnToPlayer(SimPawnComponent newPawn, SimPlayerId simPlayerId)
     {
         if (_playerPawns.TryGetValue(simPlayerId, out SimPawnComponent previousPawn))

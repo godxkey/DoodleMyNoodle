@@ -6,7 +6,7 @@ public class GameStateInGameBase : GameState
 {
     public virtual void ReturnToMenu()
     {
-        GameStateManager.TransitionToState(((GameStateDefinitionInGameBase)definition).gameStateIfReturn);
+        GameStateManager.TransitionToState(((GameStateDefinitionInGameBase)Definition).gameStateIfReturn);
     }
 
     public virtual void ExitApplication()

@@ -43,8 +43,8 @@ public class ChatSystemClient : ChatSystem
 
         AddNewLine(new ChatLine()
         {
-            message = chatMessage.message,
-            playerName = playerName
+            Message = chatMessage.message,
+            ChatterName = playerName
         });
     }
 }
