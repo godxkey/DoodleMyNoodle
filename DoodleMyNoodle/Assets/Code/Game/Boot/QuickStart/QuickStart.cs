@@ -108,7 +108,7 @@ public static class QuickStart
                     && (elapsedTime < assets.searchForSeverTimeout || assets.searchForSeverTimeout == -1)
                     && OnlineService.clientInterface != null)
                 {
-                    foreach (INetworkInterfaceSession session in OnlineService.clientInterface.availableSessions)
+                    foreach (INetworkInterfaceSession session in OnlineService.clientInterface.AvailableSessions)
                     {
                         if (session.HostName == settings.serverName)
                         {

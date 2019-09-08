@@ -5,15 +5,15 @@ using System.Diagnostics;
 
 public class ProcessHandle : IDisposable
 {
-    public Action onExitAction { get; set; }
-    public int customId { get; private set; }
-    public Process process { get; }
-    public bool hasExited => process.HasExited;
+    public Action OnExitAction { get; set; }
+    public int CustomId { get; private set; }
+    public Process Process { get; }
+    public bool HasExited => Process.HasExited;
 
     public ProcessHandle(Process process, int customId = -1)
     {
-        this.customId = customId;
-        this.process = process ?? throw new NullReferenceException();
+        this.CustomId = customId;
+        this.Process = process ?? throw new NullReferenceException();
 
         process.Refresh();
         if (process.Id == 0)
@@ -30,12 +30,12 @@ public class ProcessHandle : IDisposable
         ProcessHandleManager.UnregisterHandle(this);
     }
 
-    public static ReadOnlyCollection<ProcessHandle> activeHandles
+    public static ReadOnlyList<ProcessHandle> ActiveHandles
     {
         get
         {
             ProcessHandleManager.InitIfNeeded();
-            return ProcessHandleManager.handlesReadOnly;
+            return ProcessHandleManager.Handles;
         }
     }
 }

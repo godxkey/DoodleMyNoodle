@@ -13,7 +13,7 @@ public static class SessionInterfaceExtensions
             sessionInterface.SendNetMessage(netMessage, connections[i]);
         }
     }
-    public static void SendNetMessage(this SessionInterface sessionInterface, object netMessage, ReadOnlyCollection<INetworkInterfaceConnection> connections)
+    public static void SendNetMessage(this SessionInterface sessionInterface, object netMessage, in ReadOnlyList<INetworkInterfaceConnection> connections)
     {
         for (int i = 0; i < connections.Count; i++)
         {

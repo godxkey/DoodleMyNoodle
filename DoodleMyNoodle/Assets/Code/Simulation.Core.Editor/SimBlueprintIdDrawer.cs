@@ -16,7 +16,7 @@ public class SimBlueprintIdDrawer : PropertyDrawer
     {
         SerializedProperty typeProperty = property.FindPropertyRelative("type");
         SerializedProperty valueProperty = property.FindPropertyRelative("value");
-        blueprintId.Value = new SimBlueprintId((SimBlueprintId.Type)typeProperty.intValue, valueProperty.stringValue);
+        blueprintId.Value = new SimBlueprintId((SimBlueprintId.BlueprintType)typeProperty.intValue, valueProperty.stringValue);
         if (blueprintId.IsDirty)
         {
             oldRef = GetGameObjectReference(blueprintId.Value);
@@ -32,8 +32,8 @@ public class SimBlueprintIdDrawer : PropertyDrawer
         {
             var newBlueprintId = GetBlueprintFromGameObject(newRef as GameObject);
 
-            typeProperty.enumValueIndex = (int)newBlueprintId.type;
-            valueProperty.stringValue = newBlueprintId.value;
+            typeProperty.enumValueIndex = (int)newBlueprintId.Type;
+            valueProperty.stringValue = newBlueprintId.Value;
         }
 
         EditorGUI.indentLevel++;
@@ -58,21 +58,21 @@ public class SimBlueprintIdDrawer : PropertyDrawer
 
     GameObject GetGameObjectReference(SimBlueprintId blueprintId)
     {
-        switch (blueprintId.type)
+        switch (blueprintId.Type)
         {
             default:
-            case SimBlueprintId.Type.Invalid:
+            case SimBlueprintId.BlueprintType.Invalid:
             {
                 return null;
             }
 
-            case SimBlueprintId.Type.Prefab:
+            case SimBlueprintId.BlueprintType.Prefab:
             {
-                string assetPath = AssetDatabase.GUIDToAssetPath(blueprintId.value);
+                string assetPath = AssetDatabase.GUIDToAssetPath(blueprintId.Value);
                 return AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             }
 
-            case SimBlueprintId.Type.SceneGameObject:
+            case SimBlueprintId.BlueprintType.SceneGameObject:
             {
                 return null;
             }
@@ -94,7 +94,7 @@ public class SimBlueprintIdDrawer : PropertyDrawer
 
         if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(gameObject, out string guid, out long localId))
         {
-            return new SimBlueprintId(SimBlueprintId.Type.Prefab, guid);
+            return new SimBlueprintId(SimBlueprintId.BlueprintType.Prefab, guid);
         }
 
         return SimBlueprintId.invalid;

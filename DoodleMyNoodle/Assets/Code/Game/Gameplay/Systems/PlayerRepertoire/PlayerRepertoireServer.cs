@@ -1,27 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 public class PlayerRepertoireServer : PlayerRepertoireSystem
 {
-    public static new PlayerRepertoireServer instance => (PlayerRepertoireServer)GameSystem<PlayerRepertoireSystem>.instance;
+    public static new PlayerRepertoireServer Instance => (PlayerRepertoireServer)GameSystem<PlayerRepertoireSystem>.Instance;
 
     SessionServerInterface _serverSession;
-    ushort _playerIdCounter = PlayerId.firstValid.value;
+    ushort _playerIdCounter = PlayerId.FirstValid.Value;
 
     List<INetworkInterfaceConnection> _newConnectionsNotYetPlayers = new List<INetworkInterfaceConnection>();
 
     // This list should match the _players list
     List<INetworkInterfaceConnection> _playerConnections = new List<INetworkInterfaceConnection>();
-    public ReadOnlyCollection<INetworkInterfaceConnection> playerConnections;
+    public ReadOnlyList<INetworkInterfaceConnection> PlayerConnections => _playerConnections.AsReadOnlyNoAlloc();
 
-    public override bool isSystemReady => true;
+    public override bool SystemReady => true;
 
     public override PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection)
     {
         for (int i = 0; i < _playerConnections.Count; i++)
         {
-            if(_playerConnections[i] != null && _playerConnections[i].Id == connection.Id)
+            if (_playerConnections[i] != null && _playerConnections[i].Id == connection.Id)
             {
                 return _players[i];
             }
@@ -29,14 +28,31 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
         return null;
     }
 
+    public void AssignSimPlayerToPlayer(in PlayerId playerId, in SimPlayerId simPlayerId)
+    {
+        PlayerInfo playerInfo = GetPlayerInfo(playerId);
+
+        if (playerInfo == null)
+        {
+            DebugService.LogError("Trying to assign a SimPlayerId to a player that does not exist: " + playerId);
+            return;
+        }
+
+        playerInfo.SimPlayerId = simPlayerId;
+
+        NetMessageSimPlayerIdAssignement message = new NetMessageSimPlayerIdAssignement();
+        message.SimPlayerId = simPlayerId;
+        message.PlayerId = playerId;
+
+        _serverSession.SendNetMessage(message, _playerConnections);
+    }
+
     protected override void Internal_OnGameReady()
     {
-        playerConnections = _playerConnections.AsReadOnly();
-
         // when we're the server, we assign ourself our Id (which is 1)
 
-        _localPlayerInfo.playerId = new PlayerId(_playerIdCounter++);
-        _localPlayerInfo.isServer = true;
+        _localPlayerInfo.PlayerId = new PlayerId(_playerIdCounter++);
+        _localPlayerInfo.IsServer = true;
 
         _players.Add(_localPlayerInfo);
         _playerConnections.Add(null);
@@ -45,16 +61,16 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
 
     protected override void OnBindedToSession()
     {
-        _serverSession = (SessionServerInterface)_sessionInterface;
-        _sessionInterface.onConnectionAdded += OnConnectionAdded;
-        _sessionInterface.onConnectionRemoved += OnConnectionRemoved;
-        _sessionInterface.RegisterNetMessageReceiver<NetMessageClientHello>(OnClientHello);
+        _serverSession = (SessionServerInterface)SessionInterface;
+        SessionInterface.OnConnectionAdded += OnConnectionAdded;
+        SessionInterface.OnConnectionRemoved += OnConnectionRemoved;
+        SessionInterface.RegisterNetMessageReceiver<NetMessageClientHello>(OnClientHello);
     }
     protected override void OnUnbindedFromSession()
     {
-        _sessionInterface.onConnectionAdded -= OnConnectionAdded;
-        _sessionInterface.onConnectionRemoved -= OnConnectionRemoved;
-        _sessionInterface.UnregisterNetMessageReceiver<NetMessageClientHello>(OnClientHello);
+        SessionInterface.OnConnectionAdded -= OnConnectionAdded;
+        SessionInterface.OnConnectionRemoved -= OnConnectionRemoved;
+        SessionInterface.UnregisterNetMessageReceiver<NetMessageClientHello>(OnClientHello);
         _serverSession = null;
     }
 
@@ -67,7 +83,7 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
     {
         DebugService.Log("[PlayerRepertoireServer] OnClientHello");
         int index = _newConnectionsNotYetPlayers.IndexOf(clientConnection);
-        if(index == -1)
+        if (index == -1)
         {
             DebugService.LogWarning("[PlayerRepertoireServer] We received a client hello, but the client is not in the _newConnectionsNotYetPlayers list. The hello will be ignored.");
             return;
@@ -75,28 +91,16 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
 
         _newConnectionsNotYetPlayers.RemoveAt(index);
 
-        
+
         // Add new player to list
         PlayerInfo newPlayerInfo = new PlayerInfo()
         {
-            playerId = new PlayerId(_playerIdCounter++),
-            isServer = false,
-            playerName = message.playerName
+            PlayerId = new PlayerId(_playerIdCounter++),
+            IsServer = false,
+            PlayerName = message.playerName
         };
 
-        _players.Add(newPlayerInfo);
-        _playerConnections.Add(clientConnection);
-
-        ChatSystem.instance.SubmitMessage(newPlayerInfo.playerName + " has joined the game.");
-
-        // Assign id to the new player
-        NetMessagePlayerIdAssignment playerIdAssignementMessage = new NetMessagePlayerIdAssignment
-        {
-            playerId = newPlayerInfo.playerId
-        };
-        _serverSession.SendNetMessage(playerIdAssignementMessage, clientConnection);
-        DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerIdAssignment");
-
+        ChatSystem.Instance.SubmitMessage(newPlayerInfo.PlayerName + " has joined the game.");
 
         // Notify other players
         NetMessagePlayerJoined playerJoinedMessage = new NetMessagePlayerJoined
@@ -106,8 +110,20 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
         _serverSession.SendNetMessage(playerJoinedMessage, _playerConnections);
         DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerJoined");
 
+        // add to list
+        _players.Add(newPlayerInfo);
+        _playerConnections.Add(clientConnection);
 
-        // Sync all the players to the new one
+        // Assign id to the new player
+        NetMessagePlayerIdAssignment playerIdAssignementMessage = new NetMessagePlayerIdAssignment
+        {
+            playerId = newPlayerInfo.PlayerId
+        };
+        _serverSession.SendNetMessage(playerIdAssignementMessage, clientConnection);
+        DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerIdAssignment");
+
+
+        // Send the complete player list to the new player
         NetMessagePlayerRepertoireSync syncMessage = new NetMessagePlayerRepertoireSync()
         {
             players = _players.ToArray()
@@ -122,15 +138,15 @@ public class PlayerRepertoireServer : PlayerRepertoireSystem
         _newConnectionsNotYetPlayers.Remove(oldConnection);
 
         int playerIndex = _playerConnections.IndexOf(oldConnection);
-        if(playerIndex == -1)
+        if (playerIndex == -1)
         {
             // The connection was not yet a valid player. Nothing else to do
             return;
         }
 
-        ChatSystem.instance.SubmitMessage(_players[playerIndex].playerName + " has left the game.");
+        ChatSystem.Instance.SubmitMessage(_players[playerIndex].PlayerName + " has left the game.");
 
-        PlayerId playerId = _players[playerIndex].playerId;
+        PlayerId playerId = _players[playerIndex].PlayerId;
 
         // remove player from lists
         _playerConnections.RemoveAt(playerIndex);

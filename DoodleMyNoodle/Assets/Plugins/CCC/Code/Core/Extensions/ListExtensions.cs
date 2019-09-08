@@ -38,7 +38,7 @@ public static class ListExtensions
         int index = list.IndexOf(value);
         if (index >= 0)
         {
-            list.RemoveWithLastSwap(index);
+            list.RemoveWithLastSwapAt(index);
             return true;
         }
         else
@@ -46,7 +46,7 @@ public static class ListExtensions
             return false;
         }
     }
-    public static void RemoveWithLastSwap<T>(this List<T> list, int index)
+    public static void RemoveWithLastSwapAt<T>(this List<T> list, int index)
     {
         int lastIndex = list.Count - 1;
 
@@ -130,5 +130,10 @@ public static class ListExtensions
             list[chosen] = list[i];
             list[i] = temp;
         }
+    }
+
+    public static ReadOnlyList<T> AsReadOnlyNoAlloc<T>(this List<T> list)
+    {
+        return new ReadOnlyList<T>(list);
     }
 }

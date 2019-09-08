@@ -16,7 +16,7 @@ public class GameStateLobbyServer : GameStateLobbyOnlineBase
     {
         base.Enter(parameters);
 
-        if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.isServerType == false)
+        if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.IsServerType == false)
         {
             GameStateManager.TransitionToState(_specificDefinition.gameStateIfReturn);
             DebugService.LogError("[GameStateLobbyServer] The available onlineInterface is of type Client. " +

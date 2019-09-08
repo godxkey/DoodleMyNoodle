@@ -62,7 +62,9 @@ public class GameStateManager : MonoCoreService<GameStateManager>
         _targetGameState = newGameState;
 
         if (log)
+#pragma warning disable CS0162 // Unreachable code detected
             DebugService.Log("[GameStateManager] Transitioning from " + GetPrintGameStateName(_currentGameState) + " to " + GetPrintGameStateName(_targetGameState) + "...");
+#pragma warning restore CS0162 // Unreachable code detected
         _currentGameState?.BeginExit(_parameters);
     }
 
@@ -84,7 +86,9 @@ public class GameStateManager : MonoCoreService<GameStateManager>
                 {
                     _currentGameState = _targetGameState;
                     if (log)
+#pragma warning disable CS0162 // Unreachable code detected
                         DebugService.Log("[GameStateManager] Entering " + GetPrintGameStateName(_currentGameState));
+#pragma warning restore CS0162 // Unreachable code detected
                     _currentGameState?.Enter(_parameters);
 
                     if (isTransitioningState)

@@ -1,11 +1,15 @@
 {
     "name": "CCC.Debug",
     "references": [
-        "CCC.Core",
-        "DOTweenModules"
+        "GUID:c886ee09f9545f74f85dd4e7b076b17c",
+        "GUID:71a9cd6dc501bea45942ce8c4a356c95"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
 }

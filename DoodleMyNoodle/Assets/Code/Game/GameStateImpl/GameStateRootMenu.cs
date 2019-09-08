@@ -78,7 +78,7 @@ public class GameStateRootMenu : GameState
                 }
                 else
                 {
-                    if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.isServerType)
+                    if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.IsServerType)
                     {
                         GameStateManager.TransitionToState(_specificDefinition.gameStateIfServer);
                     }

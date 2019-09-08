@@ -18,10 +18,10 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
     {
         get
         {
-            if (networkInterface.state != NetworkState.Running)
+            if (networkInterface.State != NetworkState.Running)
                 return OnlineRole.None;
 
-            if (networkInterface.isClient)
+            if (networkInterface.IsClient)
                 return OnlineRole.Client;
             else
                 return OnlineRole.Server;
@@ -45,7 +45,7 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
         _networkInterface = CreateNetworkInterface();
         DynamicNetSerializer.impl = CreateNetMessageFactory();
 
-        _networkInterface.onShutdownBegin += OnNetworkInterfaceShutdownBegin;
+        _networkInterface.OnShutdownBegin += OnNetworkInterfaceShutdownBegin;
 
         onComplete(this);
     }
@@ -77,12 +77,12 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
         {
             case OnlineRole.Client:
                 {
-                    if (networkInterface.state == NetworkState.Running && networkInterface.isServer)
+                    if (networkInterface.State == NetworkState.Running && networkInterface.IsServer)
                     {
                         networkInterface.Shutdown();
                     }
 
-                    if (networkInterface.state == NetworkState.Stopped)
+                    if (networkInterface.State == NetworkState.Stopped)
                     {
                         networkInterface.LaunchClient(OnLaunchClientResult);
                     }
@@ -90,12 +90,12 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
                 break;
             case OnlineRole.Server:
                 {
-                    if (networkInterface.state == NetworkState.Running && networkInterface.isClient)
+                    if (networkInterface.State == NetworkState.Running && networkInterface.IsClient)
                     {
                         networkInterface.Shutdown();
                     }
 
-                    if (networkInterface.state == NetworkState.Stopped)
+                    if (networkInterface.State == NetworkState.Stopped)
                     {
                         networkInterface.LaunchServer(OnLaunchServerResult);
                     }
@@ -103,7 +103,7 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
                 break;
             case OnlineRole.None:
                 {
-                    if (networkInterface.state == NetworkState.Running)
+                    if (networkInterface.State == NetworkState.Running)
                     {
                         networkInterface.Shutdown();
                     }

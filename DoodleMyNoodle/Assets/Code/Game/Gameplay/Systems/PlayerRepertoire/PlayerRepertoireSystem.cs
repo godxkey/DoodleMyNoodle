@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using UnityEngine;
 
 public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem>
 {
-    public ReadOnlyCollection<PlayerInfo> players { get; private set; }
+    public ReadOnlyList<PlayerInfo> Players => _players.AsReadOnlyNoAlloc();
 
     public PlayerInfo GetLocalPlayerInfo()
     {
@@ -15,7 +15,7 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
     {
         for (int i = 0; i < _players.Count; i++)
         {
-            if (_players[i].playerId == playerId)
+            if (_players[i].PlayerId == playerId)
             {
                 return _players[i];
             }
@@ -24,33 +24,33 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
     }
     public bool IsLocalPlayer(PlayerId id)
     {
-        return id.isValid && _localPlayerInfo.playerId == id;
+        return id.IsValid && _localPlayerInfo.PlayerId == id;
     }
     public PlayerInfo GetServerPlayerInfo()
     {
         for (int i = 0; i < _players.Count; i++)
         {
-            if (_players[i].isServer)
+            if (_players[i].IsServer)
                 return _players[i];
         }
 
         return null;
     }
 
-    protected SessionInterface _sessionInterface { get; private set; }
-    protected List<PlayerInfo> _players { get; private set; } = new List<PlayerInfo>();
+    protected SessionInterface SessionInterface { get; private set; }
+    [SerializeField] // for display purposes
+    protected List<PlayerInfo> _players;
     protected PlayerInfo _localPlayerInfo = new PlayerInfo();
 
     public override void OnGameReady()
     {
-        players = _players.AsReadOnly();
-        _localPlayerInfo.playerName = PlayerProfileService.Instance.playerName;
+        _localPlayerInfo.PlayerName = PlayerProfileService.Instance.playerName;
 
         GameStateInGameOnline gameStateOnline = GameStateManager.GetCurrentGameState<GameStateInGameOnline>();
 
         if (gameStateOnline != null && gameStateOnline.sessionInterface != null)
         {
-            _sessionInterface = gameStateOnline.sessionInterface;
+            SessionInterface = gameStateOnline.sessionInterface;
             BindToSession();
         }
 
@@ -59,7 +59,7 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
 
     public override void OnSafeDestroy()
     {
-        if(_sessionInterface != null)
+        if(SessionInterface != null)
         {
             UnbindFromSession();
         }
@@ -67,7 +67,7 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
 
     void BindToSession()
     {
-        _sessionInterface.onTerminate += OnSessionInterfaceTerminating;
+        SessionInterface.OnTerminate += OnSessionInterfaceTerminating;
 
         OnBindedToSession();
     }
@@ -76,13 +76,13 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
     {
         OnUnbindedFromSession();
 
-        _sessionInterface.onTerminate -= OnSessionInterfaceTerminating;
-        _sessionInterface = null;
+        SessionInterface.OnTerminate -= OnSessionInterfaceTerminating;
+        SessionInterface = null;
     }
 
     void OnSessionInterfaceTerminating()
     {
-        _sessionInterface = null;
+        SessionInterface = null;
     }
 
     protected virtual void OnBindedToSession() { }

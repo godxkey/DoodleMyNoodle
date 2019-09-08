@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class EscapeMenuSystem : GameSystem<EscapeMenuSystem>
 {
-    public override bool isSystemReady => true;
+    public override bool SystemReady => true;
 
     [SerializeField] SceneInfo _escapeMenuScene;
 

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 /// <summary>
 /// A GameMonoBehaviour is a monobehaviour class that receives common game events
@@ -8,7 +7,7 @@ using System.Collections.ObjectModel;
 public class GameMonoBehaviour : MonoBehaviour
 {
     static List<GameMonoBehaviour> _registeredBehaviours = new List<GameMonoBehaviour>();
-    public static ReadOnlyCollection<GameMonoBehaviour> registeredBehaviours = _registeredBehaviours.AsReadOnly();
+    public static ReadOnlyList<GameMonoBehaviour> RegisteredBehaviours => _registeredBehaviours.AsReadOnlyNoAlloc();
 
     protected virtual void Awake()
     {

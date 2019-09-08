@@ -10,7 +10,7 @@ public class SimEntityEditor : Editor
     {
         if (Application.isPlaying)
         {
-            if(((SimEntity)target).isPartOfSimulation)
+            if(((SimEntity)target).IsPartOfSimulationRuntime)
             {
                 EditorGUILayout.HelpBox("Connected to simulation", MessageType.Info);
             }

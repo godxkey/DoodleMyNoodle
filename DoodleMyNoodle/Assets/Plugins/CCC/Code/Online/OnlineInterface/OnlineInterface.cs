@@ -7,39 +7,43 @@ public abstract class OnlineInterface : IDisposable
     const bool log = false;
 
     public event Action onTerminate;
-    public SessionInterface sessionInterface { get; protected set; }
+    public SessionInterface SessionInterface { get; protected set; }
 
-    public abstract bool isServerType { get; }
-    public bool isClientType => !isServerType;
+    public abstract bool IsServerType { get; }
+    public bool isClientType => !IsServerType;
 
     public OnlineInterface(NetworkInterface network)
     {
         _network = network;
 
-        _network.onDisconnectedFromSession += OnDisconnectFromSession;
+        _network.OnDisconnectedFromSession += OnDisconnectFromSession;
 
         if (log)
+#pragma warning disable CS0162 // Unreachable code detected
             DebugService.Log("Online interface created");
+#pragma warning restore CS0162 // Unreachable code detected
     }
 
     public void Update()
     {
-        sessionInterface?.Update();
+        SessionInterface?.Update();
     }
 
     protected virtual void OnDisconnectFromSession()
     {
-        sessionInterface?.Dispose();
-        sessionInterface = null;
+        SessionInterface?.Dispose();
+        SessionInterface = null;
     }
 
     public virtual void Dispose()
     {
-        sessionInterface?.Dispose();
-        _network.onDisconnectedFromSession -= OnDisconnectFromSession;
+        SessionInterface?.Dispose();
+        _network.OnDisconnectedFromSession -= OnDisconnectFromSession;
 
         if (log)
+#pragma warning disable CS0162 // Unreachable code detected
             DebugService.Log("Online interface terminating");
+#pragma warning restore CS0162 // Unreachable code detected
 
         onTerminate?.Invoke();
     }

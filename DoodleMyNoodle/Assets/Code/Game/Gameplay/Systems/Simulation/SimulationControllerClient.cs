@@ -22,7 +22,7 @@ public class SimulationControllerClient : SimulationController
     {
         base.OnGameReady();
 
-        _session = OnlineService.clientInterface.sessionClientInterface;
+        _session = OnlineService.clientInterface.SessionClientInterface;
         _session.RegisterNetMessageReceiver<NetMessageSimTick>(OnNetMessageSimTick);
     }
 
@@ -57,16 +57,16 @@ public class SimulationControllerClient : SimulationController
 
     private void FixedUpdate()
     {
-        if (!SimulationPublic.isInitialized)
+        if (!SimulationView.IsInitialized)
             return;
 
         _pendingSimTicks.Update(Time.fixedDeltaTime);
 
-        while (SimulationPublic.canBeTicked && _pendingSimTicks.TryDrop(out NetMessageSimTick tick))
+        while (SimulationView.CanBeTicked && _pendingSimTicks.TryDrop(out NetMessageSimTick tick))
         {
-            if(SimulationPublic.tickId != tick.tickId)
+            if(SimulationView.TickId != tick.tickId)
             {
-                SimulationPublic.ForceSetTickId(tick.tickId);
+                SimulationView.ForceSetTickId(tick.tickId);
                 DebugService.LogWarning($"[Temporary Hack] We forcefully set the next simulation's stick at {tick.tickId} to match with the server. " +
                     $"This should eventually be replaced by the 'join in progress' feature. NB: This message should only appear once per session!");
             }
@@ -87,6 +87,6 @@ public class SimulationControllerClient : SimulationController
             inputs = simInputs
         };
 
-        SimulationPublic.Tick(tickData);
+        SimulationView.Tick(tickData);
     }
 }

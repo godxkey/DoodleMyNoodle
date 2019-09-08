@@ -7,15 +7,15 @@ public class SessionClientInterface : SessionInterface
 {
     public SessionClientInterface(NetworkInterface networkInterface) : base(networkInterface) { }
 
-    public override bool isServerType => false;
+    public override bool IsServerType => false;
 
     public INetworkInterfaceConnection serverConnection
     {
         get
         {
-            if (_networkInterface.connections.Count > 0)
+            if (_networkInterface.Connections.Count > 0)
             {
-                return _networkInterface.connections[0];
+                return _networkInterface.Connections[0];
             }
             else
             {

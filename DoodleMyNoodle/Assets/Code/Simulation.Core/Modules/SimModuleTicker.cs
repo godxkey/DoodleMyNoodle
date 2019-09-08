@@ -1,71 +1,79 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-public class SimModuleTicker
+public class SimModuleTicker : IDisposable
 {
-    internal bool canSimBeTicked => SimModules.sceneLoader.pendingSceneLoads == 0
-        && !isTicking;
+    internal bool CanSimBeTicked =>
+        SimModules.SceneLoader.PendingSceneLoads == 0
+        && SimModules.EntityManager.PendingPermanentEntityDestructions == 0
+        && !IsTicking;
 
-    internal bool isTicking = false;
-    internal uint tickId => SimModules.world.tickId;
+    internal bool IsTicking = false;
+    internal uint TickId => SimModules.World.TickId;
 
-    internal List<ISimTickable> tickables = new List<ISimTickable>();
+    internal List<ISimTickable> Tickables = new List<ISimTickable>();
+    internal List<ISimTickable> NewTickables = new List<ISimTickable>();
 
     internal void Tick(in SimTickData tickData)
     {
-        if (!canSimBeTicked)
+        if (!CanSimBeTicked)
             throw new System.Exception("Tried to tick the simulation while it could not. Investigate.");
 
-        isTicking = true;
+        IsTicking = true;
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Call OnSimStart() methods on objects that need it                                 
+        ////////////////////////////////////////////////////////////////////////////////////////
+        CallOnSimStartOnObjectNeedingIt();
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      INPUTS                                 
         ////////////////////////////////////////////////////////////////////////////////////////
         foreach (SimInput input in tickData.inputs)
         {
-            SimCommand simCommand = input as SimCommand;
-            if (simCommand != null)
-            {
-                simCommand.Execute();
-            }
-            else
-            {
-                // TODO
-                // TEMPORAIRE
-                SimModules.worldSearcher.ForEveryEntityWithComponent<ISimInputHandler>((handler) =>
-                {
-                    if(handler is SimObject c && !c.isActiveAndEnabled)
-                    {
-                        return true; // continue
-                    }
-
-                    bool handled = handler.HandleInput(input);
-                    return !handled; // continue if not handled
-                });
-            }
+            SimModules.InputProcessorManager.ProcessInput(input);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      TICK                                 
         ////////////////////////////////////////////////////////////////////////////////////////
-        for (int i = 0; i < tickables.Count; i++)
+        Tickables.AddRange(NewTickables);
+        NewTickables.Clear();
+        for (int i = 0; i < Tickables.Count; i++)
         {
-            if (tickables[i].isActiveAndEnabled)
+            if (Tickables[i].isActiveAndEnabled)
             {
-                tickables[i].OnSimTick();
+                try
+                {
+                    Tickables[i].OnSimTick();
+                }
+                catch (Exception e)
+                {
+                    DebugService.LogError(e.Message + " - stack:\n " + e.StackTrace);
+                }
             }
         }
 
-        SimModules.world.tickId++;
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Call OnSimStart() methods on objects that need it                                 
+        ////////////////////////////////////////////////////////////////////////////////////////
+        CallOnSimStartOnObjectNeedingIt();
 
 
-        isTicking = false;
+        SimModules.World.TickId++;
+
+
+        IsTicking = false;
     }
 
     internal void OnAddSimObjectToSim(SimObject obj)
     {
         if (obj is ISimTickable)
         {
-            tickables.Add((ISimTickable)obj);
+            // Here we add the Tickable object in the NewTickables list instead of Tickables BECAUSE:
+            // we want to make sure we call OnSimStart on all new objects before starting to tick them
+
+            NewTickables.Add((ISimTickable)obj);
         }
     }
 
@@ -73,7 +81,37 @@ public class SimModuleTicker
     {
         if (obj is ISimTickable)
         {
-            tickables.Remove((ISimTickable)obj);
+            // The Tickable object might be in either of those lists. Try removing it from both.
+
+            if (NewTickables.Remove((ISimTickable)obj) == false)
+            {
+                Tickables.Remove((ISimTickable)obj);
+            }
         }
+    }
+
+    void CallOnSimStartOnObjectNeedingIt()
+    {
+        List<SimObject> objs = SimModules.World.ObjectsThatHaventStartedYet;
+        for (int i = 0; i < objs.Count; i++)
+        {
+            if (objs[i].isActiveAndEnabled)
+            {
+                try
+                {
+                    objs[i].OnSimStart();
+                }
+                catch (Exception e)
+                {
+                    DebugService.LogError(e.Message + " - stack:\n " + e.StackTrace);
+                }
+                objs.RemoveWithLastSwapAt(i);
+                i--;
+            }
+        }
+    }
+
+    public void Dispose()
+    {
     }
 }

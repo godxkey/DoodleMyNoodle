@@ -161,9 +161,11 @@ public class LaunchWindow : EditorWindow
                     isMarkedAsEditor = (whoIsEditor == profile.localId),
                 };
 
-                newElement.RegisterCallback((ContextualMenuPopulateEvent evt) =>
+                newElement.focusable = true;
+                newElement.pickingMode = PickingMode.Position;
+                newElement.AddManipulator(new ContextualMenuManipulator((ContextualMenuPopulateEvent evt) =>
                 {
-                    evt.menu.AppendAction("Set As Server", (DropdownMenuAction action) =>
+                    evt.menu.AppendAction("Set Server", (DropdownMenuAction action) =>
                     {
                         if (newElement.isMarkedAsServer)
                         {
@@ -174,7 +176,7 @@ public class LaunchWindow : EditorWindow
                             SetAsServer(newElement);
                         }
                     }, status: newElement.isMarkedAsServer ? DropdownMenuAction.Status.Checked : DropdownMenuAction.Status.Normal);
-                    evt.menu.AppendAction("Set As Editor", (DropdownMenuAction action) =>
+                    evt.menu.AppendAction("Set Editor", (DropdownMenuAction action) =>
                     {
                         if (newElement.isMarkedAsEditor)
                         {
@@ -185,11 +187,7 @@ public class LaunchWindow : EditorWindow
                             SetAsEditor(newElement);
                         }
                     }, status: newElement.isMarkedAsEditor ? DropdownMenuAction.Status.Checked : DropdownMenuAction.Status.Normal);
-                });
-
-                newElement.focusable = true;
-                newElement.pickingMode = PickingMode.Position;
-                newElement.Add(new TextField());
+                }));
 
                 _profileElements.Add(newElement);
                 element.Add(newElement);

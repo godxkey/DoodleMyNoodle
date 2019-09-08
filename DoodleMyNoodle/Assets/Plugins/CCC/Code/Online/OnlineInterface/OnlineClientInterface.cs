@@ -4,23 +4,23 @@ using System.Collections.ObjectModel;
 
 public class OnlineClientInterface : OnlineInterface
 {
-    public override bool isServerType => false;
-    public SessionClientInterface sessionClientInterface => sessionInterface == null ? null : (SessionClientInterface)sessionInterface;
+    public override bool IsServerType => false;
+    public SessionClientInterface SessionClientInterface => SessionInterface == null ? null : (SessionClientInterface)SessionInterface;
 
-    public event Action onSessionListUpdated;
-    public bool isConnectingSession { get; private set; }
+    public event Action OnSessionListUpdated;
+    public bool IsConnectingSession { get; private set; }
 
     public OnlineClientInterface(NetworkInterface network)
         : base(network)
     {
-        network.onSessionListUpdated += OnSessionListUpdated;
+        network.OnSessionListUpdated += OnSessionListUpdatedCallback;
     }
 
-    public ReadOnlyCollection<INetworkInterfaceSession> availableSessions => _network.sessions;
+    public ReadOnlyList<INetworkInterfaceSession> AvailableSessions => _network.Sessions;
     public void GetAvailableSessions(ref List<INetworkInterfaceSession> sessionList) => _network.GetSessions(ref sessionList);
     public void ConnectToSession(INetworkInterfaceSession session, Action<bool, string> onComplete = null)
     {
-        isConnectingSession = true;
+        IsConnectingSession = true;
 
         _onConnectToSessionsCallback = onComplete;
         _network.ConnectToSession(session, OnConnectToSessionComplete);
@@ -28,25 +28,25 @@ public class OnlineClientInterface : OnlineInterface
 
     void OnConnectToSessionComplete(bool success, string message)
     {
-        isConnectingSession = false;
+        IsConnectingSession = false;
 
         if (success)
         {
-            sessionInterface = new SessionClientInterface(_network);
+            SessionInterface = new SessionClientInterface(_network);
         }
 
         _onConnectToSessionsCallback?.Invoke(success, message);
     }
 
-    void OnSessionListUpdated()
+    void OnSessionListUpdatedCallback()
     {
-        onSessionListUpdated?.Invoke();
+        OnSessionListUpdated?.Invoke();
     }
 
     public override void Dispose()
     {
         if (_network != null)
-            _network.onSessionListUpdated -= OnSessionListUpdated;
+            _network.OnSessionListUpdated -= OnSessionListUpdated;
 
         base.Dispose();
     }

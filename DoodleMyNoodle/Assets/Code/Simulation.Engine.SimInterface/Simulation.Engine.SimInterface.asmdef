@@ -1,0 +1,15 @@
+{
+    "name": "Simulation.Engine.SimInterface",
+    "references": [
+        "GUID:a695b5a3e8c39e14fb9d86d3205fadf9",
+        "GUID:967bf62d84e8bce4fb02b8adb322ac64"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

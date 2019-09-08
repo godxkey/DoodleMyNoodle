@@ -7,8 +7,8 @@ public class DebugPanelClientSimController : DebugPanel
 {
     public override string title => "Sim Controller (Client)";
     public override bool canBeDisplayed =>
-        SimulationController.instance != null &&
-        SimulationController.instance is SimulationControllerClient;
+        SimulationController.Instance != null &&
+        SimulationController.Instance is SimulationControllerClient;
 
     float[] m_simTickQueueLengths = new float[60];
     int m_simTickQueueLengthsIterator = 0;
@@ -21,7 +21,7 @@ public class DebugPanelClientSimController : DebugPanel
 
     public override void OnGUI()
     {
-        SimulationControllerClient simController = SimulationController.instance as SimulationControllerClient;
+        SimulationControllerClient simController = SimulationController.Instance as SimulationControllerClient;
 
         m_simTickQueueLengths[m_simTickQueueLengthsIterator] = simController.simTicksInQueue;
         m_simTickQueueLengthsIterator++;
@@ -43,10 +43,10 @@ public class DebugPanelClientSimController : DebugPanel
 
     void OnFixedUpdate()
     {
-        if (!SimulationPublic.isInitialized)
+        if (!SimulationView.IsInitialized)
             return;
 
-        m_currentSimTick.Value = SimulationPublic.tickId;
+        m_currentSimTick.Value = SimulationView.TickId;
 
         // 'not dirty' means no change. That means the simulation has NOT played a sim tick this past fixed update
         m_offsettedSimTicks[m_offsettedSimTicksIterator] = !m_currentSimTick.IsDirty;
@@ -74,7 +74,6 @@ public class DebugPanelClientSimController : DebugPanel
         base.OnStartDisplay();
 
         UpdaterService.AddFixedUpdateCallback(OnFixedUpdate);
-        Debug.Log("start");
     }
 
     public override void OnStopDisplay()
@@ -82,6 +81,5 @@ public class DebugPanelClientSimController : DebugPanel
         base.OnStopDisplay();
 
         UpdaterService.RemoveFixedUpdateCallback(OnFixedUpdate);
-        Debug.Log("stop");
     }
 }

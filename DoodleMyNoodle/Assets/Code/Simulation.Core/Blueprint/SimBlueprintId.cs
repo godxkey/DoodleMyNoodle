@@ -1,40 +1,43 @@
 ﻿using System;
 
+/// <summary>
+/// Blueprint ids are used to correctly recreate a gameobject at runtime from a saved game.
+/// </summary>
 [NetSerializable]
 [Serializable]
 public struct SimBlueprintId
 {
-    public enum Type : byte
+    public enum BlueprintType : byte
     {
         Invalid,
         Prefab,
         SceneGameObject
     }
 
-    public SimBlueprintId(Type type, string value)
+    public SimBlueprintId(BlueprintType type, string value)
     {
-        this.type = type;
-        this.value = value;
+        this.Type = type;
+        this.Value = value;
     }
 
-    public Type type;
-    public string value;
+    public BlueprintType Type;
+    public string Value;
 
-    public static readonly SimBlueprintId invalid = new SimBlueprintId(Type.Invalid, "");
-    public bool isValid => value != invalid.value;
+    public static readonly SimBlueprintId invalid = new SimBlueprintId(BlueprintType.Invalid, "");
+    public bool IsValid => Value != invalid.Value;
 
 
     public override bool Equals(object obj)
     {
         return obj is SimBlueprintId id &&
-               type == id.type &&
-               value == id.value;
+               Type == id.Type &&
+               Value == id.Value;
     }
     public static bool operator ==(SimBlueprintId a, SimBlueprintId b)
     {
-        return a.value == b.value
-            & a.type == b.type;
+        return a.Value == b.Value
+            & a.Type == b.Type;
     }
     public static bool operator !=(SimBlueprintId a, SimBlueprintId b) => !(a == b);
-    public override int GetHashCode() => value.GetHashCode();
+    public override int GetHashCode() => Value.GetHashCode();
 }

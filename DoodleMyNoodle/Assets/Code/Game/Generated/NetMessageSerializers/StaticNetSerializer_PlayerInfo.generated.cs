@@ -15,9 +15,10 @@ public static class StaticNetSerializer_PlayerInfo
     public static int GetNetBitSize(PlayerInfo obj)
     {
         int result = 0;
-        result += StaticNetSerializer_String.GetNetBitSize(ref obj.playerName);
-        result += StaticNetSerializer_PlayerId.GetNetBitSize(ref obj.playerId);
-        result += StaticNetSerializer_Boolean.GetNetBitSize(ref obj.isServer);
+        result += StaticNetSerializer_String.GetNetBitSize(ref obj.PlayerName);
+        result += StaticNetSerializer_PlayerId.GetNetBitSize(ref obj.PlayerId);
+        result += StaticNetSerializer_Boolean.GetNetBitSize(ref obj.IsServer);
+        result += StaticNetSerializer_SimPlayerId.GetNetBitSize(ref obj.SimPlayerId);
         return result;
     }
 
@@ -33,9 +34,10 @@ public static class StaticNetSerializer_PlayerInfo
     }
     public static void NetSerialize(PlayerInfo obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_String.NetSerialize(ref obj.playerName, writer);
-        StaticNetSerializer_PlayerId.NetSerialize(ref obj.playerId, writer);
-        StaticNetSerializer_Boolean.NetSerialize(ref obj.isServer, writer);
+        StaticNetSerializer_String.NetSerialize(ref obj.PlayerName, writer);
+        StaticNetSerializer_PlayerId.NetSerialize(ref obj.PlayerId, writer);
+        StaticNetSerializer_Boolean.NetSerialize(ref obj.IsServer, writer);
+        StaticNetSerializer_SimPlayerId.NetSerialize(ref obj.SimPlayerId, writer);
     }
 
     public static PlayerInfo NetDeserialize_Class(BitStreamReader reader)
@@ -50,8 +52,9 @@ public static class StaticNetSerializer_PlayerInfo
     }
     public static void NetDeserialize(PlayerInfo obj, BitStreamReader reader)
     {
-        StaticNetSerializer_String.NetDeserialize(ref obj.playerName, reader);
-        StaticNetSerializer_PlayerId.NetDeserialize(ref obj.playerId, reader);
-        StaticNetSerializer_Boolean.NetDeserialize(ref obj.isServer, reader);
+        StaticNetSerializer_String.NetDeserialize(ref obj.PlayerName, reader);
+        StaticNetSerializer_PlayerId.NetDeserialize(ref obj.PlayerId, reader);
+        StaticNetSerializer_Boolean.NetDeserialize(ref obj.IsServer, reader);
+        StaticNetSerializer_SimPlayerId.NetDeserialize(ref obj.SimPlayerId, reader);
     }
 }

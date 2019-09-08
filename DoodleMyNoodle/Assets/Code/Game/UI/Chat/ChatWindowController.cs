@@ -12,9 +12,9 @@ public class ChatWindowController : GameMonoBehaviour
 
     public override void OnGameStart()
     {
-        if (ChatSystem.instance != null)
+        if (ChatSystem.Instance != null)
         {
-            ChatSystem.instance.onNewLine += OnNewLine;
+            ChatSystem.Instance.onNewLine += OnNewLine;
             _chatWindow = _chatWindowPrefab.DuplicateGO();
             _chatWindow.displayed = false;
             _chatWindow.focused = false;
@@ -39,7 +39,7 @@ public class ChatWindowController : GameMonoBehaviour
 
                 if (_chatWindow.inputText.IsNullOrEmpty() == false)
                 {
-                    ChatSystem.instance.SubmitMessage(_chatWindow.inputText);
+                    ChatSystem.Instance.SubmitMessage(_chatWindow.inputText);
                     _chatWindow.inputText = string.Empty;
                 }
             }

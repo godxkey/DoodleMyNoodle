@@ -4,16 +4,16 @@ using System.Collections.ObjectModel;
 
 public static class CommandLine
 {
-    public static ReadOnlyCollection<string> arguments
+    public static ReadOnlyList<string> Arguments
     {
         get
         {
             if (_arguments == null)
-                _arguments = new List<string>(Environment.GetCommandLineArgs()).AsReadOnly();
-            return _arguments;
+                _arguments = new List<string>(Environment.GetCommandLineArgs());
+            return _arguments.AsReadOnlyNoAlloc();
         }
     }
-    static ReadOnlyCollection<string> _arguments;
+    static List<string> _arguments;
 
 
 
@@ -21,7 +21,7 @@ public static class CommandLine
     {
         if (TryGetArgumentMatchedWithValue(key, out int index))
         {
-            return int.TryParse(arguments[index + 1], out value);
+            return int.TryParse(Arguments[index + 1], out value);
         }
         value = default;
         return false;
@@ -31,7 +31,7 @@ public static class CommandLine
     {
         if (TryGetArgumentMatchedWithValue(key, out int index))
         {
-            return float.TryParse(arguments[index + 1], out value);
+            return float.TryParse(Arguments[index + 1], out value);
         }
         value = default;
         return false;
@@ -41,7 +41,7 @@ public static class CommandLine
     {
         if (TryGetArgumentMatchedWithValue(key, out int index))
         {
-            value = arguments[index + 1];
+            value = Arguments[index + 1];
             return true;
         }
         value = default;
@@ -50,8 +50,8 @@ public static class CommandLine
 
     static bool TryGetArgumentMatchedWithValue(string key, out int index)
     {
-        index = arguments.IndexOf(key);
-        if (index != -1 && index < arguments.Count - 1)
+        index = Arguments.IndexOf(key);
+        if (index != -1 && index < Arguments.Count - 1)
         {
             return true;
         }

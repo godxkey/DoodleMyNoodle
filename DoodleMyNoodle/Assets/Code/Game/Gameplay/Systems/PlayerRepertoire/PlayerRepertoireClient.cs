@@ -3,18 +3,21 @@ using System.Collections.Generic;
 
 public class PlayerRepertoireClient : PlayerRepertoireSystem
 {
-    public static new PlayerRepertoireClient instance => (PlayerRepertoireClient)GameSystem<PlayerRepertoireSystem>.instance;
+    public static new PlayerRepertoireClient Instance => (PlayerRepertoireClient)GameSystem<PlayerRepertoireSystem>.Instance;
 
     SessionClientInterface _clientSession;
 
     bool _localPlayerIdAssigned = false;
     bool _playerListSyncReceived = false;
 
-    public override bool isSystemReady => _localPlayerIdAssigned && _playerListSyncReceived;
+    // we defer any received change to the player repertoire until the system is ready
+    Queue<object> _deferredNetMessages = new Queue<object>();
+
+    public override bool SystemReady => _localPlayerIdAssigned && _playerListSyncReceived;
 
     public override PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection)
     {
-        if(_clientSession != null && _clientSession.serverConnection != null && _clientSession.serverConnection.Id == connection.Id)
+        if (_clientSession != null && _clientSession.serverConnection != null && _clientSession.serverConnection.Id == connection.Id)
         {
             return GetServerPlayerInfo();
         }
@@ -26,15 +29,17 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
 
     protected override void OnBindedToSession()
     {
-        _clientSession = (SessionClientInterface)_sessionInterface;
+        _clientSession = (SessionClientInterface)SessionInterface;
         _clientSession.RegisterNetMessageReceiver<NetMessagePlayerIdAssignment>(OnMsg_PlayerIdAssignement);
         _clientSession.RegisterNetMessageReceiver<NetMessagePlayerRepertoireSync>(OnMsg_NetMessagePlayerRepertoireSync);
         _clientSession.RegisterNetMessageReceiver<NetMessagePlayerJoined>(OnMsg_NetMessagePlayerJoined);
         _clientSession.RegisterNetMessageReceiver<NetMessagePlayerLeft>(OnMsg_NetMessagePlayerLeft);
+        _clientSession.RegisterNetMessageReceiver<NetMessageSimPlayerIdAssignement>(OnMsg_NetMessageSimPlayerIdAssignement);
     }
 
     protected override void OnUnbindedFromSession()
     {
+        _clientSession.UnregisterNetMessageReceiver<NetMessageSimPlayerIdAssignement>(OnMsg_NetMessageSimPlayerIdAssignement);
         _clientSession.UnregisterNetMessageReceiver<NetMessagePlayerIdAssignment>(OnMsg_PlayerIdAssignement);
         _clientSession.UnregisterNetMessageReceiver<NetMessagePlayerRepertoireSync>(OnMsg_NetMessagePlayerRepertoireSync);
         _clientSession.UnregisterNetMessageReceiver<NetMessagePlayerJoined>(OnMsg_NetMessagePlayerJoined);
@@ -44,22 +49,47 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
 
     protected override void Internal_OnGameReady()
     {
-        _localPlayerInfo.isServer = false;
-        _localPlayerInfo.playerId = PlayerId.invalid;
+        _localPlayerInfo.IsServer = false;
+        _localPlayerInfo.PlayerId = PlayerId.Invalid;
 
         // Say hello to server ! (this should initiate the process of being added to valid players)
         NetMessageClientHello helloMessage = new NetMessageClientHello()
         {
-            playerName = _localPlayerInfo.playerName
+            playerName = _localPlayerInfo.PlayerName
         };
         _clientSession.SendNetMessageToServer(helloMessage);
         DebugService.Log("[PlayerRepertoireClient] Hello sent");
     }
 
+    public override void OnGameUpdate()
+    {
+        base.OnGameUpdate();
+
+        if (SystemReady)
+        {
+            while (_deferredNetMessages.Count > 0)
+            {
+                object netMessage = _deferredNetMessages.Dequeue();
+                switch (netMessage)
+                {
+                    case NetMessagePlayerJoined playerJoined:
+                        OnMsg_NetMessagePlayerJoined(playerJoined, null);
+                        break;
+                    case NetMessagePlayerLeft playerLeft:
+                        OnMsg_NetMessagePlayerLeft(playerLeft, null);
+                        break;
+                    case NetMessageSimPlayerIdAssignement simPlayerIdAssignement:
+                        OnMsg_NetMessageSimPlayerIdAssignement(simPlayerIdAssignement, null);
+                        break;
+                }
+            }
+        }
+    }
+
     void OnMsg_PlayerIdAssignement(NetMessagePlayerIdAssignment message, INetworkInterfaceConnection source)
     {
         DebugService.Log("[PlayerRepertoireClient] OnMsg_PlayerIdAssignement");
-        _localPlayerInfo.playerId = message.playerId;
+        _localPlayerInfo.PlayerId = message.playerId;
 
         _localPlayerIdAssigned = true;
     }
@@ -78,13 +108,50 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
 
     void OnMsg_NetMessagePlayerJoined(NetMessagePlayerJoined message, INetworkInterfaceConnection source)
     {
-        DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessagePlayerJoined");
-        _players.Add(new PlayerInfo(message.playerInfo));
+        if (SystemReady)
+        {
+            DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessagePlayerJoined");
+            _players.Add(new PlayerInfo(message.playerInfo));
+        }
+        else
+        {
+            DebugService.Log("[PlayerRepertoireClient] *Deferring* OnMsg_NetMessagePlayerJoined");
+            _deferredNetMessages.Enqueue(message);
+        }
     }
 
     void OnMsg_NetMessagePlayerLeft(NetMessagePlayerLeft message, INetworkInterfaceConnection source)
     {
-        DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessagePlayerLeft");
-        _players.RemoveFirst((p) => p.playerId == message.playerId);
+        if (SystemReady)
+        {
+            DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessagePlayerLeft");
+            _players.RemoveFirst((p) => p.PlayerId == message.playerId);
+        }
+        else
+        {
+            DebugService.Log("[PlayerRepertoireClient] *Deferring* OnMsg_NetMessagePlayerLeft");
+            _deferredNetMessages.Enqueue(message);
+        }
+    }
+
+    void OnMsg_NetMessageSimPlayerIdAssignement(NetMessageSimPlayerIdAssignement message, INetworkInterfaceConnection source)
+    {
+        if (SystemReady)
+        {
+            DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessageSimPlayerIdAssignement");
+            PlayerInfo playerInfo = GetPlayerInfo(message.PlayerId);
+            if (playerInfo == null)
+            {
+                DebugService.LogError("The server told us to assign a simPlayerId to a player but that player could not be found.");
+                return;
+            }
+
+            playerInfo.SimPlayerId = message.SimPlayerId;
+        }
+        else
+        {
+            DebugService.Log("[PlayerRepertoireClient] *Deferring* OnMsg_NetMessageSimPlayerIdAssignement");
+            _deferredNetMessages.Enqueue(message);
+        }
     }
 }

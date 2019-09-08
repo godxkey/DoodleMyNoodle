@@ -7,22 +7,23 @@ public abstract class SimulationController : GameSystem<SimulationController>
 {
     [SerializeField] SimBlueprintBank _blueprintBank;
 
-    public override bool isSystemReady => true;
+    public override bool SystemReady => true;
 
     public abstract void SubmitInput(SimInput input);
 
     public override void OnGameReady()
     {
-        SimulationPublic.Initialize(_blueprintBank);
+        SimulationView.Initialize(_blueprintBank);
 
         base.OnGameReady();
     }
 
 
-    public override void OnSafeDestroy()
+    protected override void OnDestroy()
     {
-        base.OnSafeDestroy();
+        base.OnDestroy();
 
-        SimulationPublic.Shutdown();
+        if (SimulationView.IsInitialized)
+            SimulationView.Dispose();
     }
 }

@@ -24,14 +24,14 @@ public class ChatSystemServer : ChatSystem
 
     public override void SubmitMessage(string message)
     {
-        PlayerInfo localPlayer = PlayerRepertoireSystem.instance.GetLocalPlayerInfo();
+        PlayerInfo localPlayer = PlayerRepertoireSystem.Instance.GetLocalPlayerInfo();
         AddNewMessage(message, localPlayer);
     }
 
     void OnNetMessageChatMessageSubmission(NetMessageChatMessageSubmission submission, INetworkInterfaceConnection source)
     {
         // A client wants to submit a new message
-        PlayerInfo sourcePlayer = PlayerRepertoireSystem.instance.GetPlayerInfo(source);
+        PlayerInfo sourcePlayer = PlayerRepertoireSystem.Instance.GetPlayerInfo(source);
 
         if (sourcePlayer != null)
             AddNewMessage(submission.message, sourcePlayer);
@@ -41,7 +41,7 @@ public class ChatSystemServer : ChatSystem
     {
         AddNewLine(new ChatLine()
         {
-            playerName = playerInfo.playerName,
+            playerName = playerInfo.PlayerName,
             message = message
         });
 
@@ -50,9 +50,9 @@ public class ChatSystemServer : ChatSystem
         NetMessageChatMessage netMessage = new NetMessageChatMessage()
         {
             message = message,
-            playerId = playerInfo.playerId
+            playerId = playerInfo.PlayerId
         };
 
-        _session.SendNetMessage(netMessage, PlayerRepertoireServer.instance.playerConnections);
+        _session.SendNetMessage(netMessage, PlayerRepertoireServer.Instance.PlayerConnections);
     }
 }

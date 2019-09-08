@@ -55,7 +55,9 @@ public class DebugService : MonoCoreService<DebugService>
             }
         }
         if (log)
+#pragma warning disable CS0162 // Unreachable code detected
             DebugService.Log("DebugService initialized. Logging to " + engineLogFileLocation + "/" + name);
+#pragma warning restore CS0162 // Unreachable code detected
     }
 
     protected override void OnDestroy()

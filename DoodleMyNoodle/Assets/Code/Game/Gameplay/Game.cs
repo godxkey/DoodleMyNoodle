@@ -77,7 +77,7 @@ public class Game : MonoBehaviour
             {
                 // invoke 'OnReady' callbacks
 
-                foreach (GameMonoBehaviour b in GameMonoBehaviour.registeredBehaviours)
+                foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
                 {
                     b.OnGameReady();
                 }
@@ -88,7 +88,7 @@ public class Game : MonoBehaviour
         {
             for (int i = 0; i < GameSystem.unreadySystems.Count; i++)
             {
-                if (GameSystem.unreadySystems[i].isSystemReady)
+                if (GameSystem.unreadySystems[i].SystemReady)
                 {
                     GameSystem.unreadySystems.RemoveAt(i);
                     i--;
@@ -99,7 +99,7 @@ public class Game : MonoBehaviour
             {
                 _started = true;
 
-                foreach (GameMonoBehaviour b in GameMonoBehaviour.registeredBehaviours)
+                foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
                 {
                     b.OnGameStart();
                 }
@@ -109,7 +109,7 @@ public class Game : MonoBehaviour
 
         if (_started)
         {
-            foreach (GameMonoBehaviour b in GameMonoBehaviour.registeredBehaviours)
+            foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
 #if DEBUG_BUILD
                 try
@@ -133,7 +133,7 @@ public class Game : MonoBehaviour
     {
         if (_started)
         {
-            foreach (GameMonoBehaviour b in GameMonoBehaviour.registeredBehaviours)
+            foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
 #if DEBUG_BUILD
                 try

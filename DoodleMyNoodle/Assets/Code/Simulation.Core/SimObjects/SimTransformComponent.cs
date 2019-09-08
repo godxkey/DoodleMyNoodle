@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class SimTransformComponent : SimBehaviour
+public class SimTransformComponent : SimComponent
 {
     [SerializeField]
     FixVector3 _localPosition;
@@ -63,16 +63,16 @@ public class SimTransformComponent : SimBehaviour
         }
     }
 
-    public SimTransformComponent parent => unityTransform.parent?.GetComponent<SimTransformComponent>();
+    public SimTransformComponent parent => UnityTransform.parent?.GetComponent<SimTransformComponent>();
 
     void Update()
     {
         // VISUAL UPDATE
 
         // could be optimized later
-        unityTransform.localPosition = localPosition.ToUnityVec();
-        unityTransform.localRotation = localRotation.ToUnityQuat();
-        unityTransform.localScale = localScale.ToUnityVec();
+        UnityTransform.localPosition = localPosition.ToUnityVec();
+        UnityTransform.localRotation = localRotation.ToUnityQuat();
+        UnityTransform.localScale = localScale.ToUnityVec();
     }
 
     void UpdateMatrix()
@@ -148,9 +148,9 @@ public class SimTransformComponent : SimBehaviour
     }
     void DirtyChildren()
     {
-        for (int i = 0; i < unityTransform.childCount; i++)
+        for (int i = 0; i < UnityTransform.childCount; i++)
         {
-            SimTransformComponent childSimTr = unityTransform.GetChild(i).GetComponent<SimTransformComponent>();
+            SimTransformComponent childSimTr = UnityTransform.GetChild(i).GetComponent<SimTransformComponent>();
             if (childSimTr)
             {
                 childSimTr.DirtyCachedRelativeToParentValues();

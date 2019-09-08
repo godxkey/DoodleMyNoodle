@@ -8,13 +8,13 @@ public abstract class GameSystem : GameMonoBehaviour
 {
     public static List<GameSystem> unreadySystems = new List<GameSystem>();
 
-    public abstract bool isSystemReady { get; }
+    public abstract bool SystemReady { get; }
 
     protected override void Awake()
     {
         base.Awake();
 
-        if (isSystemReady == false)
+        if (SystemReady == false)
         {
             unreadySystems.Add(this);
         }
@@ -34,22 +34,22 @@ public abstract class GameSystem : GameMonoBehaviour
 /// </summary>
 public abstract class GameSystem<T> : GameSystem where T : GameSystem<T>
 {
-    public static T instance { get; private set; }
+    public static T Instance { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
 
-        if (instance != null)
+        if (Instance != null)
             DebugService.LogError("We have 2 instances of " + nameof(T));
 
-        instance = (T)this;
+        Instance = (T)this;
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
 
-        instance = null;
+        Instance = null;
     }
 }

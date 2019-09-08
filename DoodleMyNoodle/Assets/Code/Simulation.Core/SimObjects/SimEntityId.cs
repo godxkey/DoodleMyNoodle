@@ -4,24 +4,20 @@
 [Serializable]
 public struct SimEntityId
 {
-    public static readonly SimEntityId invalid = new SimEntityId();
-    public static readonly SimEntityId firstValid = new SimEntityId(1);
+    public static readonly SimEntityId Invalid = new SimEntityId();
+    public static readonly SimEntityId FirstValid = new SimEntityId(1);
 
-    public SimEntityId(SimEntityId other) { value = other.value; }
-    public SimEntityId(UInt16 value) { this.value = value; }
+    public SimEntityId(SimEntityId other) { Value = other.Value; }
+    public SimEntityId(UInt16 value) { this.Value = value; }
 
-    public UInt16 value;
+    public UInt16 Value;
 
-    public void Increment()
-    {
-        value++;
-    }
-
-    public bool isValid => this != invalid;
+    public bool IsValid => this != Invalid;
 
     #region Overloads
-    public static bool operator ==(SimEntityId obj1, SimEntityId obj2) => obj1.value == obj2.value;
-    public static bool operator !=(SimEntityId obj1, SimEntityId obj2) => obj1.value != obj2.value;
+    public static SimEntityId operator ++(SimEntityId x) => new SimEntityId((UInt16)(x.Value + 1));
+    public static bool operator ==(SimEntityId obj1, SimEntityId obj2) => obj1.Value == obj2.Value;
+    public static bool operator !=(SimEntityId obj1, SimEntityId obj2) => obj1.Value != obj2.Value;
     public override bool Equals(object obj)
     {
         if (!(obj is SimEntityId))
@@ -30,12 +26,12 @@ public struct SimEntityId
         }
 
         var objPlayerId = (SimEntityId)obj;
-        return value == objPlayerId.value;
+        return Value == objPlayerId.Value;
     }
 
     public override int GetHashCode()
     {
-        return -1584136870 + value.GetHashCode();
+        return -1584136870 + Value.GetHashCode();
     }
     #endregion
 }

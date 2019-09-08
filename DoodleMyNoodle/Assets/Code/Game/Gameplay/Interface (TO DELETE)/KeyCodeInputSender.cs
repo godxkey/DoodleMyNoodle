@@ -98,6 +98,168 @@ public class KeyCodeInputSender : MonoBehaviour
             sendHold = true,
             sendRelease = true,
         }
+        
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Letters
+        ////////////////////////////////////////////////////////////////////////////////////////
+        , new Entry()
+        {
+            keyCode = KeyCode.Q,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.W,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.E,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.R,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }
+        , new Entry()
+        {
+            keyCode = KeyCode.T,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.Y,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.U,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.I,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.O,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.P,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.A,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.S,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.D,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.F,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.G,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.H,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.J,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.K,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.L,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.Z,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.X,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.C,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.V,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.B,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.N,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }, new Entry()
+        {
+            keyCode = KeyCode.M,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }
     };
 
 
@@ -123,6 +285,6 @@ public class KeyCodeInputSender : MonoBehaviour
 
     void Send(KeyCode keyCode, SimInputKeycode.State state)
     {
-        SimulationController.instance.SubmitInput(new SimInputKeycode() { keyCode = keyCode, state = state });
+        SimulationController.Instance.SubmitInput(new SimInputKeycode() { keyCode = keyCode, state = state });
     }
 }

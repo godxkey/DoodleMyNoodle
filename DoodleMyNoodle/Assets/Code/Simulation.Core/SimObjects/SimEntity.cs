@@ -6,26 +6,27 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class SimEntity : SimObject
 {
-    public SimEntityId entityId { get; internal set; }
-    public SimBlueprintId blueprintId { get; internal set; }
+    public SimEntityId EntityId { get; internal set; }
+    public SimBlueprintId BlueprintId { get; internal set; }
 
     [field: System.NonSerialized]
-    public bool isPartOfSimulation { get; private set; }
+    public bool IsPartOfSimulationRuntime { get; private set; }
 
-    public override void OnAddedToEntityList()
+    public override void OnAddedToRuntime()
     {
-        isPartOfSimulation = true;
+        IsPartOfSimulationRuntime = true;
     }
-    public override void OnRemovingFromEntityList()
+    public override void OnRemovingFromRuntime()
     {
-        isPartOfSimulation = false;
+        IsPartOfSimulationRuntime = false;
     }
 
     private void OnDestroy()
     {
-        if (isPartOfSimulation && !ApplicationUtilityService.ApplicationIsQuitting && SimModules.isInitialized)
+        if (IsPartOfSimulationRuntime && !ApplicationUtilityService.ApplicationIsQuitting && SimModules.IsInitialized)
         {
-            SimModules.entityManager.OnDestroyEntity(this);
+            SimModules.EntityManager.OnDestroyEntity(this);
         }
+        IsPartOfSimulationRuntime = false;
     }
 }

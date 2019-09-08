@@ -6,36 +6,40 @@ using UnityEngine;
 
 public abstract class SessionInterface : IDisposable
 {
-    const bool log = false;
+    const bool LOG = false;
 
-    public abstract bool isServerType { get; }
-    public bool isClientType => !isServerType;
-    public INetworkInterfaceSession sessionInfo => _networkInterface.connectedSessionInfo;
-    public ReadOnlyCollection<INetworkInterfaceConnection> connections => _networkInterface.connections;
-    public event Action onTerminate;
-    public event Action<INetworkInterfaceConnection> onConnectionAdded;
-    public event Action<INetworkInterfaceConnection> onConnectionRemoved;
+    public abstract bool IsServerType { get; }
+    public bool IsClientType => !IsServerType;
+    public INetworkInterfaceSession SessionInfo => _networkInterface.ConnectedSessionInfo;
+    public ReadOnlyList<INetworkInterfaceConnection> Connections => _networkInterface.Connections;
+    public event Action OnTerminate;
+    public event Action<INetworkInterfaceConnection> OnConnectionAdded;
+    public event Action<INetworkInterfaceConnection> OnConnectionRemoved;
 
     public SessionInterface(NetworkInterface networkInterface)
     {
         _networkInterface = networkInterface;
         _networkInterface.SetMessageReader(OnReceiveMessage);
 
-        _networkInterface.onDisconnect += InterfaceOnDisconnect;
-        _networkInterface.onConnect += Interface_OnConnect;
+        _networkInterface.OnDisconnect += InterfaceOnDisconnect;
+        _networkInterface.OnConnect += Interface_OnConnect;
 
-        if (log)
+        if (LOG)
+#pragma warning disable CS0162 // Unreachable code detected
             DebugService.Log("Session interface created");
+#pragma warning restore CS0162 // Unreachable code detected
     }
 
     public void Dispose()
     {
-        if (log)
+        if (LOG)
+#pragma warning disable CS0162 // Unreachable code detected
             DebugService.Log("Session interface terminating");
-        onTerminate?.Invoke();
+#pragma warning restore CS0162 // Unreachable code detected
+        OnTerminate?.Invoke();
 
-        _networkInterface.onDisconnect -= InterfaceOnDisconnect;
-        _networkInterface.onConnect -= Interface_OnConnect;
+        _networkInterface.OnDisconnect -= InterfaceOnDisconnect;
+        _networkInterface.OnConnect -= Interface_OnConnect;
     }
 
     public virtual void Update()
@@ -75,18 +79,20 @@ public abstract class SessionInterface : IDisposable
         byte[] messageData;
         NetMessageInterpreter.GetDataFromMessage(netMessage, out messageData);
         _networkInterface.SendMessage(connection, messageData, messageData.Length);
-        if (log)
+        if (LOG)
+#pragma warning disable CS0162 // Unreachable code detected
             DebugService.Log("[Session] Send message to : " + connection.Id);
+#pragma warning restore CS0162 // Unreachable code detected
     }
 
     void Interface_OnConnect(INetworkInterfaceConnection connection)
     {
-        onConnectionAdded?.Invoke(connection);
+        OnConnectionAdded?.Invoke(connection);
     }
 
     void InterfaceOnDisconnect(INetworkInterfaceConnection connection)
     {
-        onConnectionRemoved?.Invoke(connection);
+        OnConnectionRemoved?.Invoke(connection);
     }
 
     protected virtual void OnReceiveMessage(INetworkInterfaceConnection source, byte[] data, int messageSize)

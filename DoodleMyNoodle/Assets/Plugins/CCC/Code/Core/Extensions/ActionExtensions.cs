@@ -84,13 +84,15 @@ public static class ActionExtensions
 
     static private void Log(Exception exception, SafeInvokeLogMode logMode)
     {
+        string message = $"Error in SafeInvoke: {exception.Message}  \nStack:" + exception.StackTrace;
+
         switch (logMode)
         {
             case SafeInvokeLogMode.Warning:
-                Debug.LogWarning("Error in SafeInvoke: " + exception.Message);
+                Debug.LogWarning(message);
                 break;
             case SafeInvokeLogMode.Error:
-                Debug.LogError("Error in SafeInvoke: " + exception.Message);
+                Debug.LogError(message);
                 break;
         }
     }

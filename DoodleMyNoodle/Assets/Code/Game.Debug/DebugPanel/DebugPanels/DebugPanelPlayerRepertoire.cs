@@ -5,12 +5,12 @@ using UnityEngine;
 public class DebugPanelPlayerRepertoire : DebugPanel
 {
     public override string title => "Player Repertoire";
-    public override bool canBeDisplayed => PlayerRepertoireSystem.instance != null;
+    public override bool canBeDisplayed => PlayerRepertoireSystem.Instance != null;
 
     public override void OnGUI()
     {
-        PlayerRepertoireSystem repertoire = PlayerRepertoireSystem.instance;
-        var players = repertoire.players;
+        PlayerRepertoireSystem repertoire = PlayerRepertoireSystem.Instance;
+        var players = repertoire.Players;
 
         GUILayout.BeginHorizontal();
 
@@ -19,7 +19,7 @@ public class DebugPanelPlayerRepertoire : DebugPanel
         for (int i = 0; i < players.Count; i++)
         {
             ApplyPlayerTextColor(players[i]);
-            GUILayout.Label(players[i].playerName);
+            GUILayout.Label(players[i].PlayerName);
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -30,7 +30,7 @@ public class DebugPanelPlayerRepertoire : DebugPanel
         for (int i = 0; i < players.Count; i++)
         {
             ApplyPlayerTextColor(players[i]);
-            GUILayout.Label(players[i].playerId.value.ToString());
+            GUILayout.Label(players[i].PlayerId.Value.ToString());
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -41,7 +41,7 @@ public class DebugPanelPlayerRepertoire : DebugPanel
         for (int i = 0; i < players.Count; i++)
         {
             ApplyPlayerTextColor(players[i]);
-            GUILayout.Label(players[i].isServer.ToString());
+            GUILayout.Label(players[i].IsServer.ToString());
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -52,9 +52,21 @@ public class DebugPanelPlayerRepertoire : DebugPanel
         for (int i = 0; i < players.Count; i++)
         {
             ApplyPlayerTextColor(players[i]);
-            GUILayout.Label(repertoire.IsLocalPlayer(players[i].playerId).ToString());
+            GUILayout.Label(repertoire.IsLocalPlayer(players[i].PlayerId).ToString());
         }
         GUILayout.EndVertical();
+        ResetTextColor();
+
+
+        GUILayout.BeginVertical();
+        GUILayout.Label("SimPlayerId", DebugPanelStyles.boldText);
+        for (int i = 0; i < players.Count; i++)
+        {
+            ApplyPlayerTextColor(players[i]);
+            GUILayout.Label(players[i].SimPlayerId.ToString());
+        }
+        GUILayout.EndVertical();
+        ResetTextColor();
 
 
         GUILayout.EndHorizontal();
@@ -62,7 +74,7 @@ public class DebugPanelPlayerRepertoire : DebugPanel
 
     static void ApplyPlayerTextColor(PlayerInfo playerInfo)
     {
-        GUI.color = PlayerRepertoireSystem.instance.IsLocalPlayer(playerInfo.playerId) ? Color.yellow : Color.white;
+        GUI.color = PlayerRepertoireSystem.Instance.IsLocalPlayer(playerInfo.PlayerId) ? Color.yellow : Color.white;
     }
     static void ResetTextColor()
     {

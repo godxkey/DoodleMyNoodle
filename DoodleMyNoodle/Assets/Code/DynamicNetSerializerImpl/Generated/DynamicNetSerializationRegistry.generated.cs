@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class DynamicNetSerializationRegistry
 {
-    public static readonly ulong crc = 12194395416973295068;
+    public static readonly ulong crc = 4535193639646452642;
 
     public static readonly Type[] types = new Type[]
     {
@@ -52,6 +52,8 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(NetMessagePlayerRepertoireSync)
         ,
+        typeof(NetMessageSimPlayerIdAssignement)
+        ,
         typeof(NetMessageSimTick)
         ,
         typeof(PlayerId)
@@ -70,7 +72,17 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(SimInputKeycode)
         ,
+        typeof(SimInputPlayerCreate)
+        ,
+        typeof(SimInputPlayerRemove)
+        ,
+        typeof(SimInputPlayerUpdate)
+        ,
         typeof(SimPlayerId)
+        ,
+        typeof(SimPlayerInfo)
+        ,
+        typeof(SimPlayerInput)
         ,
         typeof(TestMessage)
         ,
@@ -209,6 +221,12 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_NetMessagePlayerRepertoireSync.GetNetBitSize(ref castedObj);
         }
         ,
+        [typeof(NetMessageSimPlayerIdAssignement)] = (obj) =>
+        {
+            NetMessageSimPlayerIdAssignement castedObj = (NetMessageSimPlayerIdAssignement)obj;
+            return StaticNetSerializer_NetMessageSimPlayerIdAssignement.GetNetBitSize(ref castedObj);
+        }
+        ,
         [typeof(NetMessageSimTick)] = (obj) =>
         {
             NetMessageSimTick castedObj = (NetMessageSimTick)obj;
@@ -263,10 +281,40 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_SimInputKeycode.GetNetBitSize(castedObj);
         }
         ,
+        [typeof(SimInputPlayerCreate)] = (obj) =>
+        {
+            SimInputPlayerCreate castedObj = (SimInputPlayerCreate)obj;
+            return StaticNetSerializer_SimInputPlayerCreate.GetNetBitSize(castedObj);
+        }
+        ,
+        [typeof(SimInputPlayerRemove)] = (obj) =>
+        {
+            SimInputPlayerRemove castedObj = (SimInputPlayerRemove)obj;
+            return StaticNetSerializer_SimInputPlayerRemove.GetNetBitSize(castedObj);
+        }
+        ,
+        [typeof(SimInputPlayerUpdate)] = (obj) =>
+        {
+            SimInputPlayerUpdate castedObj = (SimInputPlayerUpdate)obj;
+            return StaticNetSerializer_SimInputPlayerUpdate.GetNetBitSize(castedObj);
+        }
+        ,
         [typeof(SimPlayerId)] = (obj) =>
         {
             SimPlayerId castedObj = (SimPlayerId)obj;
             return StaticNetSerializer_SimPlayerId.GetNetBitSize(ref castedObj);
+        }
+        ,
+        [typeof(SimPlayerInfo)] = (obj) =>
+        {
+            SimPlayerInfo castedObj = (SimPlayerInfo)obj;
+            return StaticNetSerializer_SimPlayerInfo.GetNetBitSize(castedObj);
+        }
+        ,
+        [typeof(SimPlayerInput)] = (obj) =>
+        {
+            SimPlayerInput castedObj = (SimPlayerInput)obj;
+            return StaticNetSerializer_SimPlayerInput.GetNetBitSize(castedObj);
         }
         ,
         [typeof(TestMessage)] = (obj) =>
@@ -422,6 +470,12 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_NetMessagePlayerRepertoireSync.NetSerialize(ref castedObj, writer);
         }
         ,
+        [typeof(NetMessageSimPlayerIdAssignement)] = (obj, writer) =>
+        {
+            NetMessageSimPlayerIdAssignement castedObj = (NetMessageSimPlayerIdAssignement)obj;
+            StaticNetSerializer_NetMessageSimPlayerIdAssignement.NetSerialize(ref castedObj, writer);
+        }
+        ,
         [typeof(NetMessageSimTick)] = (obj, writer) =>
         {
             NetMessageSimTick castedObj = (NetMessageSimTick)obj;
@@ -476,10 +530,40 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_SimInputKeycode.NetSerialize(castedObj, writer);
         }
         ,
+        [typeof(SimInputPlayerCreate)] = (obj, writer) =>
+        {
+            SimInputPlayerCreate castedObj = (SimInputPlayerCreate)obj;
+            StaticNetSerializer_SimInputPlayerCreate.NetSerialize(castedObj, writer);
+        }
+        ,
+        [typeof(SimInputPlayerRemove)] = (obj, writer) =>
+        {
+            SimInputPlayerRemove castedObj = (SimInputPlayerRemove)obj;
+            StaticNetSerializer_SimInputPlayerRemove.NetSerialize(castedObj, writer);
+        }
+        ,
+        [typeof(SimInputPlayerUpdate)] = (obj, writer) =>
+        {
+            SimInputPlayerUpdate castedObj = (SimInputPlayerUpdate)obj;
+            StaticNetSerializer_SimInputPlayerUpdate.NetSerialize(castedObj, writer);
+        }
+        ,
         [typeof(SimPlayerId)] = (obj, writer) =>
         {
             SimPlayerId castedObj = (SimPlayerId)obj;
             StaticNetSerializer_SimPlayerId.NetSerialize(ref castedObj, writer);
+        }
+        ,
+        [typeof(SimPlayerInfo)] = (obj, writer) =>
+        {
+            SimPlayerInfo castedObj = (SimPlayerInfo)obj;
+            StaticNetSerializer_SimPlayerInfo.NetSerialize(castedObj, writer);
+        }
+        ,
+        [typeof(SimPlayerInput)] = (obj, writer) =>
+        {
+            SimPlayerInput castedObj = (SimPlayerInput)obj;
+            StaticNetSerializer_SimPlayerInput.NetSerialize(castedObj, writer);
         }
         ,
         [typeof(TestMessage)] = (obj, writer) =>
@@ -658,96 +742,138 @@ public static class DynamicNetSerializationRegistry
         ,
         [21] = (reader) =>
         {
+            NetMessageSimPlayerIdAssignement obj = new NetMessageSimPlayerIdAssignement();
+            StaticNetSerializer_NetMessageSimPlayerIdAssignement.NetDeserialize(ref obj, reader);
+            return obj;
+        }
+        ,
+        [22] = (reader) =>
+        {
             NetMessageSimTick obj = new NetMessageSimTick();
             StaticNetSerializer_NetMessageSimTick.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
-        [22] = (reader) =>
+        [23] = (reader) =>
         {
             PlayerId obj = new PlayerId();
             StaticNetSerializer_PlayerId.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
-        [23] = (reader) =>
+        [24] = (reader) =>
         {
             PlayerInfo obj = new PlayerInfo();
             StaticNetSerializer_PlayerInfo.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [24] = (reader) =>
+        [25] = (reader) =>
         {
             SimBlueprintId obj = new SimBlueprintId();
             StaticNetSerializer_SimBlueprintId.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
-        [25] = (reader) =>
+        [26] = (reader) =>
         {
             SimCommandInjectBlueprint obj = new SimCommandInjectBlueprint();
             StaticNetSerializer_SimCommandInjectBlueprint.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [26] = (reader) =>
+        [27] = (reader) =>
         {
             SimCommandLoadScene obj = new SimCommandLoadScene();
             StaticNetSerializer_SimCommandLoadScene.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [27] = (reader) =>
+        [28] = (reader) =>
         {
             SimCommandLog obj = new SimCommandLog();
             StaticNetSerializer_SimCommandLog.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [28] = (reader) =>
+        [29] = (reader) =>
         {
             SimEntityId obj = new SimEntityId();
             StaticNetSerializer_SimEntityId.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
-        [29] = (reader) =>
+        [30] = (reader) =>
         {
             SimInputKeycode obj = new SimInputKeycode();
             StaticNetSerializer_SimInputKeycode.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [30] = (reader) =>
+        [31] = (reader) =>
+        {
+            SimInputPlayerCreate obj = new SimInputPlayerCreate();
+            StaticNetSerializer_SimInputPlayerCreate.NetDeserialize(obj, reader);
+            return obj;
+        }
+        ,
+        [32] = (reader) =>
+        {
+            SimInputPlayerRemove obj = new SimInputPlayerRemove();
+            StaticNetSerializer_SimInputPlayerRemove.NetDeserialize(obj, reader);
+            return obj;
+        }
+        ,
+        [33] = (reader) =>
+        {
+            SimInputPlayerUpdate obj = new SimInputPlayerUpdate();
+            StaticNetSerializer_SimInputPlayerUpdate.NetDeserialize(obj, reader);
+            return obj;
+        }
+        ,
+        [34] = (reader) =>
         {
             SimPlayerId obj = new SimPlayerId();
             StaticNetSerializer_SimPlayerId.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
-        [31] = (reader) =>
+        [35] = (reader) =>
+        {
+            SimPlayerInfo obj = new SimPlayerInfo();
+            StaticNetSerializer_SimPlayerInfo.NetDeserialize(obj, reader);
+            return obj;
+        }
+        ,
+        [36] = (reader) =>
+        {
+            SimPlayerInput obj = new SimPlayerInput();
+            StaticNetSerializer_SimPlayerInput.NetDeserialize(obj, reader);
+            return obj;
+        }
+        ,
+        [37] = (reader) =>
         {
             TestMessage obj = new TestMessage();
             StaticNetSerializer_TestMessage.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [32] = (reader) =>
+        [38] = (reader) =>
         {
             TestMessageAnimal obj = new TestMessageAnimal();
             StaticNetSerializer_TestMessageAnimal.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [33] = (reader) =>
+        [39] = (reader) =>
         {
             TestMessageCat obj = new TestMessageCat();
             StaticNetSerializer_TestMessageCat.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [34] = (reader) =>
+        [40] = (reader) =>
         {
             TestMessageDog obj = new TestMessageDog();
             StaticNetSerializer_TestMessageDog.NetDeserialize(obj, reader);

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class ChatSystem : GameSystem<ChatSystem>
 {
-    public override bool isSystemReady => true;
+    public override bool SystemReady => true;
     public event Action<ChatLine> onNewLine;
 
     public override void OnGameReady()

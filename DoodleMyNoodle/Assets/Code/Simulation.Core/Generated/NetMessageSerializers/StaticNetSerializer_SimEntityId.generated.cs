@@ -8,17 +8,17 @@ public static class StaticNetSerializer_SimEntityId
     public static int GetNetBitSize(ref SimEntityId obj)
     {
         int result = 0;
-        result += StaticNetSerializer_UInt16.GetNetBitSize(ref obj.value);
+        result += StaticNetSerializer_UInt16.GetNetBitSize(ref obj.Value);
         return result;
     }
 
     public static void NetSerialize(ref SimEntityId obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_UInt16.NetSerialize(ref obj.value, writer);
+        StaticNetSerializer_UInt16.NetSerialize(ref obj.Value, writer);
     }
 
     public static void NetDeserialize(ref SimEntityId obj, BitStreamReader reader)
     {
-        StaticNetSerializer_UInt16.NetDeserialize(ref obj.value, reader);
+        StaticNetSerializer_UInt16.NetDeserialize(ref obj.Value, reader);
     }
 }

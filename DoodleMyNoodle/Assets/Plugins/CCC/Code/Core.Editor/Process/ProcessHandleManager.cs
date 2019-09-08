@@ -7,20 +7,20 @@ using UnityEngine;
 
 internal class ProcessHandleManager
 {
-    static List<ProcessHandle> handles = new List<ProcessHandle>();
-    public static ReadOnlyCollection<ProcessHandle> handlesReadOnly = handles.AsReadOnly();
-    static bool updateRegistered = false;
+    static List<ProcessHandle> _handles = new List<ProcessHandle>();
+    public static ReadOnlyList<ProcessHandle> Handles => _handles.AsReadOnlyNoAlloc();
 
-    static int updateIterator;
+    static bool _updateRegistered = false;
+    static int _updateIterator;
 
     public static void RegisterHandle(ProcessHandle handle)
     {
-        handles.Add(handle);
+        _handles.Add(handle);
 
-        if (updateRegistered == false)
+        if (_updateRegistered == false)
         {
             EditorApplication.update += EditorUpdate;
-            updateRegistered = true;
+            _updateRegistered = true;
         }
 
         Save();
@@ -28,13 +28,13 @@ internal class ProcessHandleManager
 
     public static void UnregisterHandle(ProcessHandle handle)
     {
-        handles.RemoveWithLastSwap(handle);
-        updateIterator--;
+        _handles.RemoveWithLastSwap(handle);
+        _updateIterator--;
 
-        if (handles.Count == 0 && updateRegistered)
+        if (_handles.Count == 0 && _updateRegistered)
         {
             EditorApplication.update -= EditorUpdate;
-            updateRegistered = false;
+            _updateRegistered = false;
         }
 
         Save();
@@ -42,13 +42,13 @@ internal class ProcessHandleManager
 
     static void EditorUpdate()
     {
-        for (updateIterator = 0; updateIterator < handles.Count; updateIterator++)
+        for (_updateIterator = 0; _updateIterator < _handles.Count; _updateIterator++)
         {
-            ProcessHandle handle = handles[updateIterator];
+            ProcessHandle handle = _handles[_updateIterator];
 
-            if (handle.hasExited)
+            if (handle.HasExited)
             {
-                handle.onExitAction?.Invoke();
+                handle.OnExitAction?.Invoke();
                 UnregisterHandle(handle);
             }
         }
@@ -75,11 +75,11 @@ internal class ProcessHandleManager
 
     static void Save()
     {
-        EditorPrefs.SetInt("ProcessHandleCount", handles.Count);
-        for (int i = 0; i < handles.Count; i++)
+        EditorPrefs.SetInt("ProcessHandleCount", _handles.Count);
+        for (int i = 0; i < _handles.Count; i++)
         {
-            EditorPrefs.SetInt($"ProcessHandleProcessId-{i}", handles[i].process.Id);
-            EditorPrefs.SetInt($"ProcessHandleCustomId-{i}", handles[i].customId);
+            EditorPrefs.SetInt($"ProcessHandleProcessId-{i}", _handles[i].Process.Id);
+            EditorPrefs.SetInt($"ProcessHandleCustomId-{i}", _handles[i].CustomId);
             //UnityEngine.Debug.Log($"Saved:  ProcessHandleProcessId-{i}: {handles[i].process.Id} |   ProcessHandleCustomId-{i}: {handles[i].customId}");
         }
     }

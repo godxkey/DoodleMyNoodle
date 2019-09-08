@@ -8,7 +8,8 @@ public class DebugPanelRegistry
     {
         new DebugPanelGameState(),
         new DebugPanelPlayerRepertoire(),
+        new DebugPanelSimPlayers(),
         new DebugPanelClientSimController(),
-        new DebugPanelSimEntities()
+        new DebugPanelSimEntities(),
     };
 }

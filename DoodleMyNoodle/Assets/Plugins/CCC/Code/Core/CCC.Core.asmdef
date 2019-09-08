@@ -1,14 +1,14 @@
 {
     "name": "CCC.Core",
     "references": [
-        "DOTweenModules"
+        "GUID:71a9cd6dc501bea45942ce8c4a356c95"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": []
 }

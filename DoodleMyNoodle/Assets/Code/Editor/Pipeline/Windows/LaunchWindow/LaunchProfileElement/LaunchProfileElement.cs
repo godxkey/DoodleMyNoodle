@@ -21,7 +21,7 @@ public class LaunchProfileElement : VisualElement
 
     bool myStandaloneIsRunning
         => _standaloneProcessHandle != null
-        && !_standaloneProcessHandle.hasExited;
+        && !_standaloneProcessHandle.HasExited;
 
     bool anyEditorIsRunning
         => Application.isPlaying;
@@ -204,7 +204,7 @@ public class LaunchProfileElement : VisualElement
     {
         if (_standaloneProcessHandle != null)
         {
-            _standaloneProcessHandle.process.Kill();
+            _standaloneProcessHandle.Process.Kill();
         }
     }
 
@@ -213,10 +213,10 @@ public class LaunchProfileElement : VisualElement
         if (playerProfile == null)
             return;
 
-        foreach (ProcessHandle handle in ProcessHandle.activeHandles)
+        foreach (ProcessHandle handle in ProcessHandle.ActiveHandles)
         {
             ProcessHandle standaloneProcessHandle = handle as ProcessHandle;
-            if (standaloneProcessHandle != null && handle.customId == playerProfile.localId)
+            if (standaloneProcessHandle != null && handle.CustomId == playerProfile.localId)
             {
                 BindToStandaloneProcess(standaloneProcessHandle);
                 return;
@@ -227,7 +227,7 @@ public class LaunchProfileElement : VisualElement
     void BindToStandaloneProcess(ProcessHandle processHandle)
     {
         _standaloneProcessHandle = processHandle;
-        _standaloneProcessHandle.onExitAction = OnStandaloneProcessExit;
+        _standaloneProcessHandle.OnExitAction = OnStandaloneProcessExit;
         UpdateContent();
     }
 

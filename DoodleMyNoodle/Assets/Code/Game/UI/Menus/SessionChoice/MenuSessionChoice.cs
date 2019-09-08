@@ -41,7 +41,7 @@ public class MenuSessionChoice : MonoBehaviour
         _joinButton.interactable = 
             _selectedSession != null &&
             _clientInterface != null &&
-            _clientInterface.isConnectingSession == false;
+            _clientInterface.IsConnectingSession == false;
     }
 
     void OnDestroy()
@@ -56,7 +56,7 @@ public class MenuSessionChoice : MonoBehaviour
         if (_clientInterface != null)
         {
             _clientInterface.onTerminate += OnOnlineInterfaceTerminated;
-            _clientInterface.onSessionListUpdated += OnSessionListUpdated;
+            _clientInterface.OnSessionListUpdated += OnSessionListUpdated;
             _clientInterface.GetAvailableSessions(ref _sessions);
         }
 
@@ -67,7 +67,7 @@ public class MenuSessionChoice : MonoBehaviour
     {
         if (_clientInterface != null)
         {
-            _clientInterface.onSessionListUpdated -= OnSessionListUpdated;
+            _clientInterface.OnSessionListUpdated -= OnSessionListUpdated;
             _clientInterface.onTerminate -= OnOnlineInterfaceTerminated;
             _clientInterface = null;
         }

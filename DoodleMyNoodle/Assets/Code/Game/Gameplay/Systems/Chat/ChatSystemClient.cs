@@ -8,7 +8,7 @@ public class ChatSystemClient : ChatSystem
     {
         base.OnGameReady();
 
-        _session = OnlineService.clientInterface.sessionClientInterface;
+        _session = OnlineService.clientInterface.SessionClientInterface;
         _session.RegisterNetMessageReceiver<NetMessageChatMessage>(OnNetMessageChatMessage);
     }
 
@@ -37,9 +37,9 @@ public class ChatSystemClient : ChatSystem
     void OnNetMessageChatMessage(NetMessageChatMessage chatMessage, INetworkInterfaceConnection source)
     {
         // Server tells us a new message should be displayed in the chat box!
-        PlayerInfo sourcePlayer = PlayerRepertoireSystem.instance.GetPlayerInfo(chatMessage.playerId);
+        PlayerInfo sourcePlayer = PlayerRepertoireSystem.Instance.GetPlayerInfo(chatMessage.playerId);
 
-        string playerName = sourcePlayer == null ? "ERROR UNKNOWN PLAYER" : sourcePlayer.playerName;
+        string playerName = sourcePlayer == null ? "ERROR UNKNOWN PLAYER" : sourcePlayer.PlayerName;
 
         AddNewLine(new ChatLine()
         {

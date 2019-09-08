@@ -13,13 +13,13 @@ public class TileHighlightManager : GameMonoBehaviour
 
     public override void OnGameUpdate()
     {
-        if (!SimulationPublic.isInitialized)
+        if (!SimulationView.IsInitialized)
             return;
 
         int i = 0;
 
         // activate and position 1 highlight for every grid walker
-        SimulationPublic.ForEveryEntityWithComponent((SimGridWalkerComponent gridWalker) =>
+        foreach (SimGridWalkerComponent gridWalker in SimulationView.EntitiesWithComponent<SimGridWalkerComponent>())
         {
             if (i >= _highlights.Count)
                 _highlights.Add(highlightPrefab.Duplicate());
@@ -27,7 +27,7 @@ public class TileHighlightManager : GameMonoBehaviour
             _highlights[i].SetActive(true);
             _highlights[i].transform.position = gridWalker.tileId.GetWorldPosition3D().ToUnityVec();
             i++;
-        });
+        }
 
         // deactivate excedent highlights
         for (; i < _highlights.Count; i++)

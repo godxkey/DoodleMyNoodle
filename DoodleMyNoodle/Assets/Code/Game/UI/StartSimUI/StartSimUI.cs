@@ -47,10 +47,10 @@ public class StartSimUI : GameMonoBehaviour
 
     void StartSimWithLevel(string level)
     {
-        ((SimulationControllerServer)SimulationControllerServer.instance).allowSimToTick = true;
+        ((SimulationControllerServer)SimulationControllerServer.Instance).allowSimToTick = true;
         if (!level.IsNullOrEmpty())
         {
-            SimulationControllerServer.instance.SubmitInput(new SimCommandLoadScene() { sceneName = level });
+            SimulationControllerServer.Instance.SubmitInput(new SimCommandLoadScene() { sceneName = level });
         }
 
         PlayerPrefs.SetString("startLevel", level);

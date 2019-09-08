@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class OnlineServerInterface : OnlineInterface
 {
-    public override bool isServerType => true;
-    public SessionServerInterface sessionServerInterface => sessionInterface == null ? null : (SessionServerInterface)sessionInterface;
+    public override bool IsServerType => true;
+    public SessionServerInterface sessionServerInterface => SessionInterface == null ? null : (SessionServerInterface)SessionInterface;
 
     public bool isCreatingSession { get; private set; }
 
@@ -27,7 +27,7 @@ public class OnlineServerInterface : OnlineInterface
 
         if (success)
         {
-            sessionInterface = new SessionServerInterface(_network);
+            SessionInterface = new SessionServerInterface(_network);
         }
 
         _onSessionCreatedCallback?.Invoke(success, message);

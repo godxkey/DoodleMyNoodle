@@ -20,4 +20,11 @@ public static class MonoBehaviourExtensions
 
         action.Invoke();
     }
+
+
+    public static bool GetComponent<T>(this Component component, out T result)
+    {
+        result = component.GetComponent<T>();
+        return result != null;
+    }
 }

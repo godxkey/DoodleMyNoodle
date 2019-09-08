@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 
 [NetSerializable]
+[System.Serializable]
 public class PlayerInfo
 {
     public PlayerInfo() { }
     public PlayerInfo(PlayerInfo other)
     {
-        playerName = other.playerName;
-        playerId = other.playerId;
-        isServer = other.isServer;
+        PlayerName = other.PlayerName;
+        PlayerId = other.PlayerId;
+        IsServer = other.IsServer;
+        SimPlayerId = other.SimPlayerId;
     }
 
-    public string playerName;
-    public PlayerId playerId;
-    public bool isServer;
+    public string       PlayerName;
+    public PlayerId     PlayerId;
+    public bool         IsServer;
+    public SimPlayerId  SimPlayerId;
 }

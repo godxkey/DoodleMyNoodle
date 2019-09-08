@@ -25,7 +25,7 @@ public class GameStateInGameOnline : GameStateInGameBase
             return;
         }
 
-        sessionInterface = OnlineService.onlineInterface.sessionInterface;
+        sessionInterface = OnlineService.onlineInterface.SessionInterface;
 
         if (sessionInterface == null)
         {
@@ -34,8 +34,8 @@ public class GameStateInGameOnline : GameStateInGameBase
             return;
         }
 
-        sessionInterface = OnlineService.onlineInterface.sessionInterface;
-        sessionInterface.onTerminate += OnSessionInterfaceTerminated;
+        sessionInterface = OnlineService.onlineInterface.SessionInterface;
+        sessionInterface.OnTerminate += OnSessionInterfaceTerminated;
     }
 
 
@@ -57,7 +57,7 @@ public class GameStateInGameOnline : GameStateInGameBase
     {
         if (sessionInterface != null)
         {
-            sessionInterface.onTerminate -= OnSessionInterfaceTerminated;
+            sessionInterface.OnTerminate -= OnSessionInterfaceTerminated;
             sessionInterface = null;
         }
     }
