@@ -59,10 +59,9 @@ public class SaveService : MonoCoreService<SaveService>
         }
         catch (Exception e)
         {
-            Debug.LogError("Failed to deserialize the following file:\n" + path + "\n\nError:\n" + e.Message);
+            DebugService.LogError("Failed to deserialize the following file:\n" + path + "\n\nError:\n" + e.Message);
         }
         file.Close();
-
 
         if (onComplete != null)
             MainThreadService.AddMainThreadCallbackFromThread(delegate ()
@@ -71,7 +70,7 @@ public class SaveService : MonoCoreService<SaveService>
             });
     }
 
-    static private void ErrorLogThreadMethodInNonPlaying() { Debug.LogError("Cannot use " + nameof(SaveService) + "'s threaded methods when the game is not running"); }
+    static private void ErrorLogThreadMethodInNonPlaying() { DebugService.LogError("Cannot use " + nameof(SaveService) + "'s threaded methods when the game is not running"); }
 
     public void InstantSave(string path, object graph)
     {

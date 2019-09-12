@@ -5,6 +5,7 @@ using UnityEngine;
 public class DebugService : MonoCoreService<DebugService>
 {
     const bool log = false;
+    const string DELAYED_TO_MAIN_THREAD_SUFFIX = "   (Log was deferred to main thread)";
 
     static bool forwardToNativeUnityDebug = true;
     static System.IO.StreamWriter logFile = null;
@@ -92,40 +93,61 @@ public class DebugService : MonoCoreService<DebugService>
 
     public static void Log(string message, bool displayOnScreen = false)
     {
-        if (forwardToNativeUnityDebug)
-            Debug.Log(message);
-        else
-            _Log(message);
-
-        if (displayOnScreen)
+        if (ThreadUtility.IsMainThread)
         {
-            DebugScreenMessage.DisplayMessage(message);
+            if (forwardToNativeUnityDebug)
+                Debug.Log(message);
+            else
+                _Log(message);
+
+            if (displayOnScreen)
+            {
+                DebugScreenMessage.DisplayMessage(message);
+            }
+        }
+        else
+        {
+            MainThreadService.AddMainThreadCallbackFromThread(() => Log(message + DELAYED_TO_MAIN_THREAD_SUFFIX, displayOnScreen));
         }
     }
 
     public static void LogError(string message, bool displayOnScreen = false)
     {
-        if (forwardToNativeUnityDebug)
-            Debug.LogError(message);
-        else
-            _LogError(message);
-
-        if (displayOnScreen)
+        if (ThreadUtility.IsMainThread)
         {
-            DebugScreenMessage.DisplayMessage(message);
+            if (forwardToNativeUnityDebug)
+                Debug.LogError(message);
+            else
+                _LogError(message);
+
+            if (displayOnScreen)
+            {
+                DebugScreenMessage.DisplayMessage(message);
+            }
+        }
+        else
+        {
+            MainThreadService.AddMainThreadCallbackFromThread(() => LogError(message + DELAYED_TO_MAIN_THREAD_SUFFIX, displayOnScreen));
         }
     }
 
     public static void LogWarning(string message, bool displayOnScreen = false)
     {
-        if (forwardToNativeUnityDebug)
-            Debug.LogWarning(message);
-        else
-            _LogWarning(message);
-
-        if (displayOnScreen)
+        if (ThreadUtility.IsMainThread)
         {
-            DebugScreenMessage.DisplayMessage(message);
+            if (forwardToNativeUnityDebug)
+                Debug.LogWarning(message);
+            else
+                _LogWarning(message);
+
+            if (displayOnScreen)
+            {
+                DebugScreenMessage.DisplayMessage(message);
+            }
+        }
+        else
+        {
+            MainThreadService.AddMainThreadCallbackFromThread(() => Log(message + DELAYED_TO_MAIN_THREAD_SUFFIX, displayOnScreen));
         }
     }
 
