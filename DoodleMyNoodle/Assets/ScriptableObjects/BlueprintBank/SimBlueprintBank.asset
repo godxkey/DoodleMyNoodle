@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f7cb09269039e245a8d2b68ff46d876, type: 3}
+  m_Name: SimBlueprintBank
+  m_EditorClassIdentifier: 
+  _prefabBlueprints:
+  - BlueprintId:
+      Type: 1
+      Value: ae2d25a66f815824e98df5bdf7c7da25
+    Prefab: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
+      type: 3}
+    EntityName: PlayerCharacter
+  - BlueprintId:
+      Type: 1
+      Value: 58c51afadcca8a14ebd8323ac7a49dcf
+    Prefab: {fileID: -7115400988331562053, guid: 58c51afadcca8a14ebd8323ac7a49dcf,
+      type: 3}
+    EntityName: Ball Entity Prefab
+  - BlueprintId:
+      Type: 1
+      Value: 41e300480790e7b4b8ead30d0b5ff7a7
+    Prefab: {fileID: 1368924192284294072, guid: 41e300480790e7b4b8ead30d0b5ff7a7,
+      type: 3}
+    EntityName: Bullet

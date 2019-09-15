@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class SimGridTransformComponent : SimTransformComponent
 {
-    public SimTileId tileId => SimTileId.FromWorldPosition(worldPosition);
+    public SimTileId TileId => SimTileId.FromWorldPosition(WorldPosition);
 }

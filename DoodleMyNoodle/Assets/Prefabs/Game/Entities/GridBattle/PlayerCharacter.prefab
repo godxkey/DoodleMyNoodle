@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 8908235613229724288}
   - component: {fileID: 8908235613229724287}
   - component: {fileID: -4046522282015926349}
+  - component: {fileID: 5644787936725170939}
   m_Layer: 0
   m_Name: PlayerCharacter
   m_TagString: Untagged
@@ -174,9 +175,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af4c3a90ba5d9d74daf80885fac06c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed:
+  Speed:
     m_rawValue: 17179869184
-  path: []
+  Path: []
 --- !u!114 &-4046522282015926349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,3 +190,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dc99c56d9bb79c4b81aa4f06471cbdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerInControl:
+    Value: 0
+--- !u!114 &5644787936725170939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908235613229724289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eb056a9a1aaa6744a9ab1347e284a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BulletPrefab:
+    Type: 1
+    Value: 41e300480790e7b4b8ead30d0b5ff7a7

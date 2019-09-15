@@ -9,14 +9,17 @@ using UnityEngine;
 public class SimBlueprintBank : ScriptableObject, ISimModuleBlueprintBank
 {
     [System.Serializable]
-    class PrefabAndBlueprintPair
+    public struct PrefabData
     {
-        public SimBlueprintId blueprintId;
-        public SimEntity prefab;
+        public SimBlueprintId BlueprintId;
+        public SimEntity Prefab;
+
+        [HideInInspector] // used for editor display purposes
+        public string EntityName;
     }
 
     [SerializeField]
-    private List<PrefabAndBlueprintPair> prefabBlueprints;
+    private List<PrefabData> _prefabBlueprints = new List<PrefabData>();
 
     public SimBlueprint GetBlueprint(in SimBlueprintId blueprintId)
     {
@@ -25,17 +28,17 @@ public class SimBlueprintBank : ScriptableObject, ISimModuleBlueprintBank
             default:
             case SimBlueprintId.BlueprintType.Invalid:
             {
-                return null;
+                return default;
             }
 
             case SimBlueprintId.BlueprintType.Prefab:
             {
-                for (int i = 0; i < prefabBlueprints.Count; i++)
+                for (int i = 0; i < _prefabBlueprints.Count; i++)
                 {
-                    if (prefabBlueprints[i].blueprintId.Value == blueprintId.Value)
-                        return new SimBlueprint(blueprintId, prefabBlueprints[i].prefab);
+                    if (_prefabBlueprints[i].BlueprintId.Value == blueprintId.Value)
+                        return new SimBlueprint(blueprintId, _prefabBlueprints[i].Prefab);
                 }
-                return null;
+                return default;
             }
 
             case SimBlueprintId.BlueprintType.SceneGameObject:
@@ -49,4 +52,13 @@ public class SimBlueprintBank : ScriptableObject, ISimModuleBlueprintBank
     public void Dispose()
     {
     }
+
+
+#if UNITY_EDITOR
+    public List<PrefabData> PrefabData_Editor
+    {
+        get => _prefabBlueprints;
+        set => _prefabBlueprints = value;
+    }
+#endif
 }

@@ -16,8 +16,11 @@ public class SimCompDemoBallMove : SimComponent, ISimPawnInputHandler, ISimTicka
             {
                 case KeyCode.Space:
                 {
-                    FixVector3 dir = Simulation.Random.Direction3D();
-                    SimTransform.localPosition += dir;
+                    if (inputKeycode.state == SimInputKeycode.State.Pressed)
+                    {
+                        FixVector3 dir = Simulation.Random.Direction3D();
+                        SimTransform.LocalPosition += dir;
+                    }
                     break;
                 }
 
@@ -25,7 +28,7 @@ public class SimCompDemoBallMove : SimComponent, ISimPawnInputHandler, ISimTicka
                 {
                     if (inputKeycode.state == SimInputKeycode.State.Pressed)
                         inputDirection += FixVector3.right;
-                    else
+                    else if (inputKeycode.state == SimInputKeycode.State.Released)
                         inputDirection -= FixVector3.right;
                     break;
                 }
@@ -34,7 +37,7 @@ public class SimCompDemoBallMove : SimComponent, ISimPawnInputHandler, ISimTicka
                 {
                     if (inputKeycode.state == SimInputKeycode.State.Pressed)
                         inputDirection += FixVector3.left;
-                    else
+                    else if (inputKeycode.state == SimInputKeycode.State.Released)
                         inputDirection -= FixVector3.left;
                     break;
                 }
@@ -43,7 +46,7 @@ public class SimCompDemoBallMove : SimComponent, ISimPawnInputHandler, ISimTicka
                 {
                     if (inputKeycode.state == SimInputKeycode.State.Pressed)
                         inputDirection += FixVector3.forward;
-                    else
+                    else if (inputKeycode.state == SimInputKeycode.State.Released)
                         inputDirection -= FixVector3.forward;
                     break;
                 }
@@ -52,7 +55,7 @@ public class SimCompDemoBallMove : SimComponent, ISimPawnInputHandler, ISimTicka
                 {
                     if (inputKeycode.state == SimInputKeycode.State.Pressed)
                         inputDirection += FixVector3.backward;
-                    else
+                    else if (inputKeycode.state == SimInputKeycode.State.Released)
                         inputDirection -= FixVector3.backward;
                     break;
                 }
@@ -66,6 +69,6 @@ public class SimCompDemoBallMove : SimComponent, ISimPawnInputHandler, ISimTicka
 
     public void OnSimTick()
     {
-        SimTransform.localPosition += inputDirection * speed * Simulation.DeltaTime;
+        SimTransform.LocalPosition += inputDirection * speed * Simulation.DeltaTime;
     }
 }

@@ -81,54 +81,73 @@ public class SimModuleEntityManager : IDisposable
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal SimEntity Instantiate(SimBlueprint blueprint)
+    internal SimEntity Instantiate(in SimBlueprint blueprint)
     {
-        GameObject newGameObject = GameObject.Instantiate(blueprint.prefab.gameObject);
-        return OnInstantiated_Internal(blueprint.id, newGameObject); ;
+        if (!ValidateBlueprint(blueprint))
+            return null;
+        GameObject newGameObject = GameObject.Instantiate(blueprint.Prefab.gameObject);
+        return OnInstantiated_Internal(blueprint.Id, newGameObject); ;
     }
     /// <summary>
     /// Instantiate entity from the blueprint and inject it into the simulation
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal SimEntity Instantiate(SimBlueprint blueprint, Transform parent)
+    internal SimEntity Instantiate(in SimBlueprint blueprint, Transform parent)
     {
-        GameObject newGameObject = GameObject.Instantiate(blueprint.prefab.gameObject, parent);
-        return OnInstantiated_Internal(blueprint.id, newGameObject);
+        if (!ValidateBlueprint(blueprint))
+            return null;
+        GameObject newGameObject = GameObject.Instantiate(blueprint.Prefab.gameObject, parent);
+        return OnInstantiated_Internal(blueprint.Id, newGameObject);
     }
     /// <summary>
     /// Instantiate entity from the blueprint and inject it into the simulation
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal SimEntity Instantiate(SimBlueprint blueprint, in FixVector3 position, in FixQuaternion rotation)
+    internal SimEntity Instantiate(in SimBlueprint blueprint, in FixVector3 position, in FixQuaternion rotation)
     {
-        GameObject newGameObject = GameObject.Instantiate(blueprint.prefab.gameObject, position.ToUnityVec(), rotation.ToUnityQuat());
-        return OnInstantiated_Internal(blueprint.id, newGameObject, position, rotation);
+        if (!ValidateBlueprint(blueprint))
+            return null;
+        GameObject newGameObject = GameObject.Instantiate(blueprint.Prefab.gameObject, position.ToUnityVec(), rotation.ToUnityQuat());
+        return OnInstantiated_Internal(blueprint.Id, newGameObject, position, rotation);
     }
     /// <summary>
     /// Instantiate entity from the blueprint and inject it into the simulation
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal SimEntity Instantiate(SimBlueprint blueprint, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
+    internal SimEntity Instantiate(in SimBlueprint blueprint, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
     {
-        GameObject newGameObject = GameObject.Instantiate(blueprint.prefab.gameObject, position.ToUnityVec(), rotation.ToUnityQuat(), parent.UnityTransform);
-        return OnInstantiated_Internal(blueprint.id, newGameObject, position, rotation);
+        if (!ValidateBlueprint(blueprint))
+            return null;
+        GameObject newGameObject = GameObject.Instantiate(blueprint.Prefab.gameObject, position.ToUnityVec(), rotation.ToUnityQuat(), parent.UnityTransform);
+        return OnInstantiated_Internal(blueprint.Id, newGameObject, position, rotation);
     }
 
-    SimEntity OnInstantiated_Internal(SimBlueprintId blueprintId, GameObject newGameObject, in FixVector3 position, in FixQuaternion rotation)
+    bool ValidateBlueprint(in SimBlueprint bp)
+    {
+        if (bp.IsValid)
+            return true;
+        else
+        {
+            Debug.LogWarning($"Invalid blueprint with Id: {bp.Id}. Try updating the blueprint bank with Tools > UpdateSimBlueprintBank.");
+            return false;
+        }
+    }
+
+    SimEntity OnInstantiated_Internal(in SimBlueprintId blueprintId, GameObject newGameObject, in FixVector3 position, in FixQuaternion rotation)
     {
         SimTransformComponent simTransform = newGameObject.GetComponent<SimTransformComponent>();
         if (simTransform)
         {
-            simTransform.localPosition = position;
-            simTransform.localRotation = rotation;
+            simTransform.LocalPosition = position;
+            simTransform.LocalRotation = rotation;
         }
 
         return OnInstantiated_Internal(blueprintId, newGameObject);
     }
-    SimEntity OnInstantiated_Internal(SimBlueprintId blueprintId, GameObject newGameObject)
+    SimEntity OnInstantiated_Internal(in SimBlueprintId blueprintId, GameObject newGameObject)
     {
         SimEntity newEntity = newGameObject.GetComponent<SimEntity>();
         InjectNewEntityIntoSim(newEntity, blueprintId);
@@ -141,7 +160,7 @@ public class SimModuleEntityManager : IDisposable
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal void InjectNewEntityIntoSim(SimEntity newEntity, SimBlueprintId blueprintId)
+    internal void InjectNewEntityIntoSim(SimEntity newEntity, in SimBlueprintId blueprintId)
     {
         newEntity.BlueprintId = blueprintId;
         newEntity.EntityId = SimModules.World.NextEntityId;

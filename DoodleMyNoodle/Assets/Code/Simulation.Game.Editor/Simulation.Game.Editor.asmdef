@@ -1,0 +1,18 @@
+{
+    "name": "Simulation.Game.Editor",
+    "references": [
+        "GUID:7e29b333690cedd478380f8826492a9c",
+        "GUID:f5823330910b6a446a2095347107fb53",
+        "GUID:a695b5a3e8c39e14fb9d86d3205fadf9"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

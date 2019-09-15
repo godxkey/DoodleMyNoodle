@@ -27,17 +27,34 @@ public class SimModuleSceneLoader : IDisposable
             GameObject[] gameobjects = scene.GetRootGameObjects();
 
             // fbessette: Apparently, in standalone build, the hierarchy is all desorganised ... sort the gameobjects by name :(
-
             Array.Sort(gameobjects, (a, b) => string.Compare(a.name, b.name));
 
             for (int i = 0; i < gameobjects.Length; i++)
             {
-                SimEntity newEntity = gameobjects[i].GetComponent<SimEntity>();
-                if (newEntity)
-                {
-                    SimModules.EntityManager.InjectNewEntityIntoSim(newEntity, new SimBlueprintId(SimBlueprintId.BlueprintType.SceneGameObject, "TODO"));
-                }
+                InjectSceneGameObjectIntoSim(gameobjects[i]);
             }
         });
+    }
+
+    void InjectSceneGameObjectIntoSim(GameObject gameObject)
+    {
+        SimEntity simEntity = gameObject.GetComponent<SimEntity>();
+
+        if(simEntity)
+        {
+            SimBlueprintId blueprintId = SimBlueprintUtility.GetSimBlueprintIdFromBakedSceneGameObject(simEntity.gameObject);
+            SimModules.EntityManager.InjectNewEntityIntoSim(simEntity, blueprintId);
+
+            // If the entity has a SimTranform, we should look for child-entities that need to be injected into the sim as well
+            SimTransformComponent simTransform = simEntity.SimTransform;
+            if (simTransform)
+            {
+                Transform unityTransform = simEntity.UnityTransform;
+                for (int i = 0; i < unityTransform.childCount; i++)
+                {
+                    InjectSceneGameObjectIntoSim(unityTransform.GetChild(i).gameObject);
+                }
+            }
+        }
     }
 }

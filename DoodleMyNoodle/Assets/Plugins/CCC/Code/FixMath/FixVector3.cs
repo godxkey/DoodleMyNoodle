@@ -624,4 +624,6 @@ public struct FixVector3 : IEquatable<FixVector3>
     public static readonly FixVector3 down = new FixVector3 { y = -F64.C1 };
     public static readonly FixVector3 forward = new FixVector3 { z = F64.C1 };
     public static readonly FixVector3 backward = new FixVector3 { z = -F64.C1 };
+
+    public static explicit operator FixVector2(in FixVector3 v) => new FixVector2(v.x, v.y);
 }

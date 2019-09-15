@@ -32,9 +32,9 @@ public class SimTransformEditor : Editor
             {
                 Undo.RecordObject(unityTransform, "Change UnityTransform");
 
-                unityTransform.localPosition = simTransform.localPosition.ToUnityVec();
-                unityTransform.localRotation = simTransform.localRotation.ToUnityQuat();
-                unityTransform.localScale = simTransform.localScale.ToUnityVec();
+                unityTransform.localPosition = simTransform.LocalPosition.ToUnityVec();
+                unityTransform.localRotation = simTransform.LocalRotation.ToUnityQuat();
+                unityTransform.localScale = simTransform.LocalScale.ToUnityVec();
 
                 PrefabUtility.RecordPrefabInstancePropertyModifications(target);
             }
@@ -44,17 +44,17 @@ public class SimTransformEditor : Editor
                 FixQuaternion localRotation = unityTransform.localRotation.ToFixQuat();
                 FixVector3 localScale = unityTransform.localScale.ToFixVec();
 
-                bool change = localPosition != simTransform.localPosition
-                            || localRotation != simTransform.localRotation
-                            || localScale != simTransform.localScale;
+                bool change = localPosition != simTransform.LocalPosition
+                            || localRotation != simTransform.LocalRotation
+                            || localScale != simTransform.LocalScale;
 
                 if (change)
                 {
                     Undo.RecordObject(target, "Change SimTransform");
 
-                    simTransform.localPosition = localPosition;
-                    simTransform.localRotation = localRotation;
-                    simTransform.localScale = localScale;
+                    simTransform.LocalPosition = localPosition;
+                    simTransform.LocalRotation = localRotation;
+                    simTransform.LocalScale = localScale;
 
                     PrefabUtility.RecordPrefabInstancePropertyModifications(target);
                 }

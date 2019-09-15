@@ -23,8 +23,8 @@ public struct SimBlueprintId
     public BlueprintType Type;
     public string Value;
 
-    public static readonly SimBlueprintId invalid = new SimBlueprintId(BlueprintType.Invalid, "");
-    public bool IsValid => Value != invalid.Value;
+    public static readonly SimBlueprintId Invalid = new SimBlueprintId(BlueprintType.Invalid, "");
+    public bool IsValid => Value != Invalid.Value;
 
 
     public override bool Equals(object obj)

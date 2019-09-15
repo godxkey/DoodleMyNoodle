@@ -25,7 +25,7 @@ public class TileHighlightManager : GameMonoBehaviour
                 _highlights.Add(highlightPrefab.Duplicate());
 
             _highlights[i].SetActive(true);
-            _highlights[i].transform.position = gridWalker.tileId.GetWorldPosition3D().ToUnityVec();
+            _highlights[i].transform.position = gridWalker.TileId.GetWorldPosition3D().ToUnityVec();
             i++;
         }
 

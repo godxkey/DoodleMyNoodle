@@ -14,8 +14,8 @@ public class SimBlueprintIdDrawer : PropertyDrawer
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        SerializedProperty typeProperty = property.FindPropertyRelative("type");
-        SerializedProperty valueProperty = property.FindPropertyRelative("value");
+        SerializedProperty typeProperty = property.FindPropertyRelative(nameof(SimBlueprintId.Type));
+        SerializedProperty valueProperty = property.FindPropertyRelative(nameof(SimBlueprintId.Value));
         blueprintId.Value = new SimBlueprintId((SimBlueprintId.BlueprintType)typeProperty.intValue, valueProperty.stringValue);
         if (blueprintId.IsDirty)
         {
@@ -83,20 +83,20 @@ public class SimBlueprintIdDrawer : PropertyDrawer
     {
         if (gameObject == null)
         {
-            return SimBlueprintId.invalid;
+            return SimBlueprintId.Invalid;
         }
 
         if (gameObject.GetComponent<SimEntity>() == null)
         {
             Debug.LogWarning("Cannot set blueprint because gameobject doesn't have SimEntity component");
-            return SimBlueprintId.invalid;
+            return SimBlueprintId.Invalid;
         }
 
         if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(gameObject, out string guid, out long localId))
         {
-            return new SimBlueprintId(SimBlueprintId.BlueprintType.Prefab, guid);
+            return SimBlueprintUtility.GetSimBlueprintIdFromBakedPrefabGUID(guid);
         }
 
-        return SimBlueprintId.invalid;
+        return SimBlueprintId.Invalid;
     }
 }

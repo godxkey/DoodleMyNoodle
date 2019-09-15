@@ -14,117 +14,117 @@ public class SimTransformComponent : SimComponent
     FixVector3 _localScale = new FixVector3(1, 1, 1);
 
 
-    public FixVector3 localScale { get => _localScale; set { _localScale = value; DirtyCachedRelativeToSelfValues(); } }
-    public FixVector3 localPosition { get => _localPosition; set { _localPosition = value; DirtyCachedRelativeToSelfValues(); } }
-    public FixQuaternion localRotation { get => _localRotation; set { _localRotation = value; DirtyCachedRelativeToSelfValues(); } }
+    public FixVector3 LocalScale { get => _localScale; set { _localScale = value; DirtyCachedRelativeToSelfValues(); } }
+    public FixVector3 LocalPosition { get => _localPosition; set { _localPosition = value; DirtyCachedRelativeToSelfValues(); } }
+    public FixQuaternion LocalRotation { get => _localRotation; set { _localRotation = value; DirtyCachedRelativeToSelfValues(); } }
 
 
-    public FixMatrix localToWorldMatrix
+    public FixMatrix LocalToWorldMatrix
     {
         get
         {
             UpdateLocalToWorldMatrix();
-            return _localToWorldMatrix.val;
+            return _localToWorldMatrix.Val;
         }
     }
-    public FixMatrix worldToLocalMatrix
+    public FixMatrix WorldToLocalMatrix
     {
         get
         {
             UpdateWorldToLocalMatrix();
-            return _worldToLocalMatrix.val;
+            return _worldToLocalMatrix.Val;
         }
     }
-    public FixVector3 worldPosition
+    public FixVector3 WorldPosition
     {
         get
         {
-            if(parent == null)
+            if(Parent == null)
             {
                 return _localPosition;
             }
             else
             {
                 UpdateLocalToWorldMatrix();
-                return FixMatrix.TransformPoint(_localPosition, _localToWorldMatrix.val);
+                return FixMatrix.TransformPoint(_localPosition, _localToWorldMatrix.Val);
             }
         }
         set
         {
-            if (parent == null)
+            if (Parent == null)
             {
                 _localPosition = value;
             }
             else
             {
                 UpdateWorldToLocalMatrix();
-                _localPosition =  FixMatrix.TransformPoint(value, _worldToLocalMatrix.val);
+                _localPosition =  FixMatrix.TransformPoint(value, _worldToLocalMatrix.Val);
             }
         }
     }
 
-    public SimTransformComponent parent => UnityTransform.parent?.GetComponent<SimTransformComponent>();
+    public SimTransformComponent Parent => UnityTransform.parent?.GetComponent<SimTransformComponent>();
 
     void Update()
     {
         // VISUAL UPDATE
 
         // could be optimized later
-        UnityTransform.localPosition = localPosition.ToUnityVec();
-        UnityTransform.localRotation = localRotation.ToUnityQuat();
-        UnityTransform.localScale = localScale.ToUnityVec();
+        UnityTransform.localPosition = LocalPosition.ToUnityVec();
+        UnityTransform.localRotation = LocalRotation.ToUnityQuat();
+        UnityTransform.localScale = LocalScale.ToUnityVec();
     }
 
     void UpdateMatrix()
     {
-        if (_matrix.upToDate)
+        if (_matrix.UpToDate)
             return;
 
         Debug.Log("UpdateMatrix");
 
-        FixMatrix.CreateTRS(_localPosition, _localRotation, _localScale, out _matrix.val);
+        FixMatrix.CreateTRS(_localPosition, _localRotation, _localScale, out _matrix.Val);
 
         // mark as up-to-date
-        _matrix.upToDate = true;
+        _matrix.UpToDate = true;
     }
 
     void UpdateLocalToWorldMatrix()
     {
-        if (_localToWorldMatrix.upToDate)
+        if (_localToWorldMatrix.UpToDate)
             return;
         Debug.Log("UpdateLocalToWorldMatrix");
 
         UpdateMatrix(); // needed for calculations
 
-        SimTransformComponent parentTr = parent;
+        SimTransformComponent parentTr = Parent;
         if (parentTr != null)
         {
-            _localToWorldMatrix.val = _matrix.val * parentTr.localToWorldMatrix;
+            _localToWorldMatrix.Val = _matrix.Val * parentTr.LocalToWorldMatrix;
         }
         else
         {
             _localToWorldMatrix = _matrix;
         }
 
-        _localToWorldMatrix.upToDate = true;
+        _localToWorldMatrix.UpToDate = true;
     }
 
     void UpdateWorldToLocalMatrix()
     {
-        if (_worldToLocalMatrix.upToDate)
+        if (_worldToLocalMatrix.UpToDate)
             return;
         Debug.Log("UpdateWorldToLocalMatrix");
 
         UpdateLocalToWorldMatrix(); // needed for calculations
-        FixMatrix.Invert(_localToWorldMatrix.val, out _worldToLocalMatrix.val);
+        FixMatrix.Invert(_localToWorldMatrix.Val, out _worldToLocalMatrix.Val);
 
-        _worldToLocalMatrix.upToDate = true;
+        _worldToLocalMatrix.UpToDate = true;
     }
 
     struct LazyMatrix
     {
-        public FixMatrix val;
-        public bool upToDate;
+        public FixMatrix Val;
+        public bool UpToDate;
     }
 
     [NonSerialized]
@@ -136,15 +136,15 @@ public class SimTransformComponent : SimComponent
 
     void DirtyCachedRelativeToSelfValues()
     {
-        _matrix.upToDate = false;
-        _localToWorldMatrix.upToDate = false;
-        _worldToLocalMatrix.upToDate = false;
+        _matrix.UpToDate = false;
+        _localToWorldMatrix.UpToDate = false;
+        _worldToLocalMatrix.UpToDate = false;
         DirtyChildren();
     }
     void DirtyCachedRelativeToParentValues()
     {
-        _localToWorldMatrix.upToDate = false;
-        _worldToLocalMatrix.upToDate = false;
+        _localToWorldMatrix.UpToDate = false;
+        _worldToLocalMatrix.UpToDate = false;
     }
     void DirtyChildren()
     {

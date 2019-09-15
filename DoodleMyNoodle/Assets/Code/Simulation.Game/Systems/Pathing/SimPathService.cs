@@ -14,7 +14,7 @@ public class SimPathService : SimSingleton<SimPathService>
         result.Clear();
         List<SimTileId> resultRef = result;
 
-        SimTileId currentTile = walker.tileId;
+        SimTileId currentTile = walker.TileId;
 
         while (currentTile != destination)
         {

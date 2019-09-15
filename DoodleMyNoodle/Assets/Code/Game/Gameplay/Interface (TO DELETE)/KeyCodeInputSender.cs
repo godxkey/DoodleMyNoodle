@@ -260,6 +260,17 @@ public class KeyCodeInputSender : MonoBehaviour
             sendHold = true,
             sendRelease = true,
         }
+        
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Misc
+        ////////////////////////////////////////////////////////////////////////////////////////
+        , new Entry()
+        {
+            keyCode = KeyCode.Space,
+            sendPress = true,
+            sendHold = true,
+            sendRelease = true,
+        }
     };
 
 

@@ -16,7 +16,7 @@ public class SimCommandInjectBlueprint : SimCommand
     {
         SimBlueprint blueprint = Simulation.GetBlueprint(blueprintId);
 
-        if (blueprint != null)
+        if (blueprint.IsValid)
         {
             Simulation.Instantiate(blueprint);
         }

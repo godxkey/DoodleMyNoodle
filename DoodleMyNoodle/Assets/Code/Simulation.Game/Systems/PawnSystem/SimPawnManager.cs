@@ -16,7 +16,7 @@ public class SimPawnManager : SimComponentRegistrySingleton<SimPawnManager, SimP
         SimPawnComponent pawn = null;
         foreach (SimGridTransformComponent gridTr in Simulation.EntitiesWithComponent<SimGridTransformComponent>())
         {
-            if (gridTr.tileId == tileId && gridTr.GetComponent(out pawn))
+            if (gridTr.TileId == tileId && gridTr.GetComponent(out pawn))
             {
                 break;
             }
