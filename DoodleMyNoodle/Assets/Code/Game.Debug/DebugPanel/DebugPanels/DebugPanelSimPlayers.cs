@@ -7,8 +7,8 @@ public class DebugPanelSimPlayers : DebugPanel
     public override string title => "Sim Players";
 
     public override bool canBeDisplayed =>
-        SimulationView.IsInitialized
-        && Game.started
+        SimulationView.IsRunningOrReadyToRun
+        && Game.Started
         && SimPlayerManager.Instance;
 
     public override void OnGUI()

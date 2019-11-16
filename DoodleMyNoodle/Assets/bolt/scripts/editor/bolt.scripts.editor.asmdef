@@ -1,0 +1,21 @@
+{
+    "name": "bolt.scripts.editor",
+    "references": [
+        "GUID:6cf8f8538b720234183cf0a6688e597f"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "bolt.dll",
+        "bolt.editor.dll",
+        "bolt.user.dll",
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

@@ -23,8 +23,8 @@ public struct SimBlueprintId
     public BlueprintType Type;
     public string Value;
 
-    public static readonly SimBlueprintId Invalid = new SimBlueprintId(BlueprintType.Invalid, "");
-    public bool IsValid => Value != Invalid.Value;
+    public static readonly SimBlueprintId Invalid = new SimBlueprintId(BlueprintType.Invalid, default);
+    public bool IsValid => Type != BlueprintType.Invalid;
 
 
     public override bool Equals(object obj)
@@ -40,4 +40,6 @@ public struct SimBlueprintId
     }
     public static bool operator !=(SimBlueprintId a, SimBlueprintId b) => !(a == b);
     public override int GetHashCode() => Value.GetHashCode();
+
+    public override string ToString() => $"SimBlueprintId({Type}, {Value})";
 }

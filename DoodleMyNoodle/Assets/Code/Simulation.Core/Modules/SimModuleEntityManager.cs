@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimModuleEntityManager : IDisposable
+internal class SimModuleEntityManager : SimModuleBase
 {
     List<ISimEntityListChangeObserver> _changeObservers = new List<ISimEntityListChangeObserver>();
 
@@ -21,9 +21,10 @@ public class SimModuleEntityManager : IDisposable
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal SimEntity Instantiate(SimEntity entity, Transform parent)
+    internal SimEntity Instantiate(SimEntity entity, SimTransformComponent parent)
     {
-        GameObject newGameObject = GameObject.Instantiate(entity.gameObject, parent);
+        GameObject newGameObject = GameObject.Instantiate(entity.gameObject, parent.UnityTransform);
+        SetNewGameObjectTransform(newGameObject, parent);
         return OnInstantiated_Internal(entity.BlueprintId, newGameObject); ;
     }
     /// <summary>
@@ -34,6 +35,9 @@ public class SimModuleEntityManager : IDisposable
     internal SimEntity Instantiate(SimEntity entity, in FixVector3 position, in FixQuaternion rotation)
     {
         GameObject newGameObject = GameObject.Instantiate(entity.gameObject, position.ToUnityVec(), rotation.ToUnityQuat());
+
+        SetNewGameObjectTransform(newGameObject, position, rotation);
+
         return OnInstantiated_Internal(entity.BlueprintId, newGameObject); ;
     }
     /// <summary>
@@ -44,37 +48,38 @@ public class SimModuleEntityManager : IDisposable
     internal SimEntity Instantiate(SimEntity entity, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
     {
         GameObject newGameObject = GameObject.Instantiate(entity.gameObject, position.ToUnityVec(), rotation.ToUnityQuat(), parent.UnityTransform);
+        SetNewGameObjectTransform(newGameObject, position, rotation, parent);
         return OnInstantiated_Internal(entity.BlueprintId, newGameObject); ;
     }
 
-    /// <summary>
-    /// Instantiate entity from the blueprint and inject it into the simulation
-    /// <para/>
-    /// NB: not called if reloading/reconstructing a saved game
-    /// </summary>
-    internal SimEntity Instantiate(in SimBlueprintId blueprintId)
-        => Instantiate(SimModules.BlueprintBank.GetBlueprint(blueprintId));
-    /// <summary>
-    /// Instantiate entity from the blueprint and inject it into the simulation
-    /// <para/>
-    /// NB: not called if reloading/reconstructing a saved game
-    /// </summary>
-    internal SimEntity Instantiate(in SimBlueprintId blueprintId, Transform parent)
-        => Instantiate(SimModules.BlueprintBank.GetBlueprint(blueprintId), parent);
-    /// <summary>
-    /// Instantiate entity from the blueprint and inject it into the simulation
-    /// <para/>
-    /// NB: not called if reloading/reconstructing a saved game
-    /// </summary>
-    internal SimEntity Instantiate(in SimBlueprintId blueprintId, in FixVector3 position, in FixQuaternion rotation)
-        => Instantiate(SimModules.BlueprintBank.GetBlueprint(blueprintId), position, rotation);
-    /// <summary>
-    /// Instantiate entity from the blueprint and inject it into the simulation
-    /// <para/>
-    /// NB: not called if reloading/reconstructing a saved game
-    /// </summary>
-    internal SimEntity Instantiate(in SimBlueprintId blueprintId, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
-        => Instantiate(SimModules.BlueprintBank.GetBlueprint(blueprintId), position, rotation, parent);
+    ///// <summary>
+    ///// Instantiate entity from the blueprint and inject it into the simulation
+    ///// <para/>
+    ///// NB: not called if reloading/reconstructing a saved game
+    ///// </summary>
+    //internal SimEntity Instantiate(in SimBlueprintId blueprintId)
+    //    => Instantiate(SimModules._BlueprintManager.GetBlueprint(blueprintId));
+    ///// <summary>
+    ///// Instantiate entity from the blueprint and inject it into the simulation
+    ///// <para/>
+    ///// NB: not called if reloading/reconstructing a saved game
+    ///// </summary>
+    //internal SimEntity Instantiate(in SimBlueprintId blueprintId, Transform parent)
+    //    => Instantiate(SimModules._BlueprintManager.GetBlueprint(blueprintId), parent);
+    ///// <summary>
+    ///// Instantiate entity from the blueprint and inject it into the simulation
+    ///// <para/>
+    ///// NB: not called if reloading/reconstructing a saved game
+    ///// </summary>
+    //internal SimEntity Instantiate(in SimBlueprintId blueprintId, in FixVector3 position, in FixQuaternion rotation)
+    //    => Instantiate(SimModules._BlueprintManager.GetBlueprint(blueprintId), position, rotation);
+    ///// <summary>
+    ///// Instantiate entity from the blueprint and inject it into the simulation
+    ///// <para/>
+    ///// NB: not called if reloading/reconstructing a saved game
+    ///// </summary>
+    //internal SimEntity Instantiate(in SimBlueprintId blueprintId, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
+    //    => Instantiate(SimModules._BlueprintManager.GetBlueprint(blueprintId), position, rotation, parent);
 
     /// <summary>
     /// Instantiate entity from the blueprint and inject it into the simulation
@@ -93,11 +98,12 @@ public class SimModuleEntityManager : IDisposable
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal SimEntity Instantiate(in SimBlueprint blueprint, Transform parent)
+    internal SimEntity Instantiate(in SimBlueprint blueprint, SimTransformComponent parent)
     {
         if (!ValidateBlueprint(blueprint))
             return null;
-        GameObject newGameObject = GameObject.Instantiate(blueprint.Prefab.gameObject, parent);
+        GameObject newGameObject = GameObject.Instantiate(blueprint.Prefab.gameObject, parent.UnityTransform);
+        SetNewGameObjectTransform(newGameObject, parent);
         return OnInstantiated_Internal(blueprint.Id, newGameObject);
     }
     /// <summary>
@@ -110,6 +116,7 @@ public class SimModuleEntityManager : IDisposable
         if (!ValidateBlueprint(blueprint))
             return null;
         GameObject newGameObject = GameObject.Instantiate(blueprint.Prefab.gameObject, position.ToUnityVec(), rotation.ToUnityQuat());
+        SetNewGameObjectTransform(newGameObject, position, rotation);
         return OnInstantiated_Internal(blueprint.Id, newGameObject, position, rotation);
     }
     /// <summary>
@@ -122,8 +129,38 @@ public class SimModuleEntityManager : IDisposable
         if (!ValidateBlueprint(blueprint))
             return null;
         GameObject newGameObject = GameObject.Instantiate(blueprint.Prefab.gameObject, position.ToUnityVec(), rotation.ToUnityQuat(), parent.UnityTransform);
+        SetNewGameObjectTransform(newGameObject, position, rotation, parent);
         return OnInstantiated_Internal(blueprint.Id, newGameObject, position, rotation);
     }
+
+    void SetNewGameObjectTransform(GameObject newGameObject, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
+    {
+        SimTransformComponent simTransformComponent = newGameObject.GetComponent<SimTransformComponent>();
+        if (simTransformComponent)
+        {
+            simTransformComponent.SetParent(parent);
+            simTransformComponent.LocalPosition = position;
+            simTransformComponent.LocalRotation = rotation;
+        }
+    }
+    void SetNewGameObjectTransform(GameObject newGameObject, SimTransformComponent parent)
+    {
+        SimTransformComponent simTransformComponent = newGameObject.GetComponent<SimTransformComponent>();
+        if (simTransformComponent)
+        {
+            simTransformComponent.SetParent(parent);
+        }
+    }
+    void SetNewGameObjectTransform(GameObject newGameObject, in FixVector3 position, in FixQuaternion rotation)
+    {
+        SimTransformComponent simTransformComponent = newGameObject.GetComponent<SimTransformComponent>();
+        if (simTransformComponent)
+        {
+            simTransformComponent.LocalPosition = position;
+            simTransformComponent.LocalRotation = rotation;
+        }
+    }
+
 
     bool ValidateBlueprint(in SimBlueprint bp)
     {
@@ -154,7 +191,7 @@ public class SimModuleEntityManager : IDisposable
         return newEntity;
     }
 
-
+    List<SimObject> _cachedSimObjectList = new List<SimObject>();
     /// <summary>
     /// All newly created entities go through here.
     /// <para/>
@@ -163,18 +200,21 @@ public class SimModuleEntityManager : IDisposable
     internal void InjectNewEntityIntoSim(SimEntity newEntity, in SimBlueprintId blueprintId)
     {
         newEntity.BlueprintId = blueprintId;
-        newEntity.EntityId = SimModules.World.NextEntityId;
-        SimModules.World.NextEntityId++;
 
-        SimModules.World.Entities.Add(newEntity);
-
-        foreach (SimObject obj in newEntity.GetComponents<SimObject>())
+        SimModules._World.Entities.Add(newEntity);
+        newEntity.GetComponents<SimObject>(_cachedSimObjectList);
+        foreach (SimObject obj in _cachedSimObjectList)
         {
+            // assign id
+            obj.SimObjectId = SimModules._World.NextObjectId;
+            SimModules._World.NextObjectId++;
+
             obj.OnSimAwake();
 
             // This should eventually cause the OnSimStart() method to get called
-            SimModules.World.ObjectsThatHaventStartedYet.Add(obj);
+            SimModules._World.ObjectsThatHaventStartedYet.Add(obj);
         }
+        _cachedSimObjectList.Clear();
 
         AddEntityToRuntime(newEntity);
     }
@@ -190,7 +230,7 @@ public class SimModuleEntityManager : IDisposable
         {
             obj.OnSimDestroy();
 
-            SimModules.World.ObjectsThatHaventStartedYet.RemoveWithLastSwap(obj);
+            SimModules._World.ObjectsThatHaventStartedYet.RemoveWithLastSwap(obj);
         }
 
         PendingPermanentEntityDestructions++;
@@ -201,32 +241,31 @@ public class SimModuleEntityManager : IDisposable
     /// </summary>
     internal void OnDestroyEntity(SimEntity entity)
     {
-        if (PendingPermanentEntityDestructions == 0 && !SimModules.IsDisposed)
+        if (PendingPermanentEntityDestructions == 0 && !SimModules._IsDisposed)
         {
             DebugService.LogWarning("A SimEntity is getting incorrectly destroyed. Please call SimWorld.Destroy() to destroy simulation entities.");
         }
 
         if (PendingPermanentEntityDestructions > 0)
         {
-            SimModules.World.Entities.Remove(entity);
+            SimModules._World.Entities.Remove(entity);
             PendingPermanentEntityDestructions--;
         }
 
         RemoveEntityFromRuntime(entity);
     }
 
-
     /// <summary>
     /// Add the entity to the entity-list
     /// <para/>
     /// NB: also called when reloading/reconstructing a saved game
     /// </summary>
-    void AddEntityToRuntime(SimEntity simEntity)
+    internal void AddEntityToRuntime(SimEntity simEntity)
     {
         foreach (SimObject obj in simEntity.GetComponents<SimObject>())
         {
-            SimModules.Ticker.OnAddSimObjectToSim(obj);
-            SimModules.InputProcessorManager.OnAddSimObjectToSim(obj);
+            SimModules._Ticker.OnAddSimObjectToSim(obj);
+            SimModules._InputProcessorManager.OnAddSimObjectToSim(obj);
 
             obj.OnAddedToRuntime();
 
@@ -241,7 +280,7 @@ public class SimModuleEntityManager : IDisposable
             }
         }
     }
-    void RemoveEntityFromRuntime(SimEntity simEntity)
+    internal void RemoveEntityFromRuntime(SimEntity simEntity)
     {
         foreach (SimObject obj in simEntity.GetComponents<SimObject>())
         {
@@ -257,10 +296,8 @@ public class SimModuleEntityManager : IDisposable
 
             obj.OnRemovingFromRuntime();
 
-            SimModules.InputProcessorManager.OnRemovingSimObjectFromSim(obj);
-            SimModules.Ticker.OnRemovingSimObjectFromSim(obj);
+            SimModules._InputProcessorManager.OnRemovingSimObjectFromSim(obj);
+            SimModules._Ticker.OnRemovingSimObjectFromSim(obj);
         }
     }
-
-    public void Dispose() { }
 }

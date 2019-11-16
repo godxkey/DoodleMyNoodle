@@ -23,14 +23,14 @@ public class BitStreamReader : BitStreamHead
 
         while (resultProgress < bitCount)
         {
-            if (ByteIndex >= m_buffer.Length)
+            if (ByteIndex >= _buffer.Length)
             {
                 DebugService.LogError("Trying to read beyond the buffer length");
                 break;
             }
 
             // read data from byte (truncated)
-            int data = (m_buffer[ByteIndex] >> BitIndex);
+            int data = (_buffer[ByteIndex] >> BitIndex);
 
             // move the data to the left, where we need to emplace it
             data <<= resultProgress;
@@ -59,13 +59,13 @@ public class BitStreamReader : BitStreamHead
 
     public bool ReadBit()
     {
-        if (ByteIndex >= m_buffer.Length)
+        if (ByteIndex >= _buffer.Length)
         {
             DebugService.LogError("Trying to read beyond the buffer length");
             return false;
         }
 
-        bool result = ((m_buffer[ByteIndex] >> BitIndex) & 1) != 0;
+        bool result = ((_buffer[ByteIndex] >> BitIndex) & 1) != 0;
         MoveHeadForward(1);
         return result;
     }

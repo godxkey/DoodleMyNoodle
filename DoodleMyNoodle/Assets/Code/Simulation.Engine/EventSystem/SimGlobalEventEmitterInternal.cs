@@ -74,7 +74,7 @@ public class SimGlobalEventEmitterInternal : SimSingleton<SimGlobalEventEmitterI
     {
         if (GetInstanceWithError(out SimGlobalEventEmitterInternal instance))
         {
-            return instance._eventsMap.GetOrAdd(typeof(T)).RegisterListener_Internal(listener, serializedBehavior);
+            return instance._eventsMap.GetOrAddNew(typeof(T)).RegisterListener_Internal(listener, serializedBehavior);
         }
 
         return false;
@@ -83,7 +83,7 @@ public class SimGlobalEventEmitterInternal : SimSingleton<SimGlobalEventEmitterI
     {
         if (GetInstanceWithError(out SimGlobalEventEmitterInternal instance))
         {
-            return instance._eventsMap.GetOrAdd(typeof(T)).RegisterListenerUnsafe_Internal(listener, serializedBehavior);
+            return instance._eventsMap.GetOrAddNew(typeof(T)).RegisterListenerUnsafe_Internal(listener, serializedBehavior);
         }
 
         return false;

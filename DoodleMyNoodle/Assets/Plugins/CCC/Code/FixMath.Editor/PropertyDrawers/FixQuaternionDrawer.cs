@@ -6,19 +6,19 @@ public class FixQuaternionDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        SerializedProperty xProp = property.FindPropertyRelative("x").FindPropertyRelative("m_rawValue");
-        SerializedProperty yProp = property.FindPropertyRelative("y").FindPropertyRelative("m_rawValue");
-        SerializedProperty zProp = property.FindPropertyRelative("z").FindPropertyRelative("m_rawValue");
-        SerializedProperty wProp = property.FindPropertyRelative("w").FindPropertyRelative("m_rawValue");
+        SerializedProperty xProp = property.FindPropertyRelative(nameof(Quaternion.x)).FindPropertyRelative(nameof(Fix64.RawValue));
+        SerializedProperty yProp = property.FindPropertyRelative(nameof(Quaternion.y)).FindPropertyRelative(nameof(Fix64.RawValue));
+        SerializedProperty zProp = property.FindPropertyRelative(nameof(Quaternion.z)).FindPropertyRelative(nameof(Fix64.RawValue));
+        SerializedProperty wProp = property.FindPropertyRelative(nameof(Quaternion.w)).FindPropertyRelative(nameof(Fix64.RawValue));
 
         Fix64 xVal;
         Fix64 yVal;
         Fix64 zVal;
         Fix64 wVal;
-        xVal.m_rawValue = xProp.longValue;
-        yVal.m_rawValue = yProp.longValue;
-        zVal.m_rawValue = zProp.longValue;
-        wVal.m_rawValue = wProp.longValue;
+        xVal.RawValue = xProp.longValue;
+        yVal.RawValue = yProp.longValue;
+        zVal.RawValue = zProp.longValue;
+        wVal.RawValue = wProp.longValue;
 
         FixQuaternion oldQuat = new FixQuaternion(xVal, yVal, zVal, wVal);        
 
@@ -35,10 +35,10 @@ public class FixQuaternionDrawer : PropertyDrawer
         {
             FixQuaternion newQuat = Quaternion.Euler(newEuler.x, newEuler.y, newEuler.z).ToFixQuat();
 
-            xProp.longValue = newQuat.x.m_rawValue;
-            yProp.longValue = newQuat.y.m_rawValue;
-            zProp.longValue = newQuat.z.m_rawValue;
-            wProp.longValue = newQuat.w.m_rawValue;
+            xProp.longValue = newQuat.x.RawValue;
+            yProp.longValue = newQuat.y.RawValue;
+            zProp.longValue = newQuat.z.RawValue;
+            wProp.longValue = newQuat.w.RawValue;
         }
 
 

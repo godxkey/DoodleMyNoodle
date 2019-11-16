@@ -14,7 +14,6 @@ public class SimComponentRegistrySingleton<ChildClass, ComponentClass> :
     {
         base.OnSimAwake();
 
-
         // Add preexisting entities
         foreach (ComponentClass component in Simulation.EntitiesWithComponent<ComponentClass>())
         {
@@ -33,7 +32,7 @@ public class SimComponentRegistrySingleton<ChildClass, ComponentClass> :
             }
 
             _components.Add(component);
-            OnRegisterComponent(component);
+            // OnRegisterComponent(component);
         }
     }
 
@@ -45,10 +44,11 @@ public class SimComponentRegistrySingleton<ChildClass, ComponentClass> :
             {
                 DebugService.LogError($"Trying to unregister a {nameof(ComponentClass)} that was not registered ({obj.gameObject.name})");
             }
-            OnUnregisterComponent(component);
+            // OnUnregisterComponent(component);
         }
     }
 
-    protected virtual void OnRegisterComponent(ComponentClass component) { }
-    protected virtual void OnUnregisterComponent(ComponentClass component) { }
+
+    //protected virtual void OnRegisterComponent(ComponentClass component) { }
+    //protected virtual void OnUnregisterComponent(ComponentClass component) { }
 }

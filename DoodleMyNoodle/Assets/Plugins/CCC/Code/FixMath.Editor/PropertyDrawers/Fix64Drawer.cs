@@ -6,11 +6,11 @@ public class Fix64Drawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        SerializedProperty valueProperty = property.FindPropertyRelative("m_rawValue");
+        SerializedProperty valueProperty = property.FindPropertyRelative(nameof(Fix64.RawValue));
         long valueRaw = valueProperty.longValue;
 
         Fix64 value;
-        value.m_rawValue = valueRaw;
+        value.RawValue = valueRaw;
 
         float floatValue = (float)value;
 
@@ -25,7 +25,7 @@ public class Fix64Drawer : PropertyDrawer
         if(newFloatValue != floatValue)
         {
             Fix64 newValue = (Fix64)newFloatValue;
-            valueProperty.longValue = newValue.m_rawValue;
+            valueProperty.longValue = newValue.RawValue;
         }
 
 

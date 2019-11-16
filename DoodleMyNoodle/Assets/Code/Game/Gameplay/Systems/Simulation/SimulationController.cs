@@ -5,7 +5,8 @@ using UnityEngine;
 
 public abstract class SimulationController : GameSystem<SimulationController>
 {
-    [SerializeField] SimBlueprintBank _blueprintBank;
+    [SerializeField] SimBlueprintProviderPrefab _bpProviderPrefab;
+    [SerializeField] SimBlueprintProviderSceneObject _bpProviderSceneObject;
 
     public override bool SystemReady => true;
 
@@ -13,7 +14,17 @@ public abstract class SimulationController : GameSystem<SimulationController>
 
     public override void OnGameReady()
     {
-        SimulationView.Initialize(_blueprintBank);
+        Time.fixedDeltaTime = (float)SimulationConstants.TIME_STEP;
+
+
+        SimulationCoreSettings settings = new SimulationCoreSettings();
+        settings.BlueprintProviders = new List<ISimBlueprintProvider>()
+        {
+            _bpProviderPrefab,
+            _bpProviderSceneObject
+        };
+
+        SimulationView.Initialize(settings);
 
         base.OnGameReady();
     }
@@ -23,7 +34,7 @@ public abstract class SimulationController : GameSystem<SimulationController>
     {
         base.OnDestroy();
 
-        if (SimulationView.IsInitialized)
+        if (SimulationView.IsRunningOrReadyToRun)
             SimulationView.Dispose();
     }
 }

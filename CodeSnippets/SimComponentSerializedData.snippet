@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>SimComponent Serialized Data</Title>
+      <Author>Frederic Bessette</Author>
+      <Description>Setup a SimComponent's SerializedData struct</Description>
+      <Shortcut>scSimData</Shortcut>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>AddFieldsHere</ID>
+          <ToolTip>Add Fields Here</ToolTip>
+          <Default>AddFieldsHere</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp"
+            Kind="method body">
+        <![CDATA[    [System.Serializable]
+    struct SerializedData
+    {
+        $AddFieldsHere$
+        $end$
+    }
+
+#region Serialized Data Methods
+    [UnityEngine.SerializeField]
+    [Forward]
+    SerializedData _data = new SerializedData()
+    {
+        // define default values here
+    };
+    
+    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    {
+        base.SerializeToDataStack(dataStack);
+        dataStack.Push(_data);
+    }
+
+    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
+    {
+        _data = (SerializedData)dataStack.Pop();
+        base.SerializeToDataStack(dataStack);
+    }
+#endregion]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

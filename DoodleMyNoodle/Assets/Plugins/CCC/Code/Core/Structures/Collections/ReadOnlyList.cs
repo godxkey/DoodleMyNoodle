@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
@@ -6,9 +7,9 @@ using System.Collections.Generic;
 /// </summary>
 public struct ReadOnlyList<T>
 {
-    readonly IList<T> _list;
+    readonly List<T> _list;
 
-    public ReadOnlyList(IList<T> list)
+    public ReadOnlyList(List<T> list)
     {
         _list = list ?? throw new System.NullReferenceException();
     }
@@ -18,6 +19,7 @@ public struct ReadOnlyList<T>
     public bool Contains(T value) => _list.Contains(value);
     public void CopyTo(T[] array, int index) => _list.CopyTo(array, index);
     public int IndexOf(T value) => _list.IndexOf(value);
+    public T Find(Predicate<T> match) => _list.Find(match);
 
     #region Enumerator
     public Enumerator GetEnumerator() => new Enumerator(_list);
@@ -48,14 +50,14 @@ public struct ReadOnlyList<T>
 
 
 /// <summary>
-/// This is like the ReadOnlyCollection provided by .NET but in struct (instead of class) meaning it does't produce garbage
+/// This is like the ReadOnlyCollection provided by .NET but in struct (instead of class) meaning it doesn't produce garbage
 /// </summary>
 public struct ReadOnlyList<ListType, ReadType>
     where ListType : ReadType
 {
-    readonly IList<ListType> _list;
+    readonly List<ListType> _list;
 
-    public ReadOnlyList(IList<ListType> list)
+    public ReadOnlyList(List<ListType> list)
     {
         _list = list ?? throw new System.NullReferenceException();
     }
@@ -77,6 +79,15 @@ public struct ReadOnlyList<ListType, ReadType>
         if (value is ListType)
             return _list.IndexOf((ListType)value);
         return -1;
+    }
+    public ReadType Find(Predicate<ReadType> match)
+    {
+        for (int i = 0; i < _list.Count; i++)
+        {
+            if (match(_list[i]))
+                return _list[i];
+        }
+        return default;
     }
 
     #region Enumerator

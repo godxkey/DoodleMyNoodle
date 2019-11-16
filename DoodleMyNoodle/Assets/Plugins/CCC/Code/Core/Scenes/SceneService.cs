@@ -4,21 +4,46 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public interface ISceneLoadPromise
+{
+    bool IsComplete { get; }
+    Scene Scene { get; }
+    event Action<ISceneLoadPromise> OnComplete;
+}
+
 public class SceneService : MonoCoreService<SceneService>
 {
-    private class ScenePromise
+    private class ScenePromise : ISceneLoadPromise
     {
-        public ScenePromise(string name, Action<Scene> callback)
+        public ScenePromise(string sceneName)
         {
-            this.name = name;
-            Callbacks += callback;
+            SceneName = sceneName;
+            IsComplete = false;
         }
-        public string name;
-        public event Action<Scene> Callbacks;
-        public Scene scene;
-        public void InvokeCallback()
+
+        public string SceneName;
+        private event Action<ISceneLoadPromise> OnCompleteInternal;
+        public event Action<ISceneLoadPromise> OnComplete
         {
-            Callbacks?.SafeInvoke(scene);
+            add
+            {
+                if (IsComplete)
+                    value(this);
+                else
+                    OnCompleteInternal += value;
+            }
+            remove
+            {
+                OnCompleteInternal -= value;
+            }
+        }
+        public Scene Scene { get; set; }
+        public bool IsComplete { get; private set; }
+
+        public void Complete()
+        {
+            IsComplete = true;
+            OnCompleteInternal?.SafeInvoke(this);
         }
     }
 
@@ -26,7 +51,7 @@ public class SceneService : MonoCoreService<SceneService>
     List<ScenePromise> _unloadingScenePromises = new List<ScenePromise>();
 
     // useful to know if we're the first scene in the game
-    public static int totalSceneLoadCount { get; private set; } 
+    public static int TotalSceneLoadCount { get; private set; }
 
     public override void Initialize(Action<ICoreService> onComplete)
     {
@@ -44,60 +69,75 @@ public class SceneService : MonoCoreService<SceneService>
 
     #region Load/Unload Methods
 
-    public static void Load(SceneInfo sceneInfo, SceneLoadSettings loadSettings, Action<Scene> callback = null)
+    public static ISceneLoadPromise Load(string sceneName, SceneLoadSettings loadSettings)
     {
-        if (loadSettings.async)
-        {
-            LoadAsync(sceneInfo.SceneName, loadSettings.additive ? LoadSceneMode.Additive : LoadSceneMode.Single, callback, loadSettings.allowMultiple);
-        }
-        else
-        {
-            Load(sceneInfo.SceneName, loadSettings.additive ? LoadSceneMode.Additive : LoadSceneMode.Single, callback, loadSettings.allowMultiple);
-        }
-    }
-    public static void Load(string name, LoadSceneMode mode = LoadSceneMode.Single, Action<Scene> callback = null, bool allowMultiple = true)
-    {
-        if (!allowMultiple && TryHandleUniqueLoad(name, callback))
-            return;
-
-        ScenePromise scenePromise = new ScenePromise(name, callback);
+        // add new promise
+        ScenePromise scenePromise = new ScenePromise(sceneName);
         Instance._loadingScenePromises.Add(scenePromise);
-        SceneManager.LoadScene(name, mode);
-    }
-    public static void Load(SceneInfo sceneInfo, Action<Scene> callback = null)
-    {
-        Load(sceneInfo.SceneName, sceneInfo.LoadMode, callback, sceneInfo.AllowMultiple);
-    }
 
-    public static void LoadAsync(string name, LoadSceneMode mode = LoadSceneMode.Single, Action<Scene> callback = null, bool allowMultiple = true)
-    {
-        if (!allowMultiple && TryHandleUniqueLoad(name, callback))
-            return;
 
-        ScenePromise scenePromise = new ScenePromise(name, callback);
-        Instance._loadingScenePromises.Add(scenePromise);
-        SceneManager.LoadSceneAsync(name, mode);
-    }
-    public static void LoadAsync(SceneInfo sceneInfo, Action<Scene> callback = null)
-    {
-        LoadAsync(sceneInfo.SceneName, sceneInfo.LoadMode, callback, sceneInfo.AllowMultiple);
-    }
-
-    private static bool TryHandleUniqueLoad(string sceneName, Action<Scene> callback)
-    {
-        ScenePromise scenePromise = GetLoadingScenePromise(sceneName);
-        if (scenePromise != null) // means the scene is currently being loaded
+        LoadSceneParameters loadParameters = new LoadSceneParameters()
         {
-            scenePromise.Callbacks += callback;
-            return true;
-        }
-        else if (IsLoaded(sceneName))
+            loadSceneMode = loadSettings.LoadSceneMode,
+            localPhysicsMode = loadSettings.LocalPhysicsMode
+        };
+
+        switch (loadSettings.LoadSceneMode)
         {
-            callback?.Invoke(GetLoaded(sceneName));
-            return true;
+            case LoadSceneMode.Single:
+                SceneManager.LoadScene(sceneName, loadParameters);
+                break;
+            case LoadSceneMode.Additive:
+                SceneManager.LoadSceneAsync(sceneName, loadParameters);
+                break;
+            default:
+                throw new NotSupportedException();
         }
-        return false;
+
+        return scenePromise;
     }
+    public static ISceneLoadPromise Load(SceneInfo sceneInfo, SceneLoadSettings loadSettings)
+    {
+        return Load(sceneInfo.SceneName, loadSettings);
+    }
+
+    public static ISceneLoadPromise Load(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive, LocalPhysicsMode localPhysicsMode = LocalPhysicsMode.Physics3D)
+    {
+        return Load(sceneName, new SceneLoadSettings() { Async = false, LoadSceneMode = mode, LocalPhysicsMode = localPhysicsMode });
+    }
+    // fbessette: should not be used anymore. If we add it back, we should refactor it a bit so that SceneInfo doesn't contain all of these misplaced
+    //            properties like the 'default load scene mode'
+    //public static void Load(SceneInfo sceneInfo, Action<Scene> callback = null)
+    //{
+    //    Load(sceneInfo.SceneName, sceneInfo.LoadMode, callback, sceneInfo.AllowMultiple);
+    //}
+
+    public static ISceneLoadPromise LoadAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive, LocalPhysicsMode localPhysicsMode = LocalPhysicsMode.Physics3D)
+    {
+        return Load(sceneName, new SceneLoadSettings() { Async = true, LoadSceneMode = mode, LocalPhysicsMode = localPhysicsMode });
+    }
+    // fbessette: should not be used anymore. If we add it back, we should refactor it a bit so that SceneInfo doesn't contain all of these misplaced
+    //            properties like the 'default load scene mode'
+    //public static void LoadAsync(SceneInfo sceneInfo, Action<Scene> callback = null)
+    //{
+    //    LoadAsync(sceneInfo.SceneName, sceneInfo.LoadMode, callback, sceneInfo.AllowMultiple);
+    //}
+
+    //private static bool TryHandleUniqueLoad(string sceneName, Action<Scene> callback)
+    //{
+    //    ScenePromise scenePromise = GetLoadingScenePromise(sceneName);
+    //    if (scenePromise != null) // means the scene is currently being loaded
+    //    {
+    //        scenePromise.OnComplete += callback;
+    //        return true;
+    //    }
+    //    else if (IsLoaded(sceneName))
+    //    {
+    //        callback?.Invoke(GetLoaded(sceneName));
+    //        return true;
+    //    }
+    //    return false;
+    //}
 
     public static void UnloadAsync(Scene scene)
     {
@@ -114,22 +154,26 @@ public class SceneService : MonoCoreService<SceneService>
 
     public static bool IsLoadedOrLoading(string sceneName)
     {
-        if (IsLoaded(sceneName) || IsLoading(sceneName))
-            return true;
-        return false;
+        return IsLoaded(sceneName) || IsLoading(sceneName);
     }
     public static bool IsLoadedOrBeingLoaded(SceneInfo sceneInfo)
     {
         return IsLoadedOrLoading(sceneInfo.SceneName);
     }
 
-    public static bool IsLoading(string sceneName)
+    public static ISceneLoadPromise FindLoadingScenePromise(string sceneName)
     {
         for (int i = 0; i < Instance._loadingScenePromises.Count; i++)
         {
-            if (Instance._loadingScenePromises[i].name == sceneName) return true;
+            if (Instance._loadingScenePromises[i].SceneName == sceneName)
+                return Instance._loadingScenePromises[i];
         }
-        return false;
+        return null;
+    }
+
+    public static bool IsLoading(string sceneName)
+    {
+        return FindLoadingScenePromise(sceneName) != null;
     }
     public static bool IsLoading(SceneInfo sceneInfo)
     {
@@ -165,11 +209,11 @@ public class SceneService : MonoCoreService<SceneService>
     public static Scene GetActiveScene() => SceneManager.GetActiveScene();
     public static void SetActiveScene(Scene scene) => SceneManager.SetActiveScene(scene);
 
-    public static int loadedSceneCount
+    public static int LoadedSceneCount
     {
         get { return SceneManager.sceneCount; }
     }
-    public static int loadingSceneCount
+    public static int LoadingSceneCount
     {
         get { return Instance._loadingScenePromises.Count; }
     }
@@ -180,12 +224,12 @@ public class SceneService : MonoCoreService<SceneService>
 
     static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        totalSceneLoadCount++;
+        TotalSceneLoadCount++;
         ScenePromise promise = GetLoadingScenePromise(scene.name);
         if (promise == null)
             return;
 
-        promise.scene = scene;
+        promise.Scene = scene;
 
         if (!scene.isLoaded)
             Instance.StartCoroutine(WaitForSceneLoad(scene, promise));
@@ -222,7 +266,7 @@ public class SceneService : MonoCoreService<SceneService>
 
     static void Execute(ScenePromise promise)
     {
-        promise.InvokeCallback();
+        promise.Complete();
 
         Instance._loadingScenePromises.Remove(promise);
     }
@@ -235,7 +279,7 @@ public class SceneService : MonoCoreService<SceneService>
     {
         foreach (ScenePromise scene in Instance._loadingScenePromises)
         {
-            if (scene.name == name) return scene;
+            if (scene.SceneName == name) return scene;
         }
         return null;
     }
@@ -243,7 +287,7 @@ public class SceneService : MonoCoreService<SceneService>
     {
         foreach (ScenePromise scene in Instance._unloadingScenePromises)
         {
-            if (scene.name == name) return scene;
+            if (scene.SceneName == name) return scene;
         }
         return null;
     }

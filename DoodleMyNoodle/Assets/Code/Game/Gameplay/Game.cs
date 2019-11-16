@@ -4,56 +4,70 @@ using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
-    public static bool playModeLocal { get; private set; }
-    public static bool playModeClient { get; private set; }
-    public static bool playModeServer { get; private set; }
+    public static bool PlayModeLocal { get; private set; }
+    public static bool PlayModeClient { get; private set; }
+    public static bool PlayModeServer { get; private set; }
 
-    public static bool ready => _instance && _instance._ready;
-    public static bool started => _instance && _instance._started;
+    public static bool Ready => s_instance && s_instance._ready;
+    public static bool Started => s_instance && s_instance._started;
 
     [SerializeField] SceneInfo _localSpecificScene;
     [SerializeField] SceneInfo _serverSpecificScene;
     [SerializeField] SceneInfo _clientSpecificScene;
 
-    static Game _instance;
+    static Game s_instance;
 
     bool _ready;
     bool _started;
     bool _playModeSpecificSceneRequested = false;
     bool _playModeSpecificSceneLoaded = false;
 
+    ISceneLoadPromise _sceneLoadPromise;
+
     void Awake()
     {
-        _instance = this;
+        s_instance = this;
     }
 
     void OnDestroy()
     {
-        playModeLocal = false;
-        playModeClient = false;
-        playModeServer = false;
-        _instance = null;
+        PlayModeLocal = false;
+        PlayModeClient = false;
+        PlayModeServer = false;
+        s_instance = null;
+
+        if (_sceneLoadPromise != null)
+            _sceneLoadPromise.OnComplete -= OnPlayModeSpecificSceneLoaded;
     }
 
     void Update()
     {
         if (!_playModeSpecificSceneRequested)
         {
+            SceneInfo sceneToLoad = null;
             switch (GameStateManager.currentGameState)
             {
                 case GameStateInGameClient clientState:
-                    SceneService.LoadAsync(_clientSpecificScene.SceneName, LoadSceneMode.Additive, OnPlayModeSpecificSceneLoaded);
-                    playModeClient = true;
+                    sceneToLoad = _clientSpecificScene;
+                    PlayModeClient = true;
                     break;
                 case GameStateInGameServer serverState:
-                    SceneService.LoadAsync(_serverSpecificScene.SceneName, LoadSceneMode.Additive, OnPlayModeSpecificSceneLoaded);
-                    playModeServer = true;
+                    sceneToLoad = _serverSpecificScene;
+                    PlayModeServer = true;
                     break;
                 case GameStateInGameLocal localState:
-                    SceneService.LoadAsync(_localSpecificScene.SceneName, LoadSceneMode.Additive, OnPlayModeSpecificSceneLoaded);
-                    playModeLocal = true;
+                    sceneToLoad = _localSpecificScene;
+                    PlayModeLocal = true;
                     break;
             }
+
+            if(sceneToLoad != null)
+            {
+                _sceneLoadPromise = SceneService.LoadAsync(sceneToLoad.SceneName, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D);
+                _sceneLoadPromise.OnComplete += OnPlayModeSpecificSceneLoaded;
+            }
+
+
             _playModeSpecificSceneRequested = true;
         }
 
@@ -153,9 +167,12 @@ public class Game : MonoBehaviour
         }
     }
 
-    void OnPlayModeSpecificSceneLoaded(Scene scene)
+    void OnPlayModeSpecificSceneLoaded(ISceneLoadPromise sceneLoadPromise)
     {
         _playModeSpecificSceneLoaded = true;
+        _sceneLoadPromise = null;
     }
+
+    
 
 }

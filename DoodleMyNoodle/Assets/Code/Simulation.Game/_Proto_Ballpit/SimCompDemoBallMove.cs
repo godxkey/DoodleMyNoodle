@@ -8,7 +8,7 @@ public class SimCompDemoBallMove : SimComponent, ISimPawnInputHandler, ISimTicka
 
     FixVector3 inputDirection;
 
-    public bool HandleInput(SimInput input)
+    public bool HandleInput(SimPlayerInput input)
     {
         if (input is SimInputKeycode inputKeycode)
         {

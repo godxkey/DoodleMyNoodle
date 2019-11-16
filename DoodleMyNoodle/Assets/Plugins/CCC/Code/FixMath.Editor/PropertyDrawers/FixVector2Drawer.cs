@@ -6,13 +6,13 @@ public class FixFixVector2Drawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        SerializedProperty xProp = property.FindPropertyRelative("x").FindPropertyRelative("m_rawValue");
-        SerializedProperty yProp = property.FindPropertyRelative("y").FindPropertyRelative("m_rawValue");
+        SerializedProperty xProp = property.FindPropertyRelative(nameof(FixVector2.x)).FindPropertyRelative(nameof(Fix64.RawValue));
+        SerializedProperty yProp = property.FindPropertyRelative(nameof(FixVector2.y)).FindPropertyRelative(nameof(Fix64.RawValue));
 
         Fix64 xVal;
         Fix64 yVal;
-        xVal.m_rawValue = xProp.longValue;
-        yVal.m_rawValue = yProp.longValue;
+        xVal.RawValue = xProp.longValue;
+        yVal.RawValue = yProp.longValue;
 
         FixVector2 oldFixVec = new FixVector2(xVal, yVal);
 
@@ -29,8 +29,8 @@ public class FixFixVector2Drawer : PropertyDrawer
         {
             FixVector2 newFixVec = newVec.ToFixVec();
 
-            xProp.longValue = newFixVec.x.m_rawValue;
-            yProp.longValue = newFixVec.y.m_rawValue;
+            xProp.longValue = newFixVec.x.RawValue;
+            yProp.longValue = newFixVec.y.RawValue;
         }
 
 

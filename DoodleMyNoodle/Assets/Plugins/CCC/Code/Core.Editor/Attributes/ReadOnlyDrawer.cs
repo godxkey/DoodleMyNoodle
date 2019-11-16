@@ -6,13 +6,13 @@ public class ReadOnlyDrawer : PropertyDrawer
 {
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        return EditorGUI.GetPropertyHeight(property, label, (attribute as ReadOnlyAttribute).forwardToChildren);
+        return EditorGUI.GetPropertyHeight(property, label, (attribute as ReadOnlyAttribute).ForwardToChildren);
     }
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         GUI.enabled = false;
-        EditorGUI.PropertyField(position, property, label, (attribute as ReadOnlyAttribute).forwardToChildren);
+        EditorGUI.PropertyField(position, property, label, (attribute as ReadOnlyAttribute).ForwardToChildren);
         GUI.enabled = true;
     }
 }

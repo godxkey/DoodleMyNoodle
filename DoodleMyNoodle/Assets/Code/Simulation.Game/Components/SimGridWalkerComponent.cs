@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SimGridTransformComponent))]
+[RequireComponent(typeof(SimTransformComponent))]
 public class SimGridWalkerComponent : SimComponent, ISimTickable
 {
     public Fix64 Speed = new Fix64(4);
     public bool HasADestination { get; private set; }
     public List<SimTileId> Path;
 
-    public SimTileId TileId => _gridTr.TileId;
+    public SimTileId TileId => SimTransform.GetTileId();
 
     public void TryWalkTo(in SimTileId destination)
     {
@@ -30,7 +30,7 @@ public class SimGridWalkerComponent : SimComponent, ISimTickable
             {
                 SimTileId currentTile = TileId;
                 SimTileId targetTile = Path[0];
-                FixVector3 currentPosition = _gridTr.WorldPosition;
+                FixVector3 currentPosition = SimTransform.WorldPosition;
                 FixVector3 targetPosition = targetTile.GetWorldPosition3D();
 
 
@@ -39,7 +39,7 @@ public class SimGridWalkerComponent : SimComponent, ISimTickable
                 FixVector3 moveVector = (v.normalized * Simulation.DeltaTime * Speed).LimitDirection(v);
 
                 // endpoint
-                FixVector3 newPosition = _gridTr.WorldPosition + moveVector;
+                FixVector3 newPosition = SimTransform.WorldPosition + moveVector;
                 SimTileId newTile = SimTileId.FromWorldPosition(newPosition);
 
 
@@ -48,14 +48,14 @@ public class SimGridWalkerComponent : SimComponent, ISimTickable
                     // We're about to change tile but it's occupied, bump!
 
                     Stop();
-                    _gridTr.WorldPosition = currentTile.GetWorldPosition3D(); // normally, we would have a nice 'bump' animation
+                    SimTransform.WorldPosition = currentTile.GetWorldPosition3D(); // normally, we would have a nice 'bump' animation
                 }
                 else
                 {
                     // Normal move
 
                     // Process move
-                    _gridTr.WorldPosition = newPosition;
+                    SimTransform.WorldPosition = newPosition;
 
                     UpdatePathAndDestination();
                 }
@@ -65,13 +65,13 @@ public class SimGridWalkerComponent : SimComponent, ISimTickable
 
     void UpdatePathAndDestination()
     {
-        FixVector3 currentPosition = _gridTr.WorldPosition;
+        FixVector3 currentPosition = SimTransform.WorldPosition;
         FixVector3 targetPathPosition = Path[0].GetWorldPosition3D();
 
         if (TileId == Path[0] && FixMath.AlmostEqual(currentPosition, targetPathPosition))
         {
             // we've reached the node
-            _gridTr.WorldPosition = targetPathPosition;
+            SimTransform.WorldPosition = targetPathPosition;
             Path.RemoveFirst();
 
             if (Path.Count == 0)
@@ -81,15 +81,4 @@ public class SimGridWalkerComponent : SimComponent, ISimTickable
             }
         }
     }
-
-
-
-    #region Component Caching
-    [System.NonSerialized] SimGridTransformComponent _gridTr;
-    public override void OnAddedToRuntime()
-    {
-        base.OnAddedToRuntime();
-        _gridTr = GetComponent<SimGridTransformComponent>();
-    }
-    #endregion
 }

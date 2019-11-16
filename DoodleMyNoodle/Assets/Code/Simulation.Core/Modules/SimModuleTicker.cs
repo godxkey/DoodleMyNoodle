@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class SimModuleTicker : IDisposable
+internal class SimModuleTicker : SimModuleBase
 {
     internal bool CanSimBeTicked =>
-        SimModules.SceneLoader.PendingSceneLoads == 0
-        && SimModules.EntityManager.PendingPermanentEntityDestructions == 0
-        && !IsTicking;
+        SimModules._SceneLoader.PendingSceneLoads == 0
+        && SimModules._EntityManager.PendingPermanentEntityDestructions == 0
+        && !IsTicking
+        && !SimModules._Serializer.IsInDeserializationProcess
+        && !SimModules._Serializer.IsInSerializationProcess;
 
     internal bool IsTicking = false;
-    internal uint TickId => SimModules.World.TickId;
+    internal uint TickId => SimModules._World.TickId;
 
     internal List<ISimTickable> Tickables = new List<ISimTickable>();
     internal List<ISimTickable> NewTickables = new List<ISimTickable>();
@@ -31,7 +33,7 @@ public class SimModuleTicker : IDisposable
         ////////////////////////////////////////////////////////////////////////////////////////
         foreach (SimInput input in tickData.inputs)
         {
-            SimModules.InputProcessorManager.ProcessInput(input);
+            SimModules._InputProcessorManager.ProcessInput(input);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +62,7 @@ public class SimModuleTicker : IDisposable
         CallOnSimStartOnObjectNeedingIt();
 
 
-        SimModules.World.TickId++;
+        SimModules._World.TickId++;
 
 
         IsTicking = false;
@@ -92,7 +94,7 @@ public class SimModuleTicker : IDisposable
 
     void CallOnSimStartOnObjectNeedingIt()
     {
-        List<SimObject> objs = SimModules.World.ObjectsThatHaventStartedYet;
+        List<SimObject> objs = SimModules._World.ObjectsThatHaventStartedYet;
         for (int i = 0; i < objs.Count; i++)
         {
             if (objs[i].isActiveAndEnabled)
@@ -109,9 +111,5 @@ public class SimModuleTicker : IDisposable
                 i--;
             }
         }
-    }
-
-    public void Dispose()
-    {
     }
 }

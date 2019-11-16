@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class QuickStart
 {
@@ -43,9 +44,9 @@ public static class QuickStart
 
     static IEnumerator StartRoutine(QuickStartSettings settings)
     {
-        SceneService.Load(assets.emptyScene);
+        SceneService.Load(assets.emptyScene.name, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D);
 
-        yield return null;
+        yield return null; // wait for scene load
 
         PlayerProfileService.Instance.SetPlayerProfile(settings.localProfileId);
 

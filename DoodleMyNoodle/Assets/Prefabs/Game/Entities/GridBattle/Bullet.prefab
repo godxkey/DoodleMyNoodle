@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1368924192284294078}
   - component: {fileID: 1368924192284294073}
   - component: {fileID: 1368924192284294072}
-  - component: {fileID: 1368924192284294075}
+  - component: {fileID: 4269256218968060757}
   - component: {fileID: 1368924192284294074}
   m_Layer: 0
   m_Name: Bullet
@@ -95,7 +95,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5263acbbb543a548a5b5f6aa444a54d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1368924192284294075
+  _blueprintId:
+    Type: 1
+    Value: 41e300480790e7b4b8ead30d0b5ff7a7
+--- !u!114 &4269256218968060757
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,32 +107,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 1368924192284294053}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cab2341fce43c39488a3dd653efeb6b3, type: 3}
+  m_Script: {fileID: 11500000, guid: df559d762defae54ab42fffff2a0313e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _localPosition:
-    x:
-      m_rawValue: 0
-    y:
-      m_rawValue: 0
-    z:
-      m_rawValue: 0
-  _localRotation:
-    x:
-      m_rawValue: 0
-    y:
-      m_rawValue: 0
-    z:
-      m_rawValue: 0
-    w:
-      m_rawValue: 4294967296
-  _localScale:
-    x:
-      m_rawValue: 4294967296
-    y:
-      m_rawValue: 4294967296
-    z:
-      m_rawValue: 4294967296
+  _data:
+    LocalPosition:
+      x:
+        RawValue: 0
+      y:
+        RawValue: 0
+      z:
+        RawValue: 0
+    LocalRotation:
+      x:
+        RawValue: 0
+      y:
+        RawValue: 0
+      z:
+        RawValue: 0
+      w:
+        RawValue: 4294967296
+    LocalScale:
+      x:
+        RawValue: 4294967296
+      y:
+        RawValue: 4294967296
+      z:
+        RawValue: 4294967296
+    Parent: {fileID: 0}
+    SiblingIndex: 0
 --- !u!114 &1368924192284294074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,6 +150,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed:
     x:
-      m_rawValue: 0
+      RawValue: 0
     y:
-      m_rawValue: 8589934592
+      RawValue: 12884901888

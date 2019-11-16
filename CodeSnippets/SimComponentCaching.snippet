@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>SimComponent Caching</Title>
+      <Author>Frederic Bessette</Author>
+      <Description>Setup a SimComponent Caching region</Description>
+      <Shortcut>scSimComponentCaching</Shortcut>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>ComponentType</ID>
+          <ToolTip>The component's type</ToolTip>
+          <Default>Type</Default>
+        </Literal>
+        <Literal>
+          <ID>_name</ID>
+          <ToolTip>The name of the field</ToolTip>
+          <Default>_name</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp"
+            Kind="method body">
+        <![CDATA[    #region Component Caching
+    [System.NonSerialized] $ComponentType$ $_name$;
+    public override void OnAddedToRuntime()
+    {
+        base.OnAddedToRuntime();
+        $_name$ = GetComponent<$ComponentType$>();
+    }
+    #endregion$end$]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

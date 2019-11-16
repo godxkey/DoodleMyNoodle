@@ -2,7 +2,7 @@
 
 [NetSerializable]
 [System.Serializable]
-public struct SimPlayerId
+public struct SimPlayerId : IDType
 {
     public static readonly SimPlayerId Invalid = new SimPlayerId();
     public static readonly SimPlayerId FirstValid = new SimPlayerId(1);
@@ -36,4 +36,14 @@ public struct SimPlayerId
     }
     public override string ToString() => IsValid ? $"SimPlayerId({Value})" : "SimPlayerId(invalid)";
     #endregion
+
+    public object GetValue()
+    {
+        return Value;
+    }
+
+    public void SetValue(object obj)
+    {
+        Value = Convert.ToUInt16(obj);
+    }
 }

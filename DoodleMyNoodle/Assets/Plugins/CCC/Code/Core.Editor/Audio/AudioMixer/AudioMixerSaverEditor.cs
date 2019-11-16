@@ -38,7 +38,7 @@ public class AudioMixerSaverEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        EditorHelper.DrawOpenFileLocation(Application.persistentDataPath);
+        EditorHelpers.DrawOpenFileLocation(Application.persistentDataPath);
 
         CheckResources();
 

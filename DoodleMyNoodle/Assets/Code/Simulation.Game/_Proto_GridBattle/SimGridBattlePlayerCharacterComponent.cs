@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimGridBattlePlayerCharacterComponent : SimComponent, ISimPawnInputHandler
+public class SimGridBattlePlayerCharacterComponent : SimComponent, ISimPawnInputHandler, ISimInputProcessor
 {
-    public SimBlueprintId BulletPrefab;
+    [System.Serializable]
+    struct SerializedData
+    {
+        public SimEntity BulletPrefab;
+    }
 
-    public bool HandleInput(SimInput input)
+    public bool HandleInput(SimPlayerInput input)
     {
         if (input is SimInputKeycode keyCodeInput && keyCodeInput.state == SimInputKeycode.State.Pressed)
         {
@@ -14,7 +18,7 @@ public class SimGridBattlePlayerCharacterComponent : SimComponent, ISimPawnInput
             {
                 case KeyCode.Space:
                     // Shoot!
-                    Simulation.Instantiate(BulletPrefab);
+                    Simulation.Instantiate(_data.BulletPrefab, SimTransform.WorldPosition, FixQuaternion.Identity);
                     return false;
 
                 case KeyCode.RightArrow:
@@ -39,6 +43,36 @@ public class SimGridBattlePlayerCharacterComponent : SimComponent, ISimPawnInput
     }
 
 
+    public void ProcessInput(SimInput input)
+    {
+        //if (input is SimPlayerInput playerInput)
+        //{
+        //    SimPlayerInfo playerInfo = SimPlayerManager.Instance.GetSimPlayerInfo(playerInput.SimPlayerId);
+        //    playerInfo.
+        //}
+    }
+
+
+    #region Serialized Data Methods
+    [UnityEngine.SerializeField]
+    [Forward]
+    SerializedData _data = new SerializedData()
+    {
+        // define default values here
+    };
+
+    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    {
+        base.SerializeToDataStack(dataStack);
+        dataStack.Push(_data);
+    }
+
+    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
+    {
+        _data = (SerializedData)dataStack.Pop();
+        base.SerializeToDataStack(dataStack);
+    }
+    #endregion
 
 
     #region Component Caching

@@ -2,60 +2,77 @@
 
 internal static class SimModules
 {
-    internal static void Initialize(ISimModuleBlueprintBank iBlueprintBank)
+    internal static void Initialize(SimulationCoreSettings settings)
     {
         // garder en horde alphabétique svp
-        BlueprintBank = iBlueprintBank;
-        EntityManager = new SimModuleEntityManager();
-        InputProcessorManager = new SimModuleInputProcessorManager();
-        Random = new SimModuleRandom();
-        SceneLoader = new SimModuleSceneLoader();
-        Serializer = new SimModuleSerializer();
-        Ticker = new SimModuleTicker();
-        World = new SimWorld();
-        WorldSearcher = new SimModuleWorldSearcher();
+        _BlueprintManager      = new SimModuleBlueprintManager();
+        _EntityManager         = new SimModuleEntityManager();
+        _InputProcessorManager = new SimModuleInputProcessorManager();
+        _Random                = new SimModuleRandom();
+        _SceneLoader           = new SimModuleSceneLoader();
+        _Serializer            = new SimModuleSerializer();
+        _Ticker                = new SimModuleTicker();
+        _WorldSearcher         = new SimModuleWorldSearcher();
+
+        _Modules = new SimModuleBase[]
+        {
+            _BlueprintManager     ,
+            _EntityManager        ,
+            _InputProcessorManager,
+            _Random               ,
+            _SceneLoader          ,
+            _Serializer           ,
+            _Ticker               ,
+            _WorldSearcher        ,
+        };
+
+        // not a module - contains no logic
+        _World                 = new SimWorld();
+
+
+        for (int i = 0; i < _Modules.Length; i++)
+        {
+            _Modules[i].Initialize(settings);
+        }
     }
 
     internal static void Dispose()
     {
-        IsDisposed = true;
+        _IsDisposed = true;
+
+        for (int i = 0; i < _Modules.Length; i++)
+        {
+            _Modules[i].Dispose();
+        }
 
         // garder en horde alphabétique svp
-        BlueprintBank.Dispose();
-        EntityManager.Dispose();
-        InputProcessorManager.Dispose();
-        Random.Dispose();
-        SceneLoader.Dispose();
-        Serializer.Dispose();
-        Ticker.Dispose();
-        World.Dispose();
-        WorldSearcher.Dispose();
+        _BlueprintManager = null;
+        _EntityManager = null;
+        _InputProcessorManager = null;
+        _Random = null;
+        _SceneLoader = null;
+        _Serializer = null;
+        _Ticker = null;
+        _WorldSearcher = null;
 
-        // garder en horde alphabétique svp
-        BlueprintBank = null;
-        EntityManager = null;
-        InputProcessorManager = null;
-        Random = null;
-        SceneLoader = null;
-        Serializer = null;
-        Ticker = null;
-        World = null;
-        WorldSearcher = null;
+        _World = null;
     }
 
 
-    internal static bool IsDisposed;
-    internal static SimWorld World;
+    internal static bool _IsDisposed;
+    internal static SimWorld _World;
 
     // garder en horde alphabétique svp
-    internal static ISimModuleBlueprintBank BlueprintBank;
-    internal static SimModuleEntityManager EntityManager;
-    internal static SimModuleInputProcessorManager InputProcessorManager;
-    internal static SimModuleRandom Random;
-    internal static SimModuleSceneLoader SceneLoader;
-    internal static SimModuleSerializer Serializer;
-    internal static SimModuleTicker Ticker;
-    internal static SimModuleWorldSearcher WorldSearcher;
+    internal static SimModuleBlueprintManager _BlueprintManager;
+    internal static SimModuleEntityManager _EntityManager;
+    internal static SimModuleInputProcessorManager _InputProcessorManager;
+    internal static SimModuleRandom _Random;
+    internal static SimModuleSceneLoader _SceneLoader;
+    internal static SimModuleSerializer _Serializer;
+    internal static SimModuleTicker _Ticker;
+    internal static SimModuleWorldSearcher _WorldSearcher;
 
-    internal static bool IsInitialized => World != null;
+    internal static SimModuleBase[] _Modules;
+
+    internal static bool IsInitialized => _World != null;
 }

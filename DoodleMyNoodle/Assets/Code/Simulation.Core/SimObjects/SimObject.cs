@@ -1,13 +1,18 @@
 ﻿using System;
 using UnityEngine;
 
-public abstract class SimObject : MonoBehaviour
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+public abstract class SimObject : MonoBehaviour, ISimSerializable
 {
 #if UNITY_EDITOR
     // this is to prevent us from accidently using the unity transform instead of the SimTransform
     [NonSerialized]
     public new bool transform = false;
 #endif
+    public SimObjectId SimObjectId { get; internal set; }
 
     /// <summary>
     /// Similar to unity's Awake() but only called when the entity actually becomes part of the simulation
@@ -43,6 +48,10 @@ public abstract class SimObject : MonoBehaviour
     /// </summary>
     public virtual void OnRemovingFromRuntime() { }
 
+    public virtual void SerializeToDataStack(SimComponentDataStack dataStack) { }
+
+    public virtual void DeserializeFromDataStack(SimComponentDataStack dataStack) { }
+
     public Transform UnityTransform => gameObject.transform;
     public SimTransformComponent SimTransform
     {
@@ -59,4 +68,15 @@ public abstract class SimObject : MonoBehaviour
 
     [NonSerialized]
     SimTransformComponent _cachedSimTransform;
+
+
+
+#if UNITY_EDITOR
+    [MenuItem("CONTEXT/SimObject/Print SimObjectId")]
+    static void PrintSimObjectId(MenuCommand command)
+    {
+        SimObject obj = (SimObject)command.context;
+        Debug.Log(obj.SimObjectId);
+    }
+#endif
 }

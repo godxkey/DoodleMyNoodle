@@ -4,22 +4,22 @@ using UnityEngine;
 
 public struct EventAData
 {
-    public string message;
+    public string Message;
 }
 public struct EventBData
 {
-    public string message;
+    public string Message;
 }
 
 public class SimTestScriptComponent : SimEventComponent, ISimInputProcessor, ISimEventListener<EventAData>
 {
-    public bool master = true;
+    public bool Master = true;
 
     public SimEvent<EventAData> EventA;
     public SimEvent<EventBData> EventB;
 
-    SimTestScriptComponent a;
-    SimTestScriptComponent b;
+    SimTestScriptComponent _a;
+    SimTestScriptComponent _b;
 
     public override void OnSimAwake()
     {
@@ -31,12 +31,12 @@ public class SimTestScriptComponent : SimEventComponent, ISimInputProcessor, ISi
 
     public void OnEventRaised(in EventAData eventData)
     {
-        Debug.Log("On event raised: " + eventData.message);
+        Debug.Log("On event raised: " + eventData.Message);
     }
 
     public void ProcessInput(SimInput input)
     {
-        if (!master)
+        if (!Master)
             return;
 
         if (input is SimInputKeycode keycode && keycode.state == SimInputKeycode.State.Pressed)
@@ -46,68 +46,68 @@ public class SimTestScriptComponent : SimEventComponent, ISimInputProcessor, ISi
                 case KeyCode.A:
                     Debug.Log("Invoke A's event");
 
-                    a.EventA.Raise(new EventAData() { message = "A's event" });
+                    _a.EventA.Raise(new EventAData() { Message = "A's event" });
                     break;
 
                 case KeyCode.B:
                     Debug.Log("Invoke B's event");
 
-                    b.EventA.Raise(new EventAData() { message = "B's event" });
+                    _b.EventA.Raise(new EventAData() { Message = "B's event" });
                     break;
 
                 case KeyCode.S:
-                    if (b.EventA.IsListenerRegistered(a))
+                    if (_b.EventA.IsListenerRegistered(_a))
                     {
                         Debug.Log("Register A to B's event");
-                        b.EventA.UnregisterListener(a);
+                        _b.EventA.UnregisterListener(_a);
                     }
                     else
                     {
                         Debug.Log("Unregister A from B's event");
-                        b.EventA.RegisterListener(a);
+                        _b.EventA.RegisterListener(_a);
                     }
                     break;
 
                 case KeyCode.N:
-                    if (a.EventA.IsListenerRegistered(b))
+                    if (_a.EventA.IsListenerRegistered(_b))
                     {
                         Debug.Log("Unregister B from A's event");
-                        a.EventA.UnregisterListener(b);
+                        _a.EventA.UnregisterListener(_b);
                     }
                     else
                     {
                         Debug.Log("Register B to A's event");
-                        a.EventA.RegisterListener(b);
+                        _a.EventA.RegisterListener(_b);
                     }
                     break;
 
                 case KeyCode.Q:
-                    if (a == null)
+                    if (_a == null)
                     {
                         Debug.Log("Spawn A");
-                        a = Simulation.Instantiate(SimEntity).GetComponent<SimTestScriptComponent>();
-                        a.master = false;
+                        _a = Simulation.Instantiate(SimEntity).GetComponent<SimTestScriptComponent>();
+                        _a.Master = false;
                     }
                     else
                     {
                         Debug.Log("Destroy A");
-                        Simulation.Destroy(a.SimEntity);
-                        a = null;
+                        Simulation.Destroy(_a.SimEntity);
+                        _a = null;
                     }
                     break;
 
                 case KeyCode.G:
-                    if (b == null)
+                    if (_b == null)
                     {
                         Debug.Log("Spawn B");
-                        b = Simulation.Instantiate(SimEntity).GetComponent<SimTestScriptComponent>();
-                        b.master = false;
+                        _b = Simulation.Instantiate(SimEntity).GetComponent<SimTestScriptComponent>();
+                        _b.Master = false;
                     }
                     else
                     {
                         Debug.Log("Destroy B");
-                        Simulation.Destroy(b.SimEntity);
-                        b = null;
+                        Simulation.Destroy(_b.SimEntity);
+                        _b = null;
                     }
                     break;
             }

@@ -1,5 +1,5 @@
 ﻿
 public interface ISimPawnInputHandler
 {
-    bool HandleInput(SimInput input);
+    bool HandleInput(SimPlayerInput input);
 }

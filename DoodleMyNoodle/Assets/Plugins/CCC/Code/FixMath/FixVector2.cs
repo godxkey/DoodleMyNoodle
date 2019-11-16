@@ -1,16 +1,20 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Runtime.Serialization;
 
 /// <summary>
 /// Provides XNA-like 2D vector math.
 /// </summary>
 [NetSerializable]
 [Serializable]
+[JsonObject(IsReference =false)]
 public struct FixVector2 : IEquatable<FixVector2>
 {
     /// <summary>
     /// X component of the vector.
     /// </summary>
     public Fix64 x;
+
     /// <summary>
     /// Y component of the vector.
     /// </summary>

@@ -8,26 +8,26 @@ public abstract class BitStreamHead
     // [,,,,,,,] [,,,,,,,] [,,,,,,,] [,,,,,,,] [,,,,,,,] [,,,,,,,] [,,,,,,,]
     //
 
-    protected byte[] m_buffer;
+    protected byte[] _buffer;
     protected int CurrentByteRemains => (8 - BitIndex);
 
     public int BitIndex { get; private set; }
     public int ByteIndex { get; private set; }
     public int TotalBitIndex => ByteIndex * 8 + BitIndex;
-    public int RemainingBits => (m_buffer.Length - ByteIndex) * 8 - BitIndex;
+    public int RemainingBits => (_buffer.Length - ByteIndex) * 8 - BitIndex;
 
     public BitStreamHead(byte[] buffer)
     {
-        m_buffer = buffer;
+        _buffer = buffer;
         ByteIndex = 0;
         BitIndex = 0;
     }
 
-    public void ResetBuffer()
+    public void ResetBufferToZeros()
     {
-        for (int i = 0; i < m_buffer.Length; i++)
+        for (int i = 0; i < _buffer.Length; i++)
         {
-            m_buffer[i] = 0;
+            _buffer[i] = 0;
         }
     }
 
@@ -62,5 +62,4 @@ public abstract class BitStreamHead
             ByteIndex++;
         }
     }
-
 }

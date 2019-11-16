@@ -6,17 +6,19 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class SimTransformComponent : SimComponent
 {
-    [SerializeField]
-    FixVector3 _localPosition;
-    [SerializeField]
-    FixQuaternion _localRotation;
-    [SerializeField]
-    FixVector3 _localScale = new FixVector3(1, 1, 1);
+    [System.Serializable]
+    public struct SerializedData
+    {
+        public FixVector3 LocalPosition;
+        public FixQuaternion LocalRotation;
+        public FixVector3 LocalScale;
+        public SimTransformComponent Parent;
+        public int SiblingIndex;
+    }
 
-
-    public FixVector3 LocalScale { get => _localScale; set { _localScale = value; DirtyCachedRelativeToSelfValues(); } }
-    public FixVector3 LocalPosition { get => _localPosition; set { _localPosition = value; DirtyCachedRelativeToSelfValues(); } }
-    public FixQuaternion LocalRotation { get => _localRotation; set { _localRotation = value; DirtyCachedRelativeToSelfValues(); } }
+    public FixVector3 LocalScale { get => _data.LocalScale; set { _data.LocalScale = value; DirtyCachedRelativeToSelfValues(); } }
+    public FixVector3 LocalPosition { get => _data.LocalPosition; set { _data.LocalPosition = value; DirtyCachedRelativeToSelfValues(); } }
+    public FixQuaternion LocalRotation { get => _data.LocalRotation; set { _data.LocalRotation = value; DirtyCachedRelativeToSelfValues(); } }
 
 
     public FixMatrix LocalToWorldMatrix
@@ -39,30 +41,33 @@ public class SimTransformComponent : SimComponent
     {
         get
         {
-            if(Parent == null)
+            if (Parent == null)
             {
-                return _localPosition;
+                return _data.LocalPosition;
             }
             else
             {
                 UpdateLocalToWorldMatrix();
-                return FixMatrix.TransformPoint(_localPosition, _localToWorldMatrix.Val);
+                return FixMatrix.TransformPoint(_data.LocalPosition, _localToWorldMatrix.Val);
             }
         }
         set
         {
             if (Parent == null)
             {
-                _localPosition = value;
+                _data.LocalPosition = value;
             }
             else
             {
                 UpdateWorldToLocalMatrix();
-                _localPosition =  FixMatrix.TransformPoint(value, _worldToLocalMatrix.Val);
+                _data.LocalPosition = FixMatrix.TransformPoint(value, _worldToLocalMatrix.Val);
             }
         }
     }
 
+    /// <summary>
+    /// To set the parent, simply use the normal Unity
+    /// </summary>
     public SimTransformComponent Parent => UnityTransform.parent?.GetComponent<SimTransformComponent>();
 
     void Update()
@@ -75,6 +80,18 @@ public class SimTransformComponent : SimComponent
         UnityTransform.localScale = LocalScale.ToUnityVec();
     }
 
+    public void SetParent(SimTransformComponent parent)
+    {
+        UnityTransform.SetParent(parent?.UnityTransform);
+        _data.Parent = parent;
+    }
+
+    public void SetSiblingIndex(int siblingIndex)
+    {
+        UnityTransform.SetSiblingIndex(siblingIndex);
+        _data.SiblingIndex = siblingIndex;
+    }
+
     void UpdateMatrix()
     {
         if (_matrix.UpToDate)
@@ -82,7 +99,7 @@ public class SimTransformComponent : SimComponent
 
         Debug.Log("UpdateMatrix");
 
-        FixMatrix.CreateTRS(_localPosition, _localRotation, _localScale, out _matrix.Val);
+        FixMatrix.CreateTRS(_data.LocalPosition, _data.LocalRotation, _data.LocalScale, out _matrix.Val);
 
         // mark as up-to-date
         _matrix.UpToDate = true;
@@ -155,6 +172,41 @@ public class SimTransformComponent : SimComponent
             {
                 childSimTr.DirtyCachedRelativeToParentValues();
             }
+        }
+    }
+
+    #region Serialized Data Methods
+    [UnityEngine.SerializeField]
+    [Forward]
+    public SerializedData _data = new SerializedData()
+    {
+        LocalScale = new FixVector3(1, 1, 1)
+    };
+    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    {
+        base.SerializeToDataStack(dataStack);
+
+        VerifyIntegrity();
+        dataStack.Push(_data);
+    }
+
+    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
+    {
+        _data = (SerializedData)dataStack.Pop();
+        SetParent(_data.Parent);
+        if (_data.Parent)
+            SetSiblingIndex(_data.SiblingIndex);
+
+        base.SerializeToDataStack(dataStack);
+    }
+    #endregion
+
+    void VerifyIntegrity()
+    {
+        if (UnityTransform.parent?.gameObject != _data.Parent?.gameObject)
+        {
+            DebugService.LogError("Mismatch between the UnityTransform's parent and the SimTransform's parent. " +
+                "Make sure you use the simTransform's methods like simTransform.SetParent()");
         }
     }
 

@@ -17,14 +17,15 @@ public class BitStreamWriter : BitStreamHead
             return;
         }
 
+        // create a mask that will clear the bits beyond 'bitCount'
         uint mask;
         if(bitCount < 32) // we have to do this because we CANNOT bitshift by 32
         {
-            mask = (1u << bitCount) - 1u;
+            mask = (1u << bitCount) - 1u; // e.g: 00000000 00111111 11111111 11111111
         }
         else
         {
-            mask = ~0u; // 11111111 111...
+            mask = ~0u; // 11111111 11111111 11111111 11111111
         }
         
         // truncate end of int value
@@ -32,13 +33,13 @@ public class BitStreamWriter : BitStreamHead
 
         while (bitCount > 0)
         {
-            if (ByteIndex >= m_buffer.Length)
+            if (ByteIndex >= _buffer.Length)
             {
                 DebugService.LogError("Trying to write beyond the buffer length");
                 break;
             }
 
-            m_buffer[ByteIndex] |= (byte)(value << BitIndex);
+            _buffer[ByteIndex] |= (byte)(value << BitIndex);
 
             int howMuchDidWeProgress = Math.Min(CurrentByteRemains, bitCount);
             value >>= howMuchDidWeProgress; // chunk the part of the value that we used
@@ -49,7 +50,7 @@ public class BitStreamWriter : BitStreamHead
 
     public void WriteBit(bool value)
     {
-        if (ByteIndex >= m_buffer.Length)
+        if (ByteIndex >= _buffer.Length)
         {
             DebugService.LogError("Trying to write beyond the buffer length");
             return;
@@ -57,7 +58,7 @@ public class BitStreamWriter : BitStreamHead
 
         if (value)
         {
-            m_buffer[ByteIndex] |= (byte)(1 << BitIndex);
+            _buffer[ByteIndex] |= (byte)(1 << BitIndex);
         }
 
         MoveHeadForward(1);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class SimModuleRandom : IDisposable
+internal class SimModuleRandom : SimModuleBase
 {
     internal int RandomInt()
     {
@@ -60,7 +60,7 @@ public class SimModuleRandom : IDisposable
                 if (_associatedTick != value)
                 {
                     // ensures the seed is far apart from tick to tick
-                    Reinitialise(SimModules.World.Seed + BitConverterX.UInt32ToInt32(value * 99877)); 
+                    Reinitialise(SimModules._World.Seed + BitConverterX.UInt32ToInt32(value * 99877)); 
                 }
                 _associatedTick = value;
             }
@@ -78,12 +78,8 @@ public class SimModuleRandom : IDisposable
             _randomNumberGenerator = new TickRandom();
         }
 
-        _randomNumberGenerator.associatedTick = SimModules.Ticker.TickId;
+        _randomNumberGenerator.associatedTick = SimModules._Ticker.TickId;
 
         return _randomNumberGenerator;
-    }
-
-    public void Dispose()
-    {
     }
 }

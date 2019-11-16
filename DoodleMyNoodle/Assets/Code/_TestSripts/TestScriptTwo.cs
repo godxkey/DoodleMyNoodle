@@ -4,30 +4,30 @@ using UnityEngine;
 
 public class TestScriptTwo : MonoBehaviour
 {
-    bool firstUpdate = true;
+    string _json;
 
-    private void Awake()
-    {
-        firstUpdate = true;
-        Debug.Log("[Two] Awake on " + Time.frameCount);
-    }
-
-    private void Start()
-    {
-        Debug.Log("[Two] Start on " + Time.frameCount);
-    }
+    public GameObject test;
 
     private void Update()
     {
-        if (firstUpdate)
-        {
-            Debug.Log("[Two] First Update on " + Time.frameCount);
-            firstUpdate = false;
-        }
         if (Input.GetKeyDown(KeyCode.T))
         {
-            this.DuplicateGO();
-            Debug.Log("[Two] Duplicated on " + Time.frameCount);
+            Debug.Log($"Serialize");
+            SimulationView.SerializeSimulation((resultJson) =>
+            {
+                _json = resultJson;
+                Debug.Log($"Length: {_json.Length}    byte size: {_json.Length * sizeof(char)}    kilobyte size: {_json.Length * sizeof(char) / 1024}");
+                Debug.Log(_json);
+            });
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            Debug.Log($"Deserialize");
+            SimulationView.DeserializeSimulation(_json, () =>
+            {
+                Debug.Log($"OnComplete");
+            });
         }
     }
 }

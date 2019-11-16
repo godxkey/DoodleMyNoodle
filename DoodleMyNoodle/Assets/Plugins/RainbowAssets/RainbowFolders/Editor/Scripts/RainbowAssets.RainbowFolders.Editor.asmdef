@@ -1,0 +1,17 @@
+{
+    "name": "RainbowAssets.RainbowFolders.Editor",
+    "references": [
+        "GUID:82dedfd3bda740d49be228947ab258a5",
+        "GUID:e498b81b3de45794aac9a835acdf45cd"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

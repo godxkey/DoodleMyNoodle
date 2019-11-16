@@ -24,7 +24,7 @@ public class SimPlayerManager : SimSingleton<SimPlayerManager>, ISimInputProcess
         return GetSimPlayerInfoInternal(playerId);
     }
 
-    public SimPlayerInfo GetSimPlayerInfoInternal(in SimPlayerId playerId)
+    SimPlayerInfo GetSimPlayerInfoInternal(in SimPlayerId playerId)
     {
         for (int i = 0; i < _players.Count; i++)
         {

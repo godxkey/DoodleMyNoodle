@@ -5,16 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class LoadSceneComponent : MonoBehaviour
 {
+    [Serializable]
+    public class SceneEvent : UnityEvent<Scene> { }
+
     [SerializeField] SceneInfo sceneInfo;
     [SerializeField] bool loadOnStart = false;
     [SerializeField] bool dontLoadDuplicate = true;
     [SerializeField] bool loadAsync = false;
+    [SerializeField] SceneEvent onLoadComplete = new SceneEvent();
 
-    public SceneInfo SceneInfo { get { return sceneInfo; } set { sceneInfo = value; } }
+    public SceneInfo SceneInfo => sceneInfo;
+    public SceneEvent OnLoadComplete => onLoadComplete;
 
-    [Serializable]
-    public class SceneEvent : UnityEvent<Scene> { }
-    public SceneEvent OnLoadComplete { get; set; }
+    ISceneLoadPromise _loadPromise;
 
     void Start()
     {
@@ -26,22 +29,22 @@ public class LoadSceneComponent : MonoBehaviour
 
     public void Load()
     {
-        Load(null);
-    }
-    public void Load(Action<Scene> callback)
-    {
         if (dontLoadDuplicate && SceneService.IsLoadedOrBeingLoaded(sceneInfo))
             return;
 
-        Action<Scene> localCallback = (scene) =>
-        {
-            callback?.Invoke(scene);
-            OnLoadComplete?.Invoke(scene);
-        };
 
-        if (loadAsync)
-            SceneService.LoadAsync(sceneInfo, localCallback);
-        else
-            SceneService.Load(sceneInfo, localCallback);
+        _loadPromise = SceneService.Load(sceneInfo.SceneName, new SceneLoadSettings()
+        {
+            Async = loadAsync,
+            LoadSceneMode = LoadSceneMode.Additive,
+            LocalPhysicsMode = LocalPhysicsMode.Physics3D
+        });
+
+        _loadPromise.OnComplete += OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(ISceneLoadPromise sceneLoadPromise)
+    {
+        onLoadComplete?.Invoke(sceneLoadPromise.Scene);
     }
 }

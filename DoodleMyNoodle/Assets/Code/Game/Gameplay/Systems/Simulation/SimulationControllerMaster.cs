@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public class SimulationControllerMaster : SimulationController
 {
@@ -52,7 +53,7 @@ public class SimulationControllerMaster : SimulationController
 
     void FixedUpdate()
     {
-        if (!Game.started)
+        if (!Game.Started)
             return;
 
         if (SimulationView.CanBeTicked && AllowSimToTick)

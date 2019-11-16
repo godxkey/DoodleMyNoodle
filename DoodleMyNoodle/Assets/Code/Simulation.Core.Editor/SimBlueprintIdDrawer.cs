@@ -4,8 +4,8 @@ using UnityEngine;
 [CustomPropertyDrawer(typeof(SimBlueprintId))]
 public class SimBlueprintIdDrawer : PropertyDrawer
 {
-    DirtyValue<SimBlueprintId> blueprintId;
-    Object oldRef;
+    DirtyValue<SimBlueprintId> _blueprintId;
+    Object _oldRef;
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
@@ -16,19 +16,19 @@ public class SimBlueprintIdDrawer : PropertyDrawer
     {
         SerializedProperty typeProperty = property.FindPropertyRelative(nameof(SimBlueprintId.Type));
         SerializedProperty valueProperty = property.FindPropertyRelative(nameof(SimBlueprintId.Value));
-        blueprintId.Value = new SimBlueprintId((SimBlueprintId.BlueprintType)typeProperty.intValue, valueProperty.stringValue);
-        if (blueprintId.IsDirty)
+        _blueprintId.Value = new SimBlueprintId((SimBlueprintId.BlueprintType)typeProperty.intValue, valueProperty.stringValue);
+        if (_blueprintId.IsDirty)
         {
-            oldRef = GetGameObjectReference(blueprintId.Value);
-            blueprintId.Reset();
+            _oldRef = GetGameObjectReference(_blueprintId.Value);
+            _blueprintId.Reset();
         }
 
         EditorGUI.BeginProperty(position, label, property);
 
         Rect rect = new Rect(position.x, position.y, position.width, 18);
 
-        Object newRef = EditorGUI.ObjectField(rect, label, oldRef, typeof(GameObject), allowSceneObjects: false);
-        if (ReferenceEquals(oldRef, newRef) == false) // change!
+        Object newRef = EditorGUI.ObjectField(rect, label, _oldRef, typeof(GameObject), allowSceneObjects: false);
+        if (ReferenceEquals(_oldRef, newRef) == false) // change!
         {
             var newBlueprintId = GetBlueprintFromGameObject(newRef as GameObject);
 
@@ -94,7 +94,7 @@ public class SimBlueprintIdDrawer : PropertyDrawer
 
         if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(gameObject, out string guid, out long localId))
         {
-            return SimBlueprintUtility.GetSimBlueprintIdFromBakedPrefabGUID(guid);
+            return SimBlueprintProviderPrefab.MakeBlueprintId(prefabGuid: guid);
         }
 
         return SimBlueprintId.Invalid;

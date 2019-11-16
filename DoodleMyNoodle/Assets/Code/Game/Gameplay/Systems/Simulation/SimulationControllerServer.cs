@@ -33,7 +33,7 @@ public class SimulationControllerServer : SimulationControllerMaster
     bool ValidateInputSubmission(NetMessageInputSubmission submission, PlayerInfo playerInfo)
     {
         // This should eventually evolve into a full validation check (prevent cheating)
-        if (!SimulationView.IsInitialized)
+        if (!SimulationView.IsRunningOrReadyToRun)
             return false;
 
         if (playerInfo == null)

@@ -43,7 +43,7 @@ public class DebugPanelClientSimController : DebugPanel
 
     void OnFixedUpdate()
     {
-        if (!SimulationView.IsInitialized)
+        if (!SimulationView.IsRunningOrReadyToRun)
             return;
 
         m_currentSimTick.Value = SimulationView.TickId;

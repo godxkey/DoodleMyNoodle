@@ -14,8 +14,8 @@ public class SimWorld : IDisposable
     // the list of all entities in the simulation
     internal List<SimEntity> Entities = new List<SimEntity>();
 
-    // should start at 0 for all games
-    internal SimEntityId NextEntityId = SimEntityId.FirstValid;
+    // should start at 1 for all games
+    internal SimObjectId NextObjectId = SimObjectId.FirstValid;
 
     // fbessette:   since the "join in progress and download the sim from the server" feature is not implemented yet, 
     //              the seed will always be at 0 for all players. This means pressing "play" will always give the same random results at first.
@@ -25,6 +25,6 @@ public class SimWorld : IDisposable
 
     public void Dispose()
     {
-        // nothing to do, not logic should be here
+        // nothing to do, no logic should be here
     }
 }

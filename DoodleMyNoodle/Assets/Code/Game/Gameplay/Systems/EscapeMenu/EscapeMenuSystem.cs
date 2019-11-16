@@ -8,16 +8,19 @@ public class EscapeMenuSystem : GameSystem<EscapeMenuSystem>
     [SerializeField] SceneInfo _escapeMenuScene;
 
     MenuInGameEscape _menuInGameEscape;
+    ISceneLoadPromise _loadPromise;
 
     public override void OnGameReady()
     {
         base.OnGameReady();
-        SceneService.LoadAsync(_escapeMenuScene.SceneName, LoadSceneMode.Additive, OnEscapeMenuSceneLoaded);
+        _loadPromise = SceneService.LoadAsync(_escapeMenuScene.SceneName, LoadSceneMode.Additive);
+        _loadPromise.OnComplete += OnEscapeMenuSceneLoaded;
     }
 
-    void OnEscapeMenuSceneLoaded(Scene scene)
+    void OnEscapeMenuSceneLoaded(ISceneLoadPromise sceneLoadPromise)
     {
-        _menuInGameEscape = scene.FindRootObject<MenuInGameEscape>();
+        _menuInGameEscape = sceneLoadPromise.Scene.FindRootObject<MenuInGameEscape>();
+        _loadPromise = null;
     }
 
     void Update()
@@ -26,5 +29,13 @@ public class EscapeMenuSystem : GameSystem<EscapeMenuSystem>
         {
             _menuInGameEscape?.Open();
         }
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        if (_loadPromise != null)
+            _loadPromise.OnComplete -= OnEscapeMenuSceneLoaded;
     }
 }

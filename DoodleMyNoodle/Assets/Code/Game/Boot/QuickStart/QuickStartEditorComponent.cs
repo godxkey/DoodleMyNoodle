@@ -30,7 +30,7 @@ public class QuickStartEditorComponent : MonoBehaviour
     void Awake()
     {
         // Fred - maybe this is not necessary
-        if (SceneService.totalSceneLoadCount == 0)
+        if (SceneService.TotalSceneLoadCount == 0)
         {
             CoreServiceManager.AddInitializationCallback(OnServicesReady);
         }

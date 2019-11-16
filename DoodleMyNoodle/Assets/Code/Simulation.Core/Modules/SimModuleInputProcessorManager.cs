@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimModuleInputProcessorManager : IDisposable
+internal class SimModuleInputProcessorManager : SimModuleBase
 {
     List<ISimInputProcessor> _inputProcessors = new List<ISimInputProcessor>();
     int _inputProcessorIterator;
@@ -53,9 +53,5 @@ public class SimModuleInputProcessorManager : IDisposable
             if (_inputProcessorIterator >= i)
                 _inputProcessorIterator--;
         }
-    }
-
-    public void Dispose()
-    {
     }
 }

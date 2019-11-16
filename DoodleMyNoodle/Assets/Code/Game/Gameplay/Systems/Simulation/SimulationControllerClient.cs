@@ -57,7 +57,7 @@ public class SimulationControllerClient : SimulationController
 
     private void FixedUpdate()
     {
-        if (!SimulationView.IsInitialized)
+        if (!SimulationView.IsRunningOrReadyToRun)
             return;
 
         _pendingSimTicks.Update(Time.fixedDeltaTime);

@@ -27,7 +27,7 @@ public class DataSaverEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        EditorHelper.DrawOpenFileLocation(Application.persistentDataPath);
+        EditorHelpers.DrawOpenFileLocation(Application.persistentDataPath);
 
         base.OnInspectorGUI();
 

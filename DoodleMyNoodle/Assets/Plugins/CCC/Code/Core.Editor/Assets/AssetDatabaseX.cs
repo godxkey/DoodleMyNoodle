@@ -83,4 +83,65 @@ public static class AssetDatabaseX
             }
         }
     }
+
+
+    public static T GetOrCreateDataAsset<T>(string path) where T : ScriptableObject, new()
+    {
+        T asset = AssetDatabase.LoadAssetAtPath<T>(path);
+
+        if (asset == null)
+        {
+            AssetDatabaseX.CreateFolderFromPath(path.Remove(path.LastIndexOf('/')));
+            AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<T>(), path);
+            asset = AssetDatabase.LoadAssetAtPath<T>(path);
+        }
+
+        return asset;
+    }
+
+    public static void CreateFolderFromPath(string path)
+    {
+        CreateFolderFromPath(path, out string dummy);
+    }
+    public static void CreateFolderFromPath(string path, out string folderGuid)
+    {
+        folderGuid = "";
+        if (AssetDatabase.IsValidFolder(path) == false)
+        {
+            string[] steps = path.Split('/');
+
+
+            string currentPath = steps[0];
+            string parentPath = steps[0];
+            if (currentPath != "Assets")
+            {
+                Debug.LogError("the path should start with Assets/");
+                return;
+            }
+
+            for (int i = 1; i < steps.Length; i++) // NB: we start at i=1 to skip the 'Asset/'
+            {
+                currentPath = $"{currentPath}/{steps[i]}";
+
+                if (!AssetDatabase.IsValidFolder(currentPath))
+                {
+                    Debug.Log($"Creating folder {currentPath}");
+                    folderGuid = AssetDatabase.CreateFolder(parentPath, steps[i]);
+                }
+
+                parentPath = currentPath;
+            }
+        }
+    }
+
+    public static string GetFileNameFromPath(string path)
+    {
+        return path.Substring(path.LastIndexOf('/') + 1);
+    }
+
+    public static string GetAssetNameFromPath(string path)
+    {
+        string fileName = GetFileNameFromPath(path);
+        return fileName.Remove(fileName.LastIndexOf('.'));
+    }
 }

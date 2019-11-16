@@ -14,9 +14,9 @@ public class SimPawnManager : SimComponentRegistrySingleton<SimPawnManager, SimP
     public SimPawnComponent GetPawnOnTile(SimTileId tileId)
     {
         SimPawnComponent pawn = null;
-        foreach (SimGridTransformComponent gridTr in Simulation.EntitiesWithComponent<SimGridTransformComponent>())
+        foreach (SimTransformComponent transform in Simulation.EntitiesWithComponent<SimTransformComponent>())
         {
-            if (gridTr.TileId == tileId && gridTr.GetComponent(out pawn))
+            if (transform.GetTileId() == tileId && transform.GetComponent(out pawn))
             {
                 break;
             }
@@ -45,7 +45,7 @@ public class SimPawnManager : SimComponentRegistrySingleton<SimPawnManager, SimP
 
                     for (int i = 0; i < _pooledPawnInputHandlersList.Count; i++)
                     {
-                        if (_pooledPawnInputHandlersList[i].HandleInput(input))
+                        if (_pooledPawnInputHandlersList[i].HandleInput(playerInput))
                         {
                             break;
                         }
