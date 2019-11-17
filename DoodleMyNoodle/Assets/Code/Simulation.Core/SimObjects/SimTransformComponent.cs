@@ -187,12 +187,12 @@ public class SimTransformComponent : SimComponent
         base.SerializeToDataStack(dataStack);
 
         VerifyIntegrity();
-        dataStack.Push(_data);
+        dataStack.Add(_data);
     }
 
     public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
     {
-        _data = (SerializedData)dataStack.Pop();
+        _data = (SerializedData)dataStack.Get();
         SetParent(_data.Parent);
         if (_data.Parent)
             SetSiblingIndex(_data.SiblingIndex);

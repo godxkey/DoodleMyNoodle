@@ -35,9 +35,14 @@ public class SimEntityHierarchyDrawer
             {
                 Color pastGUIColor = GUI.color;
 
-                if (Application.isPlaying == SimModules.IsInitialized
-                    && SimModules.IsInitialized == simEntity.IsPartOfSimulationRuntime
-                    && simEntity.BlueprintId.IsValid)
+                bool ok = simEntity.BlueprintId.IsValid;
+
+                if(Application.isPlaying)
+                {
+                    ok &= SimModules.IsInitialized && simEntity.IsPartOfSimulationRuntime;
+                }
+
+                if (ok)
                 {
                     GUI.color = new Color(0.65f, 1, 0.65f);
                     GUI.Box(rect, "Sim", style);

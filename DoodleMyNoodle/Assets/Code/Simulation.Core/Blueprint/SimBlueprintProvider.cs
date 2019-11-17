@@ -14,14 +14,15 @@ public struct SimBlueprintRequest
 public interface ISimBlueprintProvider
 {
     bool CanProvideBlueprintFor(in SimBlueprintId blueprintId);
+    bool CanProvideBlueprintSynchronously();
+
     SimBlueprint ProvideBlueprint(in SimBlueprintId blueprintId);
 
 
     // needs to be revisited a bit
-    void ProvideBlueprintsAsync(in List<SimBlueprintId> blueprintIds, Action<List<SimBlueprint>> onComplete);
-    void ProvideBlueprintAsync(in SimBlueprintId blueprintId, Action<SimBlueprint> onComplete);
-    void EndProvideBlueprint();
+    //void ProvideBlueprintsAsync(in List<SimBlueprintId> blueprintIds, Action<List<SimBlueprint>> onComplete);
+    //void ProvideBlueprintAsync(in SimBlueprintId blueprintId, Action<SimBlueprint> onComplete);
 
-
-    bool CanProvideBlueprintSynchronously();
+    void ProvideBlueprintBatched(in SimBlueprintId[] blueprintIds, Action<SimBlueprint[]> onComplete);
+    void ReleaseBatchedBlueprints();
 }

@@ -202,6 +202,8 @@ internal class SimModuleEntityManager : SimModuleBase
         newEntity.BlueprintId = blueprintId;
 
         SimModules._World.Entities.Add(newEntity);
+        AddEntityToRuntime(newEntity);
+
         newEntity.GetComponents<SimObject>(_cachedSimObjectList);
         foreach (SimObject obj in _cachedSimObjectList)
         {
@@ -215,8 +217,6 @@ internal class SimModuleEntityManager : SimModuleBase
             SimModules._World.ObjectsThatHaventStartedYet.Add(obj);
         }
         _cachedSimObjectList.Clear();
-
-        AddEntityToRuntime(newEntity);
     }
 
     internal int PendingPermanentEntityDestructions = 0;

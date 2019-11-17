@@ -92,6 +92,23 @@ public static class JsonSerializationUtility
         onComplete.Invoke(results);
     }
 
+    public static IEnumerator DeserializeBatch<T>(string[] data, JsonSerializerSettings jsonSettings, Action<DeserializationResult[]> onComplete)
+    {
+        DeserializationResult[] results = new DeserializationResult[data.Length];
+
+        const int DESERIALIZATIONS_PER_FRAME = 100;
+
+        for (int i = 0; i < data.Length; i++)
+        {
+            results[i] = Deserialize<T>(data[i], jsonSettings);
+
+            if (i % DESERIALIZATIONS_PER_FRAME == 0) // wait a frame
+                yield return null;
+        }
+
+        onComplete.Invoke(results);
+    }
+
     private static IEnumerator StartThreadAndWaitForCompletion(Thread thread)
     {
         thread.Start();

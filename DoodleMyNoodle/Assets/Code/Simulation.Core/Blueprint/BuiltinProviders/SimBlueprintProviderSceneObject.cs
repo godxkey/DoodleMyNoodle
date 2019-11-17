@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class SimBlueprintProviderSceneObject : MonoBehaviour, ISimBlueprintProvider
 {
+    Dictionary<ISceneMetaData, ISceneLoadPromise> _sceneLoads = new Dictionary<ISceneMetaData, ISceneLoadPromise>();
+
     public SceneMetaDataBank SceneMetaDataBank;
 
     public bool CanProvideBlueprintFor(in SimBlueprintId blueprintId) => blueprintId.Type == SimBlueprintId.BlueprintType.SceneGameObject;
@@ -15,93 +17,34 @@ public class SimBlueprintProviderSceneObject : MonoBehaviour, ISimBlueprintProvi
     public SimBlueprint ProvideBlueprint(in SimBlueprintId blueprintId) => throw new NotImplementedException();
 
 
-
-
-    struct BlueprintRequest
+    void ISimBlueprintProvider.ProvideBlueprintBatched(in SimBlueprintId[] blueprintIds, Action<SimBlueprint[]> onComplete)
     {
-        public string SceneName;
-        public string GameObjectId;
-        public SimBlueprint Result;
+        _sceneLoads.Clear();
+        StartCoroutine(ProvideBlueprintsRoutine(blueprintIds, onComplete));
     }
-    List<BlueprintRequest> _blueprintRequests = new List<BlueprintRequest>();
-    bool _isInProvidingProcess = false;
-
-
-    public void BeginProvideBlueprint()
-    {
-        _isInProvidingProcess = true;
-        _blueprintRequests.Clear();
-    }
-
-    public void ProvideBlueprintAsync(in SimBlueprintId blueprintId, Action<SimBlueprint> onComplete)
-    {
-        if (!ParseBlueprintId(blueprintId, out string sceneGuid, out string gameObjectGuid))
-        {
-            Debug.LogError($"Could not parse blueprintId {blueprintId} in SimBlueprintSceneObjectProvider");
-            onComplete(new SimBlueprint());
-            return;
-        }
-
-        // find corresponding scene
-        ISceneMetaData sceneMetaData = SceneMetaDataBank.SceneMetaDatas.Find((ISceneMetaData metaData) => metaData.AssetGuid == sceneGuid);
-
-        if (sceneMetaData == null)
-        {
-            Debug.LogError($"Could not provide blueprint for {blueprintId} because no scene was found with the matching guid.");
-            onComplete(new SimBlueprint());
-            return;
-        }
-
-
-        LoadSceneParameters loadParamerters = default;
-        loadParamerters.loadSceneMode = LoadSceneMode.Additive;
-        loadParamerters.localPhysicsMode = LocalPhysicsMode.None;
-
-
-        //SceneManager.LoadSceneAsync(blueprintId.Value)
-    }
-
-
-
-    public void ProvideBlueprintsAsync(in List<SimBlueprintId> requests, Action<List<SimBlueprint>> onComplete)
-    {
-        if (SceneMetaDataBank == null)
-        {
-            Debug.LogError($"Cannot provide blueprints because the SceneMetaDataBank reference is null");
-            onComplete(null);
-            return;
-        }
-
-
-    }
-
 
     struct Request
     {
+        public bool IsValid;
         public ISceneMetaData SceneMetaData;
-        public string GameObjectGuid;
-        public int Index;
+        public SimBlueprintId BlueprintId;
     }
 
-    IEnumerator ProvideBlueprintsRoutine(List<SimBlueprintId> blueprintIds, Action<SimBlueprint[]> onComplete)
+    IEnumerator ProvideBlueprintsRoutine(SimBlueprintId[] blueprintIds, Action<SimBlueprint[]> onComplete)
     {
-        List<Request> requests = new List<Request>(blueprintIds.Count);
-        SimBlueprint[] results = new SimBlueprint[requests.Count];
+        Request[] requests = new Request[blueprintIds.Length];
+        SimBlueprint[] results = new SimBlueprint[blueprintIds.Length];
 
 
         ////////////////////////////////////////////////////////////////////////////////////////
-        //      Parse all blueprint ids and load their corresponding scenes
+        //      Create requests
         ////////////////////////////////////////////////////////////////////////////////////////
-        Dictionary<ISceneMetaData, AsyncOperation> sceneLoads = new Dictionary<ISceneMetaData, AsyncOperation>();
-        LoadSceneParameters sceneLoadParameters = default;
-        sceneLoadParameters.loadSceneMode = LoadSceneMode.Additive;
-        sceneLoadParameters.localPhysicsMode = LocalPhysicsMode.None;
 
-        for (int i = 0; i < blueprintIds.Count; i++)
+        for (int i = 0; i < blueprintIds.Length; i++)
         {
             if (ParseBlueprintId(blueprintIds[i], out string sceneGuid, out string gameObjectGuid) == false)
             {
-                Debug.LogError($"Could not parse blueprintId {requests[i]} in SimBlueprintSceneObjectProvider");
+                Debug.LogError($"Could not parse blueprintId {blueprintIds[i]} in SimBlueprintSceneObjectProvider");
                 continue;
             }
 
@@ -114,74 +57,84 @@ public class SimBlueprintProviderSceneObject : MonoBehaviour, ISimBlueprintProvi
                 continue;
             }
 
+            // fill request data
+            requests[i].BlueprintId = blueprintIds[i];
+            requests[i].SceneMetaData = sceneMetaData;
+            requests[i].IsValid = true;
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Load all necessary scenes
+        ////////////////////////////////////////////////////////////////////////////////////////
+        LoadSceneParameters sceneLoadParameters = default;
+        sceneLoadParameters.loadSceneMode = LoadSceneMode.Additive;
+        sceneLoadParameters.localPhysicsMode = LocalPhysicsMode.None;
+
+        for (int i = 0; i < requests.Length; i++)
+        {
+            if (!requests[i].IsValid)
+                continue;
+
             // start loading scene if it's not already
-            if (sceneLoads.ContainsKey(sceneMetaData) == false)
+            ISceneMetaData sceneMeta = requests[i].SceneMetaData;
+            if (_sceneLoads.ContainsKey(sceneMeta) == false)
             {
-                //sceneLoads.Add(sceneMetaData, SceneService.LoadAsync(sceneMetaData.Name, LoadSceneMode.Additive)); // TODO
+                _sceneLoads.Add(sceneMeta, SceneService.LoadAsync(sceneMeta.Name, LoadSceneMode.Additive, LocalPhysicsMode.None));
             }
         }
 
 
         ////////////////////////////////////////////////////////////////////////////////////////
-        //      Wait for all scenes to load
+        //      Wait for all scenes to load and gather scene gameobjects
         ////////////////////////////////////////////////////////////////////////////////////////
-
-        bool sceneStillLoading = true;
-        while (sceneStillLoading)
+        Dictionary<ISceneMetaData, GameObject[]> sceneRootGameObjects = new Dictionary<ISceneMetaData, GameObject[]>();
+        while (sceneRootGameObjects.Count != _sceneLoads.Count)
         {
-            sceneStillLoading = false;
-            foreach (KeyValuePair<ISceneMetaData, AsyncOperation> pair in sceneLoads)
+            foreach (KeyValuePair<ISceneMetaData, ISceneLoadPromise> pair in _sceneLoads)
             {
-                if (!pair.Value.isDone)
+                if (pair.Value.IsComplete && !sceneRootGameObjects.ContainsKey(pair.Key))
                 {
-                    // pair.Value.
-                    // sceneStillLoading = true; TODO
-                    break;
+                    sceneRootGameObjects.Add(pair.Key, pair.Value.Scene.GetRootGameObjects());
                 }
             }
 
             yield return null;
         }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Find the scene gameobject that matches each request
+        ////////////////////////////////////////////////////////////////////////////////////////
+        for (int i = 0; i < requests.Length; i++)
+        {
+            SimEntity entity = sceneRootGameObjects[requests[i].SceneMetaData].FindEntityDeepFromGameObjectGuid(requests[i].BlueprintId);
+            if (entity)
+            {
+                results[i] = new SimBlueprint(requests[i].BlueprintId, entity);
+            }
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Return result
+        ////////////////////////////////////////////////////////////////////////////////////////
+        onComplete(results);
     }
 
-    private void OnSceneLoaded(Scene loadedScene)
+
+    void ISimBlueprintProvider.ReleaseBatchedBlueprints()
     {
+        foreach (var item in _sceneLoads)
+        {
+            if (item.Value.Scene.isLoaded)
+            {
+                SceneService.UnloadAsync(item.Value.Scene);
+            }
+        }
 
-
+        _sceneLoads.Clear();
     }
-
-
-    public void EndProvideBlueprint()
-    {
-        _blueprintRequests.Clear();
-        _isInProvidingProcess = false;
-    }
-
-
-    //bool _registeredToSceneLoads = false;
-    //void RegisterToSceneLoads()
-    //{
-    //    if(!_registeredToSceneLoads)
-    //    {
-    //        SceneManager.sceneLoaded += Event_OnSceneLoaded;
-    //        _registeredToSceneLoads = true;
-    //    }
-    //}
-
-    //void UnregisterFromSceneLoads()
-    //{
-    //    if (_registeredToSceneLoads)
-    //    {
-    //        SceneManager.sceneLoaded -= Event_OnSceneLoaded;
-    //        _registeredToSceneLoads = false;
-    //    }
-    //}
-
-
-    //void OnDestroy()
-    //{
-    //    UnregisterFromSceneLoads();
-    //}
 
 
 
@@ -204,6 +157,22 @@ public class SimBlueprintProviderSceneObject : MonoBehaviour, ISimBlueprintProvi
 
             return false;
         }
+    }
+    public static bool CompareGameObjectGuid(in SimBlueprintId a, in SimBlueprintId b)
+    {
+        int compareStringUpTo = a.Value.IndexOf('/');
+        if (b.Value.IndexOf('/') != compareStringUpTo)
+            return false;
+
+        for (int i = 0; i < compareStringUpTo; i++)
+        {
+            if (a.Value[i] != b.Value[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static SimBlueprintId MakeBlueprintId(string sceneGuid, string gameObjectGuid)

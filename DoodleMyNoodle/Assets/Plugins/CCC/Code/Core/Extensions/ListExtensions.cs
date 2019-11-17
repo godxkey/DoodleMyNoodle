@@ -87,6 +87,10 @@ public static class ListExtensions
         list.Add(temp);
     }
 
+    public static T First<T>(this List<T> list)
+    {
+        return list[0];
+    }
     public static T Last<T>(this List<T> list)
     {
         return list[list.Count - 1];

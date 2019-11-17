@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 internal class SimModuleBlueprintManager : SimModuleBase
 {
     ISimBlueprintProvider[] _blueprintProviders;
+    Coroutine _provideBlueprintBatchedRoutine;
 
     internal override void Initialize(SimulationCoreSettings settings)
     {
@@ -27,16 +29,57 @@ internal class SimModuleBlueprintManager : SimModuleBase
         return bpProvider.ProvideBlueprint(blueprintId);
     }
 
-    public void GetBlueprintAsync(in SimBlueprintId blueprintId, Action<SimBlueprint> onComplete)
+    public IEnumerator ProvideBlueprintBatched(List<SimBlueprintId> requestedBlueprintIds, Action<SimBlueprint[]> onComplete)
     {
-        ISimBlueprintProvider bpProvider = GetBlueprintProviderForBlueprintId(blueprintId);
-        if (bpProvider == null)
+        // Ask every provider to provide blueprints from the blueprintIds
+        SimBlueprint[][] providerResults = new SimBlueprint[_blueprintProviders.Length][];
+        for (int i = 0; i < _blueprintProviders.Length; i++)
         {
-            onComplete(default);
+            SimBlueprintId[] request = requestedBlueprintIds.Where((x) => _blueprintProviders[i].CanProvideBlueprintFor(x)).ToArray();
+
+            int index = i; // needed to create a copy of 'i' for the callback
+            _blueprintProviders[i].ProvideBlueprintBatched(request, (blueprints) => providerResults[index] = blueprints);
         }
-        else
+
+        // wait until all providers have responded with their results
+        while (providerResults.ContainsNull())
         {
-            bpProvider.ProvideBlueprintAsync(blueprintId, onComplete);
+            yield return null;
+        }
+
+        // LOCAL FUNCTION
+        SimBlueprint FindBlueprintInProviderResults(in SimBlueprintId blueprintId)
+        {
+            for (int i = 0; i < providerResults.Length; i++)
+            {
+                for (int j = 0; j < providerResults[i].Length; j++)
+                {
+                    if (providerResults[i][j].Id == blueprintId)
+                    {
+                        return providerResults[i][j];
+                    }
+                }
+            }
+            return new SimBlueprint();
+        }
+
+        // group blueprints back together, with the same sorting as the requested 'requestedBlueprintIds'
+        SimBlueprint[] combinedResult = new SimBlueprint[requestedBlueprintIds.Count];
+        for (int i = 0; i < requestedBlueprintIds.Count; i++)
+        {
+            combinedResult[i] = FindBlueprintInProviderResults(requestedBlueprintIds[i]);
+        }
+
+        // callback
+        onComplete(combinedResult);
+    }
+
+    public void ReleaseBatchedBlueprints()
+    {
+        _provideBlueprintBatchedRoutine = null;
+        foreach (var provider in _blueprintProviders)
+        {
+            provider.ReleaseBatchedBlueprints();
         }
     }
 
@@ -54,5 +97,15 @@ internal class SimModuleBlueprintManager : SimModuleBase
         DebugService.LogError($"Could not find blueprint provider for blueprint id {blueprintId}");
 
         return null;
+    }
+
+    public override void Dispose()
+    {
+        if (_provideBlueprintBatchedRoutine != null)
+        {
+            CoroutineLauncherService.Instance.StopCoroutine(_provideBlueprintBatchedRoutine);
+            _provideBlueprintBatchedRoutine = null;
+        }
+        base.Dispose();
     }
 }

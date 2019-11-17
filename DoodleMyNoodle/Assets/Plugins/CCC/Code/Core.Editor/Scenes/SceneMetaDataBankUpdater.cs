@@ -88,24 +88,6 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
 
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
-        foreach (var item in importedAssets)
-        {
-            Debug.Log($"importedAsset {item}");
-        }
-        foreach (var item in deletedAssets)
-        {
-            Debug.Log($"deletedAssets {item}");
-        }
-        foreach (var item in movedAssets)
-        {
-            Debug.Log($"movedAssets {item}");
-        }
-        foreach (var item in movedFromAssetPaths)
-        {
-            Debug.Log($"movedFromAssetPaths {item}");
-        }
-
-
         System.Predicate<string> sceneAssetPath = (x) => x.EndsWith(".unity");
 
         if(importedAssets.Contains(sceneAssetPath)

@@ -86,6 +86,23 @@ public class SimObjectJsonConverter : JsonConverter
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
         object val = reader.Value;
+
+        if (val == null) // the SimObject reference was null
+        {
+            DebugService.Log($"Reading ref: {reader.Path} : null");
+            return null;
+        }
+
+        // Json misinterprets the values to 'long' and 'int'
+        if(val is long longValue)
+        {
+            val = (ulong)longValue;
+        }
+        else if (val is int intValue)
+        {
+            val = (ulong)intValue;
+        }
+
         if (val is ulong readValue)
         {
             ReferenceData refData = ReferenceData.FromUInt64(readValue);
@@ -93,15 +110,16 @@ public class SimObjectJsonConverter : JsonConverter
             if (refData.IsBlueprint)
             {
                 uint blueprintIndex = refData.Value1;
-                if(blueprintIndex < AvailableBlueprints.Length)
+                if (blueprintIndex < AvailableBlueprints.Length)
                 {
                     SimBlueprint blueprint = AvailableBlueprints[blueprintIndex];
 
                     blueprint.Prefab.GetComponents(_componentList);
 
                     int componentIndex = refData.Value2;
-                    if(componentIndex < _componentList.Count)
+                    if (componentIndex < _componentList.Count)
                     {
+                        DebugService.Log($"Reading ref: {reader.Path} : BLUEPRINT {_componentList[componentIndex].gameObject}'s {_componentList[componentIndex].GetType()}");
                         return _componentList[componentIndex];
                     }
                 }
@@ -112,9 +130,12 @@ public class SimObjectJsonConverter : JsonConverter
 
                 if (SimObjectsReferenceTable.TryGetValue(simObjId, out SimObject simObject))
                 {
+                    DebugService.Log($"Reading ref: {reader.Path} : OBJECT {simObject.gameObject.name}'s {simObject.GetType()}");
                     return simObject;
                 }
             }
+
+            DebugService.Log($"Reading ref: {reader.Path} : FAILED {readValue}");
         }
 
         DebugService.LogError($"Error in deserialization: Failed to recreate reference to simObject {val}.");

@@ -5,10 +5,59 @@ using UnityEngine;
 
 public static  class ArrayExtensions
 {
+    public static bool IsValidIndex(this Array array, int index)
+    {
+        return index >= 0 && index < array.Length;
+    }
+
+    public static bool IsValidIndex(this Array array, uint index)
+    {
+        return index < array.Length;
+    }
+
+    public static T TryGetAt<T>(this T[] array, uint index)
+    {
+        array.TryGetAt(index, out T result);
+        return result;
+    }
+    public static T TryGetAt<T>(this T[] array, int index)
+    {
+        array.TryGetAt(index, out T result);
+        return result;
+    }
+    public static bool TryGetAt<T>(this T[] array, uint index, out T result)
+    {
+        if (array.IsValidIndex(index))
+        {
+            result = array[index];
+            return true;
+        }
+        result = default;
+        return false;
+    }
+    public static bool TryGetAt<T>(this T[] array, int index, out T result)
+    {
+        if (array.IsValidIndex(index))
+        {
+            result = array[index];
+            return true;
+        }
+        result = default;
+        return false;
+    }
+
     public static bool Contains(this Array array, object obj)
     {
         for (int i = 0; i < array.Length; i++)
             if (array.GetValue(i).Equals(obj))
+                return true;
+        return false;
+    }
+
+    public static bool ContainsNull(this Array array)
+    {
+        for (int i = 0; i < array.Length; i++)
+            if (array.GetValue(i) == null)
                 return true;
         return false;
     }

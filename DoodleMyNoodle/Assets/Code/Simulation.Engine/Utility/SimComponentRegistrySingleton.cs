@@ -10,9 +10,9 @@ public class SimComponentRegistrySingleton<ChildClass, ComponentClass> :
 {
     protected List<ComponentClass> _components = new List<ComponentClass>();
 
-    public override void OnSimAwake()
+    public override void OnAddedToRuntime()
     {
-        base.OnSimAwake();
+        base.OnAddedToRuntime();
 
         // Add preexisting entities
         foreach (ComponentClass component in Simulation.EntitiesWithComponent<ComponentClass>())
@@ -27,7 +27,7 @@ public class SimComponentRegistrySingleton<ChildClass, ComponentClass> :
         {
             if (_components.Contains(component))
             {
-                DebugService.LogError($"Trying to register a {nameof(ComponentClass)} twice ({obj.gameObject.name})");
+                DebugService.LogError($"Trying to register a {typeof(ComponentClass)} twice ({obj.gameObject.name})");
                 return;
             }
 
@@ -42,7 +42,7 @@ public class SimComponentRegistrySingleton<ChildClass, ComponentClass> :
         {
             if (!_components.Remove(component))
             {
-                DebugService.LogError($"Trying to unregister a {nameof(ComponentClass)} that was not registered ({obj.gameObject.name})");
+                DebugService.LogError($"Trying to unregister a {typeof(ComponentClass)} that was not registered ({obj.gameObject.name})");
             }
             // OnUnregisterComponent(component);
         }

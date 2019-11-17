@@ -248,17 +248,19 @@ internal class SimModuleSerializer : SimModuleBase
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Aquire necessary blueprints to reconstruct entites
         ////////////////////////////////////////////////////////////////////////////////////////
-        DebugService.Log($"Aquiring necessary blueprints to reconstruct entites");
+        DebugService.Log($"Aquiring necessary blueprints to reconstruct entites...");
         SimBlueprint[] resultBlueprints = new SimBlueprint[serializableWorld.Entities.Count];
-        yield return AcquireBlueprintsBatched(serializableWorld.ReferencedBlueprints, resultBlueprints);
 
+        yield return SimModules._BlueprintManager.ProvideBlueprintBatched(serializableWorld.ReferencedBlueprints, (x) => resultBlueprints = x);
+
+        SimBlueprint[] bp = resultBlueprints;
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Reconstruct entities
         ////////////////////////////////////////////////////////////////////////////////////////
-        DebugService.Log($"Reconstructing entites");
+        DebugService.Log($"Reconstructing entites...");
         int reconstructCount = resultBlueprints.Length;
-        Dictionary<SimObjectId, SimObject> allSimObjects = new Dictionary<SimObjectId, SimObject>(reconstructCount * 4); // expecting 4 components per entity
+        Dictionary<SimObjectId, SimObject> allSimObjects = new Dictionary<SimObjectId, SimObject>(reconstructCount * 4); // expecting ~4 components per entity
         string[] serializedComponentDataStacks = new string[reconstructCount];
         SimComponentDataStack[] componentDataStacks = new SimComponentDataStack[reconstructCount];
         List<SimComponent> componentList = new List<SimComponent>();
@@ -266,20 +268,31 @@ internal class SimModuleSerializer : SimModuleBase
         for (int i = 0; i < serializableWorld.Entities.Count; i++)
         {
             SimEntity reconstructedEntity = null;
-            if (resultBlueprints[i].IsValid)
-            {
-                SimSerializableWorld.Entity serializedEntity = serializableWorld.Entities[i];
+            SimSerializableWorld.Entity serializedEntity = serializableWorld.Entities[i];
 
-                reconstructedEntity = resultBlueprints[i].Prefab.DuplicateGO();
+            SimBlueprint blueprint = resultBlueprints.TryGetAt(serializedEntity.BlueprintIdIndex);
+
+            if (blueprint.IsValid)
+            {
+                reconstructedEntity = blueprint.Prefab.DuplicateGO();
                 reconstructedEntity.SimObjectId = serializedEntity.Id;
                 reconstructedEntity.gameObject.name = serializedEntity.Name;
                 reconstructedEntity.gameObject.SetActive(serializedEntity.Active);
-                reconstructedEntity.BlueprintId = resultBlueprints[serializedEntity.BlueprintIdIndex].Id; // is this necessary ?
+                reconstructedEntity.BlueprintId = blueprint.Id; // is this necessary ?
                 reconstructedEntity.GetComponents(componentList);
                 for (int c = 0; c < componentList.Count; c++)
                 {
-                    componentList[c].SimObjectId = serializedEntity.Components[c].Id;
-                    componentList[c].enabled = serializedEntity.Components[c].Enabled;
+                    if (c < serializedEntity.Components.Count)
+                    {
+                        componentList[c].SimObjectId = serializedEntity.Components[c].Id;
+                        componentList[c].enabled = serializedEntity.Components[c].Enabled;
+                    }
+                    else
+                    {
+                        DebugService.LogWarning($"The reconstructed entity {reconstructedEntity.gameObject.name} has a " +
+                            $"component({componentList[c].GetType()}) that was not found in the serialized simulation. " +
+                            $"It may be a new component that was not there when the serialization happened.");
+                    }
 
                     // cache SimObject
                     allSimObjects.Add(componentList[c].SimObjectId, componentList[c]);
@@ -302,14 +315,22 @@ internal class SimModuleSerializer : SimModuleBase
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
+        //      Release blueprints that were loaded for the reconstructions
+        ////////////////////////////////////////////////////////////////////////////////////////
+        DebugService.Log($"Releaseing blueprints loaded for reconstruction...");
+        SimModules._BlueprintManager.ReleaseBatchedBlueprints();
+
+        ////////////////////////////////////////////////////////////////////////////////////////
         //      Deserialize all component data stacks
         ////////////////////////////////////////////////////////////////////////////////////////
-        DebugService.Log($"Deserializing component data stacks");
+        DebugService.Log($"Deserializing component data stacks...");
         GetSimObjectJsonConverter().SimObjectsReferenceTable = allSimObjects; // necessary for json to reassign references correctly
         GetSimObjectJsonConverter().AvailableBlueprints = resultBlueprints;
-        yield return JsonSerializationUtility.DeserializeBatchThreaded<SimComponentDataStack>(
-            serializedComponentDataStacks, 
-            GetJsonSettings(), 
+
+        // NB: cannot be threaded for now because our json converter accesses Unity API which is main thread bound. Could probably be changed!
+        yield return JsonSerializationUtility.DeserializeBatch<SimComponentDataStack>( 
+            serializedComponentDataStacks,
+            GetJsonSettings(),
             (JsonSerializationUtility.DeserializationResult[] results) =>
         {
             for (int i = 0; i < results.Length; i++)
@@ -328,7 +349,7 @@ internal class SimModuleSerializer : SimModuleBase
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Refill components with data (from data stacks)
         ////////////////////////////////////////////////////////////////////////////////////////
-        DebugService.Log($"Refilling components' data");
+        DebugService.Log($"Refilling components' data...");
         for (int i = 0; i < serializableWorld.Entities.Count; i++)
         {
             SimEntity reconstructedEntity = world.Entities[i];
@@ -338,7 +359,15 @@ internal class SimModuleSerializer : SimModuleBase
                 reconstructedEntity.GetComponents(componentList);
                 for (int c = 0; c < componentList.Count; c++)
                 {
-                    componentList[c].DeserializeFromDataStack(componentDataStacks[i]);
+                    try
+                    {
+                        componentList[c].DeserializeFromDataStack(componentDataStacks[i]);
+                    }
+                    catch (Exception e)
+                    {
+                        DebugService.LogWarning($"Failed to deserialize {reconstructedEntity.gameObject.name}'s {componentList[c].GetType()} component: {e.Message}." +
+                            $"\nComponent data will stay at default values.");
+                    }
                 }
             }
         }
@@ -346,13 +375,13 @@ internal class SimModuleSerializer : SimModuleBase
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Remove null entities
         ////////////////////////////////////////////////////////////////////////////////////////
-        DebugService.Log($"Clearing entities that failed to be reconstructed");
+        DebugService.Log($"Clearing entities that failed to be reconstructed...");
         world.Entities.RemoveNulls();
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Add all reconstructed entities to runtime
         ////////////////////////////////////////////////////////////////////////////////////////
-        DebugService.Log($"Adding reconstructed entities to runtime");
+        DebugService.Log($"Adding reconstructed entities to runtime...");
         world.Entities.ForEach((x) => SimModules._EntityManager.AddEntityToRuntime(x));
 
         // terminado!
@@ -369,26 +398,5 @@ internal class SimModuleSerializer : SimModuleBase
             world.Entities[i].DestroyGO();
         }
         world.Entities.Clear();
-    }
-
-    IEnumerator AcquireBlueprintsBatched(List<SimBlueprintId> blueprintIds, SimBlueprint[] outBlueprints)
-    {
-        int pending = blueprintIds.Count;
-
-        for (int i = 0; i < blueprintIds.Count; i++)
-        {
-            int localIndex = i;
-            SimModules._BlueprintManager.GetBlueprintAsync(blueprintIds[i], (x) =>
-            {
-                outBlueprints[localIndex] = x;
-                pending--;
-            });
-        }
-
-        // spin until we're done gettings all the blueprints
-        while (pending != 0)
-        {
-            yield return null;
-        }
     }
 }

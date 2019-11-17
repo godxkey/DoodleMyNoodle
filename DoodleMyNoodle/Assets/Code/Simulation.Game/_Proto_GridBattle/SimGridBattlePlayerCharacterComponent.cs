@@ -64,12 +64,12 @@ public class SimGridBattlePlayerCharacterComponent : SimComponent, ISimPawnInput
     public override void SerializeToDataStack(SimComponentDataStack dataStack)
     {
         base.SerializeToDataStack(dataStack);
-        dataStack.Push(_data);
+        dataStack.Add(_data);
     }
 
     public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
     {
-        _data = (SerializedData)dataStack.Pop();
+        _data = (SerializedData)dataStack.Get();
         base.SerializeToDataStack(dataStack);
     }
     #endregion

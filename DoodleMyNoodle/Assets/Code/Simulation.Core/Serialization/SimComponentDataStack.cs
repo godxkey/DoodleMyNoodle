@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-#pragma warning disable IDE0052 // Remove unread private members
+//#pragma warning disable IDE0052 // Remove unread private members
 [DataContract]
 [JsonObject(IsReference = false, ItemIsReference = false)]
 public class SimComponentDataStack
@@ -11,15 +11,15 @@ public class SimComponentDataStack
     [JsonProperty(IsReference = false)]
     List<object> _data = new List<object>();
 
-    public void Push(object obj)
+    public void Add(object obj)
     {
         _data.Add(obj);
     }
 
-    public object Pop()
+    public object Get()
     {
-        object last = _data.Last();
-        _data.RemoveLast();
+        object last = _data.First();
+        _data.RemoveFirst();
         return last;
     }
 
@@ -28,4 +28,4 @@ public class SimComponentDataStack
         _data.Clear();
     }
 }
-#pragma warning restore IDE0052 // Remove unread private members
+//#pragma warning restore IDE0052 // Remove unread private members

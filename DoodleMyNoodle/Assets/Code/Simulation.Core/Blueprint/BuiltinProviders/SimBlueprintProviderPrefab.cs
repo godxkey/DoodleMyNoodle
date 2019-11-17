@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SimBlueprintProviderPrefab : MonoBehaviour, ISimBlueprintProvider
@@ -23,9 +24,13 @@ public class SimBlueprintProviderPrefab : MonoBehaviour, ISimBlueprintProvider
         return default;
     }
 
-    public void ProvideBlueprintAsync(in SimBlueprintId blueprintId, Action<SimBlueprint> onComplete)
+    public void ProvideBlueprintBatched(in SimBlueprintId[] blueprintIds, Action<SimBlueprint[]> onComplete)
     {
-        onComplete(ProvideBlueprint(blueprintId));
+        onComplete(blueprintIds.Select((id) => ProvideBlueprint(id)).ToArray());
+    }
+
+    public void ReleaseBatchedBlueprints()
+    {
     }
 
     public static SimBlueprintId MakeBlueprintId(string prefabGuid)
@@ -33,13 +38,4 @@ public class SimBlueprintProviderPrefab : MonoBehaviour, ISimBlueprintProvider
         return new SimBlueprintId(SimBlueprintId.BlueprintType.Prefab, prefabGuid);
     }
 
-    public void ProvideBlueprintsAsync(in List<SimBlueprintId> blueprintIds, Action<List<SimBlueprint>> onComplete)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void EndProvideBlueprint()
-    {
-        throw new NotImplementedException();
-    }
 }

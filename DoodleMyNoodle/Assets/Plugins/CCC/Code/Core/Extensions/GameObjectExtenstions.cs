@@ -10,4 +10,9 @@ public static class GameObjectExtensions
         result = gameObject.GetComponent<T>();
         return result != null;
     }
+
+    public static bool HasComponent<T>(this GameObject gameObject)
+    {
+        return gameObject.GetComponent<T>() != null;
+    }
 }
