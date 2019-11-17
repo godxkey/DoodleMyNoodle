@@ -16,7 +16,7 @@ public class SimBlueprintIdDrawer : PropertyDrawer
     {
         SerializedProperty typeProperty = property.FindPropertyRelative(nameof(SimBlueprintId.Type));
         SerializedProperty valueProperty = property.FindPropertyRelative(nameof(SimBlueprintId.Value));
-        _blueprintId.Value = new SimBlueprintId((SimBlueprintId.BlueprintType)typeProperty.intValue, valueProperty.stringValue);
+        _blueprintId.SetValue(new SimBlueprintId((SimBlueprintId.BlueprintType)typeProperty.intValue, valueProperty.stringValue));
         if (_blueprintId.IsDirty)
         {
             _oldRef = GetGameObjectReference(_blueprintId.Value);

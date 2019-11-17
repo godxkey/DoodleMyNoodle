@@ -12,7 +12,7 @@ public class ContextRulePlayerClassRegister : ScriptableObject
 
     public void UpdateRules(PlayerClassType currentPlayerClass)
     {
-        playerClassType.Value = currentPlayerClass;
+        playerClassType.SetValue(currentPlayerClass);
 
         if (playerClassType.IsDirty)
         {
