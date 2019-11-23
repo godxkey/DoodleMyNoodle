@@ -26,3 +26,4 @@ GameObject.Instantiate = Simulation.Instantiate
 GameObject.Destroy = Simulation.Destroy
 SceneManager.LoadScene = Simulation.LoadScene
 Random.X = Simulation.Random.X
+
