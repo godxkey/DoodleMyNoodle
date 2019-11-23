@@ -136,8 +136,13 @@ public static class ListExtensions
         }
     }
 
-    public static ReadOnlyList<T> AsReadOnlyNoAlloc<T>(this List<T> list)
+    public static ReadOnlyList<ListType> AsReadOnlyNoAlloc<ListType>(this List<ListType> list)
     {
-        return new ReadOnlyList<T>(list);
+        return new ReadOnlyList<ListType>(list);
+    }
+    public static ReadOnlyList<ListType, ReadType> AsReadOnlwyNoAlloc<ListType, ReadType>(this List<ListType> list)
+        where ListType : ReadType
+    {
+        return new ReadOnlyList<ListType, ReadType>(list);
     }
 }
