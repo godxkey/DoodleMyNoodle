@@ -7,7 +7,7 @@ etc.
 
 Mathf.X = FixMath.X
 
-wdwd
+
 2. Event Unity vs. Event Sim
 Awake = OnSimAwake
 Start = OnSimStart
@@ -26,3 +26,4 @@ GameObject.Instantiate = Simulation.Instantiate
 GameObject.Destroy = Simulation.Destroy
 SceneManager.LoadScene = Simulation.LoadScene
 Random.X = Simulation.Random.X
+
