@@ -27,7 +27,7 @@ public interface ISimEventListener<T> : ISimEventListenerBase<T>, ISimEventListe
 }
 
 /// <summary>
-/// Meant to be added on SimEventComponents
+/// Meant to be added on classes OTHER than SimEventComponent
 /// </summary>
 public interface ISimEventListenerUnsafe<T> : ISimEventListenerBase<T>, ISimEventListenerUnsafe
 {

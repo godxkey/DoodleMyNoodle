@@ -74,7 +74,6 @@ public static class FixMath
         return value;
     }
 
-
     /// <summary>
     /// Returns the higher value of the two parameters.
     /// </summary>
@@ -102,7 +101,7 @@ public static class FixMath
     /// </summary>
     /// <param name="degrees">Degrees to convert.</param>
     /// <returns>Radians equivalent to the input degrees.</returns>
-    public static Fix64 ToRadians(Fix64 degrees)
+    public static Fix64 ToRadians(in Fix64 degrees)
     {
         return degrees * (Pi / F64.C180);
     }
@@ -112,7 +111,7 @@ public static class FixMath
     /// </summary>
     /// <param name="radians">Radians to convert.</param>
     /// <returns>Degrees equivalent to the input radians.</returns>
-    public static Fix64 ToDegrees(Fix64 radians)
+    public static Fix64 ToDegrees(in Fix64 radians)
     {
         return radians * (F64.C180 / Pi);
     }
