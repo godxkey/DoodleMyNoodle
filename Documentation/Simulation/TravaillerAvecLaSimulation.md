@@ -38,8 +38,8 @@ public class MySimComponent : SimComponent
 {
 	[System.Serializable]
 	struct SerializedData
-	{
-		// all of my saved properties
+	{    
+	    // all of my saved properties
 	    public Fix64 Speed;
    	    public int Health;
    	    public SimEntity TargetedEnemy;
