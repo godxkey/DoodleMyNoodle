@@ -1,10 +1,10 @@
 ﻿using System;
 
-public struct DirtyValue<T> : IStructValue<T>
+public struct DirtyValue<T>
 {
     bool forceDirty;
 
-    public T Value { get; private set; }
+    public T Value { get; set; }
     public T PreviousValue { get; private set; }
 
     public DirtyValue(T initialValue, bool dirtyOnStart = true)
@@ -37,27 +37,5 @@ public struct DirtyValue<T> : IStructValue<T>
     public void ForceDirty()
     {
         forceDirty = true;
-    }
-
-    public void SetValue(T newValue)
-    {
-        PreviousValue = Value;
-        Value = newValue;
-    }
-
-    public T GetValue()
-    {
-        return Value;
-    }
-
-   void IStructValue<T>.SetValue(T newValue)
-    {
-        SetValue(newValue);
-    }
-
-    public static T operator +(DirtyValue<T> dirtyValue, T newValue)
-    {
-        dirtyValue.SetValue(newValue);
-        return dirtyValue.Value;
     }
 }
