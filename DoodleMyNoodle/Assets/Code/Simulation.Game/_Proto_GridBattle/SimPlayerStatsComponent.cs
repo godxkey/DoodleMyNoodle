@@ -1,26 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class SimPlayerStatsComponent : SimComponent
 {
-    // Make it so that here we have a list of simple stats container scriptable object
+    public int StartHealthpoints = 10;
+
     public Stat<int> Healthpoints;
+    
+    public int GetCurrentHealthpoints { get { return Healthpoints.GetValue().Value; } }
 
-    //public int GetCurrentHealthpoints { get { return healthpoints.GetStruct.Value; } }
+    [System.Serializable]
+    public class OnHPChanged : UnityEvent<float, float> { }
+    public OnHPChanged OnHealthpointsChanged = new OnHPChanged();
 
-    //// TODO Add Event for healthchange
+    public override void OnSimStart()
+    {
+        base.OnSimStart();
 
-    //void Start()
-    //{
-    //    healthpoints = ;
-    //    healthpoints.GetStruct.SetValue(healthpointsStartValue);
-    //}
+        Healthpoints = new Stat<int>(StartHealthpoints);
+    }
 
-    //public bool IncreaseValue(int value)
-    //{
-    //    healthpoints.IncreaseValue(value);
-    //    return healthpoints.GetStruct.IsDirty;
-    //}
+    public int ChangeValue(int value)
+    {
+        Healthpoints.SetValue(Healthpoints.GetValue().Value + value);
+
+        if (Healthpoints.GetValue().IsDirty)
+        {
+            OnHealthpointsChanged?.Invoke(Healthpoints.GetValue().Value, StartHealthpoints);
+        }
+
+        return Healthpoints.GetValue().Value - Healthpoints.GetValue().PreviousValue;
+    }
 }

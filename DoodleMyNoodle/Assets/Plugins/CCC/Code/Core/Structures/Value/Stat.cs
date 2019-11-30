@@ -4,18 +4,27 @@ using UnityEngine;
 
 public struct Stat<T>
 {
-    public T startValue { get; set; }
-    public T Value { get; private set; }
+    private T _startValue;
+    private AutoResetDirtyValue<T> _dirtyValue;
 
-    public List<ValueSetting<T>> settings;
-
-    public void SetValue(T newValue)
+    public Stat(T initialValue)
     {
-        T valueToApply = newValue;
-        foreach (ValueSetting<T> setting in settings)
-        {
-            valueToApply = setting.EvaluateValue(valueToApply);
-        }
-        Value = valueToApply;
+        _startValue = initialValue;
+        _dirtyValue = new AutoResetDirtyValue<T>(initialValue);
+    }
+
+    public void Reset()
+    {
+        _dirtyValue.SetValue(_startValue);
+    }
+
+    public bool SetValue(T newValue)
+    {
+        return _dirtyValue.SetValue(newValue);
+    }
+
+    public AutoResetDirtyValue<T> GetValue()
+    {
+        return _dirtyValue;
     }
 }

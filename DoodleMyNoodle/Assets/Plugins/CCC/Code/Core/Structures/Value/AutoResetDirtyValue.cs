@@ -3,7 +3,7 @@
 public struct AutoResetDirtyValue<T>
 {
     public T Value { get; private set; }
-    private T PreviousValue { get; set; }
+    public T PreviousValue { get; private set; }
 
     public AutoResetDirtyValue(T initialValue)
     {
