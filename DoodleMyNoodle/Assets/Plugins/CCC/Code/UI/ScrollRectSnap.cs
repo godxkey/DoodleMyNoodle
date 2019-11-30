@@ -18,7 +18,7 @@ public class ScrollRectSnap : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     public float baseSnapDelta = 0;
     public float snapInterval = 100;
 
-    [Header("Acceleration"), Forward]
+    [Header("Acceleration"), AlwaysExpand]
     public GuidedAccelerationHandler accelerationHandler = new GuidedAccelerationHandler(1000);
 
     /// <summary>

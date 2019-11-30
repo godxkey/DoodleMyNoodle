@@ -11,15 +11,15 @@ public class SimComponentDataStack
     [JsonProperty(IsReference = false)]
     List<object> _data = new List<object>();
 
-    public void Add(object obj)
+    public void Push(object obj)
     {
         _data.Add(obj);
     }
 
-    public object Get()
+    public object Pop()
     {
-        object last = _data.First();
-        _data.RemoveFirst();
+        object last = _data.Last();
+        _data.RemoveLast();
         return last;
     }
 

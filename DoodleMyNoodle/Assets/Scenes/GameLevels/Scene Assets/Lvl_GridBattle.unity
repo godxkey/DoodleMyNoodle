@@ -483,9 +483,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf33e6a603ac2be40938cc3ab754bf0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nextPlayerId:
-    Value: 0
-  _players: []
+  _data:
+    NextPlayerId:
+      Value: 0
+    Players: []
 --- !u!114 &447269862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2210,6 +2211,11 @@ PrefabInstance:
         type: 3}
       propertyPath: PlayerInControl.Value
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908235613229724287, guid: ae2d25a66f815824e98df5bdf7c7da25,
+        type: 3}
+      propertyPath: _data.test
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae2d25a66f815824e98df5bdf7c7da25, type: 3}

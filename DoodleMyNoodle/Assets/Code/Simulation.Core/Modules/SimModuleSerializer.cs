@@ -249,17 +249,15 @@ internal class SimModuleSerializer : SimModuleBase
         //      Aquire necessary blueprints to reconstruct entites
         ////////////////////////////////////////////////////////////////////////////////////////
         DebugService.Log($"Aquiring necessary blueprints to reconstruct entites...");
-        SimBlueprint[] resultBlueprints = new SimBlueprint[serializableWorld.Entities.Count];
+        SimBlueprint[] resultBlueprints = new SimBlueprint[0];
 
         yield return SimModules._BlueprintManager.ProvideBlueprintBatched(serializableWorld.ReferencedBlueprints, (x) => resultBlueprints = x);
-
-        SimBlueprint[] bp = resultBlueprints;
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Reconstruct entities
         ////////////////////////////////////////////////////////////////////////////////////////
-        DebugService.Log($"Reconstructing entites...");
-        int reconstructCount = resultBlueprints.Length;
+        DebugService.Log($"Reconstructing entites ({serializableWorld.Entities.Count})...");
+        int reconstructCount = serializableWorld.Entities.Count;
         Dictionary<SimObjectId, SimObject> allSimObjects = new Dictionary<SimObjectId, SimObject>(reconstructCount * 4); // expecting ~4 components per entity
         string[] serializedComponentDataStacks = new string[reconstructCount];
         SimComponentDataStack[] componentDataStacks = new SimComponentDataStack[reconstructCount];
@@ -357,7 +355,7 @@ internal class SimModuleSerializer : SimModuleBase
             if (reconstructedEntity != null && dataStack != null) // skip over invalid entities
             {
                 reconstructedEntity.GetComponents(componentList);
-                for (int c = 0; c < componentList.Count; c++)
+                for (int c = componentList.Count - 1; c >= 0; c--)
                 {
                     try
                     {
@@ -365,7 +363,7 @@ internal class SimModuleSerializer : SimModuleBase
                     }
                     catch (Exception e)
                     {
-                        DebugService.LogWarning($"Failed to deserialize {reconstructedEntity.gameObject.name}'s {componentList[c].GetType()} component: {e.Message}." +
+                        DebugService.LogWarning($"Failed to deserialize {reconstructedEntity.gameObject.name}'s {componentList[c].GetType()} component: {e.Message} / {e.StackTrace}." +
                             $"\nComponent data will stay at default values.");
                     }
                 }

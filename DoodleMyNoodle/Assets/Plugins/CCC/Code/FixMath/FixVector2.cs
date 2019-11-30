@@ -425,11 +425,11 @@ public struct FixVector2 : IEquatable<FixVector2>
         return x.GetHashCode() + y.GetHashCode();
     }
 
-    public static readonly FixVector2 zero = new FixVector2(0, 0);
-    public static readonly FixVector2 right = new FixVector2(1, 0);
-    public static readonly FixVector2 left = new FixVector2(-1, 0);
-    public static readonly FixVector2 up = new FixVector2(0, 1);
-    public static readonly FixVector2 down = new FixVector2(0, -1);
+    public static readonly FixVector2 Zero = new FixVector2(0, 0);
+    public static readonly FixVector2 Right = new FixVector2(1, 0);
+    public static readonly FixVector2 Left = new FixVector2(-1, 0);
+    public static readonly FixVector2 Up = new FixVector2(0, 1);
+    public static readonly FixVector2 Down = new FixVector2(0, -1);
 
     public static implicit operator FixVector3(in FixVector2 v) => new FixVector3(v.x, v.y, 0);
 }

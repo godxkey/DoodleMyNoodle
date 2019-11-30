@@ -1,6 +1,4 @@
-﻿
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public class SimComponentRegistrySingleton<ChildClass, ComponentClass> : 
     SimEventSingleton<ChildClass>,
@@ -8,13 +6,16 @@ public class SimComponentRegistrySingleton<ChildClass, ComponentClass> :
     
     where ChildClass : SimComponentRegistrySingleton<ChildClass, ComponentClass>
 {
+    // fbessette: This list of components is not serialized. It is rebuilt at every game reload.
+    //            We could rework this if it's causing desyncs
+
     protected List<ComponentClass> _components = new List<ComponentClass>();
 
     public override void OnAddedToRuntime()
     {
         base.OnAddedToRuntime();
 
-        // Add preexisting entities
+        // Add pre-existing entities
         foreach (ComponentClass component in Simulation.EntitiesWithComponent<ComponentClass>())
         {
             _components.Add(component);
@@ -32,7 +33,6 @@ public class SimComponentRegistrySingleton<ChildClass, ComponentClass> :
             }
 
             _components.Add(component);
-            // OnRegisterComponent(component);
         }
     }
 
@@ -44,11 +44,6 @@ public class SimComponentRegistrySingleton<ChildClass, ComponentClass> :
             {
                 DebugService.LogError($"Trying to unregister a {typeof(ComponentClass)} that was not registered ({obj.gameObject.name})");
             }
-            // OnUnregisterComponent(component);
         }
     }
-
-
-    //protected virtual void OnRegisterComponent(ComponentClass component) { }
-    //protected virtual void OnUnregisterComponent(ComponentClass component) { }
 }
