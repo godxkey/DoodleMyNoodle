@@ -9,7 +9,7 @@ using UnityEngine;
 //-----------------------------------------------------------------------
 
 [System.Serializable]
-public struct ClampedValueSetting<T> : ValueSetting<T> where T : System.IComparable<T>
+public struct ClampedValueSetting<T> : IValueEvaluator<T> where T : System.IComparable<T>
 {
     public T MaxValue { get; private set; }
     public T MinValue { get; private set; }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 //-----------------------------------------------------------------------
 
-// ValueSetting - Add this interface to your ValueSettings, 
+// ValueEvaluator - Add this interface to your ValueSettings, 
 // each setting should have a function to evaluate the value and ajust it according to the setting
 
 //-----------------------------------------------------------------------
 
-public interface ValueSetting<T>
+public interface IValueEvaluator<T>
 {
     T EvaluateValue(T currentValue);
 }
