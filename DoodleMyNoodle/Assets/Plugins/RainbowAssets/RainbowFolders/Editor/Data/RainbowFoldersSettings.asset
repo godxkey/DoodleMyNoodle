@@ -274,8 +274,8 @@ MonoBehaviour:
     Background: {fileID: 2800000, guid: ff40d61e544214d49991c4602c16ec44, type: 3}
     IsBackgroundRecursive: 0
     IsBackgroundCustom: 0
-  - Type: 1
-    Key: Assets/Plugins/CCC/Code
+  - Type: 0
+    Key: Code
     SmallIcon: {fileID: 2800000, guid: ed89c5b2588683046989a2a138f3b343, type: 3}
     LargeIcon: {fileID: 2800000, guid: 9fca1a811da70484494d9e10d46e0636, type: 3}
     IsIconRecursive: 1
@@ -292,8 +292,17 @@ MonoBehaviour:
     Background: {fileID: 2800000, guid: ca4530bd51581dc47847c3e5b35f4c91, type: 3}
     IsBackgroundRecursive: 0
     IsBackgroundCustom: 0
-  - Type: 1
-    Key: Assets/AudioClips
+  - Type: 0
+    Key: Database
+    SmallIcon: {fileID: 2800000, guid: 8d50cf779e5b4f54a831bdefc32b044c, type: 3}
+    LargeIcon: {fileID: 2800000, guid: 5c32cf9ad519d0c4aacb16805c45eab3, type: 3}
+    IsIconRecursive: 0
+    IsIconCustom: 0
+    Background: {fileID: 0}
+    IsBackgroundRecursive: 0
+    IsBackgroundCustom: 0
+  - Type: 0
+    Key: AudioClips
     SmallIcon: {fileID: 2800000, guid: 4372cfb8a7d3b5b4d9b899147b193270, type: 3}
     LargeIcon: {fileID: 2800000, guid: 65e13c9890ffa26478506eda78683d5c, type: 3}
     IsIconRecursive: 0

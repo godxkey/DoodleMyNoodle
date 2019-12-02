@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4343a9ce51b05384698cf9e29044e923, type: 3}
+  m_Name: NotesDatabase
+  m_EditorClassIdentifier: 
+  _savedNotes:
+  - Id: 9da9508831db3274290df558686b7466
+    Text: Core of the simulation. Should not be touched unless new tech is developped.
+  - Id: 0a7f65abd258c0340b9043d33ae85ad0
+    Text: The part of "Simulation.Core" that should only be accessible by other Simulation
+      code
+  - Id: cb86fa96de9228f4d9a68ac5cac90102
+    Text: The part of "Simulation.Core" that should only be accessible by the View
+  - Id: feb14665d6ec41e4bad50c1b660bd1a6
+    Text: Editor code for Simulation.Core
+  - Id: 3580e130f11a5f4478b400d847eb3986
+    Text: Simulation code that isn't required for the Simulation to run, but still
+      considered generic and game-agnostic.
+  - Id: 31302ccf82a7fb343b92912d866fa0d9
+    Text: Part of Simulation.Engine that should only be accessed by other Simulation
+      code
+  - Id: 60fc291f9b5d078418d5f8871bfe8da6
+    Text: Part of Simulation.Engine that should only be accessed by the View
+  - Id: 15199f4573b989046b87bf47e01b46b4
+    Text: Most game-related Simulation code
+  - Id: 3ffbee277db4fa74dbf935613b0aa4b5
+    Text: Editor code for Simulation.Game
+  - Id: c7e2872031cf4ae4b97195695700bcf5
+    Text: All game related code that is outside of the simulation
+  - Id: 0cc250d6e3be1b74abf90017ae4a5f68
+    Text: data structures used by Game (currently barely used, might be deleted)
+  - Id: 936f83e47f6e1bb4bb22be8bcce7e2a6
+    Text: Debug code for Game
+  - Id: 0b3ecc1625c702e4da6fab9954482cf4
+    Text: editor code for Game
+  - Id: c97837d3fd4efd44ab1469c9a71900a7
+    Text: Necessary code for NetSerializer tech
+  - Id: f452a6b9ea946ff46b3b2775188b8bd4
+    Text: All game-related tools. If they are project agnostic, consider moving them
+      in CCC
