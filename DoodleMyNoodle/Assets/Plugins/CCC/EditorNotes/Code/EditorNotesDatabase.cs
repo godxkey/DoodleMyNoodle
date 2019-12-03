@@ -73,7 +73,6 @@ public class EditorNotesDatabase : ScriptableObject
     }
 
     #region Asset Access
-    private const string ASSET_PATH = EditorNotesSettings.DATABASE_FOLDER + "/NotesDatabase.asset";
     private static EditorNotesDatabase s_cachedInstance;
     public static EditorNotesDatabase Instance
     {
@@ -81,7 +80,7 @@ public class EditorNotesDatabase : ScriptableObject
         {
             if (!s_cachedInstance)
             {
-                s_cachedInstance = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<EditorNotesDatabase>(ASSET_PATH);
+                s_cachedInstance = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<EditorNotesDatabase>(EditorNotesSettings.ASSET_PATH_DATABASE);
             }
 
             return s_cachedInstance;

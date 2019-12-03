@@ -17,7 +17,7 @@ public class EditorNotesViewData
         get
         {
             if (s_cachedNoteIconTexture == null)
-                s_cachedNoteIconTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorNotesSettings.TEXTURE_FOLDER + "/editorNotes_noteIcon.png");
+                s_cachedNoteIconTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorNotesSettings.ASSET_PATH_NOTE_ICON);
 
             return s_cachedNoteIconTexture;
         }
@@ -29,7 +29,7 @@ public class EditorNotesViewData
         get
         {
             if (s_cachedWindowBGTexture == null)
-                s_cachedWindowBGTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorNotesSettings.TEXTURE_FOLDER + "/editorNotes_windowBG.png");
+                s_cachedWindowBGTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorNotesSettings.ASSET_PATH_WINDOW_BACKGROUND);
 
             return s_cachedWindowBGTexture;
         }
@@ -41,7 +41,7 @@ public class EditorNotesViewData
         get
         {
             if (s_cachedSelectionBorderTexture == null)
-                s_cachedSelectionBorderTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorNotesSettings.TEXTURE_FOLDER + "/editorNotes_selectionBorder.png");
+                s_cachedSelectionBorderTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorNotesSettings.ASSET_PATH_SELECTION_BORDER);
 
             return s_cachedSelectionBorderTexture;
         }

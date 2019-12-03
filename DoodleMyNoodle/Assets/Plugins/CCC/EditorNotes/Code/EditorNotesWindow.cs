@@ -6,15 +6,16 @@ using UnityEngine;
 /// </summary>
 public class EditorNotesWindow : DraggablePopupWindow
 {
-
-
-
     bool _forceFocusOnTextArea;
+    public Vector2 TargetPosition;
+
     protected override void OnGUI()
     {
         base.OnGUI();
 
-        // draw bg
+        AdjustWindowRect();
+
+        // background
         GUI.DrawTexture(new Rect(0, 0, position.width, position.height), EditorNotesViewData.WindowBGTexture, ScaleMode.StretchToFill);
 
         if (EditorNotesViewData.IsEditingNote)
@@ -47,6 +48,7 @@ public class EditorNotesWindow : DraggablePopupWindow
             }
 
             GUILayout.Label("Shift+Enter for new line", EditorStyles.miniLabel);
+
         }
         else
         {
@@ -67,6 +69,26 @@ public class EditorNotesWindow : DraggablePopupWindow
             EditorStyles.label.wordWrap = oldWrap;
             EditorStyles.label.stretchHeight = oldStrechHeight;
         }
+
+    }
+
+    void AdjustWindowRect()
+    {
+        // calculate text height
+        float textHeight = EditorStyles.textArea.CalcHeight(new GUIContent(EditorNotesViewData.NoteText), EditorNotesSettings.NOTE_WINDOW_WIDTH - 8);
+
+        float height = Mathf.Max(textHeight + 5, EditorNotesSettings.NOTE_WINDOW_MIN_HEIGHT);
+        float width = EditorNotesSettings.NOTE_WINDOW_WIDTH;
+
+        Rect noteBox = new Rect()
+        {
+            width = width,
+            height = height,
+            x = TargetPosition.x,
+            y = TargetPosition.y - height - 3
+        };
+
+        position = noteBox;
     }
 
     private void OnFocus()

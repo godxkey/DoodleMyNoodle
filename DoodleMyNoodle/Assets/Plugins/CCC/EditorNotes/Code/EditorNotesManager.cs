@@ -15,6 +15,7 @@ public class EditorNotesManager
 
     static double s_lastDrawTime;
     static DirtyValue<string> s_noteId;
+    static bool s_requestRepaint;
 
     private static void Update()
     {
@@ -26,13 +27,21 @@ public class EditorNotesManager
                 EndNoteAndClose();
             }
         }
+
+        if (s_requestRepaint)
+        {
+            EditorApplication.RepaintProjectWindow(); // needed for responsive UI
+            s_requestRepaint = false;
+        }
     }
 
     static void OnProjectWindowItemOnGUI(string guid, Rect selectionRect)
     {
         string noteId = guid;
 
-        if ((Event.current.modifiers & EditorNotesSettings.MODIFIER_KEY) != EventModifiers.None) // user pressed the correct key
+        bool isHoldingRequiredKeys = (Event.current.modifiers & EditorNotesSettings.MODIFIER_KEY) != EventModifiers.None;
+
+        if (isHoldingRequiredKeys) // user pressed the correct key
         {
             if (selectionRect.Contains(Event.current.mousePosition)) // we're drawing the item that the user is pointing on
             {
@@ -54,15 +63,6 @@ public class EditorNotesManager
                     }
                 }
 
-                // _________________________________________ Draw _________________________________________ //
-                EditorNotesDrawer.DrawNote(selectionRect);
-                if (!EditorNotesViewData.IsEditingNote)
-                {
-                    EditorNotesDrawer.DrawEditNoteButton(selectionRect);
-                }
-
-
-                EditorApplication.RepaintProjectWindow(); // needed for responsive UI
 
                 s_lastDrawTime = EditorApplication.timeSinceStartup;
             }
@@ -73,15 +73,26 @@ public class EditorNotesManager
         }
 
 
-        if(s_noteId.Value == noteId)
+        // _________________________________________ Draw _________________________________________ //
+        if (s_noteId.Value == noteId)
         {
+            EditorNotesDrawer.DrawNote(selectionRect);
             EditorNotesDrawer.DrawSelectionBorder(selectionRect);
+
+            if (!EditorNotesViewData.IsEditingNote)
+            {
+                EditorNotesDrawer.DrawEditNoteButton(selectionRect);
+            }
         }
 
         if (EditorNotesDatabase.Instance.ContainsNote(noteId))
         {
             EditorNotesDrawer.DrawNoteIcon(selectionRect);
         }
+
+
+
+        s_requestRepaint = isHoldingRequiredKeys || EditorNotesViewData.IsEditingNote; // needed for responsive UI
     }
 
     static bool CanEndNoteAndClose()

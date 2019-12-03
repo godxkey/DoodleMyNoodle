@@ -10,19 +10,6 @@ public class EditorNotesDrawer
 
     public static void DrawNote(Rect selectionRect)
     {
-        Rect screenSpaceSelectionRect = GUIUtility.GUIToScreenRect(selectionRect);
-
-        // TODO: this should resize to the size of the text
-        const float WINDOW_HEIGHT = 46;
-        Rect noteBox = new Rect()
-        {
-            width = 250,
-            height = WINDOW_HEIGHT,
-            x = screenSpaceSelectionRect.x,
-            y = screenSpaceSelectionRect.y - WINDOW_HEIGHT - 3
-        };
-
-
         // Show window if it wasn't already displayed
         if (s_noteWindow == null)
         {
@@ -30,7 +17,7 @@ public class EditorNotesDrawer
 
             s_noteWindow = DraggablePopupWindow.GetDraggableWindow<EditorNotesWindow>();
             s_noteWindow.titleContent = new GUIContent("Note");
-            s_noteWindow.ShowAt(noteBox, false);
+            s_noteWindow.ShowAt(selectionRect, false);
 
             if (previousFocus != s_noteWindow) // focuse previous window (unity always focuses the new...)
             {
@@ -38,12 +25,8 @@ public class EditorNotesDrawer
             }
         }
 
-
-        // set position if not editing
-        if (!EditorNotesViewData.IsEditingNote)
-        {
-            s_noteWindow.position = noteBox;
-        }
+        s_noteWindow.TargetPosition = GUIUtility.GUIToScreenRect(selectionRect).position;
+        s_noteWindow.Repaint();
     }
 
 
@@ -82,17 +65,14 @@ public class EditorNotesDrawer
     {
         // icon drawn to indicate that an asset has a note
 
-        const int NOTE_ICON_SIZE = 16;
-        const int SELECTION_RECT_PADDING = 5;
-
-        Rect buttonBox = new Rect()
+        Rect iconRect = new Rect()
         {
-            width = NOTE_ICON_SIZE,
-            height = NOTE_ICON_SIZE,
-            x = selectionRect.xMax - NOTE_ICON_SIZE - SELECTION_RECT_PADDING,
+            width = EditorNotesSettings.NOTE_ICON_WIDTH,
+            height = EditorNotesSettings.NOTE_ICON_HEIGHT,
+            x = selectionRect.xMax - EditorNotesSettings.NOTE_ICON_WIDTH - 5,
             y = selectionRect.y
         };
 
-        GUI.DrawTexture(buttonBox, EditorNotesViewData.NoteIconTexture);
+        GUI.DrawTexture(iconRect, EditorNotesViewData.NoteIconTexture);
     }
 }
