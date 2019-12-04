@@ -83,9 +83,11 @@ public static class AssetDatabaseX
             }
         }
     }
-
-
-    public static T GetOrCreateDataAsset<T>(string path) where T : ScriptableObject, new()
+    
+    /// <summary>
+    /// Don't forget the .asset extension
+    /// </summary>
+    public static T LoadOrCreateScriptableObjectAsset<T>(string path) where T : ScriptableObject, new()
     {
         T asset = AssetDatabase.LoadAssetAtPath<T>(path);
 

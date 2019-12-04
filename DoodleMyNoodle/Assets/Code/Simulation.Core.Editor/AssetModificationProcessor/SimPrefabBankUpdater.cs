@@ -23,7 +23,7 @@ public class SimPrefabBankUpdater : AssetPostprocessor
     {
         AssetDatabase.Refresh();
 
-        SimPrefabBank blueprintBank = AssetDatabaseX.GetOrCreateDataAsset<SimPrefabBank>(ASSET_PATH);
+        SimPrefabBank blueprintBank = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<SimPrefabBank>(ASSET_PATH);
 
         List<KeyValuePair<string, GameObject>> searchResult;
         AssetDatabaseX.FindPrefabsAssetsWithComponent<SimEntity>(out searchResult);
