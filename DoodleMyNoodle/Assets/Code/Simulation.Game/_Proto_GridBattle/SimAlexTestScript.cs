@@ -8,7 +8,7 @@ public class SimAlexTestScript : SimComponent, ISimInputProcessor
     {
         if (input is SimInputKeycode keyCodeInput && keyCodeInput.keyCode == KeyCode.M && keyCodeInput.state == SimInputKeycode.State.Pressed) 
         {
-            GetComponent<SimCharacterHealthStatComponent>()?.DecreaseValue(1);
+            GetComponent<SimHealthStatComponent>()?.DecreaseValue(1);
         }
     }
 }
