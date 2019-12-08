@@ -30,14 +30,7 @@ public class SimStatComponent : SimComponent
     /// </summary>
     public int IncreaseValue(int value)
     {
-        _stat.SetValue(_stat.Value + value);
-
-        if (_stat.HasChanged())
-        {
-            OnStatChanged?.Invoke(_stat.Value, _stat.PreviousValue, StartValue);
-        }
-
-        return _stat.Value - _stat.PreviousValue;
+        return SetValue(_stat.Value + value);
     }
 
     /// <summary>
@@ -45,12 +38,7 @@ public class SimStatComponent : SimComponent
     /// </summary>
     public int DecreaseValue(int value)
     {
-        if (_stat.SetValue(_stat.Value - value))
-        {
-            OnStatChanged?.Invoke(_stat.Value, _stat.PreviousValue, StartValue);
-        }
-
-        return _stat.Value - _stat.PreviousValue;
+        return SetValue(_stat.Value - value);
     }
 
     /// <summary>

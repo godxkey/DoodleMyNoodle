@@ -23,7 +23,7 @@ public struct AutoResetDirtyValue<T>
         }
     }
 
-    public bool SetValue(T newValue)
+    public bool SetValue(in T newValue)
     {
         PreviousValue = Value;
         Value = newValue;
