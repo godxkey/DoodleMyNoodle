@@ -15,8 +15,8 @@ public struct Stat<T>
     public T PreviousValue => _dirtyValue.PreviousValue;
     public bool HasChanged() => _dirtyValue.IsDirty;
 
-    public bool SetValue(in T newValue)
+    public void SetValue(in T newValue)
     {
-        return _dirtyValue.SetValue(newValue);
+        _dirtyValue.SetValue(newValue);
     }
 }

@@ -46,7 +46,8 @@ public class SimStatComponent : SimComponent
     /// </summary>
     public int SetValue(int value)
     {
-        if (_stat.SetValue(value))
+        _stat.SetValue(value);
+        if (_stat.HasChanged())
         {
             OnStatChanged?.Invoke(_stat.Value, _stat.PreviousValue, StartValue);
         }

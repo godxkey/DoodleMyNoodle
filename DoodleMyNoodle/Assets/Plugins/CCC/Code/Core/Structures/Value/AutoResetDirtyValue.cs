@@ -23,10 +23,9 @@ public struct AutoResetDirtyValue<T>
         }
     }
 
-    public bool SetValue(in T newValue)
+    public void SetValue(in T newValue)
     {
         PreviousValue = Value;
         Value = newValue;
-        return IsDirty;
     }
 }
