@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class SimEventComponent : SimComponent, ISimEventListener
 {
@@ -50,6 +51,7 @@ public class SimEventComponent : SimComponent, ISimEventListener
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
     [AlwaysExpand]
+    [HideInInspector]
     SerializedData _evtComponentData = new SerializedData()
     {
         // define default values here

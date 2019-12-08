@@ -10,7 +10,6 @@ public struct WalkedOnTileEventData
 [RequireComponent(typeof(SimTransformComponent))]
 public class SimGridWalkerComponent : SimEventComponent, ISimTickable
 {
-
     [System.Serializable]
     struct SerializedData
     {
@@ -19,19 +18,20 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
         public bool HasADestination;
 
         public List<SimTileId> Path;
+        
+        public SimEvent<WalkedOnTileEventData> OnWalkedOnTileEvent;
     }
 
     public Fix64 Speed { get => _data.Speed; set => _data.Speed = value; }
     public bool HasADestination => _data.HasADestination;
     public SimTileId TileId => SimTransform.GetTileId();
-
-    public SimEvent<WalkedOnTileEventData> OnWalkedOnTileEvent;
+    public SimEvent<WalkedOnTileEventData> OnWalkedOnTileEvent => _data.OnWalkedOnTileEvent;
 
     public override void OnSimAwake()
     {
         base.OnSimAwake();
 
-        OnWalkedOnTileEvent = CreateLocalEvent<WalkedOnTileEventData>();
+        _data.OnWalkedOnTileEvent = CreateLocalEvent<WalkedOnTileEventData>();
     }
 
     public void TryWalkTo(in SimTileId destination)
@@ -98,13 +98,13 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
             SimTransform.WorldPosition = targetPathPosition;
             _data.Path.RemoveFirst();
 
-            OnWalkedOnTileEvent.Raise(new WalkedOnTileEventData());
-
             if (_data.Path.Count == 0)
             {
                 // we've reached the destination
                 Stop();
             }
+
+            _data.OnWalkedOnTileEvent.Raise(new WalkedOnTileEventData());
         }
     }
 
