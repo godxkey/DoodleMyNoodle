@@ -2,29 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimTurnManager : SimComponent
+public enum Team
 {
+    Player,
+    AI
+}
+
+public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
+{
+    public const int TEAM_COUNT = 2;
+
     public int DurationOfATurn = 10;
-    public Team StartTeam;
 
     private Fix64 _timer = 0;
-    private Team _currentTeam;
+    private Team _currentTeam = (Team)TEAM_COUNT;
 
     private bool _hasInit = false;
 
     public override void OnSimStart() 
     {
+        base.OnSimStart();
+
         _timer = DurationOfATurn;
-        _currentTeam = StartTeam;
         _hasInit = true;
-        Debug.Log("SWITCH TURN - " + _currentTeam);
+
+        SwitchTurn();
     }
 
-    void Update()
+    void ISimTickable.OnSimTick()
     {
         if (_hasInit)
         {
-            _timer -= (Fix64)Time.deltaTime;
+            _timer -= (Fix64)Simulation.DeltaTime;
 
             if (_timer <= 0)
             {
@@ -37,10 +46,15 @@ public class SimTurnManager : SimComponent
     private void SwitchTurn()
     {
         _currentTeam = _currentTeam + 1;
-        if((int)_currentTeam >= SimTeams.TEAM_COUNT)
+        if((int)_currentTeam >= TEAM_COUNT)
         {
             _currentTeam = 0;
         }
         Debug.Log("SWITCH TURN - " + _currentTeam);
+    }
+
+    public bool IsMyTurn(Team myTeam)
+    {
+        return _currentTeam == myTeam;
     }
 }

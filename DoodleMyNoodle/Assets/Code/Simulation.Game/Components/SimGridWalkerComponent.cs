@@ -43,7 +43,7 @@ public class SimGridWalkerComponent : SimComponent, ISimTickable
                 SimTileId newTile = SimTileId.FromWorldPosition(newPosition);
 
 
-                if (newTile != currentTile && SimHelper.CanEntityWalkGoOntoTile(this, newTile) == false)
+                if (newTile != currentTile && SimHelper.CanEntityWalkOntoTile(this, newTile) == false)
                 {
                     // We're about to change tile but it's occupied, bump!
 
