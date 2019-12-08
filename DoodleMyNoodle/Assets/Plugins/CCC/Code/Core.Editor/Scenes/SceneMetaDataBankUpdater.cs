@@ -22,7 +22,7 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
 
     static void UpdateMetaData(LogMode logMode)
     {
-        SceneMetaDataBank dataAsset = AssetDatabaseX.GetOrCreateDataAsset<SceneMetaDataBank>(ASSET_PATH);
+        SceneMetaDataBank dataAsset = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<SceneMetaDataBank>(ASSET_PATH);
 
         if (dataAsset == null)
         {
