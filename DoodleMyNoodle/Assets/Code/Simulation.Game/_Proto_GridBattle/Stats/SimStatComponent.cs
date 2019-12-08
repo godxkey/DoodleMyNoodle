@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class SimCharacterStatComponent : SimComponent
+public class SimStatComponent : SimComponent
 {
     private Stat<int> _stat;
 
@@ -25,6 +25,9 @@ public class SimCharacterStatComponent : SimComponent
         _stat = new Stat<int>(StartValue);
     }
 
+    /// <summary>
+    /// Returns the delta the stat value performed
+    /// </summary>
     public int IncreaseValue(int value)
     {
         _stat.SetValue(_stat.Value + value);
@@ -37,6 +40,9 @@ public class SimCharacterStatComponent : SimComponent
         return _stat.Value - _stat.PreviousValue;
     }
 
+    /// <summary>
+    /// Returns the delta the stat value performed
+    /// </summary>
     public int DecreaseValue(int value)
     {
         if (_stat.SetValue(_stat.Value - value))
@@ -47,6 +53,9 @@ public class SimCharacterStatComponent : SimComponent
         return _stat.Value - _stat.PreviousValue;
     }
 
+    /// <summary>
+    /// Returns the delta the stat value performed
+    /// </summary>
     public int SetValue(int value)
     {
         if (_stat.SetValue(value))
