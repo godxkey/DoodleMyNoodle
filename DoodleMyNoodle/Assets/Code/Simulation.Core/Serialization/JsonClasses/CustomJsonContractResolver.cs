@@ -9,10 +9,13 @@ class CustomJsonContractResolver : DefaultContractResolver
 {
     protected override List<MemberInfo> GetSerializableMembers(Type objectType)
     {
-        // exclude all properties!
+        // main difference with JSON's default contract resolver: 
+        //  - we exclude all properties
+        //  - we exclude all fields that have the [NonSerialized] attribute
+
         FieldInfo[] fieldInfos = objectType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-        List<MemberInfo> serializedMembers = new List<MemberInfo>(fieldInfos.Length);// = base.GetSerializableMembers(objectType);
+        List<MemberInfo> serializedMembers = new List<MemberInfo>(fieldInfos.Length);
         for (int i = 0; i < fieldInfos.Length; i++)
         {
             if (!fieldInfos[i].CustomAttributes.Contains<System.NonSerializedAttribute>())
@@ -21,7 +24,7 @@ class CustomJsonContractResolver : DefaultContractResolver
             }
         }
 
-        return serializedMembers; //.Where(m => m.MemberType == MemberTypes.Field).ToList();
+        return serializedMembers;
     }
 
     protected override JsonContract CreateContract(Type objectType)
