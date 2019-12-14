@@ -145,4 +145,15 @@ public static class ListExtensions
     {
         return new ReadOnlyList<ListType, ReadType>(list);
     }
+
+    public static bool Contains<T>(this IEnumerable enumerable)
+    {
+        foreach (var item in enumerable)
+        {
+            if (item is T)
+                return true;
+        }
+
+        return false;
+    }
 }

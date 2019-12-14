@@ -19,14 +19,14 @@ public class SimSerializableWorld
             public bool Enabled;
             public SimObjectId Id;
         }
-
-        // This should contain all the custom component data, serialized into a string (could also be a byte[])
-        public string SerializedComponentDataStack;
     }
 
     public List<SimBlueprintId> ReferencedBlueprints;
 
     public List<Entity> Entities;
+
+    // This should contain all the custom component data, serialized into a string (could also be a byte[])
+    public string SerializedComponentDataStack;
 
     public SimObjectId NextObjectId;
 

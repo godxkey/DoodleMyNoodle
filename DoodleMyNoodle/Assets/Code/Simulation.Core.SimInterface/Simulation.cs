@@ -32,66 +32,68 @@ public class Simulation : SimulationBase
     public static SimEntity Instantiate(SimEntity entity, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
         => SimModules._EntityManager.Instantiate(entity, in position, in rotation, parent);
 
-    ///// <summary>
-    ///// Instantiate entity from the blueprint and inject it into the simulation
-    ///// <para/>
-    ///// NB: not called if reloading/reconstructing a saved game
-    ///// </summary>
-    //public static SimEntity Instantiate(in SimBlueprintId blueprintId)
-    //    => SimModules._EntityManager.Instantiate(blueprintId);
-    ///// <summary>
-    ///// Instantiate entity from the blueprint and inject it into the simulation
-    ///// <para/>
-    ///// NB: not called if reloading/reconstructing a saved game
-    ///// </summary>
-    //public static SimEntity Instantiate(in SimBlueprintId blueprintId, Transform parent)
-    //    => SimModules._EntityManager.Instantiate(in blueprintId, parent);
-    ///// <summary>
-    ///// Instantiate entity from the blueprint and inject it into the simulation
-    ///// <para/>
-    ///// NB: not called if reloading/reconstructing a saved game
-    ///// </summary>
-    //public static SimEntity Instantiate(in SimBlueprintId blueprintId, in FixVector3 position, in FixQuaternion rotation)
-    //    => SimModules._EntityManager.Instantiate(in blueprintId, in position, in rotation);
-    ///// <summary>
-    ///// Instantiate entity from the blueprint and inject it into the simulation
-    ///// <para/>
-    ///// NB: not called if reloading/reconstructing a saved game
-    ///// </summary>
-    //public static SimEntity Instantiate(in SimBlueprintId blueprintId, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
-    //    => SimModules._EntityManager.Instantiate(in blueprintId, in position, in rotation, parent);
-    
+    /// <summary>
+    /// Duplicate the entity using Unity's traditional Instantiate replication model and inject it into the simulation
+    /// <para/>
+    /// NB: not called if reloading/reconstructing a saved game
+    /// </summary>
+    public static T Instantiate<T>(T component) where T : SimComponent
+        => SimModules._EntityManager.Instantiate(component.SimEntity).GetComponent<T>();
+    /// <summary>
+    /// Duplicate the entity using Unity's traditional Instantiate replication model and inject it into the simulation
+    /// <para/>
+    /// NB: not called if reloading/reconstructing a saved game
+    /// </summary>
+    public static T Instantiate<T>(T component, SimTransformComponent parent) where T : SimComponent
+        => SimModules._EntityManager.Instantiate(component.SimEntity, parent).GetComponent<T>();
+    /// <summary>
+    /// Duplicate the entity using Unity's traditional Instantiate replication model and inject it into the simulation
+    /// <para/>
+    /// NB: not called if reloading/reconstructing a saved game
+    /// </summary>
+    public static T Instantiate<T>(T component, in FixVector3 position, in FixQuaternion rotation) where T : SimComponent
+        => SimModules._EntityManager.Instantiate(component.SimEntity, in position, in rotation).GetComponent<T>();
+    /// <summary>
+    /// Duplicate the entity using Unity's traditional Instantiate replication model and inject it into the simulation
+    /// <para/>
+    /// NB: not called if reloading/reconstructing a saved game
+    /// </summary>
+    public static T Instantiate<T>(T component, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent) where T : SimComponent
+        => SimModules._EntityManager.Instantiate(component.SimEntity, in position, in rotation, parent).GetComponent<T>();
+
     /// <summary>
     /// Instantiate entity from the blueprint and inject it into the simulation
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    public static SimEntity Instantiate(SimBlueprint original) 
+    public static SimEntity Instantiate(in SimBlueprint original) 
         => SimModules._EntityManager.Instantiate(original);
     /// <summary>
     /// Instantiate entity from the blueprint and inject it into the simulation
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    public static SimEntity Instantiate(SimBlueprint original, SimTransformComponent parent) 
+    public static SimEntity Instantiate(in SimBlueprint original, SimTransformComponent parent) 
         => SimModules._EntityManager.Instantiate(original, parent);
     /// <summary>
     /// Instantiate entity from the blueprint and inject it into the simulation
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    public static SimEntity Instantiate(SimBlueprint original, in FixVector3 position, in FixQuaternion rotation) 
+    public static SimEntity Instantiate(in SimBlueprint original, in FixVector3 position, in FixQuaternion rotation) 
         => SimModules._EntityManager.Instantiate(original, position, rotation);
     /// <summary>
     /// Instantiate entity from the blueprint and inject it into the simulation
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    public static SimEntity Instantiate(SimBlueprint original, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent) 
+    public static SimEntity Instantiate(in SimBlueprint original, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent) 
         => SimModules._EntityManager.Instantiate(original, position, rotation, parent);
 
     public static void Destroy(SimEntity simEntity)
         => SimModules._EntityManager.Destroy(simEntity);
+    public static void Destroy<T>(T component) where T : SimComponent
+        => SimModules._EntityManager.Destroy(component.SimEntity);
     
     /// <summary>
     /// Load the given scene and inject all gameobjects with the SimEntity component into the simulation

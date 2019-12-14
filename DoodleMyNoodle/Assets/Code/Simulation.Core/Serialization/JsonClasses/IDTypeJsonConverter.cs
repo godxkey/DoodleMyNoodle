@@ -12,22 +12,24 @@ public class IDTypeJsonConverter : JsonConverter
 
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
-        if(existingValue == null)
+        IDType idObject = null;
+
+        if(existingValue != null)
         {
-            DebugService.LogError($"Error while deserializing id type {objectType}. There is no existing value. Is it a struct like it should ?");
-            return null;
+            // get the existing object 
+            idObject = (IDType)existingValue;
+        }
+        else
+        {
+            // make an instance
+            idObject = (IDType)Activator.CreateInstance(objectType);
         }
 
-        IDType idType = (IDType)existingValue;
 
-        Int64 w = 2;
-        UInt32 x = (UInt32)w;
+        // fill it up
+        idObject.SetValue(reader.Value);
 
-        Int64 test = (Int64)reader.Value;
-
-        idType.SetValue(test);
-
-        return idType;
+        return idObject;
     }
 
     public override bool CanRead => true;

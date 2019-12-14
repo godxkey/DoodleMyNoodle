@@ -6,8 +6,11 @@ public class SimPawnManager : SimComponentRegistrySingleton<SimPawnManager, SimP
     ISimEventListener<SimPlayerCreatedEventData>,
     ISimEventListener<SimPlayerDestroyedEventData>
 {
-    Dictionary<SimPlayerId, SimPawnComponent> _playerPawns = new Dictionary<SimPlayerId, SimPawnComponent>();
-    List<ISimPawnInputHandler> _pooledPawnInputHandlersList = new List<ISimPawnInputHandler>(); // this is simply used to reduce allocations
+    [System.Serializable]
+    struct SerializedData
+    {
+        public Dictionary<SimPlayerId, SimPawnComponent> PlayerPawnsMap;
+    }
 
     public ReadOnlyList<SimPawnComponent> Pawns => _components.AsReadOnlyNoAlloc();
 
@@ -33,25 +36,26 @@ public class SimPawnManager : SimComponentRegistrySingleton<SimPawnManager, SimP
         SimGlobalEventEmitter.RegisterListener<SimPlayerDestroyedEventData>(this);
     }
 
+    List<ISimPawnInputHandler> _cachedComponentList = new List<ISimPawnInputHandler>(); // this is simply used to reduce allocations
     public void ProcessInput(SimInput input)
     {
         if (input is SimPlayerInput playerInput)
         {
-            if (_playerPawns.TryGetValue(playerInput.SimPlayerId, out SimPawnComponent pawn))
+            if (_data.PlayerPawnsMap.TryGetValue(playerInput.SimPlayerId, out SimPawnComponent pawn))
             {
                 if(pawn)
                 {
-                    pawn.GetComponents<ISimPawnInputHandler>(_pooledPawnInputHandlersList);
+                    pawn.GetComponents<ISimPawnInputHandler>(_cachedComponentList);
 
-                    for (int i = 0; i < _pooledPawnInputHandlersList.Count; i++)
+                    for (int i = 0; i < _cachedComponentList.Count; i++)
                     {
-                        if (_pooledPawnInputHandlersList[i].HandleInput(playerInput))
+                        if (_cachedComponentList[i].HandleInput(playerInput))
                         {
                             break;
                         }
                     }
 
-                    _pooledPawnInputHandlersList.Clear();
+                    _cachedComponentList.Clear();
                 }
             }
         }
@@ -59,7 +63,7 @@ public class SimPawnManager : SimComponentRegistrySingleton<SimPawnManager, SimP
 
     public void OnEventRaised(in SimPlayerCreatedEventData eventData)
     {
-        _playerPawns.Add(eventData.PlayerInfo.SimPlayerId, null);
+        _data.PlayerPawnsMap.Add(eventData.PlayerInfo.SimPlayerId, null);
 
         // Assign the first unpossessed pawn to the new player
         //      This will probably be reworked into something more solid later
@@ -75,23 +79,45 @@ public class SimPawnManager : SimComponentRegistrySingleton<SimPawnManager, SimP
 
     public void OnEventRaised(in SimPlayerDestroyedEventData eventData)
     {
-        _playerPawns.Remove(eventData.SimPlayerId);
+        _data.PlayerPawnsMap.Remove(eventData.SimPlayerId);
     }
 
     internal void AssignPawnToPlayer(SimPawnComponent newPawn, SimPlayerId simPlayerId)
     {
-        if (_playerPawns.TryGetValue(simPlayerId, out SimPawnComponent previousPawn))
+        if (_data.PlayerPawnsMap.TryGetValue(simPlayerId, out SimPawnComponent previousPawn))
         {
             if (previousPawn)
                 previousPawn.PlayerInControl = SimPlayerId.Invalid;
             if (newPawn)
                 newPawn.PlayerInControl = simPlayerId;
 
-            _playerPawns[simPlayerId] = newPawn;
+            _data.PlayerPawnsMap[simPlayerId] = newPawn;
         }
         else
         {
             DebugService.LogError($"[{nameof(SimPawnManager)}] Trying to assign a pawn to an invalid sim player.");
         }
     }
+
+    #region Serialized Data Methods
+    [UnityEngine.SerializeField]
+    [AlwaysExpand]
+    SerializedData _data = new SerializedData()
+    {
+        // define default values here
+        PlayerPawnsMap = new Dictionary<SimPlayerId, SimPawnComponent>()
+    };
+
+    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    {
+        base.SerializeToDataStack(dataStack);
+        dataStack.Push(_data);
+    }
+
+    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
+    {
+        _data = (SerializedData)dataStack.Pop();
+        base.DeserializeFromDataStack(dataStack);
+    }
+    #endregion
 }
