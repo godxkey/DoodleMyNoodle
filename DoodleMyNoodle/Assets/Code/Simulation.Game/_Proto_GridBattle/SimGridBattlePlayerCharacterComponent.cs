@@ -3,26 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SimGridBattlePlayerCharacterComponent : SimEventComponent, 
-    ISimPawnInputHandler,
-    ISimEventListener<WalkedOnTileEventData>
+    ISimPawnInputHandler
 {
     [System.Serializable]
     struct SerializedData
     {
         public SimGridBattleBulletComponent BulletPrefab;
-    }
-    
-    public override void OnSimStart()
-    {
-        base.OnSimStart();
-
-        GetComponent<SimGridWalkerComponent>().OnWalkedOnTileEvent.RegisterListener(this);
-    }
-
-    public void OnEventRaised(in WalkedOnTileEventData eventData)
-    {
-        Simulation.Instantiate(_data.BulletPrefab, SimTransform.WorldPosition, FixQuaternion.Identity)
-            .Speed = FixVector2.Left * 10;
     }
 
     public bool HandleInput(SimPlayerInput input)
