@@ -2096,6 +2096,16 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 8908235613229724287, guid: ae2d25a66f815824e98df5bdf7c7da25,
+        type: 3}
+      propertyPath: _data.test
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4046522282015926349, guid: ae2d25a66f815824e98df5bdf7c7da25,
+        type: 3}
+      propertyPath: PlayerInControl.Value
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8908235613229724288, guid: ae2d25a66f815824e98df5bdf7c7da25,
         type: 3}
       propertyPath: _data._localScale.x.m_rawValue
@@ -2105,16 +2115,6 @@ PrefabInstance:
         type: 3}
       propertyPath: _data._localScale.y.m_rawValue
       value: 10393821184
-      objectReference: {fileID: 0}
-    - target: {fileID: -4046522282015926349, guid: ae2d25a66f815824e98df5bdf7c7da25,
-        type: 3}
-      propertyPath: PlayerInControl.Value
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8908235613229724287, guid: ae2d25a66f815824e98df5bdf7c7da25,
-        type: 3}
-      propertyPath: _data.test
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae2d25a66f815824e98df5bdf7c7da25, type: 3}
