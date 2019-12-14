@@ -177,8 +177,8 @@ public class SimTransformComponent : SimComponent
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [Forward]
-    public SerializedData _data = new SerializedData()
+    [AlwaysExpand]
+    public SerializedData _data = new SerializedData() // needs to be public for Editor access
     {
         LocalScale = new FixVector3(1, 1, 1)
     };
@@ -187,17 +187,17 @@ public class SimTransformComponent : SimComponent
         base.SerializeToDataStack(dataStack);
 
         VerifyIntegrity();
-        dataStack.Add(_data);
+        dataStack.Push(_data);
     }
 
     public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
     {
-        _data = (SerializedData)dataStack.Get();
+        _data = (SerializedData)dataStack.Pop();
         SetParent(_data.Parent);
         if (_data.Parent)
             SetSiblingIndex(_data.SiblingIndex);
 
-        base.SerializeToDataStack(dataStack);
+        base.DeserializeFromDataStack(dataStack);
     }
     #endregion
 

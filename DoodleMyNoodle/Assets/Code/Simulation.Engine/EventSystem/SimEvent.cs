@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+[Serializable]
 public class SimEventInternal : IDisposable
 {
     internal enum SerializedBehavior : byte
@@ -28,7 +29,9 @@ public class SimEventInternal : IDisposable
         Unsafe
     }
 
-    List<ISimEventListenerBase> _listenersSerialized; // serialized
+    public List<ISimEventListenerBase> _listenersSerialized; // serialized
+
+    [NonSerialized]
     List<ISimEventListenerBase> _listenersNotSerialized; // NOT serialized
 
     internal bool RegisterListener_Internal(ISimEventListener listener, SerializedBehavior serializedBehavior)
@@ -181,6 +184,7 @@ public class SimEventInternal : IDisposable
 
 }
 
+[Serializable]
 public class SimEvent<T> : SimEventInternal
 {
     // Using this SimEvent<T> instead of SimEvent adds an extra validation at compile time

@@ -2,20 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Entity that can be controlled
-/// </summary>
-public class SimPawnComponent : SimComponent
+
+
+public class SimFredTestScriptComponent : SimComponent, ISimTickable
 {
     [System.Serializable]
     struct SerializedData
     {
-        public SimPlayerId PlayerInControl;
     }
 
-    public SimPlayerId PlayerInControl { get => _data.PlayerInControl; set => _data.PlayerInControl = value; }
-    
-    public bool IsPossessed => _data.PlayerInControl.IsValid;
+    public override void OnSimAwake()
+    {
+        base.OnSimAwake();
+    }
+
+    public void OnSimTick()
+    {
+    }
+
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
@@ -37,4 +41,5 @@ public class SimPawnComponent : SimComponent
         base.DeserializeFromDataStack(dataStack);
     }
     #endregion
+
 }

@@ -135,4 +135,29 @@ public class SimulationControllerMaster : SimulationController
 
         return null;
     }
+
+
+    public override void OnGameReady()
+    {
+        base.OnGameReady();
+
+#if DEBUG_BUILD
+        GameConsole.AddCommand("pausesim", Cmd_PauseSim, "Pause the simulation playback");
+#endif
+    }
+
+
+    protected override void OnDestroy()
+    {
+#if DEBUG_BUILD
+        GameConsole.RemoveCommand("pausesim");
+#endif
+
+        base.OnDestroy();
+    }
+
+    void Cmd_PauseSim(string[] args)
+    {
+        AllowSimToTick = !AllowSimToTick;
+    }
 }

@@ -52,6 +52,7 @@ namespace CCC.ConfigVarInterals
 
         public int IntValue => _intValue;
         public float FloatValue => _floatValue;
+        public bool BoolValue => _intValue == 1 || _stringValue == "true";
 
         public bool ChangeCheck()
         {

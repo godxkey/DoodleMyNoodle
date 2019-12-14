@@ -24,9 +24,9 @@ public class SimTileManager : SimSingleton<SimTileManager>
 
     public bool IsTileInBound(in SimTileId tileId)
     {
-        return tileId.x >= 0
-            && tileId.x < width
-            && tileId.y >= 0
-            && tileId.y < height;
+        return tileId.X >= 0
+            && tileId.X < width
+            && tileId.Y >= 0
+            && tileId.Y < height;
     }
 }

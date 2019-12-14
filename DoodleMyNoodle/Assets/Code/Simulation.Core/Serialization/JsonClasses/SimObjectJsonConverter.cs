@@ -12,7 +12,7 @@ public class SimObjectJsonConverter : JsonConverter
     public Dictionary<SimObjectId, SimObject> SimObjectsReferenceTable;
     public SimBlueprint[] AvailableBlueprints;
 
-    List<SimObject> _componentList = new List<SimObject>();
+    List<SimObject> _cachedComponentList = new List<SimObject>();
 
     struct ReferenceData
     {
@@ -42,59 +42,73 @@ public class SimObjectJsonConverter : JsonConverter
         }
     }
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object obj, JsonSerializer serializer)
     {
-        SimObject obj = (SimObject)value;
-
-        ReferenceData refData = new ReferenceData() { Value1 = uint.MaxValue, Value2 = ushort.MaxValue };
-
-        // this means we're referencing an entity that was never added to the sim runtime
-        // We're referencing a blueprint (like a prefab)
-        if (obj.SimObjectId.IsValid == false)
+        if (obj is SimObject simObj)
         {
-            refData.IsBlueprint = true;
+            ReferenceData refData = new ReferenceData() { Value1 = uint.MaxValue, Value2 = ushort.MaxValue };
 
-            SimEntity entity = obj.GetComponent<SimEntity>();
-
-            if (entity)
+            // this means we're referencing an entity that was never added to the sim runtime
+            // We're referencing a blueprint (like a prefab)
+            if (simObj.SimObjectId.IsValid == false)
             {
-                // write blueprint Id index
-                refData.Value1 = BlueprintIdIndexMap.GetIndexFromBlueprintId(entity.BlueprintId);
+                refData.IsBlueprint = true;
 
-                entity.GetComponents(_componentList);
+                SimEntity entity = simObj.GetComponent<SimEntity>();
 
-                // write component index
-                refData.Value2 = (ushort)_componentList.IndexOf(obj);
+                if (entity)
+                {
+                    // write blueprint Id index
+                    refData.Value1 = BlueprintIdIndexMap.GetIndexFromBlueprintId(entity.BlueprintId);
+
+                    entity.GetComponents(_cachedComponentList);
+
+                    // write component index
+                    refData.Value2 = (ushort)_cachedComponentList.IndexOf(simObj);
+                }
+                else
+                {
+                    Debug.LogError("Someone is referencing a SimObject that has no SimEntity component");
+                }
+
             }
             else
             {
-                Debug.LogError("Someone is referencing a SimObject that has no SimEntity component");
+                refData.IsBlueprint = false;
+
+                // write simObjectId
+                refData.Value1 = simObj.SimObjectId.Value;
             }
 
+            writer.WriteValue(refData.ToUInt64());
         }
         else
         {
-            refData.IsBlueprint = false;
-
-            // write simObjectId
-            refData.Value1 = obj.SimObjectId.Value;
+            serializer.Serialize(writer, obj, obj.GetType());
         }
-
-        writer.WriteValue(refData.ToUInt64());
     }
+
+    bool _skipNextConvert;
 
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
         object val = reader.Value;
 
+        // If the serialized object is not a SimObjectId, it will manifest with a "StartObject" token
+        //  In that case, we'll want to deserialize using json's default deserializer
+        if (reader.TokenType == JsonToken.StartObject)
+        {
+            _skipNextConvert = true;
+            return serializer.Deserialize(reader, objectType);
+        }
+
         if (val == null) // the SimObject reference was null
         {
-            DebugService.Log($"Reading ref: {reader.Path} : null");
             return null;
         }
 
         // Json misinterprets the values to 'long' and 'int'
-        if(val is long longValue)
+        if (val is long longValue)
         {
             val = (ulong)longValue;
         }
@@ -114,13 +128,13 @@ public class SimObjectJsonConverter : JsonConverter
                 {
                     SimBlueprint blueprint = AvailableBlueprints[blueprintIndex];
 
-                    blueprint.Prefab.GetComponents(_componentList);
+                    blueprint.Prefab.GetComponents(_cachedComponentList);
 
                     int componentIndex = refData.Value2;
-                    if (componentIndex < _componentList.Count)
+                    if (componentIndex < _cachedComponentList.Count)
                     {
-                        DebugService.Log($"Reading ref: {reader.Path} : BLUEPRINT {_componentList[componentIndex].gameObject}'s {_componentList[componentIndex].GetType()}");
-                        return _componentList[componentIndex];
+                        DebugService.Log($"Reading ref: {reader.Path} : BLUEPRINT {_cachedComponentList[componentIndex].gameObject}'s {_cachedComponentList[componentIndex].GetType()}");
+                        return _cachedComponentList[componentIndex];
                     }
                 }
             }
@@ -135,10 +149,9 @@ public class SimObjectJsonConverter : JsonConverter
                 }
             }
 
-            DebugService.Log($"Reading ref: {reader.Path} : FAILED {readValue}");
         }
 
-        DebugService.LogError($"Error in deserialization: Failed to recreate reference to simObject {val}.");
+        DebugService.Log($"Reading ref: {reader.Path} : FAILED {val}");
         return null;
     }
 
@@ -146,6 +159,11 @@ public class SimObjectJsonConverter : JsonConverter
 
     public override bool CanConvert(Type objectType)
     {
-        return typeof(SimObject).IsAssignableFrom(objectType);
+        if (_skipNextConvert)
+        {
+            _skipNextConvert = false;
+            return false;
+        }
+        return typeof(SimObject).IsAssignableFrom(objectType) || objectType.IsInterface;
     }
 }
