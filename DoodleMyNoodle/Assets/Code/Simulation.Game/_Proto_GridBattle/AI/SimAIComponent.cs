@@ -5,13 +5,12 @@ using UnityEngine;
 public class SimAIComponent : SimComponent, ISimTickable
 {
     bool _turnPlayed = false;
-    bool _wasNotMyTurn = false;
 
     void ISimTickable.OnSimTick()
     {
         if (SimTurnManager.Instance.IsMyTurn(_team.Team))
         {
-            if (!_wasNotMyTurn && !_turnPlayed)
+            if (!_turnPlayed)
             {
                 _turnPlayed = true;
 
@@ -30,11 +29,9 @@ public class SimAIComponent : SimComponent, ISimTickable
                     _gridWalker.TryWalkTo(_gridWalker.TileId + Vector2Int.down);
                 }
             }
-            _wasNotMyTurn = true;
         }
         else
         {
-            _wasNotMyTurn = false;
             _turnPlayed = false;
         }
     }

@@ -17,29 +17,23 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
     private Fix64 _timer = 0;
     private Team _currentTeam = (Team)TEAM_COUNT;
 
-    private bool _hasInit = false;
-
     public override void OnSimStart() 
     {
         base.OnSimStart();
 
         _timer = DurationOfATurn;
-        _hasInit = true;
 
         SwitchTurn();
     }
 
     void ISimTickable.OnSimTick()
     {
-        if (_hasInit)
-        {
-            _timer -= (Fix64)Simulation.DeltaTime;
+        _timer -= Simulation.DeltaTime;
 
-            if (_timer <= 0)
-            {
-                SwitchTurn();
-                _timer = DurationOfATurn;
-            }
+        if (_timer <= 0)
+        {
+            SwitchTurn();
+            _timer = DurationOfATurn;
         }
     }
 

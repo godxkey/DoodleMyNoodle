@@ -184,9 +184,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af4c3a90ba5d9d74daf80885fac06c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed:
-    RawValue: 17179869184
-  Path: []
+  _evtComponentData:
+    EventsWeHaveRegisteredTo: []
+    LocalEvents: []
+  _data:
+    Speed:
+      RawValue: 17179869184
+    HasADestination: 0
+    Path: []
 --- !u!114 &7647310802862370372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,8 +229,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dc99c56d9bb79c4b81aa4f06471cbdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerInControl:
-    Value: 0
+  _data:
+    PlayerInControl:
+      Value: 0
 --- !u!114 &9174381667908214457
 MonoBehaviour:
   m_ObjectHideFlags: 0
