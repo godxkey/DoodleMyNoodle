@@ -2,7 +2,7 @@
 
 public struct DirtyValue<T>
 {
-    bool forceDirty;
+    bool _forceDirty;
 
     public T Value { get; set; }
     public T PreviousValue { get; private set; }
@@ -11,20 +11,20 @@ public struct DirtyValue<T>
     {
         Value = initialValue;
         PreviousValue = initialValue;
-        forceDirty = dirtyOnStart;
+        _forceDirty = dirtyOnStart;
     }
 
     public void Reset()
     {
         PreviousValue = Value;
-        forceDirty = false;
+        _forceDirty = false;
     }
 
     public bool IsDirty
     {
         get
         {
-            if (forceDirty)
+            if (_forceDirty)
                 return true;
             if (Value == null && PreviousValue == null)
                 return false;
@@ -36,6 +36,6 @@ public struct DirtyValue<T>
 
     public void ForceDirty()
     {
-        forceDirty = true;
+        _forceDirty = true;
     }
 }
