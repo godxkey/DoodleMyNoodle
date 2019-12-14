@@ -259,6 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 256883002}
   - component: {fileID: 256883003}
+  - component: {fileID: 256883004}
   m_Layer: 0
   m_Name: Tile Highlight Manager
   m_TagString: Untagged
@@ -294,6 +295,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HighlightPrefab: {fileID: 8589829087157937559, guid: d1542b07390bf3d4e8b8151bd28471f4,
     type: 3}
+--- !u!114 &256883004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256883001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5263acbbb543a548a5b5f6aa444a54d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blueprintId:
+    Type: 2
+    Value: 10/4c8245514883b6c4ba63476b942bba11
 --- !u!1001 &332813751
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -526,6 +542,7 @@ GameObject:
   m_Component:
   - component: {fileID: 825009035}
   - component: {fileID: 825009034}
+  - component: {fileID: 825009036}
   m_Layer: 0
   m_Name: GridVisuals
   m_TagString: Untagged
@@ -560,6 +577,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &825009036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 825009033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5263acbbb543a548a5b5f6aa444a54d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blueprintId:
+    Type: 2
+    Value: 8/4c8245514883b6c4ba63476b942bba11
 --- !u!1 &971483900
 GameObject:
   m_ObjectHideFlags: 0
@@ -602,6 +634,7 @@ GameObject:
   - component: {fileID: 1276550479}
   - component: {fileID: 1276550478}
   - component: {fileID: 1276550481}
+  - component: {fileID: 1276550482}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -691,6 +724,21 @@ MonoBehaviour:
   camera: {fileID: 1276550479}
   audioListener: {fileID: 1276550478}
   priority: 1
+--- !u!114 &1276550482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276550477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5263acbbb543a548a5b5f6aa444a54d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blueprintId:
+    Type: 2
+    Value: 9/4c8245514883b6c4ba63476b942bba11
 --- !u!1 &1506952953
 GameObject:
   m_ObjectHideFlags: 0
