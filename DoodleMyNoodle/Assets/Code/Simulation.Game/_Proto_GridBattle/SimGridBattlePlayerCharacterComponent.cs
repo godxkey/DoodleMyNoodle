@@ -13,7 +13,7 @@ public class SimGridBattlePlayerCharacterComponent : SimEventComponent,
 
     public bool HandleInput(SimPlayerInput input)
     {
-        if (input is SimInputKeycode keyCodeInput && keyCodeInput.state == SimInputKeycode.State.Pressed)
+        if (SimTurnManager.Instance.IsMyTurn(_team.Team) && input is SimInputKeycode keyCodeInput && keyCodeInput.state == SimInputKeycode.State.Pressed)
         {
             switch (keyCodeInput.keyCode)
             {
@@ -79,10 +79,12 @@ public class SimGridBattlePlayerCharacterComponent : SimEventComponent,
 
     #region Component Caching
     [System.NonSerialized] SimGridWalkerComponent _gridWalker;
+    [System.NonSerialized] SimTeamMemberComponent _team;
     public override void OnAddedToRuntime()
     {
         base.OnAddedToRuntime();
         _gridWalker = GetComponent<SimGridWalkerComponent>();
+        _team = GetComponent<SimTeamMemberComponent>();
     }
     #endregion
 }
