@@ -7,30 +7,46 @@ using UnityEngine.Events;
 public class Inventory
 {
     public List<InventoryItem> Items = new List<InventoryItem>();
-    public UnityEvent OnInventoryChanged = new UnityEvent();
 
     public int AddItem(InventoryItem item, int position = -1)
     {
-        if (position >= 0)
+        if (position < 0)
         {
             Items.Add(item);
-            OnInventoryChanged?.Invoke();
             return Items.Count - 1;
         }
         else
         {
             Items[position] = item;
-            OnInventoryChanged?.Invoke();
             return position;
         }
     }
 
+    public InventoryItem RemoveItem(InventoryItem item)
+    {
+        InventoryItem itemRemoved = GetItem(item);
+        Items.Remove(itemRemoved);
+        return itemRemoved;
+    }
+
     public InventoryItem RemoveItem(int position)
     {
-        InventoryItem itemRemoved = Items[position];
+        InventoryItem itemRemoved = GetItem(position);
         Items[position] = null;
-        OnInventoryChanged?.Invoke();
         return itemRemoved;
+    }
+
+    public InventoryItem GetItem(InventoryItem item)
+    {
+        foreach (InventoryItem inventoryItem in Items)
+        {
+            if (item.Name == inventoryItem.Name)
+            {
+                return item;
+            }
+        }
+
+        return null;
     }
 
     public InventoryItem GetItem(int position)
