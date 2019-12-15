@@ -4,19 +4,23 @@ using UnityEngine;
 
 public class SimPlayerManager : SimSingleton<SimPlayerManager>, ISimInputProcessor
 {
-    [SerializeField] SimPlayerId _nextPlayerId;
-    [SerializeField] List<SimPlayerInfo> _players = new List<SimPlayerInfo>();
+    [System.Serializable]
+    struct SerializedData
+    {
+        public SimPlayerId NextPlayerId;
+        public List<SimPlayerInfo> Players;
+    }
 
     /// <summary>
-    /// Iterate over this with "foreach(ISimPlayerInfo playerInfo in GetPlayers())"
+    /// You can iterate over this with "foreach(ISimPlayerInfo playerInfo in GetPlayers())"
     /// </summary>
-    public ReadOnlyList<SimPlayerInfo, ISimPlayerInfo> Players => new ReadOnlyList<SimPlayerInfo, ISimPlayerInfo>(_players);
+    public ReadOnlyList<SimPlayerInfo, ISimPlayerInfo> Players => new ReadOnlyList<SimPlayerInfo, ISimPlayerInfo>(_data.Players);
 
     public override void OnSimAwake()
     {
         base.OnSimAwake();
 
-        _nextPlayerId = SimPlayerId.FirstValid;
+        _data.NextPlayerId = SimPlayerId.FirstValid;
     }
 
     public ISimPlayerInfo GetSimPlayerInfo(in SimPlayerId playerId)
@@ -26,11 +30,11 @@ public class SimPlayerManager : SimSingleton<SimPlayerManager>, ISimInputProcess
 
     SimPlayerInfo GetSimPlayerInfoInternal(in SimPlayerId playerId)
     {
-        for (int i = 0; i < _players.Count; i++)
+        for (int i = 0; i < _data.Players.Count; i++)
         {
-            if (_players[i].SimPlayerId == playerId)
+            if (_data.Players[i].SimPlayerId == playerId)
             {
-                return _players[i];
+                return _data.Players[i];
             }
         }
 
@@ -50,11 +54,11 @@ public class SimPlayerManager : SimSingleton<SimPlayerManager>, ISimInputProcess
                 }
 
                 SimPlayerInfo newPlayerInfo = new SimPlayerInfo(playerCreate.SimPlayerInfo);
-                newPlayerInfo.SimPlayerId = _nextPlayerId;
+                newPlayerInfo.SimPlayerId = _data.NextPlayerId;
 
-                _players.Add(newPlayerInfo);
+                _data.Players.Add(newPlayerInfo);
 
-                _nextPlayerId++;
+                _data.NextPlayerId++;
 
                 // Raise event
                 SimGlobalEventEmitter.RaiseEvent(new SimPlayerCreatedEventData() { PlayerInfo = newPlayerInfo });
@@ -88,4 +92,26 @@ public class SimPlayerManager : SimSingleton<SimPlayerManager>, ISimInputProcess
             //    break;
         }
     }
+
+    #region Serialized Data Methods
+    [UnityEngine.SerializeField]
+    [AlwaysExpand]
+    SerializedData _data = new SerializedData()
+    {
+        // define default values here
+        Players = new List<SimPlayerInfo>()
+    };
+
+    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    {
+        base.SerializeToDataStack(dataStack);
+        dataStack.Push(_data);
+    }
+
+    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
+    {
+        _data = (SerializedData)dataStack.Pop();
+        base.DeserializeFromDataStack(dataStack);
+    }
+    #endregion
 }

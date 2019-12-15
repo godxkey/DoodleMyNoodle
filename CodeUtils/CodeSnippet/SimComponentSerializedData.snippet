@@ -30,7 +30,7 @@
 
 #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [Forward]
+    [AlwaysExpand]
     SerializedData _data = new SerializedData()
     {
         // define default values here
@@ -39,13 +39,13 @@
     public override void SerializeToDataStack(SimComponentDataStack dataStack)
     {
         base.SerializeToDataStack(dataStack);
-        dataStack.Add(_data);
+        dataStack.Push(_data);
     }
 
     public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
     {
-        _data = (SerializedData)dataStack.Get();
-        base.SerializeToDataStack(dataStack);
+        _data = (SerializedData)dataStack.Pop();
+        base.DeserializeFromDataStack(dataStack);
     }
 #endregion]]>
       </Code>

@@ -2,23 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimGridBattlePlayerCharacterComponent : SimComponent, ISimPawnInputHandler, ISimInputProcessor
+public class SimGridBattlePlayerCharacterComponent : SimEventComponent, 
+    ISimPawnInputHandler
 {
     [System.Serializable]
     struct SerializedData
     {
-        public SimEntity BulletPrefab;
+        public SimGridBattleBulletComponent BulletPrefab;
     }
 
     public bool HandleInput(SimPlayerInput input)
     {
-        if (input is SimInputKeycode keyCodeInput && keyCodeInput.state == SimInputKeycode.State.Pressed)
+        if (SimTurnManager.Instance.IsMyTurn(_team.Team) && input is SimInputKeycode keyCodeInput && keyCodeInput.state == SimInputKeycode.State.Pressed)
         {
             switch (keyCodeInput.keyCode)
             {
                 case KeyCode.Space:
                     // Shoot!
-                    Simulation.Instantiate(_data.BulletPrefab, SimTransform.WorldPosition, FixQuaternion.Identity);
+                    Simulation.Instantiate(_data.BulletPrefab, SimTransform.WorldPosition, FixQuaternion.Identity)
+                        .Speed = FixVector2.Left * 10;
                     return false;
 
                 case KeyCode.RightArrow:
@@ -55,7 +57,7 @@ public class SimGridBattlePlayerCharacterComponent : SimComponent, ISimPawnInput
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [Forward]
+    [AlwaysExpand]
     SerializedData _data = new SerializedData()
     {
         // define default values here
@@ -64,23 +66,25 @@ public class SimGridBattlePlayerCharacterComponent : SimComponent, ISimPawnInput
     public override void SerializeToDataStack(SimComponentDataStack dataStack)
     {
         base.SerializeToDataStack(dataStack);
-        dataStack.Add(_data);
+        dataStack.Push(_data);
     }
 
     public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
     {
-        _data = (SerializedData)dataStack.Get();
-        base.SerializeToDataStack(dataStack);
+        _data = (SerializedData)dataStack.Pop();
+        base.DeserializeFromDataStack(dataStack);
     }
     #endregion
 
 
     #region Component Caching
     [System.NonSerialized] SimGridWalkerComponent _gridWalker;
+    [System.NonSerialized] SimTeamMemberComponent _team;
     public override void OnAddedToRuntime()
     {
         base.OnAddedToRuntime();
         _gridWalker = GetComponent<SimGridWalkerComponent>();
+        _team = GetComponent<SimTeamMemberComponent>();
     }
     #endregion
 }
