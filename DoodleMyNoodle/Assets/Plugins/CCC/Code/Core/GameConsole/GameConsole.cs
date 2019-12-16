@@ -257,7 +257,7 @@ public class GameConsole
         foreach (var v in varNames)
         {
             var cv = ConfigVarService.Instance.configVarRegistry.ConfigVars[v];
-            OutputString(string.Format("{0} = {1}", cv.name, cv.Value), LineColor.Normal);
+            OutputString($"{cv.name} = {cv.Value}    // {cv.description}", LineColor.Normal);
         }
     }
 
