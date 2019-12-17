@@ -3,31 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SimGridBattlePlayerCharacterComponent : SimEventComponent, 
-    ISimPawnInputHandler,
-    ISimEventListener<WalkedOnTileEventData>
+    ISimPawnInputHandler
 {
     [System.Serializable]
     struct SerializedData
     {
         public SimGridBattleBulletComponent BulletPrefab;
     }
-    
-    public override void OnSimStart()
-    {
-        base.OnSimStart();
-
-        GetComponent<SimGridWalkerComponent>().OnWalkedOnTileEvent.RegisterListener(this);
-    }
-
-    public void OnEventRaised(in WalkedOnTileEventData eventData)
-    {
-        Simulation.Instantiate(_data.BulletPrefab, SimTransform.WorldPosition, FixQuaternion.Identity)
-            .Speed = FixVector2.Left * 10;
-    }
 
     public bool HandleInput(SimPlayerInput input)
     {
-        if (input is SimInputKeycode keyCodeInput && keyCodeInput.state == SimInputKeycode.State.Pressed)
+        if (SimTurnManager.Instance.IsMyTurn(_team.Team) && input is SimInputKeycode keyCodeInput && keyCodeInput.state == SimInputKeycode.State.Pressed)
         {
             switch (keyCodeInput.keyCode)
             {
@@ -93,10 +79,12 @@ public class SimGridBattlePlayerCharacterComponent : SimEventComponent,
 
     #region Component Caching
     [System.NonSerialized] SimGridWalkerComponent _gridWalker;
+    [System.NonSerialized] SimTeamMemberComponent _team;
     public override void OnAddedToRuntime()
     {
         base.OnAddedToRuntime();
         _gridWalker = GetComponent<SimGridWalkerComponent>();
+        _team = GetComponent<SimTeamMemberComponent>();
     }
     #endregion
 }
