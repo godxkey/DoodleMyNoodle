@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// NB: Even though this class is a SimComponent, we do not use the "SimComp" prefix because logically, this is not a component.
+/// NB: Even though this class is a SimComponent, we do not use the "SimXComponent" naming because logically, this is not a component.
 /// <para/>
 /// This is a data manager.
 /// </summary>
@@ -11,13 +11,13 @@ using UnityEngine;
 public class SimTileManager : SimSingleton<SimTileManager>
 {
     [SerializeField]
-    int width;
+    int _width = 10;
     [SerializeField]
-    int height;
+    int _height = 10;
 
     public bool IsTileWalkable(in SimTileId tileId)
     {
-        // TODO: is rock ? is lava ? etc.
+        // is rock ? is lava ? etc.
 
         return IsTileInBound(tileId);
     }
@@ -25,8 +25,8 @@ public class SimTileManager : SimSingleton<SimTileManager>
     public bool IsTileInBound(in SimTileId tileId)
     {
         return tileId.X >= 0
-            && tileId.X < width
+            && tileId.X < _width
             && tileId.Y >= 0
-            && tileId.Y < height;
+            && tileId.Y < _height;
     }
 }

@@ -16,8 +16,6 @@ internal class SimModuleInputProcessorManager : SimModuleBase
         }
         else
         {
-            // TODO
-            // TEMPORAIRE
             for (_inputProcessorIterator = 0; _inputProcessorIterator < _inputProcessors.Count; _inputProcessorIterator++)
             {
                 ISimInputProcessor processor = _inputProcessors[_inputProcessorIterator];

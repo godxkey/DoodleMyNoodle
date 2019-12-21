@@ -65,10 +65,8 @@ public class Game : MonoBehaviour
             {
                 _sceneLoadPromise = SceneService.LoadAsync(sceneToLoad.SceneName, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D);
                 _sceneLoadPromise.OnComplete += OnPlayModeSpecificSceneLoaded;
+                _playModeSpecificSceneRequested = true;
             }
-
-
-            _playModeSpecificSceneRequested = true;
         }
 
 

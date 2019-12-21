@@ -29,7 +29,7 @@ public class ContextRuleUpdater : ScriptableObject
             for (int i = dirtyCount - 1; i >= 0; i--)
             {
                 dirtyRules[i].Evaluate(this);
-                dirtyRules.RemoveAt(i); // TODO: Remove with last swap
+                dirtyRules.RemoveWithLastSwapAt(i);
             }
         }
     }
