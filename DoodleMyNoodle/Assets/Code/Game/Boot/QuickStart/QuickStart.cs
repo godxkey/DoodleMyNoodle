@@ -38,6 +38,7 @@ public static class QuickStart
     {
         if (currentRoutine != null)
         {
+            SceneService.UnloadAsync(assets.emptyScene);
             CoroutineLauncherService.Instance.StopCoroutine(currentRoutine);
         }
     }
@@ -62,6 +63,8 @@ public static class QuickStart
                 yield return StartServer(settings);
                 break;
         }
+
+        SceneService.UnloadAsync(assets.emptyScene);
     }
 
     static IEnumerator StartLocal(QuickStartSettings settings)
