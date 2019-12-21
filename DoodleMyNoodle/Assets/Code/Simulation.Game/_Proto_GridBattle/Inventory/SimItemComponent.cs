@@ -2,7 +2,4 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemInfo : MonoBehaviour
-{
-    public string Name;
-}
+public class SimItemComponent : SimComponent { }

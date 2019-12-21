@@ -10,12 +10,12 @@ public class SimAlexTestScript : SimComponent, ISimInputProcessor
         {
             if (keyCodeInput.keyCode == KeyCode.N && keyCodeInput.state == SimInputKeycode.State.Pressed)
             {
-                GetComponent<SimInventoryContainer>()?.TakeItem(ItemBank.Instance.GetItem("Test"));
+                GetComponent<SimInventoryComponent>()?.TakeItem(ItemBank.Instance.GetItemWithSameName("Test"));
             }
 
             if (keyCodeInput.keyCode == KeyCode.M && keyCodeInput.state == SimInputKeycode.State.Pressed)
             {
-                GetComponent<SimInventoryContainer>()?.DropItem(ItemBank.Instance.GetItem("Test"));
+                GetComponent<SimInventoryComponent>()?.DropItem(ItemBank.Instance.GetItemWithSameName("Test"));
             }
         }
     }

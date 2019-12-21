@@ -4,9 +4,9 @@ public interface IItemOnEquip
     void OnEquip();
 }
 
-public interface IItemOnUnEquip
+public interface IItemOnUnequip
 {
-    void OnUnEquip();
+    void OnUnequip();
 }
 
 public interface IItemOnUse
