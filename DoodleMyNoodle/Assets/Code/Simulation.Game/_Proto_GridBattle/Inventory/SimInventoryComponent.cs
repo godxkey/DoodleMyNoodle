@@ -20,31 +20,29 @@ public class SimInventoryComponent : SimComponent
         }
     }
 
-    private SimItem RemoveItem(SimItem item)
+    private void RemoveItem(SimItem item)
     {
-        SimItem itemRemoved = GetItem(item);
-        _inventory.Remove(itemRemoved);
-        return itemRemoved;
+        _inventory.Remove(item);
     }
 
     private SimItem RemoveItem(int position)
     {
         SimItem itemRemoved = GetItem(position);
-        _inventory[position] = null;
+        _inventory.Remove(itemRemoved);
         return itemRemoved;
     }
 
-    public SimItem GetItem(SimItem item)
+    public bool HasItem(SimItem item)
     {
         foreach (SimItem inventoryItem in _inventory)
         {
             if (item == inventoryItem)
             {
-                return item;
+                return true;
             }
         }
 
-        return null;
+        return false;
     }
 
     public SimItem GetItem(int position)

@@ -14,13 +14,15 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
 
     // INTERFACE SHORTCUT CALLS
 
+    // TODO: Change GetComponents for something more effeciant
+
     public void OnConsume()
     {
         foreach (IItemOnConsume itemOnConsume in GetComponents<IItemOnConsume>())
         {
             if (itemOnConsume != this)
             {
-                itemOnConsume?.OnConsume();
+                itemOnConsume.OnConsume();
             } 
         }
     }
@@ -31,7 +33,7 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
         {
             if(itemOnEquip != this)
             {
-                itemOnEquip?.OnEquip();
+                itemOnEquip.OnEquip();
             }
         }
     }
@@ -42,7 +44,7 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
         {
             if (itemOnUnequip != this)
             {
-                itemOnUnequip?.OnUnequip();
+                itemOnUnequip.OnUnequip();
             }
         }
     }
@@ -53,7 +55,7 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
         {
             if (itemOnUse != this)
             {
-                itemOnUse?.OnUse();
+                itemOnUse.OnUse();
             }
         }
     }
