@@ -94,7 +94,6 @@ GameObject:
   - component: {fileID: 8908235613229724287}
   - component: {fileID: 7647310802862370372}
   - component: {fileID: 6912441518737644110}
-  - component: {fileID: 9148352897769752291}
   - component: {fileID: 9174381667908214457}
   m_Layer: 0
   m_Name: AICharacter
@@ -217,21 +216,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Team: 1
---- !u!114 &9148352897769752291
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908235613229724289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5dc99c56d9bb79c4b81aa4f06471cbdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    PlayerInControl:
-      Value: 0
 --- !u!114 &9174381667908214457
 MonoBehaviour:
   m_ObjectHideFlags: 0

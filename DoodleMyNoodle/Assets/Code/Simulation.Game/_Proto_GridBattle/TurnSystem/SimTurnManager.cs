@@ -51,4 +51,14 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
     {
         return _currentTeam == myTeam;
     }
+
+    public Team GetCurrentTeam()
+    {
+        return _currentTeam;
+    }
+
+    public Fix64 GetCurrentTime()
+    {
+        return _timer;
+    }
 }

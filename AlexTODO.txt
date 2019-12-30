@@ -1,0 +1,5 @@
+- Inventory Saving
+- Pawn Position Saving
+- Better AI (attack)
+- Get Current Player
+- Interface HasEquip() etc.

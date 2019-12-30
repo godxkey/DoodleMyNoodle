@@ -4,7 +4,16 @@ using UnityEngine;
 
 public class SimInventoryComponent : SimComponent
 {
+    public List<SimItem> StartInventory = new List<SimItem>();
+
     private List<SimItem> _inventory = new List<SimItem>();
+
+    public override void OnSimStart() 
+    {
+        base.OnSimStart();
+
+        _inventory.AddRange(StartInventory);
+    }
 
     private int AddItem(SimItem item, int position = -1)
     {
