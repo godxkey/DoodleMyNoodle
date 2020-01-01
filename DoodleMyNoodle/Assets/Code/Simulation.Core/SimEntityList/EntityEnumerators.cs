@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public struct EntityEnumerable<T1>
 {
-    readonly List<SimEntity> _entities;
+    ReadOnlyList<SimEntity> _entities;
     int _i;
     int _count;
     T1 _current;
     private SimEntity _simEntity;
-    public EntityEnumerable(List<SimEntity> entities)
+    public EntityEnumerable(ReadOnlyList<SimEntity> entities)
     {
         _entities = entities;
         _count = _entities.Count;
@@ -45,12 +45,12 @@ public struct EntityEnumerable<T1>
 
 public struct EntityEnumerable<T1, T2>
 {
-    readonly List<SimEntity> _entities;
+    ReadOnlyList<SimEntity> _entities;
     int _i;
     int _count;
     ValueTuple<T1, T2> _current;
     private SimEntity _simEntity;
-    public EntityEnumerable(List<SimEntity> entities)
+    public EntityEnumerable(ReadOnlyList<SimEntity> entities)
     {
         _entities = entities;
         _count = _entities.Count;
@@ -89,12 +89,12 @@ public struct EntityEnumerable<T1, T2>
 
 public struct EntityEnumerable<T1, T2, T3>
 {
-    readonly List<SimEntity> _entities;
+    ReadOnlyList<SimEntity> _entities;
     int _i;
     int _count;
     ValueTuple<T1, T2, T3> _current;
     SimEntity _simEntity;
-    public EntityEnumerable(List<SimEntity> entities)
+    public EntityEnumerable(ReadOnlyList<SimEntity> entities)
     {
         _entities = entities;
         _count = _entities.Count;
@@ -135,12 +135,12 @@ public struct EntityEnumerable<T1, T2, T3>
 
 public struct EntityEnumerable<T1, T2, T3, T4>
 {
-    readonly List<SimEntity> _entities;
+    ReadOnlyList<SimEntity> _entities;
     int _i;
     int _count;
     ValueTuple<T1, T2, T3, T4> _current;
     SimEntity _simEntity;
-    public EntityEnumerable(List<SimEntity> entities)
+    public EntityEnumerable(ReadOnlyList<SimEntity> entities)
     {
         _entities = entities;
         _count = _entities.Count;

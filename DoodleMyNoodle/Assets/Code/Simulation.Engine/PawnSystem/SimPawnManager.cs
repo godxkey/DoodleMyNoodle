@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class SimPawnManager : SimComponentRegistrySingleton<SimPawnManager, SimPawnComponent>,
+public class SimPawnManager : SimEventSingleton<SimPawnManager>,
     ISimInputProcessor,
     ISimEventListener<SimPlayerCreatedEventData>,
     ISimEventListener<SimPlayerDestroyedEventData>
@@ -11,8 +11,6 @@ public class SimPawnManager : SimComponentRegistrySingleton<SimPawnManager, SimP
     {
         public Dictionary<SimPlayerId, SimPawnComponent> PlayerPawnsMap;
     }
-
-    public ReadOnlyList<SimPawnComponent> Pawns => _components.AsReadOnlyNoAlloc();
 
     public override void OnSimStart()
     {
@@ -53,11 +51,11 @@ public class SimPawnManager : SimComponentRegistrySingleton<SimPawnManager, SimP
 
         // Assign the first unpossessed pawn to the new player
         //      This will probably be reworked into something more solid later
-        for (int i = 0; i < _components.Count; i++)
+        foreach (SimPawnComponent pawn in Simulation.EntitiesWithComponent<SimPawnComponent>())
         {
-            if (_components[i].IsPossessed == false)
+            if (pawn.IsPossessed == false)
             {
-                AssignPawnToPlayer(_components[i], eventData.PlayerInfo.SimPlayerId);
+                AssignPawnToPlayer(pawn, eventData.PlayerInfo.SimPlayerId);
                 break;
             }
         }
