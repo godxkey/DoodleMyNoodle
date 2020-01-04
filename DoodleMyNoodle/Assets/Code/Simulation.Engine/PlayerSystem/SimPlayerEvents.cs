@@ -1,15 +1,10 @@
 ﻿
 public struct SimPlayerCreatedEventData
 {
-    public ISimPlayerInfo PlayerInfo;
-}
-
-public struct SimPlayerUpdatedEvent
-{
-    public ISimPlayerInfo PlayerInfo;
+    public SimEntity PlayerEntity;
 }
 
 public struct SimPlayerDestroyedEventData
 {
-    public SimPlayerId SimPlayerId;
+    public SimEntity PlayerEntity;
 }

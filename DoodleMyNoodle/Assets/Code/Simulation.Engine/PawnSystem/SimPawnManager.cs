@@ -2,16 +2,9 @@
 using System.Collections.Generic;
 
 public class SimPawnManager : SimEventSingleton<SimPawnManager>,
-    ISimInputProcessor,
     ISimEventListener<SimPlayerCreatedEventData>,
     ISimEventListener<SimPlayerDestroyedEventData>
 {
-    [System.Serializable]
-    struct SerializedData
-    {
-        public Dictionary<SimPlayerId, SimPawnComponent> PlayerPawnsMap;
-    }
-
     public override void OnSimStart()
     {
         base.OnSimStart();
@@ -20,88 +13,75 @@ public class SimPawnManager : SimEventSingleton<SimPawnManager>,
         SimGlobalEventEmitter.RegisterListener<SimPlayerDestroyedEventData>(this);
     }
 
-    List<ISimPawnInputHandler> _cachedComponentList = new List<ISimPawnInputHandler>(); // this is simply used to reduce allocations
-    public void ProcessInput(SimInput input)
-    {
-        if (input is SimPlayerInput playerInput)
-        {
-            if (_data.PlayerPawnsMap.TryGetValue(playerInput.SimPlayerId, out SimPawnComponent pawn))
-            {
-                if(pawn)
-                {
-                    pawn.GetComponents<ISimPawnInputHandler>(_cachedComponentList);
-
-                    for (int i = 0; i < _cachedComponentList.Count; i++)
-                    {
-                        if (_cachedComponentList[i].HandleInput(playerInput))
-                        {
-                            break;
-                        }
-                    }
-
-                    _cachedComponentList.Clear();
-                }
-            }
-        }
-    }
-
     public void OnEventRaised(in SimPlayerCreatedEventData eventData)
     {
-        _data.PlayerPawnsMap.Add(eventData.PlayerInfo.SimPlayerId, null);
-
-        // Assign the first unpossessed pawn to the new player
-        //      This will probably be reworked into something more solid later
-        foreach (SimPawnComponent pawn in Simulation.EntitiesWithComponent<SimPawnComponent>())
+        // if the player can control pawns
+        if (eventData.PlayerEntity.GetComponent(out SimTargetPawnComponent pawnController))
         {
-            if (pawn.IsPossessed == false)
+            // and the player has no pawn
+            if (pawnController.Target == null)
             {
-                AssignPawnToPlayer(pawn, eventData.PlayerInfo.SimPlayerId);
-                break;
+                // find uncontrolled pawn
+                SimPawnInterfaceComponent uncontrolledPawn = SimPawnHelpers.FindUncontrolledPawn();
+
+                if (uncontrolledPawn)
+                {
+                    // hook them together
+                    HookControllerWithPawn(pawnController, uncontrolledPawn);
+                }
             }
         }
     }
 
     public void OnEventRaised(in SimPlayerDestroyedEventData eventData)
     {
-        _data.PlayerPawnsMap.Remove(eventData.SimPlayerId);
+        if(eventData.PlayerEntity.GetComponent(out SimTargetPawnComponent targetPawnComponent))
+        {
+            UnhookControllerFromPawn(targetPawnComponent);
+        }
     }
 
-    internal void AssignPawnToPlayer(SimPawnComponent newPawn, SimPlayerId simPlayerId)
+    public void HookControllerWithPawn(SimTargetPawnComponent controller, SimPawnInterfaceComponent pawn)
     {
-        if (_data.PlayerPawnsMap.TryGetValue(simPlayerId, out SimPawnComponent previousPawn))
+        if(controller.Target)
         {
-            if (previousPawn)
-                previousPawn.PlayerInControl = SimPlayerId.Invalid;
-            if (newPawn)
-                newPawn.PlayerInControl = simPlayerId;
+            DebugService.LogError($"Cannot hook pawn '{pawn.gameObject.name}' with controller '{controller.gameObject}'." +
+                (controller.Target ? $" The controller is already controlling '{controller.Target.gameObject.name}." : $"") +
+                $" Please unhook before hooking again.");
+            return;
+        }
 
-            _data.PlayerPawnsMap[simPlayerId] = newPawn;
+        // change pawn
+        controller.Target = pawn;
+        
+        // notify
+        NotifyPawnControllerOfPawnChange(controller.SimEntity);
+    }
+
+    public void UnhookControllerFromPawn(SimTargetPawnComponent controller)
+    {
+        controller.Target = null;
+
+        if (controller.DestroySelfIfNoTarget)
+        {
+            // destroy controller
+            Simulation.Destroy(controller);
         }
         else
         {
-            DebugService.LogError($"[{nameof(SimPawnManager)}] Trying to assign a pawn to an invalid sim player.");
+            // notify controller
+            NotifyPawnControllerOfPawnChange(controller.SimEntity);
         }
     }
 
-    #region Serialized Data Methods
-    [UnityEngine.SerializeField]
-    [AlwaysExpand]
-    SerializedData _data = new SerializedData()
-    {
-        // define default values here
-        PlayerPawnsMap = new Dictionary<SimPlayerId, SimPawnComponent>()
-    };
+    List<ISimTargetPawnChangeListener> _cachedISimTargetPawnChangeListenerComponents;
 
-    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    void NotifyPawnControllerOfPawnChange(SimEntity controller)
     {
-        base.SerializeToDataStack(dataStack);
-        dataStack.Push(_data);
+        controller.GetComponents<ISimTargetPawnChangeListener>(_cachedISimTargetPawnChangeListenerComponents);
+        foreach (ISimTargetPawnChangeListener pawnChangeObserver in _cachedISimTargetPawnChangeListenerComponents)
+        {
+            pawnChangeObserver.OnTargetPawnChanged();
+        }
     }
-
-    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
-    {
-        _data = (SerializedData)dataStack.Pop();
-        base.DeserializeFromDataStack(dataStack);
-    }
-    #endregion
 }

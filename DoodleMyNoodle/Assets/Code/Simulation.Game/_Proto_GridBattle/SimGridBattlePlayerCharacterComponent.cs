@@ -11,7 +11,7 @@ public class SimGridBattlePlayerCharacterComponent : SimEventComponent,
         public SimGridBattleBulletComponent BulletPrefab;
     }
 
-    public bool HandleInput(SimPlayerInput input)
+    public bool HandleInput(SimInput input)
     {
         if (SimTurnManager.Instance.IsMyTurn(_team.Team) && input is SimInputKeycode keyCodeInput && keyCodeInput.state == SimInputKeycode.State.Pressed)
         {
@@ -42,16 +42,6 @@ public class SimGridBattlePlayerCharacterComponent : SimEventComponent,
         }
 
         return false;
-    }
-
-
-    public void ProcessInput(SimInput input)
-    {
-        //if (input is SimPlayerInput playerInput)
-        //{
-        //    SimPlayerInfo playerInfo = SimPlayerManager.Instance.GetSimPlayerInfo(playerInput.SimPlayerId);
-        //    playerInfo.
-        //}
     }
 
 

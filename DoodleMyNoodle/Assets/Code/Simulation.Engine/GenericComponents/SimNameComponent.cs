@@ -1,21 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-/// <summary>
-/// Entity that can be controlled
-/// </summary>
-public class SimPawnComponent : SimComponent
+﻿
+public class SimNameComponent : SimComponent
 {
     [System.Serializable]
     struct SerializedData
     {
-        public SimPlayerId PlayerInControl;
+        public string Value;
     }
 
-    public SimPlayerId PlayerInControl { get => _data.PlayerInControl; set => _data.PlayerInControl = value; }
-    
-    public bool IsPossessed => _data.PlayerInControl.IsValid;
+    public string Value { get => _data.Value; set => _data.Value = value; }
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]

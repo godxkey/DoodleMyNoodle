@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimPawnControllerComponent : SimComponent
+public interface ISimTargetPawnChangeListener
 {
+    void OnTargetPawnChanged();
 }
