@@ -47,3 +47,10 @@ MonoBehaviour:
   - Id: f452a6b9ea946ff46b3b2775188b8bd4
     Text: All game-related tools. If they are project agnostic, consider moving them
       in CCC
+  - Id: 9cb81dc74db295140a81b89ee01c353c
+    Text: Simulation code that isn't required for the Simulation to run, but still
+      considered generic and game-agnostic. Should not contain any complex system
+      (put that in Simulation.Engine).
+  - Id: ee1590b9113bfa1479cab7e1864e71ba
+    Text: Event system of the simulation. Not essential for the simulation to run,
+      but very useful.

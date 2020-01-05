@@ -28,9 +28,10 @@ public class SimulationBase
     public static SimEntity FindEntityWithComponent<T>() => SimModules._WorldSearcher.FindEntityWithComponent<T>();
     public static SimEntity FindEntityWithComponent<T>(out T comp) => SimModules._WorldSearcher.FindEntityWithComponent(out comp);
 
+    // fbessette TODO: we should create a more fully-fledged query system that allow us to cache frequent queries (like EntitiesWithComponent<Pawn>)
     public static ReadOnlyList<SimEntity>          Entities                                 => new ReadOnlyList<SimEntity>(SimModules._World.Entities);
-    public static EntityEnumerable<T1>             EntitiesWithComponent<T1>()              => new EntityEnumerable<T1>(SimModules._World.Entities);
-    public static EntityEnumerable<T1, T2>         EntitiesWithComponents<T1, T2>()         => new EntityEnumerable<T1, T2>(SimModules._World.Entities);
-    public static EntityEnumerable<T1, T2, T3>     EntitiesWithComponents<T1, T2, T3>()     => new EntityEnumerable<T1, T2, T3>(SimModules._World.Entities);
-    public static EntityEnumerable<T1, T2, T3, T4> EntitiesWithComponents<T1, T2, T3, T4>() => new EntityEnumerable<T1, T2, T3, T4>(SimModules._World.Entities);
+    public static EntityEnumerable<T1>             EntitiesWithComponent<T1>()              => new EntityEnumerable<T1>(Entities);
+    public static EntityEnumerable<T1, T2>         EntitiesWithComponents<T1, T2>()         => new EntityEnumerable<T1, T2>(Entities);
+    public static EntityEnumerable<T1, T2, T3>     EntitiesWithComponents<T1, T2, T3>()     => new EntityEnumerable<T1, T2, T3>(Entities);
+    public static EntityEnumerable<T1, T2, T3, T4> EntitiesWithComponents<T1, T2, T3, T4>() => new EntityEnumerable<T1, T2, T3, T4>(Entities);
 }
