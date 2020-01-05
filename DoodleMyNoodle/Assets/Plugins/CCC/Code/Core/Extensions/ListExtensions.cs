@@ -156,4 +156,17 @@ public static class ListExtensions
 
         return false;
     }
+
+    public static bool AddUnique<T>(this List<T> list, in T value)
+    {
+        if (!list.Contains(value))
+        {
+            list.Add(value);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

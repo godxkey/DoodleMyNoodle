@@ -1,21 +1,30 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SimulationControllerClient : SimulationController
 {
-    public int simTicksInQueue => _pendingSimTicks.queueLength;
+    public int SimTicksInQueue => _simTicksDropper.QueueLength;
+    public bool IsSyncingSimulationWithServer => _syncOp != null && _syncOp.IsRunning;
+    public float CurrentSimPlayingSpeed => _simTicksDropper.Speed;
 
+
+    SimulationSyncClientOperation _syncOp;
     SessionClientInterface _session;
-    SelfRegulatingDropper<NetMessageSimTick> _pendingSimTicks;
+    SelfRegulatingDropper<NetMessageSimTick> _simTicksDropper;
+
+    // used while we are in sync process
+    List<NetMessageSimTick> _shelvedSimTicks = new List<NetMessageSimTick>();
 
     protected override void Awake()
     {
         base.Awake();
 
-        _pendingSimTicks = new SelfRegulatingDropper<NetMessageSimTick>(
+        _simTicksDropper = new SelfRegulatingDropper<NetMessageSimTick>(
             maximalCatchUpSpeed: GameConstants.CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED,
             maximalExpectedTimeInQueue: GameConstants.CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE);
+        Debug.Log($"Client tick dropper -  maximalCatchUpSpeed: {GameConstants.CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED}   maximalExpectedTimeInQueue: {GameConstants.CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE}");
     }
 
     public override void OnGameReady()
@@ -24,10 +33,25 @@ public class SimulationControllerClient : SimulationController
 
         _session = OnlineService.clientInterface.SessionClientInterface;
         _session.RegisterNetMessageReceiver<NetMessageSimTick>(OnNetMessageSimTick);
+
+#if DEBUG_BUILD
+        GameConsole.AddCommand("sim.sync", Cmd_SimSync, "Sync the simulation with the server");
+#endif
+    }
+
+    public override void OnGameStart()
+    {
+        base.OnGameStart();
+
+        SyncSimulationWithServer();
     }
 
     public override void OnSafeDestroy()
     {
+#if DEBUG_BUILD
+        GameConsole.RemoveCommand("sim.sync");
+#endif
+
         base.OnSafeDestroy();
 
         _session?.UnregisterNetMessageReceiver<NetMessageSimTick>(OnNetMessageSimTick);
@@ -42,6 +66,12 @@ public class SimulationControllerClient : SimulationController
             return;
         }
 
+        if (_syncOp != null && _syncOp.IsRunning)
+        {
+            DebugService.Log("Discarding input since we are syncing to the simulation");
+            return;
+        }
+
         _session.SendNetMessageToServer(new NetMessageInputSubmission()
         {
             submissionId = InputSubmissionId.Generate(),
@@ -51,8 +81,16 @@ public class SimulationControllerClient : SimulationController
 
     void OnNetMessageSimTick(NetMessageSimTick tick, INetworkInterfaceConnection source)
     {
+        if (_syncOp != null
+            && _syncOp.IsRunning)
+        {
+            // if we receive ticks while we're syncing, shelve the tick so we can restored it later
+            _shelvedSimTicks.Add(tick);
+            return;
+        }
+
         // The server has sent a tick message
-        _pendingSimTicks.Enqueue(tick, (float)SimulationConstants.TIME_STEP);
+        _simTicksDropper.Enqueue(tick, (float)SimulationConstants.TIME_STEP);
     }
 
     private void FixedUpdate()
@@ -60,15 +98,15 @@ public class SimulationControllerClient : SimulationController
         if (!SimulationView.IsRunningOrReadyToRun)
             return;
 
-        _pendingSimTicks.Update(Time.fixedDeltaTime);
+        _simTicksDropper.Update(Time.fixedDeltaTime);
 
-        while (SimulationView.CanBeTicked && _pendingSimTicks.TryDrop(out NetMessageSimTick tick))
+        while (CanTickSimulation && _simTicksDropper.TryDrop(out NetMessageSimTick tick))
         {
-            if(SimulationView.TickId != tick.tickId)
+            if (SimulationView.TickId != tick.tickId)
             {
+                DebugService.LogError($"We forcefully set the next simulation's tick at {tick.tickId}" +
+                    $" (from {SimulationView.TickId}) to match with the server. This should not happen if 'join in progress' works correctly");
                 SimulationView.ForceSetTickId(tick.tickId);
-                DebugService.LogWarning($"[Temporary Hack] We forcefully set the next simulation's stick at {tick.tickId} to match with the server. " +
-                    $"This should eventually be replaced by the 'join in progress' feature. NB: This message should only appear once per session!");
             }
             ExecuteTick(tick);
         }
@@ -89,4 +127,59 @@ public class SimulationControllerClient : SimulationController
 
         SimulationView.Tick(tickData);
     }
+
+    SimulationSyncClientOperation SyncSimulationWithServer()
+    {
+        if(IsSyncingSimulationWithServer)
+        {
+            DebugService.LogWarning("Trying to start a SimSync process while we are already in one");
+            return null;
+        }
+
+        PauseSimulation();
+
+        _syncOp = new SimulationSyncClientOperation(_session);
+
+        _syncOp.OnTerminateCallback = (op) =>
+        {
+            // restore ticks we received while syncing
+            _simTicksDropper.Clear();
+            for (int i = 0; i < _shelvedSimTicks.Count; i++)
+            {
+                if (_shelvedSimTicks[i].tickId >= SimulationView.TickId)
+                {
+                    _simTicksDropper.Enqueue(_shelvedSimTicks[i], (float)SimulationConstants.TIME_STEP);
+                }
+            }
+
+            UnpauseSimulation();
+        };
+
+        _syncOp.OnSucceedCallback = (op) =>
+        {
+            DebugScreenMessage.DisplayMessage($"Synced sim. {op.Message}");
+        };
+
+        _syncOp.OnFailCallback = (op) =>
+        {
+            DebugScreenMessage.DisplayMessage($"Failed to sync sim. {op.Message}");
+        };
+
+        _syncOp.Execute();
+
+        return _syncOp;
+    }
+
+#if DEBUG_BUILD
+    private void Cmd_SimSync(string[] obj)
+    {
+        if (_ongoingCmdOperation != null && _ongoingCmdOperation.IsRunning)
+        {
+            Debug.LogWarning("Cannot sync sim because another operation is ongoing");
+            return;
+        }
+
+        _ongoingCmdOperation = SyncSimulationWithServer();
+    }
+#endif
 }

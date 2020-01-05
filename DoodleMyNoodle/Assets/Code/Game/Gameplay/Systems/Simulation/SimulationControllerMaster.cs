@@ -6,7 +6,10 @@ public class SimulationControllerMaster : SimulationController
 {
     Queue<ApprovedSimInput> _inputQueue = new Queue<ApprovedSimInput>();
 
-    public bool AllowSimToTick = false;
+    public void PlaySimulationIfNotPlaying()
+    {
+        UnpauseSimulation();
+    }
 
     // called by local player
     public override void SubmitInput(SimInput input)
@@ -23,7 +26,7 @@ public class SimulationControllerMaster : SimulationController
 
     protected void QueueInput(SimInput input, PlayerInfo playerInfo, InputSubmissionId submissionId)
     {
-        if (!AllowSimToTick)
+        if (!CanTickSimulation) // we don't accept any input while sim is paused
             return;
 
         if (input is SimPlayerInput playerInput)
@@ -56,7 +59,7 @@ public class SimulationControllerMaster : SimulationController
         if (!Game.Started)
             return;
 
-        if (SimulationView.CanBeTicked && AllowSimToTick)
+        if (CanTickSimulation)
         {
             AssignSimPlayerIdsToPlayersMissingOne();
             TickSimulation();
@@ -134,30 +137,5 @@ public class SimulationControllerMaster : SimulationController
         }
 
         return null;
-    }
-
-
-    public override void OnGameReady()
-    {
-        base.OnGameReady();
-
-#if DEBUG_BUILD
-        GameConsole.AddCommand("pausesim", Cmd_PauseSim, "Pause the simulation playback");
-#endif
-    }
-
-
-    protected override void OnDestroy()
-    {
-#if DEBUG_BUILD
-        GameConsole.RemoveCommand("pausesim");
-#endif
-
-        base.OnDestroy();
-    }
-
-    void Cmd_PauseSim(string[] args)
-    {
-        AllowSimToTick = !AllowSimToTick;
     }
 }

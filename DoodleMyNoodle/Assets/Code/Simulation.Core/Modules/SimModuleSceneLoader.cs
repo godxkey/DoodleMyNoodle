@@ -9,6 +9,10 @@ internal class SimModuleSceneLoader : SimModuleBase
 
     List<ISceneLoadPromise> _sceneLoadPromises = new List<ISceneLoadPromise>();
 
+#if UNITY_EDITOR
+    public static Action<Scene> s_EditorValidationMethod;
+#endif
+
     /// <summary>
     /// Instantiate all gameobjects in the given scene and inject them all into the simulation
     /// <para/>
@@ -24,6 +28,10 @@ internal class SimModuleSceneLoader : SimModuleBase
     void OnSceneLoaded(ISceneLoadPromise sceneLoadPromise)
     {
         _sceneLoadPromises.Remove(sceneLoadPromise);
+
+#if UNITY_EDITOR
+        s_EditorValidationMethod?.Invoke(sceneLoadPromise.Scene);
+#endif
 
         GameObject[] gameobjects = sceneLoadPromise.Scene.GetRootGameObjects();
 

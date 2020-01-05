@@ -204,6 +204,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 932ceb4fe072c6947bd9ece50acbf2fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _data:
+    TurnPlayed: 0
 --- !u!114 &6912441518737644110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,7 +218,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e1a9372fbae3574b9e336d32e2605a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Team: 1
+  _data:
+    Team: 1
 --- !u!114 &9148352897769752291
 MonoBehaviour:
   m_ObjectHideFlags: 0

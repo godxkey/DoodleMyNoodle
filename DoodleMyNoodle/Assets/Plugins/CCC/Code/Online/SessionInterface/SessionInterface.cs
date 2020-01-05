@@ -8,6 +8,11 @@ public abstract class SessionInterface : IDisposable
 {
     const bool LOG = false;
 
+#if DEBUG_BUILD
+    [ConfigVar(name: "log.netmessage", defaultValue:"0", ConfigVarFlag.Save, "Should we log the sent/received NetMessages.")]
+    static ConfigVar s_logNetMessages;
+#endif
+
     public abstract bool IsServerType { get; }
     public bool IsClientType => !IsServerType;
     public INetworkInterfaceSession SessionInfo => _networkInterface.ConnectedSessionInfo;
@@ -23,19 +28,10 @@ public abstract class SessionInterface : IDisposable
 
         _networkInterface.OnDisconnect += InterfaceOnDisconnect;
         _networkInterface.OnConnect += Interface_OnConnect;
-
-        if (LOG)
-#pragma warning disable CS0162 // Unreachable code detected
-            DebugService.Log("Session interface created");
-#pragma warning restore CS0162 // Unreachable code detected
     }
 
     public void Dispose()
     {
-        if (LOG)
-#pragma warning disable CS0162 // Unreachable code detected
-            DebugService.Log("Session interface terminating");
-#pragma warning restore CS0162 // Unreachable code detected
         OnTerminate?.Invoke();
 
         _networkInterface.OnDisconnect -= InterfaceOnDisconnect;
@@ -79,10 +75,18 @@ public abstract class SessionInterface : IDisposable
         byte[] messageData;
         NetMessageInterpreter.GetDataFromMessage(netMessage, out messageData);
         _networkInterface.SendMessage(connection, messageData, messageData.Length);
-        if (LOG)
-#pragma warning disable CS0162 // Unreachable code detected
-            DebugService.Log("[Session] Send message to : " + connection.Id);
-#pragma warning restore CS0162 // Unreachable code detected
+
+#if DEBUG_BUILD
+        if (s_logNetMessages.BoolValue)
+        {
+            DebugService.Log($"[Session] Send message '{netMessage}' to connection {connection.Id}");
+        }
+#endif
+    }
+
+    public bool IsConnectionValid(INetworkInterfaceConnection connection)
+    {
+        return _networkInterface.Connections.Contains(connection);
     }
 
     void Interface_OnConnect(INetworkInterfaceConnection connection)
@@ -98,6 +102,13 @@ public abstract class SessionInterface : IDisposable
     protected virtual void OnReceiveMessage(INetworkInterfaceConnection source, byte[] data, int messageSize)
     {
         object netMessage = NetMessageInterpreter.GetMessageFromData(data);
+
+#if DEBUG_BUILD
+        if (s_logNetMessages.BoolValue)
+        {
+            DebugService.Log($"[Session] Received message '{netMessage}' from connection {source.Id}");
+        }
+#endif
 
         if (netMessage != null)
         {

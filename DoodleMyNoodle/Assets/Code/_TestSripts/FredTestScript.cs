@@ -11,20 +11,20 @@ public class FredTestScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
         {
             Debug.Log($"Serialize");
-            SimulationView.SerializeSimulation((resultJson) =>
-            {
-                _json = resultJson;
-                Debug.Log(_json);
-            });
+            //SimulationView.SerializeSimulation((resultJson) =>
+            //{
+            //    _json = resultJson;
+            //    Debug.Log(_json);
+            //});
         }
 
         if (Input.GetKeyDown(KeyCode.Y))
         {
             Debug.Log($"Deserialize");
-            SimulationView.DeserializeSimulation(_json, () =>
-            {
-                Debug.Log($"OnComplete");
-            });
+            //SimulationView.DeserializeSimulation(_json, () =>
+            //{
+            //    Debug.Log($"OnComplete");
+            //});
         }
     }
 }

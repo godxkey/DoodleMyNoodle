@@ -39,7 +39,7 @@ public static class JsonSerializationUtility
             result = Serialize(data, jsonSettings, formatting);
         });
 
-        yield return StartThreadAndWaitForCompletion(t);
+        yield return t.StartAndWaitForComplete();
 
         onComplete.Invoke(result);
     }
@@ -56,7 +56,7 @@ public static class JsonSerializationUtility
             }
         });
 
-        yield return StartThreadAndWaitForCompletion(t);
+        yield return t.StartAndWaitForComplete();
 
         onComplete.Invoke(results);
     }
@@ -70,7 +70,7 @@ public static class JsonSerializationUtility
             result = Deserialize<T>(data, jsonSettings);
         });
 
-        yield return StartThreadAndWaitForCompletion(t);
+        yield return t.StartAndWaitForComplete();
 
         onComplete.Invoke(result);
     }
@@ -87,7 +87,7 @@ public static class JsonSerializationUtility
             }
         });
 
-        yield return StartThreadAndWaitForCompletion(t);
+        yield return t.StartAndWaitForComplete();
 
         onComplete.Invoke(results);
     }
@@ -107,15 +107,6 @@ public static class JsonSerializationUtility
         }
 
         onComplete.Invoke(results);
-    }
-
-    private static IEnumerator StartThreadAndWaitForCompletion(Thread thread)
-    {
-        thread.Start();
-        while (thread.IsAlive)
-        {
-            yield return null; // if deserialization is not done, wait a frame
-        }
     }
 
     public static SerializationResult Serialize(object data, JsonSerializerSettings jsonSettings, Formatting formatting)

@@ -13,6 +13,9 @@ internal class SimModuleTicker : SimModuleBase
     internal bool IsTicking = false;
     internal uint TickId => SimModules._World.TickId;
 
+    // Elapsed time in seconds
+    internal Fix64 Time;
+
     internal List<ISimTickable> Tickables = new List<ISimTickable>();
     internal List<ISimTickable> NewTickables = new List<ISimTickable>();
 
@@ -63,9 +66,14 @@ internal class SimModuleTicker : SimModuleBase
 
 
         SimModules._World.TickId++;
-
+        OnTickUpdated();
 
         IsTicking = false;
+    }
+
+    internal void OnTickUpdated()
+    {
+        Time = ((Fix64)SimModules._World.TickId) * SimulationConstants.TIME_STEP;
     }
 
     internal void OnAddSimObjectToSim(SimObject obj)

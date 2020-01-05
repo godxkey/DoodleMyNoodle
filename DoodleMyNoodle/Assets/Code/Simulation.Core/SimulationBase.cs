@@ -15,12 +15,15 @@ public class SimulationBase
     /// The simulation tick delta time. Should be constant for the simulation to stay deterministic
     /// </summary>
     public static readonly Fix64 DeltaTime = SimulationConstants.TIME_STEP; // 50 ticks per seconds
+    /// <summary>
+    /// Total elapsed time in seconds since the simulation was created. Value will persist across saves.
+    /// </summary>
+    public static Fix64 Time => SimModules._Ticker.Time;
 
     /// <summary>
     /// The current simulation tick id. Increments by 1 every Tick()
     /// </summary>
     public static uint TickId => SimModules._World.TickId;
-    public static void Tick(in SimTickData tickData) => SimModules._Ticker.Tick(tickData);
 
     public static SimBlueprint GetBlueprint(in SimBlueprintId blueprintId) => SimModules._BlueprintManager.GetBlueprint(blueprintId);
 

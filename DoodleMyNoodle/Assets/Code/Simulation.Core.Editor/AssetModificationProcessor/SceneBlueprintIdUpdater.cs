@@ -7,8 +7,14 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[InitializeOnLoad] // to make sure the static constructor is called
 public class SceneBlueprintIdUpdater : UnityEditor.AssetModificationProcessor
 {
+    static SceneBlueprintIdUpdater() // static constructor called at the very start
+    {
+        SimModuleSceneLoader.s_EditorValidationMethod = InjectSimBlueprintIdsOnSceneGameObjects;
+    }
+
     //const string ASSET_PATH = "Assets/ScriptableObjects/SimBlueprintProviders/SceneBlueprintIdInjectorData.asset";
     const string SCENE_ASSET_EXTENSION = ".unity";
 
@@ -65,6 +71,54 @@ public class SceneBlueprintIdUpdater : UnityEditor.AssetModificationProcessor
 
                 entity.BlueprintId = newBlueprintId;
 
+                if (Application.isPlaying)
+                {
+                    DebugService.LogError($"Updating {entity.gameObject.name}'s blueprintId to {entity.BlueprintId}. " +
+                        $"This should not happen at runtime. Try resaving your scene.");
+                }
+                else
+                {
+                    if (PrefabUtility.IsPartOfAnyPrefab(entity))
+                    {
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(entity);
+                    }
+
+                    DebugEditor.LogAssetIntegrity($"Updating {entity.gameObject.name}'s blueprintId to {entity.BlueprintId}");
+                }
+            }
+
+
+            id++;
+        }
+
+        //EditorUtility.SetDirty(dataBank);
+    }
+
+    static void ValidateSceneBlueprintsIds(Scene scene)
+    {
+        string sceneGuid = GetSceneGuid(scene);
+        List<SimEntity> simEntities = GetAllSimEntitiesInScene(scene);
+        uint id = 0;
+        foreach (SimEntity entity in simEntities)
+        {
+            // a SceneGameObject's blueprint is composed of 2 parts:
+            // 1. The scene guid
+            // 2. The object guid
+            SimBlueprintProviderSceneObject.ParseBlueprintId(entity.BlueprintId, out string oldSceneGuid, out string oldGameObjecGuid);
+
+            bool update = (oldSceneGuid != sceneGuid);
+
+            if (uint.TryParse(oldGameObjecGuid, out uint oldGameObjectGuidNumber))
+            {
+                update = (id != oldGameObjectGuidNumber);
+            }
+
+            if (update)
+            {
+                SimBlueprintId newBlueprintId = SimBlueprintProviderSceneObject.MakeBlueprintId(sceneGuid, id.ToString());
+
+                entity.BlueprintId = newBlueprintId;
+
                 if (PrefabUtility.IsPartOfAnyPrefab(entity))
                 {
                     PrefabUtility.RecordPrefabInstancePropertyModifications(entity);
@@ -76,8 +130,6 @@ public class SceneBlueprintIdUpdater : UnityEditor.AssetModificationProcessor
 
             id++;
         }
-
-        //EditorUtility.SetDirty(dataBank);
     }
 
     static List<SimEntity> GetAllSimEntitiesInScene(Scene scene)
