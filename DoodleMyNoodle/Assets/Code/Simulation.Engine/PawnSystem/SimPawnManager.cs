@@ -16,13 +16,13 @@ public class SimPawnManager : SimEventSingleton<SimPawnManager>,
     public void OnEventRaised(in SimPlayerCreatedEventData eventData)
     {
         // if the player can control pawns
-        if (eventData.PlayerEntity.GetComponent(out SimTargetPawnComponent pawnController))
+        if (eventData.PlayerEntity.GetComponent(out SimPawnControllerComponent pawnController))
         {
             // and the player has no pawn
-            if (pawnController.Target == null)
+            if (pawnController.TargetPawn == null)
             {
                 // find uncontrolled pawn
-                SimPawnInterfaceComponent uncontrolledPawn = SimPawnHelpers.FindUncontrolledPawn();
+                SimPawnComponent uncontrolledPawn = SimPawnHelpers.FindUncontrolledPawn();
 
                 if (uncontrolledPawn)
                 {
@@ -35,32 +35,32 @@ public class SimPawnManager : SimEventSingleton<SimPawnManager>,
 
     public void OnEventRaised(in SimPlayerDestroyedEventData eventData)
     {
-        if(eventData.PlayerEntity.GetComponent(out SimTargetPawnComponent targetPawnComponent))
+        if(eventData.PlayerEntity.GetComponent(out SimPawnControllerComponent targetPawnComponent))
         {
             UnhookControllerFromPawn(targetPawnComponent);
         }
     }
 
-    public void HookControllerWithPawn(SimTargetPawnComponent controller, SimPawnInterfaceComponent pawn)
+    public void HookControllerWithPawn(SimPawnControllerComponent controller, SimPawnComponent pawn)
     {
-        if(controller.Target)
+        if(controller.TargetPawn)
         {
             DebugService.LogError($"Cannot hook pawn '{pawn.gameObject.name}' with controller '{controller.gameObject}'." +
-                (controller.Target ? $" The controller is already controlling '{controller.Target.gameObject.name}." : $"") +
+                (controller.TargetPawn ? $" The controller is already controlling '{controller.TargetPawn.gameObject.name}." : $"") +
                 $" Please unhook before hooking again.");
             return;
         }
 
         // change pawn
-        controller.Target = pawn;
+        controller.TargetPawn = pawn;
         
         // notify
         NotifyPawnControllerOfPawnChange(controller.SimEntity);
     }
 
-    public void UnhookControllerFromPawn(SimTargetPawnComponent controller)
+    public void UnhookControllerFromPawn(SimPawnControllerComponent controller)
     {
-        controller.Target = null;
+        controller.TargetPawn = null;
 
         if (controller.DestroySelfIfNoTarget)
         {
@@ -74,7 +74,7 @@ public class SimPawnManager : SimEventSingleton<SimPawnManager>,
         }
     }
 
-    List<ISimTargetPawnChangeListener> _cachedISimTargetPawnChangeListenerComponents;
+    List<ISimTargetPawnChangeListener> _cachedISimTargetPawnChangeListenerComponents = new List<ISimTargetPawnChangeListener>();
 
     void NotifyPawnControllerOfPawnChange(SimEntity controller)
     {

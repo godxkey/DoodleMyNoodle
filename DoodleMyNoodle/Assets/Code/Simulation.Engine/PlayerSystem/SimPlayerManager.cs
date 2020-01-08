@@ -55,20 +55,29 @@ public class SimPlayerManager : SimSingleton<SimPlayerManager>, ISimInputProcess
                 SimPlayerComponent player = SimPlayerHelpers.FindPlayerFromId(playerInput.SimPlayerId);
                 if (player)
                 {
-                    // player can control pawns ?
-                    if(player.GetComponent(out SimTargetPawnComponent targetPawn))
-                    {
-                        // the pawn is valid ?
-                        if (targetPawn.Target)
-                        {
-                            // send input !
-                            targetPawn.Target.HandleInput(playerInput);
-                        }
-                    }
+                    HandleInputFromPlayer(player, playerInput);
                 }
 
                 break;
             }
         }
+    }
+
+
+    List<ISimPlayerInputHandler> _cachedComponentList = new List<ISimPlayerInputHandler>(); // this is simply used to reduce allocations
+    
+    public void HandleInputFromPlayer(SimPlayerComponent player, SimPlayerInput input)
+    {
+        player.GetComponents<ISimPlayerInputHandler>(_cachedComponentList);
+
+        for (int i = 0; i < _cachedComponentList.Count; i++)
+        {
+            if (_cachedComponentList[i].HandleInput(input))
+            {
+                break;
+            }
+        }
+
+        _cachedComponentList.Clear();
     }
 }

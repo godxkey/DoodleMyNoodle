@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimCompDemoBallMove : SimComponent, ISimPawnInputHandler, ISimTickable
+public class SimCompDemoBallMove : SimComponent, ISimPlayerInputHandler, ISimTickable
 {
     static readonly Fix64 speed = 6;
 
@@ -12,7 +12,7 @@ public class SimCompDemoBallMove : SimComponent, ISimPawnInputHandler, ISimTicka
         public FixVector3 InputDirection;
     }
 
-    public bool HandleInput(SimInput input)
+    public bool HandleInput(SimPlayerInput input)
     {
         if (input is SimInputKeycode inputKeycode)
         {

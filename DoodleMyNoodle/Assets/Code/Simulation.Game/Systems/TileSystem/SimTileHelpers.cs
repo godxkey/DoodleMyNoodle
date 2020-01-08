@@ -20,7 +20,7 @@ public static class SimTileHelpers
     /// </summary>
     public static SimEntity GetPawnOnTile(SimTileId tileId)
     {
-        foreach (SimPawnInterfaceComponent pawn in Simulation.EntitiesWithComponent<SimPawnInterfaceComponent>())
+        foreach (SimPawnComponent pawn in Simulation.EntitiesWithComponent<SimPawnComponent>())
         {
             if(pawn.GetComponent(out SimTransformComponent transform))
             {

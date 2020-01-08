@@ -120,65 +120,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &14710051
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 14710054}
-  - component: {fileID: 14710053}
-  - component: {fileID: 14710052}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &14710052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 14710051}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 932ceb4fe072c6947bd9ece50acbf2fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &14710053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 14710051}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5263acbbb543a548a5b5f6aa444a54d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blueprintId:
-    Type: 2
-    Value: 17/4c8245514883b6c4ba63476b942bba11
---- !u!4 &14710054
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 14710051}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 27
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &82837385
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -286,16 +227,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCharacter (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
-        type: 3}
-      propertyPath: _blueprintId.Type
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
-        type: 3}
-      propertyPath: _blueprintId.Value
-      value: 11/4c8245514883b6c4ba63476b942bba11
-      objectReference: {fileID: 0}
     - target: {fileID: 8908235613229724285, guid: ae2d25a66f815824e98df5bdf7c7da25,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -350,6 +281,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
+        type: 3}
+      propertyPath: _blueprintId.Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
+        type: 3}
+      propertyPath: _blueprintId.Value
+      value: 11/4c8245514883b6c4ba63476b942bba11
       objectReference: {fileID: 0}
     - target: {fileID: 2929239971275269945, guid: ae2d25a66f815824e98df5bdf7c7da25,
         type: 3}
@@ -577,16 +518,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCharacter (2)
       objectReference: {fileID: 0}
-    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
-        type: 3}
-      propertyPath: _blueprintId.Type
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
-        type: 3}
-      propertyPath: _blueprintId.Value
-      value: 12/4c8245514883b6c4ba63476b942bba11
-      objectReference: {fileID: 0}
     - target: {fileID: 8908235613229724285, guid: ae2d25a66f815824e98df5bdf7c7da25,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -641,6 +572,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
+        type: 3}
+      propertyPath: _blueprintId.Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
+        type: 3}
+      propertyPath: _blueprintId.Value
+      value: 12/4c8245514883b6c4ba63476b942bba11
       objectReference: {fileID: 0}
     - target: {fileID: 2929239971275269945, guid: ae2d25a66f815824e98df5bdf7c7da25,
         type: 3}
@@ -797,16 +738,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCharacter (3)
       objectReference: {fileID: 0}
-    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
-        type: 3}
-      propertyPath: _blueprintId.Type
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
-        type: 3}
-      propertyPath: _blueprintId.Value
-      value: 13/4c8245514883b6c4ba63476b942bba11
-      objectReference: {fileID: 0}
     - target: {fileID: 8908235613229724285, guid: ae2d25a66f815824e98df5bdf7c7da25,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -861,6 +792,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
+        type: 3}
+      propertyPath: _blueprintId.Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
+        type: 3}
+      propertyPath: _blueprintId.Value
+      value: 13/4c8245514883b6c4ba63476b942bba11
       objectReference: {fileID: 0}
     - target: {fileID: 2929239971275269945, guid: ae2d25a66f815824e98df5bdf7c7da25,
         type: 3}
@@ -3397,7 +3338,8 @@ PrefabInstance:
       propertyPath: _data.LocalPosition.y.RawValue
       value: 38849908736
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 9148352897769752291, guid: a9f6ad84f3172af4e9b08134aa361d37, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a9f6ad84f3172af4e9b08134aa361d37, type: 3}
 --- !u!1001 &5534947295764510078
 PrefabInstance:
@@ -3406,6 +3348,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 711528429}
     m_Modifications:
+    - target: {fileID: 5534947295831120837, guid: abe5de76709f4204ba57f070a1557562,
+        type: 3}
+      propertyPath: _blueprintId.Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534947295831120837, guid: abe5de76709f4204ba57f070a1557562,
+        type: 3}
+      propertyPath: _blueprintId.Value
+      value: 16/4c8245514883b6c4ba63476b942bba11
+      objectReference: {fileID: 0}
     - target: {fileID: 5534947295831120838, guid: abe5de76709f4204ba57f070a1557562,
         type: 3}
       propertyPath: m_Name
@@ -3466,16 +3418,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5534947295831120837, guid: abe5de76709f4204ba57f070a1557562,
-        type: 3}
-      propertyPath: _blueprintId.Type
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534947295831120837, guid: abe5de76709f4204ba57f070a1557562,
-        type: 3}
-      propertyPath: _blueprintId.Value
-      value: 16/4c8245514883b6c4ba63476b942bba11
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: abe5de76709f4204ba57f070a1557562, type: 3}
 --- !u!1001 &8908235614411566591
@@ -3490,6 +3432,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 8908235613229724285, guid: ae2d25a66f815824e98df5bdf7c7da25,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
         type: 3}
       propertyPath: _blueprintId.Type
@@ -3500,10 +3447,10 @@ PrefabInstance:
       propertyPath: _blueprintId.Value
       value: 10/4c8245514883b6c4ba63476b942bba11
       objectReference: {fileID: 0}
-    - target: {fileID: 8908235613229724285, guid: ae2d25a66f815824e98df5bdf7c7da25,
+    - target: {fileID: -4046522282015926349, guid: ae2d25a66f815824e98df5bdf7c7da25,
         type: 3}
-      propertyPath: m_RootOrder
-      value: 13
+      propertyPath: PlayerInControl.Value
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8908235613229724288, guid: ae2d25a66f815824e98df5bdf7c7da25,
         type: 3}
@@ -3514,11 +3461,6 @@ PrefabInstance:
         type: 3}
       propertyPath: _data._localScale.y.m_rawValue
       value: 10393821184
-      objectReference: {fileID: 0}
-    - target: {fileID: -4046522282015926349, guid: ae2d25a66f815824e98df5bdf7c7da25,
-        type: 3}
-      propertyPath: PlayerInControl.Value
-      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae2d25a66f815824e98df5bdf7c7da25, type: 3}

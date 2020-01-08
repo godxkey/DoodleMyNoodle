@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SimTargetPawnComponent))]
+[RequireComponent(typeof(SimPawnControllerComponent))]
+[RequireComponent(typeof(SimTeamMemberComponent))]
 public class SimAIComponent : SimComponent, 
     ISimTickable,
     ISimTargetPawnChangeListener
@@ -51,21 +52,21 @@ public class SimAIComponent : SimComponent,
     [System.NonSerialized] SimGridWalkerComponent _pawnGridWalker;
     void UpdateCachedPawnComponents()
     {
-        if(_targetPawn.Target)
+        if(_targetPawn.TargetPawn)
         {
-            _pawnGridWalker = _targetPawn.Target.GetComponent<SimGridWalkerComponent>();
+            _pawnGridWalker = _targetPawn.TargetPawn.GetComponent<SimGridWalkerComponent>();
         }
     }
     #endregion
 
     #region Component Caching
     [System.NonSerialized] SimTeamMemberComponent _team;
-    [System.NonSerialized] SimTargetPawnComponent _targetPawn;
+    [System.NonSerialized] SimPawnControllerComponent _targetPawn;
     public override void OnAddedToRuntime()
     {
         base.OnAddedToRuntime();
         _team = GetComponent<SimTeamMemberComponent>();
-        _targetPawn = GetComponent<SimTargetPawnComponent>();
+        _targetPawn = GetComponent<SimPawnControllerComponent>();
         
         UpdateCachedPawnComponents();
     }

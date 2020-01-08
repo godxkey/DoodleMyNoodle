@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// An entity with this component can 'control' a controllable
+/// An entity with this component can control a pawn
 /// </summary>
-public class SimTargetPawnComponent : SimComponent
+public class SimPawnControllerComponent : SimComponent
 {
     // fbessette: This could be changed to a List<SimPawnComponent> if we want the player to be able to 
     //            control multiple pawns AT THE SAME TIME (like an RTS with multiselection)
     [System.Serializable]
     struct SerializedData
     {
-        public SimPawnInterfaceComponent Target;
+        [ReadOnlyInEditMode]
+        public SimPawnComponent TargetPawn;
     }
 
     // for now, no need to be saved. it should be a permanent setting
     [SerializeField] bool _destroySelfIfNoTarget = true;
 
     public bool DestroySelfIfNoTarget => _destroySelfIfNoTarget;
-    public SimPawnInterfaceComponent Target { get => _data.Target; set => _data.Target = value; }
+    public SimPawnComponent TargetPawn { get => _data.TargetPawn; set => _data.TargetPawn = value; }
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
