@@ -41,4 +41,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameLevels/Scene Assets/Lvl_GridBattle.unity
     guid: 4c8245514883b6c4ba63476b942bba11
+  - enabled: 1
+    path: Assets/Scenes/GameRoot/Scene Assets/SimManagers.unity
+    guid: 47ac98eafdf2257458009be782cc980c
   m_configObjects: {}

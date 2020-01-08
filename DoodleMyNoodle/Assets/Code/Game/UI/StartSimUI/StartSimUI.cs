@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class StartSimUI : GameMonoBehaviour
 {
+    public SceneInfo SimManagersScene;
     public TMP_InputField levelToLoadField;
     public Button startSimButton;
 
@@ -50,6 +51,7 @@ public class StartSimUI : GameMonoBehaviour
         ((SimulationControllerMaster)SimulationControllerMaster.Instance).AllowSimToTick = true;
         if (!level.IsNullOrEmpty())
         {
+            SimulationControllerMaster.Instance.SubmitInput(new SimCommandLoadScene() { sceneName = SimManagersScene.SceneName });
             SimulationControllerMaster.Instance.SubmitInput(new SimCommandLoadScene() { sceneName = level });
         }
 

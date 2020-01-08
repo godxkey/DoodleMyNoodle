@@ -56,6 +56,8 @@ public class SimulationControllerMaster : SimulationController
         if (!Game.Started)
             return;
 
+        SimulationView.UpdateSceneLoads();
+
         if (SimulationView.CanBeTicked && AllowSimToTick)
         {
             AssignSimPlayerIdsToPlayersMissingOne();
