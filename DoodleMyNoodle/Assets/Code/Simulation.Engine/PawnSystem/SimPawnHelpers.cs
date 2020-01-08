@@ -29,7 +29,7 @@ public static class SimPawnHelpers
 
     public static bool IsPawnControlled(SimPawnComponent pawn)
     {
-        return FindPawnController(pawn) == null;
+        return FindPawnController(pawn) != null;
     }
 
     public static SimEntity FindPawnController(SimPawnComponent pawn)
