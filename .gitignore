@@ -31,10 +31,15 @@ ExportedObj/
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
+# Log Files
+*.log
+
 # Builds
 *.apk
 *.unitypackage
 TestBuilds/*
 !TestBuilds/ReadMe.txt
 
-*.log
+# External Tools
+ExternalTools/MermaidRenderer/*
+!ExternalTools/MermaidRenderer/README.md
