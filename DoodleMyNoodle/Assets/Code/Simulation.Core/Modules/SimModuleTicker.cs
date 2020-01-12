@@ -22,6 +22,7 @@ internal class SimModuleTicker : SimModuleBase
             throw new System.Exception("Tried to tick the simulation while it could not. Investigate.");
 
         IsTicking = true;
+        SimModules._World.TickId++;
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Call OnSimStart() methods on objects that need it                                 
@@ -60,10 +61,6 @@ internal class SimModuleTicker : SimModuleBase
         //      Call OnSimStart() methods on objects that need it                                 
         ////////////////////////////////////////////////////////////////////////////////////////
         CallOnSimStartOnObjectNeedingIt();
-
-
-        SimModules._World.TickId++;
-
 
         IsTicking = false;
     }

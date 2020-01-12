@@ -18,14 +18,21 @@ internal class SimModuleSceneLoader : SimModuleBase
     {
         // fbessette: eventually, we'll want to have a preloading mechanism outside of the simulation so we don't have a CPU spike here.
         _sceneLoadPromises.Add(SceneService.Load(sceneName, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D));
-        _sceneLoadPromises.Last().OnComplete += OnSceneLoaded;
     }
 
-    void OnSceneLoaded(ISceneLoadPromise sceneLoadPromise)
+    internal void Update()
     {
-        _sceneLoadPromises.Remove(sceneLoadPromise);
+        // this makes sure we apply the scene in the order we received the commands
+        while (_sceneLoadPromises.Count > 0 && _sceneLoadPromises.First().IsComplete)
+        {
+            ApplyLoadedScene(_sceneLoadPromises.First().Scene);
+            _sceneLoadPromises.RemoveFirst();
+        }
+    }
 
-        GameObject[] gameobjects = sceneLoadPromise.Scene.GetRootGameObjects();
+    void ApplyLoadedScene(Scene scene)
+    {
+        GameObject[] gameobjects = scene.GetRootGameObjects();
 
         // fbessette: Apparently, in standalone build, the hierarchy is all desorganised ... sort the gameobjects by name :(
         Array.Sort(gameobjects, (a, b) => string.Compare(a.name, b.name));
@@ -42,7 +49,7 @@ internal class SimModuleSceneLoader : SimModuleBase
 
         if (simEntity)
         {
-            if(simEntity.BlueprintId.IsValid == false)
+            if (!simEntity.BlueprintId.IsValid)
             {
                 Debug.LogError($"Could not inject entity '{simEntity.name}' into sim after loading scene because its blueprintId is invalid. " +
                     $"Try re-saving the scene to fix broken blueprintIds");
@@ -62,16 +69,5 @@ internal class SimModuleSceneLoader : SimModuleBase
                 }
             }
         }
-    }
-
-    public override void Dispose()
-    {
-        base.Dispose();
-
-        for (int i = 0; i < _sceneLoadPromises.Count; i++)
-        {
-            _sceneLoadPromises[i].OnComplete -= OnSceneLoaded;
-        }
-        _sceneLoadPromises.Clear();
     }
 }
