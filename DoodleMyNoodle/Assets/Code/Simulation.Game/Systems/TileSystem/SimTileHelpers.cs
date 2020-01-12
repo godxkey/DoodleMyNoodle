@@ -1,4 +1,5 @@
-﻿public static class SimTileHelpers
+﻿
+public static class SimTileHelpers
 {
     public static bool CanEntityWalkGoOntoTile(SimEntity entity, in SimTileId tile)
     {
@@ -17,7 +18,7 @@
     /// <summary>
     /// Returns the first pawn found on the matching tile (or null if none found)
     /// </summary>
-    public static SimPawnComponent GetPawnOnTile(SimTileId tileId)
+    public static SimEntity GetPawnOnTile(SimTileId tileId)
     {
         foreach (SimPawnComponent pawn in Simulation.EntitiesWithComponent<SimPawnComponent>())
         {
@@ -25,7 +26,7 @@
             {
                 if (transform.GetTileId() == tileId)
                 {
-                    return pawn;
+                    return pawn.SimEntity;
                 }
             }
         }

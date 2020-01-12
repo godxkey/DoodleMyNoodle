@@ -92,11 +92,10 @@ GameObject:
   - component: {fileID: 8908235613229724286}
   - component: {fileID: 2929239971275269945}
   - component: {fileID: 8908235613229724287}
-  - component: {fileID: 7647310802862370372}
-  - component: {fileID: 6912441518737644110}
   - component: {fileID: 9174381667908214457}
+  - component: {fileID: 9153719443052239491}
   m_Layer: 0
-  m_Name: AICharacter
+  m_Name: GridBattle_Soldier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -191,31 +190,6 @@ MonoBehaviour:
       RawValue: 17179869184
     HasADestination: 0
     Path: []
---- !u!114 &7647310802862370372
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908235613229724289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 932ceb4fe072c6947bd9ece50acbf2fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6912441518737644110
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908235613229724289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e1a9372fbae3574b9e336d32e2605a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Team: 1
 --- !u!114 &9174381667908214457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,6 +206,20 @@ MonoBehaviour:
   OnStatChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &9153719443052239491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908235613229724289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebd40280b4b8ecd409753ddd6227da5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controllerPrefab: {fileID: 3177534479664188177, guid: 073d20c9c7c541d449652b85017d033c,
+    type: 3}
 --- !u!1001 &3779284023405681430
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -239,11 +227,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8908235613229724285}
     m_Modifications:
-    - target: {fileID: 6674601025037133760, guid: e10a426e9027d96489c298c100ffc8df,
-        type: 3}
-      propertyPath: m_Name
-      value: HealthBarContainer
-      objectReference: {fileID: 0}
     - target: {fileID: 441856737791022927, guid: e10a426e9027d96489c298c100ffc8df,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -298,6 +281,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6674601025037133760, guid: e10a426e9027d96489c298c100ffc8df,
+        type: 3}
+      propertyPath: m_Name
+      value: HealthBarContainer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e10a426e9027d96489c298c100ffc8df, type: 3}

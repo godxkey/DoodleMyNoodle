@@ -1,0 +1,29 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public static class SimPlayerHelpers
+{
+    public static SimPlayerComponent FindPlayerFromId(in SimPlayerId simPlayerId)
+    {
+        foreach (SimPlayerComponent playerComponent in Simulation.EntitiesWithComponent<SimPlayerComponent>())
+        {
+            if(playerComponent.SimPlayerId == simPlayerId)
+            {
+                return playerComponent;
+            }
+        }
+
+        return null;
+    }
+
+    public static string GetPlayerName(SimPlayerComponent player)
+    {
+        if (player.GetComponent(out SimNameComponent nameComponent))
+        {
+            return nameComponent.Value;
+        }
+
+        return null;
+    }
+}

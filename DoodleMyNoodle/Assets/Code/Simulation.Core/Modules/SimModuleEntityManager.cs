@@ -191,7 +191,6 @@ internal class SimModuleEntityManager : SimModuleBase
         return newEntity;
     }
 
-    List<SimObject> _cachedSimObjectList = new List<SimObject>();
     /// <summary>
     /// All newly created entities go through here.
     /// <para/>
@@ -204,8 +203,11 @@ internal class SimModuleEntityManager : SimModuleBase
         SimModules._World.Entities.Add(newEntity);
         AddEntityToRuntime(newEntity);
 
-        newEntity.GetComponents<SimObject>(_cachedSimObjectList);
-        foreach (SimObject obj in _cachedSimObjectList)
+        // fbessette: This used to be a cached List (to prevent allocation).
+        //            Since entities can instantiate other entities in their OnSimAwake, the iterator could break by being modified
+        //            while still being iterated on. Now we create a new list every, which allocates a lot of garbage. We should
+        //            find a non-allocating solution for this (investigate pooling of component iterators with a disposable pattern ?) TODO
+        foreach (SimObject obj in newEntity.GetComponents<SimObject>())
         {
             // assign id
             obj.SimObjectId = SimModules._World.NextObjectId;
@@ -216,7 +218,6 @@ internal class SimModuleEntityManager : SimModuleBase
             // This should eventually cause the OnSimStart() method to get called
             SimModules._World.ObjectsThatHaventStartedYet.Add(obj);
         }
-        _cachedSimObjectList.Clear();
     }
 
     internal int PendingPermanentEntityDestructions = 0;

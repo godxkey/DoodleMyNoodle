@@ -8,17 +8,17 @@ public static class StaticNetSerializer_SimPlayerId
     public static int GetNetBitSize(ref SimPlayerId obj)
     {
         int result = 0;
-        result += StaticNetSerializer_UInt16.GetNetBitSize(ref obj.Value);
+        result += StaticNetSerializer_UInt32.GetNetBitSize(ref obj.Value);
         return result;
     }
 
     public static void NetSerialize(ref SimPlayerId obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_UInt16.NetSerialize(ref obj.Value, writer);
+        StaticNetSerializer_UInt32.NetSerialize(ref obj.Value, writer);
     }
 
     public static void NetDeserialize(ref SimPlayerId obj, BitStreamReader reader)
     {
-        StaticNetSerializer_UInt16.NetDeserialize(ref obj.Value, reader);
+        StaticNetSerializer_UInt32.NetDeserialize(ref obj.Value, reader);
     }
 }
