@@ -20,7 +20,7 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
     {
         foreach (IItemOnConsume itemOnConsume in GetComponents<IItemOnConsume>())
         {
-            if (itemOnConsume != this)
+            if (itemOnConsume != (IItemOnConsume)this)
             {
                 itemOnConsume.OnConsume();
             } 
@@ -31,7 +31,7 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
     {
         foreach (IItemOnEquip itemOnEquip in GetComponents<IItemOnEquip>())
         {
-            if(itemOnEquip != this)
+            if(itemOnEquip != (IItemOnEquip)this)
             {
                 itemOnEquip.OnEquip();
             }
@@ -42,7 +42,7 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
     {
         foreach (IItemOnUnequip itemOnUnequip in GetComponents<IItemOnUnequip>())
         {
-            if (itemOnUnequip != this)
+            if (itemOnUnequip != (IItemOnUnequip)this)
             {
                 itemOnUnequip.OnUnequip();
             }
@@ -53,7 +53,7 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
     {
         foreach (IItemOnUse itemOnUse in GetComponents<IItemOnUse>())
         {
-            if (itemOnUse != this)
+            if (itemOnUse != (IItemOnUse)this)
             {
                 itemOnUse.OnUse();
             }
