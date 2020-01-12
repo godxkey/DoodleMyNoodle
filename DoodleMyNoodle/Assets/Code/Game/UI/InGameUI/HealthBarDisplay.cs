@@ -12,7 +12,15 @@ public class HealthBarDisplay : MonoBehaviour
 
     private void Start()
     {
-        GetComponentInParent<SimStatComponent>()?.OnStatChanged.AddListener(AjustDisplay);
+        SimHealthStatComponent simHealthStatComponent = GetComponentInParent<SimHealthStatComponent>();
+        if (simHealthStatComponent != null)
+        {
+            simHealthStatComponent.OnStatChanged.AddListener(AjustDisplay);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void AjustDisplay(float HealthCurrentValue, float PreviousValue, float HealthMaxValue)
