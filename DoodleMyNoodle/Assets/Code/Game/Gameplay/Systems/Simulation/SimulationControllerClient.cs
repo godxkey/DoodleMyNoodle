@@ -62,6 +62,8 @@ public class SimulationControllerClient : SimulationController
 
         _pendingSimTicks.Update(Time.fixedDeltaTime);
 
+        SimulationView.UpdateSceneLoads();
+
         while (SimulationView.CanBeTicked && _pendingSimTicks.TryDrop(out NetMessageSimTick tick))
         {
             if(SimulationView.TickId != tick.tickId)
