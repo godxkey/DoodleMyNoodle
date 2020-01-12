@@ -49,7 +49,7 @@ internal class SimModuleSceneLoader : SimModuleBase
 
         if (simEntity)
         {
-            if (simEntity.BlueprintId.IsValid == false)
+            if (!simEntity.BlueprintId.IsValid)
             {
                 Debug.LogError($"Could not inject entity '{simEntity.name}' into sim after loading scene because its blueprintId is invalid. " +
                     $"Try re-saving the scene to fix broken blueprintIds");
