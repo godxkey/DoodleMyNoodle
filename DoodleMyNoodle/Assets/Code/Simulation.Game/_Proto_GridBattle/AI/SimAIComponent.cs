@@ -8,15 +8,19 @@ public class SimAIComponent : SimComponent,
     ISimTickable,
     ISimTargetPawnChangeListener
 {
-    bool _turnPlayed = false;
+    [System.Serializable]
+    struct SerializedData
+    {
+        public bool TurnPlayed;
+    }
 
     void ISimTickable.OnSimTick()
     {
         if (SimTurnManager.Instance.IsMyTurn(_team.Team))
         {
-            if (!_turnPlayed)
+            if (!_data.TurnPlayed)
             {
-                _turnPlayed = true;
+                _data.TurnPlayed = true;
 
                 if (_pawnGridWalker)
                 {
@@ -39,7 +43,7 @@ public class SimAIComponent : SimComponent,
         }
         else
         {
-            _turnPlayed = false;
+            _data.TurnPlayed = false;
         }
     }
 
@@ -69,6 +73,27 @@ public class SimAIComponent : SimComponent,
         _targetPawn = GetComponent<SimPawnControllerComponent>();
         
         UpdateCachedPawnComponents();
+    }
+    #endregion
+
+    #region Serialized Data Methods
+    [UnityEngine.SerializeField]
+    [AlwaysExpand]
+    SerializedData _data = new SerializedData()
+    {
+        // define default values here
+    };
+
+    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    {
+        base.SerializeToDataStack(dataStack);
+        dataStack.Push(_data);
+    }
+
+    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
+    {
+        _data = (SerializedData)dataStack.Pop();
+        base.DeserializeFromDataStack(dataStack);
     }
     #endregion
 }

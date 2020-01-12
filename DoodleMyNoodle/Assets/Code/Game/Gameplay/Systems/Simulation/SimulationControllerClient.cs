@@ -98,6 +98,8 @@ public class SimulationControllerClient : SimulationController
         if (!SimulationView.IsRunningOrReadyToRun)
             return;
 
+        SimulationView.UpdateSceneLoads();
+
         _simTicksDropper.Update(Time.fixedDeltaTime);
 
         while (CanTickSimulation && _simTicksDropper.TryDrop(out NetMessageSimTick tick))

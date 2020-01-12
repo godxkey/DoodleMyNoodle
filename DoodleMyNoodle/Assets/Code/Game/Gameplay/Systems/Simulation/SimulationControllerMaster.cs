@@ -59,6 +59,8 @@ public class SimulationControllerMaster : SimulationController
         if (!Game.Started)
             return;
 
+        SimulationView.UpdateSceneLoads();
+
         if (CanTickSimulation)
         {
             AssignSimPlayerIdsToPlayersMissingOne();
@@ -106,7 +108,7 @@ public class SimulationControllerMaster : SimulationController
         {
             if (PlayerIdHelpers.GetSimPlayerFromPlayer(playerInfo) == null)
             {
-                ISimPlayerInfo unassignedSimPlayer = GetUnassignedSimPlayer();
+                SimPlayerComponent unassignedSimPlayer = GetUnassignedSimPlayer();
 
                 if (unassignedSimPlayer != null)
                 {
@@ -123,12 +125,12 @@ public class SimulationControllerMaster : SimulationController
         }
     }
 
-    ISimPlayerInfo GetUnassignedSimPlayer()
+    SimPlayerComponent GetUnassignedSimPlayer()
     {
         if (SimPlayerManager.Instance == null)
             return null;
 
-        foreach (ISimPlayerInfo simPlayer in SimPlayerManager.Instance.Players)
+        foreach (SimPlayerComponent simPlayer in SimulationView.EntitiesWithComponent<SimPlayerComponent>())
         {
             if (PlayerIdHelpers.GetPlayerFromSimPlayer(simPlayer) == null)
             {
