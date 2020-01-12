@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimAIComponent : SimComponent, ISimTickable
+[RequireComponent(typeof(SimPawnControllerComponent))]
+[RequireComponent(typeof(SimTeamMemberComponent))]
+public class SimAIComponent : SimComponent, 
+    ISimTickable,
+    ISimTargetPawnChangeListener
 {
     bool _turnPlayed = false;
 
@@ -14,19 +18,22 @@ public class SimAIComponent : SimComponent, ISimTickable
             {
                 _turnPlayed = true;
 
-                Fix64 randomDecision = Simulation.Random.Range(0,3);
+                if (_pawnGridWalker)
+                {
+                    Fix64 randomDecision = Simulation.Random.Range(0, 3);
 
-                if (randomDecision < 1)
-                {
-                    _gridWalker.TryWalkTo(_gridWalker.TileId + Vector2Int.right);
-                }
-                else if (randomDecision < 2)
-                {
-                    _gridWalker.TryWalkTo(_gridWalker.TileId + Vector2Int.left);
-                }
-                else
-                {
-                    _gridWalker.TryWalkTo(_gridWalker.TileId + Vector2Int.down);
+                    if (randomDecision < 1)
+                    {
+                        _pawnGridWalker.TryWalkTo(_pawnGridWalker.TileId + Vector2Int.right);
+                    }
+                    else if (randomDecision < 2)
+                    {
+                        _pawnGridWalker.TryWalkTo(_pawnGridWalker.TileId + Vector2Int.left);
+                    }
+                    else
+                    {
+                        _pawnGridWalker.TryWalkTo(_pawnGridWalker.TileId + Vector2Int.down);
+                    }
                 }
             }
         }
@@ -36,14 +43,32 @@ public class SimAIComponent : SimComponent, ISimTickable
         }
     }
 
+    void ISimTargetPawnChangeListener.OnTargetPawnChanged()
+    {
+        UpdateCachedPawnComponents();
+    }
+
+    #region Pawn Component Caching
+    [System.NonSerialized] SimGridWalkerComponent _pawnGridWalker;
+    void UpdateCachedPawnComponents()
+    {
+        if(_targetPawn.TargetPawn)
+        {
+            _pawnGridWalker = _targetPawn.TargetPawn.GetComponent<SimGridWalkerComponent>();
+        }
+    }
+    #endregion
+
     #region Component Caching
-    [System.NonSerialized] SimGridWalkerComponent _gridWalker;
     [System.NonSerialized] SimTeamMemberComponent _team;
+    [System.NonSerialized] SimPawnControllerComponent _targetPawn;
     public override void OnAddedToRuntime()
     {
         base.OnAddedToRuntime();
-        _gridWalker = GetComponent<SimGridWalkerComponent>();
         _team = GetComponent<SimTeamMemberComponent>();
+        _targetPawn = GetComponent<SimPawnControllerComponent>();
+        
+        UpdateCachedPawnComponents();
     }
     #endregion
 }

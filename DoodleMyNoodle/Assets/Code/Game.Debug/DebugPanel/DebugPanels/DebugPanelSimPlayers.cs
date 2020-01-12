@@ -11,9 +11,21 @@ public class DebugPanelSimPlayers : DebugPanel
         && Game.Started
         && SimPlayerManager.Instance;
 
+    List<SimPlayerComponent> _cachedPlayers;
+
+    void UpdateCachedPlayers()
+    {
+        _cachedPlayers.Clear();
+        foreach (SimPlayerComponent simPlayer in SimulationView.EntitiesWithComponent<SimPlayerComponent>())
+        {
+            _cachedPlayers.Add(simPlayer);
+        }
+    }
+
     public override void OnGUI()
     {
-        var simPlayers = SimPlayerManager.Instance.Players;
+        UpdateCachedPlayers();
+        var simPlayers = _cachedPlayers;
 
         GUILayout.BeginHorizontal();
 
@@ -22,7 +34,7 @@ public class DebugPanelSimPlayers : DebugPanel
         for (int i = 0; i < simPlayers.Count; i++)
         {
             ApplyPlayerTextColor(simPlayers[i]);
-            GUILayout.Label(simPlayers[i].Name);
+            GUILayout.Label(SimPlayerHelpers.GetPlayerName(simPlayers[i]));
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -52,9 +64,9 @@ public class DebugPanelSimPlayers : DebugPanel
         GUILayout.EndHorizontal();
     }
 
-    static void ApplyPlayerTextColor(ISimPlayerInfo simPlayerInfo)
+    static void ApplyPlayerTextColor(SimPlayerComponent simPlayer)
     {
-        PlayerInfo p = PlayerIdHelpers.GetPlayerFromSimPlayer(simPlayerInfo);
+        PlayerInfo p = PlayerIdHelpers.GetPlayerFromSimPlayer(simPlayer);
         GUI.color = p == null ? Color.red : Color.white;
     }
     static void ResetTextColor()

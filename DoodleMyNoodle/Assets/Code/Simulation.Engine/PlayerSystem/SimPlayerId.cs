@@ -8,9 +8,9 @@ public struct SimPlayerId : IDType
     public static readonly SimPlayerId FirstValid = new SimPlayerId(1);
 
     public SimPlayerId(SimPlayerId other) { Value = other.Value; }
-    public SimPlayerId(UInt16 value) { this.Value = value; }
+    public SimPlayerId(UInt32 value) { this.Value = value; }
 
-    public UInt16 Value;
+    public UInt32 Value;
 
     public bool IsValid => Value != Invalid.Value;
 

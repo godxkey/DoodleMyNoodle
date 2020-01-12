@@ -4,9 +4,9 @@ using UnityEngine;
 
 public static class PlayerIdHelpers
 {
-    public static PlayerInfo GetPlayerFromSimPlayer(in ISimPlayerInfo simPlayerId)
+    public static PlayerInfo GetPlayerFromSimPlayer(SimPlayerComponent simPlayer)
     {
-        return GetPlayerFromSimPlayer(simPlayerId.SimPlayerId);
+        return GetPlayerFromSimPlayer(simPlayer.SimPlayerId);
     }
 
     public static PlayerInfo GetPlayerFromSimPlayer(in SimPlayerId simPlayerId)
@@ -22,7 +22,7 @@ public static class PlayerIdHelpers
         return null;
     }
 
-    public static ISimPlayerInfo GetSimPlayerFromPlayer(in PlayerId playerId)
+    public static SimPlayerComponent GetSimPlayerFromPlayer(in PlayerId playerId)
     {
         if (PlayerRepertoireSystem.Instance == null)
             return null;
@@ -32,12 +32,12 @@ public static class PlayerIdHelpers
         return GetSimPlayerFromPlayer(playerInfo);
     }
 
-    public static ISimPlayerInfo GetSimPlayerFromPlayer(PlayerInfo playerInfo)
+    public static SimPlayerComponent GetSimPlayerFromPlayer(PlayerInfo playerInfo)
     {
         if (playerInfo == null || SimPlayerManager.Instance == null)
             return null;
 
-        foreach (ISimPlayerInfo simPlayer in SimPlayerManager.Instance.Players)
+        foreach (SimPlayerComponent simPlayer in SimulationView.EntitiesWithComponent<SimPlayerComponent>())
         {
             if(simPlayer.SimPlayerId == playerInfo.SimPlayerId)
             {

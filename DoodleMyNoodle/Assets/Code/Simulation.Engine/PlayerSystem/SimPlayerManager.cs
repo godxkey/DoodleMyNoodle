@@ -4,42 +4,17 @@ using UnityEngine;
 
 public class SimPlayerManager : SimSingleton<SimPlayerManager>, ISimInputProcessor
 {
-    [System.Serializable]
-    struct SerializedData
-    {
-        public SimPlayerId NextPlayerId;
-        public List<SimPlayerInfo> Players;
-    }
+    // NB:  The player entity is not the same thing as the pawn entity
+    //      The player entity contains things like:
+    //          - a reference to the controlled pawn
+    //          - the player's name
+    //          - (hypothetical) the time at which the player first joined the simulation
+    //      The pawn entity contains things like:
+    //          - a world position
+    //          - some health, mana, items, etc.
 
-    /// <summary>
-    /// You can iterate over this with "foreach(ISimPlayerInfo playerInfo in GetPlayers())"
-    /// </summary>
-    public ReadOnlyList<SimPlayerInfo, ISimPlayerInfo> Players => new ReadOnlyList<SimPlayerInfo, ISimPlayerInfo>(_data.Players);
-
-    public override void OnSimAwake()
-    {
-        base.OnSimAwake();
-
-        _data.NextPlayerId = SimPlayerId.FirstValid;
-    }
-
-    public ISimPlayerInfo GetSimPlayerInfo(in SimPlayerId playerId)
-    {
-        return GetSimPlayerInfoInternal(playerId);
-    }
-
-    SimPlayerInfo GetSimPlayerInfoInternal(in SimPlayerId playerId)
-    {
-        for (int i = 0; i < _data.Players.Count; i++)
-        {
-            if (_data.Players[i].SimPlayerId == playerId)
-            {
-                return _data.Players[i];
-            }
-        }
-
-        return null;
-    }
+    [SerializeField]
+    SimPlayerComponent _playerPrefab;
 
     public void ProcessInput(SimInput input)
     {
@@ -53,33 +28,15 @@ public class SimPlayerManager : SimSingleton<SimPlayerManager>, ISimInputProcess
                     return;
                 }
 
-                SimPlayerInfo newPlayerInfo = new SimPlayerInfo(playerCreate.SimPlayerInfo);
-                newPlayerInfo.SimPlayerId = _data.NextPlayerId;
+                SimEntity playerEntity = Simulation.Instantiate(_playerPrefab.SimEntity);
 
-                _data.Players.Add(newPlayerInfo);
-
-                _data.NextPlayerId++;
-
-                // Raise event
-                SimGlobalEventEmitter.RaiseEvent(new SimPlayerCreatedEventData() { PlayerInfo = newPlayerInfo });
-                break;
-            }
-
-
-            case SimInputPlayerUpdate playerUpdate:
-            {
-                SimPlayerInfo playerInfo = GetSimPlayerInfoInternal(playerUpdate.PlayerId);
-
-                if (playerInfo == null)
+                if (playerEntity.GetComponent(out SimNameComponent nameComponent))
                 {
-                    DebugService.LogError($"Trying to update an unregistered player's info in the SimPlayerManager: {playerUpdate.PlayerInfo.Name}");
-                    return;
+                    nameComponent.Value = playerCreate.SimPlayerInfo.Name;
                 }
 
-                playerInfo.Name = playerUpdate.PlayerInfo.Name;
-
                 // Raise event
-                SimGlobalEventEmitter.RaiseEvent(new SimPlayerUpdatedEvent() { PlayerInfo = playerInfo });
+                SimGlobalEventEmitter.RaiseEvent(new SimPlayerCreatedEventData() { PlayerEntity = playerEntity });
                 break;
             }
 
@@ -90,28 +47,37 @@ public class SimPlayerManager : SimSingleton<SimPlayerManager>, ISimInputProcess
             //            S'il reviens 1 mois plus tard, il DOIT encore avoir son "personnage" et ses "equipements".
             //case SimInputPlayerDestroy playerDestroy:
             //    break;
+
+
+            case SimPlayerInput playerInput:
+            {
+                // valid player ?
+                SimPlayerComponent player = SimPlayerHelpers.FindPlayerFromId(playerInput.SimPlayerId);
+                if (player)
+                {
+                    HandleInputFromPlayer(player, playerInput);
+                }
+
+                break;
+            }
         }
     }
 
-    #region Serialized Data Methods
-    [UnityEngine.SerializeField]
-    [AlwaysExpand]
-    SerializedData _data = new SerializedData()
-    {
-        // define default values here
-        Players = new List<SimPlayerInfo>()
-    };
 
-    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    List<ISimPlayerInputHandler> _cachedComponentList = new List<ISimPlayerInputHandler>(); // this is simply used to reduce allocations
+    
+    public void HandleInputFromPlayer(SimPlayerComponent player, SimPlayerInput input)
     {
-        base.SerializeToDataStack(dataStack);
-        dataStack.Push(_data);
-    }
+        player.GetComponents<ISimPlayerInputHandler>(_cachedComponentList);
 
-    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
-    {
-        _data = (SerializedData)dataStack.Pop();
-        base.DeserializeFromDataStack(dataStack);
+        for (int i = 0; i < _cachedComponentList.Count; i++)
+        {
+            if (_cachedComponentList[i].HandleInput(input))
+            {
+                break;
+            }
+        }
+
+        _cachedComponentList.Clear();
     }
-    #endregion
 }
