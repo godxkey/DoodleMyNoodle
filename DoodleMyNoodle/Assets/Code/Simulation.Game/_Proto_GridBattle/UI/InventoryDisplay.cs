@@ -12,7 +12,7 @@ public class InventoryDisplay : MonoBehaviour
         {
             _hasBeenSetup = true;
 
-            SimPawnManager.Instance.Get
+            //SimPawnManager.Instance.Get
         }
         gameObject.SetActive(!gameObject.activeSelf);
     }
