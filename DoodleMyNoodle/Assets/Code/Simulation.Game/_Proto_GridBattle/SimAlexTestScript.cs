@@ -6,9 +6,17 @@ public class SimAlexTestScript : SimComponent, ISimInputProcessor
 {
     public void ProcessInput(SimInput input)
     {
-        if (input is SimInputKeycode keyCodeInput && keyCodeInput.keyCode == KeyCode.M && keyCodeInput.state == SimInputKeycode.State.Pressed) 
+        if (input is SimInputKeycode keyCodeInput)
         {
-            GetComponent<SimHealthStatComponent>()?.DecreaseValue(1);
+            if (keyCodeInput.keyCode == KeyCode.N && keyCodeInput.state == SimInputKeycode.State.Pressed)
+            {
+                GetComponent<SimInventoryComponent>()?.TakeItem(ItemBank.Instance.GetItemWithSameName("Test"));
+            }
+
+            if (keyCodeInput.keyCode == KeyCode.M && keyCodeInput.state == SimInputKeycode.State.Pressed)
+            {
+                GetComponent<SimInventoryComponent>()?.DropItem(ItemBank.Instance.GetItemWithSameName("Test"));
+            }
         }
     }
 }

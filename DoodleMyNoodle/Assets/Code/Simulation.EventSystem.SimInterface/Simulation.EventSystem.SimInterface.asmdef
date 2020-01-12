@@ -1,0 +1,16 @@
+{
+    "name": "Simulation.EventSystem.SimInterface",
+    "references": [
+        "GUID:a695b5a3e8c39e14fb9d86d3205fadf9",
+        "GUID:f94e1c9377273104d83be7da954b5cb5",
+        "GUID:7a7d6ad02114b094396a3faba9a6db02"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

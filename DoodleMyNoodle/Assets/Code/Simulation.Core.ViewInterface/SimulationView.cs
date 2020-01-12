@@ -22,6 +22,11 @@ public class SimulationView : SimulationBase
     public static bool CanBeTicked => SimModules._Ticker.CanSimBeTicked;
 
     /// <summary>
+    /// Update the loading of scenes
+    /// </summary>
+    public static void UpdateSceneLoads() => SimModules._SceneLoader.Update();
+
+    /// <summary>
     /// Can the simulation be saved ? Some things can prevent the simulation to be saved (like being in the middle of a scene injection)
     /// </summary>
     public static bool CanBeSerialized => SimModules._Serializer.CanSimWorldBeSaved;

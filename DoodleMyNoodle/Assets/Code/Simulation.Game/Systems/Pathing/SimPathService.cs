@@ -21,7 +21,7 @@ public class SimPathService : SimSingleton<SimPathService>
             
             bool TryAdjacentTile(in SimTileId tile) // this is a method
             {
-                if (SimHelper.CanEntityWalkOntoTile(walker, tile))
+                if (SimTileHelpers.CanEntityWalkOntoTile(walker, tile))
                 {
                     resultRef.Add(tile);
                     currentTile = tile;

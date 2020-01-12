@@ -2,74 +2,73 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimAIComponent : SimComponent, ISimTickable
+[RequireComponent(typeof(SimPawnControllerComponent))]
+[RequireComponent(typeof(SimTeamMemberComponent))]
+public class SimAIComponent : SimComponent, 
+    ISimTickable,
+    ISimTargetPawnChangeListener
 {
-    [System.Serializable]
-    struct SerializedData
-    {
-        public bool TurnPlayed;
-    }
+    bool _turnPlayed = false;
 
     void ISimTickable.OnSimTick()
     {
         if (SimTurnManager.Instance.IsMyTurn(_team.Team))
         {
-            if (!_data.TurnPlayed)
+            if (!_turnPlayed)
             {
-                _data.TurnPlayed = true;
+                _turnPlayed = true;
 
-                Fix64 randomDecision = Simulation.Random.Range(0,3);
+                if (_pawnGridWalker)
+                {
+                    Fix64 randomDecision = Simulation.Random.Range(0, 3);
 
-                Debug.Log($"{SimObjectId} picking direction on tick " + Simulation.TickId);
-                if (randomDecision < 1)
-                {
-                    _gridWalker.TryWalkTo(_gridWalker.TileId + Vector2Int.right);
-                }
-                else if (randomDecision < 2)
-                {
-                    _gridWalker.TryWalkTo(_gridWalker.TileId + Vector2Int.left);
-                }
-                else
-                {
-                    _gridWalker.TryWalkTo(_gridWalker.TileId + Vector2Int.down);
+                    if (randomDecision < 1)
+                    {
+                        _pawnGridWalker.TryWalkTo(_pawnGridWalker.TileId + Vector2Int.right);
+                    }
+                    else if (randomDecision < 2)
+                    {
+                        _pawnGridWalker.TryWalkTo(_pawnGridWalker.TileId + Vector2Int.left);
+                    }
+                    else
+                    {
+                        _pawnGridWalker.TryWalkTo(_pawnGridWalker.TileId + Vector2Int.down);
+                    }
                 }
             }
         }
         else
         {
-            _data.TurnPlayed = false;
+            _turnPlayed = false;
         }
     }
 
-    #region Serialized Data Methods
-    [UnityEngine.SerializeField]
-    [AlwaysExpand]
-    SerializedData _data = new SerializedData()
+    void ISimTargetPawnChangeListener.OnTargetPawnChanged()
     {
-        TurnPlayed = false
-    };
-
-    public override void SerializeToDataStack(SimComponentDataStack dataStack)
-    {
-        base.SerializeToDataStack(dataStack);
-        dataStack.Push(_data);
+        UpdateCachedPawnComponents();
     }
 
-    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
+    #region Pawn Component Caching
+    [System.NonSerialized] SimGridWalkerComponent _pawnGridWalker;
+    void UpdateCachedPawnComponents()
     {
-        _data = (SerializedData)dataStack.Pop();
-        base.DeserializeFromDataStack(dataStack);
+        if(_targetPawn.TargetPawn)
+        {
+            _pawnGridWalker = _targetPawn.TargetPawn.GetComponent<SimGridWalkerComponent>();
+        }
     }
     #endregion
 
     #region Component Caching
-    [System.NonSerialized] SimGridWalkerComponent _gridWalker;
     [System.NonSerialized] SimTeamMemberComponent _team;
+    [System.NonSerialized] SimPawnControllerComponent _targetPawn;
     public override void OnAddedToRuntime()
     {
         base.OnAddedToRuntime();
-        _gridWalker = GetComponent<SimGridWalkerComponent>();
         _team = GetComponent<SimTeamMemberComponent>();
+        _targetPawn = GetComponent<SimPawnControllerComponent>();
+        
+        UpdateCachedPawnComponents();
     }
     #endregion
 }

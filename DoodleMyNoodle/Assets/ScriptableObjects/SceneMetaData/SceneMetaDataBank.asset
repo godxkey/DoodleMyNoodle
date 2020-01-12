@@ -61,3 +61,7 @@ MonoBehaviour:
     Path: Assets/Scenes/GameLevels/Scene Assets/Lvl_GridBattle.unity
     BuildIndex: 11
     AssetGuid: 4c8245514883b6c4ba63476b942bba11
+  - Name: SimManagers
+    Path: Assets/Scenes/GameRoot/Scene Assets/SimManagers.unity
+    BuildIndex: 12
+    AssetGuid: 47ac98eafdf2257458009be782cc980c
