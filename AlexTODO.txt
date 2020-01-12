@@ -3,3 +3,5 @@
 - Better AI (attack)
 - Get Current Player
 - Interface HasEquip() etc.
+- StatModifier - List de stat + modifier
+- quand on ajoute une state, faut rejister les events

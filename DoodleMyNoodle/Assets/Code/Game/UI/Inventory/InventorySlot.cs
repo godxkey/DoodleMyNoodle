@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public SimItem StartItem;
-
     public Image Background;
     public Image ItemIcon;
 
@@ -17,6 +15,10 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void Start()
     {
         _startBackgroundColor = Background.color;
+    }
+
+    public void Init(SimItem StartItem)
+    {
         _currentItem = StartItem;
         UpdateDisplay();
     }
@@ -26,7 +28,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         Background.color = Color.white;
         if(_currentItem != null)
         {
-            ClickerDisplay.Instance.UpdateOverlapText(_currentItem.GetName());
+            ClickerDisplay.Instance.UpdateOverlapText(_currentItem.GetName(),_currentItem.GetDescription());
         }
     }
 
@@ -35,7 +37,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         Background.color = _startBackgroundColor;
         if (_currentItem != null)
         {
-            ClickerDisplay.Instance.UpdateOverlapText("");
+            ClickerDisplay.Instance.UpdateOverlapText("","");
         }
     }
 

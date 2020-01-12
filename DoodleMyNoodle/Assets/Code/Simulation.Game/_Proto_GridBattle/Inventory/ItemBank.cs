@@ -6,7 +6,7 @@ public class ItemBank : SimSingleton<ItemBank>
 {
     private List<SimItem> _availableItems = new List<SimItem>();
 
-    public override void OnSimStart()
+    public override void OnSimAwake()
     {
         base.OnSimStart();
 

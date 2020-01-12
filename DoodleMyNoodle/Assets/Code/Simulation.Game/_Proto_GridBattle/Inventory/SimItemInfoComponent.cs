@@ -6,5 +6,7 @@ public class SimItemInfoComponent : SimItemComponent
 {
     public string Name;
 
+    public string Description;
+
     public Sprite Icon;
 }

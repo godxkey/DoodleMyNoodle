@@ -9,7 +9,8 @@ public class ClickerDisplay : MonoBehaviour
 
     public Image HoldingImage;
     public GameObject TooltipPanel;
-    public Text Tooltip;
+    public Text TooltipName;
+    public Text TooltipDescription;
     public Camera Cam;
 
     private SimItem _itemHeld = null;
@@ -53,14 +54,15 @@ public class ClickerDisplay : MonoBehaviour
         }
     }
 
-    public void UpdateOverlapText(string Text)
+    public void UpdateOverlapText(string Name, string Description)
     {
         if(_itemHeld == null)
         {
-            if(Text != "")
+            if(Name != "")
             {
                 TooltipPanel.SetActive(true);
-                Tooltip.text = Text;
+                TooltipName.text = Name;
+                TooltipDescription.text = Description;
             }
             else
             {
@@ -89,13 +91,15 @@ public class ClickerDisplay : MonoBehaviour
         {
             HoldingImage.sprite = _itemHeld.GetInfo().Icon;
             HoldingImage.color = HoldingImage.color.ChangedAlpha(1);
-            Tooltip.text = _itemHeld.GetName();
+            TooltipName.text = _itemHeld.GetName();
+            TooltipDescription.text = _itemHeld.GetDescription();
             TooltipPanel.SetActive(true);
         }
         else
         {
             HoldingImage.color = HoldingImage.color.ChangedAlpha(0);
-            Tooltip.text = "";
+            TooltipName.text = "";
+            TooltipDescription.text = "";
             TooltipPanel.SetActive(false);
         }
     }
