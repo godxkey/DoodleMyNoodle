@@ -11,7 +11,7 @@ public class DebugPanelSimPlayers : DebugPanel
         && Game.Started
         && SimPlayerManager.Instance;
 
-    List<SimPlayerComponent> _cachedPlayers;
+    List<SimPlayerComponent> _cachedPlayers = new List<SimPlayerComponent>();
 
     void UpdateCachedPlayers()
     {

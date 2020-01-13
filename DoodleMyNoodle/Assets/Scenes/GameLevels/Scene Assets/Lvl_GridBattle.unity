@@ -354,6 +354,7 @@ GameObject:
   m_Component:
   - component: {fileID: 256883002}
   - component: {fileID: 256883003}
+  - component: {fileID: 256883004}
   m_Layer: 0
   m_Name: Tile Highlight Manager
   m_TagString: Untagged
@@ -389,6 +390,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HighlightPrefab: {fileID: 8589829087157937559, guid: d1542b07390bf3d4e8b8151bd28471f4,
     type: 3}
+--- !u!114 &256883004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256883001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5263acbbb543a548a5b5f6aa444a54d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blueprintId:
+    Type: 2
+    Value: 11/4c8245514883b6c4ba63476b942bba11
 --- !u!1 &293054867
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,7 +854,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blueprintId:
     Type: 2
-    Value: 9/4c8245514883b6c4ba63476b942bba11
+    Value: 12/4c8245514883b6c4ba63476b942bba11
 --- !u!4 &711528429
 Transform:
   m_ObjectHideFlags: 0
@@ -864,6 +880,7 @@ GameObject:
   m_Component:
   - component: {fileID: 825009035}
   - component: {fileID: 825009034}
+  - component: {fileID: 825009036}
   m_Layer: 0
   m_Name: GridVisuals
   m_TagString: Untagged
@@ -898,6 +915,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &825009036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 825009033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5263acbbb543a548a5b5f6aa444a54d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blueprintId:
+    Type: 2
+    Value: 9/4c8245514883b6c4ba63476b942bba11
 --- !u!1 &880622428
 GameObject:
   m_ObjectHideFlags: 0
@@ -1138,6 +1170,7 @@ GameObject:
   - component: {fileID: 1276550479}
   - component: {fileID: 1276550478}
   - component: {fileID: 1276550481}
+  - component: {fileID: 1276550482}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -1227,6 +1260,21 @@ MonoBehaviour:
   camera: {fileID: 1276550479}
   audioListener: {fileID: 1276550478}
   priority: 1
+--- !u!114 &1276550482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276550477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5263acbbb543a548a5b5f6aa444a54d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blueprintId:
+    Type: 2
+    Value: 10/4c8245514883b6c4ba63476b942bba11
 --- !u!1 &1394604472
 GameObject:
   m_ObjectHideFlags: 0
@@ -2955,16 +3003,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 711528429}
     m_Modifications:
-    - target: {fileID: 5534947295831120837, guid: abe5de76709f4204ba57f070a1557562,
-        type: 3}
-      propertyPath: _blueprintId.Type
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534947295831120837, guid: abe5de76709f4204ba57f070a1557562,
-        type: 3}
-      propertyPath: _blueprintId.Value
-      value: 10/4c8245514883b6c4ba63476b942bba11
-      objectReference: {fileID: 0}
     - target: {fileID: 5534947295831120838, guid: abe5de76709f4204ba57f070a1557562,
         type: 3}
       propertyPath: m_Name
@@ -3025,6 +3063,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5534947295831120837, guid: abe5de76709f4204ba57f070a1557562,
+        type: 3}
+      propertyPath: _blueprintId.Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534947295831120837, guid: abe5de76709f4204ba57f070a1557562,
+        type: 3}
+      propertyPath: _blueprintId.Value
+      value: 13/4c8245514883b6c4ba63476b942bba11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: abe5de76709f4204ba57f070a1557562, type: 3}
 --- !u!1001 &8908235614411566591
@@ -3054,11 +3102,6 @@ PrefabInstance:
       propertyPath: _blueprintId.Value
       value: 4/4c8245514883b6c4ba63476b942bba11
       objectReference: {fileID: 0}
-    - target: {fileID: -4046522282015926349, guid: ae2d25a66f815824e98df5bdf7c7da25,
-        type: 3}
-      propertyPath: PlayerInControl.Value
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 8908235613229724288, guid: ae2d25a66f815824e98df5bdf7c7da25,
         type: 3}
       propertyPath: _data._localScale.x.m_rawValue
@@ -3068,6 +3111,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _data._localScale.y.m_rawValue
       value: 10393821184
+      objectReference: {fileID: 0}
+    - target: {fileID: -4046522282015926349, guid: ae2d25a66f815824e98df5bdf7c7da25,
+        type: 3}
+      propertyPath: PlayerInControl.Value
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae2d25a66f815824e98df5bdf7c7da25, type: 3}
