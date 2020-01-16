@@ -97,6 +97,11 @@ public static class VectorExtensions
         return new Vector2(v.x.Rounded(), v.y.Rounded());
     }
 
+    public static Vector2Int RoundedToInt(this in Vector2 v)
+    {
+        return new Vector2Int(v.x.RoundedToInt(), v.y.RoundedToInt());
+    }
+
     public static Vector2 Rotate(this in Vector2 v, float angle)
     {
         return v.RotateRad(angle * Mathf.Deg2Rad);
