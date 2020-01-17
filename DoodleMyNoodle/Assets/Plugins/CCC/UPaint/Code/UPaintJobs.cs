@@ -3,26 +3,30 @@ using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.Collections;
 using Unity.Burst;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace UPaintJobs
 {
+    [BurstCompile]
     public struct PaintPoint : IJob
     {
-        public UPaintLayerAccessor Layer;
+        public UPaintLayer Layer;
         public Color32 Color;
-        public Vector2Int Coordinates;
+        public int2 Coordinates;
 
         public void Execute()
         {
             Layer[Coordinates] = Color;
         }
     }
+
+    [BurstCompile]
     public struct PaintSquare : IJob
     {
-        public UPaintLayerAccessor Layer;
+        public UPaintLayer Layer;
         public Color32 Color;
-        public Vector2Int CenterCoordinates;
+        public int2 CenterCoordinates;
         public int Width;
 
         public void Execute()
@@ -44,88 +48,48 @@ namespace UPaintJobs
             }
         }
     }
-    public struct PaintCircle : IJob
-    {
-        public UPaintLayerAccessor Layer;
-        public Color32 Color;
-        public Vector2Int CenterCoordinates;
-        public int Width;
-        public float Gradient01;
 
-        public void Execute()
-        {
-            int xStart = CenterCoordinates.x - (Width / 2);
-            int xEnd = xStart + Width;
-            int yStart = CenterCoordinates.y - (Width / 2);
-            int yEnd = yStart + Width;
-
-            float edgeSqrMagnitude = (Width / 2) * (Width / 2);
-
-            Vector2 pixelToCircleCenter;
-            float sqrMag;
-            float blend01;
-
-            for (int x = xStart; x < xEnd; x++)
-            {
-                for (int y = yStart; y < yEnd; y++)
-                {
-                    pixelToCircleCenter.x = x - CenterCoordinates.x;
-                    pixelToCircleCenter.y = y - CenterCoordinates.y;
-
-                    sqrMag = pixelToCircleCenter.sqrMagnitude;
-
-                    if (Layer.IsValidPixel(x, y) && sqrMag <= edgeSqrMagnitude)
-                    {
-                        if (Gradient01 > 0.0001)
-                        {
-                            blend01 =Mathf.Clamp01(((sqrMag / edgeSqrMagnitude) - (1 - Gradient01)) / Gradient01);
-                        }
-                        else
-                        {
-                            blend01 = 0;
-                        }
-
-                        Layer[x, y] = Color32.Lerp(Color, Layer[x, y], blend01);
-                    }
-                }
-            }
-        }
-    }
-
-    public struct PaintVector : IJob
-    {
-        public UPaintLayerAccessor Layer;
-        public Color32 Color;
-        public Vector2Int Coordinates;
-
-        public void Execute()
-        {
-            Layer[Coordinates] = Color;
-        }
-    }
-
+    [BurstCompile]
     public struct PaintAllPixels : IJob
     {
-        public NativeArray<Color32> Layer;
+        public UPaintLayer Layer;
         public Color32 Color;
 
         public void Execute()
         {
-            for (int i = 0; i < Layer.Length; i++)
+            for (int i = 0; i < Layer.PixelCount; i++)
             {
                 Layer[i] = Color;
             }
         }
     }
-
-    public struct ApplyLayerOneOntoLayerTwo : IJob
+    
+    [BurstCompile]
+    public struct CopyLayerOneToTwo : IJob
     {
-        public NativeArray<Color32> LayerOne;
-        public NativeArray<Color32> LayerTwo;
+        [ReadOnly] public UPaintLayer LayerOne;
+        [ReadOnly] public UPaintLayer LayerTwo;
 
         public void Execute()
         {
-            for (int i = 0; i < LayerOne.Length; i++)
+            LayerTwo.Height = LayerOne.Height;
+            LayerTwo.Width = LayerOne.Width;
+            for (int i = 0; i < LayerOne.PixelCount; i++)
+            {
+                LayerTwo[i] = LayerOne[i];
+            }
+        }
+    }
+
+    [BurstCompile]
+    public struct BlendLayerOneOntoLayerTwo : IJob
+    {
+        [ReadOnly] public UPaintLayer LayerOne;
+        public UPaintLayer LayerTwo;
+
+        public void Execute()
+        {
+            for (int i = 0; i < LayerOne.PixelCount; i++)
             {
                 LayerTwo[i] = UPaintOperations.AlphaBlendColorOneOntoTwo(LayerOne[i], LayerTwo[i]);
             }
