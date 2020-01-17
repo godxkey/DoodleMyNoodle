@@ -15,7 +15,7 @@ public interface IUPaintBrushCanvasInterface
 [System.Serializable]
 public struct UPaintContext
 {
-    public int2 CursorCoordinate;
+    public float2 CursorCoordinate;
     public Color32 Color;
 }
 
@@ -68,7 +68,7 @@ public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
                 Width = texture.width,
                 Height = texture.height
             };
-            ScheduleNextPaintJob(new UPaintJobs.PaintAllPixels()
+            ScheduleNextPaintJob(new UPaintCommonJobs.PaintAllPixels()
             {
                 Color = color,
                 Layer = layer
@@ -112,15 +112,15 @@ public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
     UPaintLayer IUPaintBrushCanvasInterface.MainLayer => _mainLayer;
     UPaintLayer IUPaintBrushCanvasInterface.PreviewLayer => _previewLayer;
 
-    public void PressBursh<T>(T brush, int2 pixelCoordinate, Color color) where T : IUPaintBursh
+    public void PressBursh<T>(T brush, float2 pixelCoordinate, Color color) where T : IUPaintBursh
     {
         brush.OnPress(this, new UPaintContext() { CursorCoordinate = pixelCoordinate, Color = color });
     }
-    public void HoldBursh<T>(T brush, int2 pixelCoordinate, Color color) where T : IUPaintBursh
+    public void HoldBursh<T>(T brush, float2 pixelCoordinate, Color color) where T : IUPaintBursh
     {
         brush.OnHold(this, new UPaintContext() { CursorCoordinate = pixelCoordinate, Color = color });
     }
-    public void ReleaseBursh<T>(T brush, int2 pixelCoordinate, Color color) where T : IUPaintBursh
+    public void ReleaseBursh<T>(T brush, float2 pixelCoordinate, Color color) where T : IUPaintBursh
     {
         brush.OnRelease(this, new UPaintContext() { CursorCoordinate = pixelCoordinate, Color = color });
     }
@@ -139,13 +139,13 @@ public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
     {
         SchedulePushMainLayerToHistory();
 
-        ScheduleNextPaintJob(new UPaintJobs.BlendLayerOneOntoLayerTwo()
+        ScheduleNextPaintJob(new UPaintCommonJobs.BlendLayerOneOntoLayerTwo()
         {
             LayerOne = _previewLayer,
             LayerTwo = _mainLayer
         });
 
-        ScheduleNextPaintJob(new UPaintJobs.PaintAllPixels()
+        ScheduleNextPaintJob(new UPaintCommonJobs.PaintAllPixels()
         {
             Color = new Color32(0, 0, 0, 0),
             Layer = _previewLayer
@@ -169,7 +169,7 @@ public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
         if (_historyCount < MAX_HISTORY_LENGTH)
             _historyCount++;
 
-        ScheduleNextPaintJob(new UPaintJobs.CopyLayerOneToTwo()
+        ScheduleNextPaintJob(new UPaintCommonJobs.CopyLayerOneToTwo()
         {
             LayerOne = _mainLayer,
             LayerTwo = _layerHistory.First().Layer
@@ -181,7 +181,7 @@ public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
         if (_historyCount <= 0)
             return;
 
-        ScheduleNextPaintJob(new UPaintJobs.CopyLayerOneToTwo()
+        ScheduleNextPaintJob(new UPaintCommonJobs.CopyLayerOneToTwo()
         {
             LayerOne = _layerHistory.First().Layer,
             LayerTwo = _mainLayer

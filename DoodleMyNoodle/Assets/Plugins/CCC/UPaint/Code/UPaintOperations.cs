@@ -4,6 +4,7 @@ using Unity.Collections;
 using UnityEngine;
 using Unity.Mathematics;
 using Unity.Burst;
+using static Unity.Mathematics.math;
 
 public static class UPaintOperations
 {
@@ -65,5 +66,12 @@ public static class UPaintOperations
         //                   (   0.2  *   0.25) + 0.8
         //                           0.05       + 0.8 = 0.85
         return ((1 - alphaRatio2) * alphaRatio1) + alphaRatio2;
+    }
+
+    [BurstCompile]
+    public static void ClampToLayerDimensions(in float2 min, in float2 max, in UPaintLayer layer, out int2 drawMin, out int2 drawMax)
+    {
+        drawMin = math.max(int2(min), int2(0,0));
+        drawMax = math.min(int2(max), int2(layer.Width, layer.Height));
     }
 }

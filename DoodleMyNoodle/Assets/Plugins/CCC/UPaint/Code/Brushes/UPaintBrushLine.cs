@@ -12,8 +12,7 @@ namespace UPaintBrushes
         public float Gradient01;
         public int Thickness;
 
-
-        private int2 _pressCoordinates;
+        private float2 _pressCoordinates;
 
         public void OnPress(IUPaintBrushCanvasInterface canvas, in UPaintContext context)
         {
@@ -26,7 +25,7 @@ namespace UPaintBrushes
 
         public void OnRelease(IUPaintBrushCanvasInterface canvas, in UPaintContext context)
         {
-            canvas.ScheduleNextPaintJob(new LineJob()
+            canvas.ScheduleNextPaintJob(new UPaintCommonJobs.PaintLine()
             {
                 StartCoordinates = _pressCoordinates,
                 EndCoordinates = context.CursorCoordinate,
@@ -39,58 +38,91 @@ namespace UPaintBrushes
             canvas.ScheduleBlendPreviewOntoMainLayer();
         }
 
-        [BurstCompile]
-        public struct LineJob : IJob
-        {
-            public UPaintLayer Layer;
-            [ReadOnly] public int2 StartCoordinates;
-            [ReadOnly] public int2 EndCoordinates;
-            [ReadOnly] public Color32 Color;
-            [ReadOnly] public int Thickness;
-            [ReadOnly] public float Gradient01;
+        //[BurstCompile]
+        //public struct LineJob : IJob
+        //{
+        //    public UPaintLayer Layer;
+        //    [ReadOnly] public float2 StartCoordinates;
+        //    [ReadOnly] public float2 EndCoordinates;
+        //    [ReadOnly] public Color32 Color;
+        //    [ReadOnly] public float Thickness;
+        //    [ReadOnly] public float Gradient01;
 
-            public void Execute()
-            {
-                int radius = Thickness / 2;
-                int2 min = new int2(
-                    math.min(StartCoordinates.x, EndCoordinates.x),
-                    math.min(StartCoordinates.y, EndCoordinates.y));
-                int2 max = new int2(
-                    math.max(StartCoordinates.x, EndCoordinates.x),
-                    math.max(StartCoordinates.y, EndCoordinates.y));
+        //    public void Execute()
+        //    {
+        //        float radius = Thickness / 2;
+        //        float radiusSq = radius * radius;
+        //        float2 lineMin = new float2(
+        //            min(StartCoordinates.x, EndCoordinates.x),
+        //            min(StartCoordinates.y, EndCoordinates.y));
+        //        float2 lineMax = new float2(
+        //            max(StartCoordinates.x, EndCoordinates.x),
+        //            max(StartCoordinates.y, EndCoordinates.y));
 
-                min -= radius;
-                max += radius;
+        //        int2 drawMin = new int2((int)(floor(lineMin.x) - radius), (int)(floor(lineMin.y) - radius));
+        //        int2 drawMax = new int2((int)(ceil(lineMin.x) + radius), (int)(ceil(lineMin.y) + radius));
 
-                min = math.max(min, int2(0, 0));
-                max = math.min(max, int2(Layer.Width, Layer.Height));
+        //        // clamp in canvas dimensions
+        //        drawMin = max(drawMin, int2(0, 0));
+        //        drawMax = min(drawMax, int2(Layer.Width, Layer.Height));
 
 
-                float distance;
-                for (int x = min.x; x < max.x; x++)
-                {
-                    for (int y = min.y; y < max.y; y++)
-                    {
-                        distance = GetDistanceFromPointToLine(int2(x, y), StartCoordinates, EndCoordinates);
-                        if(distance < radius)
-                        {
-                            Layer[x, y] = Color;
-                        }
-                    }
-                }
-            }
+        //        for (int x = drawMin.x; x < drawMax.x; x++)
+        //        {
+        //            for (int y = drawMin.y; y < drawMax.y; y++)
+        //            {
+        //                float2 point = new float2(x, y);
 
-            float GetDistanceFromPointToLine(in int2 point, in int2 lineBegin, in int2 lineEnd)
-            {
-                int2 a = lineBegin;
-                int2 b = point;
-                int2 v = lineEnd - lineBegin;
+        //                float2 vectorFromPointToLine = GetShortestVectorFromPointToLine(point, StartCoordinates, EndCoordinates);
+        //                float2 intersectionPoint = point + vectorFromPointToLine;
 
-                float n = v.x * (b.y - a.y) + v.y * (a.x - b.x);
-                n /= (v.y * v.y) + (v.x * v.x);
+        //                float distanceSq;
+        //                if (inrange(intersectionPoint, lineMin, lineMax))
+        //                {
+        //                    distanceSq = lengthsq(vectorFromPointToLine);
+        //                }
+        //                else
+        //                {
+        //                    distanceSq = min(distancesq(point, StartCoordinates), distancesq(point, EndCoordinates));
+        //                }
 
-                return length(n * float2(v));
-            }
-        }
+        //                if (distanceSq <= radiusSq)
+        //                {
+        //                    Color32 finalColor = Color;
+
+        //                    // fade out the color near cicle edges
+        //                    if (Gradient01 > 0.0001)
+        //                    {
+        //                        float blend01 = clamp(((distanceSq / radiusSq) - (1 - Gradient01)) / Gradient01,
+        //                            0,
+        //                            1);
+        //                        finalColor.a = (byte)(finalColor.a * (1 - blend01));
+        //                    }
+
+
+        //                    Layer[x, y] = finalColor;
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    static bool inrange(in float2 point, in float2 min, float2 max)
+        //    {
+        //        return point.x >= min.x && point.x <= max.x
+        //            && point.y >= min.y && point.y <= max.y;
+        //    }
+
+        //    static float2 GetShortestVectorFromPointToLine(in float2 point, in float2 lineBegin, in float2 lineEnd)
+        //    {
+        //        float2 a = lineBegin;
+        //        float2 b = point;
+        //        float2 v = lineEnd - lineBegin;
+
+        //        float n = v.x * (b.y - a.y) + v.y * (a.x - b.x);
+        //        n /= (v.y * v.y) + (v.x * v.x);
+
+        //        return  n * float2(v.y, -v.x);
+        //    }
+        //}
     }
 }

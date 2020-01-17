@@ -1286,13 +1286,17 @@ MonoBehaviour:
   RenderResolution: {x: 600, y: 500}
   DefaultPixeColor: {r: 1, g: 1, b: 1, a: 1}
   TextureFiltering: 0
+  CurrentBrushType: 0
   PaintColor: {r: 1, g: 0, b: 0, a: 1}
   CircleBrush:
-    Gradient01: 1
+    Gradient01: 0.2
     Width: 50
   LineBrush:
-    Gradient01: 0
-    Thickness: 5
+    Gradient01: 0.2
+    Thickness: 10
+  FreeLineBrush:
+    Gradient01: 0.2
+    Thickness: 15
   MainRenderTexture: {fileID: 0}
   PreviewRenderTexture: {fileID: 0}
 --- !u!1 &1719234265

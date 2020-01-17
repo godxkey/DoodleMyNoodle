@@ -8,6 +8,14 @@ using UnityEngine;
 
 public class UPaintTest : MonoBehaviour
 {
+    public enum TestBrushes
+    {
+        Circle,
+        Line,
+        FreeLine,
+        Fill
+    }
+
     [Header("Links")]
     public UnityEngine.UI.RawImage MainRenderImage;
     public UnityEngine.UI.RawImage PreviewRenderImage;
@@ -19,9 +27,12 @@ public class UPaintTest : MonoBehaviour
     public FilterMode TextureFiltering;
 
     [Header("Brushes")]
+    public TestBrushes CurrentBrushType;
     public Color PaintColor;
     public UPaintBrushes.Circle CircleBrush;
     public UPaintBrushes.Line LineBrush;
+    public UPaintBrushes.FreeLine FreeLineBrush;
+    public UPaintBrushes.Fill FillBrush;
 
     [Header("Data")]
     [ReadOnly] public Texture2D MainRenderTexture;
@@ -39,16 +50,22 @@ public class UPaintTest : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            int2 pixelCoordinate = DisplayPositionToLayerCoordinate(Input.mousePosition);
+            float2 pixelCoordinate = DisplayPositionToLayerCoordinate(Input.mousePosition);
 
-            Canvas.PressBursh(LineBrush, pixelCoordinate, PaintColor);
+            Canvas.PressBursh(CurrentBrush, pixelCoordinate, PaintColor);
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            int2 pixelCoordinate = DisplayPositionToLayerCoordinate(Input.mousePosition);
+            float2 pixelCoordinate = DisplayPositionToLayerCoordinate(Input.mousePosition);
 
-            Canvas.ReleaseBursh(LineBrush, pixelCoordinate, PaintColor);
+            Canvas.ReleaseBursh(CurrentBrush, pixelCoordinate, PaintColor);
+        }
+
+        if (Input.GetMouseButton(0))
+        {
+            float2 pixelCoordinate = DisplayPositionToLayerCoordinate(Input.mousePosition);
+            Canvas.HoldBursh(CurrentBrush, pixelCoordinate, PaintColor);
         }
 
         if (Canvas.IsProcessingJobs)
@@ -61,16 +78,9 @@ public class UPaintTest : MonoBehaviour
             Canvas.Undo();
         }
 
-        if (Input.GetMouseButton(0))
-        {
-            int2 pixelCoordinate = DisplayPositionToLayerCoordinate(Input.mousePosition);
-
-            Canvas.HoldBursh(LineBrush, pixelCoordinate, PaintColor);
-        }
-
         for (int i = 0; i < HistoryRenderImages.Length; i++)
         {
-            if(i < Canvas.AvailableUndos)
+            if (i < Canvas.AvailableUndos)
             {
                 HistoryRenderImages[i].texture = Canvas._layerHistory[i].tempTexture;
                 Canvas._layerHistory[i].tempTexture.Apply();
@@ -82,7 +92,27 @@ public class UPaintTest : MonoBehaviour
         }
     }
 
-    int2 DisplayPositionToLayerCoordinate(Vector2 mousePosition)
+    IUPaintBursh CurrentBrush
+    {
+        get
+        {
+            switch (CurrentBrushType)
+            {
+                case TestBrushes.Circle:
+                    return CircleBrush;
+                case TestBrushes.Line:
+                    return LineBrush;
+                case TestBrushes.FreeLine:
+                    return FreeLineBrush;
+                case TestBrushes.Fill:
+                    return FillBrush;
+                default:
+                    throw new System.Exception();
+            }
+        }
+    }
+
+    float2 DisplayPositionToLayerCoordinate(Vector2 mousePosition)
     {
         // get render image display rect (from (0, 0) to (screenResX, screenResY))
         Rect renderImageRect = MainRenderImage.rectTransform.rect;
@@ -97,7 +127,7 @@ public class UPaintTest : MonoBehaviour
         // offset position half a pixel to account for pixel center
         rectSpacePosition -= new Vector2(0.5f, 0.5f);
 
-        return rectSpacePosition.RoundedToInt2();
+        return new float2(rectSpacePosition.x, rectSpacePosition.y);
     }
 
     [ContextMenu("reset render")]
