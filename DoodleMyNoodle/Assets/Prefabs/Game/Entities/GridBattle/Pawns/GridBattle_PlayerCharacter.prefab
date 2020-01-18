@@ -91,9 +91,9 @@ GameObject:
   - component: {fileID: 8908235613229724285}
   - component: {fileID: 8908235613229724286}
   - component: {fileID: 2929239971275269945}
-  - component: {fileID: 8908235613229724287}
   - component: {fileID: 9040000742765455731}
   - component: {fileID: 6770731346246755088}
+  - component: {fileID: 5664901083381853137}
   m_Layer: 0
   m_Name: GridBattle_PlayerCharacter
   m_TagString: Untagged
@@ -116,7 +116,7 @@ Transform:
   - {fileID: 3191731455259856276}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -0.95, y: 0.24, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8908235613229724286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,26 +170,6 @@ MonoBehaviour:
         RawValue: 4294967296
     Parent: {fileID: 0}
     SiblingIndex: 0
---- !u!114 &8908235613229724287
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908235613229724289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af4c3a90ba5d9d74daf80885fac06c17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _evtComponentData:
-    EventsWeHaveRegisteredTo: []
-    LocalEvents: []
-  _data:
-    Speed:
-      RawValue: 17179869184
-    HasADestination: 0
-    Path: []
 --- !u!114 &9040000742765455731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,8 +195,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d9f189aea994b3408c3a9f5bb207340, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartInventory: []
+  StartInventory:
+  - {fileID: 0}
+  - {fileID: 0}
   InventorySize: 1
+--- !u!114 &5664901083381853137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908235613229724289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee97725a2b822724aac95afc14ffd5d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3056401006852168411
 PrefabInstance:
   m_ObjectHideFlags: 0

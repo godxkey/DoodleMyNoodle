@@ -12,9 +12,37 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private Color _startBackgroundColor;
     private SimItem _currentItem;
 
+    private bool _MouseHovering = false;
+
     private void Start()
     {
         _startBackgroundColor = Background.color;
+    }
+
+    private void Update()
+    {
+        if (_MouseHovering) 
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                // Alex - HACK TO TEST FUNCTIONNALITY OF DROPPING
+                if (_currentItem.GetComponent<TrashItemComponent>())
+                {
+                    SimItem item = ClickerDisplay.Instance.GetItemCurrentlyHolding();
+                    
+                    if (item != null)
+                    {
+                        SimPawnComponent playerPawn = SimPawnHelpers.GetPawnFromController(PlayerIdHelpers.GetLocalSimPlayerComponent());
+
+                        SimInventoryComponent inventory = playerPawn.GetComponent<SimInventoryComponent>();
+
+                        inventory.DropItem(item);
+                    }
+
+                    ClickerDisplay.Instance.DropHoldingItem();
+                }
+            }
+        }
     }
 
     public void Init(SimItem StartItem)
@@ -30,6 +58,8 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
         {
             ClickerDisplay.Instance.UpdateHoverText(_currentItem.GetName(),_currentItem.GetDescription());
         }
+
+        _MouseHovering = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -39,6 +69,8 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
         {
             ClickerDisplay.Instance.UpdateHoverText("","");
         }
+
+        _MouseHovering = false;
     }
 
     private void UpdateDisplay()
@@ -56,7 +88,6 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void SlotSelected()
     {
-        Debug.Log("CLICKED");
         _currentItem = ClickerDisplay.Instance.InventorySlotClicked(_currentItem);
         UpdateDisplay();
     }

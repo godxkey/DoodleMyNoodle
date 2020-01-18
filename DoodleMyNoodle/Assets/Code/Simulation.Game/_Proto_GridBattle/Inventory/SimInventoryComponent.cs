@@ -10,13 +10,16 @@ public class SimInventoryComponent : SimComponent
 
     private List<SimItem> _inventory = new List<SimItem>();
 
-    public override void OnSimStart() 
+    public override void OnSimAwake() 
     {
-        base.OnSimStart();
+        base.OnSimAwake();
 
         TakeItem(ItemBank.Instance.GetItemWithSameName("Backpack"));
 
-        _inventory.AddRange(StartInventory);
+        foreach (SimItem item in StartInventory)
+        {
+            TakeItem(item);
+        }
     }
 
     private int AddItem(SimItem item, int position = -1)

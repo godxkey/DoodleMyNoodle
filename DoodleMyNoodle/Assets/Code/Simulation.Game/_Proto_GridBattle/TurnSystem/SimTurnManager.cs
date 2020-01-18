@@ -47,7 +47,6 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
         {
             _currentTeam = 0;
         }
-        Debug.Log("SWITCH TURN - " + _currentTeam);
     }
 
     public bool IsMyTurn(Team myTeam)

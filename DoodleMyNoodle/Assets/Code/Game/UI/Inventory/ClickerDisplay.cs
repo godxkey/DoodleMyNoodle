@@ -7,11 +7,18 @@ public class ClickerDisplay : MonoBehaviour
 {
     public static ClickerDisplay Instance = null;
 
+    // TOOLTIP
     public Image HoldingImage;
     public GameObject TooltipPanel;
     public Text TooltipName;
     public Text TooltipDescription;
     public Camera Cam;
+
+    // MOUSE
+    public CursorMode CursorMode = CursorMode.Auto;
+    public Vector2 HotSpot = Vector2.zero;
+    public Texture2D MouseIdle;
+    public Texture2D MouseGrab;
 
     private SimItem _itemHeld = null;
 
@@ -73,12 +80,14 @@ public class ClickerDisplay : MonoBehaviour
 
     private void StartHoldingItem(SimItem item)
     {
+        Cursor.SetCursor(MouseGrab, HotSpot, CursorMode);
         _itemHeld = item;
         UpdateDisplay(_itemHeld);
     }
 
-    private SimItem DropHoldingItem()
+    public SimItem DropHoldingItem()
     {
+        Cursor.SetCursor(MouseIdle, HotSpot, CursorMode);
         SimItem previousItem = _itemHeld;
         _itemHeld = null;
         UpdateDisplay(_itemHeld);
