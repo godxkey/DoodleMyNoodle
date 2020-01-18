@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 5534947295831120839}
   - component: {fileID: 5534947295831120837}
   - component: {fileID: 5534947295831120836}
-  - component: {fileID: 5534947295831120834}
+  - component: {fileID: 4227164975338144494}
   m_Layer: 0
-  m_Name: TestItem
+  m_Name: Backpack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blueprintId:
     Type: 1
-    Value: abe5de76709f4204ba57f070a1557562
+    Value: dffb362788735c0498f4a3f0af4e57b1
 --- !u!114 &5534947295831120836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,8 +60,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dc6835d73153d24e8c725d2cd8178a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Test
---- !u!114 &5534947295831120834
+  Name: Backpack
+  Icon: {fileID: 21300000, guid: 315af10f3f6e1044f8bf88ee7930c6e6, type: 3}
+--- !u!114 &4227164975338144494
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -70,6 +71,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5534947295831120838}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 374846b449f6104469287f3743d2439c, type: 3}
+  m_Script: {fileID: 11500000, guid: 85d33e2347c8e5e47b7313bfbc76982f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InventorySizeUpgrade: 10

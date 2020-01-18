@@ -4,10 +4,26 @@ using UnityEngine;
 
 public class SimInventoryComponent : SimComponent
 {
+    public List<SimItem> StartInventory = new List<SimItem>();
+
+    public int InventorySize = 1;
+
     private List<SimItem> _inventory = new List<SimItem>();
+
+    public override void OnSimStart() 
+    {
+        base.OnSimStart();
+
+        TakeItem(ItemBank.Instance.GetItemWithSameName("Backpack"));
+
+        _inventory.AddRange(StartInventory);
+    }
 
     private int AddItem(SimItem item, int position = -1)
     {
+        if (_inventory.Count >= InventorySize)
+            return -1;
+
         if (position < 0)
         {
             _inventory.Add(item);
@@ -20,9 +36,9 @@ public class SimInventoryComponent : SimComponent
         }
     }
 
-    private void RemoveItem(SimItem item)
+    private bool RemoveItem(SimItem item)
     {
-        _inventory.Remove(item);
+        return _inventory.Remove(item);
     }
 
     private SimItem RemoveItem(int position)
@@ -47,18 +63,25 @@ public class SimInventoryComponent : SimComponent
 
     public SimItem GetItem(int position)
     {
+        if (position >= _inventory.Count)
+            return null;
+
         return _inventory[position];
     }
 
     public void TakeItem(SimItem item)
     {
-        AddItem(item);
-        item.OnEquip();
+        if(AddItem(item) >= 0)
+        {
+            item.OnEquip(this);
+        }
     }
 
     public void DropItem(SimItem item)
     {
-        item.OnUnequip();
-        RemoveItem(item);
+        if (RemoveItem(item))
+        {
+            item.OnUnequip(this);
+        }
     }
 }

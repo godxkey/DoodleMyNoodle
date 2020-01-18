@@ -4,6 +4,21 @@ using UnityEngine;
 
 public static class PlayerIdHelpers
 {
+    public static PlayerId GetLocalPlayerID()
+    {
+        return PlayerRepertoireSystem.Instance.GetLocalPlayerInfo().PlayerId;
+    }
+
+    public static PlayerInfo GetLocalPlayerInfo()
+    {
+        return PlayerRepertoireSystem.Instance.GetLocalPlayerInfo();
+    }
+
+    public static SimPlayerComponent GetLocalSimPlayerComponent()
+    {
+        return PlayerIdHelpers.GetSimPlayerFromPlayer(PlayerRepertoireSystem.Instance.GetLocalPlayerInfo());
+    }
+
     public static PlayerInfo GetPlayerFromSimPlayer(SimPlayerComponent simPlayer)
     {
         return GetPlayerFromSimPlayer(simPlayer.SimPlayerId);

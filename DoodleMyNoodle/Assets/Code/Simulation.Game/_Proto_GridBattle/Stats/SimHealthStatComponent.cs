@@ -2,7 +2,4 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimHealthStatComponent : SimStatComponent
-{
-    
-}
+public class SimHealthStatComponent : SimClampedStatComponent { }

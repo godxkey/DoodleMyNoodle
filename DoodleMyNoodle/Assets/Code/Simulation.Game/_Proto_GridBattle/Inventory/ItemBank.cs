@@ -6,9 +6,9 @@ public class ItemBank : SimSingleton<ItemBank>
 {
     private List<SimItem> _availableItems = new List<SimItem>();
 
-    public override void OnSimStart()
+    public override void OnSimAwake()
     {
-        base.OnSimStart();
+        base.OnSimAwake();
 
         foreach (SimItem item in GetComponentsInChildren<SimItem>())
         {
