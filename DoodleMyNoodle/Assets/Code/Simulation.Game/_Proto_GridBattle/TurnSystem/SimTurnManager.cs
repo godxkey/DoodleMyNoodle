@@ -17,6 +17,9 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
     private Fix64 _timer = 0;
     private Team _currentTeam = (Team)TEAM_COUNT;
 
+    public Team CurrentTeam => _currentTeam;
+    public Fix64 TurnRemainingTime => _timer;
+
     public override void OnSimStart() 
     {
         base.OnSimStart();
@@ -50,15 +53,5 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
     public bool IsMyTurn(Team myTeam)
     {
         return _currentTeam == myTeam;
-    }
-
-    public Team GetCurrentTeam()
-    {
-        return _currentTeam;
-    }
-
-    public Fix64 GetCurrentTime()
-    {
-        return _timer;
     }
 }

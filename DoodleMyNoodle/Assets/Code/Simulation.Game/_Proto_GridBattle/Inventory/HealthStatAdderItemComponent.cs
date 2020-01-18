@@ -13,8 +13,12 @@ public class HealthStatAdderItemComponent : SimComponent, IItemOnEquip, IItemOnU
         newHealthComponent.IncreaseValue(StartingHealth);
     }
 
+
+
+
+
     public void OnUnequip(SimInventoryComponent Inventory)
     {
-        Destroy(Inventory.gameObject.GetComponent<SimHealthStatComponent>());
+        Destroy(Inventory.GetComponent<SimHealthStatComponent>());
     }
 }

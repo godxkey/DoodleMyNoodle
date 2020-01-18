@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Image Background;
     public Image ItemIcon;
@@ -28,7 +28,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         Background.color = Color.white;
         if(_currentItem != null)
         {
-            ClickerDisplay.Instance.UpdateOverlapText(_currentItem.GetName(),_currentItem.GetDescription());
+            ClickerDisplay.Instance.UpdateHoverText(_currentItem.GetName(),_currentItem.GetDescription());
         }
     }
 
@@ -37,7 +37,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         Background.color = _startBackgroundColor;
         if (_currentItem != null)
         {
-            ClickerDisplay.Instance.UpdateOverlapText("","");
+            ClickerDisplay.Instance.UpdateHoverText("","");
         }
     }
 

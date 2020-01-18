@@ -54,15 +54,15 @@ public class ClickerDisplay : MonoBehaviour
         }
     }
 
-    public void UpdateOverlapText(string Name, string Description)
+    public void UpdateHoverText(string name, string description)
     {
         if(_itemHeld == null)
         {
-            if(Name != "")
+            if(!name.IsNullOrEmpty())
             {
                 TooltipPanel.SetActive(true);
-                TooltipName.text = Name;
-                TooltipDescription.text = Description;
+                TooltipName.text = name;
+                TooltipDescription.text = description;
             }
             else
             {
@@ -74,25 +74,25 @@ public class ClickerDisplay : MonoBehaviour
     private void StartHoldingItem(SimItem item)
     {
         _itemHeld = item;
-        UpdateDisplay();
+        UpdateDisplay(_itemHeld);
     }
 
     private SimItem DropHoldingItem()
     {
         SimItem previousItem = _itemHeld;
         _itemHeld = null;
-        UpdateDisplay();
+        UpdateDisplay(_itemHeld);
         return previousItem;
     }
 
-    private void UpdateDisplay()
+    private void UpdateDisplay(SimItem itemHeld)
     {
-        if(_itemHeld != null)
+        if(itemHeld != null)
         {
-            HoldingImage.sprite = _itemHeld.GetInfo().Icon;
+            HoldingImage.sprite = itemHeld.GetInfo().Icon;
             HoldingImage.color = HoldingImage.color.ChangedAlpha(1);
-            TooltipName.text = _itemHeld.GetName();
-            TooltipDescription.text = _itemHeld.GetDescription();
+            TooltipName.text = itemHeld.GetName();
+            TooltipDescription.text = itemHeld.GetDescription();
             TooltipPanel.SetActive(true);
         }
         else

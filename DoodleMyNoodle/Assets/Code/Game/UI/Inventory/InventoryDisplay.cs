@@ -15,14 +15,14 @@ public class InventoryDisplay : MonoBehaviour
         {
             _hasBeenSetup = true;
 
-            SimPawnComponent PlayerPawn = SimPawnHelpers.GetPawnFromController(PlayerIdHelpers.GetLocalSimPlayerComponent());
+            SimPawnComponent playerPawn = SimPawnHelpers.GetPawnFromController(PlayerIdHelpers.GetLocalSimPlayerComponent());
 
-            SimInventoryComponent Inventory = PlayerPawn.GetComponent<SimInventoryComponent>();
+            SimInventoryComponent inventory = playerPawn.GetComponent<SimInventoryComponent>();
 
-            for (int i = 0; i < Inventory.InventorySize; i++)
+            for (int i = 0; i < inventory.InventorySize; i++)
             {
-                SimItem item = Inventory.GetItem(i);
-                InventorySlot newSlot = Instantiate(InventoryTilePrefab, InventoryTileContainer.transform).GetComponent<InventorySlot>();
+                SimItem item = inventory.GetItem(i);
+                UIInventorySlot newSlot = Instantiate(InventoryTilePrefab, InventoryTileContainer.transform).GetComponent<UIInventorySlot>();
                 newSlot.Init(item);
             }
         }

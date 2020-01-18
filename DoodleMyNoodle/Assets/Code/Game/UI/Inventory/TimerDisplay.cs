@@ -8,15 +8,17 @@ public class TimerDisplay : MonoBehaviour
     public Text CurrentTeamName;
     public Text CurrentTime;
 
-    private string _previousTime;
+    private AutoResetDirtyValue<string> _timer;
 
     void Update()
     {
         if(SimTurnManager.Instance != null)
         {
             // Timer
-            int currentTime = (int)SimTurnManager.Instance.GetCurrentTime();
-            CurrentTime.text = "" + currentTime;
+            int currentTime = (int)SimTurnManager.Instance.TurnRemainingTime;
+            _timer.SetValue(currentTime.ToString());
+            CurrentTime.text = _timer.Value;
+
             if (currentTime <= 3)
             {
                 CurrentTime.color = Color.red;
@@ -26,16 +28,14 @@ public class TimerDisplay : MonoBehaviour
                 CurrentTime.color = Color.black;
             }
 
-            if (CurrentTime.text != _previousTime)
+            if (_timer.IsDirty)
             {
                 // fade text shortly
             }
 
-            _previousTime = CurrentTime.text;
-
             // Team Text
-            Team currentTeam = SimTurnManager.Instance.GetCurrentTeam();
-            CurrentTeamName.text = "" + currentTeam;
+            Team currentTeam = SimTurnManager.Instance.CurrentTeam;
+            CurrentTeamName.text = currentTeam.ToString();
             switch (currentTeam)
             {
                 case Team.Player:

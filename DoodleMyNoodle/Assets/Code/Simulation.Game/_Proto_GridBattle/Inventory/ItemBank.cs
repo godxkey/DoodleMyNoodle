@@ -8,7 +8,7 @@ public class ItemBank : SimSingleton<ItemBank>
 
     public override void OnSimAwake()
     {
-        base.OnSimStart();
+        base.OnSimAwake();
 
         foreach (SimItem item in GetComponentsInChildren<SimItem>())
         {
