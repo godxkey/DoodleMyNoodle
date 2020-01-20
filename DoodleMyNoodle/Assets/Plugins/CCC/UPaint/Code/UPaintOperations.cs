@@ -71,7 +71,7 @@ public static class UPaintOperations
     [BurstCompile]
     public static void ClampToLayerDimensions(in float2 min, in float2 max, in UPaintLayer layer, out int2 drawMin, out int2 drawMax)
     {
-        drawMin = math.max(int2(min), int2(0,0));
-        drawMax = math.min(int2(max), int2(layer.Width, layer.Height));
+        drawMin = math.max(int2(floor(min)), int2(0,0));
+        drawMax = math.min(int2(ceil(max)), int2(layer.Width - 1, layer.Height - 1));
     }
 }

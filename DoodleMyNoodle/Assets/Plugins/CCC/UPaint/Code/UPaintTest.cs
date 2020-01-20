@@ -158,6 +158,7 @@ public class UPaintTest : MonoBehaviour
     private void OnDestroy()
     {
         Canvas?.Dispose();
+        FillBrush?.Dispose();
     }
 }
 

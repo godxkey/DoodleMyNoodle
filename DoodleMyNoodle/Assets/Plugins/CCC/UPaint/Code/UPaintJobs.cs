@@ -15,12 +15,12 @@ namespace UPaintCommonJobs
         public UPaintLayer Layer;
         [ReadOnly] public Color32 Color;
         [ReadOnly] public float2 CenterCoordinates;
-        [ReadOnly] public int Width;
+        [ReadOnly] public float Width;
         [ReadOnly] public float Gradient01;
 
         public void Execute()
         {
-            int radius = Width / 2;
+            float radius = Width / 2;
             float radiusSq = radius * radius;
 
             UPaintOperations.ClampToLayerDimensions(
@@ -29,9 +29,9 @@ namespace UPaintCommonJobs
                 out int2 drawMin, 
                 out int2 drawMax);
 
-            for (int x = drawMin.x; x < drawMax.x; x++)
+            for (int x = drawMin.x; x <= drawMax.x; x++)
             {
-                for (int y = drawMin.y; y < drawMax.y; y++)
+                for (int y = drawMin.y; y <= drawMax.y; y++)
                 {
                     int2 point = new int2(x, y);
 
@@ -68,13 +68,13 @@ namespace UPaintCommonJobs
         [ReadOnly] public float2 StartCoordinates;
         [ReadOnly] public float2 EndCoordinates;
         [ReadOnly] public Color32 Color;
-        [ReadOnly] public int Thickness;
+        [ReadOnly] public float Thickness;
         [ReadOnly] public float Gradient01;
 
         public void Execute()
         {
-            int radius = Thickness / 2;
-            int radiusSq = radius * radius;
+            float radius = Thickness / 2;
+            float radiusSq = radius * radius;
             float2 lineMin = new float2(
                 min(StartCoordinates.x, EndCoordinates.x),
                 min(StartCoordinates.y, EndCoordinates.y));
@@ -88,9 +88,9 @@ namespace UPaintCommonJobs
                 out int2 drawMin,
                 out int2 drawMax);
 
-            for (int x = drawMin.x; x < drawMax.x; x++)
+            for (int x = drawMin.x; x <= drawMax.x; x++)
             {
-                for (int y = drawMin.y; y < drawMax.y; y++)
+                for (int y = drawMin.y; y <= drawMax.y; y++)
                 {
                     float2 point = new float2(x, y);
 
