@@ -30,7 +30,7 @@ namespace UPaintBrushes
             // find start position of the fill
             int2 pixelPosition = int2(round(context.CursorCoordinate));
 
-            canvas.ScheduleNextPaintJob(new FillJob()
+            canvas.ScheduleNextBrushJob(new FillJob()
             {
                 PixelBuffer = _pixelBuffer,
                 StartCoordinates = pixelPosition,

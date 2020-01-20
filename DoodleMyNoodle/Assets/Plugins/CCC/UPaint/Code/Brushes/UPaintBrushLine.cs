@@ -25,7 +25,7 @@ namespace UPaintBrushes
 
         public void OnRelease(IUPaintBrushCanvasInterface canvas, in UPaintContext context)
         {
-            canvas.ScheduleNextPaintJob(new UPaintCommonJobs.PaintLine()
+            canvas.ScheduleNextBrushJob(new UPaintCommonJobs.PaintLine()
             {
                 StartCoordinates = _pressCoordinates,
                 EndCoordinates = context.CursorCoordinate,

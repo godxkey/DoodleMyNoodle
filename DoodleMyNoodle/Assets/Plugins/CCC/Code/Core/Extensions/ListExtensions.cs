@@ -76,15 +76,26 @@ public static class ListExtensions
         list[index] = temp;
     }
 
+    public static void MoveFirst<T>(this List<T> list, int index)
+    {
+        if (list.Count <= 1)
+            return;
+
+        T element = list[index];
+
+        list.RemoveAt(index);
+        list.Insert(0, element);
+    }
+
     public static void MoveLast<T>(this List<T> list, int index)
     {
         if (list.Count <= 1)
             return;
 
-        T temp = list[index];
+        T element = list[index];
 
         list.RemoveAt(index);
-        list.Add(temp);
+        list.Add(element);
     }
 
     public static T First<T>(this List<T> list)

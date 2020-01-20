@@ -17,7 +17,7 @@ namespace UPaintBrushes
         public void OnPress(IUPaintBrushCanvasInterface canvas, in UPaintContext context)
         {
             _pressCoordinates = context.CursorCoordinate;
-            canvas.ScheduleNextPaintJob(new UPaintCommonJobs.PaintCircle()
+            canvas.ScheduleNextBrushJob(new UPaintCommonJobs.PaintCircle()
             {
                 CenterCoordinates = _pressCoordinates,
                 Color = context.Color,
@@ -36,7 +36,7 @@ namespace UPaintBrushes
             if (any(to != from)) 
             {
                 // paint line
-                canvas.ScheduleNextPaintJob(new UPaintCommonJobs.PaintLine()
+                canvas.ScheduleNextBrushJob(new UPaintCommonJobs.PaintLine()
                 {
                     StartCoordinates = from,
                     EndCoordinates = to,

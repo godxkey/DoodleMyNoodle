@@ -19,7 +19,7 @@ namespace UPaintBrushes
 
         public void OnHold(IUPaintBrushCanvasInterface canvas, in UPaintContext context)
         {
-            canvas.ScheduleNextPaintJob(new UPaintCommonJobs.PaintCircle()
+            canvas.ScheduleNextBrushJob(new UPaintCommonJobs.PaintCircle()
             {
                 CenterCoordinates = context.CursorCoordinate,
                 Color = context.Color,

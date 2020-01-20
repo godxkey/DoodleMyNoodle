@@ -8,57 +8,28 @@ public interface IUPaintBrushCanvasInterface
 {
     UPaintLayer MainLayer { get; }
     UPaintLayer PreviewLayer { get; }
-    void ScheduleNextPaintJob<T>(T job) where T : struct, IJob;
+    void ScheduleNextBrushJob<T>(T job) where T : struct, IJob;
     void ScheduleBlendPreviewOntoMainLayer();
-}
-
-[System.Serializable]
-public struct UPaintContext
-{
-    public float2 CursorCoordinate;
-    public Color32 Color;
-}
-
-public class UPaintUnmanagedLayerContainer : IDisposable
-{
-    public Texture2D tempTexture;
-    public UPaintUnmanagedLayerContainer(int width, int height)
-    {
-        tempTexture = new Texture2D(width, height, TextureFormat.RGBA32, mipChain: false);
-
-        Layer = new UPaintLayer()
-        {
-            Height = height,
-            Width = width,
-            Pixels = tempTexture.GetRawTextureData<Color32>(), /*new NativeArray<Color32>(height * width, Allocator.Persistent)*/
-        };
-    }
-    public UPaintLayer Layer { get; private set; }
-
-    public void Dispose()
-    {
-        //Layer.Pixels.Dispose();
-    }
 }
 
 public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
 {
-    Texture2D _mainTexture;
-    Texture2D _previewTexture;
-    UPaintLayer _mainLayer;
-    UPaintLayer _previewLayer;
+    readonly Texture2D _mainTexture;
+    readonly Texture2D _previewTexture;
+    readonly UPaintLayer _mainLayer;
+    readonly UPaintLayer _previewLayer;
+    readonly List<UPaintUnmanagedLayerContainer> _layerHistory = new List<UPaintUnmanagedLayerContainer>();
+    readonly int _maxHistoryLength;
 
-    public List<UPaintUnmanagedLayerContainer> _layerHistory = new List<UPaintUnmanagedLayerContainer>();
-    int _historyCount;
-    const int MAX_HISTORY_LENGTH = 10;
-
+    UPaintUnmanagedLayerContainer _tempLayer;
     JobHandle _latestJob;
     bool _needApply;
 
-    public UPaintCanvas(Texture2D mainTexture, Texture2D previewTexture)
+    public UPaintCanvas(Texture2D mainTexture, Texture2D previewTexture, int historyMaxLength, Color initColor)
     {
         _mainTexture = mainTexture;
         _previewTexture = previewTexture;
+        _maxHistoryLength = historyMaxLength;
 
         void SetupLayer(ref UPaintLayer layer, Texture2D texture, in Color32 color)
         {
@@ -75,8 +46,10 @@ public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
             });
         }
 
-        SetupLayer(ref _mainLayer, _mainTexture, Color.white);
+        SetupLayer(ref _mainLayer, _mainTexture, initColor);
         SetupLayer(ref _previewLayer, _previewTexture, new Color32(0, 0, 0, 0) /*transparent*/);
+        
+        _tempLayer = new UPaintUnmanagedLayerContainer(_mainLayer.Width, _mainLayer.Height);
     }
 
     public void Dispose()
@@ -86,6 +59,7 @@ public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
         {
             _layerHistory[i].Dispose();
         }
+        _tempLayer?.Dispose();
     }
 
     public void ForceCompleteJobsAndApply()
@@ -104,13 +78,12 @@ public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
         }
     }
 
+    public int AvailableUndos { get; private set; }
+    public int AvailableRedos { get; private set; }
     public bool IsProcessingJobs => !_latestJob.IsCompleted;
     public int Width => _mainLayer.Width;
     public int Height => _mainLayer.Height;
     public bool IsValidPixel(int x, int y) => _mainLayer.IsValidPixel(x, y);
-    public int AvailableUndos => _historyCount;
-    UPaintLayer IUPaintBrushCanvasInterface.MainLayer => _mainLayer;
-    UPaintLayer IUPaintBrushCanvasInterface.PreviewLayer => _previewLayer;
 
     public void PressBursh<T>(T brush, float2 pixelCoordinate, Color color) where T : IUPaintBursh
     {
@@ -126,15 +99,21 @@ public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
     }
     public void Undo()
     {
-        SchedulePopHistoryIntoMainLayer();
+        ScheduleUndo();
+    }
+    public void Redo()
+    {
+        ScheduleRedo();
     }
 
-    void IUPaintBrushCanvasInterface.ScheduleNextPaintJob<T>(T job)
+    UPaintLayer IUPaintBrushCanvasInterface.MainLayer => _mainLayer;
+    UPaintLayer IUPaintBrushCanvasInterface.PreviewLayer => _previewLayer;
+    void IUPaintBrushCanvasInterface.ScheduleNextBrushJob<T>(T job)
     {
         _latestJob = job.Schedule(_latestJob);
         _needApply = true;
+        AvailableRedos = 0;
     }
-
     void IUPaintBrushCanvasInterface.ScheduleBlendPreviewOntoMainLayer()
     {
         SchedulePushMainLayerToHistory();
@@ -155,19 +134,18 @@ public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
 
     void SchedulePushMainLayerToHistory()
     {
-        if (_layerHistory.Count < MAX_HISTORY_LENGTH)
+        if (_layerHistory.Count < _maxHistoryLength)
         {
             _layerHistory.Insert(0, new UPaintUnmanagedLayerContainer(_mainLayer.Width, _mainLayer.Height));
         }
         else
         {
             // move the last element back to the start
-            _layerHistory.Insert(0, _layerHistory.Last());
-            _layerHistory.RemoveLast();
+            _layerHistory.MoveFirst(_layerHistory.LastIndex());
         }
 
-        if (_historyCount < MAX_HISTORY_LENGTH)
-            _historyCount++;
+        if (AvailableUndos < _maxHistoryLength)
+            AvailableUndos++;
 
         ScheduleNextPaintJob(new UPaintCommonJobs.CopyLayerOneToTwo()
         {
@@ -176,20 +154,70 @@ public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
         });
     }
 
-    void SchedulePopHistoryIntoMainLayer()
+    void ScheduleRedo()
     {
-        if (_historyCount <= 0)
+        if (AvailableRedos <= 0)
             return;
 
+        // copy main layer into temp (will be used for 'undo')
         ScheduleNextPaintJob(new UPaintCommonJobs.CopyLayerOneToTwo()
         {
-            LayerOne = _layerHistory.First().Layer,
+            LayerOne = _mainLayer,
+            LayerTwo = _tempLayer.Layer
+        });
+
+        // remove last history
+        UPaintUnmanagedLayerContainer historyLayer = _layerHistory.Last();
+        _layerHistory.RemoveLast();
+
+        // copy last history into main layer
+        ScheduleNextPaintJob(new UPaintCommonJobs.CopyLayerOneToTwo()
+        {
+            LayerOne = historyLayer.Layer,
             LayerTwo = _mainLayer
         });
 
-        // put first layer last
-        _layerHistory.MoveLast(0);
-        _historyCount--;
+        // set temp layer at start of history
+        _layerHistory.Insert(0, _tempLayer);
+
+        // move history layer we just used in temp
+        _tempLayer = historyLayer;
+
+        AvailableUndos++;
+        AvailableRedos--;
+    }
+
+    void ScheduleUndo()
+    {
+        if (AvailableUndos <= 0)
+            return;
+
+        // copy main layer in temp (will be used for 'redo')
+        ScheduleNextPaintJob(new UPaintCommonJobs.CopyLayerOneToTwo()
+        {
+            LayerOne = _mainLayer,
+            LayerTwo = _tempLayer.Layer
+        });
+
+        // pop latest history
+        UPaintUnmanagedLayerContainer historyLayer = _layerHistory.First();
+        _layerHistory.RemoveFirst();
+
+        // copy latest history into main layer
+        ScheduleNextPaintJob(new UPaintCommonJobs.CopyLayerOneToTwo()
+        {
+            LayerOne = historyLayer.Layer,
+            LayerTwo = _mainLayer
+        });
+
+        // move temp layer in back of history (will be used for 'redo')
+        _layerHistory.Add(_tempLayer);
+
+        // move history layer we just used in temp
+        _tempLayer = historyLayer;
+
+        AvailableUndos--;
+        AvailableRedos++;
     }
 
     void ScheduleNextPaintJob<T>(T job) where T : struct, IJob
