@@ -1,12 +1,12 @@
 ﻿
 public interface IItemOnEquip
 {
-    void OnEquip();
+    void OnEquip(SimInventoryComponent Inventory);
 }
 
 public interface IItemOnUnequip
 {
-    void OnUnequip();
+    void OnUnequip(SimInventoryComponent Inventory);
 }
 
 public interface IItemOnUse

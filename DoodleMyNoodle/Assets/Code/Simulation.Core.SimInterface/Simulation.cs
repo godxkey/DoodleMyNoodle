@@ -90,6 +90,11 @@ public class Simulation : SimulationBase
     public static SimEntity Instantiate(in SimBlueprint original, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent) 
         => SimModules._EntityManager.Instantiate(original, position, rotation, parent);
 
+    public static T AddComponent<T>(SimEntity entity) where T : SimComponent 
+        => SimModules._EntityManager.AddComponent<T>(entity);
+    public static void RemoveComponent<T>(SimEntity entity) where T : SimComponent 
+        => SimModules._EntityManager.RemoveComponent<T>(entity);
+
     public static void Destroy(SimEntity simEntity)
         => SimModules._EntityManager.Destroy(simEntity);
     public static void Destroy<T>(T component) where T : SimComponent

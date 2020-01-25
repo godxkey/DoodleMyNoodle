@@ -45,7 +45,7 @@ public class SimStatComponent : SimComponent
     /// <summary>
     /// Returns the delta the stat value performed
     /// </summary>
-    public int SetValue(int value)
+    public virtual int SetValue(int value)
     {
         _stat.SetValue(value);
         if (_stat.HasChanged())

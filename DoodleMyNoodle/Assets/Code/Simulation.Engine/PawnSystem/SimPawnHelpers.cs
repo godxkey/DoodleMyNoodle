@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class SimPawnHelpers
 {
-    public static SimPawnComponent GetPawnFromPlayer(MonoBehaviour player)
+    public static SimPawnComponent GetPawnFromController(MonoBehaviour player)
     {
         if (player.GetComponent(out SimPawnControllerComponent pawnController))
         {

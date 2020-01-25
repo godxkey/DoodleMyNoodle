@@ -10,6 +10,8 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
     // GETTERS
 
     public string GetName() { return GetComponent<SimItemInfoComponent>()?.Name; }
+    public string GetDescription() { return GetComponent<SimItemInfoComponent>()?.Description; }
+    
     public SimItemInfoComponent GetInfo() { return GetComponent<SimItemInfoComponent>(); }
 
     // INTERFACE SHORTCUT CALLS
@@ -27,24 +29,24 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
         }
     }
 
-    public void OnEquip()
+    public void OnEquip(SimInventoryComponent Inventory)
     {
         foreach (IItemOnEquip itemOnEquip in GetComponents<IItemOnEquip>())
         {
             if(itemOnEquip != (IItemOnEquip)this)
             {
-                itemOnEquip.OnEquip();
+                itemOnEquip.OnEquip(Inventory);
             }
         }
     }
 
-    public void OnUnequip()
+    public void OnUnequip(SimInventoryComponent Inventory)
     {
         foreach (IItemOnUnequip itemOnUnequip in GetComponents<IItemOnUnequip>())
         {
             if (itemOnUnequip != (IItemOnUnequip)this)
             {
-                itemOnUnequip.OnUnequip();
+                itemOnUnequip.OnUnequip(Inventory);
             }
         }
     }

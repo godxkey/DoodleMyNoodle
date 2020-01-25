@@ -23,6 +23,9 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
 
     public int DurationOfATurn => _data.DurationOfATurn;
 
+    public Team CurrentTeam => _currentTeam;
+    public Fix64 TurnRemainingTime => _timer;
+
     public override void OnSimStart() 
     {
         base.OnSimStart();
