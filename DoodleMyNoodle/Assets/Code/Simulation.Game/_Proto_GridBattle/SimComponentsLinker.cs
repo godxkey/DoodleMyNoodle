@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class SimPlayerComponentsLinker : MonoBehaviour
+public class SimComponentsLinker : SimComponent
 {
     private List<SimComponent> _playerComponents = new List<SimComponent>();
 
@@ -13,7 +13,7 @@ public class SimPlayerComponentsLinker : MonoBehaviour
 
     public T AddComponent<T>() where T : SimComponent
     {
-        T newComponent = gameObject.AddComponent<T>();
+        T newComponent = Simulation.AddComponent<T>(SimEntity);
         _playerComponents.Add(newComponent);
         OnComponentAdded?.Invoke(newComponent);
         return newComponent;
@@ -24,6 +24,6 @@ public class SimPlayerComponentsLinker : MonoBehaviour
         SimComponent oldComponent = GetComponent<T>();
         _playerComponents.Remove(oldComponent);
         OnComponentRemoved?.Invoke(oldComponent);
-        Destroy(oldComponent);
+        Simulation.RemoveComponent<T>(SimEntity);
     }
 }

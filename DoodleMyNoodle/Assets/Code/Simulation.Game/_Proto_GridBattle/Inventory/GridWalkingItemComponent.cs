@@ -9,12 +9,12 @@ public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
 
     public void OnEquip(SimInventoryComponent Inventory)
     {
-        SimGridWalkerComponent newGridWalkerComponent = Inventory.GetComponent<SimPlayerComponentsLinker>().AddComponent<SimGridWalkerComponent>();
+        SimGridWalkerComponent newGridWalkerComponent = Inventory.GetComponent<SimComponentsLinker>().AddComponent<SimGridWalkerComponent>();
         newGridWalkerComponent.Speed = StartingSpeed;
     }
 
     public void OnUnequip(SimInventoryComponent Inventory)
     {
-        Inventory.GetComponent<SimPlayerComponentsLinker>().RemoveComponent<SimGridWalkerComponent>();
+        Inventory.GetComponent<SimComponentsLinker>().RemoveComponent<SimGridWalkerComponent>();
     }
 }

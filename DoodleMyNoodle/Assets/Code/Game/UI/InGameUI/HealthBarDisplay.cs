@@ -16,8 +16,8 @@ public class HealthBarDisplay : MonoBehaviour
         SimHealthStatComponent simHealthStatComponent = GetComponentInParent<SimHealthStatComponent>();
         ListenToHealthComponent(simHealthStatComponent);
 
-        GetComponentInParent<SimPlayerComponentsLinker>()?.OnComponentAdded.AddListener(UpdateOnComponentAdded);
-        GetComponentInParent<SimPlayerComponentsLinker>()?.OnComponentRemoved.AddListener(UpdateOnComponentRemoved);
+        GetComponentInParent<SimComponentsLinker>()?.OnComponentAdded.AddListener(UpdateOnComponentAdded);
+        GetComponentInParent<SimComponentsLinker>()?.OnComponentRemoved.AddListener(UpdateOnComponentRemoved);
     }
 
     public void UpdateOnComponentAdded(SimComponent newComponent)
