@@ -66,7 +66,7 @@ public class SceneBlueprintIdUpdater : UnityEditor.AssetModificationProcessor
                 if (Application.isPlaying)
                 {
                     DebugService.LogError($"Updating {entity.gameObject.name}'s blueprintId to {entity.BlueprintId}. " +
-                        $"This should not happen at runtime. Try resaving your scene.");
+                        $"This should not happen at runtime. Try resaving the {scene.name} scene.");
                 }
                 else
                 {

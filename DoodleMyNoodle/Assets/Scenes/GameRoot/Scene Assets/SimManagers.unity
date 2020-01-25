@@ -166,7 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blueprintId:
     Type: 2
-    Value: 3/4c8245514883b6c4ba63476b942bba11
+    Value: 3/47ac98eafdf2257458009be782cc980c
 --- !u!4 &77173082
 Transform:
   m_ObjectHideFlags: 0
@@ -227,7 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blueprintId:
     Type: 2
-    Value: 0/4c8245514883b6c4ba63476b942bba11
+    Value: 0/47ac98eafdf2257458009be782cc980c
 --- !u!4 &142321503
 Transform:
   m_ObjectHideFlags: 0
@@ -286,7 +286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blueprintId:
     Type: 2
-    Value: 4/4c8245514883b6c4ba63476b942bba11
+    Value: 4/47ac98eafdf2257458009be782cc980c
 --- !u!4 &190107778
 Transform:
   m_ObjectHideFlags: 0
@@ -398,7 +398,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blueprintId:
     Type: 2
-    Value: 2/4c8245514883b6c4ba63476b942bba11
+    Value: 2/47ac98eafdf2257458009be782cc980c
 --- !u!4 &786510058
 Transform:
   m_ObjectHideFlags: 0
@@ -443,7 +443,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bace60742251cd468cc83f94a141cad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DurationOfATurn: 10
+  _data:
+    DurationOfATurn: 10
+    Timer:
+      RawValue: 0
+    CurrentTeam: 2
 --- !u!114 &1669361380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -458,7 +462,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blueprintId:
     Type: 2
-    Value: 5/4c8245514883b6c4ba63476b942bba11
+    Value: 5/47ac98eafdf2257458009be782cc980c
 --- !u!4 &1669361381
 Transform:
   m_ObjectHideFlags: 0
@@ -517,7 +521,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blueprintId:
     Type: 2
-    Value: 1/4c8245514883b6c4ba63476b942bba11
+    Value: 1/47ac98eafdf2257458009be782cc980c
 --- !u!4 &1912758291
 Transform:
   m_ObjectHideFlags: 0
