@@ -407,8 +407,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 209.48, y: 0}
-  m_SizeDelta: {x: 419.05, y: 0}
+  m_AnchoredPosition: {x: 115.5, y: -0.024963379}
+  m_SizeDelta: {x: 231.1, y: 0.050049}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9172142810175984204
 CanvasRenderer:
@@ -784,7 +784,7 @@ MonoBehaviour:
   m_CellSize: {x: 50, y: 50}
   m_Spacing: {x: 5, y: 5}
   m_Constraint: 1
-  m_ConstraintCount: 5
+  m_ConstraintCount: 2
 --- !u!222 &9172142810998268794
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1089,6 +1089,7 @@ GameObject:
   - component: {fileID: 9172142811476118909}
   - component: {fileID: 9172142811476118910}
   - component: {fileID: 9172142811476118911}
+  - component: {fileID: 6747833213363989679}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -1177,6 +1178,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6747833213363989679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9172142811476118880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2343ee351c329e54b94774cf264f82f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameCamera: {fileID: 0}
 --- !u!1 &9172142811507831223
 GameObject:
   m_ObjectHideFlags: 0
@@ -1308,6 +1322,10 @@ MonoBehaviour:
   TooltipName: {fileID: 9172142810864508241}
   TooltipDescription: {fileID: 9172142811231902035}
   Cam: {fileID: 0}
+  CursorMode: 0
+  HotSpot: {x: 0, y: 0}
+  MouseIdle: {fileID: 0}
+  MouseGrab: {fileID: 0}
 --- !u!223 &9172142811511739586
 Canvas:
   m_ObjectHideFlags: 0

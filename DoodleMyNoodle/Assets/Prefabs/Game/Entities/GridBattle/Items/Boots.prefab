@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3366830681365677837}
   - component: {fileID: 3366830681365677839}
   - component: {fileID: 3366830681365677838}
+  - component: {fileID: -349822656114683727}
   m_Layer: 0
   m_Name: Boots
   m_TagString: Untagged
@@ -62,3 +63,16 @@ MonoBehaviour:
   Name: Boots
   Description: Move to 1 adjacent tile in any direction
   Icon: {fileID: 21300000, guid: 96b3c2698e8fd3f409b90140f23df342, type: 3}
+--- !u!114 &-349822656114683727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3366830681365677836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 831d052142d0c0a48a6273b4ad78750f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartingSpeed: 4
