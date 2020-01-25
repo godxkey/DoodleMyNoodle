@@ -6,6 +6,27 @@ internal class SimModuleEntityManager : SimModuleBase
 {
     List<ISimEntityListChangeObserver> _changeObservers = new List<ISimEntityListChangeObserver>();
 
+    internal T AddComponent<T>(SimEntity entity) where T : SimComponent
+    {
+        T newComponent = entity.gameObject.AddComponent<T>();
+
+        AddObjectToRuntime(newComponent);
+        OnNewObjectIntoSim(newComponent);
+
+        return newComponent;
+    }
+
+    internal void RemoveComponent<T>(SimEntity entity) where T : SimComponent
+    {
+        T comp = entity.GetComponent<T>();
+        
+        OnPreDestroyObject(comp);
+
+        RemoveObjectFromRuntime(comp);
+
+        UnityEngine.Object.Destroy(comp);
+    }
+
     /// <summary>
     /// Duplicate the entity using Unity's traditional Instantiate replication model and inject it into the simulation
     /// <para/>
@@ -209,15 +230,20 @@ internal class SimModuleEntityManager : SimModuleBase
         //            find a non-allocating solution for this (investigate pooling of component iterators with a disposable pattern ?) TODO
         foreach (SimObject obj in newEntity.GetComponents<SimObject>())
         {
-            // assign id
-            obj.SimObjectId = SimModules._World.NextObjectId;
-            SimModules._World.NextObjectId++;
-
-            obj.OnSimAwake();
-
-            // This should eventually cause the OnSimStart() method to get called
-            SimModules._World.ObjectsThatHaventStartedYet.Add(obj);
+            OnNewObjectIntoSim(obj);
         }
+    }
+
+    void OnNewObjectIntoSim(SimObject obj)
+    {
+        // assign id
+        obj.SimObjectId = SimModules._World.NextObjectId;
+        SimModules._World.NextObjectId++;
+
+        obj.OnSimAwake();
+
+        // This should eventually cause the OnSimStart() method to get called
+        SimModules._World.ObjectsThatHaventStartedYet.Add(obj);
     }
 
     internal int PendingPermanentEntityDestructions = 0;
@@ -229,14 +255,20 @@ internal class SimModuleEntityManager : SimModuleBase
     {
         foreach (SimObject obj in entity.GetComponents<SimObject>())
         {
-            obj.OnSimDestroy();
-
-            SimModules._World.ObjectsThatHaventStartedYet.RemoveWithLastSwap(obj);
+            OnPreDestroyObject(obj);
         }
 
         PendingPermanentEntityDestructions++;
         GameObject.Destroy(entity.gameObject);
     }
+
+    void OnPreDestroyObject(SimObject obj)
+    {
+        obj.OnSimDestroy();
+
+        SimModules._World.ObjectsThatHaventStartedYet.RemoveWithLastSwap(obj);
+    }
+
     /// <summary>
     /// This should be called by the entity itself upon destruction. 
     /// </summary>
@@ -265,40 +297,51 @@ internal class SimModuleEntityManager : SimModuleBase
     {
         foreach (SimObject obj in simEntity.GetComponents<SimObject>())
         {
-            SimModules._Ticker.OnAddSimObjectToSim(obj);
-            SimModules._InputProcessorManager.OnAddSimObjectToSim(obj);
-
-            obj.OnAddedToRuntime();
-
-            foreach (ISimEntityListChangeObserver existingObserver in _changeObservers)
-            {
-                existingObserver.OnAddSimObjectToRuntime(obj);
-            }
-
-            if (obj is ISimEntityListChangeObserver newObserver)
-            {
-                _changeObservers.Add(newObserver);
-            }
+            AddObjectToRuntime(obj);
         }
     }
+
+    void AddObjectToRuntime(SimObject obj)
+    {
+        SimModules._Ticker.OnAddSimObjectToSim(obj);
+        SimModules._InputProcessorManager.OnAddSimObjectToSim(obj);
+
+        obj.OnAddedToRuntime();
+
+        foreach (ISimEntityListChangeObserver existingObserver in _changeObservers)
+        {
+            existingObserver.OnAddSimObjectToRuntime(obj);
+        }
+
+        if (obj is ISimEntityListChangeObserver newObserver)
+        {
+            _changeObservers.Add(newObserver);
+        }
+    }
+
     internal void RemoveEntityFromRuntime(SimEntity simEntity)
     {
         foreach (SimObject obj in simEntity.GetComponents<SimObject>())
         {
-            if (obj is ISimEntityListChangeObserver oldObserver)
-            {
-                _changeObservers.Remove(oldObserver);
-            }
-
-            foreach (ISimEntityListChangeObserver existingObserver in _changeObservers)
-            {
-                existingObserver.OnRemoveSimObjectFromRuntime(obj);
-            }
-
-            obj.OnRemovingFromRuntime();
-
-            SimModules._InputProcessorManager.OnRemovingSimObjectFromSim(obj);
-            SimModules._Ticker.OnRemovingSimObjectFromSim(obj);
+            RemoveObjectFromRuntime(obj);
         }
+    }
+
+    void RemoveObjectFromRuntime(SimObject obj)
+    {
+        if (obj is ISimEntityListChangeObserver oldObserver)
+        {
+            _changeObservers.Remove(oldObserver);
+        }
+
+        foreach (ISimEntityListChangeObserver existingObserver in _changeObservers)
+        {
+            existingObserver.OnRemoveSimObjectFromRuntime(obj);
+        }
+
+        obj.OnRemovingFromRuntime();
+
+        SimModules._InputProcessorManager.OnRemovingSimObjectFromSim(obj);
+        SimModules._Ticker.OnRemovingSimObjectFromSim(obj);
     }
 }
