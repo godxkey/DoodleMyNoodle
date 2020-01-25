@@ -83,7 +83,7 @@ namespace Sim.Operations
             DebugService.Log($"Reconstructing entites ({serializableWorld.Entities.Count})...");
             int reconstructCount = serializableWorld.Entities.Count;
             Dictionary<SimObjectId, SimObject> allSimObjects = new Dictionary<SimObjectId, SimObject>(reconstructCount * 4); // expecting ~4 components per entity
-            List<SimComponent> cachedComponentList = new List<SimComponent>();
+            List<SimComponent> reconstructedComponents = new List<SimComponent>();
             SimSerializableWorld deletethis = serializableWorld;
 
             for (int i = 0; i < serializableWorld.Entities.Count; i++)
@@ -100,28 +100,47 @@ namespace Sim.Operations
                     reconstructedEntity.gameObject.name = serializedEntity.Name;
                     reconstructedEntity.gameObject.SetActive(serializedEntity.Active);
                     reconstructedEntity.BlueprintId = blueprint.Id; // is this necessary ?
-                    reconstructedEntity.GetComponents(cachedComponentList);
+                    reconstructedEntity.GetComponents(reconstructedComponents);
 
-                    for (int c = 0; c < cachedComponentList.Count; c++)
+                    for (int c = serializedEntity.Components.Count - 1; c >= 0; c--)
                     {
-                        if (c < serializedEntity.Components.Count)
+                        SimSerializableWorld.Entity.Component serializedComponent = serializedEntity.Components[c];
+
+                        if(serializedComponent.Type == null)
                         {
-                            cachedComponentList[c].SimObjectId = serializedEntity.Components[c].Id;
-                            cachedComponentList[c].enabled = serializedEntity.Components[c].Enabled;
+                            PartialSuccess = true;
+                            DebugService.LogWarning($"Failed to deserialize type for component[{c}] of entity '{serializableWorld.Entities[i].Name}'. Reconstruction skipped.");
+                            continue;
+                        }
+
+                        int componentIndex = reconstructedComponents.IndexOf(serializedComponent.Type);
+                        SimComponent comp;
+                        if (componentIndex != -1)
+                        {
+                            comp = reconstructedComponents[componentIndex];
+                            reconstructedComponents.RemoveAt(componentIndex);
                         }
                         else
                         {
-                            PartialSuccess = true;
-                            DebugService.LogWarning($"The reconstructed entity {reconstructedEntity.gameObject.name} has a " +
-                                $"component({cachedComponentList[c].GetType()}) that was not found in the serialized simulation. " +
-                                $"It may be a new component that was not there when the serialization happened.");
+                            // component was not on the original blueprint, add it
+                            comp = (SimComponent)reconstructedEntity.gameObject.AddComponent(serializedComponent.Type);
                         }
 
-                        // cache SimObject
-                        if (cachedComponentList[c].SimObjectId.IsValid)
+
+                        comp.SimObjectId = serializedComponent.Id;
+                        comp.enabled = serializedComponent.Enabled;
+
+                        if (comp.SimObjectId.IsValid)
                         {
-                            allSimObjects.Add(cachedComponentList[c].SimObjectId, cachedComponentList[c]);
+                            allSimObjects.Add(comp.SimObjectId, comp);
                         }
+                    }
+
+                    // remove components that were not found in the saved data
+                    // (they are on the original blueprint, but they were probably removed in gameplay)
+                    for (int c = 0; c < reconstructedComponents.Count; c++)
+                    {
+                        UnityEngine.Object.Destroy(reconstructedComponents[c]);
                     }
 
                     // cache SimObject
@@ -177,16 +196,16 @@ namespace Sim.Operations
                 SimEntity reconstructedEntity = world.Entities[e];
                 if (reconstructedEntity != null) // skip over invalid entities
                 {
-                    reconstructedEntity.GetComponents(cachedComponentList);
-                    for (int c = cachedComponentList.Count - 1; c >= 0; c--)
+                    reconstructedEntity.GetComponents(reconstructedComponents);
+                    for (int c = reconstructedComponents.Count - 1; c >= 0; c--)
                     {
                         try
                         {
-                            cachedComponentList[c].DeserializeFromDataStack(componentDataStack);
+                            reconstructedComponents[c].DeserializeFromDataStack(componentDataStack);
                         }
                         catch (Exception error)
                         {
-                            DebugService.LogWarning($"Failed to deserialize {reconstructedEntity.gameObject.name}'s {cachedComponentList[c].GetType()} component: {error.Message} / {error.StackTrace}." +
+                            DebugService.LogWarning($"Failed to deserialize {reconstructedEntity.gameObject.name}'s {reconstructedComponents[c].GetType()} component: {error.Message} / {error.StackTrace}." +
                                 $"\nComponent data will stay at default values.");
                             PartialSuccess = true;
                         }
@@ -208,7 +227,7 @@ namespace Sim.Operations
 
             // terminado!
             DebugService.Log($"Deserialization complete! sim at tick {world.TickId}");
-            
+
             TerminateWithSuccess();
         }
 
