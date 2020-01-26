@@ -30,16 +30,16 @@ public class SimPawnControllerComponent : SimComponent
         // define default values here
     };
 
-    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    public override void PushToDataStack(SimComponentDataStack dataStack)
     {
-        base.SerializeToDataStack(dataStack);
+        base.PushToDataStack(dataStack);
         dataStack.Push(_data);
     }
 
-    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
+    public override void PopFromDataStack(SimComponentDataStack dataStack)
     {
         _data = (SerializedData)dataStack.Pop();
-        base.DeserializeFromDataStack(dataStack);
+        base.PopFromDataStack(dataStack);
     }
     #endregion
 }

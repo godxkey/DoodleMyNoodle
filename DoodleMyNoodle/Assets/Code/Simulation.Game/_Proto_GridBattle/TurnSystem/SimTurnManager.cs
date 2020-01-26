@@ -69,16 +69,16 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
         CurrentTeam = (Team)TEAM_COUNT
     };
 
-    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    public override void PushToDataStack(SimComponentDataStack dataStack)
     {
-        base.SerializeToDataStack(dataStack);
+        base.PushToDataStack(dataStack);
         dataStack.Push(_data);
     }
 
-    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
+    public override void PopFromDataStack(SimComponentDataStack dataStack)
     {
         _data = (SerializedData)dataStack.Pop();
-        base.DeserializeFromDataStack(dataStack);
+        base.PopFromDataStack(dataStack);
     }
     #endregion
 }

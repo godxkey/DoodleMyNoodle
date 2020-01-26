@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SimulationSyncClientOperation : CoroutineOperation
 {
-    public bool IsServerReadyToSendSimTicksForSimulationWereSyncingToo { get; private set; }
+    public bool IsServerReadyToSendSimTicksForSimulationWeAreSyncingTo { get; private set; }
 
     SessionClientInterface _sessionInterface;
     string _simLoadFile;
@@ -58,7 +58,7 @@ public class SimulationSyncClientOperation : CoroutineOperation
     {
         _receivedResponseFromServer = true;
         _simLoadFile = netMessage.SerializedSimulationFilePath;
-        IsServerReadyToSendSimTicksForSimulationWereSyncingToo = true;
+        IsServerReadyToSendSimTicksForSimulationWeAreSyncingTo = true;
     }
 
     protected override void OnTerminate()
