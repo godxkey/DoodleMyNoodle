@@ -643,7 +643,7 @@ namespace NestedTODO
         {
             if (AgileBoardWindow.nestedList == null)
             {
-                EditorGUILayout.HelpBox("There is no TODO List selected", MessageType.Warning);
+                EditorGUILayout.HelpBox("There is no to do List selected", MessageType.Warning);
                 return;
             }
 
@@ -830,7 +830,7 @@ namespace NestedTODO
         {
             if (AgileBoardWindow.nestedList == null)
             {
-                EditorGUILayout.HelpBox("There is no TODO List selected", MessageType.Warning);
+                EditorGUILayout.HelpBox("There is no to do List selected", MessageType.Warning);
                 return;
             }
 
