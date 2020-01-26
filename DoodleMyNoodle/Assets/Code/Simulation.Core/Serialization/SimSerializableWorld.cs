@@ -18,6 +18,7 @@ public class SimSerializableWorld
         {
             public bool Enabled;
             public SimObjectId Id;
+            public System.Type Type;
         }
     }
 

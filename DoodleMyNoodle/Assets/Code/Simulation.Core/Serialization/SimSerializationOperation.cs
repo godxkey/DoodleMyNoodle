@@ -76,7 +76,8 @@ namespace Sim.Operations
                     serializableEntity.Components.Add(new SimSerializableWorld.Entity.Component()
                     {
                         Enabled = simComponent.enabled,
-                        Id = simComponent.SimObjectId
+                        Id = simComponent.SimObjectId,
+                        Type = simComponent.GetType()
                     });
 
 

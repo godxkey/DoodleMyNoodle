@@ -156,6 +156,46 @@ public static class ListExtensions
 
         return false;
     }
+    
+    public static bool FindFirstOfType<T>(this IEnumerable enumerable, out T result)
+    {
+        foreach (var item in enumerable)
+        {
+            if (item is T t)
+            {
+                result = t;
+                return  true;
+            }
+        }
+
+        result = default;
+        return false;
+    }
+
+    public static bool FindFirstOfType<T>(this List<T> list, Type type, out T result)
+    {
+        int index = list.IndexOf(type);
+        if(index != -1)
+        {
+            result = list[index];
+            return true;
+        }
+        else
+        {
+            result = default;
+            return false;
+        }
+    }
+
+    public static int IndexOf<T>(this List<T> list, Type type)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list[i].GetType() == type)
+                return i;
+        }
+        return -1;
+    }
 
     public static bool AddUnique<T>(this List<T> list, in T value)
     {
