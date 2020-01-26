@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-[System.Serializable]
 public class SimStatComponent : SimComponent
 {
     private Stat<int> _stat;

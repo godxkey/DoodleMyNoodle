@@ -2,6 +2,6 @@
 
 public interface ISimSerializable
 {
-    void SerializeToDataStack(SimComponentDataStack dataStack);
-    void DeserializeFromDataStack(SimComponentDataStack dataStack);
+    void PushToDataStack(SimComponentDataStack dataStack);
+    void PopFromDataStack(SimComponentDataStack dataStack);
 }

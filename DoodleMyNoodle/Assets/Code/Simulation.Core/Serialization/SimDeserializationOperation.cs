@@ -201,7 +201,7 @@ namespace Sim.Operations
                     {
                         try
                         {
-                            reconstructedComponents[c].DeserializeFromDataStack(componentDataStack);
+                            reconstructedComponents[c].PopFromDataStack(componentDataStack);
                         }
                         catch (Exception error)
                         {

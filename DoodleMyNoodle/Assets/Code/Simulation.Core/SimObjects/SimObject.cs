@@ -48,9 +48,9 @@ public abstract class SimObject : MonoBehaviour, ISimSerializable
     /// </summary>
     public virtual void OnRemovingFromRuntime() { }
 
-    public virtual void SerializeToDataStack(SimComponentDataStack dataStack) { }
+    public virtual void PushToDataStack(SimComponentDataStack dataStack) { }
 
-    public virtual void DeserializeFromDataStack(SimComponentDataStack dataStack) { }
+    public virtual void PopFromDataStack(SimComponentDataStack dataStack) { }
 
     public Transform UnityTransform => gameObject.transform;
     public SimTransformComponent SimTransform
