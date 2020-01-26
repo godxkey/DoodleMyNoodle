@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // TODO : CHANGE IT THAT INSTED OF ADDING GRID WALKING, THIS COMPONENT IS THE ONE MOVING US WHEN USE() IS CALLED
-public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip
+public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip, IItemOnUse
 {
     public int StartingSpeed = 4;
 
@@ -16,5 +16,15 @@ public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
     public void OnUnequip(SimInventoryComponent Inventory)
     {
         Inventory.GetComponent<SimComponentsLinker>().RemoveComponent<SimGridWalkerComponent>();
+    }
+
+    public void OnUse(SimPlayerActions PlayerActions)
+    {
+        if (PlayerActions.CanTakeAction())
+        {
+            Debug.Log("Walking!");
+
+            PlayerActions.DecreaseValue(1);
+        }
     }
 }

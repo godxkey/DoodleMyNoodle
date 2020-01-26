@@ -16,15 +16,13 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
 
     // INTERFACE SHORTCUT CALLS
 
-    // TODO: Change GetComponents for something more effeciant
-
-    public void OnConsume()
+    public void OnConsume(SimPlayerActions PlayerActions)
     {
         foreach (IItemOnConsume itemOnConsume in GetComponents<IItemOnConsume>())
         {
             if (itemOnConsume != (IItemOnConsume)this)
             {
-                itemOnConsume.OnConsume();
+                itemOnConsume.OnConsume(PlayerActions);
             } 
         }
     }
@@ -51,13 +49,13 @@ public class SimItem : SimEntity, IItemOnEquip, IItemOnUnequip, IItemOnConsume, 
         }
     }
 
-    public void OnUse()
+    public void OnUse(SimPlayerActions PlayerActions)
     {
         foreach (IItemOnUse itemOnUse in GetComponents<IItemOnUse>())
         {
             if (itemOnUse != (IItemOnUse)this)
             {
-                itemOnUse.OnUse();
+                itemOnUse.OnUse(PlayerActions);
             }
         }
     }

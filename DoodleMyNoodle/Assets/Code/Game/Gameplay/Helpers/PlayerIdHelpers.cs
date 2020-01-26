@@ -6,16 +6,25 @@ public static class PlayerIdHelpers
 {
     public static PlayerId GetLocalPlayerID()
     {
+        if (PlayerRepertoireSystem.Instance == null)
+            return new PlayerId();
+
         return PlayerRepertoireSystem.Instance.GetLocalPlayerInfo().PlayerId;
     }
 
     public static PlayerInfo GetLocalPlayerInfo()
     {
+        if (PlayerRepertoireSystem.Instance == null)
+            return null;
+
         return PlayerRepertoireSystem.Instance.GetLocalPlayerInfo();
     }
 
     public static SimPlayerComponent GetLocalSimPlayerComponent()
     {
+        if (PlayerRepertoireSystem.Instance == null)
+            return null;
+
         return PlayerIdHelpers.GetSimPlayerFromPlayer(PlayerRepertoireSystem.Instance.GetLocalPlayerInfo());
     }
 
@@ -26,6 +35,9 @@ public static class PlayerIdHelpers
 
     public static PlayerInfo GetPlayerFromSimPlayer(in SimPlayerId simPlayerId)
     {
+        if (PlayerRepertoireSystem.Instance == null)
+            return null;
+
         foreach (PlayerInfo player in PlayerRepertoireSystem.Instance.Players)
         {
             if (player.SimPlayerId == simPlayerId)

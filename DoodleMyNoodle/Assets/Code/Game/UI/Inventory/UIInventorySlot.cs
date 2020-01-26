@@ -25,21 +25,32 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
         {
             if (Input.GetMouseButtonDown(1))
             {
-                // Alex - HACK TO TEST FUNCTIONNALITY OF DROPPING
-                if (_currentItem.GetComponent<TrashItemComponent>())
+                if(_currentItem != null) 
                 {
-                    SimItem item = ClickerDisplay.Instance.GetItemCurrentlyHolding();
-                    
-                    if (item != null)
+                    SimPawnComponent playerPawn = SimPawnHelpers.GetPawnFromController(PlayerIdHelpers.GetLocalSimPlayerComponent());
+
+                    SimInventoryComponent inventory = playerPawn.GetComponent<SimInventoryComponent>();
+                    SimPlayerActions PlayerActions = playerPawn.GetComponent<SimPlayerActions>();
+
+                    // Alex - HACK TO TEST FUNCTIONNALITY OF DROPPING
+                    if (_currentItem.GetComponent<TrashItemComponent>())
                     {
-                        SimPawnComponent playerPawn = SimPawnHelpers.GetPawnFromController(PlayerIdHelpers.GetLocalSimPlayerComponent());
+                        SimItem item = ClickerDisplay.Instance.GetItemCurrentlyHolding();
 
-                        SimInventoryComponent inventory = playerPawn.GetComponent<SimInventoryComponent>();
+                        if (item != null)
+                        {
+                            inventory.DropItem(item);
+                        }
 
-                        inventory.DropItem(item);
+                        ClickerDisplay.Instance.DropHoldingItem();
                     }
-
-                    ClickerDisplay.Instance.DropHoldingItem();
+                    else
+                    {
+                        if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                        {
+                            _currentItem.OnUse(PlayerActions);
+                        }
+                    }
                 }
             }
         }

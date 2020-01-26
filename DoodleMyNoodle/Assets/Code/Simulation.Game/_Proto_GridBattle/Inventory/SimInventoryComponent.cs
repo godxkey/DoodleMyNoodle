@@ -22,6 +22,14 @@ public class SimInventoryComponent : SimComponent
         }
     }
 
+    public void OnInventorySizeDecrease()
+    {
+        while (_inventory.Count != InventorySize)
+        {
+            DropItem(_inventory.Last());
+        }
+    }
+
     private int AddItem(SimItem item, int position = -1)
     {
         if (_inventory.Count >= InventorySize)

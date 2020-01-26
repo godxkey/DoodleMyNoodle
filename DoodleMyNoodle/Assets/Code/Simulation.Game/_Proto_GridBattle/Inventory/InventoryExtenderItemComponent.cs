@@ -14,5 +14,6 @@ public class InventoryExtenderItemComponent : SimComponent, IItemOnEquip, IItemO
     public void OnUnequip(SimInventoryComponent Inventory)
     {
         Inventory.InventorySize -= InventorySizeUpgrade;
+        Inventory.OnInventorySizeDecrease();
     }
 }
