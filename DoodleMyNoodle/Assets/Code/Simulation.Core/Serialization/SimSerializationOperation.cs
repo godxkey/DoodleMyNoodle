@@ -84,7 +84,7 @@ namespace Sim.Operations
 
                     try
                     {
-                        simComponent.SerializeToDataStack(componentDataStack);
+                        simComponent.PushToDataStack(componentDataStack);
                     }
                     catch (Exception e)
                     {

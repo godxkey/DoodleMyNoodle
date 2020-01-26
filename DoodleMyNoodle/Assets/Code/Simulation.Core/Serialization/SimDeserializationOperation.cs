@@ -182,7 +182,7 @@ namespace Sim.Operations
                     {
                         try
                         {
-                            cachedComponentList[c].DeserializeFromDataStack(componentDataStack);
+                            cachedComponentList[c].PopFromDataStack(componentDataStack);
                         }
                         catch (Exception error)
                         {
