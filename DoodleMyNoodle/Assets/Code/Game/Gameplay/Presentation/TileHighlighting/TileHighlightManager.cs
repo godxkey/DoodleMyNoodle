@@ -35,4 +35,15 @@ public class TileHighlightManager : GameMonoBehaviour
             _highlights[i].SetActive(false);
         }
     }
+
+    public override void OnSafeDestroy()
+    {
+        base.OnSafeDestroy();
+
+        for (int i = 0; i < _highlights.Count; i++)
+        {
+            _highlights[i].Destroy();
+        }
+        _highlights.Clear();
+    }
 }

@@ -15,10 +15,10 @@ MonoBehaviour:
   _PrefabBlueprints:
   - BlueprintId:
       Type: 1
-      Value: ae2d25a66f815824e98df5bdf7c7da25
-    Prefab: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
+      Value: 0d5d0005113063a4da4aba051a9e90a0
+    Prefab: {fileID: 6013152437860551189, guid: 0d5d0005113063a4da4aba051a9e90a0,
       type: 3}
-    EntityName: PlayerCharacter
+    EntityName: Player
   - BlueprintId:
       Type: 1
       Value: 58c51afadcca8a14ebd8323ac7a49dcf
@@ -31,3 +31,27 @@ MonoBehaviour:
     Prefab: {fileID: 1368924192284294072, guid: 41e300480790e7b4b8ead30d0b5ff7a7,
       type: 3}
     EntityName: Bullet
+  - BlueprintId:
+      Type: 1
+      Value: 073d20c9c7c541d449652b85017d033c
+    Prefab: {fileID: 5520528403305719284, guid: 073d20c9c7c541d449652b85017d033c,
+      type: 3}
+    EntityName: GridBattle_SoldierAI
+  - BlueprintId:
+      Type: 1
+      Value: a9f6ad84f3172af4e9b08134aa361d37
+    Prefab: {fileID: 8908235613229724286, guid: a9f6ad84f3172af4e9b08134aa361d37,
+      type: 3}
+    EntityName: GridBattle_Soldier
+  - BlueprintId:
+      Type: 1
+      Value: abe5de76709f4204ba57f070a1557562
+    Prefab: {fileID: 5534947295831120837, guid: abe5de76709f4204ba57f070a1557562,
+      type: 3}
+    EntityName: TestItem
+  - BlueprintId:
+      Type: 1
+      Value: ae2d25a66f815824e98df5bdf7c7da25
+    Prefab: {fileID: 8908235613229724286, guid: ae2d25a66f815824e98df5bdf7c7da25,
+      type: 3}
+    EntityName: GridBattle_PlayerCharacter

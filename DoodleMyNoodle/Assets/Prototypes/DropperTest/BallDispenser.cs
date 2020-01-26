@@ -65,7 +65,7 @@ public class BallDispenser : MonoBehaviour
 
     private void Update()
     {
-        queueLength = ballOrders.queueLength;
+        queueLength = ballOrders.QueueLength;
         heldQueueLength = heldBallOrders.Count;
 
 

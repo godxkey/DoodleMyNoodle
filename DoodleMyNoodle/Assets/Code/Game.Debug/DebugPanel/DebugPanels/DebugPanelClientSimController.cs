@@ -10,35 +10,48 @@ public class DebugPanelClientSimController : DebugPanel
         SimulationController.Instance != null &&
         SimulationController.Instance is SimulationControllerClient;
 
-    float[] m_simTickQueueLengths = new float[60];
-    int m_simTickQueueLengthsIterator = 0;
-    float m_averagedSimTickQueueLength = 0;
+    float[] _simTickQueueLengths = new float[60];
+    int _simTickQueueLengthsIterator = 0;
+    float _averagedSimTickQueueLength = 0;
 
-    DirtyValue<uint> m_currentSimTick;
-    bool[] m_offsettedSimTicks = new bool[60];
-    int m_offsettedSimTicksIterator = 0;
-    int m_totalOffsettedSimTicks;
+    float[] _simTickDropperSpeeds = new float[60];
+    float _averagedSimTickDropperSpeed = 0;
+
+    DirtyValue<uint> _currentSimTick;
+    bool[] _offsettedSimTicks = new bool[60];
+    int _offsettedSimTicksIterator = 0;
+    int _totalOffsettedSimTicks;
 
     public override void OnGUI()
     {
         SimulationControllerClient simController = SimulationController.Instance as SimulationControllerClient;
 
-        m_simTickQueueLengths[m_simTickQueueLengthsIterator] = simController.simTicksInQueue;
-        m_simTickQueueLengthsIterator++;
-        m_simTickQueueLengthsIterator %= m_simTickQueueLengths.Length;
+        _simTickQueueLengths[_simTickQueueLengthsIterator] = simController.SimTicksInQueue;
+        _simTickDropperSpeeds[_simTickQueueLengthsIterator] = simController.CurrentSimPlayingSpeed;
+        _simTickQueueLengthsIterator++;
+        _simTickQueueLengthsIterator %= _simTickQueueLengths.Length;
 
-        if (m_simTickQueueLengthsIterator == 0)
+        if (_simTickQueueLengthsIterator == 0)
         {
-            m_averagedSimTickQueueLength = 0;
-            for (int i = 0; i < m_simTickQueueLengths.Length; i++)
+            _averagedSimTickQueueLength = 0;
+            for (int i = 0; i < _simTickQueueLengths.Length; i++)
             {
-                m_averagedSimTickQueueLength += m_simTickQueueLengths[i];
+                _averagedSimTickQueueLength += _simTickQueueLengths[i];
             }
-            m_averagedSimTickQueueLength /= m_simTickQueueLengths.Length;
+            _averagedSimTickQueueLength /= _simTickQueueLengths.Length;
+
+
+            _averagedSimTickDropperSpeed = 0;
+            for (int i = 0; i < _simTickDropperSpeeds.Length; i++)
+            {
+                _averagedSimTickDropperSpeed += _simTickDropperSpeeds[i];
+            }
+            _averagedSimTickDropperSpeed /= _simTickDropperSpeeds.Length;
         }
 
-        GUILayout.Label($"Average SimTick queue length (over 60 frames): {m_averagedSimTickQueueLength:F3}");
-        GUILayout.Label($"Offsetted SimTicks (over 60 frames): {m_totalOffsettedSimTicks}");
+        GUILayout.Label($"Average SimTick queue length (over 60 frames): {_averagedSimTickQueueLength:F3}");
+        GUILayout.Label($"Offsetted SimTicks (over 60 frames): {_totalOffsettedSimTicks}");
+        GUILayout.Label($"SimTick Dropper Speed (over 60 frames): {_averagedSimTickDropperSpeed}");
     }
 
     void OnFixedUpdate()
@@ -46,25 +59,25 @@ public class DebugPanelClientSimController : DebugPanel
         if (!SimulationView.IsRunningOrReadyToRun)
             return;
 
-        m_currentSimTick.Value = SimulationView.TickId;
+        _currentSimTick.Value = SimulationView.TickId;
 
         // 'not dirty' means no change. That means the simulation has NOT played a sim tick this past fixed update
-        m_offsettedSimTicks[m_offsettedSimTicksIterator] = !m_currentSimTick.IsDirty;
+        _offsettedSimTicks[_offsettedSimTicksIterator] = !_currentSimTick.IsDirty;
 
-        m_offsettedSimTicksIterator++;
-        m_offsettedSimTicksIterator %= m_offsettedSimTicks.Length;
+        _offsettedSimTicksIterator++;
+        _offsettedSimTicksIterator %= _offsettedSimTicks.Length;
 
-        if (m_offsettedSimTicksIterator == 0)
+        if (_offsettedSimTicksIterator == 0)
         {
-            m_totalOffsettedSimTicks = 0;
-            for (int i = 0; i < m_offsettedSimTicks.Length; i++)
+            _totalOffsettedSimTicks = 0;
+            for (int i = 0; i < _offsettedSimTicks.Length; i++)
             {
-                if (m_offsettedSimTicks[i])
-                    m_totalOffsettedSimTicks++;
+                if (_offsettedSimTicks[i])
+                    _totalOffsettedSimTicks++;
             }
         }
 
-        m_currentSimTick.Reset();
+        _currentSimTick.Reset();
     }
 
 

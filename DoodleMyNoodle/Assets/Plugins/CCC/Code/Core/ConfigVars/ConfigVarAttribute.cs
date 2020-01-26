@@ -1,6 +1,11 @@
 ﻿using System;
 using CCC.ConfigVarInterals;
 
+/// <summary>
+/// Name Guideline: Separate terms by . Separate words of a term by _
+/// <para/>
+/// E.g: inventory.drop_item
+/// </summary>
 [AttributeUsage(AttributeTargets.Field)]
 public class ConfigVarAttribute : ConfigVarBaseAttribute
 {

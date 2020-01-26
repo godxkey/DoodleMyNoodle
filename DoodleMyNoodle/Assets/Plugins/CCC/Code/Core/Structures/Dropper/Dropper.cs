@@ -7,8 +7,8 @@ public class Dropper<T>
 {
     protected struct Element
     {
-        public T value;
-        public float scheduledDrop;
+        public T Value;
+        public float ScheduledDrop;
     }
 
     /// <summary>
@@ -18,16 +18,16 @@ public class Dropper<T>
     /// <para/>
     /// 0 = no more drops
     /// </summary>
-    public float speed;
-    public int queueLength => queue.Count;
+    public float Speed;
+    public int QueueLength => queue.Count;
 
-    protected float currentTime { get; private set; } = 0;
-    protected Element lastEnqueuedElement { get; private set; } = new Element() { value = default, scheduledDrop = float.MinValue };
+    protected float CurrentTime { get; private set; } = 0;
+    protected Element LastEnqueuedElement { get; private set; } = new Element() { Value = default, ScheduledDrop = float.MinValue };
     Queue<Element> _queue;
 
     public virtual void Update(float deltaTime)
     {
-        currentTime += deltaTime * speed;
+        CurrentTime += deltaTime * Speed;
     }
 
     public bool IsReadyForDrop()
@@ -35,20 +35,20 @@ public class Dropper<T>
         if (queue.Count == 0)
             return false;
 
-        return currentTime >= queue.Peek().scheduledDrop;
+        return CurrentTime >= queue.Peek().ScheduledDrop;
     }
 
     public virtual void Enqueue(T item, float deltaTime)
     {
-        float scheduleBase = lastEnqueuedElement.scheduledDrop;
+        float scheduleBase = LastEnqueuedElement.ScheduledDrop;
 
-        lastEnqueuedElement = new Element()
+        LastEnqueuedElement = new Element()
         {
-            value = item,
-            scheduledDrop = (scheduleBase + deltaTime).MinLimit(currentTime)
+            Value = item,
+            ScheduledDrop = (scheduleBase + deltaTime).MinLimit(CurrentTime)
         };
 
-        queue.Enqueue(lastEnqueuedElement);
+        queue.Enqueue(LastEnqueuedElement);
 
     }
 
@@ -56,7 +56,7 @@ public class Dropper<T>
     {
         if (IsReadyForDrop())
         {
-            droppedItem = queue.Dequeue().value;
+            droppedItem = queue.Dequeue().Value;
 
             return true;
         }
@@ -65,6 +65,11 @@ public class Dropper<T>
             droppedItem = default;
             return false;
         }
+    }
+
+    public void Clear()
+    {
+        _queue.Clear();
     }
 
 

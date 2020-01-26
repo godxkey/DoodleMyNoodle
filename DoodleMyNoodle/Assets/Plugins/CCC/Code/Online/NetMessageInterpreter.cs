@@ -9,9 +9,9 @@ public static class NetMessageInterpreter
     {
         BitStreamReader reader = new BitStreamReader(messageData);
 
-        if (messageData.Length < 4)
+        if (messageData.Length < 2) // 2 minimum bytes required for the message type
         {
-            DebugService.LogError("[NetMessageInterpreter] Error interpreting: data size to small.");
+            DebugService.LogError($"[NetMessageInterpreter] Error interpreting: data size to small ({messageData.Length} bytes)");
             return null;
         }
 
