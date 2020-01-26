@@ -70,11 +70,11 @@ public abstract class SessionInterface : IDisposable
         _networkInterface.DisconnectFromSession(null);
     }
 
-    public void SendNetMessage(object netMessage, INetworkInterfaceConnection connection)
+    public void SendNetMessage(object netMessage, INetworkInterfaceConnection connection, bool reliableAndOrdered = true)
     {
         byte[] messageData;
         NetMessageInterpreter.GetDataFromMessage(netMessage, out messageData);
-        _networkInterface.SendMessage(connection, messageData, messageData.Length);
+        _networkInterface.SendMessage(connection, messageData, reliableAndOrdered);
 
 #if DEBUG_BUILD
         if (s_logNetMessages.BoolValue)

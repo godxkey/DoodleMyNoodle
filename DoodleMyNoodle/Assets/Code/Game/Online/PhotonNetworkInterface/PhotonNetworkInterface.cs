@@ -143,7 +143,7 @@ namespace Internals.PhotonNetwokInterface
             }
         }
 
-        public override void SendMessage(INetworkInterfaceConnection connection, byte[] data, int size)
+        public override void SendMessage(INetworkInterfaceConnection connection, byte[] data, bool reliableAndOrdered)
         {
             if (connection == null)
             {
@@ -152,7 +152,9 @@ namespace Internals.PhotonNetwokInterface
             }
 
             BoltConnection boltConnection = ((PhotonNetworkInterfaceConnection)connection).BoltConnection;
-            BoltCommunicationEvent evt = BoltCommunicationEvent.Create(boltConnection, Bolt.ReliabilityModes.ReliableOrdered);
+            BoltCommunicationEvent evt = BoltCommunicationEvent.Create(boltConnection,
+                reliableAndOrdered ? ReliabilityModes.ReliableOrdered : ReliabilityModes.Unreliable);
+
             if (evt != null) // evt might be null if the connection is not valid anymore
             {
                 evt.BinaryData = data;
