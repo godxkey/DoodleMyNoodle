@@ -162,7 +162,7 @@ namespace Internals.PhotonNetwokInterface
             }
         }
 
-        public override void SetMessageReader(Action<INetworkInterfaceConnection, byte[], int> messageReader)
+        public override void SetMessageReader(Action<INetworkInterfaceConnection, byte[]> messageReader)
         {
             _messageReader = messageReader;
         }
@@ -328,7 +328,7 @@ namespace Internals.PhotonNetwokInterface
 
             if (intenseLog)
                 DebugService.Log("[PhotonNetworkInterface] OnEvent: (length)" + evnt.BinaryData.Length);
-            _messageReader?.Invoke(connection, evnt.BinaryData, evnt.BinaryData.Length);
+            _messageReader?.Invoke(connection, evnt.BinaryData);
         }
         #endregion
 
@@ -366,7 +366,7 @@ namespace Internals.PhotonNetwokInterface
         }
         #endregion
 
-        Action<INetworkInterfaceConnection, byte[], int> _messageReader;
+        Action<INetworkInterfaceConnection, byte[]> _messageReader;
         List<INetworkInterfaceConnection> _connections = new List<INetworkInterfaceConnection>();
         List<INetworkInterfaceSession> _sessions = new List<INetworkInterfaceSession>();
         INetworkInterfaceSession _connectedSessionInfo;

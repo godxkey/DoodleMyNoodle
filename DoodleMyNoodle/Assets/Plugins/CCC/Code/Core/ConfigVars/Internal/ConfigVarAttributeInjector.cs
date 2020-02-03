@@ -12,8 +12,6 @@ namespace CCC.ConfigVarInterals
             {
                 foreach (var _class in assembly.GetTypes())
                 {
-                    if (!_class.IsClass)
-                        continue;
                     foreach (var field in _class.GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public))
                     {
                         if (!field.IsDefined(typeof(ConfigVarAttributeType), false))

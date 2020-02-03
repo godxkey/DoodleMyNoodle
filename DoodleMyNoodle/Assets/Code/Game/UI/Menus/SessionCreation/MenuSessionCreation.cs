@@ -25,7 +25,7 @@ public class MenuSessionCreation : MonoBehaviour
 
     void Update()
     {
-        OnlineServerInterface serverInterface = OnlineService.serverInterface;
+        OnlineServerInterface serverInterface = OnlineService.ServerInterface;
 
         _sessionNameInputField.interactable = serverInterface != null;
 

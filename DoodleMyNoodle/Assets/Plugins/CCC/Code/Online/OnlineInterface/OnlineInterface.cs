@@ -4,13 +4,13 @@ using UnityEngine;
 
 public abstract class OnlineInterface : IDisposable
 {
-    const bool log = false;
+    const bool LOG = false;
 
-    public event Action onTerminate;
+    public event Action OnTerminate;
     public SessionInterface SessionInterface { get; protected set; }
 
     public abstract bool IsServerType { get; }
-    public bool isClientType => !IsServerType;
+    public bool IsClientType => !IsServerType;
 
     public OnlineInterface(NetworkInterface network)
     {
@@ -18,7 +18,7 @@ public abstract class OnlineInterface : IDisposable
 
         _network.OnDisconnectedFromSession += OnDisconnectFromSession;
 
-        if (log)
+        if (LOG)
 #pragma warning disable CS0162 // Unreachable code detected
             DebugService.Log("Online interface created");
 #pragma warning restore CS0162 // Unreachable code detected
@@ -40,12 +40,12 @@ public abstract class OnlineInterface : IDisposable
         SessionInterface?.Dispose();
         _network.OnDisconnectedFromSession -= OnDisconnectFromSession;
 
-        if (log)
+        if (LOG)
 #pragma warning disable CS0162 // Unreachable code detected
             DebugService.Log("Online interface terminating");
 #pragma warning restore CS0162 // Unreachable code detected
 
-        onTerminate?.Invoke();
+        OnTerminate?.Invoke();
     }
 
     protected NetworkInterface _network;

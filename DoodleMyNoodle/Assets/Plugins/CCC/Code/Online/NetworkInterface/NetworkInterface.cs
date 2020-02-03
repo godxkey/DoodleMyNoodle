@@ -31,18 +31,8 @@ public abstract class NetworkInterface : IDisposable
     public abstract void Update();
 
     public abstract void SendMessage(INetworkInterfaceConnection connection, byte[] data, bool reliableAndOrdered);
-    public abstract void SetMessageReader(Action<INetworkInterfaceConnection, byte[], int> messageReader);
-    public abstract IDataTransferHandle StartDataTransfer(byte[] data);
+    public abstract void SetMessageReader(Action<INetworkInterfaceConnection, byte[]> messageReader);
 
     public virtual void Dispose() { }
 
-    public interface IDataTransferHandle
-    {
-        float Progress { get; }
-        void Stop();
-        bool IsOngoing { get; }
-        bool HasCompletedWithSuccess { get; }
-        bool HasStoppedWithFailure { get; }
-        string ErrorMessage { get; }
-    }
 }

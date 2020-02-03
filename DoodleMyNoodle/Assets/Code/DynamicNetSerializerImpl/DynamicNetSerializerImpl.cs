@@ -63,52 +63,66 @@ namespace Internals.OnlineServiceImpl
 
         public int GetNetBitSize(object message)
         {
+#if DEBUG_BUILD
             try
             {
-
+#endif
 
                 return 16 + DynamicNetSerializationRegistry.map_GetBitSize[message.GetType()].Invoke(message);
 
 
+#if DEBUG_BUILD
             }
             catch (Exception e)
             {
-                DebugService.LogError("[NetMessageFactoryImpl] Failed to get message bit size from type [" + message.GetType() + "] : " + e.Message);
+                DebugService.LogError($"[NetMessageFactoryImpl] " +
+                    $"Failed to get message bit size from type [{message.GetType()}] : {e.Message} - {e.StackTrace}");
                 return 0;
             }
+#endif
         }
 
         public void NetSerialize(object message, BitStreamWriter writer)
         {
+#if DEBUG_BUILD
             try
             {
+#endif
 
                 writer.WriteUInt16(GetTypeId(message));
                 DynamicNetSerializationRegistry.map_Serialize[message.GetType()].Invoke(message, writer);
 
 
+#if DEBUG_BUILD
             }
             catch (Exception e)
             {
-                DebugService.LogError("[NetMessageFactoryImpl] Failed to serialize message of type [" + message.GetType() + "] : " + e.Message);
+                DebugService.LogError($"[NetMessageFactoryImpl]" +
+                    $" Failed to serialize message of type [{message.GetType()}] : {e.Message} - {e.StackTrace}");
             }
+#endif
         }
 
         public object NetDeserialize(BitStreamReader reader)
         {
+#if DEBUG_BUILD
             try
             {
+#endif
 
                 ushort typeId = reader.ReadUInt16();
                 return DynamicNetSerializationRegistry.map_Deserialize[typeId].Invoke(reader);
 
 
+#if DEBUG_BUILD
             }
             catch (Exception e)
             {
-                DebugService.LogError("[NetMessageFactoryImpl] Failed to deserialize message : " + e.Message);
+                DebugService.LogError($"[NetMessageFactoryImpl]" +
+                    $" Failed to deserialize message : {e.Message} - {e.StackTrace}");
                 return null;
             }
+#endif
         }
     }
 }

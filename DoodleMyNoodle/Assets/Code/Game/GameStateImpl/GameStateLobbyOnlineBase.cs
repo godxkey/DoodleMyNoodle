@@ -18,7 +18,7 @@ public abstract class GameStateLobbyOnlineBase : GameState
     {
         base.Enter(parameters);
 
-        if (OnlineService.onlineInterface == null)
+        if (OnlineService.OnlineInterface == null)
         {
             GameStateManager.TransitionToState(_specificDefinition.gameStateIfReturn);
             DebugService.LogError("[" + ToString() + "] Failed to get onlineInterface." +
@@ -26,16 +26,16 @@ public abstract class GameStateLobbyOnlineBase : GameState
             return;
         }
 
-        OnlineService.onlineInterface.onTerminate += OnOnlineInterfaceTerminate;
+        OnlineService.OnlineInterface.OnTerminate += OnOnlineInterfaceTerminate;
     }
 
     public override void BeginExit(GameStateParam[] parameters)
     {
         base.BeginExit(parameters);
 
-        if (OnlineService.onlineInterface != null)
+        if (OnlineService.OnlineInterface != null)
         {
-            OnlineService.onlineInterface.onTerminate -= OnOnlineInterfaceTerminate;
+            OnlineService.OnlineInterface.OnTerminate -= OnOnlineInterfaceTerminate;
         }
     }
 

@@ -13,7 +13,7 @@ public class SimulationControllerServer : SimulationControllerMaster
     {
         base.OnGameReady();
 
-        _session = OnlineService.serverInterface.sessionServerInterface;
+        _session = OnlineService.ServerInterface.sessionServerInterface;
         _session.RegisterNetMessageReceiver<NetMessageInputSubmission>(OnNetMessageInputSubmission);
         _session.RegisterNetMessageReceiver<NetMessageRequestSimSync>(OnSimSyncRequest);
     }
