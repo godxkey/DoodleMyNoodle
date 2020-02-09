@@ -32,6 +32,6 @@ public class SimulationView : SimulationBase
     public static bool CanBeSerialized => SimModules._Serializer.CanSimWorldBeSaved;
     public static bool CanBeDeserialized => SimModules._Serializer.CanSimWorldBeSaved;
 
-    public static SimSerializationOperation SerializeSimulation() => SimModules._Serializer.SerializeSimulation();
+    public static SimSerializationOperationWithCache SerializeSimulation() => SimModules._Serializer.SerializeSimulation();
     public static SimDeserializationOperation DeserializeSimulation(string data) => SimModules._Serializer.DeserializeSimulation(data);
 }

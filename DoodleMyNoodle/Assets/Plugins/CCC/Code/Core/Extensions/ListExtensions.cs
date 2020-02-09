@@ -100,6 +100,13 @@ public static class ListExtensions
         return list.Count - 1;
     }
 
+    public static T Pop<T>(this List<T> list)
+    {
+        T last = list.Last();
+        list.RemoveLast();
+        return last;
+    }
+
     public static int CountOf<T>(this List<T> list, T element)
     {
         int amount = 0;

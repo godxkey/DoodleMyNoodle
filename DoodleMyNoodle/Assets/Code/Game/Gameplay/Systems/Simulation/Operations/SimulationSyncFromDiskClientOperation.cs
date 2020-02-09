@@ -1,10 +1,7 @@
 ﻿using CCC.Operations;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class SimulationSyncClientOperation : CoroutineOperation
+public class SimulationSyncFromDiskClientOperation : CoroutineOperation
 {
     public bool IsServerReadyToSendSimTicksForSimulationWeAreSyncingTo { get; private set; }
 
@@ -12,7 +9,7 @@ public class SimulationSyncClientOperation : CoroutineOperation
     string _simLoadFile;
     bool _receivedResponseFromServer;
 
-    public SimulationSyncClientOperation(SessionClientInterface sessionInterface)
+    public SimulationSyncFromDiskClientOperation(SessionClientInterface sessionInterface)
     {
         _sessionInterface = sessionInterface;
     }
@@ -26,7 +23,7 @@ public class SimulationSyncClientOperation : CoroutineOperation
         //               In future iterations, the server should upload the simulation directly to the other player.
 
         // file name example: SerializedSim-515433
-        
+
 
         // request sync to server
         NetMessageRequestSimSync syncRequest = new NetMessageRequestSimSync();
@@ -43,7 +40,7 @@ public class SimulationSyncClientOperation : CoroutineOperation
         _sessionInterface.UnregisterNetMessageReceiver<NetMessageSimSyncFromFile>(OnNetMessageSimSyncFromFile);
 
         // terminate if load path is invalid
-        if(_simLoadFile.IsNullOrEmpty())
+        if (_simLoadFile.IsNullOrEmpty())
         {
             TerminateWithFailure($"Invalid simulation load file path received from the server ({_simLoadFile}). Prehaps it failed to serialize it.");
             yield break;

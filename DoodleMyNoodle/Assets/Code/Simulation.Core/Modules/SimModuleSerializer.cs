@@ -27,7 +27,7 @@ internal class SimModuleSerializer : SimModuleBase
     internal Action<SimDeserializationResult> OnDeserializationResult;
 
     SimDeserializationOperation _deserializationOperation;
-    SimSerializationOperation _serializationOperation;
+    SimSerializationOperationWithCache _serializationOperation;
 
     JsonSerializerSettings _cachedJsonSettings;
     SimObjectJsonConverter _cachedSimObjectJsonConverter;
@@ -61,7 +61,7 @@ internal class SimModuleSerializer : SimModuleBase
         return _cachedSimObjectJsonConverter;
     }
 
-    public SimSerializationOperation SerializeSimulation()
+    public SimSerializationOperationWithCache SerializeSimulation()
     {
         if (!SimModules._Serializer.CanSimWorldBeSaved)
         {
@@ -69,7 +69,7 @@ internal class SimModuleSerializer : SimModuleBase
             return null;
         }
 
-        _serializationOperation = new SimSerializationOperation(GetSimObjectJsonConverter(), GetJsonSettings());
+        _serializationOperation = new SimSerializationOperationWithCache(GetSimObjectJsonConverter(), GetJsonSettings());
 
         _serializationOperation.OnFailCallback = (op) =>
         {
@@ -81,7 +81,7 @@ internal class SimModuleSerializer : SimModuleBase
 
         _serializationOperation.OnSucceedCallback = (op) =>
         {
-            SimSerializationOperation serializationOp = (SimSerializationOperation)op;
+            SimSerializationOperationWithCache serializationOp = (SimSerializationOperationWithCache)op;
             OnSerializationResult?.Invoke(new SimSerializationResult()
             {
                 SuccessLevel = serializationOp.PartialSuccess ?

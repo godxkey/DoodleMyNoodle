@@ -1,13 +1,15 @@
-﻿using System;
+﻿using CCC.Operations;
+using System;
 using System.Collections.Generic;
 
 public class SimulationControllerServer : SimulationControllerMaster
 {
+    [ConfigVar("sim.pause_while_join", "true", description: "Should the simulation be paused while players are joining the game?")]
+    static ConfigVar s_pauseSimulationWhilePlayersAreJoining;
+
     SessionServerInterface _session;
 
-    SimulationSyncServerOperation _syncOp;
-
-    List<INetworkInterfaceConnection> _clientsWaitingForSync = new List<INetworkInterfaceConnection>();
+    List<CoroutineOperation> _ongoingOperations = new List<CoroutineOperation>();
 
     public override void OnGameReady()
     {
@@ -28,6 +30,22 @@ public class SimulationControllerServer : SimulationControllerMaster
             _session.UnregisterNetMessageReceiver<NetMessageInputSubmission>(OnNetMessageInputSubmission);
             _session = null;
         }
+
+        _ongoingOperations.ForEach((x) => x.TerminateWithFailure());
+    }
+
+    public override void OnGameUpdate()
+    {
+        base.OnGameUpdate();
+
+        if (_ongoingOperations.Count > 0)
+        {
+            _ongoingOperations.RemoveAll((x) => !x.IsRunning);
+            if (_ongoingOperations.Count == 0 && s_pauseSimulationWhilePlayersAreJoining.BoolValue)
+            {
+                UnpauseSimulation(key: "PlayerJoining");
+            }
+        }
     }
 
     void OnNetMessageInputSubmission(NetMessageInputSubmission netMessage, INetworkInterfaceConnection source)
@@ -44,11 +62,7 @@ public class SimulationControllerServer : SimulationControllerMaster
         // A client wants a complete simulatio sync
         DebugService.Log($"Client {clientConnection.Id} requested a simulation sync");
 
-        if (!TryLaunchSyncForClient(clientConnection))
-        {
-            DebugService.Log($"Could not start sync right now. Will try later automatically.");
-            _clientsWaitingForSync.AddUnique(clientConnection);
-        }
+        LaunchSyncForClient(clientConnection);
     }
 
     bool ValidateInputSubmission(NetMessageInputSubmission submission, PlayerInfo playerInfo)
@@ -58,6 +72,9 @@ public class SimulationControllerServer : SimulationControllerMaster
             return false;
 
         if (playerInfo == null)
+            return false;
+
+        if (IsSimulationPaused)
             return false;
 
         return true;
@@ -77,55 +94,31 @@ public class SimulationControllerServer : SimulationControllerMaster
         _session.SendNetMessage(netMessage, PlayerRepertoireServer.Instance.PlayerConnections);
     }
 
-    public override void OnGameUpdate()
+    SimulationSyncFromTransferServerOperation LaunchSyncForClient(INetworkInterfaceConnection clientConnection)
     {
-        base.OnGameUpdate();
+        DebugService.Log($"Starting new sync...");
 
-        if (_clientsWaitingForSync.Count > 0)
+        var newOp = new SimulationSyncFromTransferServerOperation(_session, clientConnection);
+
+        newOp.OnFailCallback = (op) =>
         {
-            for (int i = _clientsWaitingForSync.Count - 1; i >= 0; i--)
-            {
-                if (!_session.IsConnectionValid(_clientsWaitingForSync[i])
-                    || TryLaunchSyncForClient(_clientsWaitingForSync[i]))
-                {
-                    _clientsWaitingForSync.RemoveAt(i);
-                }
-            }
-        }
-    }
+            DebugService.Log($"Sync failed. {op.Message}");
+        };
 
-    bool TryLaunchSyncForClient(INetworkInterfaceConnection clientConnection)
-    {
-        if (_syncOp == null || !_syncOp.IsRunning)
+        newOp.OnSucceedCallback = (op) =>
         {
-            DebugService.Log($"Starting new sync...");
-            _syncOp = new SimulationSyncServerOperation(_session, clientConnection);
+            DebugService.Log($"Sync complete. {op.Message}");
+        };
 
-            _syncOp.OnFailCallback = (op) =>
-            {
-                DebugService.Log($"Sync failed. {op.Message}");
-            };
+        newOp.Execute();
 
-            _syncOp.OnSucceedCallback = (op) =>
-            {
-                DebugService.Log($"Sync complete. {op.Message}");
-            };
+        _ongoingOperations.Add(newOp);
 
-            _syncOp.Execute();
-
-            return true;
-        }
-        else if (_syncOp.CanAcceptNewClients)
+        if (s_pauseSimulationWhilePlayersAreJoining.BoolValue)
         {
-            DebugService.Log($"Adding a client to ongoing sync...");
-            _syncOp.AddAdditionalClientConnection(clientConnection);
+            PauseSimulation(key: "PlayerJoining");
+        }
 
-            return true;
-        }
-        else
-        {
-            // cannot sync right now...
-            return false;
-        }
+        return newOp;
     }
 }
