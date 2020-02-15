@@ -15,7 +15,6 @@ public class SimulationView : SimulationBase
     public static void ForceSetTickId(uint tickId) => SimModules._World.TickId = tickId;
     public static void Tick(in SimTickData tickData) => SimModules._Ticker.Tick(tickData);
 
-
     /// <summary>
     /// Can the simulation be ticked ? Some things can prevent the simulation to be ticked (like being in the middle of a scene injection)
     /// </summary>

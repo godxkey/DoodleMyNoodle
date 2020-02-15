@@ -66,6 +66,7 @@ namespace Sim.Operations
             world.TickId = serializableWorld.TickId;
             world.Seed = serializableWorld.Seed;
             world.NextObjectId = serializableWorld.NextObjectId;
+            world.PresentationScenes = serializableWorld.PresentationScenes;
 
             SimModules._Ticker.OnTickUpdated();
 
@@ -224,6 +225,8 @@ namespace Sim.Operations
             ////////////////////////////////////////////////////////////////////////////////////////
             DebugService.Log($"Adding reconstructed entities to runtime...");
             world.Entities.ForEach((x) => SimModules._EntityManager.AddEntityToRuntime(x));
+
+            SimModules._PresentationSceneManager.OnDeserializedWorld();
 
             // terminado!
             DebugService.Log($"Deserialization complete! sim at tick {world.TickId}");

@@ -34,4 +34,6 @@ public class SimSerializableWorld
     public int Seed = 0;
 
     public List<SimObjectId> ObjectsThatHaventStartedYet;
+
+    public List<string> PresentationScenes;
 }

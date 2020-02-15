@@ -8,6 +8,7 @@ internal static class SimModules
         _BlueprintManager      = new SimModuleBlueprintManager();
         _EntityManager         = new SimModuleEntityManager();
         _InputProcessorManager = new SimModuleInputProcessorManager();
+        _PresentationSceneManager = new SimModulePresentationSceneManager();
         _Random                = new SimModuleRandom();
         _SceneLoader           = new SimModuleSceneLoader();
         _Serializer            = new SimModuleSerializer();
@@ -19,6 +20,7 @@ internal static class SimModules
             _BlueprintManager     ,
             _EntityManager        ,
             _InputProcessorManager,
+            _PresentationSceneManager,
             _Random               ,
             _SceneLoader          ,
             _Serializer           ,
@@ -49,6 +51,7 @@ internal static class SimModules
         _BlueprintManager = null;
         _EntityManager = null;
         _InputProcessorManager = null;
+        _PresentationSceneManager = null;
         _Random = null;
         _SceneLoader = null;
         _Serializer = null;
@@ -66,6 +69,7 @@ internal static class SimModules
     internal static SimModuleBlueprintManager _BlueprintManager;
     internal static SimModuleEntityManager _EntityManager;
     internal static SimModuleInputProcessorManager _InputProcessorManager;
+    internal static SimModulePresentationSceneManager _PresentationSceneManager;
     internal static SimModuleRandom _Random;
     internal static SimModuleSceneLoader _SceneLoader;
     internal static SimModuleSerializer _Serializer;

@@ -103,9 +103,11 @@ public class SimulationControllerClient : SimulationController
             _ongoingSyncOp = null;
     }
 
-    private void FixedUpdate()
+    public override void OnGameFixedUpdate()
     {
-        if (!SimulationView.IsRunningOrReadyToRun)
+        base.OnGameFixedUpdate();
+
+        if (IsSyncingSimulationWithServer && !SimulationView.IsRunningOrReadyToRun)
             return;
 
         SimulationView.UpdateSceneLoads();
