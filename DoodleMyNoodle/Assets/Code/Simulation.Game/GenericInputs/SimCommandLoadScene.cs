@@ -10,10 +10,10 @@ using UnityEngine;
 [NetSerializable]
 public class SimCommandLoadScene : SimCommand
 {
-    public string sceneName;
+    public string SceneName;
 
     public override void Execute()
     {
-        Simulation.LoadScene(sceneName);
+        Simulation.LoadScene(SceneName);
     }
 }

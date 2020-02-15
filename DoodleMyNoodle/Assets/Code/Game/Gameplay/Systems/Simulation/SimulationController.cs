@@ -10,9 +10,9 @@ public abstract class SimulationController : GameSystem<SimulationController>
     [SerializeField] SimBlueprintProviderPrefab _bpProviderPrefab;
     [SerializeField] SimBlueprintProviderSceneObject _bpProviderSceneObject;
 
-    private bool _pauseSimulation = false;
+    private Blocker _playSimulation = new Blocker();
 
-    public bool CanTickSimulation => SimulationView.CanBeTicked && !_pauseSimulation;
+    public bool CanTickSimulation => SimulationView.CanBeTicked && _playSimulation;
 
     public override bool SystemReady => true;
 
@@ -42,7 +42,6 @@ public abstract class SimulationController : GameSystem<SimulationController>
 #endif
     }
 
-
     protected override void OnDestroy()
     {
 #if DEBUG_BUILD
@@ -60,17 +59,17 @@ public abstract class SimulationController : GameSystem<SimulationController>
             SimulationView.Dispose();
     }
 
-    protected void PauseSimulation()
+    protected void PauseSimulation(string key)
     {
-        _pauseSimulation = true;
+        _playSimulation.BlockUnique(key);
     }
 
-    protected void UnpauseSimulation()
+    protected void UnpauseSimulation(string key)
     {
-        _pauseSimulation = false;
+        _playSimulation.Unblock(key);
     }
 
-    protected bool IsSimulationPaused => _pauseSimulation;
+    protected bool IsSimulationPaused => !_playSimulation;
 
 #if DEBUG_BUILD
     protected CoroutineOperation _ongoingCmdOperation;
@@ -131,7 +130,7 @@ public abstract class SimulationController : GameSystem<SimulationController>
             {
                 fileNameToReadFrom += ".txt";
             }
-            
+
             _ongoingCmdOperation = new LoadSimulationFromDiskOperation($"{Application.persistentDataPath}/{fileNameToReadFrom}");
             locationTxt = $"file {fileNameToReadFrom}";
         }
@@ -158,11 +157,11 @@ public abstract class SimulationController : GameSystem<SimulationController>
     {
         if (IsSimulationPaused)
         {
-            UnpauseSimulation();
+            UnpauseSimulation(key: "cmd");
         }
         else
         {
-            PauseSimulation();
+            PauseSimulation(key: "cmd");
         }
     }
 #endif

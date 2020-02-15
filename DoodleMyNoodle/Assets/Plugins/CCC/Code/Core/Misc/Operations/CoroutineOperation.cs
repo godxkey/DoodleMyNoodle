@@ -20,7 +20,8 @@ namespace CCC.Operations
         {
             None = 0,
             Success = 1 << 0,
-            Failure = 1 << 1
+            Failure = 1 << 1,
+            All = Success | Failure
         }
         public LogFlag LogFlags = LogFlag.Failure;
 

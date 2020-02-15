@@ -9,7 +9,7 @@ public class SessionClientInterface : SessionInterface
 
     public override bool IsServerType => false;
 
-    public INetworkInterfaceConnection serverConnection
+    public INetworkInterfaceConnection ServerConnection
     {
         get
         {
@@ -26,6 +26,6 @@ public class SessionClientInterface : SessionInterface
 
     public void SendNetMessageToServer(object netMessage)
     {
-        SendNetMessage(netMessage, serverConnection);
+        SendNetMessage(netMessage, ServerConnection);
     }
 }

@@ -15,7 +15,7 @@ public static class StaticNetSerializer_SimCommandLoadScene
     public static int GetNetBitSize(SimCommandLoadScene obj)
     {
         int result = 0;
-        result += StaticNetSerializer_String.GetNetBitSize(ref obj.sceneName);
+        result += StaticNetSerializer_String.GetNetBitSize(ref obj.SceneName);
         result += StaticNetSerializer_SimCommand.GetNetBitSize(obj);
         return result;
     }
@@ -32,7 +32,7 @@ public static class StaticNetSerializer_SimCommandLoadScene
     }
     public static void NetSerialize(SimCommandLoadScene obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_String.NetSerialize(ref obj.sceneName, writer);
+        StaticNetSerializer_String.NetSerialize(ref obj.SceneName, writer);
         StaticNetSerializer_SimCommand.NetSerialize(obj, writer);
     }
 
@@ -48,7 +48,7 @@ public static class StaticNetSerializer_SimCommandLoadScene
     }
     public static void NetDeserialize(SimCommandLoadScene obj, BitStreamReader reader)
     {
-        StaticNetSerializer_String.NetDeserialize(ref obj.sceneName, reader);
+        StaticNetSerializer_String.NetDeserialize(ref obj.SceneName, reader);
         StaticNetSerializer_SimCommand.NetDeserialize(obj, reader);
     }
 }

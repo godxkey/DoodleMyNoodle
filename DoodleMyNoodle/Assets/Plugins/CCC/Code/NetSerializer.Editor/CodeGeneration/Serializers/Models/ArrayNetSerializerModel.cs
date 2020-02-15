@@ -50,7 +50,7 @@ public static partial class NetSerializerCodeGenerator
                     {
                         writer.WriteLine("        if (obj == null)");
                         writer.WriteLine("            return 1;");
-                        writer.WriteLine("        int result = 1 + sizeof(UInt16) * 8;");
+                        writer.WriteLine("        int result = 1 + sizeof(UInt32) * 8;");
                         writer.WriteLine("        for (int i = 0; i < obj.Length; i++)");
                         writer.WriteLine("        {");
                         writer.WriteLine("            " + ModelHelpers.GetSerializerFieldLine_GetNetBitSize(elementType, "[i]"));
@@ -72,7 +72,7 @@ public static partial class NetSerializerCodeGenerator
                         writer.WriteLine("            return;");
                         writer.WriteLine("        }");
                         writer.WriteLine("        writer.WriteBit(true);");
-                        writer.WriteLine("        writer.WriteUInt16((UInt16)obj.Length);");
+                        writer.WriteLine("        writer.WriteUInt32((UInt32)obj.Length);");
                         writer.WriteLine("        for (int i = 0; i < obj.Length; i++)");
                         writer.WriteLine("        {");
                         writer.WriteLine("            " + ModelHelpers.GetSerializerFieldLine_Serialize(elementType, "[i]"));
@@ -91,7 +91,7 @@ public static partial class NetSerializerCodeGenerator
                         writer.WriteLine("            obj = null;");
                         writer.WriteLine("            return;");
                         writer.WriteLine("        }");
-                        writer.WriteLine("        obj = new " + elementType.Name + "[reader.ReadUInt16()];");
+                        writer.WriteLine("        obj = new " + elementType.Name + "[reader.ReadUInt32()];");
                         writer.WriteLine("        for (int i = 0; i < obj.Length; i++)");
                         writer.WriteLine("        {");
                         writer.WriteLine("            " + ModelHelpers.GetSerializerFieldLine_Deserialize(elementType, "[i]"));

@@ -76,15 +76,26 @@ public static class ListExtensions
         list[index] = temp;
     }
 
+    public static void MoveFirst<T>(this List<T> list, int index)
+    {
+        if (list.Count <= 1)
+            return;
+
+        T element = list[index];
+
+        list.RemoveAt(index);
+        list.Insert(0, element);
+    }
+
     public static void MoveLast<T>(this List<T> list, int index)
     {
         if (list.Count <= 1)
             return;
 
-        T temp = list[index];
+        T element = list[index];
 
         list.RemoveAt(index);
-        list.Add(temp);
+        list.Add(element);
     }
 
     public static T First<T>(this List<T> list)
@@ -98,6 +109,13 @@ public static class ListExtensions
     public static int LastIndex<T>(this List<T> list)
     {
         return list.Count - 1;
+    }
+
+    public static T Pop<T>(this List<T> list)
+    {
+        T last = list.Last();
+        list.RemoveLast();
+        return last;
     }
 
     public static int CountOf<T>(this List<T> list, T element)
@@ -207,6 +225,14 @@ public static class ListExtensions
         else
         {
             return false;
+        }
+    }
+
+    public static void AddRange<T>(this List<T> list, in T value, int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            list.Add(value);
         }
     }
 }

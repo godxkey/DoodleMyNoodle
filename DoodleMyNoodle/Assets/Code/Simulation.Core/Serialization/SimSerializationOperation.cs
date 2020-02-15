@@ -6,6 +6,52 @@ using System.Collections.Generic;
 
 namespace Sim.Operations
 {
+    // This operation launches the real 'SimSerializationOperation' and caches it.
+    // If there is already one for the current tick id, it'll take the existing cached operation insteading of launching a new one
+    public class SimSerializationOperationWithCache : CoroutineOperation
+    {
+        internal static SimSerializationOperation s_CachedSerializationOp;
+        internal static uint s_CachedSerializationTickId = uint.MaxValue;
+
+        public string SerializationData;
+        public bool PartialSuccess;
+
+        SimObjectJsonConverter _simObjectJsonConverter;
+        JsonSerializerSettings _jsonSerializerSettings;
+
+        internal SimSerializationOperationWithCache(
+            SimObjectJsonConverter simObjectJsonConverter, 
+            JsonSerializerSettings jsonSerializerSettings)
+        {
+            _simObjectJsonConverter = simObjectJsonConverter;
+            _jsonSerializerSettings = jsonSerializerSettings;
+        }
+
+        protected override IEnumerator ExecuteRoutine()
+        {
+            if(SimulationBase.TickId != s_CachedSerializationTickId)
+            {
+                s_CachedSerializationOp = new SimSerializationOperation(_simObjectJsonConverter, _jsonSerializerSettings);
+                s_CachedSerializationOp.Execute();
+                s_CachedSerializationTickId = SimulationBase.TickId;
+            }
+
+            if (s_CachedSerializationOp.IsRunning)
+            {
+                yield return ExecuteSubOperationAndWaitForSuccess(s_CachedSerializationOp);
+            }
+
+            SerializationData = s_CachedSerializationOp.SerializationData;
+            PartialSuccess = s_CachedSerializationOp.PartialSuccess;
+
+            if (s_CachedSerializationOp.HasSucceeded)
+                TerminateWithSuccess(s_CachedSerializationOp.Message);
+            else
+                TerminateWithFailure(s_CachedSerializationOp.Message);
+        }
+    }
+
+
     public class SimSerializationOperation : CoroutineOperation
     {
         [ConfigVar(name: "log.sim_serialization", defaultValue: "0", description: "Should the SimModuleSerializer print the serialization text after completing a serializing?", flags: ConfigVarFlag.Save)]
@@ -43,6 +89,7 @@ namespace Sim.Operations
             serializableWorld.TickId = world.TickId;
             serializableWorld.NextObjectId = world.NextObjectId;
             serializableWorld.Seed = world.Seed;
+            serializableWorld.PresentationScenes = world.PresentationScenes;
 
             serializableWorld.ObjectsThatHaventStartedYet = new List<SimObjectId>(world.ObjectsThatHaventStartedYet.Count);
             for (int i = 0; i < world.ObjectsThatHaventStartedYet.Count; i++)

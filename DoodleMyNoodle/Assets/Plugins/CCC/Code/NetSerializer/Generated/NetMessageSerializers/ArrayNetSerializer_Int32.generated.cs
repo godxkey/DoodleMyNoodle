@@ -10,7 +10,7 @@ public static class ArrayNetSerializer_Int32
     {
         if (obj == null)
             return 1;
-        int result = 1 + sizeof(UInt16) * 8;
+        int result = 1 + sizeof(UInt32) * 8;
         for (int i = 0; i < obj.Length; i++)
         {
             result += StaticNetSerializer_Int32.GetNetBitSize(ref obj[i]);
@@ -26,7 +26,7 @@ public static class ArrayNetSerializer_Int32
             return;
         }
         writer.WriteBit(true);
-        writer.WriteUInt16((UInt16)obj.Length);
+        writer.WriteUInt32((UInt32)obj.Length);
         for (int i = 0; i < obj.Length; i++)
         {
             StaticNetSerializer_Int32.NetSerialize(ref obj[i], writer);
@@ -40,7 +40,7 @@ public static class ArrayNetSerializer_Int32
             obj = null;
             return;
         }
-        obj = new Int32[reader.ReadUInt16()];
+        obj = new Int32[reader.ReadUInt32()];
         for (int i = 0; i < obj.Length; i++)
         {
             StaticNetSerializer_Int32.NetDeserialize(ref obj[i], reader);

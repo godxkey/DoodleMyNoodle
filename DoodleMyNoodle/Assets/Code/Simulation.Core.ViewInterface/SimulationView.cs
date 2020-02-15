@@ -15,7 +15,6 @@ public class SimulationView : SimulationBase
     public static void ForceSetTickId(uint tickId) => SimModules._World.TickId = tickId;
     public static void Tick(in SimTickData tickData) => SimModules._Ticker.Tick(tickData);
 
-
     /// <summary>
     /// Can the simulation be ticked ? Some things can prevent the simulation to be ticked (like being in the middle of a scene injection)
     /// </summary>
@@ -32,6 +31,6 @@ public class SimulationView : SimulationBase
     public static bool CanBeSerialized => SimModules._Serializer.CanSimWorldBeSaved;
     public static bool CanBeDeserialized => SimModules._Serializer.CanSimWorldBeSaved;
 
-    public static SimSerializationOperation SerializeSimulation() => SimModules._Serializer.SerializeSimulation();
+    public static SimSerializationOperationWithCache SerializeSimulation() => SimModules._Serializer.SerializeSimulation();
     public static SimDeserializationOperation DeserializeSimulation(string data) => SimModules._Serializer.DeserializeSimulation(data);
 }

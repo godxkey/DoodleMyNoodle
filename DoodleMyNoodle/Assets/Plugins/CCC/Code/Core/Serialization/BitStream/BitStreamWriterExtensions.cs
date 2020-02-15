@@ -3,60 +3,60 @@ using UnityEngine;
 
 public static class BitStreamWriterExtensions
 {
-    public static void WriteByte(this BitStreamWriter writer, byte value)
+    public static void WriteByte(this BitStreamWriter writer, Byte value)
     {
         writer.WriteBits(value, 8);
     }
 
-    public static void WriteChar(this BitStreamWriter writer, char value)
+    public static void WriteChar(this BitStreamWriter writer, Char value)
     {
         writer.WriteBits(value, 16);
     }
 
-    public static void WriteInt16(this BitStreamWriter writer, short value)
+    public static void WriteInt16(this BitStreamWriter writer, Int16 value)
     {
         writer.WriteBits(BitConverterX.Int32ToUInt32(value), 16);
     }
-    public static void WriteInt32(this BitStreamWriter writer, int value)
+    public static void WriteInt32(this BitStreamWriter writer, Int32 value)
     {
         writer.WriteBits(BitConverterX.Int32ToUInt32(value), 32);
     }
-    public static void WriteUInt16(this BitStreamWriter writer, ushort value)
+    public static void WriteUInt16(this BitStreamWriter writer, UInt16 value)
     {
         writer.WriteBits(value, 16);
     }
-    public static void WriteUInt32(this BitStreamWriter writer, uint value)
+    public static void WriteUInt32(this BitStreamWriter writer, UInt32 value)
     {
         writer.WriteBits(value, 32);
     }
-    public static void WriteInt64(this BitStreamWriter writer, long value)
+    public static void WriteInt64(this BitStreamWriter writer, Int64 value)
     {
-        BitConverterX.UInt64ToUInt32((ulong)value, out uint left, out uint right);
+        BitConverterX.UInt64ToUInt32((UInt64)value, out UInt32 left, out UInt32 right);
         writer.WriteUInt32(left);
         writer.WriteUInt32(right);
     }
-    public static void WriteUInt64(this BitStreamWriter writer, ulong value)
+    public static void WriteUInt64(this BitStreamWriter writer, UInt64 value)
     {
-        BitConverterX.UInt64ToUInt32(value, out uint left, out uint right);
+        BitConverterX.UInt64ToUInt32(value, out UInt32 left, out UInt32 right);
         writer.WriteUInt32(left);
         writer.WriteUInt32(right);
     }
 
-    public static void WriteFloat32(this BitStreamWriter writer, float value)
+    public static void WriteFloat32(this BitStreamWriter writer, Single value)
     {
         writer.WriteBits(BitConverterX.Float32ToUInt32(value), 32);
     }
 
-    public static void WriteBool(this BitStreamWriter writer, bool value)
+    public static void WriteBool(this BitStreamWriter writer, Boolean value)
     {
         writer.WriteBit(value);
     }
 
     public static void WriteString(this BitStreamWriter writer, string value)
     {
-        writer.WriteUInt16((UInt16)value.Length);
+        writer.WriteUInt32((UInt32)value.Length);
 
-        for (int i = 0; i < value.Length; i++)
+        for (Int32 i = 0; i < value.Length; i++)
         {
             writer.WriteChar(value[i]);
         }

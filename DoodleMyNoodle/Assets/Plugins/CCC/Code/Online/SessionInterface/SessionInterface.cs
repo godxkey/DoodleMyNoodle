@@ -9,7 +9,7 @@ public abstract class SessionInterface : IDisposable
     const bool LOG = false;
 
 #if DEBUG_BUILD
-    [ConfigVar(name: "log.netmessage", defaultValue:"0", ConfigVarFlag.Save, "Should we log the sent/received NetMessages.")]
+    [ConfigVar(name: "log.netmessage", defaultValue: "0", ConfigVarFlag.Save, "Should we log the sent/received NetMessages.")]
     static ConfigVar s_logNetMessages;
 #endif
 
@@ -17,9 +17,12 @@ public abstract class SessionInterface : IDisposable
     public bool IsClientType => !IsServerType;
     public INetworkInterfaceSession SessionInfo => _networkInterface.ConnectedSessionInfo;
     public ReadOnlyList<INetworkInterfaceConnection> Connections => _networkInterface.Connections;
+    public ReadOnlyList<ReceiveDataTransferOperation> IncomingDataTransfers => _incomingDataTransfers.AsReadOnlyNoAlloc();
+    public ReadOnlyList<SendDataTransferOperation> OutgoingDataTransfer => _outgoingDataTransfers.AsReadOnlyNoAlloc();
     public event Action OnTerminate;
     public event Action<INetworkInterfaceConnection> OnConnectionAdded;
     public event Action<INetworkInterfaceConnection> OnConnectionRemoved;
+    public event Action<ReceiveDataTransferOperation, INetworkInterfaceConnection> OnBeginReceiveLargeDataTransfer;
 
     public SessionInterface(NetworkInterface networkInterface)
     {
@@ -28,6 +31,8 @@ public abstract class SessionInterface : IDisposable
 
         _networkInterface.OnDisconnect += InterfaceOnDisconnect;
         _networkInterface.OnConnect += Interface_OnConnect;
+
+        RegisterNetMessageReceiver<NetMessageDataTransferHeader>(OnReceiveDataTransferHeader);
     }
 
     public void Dispose()
@@ -41,6 +46,9 @@ public abstract class SessionInterface : IDisposable
     public virtual void Update()
     {
         // nothing to do
+
+        _outgoingDataTransfers.RemoveAll((x) => !x.IsRunning);
+        _incomingDataTransfers.RemoveAll((x) => !x.IsRunning);
     }
 
     public void RegisterNetMessageReceiver<NetMessageType>(Action<NetMessageType, INetworkInterfaceConnection> callback)
@@ -70,23 +78,72 @@ public abstract class SessionInterface : IDisposable
         _networkInterface.DisconnectFromSession(null);
     }
 
-    public void SendNetMessage(object netMessage, INetworkInterfaceConnection connection)
+    public void SendNetMessage(object netMessage, INetworkInterfaceConnection connection, bool reliableAndOrdered = true)
     {
-        byte[] messageData;
-        NetMessageInterpreter.GetDataFromMessage(netMessage, out messageData);
-        _networkInterface.SendMessage(connection, messageData, messageData.Length);
+        if (NetMessageInterpreter.GetDataFromMessage(netMessage, out byte[] messageData, byteLimit: OnlineConstants.MAX_MESSAGE_SIZE))
+        {
+            _networkInterface.SendMessage(connection, messageData, reliableAndOrdered);
 
 #if DEBUG_BUILD
-        if (s_logNetMessages.BoolValue)
-        {
-            DebugService.Log($"[Session] Send message '{netMessage}' to connection {connection.Id}");
-        }
+            if (s_logNetMessages.BoolValue)
+            {
+                DebugService.Log($"[Session] Send message '{netMessage}' to connection {connection.Id}");
+            }
 #endif
+        }
     }
 
     public bool IsConnectionValid(INetworkInterfaceConnection connection)
     {
         return _networkInterface.Connections.Contains(connection);
+    }
+
+    public SendDataTransferOperation BeginLargeDataTransfer(object netMessage, INetworkInterfaceConnection connection, string description = "")
+    {
+        if (NetMessageInterpreter.GetDataFromMessage(netMessage, out byte[] messageData, byteLimit: int.MaxValue))
+        {
+            SendDataTransferOperation op = new SendDataTransferOperation(messageData, connection, this, description);
+
+            _outgoingDataTransfers.Add(op);
+
+            op.Execute();
+
+#if DEBUG_BUILD
+            if (s_logNetMessages.BoolValue)
+            {
+                DebugService.Log($"[Session] BeginLargeDataTransfer '{netMessage}-{description}' to connection {connection.Id}");
+            }
+#endif
+
+            return op;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    void OnReceiveDataTransferHeader(NetMessageDataTransferHeader netMessage, INetworkInterfaceConnection source)
+    {
+        ReceiveDataTransferOperation op = new ReceiveDataTransferOperation(netMessage, source, this);
+
+        _incomingDataTransfers.Add(op);
+
+        op.OnDataReceived += (o, data) =>
+        {
+            OnReceiveMessage(source, data);
+        };
+
+        op.Execute();
+
+#if DEBUG_BUILD
+        if (s_logNetMessages.BoolValue)
+        {
+            DebugService.Log($"[Session] OnReceiveDataTransferHeader '{netMessage}-{netMessage.Description}' from connection {source.Id}");
+        }
+#endif
+
+        OnBeginReceiveLargeDataTransfer?.Invoke(op, source);
     }
 
     void Interface_OnConnect(INetworkInterfaceConnection connection)
@@ -99,30 +156,33 @@ public abstract class SessionInterface : IDisposable
         OnConnectionRemoved?.Invoke(connection);
     }
 
-    protected virtual void OnReceiveMessage(INetworkInterfaceConnection source, byte[] data, int messageSize)
+    protected virtual void OnReceiveMessage(INetworkInterfaceConnection source, byte[] data)
     {
-        object netMessage = NetMessageInterpreter.GetMessageFromData(data);
-
-#if DEBUG_BUILD
-        if (s_logNetMessages.BoolValue)
+        if (NetMessageInterpreter.GetMessageFromData(data, out object netMessage))
         {
-            DebugService.Log($"[Session] Received message '{netMessage}' from connection {source.Id}");
-        }
+#if DEBUG_BUILD
+            if (s_logNetMessages.BoolValue)
+            {
+                DebugService.Log($"[Session] Received message '{netMessage}' from connection {source.Id}");
+            }
 #endif
 
-        if (netMessage != null)
-        {
-            Type t = netMessage.GetType();
-
-            if (_netMessageReceivers.ContainsKey(t))
+            if (netMessage != null)
             {
-                _netMessageReceivers[t].OnReceive(netMessage, source);
+                Type t = netMessage.GetType();
+
+                if (_netMessageReceivers.ContainsKey(t))
+                {
+                    _netMessageReceivers[t].OnReceive(netMessage, source);
+                }
             }
         }
     }
 
     protected NetworkInterface _networkInterface;
     protected Dictionary<Type, NetMessageReceiverList> _netMessageReceivers = new Dictionary<Type, NetMessageReceiverList>();
+    protected List<SendDataTransferOperation> _outgoingDataTransfers = new List<SendDataTransferOperation>();
+    protected List<ReceiveDataTransferOperation> _incomingDataTransfers = new List<ReceiveDataTransferOperation>();
 
     protected abstract class NetMessageReceiverList
     {
@@ -133,24 +193,24 @@ public abstract class SessionInterface : IDisposable
 
     protected class NetMessageReceiverList<NetMessageType> : NetMessageReceiverList
     {
-        public List<Action<NetMessageType, INetworkInterfaceConnection>> _listeners = new List<Action<NetMessageType, INetworkInterfaceConnection>>();
+        public List<Action<NetMessageType, INetworkInterfaceConnection>> Listeners = new List<Action<NetMessageType, INetworkInterfaceConnection>>();
 
         public override void AddListener(object callback)
         {
-            _listeners.Add((Action<NetMessageType, INetworkInterfaceConnection>)callback);
+            Listeners.Add((Action<NetMessageType, INetworkInterfaceConnection>)callback);
         }
 
         public override void RemoveListener(object callback)
         {
-            _listeners.Remove((Action<NetMessageType, INetworkInterfaceConnection>)callback);
+            Listeners.Remove((Action<NetMessageType, INetworkInterfaceConnection>)callback);
         }
 
         public override void OnReceive(object netMessage, INetworkInterfaceConnection source)
         {
             NetMessageType castedMessage = (NetMessageType)netMessage;
-            for (int i = _listeners.Count - 1; i >= 0; i--)
+            for (int i = Listeners.Count - 1; i >= 0; i--)
             {
-                _listeners[i].Invoke(castedMessage, source);
+                Listeners[i].Invoke(castedMessage, source);
             }
         }
     }

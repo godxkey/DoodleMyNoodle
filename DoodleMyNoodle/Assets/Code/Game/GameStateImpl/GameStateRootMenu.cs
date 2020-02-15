@@ -66,7 +66,7 @@ public class GameStateRootMenu : GameState
                 }
                 else
                 {
-                    if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.isClientType)
+                    if (OnlineService.OnlineInterface != null && OnlineService.OnlineInterface.IsClientType)
                     {
                         GameStateManager.TransitionToState(_specificDefinition.gameStateIfClient);
                     }
@@ -79,7 +79,7 @@ public class GameStateRootMenu : GameState
                 }
                 else
                 {
-                    if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.IsServerType)
+                    if (OnlineService.OnlineInterface != null && OnlineService.OnlineInterface.IsServerType)
                     {
                         GameStateManager.TransitionToState(_specificDefinition.gameStateIfServer);
                     }

@@ -23,6 +23,8 @@ public class SimWorld : IDisposable
 
     internal List<SimObject> ObjectsThatHaventStartedYet = new List<SimObject>(); // objects that never received their OnSimStart method called
 
+    internal List<string> PresentationScenes; // fbessette TODO: This should be moved elsewhere, this is temprorary
+
     public void Dispose()
     {
         // nothing to do, no logic should be here

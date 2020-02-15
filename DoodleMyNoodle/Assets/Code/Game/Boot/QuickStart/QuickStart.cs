@@ -72,8 +72,8 @@ public static class QuickStart
         LoadingScreenUIController.displayedStatus = "Loading...";
 
         OnlineService.SetTargetRole(OnlineRole.None);
-        while (OnlineService.isChangingRole
-            || OnlineService.currentRole != OnlineRole.None)
+        while (OnlineService.IsChangingRole
+            || OnlineService.CurrentRole != OnlineRole.None)
         {
             yield return null;
         }
@@ -87,9 +87,9 @@ public static class QuickStart
         LoadingScreenUIController.displayedStatus = "Waiting for online services...";
 
         OnlineService.SetTargetRole(OnlineRole.Client);
-        while (OnlineService.isChangingRole
-            || OnlineService.currentRole != OnlineRole.Client
-            || OnlineService.clientInterface == null)
+        while (OnlineService.IsChangingRole
+            || OnlineService.CurrentRole != OnlineRole.Client
+            || OnlineService.ClientInterface == null)
         {
             yield return null;
         }
@@ -110,9 +110,9 @@ public static class QuickStart
                 float elapsedTime = 0;
                 while (foundSession == null
                     && (elapsedTime < assets.searchForSeverTimeout || assets.searchForSeverTimeout == -1)
-                    && OnlineService.clientInterface != null)
+                    && OnlineService.ClientInterface != null)
                 {
-                    foreach (INetworkInterfaceSession session in OnlineService.clientInterface.AvailableSessions)
+                    foreach (INetworkInterfaceSession session in OnlineService.ClientInterface.AvailableSessions)
                     {
                         if (session.HostName == settings.serverName)
                         {
@@ -137,7 +137,7 @@ public static class QuickStart
                 LoadingScreenUIController.displayedStatus = "Connecting to server [" + settings.serverName + "] ...";
 
                 int success = -1; // -1 -> waiting for result    0 -> failure        1 -> success
-                OnlineService.clientInterface.ConnectToSession(foundSession, (bool r, string message) =>
+                OnlineService.ClientInterface.ConnectToSession(foundSession, (bool r, string message) =>
                 {
                     if (r)
                         success = 1;
@@ -172,9 +172,9 @@ public static class QuickStart
         LoadingScreenUIController.displayedStatus = "Waiting for online services...";
 
         OnlineService.SetTargetRole(OnlineRole.Server);
-        while (OnlineService.isChangingRole
-            || OnlineService.currentRole != OnlineRole.Server
-            || OnlineService.serverInterface == null)
+        while (OnlineService.IsChangingRole
+            || OnlineService.CurrentRole != OnlineRole.Server
+            || OnlineService.ServerInterface == null)
         {
             yield return null;
         }
@@ -191,7 +191,7 @@ public static class QuickStart
             int success = -1; // -1 -> waiting for result    0 -> failure        1 -> success
 
             LoadingScreenUIController.displayedStatus = "Creating session ...";
-            OnlineService.serverInterface.CreateSession(settings.serverName, (bool r, string message) =>
+            OnlineService.ServerInterface.CreateSession(settings.serverName, (bool r, string message) =>
             {
                 if (r)
                     success = 1;

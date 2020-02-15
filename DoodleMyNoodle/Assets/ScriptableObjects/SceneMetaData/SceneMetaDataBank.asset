@@ -33,24 +33,24 @@ MonoBehaviour:
     Path: Assets/Scenes/Menu/OnlineFlow/Scene Assets/OnlineClientSessionChoice.unity
     BuildIndex: 4
     AssetGuid: 8604ebda00836304f802fc028ca9979a
-  - Name: GameRoot
-    Path: Assets/Scenes/GameRoot/Scene Assets/GameRoot.unity
+  - Name: Game
+    Path: Assets/Scenes/GameRoot/Scene Assets/Game.unity
     BuildIndex: 5
     AssetGuid: b3695b8f43019e040858a9dfdbc524f7
   - Name: InGameEsacpeMenu
     Path: Assets/Scenes/Menu/Scene Assets/InGameEsacpeMenu.unity
     BuildIndex: 6
     AssetGuid: 526cbea577512dc42a4c0e329783b3b0
-  - Name: GameRootClient
-    Path: Assets/Scenes/GameRoot/Scene Assets/GameRootClient.unity
+  - Name: GameClient
+    Path: Assets/Scenes/GameRoot/Scene Assets/GameClient.unity
     BuildIndex: 7
     AssetGuid: 89c09be2ea7a787418bc64f4cdb83b20
-  - Name: GameRootServer
-    Path: Assets/Scenes/GameRoot/Scene Assets/GameRootServer.unity
+  - Name: GameServer
+    Path: Assets/Scenes/GameRoot/Scene Assets/GameServer.unity
     BuildIndex: 8
     AssetGuid: fa9ca71823e5fc44c8096a44b275a0a9
-  - Name: GameRootLocal
-    Path: Assets/Scenes/GameRoot/Scene Assets/GameRootLocal.unity
+  - Name: GameLocal
+    Path: Assets/Scenes/GameRoot/Scene Assets/GameLocal.unity
     BuildIndex: 9
     AssetGuid: 6832c9c496e32854086ae3c970b86b4f
   - Name: Lvl_Ballpit
@@ -61,7 +61,15 @@ MonoBehaviour:
     Path: Assets/Scenes/GameLevels/Scene Assets/Lvl_GridBattle.unity
     BuildIndex: 11
     AssetGuid: 4c8245514883b6c4ba63476b942bba11
-  - Name: SimManagers
-    Path: Assets/Scenes/GameRoot/Scene Assets/SimManagers.unity
+  - Name: SimulationManagers
+    Path: Assets/Scenes/GameRoot/Scene Assets/SimulationManagers.unity
     BuildIndex: 12
     AssetGuid: 47ac98eafdf2257458009be782cc980c
+  - Name: Lvl_GridBattle_Presentation
+    Path: Assets/Scenes/GameLevels_Presentation/SceneAssets/Lvl_GridBattle_Presentation.unity
+    BuildIndex: 13
+    AssetGuid: 60fc40dbdb1e23144a5055ed9a5d1563
+  - Name: SimulationBasePresentation
+    Path: Assets/Scenes/GameRoot/Scene Assets/SimulationBasePresentation.unity
+    BuildIndex: 14
+    AssetGuid: 02fa011c09404914098c6019b2610a09

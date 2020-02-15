@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 public static class VectorExtensions
@@ -95,6 +96,15 @@ public static class VectorExtensions
     public static Vector2 Rounded(this in Vector2 v)
     {
         return new Vector2(v.x.Rounded(), v.y.Rounded());
+    }
+
+    public static Vector2Int RoundedToInt(this in Vector2 v)
+    {
+        return new Vector2Int(v.x.RoundedToInt(), v.y.RoundedToInt());
+    }
+    public static int2 RoundedToInt2(this in Vector2 v)
+    {
+        return new int2(v.x.RoundedToInt(), v.y.RoundedToInt());
     }
 
     public static Vector2 Rotate(this in Vector2 v, float angle)

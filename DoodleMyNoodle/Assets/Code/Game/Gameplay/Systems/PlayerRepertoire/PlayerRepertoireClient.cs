@@ -17,7 +17,7 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
 
     public PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection)
     {
-        if (_clientSession != null && _clientSession.serverConnection != null && _clientSession.serverConnection.Id == connection.Id)
+        if (_clientSession != null && _clientSession.ServerConnection != null && _clientSession.ServerConnection.Id == connection.Id)
         {
             return GetServerPlayerInfo();
         }
