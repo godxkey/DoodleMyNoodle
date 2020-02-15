@@ -11,6 +11,10 @@ public class GameMonoBehaviour : MonoBehaviour
 
     protected virtual void Awake()
     {
+        if (Game.Ready)
+            OnGameReady();
+        if (Game.Started)
+            OnGameStart();
         _registeredBehaviours.Add(this);
     }
 

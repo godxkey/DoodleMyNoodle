@@ -22,8 +22,16 @@ public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
     {
         if (PlayerActions.CanTakeAction())
         {
-
-            PlayerActions.DecreaseValue(1);
+            if (PlayerActions.GetComponent<SimGridWalkerComponent>().WantsToWalk)
+            {
+                PlayerActions.GetComponent<SimGridWalkerComponent>().WantsToWalk = false;
+                PlayerActions.GetComponent<SimGridWalkerComponent>().ChoiceMade = true;
+            }
+            else
+            {
+                PlayerActions.GetComponent<SimGridWalkerComponent>().ChoiceMade = false;
+                PlayerActions.GetComponent<SimGridWalkerComponent>().WantsToWalk = true;
+            }
         }
     }
 }

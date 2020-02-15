@@ -27,6 +27,9 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
     public SimTileId TileId => SimTransform.GetTileId();
     public SimEvent<WalkedOnTileEventData> OnWalkedOnTileEvent => _data.OnWalkedOnTileEvent;
 
+    public bool WantsToWalk = false;
+    public bool ChoiceMade = false;
+
     public override void OnSimAwake()
     {
         base.OnSimAwake();
@@ -36,6 +39,9 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
 
     public void TryWalkTo(in SimTileId destination)
     {
+        if (destination == TileId)
+            return;
+
         _data.HasADestination = SimPathService.Instance.GetPathTo(this, destination, ref _data.Path);
     }
 
