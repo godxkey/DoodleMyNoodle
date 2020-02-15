@@ -4,6 +4,9 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
+/// <summary>
+/// Interface to the canvas that the brushes use
+/// </summary>
 public interface IUPaintBrushCanvasInterface
 {
     UPaintLayer MainLayer { get; }
@@ -11,6 +14,7 @@ public interface IUPaintBrushCanvasInterface
     void ScheduleNextBrushJob<T>(T job) where T : struct, IJob;
     void ScheduleBlendPreviewOntoMainLayer();
 }
+
 
 public class UPaintCanvas : IUPaintBrushCanvasInterface, IDisposable
 {
