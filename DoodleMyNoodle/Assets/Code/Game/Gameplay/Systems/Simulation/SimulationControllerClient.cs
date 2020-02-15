@@ -6,11 +6,11 @@ using UnityEngine;
 public class SimulationControllerClient : SimulationController
 {
     public int SimTicksInQueue => _simTicksDropper.QueueLength;
-    public bool IsSyncingSimulationWithServer => _syncOp != null && _syncOp.IsRunning;
+    public bool IsSyncingSimulationWithServer => _ongoingSyncOp != null && _ongoingSyncOp.IsRunning;
     public float CurrentSimPlayingSpeed => _simTicksDropper.Speed;
 
 
-    SimulationSyncClientOperation _syncOp;
+    SimulationSyncFromTransferClientOperation _ongoingSyncOp;
     SessionClientInterface _session;
     SelfRegulatingDropper<NetMessageSimTick> _simTicksDropper;
 
@@ -24,7 +24,7 @@ public class SimulationControllerClient : SimulationController
         _simTicksDropper = new SelfRegulatingDropper<NetMessageSimTick>(
             maximalCatchUpSpeed: GameConstants.CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED,
             maximalExpectedTimeInQueue: GameConstants.CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE);
-        Debug.Log($"Client tick dropper -  maximalCatchUpSpeed: {GameConstants.CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED}   maximalExpectedTimeInQueue: {GameConstants.CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE}");
+        //Debug.Log($"Client tick dropper -  maximalCatchUpSpeed: {GameConstants.CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED}   maximalExpectedTimeInQueue: {GameConstants.CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE}");
     }
 
     public override void OnGameReady()
@@ -56,6 +56,8 @@ public class SimulationControllerClient : SimulationController
 
         _session?.UnregisterNetMessageReceiver<NetMessageSimTick>(OnNetMessageSimTick);
         _session = null;
+
+        _ongoingSyncOp?.TerminateWithFailure();
     }
 
     public override void SubmitInput(SimInput input)
@@ -66,7 +68,7 @@ public class SimulationControllerClient : SimulationController
             return;
         }
 
-        if (_syncOp != null && _syncOp.IsRunning)
+        if (_ongoingSyncOp != null && _ongoingSyncOp.IsRunning)
         {
             DebugService.Log("Discarding input since we are syncing to the simulation");
             return;
@@ -81,8 +83,8 @@ public class SimulationControllerClient : SimulationController
 
     void OnNetMessageSimTick(NetMessageSimTick tick, INetworkInterfaceConnection source)
     {
-        if (_syncOp != null
-            && _syncOp.IsRunning)
+        if (_ongoingSyncOp != null
+            && _ongoingSyncOp.IsRunning)
         {
             // if we receive ticks while we're syncing, shelve the tick so we can restored it later
             _shelvedSimTicks.Add(tick);
@@ -91,6 +93,14 @@ public class SimulationControllerClient : SimulationController
 
         // The server has sent a tick message
         _simTicksDropper.Enqueue(tick, (float)SimulationConstants.TIME_STEP);
+    }
+
+    public override void OnGameUpdate()
+    {
+        base.OnGameUpdate();
+
+        if (_ongoingSyncOp != null && !_ongoingSyncOp.IsRunning)
+            _ongoingSyncOp = null;
     }
 
     private void FixedUpdate()
@@ -130,7 +140,7 @@ public class SimulationControllerClient : SimulationController
         SimulationView.Tick(tickData);
     }
 
-    SimulationSyncClientOperation SyncSimulationWithServer()
+    SimulationSyncFromTransferClientOperation SyncSimulationWithServer()
     {
         if(IsSyncingSimulationWithServer)
         {
@@ -138,11 +148,11 @@ public class SimulationControllerClient : SimulationController
             return null;
         }
 
-        PauseSimulation();
+        PauseSimulation(key: "sync");
 
-        _syncOp = new SimulationSyncClientOperation(_session);
+        _ongoingSyncOp = new SimulationSyncFromTransferClientOperation(_session);
 
-        _syncOp.OnTerminateCallback = (op) =>
+        _ongoingSyncOp.OnTerminateCallback = (op) =>
         {
             // restore ticks we received while syncing
             _simTicksDropper.Clear();
@@ -154,22 +164,22 @@ public class SimulationControllerClient : SimulationController
                 }
             }
 
-            UnpauseSimulation();
+            UnpauseSimulation(key: "sync");
         };
 
-        _syncOp.OnSucceedCallback = (op) =>
+        _ongoingSyncOp.OnSucceedCallback = (op) =>
         {
             DebugScreenMessage.DisplayMessage($"Synced sim. {op.Message}");
         };
 
-        _syncOp.OnFailCallback = (op) =>
+        _ongoingSyncOp.OnFailCallback = (op) =>
         {
             DebugScreenMessage.DisplayMessage($"Failed to sync sim. {op.Message}");
         };
 
-        _syncOp.Execute();
+        _ongoingSyncOp.Execute();
 
-        return _syncOp;
+        return _ongoingSyncOp;
     }
 
 #if DEBUG_BUILD

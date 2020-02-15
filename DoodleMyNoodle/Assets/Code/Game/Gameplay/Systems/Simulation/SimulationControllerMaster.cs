@@ -6,11 +6,6 @@ public class SimulationControllerMaster : SimulationController
 {
     Queue<ApprovedSimInput> _inputQueue = new Queue<ApprovedSimInput>();
 
-    public void PlaySimulationIfNotPlaying()
-    {
-        UnpauseSimulation();
-    }
-
     // called by local player
     public override void SubmitInput(SimInput input)
     {

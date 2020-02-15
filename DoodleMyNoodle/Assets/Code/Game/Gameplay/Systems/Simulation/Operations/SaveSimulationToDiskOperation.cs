@@ -14,7 +14,7 @@ public class SaveSimulationToDiskOperation : CoroutineOperation
     protected override IEnumerator ExecuteRoutine()
     {
         // Serialize sim
-        SimSerializationOperation serializeOp = SimulationView.SerializeSimulation();
+        SimSerializationOperationWithCache serializeOp = SimulationView.SerializeSimulation();
         yield return ExecuteSubOperationAndWaitForSuccess(serializeOp);
         string serializedData = serializeOp.SerializationData;
 
