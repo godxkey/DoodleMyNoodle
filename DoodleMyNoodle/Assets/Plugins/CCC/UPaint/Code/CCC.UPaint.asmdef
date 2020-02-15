@@ -1,12 +1,13 @@
 {
-    "name": "CCC.Core",
+    "name": "CCC.UPaint",
     "references": [
-        "GUID:71a9cd6dc501bea45942ce8c4a356c95",
+        "GUID:c886ee09f9545f74f85dd4e7b076b17c",
+        "GUID:2665a8d13d1b3f18800f46e256720795",
         "GUID:d8b63aba1907145bea998dd612889d6b"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": true,
+    "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
