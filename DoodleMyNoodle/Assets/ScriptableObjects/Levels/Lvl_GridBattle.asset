@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35853ace5228d364e8cd9cc4f9e840ec, type: 3}
-  m_Name: SimManagers
+  m_Script: {fileID: 11500000, guid: 2248c5c1e510c02428dad4c771e3fc53, type: 3}
+  m_Name: Lvl_GridBattle
   m_EditorClassIdentifier: 
-  scene: {fileID: 102900000, guid: 47ac98eafdf2257458009be782cc980c, type: 3}
-  sceneName: SimManagers
-  loadMode: 1
-  allowMultiple: 0
+  SimulationScenes:
+  - {fileID: 11400000, guid: 86c1e1e0cf2ebf04fa71c5bdeca709ab, type: 2}
+  PresentationScenes:
+  - {fileID: 11400000, guid: c176001831e7da74193f6297f2d8930c, type: 2}

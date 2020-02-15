@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35853ace5228d364e8cd9cc4f9e840ec, type: 3}
-  m_Name: GameRootLocal
+  m_Name: SimulationManagers
   m_EditorClassIdentifier: 
-  scene: {fileID: 102900000, guid: 6832c9c496e32854086ae3c970b86b4f, type: 3}
-  sceneName: GameRootLocal
+  scene: {fileID: 102900000, guid: 47ac98eafdf2257458009be782cc980c, type: 3}
+  sceneName: SimulationManagers
   loadMode: 1
   allowMultiple: 0

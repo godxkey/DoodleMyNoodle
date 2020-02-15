@@ -42,7 +42,6 @@ public abstract class SimulationController : GameSystem<SimulationController>
 #endif
     }
 
-
     protected override void OnDestroy()
     {
 #if DEBUG_BUILD

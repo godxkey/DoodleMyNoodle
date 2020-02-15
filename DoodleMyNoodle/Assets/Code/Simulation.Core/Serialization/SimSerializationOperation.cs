@@ -89,6 +89,7 @@ namespace Sim.Operations
             serializableWorld.TickId = world.TickId;
             serializableWorld.NextObjectId = world.NextObjectId;
             serializableWorld.Seed = world.Seed;
+            serializableWorld.PresentationScenes = world.PresentationScenes;
 
             serializableWorld.ObjectsThatHaventStartedYet = new List<SimObjectId>(world.ObjectsThatHaventStartedYet.Count);
             for (int i = 0; i < world.ObjectsThatHaventStartedYet.Count; i++)
