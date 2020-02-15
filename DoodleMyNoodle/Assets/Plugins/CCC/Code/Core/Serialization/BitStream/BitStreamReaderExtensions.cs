@@ -4,59 +4,59 @@ using UnityEngine;
 
 public static class BitStreamReaderExtensions
 {
-    public static byte ReadByte(this BitStreamReader reader)
+    public static Byte ReadByte(this BitStreamReader reader)
     {
-        return (byte)reader.ReadBits(8);
+        return (Byte)reader.ReadBits(8);
     }
 
-    public static char ReadChar(this BitStreamReader reader)
+    public static Char ReadChar(this BitStreamReader reader)
     {
-        return (char)reader.ReadBits(16);
+        return (Char)reader.ReadBits(16);
     }
 
-    public static short ReadInt16(this BitStreamReader reader)
+    public static Int16 ReadInt16(this BitStreamReader reader)
     {
-        return (short)reader.ReadBits(16);
+        return (Int16)reader.ReadBits(16);
     }
-    public static int ReadInt32(this BitStreamReader reader)
+    public static Int32 ReadInt32(this BitStreamReader reader)
     {
         return reader.ReadBits(32);
     }
-    public static ushort ReadUInt16(this BitStreamReader reader)
+    public static UInt16 ReadUInt16(this BitStreamReader reader)
     {
-        return (ushort)BitConverterX.Int32ToUInt32(reader.ReadBits(16));
+        return (UInt16)BitConverterX.Int32ToUInt32(reader.ReadBits(16));
     }
-    public static uint ReadUInt32(this BitStreamReader reader)
+    public static UInt32 ReadUInt32(this BitStreamReader reader)
     {
         return BitConverterX.Int32ToUInt32(reader.ReadBits(32));
     }
-    public static long ReadInt64(this BitStreamReader reader)
+    public static Int64 ReadInt64(this BitStreamReader reader)
     {
-        uint left = reader.ReadUInt32();
-        uint right = reader.ReadUInt32();
-        return (long)BitConverterX.UInt32ToUInt64(left, right);
+        UInt32 left = reader.ReadUInt32();
+        UInt32 right = reader.ReadUInt32();
+        return (Int64)BitConverterX.UInt32ToUInt64(left, right);
     }
-    public static ulong ReadUInt64(this BitStreamReader reader)
+    public static UInt64 ReadUInt64(this BitStreamReader reader)
     {
-        uint left = reader.ReadUInt32();
-        uint right = reader.ReadUInt32();
+        UInt32 left = reader.ReadUInt32();
+        UInt32 right = reader.ReadUInt32();
         return BitConverterX.UInt32ToUInt64(left, right);
     }
 
-    public static float ReadFloat32(this BitStreamReader reader)
+    public static Single ReadFloat32(this BitStreamReader reader)
     {
         return BitConverterX.Int32ToFloat32(reader.ReadBits(32));
     }
 
-    public static bool ReadBool(this BitStreamReader reader)
+    public static Boolean ReadBool(this BitStreamReader reader)
     {
         return reader.ReadBit();
     }
 
     public static string ReadString(this BitStreamReader reader)
     {
-        UInt16 size = reader.ReadUInt16();
-        StringBuilder stringBuilder = new StringBuilder(size);
+        UInt32 size = reader.ReadUInt32();
+        StringBuilder stringBuilder = new StringBuilder((int)size);
 
         for (int i = 0; i < size; i++)
         {

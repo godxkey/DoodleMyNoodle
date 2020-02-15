@@ -31,7 +31,7 @@ public class SimulationControllerClient : SimulationController
     {
         base.OnGameReady();
 
-        _session = OnlineService.clientInterface.SessionClientInterface;
+        _session = OnlineService.ClientInterface.SessionClientInterface;
         _session.RegisterNetMessageReceiver<NetMessageSimTick>(OnNetMessageSimTick);
 
 #if DEBUG_BUILD

@@ -7,34 +7,34 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
     protected abstract IDynamicNetSerializerImpl CreateNetMessageFactory();
 
 
-    public static NetworkInterface networkInterface => Instance?._networkInterface;
+    public static NetworkInterface NetworkInterface => Instance?._networkInterface;
 
-    public static OnlineInterface onlineInterface => Instance?._onlineInterface;
-    public static OnlineClientInterface clientInterface => onlineInterface as OnlineClientInterface;
-    public static OnlineServerInterface serverInterface => onlineInterface as OnlineServerInterface;
+    public static OnlineInterface OnlineInterface => Instance?._onlineInterface;
+    public static OnlineClientInterface ClientInterface => OnlineInterface as OnlineClientInterface;
+    public static OnlineServerInterface ServerInterface => OnlineInterface as OnlineServerInterface;
 
-    public static OnlineRole targetRole { get; private set; } = OnlineRole.None;
-    public static OnlineRole currentRole
+    public static OnlineRole TargetRole { get; private set; } = OnlineRole.None;
+    public static OnlineRole CurrentRole
     {
         get
         {
-            if (networkInterface.State != NetworkState.Running)
+            if (NetworkInterface.State != NetworkState.Running)
                 return OnlineRole.None;
 
-            if (networkInterface.IsClient)
+            if (NetworkInterface.IsClient)
                 return OnlineRole.Client;
             else
                 return OnlineRole.Server;
         }
     }
 
-    public static bool isChangingRole => targetRole != currentRole;
+    public static bool IsChangingRole => TargetRole != CurrentRole;
 
     public static void SetTargetRole(OnlineRole role)
     {
-        if (targetRole != role)
+        if (TargetRole != role)
         {
-            targetRole = role;
+            TargetRole = role;
 
             ProcessRoleChange();
         }
@@ -65,7 +65,7 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
         _networkInterface.Update();
         _onlineInterface?.Update();
 
-        if (isChangingRole)
+        if (IsChangingRole)
         {
             ProcessRoleChange();
         }
@@ -73,39 +73,39 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
 
     static void ProcessRoleChange()
     {
-        switch (targetRole)
+        switch (TargetRole)
         {
             case OnlineRole.Client:
                 {
-                    if (networkInterface.State == NetworkState.Running && networkInterface.IsServer)
+                    if (NetworkInterface.State == NetworkState.Running && NetworkInterface.IsServer)
                     {
-                        networkInterface.Shutdown();
+                        NetworkInterface.Shutdown();
                     }
 
-                    if (networkInterface.State == NetworkState.Stopped)
+                    if (NetworkInterface.State == NetworkState.Stopped)
                     {
-                        networkInterface.LaunchClient(OnLaunchClientResult);
+                        NetworkInterface.LaunchClient(OnLaunchClientResult);
                     }
                 }
                 break;
             case OnlineRole.Server:
                 {
-                    if (networkInterface.State == NetworkState.Running && networkInterface.IsClient)
+                    if (NetworkInterface.State == NetworkState.Running && NetworkInterface.IsClient)
                     {
-                        networkInterface.Shutdown();
+                        NetworkInterface.Shutdown();
                     }
 
-                    if (networkInterface.State == NetworkState.Stopped)
+                    if (NetworkInterface.State == NetworkState.Stopped)
                     {
-                        networkInterface.LaunchServer(OnLaunchServerResult);
+                        NetworkInterface.LaunchServer(OnLaunchServerResult);
                     }
                 }
                 break;
             case OnlineRole.None:
                 {
-                    if (networkInterface.State == NetworkState.Running)
+                    if (NetworkInterface.State == NetworkState.Running)
                     {
-                        networkInterface.Shutdown();
+                        NetworkInterface.Shutdown();
                     }
                 }
                 break;
@@ -116,8 +116,8 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
     {
         if (success)
         {
-            if (clientInterface == null)
-                Instance._onlineInterface = new OnlineClientInterface(networkInterface);
+            if (ClientInterface == null)
+                Instance._onlineInterface = new OnlineClientInterface(NetworkInterface);
         }
     }
 
@@ -125,8 +125,8 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
     {
         if (success)
         {
-            if (serverInterface == null)
-                Instance._onlineInterface = new OnlineServerInterface(networkInterface);
+            if (ServerInterface == null)
+                Instance._onlineInterface = new OnlineServerInterface(NetworkInterface);
         }
     }
 

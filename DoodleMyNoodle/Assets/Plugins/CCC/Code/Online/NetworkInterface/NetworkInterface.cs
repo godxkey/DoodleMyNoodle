@@ -30,8 +30,9 @@ public abstract class NetworkInterface : IDisposable
 
     public abstract void Update();
 
-    public abstract void SendMessage(INetworkInterfaceConnection connection, byte[] data, int size);
-    public abstract void SetMessageReader(Action<INetworkInterfaceConnection, byte[], int> messageReader);
+    public abstract void SendMessage(INetworkInterfaceConnection connection, byte[] data, bool reliableAndOrdered);
+    public abstract void SetMessageReader(Action<INetworkInterfaceConnection, byte[]> messageReader);
 
     public virtual void Dispose() { }
+
 }

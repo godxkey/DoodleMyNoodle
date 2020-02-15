@@ -19,7 +19,7 @@ public class GameStateLobbyClient : GameStateLobbyOnlineBase
     {
         base.Enter(parameters);
 
-        if (OnlineService.onlineInterface != null && OnlineService.onlineInterface.isClientType == false)
+        if (OnlineService.OnlineInterface != null && OnlineService.OnlineInterface.IsClientType == false)
         {
             GameStateManager.TransitionToState(_specificDefinition.gameStateIfReturn);
             DebugService.LogError("[GameStateLobbyClient] The available onlineInterface is of type Server. " +
@@ -39,7 +39,7 @@ public class GameStateLobbyClient : GameStateLobbyOnlineBase
     {
         _joinSessionCallback = callback;
         WaitSpinnerService.Enable(this);
-        OnlineService.clientInterface.ConnectToSession(session, OnJoinSessionResult);
+        OnlineService.ClientInterface.ConnectToSession(session, OnJoinSessionResult);
     }
 
     void OnJoinSessionResult(bool success, string message)

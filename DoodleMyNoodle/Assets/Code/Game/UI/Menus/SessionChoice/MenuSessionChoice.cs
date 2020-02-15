@@ -51,11 +51,11 @@ public class MenuSessionChoice : MonoBehaviour
 
     void FetchClientInterface()
     {
-        _clientInterface = OnlineService.clientInterface;
+        _clientInterface = OnlineService.ClientInterface;
 
         if (_clientInterface != null)
         {
-            _clientInterface.onTerminate += OnOnlineInterfaceTerminated;
+            _clientInterface.OnTerminate += OnOnlineInterfaceTerminated;
             _clientInterface.OnSessionListUpdated += OnSessionListUpdated;
             _clientInterface.GetAvailableSessions(ref _sessions);
         }
@@ -68,7 +68,7 @@ public class MenuSessionChoice : MonoBehaviour
         if (_clientInterface != null)
         {
             _clientInterface.OnSessionListUpdated -= OnSessionListUpdated;
-            _clientInterface.onTerminate -= OnOnlineInterfaceTerminated;
+            _clientInterface.OnTerminate -= OnOnlineInterfaceTerminated;
             _clientInterface = null;
         }
     }

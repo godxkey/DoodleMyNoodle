@@ -8,6 +8,7 @@ public static class NetSerializationCodeGenSettings
         {"Game",                 "Assets/Code/Game"                      + Serializers_AssemblyGenerationFolder},
         {"mscorlib",             "Assets/Plugins/CCC/Code/NetSerializer" + Serializers_AssemblyGenerationFolder},
         {"CCC.FixMath",          "Assets/Plugins/CCC/Code/FixMath"       + Serializers_AssemblyGenerationFolder},
+        {"CCC.Online",           "Assets/Plugins/CCC/Code/Online"        + Serializers_AssemblyGenerationFolder},
         {"Simulation.Core",      "Assets/Code/Simulation.Core"           + Serializers_AssemblyGenerationFolder},
         {"Simulation.Engine",    "Assets/Code/Simulation.Engine"         + Serializers_AssemblyGenerationFolder},
         {"Simulation.Game",      "Assets/Code/Simulation.Game"           + Serializers_AssemblyGenerationFolder},

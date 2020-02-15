@@ -151,7 +151,7 @@ public static class StaticNetSerializer_Boolean
 public static class StaticNetSerializer_String
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetNetBitSize(ref String value) => value.Length * sizeof(Char) * 8 + sizeof(UInt16) * 8;
+    public static int GetNetBitSize(ref String value) => value.Length * sizeof(Char) * 8 + sizeof(UInt32) * 8;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetSerialize(ref String value, BitStreamWriter writer) => writer.WriteString(value);

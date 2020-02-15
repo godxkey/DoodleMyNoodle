@@ -18,14 +18,14 @@ public class GameStateInGameOnline : GameStateInGameBase
     {
         base.Enter(parameters);
 
-        if (OnlineService.onlineInterface == null)
+        if (OnlineService.OnlineInterface == null)
         {
             GameStateManager.TransitionToState(_specificDefinition.gameStateIfDisconnect);
             DebugService.LogError("[GameStateInGameOnline] This game state requires an onlineInterface.");
             return;
         }
 
-        SessionInterface = OnlineService.onlineInterface.SessionInterface;
+        SessionInterface = OnlineService.OnlineInterface.SessionInterface;
 
         if (SessionInterface == null)
         {
@@ -34,7 +34,7 @@ public class GameStateInGameOnline : GameStateInGameBase
             return;
         }
 
-        SessionInterface = OnlineService.onlineInterface.SessionInterface;
+        SessionInterface = OnlineService.OnlineInterface.SessionInterface;
         SessionInterface.OnTerminate += OnSessionInterfaceTerminated;
     }
 

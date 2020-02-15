@@ -220,4 +220,12 @@ public static class ListExtensions
             return false;
         }
     }
+
+    public static void AddRange<T>(this List<T> list, in T value, int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            list.Add(value);
+        }
+    }
 }

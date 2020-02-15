@@ -14,8 +14,7 @@ public class BitStreamReader : BitStreamHead
     {
         if (bitCount <= 0 || bitCount > 32)
         {
-            DebugService.LogError("BitStreamReader: cannot read value because bitCount == (" + bitCount + ')');
-            return 0;
+            throw new Exception($"BitStreamReader: cannot read value because bitCount == {bitCount}. The value must be between 0 and 32");
         }
 
         int result = 0;
@@ -25,8 +24,7 @@ public class BitStreamReader : BitStreamHead
         {
             if (ByteIndex >= _buffer.Length)
             {
-                DebugService.LogError("Trying to read beyond the buffer length");
-                break;
+                throw new Exception($"BitStreamReader: Trying to read beyond the buffer length ({_buffer.Length})");
             }
 
             // read data from byte (truncated)
@@ -46,7 +44,7 @@ public class BitStreamReader : BitStreamHead
 
         // final mask to truncate the end
         int mask;
-        if(bitCount < 32) // we have to do this because we CANNOT bitshift by 32
+        if (bitCount < 32) // we have to do this because we CANNOT bitshift by 32
         {
             mask = ~(~0 << bitCount);
         }
@@ -61,8 +59,7 @@ public class BitStreamReader : BitStreamHead
     {
         if (ByteIndex >= _buffer.Length)
         {
-            DebugService.LogError("Trying to read beyond the buffer length");
-            return false;
+            throw new Exception($"BitStreamReader: Trying to read beyond the buffer length ({_buffer.Length})");
         }
 
         bool result = ((_buffer[ByteIndex] >> BitIndex) & 1) != 0;

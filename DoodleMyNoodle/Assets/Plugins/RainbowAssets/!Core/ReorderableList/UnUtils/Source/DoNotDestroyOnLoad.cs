@@ -8,7 +8,7 @@ namespace Borodar.RainbowAssets.Core.Games
     /// <summary>
     /// Marks a game object upon awakening so that it is not destroyed between scenes.
     /// </summary>
-    public sealed class DontDestroyOnLoad : MonoBehaviour
+    public sealed class DoNotDestroyOnLoad : MonoBehaviour
     {
         private void Awake()
         {

@@ -10,7 +10,7 @@ public static class ArrayNetSerializer_TestMessageAnimal
     {
         if (obj == null)
             return 1;
-        int result = 1 + sizeof(UInt16) * 8;
+        int result = 1 + sizeof(UInt32) * 8;
         for (int i = 0; i < obj.Length; i++)
         {
             result += StaticNetSerializer_TestMessageAnimal.GetNetBitSize_Class(obj[i]);
@@ -26,7 +26,7 @@ public static class ArrayNetSerializer_TestMessageAnimal
             return;
         }
         writer.WriteBit(true);
-        writer.WriteUInt16((UInt16)obj.Length);
+        writer.WriteUInt32((UInt32)obj.Length);
         for (int i = 0; i < obj.Length; i++)
         {
             StaticNetSerializer_TestMessageAnimal.NetSerialize_Class(obj[i], writer);
@@ -40,7 +40,7 @@ public static class ArrayNetSerializer_TestMessageAnimal
             obj = null;
             return;
         }
-        obj = new TestMessageAnimal[reader.ReadUInt16()];
+        obj = new TestMessageAnimal[reader.ReadUInt32()];
         for (int i = 0; i < obj.Length; i++)
         {
             obj[i] = StaticNetSerializer_TestMessageAnimal.NetDeserialize_Class(reader);
