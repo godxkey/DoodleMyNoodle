@@ -10,7 +10,7 @@ public class SimPlayerActions : SimClampedStatComponent, ISimTickable
 
     public bool CanTakeAction()
     {
-        return Value > 0;
+        return Value > 0 && SimTurnManager.Instance.IsMyTurn(Team.Player);
     }
 
     void ISimTickable.OnSimTick()

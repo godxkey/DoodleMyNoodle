@@ -182,22 +182,22 @@ public class SimTransformComponent : SimComponent
     {
         LocalScale = new FixVector3(1, 1, 1)
     };
-    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    public override void PushToDataStack(SimComponentDataStack dataStack)
     {
-        base.SerializeToDataStack(dataStack);
+        base.PushToDataStack(dataStack);
 
         VerifyIntegrity();
         dataStack.Push(_data);
     }
 
-    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
+    public override void PopFromDataStack(SimComponentDataStack dataStack)
     {
         _data = (SerializedData)dataStack.Pop();
         SetParent(_data.Parent);
         if (_data.Parent)
             SetSiblingIndex(_data.SiblingIndex);
 
-        base.DeserializeFromDataStack(dataStack);
+        base.PopFromDataStack(dataStack);
     }
     #endregion
 

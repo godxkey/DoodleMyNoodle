@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sim.Operations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,7 @@ public class SimulationView : SimulationBase
     /// Set the next time id the sim will execute
     /// </summary>
     public static void ForceSetTickId(uint tickId) => SimModules._World.TickId = tickId;
+    public static void Tick(in SimTickData tickData) => SimModules._Ticker.Tick(tickData);
 
 
     /// <summary>
@@ -30,6 +32,6 @@ public class SimulationView : SimulationBase
     public static bool CanBeSerialized => SimModules._Serializer.CanSimWorldBeSaved;
     public static bool CanBeDeserialized => SimModules._Serializer.CanSimWorldBeSaved;
 
-    public static void SerializeSimulation(Action<string> onComplete) => SimModules._Serializer.SerializeSimulation(onComplete);
-    public static void DeserializeSimulation(string data, Action onComplete) => SimModules._Serializer.DeserializeSimulation(data, onComplete);
+    public static SimSerializationOperation SerializeSimulation() => SimModules._Serializer.SerializeSimulation();
+    public static SimDeserializationOperation DeserializeSimulation(string data) => SimModules._Serializer.DeserializeSimulation(data);
 }

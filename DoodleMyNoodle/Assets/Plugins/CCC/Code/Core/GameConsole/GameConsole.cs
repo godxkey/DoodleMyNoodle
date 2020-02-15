@@ -55,6 +55,11 @@ public class GameConsole
         OutputString(msg, lineColor);
     }
 
+    /// <summary>
+    /// Name Guideline: Separate terms by . Separate words of a term by _
+    /// <para/>
+    /// E.g: inventory.drop_item
+    /// </summary>
     public static void AddCommand(string name, Action<string[]> method, string description, int tag = 0)
     {
         name = name.ToLower();
@@ -205,12 +210,12 @@ public class GameConsole
 
     public static void ExecuteCommand(string command, LineColor lineColor)
     {
-        var tokens = Tokenize(command);
+        List<string> tokens = Tokenize(command);
         if (tokens.Count < 1)
             return;
 
         OutputString('>' + command, lineColor);
-        var commandName = tokens[0].ToLower();
+        string commandName = tokens[0].ToLower();
 
         ConsoleCommand consoleCommand;
         CCC.ConfigVarInterals.ConfigVarBase configVar;
@@ -219,6 +224,7 @@ public class GameConsole
         {
             var arguments = tokens.GetRange(1, tokens.Count - 1).ToArray();
             consoleCommand.method(arguments);
+            DebugService.Log($"cmd: {command}");
         }
         else if (ConfigVarService.Instance.configVarRegistry.ConfigVars.TryGetValue(commandName, out configVar))
         {

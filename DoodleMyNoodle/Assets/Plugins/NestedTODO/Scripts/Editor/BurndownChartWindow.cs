@@ -64,7 +64,7 @@ namespace NestedTODO
         {
             if (AgileBoardWindow.nestedList == null)
             {
-                EditorGUILayout.HelpBox("There is no TODO List selected, please select one in the Agile Board Window or Checklist Window.", MessageType.Info);
+                EditorGUILayout.HelpBox("There is no to do List selected, please select one in the Agile Board Window or Checklist Window.", MessageType.Info);
                 return;
             }
 

@@ -33,7 +33,7 @@ namespace Borodar.RainbowAssets.Core.Games.Collections
     ///
     ///     public void Execute(IElementAdder<ShoppingList> elementAdder)
     ///     {
-    ///         // TODO: Add favorite items to the shopping list!
+    ///         // To do: Add favorite items to the shopping list!
     ///     }
     /// }
     /// ]]></code>

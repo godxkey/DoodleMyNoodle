@@ -12,45 +12,73 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
 {
     public const int TEAM_COUNT = 2;
 
-    public int DurationOfATurn = 10;
 
-    private Fix64 _timer = 0;
-    private Team _currentTeam = (Team)TEAM_COUNT;
+    [System.Serializable]
+    struct SerializedData
+    {
+        public int DurationOfATurn;
+        public Fix64 Timer;
+        public Team CurrentTeam;
+    }
 
-    public Team CurrentTeam => _currentTeam;
-    public Fix64 TurnRemainingTime => _timer;
+    public int DurationOfATurn => _data.DurationOfATurn;
+    public Team CurrentTeam => _data.CurrentTeam;
+    public Fix64 TurnRemainingTime => _data.Timer;
 
     public override void OnSimStart() 
     {
         base.OnSimStart();
 
-        _timer = DurationOfATurn;
+        _data.Timer = DurationOfATurn;
 
         SwitchTurn();
     }
 
     void ISimTickable.OnSimTick()
     {
-        _timer -= Simulation.DeltaTime;
+        _data.Timer -= Simulation.DeltaTime;
 
-        if (_timer <= 0)
+        if (_data.Timer <= 0)
         {
             SwitchTurn();
-            _timer = DurationOfATurn;
+            _data.Timer = DurationOfATurn;
         }
     }
 
     private void SwitchTurn()
     {
-        _currentTeam = _currentTeam + 1;
-        if((int)_currentTeam >= TEAM_COUNT)
+        _data.CurrentTeam = _data.CurrentTeam + 1;
+        if((int)_data.CurrentTeam >= TEAM_COUNT)
         {
-            _currentTeam = 0;
+            _data.CurrentTeam = 0;
         }
+        Debug.Log("SWITCH TURN - " + _data.CurrentTeam);
     }
 
     public bool IsMyTurn(Team myTeam)
     {
-        return _currentTeam == myTeam;
+        return _data.CurrentTeam == myTeam;
     }
+
+    #region Serialized Data Methods
+    [UnityEngine.SerializeField]
+    [AlwaysExpand]
+    SerializedData _data = new SerializedData()
+    {
+        DurationOfATurn = 3,
+        CurrentTeam = (Team)TEAM_COUNT
+    };
+
+    public override void PushToDataStack(SimComponentDataStack dataStack)
+    {
+        base.PushToDataStack(dataStack);
+        dataStack.Push(_data);
+    }
+
+    public override void PopFromDataStack(SimComponentDataStack dataStack)
+    {
+        _data = (SerializedData)dataStack.Pop();
+        base.PopFromDataStack(dataStack);
+    }
+    #endregion
 }

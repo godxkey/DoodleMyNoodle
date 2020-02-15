@@ -10,38 +10,38 @@ using UnityEngine;
 [System.Serializable]
 public class SelfRegulatingDropper<T> : Dropper<T>
 {
-    public float maximalCatchUpSpeed = 4;
-    public float maximalExpectedTimeInQueue = 2;
+    public float MaximalCatchUpSpeed = 4;
+    public float MaximalExpectedTimeInQueue = 2;
 
-    float timeLimitForLastItem;
+    float _timeLimitForLastItem;
 
     public SelfRegulatingDropper(float maximalExpectedTimeInQueue, float maximalCatchUpSpeed = 4)
     {
-        this.maximalCatchUpSpeed = maximalCatchUpSpeed;
-        this.maximalExpectedTimeInQueue = maximalExpectedTimeInQueue;
+        this.MaximalCatchUpSpeed = maximalCatchUpSpeed;
+        this.MaximalExpectedTimeInQueue = maximalExpectedTimeInQueue;
     }
 
     public override void Update(float deltaTime)
     {
         if (queue.Count > 0)
         {
-            float timeUntilQueueEmpty = lastEnqueuedElement.scheduledDrop - currentTime;
-            speed = (timeUntilQueueEmpty / timeLimitForLastItem).Clamped(1, maximalCatchUpSpeed);
+            float timeUntilQueueEmpty = LastEnqueuedElement.ScheduledDrop - CurrentTime;
+            Speed = (timeUntilQueueEmpty / _timeLimitForLastItem).Clamped(1, MaximalCatchUpSpeed);
         }
         else
         {
-            speed = 1;
+            Speed = 1;
         }
 
 
-        timeLimitForLastItem -= deltaTime;
-        timeLimitForLastItem = timeLimitForLastItem.MinLimit(0.0001f);
+        _timeLimitForLastItem -= deltaTime;
+        _timeLimitForLastItem = _timeLimitForLastItem.MinLimit(0.0001f);
         base.Update(deltaTime);
     }
 
     public override void Enqueue(T item, float deltaTime)
     {
         base.Enqueue(item, deltaTime);
-        timeLimitForLastItem = maximalExpectedTimeInQueue;
+        _timeLimitForLastItem = MaximalExpectedTimeInQueue;
     }
 }

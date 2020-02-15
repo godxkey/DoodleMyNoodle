@@ -22,7 +22,6 @@ public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
     {
         if (PlayerActions.CanTakeAction())
         {
-            Debug.Log("Walking!");
 
             PlayerActions.DecreaseValue(1);
         }

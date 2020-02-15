@@ -88,7 +88,7 @@ namespace Borodar.RainbowAssets.Core.Games.UnityEditorExtensions
                     break;
 
                 case SerializedPropertyType.Gradient:
-                    //!TODO: Amend when Unity add a public API for setting the gradient.
+                    //!TO DO: Amend when Unity add a public API for setting the gradient.
                     break;
             }
 
@@ -210,7 +210,7 @@ namespace Borodar.RainbowAssets.Core.Games.UnityEditorExtensions
                     break;
 
                 case SerializedPropertyType.Gradient:
-                    //!TODO: Amend when Unity add a public API for setting the gradient.
+                    //!TO DO: Amend when Unity add a public API for setting the gradient.
                     break;
             }
         }

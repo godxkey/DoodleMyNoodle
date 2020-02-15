@@ -57,16 +57,16 @@ public class SimEventComponent : SimComponent, ISimEventListener
         // define default values here
     };
 
-    public override void SerializeToDataStack(SimComponentDataStack dataStack)
+    public override void PushToDataStack(SimComponentDataStack dataStack)
     {
-        base.SerializeToDataStack(dataStack);
+        base.PushToDataStack(dataStack);
         dataStack.Push(_evtComponentData);
     }
 
-    public override void DeserializeFromDataStack(SimComponentDataStack dataStack)
+    public override void PopFromDataStack(SimComponentDataStack dataStack)
     {
         _evtComponentData = (SerializedData)dataStack.Pop();
-        base.DeserializeFromDataStack(dataStack);
+        base.PopFromDataStack(dataStack);
     }
     #endregion
 }

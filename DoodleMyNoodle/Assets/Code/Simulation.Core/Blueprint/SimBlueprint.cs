@@ -1,5 +1,5 @@
 ﻿
-// fbessette: je ne pense pas qu'on aura plus qu'1 type ou 2 de Blueprint
+// fbessette: cette struct pourrait probablement être retiré. Elle ne semble pas nécessaire.
 
 [System.Serializable]
 public struct SimBlueprint

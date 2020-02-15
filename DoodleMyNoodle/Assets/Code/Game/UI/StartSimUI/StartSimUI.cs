@@ -48,7 +48,7 @@ public class StartSimUI : GameMonoBehaviour
 
     void StartSimWithLevel(string level)
     {
-        ((SimulationControllerMaster)SimulationControllerMaster.Instance).AllowSimToTick = true;
+        ((SimulationControllerMaster)SimulationControllerMaster.Instance).PlaySimulationIfNotPlaying();
         if (!level.IsNullOrEmpty())
         {
             SimulationControllerMaster.Instance.SubmitInput(new SimCommandLoadScene() { sceneName = SimManagersScene.SceneName });

@@ -1,31 +1,35 @@
 ﻿using System;
 
+[System.Serializable]
 public struct AutoResetDirtyValue<T>
 {
-    public T Value { get; private set; }
-    public T PreviousValue { get; private set; }
+    private T _value;
+    private T _previousValue;
+
+    public T Value => _value;
+    public T PreviousValue => _previousValue;
 
     public AutoResetDirtyValue(T initialValue)
     {
-        Value = initialValue;
-        PreviousValue = Value;
+        _value = initialValue;
+        _previousValue = _value;
     }
 
     public bool IsDirty
     {
         get
         {
-            if (Value == null && PreviousValue == null)
+            if (_value == null && _previousValue == null)
                 return false;
-            if (Value == null || PreviousValue == null)
+            if (_value == null || _previousValue == null)
                 return true;
-            return !PreviousValue.Equals(Value);
+            return !_previousValue.Equals(_value);
         }
     }
 
     public void SetValue(in T newValue)
     {
-        PreviousValue = Value;
-        Value = newValue;
+        _previousValue = _value;
+        _value = newValue;
     }
 }

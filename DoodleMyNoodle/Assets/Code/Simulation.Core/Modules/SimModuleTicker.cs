@@ -13,6 +13,9 @@ internal class SimModuleTicker : SimModuleBase
     internal bool IsTicking = false;
     internal uint TickId => SimModules._World.TickId;
 
+    // Elapsed time in seconds
+    internal Fix64 Time;
+
     internal List<ISimTickable> Tickables = new List<ISimTickable>();
     internal List<ISimTickable> NewTickables = new List<ISimTickable>();
 
@@ -22,7 +25,6 @@ internal class SimModuleTicker : SimModuleBase
             throw new System.Exception("Tried to tick the simulation while it could not. Investigate.");
 
         IsTicking = true;
-        SimModules._World.TickId++;
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Call OnSimStart() methods on objects that need it                                 
@@ -62,7 +64,16 @@ internal class SimModuleTicker : SimModuleBase
         ////////////////////////////////////////////////////////////////////////////////////////
         CallOnSimStartOnObjectNeedingIt();
 
+
+        SimModules._World.TickId++;
+        OnTickUpdated();
+
         IsTicking = false;
+    }
+
+    internal void OnTickUpdated()
+    {
+        Time = ((Fix64)SimModules._World.TickId) * SimulationConstants.TIME_STEP;
     }
 
     internal void OnAddSimObjectToSim(SimObject obj)
