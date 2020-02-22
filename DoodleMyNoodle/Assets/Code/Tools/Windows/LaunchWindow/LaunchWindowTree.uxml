@@ -33,6 +33,12 @@ xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd
       <engine:Foldout name="advFoldout">
         <engine:Toggle label="Server is headless" name="headless"/>
         <engine:TextField label="Extra arguments" name="extraArgs"/>
+        <engine:Toggle label="Override Standalone Screen" name="overrideScreen"/>
+        <engine:VisualElement name="overrideScreenContainer">
+          <engine:Toggle label="Fullscreen" name="fullscreen"/>
+          <editor:IntegerField label="Screen Width" name="screenWidth"/>
+          <editor:IntegerField label="Screen Height" name="screenHeight"/>
+        </engine:VisualElement>
       </engine:Foldout>
       <engine:VisualElement name="profilesContainer"/>
     </engine:VisualElement>

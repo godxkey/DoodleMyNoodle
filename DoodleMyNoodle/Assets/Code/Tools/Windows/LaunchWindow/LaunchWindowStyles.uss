@@ -23,6 +23,11 @@
     flex:1;
 }
 
+.hidden {
+    height:0;
+    visibility:hidden;
+}
+
 #refreshButton {
     position: absolute;
     right: 2px;

@@ -13,6 +13,9 @@ public static class CommandLine
             return _arguments.AsReadOnlyNoAlloc();
         }
     }
+
+    public static string CompleteCommandLine => Environment.CommandLine;
+
     static List<string> _arguments;
 
 

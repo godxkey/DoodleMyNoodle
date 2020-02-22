@@ -151,6 +151,51 @@ public class LaunchWindow : EditorWindow
         }
 
         {
+            var element = root.Q<Toggle>(name: "overrideScreen");
+            var childrendContainer = root.Q<VisualElement>(name: "overrideScreenContainer");
+
+            element.value = EditorLaunchData.launchOverrideScreen;
+            childrendContainer.EnableInClassList("hidden", !element.value);
+
+            element.RegisterValueChangedCallback(
+                (ChangeEvent<bool> changeEvent) =>
+                {
+                    EditorLaunchData.launchOverrideScreen = changeEvent.newValue;
+                    childrendContainer.EnableInClassList("hidden", !changeEvent.newValue);
+                });
+        }
+
+        {
+            var element = root.Q<Toggle>(name: "fullscreen");
+            element.value = EditorLaunchData.launchFullscreen;
+            element.RegisterValueChangedCallback(
+                (ChangeEvent<bool> changeEvent) =>
+                {
+                    EditorLaunchData.launchFullscreen = changeEvent.newValue;
+                });
+        }
+
+        {
+            var element = root.Q<IntegerField>(name: "screenWidth");
+            element.value = EditorLaunchData.launchScreenWidth;
+            element.RegisterValueChangedCallback(
+                (ChangeEvent<int> changeEvent) =>
+                {
+                    EditorLaunchData.launchScreenWidth = changeEvent.newValue;
+                });
+        }
+
+        {
+            var element = root.Q<IntegerField>(name: "screenHeight");
+            element.value = EditorLaunchData.launchScreenHeight;
+            element.RegisterValueChangedCallback(
+                (ChangeEvent<int> changeEvent) =>
+                {
+                    EditorLaunchData.launchScreenHeight = changeEvent.newValue;
+                });
+        }
+
+        {
             var element = root.Q<VisualElement>(name: "profilesContainer");
 
             int whoIsServer = EditorLaunchData.whoIsServerId;

@@ -65,5 +65,29 @@ public class EditorLaunchData
         get => EditorPrefs.GetInt("EditorLaunch-whoIsEditorId", 0);
         set => EditorPrefs.SetInt("EditorLaunch-whoIsEditorId", value);
     }
+
+    public static bool launchOverrideScreen
+    {
+        get => EditorPrefs.GetBool("EditorLaunch-launchOverrideScreen", true);
+        set => EditorPrefs.SetBool("EditorLaunch-launchOverrideScreen", value);
+    }
+
+    public static bool launchFullscreen
+    {
+        get => EditorPrefs.GetBool("EditorLaunch-launchFullscreen", false);
+        set => EditorPrefs.SetBool("EditorLaunch-launchFullscreen", value);
+    }
+
+    public static int launchScreenWidth
+    {
+        get => EditorPrefs.GetInt("EditorLaunch-launchScreenWidth", 1280);
+        set => EditorPrefs.SetInt("EditorLaunch-launchScreenWidth", value);
+    }
+
+    public static int launchScreenHeight
+    {
+        get => EditorPrefs.GetInt("EditorLaunch-launchScreenHeight", 720);
+        set => EditorPrefs.SetInt("EditorLaunch-launchScreenHeight", value);
+    }
 }
 #endif

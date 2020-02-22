@@ -13,6 +13,7 @@ public class CommandLineBoot : MonoBehaviour
     void OnCoreServicesReady()
     {
         // read the command line arguments
+        DebugService.Log("CommandLine: " + CommandLine.CompleteCommandLine);
 
         QuickStartSettings quickStartSettings = new QuickStartSettings();
 
