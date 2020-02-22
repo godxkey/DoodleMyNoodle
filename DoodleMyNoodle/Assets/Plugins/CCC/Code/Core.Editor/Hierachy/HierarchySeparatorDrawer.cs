@@ -8,7 +8,7 @@ public class HierarchySeparatorDrawer
 {
 
     static GUIStyle style;
-    
+
     //constructor
     static HierarchySeparatorDrawer()
     {
@@ -20,9 +20,11 @@ public class HierarchySeparatorDrawer
         //get the gameObject reference using its instance ID
         GameObject go = (GameObject)EditorUtility.InstanceIDToObject(instanceID);
 
-        if(style == null)
+        if (style == null)
         {
-            style = new GUIStyle(EditorStyles.toolbarButton);
+            style = new GUIStyle(EditorStyles.objectField);
+            style.fontSize = 10;
+            style.alignment = TextAnchor.LowerLeft;
             style.fixedHeight = 14;
         }
 
@@ -33,9 +35,20 @@ public class HierarchySeparatorDrawer
                 && name[0] == '_'
                 && name[name.Length - 1] == '_')
             {
-                selectionRect.position += Vector2.up * 2;
+                selectionRect.position += Vector2.up;
+                Color wasColor = GUI.color;
+                
+                GUI.color = GetBoxColor();
                 GUI.Box(selectionRect, name.Substring(1, name.Length - 2), style);
+                GUI.color = wasColor;
             }
         }
+    }
+
+    private static Color GetBoxColor()
+    {
+        Color c = GUI.color * 0.7f;
+        c.a = 1;
+        return c;
     }
 }
