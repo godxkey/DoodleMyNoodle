@@ -13,11 +13,11 @@
     bottom: 0px;
     top: 0px;
     visibility: hidden;
-    -unity-background-image-tint-color: rgb(255, 210, 210);
+    background-color: rgb(255, 210, 210);
 }
 
 .playButton {
-    -unity-background-image-tint-color: rgb(210, 255, 210);
+    background-color: rgb(210, 255, 210);
 }
 
 .button {

@@ -62,17 +62,24 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
                         DebugEditor.LogAssetIntegrity($"<color=red>Removed scene meta-data:</color> {oldData[i].Name}");
                     }
                 }
+                for (int i = 0; i < newData.Count; i++)
+                {
+                    int oldDataIndex = oldData.FindIndex((x) => x.AssetGuid == newData[i].AssetGuid);
+                    if (oldDataIndex == -1)
+                    {
+                        DebugEditor.LogAssetIntegrity($"<color=green>Added scene meta-data:</color> {newData[i].Name}");
+                    }
+                    else if (oldData[oldDataIndex].ContentEquals(newData[i]) == false)
+                    {
+                        DebugEditor.LogAssetIntegrity($"<color=green>Updated scene meta-data:</color> {newData[i].Name}");
+                    }
+                }
             }
-            for (int i = 0; i < newData.Count; i++)
+            else
             {
-                int oldDataIndex = oldData.FindIndex((x) => x.AssetGuid == newData[i].AssetGuid);
-                if (oldDataIndex == -1)
+                for (int i = 0; i < newData.Count; i++)
                 {
                     DebugEditor.LogAssetIntegrity($"<color=green>Added scene meta-data:</color> {newData[i].Name}");
-                }
-                else if (oldData[oldDataIndex].ContentEquals(newData[i]) == false)
-                {
-                    DebugEditor.LogAssetIntegrity($"<color=green>Updated scene meta-data:</color> {newData[i].Name}");
                 }
             }
         }
