@@ -10,7 +10,7 @@ public class HighlightClicker : GameMonoBehaviour
     public override void OnGameUpdate()
     {
         if (_playerPawn == null)
-            _playerPawn = SimPawnHelpers.GetPawnFromController(PlayerIdHelpers.GetLocalSimPlayerComponent());
+            _playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
 
         if (_playerPawn != null)
         {
@@ -40,13 +40,11 @@ public class HighlightClicker : GameMonoBehaviour
     private Vector3 GetMousePositionOnTile()
     {
         Ray ray = CameraService.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-        Debug.Log(ray);
 
         float enter = 0.0f;
         if (SimTileManager.Instance.FloorPlane.Raycast(ray, out enter))
         {
             Vector3 hitPoint = ray.GetPoint(enter);
-            Debug.Log(hitPoint);
             return hitPoint;
         }
 
@@ -63,8 +61,8 @@ public class HighlightClicker : GameMonoBehaviour
 
     private int CalculateAmountOfActionToMoveThere(SimTileId start, SimTileId end)
     {
-        int up = (int)(end.Y - start.Y);
-        int right = (int)(end.X - start.X);
-        return Mathf.Abs(up + right);
+        int up = Mathf.Abs((int)(end.Y - start.Y));
+        int right = Mathf.Abs((int)(end.X - start.X));
+        return up + right;
     }
 }

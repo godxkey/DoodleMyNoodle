@@ -9,7 +9,10 @@ public class CameraMovement : MonoBehaviour
     public Texture2D MouseIdle;
     public Texture2D MouseGrab;
     private CursorMode _cursorMode = CursorMode.Auto;
-    private Vector2 _hotSpot = Vector2.zero;
+
+    // TODO : Changer ca pour régler problème de texture de souris
+    // faire un truc du genre class MouseView
+    private Vector2 _hotspot = Vector2.zero; 
 
     public float MaxPositionX;
     private float _minPositionX;
@@ -40,7 +43,7 @@ public class CameraMovement : MonoBehaviour
 
                 _isHolding = true;
 
-                Cursor.SetCursor(MouseGrab, _hotSpot, _cursorMode);
+                Cursor.SetCursor(MouseGrab, _hotspot, _cursorMode);
             }
 
             Vector3 newMousePosition = Input.mousePosition;
@@ -56,7 +59,7 @@ public class CameraMovement : MonoBehaviour
         {
             _isHolding = false;
 
-            Cursor.SetCursor(MouseIdle, _hotSpot, _cursorMode);
+            Cursor.SetCursor(MouseIdle, _hotspot, _cursorMode);
         }
     }
 

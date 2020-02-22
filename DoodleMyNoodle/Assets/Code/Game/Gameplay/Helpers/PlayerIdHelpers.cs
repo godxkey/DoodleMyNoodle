@@ -6,9 +6,6 @@ public static class PlayerIdHelpers
 {
     public static PlayerId GetLocalPlayerID()
     {
-        if (PlayerRepertoireSystem.Instance == null)
-            return new PlayerId();
-
         return PlayerRepertoireSystem.Instance.GetLocalPlayerInfo().PlayerId;
     }
 
@@ -18,6 +15,11 @@ public static class PlayerIdHelpers
             return null;
 
         return PlayerRepertoireSystem.Instance.GetLocalPlayerInfo();
+    }
+
+    public static SimPawnComponent GetLocalSimPawnComponent()
+    {
+        return SimPawnHelpers.GetPawnFromController(PlayerIdHelpers.GetLocalSimPlayerComponent());
     }
 
     public static SimPlayerComponent GetLocalSimPlayerComponent()

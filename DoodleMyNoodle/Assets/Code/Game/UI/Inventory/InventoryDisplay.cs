@@ -15,7 +15,7 @@ public class InventoryDisplay : MonoBehaviour
     {
         if (!_hasBeenSetup)
         {
-            SimPawnComponent playerPawn = SimPawnHelpers.GetPawnFromController(PlayerIdHelpers.GetLocalSimPlayerComponent());
+            SimPawnComponent playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
 
             _inventory = playerPawn.GetComponent<SimInventoryComponent>();
 

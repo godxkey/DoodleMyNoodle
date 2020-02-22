@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class SimPlayerActions : SimClampedStatComponent, ISimTickable
 {
+    [System.Serializable]
+    struct SerializedData
+    {
+        public bool WasMyTurn;
+    }
+
     public int ActionGainByTurn = 1;
 
-    private bool _wasMyTurn = false;
+    public bool WasMyTurn { get => _data.WasMyTurn; set => _data.WasMyTurn = value; }
 
     public bool CanTakeAction()
     {
@@ -15,17 +21,39 @@ public class SimPlayerActions : SimClampedStatComponent, ISimTickable
 
     void ISimTickable.OnSimTick()
     {
+        // TODO : Changer pour global event
         if (SimTurnManager.Instance.IsMyTurn(Team.Player))
         {
-            if (!_wasMyTurn)
+            if (!WasMyTurn)
             {
                 IncreaseValue(ActionGainByTurn);
-                _wasMyTurn = true;
+                WasMyTurn = true;
             }
         }
         else
         {
-            _wasMyTurn = false;
+            WasMyTurn = false;
         }
     }
+
+    #region Serialized Data Methods
+    [UnityEngine.SerializeField]
+    [AlwaysExpand]
+    SerializedData _data = new SerializedData()
+    {
+        // define default values here
+    };
+
+    public override void PushToDataStack(SimComponentDataStack dataStack)
+    {
+        base.PushToDataStack(dataStack);
+        dataStack.Push(_data);
+    }
+
+    public override void PopFromDataStack(SimComponentDataStack dataStack)
+    {
+        _data = (SerializedData)dataStack.Pop();
+        base.PopFromDataStack(dataStack);
+    }
+    #endregion
 }

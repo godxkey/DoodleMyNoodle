@@ -4,27 +4,27 @@ using UnityEngine;
 
 public static class SimPawnHelpers
 {
-    public static T GetComponentOnMainPlayer<T>(MonoBehaviour player) where T : SimComponent
+    public static T GetComponentOnControllersPawn<T>(MonoBehaviour pawnController) where T : SimComponent
     {
-        if (player == null)
+        if (pawnController == null)
             return null;
 
-        if (player.GetComponent(out SimPawnControllerComponent pawnController))
+        if (pawnController.GetComponent(out SimPawnControllerComponent pawnControllerComponent))
         {
-            return pawnController.TargetPawn.gameObject.GetComponent<T>();
+            return pawnControllerComponent.TargetPawn.gameObject.GetComponent<T>();
         }
 
         return null;
     }
 
-    public static SimPawnComponent GetPawnFromController(MonoBehaviour player)
+    public static SimPawnComponent GetPawnFromController(MonoBehaviour pawnController)
     {
-        if (player == null)
+        if (pawnController == null)
             return null;
 
-        if (player.GetComponent(out SimPawnControllerComponent pawnController))
+        if (pawnController.GetComponent(out SimPawnControllerComponent pawnControllerComponent))
         {
-            return pawnController.TargetPawn;
+            return pawnControllerComponent.TargetPawn;
         }
 
         return null;

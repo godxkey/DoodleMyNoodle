@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class SimInventoryComponent : SimComponent
 {
+    [System.Serializable]
+    struct SerializedData
+    {
+        public List<SimItem> Inventory;
+    }
+
+    public List<SimItem> Inventory { get => _data.Inventory; }
+
     public List<SimItem> StartInventory = new List<SimItem>();
 
     public int InventorySize = 1;
-
-    private List<SimItem> _inventory = new List<SimItem>();
 
     public override void OnSimAwake() 
     {
@@ -24,44 +30,44 @@ public class SimInventoryComponent : SimComponent
 
     public void OnInventorySizeDecrease()
     {
-        while (_inventory.Count != InventorySize)
+        while (Inventory.Count != InventorySize)
         {
-            DropItem(_inventory.Last());
+            DropItem(Inventory.Last());
         }
     }
 
     private int AddItem(SimItem item, int position = -1)
     {
-        if (_inventory.Count >= InventorySize)
+        if (Inventory.Count >= InventorySize)
             return -1;
 
         if (position < 0)
         {
-            _inventory.Add(item);
-            return _inventory.Count - 1;
+            Inventory.Add(item);
+            return Inventory.Count - 1;
         }
         else
         {
-            _inventory[position] = item;
+            Inventory[position] = item;
             return position;
         }
     }
 
     private bool RemoveItem(SimItem item)
     {
-        return _inventory.Remove(item);
+        return Inventory.Remove(item);
     }
 
     private SimItem RemoveItem(int position)
     {
         SimItem itemRemoved = GetItem(position);
-        _inventory.Remove(itemRemoved);
+        Inventory.Remove(itemRemoved);
         return itemRemoved;
     }
 
     public bool HasItem(SimItem item)
     {
-        foreach (SimItem inventoryItem in _inventory)
+        foreach (SimItem inventoryItem in Inventory)
         {
             if (item == inventoryItem)
             {
@@ -74,10 +80,10 @@ public class SimInventoryComponent : SimComponent
 
     public SimItem GetItem(int position)
     {
-        if (position >= _inventory.Count)
+        if (position >= Inventory.Count)
             return null;
 
-        return _inventory[position];
+        return Inventory[position];
     }
 
     public void TakeItem(SimItem item)
@@ -95,4 +101,25 @@ public class SimInventoryComponent : SimComponent
             item.OnUnequip(this);
         }
     }
+
+    #region Serialized Data Methods
+    [UnityEngine.SerializeField]
+    [AlwaysExpand]
+    SerializedData _data = new SerializedData()
+    {
+        // define default values here
+    };
+
+    public override void PushToDataStack(SimComponentDataStack dataStack)
+    {
+        base.PushToDataStack(dataStack);
+        dataStack.Push(_data);
+    }
+
+    public override void PopFromDataStack(SimComponentDataStack dataStack)
+    {
+        _data = (SerializedData)dataStack.Pop();
+        base.PopFromDataStack(dataStack);
+    }
+    #endregion
 }

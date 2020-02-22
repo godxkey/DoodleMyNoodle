@@ -12,7 +12,7 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private Color _startBackgroundColor;
     private SimItem _currentItem;
 
-    private bool _MouseHovering = false;
+    private bool _mouseHovering = false;
 
     private void Start()
     {
@@ -21,13 +21,13 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void Update()
     {
-        if (_MouseHovering) 
+        if (_mouseHovering) 
         {
             if (Input.GetMouseButtonDown(1))
             {
                 if(_currentItem != null) 
                 {
-                    SimPawnComponent playerPawn = SimPawnHelpers.GetPawnFromController(PlayerIdHelpers.GetLocalSimPlayerComponent());
+                    SimPawnComponent playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
 
                     SimInventoryComponent inventory = playerPawn.GetComponent<SimInventoryComponent>();
                     SimPlayerActions PlayerActions = playerPawn.GetComponent<SimPlayerActions>();
@@ -70,7 +70,7 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
             ClickerDisplay.Instance.UpdateHoverText(_currentItem.GetName(),_currentItem.GetDescription());
         }
 
-        _MouseHovering = true;
+        _mouseHovering = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -81,7 +81,7 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
             ClickerDisplay.Instance.UpdateHoverText("","");
         }
 
-        _MouseHovering = false;
+        _mouseHovering = false;
     }
 
     private void UpdateDisplay()
