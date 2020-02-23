@@ -3,7 +3,10 @@
     "references": [
         "GUID:737e1c04c3dd3e046bedb5be72aec1d7",
         "GUID:c886ee09f9545f74f85dd4e7b076b17c",
-        "GUID:389edd8433a26384eb01215cc0adad2a"
+        "GUID:389edd8433a26384eb01215cc0adad2a",
+        "GUID:734d92eba21c94caba915361bd5ac177",
+        "GUID:8819f35a0fc84499b990e90a4ca1911f",
+        "GUID:d8b63aba1907145bea998dd612889d6b"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -14,5 +17,6 @@
     ],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }

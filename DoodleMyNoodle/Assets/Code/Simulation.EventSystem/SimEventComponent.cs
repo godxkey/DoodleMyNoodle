@@ -50,7 +50,7 @@ public class SimEventComponent : SimComponent, ISimEventListener
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [AlwaysExpand]
+    [CCC.InspectorDisplay.AlwaysExpand]
     [HideInInspector]
     SerializedData _evtComponentData = new SerializedData()
     {

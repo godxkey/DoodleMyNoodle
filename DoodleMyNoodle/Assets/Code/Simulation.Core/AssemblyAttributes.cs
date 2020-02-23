@@ -1,4 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
+using Unity.Entities;
+
+[assembly: DisableAutoCreation]
+
 
 [assembly: InternalsVisibleTo("Simulation.Core.SimInterface")]
 [assembly: InternalsVisibleTo("Simulation.Core.ViewInterface")]

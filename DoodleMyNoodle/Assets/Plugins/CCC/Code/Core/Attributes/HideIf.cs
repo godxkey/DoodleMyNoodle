@@ -1,4 +1,8 @@
-﻿public class HideIfAttribute : HideShowBaseAttribute
+﻿
+namespace CCC.InspectorDisplay
 {
-    public HideIfAttribute(string name, Type type = Type.Field) : base(name, type) { }
+    public class HideIfAttribute : HideShowBaseAttribute
+    {
+        public HideIfAttribute(string name, Type type = Type.Field) : base(name, type) { }
+    }
 }

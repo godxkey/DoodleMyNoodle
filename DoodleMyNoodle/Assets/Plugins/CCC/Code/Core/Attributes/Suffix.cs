@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 
-public class Suffix : PropertyAttribute
+namespace CCC.InspectorDisplay
 {
-    public string text;
-    public Suffix(string text)
+    public class Suffix : PropertyAttribute
     {
-        this.text = text;
+        public string text;
+        public Suffix(string text)
+        {
+            this.text = text;
+        }
     }
 }

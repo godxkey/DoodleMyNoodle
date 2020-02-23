@@ -3,68 +3,70 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
-
-[CustomPropertyDrawer(typeof(BitMaskAttribute))]
-public class BitMaskPropertyDrawer : PropertyDrawer
+namespace CCC.InspectorDisplay
 {
-    public override void OnGUI(Rect position, SerializedProperty prop, GUIContent label)
+    [CustomPropertyDrawer(typeof(BitMaskAttribute))]
+    public class BitMaskPropertyDrawer : PropertyDrawer
     {
-        EditorGUI.BeginProperty(position, label, prop);
-
-        // Add the actual int value behind the field name
-        label.text = label.text + "(" + prop.intValue + ")";
-        prop.intValue = DrawBitMaskField(position, prop.intValue, GetTypeOfProp(prop), label);
-
-        EditorGUI.EndProperty();
-    }
-
-    public static int DrawBitMaskField(Rect aPosition, int aMask, System.Type aType, GUIContent aLabel)
-    {
-        var itemNames = System.Enum.GetNames(aType);
-        var itemValues = System.Enum.GetValues(aType) as int[];
-
-        int val = aMask;
-        int maskVal = 0;
-        for (int i = 0; i < itemValues.Length; i++)
+        public override void OnGUI(Rect position, SerializedProperty prop, GUIContent label)
         {
-            if (itemValues[i] != 0)
+            EditorGUI.BeginProperty(position, label, prop);
+
+            // Add the actual int value behind the field name
+            label.text = label.text + "(" + prop.intValue + ")";
+            prop.intValue = DrawBitMaskField(position, prop.intValue, GetTypeOfProp(prop), label);
+
+            EditorGUI.EndProperty();
+        }
+
+        public static int DrawBitMaskField(Rect aPosition, int aMask, System.Type aType, GUIContent aLabel)
+        {
+            var itemNames = System.Enum.GetNames(aType);
+            var itemValues = System.Enum.GetValues(aType) as int[];
+
+            int val = aMask;
+            int maskVal = 0;
+            for (int i = 0; i < itemValues.Length; i++)
             {
-                if ((val & itemValues[i]) == itemValues[i])
+                if (itemValues[i] != 0)
+                {
+                    if ((val & itemValues[i]) == itemValues[i])
+                        maskVal |= 1 << i;
+                }
+                else if (val == 0)
                     maskVal |= 1 << i;
             }
-            else if (val == 0)
-                maskVal |= 1 << i;
-        }
-        int newMaskVal = EditorGUI.MaskField(aPosition, aLabel, maskVal, itemNames);
-        int changes = maskVal ^ newMaskVal;
+            int newMaskVal = EditorGUI.MaskField(aPosition, aLabel, maskVal, itemNames);
+            int changes = maskVal ^ newMaskVal;
 
-        for (int i = 0; i < itemValues.Length; i++)
-        {
-            if ((changes & (1 << i)) != 0)            // has this list item changed?
+            for (int i = 0; i < itemValues.Length; i++)
             {
-                if ((newMaskVal & (1 << i)) != 0)     // has it been set?
+                if ((changes & (1 << i)) != 0)            // has this list item changed?
                 {
-                    if (itemValues[i] == 0)           // special case: if "0" is set, just set the val to 0
+                    if ((newMaskVal & (1 << i)) != 0)     // has it been set?
                     {
-                        val = 0;
-                        break;
+                        if (itemValues[i] == 0)           // special case: if "0" is set, just set the val to 0
+                        {
+                            val = 0;
+                            break;
+                        }
+                        else
+                            val |= itemValues[i];
                     }
-                    else
-                        val |= itemValues[i];
-                }
-                else                                  // it has been reset
-                {
-                    val &= ~itemValues[i];
+                    else                                  // it has been reset
+                    {
+                        val &= ~itemValues[i];
+                    }
                 }
             }
+            return val;
         }
-        return val;
-    }
 
-    public static Type GetTypeOfProp(SerializedProperty property)
-    {
-        Type parentType = property.serializedObject.targetObject.GetType();
-        System.Reflection.FieldInfo fi = parentType.GetField(property.propertyPath);
-        return fi.FieldType;
+        public static Type GetTypeOfProp(SerializedProperty property)
+        {
+            Type parentType = property.serializedObject.targetObject.GetType();
+            System.Reflection.FieldInfo fi = parentType.GetField(property.propertyPath);
+            return fi.FieldType;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CCC.InspectorDisplay;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,9 +24,9 @@ public class BallDispenser : MonoBehaviour
     public Transform spawnPosition;
     public Vector3 spawnForce;
 
-    [ReadOnly]
+    [ReadOnlyAlways]
     public int queueLength;
-    [ReadOnly]
+    [ReadOnlyAlways]
     public int heldQueueLength;
 
     public float orderDelay;

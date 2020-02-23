@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CCC.InspectorDisplay;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ public class GridData : ScriptableObject
     public int height = 0;
 
     // Grid Info
-    [HideIf("usingTileData"),Header("GRID INFO"), Space]
+    [HideIf("usingTileData"), Header("GRID INFO"), Space]
     public int gridSize = 16; // Amount of Tile
     [HideInInspector]
     public Vector3 cornerALocation;

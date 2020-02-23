@@ -20,7 +20,7 @@ public class SimGridBattleBulletComponent : SimComponent, ISimTickable
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [AlwaysExpand]
+    [CCC.InspectorDisplay.AlwaysExpand]
     SerializedData _data = new SerializedData()
     {
         // define default values here

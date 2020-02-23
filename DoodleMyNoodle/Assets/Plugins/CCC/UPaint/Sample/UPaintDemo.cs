@@ -37,8 +37,8 @@ public class UPaintDemo : MonoBehaviour
     public UPaintBrushes.Fill FillBrush;
 
     [Header("Data")]
-    [ReadOnly] public Texture2D MainRenderTexture;
-    [ReadOnly] public Texture2D PreviewRenderTexture;
+    public Texture2D MainRenderTexture;
+    public Texture2D PreviewRenderTexture;
     public UPaintCanvas Canvas;
 
     private void Start()

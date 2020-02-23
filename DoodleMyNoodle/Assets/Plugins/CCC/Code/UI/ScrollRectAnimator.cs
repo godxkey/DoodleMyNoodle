@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
+using CCC.InspectorDisplay;
 
 /// <summary>
 /// Control animation and automation ScrollRect position
@@ -10,7 +11,7 @@ using DG.Tweening;
 [RequireComponent(typeof(ScrollRect))]
 public class ScrollRectAnimator : MonoBehaviour, IBeginDragHandler
 {
-    [SerializeField, ReadOnly]
+    [SerializeField, ReadOnlyAlways]
     bool isAnimating = false;
     public bool IsAnimating { get { return isAnimating; } }
 

@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-[CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
-public class ReadOnlyDrawer : PropertyDrawer
+namespace CCC.InspectorDisplay
 {
-    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    [CustomPropertyDrawer(typeof(ReadOnlyAlwaysAttribute))]
+    public class ReadOnlyDrawer : PropertyDrawer
     {
-        return EditorGUI.GetPropertyHeight(property, label, property.hasVisibleChildren);
-    }
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label, property.hasVisibleChildren);
+        }
 
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-    {
-        GUI.enabled = false;
-        EditorGUI.PropertyField(position, property, label, property.hasVisibleChildren);
-        GUI.enabled = true;
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            GUI.enabled = false;
+            EditorGUI.PropertyField(position, property, label, property.hasVisibleChildren);
+            GUI.enabled = true;
+        }
     }
 }

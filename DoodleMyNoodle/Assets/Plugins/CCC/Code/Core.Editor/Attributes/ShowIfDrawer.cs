@@ -1,21 +1,24 @@
 ﻿using UnityEditor;
 
-[CustomPropertyDrawer(typeof(ShowIfAttribute))]
-public class ShowIfDrawer : HideShowBaseDrawer
+namespace CCC.InspectorDisplay
 {
-    protected override bool DefaultMemberValue
+    [CustomPropertyDrawer(typeof(ShowIfAttribute))]
+    public class ShowIfDrawer : HideShowBaseDrawer
     {
-        get
+        protected override bool DefaultMemberValue
         {
-            return true;
+            get
+            {
+                return true;
+            }
         }
-    }
 
-    protected override bool IsShownIfMemberTrue
-    {
-        get
+        protected override bool IsShownIfMemberTrue
         {
-            return true;
+            get
+            {
+                return true;
+            }
         }
     }
 }

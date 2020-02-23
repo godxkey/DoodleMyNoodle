@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public class ReadOnlyInEditMode : PropertyAttribute
+namespace CCC.InspectorDisplay
 {
-    public ReadOnlyInEditMode() { }
+    public class ReadOnlyInEditMode : PropertyAttribute
+    {
+        public ReadOnlyInEditMode() { }
+    }
 }

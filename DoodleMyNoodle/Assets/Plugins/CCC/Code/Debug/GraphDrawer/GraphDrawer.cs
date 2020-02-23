@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CCC.GraphHidden;
+using CCC.InspectorDisplay;
 
 namespace CCC.Graph
 {

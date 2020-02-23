@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 
-public class ColoredAttribute : PropertyAttribute
+namespace CCC.InspectorDisplay
 {
-    public readonly Color color;
-
-    public ColoredAttribute(float r, float g, float b)
+    public class ColoredAttribute : PropertyAttribute
     {
-        color = new Color(r, g, b);
+        public readonly Color color;
+
+        public ColoredAttribute(float r, float g, float b)
+        {
+            color = new Color(r, g, b);
+        }
     }
 }
