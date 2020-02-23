@@ -8,9 +8,6 @@ public class HealthBarDisplay : MonoBehaviour
     public GameObject HealthpointsBar;
     public GameObject HealthDisplay;
 
-    public float EndScale;
-    public float EndXPosition;
-
     private void Start()
     {
         SimHealthStatComponent simHealthStatComponent = GetComponentInParent<SimHealthStatComponent>();
@@ -22,7 +19,7 @@ public class HealthBarDisplay : MonoBehaviour
 
     public void UpdateOnComponentAdded(SimComponent newComponent)
     {
-        if(newComponent is SimHealthStatComponent)
+        if (newComponent is SimHealthStatComponent)
         {
             SimHealthStatComponent simHealthStatComponent = (SimHealthStatComponent)newComponent;
             ListenToHealthComponent(simHealthStatComponent);
@@ -41,11 +38,8 @@ public class HealthBarDisplay : MonoBehaviour
     public void AjustDisplay(float HealthCurrentValue, float PreviousValue, float HealthMaxValue)
     {
         float healthpointsRatio = HealthCurrentValue / HealthMaxValue;
-        Vector3 pos = HealthpointsBar.transform.localPosition;
-        HealthpointsBar.transform.localPosition = new Vector3(Mathf.Lerp(EndXPosition, pos.x, healthpointsRatio), pos.y, pos.z);
 
-        Vector3 scale = HealthpointsBar.transform.localScale;
-        HealthpointsBar.transform.localScale = new Vector3(Mathf.Lerp(EndScale, scale.x, healthpointsRatio), scale.y, scale.z);
+        HealthpointsBar.transform.localScale = new Vector3(Mathf.Lerp(0, 1, healthpointsRatio), 1, 1);
     }
 
     private void ListenToHealthComponent(SimHealthStatComponent simHealthStatComponent)

@@ -8,13 +8,15 @@ public class SimInventoryComponent : SimComponent
     struct SerializedData
     {
         public List<SimItem> Inventory;
+        public int InventorySize;
     }
+
+    public int InventorySize { get => _data.InventorySize; set => _data.InventorySize = value; }
 
     public List<SimItem> Inventory { get => _data.Inventory; }
 
     public List<SimItem> StartInventory = new List<SimItem>();
 
-    public int InventorySize = 1;
 
     public override void OnSimAwake() 
     {

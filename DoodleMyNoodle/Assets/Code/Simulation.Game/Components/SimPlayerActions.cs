@@ -8,11 +8,12 @@ public class SimPlayerActions : SimClampedStatComponent, ISimTickable
     struct SerializedData
     {
         public bool WasMyTurn;
+        public int ActionGainByTurn;
     }
 
-    public int ActionGainByTurn = 1;
+    public int ActionGainByTurn { get => _data.ActionGainByTurn; set => _data.ActionGainByTurn = value; }
 
-    public bool WasMyTurn { get => _data.WasMyTurn; set => _data.WasMyTurn = value; }
+    public bool WasMyTurn { get => _data.WasMyTurn; internal set => _data.WasMyTurn = value; }
 
     public bool CanTakeAction()
     {

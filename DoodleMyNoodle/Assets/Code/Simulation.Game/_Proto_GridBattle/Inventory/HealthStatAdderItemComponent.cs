@@ -10,6 +10,7 @@ public class HealthStatAdderItemComponent : SimComponent, IItemOnEquip, IItemOnU
     {
         SimHealthStatComponent newHealthComponent = Inventory.GetComponent<SimComponentsLinker>().AddComponent<SimHealthStatComponent>();
         newHealthComponent.MaxValue = StartingHealth;
+        newHealthComponent.StartValue = StartingHealth;
         newHealthComponent.IncreaseValue(StartingHealth);
     }
 

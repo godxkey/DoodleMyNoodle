@@ -443,6 +443,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2790fa8e8b95a314cb85fb6e4aa5dc81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GameEnded: 0
+  WinningTeam: 0
 --- !u!114 &1056403278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -503,7 +505,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    DurationOfATurn: 5
+    DurationOfATurn: 10
     Timer:
       RawValue: 0
     CurrentTeam: 2

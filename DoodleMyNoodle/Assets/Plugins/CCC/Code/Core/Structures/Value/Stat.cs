@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public struct Stat<T>
 {
     private AutoResetDirtyValue<T> _dirtyValue;

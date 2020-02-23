@@ -6,11 +6,16 @@ using UnityEngine.UI;
 
 public class SimStatComponent : SimComponent
 {
-    private Stat<int> _stat;
+    [System.Serializable]
+    struct SerializedData
+    {
+        public Stat<int> Stat;
+        public int StartValue;
+    }
 
-    public int StartValue = 10;
-
-    public int Value { get { return _stat.Value; } }
+    private Stat<int> Stat { get => _dataSimStatComponent.Stat; set => _dataSimStatComponent.Stat = value; }
+    public int StartValue { get => _dataSimStatComponent.StartValue; set => _dataSimStatComponent.StartValue = value; }
+    public int Value { get { return Stat.Value; } }
 
     // Stat Changed Callback - New Value / Previous Value / Value on Start aka Max Value for now
     [System.Serializable]
@@ -18,11 +23,11 @@ public class SimStatComponent : SimComponent
     [HideInInspector]
     public OnValueChanged OnStatChanged = new OnValueChanged();
 
-    public override void OnSimStart()
+    public override void OnSimAwake()
     {
-        base.OnSimStart();
+        base.OnSimAwake();
 
-        _stat = new Stat<int>(StartValue);
+        Stat = new Stat<int>(StartValue);
     }
 
     /// <summary>
@@ -30,7 +35,7 @@ public class SimStatComponent : SimComponent
     /// </summary>
     public int IncreaseValue(int value)
     {
-        return SetValue(_stat.Value + value);
+        return SetValue(Stat.Value + value);
     }
 
     /// <summary>
@@ -38,7 +43,7 @@ public class SimStatComponent : SimComponent
     /// </summary>
     public int DecreaseValue(int value)
     {
-        return SetValue(_stat.Value - value);
+        return SetValue(Stat.Value - value);
     }
 
     /// <summary>
@@ -46,12 +51,36 @@ public class SimStatComponent : SimComponent
     /// </summary>
     public virtual int SetValue(int value)
     {
-        _stat.SetValue(value);
-        if (_stat.HasChanged())
+        var currentStat = Stat;
+        currentStat.SetValue(value);
+        Stat = currentStat;
+
+        if (Stat.HasChanged())
         {
-            OnStatChanged?.Invoke(_stat.Value, _stat.PreviousValue, StartValue);
+            OnStatChanged?.Invoke(Stat.Value, Stat.PreviousValue, StartValue);
         }
 
-        return _stat.Value - _stat.PreviousValue;
+        return Stat.Value - Stat.PreviousValue;
     }
+
+    #region Serialized Data Methods
+    [UnityEngine.SerializeField]
+    [AlwaysExpand]
+    SerializedData _dataSimStatComponent = new SerializedData()
+    {
+        // define default values here
+    };
+
+    public override void PushToDataStack(SimComponentDataStack dataStack)
+    {
+        base.PushToDataStack(dataStack);
+        dataStack.Push(_dataSimStatComponent);
+    }
+
+    public override void PopFromDataStack(SimComponentDataStack dataStack)
+    {
+        _dataSimStatComponent = (SerializedData)dataStack.Pop();
+        base.PopFromDataStack(dataStack);
+    }
+    #endregion
 }

@@ -11,7 +11,8 @@ public static class SimPawnHelpers
 
         if (pawnController.GetComponent(out SimPawnControllerComponent pawnControllerComponent))
         {
-            return pawnControllerComponent.TargetPawn.gameObject.GetComponent<T>();
+            if (pawnControllerComponent.TargetPawn)
+                return pawnControllerComponent.TargetPawn.gameObject.GetComponent<T>();
         }
 
         return null;

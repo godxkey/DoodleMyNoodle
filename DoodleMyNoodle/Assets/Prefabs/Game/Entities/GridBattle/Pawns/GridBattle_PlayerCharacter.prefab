@@ -198,9 +198,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartInventory: []
-  InventorySize: 1
   _data:
     Inventory: []
+    InventorySize: 0
 --- !u!114 &2799728580691253279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,12 +213,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6f7db9e73f5e746a6a1183abab51fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartValue: 4
   OnStatChanged:
     m_PersistentCalls:
       m_Calls: []
-  MaxValue: 4
-  MinValue: 0
+  _dataSimStatComponent:
+    StartValue: 4
+  _dataSimClampedStatComponent:
+    MaxValue: 4
+    MinValue: 0
   ActionGainByTurn: 4
   _data:
     WasMyTurn: 0
@@ -257,11 +259,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8908235613229724285}
     m_Modifications:
-    - target: {fileID: 6674601025037133760, guid: e10a426e9027d96489c298c100ffc8df,
-        type: 3}
-      propertyPath: m_Name
-      value: HealthBarContainer
-      objectReference: {fileID: 0}
     - target: {fileID: 441856737791022927, guid: e10a426e9027d96489c298c100ffc8df,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -316,6 +313,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6674601025037133760, guid: e10a426e9027d96489c298c100ffc8df,
+        type: 3}
+      propertyPath: m_Name
+      value: HealthBarContainer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e10a426e9027d96489c298c100ffc8df, type: 3}
