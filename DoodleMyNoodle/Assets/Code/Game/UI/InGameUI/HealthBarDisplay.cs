@@ -6,6 +6,7 @@ using UnityEngine;
 public class HealthBarDisplay : MonoBehaviour
 {
     public GameObject HealthpointsBar;
+    public GameObject HealthDisplay;
 
     public float EndScale;
     public float EndXPosition;
@@ -13,13 +14,27 @@ public class HealthBarDisplay : MonoBehaviour
     private void Start()
     {
         SimHealthStatComponent simHealthStatComponent = GetComponentInParent<SimHealthStatComponent>();
-        if (simHealthStatComponent != null)
+        ListenToHealthComponent(simHealthStatComponent);
+
+        GetComponentInParent<SimComponentsLinker>()?.OnComponentAdded.AddListener(UpdateOnComponentAdded);
+        GetComponentInParent<SimComponentsLinker>()?.OnComponentRemoved.AddListener(UpdateOnComponentRemoved);
+    }
+
+    public void UpdateOnComponentAdded(SimComponent newComponent)
+    {
+        if(newComponent is SimHealthStatComponent)
         {
-            simHealthStatComponent.OnStatChanged.AddListener(AjustDisplay);
+            SimHealthStatComponent simHealthStatComponent = (SimHealthStatComponent)newComponent;
+            ListenToHealthComponent(simHealthStatComponent);
         }
-        else
+    }
+
+    public void UpdateOnComponentRemoved(SimComponent oldComponent)
+    {
+        if (oldComponent is SimHealthStatComponent)
         {
-            gameObject.SetActive(false);
+            SimHealthStatComponent simHealthStatComponent = (SimHealthStatComponent)oldComponent;
+            StopListenToHealthComponent(simHealthStatComponent);
         }
     }
 
@@ -31,5 +46,23 @@ public class HealthBarDisplay : MonoBehaviour
 
         Vector3 scale = HealthpointsBar.transform.localScale;
         HealthpointsBar.transform.localScale = new Vector3(Mathf.Lerp(EndScale, scale.x, healthpointsRatio), scale.y, scale.z);
+    }
+
+    private void ListenToHealthComponent(SimHealthStatComponent simHealthStatComponent)
+    {
+        if (simHealthStatComponent != null)
+        {
+            simHealthStatComponent.OnStatChanged.AddListener(AjustDisplay);
+            HealthDisplay.SetActive(true);
+        }
+    }
+
+    private void StopListenToHealthComponent(SimHealthStatComponent simHealthStatComponent)
+    {
+        if (simHealthStatComponent != null)
+        {
+            simHealthStatComponent.OnStatChanged.RemoveListener(AjustDisplay);
+            HealthDisplay.SetActive(false);
+        }
     }
 }

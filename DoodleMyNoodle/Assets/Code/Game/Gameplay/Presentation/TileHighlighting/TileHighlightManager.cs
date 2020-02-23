@@ -27,6 +27,21 @@ public class TileHighlightManager : GameMonoBehaviour
             _highlights[i].SetActive(true);
             _highlights[i].transform.position = gridWalker.TileId.GetWorldPosition3D().ToUnityVec();
             i++;
+
+            if (_tempHighlights.Count == 0) 
+            {
+                if (gridWalker.WantsToWalk)
+                {
+                    AddHilightsAroundPlayer(gridWalker, gridWalker.GetComponent<SimPlayerActions>().Value);
+                }
+            }
+            else
+            {
+                if (gridWalker.ChoiceMade)
+                {
+                    RemoveHilightsAroundPlayer();
+                }
+            }
         }
 
         // deactivate excedent highlights
@@ -45,5 +60,70 @@ public class TileHighlightManager : GameMonoBehaviour
             _highlights[i].Destroy();
         }
         _highlights.Clear();
+    }
+
+    private List<GameObject> _tempHighlights = new List<GameObject>();
+
+    public void AddHilightsAroundPlayer(SimGridWalkerComponent gridWalker, int depth)
+    {
+        for (int i = 1; i <= depth; i++)
+        {
+            for (int j = 1; j <= (i * 4); j++)
+            {
+                Vector2 newPossibleDestination = new Vector2(gridWalker.TileId.X, gridWalker.TileId.Y);
+
+                int currentTotalTiles = i * 4;
+
+                int currentQuadran = Mathf.CeilToInt((float)j / i);
+
+                int displacementForward = ((currentQuadran * i + 1) - j);
+                int displacementSide = (j - (((currentQuadran - 1) * i) + 1));
+
+                // 4 Quadran
+                switch (currentQuadran)
+                {
+                    case 1:
+                        newPossibleDestination.x += -1 * displacementForward;
+                        newPossibleDestination.y += displacementSide;
+                        break;
+                    case 2:
+                        newPossibleDestination.x += displacementSide;
+                        newPossibleDestination.y += displacementForward;
+                        break;
+                    case 3:
+                        newPossibleDestination.x += displacementForward;
+                        newPossibleDestination.y += -1 * displacementSide;
+                        break;
+                    case 4:
+                        newPossibleDestination.x += -1 * displacementSide;
+                        newPossibleDestination.y += -1 * displacementForward;
+                        break;
+                    default:
+                        break;
+                }
+
+                SimTileId destinationSimTileID = new SimTileId((int)newPossibleDestination.x, (int)newPossibleDestination.y);
+
+                List<SimTileId> path = new List<SimTileId>();
+                if (SimPathService.Instance.GetPathTo(gridWalker, destinationSimTileID, ref path))
+                {
+                    GameObject newHighlight = HighlightPrefab.Duplicate();
+                    _tempHighlights.Add(newHighlight);
+
+                    newHighlight.SetActive(true);
+                    newHighlight.transform.position = destinationSimTileID.GetWorldPosition3D().ToUnityVec();
+                }
+            }
+        }
+    }
+
+    public void RemoveHilightsAroundPlayer()
+    {
+        foreach (GameObject highlight in _tempHighlights)
+        {
+            Destroy(highlight);
+        }
+
+        _tempHighlights.Clear();
     }
 }

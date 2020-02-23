@@ -8,17 +8,13 @@ public class HealthStatAdderItemComponent : SimComponent, IItemOnEquip, IItemOnU
 
     public void OnEquip(SimInventoryComponent Inventory)
     {
-        SimHealthStatComponent newHealthComponent = Inventory.gameObject.AddComponent<SimHealthStatComponent>();
+        SimHealthStatComponent newHealthComponent = Inventory.GetComponent<SimComponentsLinker>().AddComponent<SimHealthStatComponent>();
         newHealthComponent.MaxValue = StartingHealth;
         newHealthComponent.IncreaseValue(StartingHealth);
     }
 
-
-
-
-
     public void OnUnequip(SimInventoryComponent Inventory)
     {
-        Destroy(Inventory.GetComponent<SimHealthStatComponent>());
+        Inventory.GetComponent<SimComponentsLinker>().RemoveComponent<SimHealthStatComponent>();
     }
 }
