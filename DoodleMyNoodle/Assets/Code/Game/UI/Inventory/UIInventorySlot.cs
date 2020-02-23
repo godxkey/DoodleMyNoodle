@@ -12,9 +12,48 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private Color _startBackgroundColor;
     private SimItem _currentItem;
 
+    private bool _mouseHovering = false;
+
     private void Start()
     {
         _startBackgroundColor = Background.color;
+    }
+
+    private void Update()
+    {
+        if (_mouseHovering) 
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                if(_currentItem != null) 
+                {
+                    SimPawnComponent playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
+
+                    SimInventoryComponent inventory = playerPawn.GetComponent<SimInventoryComponent>();
+                    SimPlayerActions PlayerActions = playerPawn.GetComponent<SimPlayerActions>();
+
+                    // Alex - HACK TO TEST FUNCTIONNALITY OF DROPPING
+                    if (_currentItem.GetComponent<TrashItemComponent>())
+                    {
+                        SimItem item = ClickerDisplay.Instance.GetItemCurrentlyHolding();
+
+                        if (item != null)
+                        {
+                            inventory.DropItem(item);
+                        }
+
+                        ClickerDisplay.Instance.DropHoldingItem();
+                    }
+                    else
+                    {
+                        if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                        {
+                            _currentItem.OnUse(PlayerActions);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void Init(SimItem StartItem)
@@ -30,6 +69,8 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
         {
             ClickerDisplay.Instance.UpdateHoverText(_currentItem.GetName(),_currentItem.GetDescription());
         }
+
+        _mouseHovering = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -39,6 +80,8 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
         {
             ClickerDisplay.Instance.UpdateHoverText("","");
         }
+
+        _mouseHovering = false;
     }
 
     private void UpdateDisplay()
@@ -56,7 +99,6 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void SlotSelected()
     {
-        Debug.Log("CLICKED");
         _currentItem = ClickerDisplay.Instance.InventorySlotClicked(_currentItem);
         UpdateDisplay();
     }

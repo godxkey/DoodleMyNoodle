@@ -7,11 +7,18 @@ public class ClickerDisplay : MonoBehaviour
 {
     public static ClickerDisplay Instance = null;
 
+    // TOOLTIP
     public Image HoldingImage;
     public GameObject TooltipPanel;
     public Text TooltipName;
     public Text TooltipDescription;
     public Camera Cam;
+
+    // MOUSE
+    public Texture2D MouseIdle;
+    public Texture2D MouseGrab;
+    private CursorMode _cursorMode = CursorMode.Auto;
+    private Vector2 _hotSpot = Vector2.zero;
 
     private SimItem _itemHeld = null;
 
@@ -28,6 +35,11 @@ public class ClickerDisplay : MonoBehaviour
     public void Update()
     {
         transform.position = Input.mousePosition;
+
+        if (SimEndGameManager.Instance && SimEndGameManager.Instance.GameEnded)
+        {
+            Cursor.SetCursor(MouseIdle, _hotSpot, _cursorMode);
+        }
     }
 
     // Returns item left on the slot
@@ -73,12 +85,14 @@ public class ClickerDisplay : MonoBehaviour
 
     private void StartHoldingItem(SimItem item)
     {
+        Cursor.SetCursor(MouseGrab, _hotSpot, _cursorMode);
         _itemHeld = item;
         UpdateDisplay(_itemHeld);
     }
 
-    private SimItem DropHoldingItem()
+    public SimItem DropHoldingItem()
     {
+        Cursor.SetCursor(MouseIdle, _hotSpot, _cursorMode);
         SimItem previousItem = _itemHeld;
         _itemHeld = null;
         UpdateDisplay(_itemHeld);

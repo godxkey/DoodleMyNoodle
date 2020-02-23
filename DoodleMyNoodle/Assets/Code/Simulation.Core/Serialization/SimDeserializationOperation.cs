@@ -102,8 +102,9 @@ namespace Sim.Operations
                     reconstructedEntity.gameObject.SetActive(serializedEntity.Active);
                     reconstructedEntity.BlueprintId = blueprint.Id; // is this necessary ?
                     reconstructedEntity.GetComponents(reconstructedComponents);
+                    List<UnityEngine.Object> toDestroy = new List<UnityEngine.Object>(reconstructedComponents);
 
-                    for (int c = serializedEntity.Components.Count - 1; c >= 0; c--)
+                    for (int c = 0; c < serializedEntity.Components.Count; c++)
                     {
                         SimSerializableWorld.Entity.Component serializedComponent = serializedEntity.Components[c];
 
@@ -119,7 +120,7 @@ namespace Sim.Operations
                         if (componentIndex != -1)
                         {
                             comp = reconstructedComponents[componentIndex];
-                            reconstructedComponents.RemoveAt(componentIndex);
+                            toDestroy.Remove(comp);
                         }
                         else
                         {
@@ -139,9 +140,9 @@ namespace Sim.Operations
 
                     // remove components that were not found in the saved data
                     // (they are on the original blueprint, but they were probably removed in gameplay)
-                    for (int c = 0; c < reconstructedComponents.Count; c++)
+                    for (int c = 0; c < toDestroy.Count; c++)
                     {
-                        UnityEngine.Object.Destroy(reconstructedComponents[c]);
+                        UnityEngine.Object.Destroy(toDestroy[c]);
                     }
 
                     // cache SimObject

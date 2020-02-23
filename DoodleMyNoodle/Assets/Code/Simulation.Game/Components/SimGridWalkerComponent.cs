@@ -22,10 +22,13 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
         public SimEvent<WalkedOnTileEventData> OnWalkedOnTileEvent;
     }
 
-    public Fix64 Speed { get => _data.Speed; set => _data.Speed = value; }
+    public Fix64 Speed { get => _data.Speed; internal set => _data.Speed = value; }
     public bool HasADestination => _data.HasADestination;
     public SimTileId TileId => SimTransform.GetTileId();
     public SimEvent<WalkedOnTileEventData> OnWalkedOnTileEvent => _data.OnWalkedOnTileEvent;
+
+    public bool WantsToWalk = false;
+    public bool ChoiceMade = false;
 
     public override void OnSimAwake()
     {
@@ -34,12 +37,15 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
         _data.OnWalkedOnTileEvent = CreateLocalEvent<WalkedOnTileEventData>();
     }
 
-    public void TryWalkTo(in SimTileId destination)
+    internal void TryWalkTo(in SimTileId destination)
     {
+        if (destination == TileId)
+            return;
+
         _data.HasADestination = SimPathService.Instance.GetPathTo(this, destination, ref _data.Path);
     }
 
-    public void Stop()
+    internal void Stop()
     {
         _data.HasADestination = false;
     }

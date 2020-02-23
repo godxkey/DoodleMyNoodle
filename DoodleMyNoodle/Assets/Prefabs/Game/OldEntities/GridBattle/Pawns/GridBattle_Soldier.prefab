@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8908235612957549171}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: -0.326}
   m_LocalScale: {x: 0.15, y: 0.15, z: 1}
   m_Children: []
   m_Father: {fileID: 8908235613229724285}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!212 &8908235612957549169
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -94,6 +94,8 @@ GameObject:
   - component: {fileID: 8908235613229724287}
   - component: {fileID: 9174381667908214457}
   - component: {fileID: 9153719443052239491}
+  - component: {fileID: 1930990586349289378}
+  - component: {fileID: 7088678230703503781}
   m_Layer: 0
   m_Name: GridBattle_Soldier
   m_TagString: Untagged
@@ -185,6 +187,8 @@ MonoBehaviour:
   _evtComponentData:
     EventsWeHaveRegisteredTo: []
     LocalEvents: []
+  WantsToWalk: 0
+  ChoiceMade: 0
   _data:
     Speed:
       RawValue: 17179869184
@@ -202,10 +206,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9b1c892727f5b84ba962670a2e1452c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartValue: 10
   OnStatChanged:
     m_PersistentCalls:
       m_Calls: []
+  _dataSimStatComponent:
+    StartValue: 10
+  _dataSimClampedStatComponent:
+    MaxValue: 10
+    MinValue: 0
 --- !u!114 &9153719443052239491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,6 +228,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _controllerPrefab: {fileID: 3177534479664188177, guid: 073d20c9c7c541d449652b85017d033c,
     type: 3}
+--- !u!114 &1930990586349289378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908235613229724289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47494f05dd072ec42858ac51e1b4a8ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _evtComponentData:
+    EventsWeHaveRegisteredTo: []
+    LocalEvents: []
+  WantsToAttack: 0
+  ChoiceMade: 0
+  _data:
+    AttackDamage: 2
+--- !u!114 &7088678230703503781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908235613229724289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e1a9372fbae3574b9e336d32e2605a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    Team: 1
 --- !u!1001 &3779284023405681430
 PrefabInstance:
   m_ObjectHideFlags: 0

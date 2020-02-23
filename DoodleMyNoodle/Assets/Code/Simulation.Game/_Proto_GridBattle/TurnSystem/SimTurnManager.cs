@@ -41,7 +41,10 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
         if (_data.Timer <= 0)
         {
             SwitchTurn();
-            _data.Timer = DurationOfATurn;
+            if (_data.CurrentTeam == Team.AI)
+                _data.Timer = 1;
+            else
+                _data.Timer = DurationOfATurn;
         }
     }
 
@@ -52,7 +55,6 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
         {
             _data.CurrentTeam = 0;
         }
-        Debug.Log("SWITCH TURN - " + _data.CurrentTeam);
     }
 
     public bool IsMyTurn(Team myTeam)

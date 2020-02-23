@@ -105,7 +105,7 @@ namespace Sim.Operations
 
             foreach (SimEntity simEntity in world.Entities)
             {
-                DebugService.Log($"Serializing entity {simEntity.gameObject.name}");
+                DebugService.Log($"Serializing entity {simEntity.gameObject.name} - {simEntity.BlueprintId}");
 
                 // define new serialized entity
                 SimSerializableWorld.Entity serializableEntity = new SimSerializableWorld.Entity();
@@ -178,6 +178,8 @@ namespace Sim.Operations
             //      Serialize serializableWorld to string
             ////////////////////////////////////////////////////////////////////////////////////////
             serializableWorld.ReferencedBlueprints = blueprintIdIndexMap.GetList();
+            DebugService.Log($"BPs: {serializableWorld.ReferencedBlueprints.Count}");
+            serializableWorld.ReferencedBlueprints.ForEach((x) => DebugService.Log($"BP: {x.Value}"));
             yield return JsonSerializationUtility.SerializeThreaded(
                 serializableWorld,
                 _jsonSerializerSettings,

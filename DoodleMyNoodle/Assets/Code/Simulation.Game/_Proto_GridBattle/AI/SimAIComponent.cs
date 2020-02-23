@@ -24,19 +24,48 @@ public class SimAIComponent : SimComponent,
 
                 if (_pawnGridWalker)
                 {
-                    Fix64 randomDecision = Simulation.Random.Range(0, 3);
+                    Fix64 randomDecision = Simulation.Random.Range(0, 4);
 
                     if (randomDecision < 1)
                     {
-                        _pawnGridWalker.TryWalkTo(_pawnGridWalker.TileId + Vector2Int.right);
+                        _pawnGridWalker.TryWalkTo(_pawnGridWalker.TileId + Vector2Int.left);
                     }
                     else if (randomDecision < 2)
                     {
                         _pawnGridWalker.TryWalkTo(_pawnGridWalker.TileId + Vector2Int.left);
                     }
-                    else
+                    else if(randomDecision < 3)
                     {
                         _pawnGridWalker.TryWalkTo(_pawnGridWalker.TileId + Vector2Int.down);
+                    }
+                    else
+                    {
+                        _pawnGridWalker.TryWalkTo(_pawnGridWalker.TileId + Vector2Int.up);
+                    }
+
+                    if (_characterAttack)
+                    {
+                        int maxTry = 4;
+                        int currentTry = 0;
+                        SimTileId nextTileToAttack = _pawnGridWalker.TileId + Vector2Int.right;
+                        while (!_characterAttack.TryToAttack(nextTileToAttack) && currentTry < maxTry)
+                        {
+                            currentTry++;
+                            switch (currentTry)
+                            {
+                                case 1:
+                                    nextTileToAttack = _pawnGridWalker.TileId + Vector2Int.up;
+                                    break;
+                                case 2:
+                                    nextTileToAttack = _pawnGridWalker.TileId + Vector2Int.left;
+                                    break;
+                                case 3:
+                                    nextTileToAttack = _pawnGridWalker.TileId + Vector2Int.down;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
                     }
                 }
             }
@@ -54,11 +83,13 @@ public class SimAIComponent : SimComponent,
 
     #region Pawn Component Caching
     [System.NonSerialized] SimGridWalkerComponent _pawnGridWalker;
+    [System.NonSerialized] SimCharacterAttackComponent _characterAttack;
     void UpdateCachedPawnComponents()
     {
         if(_targetPawn.TargetPawn)
         {
             _pawnGridWalker = _targetPawn.TargetPawn.GetComponent<SimGridWalkerComponent>();
+            _characterAttack = _targetPawn.TargetPawn.GetComponent<SimCharacterAttackComponent>();
         }
     }
     #endregion

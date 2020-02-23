@@ -103,6 +103,8 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
             _players.Add(new PlayerInfo(playerInfo));
         }
 
+        _localPlayerInfo = _players.Find((x) => x.PlayerId == _localPlayerInfo.PlayerId); // a bit hackish
+
         _playerListSyncReceived = true;
     }
 

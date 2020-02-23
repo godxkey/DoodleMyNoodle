@@ -29,4 +29,6 @@ public class SimTileManager : SimSingleton<SimTileManager>
             && tileId.Y >= 0
             && tileId.Y < _height;
     }
+
+    public Plane FloorPlane => new Plane(Vector3.back, 0);
 }

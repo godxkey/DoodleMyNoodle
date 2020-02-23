@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class ItemBank : SimSingleton<ItemBank>
 {
-    private List<SimItem> _availableItems = new List<SimItem>();
+    [System.Serializable]
+    struct SerializedData
+    {
+        public List<SimItem> AvailableItems;
+    }
+    
+    private List<SimItem> AvailableItems => _data.AvailableItems;
 
     public override void OnSimAwake()
     {
@@ -12,13 +18,13 @@ public class ItemBank : SimSingleton<ItemBank>
 
         foreach (SimItem item in GetComponentsInChildren<SimItem>())
         {
-            _availableItems.Add(item);
+            AvailableItems.Add(item);
         }
     }
 
     public SimItem GetItemWithSameName(string Name)
     {
-        foreach (SimItem item in _availableItems)
+        foreach (SimItem item in AvailableItems)
         {
             if(item.GetName() == Name)
             {
@@ -28,4 +34,25 @@ public class ItemBank : SimSingleton<ItemBank>
 
         return null;
     }
+
+    #region Serialized Data Methods
+    [UnityEngine.SerializeField]
+    [AlwaysExpand]
+    SerializedData _data = new SerializedData()
+    {
+        // define default values here
+    };
+
+    public override void PushToDataStack(SimComponentDataStack dataStack)
+    {
+        base.PushToDataStack(dataStack);
+        dataStack.Push(_data);
+    }
+
+    public override void PopFromDataStack(SimComponentDataStack dataStack)
+    {
+        _data = (SerializedData)dataStack.Pop();
+        base.PopFromDataStack(dataStack);
+    }
+    #endregion
 }

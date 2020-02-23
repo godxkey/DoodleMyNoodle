@@ -23,7 +23,11 @@ public class SceneBlueprintIdUpdater : UnityEditor.AssetModificationProcessor
         paths.Where((assetPath) => assetPath.EndsWith(SCENE_ASSET_EXTENSION))
             .Select((scenePath) => EditorSceneManager.GetSceneByPath(scenePath))
             .ToList()
-            .ForEach((scene) => InjectSimBlueprintIdsOnSceneGameObjects(scene));
+            .ForEach((scene) =>
+            {
+                ValidateEntitiesHaveSimTransformOnParents(scene);
+                InjectSimBlueprintIdsOnSceneGameObjects(scene);
+            });
 
         return paths;
     }
@@ -157,6 +161,26 @@ public class SceneBlueprintIdUpdater : UnityEditor.AssetModificationProcessor
             });
 
         return simEntities;
+    }
+
+    static void ValidateEntitiesHaveSimTransformOnParents(Scene scene)
+    {
+        List<SimEntity> simEntities = new List<SimEntity>();
+        scene.GetRootGameObjects()
+            .ToList()
+            .ForEach((rootGameObject) =>
+            {
+                simEntities.AddRange(rootGameObject.GetComponentsInChildren<SimEntity>());
+            });
+
+        simEntities.ForEach((entity) =>
+        {
+            var parent = entity.UnityTransform.parent;
+            if (parent != null && parent.GetComponent<SimTransformComponent>() == null)
+            {
+                Debug.LogError($"{entity.gameObject.name}'s parent doesn't have a SimTransformComponent. Add the component on the parent to avoid issues.");
+            }
+        });
     }
 
     static string GetSceneGuid(Scene scene)

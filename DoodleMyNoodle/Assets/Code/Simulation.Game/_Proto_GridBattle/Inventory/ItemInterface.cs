@@ -11,10 +11,10 @@ public interface IItemOnUnequip
 
 public interface IItemOnUse
 {
-    void OnUse();
+    void OnUse(SimPlayerActions PlayerActions);
 }
 
 public interface IItemOnConsume
 {
-    void OnConsume();
+    void OnConsume(SimPlayerActions PlayerActions);
 }
