@@ -61,8 +61,8 @@ public class HighlightClicker : GameMonoBehaviour
 
     private int CalculateAmountOfActionToMoveThere(SimTileId start, SimTileId end)
     {
-        int up = Mathf.Abs((int)(end.Y - start.Y));
-        int right = Mathf.Abs((int)(end.X - start.X));
+        int up = Mathf.Abs(end.Y - start.Y);
+        int right = Mathf.Abs(end.X - start.X);
         return up + right;
     }
 }
