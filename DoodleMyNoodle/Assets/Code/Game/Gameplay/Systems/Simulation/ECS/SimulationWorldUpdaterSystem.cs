@@ -7,6 +7,9 @@ using UnityEngine.PlayerLoop;
 
 public class SimulationWorldUpdaterSystem : ComponentSystem
 {
+    public List<SimTickData> AvailableTicks = new List<SimTickData>();
+    public bool IsTicking { get; private set; }
+
     World _simulationWorld;
     SimPreInitializationSystemGroup _preInitGroup;
     SimInitializationSystemGroup _initGroup;
@@ -28,6 +31,7 @@ public class SimulationWorldUpdaterSystem : ComponentSystem
         _presGroup = _simulationWorld.CreateSystem<SimPresentationSystemGroup>();
 
         _preInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemEnd>());
+        _preInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<SimInputSystem>());
 
         _initGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<BeginInitializationEntityCommandBufferSystem>());
         _initGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<EndInitializationEntityCommandBufferSystem>());
@@ -66,10 +70,27 @@ public class SimulationWorldUpdaterSystem : ComponentSystem
             _updatePlayerLoop = false;
         }
 
-        ManualUpdate(_preInitGroup);
-        ManualUpdate(_initGroup);
-        ManualUpdate(_simGroup);
-        ManualUpdate(_presGroup);
+
+        while (AvailableTicks.Count > 0)
+        {
+            IsTicking = true;
+            
+            SimTickData tick = AvailableTicks.First();
+            AvailableTicks.RemoveAt(0);
+
+            SimInputSystem inputSystem = _simulationWorld.GetExistingSystem<SimInputSystem>();
+
+            inputSystem.TickInputs = tick.inputs;
+
+            ManualUpdate(_preInitGroup);
+            ManualUpdate(_initGroup);
+            ManualUpdate(_simGroup);
+            ManualUpdate(_presGroup);
+            
+            inputSystem.TickInputs = null;
+            
+            IsTicking = false;
+        }
     }
 
     private void ManualUpdate(IManualSystemGroupUpdate systemGroup)

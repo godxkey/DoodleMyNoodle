@@ -797,7 +797,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7e476e3d56dfbd459a248fbb74e7beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BlueprintDefinitions: []
+  BlueprintDefinitions:
+  - {fileID: 5180520187915386772, guid: 7425eff6bd23f2c4ea2111a45a3037d4, type: 3}
 --- !u!4 &1780801522
 Transform:
   m_ObjectHideFlags: 0
