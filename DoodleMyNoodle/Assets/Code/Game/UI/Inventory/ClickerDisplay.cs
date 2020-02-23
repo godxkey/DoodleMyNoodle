@@ -35,6 +35,11 @@ public class ClickerDisplay : MonoBehaviour
     public void Update()
     {
         transform.position = Input.mousePosition;
+
+        if (SimEndGameManager.Instance && SimEndGameManager.Instance.GameEnded)
+        {
+            Cursor.SetCursor(MouseIdle, _hotSpot, _cursorMode);
+        }
     }
 
     // Returns item left on the slot

@@ -28,11 +28,18 @@ public class TileHighlightManager : GameMonoBehaviour
             _highlights[i].transform.position = gridWalker.TileId.GetWorldPosition3D().ToUnityVec();
             i++;
 
+            SimCharacterAttackComponent characterAttackComponent = gridWalker.GetComponent<SimCharacterAttackComponent>();
+
             if (_tempHighlights.Count == 0) 
             {
                 if (gridWalker.WantsToWalk)
                 {
                     AddHilightsAroundPlayer(gridWalker, gridWalker.GetComponent<SimPlayerActions>().Value);
+                }
+                
+                if (characterAttackComponent != null && characterAttackComponent.WantsToAttack)
+                {
+                    AddHilightsAroundPlayer(gridWalker, 1); // hard coded attack is range 1
                 }
             }
             else
@@ -40,6 +47,13 @@ public class TileHighlightManager : GameMonoBehaviour
                 if (gridWalker.ChoiceMade)
                 {
                     RemoveHilightsAroundPlayer();
+                    gridWalker.ChoiceMade = false;
+                }
+                
+                if((characterAttackComponent != null) && characterAttackComponent.ChoiceMade)
+                {
+                    RemoveHilightsAroundPlayer();
+                    characterAttackComponent.ChoiceMade = false;
                 }
             }
         }

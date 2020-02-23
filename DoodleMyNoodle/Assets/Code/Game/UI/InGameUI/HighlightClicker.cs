@@ -6,6 +6,7 @@ public class HighlightClicker : GameMonoBehaviour
 {
     private SimPawnComponent _playerPawn;
     private SimGridWalkerComponent _playerGridWalkerComponent;
+    private SimCharacterAttackComponent _playerCharacterAttackComponent;
 
     public override void OnGameUpdate()
     {
@@ -17,6 +18,9 @@ public class HighlightClicker : GameMonoBehaviour
             if (_playerGridWalkerComponent == null)
                 _playerGridWalkerComponent = _playerPawn.GetComponent<SimGridWalkerComponent>();
 
+            if (_playerCharacterAttackComponent == null)
+                _playerCharacterAttackComponent = _playerPawn.GetComponent<SimCharacterAttackComponent>();
+
             if (_playerGridWalkerComponent != null)
             {
                 if (_playerGridWalkerComponent.WantsToWalk && IsMouseInsideHighlight(GetMousePositionOnTile()))
@@ -27,10 +31,32 @@ public class HighlightClicker : GameMonoBehaviour
 
                         _playerPawn.GetComponent<SimPlayerActions>().IncreaseValue(-CalculateAmountOfActionToMoveThere(_playerPawn.GetComponent<SimGridWalkerComponent>().TileId, currentTileID));
 
-                        _playerPawn.GetComponent<SimGridWalkerComponent>().TryWalkTo(currentTileID);
+                        _playerGridWalkerComponent.TryWalkTo(currentTileID);
 
-                        _playerPawn.GetComponent<SimGridWalkerComponent>().WantsToWalk = false;
-                        _playerPawn.GetComponent<SimGridWalkerComponent>().ChoiceMade = true;
+                        _playerGridWalkerComponent.WantsToWalk = false;
+                        _playerGridWalkerComponent.ChoiceMade = true;
+
+                        return;
+                    }
+                }
+            }
+
+            if (_playerCharacterAttackComponent != null)
+            {
+                if (_playerCharacterAttackComponent.WantsToAttack && IsMouseInsideHighlight(GetMousePositionOnTile()))
+                {
+                    if (Input.GetMouseButtonDown(0) && SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    {
+                        SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+
+                        _playerPawn.GetComponent<SimPlayerActions>().IncreaseValue(-1);
+
+                        _playerCharacterAttackComponent.TryToAttack(currentTileID);
+
+                        _playerCharacterAttackComponent.WantsToAttack = false;
+                        _playerCharacterAttackComponent.ChoiceMade = true;
+
+                        return;
                     }
                 }
             }
