@@ -22,7 +22,7 @@ public static class TypeUtility
                 var assemblyTypes = assembly.GetTypes();
                 foreach (var t in assemblyTypes)
                 {
-                    if (type.IsAssignableFrom(t))
+                    if (type != t && type.IsAssignableFrom(t))
                         types.Add(t);
                 }
             }
@@ -30,7 +30,7 @@ public static class TypeUtility
             {
                 foreach (var t in e.Types)
                 {
-                    if (t != null && type.IsAssignableFrom(t))
+                    if (t != null && type != t && type.IsAssignableFrom(t))
                         types.Add(t);
                 }
 

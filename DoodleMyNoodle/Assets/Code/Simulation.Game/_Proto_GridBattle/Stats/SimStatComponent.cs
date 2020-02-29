@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
+using CCC.InspectorDisplay;
 
 public class SimStatComponent : SimComponent
 {

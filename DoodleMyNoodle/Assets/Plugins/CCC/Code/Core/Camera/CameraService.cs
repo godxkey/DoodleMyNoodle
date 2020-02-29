@@ -69,7 +69,12 @@ public class CameraService : MonoCoreService<CameraService>
             }
         }
         cameras.Add(new CameraEntry(cameraSet, priority));
-        ReevaluateActiveCamera();
+        
+        if(!ReevaluateActiveCamera())
+        {
+            // deactivate new camera set if it was not chosen to be the new active one
+            cameraSet.Deactivate();
+        }
     }
 
     public void RemoveCamera(Camera camera)
@@ -82,15 +87,17 @@ public class CameraService : MonoCoreService<CameraService>
         ReevaluateActiveCamera();
     }
 
-    void ReevaluateActiveCamera()
+    bool ReevaluateActiveCamera()
     {
         CameraSet newActiveCameraSet = GetCameraThatShouldBeActive();
-        if (GetCameraThatShouldBeActive() != ActiveCameraSet)
+        if (newActiveCameraSet != ActiveCameraSet)
         {
             ActiveCameraSet?.Deactivate();
             newActiveCameraSet.Activate();
             ActiveCameraSet = newActiveCameraSet;
+            return true;
         }
+        return false;
     }
 
     CameraEntry GetCameraEntryFromCamera(Camera camera)

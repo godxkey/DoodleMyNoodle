@@ -50,4 +50,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameRoot/Scene Assets/SimulationBasePresentation.unity
     guid: 02fa011c09404914098c6019b2610a09
+  - enabled: 1
+    path: Assets/Scenes/GameLevels_Presentation/SceneAssets/Lvl_GridBattle_PresentationECS.unity
+    guid: 1cd9718281f9895408333cb8fc99bc29
+  - enabled: 1
+    path: Assets/Scenes/GameLevels/Scene Assets/Lvl_GridBattleECS.unity
+    guid: 815b8536c98c51447a9e715207ed3330
   m_configObjects: {}

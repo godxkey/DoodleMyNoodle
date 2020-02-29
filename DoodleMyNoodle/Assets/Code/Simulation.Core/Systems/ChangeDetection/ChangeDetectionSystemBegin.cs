@@ -7,6 +7,8 @@ public class ChangeDetectionSystemBegin : ComponentSystem
     public bool HasUpdatedAtLeastOnce = false;
     public Dictionary<ComponentType, uint> SummedVersionNumbers = new Dictionary<ComponentType, uint>();
 
+    public void ResetSample() => OnUpdate();
+
     protected override void OnUpdate()
     {
         HasUpdatedAtLeastOnce = true;

@@ -37,7 +37,7 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
         _data.OnWalkedOnTileEvent = CreateLocalEvent<WalkedOnTileEventData>();
     }
 
-    internal void TryWalkTo(in SimTileId destination)
+    public void TryWalkTo(in SimTileId destination)
     {
         if (destination == TileId)
             return;

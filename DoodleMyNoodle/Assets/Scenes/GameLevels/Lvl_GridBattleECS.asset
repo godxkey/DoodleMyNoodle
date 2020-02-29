@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57226a55b6622c8429cd888497377bf4, type: 3}
-  m_Name: LevelBank
+  m_Script: {fileID: 11500000, guid: 35853ace5228d364e8cd9cc4f9e840ec, type: 3}
+  m_Name: Lvl_GridBattleECS
   m_EditorClassIdentifier: 
-  Levels:
-  - {fileID: 11400000, guid: 075b9905e5e66bf48add910f605fe04d, type: 2}
-  - {fileID: 11400000, guid: 06a8f37edd92ac34294013382ef254b6, type: 2}
+  scene: {fileID: 102900000, guid: 815b8536c98c51447a9e715207ed3330, type: 3}
+  sceneName: Lvl_GridBattleECS
+  loadMode: 1
+  allowMultiple: 0

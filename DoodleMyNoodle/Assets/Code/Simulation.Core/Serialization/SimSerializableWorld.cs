@@ -36,4 +36,7 @@ public class SimSerializableWorld
     public List<SimObjectId> ObjectsThatHaventStartedYet;
 
     public List<string> PresentationScenes;
+
+    // it is temporary to put this here
+    public byte[] ECSWorld;
 }

@@ -139,6 +139,10 @@ public class SimulationControllerClient : SimulationController
             inputs = simInputs
         };
 
+        // NEW
+        SimWorldUpdater.AvailableTicks.Add(tickData);
+
+        // OLD
         SimulationView.Tick(tickData);
     }
 

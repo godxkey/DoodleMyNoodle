@@ -10,7 +10,7 @@ public class SimulationWorldUpdaterSystem : ComponentSystem
     public List<SimTickData> AvailableTicks = new List<SimTickData>();
     public bool IsTicking { get; private set; }
 
-    World _simulationWorld;
+    SimulationWorld _simulationWorld;
     SimPreInitializationSystemGroup _preInitGroup;
     SimInitializationSystemGroup _initGroup;
     SimSimulationSystemGroup _simGroup;
@@ -22,8 +22,8 @@ public class SimulationWorldUpdaterSystem : ComponentSystem
     {
         base.OnCreate();
 
-        SimulationWorldSystem worldMaster = World.GetOrCreateSystem<SimulationWorldSystem>();
-        _simulationWorld = worldMaster.SimulationWorld;
+        SimulationWorldSystem simWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
+        _simulationWorld = simWorldSystem.SimulationWorld;
 
         _preInitGroup = _simulationWorld.CreateSystem<SimPreInitializationSystemGroup>();
         _initGroup = _simulationWorld.CreateSystem<SimInitializationSystemGroup>();
@@ -31,11 +31,10 @@ public class SimulationWorldUpdaterSystem : ComponentSystem
         _presGroup = _simulationWorld.CreateSystem<SimPresentationSystemGroup>();
 
         _preInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemEnd>());
-        _preInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<SimInputSystem>());
+        _preInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<UpdateSimulationTimeSystem>());
 
         _initGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<BeginInitializationEntityCommandBufferSystem>());
         _initGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<EndInitializationEntityCommandBufferSystem>());
-        _initGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<UpdateWorldTimeSystem>());
 
         _simGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<BeginSimulationEntityCommandBufferSystem>());
         _simGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<EndSimulationEntityCommandBufferSystem>());
@@ -70,7 +69,7 @@ public class SimulationWorldUpdaterSystem : ComponentSystem
             _updatePlayerLoop = false;
         }
 
-
+        
         while (AvailableTicks.Count > 0)
         {
             IsTicking = true;
@@ -78,16 +77,14 @@ public class SimulationWorldUpdaterSystem : ComponentSystem
             SimTickData tick = AvailableTicks.First();
             AvailableTicks.RemoveAt(0);
 
-            SimInputSystem inputSystem = _simulationWorld.GetExistingSystem<SimInputSystem>();
-
-            inputSystem.TickInputs = tick.inputs;
+            _simulationWorld.OngoingTickInputs = tick.inputs;
 
             ManualUpdate(_preInitGroup);
             ManualUpdate(_initGroup);
             ManualUpdate(_simGroup);
             ManualUpdate(_presGroup);
-            
-            inputSystem.TickInputs = null;
+
+            _simulationWorld.OngoingTickInputs = null;
             
             IsTicking = false;
         }
