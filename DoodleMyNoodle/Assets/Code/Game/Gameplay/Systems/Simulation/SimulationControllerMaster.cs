@@ -36,7 +36,7 @@ public class SimulationControllerMaster : SimulationController
             }
             else
             {
-                DebugService.Log($"[{nameof(SimulationControllerServer)}] We refused {playerInfo.PlayerName}'s input because he doesn't have a " +
+                DebugService.Log($"[{nameof(SimulationControllerMaster)}] We refused {playerInfo.PlayerName}'s input because he doesn't have a " +
                     $"valid SimPlayerId yet.");
                 return; // player cannot submit inputs yet
             }

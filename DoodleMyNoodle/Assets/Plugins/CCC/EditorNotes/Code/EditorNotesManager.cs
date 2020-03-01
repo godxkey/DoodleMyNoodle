@@ -48,16 +48,16 @@ public class EditorNotesManager
                 // _________________________________________ Begin / End note _________________________________________ //
                 if (!EditorNotesViewData.IsEditingNote)
                 {
-                    s_noteId.Value = noteId;
+                    s_noteId.Set(noteId);
 
                     if (s_noteId.IsDirty)
                     {
-                        if (!s_noteId.PreviousValue.IsNullOrEmpty())
+                        if (!s_noteId.GetPrevious().IsNullOrEmpty())
                         {
-                            OnEndNote(s_noteId.PreviousValue);
+                            OnEndNote(s_noteId.GetPrevious());
                         }
 
-                        OnBeginNote(s_noteId.Value);
+                        OnBeginNote(s_noteId.Get());
 
                         s_noteId.Reset();
                     }
@@ -74,7 +74,7 @@ public class EditorNotesManager
 
 
         // _________________________________________ Draw _________________________________________ //
-        if (s_noteId.Value == noteId)
+        if (s_noteId.Get() == noteId)
         {
             EditorNotesDrawer.DrawNote(selectionRect);
             EditorNotesDrawer.DrawSelectionBorder(selectionRect);
@@ -97,7 +97,7 @@ public class EditorNotesManager
 
     static bool CanEndNoteAndClose()
     {
-        if (s_noteId.Value == null)
+        if (s_noteId.Get() == null)
         {
             return false; // the note is already null, there's nothing to close
         }
@@ -112,12 +112,12 @@ public class EditorNotesManager
 
     static void EndNoteAndClose()
     {
-        if (s_noteId.Value != null)
+        if (s_noteId.Get() != null)
         {
-            OnEndNote(s_noteId.Value);
+            OnEndNote(s_noteId.Get());
         }
         EditorNotesDrawer.CloseDrawings();
-        s_noteId.Value = null;
+        s_noteId.Set(null);
         s_noteId.Reset();
     }
 

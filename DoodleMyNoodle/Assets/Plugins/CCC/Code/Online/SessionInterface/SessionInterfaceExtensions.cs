@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 public static class SessionInterfaceExtensions
 {
-    public static void SendNetMessage(this SessionInterface sessionInterface, object netMessage, params INetworkInterfaceConnection[] connections)
+    public static void SendNetMessage<T>(this SessionInterface sessionInterface, in T netMessage, params INetworkInterfaceConnection[] connections)
     {
         for (int i = 0; i < connections.Length; i++)
         {
@@ -13,7 +13,7 @@ public static class SessionInterfaceExtensions
             sessionInterface.SendNetMessage(netMessage, connections[i]);
         }
     }
-    public static void SendNetMessage(this SessionInterface sessionInterface, object netMessage, in ReadOnlyList<INetworkInterfaceConnection> connections)
+    public static void SendNetMessage<T>(this SessionInterface sessionInterface, in T netMessage, in ReadOnlyList<INetworkInterfaceConnection> connections)
     {
         for (int i = 0; i < connections.Count; i++)
         {
@@ -22,7 +22,7 @@ public static class SessionInterfaceExtensions
             sessionInterface.SendNetMessage(netMessage, connections[i]);
         }
     }
-    public static void SendNetMessage(this SessionInterface sessionInterface, object netMessage, List<INetworkInterfaceConnection> connections)
+    public static void SendNetMessage<T>(this SessionInterface sessionInterface, in T netMessage, List<INetworkInterfaceConnection> connections)
     {
         for (int i = 0; i < connections.Count; i++)
         {

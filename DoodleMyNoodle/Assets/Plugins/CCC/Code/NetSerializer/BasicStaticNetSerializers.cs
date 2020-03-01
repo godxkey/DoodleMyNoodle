@@ -151,13 +151,44 @@ public static class StaticNetSerializer_Boolean
 public static class StaticNetSerializer_String
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetNetBitSize(ref String value) => value.Length * sizeof(Char) * 8 + sizeof(UInt32) * 8;
+    public static int GetNetBitSize(ref String value)
+    {
+        if(value != null)
+        {
+            return 1 + (value.Length * sizeof(Char) * 8 + sizeof(UInt32) * 8);
+        }
+        else
+        {
+            return 1;
+        }
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void NetSerialize(ref String value, BitStreamWriter writer) => writer.WriteString(value);
+    public static void NetSerialize(ref String value, BitStreamWriter writer)
+    {
+        if (value != null)
+        {
+            writer.WriteBit(true);
+            writer.WriteString(value);
+        }
+        else
+        {
+            writer.WriteBit(false);
+        }
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void NetDeserialize(ref String value, BitStreamReader reader) => value = reader.ReadString();
+    public static void NetDeserialize(ref String value, BitStreamReader reader)
+    {
+        if (reader.ReadBit())
+        {
+            value = reader.ReadString();
+        }
+        else
+        {
+            value = null;
+        }
+    }
 }
 public static class StaticNetSerializer_Char
 {

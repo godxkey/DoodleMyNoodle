@@ -59,7 +59,7 @@ public class DebugPanelClientSimController : DebugPanel
         if (!SimulationView.IsRunningOrReadyToRun)
             return;
 
-        _currentSimTick.Value = SimulationView.TickId;
+        _currentSimTick.Set(SimulationView.TickId);
 
         // 'not dirty' means no change. That means the simulation has NOT played a sim tick this past fixed update
         _offsettedSimTicks[_offsettedSimTicksIterator] = !_currentSimTick.IsDirty;

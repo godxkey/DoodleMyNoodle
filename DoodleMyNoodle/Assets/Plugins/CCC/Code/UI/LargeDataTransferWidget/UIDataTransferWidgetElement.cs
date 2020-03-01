@@ -21,19 +21,19 @@ public class UIDataTransferWidgetElement : MonoBehaviour
     {
         if (IsIncoming.IsDirty)
         {
-            _incomingText.text = IsIncoming.Value ? "Receiving:" : "Sending:";
+            _incomingText.text = IsIncoming.Get() ? "Receiving:" : "Sending:";
         }
 
         if (Description.IsDirty)
         {
-            _descriptionText.text = Description.Value;
+            _descriptionText.text = Description.Get();
         }
 
         if (TotalDataSize.IsDirty || CurrentDataSize.IsDirty)
         {
-            float ratio = (float)CurrentDataSize.Value / TotalDataSize.Value;
+            float ratio = (float)CurrentDataSize.Get() / TotalDataSize.Get();
             _progressSlider.value = ratio;
-            _progressText.text = $"{StringUtility.ByteCountRatioToReadableString(CurrentDataSize.Value, TotalDataSize.Value)} ({(ratio * 100).Rounded()}%)";
+            _progressText.text = $"{StringUtility.ByteCountRatioToReadableString(CurrentDataSize.Get(), TotalDataSize.Get())} ({(ratio * 100).Rounded()}%)";
         }
     }
 

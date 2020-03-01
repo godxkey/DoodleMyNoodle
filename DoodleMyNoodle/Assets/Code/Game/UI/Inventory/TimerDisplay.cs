@@ -16,8 +16,8 @@ public class TimerDisplay : MonoBehaviour
         {
             // Timer
             int currentTime = (int)SimTurnManager.Instance.TurnRemainingTime;
-            _timer.SetValue(currentTime.ToString());
-            CurrentTime.text = _timer.Value;
+            _timer.Set(currentTime.ToString());
+            CurrentTime.text = _timer.Get();
 
             if (currentTime <= 3)
             {

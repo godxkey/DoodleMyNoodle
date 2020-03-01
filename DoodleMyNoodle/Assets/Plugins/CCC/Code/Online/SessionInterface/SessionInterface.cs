@@ -24,6 +24,7 @@ public abstract class SessionInterface : IDisposable
     public event Action<INetworkInterfaceConnection> OnConnectionRemoved;
     public event Action<ReceiveDataTransferOperation, INetworkInterfaceConnection> OnBeginReceiveLargeDataTransfer;
 
+
     public SessionInterface(NetworkInterface networkInterface)
     {
         _networkInterface = networkInterface;
@@ -35,7 +36,7 @@ public abstract class SessionInterface : IDisposable
         RegisterNetMessageReceiver<NetMessageDataTransferHeader>(OnReceiveDataTransferHeader);
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         OnTerminate?.Invoke();
 
@@ -78,7 +79,7 @@ public abstract class SessionInterface : IDisposable
         _networkInterface.DisconnectFromSession(null);
     }
 
-    public void SendNetMessage(object netMessage, INetworkInterfaceConnection connection, bool reliableAndOrdered = true)
+    public void SendNetMessage<T>(in T netMessage, INetworkInterfaceConnection connection, bool reliableAndOrdered = true)
     {
         if (NetMessageInterpreter.GetDataFromMessage(netMessage, out byte[] messageData, byteLimit: OnlineConstants.MAX_MESSAGE_SIZE))
         {
