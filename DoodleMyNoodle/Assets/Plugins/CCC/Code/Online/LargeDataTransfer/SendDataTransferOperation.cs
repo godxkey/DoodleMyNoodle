@@ -80,7 +80,7 @@ public class SendDataTransferOperation : CoroutineOperation
         while (_remainingUnacknowledgedPaquets > 0)
         {
             // reset 'paquetsSentThisFrame'. This value will ensure we don't send to many paquets per second to our sessionInterface
-            s_currentUnityFrame.SetValue(Time.frameCount);
+            s_currentUnityFrame.Set(Time.frameCount);
             if (s_currentUnityFrame.IsDirty)
             {
                 s_paquetsSentThisFrame = 0;

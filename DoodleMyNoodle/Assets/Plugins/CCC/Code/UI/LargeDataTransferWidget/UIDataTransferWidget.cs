@@ -30,10 +30,10 @@ public class UIDataTransferWidget : MonoBehaviour
                 var transfer = incoming[i];
                 var element = GetOrAddActiveElement(elementIterator);
 
-                element.Description.SetValue(transfer.Description);
-                element.TotalDataSize.SetValue(transfer.DataSize);
-                element.CurrentDataSize.SetValue(Mathf.FloorToInt(transfer.Progress * transfer.DataSize));
-                element.IsIncoming.SetValue(true);
+                element.Description.Set(transfer.Description);
+                element.TotalDataSize.Set(transfer.DataSize);
+                element.CurrentDataSize.Set(Mathf.FloorToInt(transfer.Progress * transfer.DataSize));
+                element.IsIncoming.Set(true);
                 element.UpdateDisplay();
 
                 elementIterator++;
@@ -43,10 +43,10 @@ public class UIDataTransferWidget : MonoBehaviour
                 var transfer = outgoing[i];
                 var element = GetOrAddActiveElement(elementIterator);
 
-                element.Description.SetValue(transfer.Description);
-                element.TotalDataSize.SetValue(transfer.DataSize);
-                element.CurrentDataSize.SetValue(Mathf.FloorToInt(transfer.Progress * transfer.DataSize));
-                element.IsIncoming.SetValue(false);
+                element.Description.Set(transfer.Description);
+                element.TotalDataSize.Set(transfer.DataSize);
+                element.CurrentDataSize.Set(Mathf.FloorToInt(transfer.Progress * transfer.DataSize));
+                element.IsIncoming.Set(false);
                 element.UpdateDisplay();
 
                 elementIterator++;

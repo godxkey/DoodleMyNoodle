@@ -9,14 +9,21 @@ public abstract class BitStreamHead
     //
 
     protected byte[] _buffer;
-    protected int CurrentByteRemains => (8 - BitIndex);
 
     public int BitIndex { get; private set; }
     public int ByteIndex { get; private set; }
+    
+    protected int CurrentByteRemains => (8 - BitIndex);
+
     public int TotalBitIndex => ByteIndex * 8 + BitIndex;
     public int RemainingBits => (_buffer.Length - ByteIndex) * 8 - BitIndex;
 
     public BitStreamHead(byte[] buffer)
+    {
+        SetNewBuffer(buffer);
+    }
+
+    public void SetNewBuffer(byte[] buffer)
     {
         _buffer = buffer;
         ByteIndex = 0;

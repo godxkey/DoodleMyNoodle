@@ -12,12 +12,12 @@ public struct Stat<T>
         _dirtyValue = new AutoResetDirtyValue<T>(initialValue);
     }
 
-    public T Value => _dirtyValue.Value;
-    public T PreviousValue => _dirtyValue.PreviousValue;
+    public T Value => _dirtyValue.Get();
+    public T PreviousValue => _dirtyValue.GetPrevious();
     public bool HasChanged() => _dirtyValue.IsDirty;
 
     public void SetValue(in T newValue)
     {
-        _dirtyValue.SetValue(newValue);
+        _dirtyValue.Set(newValue);
     }
 }

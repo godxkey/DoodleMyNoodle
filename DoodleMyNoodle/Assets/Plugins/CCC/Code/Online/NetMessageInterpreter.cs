@@ -10,6 +10,31 @@ public static class NetMessageInterpreter
     static ConfigVar s_logNetMessageData;
 #endif
 
+    static BitStreamReader s_reader = new BitStreamReader(null);
+    static BitStreamWriter s_writer = new BitStreamWriter(null);
+
+
+    public static Type GetMessageType(byte[] messageData)
+    {
+        s_reader.SetNewBuffer(messageData);
+        return DynamicNetSerializer.GetMessageType(s_reader);
+    }
+
+    public static bool GetMessageFromData<T>(byte[] messageData, out T message)
+    {
+        bool res = GetMessageFromData(messageData, out object messageObj);
+
+        if (res)
+        {
+            message = (T)messageObj;
+        }
+        else
+        {
+            message = default;
+        }
+
+        return res;
+    }
     public static bool GetMessageFromData(byte[] messageData, out object message)
     {
 #if DEBUG_BUILD
@@ -19,9 +44,16 @@ public static class NetMessageInterpreter
             DebugLogUtility.LogByteArray(messageData);
         }
 #endif
-        BitStreamReader reader = new BitStreamReader(messageData);
-
         message = null;
+
+        if (!ThreadUtility.IsMainThread) // need main thread because of static s_reader
+        {
+            DebugService.LogError($"[NetMessage Interpretter] Interpreting from thread not yet supported (but it should be!). ");
+            return false;
+        }
+
+        s_reader.SetNewBuffer(messageData);
+
 
         if (messageData.Length < 2) // 2 minimum bytes required for the message type
         {
@@ -31,7 +63,7 @@ public static class NetMessageInterpreter
 
         try
         {
-            message = DynamicNetSerializer.NetDeserialize(reader);
+            message = DynamicNetSerializer.NetDeserialize(s_reader);
 
             return true;
         }
@@ -42,24 +74,31 @@ public static class NetMessageInterpreter
         }
     }
 
-    public static bool GetDataFromMessage(object message, out byte[] data, int byteLimit = int.MaxValue)
+    public static bool GetDataFromMessage<T>(in T message, out byte[] data, int byteLimit = int.MaxValue)
     {
+        data = null;
+        
+        if (!ThreadUtility.IsMainThread) // need main thread because of static s_writer
+        {
+            DebugService.LogError($"[NetMessage Interpretter] Interpreting from thread not yet supported (but it should be!). ");
+            return false;
+        }
+
         int netBitSize = DynamicNetSerializer.GetNetBitSize(message);
         int messageSizeByte = netBitSize.CeiledToStep(8) / 8; // this will ceil the size to a multiple of 8
 
         if (messageSizeByte > byteLimit)
         {
             DebugService.LogError($"The net message is exceeding the {byteLimit} byte capacity.");
-            data = null;
             return false;
         }
         data = new byte[messageSizeByte];
 
-        BitStreamWriter writer = new BitStreamWriter(data);
+        s_writer.SetNewBuffer(data);
 
         try
         {
-            DynamicNetSerializer.NetSerialize(message, writer);
+            DynamicNetSerializer.NetSerialize(message, s_writer);
 
 #if DEBUG_BUILD
             if (s_logNetMessageData.BoolValue)

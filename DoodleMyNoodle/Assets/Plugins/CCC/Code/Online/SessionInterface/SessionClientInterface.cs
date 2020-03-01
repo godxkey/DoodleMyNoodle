@@ -1,11 +1,17 @@
-﻿using System;
+﻿using CCC.Online;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SessionClientInterface : SessionInterface
 {
-    public SessionClientInterface(NetworkInterface networkInterface) : base(networkInterface) { }
+    SyncedValueContainerManagerClient _syncedValueManager;
+
+    public SessionClientInterface(NetworkInterface networkInterface) : base(networkInterface)
+    {
+        _syncedValueManager = new SyncedValueContainerManagerClient(this);
+    }
 
     public override bool IsServerType => false;
 
@@ -27,5 +33,12 @@ public class SessionClientInterface : SessionInterface
     public void SendNetMessageToServer(object netMessage)
     {
         SendNetMessage(netMessage, ServerConnection);
+    }
+
+    public override void Dispose()
+    {
+        _syncedValueManager.Dispose();
+
+        base.Dispose();
     }
 }

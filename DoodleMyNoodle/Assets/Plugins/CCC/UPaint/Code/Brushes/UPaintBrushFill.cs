@@ -19,12 +19,12 @@ namespace UPaintBrushes
         public void OnPress(IUPaintBrushCanvasInterface canvas, in UPaintContext context)
         {
             // Allocate an array used in the job
-            _pixelCount.SetValue(canvas.PreviewLayer.PixelCount);
+            _pixelCount.Set(canvas.PreviewLayer.PixelCount);
             if (_pixelCount.IsDirty)
             {
                 if (_pixelBuffer.IsCreated)
                     _pixelBuffer.Dispose();
-                _pixelBuffer = new NativeArray<int>(_pixelCount.Value, Allocator.Persistent);
+                _pixelBuffer = new NativeArray<int>(_pixelCount.Get(), Allocator.Persistent);
             }
 
             // find start position of the fill
