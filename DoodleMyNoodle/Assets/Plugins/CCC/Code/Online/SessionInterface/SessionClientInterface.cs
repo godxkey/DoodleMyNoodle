@@ -6,12 +6,7 @@ using UnityEngine;
 
 public class SessionClientInterface : SessionInterface
 {
-    SyncedValueContainerManagerClient _syncedValueManager;
-
-    public SessionClientInterface(NetworkInterface networkInterface) : base(networkInterface)
-    {
-        _syncedValueManager = new SyncedValueContainerManagerClient(this);
-    }
+    public SessionClientInterface(NetworkInterface networkInterface) : base(networkInterface) { }
 
     public override bool IsServerType => false;
 
@@ -33,12 +28,5 @@ public class SessionClientInterface : SessionInterface
     public void SendNetMessageToServer(object netMessage)
     {
         SendNetMessage(netMessage, ServerConnection);
-    }
-
-    public override void Dispose()
-    {
-        _syncedValueManager.Dispose();
-
-        base.Dispose();
     }
 }
