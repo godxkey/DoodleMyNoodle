@@ -10,37 +10,43 @@ namespace Internals.OnlineServiceImpl
 
         // This is to setup the online service's factory. 
         // It's a little weird, but it's necessary because the OnlineService doesn't have access to this class directly
-        static bool init = false;
+        static bool s_init = false;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void OnRuntimeInitialize()
         {
-            if (init)
+            if (s_init)
                 return;
-            init = true;
+            s_init = true;
 
             OnlineServicePhoton.factoryCreator = () => new DynamicNetSerializerImpl();
         }
 
 
-
-
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        static Dictionary<Type, ushort> netMessageToId = new Dictionary<Type, ushort>();
+        static Dictionary<Type, ushort> s_typeToId = new Dictionary<Type, ushort>();
+        static Dictionary<ushort, Type> s_idToType = new Dictionary<ushort, Type>();
 
         public DynamicNetSerializerImpl()
         {
-            netMessageToId.Clear();
+            s_typeToId.Clear();
+            s_idToType.Clear();
 
             // Net message -> id
             foreach (Type netMessageType in DynamicNetSerializationRegistry.types)
             {
-                netMessageToId[netMessageType] = (ushort)netMessageToId.Count;
+                s_typeToId[netMessageType] = (ushort)s_typeToId.Count;
             }
 
-            if (netMessageToId.Count > ushort.MaxValue)
+            // id -> Net message
+            foreach (KeyValuePair<Type, ushort> item in s_typeToId)
+            {
+                s_idToType.Add(item.Value, item.Key);
+            }
+
+            if (s_typeToId.Count > ushort.MaxValue)
             {
                 DebugService.LogError("To many NetMessage types for a UInt16.");
             }
@@ -50,7 +56,7 @@ namespace Internals.OnlineServiceImpl
         {
             if (Debug.isDebugBuild)
             {
-                if (!netMessageToId.ContainsKey(message.GetType()))
+                if (!s_typeToId.ContainsKey(message.GetType()))
                 {
                     DebugService.LogError("Cannot get typeId for netMessage of type " + message.GetType()
                         + ".  It has not been registered. Try re-running the registration code-gen");
@@ -58,7 +64,12 @@ namespace Internals.OnlineServiceImpl
                 }
             }
 
-            return netMessageToId[message.GetType()];
+            return s_typeToId[message.GetType()];
+        }
+
+        public bool IsNetSerializable(Type type)
+        {
+            return s_typeToId.ContainsKey(type);
         }
 
         public int GetNetBitSize(object message)
@@ -82,6 +93,27 @@ namespace Internals.OnlineServiceImpl
 #endif
         }
 
+        public Type GetMessageType(BitStreamReader reader)
+        {
+#if DEBUG_BUILD
+            try
+            {
+#endif
+
+                ushort typeId = reader.ReadUInt16();
+                return s_idToType[typeId];
+
+
+#if DEBUG_BUILD
+            }
+            catch (Exception e)
+            {
+                DebugService.LogError($"[NetMessageFactoryImpl]" +
+                    $" Failed to GetMessageType : {e.Message} - {e.StackTrace}");
+                return null;
+            }
+#endif
+        }
         public void NetSerialize(object message, BitStreamWriter writer)
         {
 #if DEBUG_BUILD

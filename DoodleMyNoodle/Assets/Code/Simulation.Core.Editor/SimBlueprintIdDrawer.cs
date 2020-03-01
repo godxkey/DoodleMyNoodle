@@ -4,7 +4,7 @@ using UnityEngine;
 [CustomPropertyDrawer(typeof(SimBlueprintId))]
 public class SimBlueprintIdDrawer : PropertyDrawer
 {
-    DirtyValue<SimBlueprintId> _blueprintId;
+    AutoResetDirtyValue<SimBlueprintId> _blueprintId;
     Object _oldRef;
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -16,11 +16,10 @@ public class SimBlueprintIdDrawer : PropertyDrawer
     {
         SerializedProperty typeProperty = property.FindPropertyRelative(nameof(SimBlueprintId.Type));
         SerializedProperty valueProperty = property.FindPropertyRelative(nameof(SimBlueprintId.Value));
-        _blueprintId.Value = new SimBlueprintId((SimBlueprintId.BlueprintType)typeProperty.intValue, valueProperty.stringValue);
+        _blueprintId.Set(new SimBlueprintId((SimBlueprintId.BlueprintType)typeProperty.intValue, valueProperty.stringValue));
         if (_blueprintId.IsDirty)
         {
-            _oldRef = GetGameObjectReference(_blueprintId.Value);
-            _blueprintId.Reset();
+            _oldRef = GetGameObjectReference(_blueprintId.Get());
         }
 
         EditorGUI.BeginProperty(position, label, property);

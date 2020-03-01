@@ -6,7 +6,7 @@ public class SimHealthStatComponent : SimClampedStatComponent, ISimTickable
 {
     public void OnSimTick()
     {
-        Debug.Log($"Health: {gameObject.name} : {Value}");
+        //Debug.Log($"Health: {gameObject.name} : {Value}");
     }
 
     public override int SetValue(int value)
