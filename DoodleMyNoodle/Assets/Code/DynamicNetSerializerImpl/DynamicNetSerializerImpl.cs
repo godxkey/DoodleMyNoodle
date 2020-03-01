@@ -67,9 +67,13 @@ namespace Internals.OnlineServiceImpl
             return s_typeToId[message.GetType()];
         }
 
-        public bool IsNetSerializable(Type type)
+        public bool IsValidType(Type type)
         {
             return s_typeToId.ContainsKey(type);
+        }
+        public bool IsValidType(ushort typeId)
+        {
+            return s_idToType.ContainsKey(typeId);
         }
 
         public int GetNetBitSize(object message)
@@ -155,6 +159,16 @@ namespace Internals.OnlineServiceImpl
                 return null;
             }
 #endif
+        }
+
+        public ushort GetTypeId(Type type)
+        {
+            return s_typeToId[type];
+        }
+
+        public Type GetTypeFromId(ushort typeId)
+        {
+            return s_idToType[typeId];
         }
     }
 }
