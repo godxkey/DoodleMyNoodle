@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using CCC.InspectorDisplay;
+using UnityEngine;
 
 public class TransformAnimationWave : MonoBehaviour
 {

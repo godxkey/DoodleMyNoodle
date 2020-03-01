@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Unity.Entities.Serialization;
 
 namespace Sim.Operations
 {
@@ -20,7 +22,7 @@ namespace Sim.Operations
         JsonSerializerSettings _jsonSerializerSettings;
 
         internal SimSerializationOperationWithCache(
-            SimObjectJsonConverter simObjectJsonConverter, 
+            SimObjectJsonConverter simObjectJsonConverter,
             JsonSerializerSettings jsonSerializerSettings)
         {
             _simObjectJsonConverter = simObjectJsonConverter;
@@ -29,7 +31,7 @@ namespace Sim.Operations
 
         protected override IEnumerator ExecuteRoutine()
         {
-            if(SimulationBase.TickId != s_CachedSerializationTickId)
+            if (SimulationBase.TickId != s_CachedSerializationTickId)
             {
                 s_CachedSerializationOp = new SimSerializationOperation(_simObjectJsonConverter, _jsonSerializerSettings);
                 s_CachedSerializationOp.Execute();
@@ -69,6 +71,18 @@ namespace Sim.Operations
             _jsonSerializerSettings = jsonSerializerSettings;
         }
 
+        byte[] GetByteArrayFromBinaryWriter(MemoryBinaryWriter binaryWriter)
+        {
+            byte[] arr = new byte[binaryWriter.Length];
+
+            unsafe
+            {
+                Marshal.Copy((IntPtr)binaryWriter.Data, arr, 0, binaryWriter.Length);
+            }
+
+            return arr;
+        }
+
         protected override IEnumerator ExecuteRoutine()
         {
             // utility variables
@@ -81,11 +95,30 @@ namespace Sim.Operations
 
             DebugService.Log("Start Serialization Process...");
 
+            SimSerializableWorld serializableWorld = new SimSerializableWorld();
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            //      ECS
+            ////////////////////////////////////////////////////////////////////////////////////////
+            {
+
+                using (var binaryWriter = new MemoryBinaryWriter())
+                {
+                    SerializeUtility.SerializeWorld(SimulationWorld.Instance.EntityManager, binaryWriter, out object[] referencedObjects);
+
+                    foreach (var obj in referencedObjects)
+                    {
+                        DebugService.LogWarning($"The ECS simulation references {obj}, which is a managed object. " +
+                            $"This is not allowed for now due to serialization");
+                    }
+
+                    serializableWorld.ECSWorld = GetByteArrayFromBinaryWriter(binaryWriter);
+                }
+            }
+
             ////////////////////////////////////////////////////////////////////////////////////////
             //      Fill data in serializedWorld                                 
             ////////////////////////////////////////////////////////////////////////////////////////
-            SimSerializableWorld serializableWorld = new SimSerializableWorld();
-
             serializableWorld.TickId = world.TickId;
             serializableWorld.NextObjectId = world.NextObjectId;
             serializableWorld.Seed = world.Seed;

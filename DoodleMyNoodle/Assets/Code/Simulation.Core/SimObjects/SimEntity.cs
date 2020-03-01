@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using CCC.InspectorDisplay;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,7 +11,7 @@ using UnityEditor;
 [DisallowMultipleComponent]
 public class SimEntity : SimObject
 {
-    [SerializeField, ReadOnly]
+    [SerializeField, ReadOnlyAlways]
     private SimBlueprintId _blueprintId;
     public SimBlueprintId BlueprintId { get => _blueprintId; internal set => _blueprintId = value; }
 

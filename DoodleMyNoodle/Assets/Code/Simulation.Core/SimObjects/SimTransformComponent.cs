@@ -177,7 +177,7 @@ public class SimTransformComponent : SimComponent
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [AlwaysExpand]
+    [CCC.InspectorDisplay.AlwaysExpand]
     public SerializedData _data = new SerializedData() // needs to be public for Editor access
     {
         LocalScale = new FixVector3(1, 1, 1)

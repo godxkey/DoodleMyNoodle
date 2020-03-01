@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CCC.InspectorDisplay;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +25,7 @@ public class SimPawnControllerComponent : SimComponent
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [AlwaysExpand]
+    [CCC.InspectorDisplay.AlwaysExpand]
     SerializedData _data = new SerializedData()
     {
         // define default values here

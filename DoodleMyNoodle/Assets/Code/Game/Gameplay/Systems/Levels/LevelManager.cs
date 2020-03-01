@@ -39,6 +39,9 @@ public class LevelManager : GameSystem<LevelManager>
         Level lvl = LevelBank.Levels.Find((x) => x.name == levelName);
         if (lvl)
             StartLevel(lvl);
+        else
+            Debug.LogError($"Could not start level {levelName}. It was not found in the level bank. " +
+                $"The bank is a scriptable object named LevelBank.");
     }
 
     public void StartLevel(Level level)

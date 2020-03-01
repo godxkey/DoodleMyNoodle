@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using CCC.InspectorDisplay;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -22,7 +23,7 @@ public class SceneInfo : ScriptableObject
     }
 #endif
 
-    [SerializeField, ReadOnly]
+    [SerializeField, ReadOnlyAlways]
     private string sceneName;
 
     [SerializeField, Header("Default Loading Options")]

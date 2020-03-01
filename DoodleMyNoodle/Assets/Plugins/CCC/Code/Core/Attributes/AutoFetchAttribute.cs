@@ -1,7 +1,10 @@
 ﻿using System;
 using UnityEngine;
 
-[AttributeUsage(AttributeTargets.Field)]
-public class AutoFetchAttribute : PropertyAttribute
+namespace CCC.InspectorDisplay
 {
+    [AttributeUsage(AttributeTargets.Field)]
+    public class AutoFetchAttribute : PropertyAttribute
+    {
+    }
 }

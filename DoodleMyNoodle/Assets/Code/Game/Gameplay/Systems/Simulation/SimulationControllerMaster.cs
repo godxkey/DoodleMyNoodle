@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Unity.Entities;
 
 public class SimulationControllerMaster : SimulationController
 {
@@ -86,6 +87,10 @@ public class SimulationControllerMaster : SimulationController
             inputs = simInputs
         };
 
+        // NEW
+        SimWorldUpdater.AvailableTicks.Add(tickData);
+
+        // OLD
         SimulationView.Tick(tickData);
     }
 

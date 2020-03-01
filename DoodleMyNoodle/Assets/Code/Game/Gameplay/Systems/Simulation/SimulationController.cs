@@ -1,8 +1,6 @@
 ﻿using CCC.Operations;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
+using Unity.Entities;
 using UnityEngine;
 
 public abstract class SimulationController : GameSystem<SimulationController>
@@ -15,6 +13,8 @@ public abstract class SimulationController : GameSystem<SimulationController>
     public bool CanTickSimulation => SimulationView.CanBeTicked && _playSimulation;
 
     public override bool SystemReady => true;
+
+    protected SimulationWorldUpdaterSystem SimWorldUpdater => World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<SimulationWorldUpdaterSystem>();
 
     public abstract void SubmitInput(SimInput input);
 

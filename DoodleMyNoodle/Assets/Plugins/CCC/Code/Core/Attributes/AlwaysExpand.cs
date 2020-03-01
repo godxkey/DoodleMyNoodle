@@ -1,8 +1,11 @@
 using UnityEngine;
 
-public class AlwaysExpandAttribute : PropertyAttribute
+namespace CCC.InspectorDisplay
 {
-    public AlwaysExpandAttribute() { }
+    public class AlwaysExpandAttribute : PropertyAttribute
+    {
+        public AlwaysExpandAttribute() { }
 
-    public bool UseRootPropertyName = false;
+        public bool UseRootPropertyName = false;
+    }
 }

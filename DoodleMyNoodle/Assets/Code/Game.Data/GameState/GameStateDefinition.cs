@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CCC.InspectorDisplay;
+using System;
 using UnityEngine;
 
 public abstract class GameStateDefinition : ScriptableObject

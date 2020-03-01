@@ -50,7 +50,7 @@ internal class SimModuleSerializer : SimModuleBase
                 new Fix64JsonConverter(),
             };
             _cachedJsonSettings.ContractResolver = new CustomJsonContractResolver();
-            _cachedJsonSettings.TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple;
+            _cachedJsonSettings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple;
         }
         return _cachedJsonSettings;
     }

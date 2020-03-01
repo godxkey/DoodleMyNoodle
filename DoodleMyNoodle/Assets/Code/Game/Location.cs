@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Location : MonoBehaviour
 {
-    [ReadOnly]
+    [CCC.InspectorDisplay.ReadOnlyAlways]
     public Vector3 pos;
 
     void Awake()

@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
+using Unity.Entities;
+using Unity.Entities.Serialization;
 
 namespace Sim.Operations
 {
@@ -19,6 +22,24 @@ namespace Sim.Operations
             _serializedData = serializedData;
             _simObjectJsonConverter = simObjectJsonConverter;
             _jsonSerializerSettings = jsonSerializerSettings;
+        }
+
+        World GetEntityWorldFromByteArray(byte[] bytes)
+        {
+            World tempWorld = new World("Deserialization temp world");
+            unsafe
+            {
+                fixed (byte* dataPtr = bytes)
+                {
+                    using (MemoryBinaryReader reader = new MemoryBinaryReader(dataPtr))
+                    {
+                        SerializeUtility.DeserializeWorld(tempWorld.EntityManager.BeginExclusiveEntityTransaction(), reader);
+                        tempWorld.EntityManager.EndExclusiveEntityTransaction();
+                    }
+                }
+            }
+
+            return tempWorld;
         }
 
         protected override IEnumerator ExecuteRoutine()
@@ -50,11 +71,29 @@ namespace Sim.Operations
                 yield break;
             }
 
-            SimWorld world = SimModules._World;
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            //      ECS
+            ////////////////////////////////////////////////////////////////////////////////////////
+            {
+
+                World tempWorld = GetEntityWorldFromByteArray(serializableWorld.ECSWorld);
+                SimulationWorld.Instance.GetExistingSystem<ChangeDetectionSystemEnd>().Enabled = false;
+                SimulationWorld.Instance.EntityManager.CopyAndReplaceEntitiesFrom(tempWorld.EntityManager);
+                tempWorld.Dispose();
+
+                // force the 'ChangeDetectionSystem' to resample, making our entity changes undetectable.
+                var changeDetectionSystem = SimulationWorld.Instance.GetExistingSystem<ChangeDetectionSystemBegin>();
+                if (changeDetectionSystem != null)
+                {
+                    changeDetectionSystem.ResetSample();
+                }
+            }
 
             ////////////////////////////////////////////////////////////////////////////////////////
             //      Delete existing entites
             ////////////////////////////////////////////////////////////////////////////////////////
+            SimWorld world = SimModules._World;
             DebugService.Log($"Destroying existing entities");
             ClearCurrentEntities(world);
 
@@ -85,7 +124,6 @@ namespace Sim.Operations
             int reconstructCount = serializableWorld.Entities.Count;
             Dictionary<SimObjectId, SimObject> allSimObjects = new Dictionary<SimObjectId, SimObject>(reconstructCount * 4); // expecting ~4 components per entity
             List<SimComponent> reconstructedComponents = new List<SimComponent>();
-            SimSerializableWorld deletethis = serializableWorld;
 
             for (int i = 0; i < serializableWorld.Entities.Count; i++)
             {
@@ -108,7 +146,7 @@ namespace Sim.Operations
                     {
                         SimSerializableWorld.Entity.Component serializedComponent = serializedEntity.Components[c];
 
-                        if(serializedComponent.Type == null)
+                        if (serializedComponent.Type == null)
                         {
                             PartialSuccess = true;
                             DebugService.LogWarning($"Failed to deserialize type for component[{c}] of entity '{serializableWorld.Entities[i].Name}'. Reconstruction skipped.");

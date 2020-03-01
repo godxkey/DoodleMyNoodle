@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 using UnityEngine.Events;
+using CCC.InspectorDisplay;
 
 public abstract class InfiniteScroll : MonoBehaviour, IDragHandler
 {
@@ -13,20 +14,20 @@ public abstract class InfiniteScroll : MonoBehaviour, IDragHandler
     [System.Serializable]
     public class RewindEvent : UnityEvent<int> { }
 
-    [SerializeField, ReadOnly]
+    [SerializeField, ReadOnlyAlways]
     protected Vector2 itemSize = Vector2.zero;
-    [SerializeField, ReadOnly]
+    [SerializeField, ReadOnlyAlways]
     protected Vector2 viewportSize = Vector2.zero;
 
-    [SerializeField, ReadOnly]
+    [SerializeField, ReadOnlyAlways]
     protected int shownItemsAtATimeX = -1;
-    [SerializeField, ReadOnly]
+    [SerializeField, ReadOnlyAlways]
     protected int shownItemsAtATimeY = -1;
 
-    [SerializeField, ReadOnly]
+    [SerializeField, ReadOnlyAlways]
     protected Vector2 deplacementMaxDuScroll = Vector2.zero;
 
-    [SerializeField, ReadOnly]
+    [SerializeField, ReadOnlyAlways]
     protected Vector2 itemSpacing = Vector2.zero;
 
     PointerEventData lastDragEvent;

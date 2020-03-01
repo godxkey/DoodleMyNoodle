@@ -1,20 +1,23 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-[CustomPropertyDrawer(typeof(Suffix))]
-public class SuffixDrawer : PropertyDrawer
+namespace CCC.InspectorDisplay
 {
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    [CustomPropertyDrawer(typeof(Suffix))]
+    public class SuffixDrawer : PropertyDrawer
     {
-        Suffix suffix = attribute as Suffix;
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            Suffix suffix = attribute as Suffix;
 
-        var suffixWidth = EditorStyles.label.CalcSize(new GUIContent(suffix.text)).x;
+            var suffixWidth = EditorStyles.label.CalcSize(new GUIContent(suffix.text)).x;
 
-        position.xMax -= suffixWidth;
-        EditorGUI.PropertyField(position, property, true);
+            position.xMax -= suffixWidth;
+            EditorGUI.PropertyField(position, property, true);
 
-        position.x += position.width;
-        position.width = suffixWidth;
-        EditorGUI.LabelField(position, suffix.text);
+            position.x += position.width;
+            position.width = suffixWidth;
+            EditorGUI.LabelField(position, suffix.text);
+        }
     }
 }

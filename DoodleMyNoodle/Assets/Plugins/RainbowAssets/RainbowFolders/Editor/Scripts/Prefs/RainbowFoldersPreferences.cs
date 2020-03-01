@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -31,23 +32,33 @@ namespace Borodar.RainbowFolders.Editor
             ModifierKey = MODIFIER_KEY_PREF.Value;
         }
 
-        //---------------------------------------------------------------------
-        // Messages
-        //---------------------------------------------------------------------
-
-        [PreferenceItem("Rainbow Folders")]
-        public static void EditorPreferences()
+        [SettingsProvider]
+        public static SettingsProvider CreateMyCustomSettingsProvider()
         {
-            EditorGUILayout.Separator();
-            HOME_FOLDER_PREF.Draw();
-            HomeFolder = HOME_FOLDER_PREF.Value;
+            // First parameter is the path in the Settings window.
+            // Second parameter is the scope of this setting: it only appears in the Project Settings window.
+            var provider = new SettingsProvider("Preferences/Rainbow Folders", SettingsScope.User)
+            {
+                // Create the SettingsProvider and initialize its drawing (IMGUI) function in place:
+                guiHandler = (searchContext) =>
+                {
+                    EditorGUILayout.Separator();
+                    HOME_FOLDER_PREF.Draw();
+                    HomeFolder = HOME_FOLDER_PREF.Value;
 
-            EditorGUILayout.Separator();
-            MODIFIER_KEY_PREF.Draw();
-            ModifierKey = MODIFIER_KEY_PREF.Value;
+                    EditorGUILayout.Separator();
+                    MODIFIER_KEY_PREF.Draw();
+                    ModifierKey = MODIFIER_KEY_PREF.Value;
 
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.LabelField("Version " + AssetInfo.VERSION, EditorStyles.centeredGreyMiniLabel);
+                    GUILayout.FlexibleSpace();
+                    EditorGUILayout.LabelField("Version " + AssetInfo.VERSION, EditorStyles.centeredGreyMiniLabel);
+                },
+
+                // Populate the search keywords to enable smart search filtering and label highlighting:
+                keywords = new HashSet<string>(new[] { "Rainbow", "Folders", "RainbowFolders" })
+            };
+
+            return provider;
         }
 
         //---------------------------------------------------------------------

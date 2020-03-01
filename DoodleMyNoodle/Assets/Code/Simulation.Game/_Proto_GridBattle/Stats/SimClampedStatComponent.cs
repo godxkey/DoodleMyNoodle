@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using CCC.InspectorDisplay;
 using UnityEngine;
 
 public class SimClampedStatComponent : SimStatComponent

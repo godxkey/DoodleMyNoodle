@@ -7,12 +7,12 @@
 
 .title {
     font-size: 20px;
-    font-weight: bold;
+    -unity-font-style: bold;
 }
 
 .title {
     font-size: 20px;
-    font-weight: bold;
+    -unity-font-style: bold;
 }
 
 .category{
@@ -21,6 +21,11 @@
 
 .buildButton{
     flex:1;
+}
+
+.hidden {
+    height:0;
+    visibility:hidden;
 }
 
 #refreshButton {

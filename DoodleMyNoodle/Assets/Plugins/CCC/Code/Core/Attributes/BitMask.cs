@@ -9,7 +9,10 @@
 //    All = A | B | C
 //}
 
-public class BitMaskAttribute : PropertyAttribute
+namespace CCC.InspectorDisplay
 {
-    public BitMaskAttribute() { }
+    public class BitMaskAttribute : PropertyAttribute
+    {
+        public BitMaskAttribute() { }
+    }
 }
