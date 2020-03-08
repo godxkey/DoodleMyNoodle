@@ -5,6 +5,11 @@ using Unity.Entities;
 
 public class SimulationControllerMaster : SimulationController
 {
+    [ConfigVar("sim.tick_rate", "1", description: "The number of ticks executed per fixed update")]
+    static ConfigVar s_tickRate;
+
+    private float _tickRateCounter;
+
     Queue<ApprovedSimInput> _inputQueue = new Queue<ApprovedSimInput>();
 
     // called by local player
@@ -58,10 +63,18 @@ public class SimulationControllerMaster : SimulationController
 
         SimulationView.UpdateSceneLoads();
 
+
         if (CanTickSimulation)
         {
+            _tickRateCounter += s_tickRate.FloatValue;
+
             AssignSimPlayerIdsToPlayersMissingOne();
-            TickSimulation();
+
+            while (_tickRateCounter > 0)
+            {
+                TickSimulation();
+                _tickRateCounter--;
+            }
         }
         else
         {

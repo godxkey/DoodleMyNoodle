@@ -2,6 +2,7 @@
 using Sim.Operations;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 internal class SimModuleSerializer : SimModuleBase
 {
@@ -49,7 +50,13 @@ internal class SimModuleSerializer : SimModuleBase
                 new IDTypeJsonConverter(),
                 new Fix64JsonConverter(),
             };
-            _cachedJsonSettings.ContractResolver = new CustomJsonContractResolver();
+
+            var contractResolver = new CustomJsonContractResolver();
+#pragma warning disable CS0618 // Type or member is obsolete
+            contractResolver.DefaultMembersSearchFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            _cachedJsonSettings.ContractResolver = contractResolver;
             _cachedJsonSettings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple;
         }
         return _cachedJsonSettings;

@@ -89,7 +89,7 @@ public static class NetMessageInterpreter
 
         if (messageSizeByte > byteLimit)
         {
-            DebugService.LogError($"The net message is exceeding the {byteLimit} byte capacity.");
+            DebugService.LogError($"The net message ({GetMessageType(data)}) is exceeding the {byteLimit} byte capacity.");
             return false;
         }
         data = new byte[messageSizeByte];
