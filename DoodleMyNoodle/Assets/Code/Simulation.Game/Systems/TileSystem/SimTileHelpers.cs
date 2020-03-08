@@ -12,7 +12,8 @@ public static class SimTileHelpers
     public static bool CanEntityWalkOntoTile(SimGridWalkerComponent walker, in SimTileId tile)
     {
         return SimTileManager.Instance.IsTileWalkable(tile)
-            && GetPawnOnTile(tile) == null;
+            && GetPawnOnTile(tile) == null
+            && GetObstacleOnTile(tile) == null;
     }
 
     /// <summary>
@@ -27,6 +28,25 @@ public static class SimTileHelpers
                 if (transform.GetTileId() == tileId)
                 {
                     return pawn.SimEntity;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Returns the first pawn found on the matching tile (or null if none found)
+    /// </summary>
+    public static SimEntity GetObstacleOnTile(SimTileId tileId)
+    {
+        foreach (SimObstacleComponent obstacle in Simulation.EntitiesWithComponent<SimObstacleComponent>())
+        {
+            if (obstacle.GetComponent(out SimTransformComponent transform))
+            {
+                if (transform.GetTileId() == tileId)
+                {
+                    return obstacle.SimEntity;
                 }
             }
         }

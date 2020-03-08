@@ -191,18 +191,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2787616910127113244}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2787616910127113234}
-        m_MethodName: SlotSelected
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2787616910127113234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,6 +204,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 963d491136fb0a443b41fd61f4d2a5db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartItem: {fileID: 0}
   Background: {fileID: 2787616910127113244}
   ItemIcon: {fileID: 2787616908238633049}
