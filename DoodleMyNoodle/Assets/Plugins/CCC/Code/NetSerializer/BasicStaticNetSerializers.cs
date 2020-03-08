@@ -244,3 +244,33 @@ public static class StaticNetSerializer_Vector3Int
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Vector3Int value, BitStreamReader reader) => value = reader.ReadVector3Int();
 }
+
+public static class StaticNetSerializer_Object
+{
+    public static int GetNetBitSize_Class(object obj)
+    {
+        if (obj == null)
+            return 1;
+        return 1 + DynamicNetSerializer.GetNetBitSize(obj);
+    }
+
+    public static void NetSerialize_Class(object obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        DynamicNetSerializer.NetSerialize(obj, writer);
+    }
+
+    public static object NetDeserialize_Class(BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            return null;
+        }
+        return DynamicNetSerializer.NetDeserialize(reader);
+    }
+}
