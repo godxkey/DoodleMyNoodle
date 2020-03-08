@@ -201,7 +201,7 @@ MonoBehaviour:
   StartInventory: []
   _data:
     Inventory: []
-    InventorySize: 0
+    InventorySize: 1
 --- !u!114 &2799728580691253279
 MonoBehaviour:
   m_ObjectHideFlags: 0

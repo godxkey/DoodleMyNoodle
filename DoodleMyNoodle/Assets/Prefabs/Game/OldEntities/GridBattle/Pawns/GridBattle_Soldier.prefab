@@ -215,6 +215,8 @@ MonoBehaviour:
   _dataSimClampedStatComponent:
     MaxValue: 10
     MinValue: 0
+  _data:
+    Invincible: 0
 --- !u!114 &9153719443052239491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,7 +249,7 @@ MonoBehaviour:
   WantsToAttack: 0
   ChoiceMade: 0
   _data:
-    AttackDamage: 2
+    AttackDamage: 4
 --- !u!114 &7088678230703503781
 MonoBehaviour:
   m_ObjectHideFlags: 0

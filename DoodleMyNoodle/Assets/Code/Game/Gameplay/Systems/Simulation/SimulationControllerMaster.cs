@@ -21,7 +21,6 @@ public class SimulationControllerMaster : SimulationController
             return;
         }
 
-        UnityEngine.Debug.Log("Input we submit :" + input);
         PlayerInfo localPlayer = PlayerRepertoireSystem.Instance.GetLocalPlayerInfo();
         QueueInput(input, localPlayer, new InputSubmissionId(0));
     }
