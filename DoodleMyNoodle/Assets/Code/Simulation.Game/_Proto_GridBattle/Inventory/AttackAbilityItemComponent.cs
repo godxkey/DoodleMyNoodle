@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip, IItemOnUse
+public class AttackAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip, IItemOnUse, IItemTryGetUsageContext
 {
     public int StartingAttackDamage = 1;
 
@@ -19,18 +20,38 @@ public class AttackAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUne
 
     public void OnUse(SimPlayerActions PlayerActions, object[] Informations)
     {
-        if (PlayerActions.CanTakeAction())
+        SimCharacterAttackComponent simAttackComponent = PlayerActions.GetComponent<SimCharacterAttackComponent>();
+
+        PlayerActions.IncreaseValue(-1);
+
+        simAttackComponent.TryToAttack((SimTileId)Informations[0]);
+    }
+
+    public void TryGetUsageContext(SimPawnComponent PawnComponent, SimPlayerId simPlayerId, int itemIndex, Action<SimPlayerInputUseItem> OnContextReady)
+    {
+        SimPlayerInputUseItem simPlayerInputUseItem = new SimPlayerInputUseItem();
+        simPlayerInputUseItem.SimPlayerId = simPlayerId;
+        simPlayerInputUseItem.ItemIndex = itemIndex;
+
+        SimPlayerActions simPlayerActions = PawnComponent.GetComponent<SimPlayerActions>();
+        SimCharacterAttackComponent simCharacterAttackComponent = PawnComponent.GetComponent<SimCharacterAttackComponent>();
+
+        if (simPlayerActions.CanTakeAction())
         {
-            SimCharacterAttackComponent characterAttackComponent = PlayerActions.GetComponent<SimCharacterAttackComponent>();
-            if (characterAttackComponent.WantsToAttack)
+            if (simCharacterAttackComponent.WantsToAttack)
             {
-                characterAttackComponent.WantsToAttack = false;
-                characterAttackComponent.ChoiceMade = true;
+                simCharacterAttackComponent.OnCancelAttackRequest();
             }
             else
             {
-                characterAttackComponent.ChoiceMade = false;
-                characterAttackComponent.WantsToAttack = true;
+                simCharacterAttackComponent.OnRequestToAttack((SimTileId Destination) =>
+                {
+                    object[] ItemUsageInfo = { Destination };
+
+                    simPlayerInputUseItem.Informations = ItemUsageInfo;
+
+                    OnContextReady.Invoke(simPlayerInputUseItem);
+                });
             }
         }
     }
