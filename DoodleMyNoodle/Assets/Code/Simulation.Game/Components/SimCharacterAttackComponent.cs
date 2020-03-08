@@ -1,4 +1,5 @@
 ﻿using CCC.InspectorDisplay;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,9 @@ public class SimCharacterAttackComponent : SimEventComponent
 
     public bool WantsToAttack = false;
     public bool ChoiceMade = false;
+
+    private Action<SimTileId> _currentAttackDestinationFoundCallback = null;
+
 
     public int AttackDamage { get => _data.AttackDamage; set => _data.AttackDamage = value; }
 
@@ -35,6 +39,29 @@ public class SimCharacterAttackComponent : SimEventComponent
         }
 
         return false;
+    }
+
+    public void OnRequestToAttack(Action<SimTileId> OnDestinationFound)
+    {
+        _currentAttackDestinationFoundCallback = OnDestinationFound;
+        ChoiceMade = false;
+        WantsToAttack = true;
+    }
+
+    public void OnCancelAttackRequest()
+    {
+        _currentAttackDestinationFoundCallback = null;
+        WantsToAttack = false;
+        ChoiceMade = true;
+    }
+
+    public void OnAttackDestinationChoosen(SimTileId simTileId)
+    {
+        if (WantsToAttack)
+        {
+            _currentAttackDestinationFoundCallback?.Invoke(simTileId);
+            OnCancelAttackRequest();
+        }
     }
 
     #region Serialized Data Methods

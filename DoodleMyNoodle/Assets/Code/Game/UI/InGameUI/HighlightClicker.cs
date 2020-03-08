@@ -44,12 +44,7 @@ public class HighlightClicker : GameMonoBehaviour
                     {
                         SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
 
-                        _playerPawn.GetComponent<SimPlayerActions>().IncreaseValue(-1);
-
-                        _playerCharacterAttackComponent.TryToAttack(currentTileID);
-
-                        _playerCharacterAttackComponent.WantsToAttack = false;
-                        _playerCharacterAttackComponent.ChoiceMade = true;
+                        _playerCharacterAttackComponent.OnAttackDestinationChoosen(currentTileID);
 
                         return;
                     }
