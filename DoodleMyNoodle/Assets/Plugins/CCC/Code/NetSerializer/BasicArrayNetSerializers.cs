@@ -1,6 +1,6 @@
 ﻿using System;
 
-public static class ArrayNetSerializer_TestMessageAnimal
+public static class ArrayNetSerializer_Object
 {
     public static int GetNetBitSize(ref object[] obj)
     {
