@@ -95,6 +95,9 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
 
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
+        if (importedAssets.Contains(ASSET_PATH))
+            return;
+
         System.Predicate<string> sceneAssetPath = (x) => x.EndsWith(".unity");
 
         if(importedAssets.Contains(sceneAssetPath)
