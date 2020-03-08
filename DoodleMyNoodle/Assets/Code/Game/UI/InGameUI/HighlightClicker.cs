@@ -29,12 +29,7 @@ public class HighlightClicker : GameMonoBehaviour
                     {
                         SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
 
-                        _playerPawn.GetComponent<SimPlayerActions>().IncreaseValue(-CalculateAmountOfActionToMoveThere(_playerPawn.GetComponent<SimGridWalkerComponent>().TileId, currentTileID));
-
-                        _playerGridWalkerComponent.TryWalkTo(currentTileID);
-
-                        _playerGridWalkerComponent.WantsToWalk = false;
-                        _playerGridWalkerComponent.ChoiceMade = true;
+                        _playerGridWalkerComponent.OnDestinationChoosen(currentTileID);
 
                         return;
                     }
@@ -83,12 +78,5 @@ public class HighlightClicker : GameMonoBehaviour
             && mousePos.x >= transform.position.x - 0.5f
             && mousePos.y <= transform.position.y + 0.5f
             && mousePos.y >= transform.position.y - 0.5f;
-    }
-
-    private int CalculateAmountOfActionToMoveThere(SimTileId start, SimTileId end)
-    {
-        int up = Mathf.Abs(end.Y - start.Y);
-        int right = Mathf.Abs(end.X - start.X);
-        return up + right;
     }
 }

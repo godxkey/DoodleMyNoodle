@@ -17,7 +17,7 @@ public class AttackAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUne
         Inventory.GetComponent<SimComponentsLinker>().RemoveComponent<SimCharacterAttackComponent>();
     }
 
-    public void OnUse(SimPlayerActions PlayerActions)
+    public void OnUse(SimPlayerActions PlayerActions, object[] Informations)
     {
         if (PlayerActions.CanTakeAction())
         {

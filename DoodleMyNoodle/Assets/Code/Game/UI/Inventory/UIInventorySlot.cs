@@ -48,7 +48,13 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
                     {
                         if (SimTurnManager.Instance.IsMyTurn(Team.Player))
                         {
-                            _currentItem.OnUse(PlayerActions);
+                            SimPlayerId simPlayerId = SimPawnHelpers.FindPawnController(playerPawn).GetComponent<SimPlayerComponent>().SimPlayerId;
+                            int itemIndex = inventory.GetIndexFromItem(_currentItem);
+
+                            _currentItem.TryGetUsageContext(playerPawn, simPlayerId, itemIndex, (SimPlayerInputUseItem UseItemInput) => 
+                            {
+                                SimulationController.Instance.SubmitInput(UseItemInput);
+                            });
                         }
                     }
                 }

@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 // TODO : CHANGE IT THAT INSTED OF ADDING GRID WALKING, THIS COMPONENT IS THE ONE MOVING US WHEN USE() IS CALLED
-public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip, IItemOnUse
+public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip, IItemOnUse, IItemTryGetUsageContext
 {
     public int StartingSpeed = 4;
 
@@ -18,20 +19,48 @@ public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
         Inventory.GetComponent<SimComponentsLinker>().RemoveComponent<SimGridWalkerComponent>();
     }
 
-    public void OnUse(SimPlayerActions PlayerActions)
+    public void OnUse(SimPlayerActions PlayerActions, object[] Informations)
     {
-        if (PlayerActions.CanTakeAction())
+        SimGridWalkerComponent simGridWalkerComponent = PlayerActions.GetComponent<SimGridWalkerComponent>();
+
+        PlayerActions.IncreaseValue(-CalculateAmountOfActionToMoveThere(simGridWalkerComponent.TileId, (SimTileId)Informations[0]));
+
+        simGridWalkerComponent.TryWalkTo((SimTileId)Informations[0]);
+    }
+
+    public void TryGetUsageContext(SimPawnComponent PawnComponent, SimPlayerId simPlayerId, int itemIndex, Action<SimPlayerInputUseItem> OnContextReady)
+    {
+        SimPlayerInputUseItem simPlayerInputUseItem = new SimPlayerInputUseItem();
+        simPlayerInputUseItem.SimPlayerId = simPlayerId;
+        simPlayerInputUseItem.ItemIndex = itemIndex;
+
+        SimPlayerActions simPlayerActions = PawnComponent.GetComponent<SimPlayerActions>();
+        SimGridWalkerComponent simGridWalkerComponent = PawnComponent.GetComponent<SimGridWalkerComponent>();
+
+        if (simPlayerActions.CanTakeAction())
         {
-            if (PlayerActions.GetComponent<SimGridWalkerComponent>().WantsToWalk)
+            if (simGridWalkerComponent.WantsToWalk)
             {
-                PlayerActions.GetComponent<SimGridWalkerComponent>().WantsToWalk = false;
-                PlayerActions.GetComponent<SimGridWalkerComponent>().ChoiceMade = true;
+                simGridWalkerComponent.OnCancelWalkRequest();
             }
             else
             {
-                PlayerActions.GetComponent<SimGridWalkerComponent>().ChoiceMade = false;
-                PlayerActions.GetComponent<SimGridWalkerComponent>().WantsToWalk = true;
+                simGridWalkerComponent.OnRequestToWalk((SimTileId Destination)=> 
+                {
+                    object[] ItemUsageInfo = { Destination };
+
+                    simPlayerInputUseItem.Informations = ItemUsageInfo;
+
+                    OnContextReady.Invoke(simPlayerInputUseItem);
+                });
             }
         }
+    }
+
+    private int CalculateAmountOfActionToMoveThere(SimTileId start, SimTileId end)
+    {
+        int up = Mathf.Abs(end.Y - start.Y);
+        int right = Mathf.Abs(end.X - start.X);
+        return up + right;
     }
 }

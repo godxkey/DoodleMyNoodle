@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using UnityEngine;
 
+[NetSerializable]
 [Serializable]
 [DebuggerDisplay("tile({x}, {y})")] // tells visual studio how to display the variable while debugging
 public struct SimTileId

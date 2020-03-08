@@ -89,6 +89,14 @@ public class SimInventoryComponent : SimComponent
         return Inventory[position];
     }
 
+    public int GetIndexFromItem(SimItem Item)
+    {
+        if (Item == null)
+            return -1;
+
+        return Inventory.IndexOf(Item);
+    }
+
     public void TakeItem(SimItem item)
     {
         if(AddItem(item) >= 0)

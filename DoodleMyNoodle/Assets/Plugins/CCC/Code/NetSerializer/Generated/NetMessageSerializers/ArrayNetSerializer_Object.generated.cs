@@ -1,8 +1,12 @@
-﻿using System;
+// THIS CODE IS GENERATED
+// DO NOT MODIFY IT
+
+using System;
+using System.Collections.Generic;
 
 public static class ArrayNetSerializer_Object
 {
-    public static int GetNetBitSize(ref object[] obj)
+    public static int GetNetBitSize(ref Object[] obj)
     {
         if (obj == null)
             return 1;
@@ -14,7 +18,7 @@ public static class ArrayNetSerializer_Object
         return result;
     }
 
-    public static void NetSerialize(ref object[] obj, BitStreamWriter writer)
+    public static void NetSerialize(ref Object[] obj, BitStreamWriter writer)
     {
         if (obj == null)
         {
@@ -29,14 +33,14 @@ public static class ArrayNetSerializer_Object
         }
     }
 
-    public static void NetDeserialize(ref object[] obj, BitStreamReader reader)
+    public static void NetDeserialize(ref Object[] obj, BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
             obj = null;
             return;
         }
-        obj = new object[reader.ReadUInt32()];
+        obj = new Object[reader.ReadUInt32()];
         for (int i = 0; i < obj.Length; i++)
         {
             obj[i] = StaticNetSerializer_Object.NetDeserialize_Class(reader);
