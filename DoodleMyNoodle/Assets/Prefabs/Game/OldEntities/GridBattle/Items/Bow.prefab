@@ -79,4 +79,4 @@ MonoBehaviour:
     type: 3}
   _throwSpeed:
     RawValue: 21474836480
-  _apCost: 1
+  _apCost: 2

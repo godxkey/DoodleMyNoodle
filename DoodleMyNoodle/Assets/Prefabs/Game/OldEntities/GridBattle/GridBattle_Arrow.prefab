@@ -146,11 +146,11 @@ MonoBehaviour:
   _data:
     LocalPosition:
       x:
-        RawValue: 0
+        RawValue: 5501853184
       y:
-        RawValue: 0
+        RawValue: 4393751552
       z:
-        RawValue: 0
+        RawValue: -1108101504
     LocalRotation:
       x:
         RawValue: 0
@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Damage: 5
+    Damage: 3
     DestroyOnContact: 1
 --- !u!114 &7812940432331005050
 MonoBehaviour:

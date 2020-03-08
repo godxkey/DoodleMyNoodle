@@ -75,4 +75,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c136ce930d68ea4390f6c4c275f2157, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartingAttackDamage: 5
+  StartingAttackDamage: 4
+  ActionToConsume: 2

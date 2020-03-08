@@ -75,4 +75,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39678ef29a805c641b9d7467d840454e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionToConsume: 1
+  ActionToConsume: 3
