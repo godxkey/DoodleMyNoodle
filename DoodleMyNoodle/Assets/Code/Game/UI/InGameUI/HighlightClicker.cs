@@ -25,13 +25,20 @@ public class HighlightClicker : GameMonoBehaviour
             {
                 if (_playerGridWalkerComponent.WantsToWalk && IsMouseInsideHighlight(GetMousePositionOnTile()))
                 {
-                    if (Input.GetMouseButtonDown(0) && SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
                     {
-                        SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+                        if (Input.GetMouseButtonDown(0)) 
+                        {
+                            SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
 
-                        _playerGridWalkerComponent.OnDestinationChoosen(currentTileID);
+                            _playerGridWalkerComponent.OnDestinationChoosen(currentTileID);
 
-                        return;
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        _playerGridWalkerComponent.OnCancelWalkRequest();
                     }
                 }
             }
@@ -40,13 +47,20 @@ public class HighlightClicker : GameMonoBehaviour
             {
                 if (_playerCharacterAttackComponent.WantsToAttack && IsMouseInsideHighlight(GetMousePositionOnTile()))
                 {
-                    if (Input.GetMouseButtonDown(0) && SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
                     {
-                        SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+                        if (Input.GetMouseButtonDown(0)) 
+                        {
+                            SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
 
-                        _playerCharacterAttackComponent.OnAttackDestinationChoosen(currentTileID);
+                            _playerCharacterAttackComponent.OnAttackDestinationChoosen(currentTileID);
 
-                        return;
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        _playerCharacterAttackComponent.OnCancelAttackRequest();
                     }
                 }
             }

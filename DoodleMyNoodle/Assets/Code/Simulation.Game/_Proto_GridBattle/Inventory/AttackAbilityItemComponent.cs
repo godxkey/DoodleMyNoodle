@@ -6,6 +6,7 @@ using UnityEngine;
 public class AttackAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip, IItemOnUse, IItemTryGetUsageContext
 {
     public int StartingAttackDamage = 1;
+    public int ActionToConsume = 1;
 
     public void OnEquip(SimInventoryComponent Inventory)
     {
@@ -22,7 +23,7 @@ public class AttackAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUne
     {
         SimCharacterAttackComponent simAttackComponent = PlayerActions.GetComponent<SimCharacterAttackComponent>();
 
-        PlayerActions.IncreaseValue(-1);
+        PlayerActions.IncreaseValue(-1 * ActionToConsume);
 
         simAttackComponent.TryToAttack((SimTileId)Informations[0]);
     }
@@ -36,7 +37,7 @@ public class AttackAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUne
         SimPlayerActions simPlayerActions = PawnComponent.GetComponent<SimPlayerActions>();
         SimCharacterAttackComponent simCharacterAttackComponent = PawnComponent.GetComponent<SimCharacterAttackComponent>();
 
-        if (simPlayerActions.CanTakeAction())
+        if (simPlayerActions.CanTakeAction(ActionToConsume))
         {
             if (simCharacterAttackComponent.WantsToAttack)
             {

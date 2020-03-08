@@ -37,7 +37,7 @@ public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
         SimPlayerActions simPlayerActions = PawnComponent.GetComponent<SimPlayerActions>();
         SimGridWalkerComponent simGridWalkerComponent = PawnComponent.GetComponent<SimGridWalkerComponent>();
 
-        if (simPlayerActions.CanTakeAction())
+        if (simPlayerActions.CanTakeAction(simPlayerActions.Value))
         {
             if (simGridWalkerComponent.WantsToWalk)
             {
