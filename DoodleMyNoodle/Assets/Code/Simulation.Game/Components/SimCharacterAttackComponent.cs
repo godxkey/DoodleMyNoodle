@@ -22,17 +22,17 @@ public class SimCharacterAttackComponent : SimEventComponent
 
     public bool TryToAttack(SimTileId simTileId)
     {
-        SimEntity simEntity = SimTileHelpers.GetPawnOnTile(simTileId);
-        if(simEntity != null)
+        SimEntity targetEntity = SimTileHelpers.GetPawnOnTile(simTileId);
+        if(targetEntity != null)
         {
-            SimHealthStatComponent Health = simEntity.GetComponent<SimHealthStatComponent>();
+            SimHealthStatComponent targetHealth = targetEntity.GetComponent<SimHealthStatComponent>();
             SimTeamMemberComponent myTeamComponent = GetComponent<SimTeamMemberComponent>();
-            SimTeamMemberComponent targetTeamComponent = simEntity.GetComponent<SimTeamMemberComponent>();
-            if (Health != null && myTeamComponent != null && targetTeamComponent != null)
+            SimTeamMemberComponent targetTeamComponent = targetEntity.GetComponent<SimTeamMemberComponent>();
+            if (targetHealth != null && myTeamComponent != null && targetTeamComponent != null)
             {
                 if(myTeamComponent.Team != targetTeamComponent.Team)
                 {
-                    Health.DecreaseValue(AttackDamage);
+                    targetHealth.DecreaseValue(AttackDamage);
                     return true;
                 }
             }

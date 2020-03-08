@@ -62,23 +62,24 @@ public class SimulationControllerMaster : SimulationController
             return;
 
         SimulationView.UpdateSceneLoads();
+        
+        _tickRateCounter += s_tickRate.FloatValue;
 
-
-        if (CanTickSimulation)
+        while (_tickRateCounter > 0)
         {
-            _tickRateCounter += s_tickRate.FloatValue;
-
-            AssignSimPlayerIdsToPlayersMissingOne();
-
-            while (_tickRateCounter > 0)
+            if (CanTickSimulation)
             {
+
+                AssignSimPlayerIdsToPlayersMissingOne();
+
                 TickSimulation();
-                _tickRateCounter--;
             }
-        }
-        else
-        {
-            _inputQueue.Clear();
+            else
+            {
+                _inputQueue.Clear();
+            }
+
+            _tickRateCounter--;
         }
     }
 

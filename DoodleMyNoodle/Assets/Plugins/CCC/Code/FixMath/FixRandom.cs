@@ -85,6 +85,12 @@ public class FixRandom
         y = Y;
         z = Z;
         w = W;
+
+        int mod = seed % 7;
+        for (int i = 0; i < mod; i++)
+        {
+            Next();
+        }
     }
 
     #endregion
