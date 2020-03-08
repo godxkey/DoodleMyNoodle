@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Unity.Entities;
-using UnityEngine;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
 
@@ -10,11 +9,14 @@ public class SimulationWorldUpdaterSystem : ComponentSystem
     public List<SimTickData> AvailableTicks = new List<SimTickData>();
     public bool IsTicking { get; private set; }
 
-    SimulationWorld _simulationWorld;
-    SimPreInitializationSystemGroup _preInitGroup;
-    SimInitializationSystemGroup _initGroup;
-    SimSimulationSystemGroup _simGroup;
-    SimPresentationSystemGroup _presGroup;
+    private SimulationWorld _simulationWorld;
+    private SimulationWorldSystem _simulationWorldSystem;
+    private SimulationLoadSceneSystem _simulationLoadSceneSystem;
+    
+    private SimPreInitializationSystemGroup _preInitGroup;
+    private SimInitializationSystemGroup _initGroup;
+    private SimSimulationSystemGroup _simGroup;
+    private SimPresentationSystemGroup _presGroup;
 
     bool _updatePlayerLoop;
 
@@ -22,8 +24,9 @@ public class SimulationWorldUpdaterSystem : ComponentSystem
     {
         base.OnCreate();
 
-        SimulationWorldSystem simWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
-        _simulationWorld = simWorldSystem.SimulationWorld;
+        _simulationWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
+        _simulationLoadSceneSystem = World.GetOrCreateSystem<SimulationLoadSceneSystem>();
+        _simulationWorld = _simulationWorldSystem.SimulationWorld;
 
         _preInitGroup = _simulationWorld.CreateSystem<SimPreInitializationSystemGroup>();
         _initGroup = _simulationWorld.CreateSystem<SimInitializationSystemGroup>();
@@ -69,11 +72,16 @@ public class SimulationWorldUpdaterSystem : ComponentSystem
             _updatePlayerLoop = false;
         }
 
-        
+
         while (AvailableTicks.Count > 0)
         {
+           _simulationLoadSceneSystem.UpdateSceneLoading();
+
+            if (_simulationLoadSceneSystem.OngoingSceneLoads.Count > 0)
+                break;
+
             IsTicking = true;
-            
+
             SimTickData tick = AvailableTicks.First();
             AvailableTicks.RemoveAt(0);
 
@@ -85,7 +93,7 @@ public class SimulationWorldUpdaterSystem : ComponentSystem
             ManualUpdate(_presGroup);
 
             _simulationWorld.OngoingTickInputs = null;
-            
+
             IsTicking = false;
         }
     }

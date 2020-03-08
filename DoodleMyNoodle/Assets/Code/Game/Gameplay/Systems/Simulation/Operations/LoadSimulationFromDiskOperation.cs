@@ -1,16 +1,17 @@
 ﻿using CCC.Operations;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
+using Unity.Entities;
 
 public class LoadSimulationFromDiskOperation : CoroutineOperation
 {
     string _filePath;
+    private World _simulationWorld;
 
-
-    public LoadSimulationFromDiskOperation(string filePath)
+    public LoadSimulationFromDiskOperation(string filePath, World simulationWorld)
     {
         _filePath = filePath;
+
+        _simulationWorld = simulationWorld;
     }
 
     protected override IEnumerator ExecuteRoutine()
@@ -27,7 +28,7 @@ public class LoadSimulationFromDiskOperation : CoroutineOperation
         }
 
         // deserialize 
-        yield return ExecuteSubOperationAndWaitForSuccess(SimulationView.DeserializeSimulation(serializedData));
+        yield return ExecuteSubOperationAndWaitForSuccess(SimulationView.DeserializeSimulation(serializedData, _simulationWorld));
 
         TerminateWithSuccess();
     }

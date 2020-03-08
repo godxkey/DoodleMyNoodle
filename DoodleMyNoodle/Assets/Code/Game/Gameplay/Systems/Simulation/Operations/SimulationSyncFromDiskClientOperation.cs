@@ -1,17 +1,20 @@
 ﻿using CCC.Operations;
 using System.Collections;
+using Unity.Entities;
 
 public class SimulationSyncFromDiskClientOperation : CoroutineOperation
 {
     public bool IsServerReadyToSendSimTicksForSimulationWeAreSyncingTo { get; private set; }
 
     SessionClientInterface _sessionInterface;
+    private World _simulationWorld;
     string _simLoadFile;
     bool _receivedResponseFromServer;
 
-    public SimulationSyncFromDiskClientOperation(SessionClientInterface sessionInterface)
+    public SimulationSyncFromDiskClientOperation(SessionClientInterface sessionInterface, World simulationWorld)
     {
         _sessionInterface = sessionInterface;
+        _simulationWorld = simulationWorld;
     }
 
     protected override IEnumerator ExecuteRoutine()
@@ -46,7 +49,7 @@ public class SimulationSyncFromDiskClientOperation : CoroutineOperation
             yield break;
         }
 
-        yield return ExecuteSubOperationAndWaitForSuccess(new LoadSimulationFromDiskOperation(_simLoadFile));
+        yield return ExecuteSubOperationAndWaitForSuccess(new LoadSimulationFromDiskOperation(_simLoadFile, _simulationWorld));
 
         TerminateWithSuccess();
     }

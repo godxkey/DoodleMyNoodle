@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 internal class SimModuleSceneLoader : SimModuleBase
 {
-    internal int PendingSceneLoads => _sceneLoadPromises.Count;
+    internal int PendingSceneLoads => _sceneLoads.Count;
 
-    List<ISceneLoadPromise> _sceneLoadPromises = new List<ISceneLoadPromise>();
+    struct SceneLoads
+    {
+        public ISceneLoadPromise SceneLoadPromise;
+        public World SimulationWorld;
+    }
+
+    List<SceneLoads> _sceneLoads = new List<SceneLoads>();
 
 #if UNITY_EDITOR
     public static Action<Scene> s_EditorValidationMethod;
@@ -21,16 +28,21 @@ internal class SimModuleSceneLoader : SimModuleBase
     internal void LoadScene(string sceneName)
     {
         // fbessette: eventually, we'll want to have a preloading mechanism outside of the simulation so we don't have a CPU spike here.
-        _sceneLoadPromises.Add(SceneService.Load(sceneName, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D));
+        _sceneLoads.Add(new SceneLoads()
+        {
+            SceneLoadPromise = SceneService.Load(sceneName, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D),
+            SimulationWorld = null
+        });
+
     }
 
     internal void Update()
     {
         // this makes sure we apply the scene in the order we received the commands
-        while (_sceneLoadPromises.Count > 0 && _sceneLoadPromises.First().IsComplete)
+        while (_sceneLoads.Count > 0 && _sceneLoads.First().SceneLoadPromise.IsComplete)
         {
-            ApplyLoadedScene(_sceneLoadPromises.First().Scene);
-            _sceneLoadPromises.RemoveFirst();
+            ApplyLoadedScene(_sceneLoads.First().SceneLoadPromise.Scene);
+            _sceneLoads.RemoveFirst();
         }
     }
 

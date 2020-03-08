@@ -96,8 +96,10 @@ namespace Unity.Entities.Editor
                                        (selectedEntityQuery != null || !(getSystemSelection() is ComponentSystemBase));
 
         private int lastVersion = -1;
+        private int lastEntityCount = -1;
 
-        public bool NeedsReload => ShowingSomething && getWorldSelection().EntityManager.Version != lastVersion;
+        public bool NeedsReload => ShowingSomething && 
+            (getWorldSelection().EntityManager.Version != lastVersion);
         
         public void ReloadIfNecessary()
         {

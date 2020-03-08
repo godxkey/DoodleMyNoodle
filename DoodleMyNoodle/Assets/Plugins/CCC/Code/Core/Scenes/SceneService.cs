@@ -9,6 +9,7 @@ public interface ISceneLoadPromise
     bool IsComplete { get; }
     Scene Scene { get; }
     event Action<ISceneLoadPromise> OnComplete;
+    string SceneName { get; }
 }
 
 public class SceneService : MonoCoreService<SceneService>
@@ -21,7 +22,7 @@ public class SceneService : MonoCoreService<SceneService>
             IsComplete = false;
         }
 
-        public string SceneName;
+        public string SceneName { get; set; }
         private event Action<ISceneLoadPromise> OnCompleteInternal;
         public event Action<ISceneLoadPromise> OnComplete
         {

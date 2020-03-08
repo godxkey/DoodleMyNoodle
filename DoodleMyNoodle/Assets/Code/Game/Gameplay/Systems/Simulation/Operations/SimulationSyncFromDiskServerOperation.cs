@@ -1,5 +1,6 @@
 ﻿using CCC.Operations;
 using System.Collections;
+using Unity.Entities;
 using UnityEngine;
 
 public class SimulationSyncFromDiskServerOperation : CoroutineOperation
@@ -8,11 +9,13 @@ public class SimulationSyncFromDiskServerOperation : CoroutineOperation
 
     INetworkInterfaceConnection _client;
     SessionServerInterface _sessionInterface;
+    private World _simulationWorld;
 
-    public SimulationSyncFromDiskServerOperation(SessionServerInterface sessionInterface, INetworkInterfaceConnection clientConnection)
+    public SimulationSyncFromDiskServerOperation(SessionServerInterface sessionInterface, INetworkInterfaceConnection clientConnection, World simulationWorld)
     {
         _client = clientConnection;
         _sessionInterface = sessionInterface;
+        _simulationWorld = simulationWorld;
     }
 
     protected override IEnumerator ExecuteRoutine()
@@ -26,7 +29,7 @@ public class SimulationSyncFromDiskServerOperation : CoroutineOperation
         string filePath = $"{Application.persistentDataPath}/{LOCAL_FILE_NAME_PREFIX}-{SimulationView.TickId}.txt";
 
         // Save sim to disk
-        yield return ExecuteSubOperationAndWaitForSuccess(new SaveSimulationToDiskOperation(filePath));
+        yield return ExecuteSubOperationAndWaitForSuccess(new SaveSimulationToDiskOperation(filePath, _simulationWorld));
 
         // Send message to clients saying "simulation has been saved to local file, load it up"
         NetMessageSimSyncFromFile netMessageSimSyncStart = new NetMessageSimSyncFromFile()

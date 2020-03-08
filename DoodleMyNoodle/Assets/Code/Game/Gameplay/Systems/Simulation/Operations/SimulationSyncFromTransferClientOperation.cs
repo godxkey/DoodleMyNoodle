@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 
 public class SimulationSyncFromTransferClientOperation : CoroutineOperation
@@ -9,12 +10,14 @@ public class SimulationSyncFromTransferClientOperation : CoroutineOperation
     public bool IsServerReadyToSendSimTicksForSimulationWeAreSyncingTo { get; private set; }
 
     SessionClientInterface _sessionInterface;
+    private World _simulationWorld;
     bool _receivedResponseFromServer;
     string _simData;
 
-    public SimulationSyncFromTransferClientOperation(SessionClientInterface sessionInterface)
+    public SimulationSyncFromTransferClientOperation(SessionClientInterface sessionInterface, World simulationWorld)
     {
         _sessionInterface = sessionInterface;
+        _simulationWorld = simulationWorld;
     }
 
     protected override IEnumerator ExecuteRoutine()
@@ -41,7 +44,7 @@ public class SimulationSyncFromTransferClientOperation : CoroutineOperation
             yield break;
         }
 
-        yield return ExecuteSubOperationAndWaitForSuccess(SimulationView.DeserializeSimulation(_simData));
+        yield return ExecuteSubOperationAndWaitForSuccess(SimulationView.DeserializeSimulation(_simData, _simulationWorld));
 
         TerminateWithSuccess();
     }

@@ -1,8 +1,5 @@
 ﻿using Sim.Operations;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Unity.Entities;
 
 public class SimulationView : SimulationBase
 {
@@ -31,6 +28,6 @@ public class SimulationView : SimulationBase
     public static bool CanBeSerialized => SimModules._Serializer.CanSimWorldBeSaved;
     public static bool CanBeDeserialized => SimModules._Serializer.CanSimWorldBeSaved;
 
-    public static SimSerializationOperationWithCache SerializeSimulation() => SimModules._Serializer.SerializeSimulation();
-    public static SimDeserializationOperation DeserializeSimulation(string data) => SimModules._Serializer.DeserializeSimulation(data);
+    public static SimSerializationOperationWithCache SerializeSimulation(World simulationWorld) => SimModules._Serializer.SerializeSimulation(simulationWorld);
+    public static SimDeserializationOperation DeserializeSimulation(string data, World simulationWorld) => SimModules._Serializer.DeserializeSimulation(data, simulationWorld);
 }

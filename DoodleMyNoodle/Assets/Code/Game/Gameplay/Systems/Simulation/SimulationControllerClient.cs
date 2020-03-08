@@ -156,7 +156,7 @@ public class SimulationControllerClient : SimulationController
 
         PauseSimulation(key: "sync");
 
-        _ongoingSyncOp = new SimulationSyncFromTransferClientOperation(_session);
+        _ongoingSyncOp = new SimulationSyncFromTransferClientOperation(_session, SimulationWorld);
 
         _ongoingSyncOp.OnTerminateCallback = (op) =>
         {

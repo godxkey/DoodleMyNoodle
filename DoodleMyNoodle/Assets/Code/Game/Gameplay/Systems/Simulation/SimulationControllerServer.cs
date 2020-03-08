@@ -98,7 +98,7 @@ public class SimulationControllerServer : SimulationControllerMaster
     {
         DebugService.Log($"Starting new sync...");
 
-        var newOp = new SimulationSyncFromTransferServerOperation(_session, clientConnection);
+        var newOp = new SimulationSyncFromTransferServerOperation(_session, clientConnection, SimulationWorld);
 
         newOp.OnFailCallback = (op) =>
         {

@@ -8,20 +8,35 @@ public abstract class SimulationController : GameSystem<SimulationController>
     [SerializeField] SimBlueprintProviderPrefab _bpProviderPrefab;
     [SerializeField] SimBlueprintProviderSceneObject _bpProviderSceneObject;
 
+
+    protected SimulationWorldSystem _simulationWorldSystem;
+    protected SimulationWorldUpdaterSystem _simulationWorldUpdaterSystem;
+
     private Blocker _playSimulation = new Blocker();
 
     public bool CanTickSimulation => SimulationView.CanBeTicked && _playSimulation;
 
     public override bool SystemReady => true;
 
-    protected SimulationWorldUpdaterSystem SimWorldUpdater => World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<SimulationWorldUpdaterSystem>();
+    public SimulationWorld SimulationWorld => _simulationWorldSystem?.SimulationWorld;
+    protected SimulationWorldUpdaterSystem SimWorldUpdater => _simulationWorldUpdaterSystem;
 
     public abstract void SubmitInput(SimInput input);
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        World masterWorld = World.DefaultGameObjectInjectionWorld;
+
+        _simulationWorldSystem = masterWorld.GetOrCreateSystem<SimulationWorldSystem>();
+        _simulationWorldUpdaterSystem = masterWorld.GetOrCreateSystem<SimulationWorldUpdaterSystem>();
+
+    }
 
     public override void OnGameReady()
     {
         Time.fixedDeltaTime = (float)SimulationConstants.TIME_STEP;
-
 
         SimulationCoreSettings settings = new SimulationCoreSettings();
         settings.BlueprintProviders = new List<ISimBlueprintProvider>()
@@ -31,6 +46,8 @@ public abstract class SimulationController : GameSystem<SimulationController>
         };
 
         SimulationView.Initialize(settings);
+        _simulationWorldSystem.ClearWorld();
+
 
         base.OnGameReady();
 
@@ -91,12 +108,12 @@ public abstract class SimulationController : GameSystem<SimulationController>
                 fileNameToSaveTo += ".txt";
             }
 
-            _ongoingCmdOperation = new SaveSimulationToDiskOperation($"{Application.persistentDataPath}/{fileNameToSaveTo}");
+            _ongoingCmdOperation = new SaveSimulationToDiskOperation($"{Application.persistentDataPath}/{fileNameToSaveTo}", SimulationWorld);
             locationTxt = $"file {fileNameToSaveTo}";
         }
         else
         {
-            _ongoingCmdOperation = new SaveSimulationToMemoryOperation();
+            _ongoingCmdOperation = new SaveSimulationToMemoryOperation(SimulationWorld);
             locationTxt = "memory";
         }
 
@@ -131,12 +148,12 @@ public abstract class SimulationController : GameSystem<SimulationController>
                 fileNameToReadFrom += ".txt";
             }
 
-            _ongoingCmdOperation = new LoadSimulationFromDiskOperation($"{Application.persistentDataPath}/{fileNameToReadFrom}");
+            _ongoingCmdOperation = new LoadSimulationFromDiskOperation($"{Application.persistentDataPath}/{fileNameToReadFrom}", SimulationWorld);
             locationTxt = $"file {fileNameToReadFrom}";
         }
         else
         {
-            _ongoingCmdOperation = new LoadSimulationFromMemoryOperation();
+            _ongoingCmdOperation = new LoadSimulationFromMemoryOperation(SimulationWorld);
             locationTxt = "memory";
         }
 

@@ -16,12 +16,14 @@ namespace Sim.Operations
         string _serializedData;
         SimObjectJsonConverter _simObjectJsonConverter;
         JsonSerializerSettings _jsonSerializerSettings;
+        World _simulationWorld;
 
-        internal SimDeserializationOperation(string serializedData, SimObjectJsonConverter simObjectJsonConverter, JsonSerializerSettings jsonSerializerSettings)
+        internal SimDeserializationOperation(string serializedData, SimObjectJsonConverter simObjectJsonConverter, JsonSerializerSettings jsonSerializerSettings, World simulationWorld)
         {
             _serializedData = serializedData;
             _simObjectJsonConverter = simObjectJsonConverter;
             _jsonSerializerSettings = jsonSerializerSettings;
+            _simulationWorld = simulationWorld;
         }
 
         World GetEntityWorldFromByteArray(byte[] bytes)
@@ -76,17 +78,23 @@ namespace Sim.Operations
             //      ECS
             ////////////////////////////////////////////////////////////////////////////////////////
             {
+                // force the 'ChangeDetectionSystem' to end the current sample, making our entity changes undetectable.
+                var changeDetectionSystemEnd = _simulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
+                if (changeDetectionSystemEnd != null)
+                {
+                    changeDetectionSystemEnd.ForceEndSample();
+                }
 
                 World tempWorld = GetEntityWorldFromByteArray(serializableWorld.ECSWorld);
-                SimulationWorld.Instance.GetExistingSystem<ChangeDetectionSystemEnd>().Enabled = false;
-                SimulationWorld.Instance.EntityManager.CopyAndReplaceEntitiesFrom(tempWorld.EntityManager);
+                _simulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>().Enabled = false;
+                _simulationWorld.EntityManager.CopyAndReplaceEntitiesFrom(tempWorld.EntityManager);
                 tempWorld.Dispose();
 
                 // force the 'ChangeDetectionSystem' to resample, making our entity changes undetectable.
-                var changeDetectionSystem = SimulationWorld.Instance.GetExistingSystem<ChangeDetectionSystemBegin>();
-                if (changeDetectionSystem != null)
+                var changeDetectionSystemBegin = _simulationWorld.GetExistingSystem<ChangeDetectionSystemBegin>();
+                if (changeDetectionSystemBegin != null)
                 {
-                    changeDetectionSystem.ResetSample();
+                    changeDetectionSystemBegin.ResetSample();
                 }
             }
 

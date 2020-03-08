@@ -2,6 +2,7 @@
 using Sim.Operations;
 using System;
 using System.Collections.Generic;
+using Unity.Entities;
 
 internal class SimModuleSerializer : SimModuleBase
 {
@@ -61,7 +62,7 @@ internal class SimModuleSerializer : SimModuleBase
         return _cachedSimObjectJsonConverter;
     }
 
-    public SimSerializationOperationWithCache SerializeSimulation()
+    public SimSerializationOperationWithCache SerializeSimulation(World simulationWorld)
     {
         if (!SimModules._Serializer.CanSimWorldBeSaved)
         {
@@ -69,7 +70,7 @@ internal class SimModuleSerializer : SimModuleBase
             return null;
         }
 
-        _serializationOperation = new SimSerializationOperationWithCache(GetSimObjectJsonConverter(), GetJsonSettings());
+        _serializationOperation = new SimSerializationOperationWithCache(GetSimObjectJsonConverter(), GetJsonSettings(), simulationWorld);
 
         _serializationOperation.OnFailCallback = (op) =>
         {
@@ -96,7 +97,7 @@ internal class SimModuleSerializer : SimModuleBase
         return _serializationOperation;
     }
 
-    public SimDeserializationOperation DeserializeSimulation(string data)
+    public SimDeserializationOperation DeserializeSimulation(string data, World simulationWorld)
     {
         if (!CanSimWorldBeLoaded)
         {
@@ -104,7 +105,7 @@ internal class SimModuleSerializer : SimModuleBase
             return null;
         }
 
-        _deserializationOperation = new SimDeserializationOperation(data, GetSimObjectJsonConverter(), GetJsonSettings());
+        _deserializationOperation = new SimDeserializationOperation(data, GetSimObjectJsonConverter(), GetJsonSettings(), simulationWorld);
 
         _deserializationOperation.OnFailCallback = (op) =>
         {

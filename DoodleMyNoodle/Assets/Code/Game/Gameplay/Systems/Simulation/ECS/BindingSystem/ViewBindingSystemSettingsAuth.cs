@@ -16,31 +16,38 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new BlobAssetReferenceComponent<ViewBindingSystemSettings>()
-        {
-            Value = CreateBlobAsset(conversionSystem)
-        });
-    }
-
-    BlobAssetReference<ViewBindingSystemSettings> CreateBlobAsset(GameObjectConversionSystem conversionSystem)
-    {
-        BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp);
-
-        ref ViewBindingSystemSettings root = ref blobBuilder.ConstructRoot<ViewBindingSystemSettings>();
-
-        var ids = blobBuilder.Allocate(ref root.BlueprintIds, BlueprintDefinitions.Count);
-        var viewEntities = blobBuilder.Allocate(ref root.BlueprintPresentationEntities, BlueprintDefinitions.Count);
-
+        var buffer = dstManager.AddBuffer<Settings_ViewBindingSystem_BlueprintDefinition>(entity);
+        buffer.Capacity = BlueprintDefinitions.Count;
+        
         for (int i = 0; i < BlueprintDefinitions.Count; i++)
         {
-            ids[i] = BlueprintDefinitions[i].GetBlueprintId().Value;
-            viewEntities[i] = conversionSystem.GetPrimaryEntity(BlueprintDefinitions[i].GetViewGameObject());
+            buffer.Add(new Settings_ViewBindingSystem_BlueprintDefinition()
+            {
+                BlueprintId = BlueprintDefinitions[i].GetBlueprintId().Value,
+                PresentationEntity = conversionSystem.GetPrimaryEntity(BlueprintDefinitions[i].GetViewGameObject())
+            });
         }
-
-        BlobAssetReference<ViewBindingSystemSettings> blobRef = blobBuilder.CreateBlobAssetReference<ViewBindingSystemSettings>(Allocator.Persistent);
-
-        blobBuilder.Dispose();
-
-        return blobRef;
     }
+
+    //BlobAssetReference<ViewBindingSystemSettings> CreateBlobAsset(GameObjectConversionSystem conversionSystem)
+    //{
+    //    BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp);
+
+    //    ref ViewBindingSystemSettings root = ref blobBuilder.ConstructRoot<ViewBindingSystemSettings>();
+
+    //    var ids = blobBuilder.Allocate(ref root.BlueprintIds, BlueprintDefinitions.Count);
+    //    var viewEntities = blobBuilder.Allocate(ref root.BlueprintPresentationEntities, BlueprintDefinitions.Count);
+
+    //    for (int i = 0; i < BlueprintDefinitions.Count; i++)
+    //    {
+    //        ids[i] = BlueprintDefinitions[i].GetBlueprintId().Value;
+    //        viewEntities[i] = conversionSystem.GetPrimaryEntity(BlueprintDefinitions[i].GetViewGameObject());
+    //    }
+
+    //    BlobAssetReference<ViewBindingSystemSettings> blobRef = blobBuilder.CreateBlobAssetReference<ViewBindingSystemSettings>(Allocator.Persistent);
+
+    //    blobBuilder.Dispose();
+
+    //    return blobRef;
+    //}
 }

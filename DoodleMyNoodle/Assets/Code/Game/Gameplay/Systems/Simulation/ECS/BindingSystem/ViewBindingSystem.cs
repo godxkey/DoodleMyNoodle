@@ -15,15 +15,17 @@ public class ViewBindingSystem : ViewJobComponentSystem
         _newSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<NewlyCreatedTag>(), ComponentType.ReadOnly<BlueprintId>());
         _ecbSystem = World.GetOrCreateSystem<BeginPresentationEntityCommandBufferSystem>();
 
-        RequireSingletonForUpdate<BlobAssetReferenceComponent<ViewBindingSystemSettings>>();
+        RequireSingletonForUpdate<Settings_ViewBindingSystem_BlueprintDefinition>();
     }
 
     protected override JobHandle OnUpdate(JobHandle inputDependencies)
     {
+        var settingsEntity = GetSingletonEntity<Settings_ViewBindingSystem_BlueprintDefinition>();
+
         var jobHandle = new FetchNewSimEntitiesJob()
         {
             Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent(),
-            SettingsRef = GetSingleton<BlobAssetReferenceComponent<ViewBindingSystemSettings>>().Value
+            BlueprintDefinitions = EntityManager.GetBuffer<Settings_ViewBindingSystem_BlueprintDefinition>(settingsEntity)
         }.Schedule(_newSimEntitiesQ, inputDependencies);
 
         _ecbSystem.AddJobHandleForProducer(jobHandle);
@@ -34,18 +36,19 @@ public class ViewBindingSystem : ViewJobComponentSystem
     [BurstCompile]
     struct FetchNewSimEntitiesJob : IJobForEachWithEntity_ECC<NewlyCreatedTag, BlueprintId>
     {
+        [ReadOnly] public DynamicBuffer<Settings_ViewBindingSystem_BlueprintDefinition> BlueprintDefinitions;
         public EntityCommandBuffer.Concurrent Ecb;
-        public BlobAssetReference<ViewBindingSystemSettings> SettingsRef;
+        //public BlobAssetReference<ViewBindingSystemSettings> SettingsRef;
 
         public void Execute(Entity simEntity, int index, [Unity.Collections.ReadOnly] ref NewlyCreatedTag c0, [Unity.Collections.ReadOnly] ref BlueprintId blueprintId)
         {
-            ref var settings = ref SettingsRef.Value;
+            //ref var settings = ref SettingsRef.Value;
 
-            for (int i = 0; i < settings.BlueprintIds.Length; i++)
+            for (int i = 0; i < BlueprintDefinitions.Length; i++)
             {
-                if (settings.BlueprintIds[i] == blueprintId.Value)
+                if (BlueprintDefinitions[i].BlueprintId == blueprintId.Value)
                 {
-                    Entity presentationEntity = Ecb.Instantiate(index, settings.BlueprintPresentationEntities[i]);
+                    Entity presentationEntity = Ecb.Instantiate(index, BlueprintDefinitions[i].PresentationEntity);
                     Ecb.AddComponent(index, presentationEntity, new BindedSimEntity() { SimWorldEntity = simEntity });
                     break;
                 }

@@ -1,20 +1,23 @@
 ﻿using CCC.Operations;
 using Sim.Operations;
 using System.Collections;
+using Unity.Entities;
 
 public class SaveSimulationToDiskOperation : CoroutineOperation
 {
     string _filePath;
+    private World _simulationWorld;
 
-    public SaveSimulationToDiskOperation(string filePath)
+    public SaveSimulationToDiskOperation(string filePath, World simulationWorld)
     {
         _filePath = filePath;
+        _simulationWorld = simulationWorld;
     }
 
     protected override IEnumerator ExecuteRoutine()
     {
         // Serialize sim
-        SimSerializationOperationWithCache serializeOp = SimulationView.SerializeSimulation();
+        SimSerializationOperationWithCache serializeOp = SimulationView.SerializeSimulation(_simulationWorld);
         yield return ExecuteSubOperationAndWaitForSuccess(serializeOp);
         string serializedData = serializeOp.SerializationData;
 

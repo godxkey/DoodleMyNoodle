@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -154,4 +155,22 @@ public class FredTestScript : MonoBehaviour
     //{
     //    OnlineService.SetTargetRole(OnlineRole.Server);
     //}
+}
+
+
+public class TestSystem : ComponentSystem
+{
+    protected override void OnUpdate()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            using (var allEntities = EntityManager.GetAllEntities(Unity.Collections.Allocator.Temp))
+            {
+                foreach (var entity in allEntities)
+                {
+                    EntityManager.DestroyEntity(entity);
+                }
+            }
+        }
+    }
 }

@@ -52,32 +52,41 @@ namespace Unity.Entities.Editor
                 this.adapter = adapter;
                 Reset();
             }
-            
+
             private void UpdateIndexInChunk()
             {
-                while (adapter.chunkArray[currentChunk].Count <= currentIndexInChunk)
-                    currentIndexInChunk -= adapter.chunkArray[currentChunk++].Count;
+                int chunkCount = -1;
+                try
+                {
+                    chunkCount = adapter.chunkArray[currentChunk].Count;
+                    while (adapter.chunkArray[currentChunk].Count <= currentIndexInChunk)
+                        currentIndexInChunk -= adapter.chunkArray[currentChunk++].Count;
+                }
+                catch (Exception e)
+                {
+                    Debug.Log("wow!");
+                }
             }
 
             internal void MoveToIndex(int newLinearIndex)
             {
-                if (newLinearIndex >= currentLinearIndex)
-                {
-                    currentIndexInChunk += newLinearIndex - currentLinearIndex;
-                    currentLinearIndex = newLinearIndex;
-                    UpdateIndexInChunk();
-                }
-                else
+                //if (newLinearIndex >= currentLinearIndex)
+                //{
+                //    currentIndexInChunk += newLinearIndex - currentLinearIndex;
+                //    currentLinearIndex = newLinearIndex;
+                //    UpdateIndexInChunk();
+                //}
+                //else
                 {
                     Reset(newLinearIndex);
                 }
             }
-            
+
             public bool MoveNext()
             {
                 ++currentIndexInChunk;
                 ++currentLinearIndex;
-                
+
                 if (currentLinearIndex >= adapter.Count)
                     return false;
 
@@ -110,7 +119,7 @@ namespace Unity.Entities.Editor
                 {
                     var entityArray = adapter.chunkArray[currentChunk].GetNativeArray(adapter.entityManager.GetArchetypeChunkEntityType());
                     var entity = entityArray[currentIndexInChunk];
-            
+
                     adapter.currentItem.id = entity.Index;
                     var name = adapter.entityManager.GetName(entity);
                     if (string.IsNullOrEmpty(name))
@@ -122,7 +131,7 @@ namespace Unity.Entities.Editor
 
             object IEnumerator.Current => Current;
 
-            public void Dispose() {}
+            public void Dispose() { }
         }
 
         public TreeViewItem this[int linearIndex]
@@ -151,9 +160,9 @@ namespace Unity.Entities.Editor
                     }
                 }
             }
-            
+
             foundEntity = Entity.Null;
-            
+
             return false;
         }
 
@@ -161,7 +170,7 @@ namespace Unity.Entities.Editor
         {
             throw new NotImplementedException();
         }
-        
+
         public IEnumerator<TreeViewItem> GetEnumerator()
         {
             return new Enumerator(this);

@@ -3,17 +3,20 @@ using Sim.Operations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 
 public class SimulationSyncFromTransferServerOperation : CoroutineOperation
 {
     INetworkInterfaceConnection _client;
     SessionServerInterface _sessionInterface;
+    private World _simulationWorld;
 
-    public SimulationSyncFromTransferServerOperation(SessionServerInterface sessionInterface, INetworkInterfaceConnection clientConnection)
+    public SimulationSyncFromTransferServerOperation(SessionServerInterface sessionInterface, INetworkInterfaceConnection clientConnection, World simulationWorld)
     {
         _client = clientConnection;
         _sessionInterface = sessionInterface;
+        _simulationWorld = simulationWorld;
     }
 
     protected override IEnumerator ExecuteRoutine()
@@ -21,7 +24,7 @@ public class SimulationSyncFromTransferServerOperation : CoroutineOperation
         uint tickId = SimulationView.TickId;
         
         // Serialize sim
-        SimSerializationOperationWithCache serializeOp = SimulationView.SerializeSimulation();
+        SimSerializationOperationWithCache serializeOp = SimulationView.SerializeSimulation(_simulationWorld);
         yield return ExecuteSubOperationAndWaitForSuccess(serializeOp);
         
         string serializedData = serializeOp.SerializationData;

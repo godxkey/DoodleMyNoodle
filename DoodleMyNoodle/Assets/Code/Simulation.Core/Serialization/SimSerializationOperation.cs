@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Unity.Entities;
 using Unity.Entities.Serialization;
 
 namespace Sim.Operations
@@ -18,22 +19,25 @@ namespace Sim.Operations
         public string SerializationData;
         public bool PartialSuccess;
 
-        SimObjectJsonConverter _simObjectJsonConverter;
-        JsonSerializerSettings _jsonSerializerSettings;
+        private SimObjectJsonConverter _simObjectJsonConverter;
+        private JsonSerializerSettings _jsonSerializerSettings;
+        private World _simulationWorld;
 
         internal SimSerializationOperationWithCache(
             SimObjectJsonConverter simObjectJsonConverter,
-            JsonSerializerSettings jsonSerializerSettings)
+            JsonSerializerSettings jsonSerializerSettings,
+             World simulationWorld)
         {
             _simObjectJsonConverter = simObjectJsonConverter;
             _jsonSerializerSettings = jsonSerializerSettings;
+            _simulationWorld = simulationWorld;
         }
 
         protected override IEnumerator ExecuteRoutine()
         {
             if (SimulationBase.TickId != s_CachedSerializationTickId)
             {
-                s_CachedSerializationOp = new SimSerializationOperation(_simObjectJsonConverter, _jsonSerializerSettings);
+                s_CachedSerializationOp = new SimSerializationOperation(_simObjectJsonConverter, _jsonSerializerSettings, _simulationWorld);
                 s_CachedSerializationOp.Execute();
                 s_CachedSerializationTickId = SimulationBase.TickId;
             }
@@ -64,11 +68,13 @@ namespace Sim.Operations
 
         SimObjectJsonConverter _simObjectJsonConverter;
         JsonSerializerSettings _jsonSerializerSettings;
+        World _simulationWorld;
 
-        internal SimSerializationOperation(SimObjectJsonConverter simObjectJsonConverter, JsonSerializerSettings jsonSerializerSettings)
+        internal SimSerializationOperation(SimObjectJsonConverter simObjectJsonConverter, JsonSerializerSettings jsonSerializerSettings, World simulationWorld)
         {
             _simObjectJsonConverter = simObjectJsonConverter;
             _jsonSerializerSettings = jsonSerializerSettings;
+            _simulationWorld = simulationWorld;
         }
 
         byte[] GetByteArrayFromBinaryWriter(MemoryBinaryWriter binaryWriter)
@@ -104,7 +110,7 @@ namespace Sim.Operations
 
                 using (var binaryWriter = new MemoryBinaryWriter())
                 {
-                    SerializeUtility.SerializeWorld(SimulationWorld.Instance.EntityManager, binaryWriter, out object[] referencedObjects);
+                    SerializeUtility.SerializeWorld(_simulationWorld.EntityManager, binaryWriter, out object[] referencedObjects);
 
                     foreach (var obj in referencedObjects)
                     {

@@ -4,11 +4,17 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-[assembly: RegisterGenericComponentType(typeof(BlobAssetReferenceComponent<ViewBindingSystemSettings>))]
+//[assembly: RegisterGenericComponentType(typeof(BlobAssetReferenceComponent<ViewBindingSystemSettings>))]
 
-[Serializable]
-public struct ViewBindingSystemSettings
+//[Serializable]
+//public struct ViewBindingSystemSettings
+//{
+//    public BlobArray<Entity> BlueprintPresentationEntities;
+//    public BlobArray<int> BlueprintIds;
+//}
+
+public struct Settings_ViewBindingSystem_BlueprintDefinition : IBufferElementData
 {
-    public BlobArray<Entity> BlueprintPresentationEntities;
-    public BlobArray<int> BlueprintIds;
+    public Entity PresentationEntity;
+    public int BlueprintId;
 }

@@ -81,3 +81,7 @@ MonoBehaviour:
     Path: Assets/Scenes/GameLevels/Scene Assets/Lvl_GridBattleECS.unity
     BuildIndex: 16
     AssetGuid: 815b8536c98c51447a9e715207ed3330
+  - Name: LoadedOnceOnStart
+    Path: Assets/Scenes/Misc/Scene Assets/LoadedOnceOnStart.unity
+    BuildIndex: 17
+    AssetGuid: c10039067683ddc48a01134931665ed8
