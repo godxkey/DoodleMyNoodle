@@ -62,7 +62,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Bow
   Description: Fire an arrow in the given direction
-  Icon: {fileID: 21300000, guid: c2aab4b72f4926e4a9c9f462323facc4, type: 3}
+  Icon: {fileID: 21300000, guid: 514c76da9d3bfcc4dadc46d14da8cc15, type: 3}
 --- !u!114 &7593032904182971349
 MonoBehaviour:
   m_ObjectHideFlags: 0
