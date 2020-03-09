@@ -27,7 +27,7 @@ public class ThrowEntityInDirectionItemComponent : SimComponent, IItemOnEquip, I
         FixVector2 Direction = Destination - (FixVector2)Informations[0];
 
         var projectileEntity = Simulation.Instantiate(_projectilePrefab);
-        projectileEntity.SimTransform.WorldPosition = Destination;
+        projectileEntity.SimTransform.WorldPosition = (FixVector3)Destination + new FixVector3(0, 0, (Fix64)(-0.5f));
 
         if (projectileEntity.TryGetComponent(out SimVelocityComponent velocityComponent))
         {
