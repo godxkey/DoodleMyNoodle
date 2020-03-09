@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Spin Attack
-  Description: Do a regular attack on all tiles around you
+  Description: (1 Action) Do a regular attack on all tiles around you
   Icon: {fileID: 21300000, guid: 234c1be7546bf3d47822fd90c5906b82, type: 3}
 --- !u!114 &2210692346401697486
 MonoBehaviour:

@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Bow
-  Description: Fire an arrow in the given direction
+  Description: (2 Action) Fire an arrow in the given direction
   Icon: {fileID: 21300000, guid: 514c76da9d3bfcc4dadc46d14da8cc15, type: 3}
 --- !u!114 &7593032904182971349
 MonoBehaviour:
@@ -79,4 +79,5 @@ MonoBehaviour:
     type: 3}
   _throwSpeed:
     RawValue: 21474836480
-  _apCost: 2
+  ProjectileDamage: 10
+  ActionToConsume: 2
