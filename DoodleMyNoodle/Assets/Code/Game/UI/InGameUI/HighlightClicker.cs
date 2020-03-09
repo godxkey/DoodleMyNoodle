@@ -87,22 +87,25 @@ public class HighlightClicker : GameMonoBehaviour
                     }
                 }
 
-                if (_playerCharacterHealComponent.WantsToHeal && IsMouseInsideHighlight(GetMousePositionOnTile()))
+                if(_playerCharacterHealComponent != null)
                 {
-                    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    if (_playerCharacterHealComponent.WantsToHeal && IsMouseInsideHighlight(GetMousePositionOnTile()))
                     {
-                        if (Input.GetMouseButtonDown(0))
+                        if (SimTurnManager.Instance.IsMyTurn(Team.Player))
                         {
-                            SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+                            if (Input.GetMouseButtonDown(0))
+                            {
+                                SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
 
-                            _playerCharacterHealComponent.OnHealDestinationChoosen(currentTileID);
+                                _playerCharacterHealComponent.OnHealDestinationChoosen(currentTileID);
 
-                            return;
+                                return;
+                            }
                         }
-                    }
-                    else
-                    {
-                        _playerCharacterHealComponent.OnCancelHealRequest();
+                        else
+                        {
+                            _playerCharacterHealComponent.OnCancelHealRequest();
+                        }
                     }
                 }
             }

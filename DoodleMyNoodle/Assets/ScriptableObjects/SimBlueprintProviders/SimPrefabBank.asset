@@ -39,10 +39,28 @@ MonoBehaviour:
     EntityName: Heart
   - BlueprintId:
       Type: 1
+      Value: 1383128145e9759468c9140b75020974
+    Prefab: {fileID: 1450320290177073653, guid: 1383128145e9759468c9140b75020974,
+      type: 3}
+    EntityName: AoeAttack
+  - BlueprintId:
+      Type: 1
       Value: f8c5891f2ff09954cbde9b23f76e0f4d
     Prefab: {fileID: 3366830681365677839, guid: f8c5891f2ff09954cbde9b23f76e0f4d,
       type: 3}
     EntityName: Boots
+  - BlueprintId:
+      Type: 1
+      Value: 9efe677dd1b745d4e81f1fbb21ab2ff8
+    Prefab: {fileID: 4906371071640317891, guid: 9efe677dd1b745d4e81f1fbb21ab2ff8,
+      type: 3}
+    EntityName: HealPotion
+  - BlueprintId:
+      Type: 1
+      Value: 8c326d73a7bae3343815f40a1e7c11ab
+    Prefab: {fileID: 1041273554248415865, guid: 8c326d73a7bae3343815f40a1e7c11ab,
+      type: 3}
+    EntityName: Shield
   - BlueprintId:
       Type: 1
       Value: 2a448178587d1e5409b2c5759e83498b
@@ -57,16 +75,16 @@ MonoBehaviour:
     EntityName: Trash
   - BlueprintId:
       Type: 1
+      Value: 970919a2c9d520a4da61ed578fb5644c
+    Prefab: {fileID: 7593032904182971351, guid: 970919a2c9d520a4da61ed578fb5644c,
+      type: 3}
+    EntityName: Bow
+  - BlueprintId:
+      Type: 1
       Value: dffb362788735c0498f4a3f0af4e57b1
     Prefab: {fileID: 5534947295831120837, guid: dffb362788735c0498f4a3f0af4e57b1,
       type: 3}
     EntityName: Backpack
-  - BlueprintId:
-      Type: 1
-      Value: 073d20c9c7c541d449652b85017d033c
-    Prefab: {fileID: 5520528403305719284, guid: 073d20c9c7c541d449652b85017d033c,
-      type: 3}
-    EntityName: GridBattle_SoldierAI
   - BlueprintId:
       Type: 1
       Value: 58c51afadcca8a14ebd8323ac7a49dcf
@@ -79,3 +97,15 @@ MonoBehaviour:
     Prefab: {fileID: 1368924192284294072, guid: 41e300480790e7b4b8ead30d0b5ff7a7,
       type: 3}
     EntityName: Bullet
+  - BlueprintId:
+      Type: 1
+      Value: 073d20c9c7c541d449652b85017d033c
+    Prefab: {fileID: 5520528403305719284, guid: 073d20c9c7c541d449652b85017d033c,
+      type: 3}
+    EntityName: GridBattle_SoldierAI
+  - BlueprintId:
+      Type: 1
+      Value: 29f219fb3d5830b4cbf713ea2568c6d3
+    Prefab: {fileID: 7812940432331005049, guid: 29f219fb3d5830b4cbf713ea2568c6d3,
+      type: 3}
+    EntityName: GridBattle_Arrow
