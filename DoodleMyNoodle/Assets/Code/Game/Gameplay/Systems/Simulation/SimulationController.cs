@@ -31,7 +31,6 @@ public abstract class SimulationController : GameSystem<SimulationController>
 
         _simulationWorldSystem = masterWorld.GetOrCreateSystem<SimulationWorldSystem>();
         _simulationWorldUpdaterSystem = masterWorld.GetOrCreateSystem<SimulationWorldUpdaterSystem>();
-
     }
 
     public override void OnGameReady()
@@ -46,7 +45,7 @@ public abstract class SimulationController : GameSystem<SimulationController>
         };
 
         SimulationView.Initialize(settings);
-        _simulationWorldSystem.ClearWorld();
+        _simulationWorldSystem.ClearSimWorld();
 
 
         base.OnGameReady();
@@ -69,6 +68,8 @@ public abstract class SimulationController : GameSystem<SimulationController>
         if (_ongoingCmdOperation != null && _ongoingCmdOperation.IsRunning)
             _ongoingCmdOperation.TerminateWithFailure();
 #endif
+        if (_simulationWorldSystem.World != null && _simulationWorldSystem.World.IsCreated)
+            _simulationWorldSystem.ClearSimWorld();
 
         base.OnDestroy();
 

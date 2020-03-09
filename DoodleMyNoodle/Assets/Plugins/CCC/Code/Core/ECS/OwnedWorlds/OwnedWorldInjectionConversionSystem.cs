@@ -1,39 +1,34 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // These systems take care of notifying any 'owned worlds' that converted entities are being injected into it
 
-[UpdateInGroup(typeof(GameObjectBeforeConversionGroup))]
+[UpdateInGroup(typeof(GameObjectDeclareReferencedObjectsGroup))]
 public class OwnedWorldInjectionPreConversionSystem : GameObjectConversionSystem
 {
     protected override void OnUpdate()
     {
         if (DstEntityManager.World is IOwnedWorld ownedWorld)
         {
-            //Entities.ForEach((Entity entity) =>
-            //{
-            //    if (EntityManager.HasComponent<InjectedInOwnedWorldFlag>(entity))
-            //    {
-            //        var comp = EntityManager.GetComponentObject<InjectedInOwnedWorldFlag>(entity);
-            //        DebugService.Log($"{entity} coming from {comp.gameObject.scene.name}");
-            //    }
-            //    NativeArray<ComponentType> components = EntityManager.GetComponentTypes(entity, Unity.Collections.Allocator.Temp);
+            List<Scene> scenes = new List<Scene>();
 
-            //    StringBuilder stringBuilder = new StringBuilder();
+            Entities.ForEach((Entity entity) =>
+            {
+                if (EntityManager.HasComponent<InjectedInOwnedWorldFlag>(entity))
+                {
+                    var comp = EntityManager.GetComponentObject<InjectedInOwnedWorldFlag>(entity);
+                    scenes.Add(comp.gameObject.scene);
+                }
+            });
 
-            //    foreach (ComponentType item in components)
-            //    {
-            //        stringBuilder.Append($" {item.GetManagedType().Name} ");
-            //    }
-            //    DebugService.Log($"Entity {entity} has components:" + stringBuilder.ToString());
-
-            //    components.Dispose();
-            //});
             if (ownedWorld.Owner != null)
             {
-                ownedWorld.Owner.OnBeginEntitiesInjectionFromGameObjectConversion();
+                ownedWorld.Owner.OnBeginEntitiesInjectionFromGameObjectConversion(scenes);
+                ownedWorld.Owner.OnEndEntitiesInjectionFromGameObjectConversion();
             }
             else
             {
@@ -50,20 +45,6 @@ public class OwnedWorldInjectionPostConversionSystem : GameObjectConversionSyste
     {
         if (DstEntityManager.World is IOwnedWorld ownedWorld)
         {
-            //Entities.ForEach((Entity entity) =>
-            //{
-            //    NativeArray<ComponentType> components = EntityManager.GetComponentTypes(entity, Unity.Collections.Allocator.Temp);
-
-            //    StringBuilder stringBuilder = new StringBuilder();
-
-            //    foreach (ComponentType item in components)
-            //    {
-            //        stringBuilder.Append($" {item.GetManagedType().Name} ");
-            //    }
-            //    DebugService.Log($"Entity {entity} has components:" + stringBuilder.ToString());
-
-            //    components.Dispose();
-            //});
             if (ownedWorld.Owner != null)
             {
                 ownedWorld.Owner.OnEndEntitiesInjectionFromGameObjectConversion();

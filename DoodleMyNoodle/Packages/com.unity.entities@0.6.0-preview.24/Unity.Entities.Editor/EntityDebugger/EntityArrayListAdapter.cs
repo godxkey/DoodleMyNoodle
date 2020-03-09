@@ -55,17 +55,8 @@ namespace Unity.Entities.Editor
 
             private void UpdateIndexInChunk()
             {
-                int chunkCount = -1;
-                try
-                {
-                    chunkCount = adapter.chunkArray[currentChunk].Count;
-                    while (adapter.chunkArray[currentChunk].Count <= currentIndexInChunk)
-                        currentIndexInChunk -= adapter.chunkArray[currentChunk++].Count;
-                }
-                catch (Exception e)
-                {
-                    Debug.Log("wow!");
-                }
+                while (adapter.chunkArray[currentChunk].Count <= currentIndexInChunk)
+                    currentIndexInChunk -= adapter.chunkArray[currentChunk++].Count;
             }
 
             internal void MoveToIndex(int newLinearIndex)

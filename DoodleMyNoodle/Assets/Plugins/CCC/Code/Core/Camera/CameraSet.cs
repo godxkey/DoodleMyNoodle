@@ -2,9 +2,22 @@
 
 public class CameraSet
 {
-    public CameraSet(Camera camera, AudioListener audioListener) { Camera = camera; AudioListener = audioListener; }
+    public enum DeactivateMode
+    {
+        DisableComponents,
+        DisableGameObject
+    }
+
     public Camera Camera { get; set; }
     public AudioListener AudioListener { get; set; }
+    public DeactivateMode Mode { get; private set; }
+
+    public CameraSet(Camera camera, AudioListener audioListener, DeactivateMode deactivateMode)
+    {
+        Camera = camera; 
+        AudioListener = audioListener;
+        Mode = deactivateMode;
+    }
 
     public void Activate()
     {
@@ -18,9 +31,19 @@ public class CameraSet
 
     public void SetActive(bool state)
     {
-        if(Camera != null)
-            Camera.enabled = state;
-        if(AudioListener != null)
-            AudioListener.enabled = state;
+        switch (Mode)
+        {
+            case DeactivateMode.DisableComponents:
+                if (Camera != null)
+                    Camera.enabled = state;
+                if (AudioListener != null)
+                    AudioListener.enabled = state;
+                break;
+
+            case DeactivateMode.DisableGameObject:
+                Camera.gameObject.SetActive(state);
+                AudioListener.gameObject.SetActive(state); // might be different gameobjects
+                break;
+        }
     }
 }

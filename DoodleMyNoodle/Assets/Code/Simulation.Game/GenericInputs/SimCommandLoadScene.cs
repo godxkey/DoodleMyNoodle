@@ -14,6 +14,6 @@ public class SimCommandLoadScene : SimCommand
 
     public override void Execute()
     {
-        Simulation.LoadScene(SceneName);
+        //Simulation.LoadScene(SceneName);
     }
 }

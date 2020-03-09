@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using CCC.InspectorDisplay;
+using Unity.Entities;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -36,6 +37,11 @@ public class QuickStartEditorComponent : MonoBehaviour
             CoreServiceManager.AddInitializationCallback(OnServicesReady);
         }
     }
+
+    //private void Start()
+    //{
+    //    DisableSimulationEntitiesWarning();
+    //}
 
     void OnServicesReady()
     {
@@ -78,5 +84,14 @@ public class QuickStartEditorComponent : MonoBehaviour
             }
         }
     }
+
+    //private void DisableSimulationEntitiesWarning()
+    //{
+    //    SimulationWorldSystem simWorldSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<SimulationWorldSystem>();
+    //    if(simWorldSystem != null)
+    //    {
+    //        simWorldSystem.DisableEntityInjectionWarningUntilNextClear(maxExpectedDuration: 10);
+    //    }
+    //}
 #endif
 }

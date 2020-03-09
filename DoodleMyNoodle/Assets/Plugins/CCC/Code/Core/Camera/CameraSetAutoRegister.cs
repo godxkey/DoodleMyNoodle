@@ -6,10 +6,11 @@ using UnityEngine;
 
 public class CameraSetAutoRegister : MonoBehaviour
 {
-    [SerializeField] RegisterOptions registerSetting;
-    [SerializeField] UnregisterOptions unregisterSetting;
-    [AutoFetch] [SerializeField] new Camera camera;
-    [AutoFetch] [SerializeField] AudioListener audioListener;
+    [SerializeField] RegisterOptions registerSetting = RegisterOptions.OnAwake;
+    [SerializeField] UnregisterOptions unregisterSetting = UnregisterOptions.OnDestroy;
+    [AutoFetch, SerializeField] new Camera camera;
+    [AutoFetch, SerializeField] AudioListener audioListener;
+    [SerializeField] CameraSet.DeactivateMode deactivateMode = CameraSet.DeactivateMode.DisableGameObject;
     [SerializeField] int priority;
 
     bool registered;
@@ -32,7 +33,7 @@ public class CameraSetAutoRegister : MonoBehaviour
         if (registered == false)
         {
             registered = true;
-            CameraService.Instance.AddCamera(camera, audioListener, priority);
+            CameraService.Instance.AddCamera(camera, audioListener, deactivateMode, priority);
         }
     }
 

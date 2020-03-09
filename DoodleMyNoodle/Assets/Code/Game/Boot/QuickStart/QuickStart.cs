@@ -45,6 +45,8 @@ public static class QuickStart
 
     static IEnumerator StartRoutine(QuickStartSettings settings)
     {
+        SimulationWorldSystem.ClearAllSimulationWorlds();
+
         SceneService.Load(assets.emptyScene.name, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D);
 
         yield return null; // wait for scene load

@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 internal class SceneLoadedOnceService : MonoCoreService<SceneLoadedOnceService>
 {
-    const string SCENE_NAME = "LoadedOnceOnStart";
+    const string SCENE_NAME = "Boot_LoadedOnceOnStart";
 
     public override void Initialize(Action<ICoreService> onComplete)
     {
