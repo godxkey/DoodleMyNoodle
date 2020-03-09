@@ -13,9 +13,13 @@ public class SimCharacterAttackComponent : SimEventComponent
     }
 
     public bool WantsToAttack = false;
-    public bool ChoiceMade = false;
+    public bool AttackChoiceMade = false;
+
+    public bool WantsToShootProjectile = false;
+    public bool ShootProjectileChoiceMade = false;
 
     private Action<SimTileId> _currentAttackDestinationFoundCallback = null;
+    private Action<SimTileId> _currentProjectileDestinationFoundCallback = null;
 
 
     public int AttackDamage { get => _data.AttackDamage; set => _data.AttackDamage = value; }
@@ -44,7 +48,7 @@ public class SimCharacterAttackComponent : SimEventComponent
     public void OnRequestToAttack(Action<SimTileId> OnDestinationFound)
     {
         _currentAttackDestinationFoundCallback = OnDestinationFound;
-        ChoiceMade = false;
+        AttackChoiceMade = false;
         WantsToAttack = true;
     }
 
@@ -52,7 +56,7 @@ public class SimCharacterAttackComponent : SimEventComponent
     {
         _currentAttackDestinationFoundCallback = null;
         WantsToAttack = false;
-        ChoiceMade = true;
+        AttackChoiceMade = true;
     }
 
     public void OnAttackDestinationChoosen(SimTileId simTileId)
@@ -61,6 +65,29 @@ public class SimCharacterAttackComponent : SimEventComponent
         {
             _currentAttackDestinationFoundCallback?.Invoke(simTileId);
             OnCancelAttackRequest();
+        }
+    }
+
+    public void OnRequestToShoot(Action<SimTileId> OnDestinationFound)
+    {
+        _currentProjectileDestinationFoundCallback = OnDestinationFound;
+        ShootProjectileChoiceMade = false;
+        WantsToShootProjectile = true;
+    }
+
+    public void OnCancelShootRequest()
+    {
+        _currentProjectileDestinationFoundCallback = null;
+        WantsToShootProjectile = false;
+        ShootProjectileChoiceMade = true;
+    }
+
+    public void OnShootDestinationChoosen(SimTileId simTileId)
+    {
+        if (WantsToShootProjectile)
+        {
+            _currentProjectileDestinationFoundCallback?.Invoke(simTileId);
+            OnCancelShootRequest();
         }
     }
 

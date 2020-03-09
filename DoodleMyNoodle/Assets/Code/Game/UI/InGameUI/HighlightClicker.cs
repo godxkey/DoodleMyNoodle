@@ -7,6 +7,7 @@ public class HighlightClicker : GameMonoBehaviour
     private SimPawnComponent _playerPawn;
     private SimGridWalkerComponent _playerGridWalkerComponent;
     private SimCharacterAttackComponent _playerCharacterAttackComponent;
+    private SimCharacterHealComponent _playerCharacterHealComponent;
 
     public override void OnGameUpdate()
     {
@@ -20,6 +21,9 @@ public class HighlightClicker : GameMonoBehaviour
 
             if (_playerCharacterAttackComponent == null)
                 _playerCharacterAttackComponent = _playerPawn.GetComponent<SimCharacterAttackComponent>();
+
+            if (_playerCharacterHealComponent == null)
+                _playerCharacterHealComponent = _playerPawn.GetComponent<SimCharacterHealComponent>();
 
             if (_playerGridWalkerComponent != null)
             {
@@ -61,6 +65,47 @@ public class HighlightClicker : GameMonoBehaviour
                     else
                     {
                         _playerCharacterAttackComponent.OnCancelAttackRequest();
+                    }
+                }
+
+                if (_playerCharacterAttackComponent.WantsToShootProjectile && IsMouseInsideHighlight(GetMousePositionOnTile()))
+                {
+                    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    {
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+
+                            _playerCharacterAttackComponent.OnShootDestinationChoosen(currentTileID);
+
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        _playerCharacterAttackComponent.OnCancelShootRequest();
+                    }
+                }
+
+                if(_playerCharacterHealComponent != null)
+                {
+                    if (_playerCharacterHealComponent.WantsToHeal && IsMouseInsideHighlight(GetMousePositionOnTile()))
+                    {
+                        if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                        {
+                            if (Input.GetMouseButtonDown(0))
+                            {
+                                SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+
+                                _playerCharacterHealComponent.OnHealDestinationChoosen(currentTileID);
+
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            _playerCharacterHealComponent.OnCancelHealRequest();
+                        }
                     }
                 }
             }

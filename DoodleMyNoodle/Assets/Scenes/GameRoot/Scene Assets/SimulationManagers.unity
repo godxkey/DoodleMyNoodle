@@ -506,7 +506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    DurationOfATurn: 10
+    DurationOfATurn: 15
     Timer:
       RawValue: 0
     CurrentTeam: 2
