@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Health Potion
-  Description: Heal Yourself or an Ally 1 tile around you
+  Description: (2 Action) Heal Yourself or an Ally 1 tile around you
   Icon: {fileID: 21300000, guid: 2e772c182ce66684083eb92cdc4cca45, type: 3}
 --- !u!114 &7744066701394540578
 MonoBehaviour:
@@ -76,4 +76,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealAmount: 10
-  ActionToConsume: 1
+  ActionToConsume: 2
