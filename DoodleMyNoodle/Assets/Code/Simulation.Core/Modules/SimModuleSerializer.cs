@@ -2,7 +2,7 @@
 using Sim.Operations;
 using System;
 using System.Collections.Generic;
-using Unity.Entities;
+using System.Reflection;
 
 internal class SimModuleSerializer : SimModuleBase
 {
@@ -50,7 +50,13 @@ internal class SimModuleSerializer : SimModuleBase
                 new IDTypeJsonConverter(),
                 new Fix64JsonConverter(),
             };
-            _cachedJsonSettings.ContractResolver = new CustomJsonContractResolver();
+
+            var contractResolver = new CustomJsonContractResolver();
+#pragma warning disable CS0618 // Type or member is obsolete
+            contractResolver.DefaultMembersSearchFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            _cachedJsonSettings.ContractResolver = contractResolver;
             _cachedJsonSettings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple;
         }
         return _cachedJsonSettings;
@@ -62,7 +68,7 @@ internal class SimModuleSerializer : SimModuleBase
         return _cachedSimObjectJsonConverter;
     }
 
-    public SimSerializationOperationWithCache SerializeSimulation(World simulationWorld)
+    public SimSerializationOperationWithCache SerializeSimulation()
     {
         if (!SimModules._Serializer.CanSimWorldBeSaved)
         {
@@ -70,7 +76,7 @@ internal class SimModuleSerializer : SimModuleBase
             return null;
         }
 
-        _serializationOperation = new SimSerializationOperationWithCache(GetSimObjectJsonConverter(), GetJsonSettings(), simulationWorld);
+        _serializationOperation = new SimSerializationOperationWithCache(GetSimObjectJsonConverter(), GetJsonSettings());
 
         _serializationOperation.OnFailCallback = (op) =>
         {
@@ -97,7 +103,7 @@ internal class SimModuleSerializer : SimModuleBase
         return _serializationOperation;
     }
 
-    public SimDeserializationOperation DeserializeSimulation(string data, World simulationWorld)
+    public SimDeserializationOperation DeserializeSimulation(string data)
     {
         if (!CanSimWorldBeLoaded)
         {
@@ -105,7 +111,7 @@ internal class SimModuleSerializer : SimModuleBase
             return null;
         }
 
-        _deserializationOperation = new SimDeserializationOperation(data, GetSimObjectJsonConverter(), GetJsonSettings(), simulationWorld);
+        _deserializationOperation = new SimDeserializationOperation(data, GetSimObjectJsonConverter(), GetJsonSettings());
 
         _deserializationOperation.OnFailCallback = (op) =>
         {

@@ -14,21 +14,21 @@ public class SimEndGameManager : SimSingleton<SimEndGameManager>, ISimTickable
         if (Simulation.Time < 5)
             return;
 
-        List<Team> teamWithPawns = new List<Team>();
+        List<Team> teamsWithPawns = new List<Team>();
         foreach (SimPawnComponent pawn in Simulation.EntitiesWithComponent<SimPawnComponent>())
         {
             SimTeamMemberComponent teamMemberComponent = pawn.GetComponent<SimTeamMemberComponent>();
             if (teamMemberComponent)
             {
-                teamWithPawns.AddUnique(teamMemberComponent.Team);
+                teamsWithPawns.AddUnique(teamMemberComponent.Team);
             }
         }
 
-        if (!teamWithPawns.Contains(Team.AI))
+        if (!teamsWithPawns.Contains(Team.AI))
         {
             GameOver(Team.Player);
         }
-        else if(!teamWithPawns.Contains(Team.Player))
+        else if(!teamsWithPawns.Contains(Team.Player))
         {
             GameOver(Team.AI);
         }

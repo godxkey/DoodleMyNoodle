@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public Image Background;
     public Image ItemIcon;
@@ -23,7 +23,7 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         if (_mouseHovering) 
         {
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(0))
             {
                 if(_currentItem != null) 
                 {
@@ -35,20 +35,26 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
                     // Alex - HACK TO TEST FUNCTIONNALITY OF DROPPING
                     if (_currentItem.GetComponent<TrashItemComponent>())
                     {
-                        SimItem item = ClickerDisplay.Instance.GetItemCurrentlyHolding();
+                        //SimItem item = ClickerDisplay.Instance.GetItemCurrentlyHolding();
 
-                        if (item != null)
-                        {
-                            inventory.DropItem(item);
-                        }
+                        //if (item != null)
+                        //{
+                        //    inventory.DropItem(item);
+                        //}
 
-                        ClickerDisplay.Instance.DropHoldingItem();
+                        //ClickerDisplay.Instance.DropHoldingItem();
                     }
                     else
                     {
                         if (SimTurnManager.Instance.IsMyTurn(Team.Player))
                         {
-                            _currentItem.OnUse(PlayerActions);
+                            SimPlayerId simPlayerId = SimPawnHelpers.FindPawnController(playerPawn).GetComponent<SimPlayerComponent>().SimPlayerId;
+                            int itemIndex = inventory.GetIndexFromItem(_currentItem);
+
+                            _currentItem.TryGetUsageContext(playerPawn, simPlayerId, itemIndex, (SimPlayerInputUseItem UseItemInput) => 
+                            {
+                                SimulationController.Instance.SubmitInput(UseItemInput);
+                            });
                         }
                     }
                 }
@@ -101,5 +107,11 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         _currentItem = ClickerDisplay.Instance.InventorySlotClicked(_currentItem);
         UpdateDisplay();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+            SlotSelected();
     }
 }

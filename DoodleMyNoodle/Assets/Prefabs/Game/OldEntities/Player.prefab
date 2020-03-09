@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6013152437860551178}
   - component: {fileID: 6013152437860551189}
-  - component: {fileID: -1057177314962397621}
   - component: {fileID: 6013152437860551191}
   - component: {fileID: -1335866605551463971}
   - component: {fileID: 6013152437860551188}
   - component: {fileID: 1838010394250898592}
+  - component: {fileID: 3088727688505303346}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -51,21 +51,6 @@ MonoBehaviour:
   _blueprintId:
     Type: 1
     Value: 0d5d0005113063a4da4aba051a9e90a0
---- !u!114 &-1057177314962397621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6013152437860551185}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9eb056a9a1aaa6744a9ab1347e284a98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _evtComponentData:
-    EventsWeHaveRegisteredTo: []
-    LocalEvents: []
 --- !u!114 &6013152437860551191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,4 +104,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e1a9372fbae3574b9e336d32e2605a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Team: 0
+  _data:
+    Team: 0
+--- !u!114 &3088727688505303346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6013152437860551185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a11d18a2e6d841942b927a78ff701455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

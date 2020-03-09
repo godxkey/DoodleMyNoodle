@@ -1,4 +1,5 @@
 ﻿using CCC.InspectorDisplay;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,29 +13,82 @@ public class SimCharacterAttackComponent : SimEventComponent
     }
 
     public bool WantsToAttack = false;
-    public bool ChoiceMade = false;
+    public bool AttackChoiceMade = false;
+
+    public bool WantsToShootProjectile = false;
+    public bool ShootProjectileChoiceMade = false;
+
+    private Action<SimTileId> _currentAttackDestinationFoundCallback = null;
+    private Action<SimTileId> _currentProjectileDestinationFoundCallback = null;
+
 
     public int AttackDamage { get => _data.AttackDamage; set => _data.AttackDamage = value; }
 
     public bool TryToAttack(SimTileId simTileId)
     {
-        SimEntity simEntity = SimTileHelpers.GetPawnOnTile(simTileId);
-        if(simEntity != null)
+        SimEntity targetEntity = SimTileHelpers.GetPawnOnTile(simTileId);
+        if(targetEntity != null)
         {
-            SimHealthStatComponent Health = simEntity.GetComponent<SimHealthStatComponent>();
+            SimHealthStatComponent targetHealth = targetEntity.GetComponent<SimHealthStatComponent>();
             SimTeamMemberComponent myTeamComponent = GetComponent<SimTeamMemberComponent>();
-            SimTeamMemberComponent targetTeamComponent = simEntity.GetComponent<SimTeamMemberComponent>();
-            if (Health != null && myTeamComponent != null && targetTeamComponent != null)
+            SimTeamMemberComponent targetTeamComponent = targetEntity.GetComponent<SimTeamMemberComponent>();
+            if (targetHealth != null && myTeamComponent != null && targetTeamComponent != null)
             {
                 if(myTeamComponent.Team != targetTeamComponent.Team)
                 {
-                    Health.DecreaseValue(AttackDamage);
+                    targetHealth.DecreaseValue(AttackDamage);
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    public void OnRequestToAttack(Action<SimTileId> OnDestinationFound)
+    {
+        _currentAttackDestinationFoundCallback = OnDestinationFound;
+        AttackChoiceMade = false;
+        WantsToAttack = true;
+    }
+
+    public void OnCancelAttackRequest()
+    {
+        _currentAttackDestinationFoundCallback = null;
+        WantsToAttack = false;
+        AttackChoiceMade = true;
+    }
+
+    public void OnAttackDestinationChoosen(SimTileId simTileId)
+    {
+        if (WantsToAttack)
+        {
+            _currentAttackDestinationFoundCallback?.Invoke(simTileId);
+            OnCancelAttackRequest();
+        }
+    }
+
+    public void OnRequestToShoot(Action<SimTileId> OnDestinationFound)
+    {
+        _currentProjectileDestinationFoundCallback = OnDestinationFound;
+        ShootProjectileChoiceMade = false;
+        WantsToShootProjectile = true;
+    }
+
+    public void OnCancelShootRequest()
+    {
+        _currentProjectileDestinationFoundCallback = null;
+        WantsToShootProjectile = false;
+        ShootProjectileChoiceMade = true;
+    }
+
+    public void OnShootDestinationChoosen(SimTileId simTileId)
+    {
+        if (WantsToShootProjectile)
+        {
+            _currentProjectileDestinationFoundCallback?.Invoke(simTileId);
+            OnCancelShootRequest();
+        }
     }
 
     #region Serialized Data Methods

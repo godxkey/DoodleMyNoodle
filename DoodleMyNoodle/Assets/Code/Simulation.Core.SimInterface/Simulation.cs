@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Simulation : SimulationBase
 {
+    public static int Seed => SimModules._World.Seed;
+
     /// <summary>
     /// Duplicate the entity using Unity's traditional Instantiate replication model and inject it into the simulation
     /// <para/>

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// _value wrapper that easily identifies if a change in value has occured.
 /// </summary>
+[System.Serializable]
 public struct AutoResetDirtyValue<T>
 {
     // fbessette:

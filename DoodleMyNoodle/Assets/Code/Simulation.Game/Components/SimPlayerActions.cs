@@ -16,9 +16,9 @@ public class SimPlayerActions : SimClampedStatComponent, ISimTickable
 
     public bool WasMyTurn { get => _data.WasMyTurn; internal set => _data.WasMyTurn = value; }
 
-    public bool CanTakeAction()
+    public bool CanTakeAction(int Cost)
     {
-        return Value > 0 && SimTurnManager.Instance.IsMyTurn(Team.Player);
+        return ((Value - Cost) >= 0) && SimTurnManager.Instance.IsMyTurn(Team.Player);
     }
 
     void ISimTickable.OnSimTick()
