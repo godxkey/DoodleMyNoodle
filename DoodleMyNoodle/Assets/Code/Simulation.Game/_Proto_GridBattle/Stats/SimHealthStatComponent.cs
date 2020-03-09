@@ -9,35 +9,26 @@ public class SimHealthStatComponent : SimClampedStatComponent, ISimTickable
     {
         [CCC.InspectorDisplay.ReadOnlyAlways]
         public bool Invincible;
+        public bool LastTurnWasMine;
     }
 
     public bool Invincible { get => _data.Invincible; set => _data.Invincible = value; }
 
-    private bool _lastTurnWasMine = false;
-    private SimTeamMemberComponent _simTeamMemberComponent = null;
-
-    public override void OnSimStart()
-    {
-        base.OnSimStart();
-
-        _simTeamMemberComponent = GetComponent<SimTeamMemberComponent>();
-    }
-
     public void OnSimTick()
     {
-        if (SimTurnManager.Instance.IsMyTurn(_simTeamMemberComponent.Team)) 
+        if (SimTurnManager.Instance.IsMyTurn(GetComponent<SimTeamMemberComponent>().Team)) 
         {
-            if (!_lastTurnWasMine)
+            if (!_data.LastTurnWasMine)
             {
-                _lastTurnWasMine = true;
+                _data.LastTurnWasMine = true;
                 TurnChanged(true);
             }
         }
         else
         {
-            if (_lastTurnWasMine)
+            if (_data.LastTurnWasMine)
             {
-                _lastTurnWasMine = false;
+                _data.LastTurnWasMine = false;
                 TurnChanged(false);
             }
         }
