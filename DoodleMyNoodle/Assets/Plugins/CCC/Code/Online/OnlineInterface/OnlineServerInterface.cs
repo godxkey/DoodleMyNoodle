@@ -4,9 +4,9 @@ using System.Collections.Generic;
 public class OnlineServerInterface : OnlineInterface
 {
     public override bool IsServerType => true;
-    public SessionServerInterface sessionServerInterface => SessionInterface == null ? null : (SessionServerInterface)SessionInterface;
+    public SessionServerInterface SessionServerInterface => SessionInterface == null ? null : (SessionServerInterface)SessionInterface;
 
-    public bool isCreatingSession { get; private set; }
+    public bool IsCreatingSession { get; private set; }
 
     public OnlineServerInterface(NetworkInterface network)
         : base(network)
@@ -15,7 +15,7 @@ public class OnlineServerInterface : OnlineInterface
 
     public void CreateSession(string sessionName, Action<bool, string> onComplete = null)
     {
-        isCreatingSession = true;
+        IsCreatingSession = true;
 
         _onSessionCreatedCallback = onComplete;
         _network.CreateSession(sessionName, OnSessionCreationComplete);
@@ -23,7 +23,7 @@ public class OnlineServerInterface : OnlineInterface
 
     void OnSessionCreationComplete(bool success, string message)
     {
-        isCreatingSession = false;
+        IsCreatingSession = false;
 
         if (success)
         {

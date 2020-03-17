@@ -11,8 +11,10 @@ public class HighlightClicker : GameMonoBehaviour
 
     public override void OnGameUpdate()
     {
-        if (_playerPawn == null)
-            _playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
+        // PORT TO ECS
+
+        //if (_playerPawn == null)
+        //    _playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
 
         if (_playerPawn != null)
         {

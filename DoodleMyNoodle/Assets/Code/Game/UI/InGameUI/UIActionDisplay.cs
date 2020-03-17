@@ -10,19 +10,20 @@ public class UIActionDisplay : MonoBehaviour
 
     private void Update()
     {
-        SimPlayerActions simPlayerActions = SimPawnHelpers.GetComponentOnControllersPawn<SimPlayerActions>(PlayerIdHelpers.GetLocalSimPlayerComponent());
+        // PORT TO ECS
+        //SimPlayerActions simPlayerActions = SimPawnHelpers.GetComponentOnControllersPawn<SimPlayerActions>(PlayerIdHelpers.GetLocalSimPlayerComponent());
 
-        if(simPlayerActions != null)
-        {
-            while (ActionImages.Count < simPlayerActions.Value)
-            {
-                ActionImages.Add(Instantiate(ImagePrefab, ImageContainer));
-            }
+        //if(simPlayerActions != null)
+        //{
+        //    while (ActionImages.Count < simPlayerActions.Value)
+        //    {
+        //        ActionImages.Add(Instantiate(ImagePrefab, ImageContainer));
+        //    }
 
-            while (ActionImages.Count > simPlayerActions.Value)
-            {
-                Destroy(ActionImages.Pop());
-            }
-        }
+        //    while (ActionImages.Count > simPlayerActions.Value)
+        //    {
+        //        Destroy(ActionImages.Pop());
+        //    }
+        //}
     }
 }

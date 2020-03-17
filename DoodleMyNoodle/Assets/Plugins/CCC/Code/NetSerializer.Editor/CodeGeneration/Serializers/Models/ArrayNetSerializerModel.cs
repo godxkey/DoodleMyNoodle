@@ -62,7 +62,7 @@ public static partial class NetSerializerCodeGenerator
 
                     writer.WriteLine();
 
-                    writer.WriteLine("    public static void NetSerialize(ref " + elementType.Name + "[] obj, BitStreamWriter writer)");
+                    writer.WriteLine("    public static void NetSerialize(ref " + elementType.GetNiceFullName() + "[] obj, BitStreamWriter writer)");
                     writer.WriteLine("    {");
                     if (!clear)
                     {
@@ -82,7 +82,7 @@ public static partial class NetSerializerCodeGenerator
 
                     writer.WriteLine();
 
-                    writer.WriteLine("    public static void NetDeserialize(ref " + elementType.Name + "[] obj, BitStreamReader reader)");
+                    writer.WriteLine("    public static void NetDeserialize(ref " + elementType.GetNiceFullName() + "[] obj, BitStreamReader reader)");
                     writer.WriteLine("    {");
                     if (!clear)
                     {
@@ -91,7 +91,7 @@ public static partial class NetSerializerCodeGenerator
                         writer.WriteLine("            obj = null;");
                         writer.WriteLine("            return;");
                         writer.WriteLine("        }");
-                        writer.WriteLine("        obj = new " + elementType.Name + "[reader.ReadUInt32()];");
+                        writer.WriteLine("        obj = new " + elementType.GetNiceFullName() + "[reader.ReadUInt32()];");
                         writer.WriteLine("        for (int i = 0; i < obj.Length; i++)");
                         writer.WriteLine("        {");
                         writer.WriteLine("            " + ModelHelpers.GetSerializerFieldLine_Deserialize(elementType, "[i]"));

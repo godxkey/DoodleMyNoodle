@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimulationControl;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,10 +25,10 @@ public class DebugPanelClientSimController : DebugPanel
 
     public override void OnGUI()
     {
-        SimulationControllerClient simController = SimulationController.Instance as SimulationControllerClient;
+        var receiveTickSystem = GameMonoBehaviourHelpers.PresentationWorld.GetExistingSystem<ReceiveSimulationTickSystem>();
 
-        _simTickQueueLengths[_simTickQueueLengthsIterator] = simController.SimTicksInQueue;
-        _simTickDropperSpeeds[_simTickQueueLengthsIterator] = simController.CurrentSimPlayingSpeed;
+        _simTickQueueLengths[_simTickQueueLengthsIterator] = receiveTickSystem.SimTicksInQueue;
+        _simTickDropperSpeeds[_simTickQueueLengthsIterator] = receiveTickSystem.CurrentSimPlayingSpeed;
         _simTickQueueLengthsIterator++;
         _simTickQueueLengthsIterator %= _simTickQueueLengths.Length;
 

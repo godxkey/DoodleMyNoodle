@@ -12,43 +12,43 @@ public class DemoBallInputs : GameMonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            SimulationController.Instance.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.Space });
+            GameMonoBehaviourHelpers.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.Space });
         }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            SimulationController.Instance.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.RightArrow, state = SimInputKeycode.State.Pressed });
+            GameMonoBehaviourHelpers.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.RightArrow, state = SimInputKeycode.State.Pressed });
         }
         if (Input.GetKeyUp(KeyCode.RightArrow))
         {
-            SimulationController.Instance.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.RightArrow, state = SimInputKeycode.State.Released });
+            GameMonoBehaviourHelpers.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.RightArrow, state = SimInputKeycode.State.Released });
         }
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            SimulationController.Instance.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.LeftArrow, state = SimInputKeycode.State.Pressed });
+            GameMonoBehaviourHelpers.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.LeftArrow, state = SimInputKeycode.State.Pressed });
         }
         if (Input.GetKeyUp(KeyCode.LeftArrow))
         {
-            SimulationController.Instance.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.LeftArrow, state = SimInputKeycode.State.Released });
+            GameMonoBehaviourHelpers.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.LeftArrow, state = SimInputKeycode.State.Released });
         }
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            SimulationController.Instance.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.UpArrow, state = SimInputKeycode.State.Pressed });
+            GameMonoBehaviourHelpers.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.UpArrow, state = SimInputKeycode.State.Pressed });
         }
         if (Input.GetKeyUp(KeyCode.UpArrow))
         {
-            SimulationController.Instance.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.UpArrow, state = SimInputKeycode.State.Released });
+            GameMonoBehaviourHelpers.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.UpArrow, state = SimInputKeycode.State.Released });
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            SimulationController.Instance.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.DownArrow, state = SimInputKeycode.State.Pressed });
+            GameMonoBehaviourHelpers.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.DownArrow, state = SimInputKeycode.State.Pressed });
         }
         if (Input.GetKeyUp(KeyCode.DownArrow))
         {
-            SimulationController.Instance.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.DownArrow, state = SimInputKeycode.State.Released });
+            GameMonoBehaviourHelpers.SubmitInput(new SimInputKeycode() { keyCode = KeyCode.DownArrow, state = SimInputKeycode.State.Released });
         }
     }
 

@@ -15,8 +15,8 @@ public static class StaticNetSerializer_TestMessageCat
     public static int GetNetBitSize(TestMessageCat obj)
     {
         int result = 0;
-        result += StaticNetSerializer_Int32.GetNetBitSize(ref obj.numberOfLivesLeft);
-        result += StaticNetSerializer_String.GetNetBitSize(ref obj.name);
+        result += StaticNetSerializer_System_Int32.GetNetBitSize(ref obj.numberOfLivesLeft);
+        result += StaticNetSerializer_System_String.GetNetBitSize(ref obj.name);
         result += StaticNetSerializer_TestMessageAnimal.GetNetBitSize(obj);
         return result;
     }
@@ -33,8 +33,8 @@ public static class StaticNetSerializer_TestMessageCat
     }
     public static void NetSerialize(TestMessageCat obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_Int32.NetSerialize(ref obj.numberOfLivesLeft, writer);
-        StaticNetSerializer_String.NetSerialize(ref obj.name, writer);
+        StaticNetSerializer_System_Int32.NetSerialize(ref obj.numberOfLivesLeft, writer);
+        StaticNetSerializer_System_String.NetSerialize(ref obj.name, writer);
         StaticNetSerializer_TestMessageAnimal.NetSerialize(obj, writer);
     }
 
@@ -50,8 +50,8 @@ public static class StaticNetSerializer_TestMessageCat
     }
     public static void NetDeserialize(TestMessageCat obj, BitStreamReader reader)
     {
-        StaticNetSerializer_Int32.NetDeserialize(ref obj.numberOfLivesLeft, reader);
-        StaticNetSerializer_String.NetDeserialize(ref obj.name, reader);
+        StaticNetSerializer_System_Int32.NetDeserialize(ref obj.numberOfLivesLeft, reader);
+        StaticNetSerializer_System_String.NetDeserialize(ref obj.name, reader);
         StaticNetSerializer_TestMessageAnimal.NetDeserialize(obj, reader);
     }
 }

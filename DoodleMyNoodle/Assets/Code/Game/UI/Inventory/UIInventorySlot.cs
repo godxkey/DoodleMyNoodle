@@ -27,36 +27,38 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
             {
                 if(_currentItem != null) 
                 {
-                    SimPawnComponent playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
+                    // PORT TO ECS
 
-                    SimInventoryComponent inventory = playerPawn.GetComponent<SimInventoryComponent>();
-                    SimPlayerActions PlayerActions = playerPawn.GetComponent<SimPlayerActions>();
+                    //SimPawnComponent playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
 
-                    // Alex - HACK TO TEST FUNCTIONNALITY OF DROPPING
-                    if (_currentItem.GetComponent<TrashItemComponent>())
-                    {
-                        //SimItem item = ClickerDisplay.Instance.GetItemCurrentlyHolding();
+                    //SimInventoryComponent inventory = playerPawn.GetComponent<SimInventoryComponent>();
+                    //SimPlayerActions PlayerActions = playerPawn.GetComponent<SimPlayerActions>();
 
-                        //if (item != null)
-                        //{
-                        //    inventory.DropItem(item);
-                        //}
+                    //// Alex - HACK TO TEST FUNCTIONNALITY OF DROPPING
+                    //if (_currentItem.GetComponent<TrashItemComponent>())
+                    //{
+                    //    //SimItem item = ClickerDisplay.Instance.GetItemCurrentlyHolding();
 
-                        //ClickerDisplay.Instance.DropHoldingItem();
-                    }
-                    else
-                    {
-                        if (SimTurnManager.Instance.IsMyTurn(Team.Player))
-                        {
-                            SimPlayerId simPlayerId = SimPawnHelpers.FindPawnController(playerPawn).GetComponent<SimPlayerComponent>().SimPlayerId;
-                            int itemIndex = inventory.GetIndexFromItem(_currentItem);
+                    //    //if (item != null)
+                    //    //{
+                    //    //    inventory.DropItem(item);
+                    //    //}
 
-                            _currentItem.TryGetUsageContext(playerPawn, simPlayerId, itemIndex, (SimPlayerInputUseItem UseItemInput) => 
-                            {
-                                SimulationController.Instance.SubmitInput(UseItemInput);
-                            });
-                        }
-                    }
+                    //    //ClickerDisplay.Instance.DropHoldingItem();
+                    //}
+                    //else
+                    //{
+                    //    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    //    {
+                    //        SimPlayerId simPlayerId = SimPawnHelpers.FindPawnController(playerPawn).GetComponent<SimPlayerComponent>().SimPlayerId;
+                    //        int itemIndex = inventory.GetIndexFromItem(_currentItem);
+
+                    //        _currentItem.TryGetUsageContext(playerPawn, simPlayerId, itemIndex, (SimPlayerInputUseItem UseItemInput) => 
+                    //        {
+                    //            SimulationController.Instance.SubmitInput(UseItemInput);
+                    //        });
+                    //    }
+                    //}
                 }
             }
         }

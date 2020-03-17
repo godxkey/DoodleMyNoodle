@@ -9,7 +9,7 @@ public abstract class PlayerRepertoireMaster : PlayerRepertoireSystem
 
     public override bool SystemReady => true;
 
-    public void AssignSimPlayerToPlayer(in PlayerId playerId, in SimPlayerId simPlayerId)
+    public void AssignSimPlayerToPlayer(in PlayerId playerId, in PersistentId simPlayerId)
     {
         PlayerInfo playerInfo = GetPlayerInfo(playerId);
 
@@ -24,25 +24,25 @@ public abstract class PlayerRepertoireMaster : PlayerRepertoireSystem
         OnAssignSimPlayerToPlayer(playerInfo, simPlayerId);
     }
 
-    protected virtual void OnAssignSimPlayerToPlayer(PlayerInfo playerInfo, in SimPlayerId simPlayerId) { }
+    protected virtual void OnAssignSimPlayerToPlayer(PlayerInfo playerInfo, in PersistentId simPlayerId) { }
 
     protected override void Internal_OnGameReady()
     {
         // when we're the master, we assign ourself our Id (which is 1)
 
         _localPlayerInfo.PlayerId = new PlayerId(_playerIdCounter++);
-        _localPlayerInfo.IsServer = true;
+        _localPlayerInfo.IsMaster = true;
 
         _players.Add(_localPlayerInfo);
     }
 
-    protected PlayerInfo CreateNewPlayer(string playerName, bool isServer)
+    protected PlayerInfo CreateNewPlayer(string playerName, bool isMaster)
     {
         // Add new player to list
         PlayerInfo newPlayerInfo = new PlayerInfo()
         {
             PlayerId = new PlayerId(_playerIdCounter++),
-            IsServer = isServer,
+            IsMaster = isMaster,
             PlayerName = playerName
         };
 

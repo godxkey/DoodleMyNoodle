@@ -45,7 +45,7 @@ public class QuickStartEditorComponent : MonoBehaviour
 
     void OnServicesReady()
     {
-        if (QuickStart.hasEverQuickStarted == false)
+        if (QuickStart.HasEverQuickStarted == false)
         {
             if (startFromScratch)
             {

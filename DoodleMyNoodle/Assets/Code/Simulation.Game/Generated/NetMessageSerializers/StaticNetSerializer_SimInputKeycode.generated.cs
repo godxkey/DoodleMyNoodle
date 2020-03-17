@@ -15,9 +15,10 @@ public static class StaticNetSerializer_SimInputKeycode
     public static int GetNetBitSize(SimInputKeycode obj)
     {
         int result = 0;
-        result += StaticNetSerializer_Int32.GetNetBitSize();
-        result += StaticNetSerializer_Int32.GetNetBitSize();
-        result += StaticNetSerializer_SimPlayerId.GetNetBitSize(ref obj.SimPlayerId);
+        result += StaticNetSerializer_System_Int32.GetNetBitSize();
+        result += StaticNetSerializer_System_Int32.GetNetBitSize();
+        result += StaticNetSerializer_SimPlayerId.GetNetBitSize(ref obj.SimPlayerIdOld);
+        result += StaticNetSerializer_PersistentId.GetNetBitSize(ref obj.SimPlayerId);
         result += StaticNetSerializer_SimPlayerInput.GetNetBitSize(obj);
         return result;
     }
@@ -34,9 +35,10 @@ public static class StaticNetSerializer_SimInputKeycode
     }
     public static void NetSerialize(SimInputKeycode obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_Int32.NetSerialize((System.Int32)obj.state, writer);
-        StaticNetSerializer_Int32.NetSerialize((System.Int32)obj.keyCode, writer);
-        StaticNetSerializer_SimPlayerId.NetSerialize(ref obj.SimPlayerId, writer);
+        StaticNetSerializer_System_Int32.NetSerialize((System.Int32)obj.state, writer);
+        StaticNetSerializer_System_Int32.NetSerialize((System.Int32)obj.keyCode, writer);
+        StaticNetSerializer_SimPlayerId.NetSerialize(ref obj.SimPlayerIdOld, writer);
+        StaticNetSerializer_PersistentId.NetSerialize(ref obj.SimPlayerId, writer);
         StaticNetSerializer_SimPlayerInput.NetSerialize(obj, writer);
     }
 
@@ -52,9 +54,10 @@ public static class StaticNetSerializer_SimInputKeycode
     }
     public static void NetDeserialize(SimInputKeycode obj, BitStreamReader reader)
     {
-        obj.state = (SimInputKeycode.State)StaticNetSerializer_Int32.NetDeserialize(reader);
-        obj.keyCode = (UnityEngine.KeyCode)StaticNetSerializer_Int32.NetDeserialize(reader);
-        StaticNetSerializer_SimPlayerId.NetDeserialize(ref obj.SimPlayerId, reader);
+        obj.state = (SimInputKeycode.State)StaticNetSerializer_System_Int32.NetDeserialize(reader);
+        obj.keyCode = (UnityEngine.KeyCode)StaticNetSerializer_System_Int32.NetDeserialize(reader);
+        StaticNetSerializer_SimPlayerId.NetDeserialize(ref obj.SimPlayerIdOld, reader);
+        StaticNetSerializer_PersistentId.NetDeserialize(ref obj.SimPlayerId, reader);
         StaticNetSerializer_SimPlayerInput.NetDeserialize(obj, reader);
     }
 }

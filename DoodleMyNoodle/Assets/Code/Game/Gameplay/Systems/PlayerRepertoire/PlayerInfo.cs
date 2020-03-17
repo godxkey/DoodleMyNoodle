@@ -10,12 +10,12 @@ public class PlayerInfo
     {
         PlayerName = other.PlayerName;
         PlayerId = other.PlayerId;
-        IsServer = other.IsServer;
+        IsMaster = other.IsMaster;
         SimPlayerId = other.SimPlayerId;
     }
 
     public string       PlayerName;
     public PlayerId     PlayerId;
-    public bool         IsServer;
-    public SimPlayerId  SimPlayerId;
+    public bool         IsMaster;
+    public PersistentId SimPlayerId;
 }

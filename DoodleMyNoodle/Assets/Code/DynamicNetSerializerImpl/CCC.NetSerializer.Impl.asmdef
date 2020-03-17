@@ -8,7 +8,8 @@
         "GUID:7a50bbf1a327d1b4392a4b0c9480cc00",
         "GUID:a695b5a3e8c39e14fb9d86d3205fadf9",
         "GUID:967bf62d84e8bce4fb02b8adb322ac64",
-        "GUID:f5823330910b6a446a2095347107fb53"
+        "GUID:f5823330910b6a446a2095347107fb53",
+        "GUID:0804c0f4c04a1024f837eae455890c7e"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -17,5 +18,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }

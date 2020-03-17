@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class TestNetMessage : GameMonoBehaviour
 {
-
     public override void OnGameReady()
     {
         base.OnGameReady();
@@ -24,15 +23,14 @@ public class TestNetMessage : GameMonoBehaviour
     {
         base.OnSafeDestroy();
 
+        GameConsole.RemoveCommand("test_net_message");
+
         SessionInterface sessionInterface = OnlineService.OnlineInterface?.SessionInterface;
         if (sessionInterface != null)
         {
             sessionInterface.UnregisterNetMessageReceiver<TestMessage>(OnReceiveMessage);
         }
     }
-
-
-
 
     void Command_TestNetMessage(string[] parameters)
     {

@@ -64,9 +64,6 @@ public static class SceneShortcuts
     [MenuItem("Scene Shortcuts/Misc_LoadingScreen", priority = 6018)]
     public static void Assets_Scenes_Misc_Scene_Assets_Misc_LoadingScreen() => LoadScene("Assets/Scenes/Misc/Scene Assets/Misc_LoadingScreen.unity");
 
-    [MenuItem("Scene Shortcuts/LargeDataTransfer", priority = 7019)]
-    public static void Assets_Scenes_Tests_LargeDataTransfer() => LoadScene("Assets/Scenes/Tests/LargeDataTransfer.unity");
-
 
     private static void LoadScene(string scenePath)
     {

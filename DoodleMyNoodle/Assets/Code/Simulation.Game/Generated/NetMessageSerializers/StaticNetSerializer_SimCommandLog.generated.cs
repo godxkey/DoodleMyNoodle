@@ -15,7 +15,7 @@ public static class StaticNetSerializer_SimCommandLog
     public static int GetNetBitSize(SimCommandLog obj)
     {
         int result = 0;
-        result += StaticNetSerializer_String.GetNetBitSize(ref obj.message);
+        result += StaticNetSerializer_System_String.GetNetBitSize(ref obj.message);
         result += StaticNetSerializer_SimCommand.GetNetBitSize(obj);
         return result;
     }
@@ -32,7 +32,7 @@ public static class StaticNetSerializer_SimCommandLog
     }
     public static void NetSerialize(SimCommandLog obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_String.NetSerialize(ref obj.message, writer);
+        StaticNetSerializer_System_String.NetSerialize(ref obj.message, writer);
         StaticNetSerializer_SimCommand.NetSerialize(obj, writer);
     }
 
@@ -48,7 +48,7 @@ public static class StaticNetSerializer_SimCommandLog
     }
     public static void NetDeserialize(SimCommandLog obj, BitStreamReader reader)
     {
-        StaticNetSerializer_String.NetDeserialize(ref obj.message, reader);
+        StaticNetSerializer_System_String.NetDeserialize(ref obj.message, reader);
         StaticNetSerializer_SimCommand.NetDeserialize(obj, reader);
     }
 }

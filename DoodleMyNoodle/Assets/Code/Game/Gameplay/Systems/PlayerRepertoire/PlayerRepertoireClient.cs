@@ -49,7 +49,7 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
 
     protected override void Internal_OnGameReady()
     {
-        _localPlayerInfo.IsServer = false;
+        _localPlayerInfo.IsMaster = false;
         _localPlayerInfo.PlayerId = PlayerId.Invalid;
 
         // Say hello to server ! (this should initiate the process of being added to valid players)

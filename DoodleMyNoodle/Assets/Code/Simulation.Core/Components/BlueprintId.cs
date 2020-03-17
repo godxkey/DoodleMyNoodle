@@ -4,11 +4,11 @@ using Unity.Entities;
 using Unity.Mathematics;
 
 [Serializable]
-public struct BlueprintId : IComponentData, IValueComponent<int>, IEquatable<BlueprintId>
+public struct BlueprintId : IComponentData, IEquatable<BlueprintId> //, IValueComponent<int>
 {
     public int Value;
 
-    int IValueComponent<int>.Value { get => Value; set => Value = value; }
+    //int IValueComponent<int>.Value { get => Value; set => Value = value; }
 
     public static BlueprintId Null => new BlueprintId();
 

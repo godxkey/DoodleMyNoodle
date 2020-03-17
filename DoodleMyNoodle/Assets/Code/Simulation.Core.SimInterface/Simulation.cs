@@ -107,9 +107,6 @@ public class Simulation : SimulationBase
     /// </summary>
     public static void LoadScene(string sceneName) => SimModules._SceneLoader.LoadScene(sceneName);
 
-    public static void AddPresentationScene(string scene) => SimModules._PresentationSceneManager.AddPresentationScene(scene);
-    public static void RemovePresentationScene(string scene) => SimModules._PresentationSceneManager.RemovePresentationScene(scene);
-
     public static class Random
     {
         public static int Int() => SimModules._Random.RandomInt();

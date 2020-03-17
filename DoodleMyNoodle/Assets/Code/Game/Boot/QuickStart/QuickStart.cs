@@ -1,45 +1,46 @@
-﻿using System.Collections;
+﻿using SimulationControl;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public static class QuickStart
 {
-    public static bool hasEverQuickStarted { get; private set; } = false;
+    public static bool HasEverQuickStarted { get; private set; } = false;
 
-    static QuickStartAssets assets => QuickStartAssets.instance;
+    static QuickStartAssets Assets => QuickStartAssets.instance;
 
-    static Coroutine currentRoutine;
+    static Coroutine s_currentRoutine;
 
     public static void Start(QuickStartSettings settings)
     {
-        hasEverQuickStarted = true;
+        HasEverQuickStarted = true;
         CoreServiceManager.AddInitializationCallback(() =>
         {
             DebugService.Log("QuickStart: " + settings.ToString());
             StopRoutine();
-            currentRoutine = CoroutineLauncherService.Instance.StartCoroutine(StartRoutine(settings));
+            s_currentRoutine = CoroutineLauncherService.Instance.StartCoroutine(StartRoutine(settings));
         });
     }
 
     public static void StartFromScratch(int playerProfileLocalId = 0)
     {
-        hasEverQuickStarted = true;
+        HasEverQuickStarted = true;
         CoreServiceManager.AddInitializationCallback(() =>
         {
             DebugService.Log("QuickStart: from scratch - profile:" + playerProfileLocalId);
             StopRoutine();
             PlayerProfileService.Instance.SetPlayerProfile(playerProfileLocalId);
-            GameStateManager.TransitionToState(assets.rootMenu);
+            GameStateManager.TransitionToState(Assets.rootMenu);
         });
     }
 
     static void StopRoutine()
     {
-        if (currentRoutine != null)
+        if (s_currentRoutine != null)
         {
-            SceneService.UnloadAsync(assets.emptyScene);
-            CoroutineLauncherService.Instance.StopCoroutine(currentRoutine);
+            SceneService.UnloadAsync(Assets.emptyScene);
+            CoroutineLauncherService.Instance.StopCoroutine(s_currentRoutine);
         }
     }
 
@@ -47,7 +48,7 @@ public static class QuickStart
     {
         SimulationWorldSystem.ClearAllSimulationWorlds();
 
-        SceneService.Load(assets.emptyScene.name, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D);
+        SceneService.Load(Assets.emptyScene.name, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D);
 
         yield return null; // wait for scene load
 
@@ -66,7 +67,7 @@ public static class QuickStart
                 break;
         }
 
-        SceneService.UnloadAsync(assets.emptyScene);
+        SceneService.UnloadAsync(Assets.emptyScene);
     }
 
     static IEnumerator StartLocal(QuickStartSettings settings)
@@ -80,7 +81,7 @@ public static class QuickStart
             yield return null;
         }
 
-        GameStateManager.TransitionToState(assets.inGameLocal, new GameStateParamLevelName(settings.level));
+        GameStateManager.TransitionToState(Assets.inGameLocal, new GameStateParamLevelName(settings.level));
     }
 
 
@@ -99,7 +100,7 @@ public static class QuickStart
         if (settings.serverName.IsNullOrEmpty())
         {
             LoadingScreenUIController.displayedStatus = "Loading...";
-            GameStateManager.TransitionToState(assets.lobbyClient);
+            GameStateManager.TransitionToState(Assets.lobbyClient);
         }
         else
         {
@@ -111,7 +112,7 @@ public static class QuickStart
             {
                 float elapsedTime = 0;
                 while (foundSession == null
-                    && (elapsedTime < assets.searchForSeverTimeout || assets.searchForSeverTimeout == -1)
+                    && (elapsedTime < Assets.searchForSeverTimeout || Assets.searchForSeverTimeout == -1)
                     && OnlineService.ClientInterface != null)
                 {
                     foreach (INetworkInterfaceSession session in OnlineService.ClientInterface.AvailableSessions)
@@ -132,7 +133,7 @@ public static class QuickStart
             if (foundSession == null)
             {
                 DebugService.LogWarning("Failed client quickstart. Could not find server with name [" + settings.serverName + "] in time.", true);
-                GameStateManager.TransitionToState(assets.rootMenu);
+                GameStateManager.TransitionToState(Assets.rootMenu);
             }
             else
             {
@@ -156,13 +157,13 @@ public static class QuickStart
                 if (success == 0)
                 {
                     DebugService.LogError("Failed client quickstart. Could not connect to server [" + settings.serverName + "].", true);
-                    GameStateManager.TransitionToState(assets.rootMenu);
+                    GameStateManager.TransitionToState(Assets.rootMenu);
                 }
                 else
                 {
                     // success!
                     LoadingScreenUIController.displayedStatus = "Loading...";
-                    GameStateManager.TransitionToState(assets.inGameClient);
+                    GameStateManager.TransitionToState(Assets.inGameClient);
                 }
             }
         }
@@ -184,7 +185,7 @@ public static class QuickStart
         if (settings.serverName.IsNullOrEmpty())
         {
             LoadingScreenUIController.displayedStatus = "Loading...";
-            GameStateManager.TransitionToState(assets.lobbyServer);
+            GameStateManager.TransitionToState(Assets.lobbyServer);
         }
         else
         {
@@ -211,13 +212,13 @@ public static class QuickStart
             if (success == 0)
             {
                 DebugService.LogError("Failed server quickstart. Could not create session [" + settings.serverName + "].", true);
-                GameStateManager.TransitionToState(assets.rootMenu);
+                GameStateManager.TransitionToState(Assets.rootMenu);
             }
             else
             {
                 // success!
                 LoadingScreenUIController.displayedStatus = "Loading ...";
-                GameStateManager.TransitionToState(assets.inGameServer, new GameStateParamLevelName(settings.level));
+                GameStateManager.TransitionToState(Assets.inGameServer, new GameStateParamLevelName(settings.level));
             }
         }
     }

@@ -15,16 +15,18 @@ public class InventoryDisplay : MonoBehaviour
     {
         if (!_hasBeenSetup)
         {
-            SimPawnComponent playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
+            // PORT TO ECS
 
-            _inventory = playerPawn.GetComponent<SimInventoryComponent>();
+            //SimPawnComponent playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
 
-            for (int i = 0; i < _inventory.InventorySize; i++)
-            {
-                SimItem item = _inventory.GetItem(i);
-                UIInventorySlot newSlot = Instantiate(InventoryTilePrefab, InventoryTileContainer.transform).GetComponent<UIInventorySlot>();
-                newSlot.Init(item);
-            }
+            //_inventory = playerPawn.GetComponent<SimInventoryComponent>();
+
+            //for (int i = 0; i < _inventory.InventorySize; i++)
+            //{
+            //    SimItem item = _inventory.GetItem(i);
+            //    UIInventorySlot newSlot = Instantiate(InventoryTilePrefab, InventoryTileContainer.transform).GetComponent<UIInventorySlot>();
+            //    newSlot.Init(item);
+            //}
 
             _hasBeenSetup = true;
         }

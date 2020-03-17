@@ -7,6 +7,7 @@ public interface IManualSystemGroupUpdate
 }
 
 [UnityEngine.ExecuteAlways]
+[AlwaysUpdateSystem]
 public class SimPreInitializationSystemGroup : ComponentSystemGroup, IManualSystemGroupUpdate
 {
     public bool CanUpdate { get; set; }
@@ -20,6 +21,7 @@ public class SimPreInitializationSystemGroup : ComponentSystemGroup, IManualSyst
 }
 
 [UnityEngine.ExecuteAlways]
+[AlwaysUpdateSystem]
 public class SimSimulationSystemGroup : SimulationSystemGroup, IManualSystemGroupUpdate
 {
     public bool CanUpdate { get; set; }
@@ -32,6 +34,7 @@ public class SimSimulationSystemGroup : SimulationSystemGroup, IManualSystemGrou
     }
 }
 [UnityEngine.ExecuteAlways]
+[AlwaysUpdateSystem]
 public class SimInitializationSystemGroup : InitializationSystemGroup, IManualSystemGroupUpdate
 {
     public bool CanUpdate { get; set; }
@@ -44,6 +47,7 @@ public class SimInitializationSystemGroup : InitializationSystemGroup, IManualSy
     }
 }
 [UnityEngine.ExecuteAlways]
+[AlwaysUpdateSystem]
 public class SimPresentationSystemGroup : PresentationSystemGroup, IManualSystemGroupUpdate
 {
     public bool CanUpdate { get; set; }

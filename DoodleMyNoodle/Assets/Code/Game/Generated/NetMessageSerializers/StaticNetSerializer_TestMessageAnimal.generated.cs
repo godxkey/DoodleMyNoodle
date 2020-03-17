@@ -15,7 +15,7 @@ public static class StaticNetSerializer_TestMessageAnimal
     public static int GetNetBitSize(TestMessageAnimal obj)
     {
         int result = 0;
-        result += StaticNetSerializer_String.GetNetBitSize(ref obj.name);
+        result += StaticNetSerializer_System_String.GetNetBitSize(ref obj.name);
         return result;
     }
 
@@ -31,7 +31,7 @@ public static class StaticNetSerializer_TestMessageAnimal
     }
     public static void NetSerialize(TestMessageAnimal obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_String.NetSerialize(ref obj.name, writer);
+        StaticNetSerializer_System_String.NetSerialize(ref obj.name, writer);
     }
 
     public static TestMessageAnimal NetDeserialize_Class(BitStreamReader reader)
@@ -44,6 +44,6 @@ public static class StaticNetSerializer_TestMessageAnimal
     }
     public static void NetDeserialize(TestMessageAnimal obj, BitStreamReader reader)
     {
-        StaticNetSerializer_String.NetDeserialize(ref obj.name, reader);
+        StaticNetSerializer_System_String.NetDeserialize(ref obj.name, reader);
     }
 }

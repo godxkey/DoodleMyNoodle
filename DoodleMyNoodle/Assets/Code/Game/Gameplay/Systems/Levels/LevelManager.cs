@@ -110,10 +110,10 @@ public class LevelManager : GameSystem<LevelManager>
         if (Game.PlayingAsMaster)
         {
             // load simulation scenes
-            SimulationController.Instance.SubmitInput(new SimCommandLoadScene() { SceneName = SimManagersScene.SceneName });
+            GameMonoBehaviourHelpers.SubmitInput(new SimCommandLoadScene() { SceneName = SimManagersScene.SceneName });
             foreach (SceneInfo scene in level.SimulationScenes)
             {
-                SimulationController.Instance.SubmitInput(new SimCommandLoadScene() { SceneName = scene.SceneName });
+                GameMonoBehaviourHelpers.SubmitInput(new SimCommandLoadScene() { SceneName = scene.SceneName });
             }
         }
 

@@ -15,7 +15,11 @@ public static class SceneShortcutsGenerator
     {
         "Assets/Scenes"
     };
-    
+    static readonly string[] SCENE_SEARCH_EXCLUDE =
+    {
+        "Assets/Scenes/Tests"
+    };
+
     static readonly string[] MENU_ITEM_STRIPPED_WORDS =
     {
         "Scene Assets/"
@@ -74,10 +78,16 @@ public static class SceneShortcuts
             string lastFolder = "";
             foreach (SceneElement scene in sceneAssets)
             {
+                if (ShouldSceneBeExcluded(scene.Path))
+                {
+                    continue;
+                }
+
+
                 string sceneName = Path.GetFileNameWithoutExtension(scene.Path);
                 string scenePathNoExt = PathX.RemoveExtension(scene.Path);
                 string folder = scenePathNoExt.Remove(sceneName);
-                string methodName =  scenePathNoExt.Replace(' ', '_').Replace('/', '_');
+                string methodName = scenePathNoExt.Replace(' ', '_').Replace('/', '_');
 
                 if (lastFolder != folder)
                     prio += 1000;
@@ -123,5 +133,18 @@ public static class SceneShortcuts
 ");
             fileWithWriter.Dispose();
         }
+    }
+
+    private static bool ShouldSceneBeExcluded(string scenePath)
+    {
+        foreach (string excludeFolder in SCENE_SEARCH_EXCLUDE)
+        {
+            if (scenePath.Contains(excludeFolder))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -1,124 +1,126 @@
 ﻿using CCC.Operations;
+using SimulationControl;
 using System;
 using System.Collections.Generic;
 
 public class SimulationControllerServer : SimulationControllerMaster
 {
-    [ConfigVar("sim.pause_while_join", "true", description: "Should the simulation be paused while players are joining the game?")]
-    static ConfigVar s_pauseSimulationWhilePlayersAreJoining;
+    //[ConfigVar("sim.pause_while_join", "true", description: "Should the simulation be paused while players are joining the game?")]
+    //static ConfigVar s_pauseSimulationWhilePlayersAreJoining;
 
-    SessionServerInterface _session;
+    //SessionServerInterface _session;
 
-    List<CoroutineOperation> _ongoingOperations = new List<CoroutineOperation>();
+    //List<CoroutineOperation> _ongoingOperations = new List<CoroutineOperation>();
 
-    public override void OnGameReady()
-    {
-        base.OnGameReady();
+    //public override void OnGameReady()
+    //{
+    //    base.OnGameReady();
 
-        _session = OnlineService.ServerInterface.sessionServerInterface;
-        _session.RegisterNetMessageReceiver<NetMessageInputSubmission>(OnNetMessageInputSubmission);
-        _session.RegisterNetMessageReceiver<NetMessageRequestSimSync>(OnSimSyncRequest);
-    }
+    //    //_session = OnlineService.ServerInterface.sessionServerInterface;
+    //    //_session.RegisterNetMessageReceiver<NetMessageInputSubmission>(OnNetMessageInputSubmission);
+    //    //_session.RegisterNetMessageReceiver<NetMessageRequestSimSync>(OnSimSyncRequest);
+    //}
 
-    public override void OnSafeDestroy()
-    {
-        base.OnSafeDestroy();
+    //public override void OnSafeDestroy()
+    //{
+    //    base.OnSafeDestroy();
 
-        if (_session != null)
-        {
-            _session.UnregisterNetMessageReceiver<NetMessageRequestSimSync>(OnSimSyncRequest);
-            _session.UnregisterNetMessageReceiver<NetMessageInputSubmission>(OnNetMessageInputSubmission);
-            _session = null;
-        }
 
-        _ongoingOperations.ForEach((x) => x.TerminateWithFailure());
-    }
+    //    //if (_session != null)
+    //    //{
+    //    //    _session.UnregisterNetMessageReceiver<NetMessageRequestSimSync>(OnSimSyncRequest);
+    //    //    _session.UnregisterNetMessageReceiver<NetMessageInputSubmission>(OnNetMessageInputSubmission);
+    //    //    _session = null;
+    //    //}
 
-    public override void OnGameUpdate()
-    {
-        base.OnGameUpdate();
+    //    //_ongoingOperations.ForEach((x) => x.TerminateWithFailure());
+    //}
 
-        if (_ongoingOperations.Count > 0)
-        {
-            _ongoingOperations.RemoveAll((x) => !x.IsRunning);
-            if (_ongoingOperations.Count == 0 && s_pauseSimulationWhilePlayersAreJoining.BoolValue)
-            {
-                UnpauseSimulation(key: "PlayerJoining");
-            }
-        }
-    }
+    //public override void OnGameUpdate()
+    //{
+    //    base.OnGameUpdate();
 
-    void OnNetMessageInputSubmission(NetMessageInputSubmission netMessage, INetworkInterfaceConnection source)
-    {
-        // A client wants to submit a new message
-        PlayerInfo sourcePlayer = PlayerRepertoireServer.Instance.GetPlayerInfo(source);
+    //    if (_ongoingOperations.Count > 0)
+    //    {
+    //        _ongoingOperations.RemoveAll((x) => !x.IsRunning);
+    //        if (_ongoingOperations.Count == 0 && s_pauseSimulationWhilePlayersAreJoining.BoolValue)
+    //        {
+    //            UnpauseSimulation(key: "PlayerJoining");
+    //        }
+    //    }
+    //}
 
-        if (ValidateInputSubmission(netMessage, sourcePlayer))
-            QueueInput(netMessage.input, sourcePlayer, netMessage.submissionId);
-    }
+    //void OnNetMessageInputSubmission(NetMessageInputSubmission netMessage, INetworkInterfaceConnection source)
+    //{
+    //    // A client wants to submit a new message
+    //    PlayerInfo sourcePlayer = PlayerRepertoireServer.Instance.GetPlayerInfo(source);
 
-    void OnSimSyncRequest(NetMessageRequestSimSync netMessage, INetworkInterfaceConnection clientConnection)
-    {
-        // A client wants a complete simulatio sync
-        DebugService.Log($"Client {clientConnection.Id} requested a simulation sync");
+    //    if (ValidateInputSubmission(netMessage, sourcePlayer))
+    //        QueueInput(netMessage.input, sourcePlayer, netMessage.submissionId);
+    //}
 
-        LaunchSyncForClient(clientConnection);
-    }
+    //void OnSimSyncRequest(NetMessageRequestSimSync netMessage, INetworkInterfaceConnection clientConnection)
+    //{
+    //    // A client wants a complete simulatio sync
+    //    DebugService.Log($"Client {clientConnection.Id} requested a simulation sync");
 
-    bool ValidateInputSubmission(NetMessageInputSubmission submission, PlayerInfo playerInfo)
-    {
-        // This should eventually evolve into a full validation check (prevent cheating)
-        if (!SimulationView.IsRunningOrReadyToRun)
-            return false;
+    //    LaunchSyncForClient(clientConnection);
+    //}
 
-        if (playerInfo == null)
-            return false;
+    //bool ValidateInputSubmission(NetMessageInputSubmission submission, PlayerInfo playerInfo)
+    //{
+    //    // This should eventually evolve into a full validation check (prevent cheating)
+    //    if (!SimulationView.IsRunningOrReadyToRun)
+    //        return false;
 
-        if (IsSimulationPaused)
-            return false;
+    //    if (playerInfo == null)
+    //        return false;
 
-        return true;
-    }
+    //    if (IsSimulationPaused)
+    //        return false;
 
-    protected override void OnAboutToTickSimulation(ApprovedSimInput[] inputs)
-    {
-        base.OnAboutToTickSimulation(inputs);
+    //    return true;
+    //}
 
-        // Send tick to clients!
-        NetMessageSimTick netMessage = new NetMessageSimTick()
-        {
-            tickId = SimulationView.TickId,
-            inputs = inputs
-        };
+    //protected override void OnAboutToTickSimulation(ApprovedSimInput[] inputs)
+    //{
+    //    base.OnAboutToTickSimulation(inputs);
 
-        _session.SendNetMessage(netMessage, PlayerRepertoireServer.Instance.PlayerConnections);
-    }
+    //    // Send tick to clients!
+    //    NetMessageSimTick netMessage = new NetMessageSimTick()
+    //    {
+    //        tickId = SimulationView.TickId,
+    //        Inputs = inputs
+    //    };
 
-    SimulationSyncFromTransferServerOperation LaunchSyncForClient(INetworkInterfaceConnection clientConnection)
-    {
-        DebugService.Log($"Starting new sync...");
+    //    _session.SendNetMessage(netMessage, PlayerRepertoireServer.Instance.PlayerConnections);
+    //}
 
-        var newOp = new SimulationSyncFromTransferServerOperation(_session, clientConnection, SimulationWorld);
+    //SimulationSyncFromTransferServerOperation LaunchSyncForClient(INetworkInterfaceConnection clientConnection)
+    //{
+    //    DebugService.Log($"Starting new sync...");
 
-        newOp.OnFailCallback = (op) =>
-        {
-            DebugService.Log($"Sync failed. {op.Message}");
-        };
+    //    var newOp = new SimulationSyncFromTransferServerOperation(_session, clientConnection, SimulationWorld);
 
-        newOp.OnSucceedCallback = (op) =>
-        {
-            DebugService.Log($"Sync complete. {op.Message}");
-        };
+    //    newOp.OnFailCallback = (op) =>
+    //    {
+    //        DebugService.Log($"Sync failed. {op.Message}");
+    //    };
 
-        newOp.Execute();
+    //    newOp.OnSucceedCallback = (op) =>
+    //    {
+    //        DebugService.Log($"Sync complete. {op.Message}");
+    //    };
 
-        _ongoingOperations.Add(newOp);
+    //    newOp.Execute();
 
-        if (s_pauseSimulationWhilePlayersAreJoining.BoolValue)
-        {
-            PauseSimulation(key: "PlayerJoining");
-        }
+    //    _ongoingOperations.Add(newOp);
 
-        return newOp;
-    }
+    //    if (s_pauseSimulationWhilePlayersAreJoining.BoolValue)
+    //    {
+    //        PauseSimulation(key: "PlayerJoining");
+    //    }
+
+    //    return newOp;
+    //}
 }

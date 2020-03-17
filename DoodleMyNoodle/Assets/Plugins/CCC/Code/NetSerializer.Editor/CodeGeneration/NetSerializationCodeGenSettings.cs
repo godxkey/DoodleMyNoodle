@@ -5,13 +5,14 @@ public static class NetSerializationCodeGenSettings
 {
     public static Dictionary<string, string> generatedSerializersPath = new Dictionary<string, string>()
     {
-        {"Game",                 "Assets/Code/Game"                      + Serializers_AssemblyGenerationFolder},
-        {"mscorlib",             "Assets/Plugins/CCC/Code/NetSerializer" + Serializers_AssemblyGenerationFolder},
-        {"CCC.FixMath",          "Assets/Plugins/CCC/Code/FixMath"       + Serializers_AssemblyGenerationFolder},
-        {"CCC.Online",           "Assets/Plugins/CCC/Code/Online"        + Serializers_AssemblyGenerationFolder},
-        {"Simulation.Core",      "Assets/Code/Simulation.Core"           + Serializers_AssemblyGenerationFolder},
-        {"Simulation.Engine",    "Assets/Code/Simulation.Engine"         + Serializers_AssemblyGenerationFolder},
-        {"Simulation.Game",      "Assets/Code/Simulation.Game"           + Serializers_AssemblyGenerationFolder},
+        {"Game",                "Assets/Code/Game"                      + Serializers_AssemblyGenerationFolder},
+        {"mscorlib",            "Assets/Plugins/CCC/Code/NetSerializer" + Serializers_AssemblyGenerationFolder},
+        {"CCC.FixMath",         "Assets/Plugins/CCC/Code/FixMath"       + Serializers_AssemblyGenerationFolder},
+        {"CCC.Online",          "Assets/Plugins/CCC/Code/Online"        + Serializers_AssemblyGenerationFolder},
+        {"Simulation.Core",     "Assets/Code/Simulation.Core"           + Serializers_AssemblyGenerationFolder},
+        {"Simulation.Engine",   "Assets/Code/Simulation.Engine"         + Serializers_AssemblyGenerationFolder},
+        {"Simulation.Game",     "Assets/Code/Simulation.Game"           + Serializers_AssemblyGenerationFolder},
+        {"SimulationIO",        "Assets/Code/SimulationIO"              + Serializers_AssemblyGenerationFolder},
     };
 
     public const string MenuName_Generate_All                = "CodeGen/Net Serialization/Generate %#c";

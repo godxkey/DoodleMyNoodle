@@ -15,8 +15,8 @@ public static class StaticNetSerializer_TestMessageDog
     public static int GetNetBitSize(TestMessageDog obj)
     {
         int result = 0;
-        result += StaticNetSerializer_Boolean.GetNetBitSize(ref obj.isAGoodBoy);
-        result += StaticNetSerializer_String.GetNetBitSize(ref obj.name);
+        result += StaticNetSerializer_System_Boolean.GetNetBitSize(ref obj.isAGoodBoy);
+        result += StaticNetSerializer_System_String.GetNetBitSize(ref obj.name);
         result += StaticNetSerializer_TestMessageAnimal.GetNetBitSize(obj);
         return result;
     }
@@ -33,8 +33,8 @@ public static class StaticNetSerializer_TestMessageDog
     }
     public static void NetSerialize(TestMessageDog obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_Boolean.NetSerialize(ref obj.isAGoodBoy, writer);
-        StaticNetSerializer_String.NetSerialize(ref obj.name, writer);
+        StaticNetSerializer_System_Boolean.NetSerialize(ref obj.isAGoodBoy, writer);
+        StaticNetSerializer_System_String.NetSerialize(ref obj.name, writer);
         StaticNetSerializer_TestMessageAnimal.NetSerialize(obj, writer);
     }
 
@@ -50,8 +50,8 @@ public static class StaticNetSerializer_TestMessageDog
     }
     public static void NetDeserialize(TestMessageDog obj, BitStreamReader reader)
     {
-        StaticNetSerializer_Boolean.NetDeserialize(ref obj.isAGoodBoy, reader);
-        StaticNetSerializer_String.NetDeserialize(ref obj.name, reader);
+        StaticNetSerializer_System_Boolean.NetDeserialize(ref obj.isAGoodBoy, reader);
+        StaticNetSerializer_System_String.NetDeserialize(ref obj.name, reader);
         StaticNetSerializer_TestMessageAnimal.NetDeserialize(obj, reader);
     }
 }

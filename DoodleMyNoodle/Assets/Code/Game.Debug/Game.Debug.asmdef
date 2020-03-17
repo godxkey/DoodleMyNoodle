@@ -10,9 +10,13 @@
         "GUID:a695b5a3e8c39e14fb9d86d3205fadf9",
         "GUID:7695ae3dd0d416e4ca5b7bb4dd0a6385",
         "GUID:967bf62d84e8bce4fb02b8adb322ac64",
-        "GUID:cc7412ed0f4286a4592ac2104dbf68ec",
         "GUID:f94e1c9377273104d83be7da954b5cb5",
-        "GUID:f5823330910b6a446a2095347107fb53"
+        "GUID:f5823330910b6a446a2095347107fb53",
+        "GUID:0804c0f4c04a1024f837eae455890c7e",
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:734d92eba21c94caba915361bd5ac177",
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:a5baed0c9693541a5bd947d336ec7659"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -23,5 +27,6 @@
     "defineConstraints": [
         "DEBUG_BUILD"
     ],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }

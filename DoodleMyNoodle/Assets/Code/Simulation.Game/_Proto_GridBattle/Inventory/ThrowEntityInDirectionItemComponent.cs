@@ -40,7 +40,7 @@ public class ThrowEntityInDirectionItemComponent : SimComponent, IItemOnEquip, I
     public void TryGetUsageContext(SimPawnComponent PawnComponent, SimPlayerId simPlayerId, int itemIndex, Action<SimPlayerInputUseItem> OnContextReady)
     {
         SimPlayerInputUseItem simPlayerInputUseItem = new SimPlayerInputUseItem();
-        simPlayerInputUseItem.SimPlayerId = simPlayerId;
+        simPlayerInputUseItem.SimPlayerIdOld = simPlayerId;
         simPlayerInputUseItem.ItemIndex = itemIndex;
 
         SimPlayerActions simPlayerActions = PawnComponent.GetComponent<SimPlayerActions>();

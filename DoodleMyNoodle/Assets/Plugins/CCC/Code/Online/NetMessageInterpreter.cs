@@ -1,6 +1,8 @@
-﻿using System;
+﻿using CCC.IO;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public static class NetMessageInterpreter
@@ -74,6 +76,9 @@ public static class NetMessageInterpreter
         }
     }
 
+#if DEBUG_BUILD
+    static uint s_avoidCollisionValue = 0;
+#endif
     public static bool GetDataFromMessage<T>(in T message, out byte[] data, int byteLimit = int.MaxValue)
     {
         data = null;
@@ -103,8 +108,22 @@ public static class NetMessageInterpreter
 #if DEBUG_BUILD
             if (s_logNetMessageData.BoolValue)
             {
-                DebugService.Log($"[NetMessageInterpreter] Serialize Message'{message}' to byte[{data.Length}]");
-                DebugLogUtility.LogByteArray(data);
+                DebugService.Log($"[NetMessageInterpreter] Serialize Message '{message}' to byte[{data.Length}]");
+                if(data.Length <= 128)
+                    DebugLogUtility.LogByteArray(data);
+                else
+                {
+                    string directory = Environment.CurrentDirectory;
+                    if (Application.isEditor)
+                        directory += "/..";
+
+                    string filePath = $"{directory}/Logs/NetMessageMessageInterperter_{Time.time}_{message.GetType()}_{s_avoidCollisionValue++}.txt";
+                    using(var writer = FileX.OpenFileFlushedAndReadyToWrite(filePath))
+                    {
+                        DebugLogUtility.LogByteArrayToFile(data, writer.StreamWriter);
+                    }
+                    DebugService.Log($"Data too long, logged to file {filePath}");
+                }
             }
 #endif
             return true;
