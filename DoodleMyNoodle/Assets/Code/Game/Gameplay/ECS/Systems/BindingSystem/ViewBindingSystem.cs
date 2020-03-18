@@ -29,7 +29,7 @@ public class ViewBindingSystem : ViewJobComponentSystem
         var settingsEntity = GetSingletonEntity<Settings_ViewBindingSystem_BlueprintDefinition>();
 
         // TODO fbessette: mini clean-up
-        _simWorldEntityClearAndReplaceCount.Set(World.GetExistingSystem<SimulationControl.SimulationWorldSystem>().SimulationWorld.EntityClearAndReplaceCount);
+        _simWorldEntityClearAndReplaceCount.Set(SimWorldAccessor.EntityClearAndReplaceCount);
         if (_simWorldEntityClearAndReplaceCount.IsDirty)
         {
             _simWorldEntityClearAndReplaceCount.Reset();

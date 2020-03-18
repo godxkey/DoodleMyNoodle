@@ -2,18 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using Unity.Transforms;
 
 namespace SimulationControl
 {
     [UpdateInGroup(typeof(Unity.Entities.SimulationSystemGroup))]
+    [UpdateBefore(typeof(TransformSystemGroup))]
     public class SimulationControlSystemGroup : ComponentSystemGroup
     {
         private SimulationWorldSystem _simulationWorldSystem;
 
         private List<ComponentSystemBase> _manuallyCreatedSystems = new List<ComponentSystemBase>();
 
+        public bool IsMaster => IsLocal || IsServer;
+        public bool IsClient { get; private set; }
+        public bool IsServer { get; private set; }
+        public bool IsLocal { get; private set; }
+        public bool IsInitialized { get; private set; }
+
         public void Initialize(SessionInterface sessionInterface, ConstructSimulationTickSystem.ValidationDelegate simInputValidationMethod)
         {
+            if (IsInitialized)
+                throw new Exception($"{nameof(SimulationControlSystemGroup)} is already initialized");
+
+            IsInitialized = true;
+
             T ManualCreateAndAddSystem<T>() where T : ComponentSystem
             {
                 if (!Attribute.IsDefined(typeof(T), typeof(DisableAutoCreationAttribute)))
@@ -27,6 +40,27 @@ namespace SimulationControl
                 return sys;
             }
 
+            switch (sessionInterface)
+            {
+                case SessionClientInterface _: // Client
+                    IsClient = true;
+                    IsLocal = false;
+                    IsServer = false;
+                    break;
+
+                case null: // Local play
+                    IsClient = false;
+                    IsLocal = true;
+                    IsServer = false;
+                    break;
+
+                case SessionServerInterface _:  // Server
+                    IsClient = false;
+                    IsLocal = false;
+                    IsServer = true;
+                    break;
+            }
+
             _simulationWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
             _simulationWorldSystem.ClearSimWorld();
             _simulationWorldSystem.ReadyForEntityInjections = true;
@@ -35,23 +69,23 @@ namespace SimulationControl
             ManualCreateAndAddSystem<LoadSimulationSceneSystem>();
             ManualCreateAndAddSystem<SaveAndLoadSimulationSystem>();
 
-            switch (sessionInterface)
+
+            if (IsMaster)
             {
-                case SessionClientInterface _:
-                    ManualCreateAndAddSystem<ReceiveSimulationSyncSystem>();
-                    ManualCreateAndAddSystem<ReceiveSimulationTickSystem>();
-                    break;
+                ManualCreateAndAddSystem<ConstructSimulationTickSystem>().ValidationMethod = simInputValidationMethod;
+            }
 
-                case SessionServerInterface _:
-                    ManualCreateAndAddSystem<SendSimulationSyncSystem>();
-                    ManualCreateAndAddSystem<SendSimulationTickSystem>();
-                    ManualCreateAndAddSystem<ReceiveSimulationInputSystem>();
-                    ManualCreateAndAddSystem<ConstructSimulationTickSystem>().ValidationMethod = simInputValidationMethod;
-                    break;
+            if (IsClient)
+            {
+                ManualCreateAndAddSystem<ReceiveSimulationSyncSystem>();
+                ManualCreateAndAddSystem<ReceiveSimulationTickSystem>();
+            }
 
-                case null: // Local play
-                    ManualCreateAndAddSystem<ConstructSimulationTickSystem>().ValidationMethod = simInputValidationMethod;
-                    break;
+            if (IsServer)
+            {
+                ManualCreateAndAddSystem<SendSimulationSyncSystem>();
+                ManualCreateAndAddSystem<SendSimulationTickSystem>();
+                ManualCreateAndAddSystem<ReceiveSimulationInputSystem>();
             }
 
 
@@ -60,6 +94,11 @@ namespace SimulationControl
 
         public void Shutdown()
         {
+            if (!IsInitialized)
+                return;
+
+            IsInitialized = false;
+
             if (_simulationWorldSystem.SimulationWorld != null && _simulationWorldSystem.SimulationWorld.IsCreated)
             {
                 _simulationWorldSystem.ReadyForEntityInjections = false;

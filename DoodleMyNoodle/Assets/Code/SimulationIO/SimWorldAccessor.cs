@@ -1,21 +1,47 @@
-﻿using System.Collections.Generic;
+﻿using SimulationControl;
+using System.Collections.Generic;
 using Unity.Collections;
+using Unity.Core;
 using Unity.Entities;
 
 public class SimWorldAccessor
 {
-    private readonly World _simWorld;
-    private readonly BeginViewSystem _beginViewSystem;
-    private readonly ComponentSystem _someSimSystem;
+    internal SimulationWorld SimWorld;
+    internal SubmitSimulationInputSystem SubmitSystem;
+    internal BeginViewSystem BeginViewSystem;
+    internal ComponentSystem SomeSimSystem;
 
-    public SimWorldAccessor(World simWorld, BeginViewSystem beginViewSystem, ComponentSystem someSimSystem)
+    public InputSubmissionId SubmitInput(SimInput simInput)
     {
-        _simWorld = simWorld;
-        _beginViewSystem = beginViewSystem;
-        _someSimSystem = someSimSystem;
+        if (SubmitSystem != null)
+            return SubmitSystem.SubmitInput(simInput);
+        return InputSubmissionId.Invalid;
     }
 
-    public SimWorldAccessorJob JobAccessor => new SimWorldAccessorJob(_beginViewSystem.ExclusiveSimWorld);
+    public SimWorldAccessorJob JobAccessor => new SimWorldAccessorJob(BeginViewSystem.ExclusiveSimWorld);
+
+    public string Name
+        => SimWorld.Name;
+
+    public override string ToString()
+    {
+        return $"Accessor({SimWorld.ToString()})";
+    }
+
+    public int Version
+        => SimWorld.Version;
+
+    public bool IsCreated =>
+        SimWorld.IsCreated;
+
+    public ulong SequenceNumber =>
+        SimWorld.SequenceNumber;
+
+    public ref TimeData Time =>
+        ref SimWorld.Time;
+
+    public uint EntityClearAndReplaceCount
+        => SimWorld.EntityClearAndReplaceCount;
 
     /// <summary>
     /// Gets an array-like container containing all components of type T, indexed by Entity.
@@ -25,7 +51,7 @@ public class SimWorldAccessor
     /// <typeparam name="T">A struct that implements <see cref="IComponentData"/>.</typeparam>
     /// <returns>All component data of type T.</returns>
     public ComponentDataFromEntity<T> GetComponentDataFromEntity<T>() where T : struct, IComponentData
-        => _someSimSystem.GetComponentDataFromEntity<T>(true);
+        => SomeSimSystem.GetComponentDataFromEntity<T>(true);
 
     /// <summary>
     /// Gets a BufferFromEntity&lt;T&gt; object that can access a <seealso cref="DynamicBuffer{T}"/>.
@@ -38,7 +64,7 @@ public class SimWorldAccessor
     /// <returns>An array-like object that provides access to buffers, indexed by <see cref="Entity"/>.</returns>
     /// <seealso cref="ComponentDataFromEntity{T}"/>
     public BufferFromEntity<T> GetBufferFromEntity<T>() where T : struct, IBufferElementData
-        => _someSimSystem.GetBufferFromEntity<T>(true);
+        => SomeSimSystem.GetBufferFromEntity<T>(true);
 
     /// <summary>
     /// Gets the value of a singleton component.
@@ -47,7 +73,7 @@ public class SimWorldAccessor
     /// <returns>The component.</returns>
     /// <seealso cref="EntityQuery.GetSingleton{T}"/>
     public T GetSingleton<T>() where T : struct, IComponentData
-        => _someSimSystem.GetSingleton<T>();
+        => SomeSimSystem.GetSingleton<T>();
 
     /// <summary>
     /// Checks whether a singelton component of the specified type exists.
@@ -55,7 +81,7 @@ public class SimWorldAccessor
     /// <typeparam name="T">The <see cref="IComponentData"/> subtype of the singleton component.</typeparam>
     /// <returns>True, if a singleton of the specified type exists in the current <see cref="World"/>.</returns>
     public bool HasSingleton<T>() where T : struct, IComponentData
-        => _someSimSystem.HasSingleton<T>();
+        => SomeSimSystem.HasSingleton<T>();
 
     /// <summary>
     /// Gets the Entity instance for a singleton.
@@ -64,7 +90,7 @@ public class SimWorldAccessor
     /// <returns>The entity associated with the specified singleton component.</returns>
     /// <seealso cref="EntityQuery.GetSingletonEntity"/>
     public Entity GetSingletonEntity<T>()
-        => _someSimSystem.GetSingletonEntity<T>();
+        => SomeSimSystem.GetSingletonEntity<T>();
 
     /// <summary>
     /// Creates a EntityQuery from an array of component types.
@@ -73,14 +99,14 @@ public class SimWorldAccessor
     /// <returns>The EntityQuery derived from the specified array of component types.</returns>
     /// <seealso cref="EntityQueryDesc"/>
     public EntityQuery CreateEntityQuery(params ComponentType[] requiredComponents)
-        => _simWorld.EntityManager.CreateEntityQuery(requiredComponents);
+        => SimWorld.EntityManager.CreateEntityQuery(requiredComponents);
 
     /// <summary>
     /// Gets the number of shared components managed by this EntityManager.
     /// </summary>
     /// <returns>The shared component count</returns>
     public int GetSharedComponentCount()
-        => _simWorld.EntityManager.GetSharedComponentCount();
+        => SimWorld.EntityManager.GetSharedComponentCount();
 
     /// <summary>
     /// Gets the value of a component for an entity.
@@ -90,7 +116,57 @@ public class SimWorldAccessor
     /// <returns>A struct of type T containing the component value.</returns>
     /// <exception cref="ArgumentException">Thrown if the component type has no fields.</exception>
     public T GetComponentData<T>(Entity entity) where T : struct, IComponentData
-        => _simWorld.EntityManager.GetComponentData<T>(entity);
+        => SimWorld.EntityManager.GetComponentData<T>(entity);
+
+    /// <summary>
+    /// Reports whether an Entity object is still valid.
+    /// </summary>
+    /// <remarks>
+    /// An Entity object does not contain a reference to its entity. Instead, the Entity struct contains an index
+    /// and a generational version number. When an entity is destroyed, the EntityManager increments the version
+    /// of the entity within the internal array of entities. The index of a destroyed entity is recycled when a
+    /// new entity is created.
+    ///
+    /// After an entity is destroyed, any existing Entity objects will still contain the
+    /// older version number. This function compares the version numbers of the specified Entity object and the
+    /// current version of the entity recorded in the entities array. If the versions are different, the Entity
+    /// object no longer refers to an existing entity and cannot be used.
+    /// </remarks>
+    /// <param name="entity">The Entity object to check.</param>
+    /// <returns>True, if <see cref="Entity.Version"/> matches the version of the current entity at
+    /// <see cref="Entity.Index"/> in the entities array.</returns>
+    public bool Exists(Entity entity)
+        => SimWorld.EntityManager.Exists(entity);
+
+    /// <summary>
+    /// Checks whether an entity has a specific type of component.
+    /// </summary>
+    /// <remarks>Always returns false for an entity that has been destroyed.</remarks>
+    /// <param name="entity">The Entity object.</param>
+    /// <typeparam name="T">The data type of the component.</typeparam>
+    /// <returns>True, if the specified entity has the component.</returns>
+    public bool HasComponent<T>(Entity entity)
+        => SimWorld.EntityManager.HasComponent<T>(entity);
+
+    /// <summary>
+    /// Checks whether an entity has a specific type of component.
+    /// </summary>
+    /// <remarks>Always returns false for an entity that has been destroyed.</remarks>
+    /// <param name="entity">The Entity object.</param>
+    /// <param name="type">The data type of the component.</param>
+    /// <returns>True, if the specified entity has the component.</returns>
+    public bool HasComponent(Entity entity, ComponentType type)
+        => SimWorld.EntityManager.HasComponent(entity, type);
+
+    /// <summary>
+    /// Checks whether the chunk containing an entity has a specific type of component.
+    /// </summary>
+    /// <remarks>Always returns false for an entity that has been destroyed.</remarks>
+    /// <param name="entity">The Entity object.</param>
+    /// <typeparam name="T">The data type of the chunk component.</typeparam>
+    /// <returns>True, if the chunk containing the specified entity has the component.</returns>
+    public bool HasChunkComponent<T>(Entity entity)
+        => SimWorld.EntityManager.HasChunkComponent<T>(entity);
 
     /// <summary>
     /// Gets the value of a chunk component.
@@ -104,7 +180,7 @@ public class SimWorldAccessor
     /// <returns>A struct of type T containing the component value.</returns>
     /// <exception cref="ArgumentException">Thrown if the ArchetypeChunk object is invalid.</exception>
     public T GetChunkComponentData<T>(ArchetypeChunk chunk) where T : struct, IComponentData
-        => _simWorld.EntityManager.GetChunkComponentData<T>(chunk);
+        => SimWorld.EntityManager.GetChunkComponentData<T>(chunk);
 
     /// <summary>
     /// Gets the value of chunk component for the chunk containing the specified entity.
@@ -117,7 +193,7 @@ public class SimWorldAccessor
     /// <typeparam name="T">The component type.</typeparam>
     /// <returns>A struct of type T containing the component value.</returns>
     public T GetChunkComponentData<T>(Entity entity) where T : struct, IComponentData
-        => _simWorld.EntityManager.GetChunkComponentData<T>(entity);
+        => SimWorld.EntityManager.GetChunkComponentData<T>(entity);
 
     /// <summary>
     /// Gets the managed [UnityEngine.Component](https://docs.unity3d.com/ScriptReference/Component.html) object
@@ -127,10 +203,10 @@ public class SimWorldAccessor
     /// <typeparam name="T">The type of the managed object.</typeparam>
     /// <returns>The managed object, cast to type T.</returns>
     public T GetComponentObject<T>(Entity entity)
-        => _simWorld.EntityManager.GetComponentObject<T>(entity);
+        => SimWorld.EntityManager.GetComponentObject<T>(entity);
 
     public T GetComponentObject<T>(Entity entity, ComponentType componentType)
-        => _simWorld.EntityManager.GetComponentObject<T>(entity, componentType);
+        => SimWorld.EntityManager.GetComponentObject<T>(entity, componentType);
 
     /// <summary>
     /// Gets a shared component from an entity.
@@ -139,10 +215,10 @@ public class SimWorldAccessor
     /// <typeparam name="T">The type of shared component.</typeparam>
     /// <returns>A copy of the shared component.</returns>
     public T GetSharedComponentData<T>(Entity entity) where T : struct, ISharedComponentData
-        => _simWorld.EntityManager.GetSharedComponentData<T>(entity);
+        => SimWorld.EntityManager.GetSharedComponentData<T>(entity);
 
     public int GetSharedComponentDataIndex<T>(Entity entity) where T : struct, ISharedComponentData
-        => _simWorld.EntityManager.GetSharedComponentDataIndex<T>(entity);
+        => SimWorld.EntityManager.GetSharedComponentDataIndex<T>(entity);
 
     /// <summary>
     /// Gets a shared component by index.
@@ -159,7 +235,7 @@ public class SimWorldAccessor
     /// <typeparam name="T">The data type of the shared component.</typeparam>
     /// <returns>A copy of the shared component.</returns>
     public T GetSharedComponentData<T>(int sharedComponentIndex) where T : struct, ISharedComponentData
-        => _simWorld.EntityManager.GetSharedComponentData<T>(sharedComponentIndex);
+        => SimWorld.EntityManager.GetSharedComponentData<T>(sharedComponentIndex);
 
     /// <summary>
     /// Gets a list of all the unique instances of a shared component type.
@@ -173,7 +249,7 @@ public class SimWorldAccessor
     /// shared component of type T.</param>
     /// <typeparam name="T">The type of shared component.</typeparam>
     public void GetAllUniqueSharedComponentData<T>(List<T> sharedComponentValues) where T : struct, ISharedComponentData
-        => _simWorld.EntityManager.GetAllUniqueSharedComponentData<T>(sharedComponentValues);
+        => SimWorld.EntityManager.GetAllUniqueSharedComponentData<T>(sharedComponentValues);
 
     /// <summary>
     /// Gets a list of all unique shared components of the same type and a corresponding list of indices into the
@@ -192,7 +268,7 @@ public class SimWorldAccessor
     /// <param name="sharedComponentIndices"></param>
     /// <typeparam name="T"></typeparam>
     public void GetAllUniqueSharedComponentData<T>(List<T> sharedComponentValues, List<int> sharedComponentIndices) where T : struct, ISharedComponentData
-        => _simWorld.EntityManager.GetAllUniqueSharedComponentData<T>(sharedComponentValues, sharedComponentIndices);
+        => SimWorld.EntityManager.GetAllUniqueSharedComponentData<T>(sharedComponentValues, sharedComponentIndices);
 
     /// <summary>
     /// Gets the dynamic buffer of an entity.
@@ -202,7 +278,7 @@ public class SimWorldAccessor
     /// <returns>The DynamicBuffer object for accessing the buffer contents.</returns>
     /// <exception cref="ArgumentException">Thrown if T is an unsupported type.</exception>
     public DynamicBuffer<T> GetBuffer<T>(Entity entity) where T : struct, IBufferElementData
-        => _simWorld.EntityManager.GetBuffer<T>(entity);
+        => SimWorld.EntityManager.GetBuffer<T>(entity);
 
     /// <summary>
     /// Gets the chunk in which the specified entity is stored.
@@ -210,7 +286,7 @@ public class SimWorldAccessor
     /// <param name="entity">The entity.</param>
     /// <returns>The chunk containing the entity.</returns>
     public ArchetypeChunk GetChunk(Entity entity)
-        => _simWorld.EntityManager.GetChunk(entity);
+        => SimWorld.EntityManager.GetChunk(entity);
 
     /// <summary>
     /// Gets the number of component types associated with an entity.
@@ -218,13 +294,13 @@ public class SimWorldAccessor
     /// <param name="entity">The entity.</param>
     /// <returns>The number of components.</returns>
     public int GetComponentCount(Entity entity)
-        => _simWorld.EntityManager.GetComponentCount(entity);
+        => SimWorld.EntityManager.GetComponentCount(entity);
 
     /// <summary>
     /// Returns false if the component has the 'Disabled' component. Disabled entities are excluded from entity queries by default
     /// </summary>
     public bool GetEnabled(Entity entity)
-        => _simWorld.EntityManager.GetEnabled(entity);
+        => SimWorld.EntityManager.GetEnabled(entity);
 }
 
 public struct SimWorldAccessorJob

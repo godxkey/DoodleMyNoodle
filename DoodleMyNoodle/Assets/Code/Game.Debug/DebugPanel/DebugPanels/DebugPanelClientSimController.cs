@@ -8,8 +8,7 @@ public class DebugPanelClientSimController : DebugPanel
 {
     public override string title => "Sim Controller (Client)";
     public override bool canBeDisplayed =>
-        SimulationController.Instance != null &&
-        SimulationController.Instance is SimulationControllerClient;
+        GameMonoBehaviourHelpers.PresentationWorld?.GetExistingSystem<ReceiveSimulationTickSystem>() != null;
 
     float[] _simTickQueueLengths = new float[60];
     int _simTickQueueLengthsIterator = 0;

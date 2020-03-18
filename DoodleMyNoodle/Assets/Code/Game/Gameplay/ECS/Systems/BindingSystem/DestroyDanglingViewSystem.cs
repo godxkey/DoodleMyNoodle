@@ -16,7 +16,7 @@ public class DestroyDanglingViewSystem : ViewJobComponentSystem
     protected override JobHandle OnUpdate(JobHandle jobHandle)
     {
         // TODO fbessette: mini clean-up
-        _simWorldEntityClearAndReplaceCount.Set(World.GetExistingSystem<SimulationControl.SimulationWorldSystem>().SimulationWorld.EntityClearAndReplaceCount);
+        _simWorldEntityClearAndReplaceCount.Set(SimWorldAccessor.EntityClearAndReplaceCount);
         if (_simWorldEntityClearAndReplaceCount.IsDirty)
         {
             _simWorldEntityClearAndReplaceCount.Reset();

@@ -1,7 +1,7 @@
 ﻿using SimulationControl;
 using Unity.Entities;
 
-[DisableAutoCreation]
+[UpdateInGroup(typeof(ViewSystemGroup))]
 public class EndViewSystem : ComponentSystem
 {
     SimulationWorldSystem _worldMaster;
@@ -15,6 +15,9 @@ public class EndViewSystem : ComponentSystem
 
     protected override void OnUpdate()
     {
+        if (_worldMaster.SimulationWorld?.EntityManager == null)
+            return;
+
         World.EntityManager.CompleteAllJobs();
         _worldMaster.SimulationWorld.EntityManager.EndExclusiveEntityTransaction();
     }

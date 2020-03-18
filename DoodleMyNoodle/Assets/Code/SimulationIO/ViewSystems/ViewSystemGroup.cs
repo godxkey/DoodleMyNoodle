@@ -4,19 +4,31 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Entities;
 
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+public class MasterOnlyAttribute : Attribute
+{
+
+}
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+public class ClientOnlyAttribute : Attribute
+{
+
+}
+
 [UpdateAfter(typeof(TickSimulationSystem))]
 [UpdateInGroup(typeof(SimulationControlSystemGroup))]
 public class ViewSystemGroup : ComponentSystemGroup, IManualSystemGroupUpdate
 {
     public bool CanUpdate { get; set; }
 
+
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        AddSystemToUpdateList(World.CreateSystem<BeginViewSystem>());
-        AddSystemToUpdateList(World.CreateSystem<EndViewSystem>());
+        // TODO: create/destroy systems + Initialize() + Shutdown() pattern
 
+        var simControlGroup = World.GetOrCreateSystem<SimulationControlSystemGroup>();
 
         IEnumerable<Type> viewComponentSystemTypes =
 
@@ -25,7 +37,19 @@ public class ViewSystemGroup : ComponentSystemGroup, IManualSystemGroupUpdate
             .Concat(TypeUtility.GetECSTypesDerivedFrom(typeof(ViewJobComponentSystem)))
 
             // exlude those with the DisableAutoCreate attribute
-            .Where((type) => !Attribute.IsDefined(type, typeof(DisableAutoCreationAttribute), true));
+            .Where((type) =>
+            {
+                if (Attribute.IsDefined(type, typeof(DisableAutoCreationAttribute), true))
+                    return false;
+
+                if (!simControlGroup.IsClient && Attribute.IsDefined(type, typeof(ClientOnlyAttribute), true))
+                    return false;
+
+                if (!simControlGroup.IsMaster && Attribute.IsDefined(type, typeof(MasterOnlyAttribute), true))
+                    return false;
+
+                return true;
+            });
 
 
         foreach (var systemType in viewComponentSystemTypes)

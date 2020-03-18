@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
-public abstract class SimulationController : GameSystem<SimulationController>
+public class SimulationController : GameSystem<SimulationController>
 {
     //[SerializeField] SimBlueprintProviderPrefab _bpProviderPrefab;
     //[SerializeField] SimBlueprintProviderSceneObject _bpProviderSceneObject;

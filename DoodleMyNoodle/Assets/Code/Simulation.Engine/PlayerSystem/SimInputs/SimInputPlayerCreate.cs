@@ -6,7 +6,7 @@ public class SimInputPlayerCreateOld : SimInput
 }
 
 [NetSerializable]
-public class SimInputPlayerCreate : SimInput
+public class SimInputPlayerCreate : SimMasterInput
 {
     public string PlayerName;
 }

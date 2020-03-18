@@ -36,6 +36,17 @@ namespace SimulationControl
             _sendTickSystem = World.GetExistingSystem<SendSimulationTickSystem>();
         }
 
+        //public bool IsLocallySubmittedInputInQueue(InputSubmissionId inputSubmissionId)
+        //{
+        //    foreach (var item in _inputSubmissionQueue)
+        //    {
+        //        if (item.InstigatorConnectionId == uint.MaxValue && item.ClientSubmissionId == inputSubmissionId)
+        //            return true;
+        //    }
+
+        //    return false;
+        //}
+
         public void SubmitInputInternal(SimInput input, INetworkInterfaceConnection instigatorConnection, InputSubmissionId submissionId)
         {
             if (ValidateInput(input, instigatorConnection))

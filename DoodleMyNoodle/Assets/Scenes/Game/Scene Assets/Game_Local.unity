@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -198,7 +199,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &781800129
 GameObject:
@@ -368,7 +369,7 @@ PrefabInstance:
     - target: {fileID: 822134859900739883, guid: 25dd36403a502a04891aecafd3f3b754,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 822134859900739883, guid: 25dd36403a502a04891aecafd3f3b754,
         type: 3}
@@ -387,18 +388,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 25dd36403a502a04891aecafd3f3b754, type: 3}
---- !u!114 &785821733 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 822134859900739880, guid: 25dd36403a502a04891aecafd3f3b754,
-    type: 3}
-  m_PrefabInstance: {fileID: 785821732}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c4a35c29e4ea6340b01c7e9ab4f76de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &812305676
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,7 +637,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4283058762
+    rgba: 4283124555
   m_fontColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -839,7 +828,7 @@ PrefabInstance:
     - target: {fileID: 822134859900739883, guid: 4aa4152d47a0ad845a840bbe41fae8a1,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 822134859900739883, guid: 4aa4152d47a0ad845a840bbe41fae8a1,
         type: 3}
@@ -858,18 +847,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4aa4152d47a0ad845a840bbe41fae8a1, type: 3}
---- !u!114 &1333488260 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: -3256774263407892231, guid: 4aa4152d47a0ad845a840bbe41fae8a1,
-    type: 3}
-  m_PrefabInstance: {fileID: 1333488259}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcd29149d112c354fbbe0b0fd1917761, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1571139224
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,52 +891,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1577200796
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1577200797}
-  - component: {fileID: 1577200798}
-  m_Layer: 0
-  m_Name: SimulationControllerLocal
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1577200797
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1577200796}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1577200798
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1577200796}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17620dccfcf8b47428242f7b22cb8c4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _bpProviderPrefab: {fileID: 1333488260}
-  _bpProviderSceneObject: {fileID: 785821733}
-  AllowSimToTick: 0
 --- !u!1 &1617881648
 GameObject:
   m_ObjectHideFlags: 0
@@ -1219,7 +1150,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 2133996082
+    rgba: 2150773298
   m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0.5}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1438,7 +1369,7 @@ RectTransform:
   - {fileID: 781800133}
   - {fileID: 1617881650}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

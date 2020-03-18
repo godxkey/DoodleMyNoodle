@@ -164,6 +164,21 @@ namespace SimulationControl
             _playSimulation.Unblock(key);
         }
 
+        //public bool IsLocallySubmittedInputInQueue(InputSubmissionId inputSubmissionId)
+        //{
+        //    foreach (var tick in AvailableTicks)
+        //    {
+        //        foreach (var inputSubmissions in tick.InputSubmissions)
+        //        {
+        //            if (inputSubmissions.InstigatorConnectionId == uint.MaxValue && 
+        //                inputSubmissions.ClientSubmissionId == inputSubmissionId)
+        //                return true;
+        //        }
+        //    }
+
+        //    return false;
+        //}
+
 #if DEBUG_BUILD
         private bool _isPausedByCmd = false;
         void Cmd_SimPause(string[] args)

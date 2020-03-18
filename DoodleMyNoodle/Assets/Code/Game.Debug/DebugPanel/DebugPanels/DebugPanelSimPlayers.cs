@@ -16,8 +16,7 @@ public class DebugPanelSimPlayers : DebugPanel
     {
         _cachedPlayers.Clear();
 
-        EntityManager simEntityManager = GameMonoBehaviourHelpers.SimulationWorld.EntityManager;
-        using (EntityQuery query = simEntityManager.CreateEntityQuery(
+        using (EntityQuery query = GameMonoBehaviourHelpers.SimulationWorld.CreateEntityQuery(
             ComponentType.ReadOnly<PlayerTag>(),
             ComponentType.ReadOnly<PersistentId>()))
         {
@@ -32,7 +31,7 @@ public class DebugPanelSimPlayers : DebugPanel
     {
         UpdateCachedPlayers();
         var simPlayers = _cachedPlayers;
-        var entityManager = GameMonoBehaviourHelpers.SimulationWorld.EntityManager;
+        var simWorldAccessor = GameMonoBehaviourHelpers.SimulationWorld;
 
         GUILayout.BeginHorizontal();
 
@@ -41,7 +40,7 @@ public class DebugPanelSimPlayers : DebugPanel
         for (int i = 0; i < simPlayers.Count; i++)
         {
             ApplyPlayerTextColor(simPlayers[i]);
-            GUILayout.Label(entityManager.GetComponentData<Name>(simPlayers[i]).Value.ToString());
+            GUILayout.Label(simWorldAccessor.GetComponentData<Name>(simPlayers[i]).Value.ToString());
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -52,7 +51,7 @@ public class DebugPanelSimPlayers : DebugPanel
         for (int i = 0; i < simPlayers.Count; i++)
         {
             ApplyPlayerTextColor(simPlayers[i]);
-            GUILayout.Label(entityManager.GetComponentData<PersistentId>(simPlayers[i]).Value.ToString());
+            GUILayout.Label(simWorldAccessor.GetComponentData<PersistentId>(simPlayers[i]).Value.ToString());
         }
         ResetTextColor();
         GUILayout.EndVertical();

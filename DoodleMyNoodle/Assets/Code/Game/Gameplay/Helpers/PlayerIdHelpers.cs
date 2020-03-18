@@ -57,11 +57,10 @@ public static class PlayerIdHelpers
         return PlayerIdHelpers.GetSimPlayerFromPlayer(PlayerRepertoireSystem.Instance.GetLocalPlayerInfo(), simulationWorld);
     }
 
-    public static PlayerInfo GetPlayerFromSimPlayer(Entity playerEntity, World simulationWorld)
+    public static PlayerInfo GetPlayerFromSimPlayer(Entity playerEntity, SimWorldAccessor simWorldAccessor)
     {
-        EntityManager entityManager = simulationWorld.EntityManager;
-        if (entityManager.HasComponent<PersistentId>(playerEntity))
-            return GetPlayerFromSimPlayer(entityManager.GetComponentData<PersistentId>(playerEntity));
+        if (simWorldAccessor.HasComponent<PersistentId>(playerEntity))
+            return GetPlayerFromSimPlayer(simWorldAccessor.GetComponentData<PersistentId>(playerEntity));
         else
             return null;
     }

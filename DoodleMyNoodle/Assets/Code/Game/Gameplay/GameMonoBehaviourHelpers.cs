@@ -7,7 +7,7 @@ using Unity.Entities;
 public static class GameMonoBehaviourHelpers
 {
     public static World PresentationWorld => World.DefaultGameObjectInjectionWorld;
-    public static World SimulationWorld => GetPresentationWorldSystem<SimulationWorldSystem>()?.SimulationWorld;
+    public static SimWorldAccessor SimulationWorld => GetPresentationWorldSystem<SimulationWorldSystem>()?.SimWorldAccessor;
 
     public static void SubmitInput(SimInput input, bool throwErrorIfFailed = false)
     {

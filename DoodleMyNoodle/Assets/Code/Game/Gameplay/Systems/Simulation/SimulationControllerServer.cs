@@ -2,7 +2,7 @@
 using SimulationControl;
 using System;
 using System.Collections.Generic;
-
+/*
 public class SimulationControllerServer : SimulationControllerMaster
 {
     //[ConfigVar("sim.pause_while_join", "true", description: "Should the simulation be paused while players are joining the game?")]
@@ -124,3 +124,4 @@ public class SimulationControllerServer : SimulationControllerMaster
     //    return newOp;
     //}
 }
+*/

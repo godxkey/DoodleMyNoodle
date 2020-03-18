@@ -11,14 +11,28 @@ namespace SimulationControl
     {
         private SessionInterface GetSession() => OnlineService.OnlineInterface?.SessionInterface;
 
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+
+            World.GetOrCreateSystem<SimulationWorldSystem>().SimWorldAccessor.SubmitSystem = this;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            World.GetOrCreateSystem<SimulationWorldSystem>().SimWorldAccessor.SubmitSystem = null;
+        }
+
         protected override void OnUpdate() { }
 
-        public void SubmitInput(SimInput input)
+        public InputSubmissionId SubmitInput(SimInput input)
         {
             if (input == null)
             {
                 DebugService.LogError("Trying to submit a null input");
-                return;
+                return InputSubmissionId.Invalid;
             }
 
             var session = GetSession();
@@ -29,23 +43,27 @@ namespace SimulationControl
                 if (syncSystem != null && syncSystem.IsSynchronizing)
                 {
                     DebugService.Log("Discarding input since we are syncing to the simulation");
-                    return;
+                    return InputSubmissionId.Invalid;
                 }
 
+                var submissionId = InputSubmissionId.Generate();
                 clientSession.SendNetMessageToServer(new NetMessageInputSubmission()
                 {
-                    submissionId = InputSubmissionId.Generate(),
+                    submissionId = submissionId,
                     input = input
                 });
+                return submissionId;
             }
             else
             {
                 // SERVER AND LOCAL
+                var submissionId = InputSubmissionId.Generate();
                 World.GetOrCreateSystem<ConstructSimulationTickSystem>()
                     .SubmitInputInternal(
                     input: input,
                     instigatorConnection: null, // local connection => null
-                    submissionId: default);
+                    submissionId: submissionId);
+                return submissionId;
             }
         }
     }

@@ -10,7 +10,7 @@ namespace SimulationControl
         List<string> _incomingEntityInjections = new List<string>();
 
         World IWorldOwner.OwnedWorld => SimulationWorld;
-        public SimulationWorld SimulationWorld { get; private set; }
+        internal SimulationWorld SimulationWorld { get; private set; }
         public World PresentationWorld => World;
         public SimWorldAccessor SimWorldAccessor { get; private set; }
         public bool ReadyForEntityInjections { get; set; } = false;
@@ -25,10 +25,10 @@ namespace SimulationControl
             World.GetOrCreateSystem<LoadSimulationSceneSystem>();
             World.GetOrCreateSystem<TickSimulationSystem>();
 
-            SimWorldAccessor = new SimWorldAccessor(
-                simWorld: SimulationWorld,
-                beginViewSystem: World.GetOrCreateSystem<BeginViewSystem>(),
-                someSimSystem: SimulationWorld.GetExistingSystem<SimPreInitializationSystemGroup>()); // could be any system
+            SimWorldAccessor = new SimWorldAccessor();
+            SimWorldAccessor.SimWorld = SimulationWorld;
+            SimWorldAccessor.BeginViewSystem = World.GetOrCreateSystem<BeginViewSystem>();
+            SimWorldAccessor.SomeSimSystem = SimulationWorld.GetExistingSystem<SimPreInitializationSystemGroup>(); // could be any system
         }
 
         protected override void OnDestroy()

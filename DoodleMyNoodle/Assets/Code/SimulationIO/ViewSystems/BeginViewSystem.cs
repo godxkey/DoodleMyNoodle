@@ -2,7 +2,7 @@
 using Unity.Collections;
 using Unity.Entities;
 
-[DisableAutoCreation]
+[UpdateInGroup(typeof(ViewSystemGroup))]
 public class BeginViewSystem : ComponentSystem
 {
     [ReadOnly] public ExclusiveEntityTransaction ExclusiveSimWorld;
@@ -18,6 +18,8 @@ public class BeginViewSystem : ComponentSystem
 
     protected override void OnUpdate()
     {
+        if (_worldMaster.SimulationWorld?.EntityManager == null)
+            return;
         ExclusiveSimWorld = _worldMaster.SimulationWorld.EntityManager.BeginExclusiveEntityTransaction();
     }
 }
