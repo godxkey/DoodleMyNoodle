@@ -11,18 +11,22 @@ namespace SimulationControl
     {
         private SessionInterface GetSession() => OnlineService.OnlineInterface?.SessionInterface;
 
+        private SimulationWorldSystem _simWorldSystem;
+
         protected override void OnCreate()
         {
             base.OnCreate();
 
-            World.GetOrCreateSystem<SimulationWorldSystem>().SimWorldAccessor.SubmitSystem = this;
+            _simWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
+            _simWorldSystem.SimWorldAccessor.SubmitSystem = this;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
 
-            World.GetOrCreateSystem<SimulationWorldSystem>().SimWorldAccessor.SubmitSystem = null;
+            if (_simWorldSystem?.SimWorldAccessor != null)
+                _simWorldSystem.SimWorldAccessor.SubmitSystem = null;
         }
 
         protected override void OnUpdate() { }

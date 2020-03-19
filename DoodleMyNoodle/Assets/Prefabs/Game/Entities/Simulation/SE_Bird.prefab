@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1983468408252183681}
   - component: {fileID: -8888525555049467793}
-  - component: {fileID: 7567639110235675312}
+  - component: {fileID: 7356425772463933767}
+  - component: {fileID: 5072555852515810054}
   m_Layer: 0
   m_Name: SE_Bird
   m_TagString: Untagged
@@ -48,7 +49,7 @@ MonoBehaviour:
     x: 0.2
     y: 0
     z: 0
---- !u!114 &7567639110235675312
+--- !u!114 &7356425772463933767
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -57,7 +58,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4951368162375339519}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2aaaf8864cc26a541811aff28c910c0e, type: 3}
+  m_Script: {fileID: 11500000, guid: 478c89a9976b4ef4cb64631425f0a2d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: Reggy
+  Value:
+    x: 0
+    y: 0
+    z: 0
+--- !u!114 &5072555852515810054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951368162375339519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f8fee623f033af42bbfe48b13f5f8bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

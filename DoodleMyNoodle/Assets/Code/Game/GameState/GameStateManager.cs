@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-public class GameStateManager : MonoCoreService<GameStateManager>
+public abstract class GameStateManager : MonoCoreService<GameStateManager>
 {
     const bool log = false;
 
@@ -18,7 +18,7 @@ public class GameStateManager : MonoCoreService<GameStateManager>
 
     GameState _currentGameState;
     GameState _targetGameState;
-    GameStateFactory _gameStateFactory = new GameStateFactory();
+    GameStateFactory _gameStateFactory;
     GameStateDefinitionGraph _graph;
 
     [SerializeField]
@@ -26,9 +26,13 @@ public class GameStateManager : MonoCoreService<GameStateManager>
     GameStateDefinition[] _gameStateDefinitions = new GameStateDefinition[0];
     GameStateParam[] _parameters;
 
+    protected abstract GameStateFactory CreateFactory();
+
     public override void Initialize(Action<ICoreService> onComplete)
     {
         onComplete(this);
+
+        _gameStateFactory = CreateFactory();
 
         _graph = new GameStateDefinitionGraph(_gameStateDefinitions);
 

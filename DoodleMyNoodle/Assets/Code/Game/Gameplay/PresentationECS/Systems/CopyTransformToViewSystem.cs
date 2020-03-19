@@ -5,7 +5,7 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Transforms;
 
-[UpdateAfter(typeof(ViewBindingSystem))]
+[UpdateAfter(typeof(CreateBindedViewEntitiesSystem))]
 public class CopyTransformToViewSystem : ViewJobComponentSystem
 {
     protected override JobHandle OnUpdate(JobHandle jobHandle)

@@ -20,6 +20,8 @@ public class SimulationController : GameSystem<SimulationController>
 
     public override void OnGameReady()
     {
+        base.OnGameReady();
+
         Time.fixedDeltaTime = (float)SimulationConstants.TIME_STEP;
         
         World.DefaultGameObjectInjectionWorld
@@ -35,7 +37,6 @@ public class SimulationController : GameSystem<SimulationController>
 
         //        //SimulationView.Initialize(settings);
 
-        base.OnGameReady();
 
 
         ////#if DEBUG_BUILD
@@ -73,6 +74,8 @@ public class SimulationController : GameSystem<SimulationController>
 
     protected override void OnDestroy()
     {
+        base.OnDestroy();
+
         World.DefaultGameObjectInjectionWorld?.GetExistingSystem<SimulationControlSystemGroup>()?.Shutdown();
 
         //#if DEBUG_BUILD
@@ -84,7 +87,6 @@ public class SimulationController : GameSystem<SimulationController>
         //            _ongoingCmdOperation.TerminateWithFailure();
         //#endif
 
-        base.OnDestroy();
 
         //if (SimulationView.IsRunningOrReadyToRun)
         //    SimulationView.Dispose();

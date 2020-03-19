@@ -1,6 +1,6 @@
 ﻿using Unity.Entities;
 
-public interface IManualSystemGroupUpdate
+internal interface IManualSystemGroupUpdate
 {
     bool CanUpdate { get; set; }
     void Update();
@@ -8,21 +8,7 @@ public interface IManualSystemGroupUpdate
 
 [UnityEngine.ExecuteAlways]
 [AlwaysUpdateSystem]
-public class SimPreInitializationSystemGroup : ComponentSystemGroup, IManualSystemGroupUpdate
-{
-    public bool CanUpdate { get; set; }
-    protected override void OnUpdate()
-    {
-        if (!CanUpdate)
-            return;
-
-        base.OnUpdate();
-    }
-}
-
-[UnityEngine.ExecuteAlways]
-[AlwaysUpdateSystem]
-public class SimSimulationSystemGroup : SimulationSystemGroup, IManualSystemGroupUpdate
+internal class SimPreInitializationSystemGroup : ComponentSystemGroup, IManualSystemGroupUpdate
 {
     public bool CanUpdate { get; set; }
     protected override void OnUpdate()
@@ -35,7 +21,7 @@ public class SimSimulationSystemGroup : SimulationSystemGroup, IManualSystemGrou
 }
 [UnityEngine.ExecuteAlways]
 [AlwaysUpdateSystem]
-public class SimInitializationSystemGroup : InitializationSystemGroup, IManualSystemGroupUpdate
+internal class SimInitializationSystemGroup : InitializationSystemGroup, IManualSystemGroupUpdate
 {
     public bool CanUpdate { get; set; }
     protected override void OnUpdate()
@@ -48,7 +34,33 @@ public class SimInitializationSystemGroup : InitializationSystemGroup, IManualSy
 }
 [UnityEngine.ExecuteAlways]
 [AlwaysUpdateSystem]
-public class SimPresentationSystemGroup : PresentationSystemGroup, IManualSystemGroupUpdate
+internal class SimSimulationSystemGroup : SimulationSystemGroup, IManualSystemGroupUpdate
+{
+    public bool CanUpdate { get; set; }
+    protected override void OnUpdate()
+    {
+        if (!CanUpdate)
+            return;
+
+        base.OnUpdate();
+    }
+}
+[UnityEngine.ExecuteAlways]
+[AlwaysUpdateSystem]
+internal class SimPresentationSystemGroup : PresentationSystemGroup, IManualSystemGroupUpdate
+{
+    public bool CanUpdate { get; set; }
+    protected override void OnUpdate()
+    {
+        if (!CanUpdate)
+            return;
+
+        base.OnUpdate();
+    }
+}
+[UnityEngine.ExecuteAlways]
+[AlwaysUpdateSystem]
+internal class SimPostPresentationSystemGroup : ComponentSystemGroup, IManualSystemGroupUpdate
 {
     public bool CanUpdate { get; set; }
     protected override void OnUpdate()

@@ -21,7 +21,6 @@ namespace SimulationControl
         private Queue<SimInputSubmission> _inputSubmissionQueue = new Queue<SimInputSubmission>();
         private TickSimulationSystem _tickSystem;
         private SimulationWorldSystem _simWorldSystem;
-        private SendSimulationTickSystem _sendTickSystem;
 
         public delegate bool ValidationDelegate(SimInput input, INetworkInterfaceConnection instigator);
 
@@ -33,7 +32,6 @@ namespace SimulationControl
 
             _tickSystem = World.GetOrCreateSystem<TickSimulationSystem>();
             _simWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
-            _sendTickSystem = World.GetExistingSystem<SendSimulationTickSystem>();
         }
 
         //public bool IsLocallySubmittedInputInQueue(InputSubmissionId inputSubmissionId)
@@ -99,7 +97,7 @@ namespace SimulationControl
                         ExpectedNewTickId = FindExpectedNewTickId()
                     };
 
-                    _sendTickSystem?.ConstructedTicks.Add(tickData);
+                    World.GetExistingSystem<SendSimulationTickSystem>()?.ConstructedTicks.Add(tickData);
 
                     // give tick to tick system    fbessette: Maybe we should go through entities to communicate that data ?
                     _tickSystem.AvailableTicks.Add(tickData);

@@ -1,7 +1,7 @@
 ﻿using SimulationControl;
 using Unity.Entities;
 
-[UpdateInGroup(typeof(ViewSystemGroup))]
+[DisableAutoCreation]
 public class EndViewSystem : ComponentSystem
 {
     SimulationWorldSystem _worldMaster;

@@ -4,13 +4,13 @@ using Unity.Jobs;
 
 public class DestroyDanglingViewSystem : ViewJobComponentSystem
 {
-    private BeginInitializationEntityCommandBufferSystem _ecbSystem;
+    private PostSimulationBindingCommandBufferSystem _ecbSystem;
     private DirtyValue<uint> _simWorldEntityClearAndReplaceCount;
 
     protected override void OnCreate()
     {
         base.OnCreate();
-        _ecbSystem = World.GetOrCreateSystem<BeginInitializationEntityCommandBufferSystem>();
+        _ecbSystem = World.GetOrCreateSystem<PostSimulationBindingCommandBufferSystem>();
     }
 
     protected override JobHandle OnUpdate(JobHandle jobHandle)

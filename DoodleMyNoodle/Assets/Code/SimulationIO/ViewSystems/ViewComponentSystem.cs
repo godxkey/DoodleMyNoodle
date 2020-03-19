@@ -1,7 +1,8 @@
 ﻿using SimulationControl;
 using Unity.Entities;
 
-[UpdateInGroup(typeof(ViewSystemGroup))]
+// fbessette: We should probably find a better pattern than this
+
 public abstract class ViewComponentSystem : ComponentSystem
 {
     protected SimWorldAccessor SimWorldAccessor => _simulationWorldSystem.SimWorldAccessor;
@@ -15,7 +16,6 @@ public abstract class ViewComponentSystem : ComponentSystem
     }
 }
 
-[UpdateInGroup(typeof(ViewSystemGroup))]
 public abstract class ViewJobComponentSystem : JobComponentSystem
 {
     protected SimWorldAccessor SimWorldAccessor => _simulationWorldSystem.SimWorldAccessor;
@@ -27,4 +27,8 @@ public abstract class ViewJobComponentSystem : JobComponentSystem
 
         _simulationWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
     }
+}
+
+public abstract class ViewEntityCommandBufferSystem : EntityCommandBufferSystem
+{
 }

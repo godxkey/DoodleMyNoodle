@@ -16,7 +16,7 @@ public static class StaticNetSerializer_SimInputPlayerCreate
     {
         int result = 0;
         result += StaticNetSerializer_System_String.GetNetBitSize(ref obj.PlayerName);
-        result += StaticNetSerializer_SimInput.GetNetBitSize(obj);
+        result += StaticNetSerializer_SimMasterInput.GetNetBitSize(obj);
         return result;
     }
 
@@ -33,7 +33,7 @@ public static class StaticNetSerializer_SimInputPlayerCreate
     public static void NetSerialize(SimInputPlayerCreate obj, BitStreamWriter writer)
     {
         StaticNetSerializer_System_String.NetSerialize(ref obj.PlayerName, writer);
-        StaticNetSerializer_SimInput.NetSerialize(obj, writer);
+        StaticNetSerializer_SimMasterInput.NetSerialize(obj, writer);
     }
 
     public static SimInputPlayerCreate NetDeserialize_Class(BitStreamReader reader)
@@ -49,6 +49,6 @@ public static class StaticNetSerializer_SimInputPlayerCreate
     public static void NetDeserialize(SimInputPlayerCreate obj, BitStreamReader reader)
     {
         StaticNetSerializer_System_String.NetDeserialize(ref obj.PlayerName, reader);
-        StaticNetSerializer_SimInput.NetDeserialize(obj, reader);
+        StaticNetSerializer_SimMasterInput.NetDeserialize(obj, reader);
     }
 }

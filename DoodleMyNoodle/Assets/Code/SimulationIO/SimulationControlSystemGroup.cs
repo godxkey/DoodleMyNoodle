@@ -3,16 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Transforms;
+using UnityEngine.LowLevel;
 
 namespace SimulationControl
 {
     [UpdateInGroup(typeof(Unity.Entities.SimulationSystemGroup))]
     [UpdateBefore(typeof(TransformSystemGroup))]
-    public class SimulationControlSystemGroup : ComponentSystemGroup
+    public class SimulationControlSystemGroup : ManualCreationComponentSystemGroup
     {
         private SimulationWorldSystem _simulationWorldSystem;
-
-        private List<ComponentSystemBase> _manuallyCreatedSystems = new List<ComponentSystemBase>();
 
         public bool IsMaster => IsLocal || IsServer;
         public bool IsClient { get; private set; }
@@ -26,19 +25,6 @@ namespace SimulationControl
                 throw new Exception($"{nameof(SimulationControlSystemGroup)} is already initialized");
 
             IsInitialized = true;
-
-            T ManualCreateAndAddSystem<T>() where T : ComponentSystem
-            {
-                if (!Attribute.IsDefined(typeof(T), typeof(DisableAutoCreationAttribute)))
-                {
-                    DebugService.LogError("We should not be manually creating the system here since its going to create itself anyway");
-                }
-
-                var sys = World.GetOrCreateSystem<T>();
-                _manuallyCreatedSystems.Add(sys);
-                AddSystemToUpdateList(sys);
-                return sys;
-            }
 
             switch (sessionInterface)
             {
@@ -64,6 +50,7 @@ namespace SimulationControl
             _simulationWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
             _simulationWorldSystem.ClearSimWorld();
             _simulationWorldSystem.ReadyForEntityInjections = true;
+            World.GetOrCreateSystem<ViewSystemGroup>().Initialize(this);
 
             ManualCreateAndAddSystem<SubmitSimulationInputSystem>();
             ManualCreateAndAddSystem<LoadSimulationSceneSystem>();
@@ -89,7 +76,16 @@ namespace SimulationControl
             }
 
 
-            SortSystemUpdateList();
+#if UNITY_EDITOR
+            // This is a hack to force the EntityDebugger to correctly update the list of displayed systems
+            {
+                PlayerLoopSystem playerLoop = ScriptBehaviourUpdateOrder.CurrentPlayerLoop;
+                PlayerLoopSystem[] oldArray = playerLoop.subSystemList;
+                playerLoop.subSystemList = new PlayerLoopSystem[oldArray.Length];
+                Array.Copy(oldArray, 0, playerLoop.subSystemList, 0, oldArray.Length);
+                ScriptBehaviourUpdateOrder.SetPlayerLoop(playerLoop);
+            }
+#endif
         }
 
         public void Shutdown()
@@ -99,18 +95,15 @@ namespace SimulationControl
 
             IsInitialized = false;
 
+            World.GetExistingSystem<ViewSystemGroup>()?.Shutdown();
+
             if (_simulationWorldSystem.SimulationWorld != null && _simulationWorldSystem.SimulationWorld.IsCreated)
             {
                 _simulationWorldSystem.ReadyForEntityInjections = false;
                 _simulationWorldSystem.ClearSimWorld();
             }
 
-            foreach (var sys in _manuallyCreatedSystems)
-            {
-                RemoveSystemFromUpdateList(sys);
-                World.DestroySystem(sys);
-            }
-            _manuallyCreatedSystems.Clear();
+            DestroyAllManuallyCreatedSystems();
         }
     }
 

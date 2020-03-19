@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Unity.Entities;
+using UnityEngine;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
 
@@ -46,7 +48,7 @@ namespace SimulationControl
         private SimInitializationSystemGroup _simInitGroup;
         private SimSimulationSystemGroup _simSimGroup;
         private SimPresentationSystemGroup _simPresGroup;
-
+        private SimPostPresentationSystemGroup _simPostPresGroup;
         private ViewSystemGroup _viewGroup;
 
         bool _updatePlayerLoop;
@@ -63,31 +65,36 @@ namespace SimulationControl
             _simInitGroup = _simulationWorld.CreateSystem<SimInitializationSystemGroup>();
             _simSimGroup = _simulationWorld.CreateSystem<SimSimulationSystemGroup>();
             _simPresGroup = _simulationWorld.CreateSystem<SimPresentationSystemGroup>();
+            _simPostPresGroup = _simulationWorld.CreateSystem<SimPostPresentationSystemGroup>();
 
+            // pre init group
             _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemEnd>());
             _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<UpdateSimulationTimeSystem>());
 
+            // init group
             _simInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<BeginInitializationEntityCommandBufferSystem>());
             _simInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<EndInitializationEntityCommandBufferSystem>());
 
+            // sim group
             _simSimGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<BeginSimulationEntityCommandBufferSystem>());
             _simSimGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<EndSimulationEntityCommandBufferSystem>());
-            foreach (Type systemType in TypeUtility.GetECSTypesDerivedFrom(typeof(SimComponentSystem)))
-            {
-                _simSimGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem(systemType));
-            }
-            foreach (Type systemType in TypeUtility.GetECSTypesDerivedFrom(typeof(SimJobComponentSystem)))
-            {
-                _simSimGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem(systemType));
-            }
 
+            // pres group
             _simPresGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<BeginPresentationEntityCommandBufferSystem>());
-            _simPresGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemBegin>());
 
-            _simPreInitGroup.SortSystemUpdateList();
-            _simInitGroup.SortSystemUpdateList();
-            _simSimGroup.SortSystemUpdateList();
-            _simPresGroup.SortSystemUpdateList();
+            // post pres
+            _simPostPresGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemBegin>());
+
+
+            var simSystemTypes = TypeUtility.GetECSTypesDerivedFrom(typeof(SimComponentSystem))
+                .Concat(TypeUtility.GetECSTypesDerivedFrom(typeof(SimJobComponentSystem)));
+
+            AddSystemsToRootLevelSystemGroups(_simulationWorld, simSystemTypes);
+
+            //_simPreInitGroup.SortSystemUpdateList();
+            //_simInitGroup.SortSystemUpdateList();
+            //_simSimGroup.SortSystemUpdateList();
+            //_simPresGroup.SortSystemUpdateList();
 
             _viewGroup = World.GetOrCreateSystem<ViewSystemGroup>(); // system add & sort is done inside
 
@@ -138,6 +145,7 @@ namespace SimulationControl
                 ManualUpdate(_simInitGroup);
                 ManualUpdate(_simSimGroup);
                 ManualUpdate(_simPresGroup);
+                ManualUpdate(_simPostPresGroup);
 
                 ManualUpdate(_viewGroup);
 
@@ -178,6 +186,101 @@ namespace SimulationControl
 
         //    return false;
         //}
+
+            // fbessette: This code mostly comes from the DefaultWorldInitialization
+        /// <summary>
+        /// Adds the collection of systems to the world by injecting them into the root level system groups
+        /// (InitializationSystemGroup, SimulationSystemGroup and PresentationSystemGroup)
+        /// </summary>
+        private static void AddSystemsToRootLevelSystemGroups(World world, IEnumerable<Type> systems)
+        {
+            // create presentation system and simulation system
+            var initializationSystemGroup = world.GetOrCreateSystem<SimInitializationSystemGroup>();
+            var simulationSystemGroup = world.GetOrCreateSystem<SimSimulationSystemGroup>();
+            var presentationSystemGroup = world.GetOrCreateSystem<SimPresentationSystemGroup>();
+
+            // Add systems to their groups, based on the [UpdateInGroup] attribute.
+            foreach (var type in systems)
+            {
+                // Skip the built-in root-level system groups
+                if (type == typeof(SimInitializationSystemGroup) ||
+                    type == typeof(SimSimulationSystemGroup) ||
+                    type == typeof(SimPresentationSystemGroup))
+                {
+                    continue;
+                }
+
+                var groups = type.GetCustomAttributes(typeof(UpdateInGroupAttribute), true);
+                if (groups.Length == 0)
+                {
+                    simulationSystemGroup.AddSystemToUpdateList(GetOrCreateSystemAndLogException(world, type));
+                }
+
+                foreach (var g in groups)
+                {
+                    var group = g as UpdateInGroupAttribute;
+                    if (group == null)
+                        continue;
+
+                    if (!(typeof(ComponentSystemGroup)).IsAssignableFrom(group.GroupType))
+                    {
+                        Debug.LogError($"Invalid [UpdateInGroup] attribute for {type}: {group.GroupType} must be derived from ComponentSystemGroup.");
+                        continue;
+                    }
+
+                    if (type == typeof(SimPreInitializationSystemGroup)||
+                        type == typeof(SimPostPresentationSystemGroup))
+                    {
+                        Debug.LogError($"Invalid [UpdateInGroup] attribute for {type}: {group.GroupType} is reserved for internal stuff.");
+                        continue;
+                    }
+
+                    // Warn against unexpected behaviour combining DisableAutoCreation and UpdateInGroup
+                    var parentDisableAutoCreation = Attribute.IsDefined(group.GroupType, typeof(DisableAutoCreationAttribute));
+                    if (parentDisableAutoCreation)
+                    {
+                        Debug.LogWarning($"A system {type} wants to execute in {group.GroupType} but this group has [DisableAutoCreation] and {type} does not.");
+                    }
+
+                    var groupSys = GetOrCreateSystemAndLogException(world, group.GroupType) as ComponentSystemGroup;
+                    if (groupSys == null)
+                    {
+                        Debug.LogWarning(
+                            $"Skipping creation of {type} due to errors creating the group {group.GroupType}. Fix these errors before continuing.");
+                        continue;
+                    }
+                    
+                    groupSys.AddSystemToUpdateList(GetOrCreateSystemAndLogException(world, type));
+                }
+            }
+
+            // Update player loop
+            initializationSystemGroup.SortSystemUpdateList();
+            simulationSystemGroup.SortSystemUpdateList();
+            presentationSystemGroup.SortSystemUpdateList();
+        }
+
+        static ComponentSystemBase GetOrCreateSystemAndLogException(World world, Type type)
+        {
+            try
+            {
+                if (type == typeof(InitializationSystemGroup))
+                    type = typeof(SimInitializationSystemGroup);
+                
+                if (type == typeof(SimulationSystemGroup))
+                    type = typeof(SimSimulationSystemGroup);
+
+                if (type == typeof(PresentationSystemGroup))
+                    type = typeof(SimPresentationSystemGroup);
+
+                return world.GetOrCreateSystem(type);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                return null;
+            }
+        }
 
 #if DEBUG_BUILD
         private bool _isPausedByCmd = false;
@@ -221,6 +324,11 @@ namespace SimulationControl
                         {
                             playerLoop.subSystemList[i].subSystemList =
                                 AddSystem<SimPresentationSystemGroup>(
+                                    world,
+                                    playerLoop.subSystemList[i].subSystemList);
+
+                            playerLoop.subSystemList[i].subSystemList =
+                                AddSystem<SimPostPresentationSystemGroup>(
                                     world,
                                     playerLoop.subSystemList[i].subSystemList);
                         }

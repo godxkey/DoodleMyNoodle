@@ -45,7 +45,6 @@ namespace SimulationControl
                     {
                         if (!WasAddedToSceneLoads(loadSceneCommand.SceneName))
                         {
-                            DebugService.Log("load scene " + loadSceneCommand.SceneName);
                             _simulationWorldSystem.RegisterIncomingEntityInjection(loadSceneCommand.SceneName);
                             _sceneLoads.Add(SceneService.Load(loadSceneCommand.SceneName, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D));
                         }

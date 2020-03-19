@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4930482915267029965}
-  - component: {fileID: 7298584738737846374}
+  - component: {fileID: 2612281582125283956}
   m_Layer: 0
   m_Name: GameStateManager
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7298584738737846374
+--- !u!114 &2612281582125283956
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,14 +40,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1246224902083646748}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0943889956ea968449cd6a840867053b, type: 3}
+  m_Script: {fileID: 11500000, guid: c823af416ad48b94882f90327979b9d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _gameStateDefinitions:
-  - {fileID: 11400000, guid: a2bcadba14b6db14cb75c84271b01619, type: 2}
+  - {fileID: 11400000, guid: 07934a0cb6742454ca8d778027d755e5, type: 2}
+  - {fileID: 11400000, guid: 484c5451124e27d46a731b87b5073a9b, type: 2}
+  - {fileID: 11400000, guid: 23a7b481f84cfb044906e1f4f380fba5, type: 2}
   - {fileID: 11400000, guid: bf39b08c256e7ea4d84154544a987abf, type: 2}
   - {fileID: 11400000, guid: a0dcc1f2f19fc234999be53597e8602d, type: 2}
   - {fileID: 11400000, guid: d47945710aca9f743a4bab70d1f34829, type: 2}
-  - {fileID: 11400000, guid: 484c5451124e27d46a731b87b5073a9b, type: 2}
-  - {fileID: 11400000, guid: 23a7b481f84cfb044906e1f4f380fba5, type: 2}
-  - {fileID: 11400000, guid: 07934a0cb6742454ca8d778027d755e5, type: 2}
+  - {fileID: 11400000, guid: a2bcadba14b6db14cb75c84271b01619, type: 2}

@@ -3,13 +3,17 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 
+[UpdateAfter(typeof(CreateBindedViewEntitiesSystem))]
+[UpdateBefore(typeof(CopyTransformToViewSystem))]
+public class PostSimulationBindingCommandBufferSystem : ViewEntityCommandBufferSystem { }
+
 [UpdateAfter(typeof(DestroyDanglingViewSystem))]
 [UpdateAfter(typeof(BeginViewSystem))]
-public class ViewBindingSystem : ViewJobComponentSystem
+public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
 {
     private EntityQuery _newSimEntitiesQ;
     private EntityQuery _allSimEntitiesQ;
-    private BeginPresentationEntityCommandBufferSystem _ecbSystem;
+    private PostSimulationBindingCommandBufferSystem _ecbSystem;
 
     private DirtyValue<uint> _simWorldEntityClearAndReplaceCount;
 
@@ -19,7 +23,7 @@ public class ViewBindingSystem : ViewJobComponentSystem
 
         _newSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<NewlyCreatedTag>(), ComponentType.ReadOnly<BlueprintId>());
         _allSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<BlueprintId>());
-        _ecbSystem = World.GetOrCreateSystem<BeginPresentationEntityCommandBufferSystem>();
+        _ecbSystem = World.GetOrCreateSystem<PostSimulationBindingCommandBufferSystem>();
 
         RequireSingletonForUpdate<Settings_ViewBindingSystem_BlueprintDefinition>();
     }
@@ -28,7 +32,8 @@ public class ViewBindingSystem : ViewJobComponentSystem
     {
         var settingsEntity = GetSingletonEntity<Settings_ViewBindingSystem_BlueprintDefinition>();
 
-        // TODO fbessette: mini clean-up
+        // fbessette: we use the 'EntityClearAndReplaceCount' to mesure when we should replace all view entities.
+        //            This doesn't feel like the best way to do it... Feel free to refactor
         _simWorldEntityClearAndReplaceCount.Set(SimWorldAccessor.EntityClearAndReplaceCount);
         if (_simWorldEntityClearAndReplaceCount.IsDirty)
         {
@@ -49,9 +54,9 @@ public class ViewBindingSystem : ViewJobComponentSystem
             }.Schedule(_newSimEntitiesQ, jobHandle);
         }
 
-
         _ecbSystem.AddJobHandleForProducer(jobHandle);
 
+        jobHandle.Complete();
         return jobHandle;
     }
 

@@ -179,7 +179,7 @@ namespace Unity.Entities
             {
                 try
                 {
-                    Debug.Log("Update: " + this.GetType() + " subsys: " + sys);
+                    //Debug.Log("Update: " + this.GetType() + " subsys: " + sys);
                     sys.Update();
                 }
                 catch (Exception e)

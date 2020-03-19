@@ -27,7 +27,6 @@ namespace SimulationControl
 
             SimWorldAccessor = new SimWorldAccessor();
             SimWorldAccessor.SimWorld = SimulationWorld;
-            SimWorldAccessor.BeginViewSystem = World.GetOrCreateSystem<BeginViewSystem>();
             SimWorldAccessor.SomeSimSystem = SimulationWorld.GetExistingSystem<SimPreInitializationSystemGroup>(); // could be any system
         }
 
