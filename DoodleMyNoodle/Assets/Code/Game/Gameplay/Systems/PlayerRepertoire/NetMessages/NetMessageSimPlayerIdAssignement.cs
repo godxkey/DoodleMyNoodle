@@ -5,6 +5,6 @@ using UnityEngine;
 [NetSerializable]
 public struct NetMessageSimPlayerIdAssignement
 {
-    public SimPlayerId SimPlayerId;
+    public PersistentId SimPlayerId;
     public PlayerId PlayerId;
 }

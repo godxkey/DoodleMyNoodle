@@ -29,17 +29,44 @@ public class TileHighlightManager : GameMonoBehaviour
             i++;
 
             SimCharacterAttackComponent characterAttackComponent = gridWalker.GetComponent<SimCharacterAttackComponent>();
+            SimCharacterHealComponent characterHealComponent = gridWalker.GetComponent<SimCharacterHealComponent>();
 
             if (_tempHighlights.Count == 0) 
             {
                 if (gridWalker.WantsToWalk)
                 {
                     AddHilightsAroundPlayer(gridWalker, gridWalker.GetComponent<SimPlayerActions>().Value);
+
+                    if (characterAttackComponent != null && characterAttackComponent.WantsToAttack)
+                        characterAttackComponent?.OnCancelAttackRequest();
+
+                    if (characterAttackComponent != null && characterAttackComponent.WantsToShootProjectile)
+                        characterAttackComponent?.OnCancelShootRequest();
+
+                    if (characterHealComponent != null && characterHealComponent.WantsToHeal)
+                        characterHealComponent?.OnCancelHealRequest();
+
                 }
-                
-                if (characterAttackComponent != null && characterAttackComponent.WantsToAttack)
+                else if (characterAttackComponent != null && characterAttackComponent.WantsToAttack)
                 {
-                    AddHilightsAroundPlayer(gridWalker, 1); // hard coded attack is range 1
+                    AddHilightsAroundPlayer(gridWalker, 1); // hard coded attack range is 1
+
+                    if(characterAttackComponent != null && characterAttackComponent.WantsToShootProjectile)
+                        characterAttackComponent?.OnCancelShootRequest();
+
+                    if (characterHealComponent != null && characterHealComponent.WantsToHeal)
+                        characterHealComponent?.OnCancelHealRequest();
+
+                }else if (characterAttackComponent != null && characterAttackComponent.WantsToShootProjectile)
+                {
+                    AddHilightsAroundPlayer(gridWalker, 1); // hard codedfor shooting
+
+                    if (characterHealComponent != null && characterHealComponent.WantsToHeal)
+                        characterHealComponent?.OnCancelHealRequest();
+
+                }else if (characterHealComponent != null && characterHealComponent.WantsToHeal)
+                {
+                    AddHilightsAroundPlayer(gridWalker, 1); // hard coded heal range is 1
                 }
             }
             else
@@ -48,12 +75,42 @@ public class TileHighlightManager : GameMonoBehaviour
                 {
                     RemoveHilightsAroundPlayer();
                     gridWalker.ChoiceMade = false;
+
+                    if (characterAttackComponent != null && characterAttackComponent.WantsToAttack)
+                        characterAttackComponent?.OnCancelAttackRequest();
+
+                    if (characterAttackComponent != null && characterAttackComponent.WantsToShootProjectile)
+                        characterAttackComponent?.OnCancelShootRequest();
+
+                    if (characterHealComponent != null && characterHealComponent.WantsToHeal)
+                        characterHealComponent?.OnCancelHealRequest();
+
                 }
-                
-                if((characterAttackComponent != null) && characterAttackComponent.ChoiceMade)
+                else if((characterAttackComponent != null) && characterAttackComponent.AttackChoiceMade)
                 {
                     RemoveHilightsAroundPlayer();
-                    characterAttackComponent.ChoiceMade = false;
+                    characterAttackComponent.AttackChoiceMade = false;
+
+                    if (characterAttackComponent != null && characterAttackComponent.WantsToShootProjectile)
+                        characterAttackComponent?.OnCancelShootRequest();
+
+                    if (characterHealComponent != null && characterHealComponent.WantsToHeal)
+                        characterHealComponent?.OnCancelHealRequest();
+
+                }
+                else if ((characterAttackComponent != null) && characterAttackComponent.ShootProjectileChoiceMade)
+                {
+                    RemoveHilightsAroundPlayer();
+                    characterAttackComponent.ShootProjectileChoiceMade = false;
+
+                    if (characterHealComponent != null && characterHealComponent.WantsToHeal)
+                        characterHealComponent?.OnCancelHealRequest();
+
+                }
+                else if ((characterHealComponent != null) && characterHealComponent.ChoiceMade)
+                {
+                    RemoveHilightsAroundPlayer();
+                    characterHealComponent.ChoiceMade = false;
                 }
             }
         }

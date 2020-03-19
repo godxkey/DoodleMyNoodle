@@ -12,6 +12,6 @@ public class SimulationTimeDisplay : GameMonoBehaviour
     {
         base.OnGameUpdate();
 
-        Text.text = $"{Prefix}{SimulationWorld.Instance.Time.ElapsedTime:F2}";
+        Text.text = $"{Prefix}{GameMonoBehaviourHelpers.SimulationWorld.Time.ElapsedTime:F2}";
     }
 }

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Simulation : SimulationBase
 {
+    public static int Seed => SimModules._World.Seed;
+
     /// <summary>
     /// Duplicate the entity using Unity's traditional Instantiate replication model and inject it into the simulation
     /// <para/>
@@ -104,9 +106,6 @@ public class Simulation : SimulationBase
     /// Load the given scene and inject all gameobjects with the SimEntity component into the simulation
     /// </summary>
     public static void LoadScene(string sceneName) => SimModules._SceneLoader.LoadScene(sceneName);
-
-    public static void AddPresentationScene(string scene) => SimModules._PresentationSceneManager.AddPresentationScene(scene);
-    public static void RemovePresentationScene(string scene) => SimModules._PresentationSceneManager.RemovePresentationScene(scene);
 
     public static class Random
     {

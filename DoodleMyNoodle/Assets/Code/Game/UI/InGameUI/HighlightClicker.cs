@@ -7,11 +7,14 @@ public class HighlightClicker : GameMonoBehaviour
     private SimPawnComponent _playerPawn;
     private SimGridWalkerComponent _playerGridWalkerComponent;
     private SimCharacterAttackComponent _playerCharacterAttackComponent;
+    private SimCharacterHealComponent _playerCharacterHealComponent;
 
     public override void OnGameUpdate()
     {
-        if (_playerPawn == null)
-            _playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
+        // PORT TO ECS
+
+        //if (_playerPawn == null)
+        //    _playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
 
         if (_playerPawn != null)
         {
@@ -21,22 +24,27 @@ public class HighlightClicker : GameMonoBehaviour
             if (_playerCharacterAttackComponent == null)
                 _playerCharacterAttackComponent = _playerPawn.GetComponent<SimCharacterAttackComponent>();
 
+            if (_playerCharacterHealComponent == null)
+                _playerCharacterHealComponent = _playerPawn.GetComponent<SimCharacterHealComponent>();
+
             if (_playerGridWalkerComponent != null)
             {
                 if (_playerGridWalkerComponent.WantsToWalk && IsMouseInsideHighlight(GetMousePositionOnTile()))
                 {
-                    if (Input.GetMouseButtonDown(0) && SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
                     {
-                        SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+                        if (Input.GetMouseButtonDown(0)) 
+                        {
+                            SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
 
-                        _playerPawn.GetComponent<SimPlayerActions>().IncreaseValue(-CalculateAmountOfActionToMoveThere(_playerPawn.GetComponent<SimGridWalkerComponent>().TileId, currentTileID));
+                            _playerGridWalkerComponent.OnDestinationChoosen(currentTileID);
 
-                        _playerGridWalkerComponent.TryWalkTo(currentTileID);
-
-                        _playerGridWalkerComponent.WantsToWalk = false;
-                        _playerGridWalkerComponent.ChoiceMade = true;
-
-                        return;
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        _playerGridWalkerComponent.OnCancelWalkRequest();
                     }
                 }
             }
@@ -45,18 +53,61 @@ public class HighlightClicker : GameMonoBehaviour
             {
                 if (_playerCharacterAttackComponent.WantsToAttack && IsMouseInsideHighlight(GetMousePositionOnTile()))
                 {
-                    if (Input.GetMouseButtonDown(0) && SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
                     {
-                        SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+                        if (Input.GetMouseButtonDown(0)) 
+                        {
+                            SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
 
-                        _playerPawn.GetComponent<SimPlayerActions>().IncreaseValue(-1);
+                            _playerCharacterAttackComponent.OnAttackDestinationChoosen(currentTileID);
 
-                        _playerCharacterAttackComponent.TryToAttack(currentTileID);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        _playerCharacterAttackComponent.OnCancelAttackRequest();
+                    }
+                }
 
-                        _playerCharacterAttackComponent.WantsToAttack = false;
-                        _playerCharacterAttackComponent.ChoiceMade = true;
+                if (_playerCharacterAttackComponent.WantsToShootProjectile && IsMouseInsideHighlight(GetMousePositionOnTile()))
+                {
+                    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    {
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
 
-                        return;
+                            _playerCharacterAttackComponent.OnShootDestinationChoosen(currentTileID);
+
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        _playerCharacterAttackComponent.OnCancelShootRequest();
+                    }
+                }
+
+                if(_playerCharacterHealComponent != null)
+                {
+                    if (_playerCharacterHealComponent.WantsToHeal && IsMouseInsideHighlight(GetMousePositionOnTile()))
+                    {
+                        if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                        {
+                            if (Input.GetMouseButtonDown(0))
+                            {
+                                SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+
+                                _playerCharacterHealComponent.OnHealDestinationChoosen(currentTileID);
+
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            _playerCharacterHealComponent.OnCancelHealRequest();
+                        }
                     }
                 }
             }
@@ -83,12 +134,5 @@ public class HighlightClicker : GameMonoBehaviour
             && mousePos.x >= transform.position.x - 0.5f
             && mousePos.y <= transform.position.y + 0.5f
             && mousePos.y >= transform.position.y - 0.5f;
-    }
-
-    private int CalculateAmountOfActionToMoveThere(SimTileId start, SimTileId end)
-    {
-        int up = Mathf.Abs(end.Y - start.Y);
-        int right = Mathf.Abs(end.X - start.X);
-        return up + right;
     }
 }

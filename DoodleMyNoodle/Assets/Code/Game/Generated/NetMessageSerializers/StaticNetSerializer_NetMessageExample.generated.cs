@@ -15,14 +15,14 @@ public static class StaticNetSerializer_NetMessageExample
     public static int GetNetBitSize(NetMessageExample obj)
     {
         int result = 0;
-        result += StaticNetSerializer_String.GetNetBitSize(ref obj.valueString);
-        result += StaticNetSerializer_Int32.GetNetBitSize(ref obj.valueInt);
-        result += StaticNetSerializer_UInt32.GetNetBitSize(ref obj.valueUInt);
-        result += StaticNetSerializer_Int16.GetNetBitSize(ref obj.valueShort);
-        result += StaticNetSerializer_UInt16.GetNetBitSize(ref obj.valueUShort);
-        result += StaticNetSerializer_Boolean.GetNetBitSize(ref obj.valueBool);
-        result += StaticNetSerializer_Byte.GetNetBitSize(ref obj.valueByte);
-        result += ArrayNetSerializer_Int32.GetNetBitSize(ref obj.listOnInts);
+        result += StaticNetSerializer_System_String.GetNetBitSize(ref obj.valueString);
+        result += StaticNetSerializer_System_Int32.GetNetBitSize(ref obj.valueInt);
+        result += StaticNetSerializer_System_UInt32.GetNetBitSize(ref obj.valueUInt);
+        result += StaticNetSerializer_System_Int16.GetNetBitSize(ref obj.valueShort);
+        result += StaticNetSerializer_System_UInt16.GetNetBitSize(ref obj.valueUShort);
+        result += StaticNetSerializer_System_Boolean.GetNetBitSize(ref obj.valueBool);
+        result += StaticNetSerializer_System_Byte.GetNetBitSize(ref obj.valueByte);
+        result += ArrayNetSerializer_System_Int32.GetNetBitSize(ref obj.listOnInts);
         return result;
     }
 
@@ -38,14 +38,14 @@ public static class StaticNetSerializer_NetMessageExample
     }
     public static void NetSerialize(NetMessageExample obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_String.NetSerialize(ref obj.valueString, writer);
-        StaticNetSerializer_Int32.NetSerialize(ref obj.valueInt, writer);
-        StaticNetSerializer_UInt32.NetSerialize(ref obj.valueUInt, writer);
-        StaticNetSerializer_Int16.NetSerialize(ref obj.valueShort, writer);
-        StaticNetSerializer_UInt16.NetSerialize(ref obj.valueUShort, writer);
-        StaticNetSerializer_Boolean.NetSerialize(ref obj.valueBool, writer);
-        StaticNetSerializer_Byte.NetSerialize(ref obj.valueByte, writer);
-        ArrayNetSerializer_Int32.NetSerialize(ref obj.listOnInts, writer);
+        StaticNetSerializer_System_String.NetSerialize(ref obj.valueString, writer);
+        StaticNetSerializer_System_Int32.NetSerialize(ref obj.valueInt, writer);
+        StaticNetSerializer_System_UInt32.NetSerialize(ref obj.valueUInt, writer);
+        StaticNetSerializer_System_Int16.NetSerialize(ref obj.valueShort, writer);
+        StaticNetSerializer_System_UInt16.NetSerialize(ref obj.valueUShort, writer);
+        StaticNetSerializer_System_Boolean.NetSerialize(ref obj.valueBool, writer);
+        StaticNetSerializer_System_Byte.NetSerialize(ref obj.valueByte, writer);
+        ArrayNetSerializer_System_Int32.NetSerialize(ref obj.listOnInts, writer);
     }
 
     public static NetMessageExample NetDeserialize_Class(BitStreamReader reader)
@@ -60,13 +60,13 @@ public static class StaticNetSerializer_NetMessageExample
     }
     public static void NetDeserialize(NetMessageExample obj, BitStreamReader reader)
     {
-        StaticNetSerializer_String.NetDeserialize(ref obj.valueString, reader);
-        StaticNetSerializer_Int32.NetDeserialize(ref obj.valueInt, reader);
-        StaticNetSerializer_UInt32.NetDeserialize(ref obj.valueUInt, reader);
-        StaticNetSerializer_Int16.NetDeserialize(ref obj.valueShort, reader);
-        StaticNetSerializer_UInt16.NetDeserialize(ref obj.valueUShort, reader);
-        StaticNetSerializer_Boolean.NetDeserialize(ref obj.valueBool, reader);
-        StaticNetSerializer_Byte.NetDeserialize(ref obj.valueByte, reader);
-        ArrayNetSerializer_Int32.NetDeserialize(ref obj.listOnInts, reader);
+        StaticNetSerializer_System_String.NetDeserialize(ref obj.valueString, reader);
+        StaticNetSerializer_System_Int32.NetDeserialize(ref obj.valueInt, reader);
+        StaticNetSerializer_System_UInt32.NetDeserialize(ref obj.valueUInt, reader);
+        StaticNetSerializer_System_Int16.NetDeserialize(ref obj.valueShort, reader);
+        StaticNetSerializer_System_UInt16.NetDeserialize(ref obj.valueUShort, reader);
+        StaticNetSerializer_System_Boolean.NetDeserialize(ref obj.valueBool, reader);
+        StaticNetSerializer_System_Byte.NetDeserialize(ref obj.valueByte, reader);
+        ArrayNetSerializer_System_Int32.NetDeserialize(ref obj.listOnInts, reader);
     }
 }

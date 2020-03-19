@@ -89,7 +89,7 @@ public static class DynamicNetSerializationRegistryCodeGenerator
                 {
                     if (addComma)
                         writer.WriteLine("        ,");
-                    writer.WriteLine("        typeof(" + GetNiceTypeName(type) + ")");
+                    writer.WriteLine("        typeof(" + type.GetNiceFullName() + ")");
                     addComma = true;
                 }
                 writer.WriteLine("    };");
@@ -107,9 +107,9 @@ public static class DynamicNetSerializationRegistryCodeGenerator
 
                     if (addComma)
                         writer.WriteLine("        ,");
-                    writer.WriteLine("        [typeof(" + GetNiceTypeName(t) + ")] = (obj) =>");
+                    writer.WriteLine("        [typeof(" + t.GetNiceFullName() + ")] = (obj) =>");
                     writer.WriteLine("        {");
-                    writer.WriteLine("            " + GetNiceTypeName(t) + " castedObj = (" + GetNiceTypeName(t) + ")obj;");
+                    writer.WriteLine("            " + t.GetNiceFullName() + " castedObj = (" + t.GetNiceFullName() + ")obj;");
                     if (NetSerializationCodeGenUtility.ConsideredAsValueType(t))
                         writer.WriteLine("            return " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".GetNetBitSize(ref castedObj);");
                     else
@@ -132,9 +132,9 @@ public static class DynamicNetSerializationRegistryCodeGenerator
 
                     if (addComma)
                         writer.WriteLine("        ,");
-                    writer.WriteLine("        [typeof(" + GetNiceTypeName(t) + ")] = (obj, writer) =>");
+                    writer.WriteLine("        [typeof(" + t.GetNiceFullName() + ")] = (obj, writer) =>");
                     writer.WriteLine("        {");
-                    writer.WriteLine("            " + GetNiceTypeName(t) + " castedObj = (" + GetNiceTypeName(t) + ")obj;");
+                    writer.WriteLine("            " + t.GetNiceFullName() + " castedObj = (" + t.GetNiceFullName() + ")obj;");
                     if (NetSerializationCodeGenUtility.ConsideredAsValueType(t))
                         writer.WriteLine("            " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".NetSerialize(ref castedObj, writer);");
                     else
@@ -159,7 +159,7 @@ public static class DynamicNetSerializationRegistryCodeGenerator
                         writer.WriteLine("        ,");
                     writer.WriteLine("        [" + i + "] = (reader) =>");
                     writer.WriteLine("        {");
-                    writer.WriteLine("            " + GetNiceTypeName(t) + " obj = new " + GetNiceTypeName(t) + "();");
+                    writer.WriteLine("            " + t.GetNiceFullName() + " obj = new " + t.GetNiceFullName() + "();");
                     if (NetSerializationCodeGenUtility.ConsideredAsValueType(t))
                         writer.WriteLine("            " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".NetDeserialize(ref obj, reader);");
                     else
@@ -174,11 +174,5 @@ public static class DynamicNetSerializationRegistryCodeGenerator
                 writer.WriteLine("}");
             }
         }
-    }
-
-
-    static string GetNiceTypeName(Type type)
-    {
-        return type.Name; //return type.FullName.Replace('+', '.');
     }
 }

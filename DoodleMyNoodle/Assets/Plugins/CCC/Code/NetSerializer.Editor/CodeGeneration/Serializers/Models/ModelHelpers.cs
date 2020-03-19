@@ -64,7 +64,7 @@ public static partial class NetSerializerCodeGenerator
         {
             if (fieldType.IsEnum)
             {
-                return $"obj{fieldAccessor} = ({fieldType.FullName.Replace('+', '.')}){NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetDeserialize(reader);";
+                return $"obj{fieldAccessor} = ({fieldType.GetNiceFullName()}){NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetDeserialize(reader);";
             }
             else if (NetSerializationCodeGenUtility.ConsideredAsValueType(fieldType))
             {

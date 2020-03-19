@@ -31,7 +31,7 @@ public class MenuSessionCreation : MonoBehaviour
 
         _createButton.interactable =
             serverInterface != null &&
-            serverInterface.isCreatingSession == false &&
+            serverInterface.IsCreatingSession == false &&
             _sessionNameInputField.text.Length > 0;
     }
 

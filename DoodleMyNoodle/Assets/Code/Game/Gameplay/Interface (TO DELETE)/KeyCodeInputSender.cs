@@ -296,6 +296,6 @@ public class KeyCodeInputSender : MonoBehaviour
 
     void Send(KeyCode keyCode, SimInputKeycode.State state)
     {
-        SimulationController.Instance.SubmitInput(new SimInputKeycode() { keyCode = keyCode, state = state });
+        GameMonoBehaviourHelpers.SubmitInput(new SimInputKeycode() { keyCode = keyCode, state = state });
     }
 }

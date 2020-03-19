@@ -54,9 +54,9 @@ public class CameraService : MonoCoreService<CameraService>
         }
     }
 
-    public void AddCamera(Camera camera, AudioListener audioListener, int priority)
+    public void AddCamera(Camera camera, AudioListener audioListener, CameraSet.DeactivateMode deactivateMode, int priority)
     {
-        AddCamera(new CameraSet(camera, audioListener), priority);
+        AddCamera(new CameraSet(camera, audioListener, deactivateMode), priority);
     }
     public void AddCamera(CameraSet cameraSet, int priority)
     {

@@ -2,127 +2,135 @@
 using Sim.Operations;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using Unity.Entities;
 
 internal class SimModuleSerializer : SimModuleBase
 {
-    internal bool CanSimWorldBeSaved =>
-        SimModules._SceneLoader.PendingSceneLoads == 0
-        && SimModules._Ticker.IsTicking == false
-        && IsInDeserializationProcess == false;
+    //internal bool CanSimWorldBeSaved =>
+    //    SimModules._SceneLoader.PendingSceneLoads == 0
+    //    && SimModules._Ticker.IsTicking == false
+    //    && IsInDeserializationProcess == false;
 
-    internal bool CanSimWorldBeLoaded =>
-        SimModules._SceneLoader.PendingSceneLoads == 0
-        && SimModules._Ticker.IsTicking == false
-        && IsInDeserializationProcess == false;
+    //internal bool CanSimWorldBeLoaded =>
+    //    SimModules._SceneLoader.PendingSceneLoads == 0
+    //    && SimModules._Ticker.IsTicking == false
+    //    && IsInDeserializationProcess == false;
 
-    internal bool IsInDeserializationProcess =>
-        _deserializationOperation != null
-        && _deserializationOperation.IsRunning;
+    //internal bool IsInDeserializationProcess =>
+    //    _deserializationOperation != null
+    //    && _deserializationOperation.IsRunning;
 
-    internal bool IsInSerializationProcess =>
-        _serializationOperation != null
-        && _serializationOperation.IsRunning;
+    //internal bool IsInSerializationProcess =>
+    //    _serializationOperation != null
+    //    && _serializationOperation.IsRunning;
 
-    internal Action<SimSerializationResult> OnSerializationResult;
-    internal Action<SimDeserializationResult> OnDeserializationResult;
+    //internal Action<SimSerializationResult> OnSerializationResult;
+    //internal Action<SimDeserializationResult> OnDeserializationResult;
 
-    SimDeserializationOperation _deserializationOperation;
-    SimSerializationOperationWithCache _serializationOperation;
+    //SimDeserializationOperation _deserializationOperation;
+    //SimSerializationOperationWithCache _serializationOperation;
 
-    JsonSerializerSettings _cachedJsonSettings;
-    SimObjectJsonConverter _cachedSimObjectJsonConverter;
+    static JsonSerializerSettings s_cachedJsonSettings;
+    static SimObjectJsonConverter s_cachedSimObjectJsonConverter;
 
-    JsonSerializerSettings GetJsonSettings()
+    static JsonSerializerSettings GetJsonSettings()
     {
-        if (_cachedJsonSettings == null)
+        if (s_cachedJsonSettings == null)
         {
-            _cachedSimObjectJsonConverter = new SimObjectJsonConverter();
+            s_cachedSimObjectJsonConverter = new SimObjectJsonConverter();
 
-            _cachedJsonSettings = new JsonSerializerSettings();
+            s_cachedJsonSettings = new JsonSerializerSettings();
 
-            _cachedJsonSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-            _cachedJsonSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-            _cachedJsonSettings.TypeNameHandling = TypeNameHandling.Auto;
-            _cachedJsonSettings.Converters = new List<JsonConverter>()
+            s_cachedJsonSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+            s_cachedJsonSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+            s_cachedJsonSettings.TypeNameHandling = TypeNameHandling.Auto;
+            s_cachedJsonSettings.Converters = new List<JsonConverter>()
             {
-                _cachedSimObjectJsonConverter,
+                s_cachedSimObjectJsonConverter,
                 new IDTypeJsonConverter(),
                 new Fix64JsonConverter(),
             };
-            _cachedJsonSettings.ContractResolver = new CustomJsonContractResolver();
-            _cachedJsonSettings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple;
+
+            var contractResolver = new CustomJsonContractResolver();
+#pragma warning disable CS0618 // Type or member is obsolete
+            contractResolver.DefaultMembersSearchFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            s_cachedJsonSettings.ContractResolver = contractResolver;
+            s_cachedJsonSettings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple;
         }
-        return _cachedJsonSettings;
+        return s_cachedJsonSettings;
     }
 
-    SimObjectJsonConverter GetSimObjectJsonConverter()
+    static SimObjectJsonConverter GetSimObjectJsonConverter()
     {
         GetJsonSettings();
-        return _cachedSimObjectJsonConverter;
+        return s_cachedSimObjectJsonConverter;
     }
 
-    public SimSerializationOperationWithCache SerializeSimulation()
+    public static SimSerializationOperationWithCache SerializeSimulation(World simulationWorld)
     {
-        if (!SimModules._Serializer.CanSimWorldBeSaved)
-        {
-            DebugService.LogError("Cannot serialize SimWorld right now. We must not be ticking nor loading a scene");
-            return null;
-        }
+        //if (!SimModules._Serializer.CanSimWorldBeSaved)
+        //{
+        //    DebugService.LogError("Cannot serialize SimWorld right now. We must not be ticking nor loading a scene");
+        //    return null;
+        //}
 
-        _serializationOperation = new SimSerializationOperationWithCache(GetSimObjectJsonConverter(), GetJsonSettings());
+        var _serializationOperation = new SimSerializationOperationWithCache(GetSimObjectJsonConverter(), GetJsonSettings(), simulationWorld);
 
-        _serializationOperation.OnFailCallback = (op) =>
-        {
-            OnSerializationResult?.Invoke(new SimSerializationResult()
-            {
-                SuccessLevel = SimSerializationResult.SuccessType.Failed,
-            });
-        };
+        //_serializationOperation.OnFailCallback = (op) =>
+        //{
+        //    OnSerializationResult?.Invoke(new SimSerializationResult()
+        //    {
+        //        SuccessLevel = SimSerializationResult.SuccessType.Failed,
+        //    });
+        //};
 
-        _serializationOperation.OnSucceedCallback = (op) =>
-        {
-            SimSerializationOperationWithCache serializationOp = (SimSerializationOperationWithCache)op;
-            OnSerializationResult?.Invoke(new SimSerializationResult()
-            {
-                SuccessLevel = serializationOp.PartialSuccess ?
-                    SimSerializationResult.SuccessType.PartialSuccess :
-                    SimSerializationResult.SuccessType.Succeeded,
-                Data = serializationOp.SerializationData
-            });
-        };
+        //_serializationOperation.OnSucceedCallback = (op) =>
+        //{
+        //    //SimSerializationOperationWithCache serializationOp = (SimSerializationOperationWithCache)op;
+        //    //OnSerializationResult?.Invoke(new SimSerializationResult()
+        //    //{
+        //    //    SuccessLevel = serializationOp.PartialSuccess ?
+        //    //        SimSerializationResult.SuccessType.PartialSuccess :
+        //    //        SimSerializationResult.SuccessType.Succeeded,
+        //    //    Data = serializationOp.SerializationData
+        //    //});
+        //};
 
         _serializationOperation.Execute();
 
         return _serializationOperation;
     }
 
-    public SimDeserializationOperation DeserializeSimulation(string data)
+    public static SimDeserializationOperation DeserializeSimulation(string data, World simulationWorld)
     {
-        if (!CanSimWorldBeLoaded)
-        {
-            DebugService.LogError("Cannot deserialize SimWorld right now. We must not be ticking nor loading a scene");
-            return null;
-        }
+        //if (!CanSimWorldBeLoaded)
+        //{
+        //    DebugService.LogError("Cannot deserialize SimWorld right now. We must not be ticking nor loading a scene");
+        //    return null;
+        //}
 
-        _deserializationOperation = new SimDeserializationOperation(data, GetSimObjectJsonConverter(), GetJsonSettings());
+        var _deserializationOperation = new SimDeserializationOperation(data, GetSimObjectJsonConverter(), GetJsonSettings(), simulationWorld);
 
-        _deserializationOperation.OnFailCallback = (op) =>
-        {
-            OnDeserializationResult?.Invoke(new SimDeserializationResult()
-            {
-                SuccessLevel = SimDeserializationResult.SuccessType.Failed,
-            });
-        };
+        //_deserializationOperation.OnFailCallback = (op) =>
+        //{
+        //    OnDeserializationResult?.Invoke(new SimDeserializationResult()
+        //    {
+        //        SuccessLevel = SimDeserializationResult.SuccessType.Failed,
+        //    });
+        //};
 
-        _deserializationOperation.OnSucceedCallback = (op) =>
-        {
-            OnDeserializationResult?.Invoke(new SimDeserializationResult()
-            {
-                SuccessLevel = ((SimDeserializationOperation)op).PartialSuccess ?
-                    SimDeserializationResult.SuccessType.PartialSuccess :
-                    SimDeserializationResult.SuccessType.Succeeded
-            });
-        };
+        //_deserializationOperation.OnSucceedCallback = (op) =>
+        //{
+        //    OnDeserializationResult?.Invoke(new SimDeserializationResult()
+        //    {
+        //        SuccessLevel = ((SimDeserializationOperation)op).PartialSuccess ?
+        //            SimDeserializationResult.SuccessType.PartialSuccess :
+        //            SimDeserializationResult.SuccessType.Succeeded
+        //    });
+        //};
 
         _deserializationOperation.Execute();
 
@@ -133,10 +141,10 @@ internal class SimModuleSerializer : SimModuleBase
     {
         base.Dispose();
 
-        if (_deserializationOperation != null && _deserializationOperation.IsRunning)
-            _deserializationOperation.TerminateWithFailure();
+        //if (_deserializationOperation != null && _deserializationOperation.IsRunning)
+        //    _deserializationOperation.TerminateWithFailure();
 
-        if (_serializationOperation != null && _serializationOperation.IsRunning)
-            _serializationOperation.TerminateWithFailure();
+        //if (_serializationOperation != null && _serializationOperation.IsRunning)
+        //    _serializationOperation.TerminateWithFailure();
     }
 }

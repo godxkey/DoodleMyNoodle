@@ -8,7 +8,7 @@ public class ChatSystemServer : ChatSystem
     {
         base.OnGameReady();
 
-        _session = OnlineService.ServerInterface.sessionServerInterface;
+        _session = OnlineService.ServerInterface.SessionServerInterface;
         _session.RegisterNetMessageReceiver<NetMessageChatMessageSubmission>(OnNetMessageChatMessageSubmission);
     }
 

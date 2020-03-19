@@ -6,21 +6,43 @@ using UnityEngine;
 
 public static class NetSerializationCodeGenUtility
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string GetSerializerNameFromType(Type type)
     {
         if (type.IsArray)
         {
-            return "ArrayNetSerializer_" + type.GetElementType().Name;
+            return "ArrayNetSerializer_" + type.GetElementType().GetNiceFullNameWithUnderscores();
         }
         else if (type.IsEnum)
         {
-            return "StaticNetSerializer_" + type.GetEnumUnderlyingType().Name;
+            return "StaticNetSerializer_" + type.GetEnumUnderlyingType().GetNiceFullNameWithUnderscores();
         }
         else
         {
-            return "StaticNetSerializer_" + type.Name;
+            return "StaticNetSerializer_" + type.GetNiceFullNameWithUnderscores();
         }
+    }
+
+    public static string GetNiceFullName(this Type type)
+    {
+        string result = type.FullName;
+
+        if (result.Contains("+"))
+            result = result.Replace('+', '.');
+
+        return result;
+    }
+
+    public static string GetNiceFullNameWithUnderscores(this Type type)
+    {
+        string result = type.FullName;
+
+        if (result.Contains("+"))
+            result = result.Replace('+', '_');
+
+        if (result.Contains("."))
+            result = result.Replace('.', '_');
+
+        return result;
     }
 
     public static List<Type> GetNetSerializableTypes()

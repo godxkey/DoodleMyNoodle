@@ -54,3 +54,6 @@ MonoBehaviour:
   - Id: ee1590b9113bfa1479cab7e1864e71ba
     Text: Event system of the simulation. Not essential for the simulation to run,
       but very useful.
+  - Id: 9c9acc2b99cf6e2459068f6c279dc6ee
+    Text: Code responsible for controlling the Simulation. It also provides a reading
+      access to the Simulation

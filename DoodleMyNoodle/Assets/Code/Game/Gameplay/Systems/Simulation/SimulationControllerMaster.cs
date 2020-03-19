@@ -1,143 +1,164 @@
-﻿using System;
+﻿/*using SimulationControl;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Unity.Collections;
 using Unity.Entities;
 
 public class SimulationControllerMaster : SimulationController
 {
-    Queue<ApprovedSimInput> _inputQueue = new Queue<ApprovedSimInput>();
+    //[ConfigVar("sim.tick_rateold", "1", description: "The number of ticks executed per fixed update")]
+    //static ConfigVar s_tickRate;
 
-    // called by local player
-    public override void SubmitInput(SimInput input)
-    {
-        if (input == null)
-        {
-            DebugService.LogError("Trying to submit a null input");
-            return;
-        }
+    //private float _tickRateCounter;
 
-        PlayerInfo localPlayer = PlayerRepertoireSystem.Instance.GetLocalPlayerInfo();
-        QueueInput(input, localPlayer, new InputSubmissionId(0));
-    }
+    //Queue<ApprovedSimInput> _inputQueue = new Queue<ApprovedSimInput>();
 
-    protected void QueueInput(SimInput input, PlayerInfo playerInfo, InputSubmissionId submissionId)
-    {
-        if (!CanTickSimulation) // we don't accept any input while sim is paused
-            return;
+    //// called by local player
+    //public override void SubmitInput(SimInput input)
+    //{
+    //    if (input == null)
+    //    {
+    //        DebugService.LogError("Trying to submit a null input");
+    //        return;
+    //    }
 
-        if (input is SimPlayerInput playerInput)
-        {
-            if (playerInfo.SimPlayerId.IsValid)
-            {
-                // Set SimPlayerId in input
-                // fbessette: Currently, since the 'SimPlayerId' is a field in the inputs, the clients pointlessly have that data sent to us.
-                //            To optimize the package's size, we could refactor this a little and pull the SimPlayerId out of the base input data class
-                playerInput.SimPlayerId = playerInfo.SimPlayerId;
-            }
-            else
-            {
-                DebugService.Log($"[{nameof(SimulationControllerMaster)}] We refused {playerInfo.PlayerName}'s input because he doesn't have a " +
-                    $"valid SimPlayerId yet.");
-                return; // player cannot submit inputs yet
-            }
-        }
+    //    PlayerInfo localPlayer = PlayerRepertoireSystem.Instance.GetLocalPlayerInfo();
+    //    QueueInput(input, localPlayer, new InputSubmissionId(0));
+    //}
 
-        _inputQueue.Enqueue(new ApprovedSimInput()
-        {
-            input = input,
-            playerInstigator = playerInfo.PlayerId,
-            clientSubmissionId = submissionId
-        });
-    }
+    //protected void QueueInput(SimInput input, PlayerInfo playerInfo, InputSubmissionId submissionId)
+    //{
+    //    if (!CanTickSimulation) // we don't accept any input while sim is paused
+    //        return;
 
-    void FixedUpdate()
-    {
-        if (!Game.Started)
-            return;
+    //    if (input is SimPlayerInput playerInput)
+    //    {
+    //        if (playerInfo.SimPlayerId != PersistentId.Invalid)
+    //        {
+    //            // Set SimPlayerId in input
+    //            // fbessette: Currently, since the 'SimPlayerId' is a field in the inputs, the clients pointlessly have that data sent to us.
+    //            //            To optimize the package's size, we could refactor this a little and pull the SimPlayerId out of the base input data class
+    //            playerInput.SimPlayerId = playerInfo.SimPlayerId;
+    //        }
+    //        else
+    //        {
+    //            DebugService.Log($"[{nameof(SimulationControllerMaster)}] We refused {playerInfo.PlayerName}'s input because he doesn't have a " +
+    //                $"valid SimPlayerId yet.");
+    //            return; // player cannot submit inputs yet
+    //        }
+    //    }
 
-        SimulationView.UpdateSceneLoads();
+    //    _inputQueue.Enqueue(new ApprovedSimInput()
+    //    {
+    //        input = input,
+    //        playerInstigator = playerInfo.PlayerId,
+    //        clientSubmissionId = submissionId
+    //    });
+    //}
 
-        if (CanTickSimulation)
-        {
-            AssignSimPlayerIdsToPlayersMissingOne();
-            TickSimulation();
-        }
-        else
-        {
-            _inputQueue.Clear();
-        }
-    }
+    //void FixedUpdate()
+    //{
+    //    if (!Game.Started)
+    //        return;
 
-    void TickSimulation()
-    {
-        ApprovedSimInput[] inputsForThisTick = _inputQueue.ToArray();
-        _inputQueue.Clear();
+    //    SimulationView.UpdateSceneLoads();
 
-        OnAboutToTickSimulation(inputsForThisTick);
+    //    _tickRateCounter += s_tickRate.FloatValue;
 
-        // Tick the simulation locally
-        SimInput[] simInputs = new SimInput[inputsForThisTick.Length];
-        for (int i = 0; i < inputsForThisTick.Length; i++)
-        {
-            simInputs[i] = inputsForThisTick[i].input;
-        }
+    //    while (_tickRateCounter > 0)
+    //    {
+    //        if (CanTickSimulation)
+    //        {
+    //            AssignSimPlayerIdsToPlayersMissingOne();
 
-        SimTickData tickData = new SimTickData()
-        {
-            inputs = simInputs
-        };
+    //            TickSimulation();
+    //        }
+    //        else
+    //        {
+    //            _inputQueue.Clear();
+    //        }
 
-        // NEW
-        SimWorldUpdater.AvailableTicks.Add(tickData);
+    //        _tickRateCounter--;
+    //    }
+    //}
 
-        // OLD
-        SimulationView.Tick(tickData);
-    }
+    //void TickSimulation()
+    //{
+    //    ApprovedSimInput[] inputsForThisTick = _inputQueue.ToArray();
+    //    _inputQueue.Clear();
 
-    protected virtual void OnAboutToTickSimulation(ApprovedSimInput[] inputs) { }
+    //    OnAboutToTickSimulation(inputsForThisTick);
 
-    void AssignSimPlayerIdsToPlayersMissingOne()
-    {
-        if (SimPlayerManager.Instance == null)
-            return;
+    //    // Tick the simulation locally
+    //    SimInput[] simInputs = new SimInput[inputsForThisTick.Length];
+    //    for (int i = 0; i < inputsForThisTick.Length; i++)
+    //    {
+    //        simInputs[i] = inputsForThisTick[i].input;
+    //    }
 
-        // fbessette: For now, we assign SimPlayers randomly. First player arrived gets the first SimPlayer
-        //            Eventually, we'll want returning players to get back their old SimPlayer to keep their character/gear/etc.
+    //    SimTickData tickData = new SimTickData()
+    //    {
+    //        inputs = simInputs
+    //    };
 
-        foreach (PlayerInfo playerInfo in PlayerRepertoireSystem.Instance.Players)
-        {
-            if (PlayerIdHelpers.GetSimPlayerFromPlayer(playerInfo) == null)
-            {
-                SimPlayerComponent unassignedSimPlayer = GetUnassignedSimPlayer();
+    //    // OLD
+    //    SimulationView.Tick(tickData);
+    //}
 
-                if (unassignedSimPlayer != null)
-                {
-                    PlayerRepertoireMaster.Instance.AssignSimPlayerToPlayer(playerInfo.PlayerId, unassignedSimPlayer.SimPlayerId);
-                }
-                else
-                {
-                    SimPlayerInfo newSimPlayerInfo = new SimPlayerInfo();
-                    newSimPlayerInfo.Name = playerInfo.PlayerName;
+    //protected virtual void OnAboutToTickSimulation(ApprovedSimInput[] inputs) { }
 
-                    SubmitInput(new SimInputPlayerCreate() { SimPlayerInfo = newSimPlayerInfo }); // ask the simulation to create a new player
-                }
-            }
-        }
-    }
+    //void AssignSimPlayerIdsToPlayersMissingOne()
+    //{
+    //    // fbessette: For now, we assign SimPlayers randomly. First player arrived gets the first SimPlayer
+    //    //            Eventually, we'll want returning players to get back their old SimPlayer to keep their character/gear/etc.
 
-    SimPlayerComponent GetUnassignedSimPlayer()
-    {
-        if (SimPlayerManager.Instance == null)
-            return null;
+    //    foreach (PlayerInfo playerInfo in PlayerRepertoireSystem.Instance.Players)
+    //    {
+    //        if(PlayerIdHelpers.GetSimPlayerFromPlayer(playerInfo, Game.SimulationWorld) == Entity.Null)
+    //        {
+    //            Entity unassignedPlayer = GetUnassignedSimPlayer();
 
-        foreach (SimPlayerComponent simPlayer in SimulationView.EntitiesWithComponent<SimPlayerComponent>())
-        {
-            if (PlayerIdHelpers.GetPlayerFromSimPlayer(simPlayer) == null)
-            {
-                return simPlayer;
-            }
-        }
+    //            if (unassignedPlayer == Entity.Null)
+    //            {
+    //                // ask the simulation to create a new player
+    //                SubmitInput(new SimInputPlayerCreate() { PlayerName = playerInfo.PlayerName }); 
+    //            }
+    //            else
+    //            {
+    //                PersistentId simPlayerId = Game.SimulationWorld.EntityManager.GetComponentData<PersistentId>(unassignedPlayer);
 
-        return null;
-    }
+    //                PlayerRepertoireMaster.Instance.AssignSimPlayerToPlayer(playerInfo.PlayerId, simPlayerId);
+    //            }
+    //        }
+    //    }
+    //}
+
+    //Entity GetUnassignedSimPlayer()
+    //{
+    //    World simWorld = Game.SimulationWorld;
+    //    if (simWorld == null)
+    //        return Entity.Null;
+
+
+    //    using (EntityQuery query = simWorld.EntityManager.CreateEntityQuery(
+    //        ComponentType.ReadOnly<PlayerTag>(),
+    //        ComponentType.ReadOnly<PersistentId>()))
+    //    {
+    //        using (NativeArray<Entity> simPlayers = query.ToEntityArray(Allocator.TempJob))
+    //        {
+    //            foreach (Entity playerEntity in simPlayers)
+    //            {
+    //                if (PlayerIdHelpers.GetPlayerFromSimPlayer(playerEntity, simWorld) == null)
+    //                {
+    //                    return playerEntity;
+    //                }
+    //            }
+    //        }
+    //    }
+
+
+    //    return Entity.Null;
+    //}
 }
+*/

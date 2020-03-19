@@ -41,7 +41,7 @@ public class DebugPanelPlayerRepertoire : DebugPanel
         for (int i = 0; i < players.Count; i++)
         {
             ApplyPlayerTextColor(players[i]);
-            GUILayout.Label(players[i].IsServer.ToString());
+            GUILayout.Label(players[i].IsMaster.ToString());
         }
         ResetTextColor();
         GUILayout.EndVertical();

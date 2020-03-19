@@ -34,7 +34,7 @@ public class PlayerRepertoireServer : PlayerRepertoireMaster
         _playerConnections.Add(null); // connection for local player
     }
 
-    protected override void OnAssignSimPlayerToPlayer(PlayerInfo playerInfo, in SimPlayerId simPlayerId)
+    protected override void OnAssignSimPlayerToPlayer(PlayerInfo playerInfo, in PersistentId simPlayerId)
     {
         base.OnAssignSimPlayerToPlayer(playerInfo, simPlayerId);
 

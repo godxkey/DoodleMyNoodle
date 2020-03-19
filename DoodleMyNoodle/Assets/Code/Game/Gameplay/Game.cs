@@ -1,12 +1,14 @@
 ﻿using System;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
-    public static bool PlayModeLocal { get; private set; }
-    public static bool PlayModeClient { get; private set; }
-    public static bool PlayModeServer { get; private set; }
+    public static bool PlayingAsLocal { get; private set; }
+    public static bool PlayingAsClient { get; private set; }
+    public static bool PlayingAsServer { get; private set; }
+    public static bool PlayingAsMaster => PlayingAsServer || PlayingAsLocal;
 
     public static bool Ready => s_instance && s_instance._ready;
     public static bool Started => s_instance && s_instance._started;
@@ -31,9 +33,9 @@ public class Game : MonoBehaviour
 
     void OnDestroy()
     {
-        PlayModeLocal = false;
-        PlayModeClient = false;
-        PlayModeServer = false;
+        PlayingAsLocal = false;
+        PlayingAsClient = false;
+        PlayingAsServer = false;
         s_instance = null;
 
         if (_sceneLoadPromise != null)
@@ -49,15 +51,15 @@ public class Game : MonoBehaviour
             {
                 case GameStateInGameClient clientState:
                     sceneToLoad = _clientSpecificScene;
-                    PlayModeClient = true;
+                    PlayingAsClient = true;
                     break;
                 case GameStateInGameServer serverState:
                     sceneToLoad = _serverSpecificScene;
-                    PlayModeServer = true;
+                    PlayingAsServer = true;
                     break;
                 case GameStateInGameLocal localState:
                     sceneToLoad = _localSpecificScene;
-                    PlayModeLocal = true;
+                    PlayingAsLocal = true;
                     break;
             }
 

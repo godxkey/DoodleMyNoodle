@@ -1,24 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
+using Unity.Entities;
 using UnityEngine;
 
 public class DebugPanelSimPlayers : DebugPanel
 {
     public override string title => "Sim Players";
 
-    public override bool canBeDisplayed =>
-        SimulationView.IsRunningOrReadyToRun
-        && Game.Started
-        && SimPlayerManager.Instance;
+    public override bool canBeDisplayed => GameMonoBehaviourHelpers.SimulationWorld != null;
 
-    List<SimPlayerComponent> _cachedPlayers = new List<SimPlayerComponent>();
+    List<Entity> _cachedPlayers = new List<Entity>();
 
     void UpdateCachedPlayers()
     {
         _cachedPlayers.Clear();
-        foreach (SimPlayerComponent simPlayer in SimulationView.EntitiesWithComponent<SimPlayerComponent>())
+
+        using (EntityQuery query = GameMonoBehaviourHelpers.SimulationWorld.CreateEntityQuery(
+            ComponentType.ReadOnly<PlayerTag>(),
+            ComponentType.ReadOnly<PersistentId>()))
         {
-            _cachedPlayers.Add(simPlayer);
+            using (NativeArray<Entity> simPlayers = query.ToEntityArray(Allocator.TempJob))
+            {
+                _cachedPlayers.AddRange(simPlayers);
+            }
         }
     }
 
@@ -26,6 +31,7 @@ public class DebugPanelSimPlayers : DebugPanel
     {
         UpdateCachedPlayers();
         var simPlayers = _cachedPlayers;
+        var simWorldAccessor = GameMonoBehaviourHelpers.SimulationWorld;
 
         GUILayout.BeginHorizontal();
 
@@ -34,7 +40,7 @@ public class DebugPanelSimPlayers : DebugPanel
         for (int i = 0; i < simPlayers.Count; i++)
         {
             ApplyPlayerTextColor(simPlayers[i]);
-            GUILayout.Label(SimPlayerHelpers.GetPlayerName(simPlayers[i]));
+            GUILayout.Label(simWorldAccessor.GetComponentData<Name>(simPlayers[i]).Value.ToString());
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -45,7 +51,7 @@ public class DebugPanelSimPlayers : DebugPanel
         for (int i = 0; i < simPlayers.Count; i++)
         {
             ApplyPlayerTextColor(simPlayers[i]);
-            GUILayout.Label(simPlayers[i].SimPlayerId.ToString());
+            GUILayout.Label(simWorldAccessor.GetComponentData<PersistentId>(simPlayers[i]).Value.ToString());
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -56,7 +62,7 @@ public class DebugPanelSimPlayers : DebugPanel
         for (int i = 0; i < simPlayers.Count; i++)
         {
             ApplyPlayerTextColor(simPlayers[i]);
-            GUILayout.Label(PlayerIdHelpers.GetPlayerFromSimPlayer(simPlayers[i]) == null ? "false" : "true");
+            GUILayout.Label(PlayerIdHelpers.GetPlayerFromSimPlayer(simPlayers[i], GameMonoBehaviourHelpers.SimulationWorld) == null ? "false" : "true");
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -64,9 +70,9 @@ public class DebugPanelSimPlayers : DebugPanel
         GUILayout.EndHorizontal();
     }
 
-    static void ApplyPlayerTextColor(SimPlayerComponent simPlayer)
+    static void ApplyPlayerTextColor(Entity simPlayer)
     {
-        PlayerInfo p = PlayerIdHelpers.GetPlayerFromSimPlayer(simPlayer);
+        PlayerInfo p = PlayerIdHelpers.GetPlayerFromSimPlayer(simPlayer, GameMonoBehaviourHelpers.SimulationWorld);
         GUI.color = p == null ? Color.red : Color.white;
     }
     static void ResetTextColor()

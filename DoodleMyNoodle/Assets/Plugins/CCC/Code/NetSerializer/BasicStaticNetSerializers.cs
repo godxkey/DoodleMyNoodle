@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public static class StaticNetSerializer_Int64
+public static class StaticNetSerializer_System_Int64
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Int64 value) => sizeof(Int64) * 8;
@@ -20,7 +20,7 @@ public static class StaticNetSerializer_Int64
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Int64 NetDeserialize(BitStreamReader reader) => reader.ReadInt64();
 }
-public static class StaticNetSerializer_UInt64
+public static class StaticNetSerializer_System_UInt64
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref UInt64 value) => sizeof(UInt64) * 8;
@@ -29,7 +29,7 @@ public static class StaticNetSerializer_UInt64
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref UInt64 value, BitStreamReader reader) => value = reader.ReadUInt64();
 }
-public static class StaticNetSerializer_Int32
+public static class StaticNetSerializer_System_Int32
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Int32 value) => sizeof(Int32) * 8;
@@ -46,7 +46,7 @@ public static class StaticNetSerializer_Int32
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Int32 NetDeserialize(BitStreamReader reader) => reader.ReadInt32();
 }
-public static class StaticNetSerializer_UInt32
+public static class StaticNetSerializer_System_UInt32
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref UInt32 value) => sizeof(UInt32) * 8;
@@ -63,7 +63,7 @@ public static class StaticNetSerializer_UInt32
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UInt32 NetDeserialize(BitStreamReader reader) => reader.ReadUInt32();
 }
-public static class StaticNetSerializer_Int16
+public static class StaticNetSerializer_System_Int16
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Int16 value) => sizeof(Int16) * 8;
@@ -80,7 +80,7 @@ public static class StaticNetSerializer_Int16
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Int16 NetDeserialize(BitStreamReader reader) => reader.ReadInt16();
 }
-public static class StaticNetSerializer_UInt16
+public static class StaticNetSerializer_System_UInt16
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref UInt16 value) => sizeof(UInt16) * 8;
@@ -97,7 +97,7 @@ public static class StaticNetSerializer_UInt16
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UInt16 NetDeserialize(BitStreamReader reader) => reader.ReadUInt16();
 }
-public static class StaticNetSerializer_Byte
+public static class StaticNetSerializer_System_Byte
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Byte value) => sizeof(Byte) * 8;
@@ -114,7 +114,7 @@ public static class StaticNetSerializer_Byte
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Byte NetDeserialize(BitStreamReader reader) => reader.ReadByte();
 }
-public static class StaticNetSerializer_Single
+public static class StaticNetSerializer_System_Single
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Single value) => sizeof(Single) * 8;
@@ -131,7 +131,7 @@ public static class StaticNetSerializer_Single
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Single NetDeserialize(BitStreamReader reader) => reader.ReadFloat32();
 }
-public static class StaticNetSerializer_Boolean
+public static class StaticNetSerializer_System_Boolean
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Boolean value) => 1;
@@ -148,7 +148,7 @@ public static class StaticNetSerializer_Boolean
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Boolean NetDeserialize(BitStreamReader reader) => reader.ReadBool();
 }
-public static class StaticNetSerializer_String
+public static class StaticNetSerializer_System_String
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref String value)
@@ -190,7 +190,7 @@ public static class StaticNetSerializer_String
         }
     }
 }
-public static class StaticNetSerializer_Char
+public static class StaticNetSerializer_System_Char
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Char value) => sizeof(Char);
@@ -199,7 +199,7 @@ public static class StaticNetSerializer_Char
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Char value, BitStreamReader reader) => value = reader.ReadChar();
 }
-public static class StaticNetSerializer_Vector2
+public static class StaticNetSerializer_UnityEngine_Vector2
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Vector2 value) => 2 * sizeof(Single) * 8;
@@ -208,7 +208,7 @@ public static class StaticNetSerializer_Vector2
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Vector2 value, BitStreamReader reader) => value = reader.ReadVector2();
 }
-public static class StaticNetSerializer_Vector3
+public static class StaticNetSerializer_UnityEngine_Vector3
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Vector3 value) => 3 * sizeof(Single) * 8;
@@ -217,7 +217,7 @@ public static class StaticNetSerializer_Vector3
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Vector3 value, BitStreamReader reader) => value = reader.ReadVector3();
 }
-public static class StaticNetSerializer_Vector4
+public static class StaticNetSerializer_UnityEngine_Vector4
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Vector4 value) => 4 * sizeof(Single) * 8;
@@ -226,7 +226,7 @@ public static class StaticNetSerializer_Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Vector4 value, BitStreamReader reader) => value = reader.ReadVector4();
 }
-public static class StaticNetSerializer_Vector2Int
+public static class StaticNetSerializer_UnityEngine_Vector2Int
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Vector2Int value) => 2 * sizeof(Int32) * 8;
@@ -235,7 +235,7 @@ public static class StaticNetSerializer_Vector2Int
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void NetDeserialize(ref Vector2Int value, BitStreamReader reader) => value = reader.ReadVector2Int();
 }
-public static class StaticNetSerializer_Vector3Int
+public static class StaticNetSerializer_UnityEngine_Vector3Int
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref Vector3Int value) => 3 * sizeof(Int32) * 8;
@@ -245,7 +245,7 @@ public static class StaticNetSerializer_Vector3Int
     public static void NetDeserialize(ref Vector3Int value, BitStreamReader reader) => value = reader.ReadVector3Int();
 }
 
-public static class StaticNetSerializer_Object
+public static class StaticNetSerializer_System_Object
 {
     public static int GetNetBitSize_Class(object obj)
     {

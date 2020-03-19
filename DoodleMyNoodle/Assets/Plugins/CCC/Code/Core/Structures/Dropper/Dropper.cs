@@ -69,7 +69,7 @@ public class Dropper<T>
 
     public void Clear()
     {
-        _queue.Clear();
+        _queue?.Clear();
     }
 
 

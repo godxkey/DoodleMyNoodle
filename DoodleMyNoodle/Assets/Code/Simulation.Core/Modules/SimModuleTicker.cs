@@ -6,9 +6,9 @@ internal class SimModuleTicker : SimModuleBase
     internal bool CanSimBeTicked =>
         SimModules._SceneLoader.PendingSceneLoads == 0
         && SimModules._EntityManager.PendingPermanentEntityDestructions == 0
-        && !IsTicking
-        && !SimModules._Serializer.IsInDeserializationProcess
-        && !SimModules._Serializer.IsInSerializationProcess;
+        && !IsTicking;
+        //&& !SimModules._Serializer.IsInDeserializationProcess
+        //&& !SimModules._Serializer.IsInSerializationProcess;
 
     internal bool IsTicking = false;
     internal uint TickId => SimModules._World.TickId;
@@ -19,7 +19,7 @@ internal class SimModuleTicker : SimModuleBase
     internal List<ISimTickable> Tickables = new List<ISimTickable>();
     internal List<ISimTickable> NewTickables = new List<ISimTickable>();
 
-    internal void Tick(in SimTickData tickData)
+    internal void Tick(in SimTickDataOld tickData)
     {
         if (!CanSimBeTicked)
             throw new System.Exception("Tried to tick the simulation while it could not. Investigate.");
@@ -34,7 +34,7 @@ internal class SimModuleTicker : SimModuleBase
         ////////////////////////////////////////////////////////////////////////////////////////
         //      INPUTS                                 
         ////////////////////////////////////////////////////////////////////////////////////////
-        foreach (SimInput input in tickData.inputs)
+        foreach (SimInput input in tickData.Inputs)
         {
             SimModules._InputProcessorManager.ProcessInput(input);
         }

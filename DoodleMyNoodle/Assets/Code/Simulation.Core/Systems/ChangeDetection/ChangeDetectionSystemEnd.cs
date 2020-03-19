@@ -34,6 +34,11 @@ public class ChangeDetectionSystemEnd : ComponentSystem
         CompareAndLogChanges(beginSystem.SummedVersionNumbers, _summedVersionNumbers);
     }
 
+    public void ForceEndSample()
+    {
+        Update();
+    }
+
     void CompareAndLogChanges(Dictionary<ComponentType, uint> a, Dictionary<ComponentType, uint> b)
     {
         if(a.Count < b.Count)

@@ -7,9 +7,9 @@ public class SimulationBase
     /// <summary>
     /// Is the simulation running or ready to run ? 
     /// </summary>
-    public static bool IsRunningOrReadyToRun => 
-        SimModules._World != null
-        && SimModules._Serializer.IsInDeserializationProcess == false;
+    public static bool IsRunningOrReadyToRun =>
+        SimModules._World != null;
+        //&& SimModules._Serializer.IsInDeserializationProcess == false;
 
     /// <summary>
     /// The simulation tick delta time. Should be constant for the simulation to stay deterministic
@@ -31,7 +31,6 @@ public class SimulationBase
     public static SimEntity FindEntityWithComponent<T>() => SimModules._WorldSearcher.FindEntityWithComponent<T>();
     public static SimEntity FindEntityWithComponent<T>(out T comp) => SimModules._WorldSearcher.FindEntityWithComponent(out comp);
 
-    // fbessette TODO: we should create a more fully-fledged query system that allow us to cache frequent queries (like EntitiesWithComponent<Pawn>)
     public static ReadOnlyList<SimEntity>          Entities                                 => new ReadOnlyList<SimEntity>(SimModules._World.Entities);
     public static EntityEnumerable<T1>             EntitiesWithComponent<T1>()              => new EntityEnumerable<T1>(Entities);
     public static EntityEnumerable<T1, T2>         EntitiesWithComponents<T1, T2>()         => new EntityEnumerable<T1, T2>(Entities);

@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
+using Unity.Entities;
 using UnityEngine;
 
 public static class PlayerIdHelpers
@@ -17,25 +19,53 @@ public static class PlayerIdHelpers
         return PlayerRepertoireSystem.Instance.GetLocalPlayerInfo();
     }
 
-    public static SimPawnComponent GetLocalSimPawnComponent()
+    public static PlayerInfo GetPlayerInfo(INetworkInterfaceConnection connection)
     {
-        return SimPawnHelpers.GetPawnFromController(PlayerIdHelpers.GetLocalSimPlayerComponent());
+        if (connection == null)
+            return GetLocalPlayerInfo();
+
+        if (PlayerRepertoireServer.Instance != null)
+        {
+            return PlayerRepertoireServer.Instance.GetPlayerInfo(connection);
+        }
+        else
+        {
+            return PlayerRepertoireClient.Instance.GetServerPlayerInfo();
+        }
     }
 
-    public static SimPlayerComponent GetLocalSimPlayerComponent()
+    public static Entity GetLocalSimPawnEntity(World simulationWorld)
+    {
+        Entity localPlayerEntity = PlayerIdHelpers.GetLocalSimPlayerEntity(simulationWorld);
+
+        if (localPlayerEntity != Entity.Null)
+        {
+            if(simulationWorld.EntityManager.TryGetComponentData(localPlayerEntity, out ControlledEntity controlledEntity))
+            {
+                return controlledEntity.Value;
+            }
+        }
+
+        return Entity.Null;
+    }
+
+    public static Entity GetLocalSimPlayerEntity(World simulationWorld)
     {
         if (PlayerRepertoireSystem.Instance == null)
-            return null;
+            return Entity.Null;
 
-        return PlayerIdHelpers.GetSimPlayerFromPlayer(PlayerRepertoireSystem.Instance.GetLocalPlayerInfo());
+        return PlayerIdHelpers.GetSimPlayerFromPlayer(PlayerRepertoireSystem.Instance.GetLocalPlayerInfo(), simulationWorld);
     }
 
-    public static PlayerInfo GetPlayerFromSimPlayer(SimPlayerComponent simPlayer)
+    public static PlayerInfo GetPlayerFromSimPlayer(Entity playerEntity, SimWorldAccessor simWorldAccessor)
     {
-        return GetPlayerFromSimPlayer(simPlayer.SimPlayerId);
+        if (simWorldAccessor.HasComponent<PersistentId>(playerEntity))
+            return GetPlayerFromSimPlayer(simWorldAccessor.GetComponentData<PersistentId>(playerEntity));
+        else
+            return null;
     }
 
-    public static PlayerInfo GetPlayerFromSimPlayer(in SimPlayerId simPlayerId)
+    public static PlayerInfo GetPlayerFromSimPlayer(in PersistentId simPlayerId)
     {
         if (PlayerRepertoireSystem.Instance == null)
             return null;
@@ -51,29 +81,27 @@ public static class PlayerIdHelpers
         return null;
     }
 
-    public static SimPlayerComponent GetSimPlayerFromPlayer(in PlayerId playerId)
+    public static Entity GetSimPlayerFromPlayer(PlayerInfo playerInfo, World simulationWorld)
     {
-        if (PlayerRepertoireSystem.Instance == null)
-            return null;
+        // TODO fbessette: cache this query
 
-        PlayerInfo playerInfo = PlayerRepertoireSystem.Instance.GetPlayerInfo(playerId);
-
-        return GetSimPlayerFromPlayer(playerInfo);
-    }
-
-    public static SimPlayerComponent GetSimPlayerFromPlayer(PlayerInfo playerInfo)
-    {
-        if (playerInfo == null || SimPlayerManager.Instance == null)
-            return null;
-
-        foreach (SimPlayerComponent simPlayer in SimulationView.EntitiesWithComponent<SimPlayerComponent>())
+        EntityManager simEntityManager = simulationWorld.EntityManager;
+        using (EntityQuery query = simEntityManager.CreateEntityQuery(
+            ComponentType.ReadOnly<PlayerTag>(),
+            ComponentType.ReadOnly<PersistentId>()))
         {
-            if(simPlayer.SimPlayerId == playerInfo.SimPlayerId)
+            using (NativeArray<Entity> simPlayers = query.ToEntityArray(Allocator.TempJob))
             {
-                return simPlayer;
+                foreach (Entity playerEntity in simPlayers)
+                {
+                    if (simEntityManager.GetComponentData<PersistentId>(playerEntity) == playerInfo.SimPlayerId)
+                    {
+                        return playerEntity;
+                    }
+                }
             }
         }
 
-        return null;
+        return Entity.Null;
     }
 }

@@ -19,14 +19,6 @@ public class LevelManager : GameSystem<LevelManager>
     public override bool SystemReady => true;
     public bool IsLevelStarted { get; private set; }
 
-    public override void OnGameReady()
-    {
-        base.OnGameReady();
-
-
-        OnLevelSet(default);
-    }
-
     public override void OnGameStart()
     {
         base.OnGameStart();
@@ -87,44 +79,56 @@ public class LevelManager : GameSystem<LevelManager>
     private void OnLevelSet(in SyncedValueCurrentLevel newValue)
     {
         if (!newValue.Name.IsNullOrEmpty())
-            StartLevelInternal(newValue.Name);
-    }
+        {
+            string levelName = newValue.Name;
+            Level lvl = LevelBank.Levels.Find((x) => x.name == levelName);
+            if (!lvl)
+            {
+                Debug.LogError($"Could not start level {levelName}. It was not found in the level bank. " +
+                    $"The bank is a scriptable object named LevelBank.");
+                return;
+            }
 
-    private void StartLevelInternal(string levelName)
-    {
-        Level lvl = LevelBank.Levels.Find((x) => x.name == levelName);
-        if (lvl)
-            StartLevelInternal(lvl);
+            OnLevelSet(lvl);
+        }
         else
-            Debug.LogError($"Could not start level {levelName}. It was not found in the level bank. " +
-                $"The bank is a scriptable object named LevelBank.");
+        {
+
+            IsLevelStarted = false;
+        }
     }
 
-    private void StartLevelInternal(Level level)
+    private void OnLevelSet(Level level)
     {
         if (IsLevelStarted)
         {
             DebugService.LogError("Cannot start another level (not yet implemented)");
             return;
         }
+        IsLevelStarted = true;
 
-        SimulationController.Instance.SubmitInput(new SimCommandLoadScene() { SceneName = SimManagersScene.SceneName });
-        SimulationController.Instance.SubmitInput(new SimCommandLoadPresentationScene() { SceneName = SimBasePresentationScene.SceneName });
-
-        foreach (SceneInfo scene in level.SimulationScenes)
+        if (Game.PlayingAsMaster)
         {
-            SimulationController.Instance.SubmitInput(new SimCommandLoadScene() { SceneName = scene.SceneName });
+            // load simulation scenes
+            GameMonoBehaviourHelpers.SubmitInput(new SimCommandLoadScene() { SceneName = SimManagersScene.SceneName });
+            foreach (SceneInfo scene in level.SimulationScenes)
+            {
+                GameMonoBehaviourHelpers.SubmitInput(new SimCommandLoadScene() { SceneName = scene.SceneName });
+            }
         }
+
+        // load presentation scenes
+        SceneService.LoadAsync(SimBasePresentationScene.SceneName);
         foreach (SceneInfo scene in level.PresentationScenes)
         {
-            SimulationController.Instance.SubmitInput(new SimCommandLoadPresentationScene() { SceneName = scene.SceneName });
+            SceneService.LoadAsync(scene.SceneName);
         }
-        IsLevelStarted = true;
     }
 
-    public void RemoveLevel(Level level)
+    public void OnLevelStopped()
     {
-        throw new System.NotImplementedException();
+        if (IsLevelStarted)
+            throw new System.NotImplementedException();
     }
 
 }

@@ -34,8 +34,8 @@ public static partial class NetSerializerCodeGenerator
             bool couldBeDynamic = !NetSerializationCodeGenUtility.ConsideredAsValueType(type);
             bool isDynamicType = serializableAttribute != null ? serializableAttribute.baseClass : false;
             string methodObjParameter_Rcv = couldBeDynamic ?
-                (type.Name + " obj") :
-                ("ref " + type.Name + " obj");
+                (type.GetNiceFullName() + " obj") :
+                ("ref " + type.GetNiceFullName() + " obj");
 
 
             using (FileStream fileStream = File.Open(completePath, FileMode.Truncate))
@@ -174,11 +174,11 @@ using System.Collections.Generic;
 
                             if (isDynamicType)
                             {
-                                writer.WriteLine("        return (" + type.Name + ")DynamicNetSerializer.NetDeserialize(reader);");
+                                writer.WriteLine("        return (" + type.GetNiceFullName() + ")DynamicNetSerializer.NetDeserialize(reader);");
                             }
                             else
                             {
-                                writer.WriteLine("        " + type.Name + " obj = new " + type.Name + "();");
+                                writer.WriteLine("        " + type.GetNiceFullName() + " obj = new " + type.GetNiceFullName() + "();");
                                 writer.WriteLine("        NetDeserialize(obj, reader);");
                                 writer.WriteLine("        return obj;");
                             }

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public Image Background;
     public Image ItemIcon;
@@ -23,34 +23,42 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         if (_mouseHovering) 
         {
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(0))
             {
                 if(_currentItem != null) 
                 {
-                    SimPawnComponent playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
+                    // PORT TO ECS
 
-                    SimInventoryComponent inventory = playerPawn.GetComponent<SimInventoryComponent>();
-                    SimPlayerActions PlayerActions = playerPawn.GetComponent<SimPlayerActions>();
+                    //SimPawnComponent playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
 
-                    // Alex - HACK TO TEST FUNCTIONNALITY OF DROPPING
-                    if (_currentItem.GetComponent<TrashItemComponent>())
-                    {
-                        SimItem item = ClickerDisplay.Instance.GetItemCurrentlyHolding();
+                    //SimInventoryComponent inventory = playerPawn.GetComponent<SimInventoryComponent>();
+                    //SimPlayerActions PlayerActions = playerPawn.GetComponent<SimPlayerActions>();
 
-                        if (item != null)
-                        {
-                            inventory.DropItem(item);
-                        }
+                    //// Alex - HACK TO TEST FUNCTIONNALITY OF DROPPING
+                    //if (_currentItem.GetComponent<TrashItemComponent>())
+                    //{
+                    //    //SimItem item = ClickerDisplay.Instance.GetItemCurrentlyHolding();
 
-                        ClickerDisplay.Instance.DropHoldingItem();
-                    }
-                    else
-                    {
-                        if (SimTurnManager.Instance.IsMyTurn(Team.Player))
-                        {
-                            _currentItem.OnUse(PlayerActions);
-                        }
-                    }
+                    //    //if (item != null)
+                    //    //{
+                    //    //    inventory.DropItem(item);
+                    //    //}
+
+                    //    //ClickerDisplay.Instance.DropHoldingItem();
+                    //}
+                    //else
+                    //{
+                    //    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    //    {
+                    //        SimPlayerId simPlayerId = SimPawnHelpers.FindPawnController(playerPawn).GetComponent<SimPlayerComponent>().SimPlayerId;
+                    //        int itemIndex = inventory.GetIndexFromItem(_currentItem);
+
+                    //        _currentItem.TryGetUsageContext(playerPawn, simPlayerId, itemIndex, (SimPlayerInputUseItem UseItemInput) => 
+                    //        {
+                    //            SimulationController.Instance.SubmitInput(UseItemInput);
+                    //        });
+                    //    }
+                    //}
                 }
             }
         }
@@ -101,5 +109,11 @@ public class UIInventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         _currentItem = ClickerDisplay.Instance.InventorySlotClicked(_currentItem);
         UpdateDisplay();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+            SlotSelected();
     }
 }

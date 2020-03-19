@@ -32,7 +32,7 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
     {
         for (int i = 0; i < _players.Count; i++)
         {
-            if (_players[i].IsServer)
+            if (_players[i].IsMaster)
                 return _players[i];
         }
 

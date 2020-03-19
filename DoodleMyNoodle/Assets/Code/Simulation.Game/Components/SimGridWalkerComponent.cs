@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public struct WalkedOnTileEventData
@@ -29,6 +30,8 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
 
     public bool WantsToWalk = false;
     public bool ChoiceMade = false;
+
+    private Action<SimTileId> _currentDestinationFoundCallback = null;
 
     public override void OnSimAwake()
     {
@@ -90,6 +93,29 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
                     UpdatePathAndDestination();
                 }
             }
+        }
+    }
+
+    public void OnRequestToWalk(Action<SimTileId> OnDestinationFound)
+    {
+        _currentDestinationFoundCallback = OnDestinationFound;
+        ChoiceMade = false;
+        WantsToWalk = true;
+    }
+
+    public void OnCancelWalkRequest()
+    {
+        _currentDestinationFoundCallback = null;
+        WantsToWalk = false;
+        ChoiceMade = true;
+    }
+
+    public void OnDestinationChoosen(SimTileId simTileId)
+    {
+        if (WantsToWalk)
+        {
+            _currentDestinationFoundCallback?.Invoke(simTileId);
+            OnCancelWalkRequest();
         }
     }
 
