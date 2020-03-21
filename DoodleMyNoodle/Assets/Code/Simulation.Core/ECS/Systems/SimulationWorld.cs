@@ -16,7 +16,7 @@ public class SimulationWorld : World, IOwnedWorld
 
     internal uint SeedToPickIfInitializing;
     public uint ExpectedNewTickId { get; internal set; }
-    public SimInput[] OngoingTickInputs { get; internal set; }
+    public SimInput[] TickInputs { get; internal set; }
 
     public Random Random() => RandomModule.PickRandomGenerator();
 

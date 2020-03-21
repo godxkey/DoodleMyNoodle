@@ -7,7 +7,6 @@ using UnityEngine.Scripting;
 public abstract class SimComponentSystem : ComponentSystem
 {
     public SimulationWorld SimWorld { get; private set; }
-    public SimInput[] SimInputs => SimWorld.OngoingTickInputs;
 
     protected override void OnCreate()
     {
@@ -19,7 +18,6 @@ public abstract class SimComponentSystem : ComponentSystem
 public abstract class SimJobComponentSystem : JobComponentSystem
 {
     public SimulationWorld SimWorld { get; private set; }
-    public SimInput[] SimInputs => ((SimulationWorld)World).OngoingTickInputs;
 
     protected override void OnCreate()
     {

@@ -139,7 +139,7 @@ namespace SimulationControl
                 SimTickData tick = AvailableTicks.First();
                 AvailableTicks.RemoveAt(0);
 
-                _simulationWorld.OngoingTickInputs = tick.ToSimInputArray();
+                _simulationWorld.TickInputs = tick.ToSimInputArray();
                 _simulationWorld.ExpectedNewTickId = tick.ExpectedNewTickId;
 
                 ManualUpdate(_simPreInitGroup);
@@ -150,7 +150,7 @@ namespace SimulationControl
 
                 ManualUpdate(_viewGroup);
 
-                _simulationWorld.OngoingTickInputs = null;
+                _simulationWorld.TickInputs = null;
 
                 IsTicking = false;
             }

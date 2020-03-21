@@ -3,20 +3,9 @@ using Unity.Collections;
 
 public class CreatePlayerSystem : SimComponentSystem
 {
-    EntityQuery _controllableEntitiesQ;
-    EntityQuery _entitieControllersQ;
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-        
-        _controllableEntitiesQ = EntityManager.CreateEntityQuery(typeof(ControllableTag));
-        _entitieControllersQ = EntityManager.CreateEntityQuery(typeof(ControlledEntity));
-    }
-
     protected override void OnUpdate()
     {
-        foreach (var input in SimInputs)
+        foreach (var input in SimWorld.TickInputs)
         {
             if (input is SimInputPlayerCreate createPlayerInput)
             {
@@ -39,7 +28,7 @@ public class CreatePlayerSystem : SimComponentSystem
 
                 // assign controllable entity if possible
                 Entity uncontrolledEntity = FindUncontrolledPawn();
-                if(uncontrolledEntity != Entity.Null)
+                if (uncontrolledEntity != Entity.Null)
                 {
                     EntityManager.SetComponentData(newPlayerEntity, new ControlledEntity() { Value = uncontrolledEntity });
                 }
@@ -55,31 +44,31 @@ public class CreatePlayerSystem : SimComponentSystem
     private Entity FindUncontrolledPawn()
     {
         Entity uncontrolledEntity = Entity.Null;
-        using (var controlledEntities = _entitieControllersQ.ToComponentDataArray<ControlledEntity>(Allocator.TempJob))
+
+        Entities.ForEach((Entity controllableEntity, ref ControllableTag controlledTag) =>
         {
-            bool IsControlled(Entity entity)
+            if (!IsEntityControlled(controllableEntity))
             {
-                for (int i = 0; i < controlledEntities.Length; i++)
-                {
-                    if (controlledEntities[i].Value == entity)
-                    {
-                        return true;
-                    }
-                }
-                return false;
+                uncontrolledEntity = controllableEntity;
+                return;
             }
-
-
-            Entities.ForEach((Entity controllableEntity, ref ControllableTag controlledTag) =>
-            {
-                if (!IsControlled(controllableEntity))
-                {
-                    uncontrolledEntity = controllableEntity;
-                    return;
-                }
-            });
-        }
+        });
 
         return uncontrolledEntity;
+    }
+
+    private bool IsEntityControlled(Entity entity)
+    {
+        bool result = false;
+        Entities.ForEach((ref ControlledEntity x) =>
+        {
+            if (entity == x.Value)
+            {
+                result = true;
+                return;
+            }
+        });
+
+        return result;
     }
 }

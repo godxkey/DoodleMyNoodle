@@ -9,7 +9,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
-        foreach (var input in SimInputs)
+        foreach (var input in SimWorld.TickInputs)
         {
             if (input is SimPlayerInput playerInput)
             {
@@ -100,11 +100,9 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                         EntityManager.SetComponentData(pawn, new Translation() { Value = float3(newPosition, 0) });
                     }
                 }
+                break;
             }
-
-            break;
         }
-
     }
 
     private Entity GetPlayerPawn(Entity playerEntity)
