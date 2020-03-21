@@ -3,12 +3,24 @@ using Unity.Entities;
 
 public static class ComponentSystemExtensions
 {
+    private static Entity CreateNamedSingleton<T>(this ComponentSystem componentSystem)
+        where T : struct, IComponentData
+    {
+        var singletonEntity = componentSystem.EntityManager.CreateEntity(typeof(T));
+
+#if UNITY_EDITOR
+        componentSystem.EntityManager.SetName(singletonEntity, typeof(T).Name);
+#endif
+
+        return singletonEntity;
+    }
+
     public static void SetOrCreateSingleton<T>(this ComponentSystem componentSystem, in T componentData)
         where T : struct, IComponentData
     {
         if (!componentSystem.HasSingleton<T>())
         {
-            componentSystem.EntityManager.CreateEntity(typeof(T));
+            componentSystem.CreateNamedSingleton<T>();
         }
 
         componentSystem.SetSingleton(componentData);
@@ -23,7 +35,7 @@ public static class ComponentSystemExtensions
         }
         else
         {
-            var newEntity = componentSystem.EntityManager.CreateEntity(typeof(T));
+            var newEntity = componentSystem.CreateNamedSingleton<T>();
             componentSystem.EntityManager.SetComponentData(newEntity, defaultValue);
             return defaultValue;
         }

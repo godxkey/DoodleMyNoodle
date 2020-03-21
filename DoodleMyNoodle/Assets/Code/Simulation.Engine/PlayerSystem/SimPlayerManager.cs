@@ -52,7 +52,7 @@ public class SimPlayerManager : SimSingleton<SimPlayerManager>, ISimInputProcess
             case SimPlayerInput playerInput:
             {
                 // valid player ?
-                SimPlayerComponent player = SimPlayerHelpers.FindPlayerFromId(playerInput.SimPlayerIdOld);
+                SimPlayerComponent player = SimPlayerHelpersOld.FindPlayerFromId(playerInput.SimPlayerIdOld);
                 if (player)
                 {
                     HandleInputFromPlayer(player, playerInput);

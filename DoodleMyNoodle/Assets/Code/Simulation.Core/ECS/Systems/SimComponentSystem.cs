@@ -6,12 +6,26 @@ using UnityEngine.Scripting;
 
 public abstract class SimComponentSystem : ComponentSystem
 {
-    public SimInput[] SimInputs => ((SimulationWorld)World).OngoingTickInputs;
+    public SimulationWorld SimWorld { get; private set; }
+    public SimInput[] SimInputs => SimWorld.OngoingTickInputs;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        SimWorld = ((SimulationWorld)World);
+    }
 }
 
 public abstract class SimJobComponentSystem : JobComponentSystem
 {
+    public SimulationWorld SimWorld { get; private set; }
     public SimInput[] SimInputs => ((SimulationWorld)World).OngoingTickInputs;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        SimWorld = ((SimulationWorld)World);
+    }
 }
 
 

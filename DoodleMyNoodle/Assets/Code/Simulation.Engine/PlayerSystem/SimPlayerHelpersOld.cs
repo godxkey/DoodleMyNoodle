@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class SimPlayerHelpers
+public static class SimPlayerHelpersOld
 {
     public static SimPlayerComponent FindPlayerFromId(in SimPlayerId simPlayerId)
     {

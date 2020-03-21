@@ -26,7 +26,7 @@ public class ClickerDisplay : MonoBehaviour
 
     public void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -42,12 +42,17 @@ public class ClickerDisplay : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
+
     // Returns item left on the slot
     public SimItem InventorySlotClicked(SimItem item)
     {
         if (_itemHeld != null)
         {
-            if(item == null)
+            if (item == null)
             {
                 return DropHoldingItem();
             }
@@ -56,7 +61,7 @@ public class ClickerDisplay : MonoBehaviour
         }
         else
         {
-            if(item != null)
+            if (item != null)
             {
                 StartHoldingItem(item);
                 return null;
@@ -68,9 +73,9 @@ public class ClickerDisplay : MonoBehaviour
 
     public void UpdateHoverText(string name, string description)
     {
-        if(_itemHeld == null)
+        if (_itemHeld == null)
         {
-            if(!name.IsNullOrEmpty())
+            if (!name.IsNullOrEmpty())
             {
                 TooltipPanel.SetActive(true);
                 TooltipName.text = name;
@@ -101,7 +106,7 @@ public class ClickerDisplay : MonoBehaviour
 
     private void UpdateDisplay(SimItem itemHeld)
     {
-        if(itemHeld != null)
+        if (itemHeld != null)
         {
             HoldingImage.sprite = itemHeld.GetInfo().Icon;
             HoldingImage.color = HoldingImage.color.ChangedAlpha(1);

@@ -70,6 +70,7 @@ namespace SimulationControl
             // pre init group
             _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemEnd>());
             _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<UpdateSimulationTimeSystem>());
+            _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<InitializeRandomSeedSystem>());
 
             // init group
             _simInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<BeginInitializationEntityCommandBufferSystem>());

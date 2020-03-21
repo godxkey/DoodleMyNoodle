@@ -14,4 +14,17 @@ public static class EntityManagerExtensions
         componentData = default;
         return false;
     }
+    
+    public static void SetOrAddComponentData<T>(this EntityManager entityManager, Entity entity, T componentData)
+         where T : struct, IComponentData
+    {
+        if (entityManager.HasComponent<T>(entity))
+        {
+            entityManager.SetComponentData(entity, componentData);
+        }
+        else
+        {
+            entityManager.AddComponentData(entity, componentData);
+        }
+    }
 }
