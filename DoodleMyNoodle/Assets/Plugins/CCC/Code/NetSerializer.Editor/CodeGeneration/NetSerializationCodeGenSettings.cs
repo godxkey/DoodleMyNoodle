@@ -10,7 +10,7 @@ public static class NetSerializationCodeGenSettings
         {"CCC.FixMath",         "Assets/Plugins/CCC/Code/FixMath"       + Serializers_AssemblyGenerationFolder},
         {"CCC.Online",          "Assets/Plugins/CCC/Code/Online"        + Serializers_AssemblyGenerationFolder},
         {"Simulation.Core",     "Assets/Code/Simulation.Core"           + Serializers_AssemblyGenerationFolder},
-        {"Simulation.Engine",   "Assets/Code/Simulation.Engine"         + Serializers_AssemblyGenerationFolder},
+        {"Simulation.Engine",   "Assets/Code/Simulation.Engine_OLD"     + Serializers_AssemblyGenerationFolder},
         {"Simulation.Game",     "Assets/Code/Simulation.Game"           + Serializers_AssemblyGenerationFolder},
         {"SimulationIO",        "Assets/Code/SimulationIO"              + Serializers_AssemblyGenerationFolder},
     };
