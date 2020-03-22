@@ -173,9 +173,9 @@ public class TileHighlightManager : GameMonoBehaviour
                         break;
                 }
 
-                SimTileId destinationSimTileID = new SimTileId((int)newPossibleDestination.x, (int)newPossibleDestination.y);
+                SimTileId_OLD destinationSimTileID = new SimTileId_OLD((int)newPossibleDestination.x, (int)newPossibleDestination.y);
 
-                List<SimTileId> path = new List<SimTileId>();
+                List<SimTileId_OLD> path = new List<SimTileId_OLD>();
                 if (SimPathService.Instance.GetPathTo(gridWalker, destinationSimTileID, ref path))
                 {
                     GameObject newHighlight = HighlightPrefab.Duplicate();

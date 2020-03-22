@@ -14,7 +14,7 @@ public class SimDamageOnContactComponent : SimComponent, ISimTickable
 
     public void OnSimTick()
     {
-        SimTileId myTileId = SimTransform.GetTileId();
+        SimTileId_OLD myTileId = SimTransform.GetTileId();
 
         foreach (SimPawnComponent pawn in Simulation.EntitiesWithComponent<SimPawnComponent>())
         {

@@ -8,9 +8,9 @@ public class SimCharacterHealComponent : SimEventComponent
     public bool WantsToHeal = false;
     public bool ChoiceMade = false;
 
-    private Action<SimTileId> _currentHealDestinationFoundCallback = null;
+    private Action<SimTileId_OLD> _currentHealDestinationFoundCallback = null;
 
-    public bool TryToHeal(SimTileId simTileId, int Amount)
+    public bool TryToHeal(SimTileId_OLD simTileId, int Amount)
     {
         SimEntity targetEntity = SimTileHelpers.GetPawnOnTile(simTileId);
         if (targetEntity != null)
@@ -31,7 +31,7 @@ public class SimCharacterHealComponent : SimEventComponent
         return false;
     }
 
-    public void OnRequestToHeal(Action<SimTileId> OnDestinationFound)
+    public void OnRequestToHeal(Action<SimTileId_OLD> OnDestinationFound)
     {
         _currentHealDestinationFoundCallback = OnDestinationFound;
         ChoiceMade = false;
@@ -45,7 +45,7 @@ public class SimCharacterHealComponent : SimEventComponent
         ChoiceMade = true;
     }
 
-    public void OnHealDestinationChoosen(SimTileId simTileId)
+    public void OnHealDestinationChoosen(SimTileId_OLD simTileId)
     {
         if (WantsToHeal)
         {

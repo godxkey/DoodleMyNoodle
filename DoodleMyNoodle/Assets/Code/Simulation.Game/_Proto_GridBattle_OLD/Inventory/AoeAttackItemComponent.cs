@@ -23,10 +23,10 @@ public class AoeAttackItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip
 
         FixVector3 PlayerPosition = (FixVector3)Informations[0];
 
-        simAttackComponent.TryToAttack(new SimTileId((int)PlayerPosition.x + 1, (int)PlayerPosition.y));
-        simAttackComponent.TryToAttack(new SimTileId((int)PlayerPosition.x - 1, (int)PlayerPosition.y));
-        simAttackComponent.TryToAttack(new SimTileId((int)PlayerPosition.x, (int)PlayerPosition.y + 1));
-        simAttackComponent.TryToAttack(new SimTileId((int)PlayerPosition.x, (int)PlayerPosition.y + 1));
+        simAttackComponent.TryToAttack(new SimTileId_OLD((int)PlayerPosition.x + 1, (int)PlayerPosition.y));
+        simAttackComponent.TryToAttack(new SimTileId_OLD((int)PlayerPosition.x - 1, (int)PlayerPosition.y));
+        simAttackComponent.TryToAttack(new SimTileId_OLD((int)PlayerPosition.x, (int)PlayerPosition.y + 1));
+        simAttackComponent.TryToAttack(new SimTileId_OLD((int)PlayerPosition.x, (int)PlayerPosition.y + 1));
     }
 
     public void TryGetUsageContext(SimPawnComponent PawnComponent, SimPlayerId simPlayerId, int itemIndex, Action<SimPlayerInputUseItem> OnContextReady)

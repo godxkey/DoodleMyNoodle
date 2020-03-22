@@ -18,13 +18,13 @@ public class SimCharacterAttackComponent : SimEventComponent
     public bool WantsToShootProjectile = false;
     public bool ShootProjectileChoiceMade = false;
 
-    private Action<SimTileId> _currentAttackDestinationFoundCallback = null;
-    private Action<SimTileId> _currentProjectileDestinationFoundCallback = null;
+    private Action<SimTileId_OLD> _currentAttackDestinationFoundCallback = null;
+    private Action<SimTileId_OLD> _currentProjectileDestinationFoundCallback = null;
 
 
     public int AttackDamage { get => _data.AttackDamage; set => _data.AttackDamage = value; }
 
-    public bool TryToAttack(SimTileId simTileId)
+    public bool TryToAttack(SimTileId_OLD simTileId)
     {
         SimEntity targetEntity = SimTileHelpers.GetPawnOnTile(simTileId);
         if(targetEntity != null)
@@ -45,7 +45,7 @@ public class SimCharacterAttackComponent : SimEventComponent
         return false;
     }
 
-    public void OnRequestToAttack(Action<SimTileId> OnDestinationFound)
+    public void OnRequestToAttack(Action<SimTileId_OLD> OnDestinationFound)
     {
         _currentAttackDestinationFoundCallback = OnDestinationFound;
         AttackChoiceMade = false;
@@ -59,7 +59,7 @@ public class SimCharacterAttackComponent : SimEventComponent
         AttackChoiceMade = true;
     }
 
-    public void OnAttackDestinationChoosen(SimTileId simTileId)
+    public void OnAttackDestinationChoosen(SimTileId_OLD simTileId)
     {
         if (WantsToAttack)
         {
@@ -68,7 +68,7 @@ public class SimCharacterAttackComponent : SimEventComponent
         }
     }
 
-    public void OnRequestToShoot(Action<SimTileId> OnDestinationFound)
+    public void OnRequestToShoot(Action<SimTileId_OLD> OnDestinationFound)
     {
         _currentProjectileDestinationFoundCallback = OnDestinationFound;
         ShootProjectileChoiceMade = false;
@@ -82,7 +82,7 @@ public class SimCharacterAttackComponent : SimEventComponent
         ShootProjectileChoiceMade = true;
     }
 
-    public void OnShootDestinationChoosen(SimTileId simTileId)
+    public void OnShootDestinationChoosen(SimTileId_OLD simTileId)
     {
         if (WantsToShootProjectile)
         {

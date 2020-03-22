@@ -35,7 +35,7 @@ public class HighlightClicker : GameMonoBehaviour
                     {
                         if (Input.GetMouseButtonDown(0)) 
                         {
-                            SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+                            SimTileId_OLD currentTileID = new SimTileId_OLD((int)transform.position.x, (int)transform.position.y);
 
                             _playerGridWalkerComponent.OnDestinationChoosen(currentTileID);
 
@@ -57,7 +57,7 @@ public class HighlightClicker : GameMonoBehaviour
                     {
                         if (Input.GetMouseButtonDown(0)) 
                         {
-                            SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+                            SimTileId_OLD currentTileID = new SimTileId_OLD((int)transform.position.x, (int)transform.position.y);
 
                             _playerCharacterAttackComponent.OnAttackDestinationChoosen(currentTileID);
 
@@ -76,7 +76,7 @@ public class HighlightClicker : GameMonoBehaviour
                     {
                         if (Input.GetMouseButtonDown(0))
                         {
-                            SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+                            SimTileId_OLD currentTileID = new SimTileId_OLD((int)transform.position.x, (int)transform.position.y);
 
                             _playerCharacterAttackComponent.OnShootDestinationChoosen(currentTileID);
 
@@ -97,7 +97,7 @@ public class HighlightClicker : GameMonoBehaviour
                         {
                             if (Input.GetMouseButtonDown(0))
                             {
-                                SimTileId currentTileID = new SimTileId((int)transform.position.x, (int)transform.position.y);
+                                SimTileId_OLD currentTileID = new SimTileId_OLD((int)transform.position.x, (int)transform.position.y);
 
                                 _playerCharacterHealComponent.OnHealDestinationChoosen(currentTileID);
 

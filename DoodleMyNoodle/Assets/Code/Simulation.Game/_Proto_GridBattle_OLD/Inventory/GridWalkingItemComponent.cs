@@ -23,9 +23,9 @@ public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
     {
         SimGridWalkerComponent simGridWalkerComponent = PlayerActions.GetComponent<SimGridWalkerComponent>();
 
-        PlayerActions.IncreaseValue(-CalculateAmountOfActionToMoveThere(simGridWalkerComponent.TileId, (SimTileId)Informations[0]));
+        PlayerActions.IncreaseValue(-CalculateAmountOfActionToMoveThere(simGridWalkerComponent.TileId, (SimTileId_OLD)Informations[0]));
 
-        simGridWalkerComponent.TryWalkTo((SimTileId)Informations[0]);
+        simGridWalkerComponent.TryWalkTo((SimTileId_OLD)Informations[0]);
     }
 
     public void TryGetUsageContext(SimPawnComponent PawnComponent, SimPlayerId simPlayerId, int itemIndex, Action<SimPlayerInputUseItem> OnContextReady)
@@ -45,7 +45,7 @@ public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
             }
             else
             {
-                simGridWalkerComponent.OnRequestToWalk((SimTileId Destination)=> 
+                simGridWalkerComponent.OnRequestToWalk((SimTileId_OLD Destination)=> 
                 {
                     object[] ItemUsageInfo = { Destination };
 
@@ -57,7 +57,7 @@ public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
         }
     }
 
-    private int CalculateAmountOfActionToMoveThere(SimTileId start, SimTileId end)
+    private int CalculateAmountOfActionToMoveThere(SimTileId_OLD start, SimTileId_OLD end)
     {
         int up = Mathf.Abs(end.Y - start.Y);
         int right = Mathf.Abs(end.X - start.X);

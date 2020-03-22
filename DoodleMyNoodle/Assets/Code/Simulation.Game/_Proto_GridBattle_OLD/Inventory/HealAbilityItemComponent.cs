@@ -24,7 +24,7 @@ public class HealAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
 
         PlayerActions.IncreaseValue(-1 * ActionToConsume);
 
-        simHealComponent.TryToHeal((SimTileId)Informations[0], HealAmount);
+        simHealComponent.TryToHeal((SimTileId_OLD)Informations[0], HealAmount);
     }
 
     public void TryGetUsageContext(SimPawnComponent PawnComponent, SimPlayerId simPlayerId, int itemIndex, Action<SimPlayerInputUseItem> OnContextReady)
@@ -44,7 +44,7 @@ public class HealAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
             }
             else
             {
-                simCharacterHealComponent.OnRequestToHeal((SimTileId Destination) =>
+                simCharacterHealComponent.OnRequestToHeal((SimTileId_OLD Destination) =>
                 {
                     object[] ItemUsageInfo = { Destination };
 

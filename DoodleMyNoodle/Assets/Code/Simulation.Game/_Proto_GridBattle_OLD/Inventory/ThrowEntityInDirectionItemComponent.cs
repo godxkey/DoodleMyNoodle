@@ -23,7 +23,7 @@ public class ThrowEntityInDirectionItemComponent : SimComponent, IItemOnEquip, I
     {
         PlayerActions.IncreaseValue(-1 * ActionToConsume);
 
-        FixVector2 Destination = new FixVector2(((SimTileId)Informations[1]).X, ((SimTileId)Informations[1]).Y);
+        FixVector2 Destination = new FixVector2(((SimTileId_OLD)Informations[1]).X, ((SimTileId_OLD)Informations[1]).Y);
         FixVector2 Direction = Destination - (FixVector2)Informations[0];
 
         var projectileEntity = Simulation.Instantiate(_projectilePrefab);
@@ -54,7 +54,7 @@ public class ThrowEntityInDirectionItemComponent : SimComponent, IItemOnEquip, I
             }
             else
             {
-                simCharacterAttackComponent.OnRequestToShoot((SimTileId Destination) =>
+                simCharacterAttackComponent.OnRequestToShoot((SimTileId_OLD Destination) =>
                 {
                     object[] ItemUsageInfo = { new FixVector2(PawnComponent.SimTransform.WorldPosition.x, PawnComponent.SimTransform.WorldPosition.y), Destination };
 

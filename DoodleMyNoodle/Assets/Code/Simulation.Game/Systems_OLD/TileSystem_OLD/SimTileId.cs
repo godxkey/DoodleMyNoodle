@@ -5,13 +5,13 @@ using UnityEngine;
 [NetSerializable]
 [Serializable]
 [DebuggerDisplay("tile({x}, {y})")] // tells visual studio how to display the variable while debugging
-public struct SimTileId
+public struct SimTileId_OLD
 {
     public int X;
     public int Y;
 
 
-    public SimTileId(int x, int y)
+    public SimTileId_OLD(int x, int y)
     {
         this.X = x;
         this.Y = y;
@@ -47,37 +47,37 @@ public struct SimTileId
     #endregion
 
     // Used to calculate directions
-    public static Vector2Int operator -(in SimTileId a, in SimTileId b)
+    public static Vector2Int operator -(in SimTileId_OLD a, in SimTileId_OLD b)
     {
         return new Vector2Int(a.X - b.X, a.Y - b.Y);
     }
     // Used to calculate directions
-    public static SimTileId operator +(in SimTileId a, in Vector2Int dir)
+    public static SimTileId_OLD operator +(in SimTileId_OLD a, in Vector2Int dir)
     {
-        return new SimTileId(a.X + dir.x, a.Y + dir.y);
+        return new SimTileId_OLD(a.X + dir.x, a.Y + dir.y);
     }
 
 
 
     #region Builder method
-    public static SimTileId FromWorldPosition(in FixVector3 worldPosition)
+    public static SimTileId_OLD FromWorldPosition(in FixVector3 worldPosition)
     {
-        return new SimTileId(Fix64.RoundToInt(worldPosition.x), Fix64.RoundToInt(worldPosition.y));
+        return new SimTileId_OLD(Fix64.RoundToInt(worldPosition.x), Fix64.RoundToInt(worldPosition.y));
     }
 
     #endregion
 
     #region Overloads
-    public static bool operator ==(in SimTileId a, in SimTileId b) => a.X == b.X && a.Y == b.Y;
-    public static bool operator !=(in SimTileId a, in SimTileId b) => !(a == b);
+    public static bool operator ==(in SimTileId_OLD a, in SimTileId_OLD b) => a.X == b.X && a.Y == b.Y;
+    public static bool operator !=(in SimTileId_OLD a, in SimTileId_OLD b) => !(a == b);
     public override bool Equals(object obj)
     {
-        if (!(obj is SimTileId))
+        if (!(obj is SimTileId_OLD))
         {
             return false;
         }
 
-        var objTileId = (SimTileId)obj;
+        var objTileId = (SimTileId_OLD)obj;
         return (X == objTileId.X) && (Y == objTileId.Y);
     }
     public override int GetHashCode()
