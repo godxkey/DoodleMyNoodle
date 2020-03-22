@@ -18,20 +18,20 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
 
         public bool HasADestination;
 
-        public List<SimTileId> Path;
+        public List<SimTileId_OLD> Path;
         
         public SimEvent<WalkedOnTileEventData> OnWalkedOnTileEvent;
     }
 
     public Fix64 Speed { get => _data.Speed; internal set => _data.Speed = value; }
     public bool HasADestination => _data.HasADestination;
-    public SimTileId TileId => SimTransform.GetTileId();
+    public SimTileId_OLD TileId => SimTransform.GetTileId();
     public SimEvent<WalkedOnTileEventData> OnWalkedOnTileEvent => _data.OnWalkedOnTileEvent;
 
     public bool WantsToWalk = false;
     public bool ChoiceMade = false;
 
-    private Action<SimTileId> _currentDestinationFoundCallback = null;
+    private Action<SimTileId_OLD> _currentDestinationFoundCallback = null;
 
     public override void OnSimAwake()
     {
@@ -40,7 +40,7 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
         _data.OnWalkedOnTileEvent = CreateLocalEvent<WalkedOnTileEventData>();
     }
 
-    public void TryWalkTo(in SimTileId destination)
+    public void TryWalkTo(in SimTileId_OLD destination)
     {
         if (destination == TileId)
             return;
@@ -61,8 +61,8 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
 
             if (HasADestination)
             {
-                SimTileId currentTile = TileId;
-                SimTileId targetTile = _data.Path[0];
+                SimTileId_OLD currentTile = TileId;
+                SimTileId_OLD targetTile = _data.Path[0];
                 FixVector3 currentPosition = SimTransform.WorldPosition;
                 FixVector3 targetPosition = targetTile.GetWorldPosition3D();
 
@@ -73,7 +73,7 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
 
                 // endpoint
                 FixVector3 newPosition = SimTransform.WorldPosition + moveVector;
-                SimTileId newTile = SimTileId.FromWorldPosition(newPosition);
+                SimTileId_OLD newTile = SimTileId_OLD.FromWorldPosition(newPosition);
 
 
                 if (newTile != currentTile && SimTileHelpers.CanEntityWalkOntoTile(this, newTile) == false)
@@ -96,7 +96,7 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
         }
     }
 
-    public void OnRequestToWalk(Action<SimTileId> OnDestinationFound)
+    public void OnRequestToWalk(Action<SimTileId_OLD> OnDestinationFound)
     {
         _currentDestinationFoundCallback = OnDestinationFound;
         ChoiceMade = false;
@@ -110,7 +110,7 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
         ChoiceMade = true;
     }
 
-    public void OnDestinationChoosen(SimTileId simTileId)
+    public void OnDestinationChoosen(SimTileId_OLD simTileId)
     {
         if (WantsToWalk)
         {

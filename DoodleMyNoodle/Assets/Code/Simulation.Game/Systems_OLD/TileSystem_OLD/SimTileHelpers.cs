@@ -1,7 +1,7 @@
 ﻿
 public static class SimTileHelpers
 {
-    public static bool CanEntityWalkGoOntoTile(SimEntity entity, in SimTileId tile)
+    public static bool CanEntityWalkGoOntoTile(SimEntity entity, in SimTileId_OLD tile)
     {
         SimGridWalkerComponent walkerComponent = entity.GetComponent<SimGridWalkerComponent>();
         if (walkerComponent == null)
@@ -9,7 +9,7 @@ public static class SimTileHelpers
         return CanEntityWalkOntoTile(walkerComponent, tile);
     }
 
-    public static bool CanEntityWalkOntoTile(SimGridWalkerComponent walker, in SimTileId tile)
+    public static bool CanEntityWalkOntoTile(SimGridWalkerComponent walker, in SimTileId_OLD tile)
     {
         return SimTileManager.Instance.IsTileWalkable(tile)
             && GetPawnOnTile(tile) == null
@@ -19,7 +19,7 @@ public static class SimTileHelpers
     /// <summary>
     /// Returns the first pawn found on the matching tile (or null if none found)
     /// </summary>
-    public static SimEntity GetPawnOnTile(SimTileId tileId)
+    public static SimEntity GetPawnOnTile(SimTileId_OLD tileId)
     {
         foreach (SimPawnComponent pawn in Simulation.EntitiesWithComponent<SimPawnComponent>())
         {
@@ -38,7 +38,7 @@ public static class SimTileHelpers
     /// <summary>
     /// Returns the first pawn found on the matching tile (or null if none found)
     /// </summary>
-    public static SimEntity GetObstacleOnTile(SimTileId tileId)
+    public static SimEntity GetObstacleOnTile(SimTileId_OLD tileId)
     {
         foreach (SimObstacleComponent obstacle in Simulation.EntitiesWithComponent<SimObstacleComponent>())
         {

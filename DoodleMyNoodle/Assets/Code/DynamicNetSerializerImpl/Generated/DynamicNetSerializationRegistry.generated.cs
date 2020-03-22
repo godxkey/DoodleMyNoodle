@@ -110,7 +110,7 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(SimPlayerInputUseItem)
         ,
-        typeof(SimTileId)
+        typeof(SimTileId_OLD)
         ,
         typeof(SimulationControl.NetMessageSimTick)
         ,
@@ -429,9 +429,9 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_SimPlayerInputUseItem.GetNetBitSize(castedObj);
         }
         ,
-        [typeof(SimTileId)] = (obj) =>
+        [typeof(SimTileId_OLD)] = (obj) =>
         {
-            SimTileId castedObj = (SimTileId)obj;
+            SimTileId_OLD castedObj = (SimTileId_OLD)obj;
             return StaticNetSerializer_SimTileId.GetNetBitSize(ref castedObj);
         }
         ,
@@ -780,9 +780,9 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_SimPlayerInputUseItem.NetSerialize(castedObj, writer);
         }
         ,
-        [typeof(SimTileId)] = (obj, writer) =>
+        [typeof(SimTileId_OLD)] = (obj, writer) =>
         {
-            SimTileId castedObj = (SimTileId)obj;
+            SimTileId_OLD castedObj = (SimTileId_OLD)obj;
             StaticNetSerializer_SimTileId.NetSerialize(ref castedObj, writer);
         }
         ,
@@ -1183,7 +1183,7 @@ public static class DynamicNetSerializationRegistry
         ,
         [50] = (reader) =>
         {
-            SimTileId obj = new SimTileId();
+            SimTileId_OLD obj = new SimTileId_OLD();
             StaticNetSerializer_SimTileId.NetDeserialize(ref obj, reader);
             return obj;
         }

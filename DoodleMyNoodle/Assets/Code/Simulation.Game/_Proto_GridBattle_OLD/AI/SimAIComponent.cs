@@ -47,7 +47,7 @@ public class SimAIComponent : SimComponent,
                     {
                         int maxTry = 4;
                         int currentTry = 0;
-                        SimTileId nextTileToAttack = _pawnGridWalker.TileId + Vector2Int.right;
+                        SimTileId_OLD nextTileToAttack = _pawnGridWalker.TileId + Vector2Int.right;
                         while (!_characterAttack.TryToAttack(nextTileToAttack) && currentTry < maxTry)
                         {
                             currentTry++;

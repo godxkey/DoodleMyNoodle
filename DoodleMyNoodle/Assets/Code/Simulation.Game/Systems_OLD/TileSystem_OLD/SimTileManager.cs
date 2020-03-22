@@ -15,14 +15,14 @@ public class SimTileManager : SimSingleton<SimTileManager>
     [SerializeField]
     int _height = 10;
 
-    public bool IsTileWalkable(in SimTileId tileId)
+    public bool IsTileWalkable(in SimTileId_OLD tileId)
     {
         // is rock ? is lava ? etc.
 
         return IsTileInBound(tileId);
     }
 
-    public bool IsTileInBound(in SimTileId tileId)
+    public bool IsTileInBound(in SimTileId_OLD tileId)
     {
         return tileId.X >= 0
             && tileId.X < _width

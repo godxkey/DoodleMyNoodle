@@ -25,7 +25,7 @@ public class AttackAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUne
 
         PlayerActions.IncreaseValue(-1 * ActionToConsume);
 
-        simAttackComponent.TryToAttack((SimTileId)Informations[0]);
+        simAttackComponent.TryToAttack((SimTileId_OLD)Informations[0]);
     }
 
     public void TryGetUsageContext(SimPawnComponent PawnComponent, SimPlayerId simPlayerId, int itemIndex, Action<SimPlayerInputUseItem> OnContextReady)
@@ -45,7 +45,7 @@ public class AttackAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUne
             }
             else
             {
-                simCharacterAttackComponent.OnRequestToAttack((SimTileId Destination) =>
+                simCharacterAttackComponent.OnRequestToAttack((SimTileId_OLD Destination) =>
                 {
                     object[] ItemUsageInfo = { Destination };
 

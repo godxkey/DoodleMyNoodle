@@ -5,21 +5,21 @@ using UnityEngine;
 public class SimPathService : SimSingleton<SimPathService>
 {
     // fbesette: should use pooling for list of tiles
-    public bool GetPathTo(SimGridWalkerComponent walker, in SimTileId destination, ref List<SimTileId> result)
+    public bool GetPathTo(SimGridWalkerComponent walker, in SimTileId_OLD destination, ref List<SimTileId_OLD> result)
     {
         // The algo here is pretty dumb. It's not a real pathfinder. We should implement one eventually
         if (result == null)
-            result = new List<SimTileId>();
+            result = new List<SimTileId_OLD>();
 
         result.Clear();
-        List<SimTileId> resultRef = result;
+        List<SimTileId_OLD> resultRef = result;
 
-        SimTileId currentTile = walker.TileId;
+        SimTileId_OLD currentTile = walker.TileId;
 
         while (currentTile != destination)
         {
             
-            bool TryAdjacentTile(in SimTileId tile) // this is a method
+            bool TryAdjacentTile(in SimTileId_OLD tile) // this is a method
             {
                 if (SimTileHelpers.CanEntityWalkOntoTile(walker, tile))
                 {

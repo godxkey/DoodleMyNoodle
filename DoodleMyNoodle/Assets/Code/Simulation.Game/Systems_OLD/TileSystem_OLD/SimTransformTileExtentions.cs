@@ -7,8 +7,8 @@ public static class SimTransformTileExtensions
     /// <summary>
     /// Get the closest tile that matches with the world position
     /// </summary>
-    public static SimTileId GetTileId(this SimTransformComponent tr)
+    public static SimTileId_OLD GetTileId(this SimTransformComponent tr)
     {
-        return SimTileId.FromWorldPosition(tr.WorldPosition);
+        return SimTileId_OLD.FromWorldPosition(tr.WorldPosition);
     }
 }
