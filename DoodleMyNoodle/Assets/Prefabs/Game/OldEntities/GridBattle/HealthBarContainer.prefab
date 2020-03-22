@@ -45,6 +45,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -156,6 +157,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -206,7 +208,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6106202476111281992
 Transform:
   m_ObjectHideFlags: 0
@@ -267,5 +269,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3a7e754e43f744ab9ddba9e0af1125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthpointsBar: {fileID: 3322073170542532432}
-  HealthDisplay: {fileID: 4672518601746929638}
+  ValueBar: {fileID: 3322073170542532432}
