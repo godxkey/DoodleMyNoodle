@@ -18,6 +18,9 @@ internal class SimPreInitializationSystemGroup : ComponentSystemGroup, IManualSy
 
         base.OnUpdate();
     }
+
+    // This gives the presentation access to a query builder inside the sim. Not sure if its ok ...
+    public EntityQueryBuilder QueryBuilder => Entities;
 }
 [UnityEngine.ExecuteAlways]
 [AlwaysUpdateSystem]
