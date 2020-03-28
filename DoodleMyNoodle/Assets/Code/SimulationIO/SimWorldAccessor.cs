@@ -9,7 +9,7 @@ public class SimWorldAccessor
     internal SimulationWorld SimWorld;
     internal SubmitSimulationInputSystem SubmitSystem;
     internal BeginViewSystem BeginViewSystem;
-    internal ComponentSystem SomeSimSystem;
+    internal SimPreInitializationSystemGroup SomeSimSystem;
 
     public InputSubmissionId SubmitInput(SimInput simInput)
     {
@@ -42,6 +42,13 @@ public class SimWorldAccessor
 
     public uint EntityClearAndReplaceCount
         => SimWorld.EntityClearAndReplaceCount;
+
+    // fbessette: 
+    //  Here we are giving the presentation access to a query builder in the simulation.
+    //  Potential down sides:
+    //      - This will cache ALL of our presentation-to-sim queries in one system, making the lookup potentially
+    //      slower
+    public EntityQueryBuilder Entities => SomeSimSystem.QueryBuilder;
 
     /// <summary>
     /// Gets an array-like container containing all components of type T, indexed by Entity.
@@ -326,4 +333,20 @@ public struct SimWorldAccessorJob
 
     public DynamicBuffer<T> GetBuffer<T>(Entity entity) where T : struct, IBufferElementData
         => _exclusiveTransaction.GetBuffer<T>(entity);
+}
+
+public static class SimWorldAccessorExtensions
+{
+    public static bool TryGetComponentData<T>(this SimWorldAccessor accessor, Entity entity, out T componentData)
+         where T : struct, IComponentData
+    {
+        if (accessor.HasComponent<T>(entity))
+        {
+            componentData = accessor.GetComponentData<T>(entity);
+            return true;
+        }
+
+        componentData = default;
+        return false;
+    }
 }

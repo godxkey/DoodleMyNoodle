@@ -34,13 +34,13 @@ public static class PlayerIdHelpers
         }
     }
 
-    public static Entity GetLocalSimPawnEntity(World simulationWorld)
+    public static Entity GetLocalSimPawnEntity(SimWorldAccessor simulationWorld)
     {
         Entity localPlayerEntity = PlayerIdHelpers.GetLocalSimPlayerEntity(simulationWorld);
 
         if (localPlayerEntity != Entity.Null)
         {
-            if(simulationWorld.EntityManager.TryGetComponentData(localPlayerEntity, out ControlledEntity controlledEntity))
+            if (simulationWorld.TryGetComponentData(localPlayerEntity, out ControlledEntity controlledEntity))
             {
                 return controlledEntity.Value;
             }
@@ -49,7 +49,7 @@ public static class PlayerIdHelpers
         return Entity.Null;
     }
 
-    public static Entity GetLocalSimPlayerEntity(World simulationWorld)
+    public static Entity GetLocalSimPlayerEntity(SimWorldAccessor simulationWorld)
     {
         if (PlayerRepertoireSystem.Instance == null)
             return Entity.Null;
@@ -81,27 +81,20 @@ public static class PlayerIdHelpers
         return null;
     }
 
-    public static Entity GetSimPlayerFromPlayer(PlayerInfo playerInfo, World simulationWorld)
+    public static Entity GetSimPlayerFromPlayer(PlayerInfo playerInfo, SimWorldAccessor simulationWorld)
     {
-        // TODO fbessette: cache this query
-
-        EntityManager simEntityManager = simulationWorld.EntityManager;
-        using (EntityQuery query = simEntityManager.CreateEntityQuery(
-            ComponentType.ReadOnly<PlayerTag>(),
-            ComponentType.ReadOnly<PersistentId>()))
-        {
-            using (NativeArray<Entity> simPlayers = query.ToEntityArray(Allocator.TempJob))
+        Entity result = Entity.Null;
+        simulationWorld.Entities
+            .WithAllReadOnly<PlayerTag, PersistentId>()
+            .ForEach((Entity playerEntity, ref PersistentId simPlayerId) =>
             {
-                foreach (Entity playerEntity in simPlayers)
+                if (simPlayerId == playerInfo.SimPlayerId)
                 {
-                    if (simEntityManager.GetComponentData<PersistentId>(playerEntity) == playerInfo.SimPlayerId)
-                    {
-                        return playerEntity;
-                    }
+                    result = playerEntity;
+                    return;
                 }
-            }
-        }
+            });
 
-        return Entity.Null;
+        return result;
     }
 }
