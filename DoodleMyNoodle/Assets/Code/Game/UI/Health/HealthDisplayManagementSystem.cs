@@ -13,23 +13,15 @@ public class HealthDisplayManagementSystem : GameMonoBehaviour
 
     public override void OnGameUpdate() 
     {
-        EntityQuery entityQuery = GameMonoBehaviourHelpers.SimulationWorld.CreateEntityQuery(ComponentType.ReadOnly<Translation>(), ComponentType.ReadOnly<Health>());
-
-        using (NativeArray<Entity> entities = entityQuery.ToEntityArray(Allocator.TempJob))
+        int healthBarAmount = 0;
+        GameMonoBehaviourHelpers.SimulationWorld.Entities.ForEach((ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref Translation entityTranslation)=>
         {
-            for (int i = 0; i < entities.Length; i++)
-            {
-                Entity entity = entities[i];
+            Fix64 healthRatio = (Fix64)entityHealth.Value / (Fix64)entityMaximumHealth.Value;
 
-                Health entityHealth = GameMonoBehaviourHelpers.SimulationWorld.GetComponentData<Health>(entity);
-                Maximum<Health> entityMaximumHealth = GameMonoBehaviourHelpers.SimulationWorld.GetComponentData<Maximum<Health>>(entity);
-                Translation entityTranslation = GameMonoBehaviourHelpers.SimulationWorld.GetComponentData<Translation>(entity);
+            SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, healthRatio);
 
-                Fix64 healthRatio = (Fix64)entityHealth.Value / (Fix64)entityMaximumHealth.Value;
-
-                SetOrAddHealthBar(i, entityTranslation.Value, healthRatio);
-            }
-        }
+            healthBarAmount++;
+        });
     }
 
     private void SetOrAddHealthBar(int index, float3 position, Fix64 ratio)

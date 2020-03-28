@@ -1,9 +1,8 @@
 ﻿using Unity.Entities;
 
-[assembly: RegisterGenericComponentType(typeof(Maximum<Health>))]
-[assembly: RegisterGenericComponentType(typeof(Minimum<Health>))]
+[assembly: RegisterGenericComponentType(typeof(MaximumInt<Health>))]
+[assembly: RegisterGenericComponentType(typeof(MinimumInt<Health>))]
 
-[GenerateAuthoringComponent]
 public struct Health : IComponentData, IStatInt
 {
     public int Value;
