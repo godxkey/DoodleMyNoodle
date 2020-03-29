@@ -5,7 +5,7 @@ using Unity.Entities;
 
 public abstract class ViewComponentSystem : ComponentSystem
 {
-    protected SimWorldAccessor SimWorldAccessor => _simulationWorldSystem.SimWorldAccessor;
+    protected ExternalSimWorldAccessor SimWorldAccessor => _simulationWorldSystem.SimWorldAccessor;
     private SimulationWorldSystem _simulationWorldSystem;
 
     protected override void OnCreate()
@@ -18,7 +18,7 @@ public abstract class ViewComponentSystem : ComponentSystem
 
 public abstract class ViewJobComponentSystem : JobComponentSystem
 {
-    protected SimWorldAccessor SimWorldAccessor => _simulationWorldSystem.SimWorldAccessor;
+    protected ExternalSimWorldAccessor SimWorldAccessor => _simulationWorldSystem.SimWorldAccessor;
     private SimulationWorldSystem _simulationWorldSystem;
 
     protected override void OnCreate()

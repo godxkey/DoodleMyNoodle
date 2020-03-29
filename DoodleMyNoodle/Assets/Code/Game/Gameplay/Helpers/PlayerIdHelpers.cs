@@ -34,7 +34,7 @@ public static class PlayerIdHelpers
         }
     }
 
-    public static Entity GetLocalSimPawnEntity(SimWorldAccessor simulationWorld)
+    public static Entity GetLocalSimPawnEntity(ExternalSimWorldAccessor simulationWorld)
     {
         Entity localPlayerEntity = PlayerIdHelpers.GetLocalSimPlayerEntity(simulationWorld);
 
@@ -49,7 +49,7 @@ public static class PlayerIdHelpers
         return Entity.Null;
     }
 
-    public static Entity GetLocalSimPlayerEntity(SimWorldAccessor simulationWorld)
+    public static Entity GetLocalSimPlayerEntity(ExternalSimWorldAccessor simulationWorld)
     {
         if (PlayerRepertoireSystem.Instance == null)
             return Entity.Null;
@@ -57,7 +57,7 @@ public static class PlayerIdHelpers
         return PlayerIdHelpers.GetSimPlayerFromPlayer(PlayerRepertoireSystem.Instance.GetLocalPlayerInfo(), simulationWorld);
     }
 
-    public static PlayerInfo GetPlayerFromSimPlayer(Entity playerEntity, SimWorldAccessor simWorldAccessor)
+    public static PlayerInfo GetPlayerFromSimPlayer(Entity playerEntity, ExternalSimWorldAccessor simWorldAccessor)
     {
         if (simWorldAccessor.HasComponent<PersistentId>(playerEntity))
             return GetPlayerFromSimPlayer(simWorldAccessor.GetComponentData<PersistentId>(playerEntity));
@@ -81,7 +81,7 @@ public static class PlayerIdHelpers
         return null;
     }
 
-    public static Entity GetSimPlayerFromPlayer(PlayerInfo playerInfo, SimWorldAccessor simulationWorld)
+    public static Entity GetSimPlayerFromPlayer(PlayerInfo playerInfo, ExternalSimWorldAccessor simulationWorld)
     {
         Entity result = Entity.Null;
         simulationWorld.Entities

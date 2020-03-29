@@ -11,11 +11,13 @@ public abstract class SimComponentSystem : ComponentSystem
     public new ref readonly FixTimeData Time => ref World.FixTime;
 
     public new SimulationWorld World { get; private set; }
+    public ISimWorldReadWriteAccessor Accessor { get; private set; }
 
     protected override void OnCreate()
     {
         base.OnCreate();
         World = ((SimulationWorld)base.World);
+        Accessor = World.InternalAccessor;
     }
 }
 
@@ -27,11 +29,13 @@ public abstract class SimJobComponentSystem : JobComponentSystem
     public new ref readonly FixTimeData Time => ref World.FixTime;
 
     public new SimulationWorld World { get; private set; }
+    public ISimWorldReadWriteAccessor Accessor { get; private set; }
 
     protected override void OnCreate()
     {
         base.OnCreate();
         World = ((SimulationWorld)base.World);
+        Accessor = World.InternalAccessor;
     }
 }
 
