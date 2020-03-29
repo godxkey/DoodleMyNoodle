@@ -9,7 +9,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
-        foreach (var input in SimWorld.TickInputs)
+        foreach (var input in World.TickInputs)
         {
             if (input is SimPlayerInput playerInput)
             {
@@ -102,7 +102,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                     if (keycodeInput.keyCode == UnityEngine.KeyCode.T && keycodeInput.state == SimInputKeycode.State.Pressed
                         && EntityManager.HasComponent<FixTranslation>(pawn))
                     {
-                        fix2 newPosition = SimWorld.Random().NextFixVector2(
+                        fix2 newPosition = World.Random().NextFixVector2(
                             min: fix2(-5, -5),
                             max: fix2(5, 5));
 

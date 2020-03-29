@@ -5,7 +5,7 @@ public class CreatePlayerSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
-        foreach (var input in SimWorld.TickInputs)
+        foreach (var input in World.TickInputs)
         {
             if (input is SimInputPlayerCreate createPlayerInput)
             {

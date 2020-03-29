@@ -2,21 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
-using UnityEngine.Scripting;
 
 public abstract class SimComponentSystem : ComponentSystem
 {
     /// <summary>
     /// The current Time data for this system's world.
     /// </summary>
-    public new ref readonly FixTimeData Time => ref SimWorld.FixTime;
+    public new ref readonly FixTimeData Time => ref World.FixTime;
 
-    public SimulationWorld SimWorld { get; private set; }
+    public new SimulationWorld World { get; private set; }
 
     protected override void OnCreate()
     {
         base.OnCreate();
-        SimWorld = ((SimulationWorld)World);
+        World = ((SimulationWorld)base.World);
     }
 }
 
@@ -25,14 +24,14 @@ public abstract class SimJobComponentSystem : JobComponentSystem
     /// <summary>
     /// The current Time data for this system's world.
     /// </summary>
-    public new ref readonly FixTimeData Time => ref SimWorld.FixTime;
+    public new ref readonly FixTimeData Time => ref World.FixTime;
 
-    public SimulationWorld SimWorld { get; private set; }
+    public new SimulationWorld World { get; private set; }
 
     protected override void OnCreate()
     {
         base.OnCreate();
-        SimWorld = ((SimulationWorld)World);
+        World = ((SimulationWorld)base.World);
     }
 }
 
