@@ -86,6 +86,15 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                                         Value = round(pawnPos.Value) + fix3(0, -1, 0)
                                     });
                                     break;
+
+                                // Damage Health Debug 
+                                case UnityEngine.KeyCode.M:
+                                    EntityManager.SetComponentData(pawn, new Health()
+                                    {
+                                        Value = EntityManager.GetComponentData<Health>(pawn).Value - 1
+                                    });
+                                    break;
+
                             }
                         }
                     }
