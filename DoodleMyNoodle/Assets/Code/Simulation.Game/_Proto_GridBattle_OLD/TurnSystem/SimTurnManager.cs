@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Team
+public enum OLD_Team
 {
     Player,
     AI
@@ -18,11 +18,11 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
     {
         public int DurationOfATurn;
         public Fix64 Timer;
-        public Team CurrentTeam;
+        public OLD_Team CurrentTeam;
     }
 
     public int DurationOfATurn => _data.DurationOfATurn;
-    public Team CurrentTeam => _data.CurrentTeam;
+    public OLD_Team CurrentTeam => _data.CurrentTeam;
     public Fix64 TurnRemainingTime => _data.Timer;
 
     public override void OnSimStart() 
@@ -41,7 +41,7 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
         if (_data.Timer <= 0)
         {
             SwitchTurn();
-            if (_data.CurrentTeam == Team.AI)
+            if (_data.CurrentTeam == OLD_Team.AI)
                 _data.Timer = 1;
             else
                 _data.Timer = DurationOfATurn;
@@ -57,7 +57,7 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
         }
     }
 
-    public bool IsMyTurn(Team myTeam)
+    public bool IsMyTurn(OLD_Team myTeam)
     {
         return _data.CurrentTeam == myTeam;
     }
@@ -68,7 +68,7 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
     SerializedData _data = new SerializedData()
     {
         DurationOfATurn = 3,
-        CurrentTeam = (Team)TEAM_COUNT
+        CurrentTeam = (OLD_Team)TEAM_COUNT
     };
 
     public override void PushToDataStack(SimComponentDataStack dataStack)

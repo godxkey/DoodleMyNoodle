@@ -18,13 +18,13 @@ public class SimPlayerActions : SimClampedStatComponent, ISimTickable
 
     public bool CanTakeAction(int Cost)
     {
-        return ((Value - Cost) >= 0) && SimTurnManager.Instance.IsMyTurn(Team.Player);
+        return ((Value - Cost) >= 0) && SimTurnManager.Instance.IsMyTurn(OLD_Team.Player);
     }
 
     void ISimTickable.OnSimTick()
     {
         // TODO : Changer pour global event
-        if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+        if (SimTurnManager.Instance.IsMyTurn(OLD_Team.Player))
         {
             if (!WasMyTurn)
             {

@@ -31,7 +31,7 @@ public class HighlightClicker : GameMonoBehaviour
             {
                 if (_playerGridWalkerComponent.WantsToWalk && IsMouseInsideHighlight(GetMousePositionOnTile()))
                 {
-                    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    if (SimTurnManager.Instance.IsMyTurn(OLD_Team.Player))
                     {
                         if (Input.GetMouseButtonDown(0)) 
                         {
@@ -53,7 +53,7 @@ public class HighlightClicker : GameMonoBehaviour
             {
                 if (_playerCharacterAttackComponent.WantsToAttack && IsMouseInsideHighlight(GetMousePositionOnTile()))
                 {
-                    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    if (SimTurnManager.Instance.IsMyTurn(OLD_Team.Player))
                     {
                         if (Input.GetMouseButtonDown(0)) 
                         {
@@ -72,7 +72,7 @@ public class HighlightClicker : GameMonoBehaviour
 
                 if (_playerCharacterAttackComponent.WantsToShootProjectile && IsMouseInsideHighlight(GetMousePositionOnTile()))
                 {
-                    if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                    if (SimTurnManager.Instance.IsMyTurn(OLD_Team.Player))
                     {
                         if (Input.GetMouseButtonDown(0))
                         {
@@ -93,7 +93,7 @@ public class HighlightClicker : GameMonoBehaviour
                 {
                     if (_playerCharacterHealComponent.WantsToHeal && IsMouseInsideHighlight(GetMousePositionOnTile()))
                     {
-                        if (SimTurnManager.Instance.IsMyTurn(Team.Player))
+                        if (SimTurnManager.Instance.IsMyTurn(OLD_Team.Player))
                         {
                             if (Input.GetMouseButtonDown(0))
                             {
