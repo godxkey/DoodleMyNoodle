@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SimCompDemoBallMove : SimComponent, ISimPlayerInputHandler, ISimTickable
 {
-    static readonly Fix64 speed = 6;
+    static readonly fix speed = 6;
 
     [System.Serializable]
     struct SerializedData
     {
-        public FixVector3 InputDirection;
+        public fix3 InputDirection;
     }
 
     public bool HandleInput(SimPlayerInput input)
@@ -22,7 +22,7 @@ public class SimCompDemoBallMove : SimComponent, ISimPlayerInputHandler, ISimTic
                 {
                     if (inputKeycode.state == SimInputKeycode.State.Pressed)
                     {
-                        FixVector3 dir = Simulation.Random.Direction3D();
+                        fix3 dir = Simulation.Random.Direction3D();
                         SimTransform.LocalPosition += dir;
                     }
                     break;
@@ -31,36 +31,36 @@ public class SimCompDemoBallMove : SimComponent, ISimPlayerInputHandler, ISimTic
                 case KeyCode.RightArrow:
                 {
                     if (inputKeycode.state == SimInputKeycode.State.Pressed)
-                        _data.InputDirection += FixVector3.right;
+                        _data.InputDirection += fix3.right;
                     else if (inputKeycode.state == SimInputKeycode.State.Released)
-                        _data.InputDirection -= FixVector3.right;
+                        _data.InputDirection -= fix3.right;
                     break;
                 }
 
                 case KeyCode.LeftArrow:
                 {
                     if (inputKeycode.state == SimInputKeycode.State.Pressed)
-                        _data.InputDirection += FixVector3.left;
+                        _data.InputDirection += fix3.left;
                     else if (inputKeycode.state == SimInputKeycode.State.Released)
-                        _data.InputDirection -= FixVector3.left;
+                        _data.InputDirection -= fix3.left;
                     break;
                 }
 
                 case KeyCode.UpArrow:
                 {
                     if (inputKeycode.state == SimInputKeycode.State.Pressed)
-                        _data.InputDirection += FixVector3.forward;
+                        _data.InputDirection += fix3.forward;
                     else if (inputKeycode.state == SimInputKeycode.State.Released)
-                        _data.InputDirection -= FixVector3.forward;
+                        _data.InputDirection -= fix3.forward;
                     break;
                 }
 
                 case KeyCode.DownArrow:
                 {
                     if (inputKeycode.state == SimInputKeycode.State.Pressed)
-                        _data.InputDirection += FixVector3.backward;
+                        _data.InputDirection += fix3.backward;
                     else if (inputKeycode.state == SimInputKeycode.State.Released)
-                        _data.InputDirection -= FixVector3.backward;
+                        _data.InputDirection -= fix3.backward;
                     break;
                 }
             }

@@ -6,6 +6,11 @@ using UnityEngine.Scripting;
 
 public abstract class SimComponentSystem : ComponentSystem
 {
+    /// <summary>
+    /// The current Time data for this system's world.
+    /// </summary>
+    public new ref readonly FixTimeData Time => ref SimWorld.FixTime;
+
     public SimulationWorld SimWorld { get; private set; }
 
     protected override void OnCreate()
@@ -17,6 +22,11 @@ public abstract class SimComponentSystem : ComponentSystem
 
 public abstract class SimJobComponentSystem : JobComponentSystem
 {
+    /// <summary>
+    /// The current Time data for this system's world.
+    /// </summary>
+    public new ref readonly FixTimeData Time => ref SimWorld.FixTime;
+
     public SimulationWorld SimWorld { get; private set; }
 
     protected override void OnCreate()

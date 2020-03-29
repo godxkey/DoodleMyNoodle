@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class SimGridBattleBulletComponent : SimComponent, ISimTickable
 {
-    public FixVector2 Speed { get => _data.Speed; set => _data.Speed = value; }
+    public fix2 Speed { get => _data.Speed; set => _data.Speed = value; }
 
     public void OnSimTick()
     {
-        SimTransform.WorldPosition += (FixVector3)(Speed * Simulation.DeltaTime);
+        SimTransform.WorldPosition += (fix3)(Speed * Simulation.DeltaTime);
     }
 
     [System.Serializable]
     struct SerializedData
     {
-        public FixVector2 Speed;
+        public fix2 Speed;
 
     }
 

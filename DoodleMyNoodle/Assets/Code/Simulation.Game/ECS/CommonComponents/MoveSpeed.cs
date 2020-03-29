@@ -3,5 +3,5 @@
 [GenerateAuthoringComponent]
 public struct MoveSpeed : IComponentData
 {
-    public float Value;
+    public fix Value;
 }

@@ -53,7 +53,7 @@ internal class SimModuleEntityManager : SimModuleBase
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal SimEntity Instantiate(SimEntity entity, in FixVector3 position, in FixQuaternion rotation)
+    internal SimEntity Instantiate(SimEntity entity, in fix3 position, in fixQuaternion rotation)
     {
         GameObject newGameObject = GameObject.Instantiate(entity.gameObject, position.ToUnityVec(), rotation.ToUnityQuat());
 
@@ -66,7 +66,7 @@ internal class SimModuleEntityManager : SimModuleBase
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal SimEntity Instantiate(SimEntity entity, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
+    internal SimEntity Instantiate(SimEntity entity, in fix3 position, in fixQuaternion rotation, SimTransformComponent parent)
     {
         GameObject newGameObject = GameObject.Instantiate(entity.gameObject, position.ToUnityVec(), rotation.ToUnityQuat(), parent.UnityTransform);
         SetNewGameObjectTransform(newGameObject, position, rotation, parent);
@@ -132,7 +132,7 @@ internal class SimModuleEntityManager : SimModuleBase
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal SimEntity Instantiate(in SimBlueprint blueprint, in FixVector3 position, in FixQuaternion rotation)
+    internal SimEntity Instantiate(in SimBlueprint blueprint, in fix3 position, in fixQuaternion rotation)
     {
         if (!ValidateBlueprint(blueprint))
             return null;
@@ -145,7 +145,7 @@ internal class SimModuleEntityManager : SimModuleBase
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    internal SimEntity Instantiate(in SimBlueprint blueprint, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
+    internal SimEntity Instantiate(in SimBlueprint blueprint, in fix3 position, in fixQuaternion rotation, SimTransformComponent parent)
     {
         if (!ValidateBlueprint(blueprint))
             return null;
@@ -154,7 +154,7 @@ internal class SimModuleEntityManager : SimModuleBase
         return OnInstantiated_Internal(blueprint.Id, newGameObject, position, rotation);
     }
 
-    void SetNewGameObjectTransform(GameObject newGameObject, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
+    void SetNewGameObjectTransform(GameObject newGameObject, in fix3 position, in fixQuaternion rotation, SimTransformComponent parent)
     {
         SimTransformComponent simTransformComponent = newGameObject.GetComponent<SimTransformComponent>();
         if (simTransformComponent)
@@ -172,7 +172,7 @@ internal class SimModuleEntityManager : SimModuleBase
             simTransformComponent.SetParent(parent);
         }
     }
-    void SetNewGameObjectTransform(GameObject newGameObject, in FixVector3 position, in FixQuaternion rotation)
+    void SetNewGameObjectTransform(GameObject newGameObject, in fix3 position, in fixQuaternion rotation)
     {
         SimTransformComponent simTransformComponent = newGameObject.GetComponent<SimTransformComponent>();
         if (simTransformComponent)
@@ -194,7 +194,7 @@ internal class SimModuleEntityManager : SimModuleBase
         }
     }
 
-    SimEntity OnInstantiated_Internal(in SimBlueprintId blueprintId, GameObject newGameObject, in FixVector3 position, in FixQuaternion rotation)
+    SimEntity OnInstantiated_Internal(in SimBlueprintId blueprintId, GameObject newGameObject, in fix3 position, in fixQuaternion rotation)
     {
         SimTransformComponent simTransform = newGameObject.GetComponent<SimTransformComponent>();
         if (simTransform)

@@ -1,6 +1,31 @@
 ﻿using System.Diagnostics;
+using Unity.Core;
 using Unity.Entities;
 using Unity.Mathematics;
+
+public readonly struct FixTimeData
+{
+    /// <summary>
+    /// The total cumulative elapsed time in seconds.
+    /// </summary>
+    public readonly fix ElapsedTime;
+
+    /// <summary>
+    /// The time in seconds since the last time-updating event occurred. (For example, a frame.)
+    /// </summary>
+    public readonly fix DeltaTime;
+
+    /// <summary>
+    /// Create a new TimeData struct with the given values.
+    /// </summary>
+    /// <param name="elapsedTime">Time since the start of time collection.</param>
+    /// <param name="deltaTime">Elapsed time since the last time-updating event occurred.</param>
+    public FixTimeData(fix elapsedTime, fix deltaTime)
+    {
+        ElapsedTime = elapsedTime;
+        DeltaTime = deltaTime;
+    }
+}
 
 [DebuggerDisplay("{Name} (#{SequenceNumber})")]
 public class SimulationWorld : World, IOwnedWorld
@@ -18,7 +43,12 @@ public class SimulationWorld : World, IOwnedWorld
     public uint ExpectedNewTickId { get; internal set; }
     public SimInput[] TickInputs { get; internal set; }
 
-    public Random Random() => RandomModule.PickRandomGenerator();
+    public FixRandom Random() => RandomModule.PickRandomGenerator();
+
+    // cached value - the real data is on an entity
+    internal FixTimeData CurrentFixTime;
+    public ref FixTimeData FixTime => ref CurrentFixTime;
+    public new bool Time => throw new System.Exception("Use FixTime instead!");
 
     // cached value - the real data is on an entity
     public uint LatestTickId { get; internal set; }

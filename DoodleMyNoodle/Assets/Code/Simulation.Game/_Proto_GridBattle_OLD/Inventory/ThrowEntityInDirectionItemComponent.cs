@@ -6,7 +6,7 @@ using UnityEngine;
 public class ThrowEntityInDirectionItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip, IItemOnUse, IItemTryGetUsageContext
 {
     [SerializeField] private SimVelocityComponent _projectilePrefab;
-    [SerializeField] private Fix64 _throwSpeed;
+    [SerializeField] private fix _throwSpeed;
 
     public int ProjectileDamage = 1;
     public int ActionToConsume = 1;
@@ -23,11 +23,11 @@ public class ThrowEntityInDirectionItemComponent : SimComponent, IItemOnEquip, I
     {
         PlayerActions.IncreaseValue(-1 * ActionToConsume);
 
-        FixVector2 Destination = new FixVector2(((SimTileId_OLD)Informations[1]).X, ((SimTileId_OLD)Informations[1]).Y);
-        FixVector2 Direction = Destination - (FixVector2)Informations[0];
+        fix2 Destination = new fix2(((SimTileId_OLD)Informations[1]).X, ((SimTileId_OLD)Informations[1]).Y);
+        fix2 Direction = Destination - (fix2)Informations[0];
 
         var projectileEntity = Simulation.Instantiate(_projectilePrefab);
-        projectileEntity.SimTransform.WorldPosition = (FixVector3)Destination + new FixVector3(0, 0, (Fix64)(-0.5f));
+        projectileEntity.SimTransform.WorldPosition = (fix3)Destination + new fix3(0, 0, (fix)(-0.5f));
 
         if (projectileEntity.TryGetComponent(out SimVelocityComponent velocityComponent))
         {
@@ -56,7 +56,7 @@ public class ThrowEntityInDirectionItemComponent : SimComponent, IItemOnEquip, I
             {
                 simCharacterAttackComponent.OnRequestToShoot((SimTileId_OLD Destination) =>
                 {
-                    object[] ItemUsageInfo = { new FixVector2(PawnComponent.SimTransform.WorldPosition.x, PawnComponent.SimTransform.WorldPosition.y), Destination };
+                    object[] ItemUsageInfo = { new fix2(PawnComponent.SimTransform.WorldPosition.x, PawnComponent.SimTransform.WorldPosition.y), Destination };
 
                     simPlayerInputUseItem.Informations = ItemUsageInfo;
 

@@ -14,7 +14,7 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
     [System.Serializable]
     struct SerializedData
     {
-        public Fix64 Speed;
+        public fix Speed;
 
         public bool HasADestination;
 
@@ -23,7 +23,7 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
         public SimEvent<WalkedOnTileEventData> OnWalkedOnTileEvent;
     }
 
-    public Fix64 Speed { get => _data.Speed; internal set => _data.Speed = value; }
+    public fix Speed { get => _data.Speed; internal set => _data.Speed = value; }
     public bool HasADestination => _data.HasADestination;
     public SimTileId_OLD TileId => SimTransform.GetTileId();
     public SimEvent<WalkedOnTileEventData> OnWalkedOnTileEvent => _data.OnWalkedOnTileEvent;
@@ -63,16 +63,16 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
             {
                 SimTileId_OLD currentTile = TileId;
                 SimTileId_OLD targetTile = _data.Path[0];
-                FixVector3 currentPosition = SimTransform.WorldPosition;
-                FixVector3 targetPosition = targetTile.GetWorldPosition3D();
+                fix3 currentPosition = SimTransform.WorldPosition;
+                fix3 targetPosition = targetTile.GetWorldPosition3D();
 
 
                 // calculate move
-                FixVector3 v = targetPosition - currentPosition;
-                FixVector3 moveVector = (v.normalized * Simulation.DeltaTime * _data.Speed).LimitDirection(v);
+                fix3 v = targetPosition - currentPosition;
+                fix3 moveVector = (v.normalized * Simulation.DeltaTime * _data.Speed).LimitDirection(v);
 
                 // endpoint
-                FixVector3 newPosition = SimTransform.WorldPosition + moveVector;
+                fix3 newPosition = SimTransform.WorldPosition + moveVector;
                 SimTileId_OLD newTile = SimTileId_OLD.FromWorldPosition(newPosition);
 
 
@@ -121,10 +121,10 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
 
     void UpdatePathAndDestination()
     {
-        FixVector3 currentPosition = SimTransform.WorldPosition;
-        FixVector3 targetPathPosition = _data.Path[0].GetWorldPosition3D();
+        fix3 currentPosition = SimTransform.WorldPosition;
+        fix3 targetPathPosition = _data.Path[0].GetWorldPosition3D();
 
-        if (TileId == _data.Path[0] && FixMath.AlmostEqual(currentPosition, targetPathPosition))
+        if (TileId == _data.Path[0] && fixMath.AlmostEqual(currentPosition, targetPathPosition))
         {
             // we've reached the node
             SimTransform.WorldPosition = targetPathPosition;

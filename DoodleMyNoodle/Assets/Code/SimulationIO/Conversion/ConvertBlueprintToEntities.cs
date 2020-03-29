@@ -56,10 +56,15 @@ public class ConvertBlueprintToEntities : ConvertToEntity
         childGO.AddComponent<BlueprintIdAuth>().Value = blueprintDefinition.BlueprintIdValue;
 
         // separate the child
-        childTr.SetParent(newParent);
+        Transform tr = transform;
+        childTr.SetParent(newParent, worldPositionStays: false);
+        childTr.localPosition = tr.localPosition;
+        childTr.localRotation = tr.localRotation;
+        childTr.localScale = tr.localScale;
+        if (childConverter is ConvertToSimEntity simConverter)
+            simConverter.FillLocalFixTransformData();
 
         // if we have blueprints under our hierarchy ...
-        Transform tr = transform;
         int childCount = tr.childCount;
         for (int i = 0; i < childCount; i++)
         {

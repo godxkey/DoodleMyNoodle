@@ -1,26 +1,28 @@
-﻿using UnityEditor;
+﻿using CCC.Editor;
+using Unity.Properties;
+using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(FixQuaternion))]
+[CustomPropertyDrawer(typeof(fixQuaternion))]
 public class FixQuaternionDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        SerializedProperty xProp = property.FindPropertyRelative(nameof(Quaternion.x)).FindPropertyRelative(nameof(Fix64.RawValue));
-        SerializedProperty yProp = property.FindPropertyRelative(nameof(Quaternion.y)).FindPropertyRelative(nameof(Fix64.RawValue));
-        SerializedProperty zProp = property.FindPropertyRelative(nameof(Quaternion.z)).FindPropertyRelative(nameof(Fix64.RawValue));
-        SerializedProperty wProp = property.FindPropertyRelative(nameof(Quaternion.w)).FindPropertyRelative(nameof(Fix64.RawValue));
+        SerializedProperty xProp = property.FindPropertyRelative(nameof(Quaternion.x)).FindPropertyRelative(nameof(fix.RawValue));
+        SerializedProperty yProp = property.FindPropertyRelative(nameof(Quaternion.y)).FindPropertyRelative(nameof(fix.RawValue));
+        SerializedProperty zProp = property.FindPropertyRelative(nameof(Quaternion.z)).FindPropertyRelative(nameof(fix.RawValue));
+        SerializedProperty wProp = property.FindPropertyRelative(nameof(Quaternion.w)).FindPropertyRelative(nameof(fix.RawValue));
 
-        Fix64 xVal;
-        Fix64 yVal;
-        Fix64 zVal;
-        Fix64 wVal;
+        fix xVal;
+        fix yVal;
+        fix zVal;
+        fix wVal;
         xVal.RawValue = xProp.longValue;
         yVal.RawValue = yProp.longValue;
         zVal.RawValue = zProp.longValue;
         wVal.RawValue = wProp.longValue;
 
-        FixQuaternion oldQuat = new FixQuaternion(xVal, yVal, zVal, wVal);        
+        fixQuaternion oldQuat = new fixQuaternion(xVal, yVal, zVal, wVal);        
 
         // Using BeginProperty / EndProperty on the parent property means that
         // prefab override logic works on the entire property.
@@ -33,7 +35,7 @@ public class FixQuaternionDrawer : PropertyDrawer
         // Change ?
         if (oldEuler != newEuler)
         {
-            FixQuaternion newQuat = Quaternion.Euler(newEuler.x, newEuler.y, newEuler.z).ToFixQuat();
+            fixQuaternion newQuat = Quaternion.Euler(newEuler.x, newEuler.y, newEuler.z).ToFixQuat();
 
             xProp.longValue = newQuat.x.RawValue;
             yProp.longValue = newQuat.y.RawValue;
@@ -48,5 +50,22 @@ public class FixQuaternionDrawer : PropertyDrawer
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         return EditorGUI.GetPropertyHeight(SerializedPropertyType.Vector3, label);
+    }
+}
+
+[CustomEntityPropertyDrawer]
+public class FixQuaternionEntityDrawer : IMGUIAdapter,
+        IVisitAdapter<fixQuaternion>
+{
+    VisitStatus IVisitAdapter<fixQuaternion>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref fixQuaternion value, ref ChangeTracker changeTracker)
+    {
+        DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
+        {
+            EditorGUILayout.Vector3Field(label, val.ToUnityQuat().eulerAngles);
+
+            return val; // we don't support modifs for now
+        });
+
+        return VisitStatus.Handled;
     }
 }

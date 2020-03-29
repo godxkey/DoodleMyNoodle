@@ -21,29 +21,29 @@ public struct SimTileId_OLD
     /// <summary>
     /// Returns the center of the tile
     /// </summary>
-    public FixVector2 GetWorldPosition2D() => new FixVector2(X, Y);
+    public fix2 GetWorldPosition2D() => new fix2(X, Y);
     /// <summary>
     /// Returns the center of the tile
     /// </summary>
-    public FixVector3 GetWorldPosition3D() => new FixVector3(X, Y, 0);
+    public fix3 GetWorldPosition3D() => new fix3(X, Y, 0);
 
-    public FixVector2 GetTopLeftWorldPosition2D()      => new FixVector2(X - (Fix64)0.5, Y + (Fix64)0.5);
-    public FixVector2 GetTopCenterWorldPosition2D()    => new FixVector2(X             , Y + (Fix64)0.5);
-    public FixVector2 GetTopRightWorldPosition2D()     => new FixVector2(X + (Fix64)0.5, Y + (Fix64)0.5);
-    public FixVector2 GetMiddleLeftWorldPosition2D()   => new FixVector2(X - (Fix64)0.5, Y             );
-    public FixVector2 GetMiddleRightWorldPosition2D()  => new FixVector2(X + (Fix64)0.5, Y             );
-    public FixVector2 GetBottomLeftWorldPosition2D()   => new FixVector2(X - (Fix64)0.5, Y - (Fix64)0.5);
-    public FixVector2 GetBottomCenterWorldPosition2D() => new FixVector2(X             , Y - (Fix64)0.5);
-    public FixVector2 GetBottomRightWorldPosition2D()  => new FixVector2(X + (Fix64)0.5, Y - (Fix64)0.5);
+    public fix2 GetTopLeftWorldPosition2D()      => new fix2(X - (fix)0.5, Y + (fix)0.5);
+    public fix2 GetTopCenterWorldPosition2D()    => new fix2(X             , Y + (fix)0.5);
+    public fix2 GetTopRightWorldPosition2D()     => new fix2(X + (fix)0.5, Y + (fix)0.5);
+    public fix2 GetMiddleLeftWorldPosition2D()   => new fix2(X - (fix)0.5, Y             );
+    public fix2 GetMiddleRightWorldPosition2D()  => new fix2(X + (fix)0.5, Y             );
+    public fix2 GetBottomLeftWorldPosition2D()   => new fix2(X - (fix)0.5, Y - (fix)0.5);
+    public fix2 GetBottomCenterWorldPosition2D() => new fix2(X             , Y - (fix)0.5);
+    public fix2 GetBottomRightWorldPosition2D()  => new fix2(X + (fix)0.5, Y - (fix)0.5);
 
-    public FixVector3 GetTopLeftWorldPosition3D()      => new FixVector3(X - (Fix64)0.5, Y + (Fix64)0.5, 0);
-    public FixVector3 GetTopCenterWorldPosition3D()    => new FixVector3(X             , Y + (Fix64)0.5, 0);
-    public FixVector3 GetTopRightWorldPosition3D()     => new FixVector3(X + (Fix64)0.5, Y + (Fix64)0.5, 0);
-    public FixVector3 GetMiddleLeftWorldPosition3D()   => new FixVector3(X - (Fix64)0.5, Y             , 0);
-    public FixVector3 GetMiddleRightWorldPosition3D()  => new FixVector3(X + (Fix64)0.5, Y             , 0);
-    public FixVector3 GetBottomLeftWorldPosition3D()   => new FixVector3(X - (Fix64)0.5, Y - (Fix64)0.5, 0);
-    public FixVector3 GetBottomCenterWorldPosition3D() => new FixVector3(X             , Y - (Fix64)0.5, 0);
-    public FixVector3 GetBottomRightWorldPosition3D()  => new FixVector3(X + (Fix64)0.5, Y - (Fix64)0.5, 0);
+    public fix3 GetTopLeftWorldPosition3D()      => new fix3(X - (fix)0.5, Y + (fix)0.5, 0);
+    public fix3 GetTopCenterWorldPosition3D()    => new fix3(X             , Y + (fix)0.5, 0);
+    public fix3 GetTopRightWorldPosition3D()     => new fix3(X + (fix)0.5, Y + (fix)0.5, 0);
+    public fix3 GetMiddleLeftWorldPosition3D()   => new fix3(X - (fix)0.5, Y             , 0);
+    public fix3 GetMiddleRightWorldPosition3D()  => new fix3(X + (fix)0.5, Y             , 0);
+    public fix3 GetBottomLeftWorldPosition3D()   => new fix3(X - (fix)0.5, Y - (fix)0.5, 0);
+    public fix3 GetBottomCenterWorldPosition3D() => new fix3(X             , Y - (fix)0.5, 0);
+    public fix3 GetBottomRightWorldPosition3D()  => new fix3(X + (fix)0.5, Y - (fix)0.5, 0);
     #endregion
 
     // Used to calculate directions
@@ -60,9 +60,9 @@ public struct SimTileId_OLD
 
 
     #region Builder method
-    public static SimTileId_OLD FromWorldPosition(in FixVector3 worldPosition)
+    public static SimTileId_OLD FromWorldPosition(in fix3 worldPosition)
     {
-        return new SimTileId_OLD(Fix64.RoundToInt(worldPosition.x), Fix64.RoundToInt(worldPosition.y));
+        return new SimTileId_OLD(fix.RoundToInt(worldPosition.x), fix.RoundToInt(worldPosition.y));
     }
 
     #endregion
