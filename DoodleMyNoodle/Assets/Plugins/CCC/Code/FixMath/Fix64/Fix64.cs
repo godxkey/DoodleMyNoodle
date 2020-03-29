@@ -18,24 +18,24 @@ public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64>, IFormattabl
     public long RawValue; // should be read-only but we leave it like that for unity serialization
 
     // Precision of this type is 2^-32, that is 2,3283064365386962890625E-10
-    public static readonly decimal Precision = (decimal)(new Fix64(1L));//0.00000000023283064365386962890625m;
-    public static readonly Fix64 MaxValue = new Fix64(MAX_VALUE);
-    public static readonly Fix64 MinValue = new Fix64(MIN_VALUE);
-    public static readonly Fix64 One = new Fix64(ONE);
-    public static readonly Fix64 Zero = new Fix64();
+    public static decimal Precision => (decimal)(new Fix64(1L));//0.00000000023283064365386962890625m;
+    public static Fix64 MaxValue => new Fix64(MAX_VALUE);
+    public static Fix64 MinValue => new Fix64(MIN_VALUE);
+    public static Fix64 One => new Fix64(ONE);
+    public static Fix64 Zero => new Fix64();
     /// <summary>
     /// The value of Pi
     /// </summary>
-    public static readonly Fix64 Pi = new Fix64(PI);
-    public static readonly Fix64 PiOver2 = new Fix64(PI_OVER_2);
-    public static readonly Fix64 PiTimes2 = new Fix64(PI_TIMES_2);
-    public static readonly Fix64 PiInv = (Fix64)0.3183098861837906715377675267M;
-    public static readonly Fix64 PiOver2Inv = (Fix64)0.6366197723675813430755350535M;
-    static readonly Fix64 Log2Max = new Fix64(LOG2MAX);
-    static readonly Fix64 Log2Min = new Fix64(LOG2MIN);
-    static readonly Fix64 Ln2 = new Fix64(LN2);
+    public static Fix64 Pi => new Fix64(PI);
+    public static Fix64 PiOver2 => new Fix64(PI_OVER_2);
+    public static Fix64 PiTimes2 => new Fix64(PI_TIMES_2);
+    public static Fix64 PiInv => (Fix64)0.3183098861837906715377675267M;
+    public static Fix64 PiOver2Inv => (Fix64)0.6366197723675813430755350535M;
+    static Fix64 Log2Max => new Fix64(LOG2MAX);
+    static Fix64 Log2Min => new Fix64(LOG2MIN);
+    static Fix64 Ln2 => new Fix64(LN2);
 
-    static readonly Fix64 LutInterval = (Fix64)(LUT_SIZE - 1) / PiOver2;
+    static Fix64 LutInterval => (Fix64)(LUT_SIZE - 1) / PiOver2;
     const long MAX_VALUE = long.MaxValue;
     const long MIN_VALUE = long.MinValue;
     const int NUM_BITS = 64;

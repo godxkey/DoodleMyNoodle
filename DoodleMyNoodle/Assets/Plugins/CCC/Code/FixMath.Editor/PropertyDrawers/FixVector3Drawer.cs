@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using CCC.Editor;
+using Unity.Properties;
+using UnityEditor;
 using UnityEngine;
 
 [CustomPropertyDrawer(typeof(FixVector3))]
@@ -46,5 +48,24 @@ public class FixFixVector3Drawer : PropertyDrawer
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         return EditorGUI.GetPropertyHeight(SerializedPropertyType.Vector3, label);
+    }
+}
+
+
+
+[CustomEntityPropertyDrawer]
+public class FixVector3EntityDrawer : IMGUIAdapter,
+        IVisitAdapter<FixVector3>
+{
+    VisitStatus IVisitAdapter<FixVector3>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref FixVector3 value, ref ChangeTracker changeTracker)
+    {
+        DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
+        {
+            var newValue = EditorGUILayout.Vector3Field(label, val.ToUnityVec());
+
+            return Application.isPlaying ? val : newValue.ToFixVec(); // we don't support runtime modif
+        });
+
+        return VisitStatus.Handled;
     }
 }

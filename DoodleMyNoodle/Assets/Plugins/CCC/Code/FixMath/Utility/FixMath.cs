@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.Mathematics;
 
 /// <summary>
 /// Contains helper math methods.
@@ -124,4 +125,45 @@ public static class FixMath
     {
         return FixVector3.DistanceSquared(a, b) < epsilon;
     }
+
+
+
+
+
+    public static Fix64         fix(int value)                                       => new Fix64(value);
+    public static Fix64         fix(float value)                                     => (Fix64)value;
+
+    public static FixVector2    fix2(in Fix64 v)                                     => new FixVector2(v, v);
+    public static FixVector3    fix3(in Fix64 v)                                     => new FixVector3(v, v, v);
+    public static FixVector4    fix4(in Fix64 v)                                     => new FixVector4(v, v, v, v);
+
+    public static FixVector2    fix2(in Fix64 x, in Fix64 y)                         => new FixVector2(x, y);
+    public static FixVector3    fix3(in Fix64 x, in Fix64 y, in Fix64 z)             => new FixVector3(x, y, z);
+    public static FixVector4    fix4(in Fix64 x, in Fix64 y, in Fix64 z, in Fix64 w) => new FixVector4(x, y, z, w);
+
+    public static FixVector2    fix2(in int x, in int y)                             => new FixVector2(x, y);
+    public static FixVector3    fix3(in int x, in int y, in int z)                   => new FixVector3(x, y, z);
+    public static FixVector4    fix4(in int x, in int y, in int z, in int w)         => new FixVector4(x, y, z, w);
+
+    public static FixVector3    fix3(in FixVector2 xy, in Fix64 z)                   => new FixVector3(xy.x, xy.y, z);
+    public static FixVector3    fix3(in Fix64 x, in FixVector2 yz)                   => new FixVector3(x, yz.x, yz.y);
+    public static FixVector3    fix3(in FixVector2 xy, in int z)                     => new FixVector3(xy.x, xy.y, z);
+    public static FixVector3    fix3(in int x, in FixVector2 yz)                     => new FixVector3(x, yz.x, yz.y);
+    public static FixVector3    fix3(in int2 xy, in int z)                           => new FixVector3(xy.x, xy.y, z);
+    public static FixVector3    fix3(in int x, in int2 yz)                           => new FixVector3(x, yz.x, yz.y);
+
+
+    public static Fix64 length(in FixVector2 v) => v.length;
+    public static Fix64 length(in FixVector3 v) => v.length;
+    public static Fix64 length(in FixVector4 v) => v.length;
+    public static Fix64 lengthsq(in FixVector2 v) => v.lengthSquared;
+    public static Fix64 lengthsq(in FixVector3 v) => v.lengthSquared;
+    public static Fix64 lengthsq(in FixVector4 v) => v.lengthSquared;
+
+
+    public static Fix64      round(in Fix64 v)      =>      Fix64.Round(v);
+    public static FixVector2 round(in FixVector2 v) => fix2(Fix64.Round(v.x), Fix64.Round(v.y));
+    public static FixVector3 round(in FixVector3 v) => fix3(Fix64.Round(v.x), Fix64.Round(v.y), Fix64.Round(v.z));
+    public static FixVector4 round(in FixVector4 v) => fix4(Fix64.Round(v.x), Fix64.Round(v.y), Fix64.Round(v.z), Fix64.Round(v.w));
+
 }

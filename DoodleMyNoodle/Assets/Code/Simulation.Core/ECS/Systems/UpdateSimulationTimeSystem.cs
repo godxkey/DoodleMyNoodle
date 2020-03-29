@@ -54,10 +54,10 @@ public class UpdateSimulationTimeSystem : ComponentSystem
             simWorld.LatestTickId = newTickId;
 
             // Set time
-            simWorld.SetTime(new TimeData(
-                elapsedTime: SimulationConstants.TIME_STEP_F * newTickId,
-                deltaTime: SimulationConstants.TIME_STEP_F
-            ));
+            simWorld.CurrentFixTime = new FixTimeData(
+                elapsedTime: SimulationConstants.TIME_STEP * (int)newTickId,
+                deltaTime: SimulationConstants.TIME_STEP
+            );
         }
     }
 

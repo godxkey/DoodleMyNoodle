@@ -58,9 +58,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value:
-    x: 0
-    y: 0
-    z: 0
+    x:
+      RawValue: 0
+    y:
+      RawValue: 0
+    z:
+      RawValue: 0
 --- !u!114 &7591131864914787085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,4 +76,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da8751e3a9c213b4bb85f9a6a12e3e62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: 4
+  Value:
+    RawValue: 17179869184

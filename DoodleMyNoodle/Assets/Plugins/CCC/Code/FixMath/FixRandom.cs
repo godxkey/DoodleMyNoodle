@@ -35,7 +35,7 @@ using System;
 ///  FastRandom are in use or if being used in a multi-threaded environment.
 /// 
 /// </summary>
-public class FixRandom
+public struct FixRandom
 {
     // fbessette: not deterministic because of double calculation
 
@@ -47,16 +47,12 @@ public class FixRandom
 
     uint x, y, z, w;
 
-    #region Constructors
+    // Buffer 32 bits in bitBuffer, return 1 at a time, keep track of how many have been returned
+    // with bitBufferIdx.
+    uint bitBuffer;
+    uint bitMask;
 
-    /// <summary>
-    /// Initialises a new instance using time dependent seed.
-    /// </summary>
-    public FixRandom()
-    {
-        // Initialise using the system tick count.
-        Reinitialise((int)Environment.TickCount);
-    }
+    #region Constructors
 
     /// <summary>
     /// Initialises a new instance using an int value as seed.
@@ -65,6 +61,13 @@ public class FixRandom
     /// </summary>
     public FixRandom(int seed)
     {
+        x = 0;
+        y = 0;
+        z = 0;
+        w = 0;
+        bitBuffer = 0;
+        bitMask = 1;
+
         Reinitialise(seed);
     }
 
@@ -293,7 +296,7 @@ public class FixRandom
 
     /// <summary>
     /// Generates a uint. Values returned are over the full range of a uint, 
-    /// uint.MinValue to uint.MaxValue, inclusive.
+    /// uint.MinValue to uint.MaxValue, (max exclusive).
     /// 
     /// This is the fastest method for generating a single random number because the underlying
     /// random number generator algorithm generates 32 random bits that can be cast directly to 
@@ -304,13 +307,15 @@ public class FixRandom
     {
         uint t = (x ^ (x << 11));
         x = y; y = z; z = w;
-        return (w = (w ^ (w >> 19)) ^ (t ^ (t >> 8)));
+        uint res = (w = (w ^ (w >> 19)) ^ (t ^ (t >> 8)));
+        
+        if (res == uint.MaxValue) // ADDED BY FBESSETTE: We want to keep the MaxValue exclusive
+            res = 0;
+        return res;
     }
 
     /// <summary>
-    /// Generates a random int over the range 0 to int.MaxValue, inclusive. 
-    /// This method differs from Next() only in that the range is 0 to int.MaxValue
-    /// and not 0 to int.MaxValue-1.
+    /// Generates a random int over the range 0 to int.MaxValue, exclusive.
     /// 
     /// The slight difference in range means this method is slightly faster than Next()
     /// but is not functionally equivalent to System.Random.Next().
@@ -320,14 +325,12 @@ public class FixRandom
     {
         uint t = (x ^ (x << 11));
         x = y; y = z; z = w;
-        return (int)(0x7FFFFFFF & (w = (w ^ (w >> 19)) ^ (t ^ (t >> 8))));
+        int res = (int)(0x7FFFFFFF & (w = (w ^ (w >> 19)) ^ (t ^ (t >> 8))));
+
+        if (res == int.MaxValue) // ADDED BY FBESSETTE: We want to keep the MaxValue exclusive
+            res = 0;
+        return res;
     }
-
-
-    // Buffer 32 bits in bitBuffer, return 1 at a time, keep track of how many have been returned
-    // with bitBufferIdx.
-    uint bitBuffer;
-    uint bitMask = 1;
 
     /// <summary>
     /// Generates a single random bit.
@@ -356,13 +359,30 @@ public class FixRandom
 
     #region Public Methods [fbessette FixMath additions]
 
-    /// <summary>
-    /// Returns a fix64 value between 0 and 1
-    /// </summary>
-    public Fix64 NextFix01()
-    {
-        int val = NextInt();
-        return new Fix64(val) / new Fix64(int.MaxValue);
-    }
+
+    /// <summary> Returns a value between 0 and 1</summary>
+    public Fix64 NextFix64Ratio() => new Fix64(NextInt()) / new Fix64(int.MaxValue);
+
+    /// <summary> Returns a value between 0 and max</summary>
+    public Fix64 NextFix64() => NextFix64Ratio() * Fix64.MaxValue;
+
+    /// <summary> Returns a value between 0 and max</summary>
+    public Fix64 NextFix64(in Fix64 max) => NextFix64Ratio() * max;
+
+    /// <summary> Returns a value between min and max</summary>
+    public Fix64 NextFix64(in Fix64 min, in Fix64 max) => (NextFix64Ratio() * (max - min)) + min;
+
+    /// <summary> Returns a value between 0 and max (exclusive)</summary>
+    public int NextInt(int max) => (int)NextFix64(new Fix64(max));
+
+    /// <summary> Returns a value between min and max (exclusive)</summary>
+    public int NextInt(int min, int max) => (int)NextFix64(new Fix64(min), new Fix64(max));
+
+    ///// <summary> Returns a value between 0 and max (exclusive)</summary>
+    //public uint NextUInt(uint max) => (uint)NextFix64(new Fix64(max));
+
+    ///// <summary> Returns a value between min and max (exclusive)</summary>
+    //public uint NextUInt(uint min, uint max) => (uint)NextFix64(new Fix64(min), new Fix64(max));
+
     #endregion
 }

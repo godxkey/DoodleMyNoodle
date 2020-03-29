@@ -1,5 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using CCC.Editor;
+using Unity.Properties;
 
 [CustomPropertyDrawer(typeof(Fix64))]
 public class Fix64Drawer : PropertyDrawer
@@ -35,5 +37,22 @@ public class Fix64Drawer : PropertyDrawer
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         return 16;
+    }
+}
+
+[CustomEntityPropertyDrawer]
+public class Fix64EntityDrawer : IMGUIAdapter,
+        IVisitAdapter<Fix64>
+{
+    VisitStatus IVisitAdapter<Fix64>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref Fix64 value, ref ChangeTracker changeTracker)
+    {
+        DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
+        {
+            var newValue = EditorGUILayout.FloatField(label, (float)val);
+
+            return Application.isPlaying ? val : (Fix64)newValue; // we don't support runtime modif
+        });
+
+        return VisitStatus.Handled;
     }
 }

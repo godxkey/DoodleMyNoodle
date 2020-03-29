@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using CCC.Editor;
+using Unity.Properties;
+using UnityEditor;
 using UnityEngine;
 
 [CustomPropertyDrawer(typeof(FixQuaternion))]
@@ -48,5 +50,22 @@ public class FixQuaternionDrawer : PropertyDrawer
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         return EditorGUI.GetPropertyHeight(SerializedPropertyType.Vector3, label);
+    }
+}
+
+[CustomEntityPropertyDrawer]
+public class FixQuaternionEntityDrawer : IMGUIAdapter,
+        IVisitAdapter<FixQuaternion>
+{
+    VisitStatus IVisitAdapter<FixQuaternion>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref FixQuaternion value, ref ChangeTracker changeTracker)
+    {
+        DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
+        {
+            EditorGUILayout.Vector3Field(label, val.ToUnityQuat().eulerAngles);
+
+            return val; // we don't support modifs for now
+        });
+
+        return VisitStatus.Handled;
     }
 }
