@@ -5,5 +5,5 @@ using Unity.Entities;
 [Serializable]
 public struct TurnDuration : IComponentData
 {
-    public int Value;
+    public fix Value;
 }

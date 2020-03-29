@@ -1,5 +1,6 @@
 ﻿using Unity.Entities;
 using static Unity.Mathematics.math;
+using static fixMath;
 
 public interface IStatInt
 {
@@ -8,7 +9,7 @@ public interface IStatInt
 
 public interface IStatFix
 {
-    Fix64 Value { get; set; }
+    fix Value { get; set; }
 }
 
 public struct MinimumInt<T> : IComponentData
@@ -26,13 +27,13 @@ public struct MaximumInt<T> : IComponentData
 public struct MinimumFix<T> : IComponentData
     where T : IComponentData, IStatFix
 {
-    public Fix64 Value;
+    public fix Value;
 }
 
 public struct MaximumFix<T> : IComponentData
     where T : IComponentData, IStatFix
 {
-    public Fix64 Value;
+    public fix Value;
 }
 
 internal static partial class CommonWrites
@@ -58,12 +59,12 @@ internal static partial class CommonWrites
     {
         if (world.EntityManager.TryGetComponentData(entity, out MinimumFix<T> minimum))
         {
-            compData.Value = FixMath.Max(minimum.Value, compData.Value);
+            compData.Value = Max(minimum.Value, compData.Value);
         }
 
         if (world.EntityManager.TryGetComponentData(entity, out MaximumFix<T> maximum))
         {
-            compData.Value = FixMath.Min(maximum.Value, compData.Value);
+            compData.Value = Min(maximum.Value, compData.Value);
         }
 
         world.EntityManager.SetComponentData(entity, compData);

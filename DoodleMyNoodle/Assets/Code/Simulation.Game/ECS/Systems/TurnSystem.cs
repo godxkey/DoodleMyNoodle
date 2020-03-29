@@ -5,22 +5,46 @@ public class TurnSystem : SimComponentSystem
     protected override void OnUpdate()
     {
         Entity turnSystemData = GetSingletonEntity<TurnTimer>();
-        TurnDuration turnDuration = EntityManager.GetComponentData<TurnDuration>(turnSystemData);
-        TurnCurrentTeam turnCurrentTeam = EntityManager.GetComponentData<TurnCurrentTeam>(turnSystemData);
-        MaximumInt<TurnCurrentTeam> teamAmount = EntityManager.GetComponentData<MaximumInt<TurnCurrentTeam>>(turnSystemData);
+        
         TurnTimer turnTimer = EntityManager.GetComponentData<TurnTimer>(turnSystemData);
 
-        turnTimer.Value -= Time.DeltaTime;
-
-        if (turnTimer.Value <= 0)
+        fix newTimerValue = turnTimer.Value - Time.DeltaTime;
+        if (newTimerValue <= 0)
         {
-            turnCurrentTeam.Value++;
-            if(turnCurrentTeam.Value > teamAmount.Value) 
-            {
-                turnCurrentTeam.Value = 0;
-            }
-
-            turnTimer.Value = turnDuration.Value;
+            CommonWrites.NextTurn(this);
         }
+        else
+        {
+            EntityManager.SetComponentData(turnSystemData, new TurnTimer { Value = newTimerValue });
+        }
+    }
+}
+
+internal static partial class CommonWrites
+{
+    public static void NextTurn(ComponentSystemBase system)
+    {
+        Entity turnSystemData = system.GetSingletonEntity<TurnTimer>();
+        TurnCurrentTeam turnCurrentTeam = system.EntityManager.GetComponentData<TurnCurrentTeam>(turnSystemData);
+
+        int newCurrentTeam = turnCurrentTeam.Value + 1;
+        SetTurn(system, newCurrentTeam);
+    }
+
+    public static void SetTurn(ComponentSystemBase system, int team)
+    {
+        Entity turnSystemData = system.GetSingletonEntity<TurnTimer>();
+        TurnDuration turnDuration = system.EntityManager.GetComponentData<TurnDuration>(turnSystemData);
+        MaximumInt<TurnCurrentTeam> teamAmount = system.EntityManager.GetComponentData<MaximumInt<TurnCurrentTeam>>(turnSystemData);
+
+        int newCurrentTeam = team;
+        if (newCurrentTeam >= teamAmount.Value || newCurrentTeam < 0)
+        {
+            newCurrentTeam = 0;
+        }
+
+        system.EntityManager.SetComponentData(turnSystemData, new TurnCurrentTeam { Value = newCurrentTeam });
+
+        system.EntityManager.SetComponentData(turnSystemData, new TurnTimer { Value = turnDuration.Value });
     }
 }

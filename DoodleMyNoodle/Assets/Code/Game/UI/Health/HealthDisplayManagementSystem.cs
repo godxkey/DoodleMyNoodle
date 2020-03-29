@@ -4,6 +4,7 @@ using Unity.Transforms;
 using Unity.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using static fixMath;
 
 public class HealthDisplayManagementSystem : GameMonoBehaviour
 {
@@ -14,7 +15,7 @@ public class HealthDisplayManagementSystem : GameMonoBehaviour
     public override void OnGameUpdate() 
     {
         int healthBarAmount = 0;
-        GameMonoBehaviourHelpers.SimulationWorld.Entities.ForEach((ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref Translation entityTranslation)=>
+        GameMonoBehaviourHelpers.SimulationWorld.Entities.ForEach((ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation)=>
         {
             fix healthRatio = (fix)entityHealth.Value / (fix)entityMaximumHealth.Value;
 
@@ -24,7 +25,7 @@ public class HealthDisplayManagementSystem : GameMonoBehaviour
         });
     }
 
-    private void SetOrAddHealthBar(int index, float3 position, fix ratio)
+    private void SetOrAddHealthBar(int index, fix3 position, fix ratio)
     {
         GameObject currentHealthBar = null;
         if (_healthBarInstances.Count <= index)
@@ -37,7 +38,7 @@ public class HealthDisplayManagementSystem : GameMonoBehaviour
             currentHealthBar = _healthBarInstances[index];
         }
 
-        currentHealthBar.transform.position = position + new float3(0,0.6f,-0.1f);
+        currentHealthBar.transform.position = (position + new fix3(0,fix(0.6f),fix(-0.1f))).ToUnityVec();
         currentHealthBar.GetComponent<UIBarDisplay>()?.AjustDisplay((float)ratio);
     }
 }
