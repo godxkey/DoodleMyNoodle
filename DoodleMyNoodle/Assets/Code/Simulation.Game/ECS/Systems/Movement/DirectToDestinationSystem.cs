@@ -4,34 +4,35 @@ using Unity.Mathematics;
 using Unity.Entities;
 using Unity.Transforms;
 using static Unity.Mathematics.math;
+using static fixMath;
 
 public class DirectToDestinationSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
         Entities.ForEach((Entity entity,
-            ref Translation translation, 
+            ref FixTranslation translation, 
             ref Velocity velocity, 
             ref Destination destination, 
             ref MoveSpeed moveSpeed) =>
         {
-            float3 deltaMove = destination.Value - translation.Value;
-            float moveLength = length(deltaMove);
+            fix3 deltaMove = destination.Value - translation.Value;
+            fix moveLength = length(deltaMove);
 
-            if (moveLength < 0.01f)
+            if (moveLength < fix(0.01f))
             {
                 // arrived to destination
                 translation.Value = destination.Value;
-                velocity.Value = float3(0);
+                velocity.Value = fix3(0);
                 EntityManager.RemoveComponent<Destination>(entity);
             }
             else
             {
                 // update velocity
-                float3 normalVel = (deltaMove / moveLength) * moveSpeed.Value;
-                float3 teleportToDestinationVelocity = deltaMove / Time.DeltaTime;
+                fix3 normalVel = (deltaMove / moveLength) * moveSpeed.Value;
+                fix3 teleportToDestinationVelocity = deltaMove / Time.DeltaTime;
 
-                if (lengthsq(teleportToDestinationVelocity) < lengthsq(normalVel) || any(isnan(normalVel)))
+                if (lengthsq(teleportToDestinationVelocity) < lengthsq(normalVel))
                 {
                     // final smaller step, just enough velocity to reach destination
                     velocity.Value = teleportToDestinationVelocity;

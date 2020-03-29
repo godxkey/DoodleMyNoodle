@@ -75,9 +75,9 @@ public class SimTransformEditor : Editor
         {
             SimTransformComponent simTransform = (SimTransformComponent)target;
             Transform unityTransform = simTransform.gameObject.transform;
-            FixVector3 localPosition = unityTransform.localPosition.ToFixVec();
-            FixQuaternion localRotation = unityTransform.localRotation.ToFixQuat();
-            FixVector3 localScale = unityTransform.localScale.ToFixVec();
+            fix3 localPosition = unityTransform.localPosition.ToFixVec();
+            fixQuaternion localRotation = unityTransform.localRotation.ToFixQuat();
+            fix3 localScale = unityTransform.localScale.ToFixVec();
 
             bool change = localPosition != simTransform.LocalPosition
                         || localRotation != simTransform.LocalRotation
@@ -198,43 +198,43 @@ public class SimTransformEditor : Editor
         new BindedVar()
         {
             UnityPropertyPath = "m_LocalPosition.x",
-            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalPosition)}.{nameof(FixVector3.x)}.{nameof(Fix64.RawValue)}",
+            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalPosition)}.{nameof(fix3.x)}.{nameof(fix.RawValue)}",
         },new BindedVar()
         {
             UnityPropertyPath = "m_LocalPosition.y",
-            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalPosition)}.{nameof(FixVector3.y)}.{nameof(Fix64.RawValue)}",
+            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalPosition)}.{nameof(fix3.y)}.{nameof(fix.RawValue)}",
         },new BindedVar()
         {
             UnityPropertyPath = "m_LocalPosition.z",
-            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalPosition)}.{nameof(FixVector3.z)}.{nameof(Fix64.RawValue)}",
+            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalPosition)}.{nameof(fix3.z)}.{nameof(fix.RawValue)}",
         },new BindedVar()
         {
             UnityPropertyPath = "m_LocalRotation.x",
-            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalRotation)}.{nameof(FixQuaternion.x)}.{nameof(Fix64.RawValue)}",
+            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalRotation)}.{nameof(fixQuaternion.x)}.{nameof(fix.RawValue)}",
         },new BindedVar()
         {
             UnityPropertyPath = "m_LocalRotation.y",
-            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalRotation)}.{nameof(FixQuaternion.y)}.{nameof(Fix64.RawValue)}",
+            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalRotation)}.{nameof(fixQuaternion.y)}.{nameof(fix.RawValue)}",
         },new BindedVar()
         {
             UnityPropertyPath = "m_LocalRotation.z",
-            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalRotation)}.{nameof(FixQuaternion.z)}.{nameof(Fix64.RawValue)}",
+            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalRotation)}.{nameof(fixQuaternion.z)}.{nameof(fix.RawValue)}",
         },new BindedVar()
         {
             UnityPropertyPath = "m_LocalRotation.w",
-            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalRotation)}.{nameof(FixQuaternion.w)}.{nameof(Fix64.RawValue)}",
+            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalRotation)}.{nameof(fixQuaternion.w)}.{nameof(fix.RawValue)}",
         },new BindedVar()
         {
             UnityPropertyPath = "m_LocalScale.x",
-            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalScale)}.{nameof(FixVector3.x)}.{nameof(Fix64.RawValue)}",
+            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalScale)}.{nameof(fix3.x)}.{nameof(fix.RawValue)}",
         },new BindedVar()
         {
             UnityPropertyPath = "m_LocalScale.y",
-            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalScale)}.{nameof(FixVector3.y)}.{nameof(Fix64.RawValue)}",
+            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalScale)}.{nameof(fix3.y)}.{nameof(fix.RawValue)}",
         },new BindedVar()
         {
             UnityPropertyPath = "m_LocalScale.z",
-            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalScale)}.{nameof(FixVector3.z)}.{nameof(Fix64.RawValue)}",
+            SimPropertyPath   = $"{nameof(SimTransformComponent._data)}.{nameof(SimTransformComponent.SerializedData.LocalScale)}.{nameof(fix3.z)}.{nameof(fix.RawValue)}",
         },
     };
 

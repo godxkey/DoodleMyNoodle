@@ -5,27 +5,27 @@
 /// </summary>
 public struct SimCountdownTimer
 {
-    private Fix64 _expirationTime;
+    private fix _expirationTime;
 
-    public SimCountdownTimer(in Fix64 duration)
+    public SimCountdownTimer(in fix duration)
     {
         _expirationTime = Simulation.Time + duration;
     }
 
-    public Fix64 RemainingTime
+    public fix RemainingTime
         => Simulation.Time - _expirationTime;
 
     public bool HasExpired
         => IsValid && Simulation.Time > _expirationTime;
 
-    public void SetDuration(in Fix64 duration)
+    public void SetDuration(in fix duration)
     {
         _expirationTime = Simulation.Time + duration;
     }
 
-    public bool IsValid => _expirationTime != Fix64.Zero;
+    public bool IsValid => _expirationTime != fix.Zero;
     public void Invalidate()
     {
-        _expirationTime = Fix64.Zero;
+        _expirationTime = fix.Zero;
     }
 }

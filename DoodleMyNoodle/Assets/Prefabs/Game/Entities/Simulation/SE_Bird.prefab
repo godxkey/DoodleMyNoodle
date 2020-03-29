@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5072555852515810054}
   - component: {fileID: -8888525555049467793}
   - component: {fileID: 7591131864914787085}
-  - component: {fileID: 4591271631016944898}
+  - component: {fileID: 8435132431937638192}
   m_Layer: 0
   m_Name: SE_Bird
   m_TagString: Untagged
@@ -59,9 +59,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value:
-    x: 0
-    y: 0
-    z: 0
+    x:
+      RawValue: 0
+    y:
+      RawValue: 0
+    z:
+      RawValue: 0
 --- !u!114 &7591131864914787085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,8 +77,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da8751e3a9c213b4bb85f9a6a12e3e62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: 4
---- !u!114 &4591271631016944898
+  Value:
+    RawValue: 17179869184
+--- !u!114 &8435132431937638192
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

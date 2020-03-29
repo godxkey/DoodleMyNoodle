@@ -2,16 +2,16 @@
 
 public static class FixVectorExtensions
 {
-    public static FixVector2 ToFixVec(this in Vector2 vec)
+    public static fix2 ToFixVec(this in Vector2 vec)
     {
-        return new FixVector2((Fix64)vec.x, (Fix64)vec.y);
+        return new fix2((fix)vec.x, (fix)vec.y);
     }
-    public static FixVector3 ToFixVec(this in Vector3 vec)
+    public static fix3 ToFixVec(this in Vector3 vec)
     {
-        return new FixVector3((Fix64)vec.x, (Fix64)vec.y, (Fix64)vec.z);
+        return new fix3((fix)vec.x, (fix)vec.y, (fix)vec.z);
     }
-    public static FixVector4 ToFixVec(this in Vector4 vec)
+    public static fix4 ToFixVec(this in Vector4 vec)
     {
-        return new FixVector4((Fix64)vec.x, (Fix64)vec.y, (Fix64)vec.z, (Fix64)vec.w);
+        return new fix4((fix)vec.x, (fix)vec.y, (fix)vec.z, (fix)vec.w);
     }
 }

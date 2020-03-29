@@ -24,7 +24,7 @@ public class SimAIComponent : SimComponent,
 
                 if (_pawnGridWalker)
                 {
-                    Fix64 randomDecision = Simulation.Random.Range(0, 4);
+                    fix randomDecision = Simulation.Random.Range(0, 4);
 
                     if (randomDecision < 1)
                     {

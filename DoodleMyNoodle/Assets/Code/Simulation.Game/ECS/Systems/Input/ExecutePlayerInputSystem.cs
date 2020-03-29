@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using static Unity.Mathematics.math;
+using static fixMath;
 
 public class ExecutePlayerInputSystem : SimComponentSystem
 {
@@ -49,7 +49,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
 
                 if (pawn != Entity.Null)
                 {
-                    if (EntityManager.TryGetComponentData(pawn, out Translation pawnPos))
+                    if (EntityManager.TryGetComponentData(pawn, out FixTranslation pawnPos))
                     {
                         if (keycodeInput.state == SimInputKeycode.State.Pressed)
                         {
@@ -59,7 +59,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                                 case UnityEngine.KeyCode.A:
                                     EntityManager.SetOrAddComponentData(pawn, new Destination()
                                     {
-                                        Value = round(pawnPos.Value) + float3(-1, 0, 0)
+                                        Value = round(pawnPos.Value) + fix3(-1, 0, 0)
                                     });
                                     break;
 
@@ -67,7 +67,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                                 case UnityEngine.KeyCode.D:
                                     EntityManager.SetOrAddComponentData(pawn, new Destination()
                                     {
-                                        Value = round(pawnPos.Value) + float3(1, 0, 0)
+                                        Value = round(pawnPos.Value) + fix3(1, 0, 0)
                                     });
                                     break;
 
@@ -75,7 +75,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                                 case UnityEngine.KeyCode.W:
                                     EntityManager.SetOrAddComponentData(pawn, new Destination()
                                     {
-                                        Value = round(pawnPos.Value) + float3(0, 1, 0)
+                                        Value = round(pawnPos.Value) + fix3(0, 1, 0)
                                     });
                                     break;
 
@@ -83,7 +83,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                                 case UnityEngine.KeyCode.S:
                                     EntityManager.SetOrAddComponentData(pawn, new Destination()
                                     {
-                                        Value = round(pawnPos.Value) + float3(0, -1, 0)
+                                        Value = round(pawnPos.Value) + fix3(0, -1, 0)
                                     });
                                     break;
 
@@ -100,13 +100,13 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                     }
 
                     if (keycodeInput.keyCode == UnityEngine.KeyCode.T && keycodeInput.state == SimInputKeycode.State.Pressed
-                        && EntityManager.HasComponent<Translation>(pawn))
+                        && EntityManager.HasComponent<FixTranslation>(pawn))
                     {
-                        float2 newPosition = SimWorld.Random().NextFloat2(
-                            min: float2(-5, -5),
-                            max: float2(5, 5));
+                        fix2 newPosition = SimWorld.Random().NextFixVector2(
+                            min: fix2(-5, -5),
+                            max: fix2(5, 5));
 
-                        EntityManager.SetComponentData(pawn, new Translation() { Value = float3(newPosition, 0) });
+                        EntityManager.SetComponentData(pawn, new FixTranslation() { Value = fix3(newPosition, 0) });
                     }
                 }
                 break;

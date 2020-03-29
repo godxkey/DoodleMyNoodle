@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Core;
 using Unity.Entities;
+using Unity.Entities.CodeGeneratedJobForEach;
 
 public class SimWorldAccessor
 {
@@ -37,8 +38,7 @@ public class SimWorldAccessor
     public ulong SequenceNumber =>
         SimWorld.SequenceNumber;
 
-    public ref TimeData Time =>
-        ref SimWorld.Time;
+    public ref FixTimeData Time => ref SimWorld.FixTime;
 
     public uint EntityClearAndReplaceCount
         => SimWorld.EntityClearAndReplaceCount;
@@ -49,6 +49,9 @@ public class SimWorldAccessor
     //      - This will cache ALL of our presentation-to-sim queries in one system, making the lookup potentially
     //      slower
     public EntityQueryBuilder Entities => SomeSimSystem.QueryBuilder;
+    public ForEachLambdaJobDescriptionJCS EntitiesJob 
+        => throw new System.NotImplementedException("EntitiesJob is not yet supported. Unity's codegen makes it difficult" +
+            " to implement. Use typical struct job declaration instead.");
 
     /// <summary>
     /// Gets an array-like container containing all components of type T, indexed by Entity.

@@ -21,7 +21,7 @@ public class AoeAttackItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip
 
         PlayerActions.IncreaseValue(-1 * ActionToConsume);
 
-        FixVector3 PlayerPosition = (FixVector3)Informations[0];
+        fix3 PlayerPosition = (fix3)Informations[0];
 
         simAttackComponent.TryToAttack(new SimTileId_OLD((int)PlayerPosition.x + 1, (int)PlayerPosition.y));
         simAttackComponent.TryToAttack(new SimTileId_OLD((int)PlayerPosition.x - 1, (int)PlayerPosition.y));

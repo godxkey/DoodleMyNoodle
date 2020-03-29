@@ -17,13 +17,13 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
     struct SerializedData
     {
         public int DurationOfATurn;
-        public Fix64 Timer;
+        public fix Timer;
         public Team CurrentTeam;
     }
 
     public int DurationOfATurn => _data.DurationOfATurn;
     public Team CurrentTeam => _data.CurrentTeam;
-    public Fix64 TurnRemainingTime => _data.Timer;
+    public fix TurnRemainingTime => _data.Timer;
 
     public override void OnSimStart() 
     {

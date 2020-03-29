@@ -7,7 +7,7 @@ public abstract class ConvertToEntityMultiWorld : ConvertToEntity
 {
     public abstract GameWorldType WorldToConvertTo { get; }
 
-    void Awake()
+    protected virtual void Awake()
     {
         if (World.DefaultGameObjectInjectionWorld != null)
         {
