@@ -16,7 +16,7 @@ public class HealthDisplayManagementSystem : GameMonoBehaviour
         int healthBarAmount = 0;
         GameMonoBehaviourHelpers.SimulationWorld.Entities.ForEach((ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref Translation entityTranslation)=>
         {
-            Fix64 healthRatio = (Fix64)entityHealth.Value / (Fix64)entityMaximumHealth.Value;
+            fix healthRatio = (fix)entityHealth.Value / (fix)entityMaximumHealth.Value;
 
             SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, healthRatio);
 
@@ -24,7 +24,7 @@ public class HealthDisplayManagementSystem : GameMonoBehaviour
         });
     }
 
-    private void SetOrAddHealthBar(int index, float3 position, Fix64 ratio)
+    private void SetOrAddHealthBar(int index, float3 position, fix ratio)
     {
         GameObject currentHealthBar = null;
         if (_healthBarInstances.Count <= index)
