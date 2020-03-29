@@ -6,5 +6,5 @@ using Unity.Mathematics;
 [GenerateAuthoringComponent]
 public struct Velocity : IComponentData
 {
-    public FixVector3 Value;
+    public fix3 Value;
 }

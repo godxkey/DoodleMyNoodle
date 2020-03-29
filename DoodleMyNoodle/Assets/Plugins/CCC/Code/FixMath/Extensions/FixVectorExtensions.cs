@@ -2,15 +2,15 @@
 
 public static class FixVectorExtensions
 {
-    public static Vector2 ToUnityVec(this in FixVector2 fixVec)
+    public static Vector2 ToUnityVec(this in fix2 fixVec)
     {
         return new Vector2((float)fixVec.x, (float)fixVec.y);
     }
-    public static Vector3 ToUnityVec(this in FixVector3 fixVec)
+    public static Vector3 ToUnityVec(this in fix3 fixVec)
     {
         return new Vector3((float)fixVec.x, (float)fixVec.y, (float)fixVec.z);
     }
-    public static Vector4 ToUnityVec(this in FixVector4 fixVec)
+    public static Vector4 ToUnityVec(this in fix4 fixVec)
     {
         return new Vector4((float)fixVec.x, (float)fixVec.y, (float)fixVec.z, (float)fixVec.w);
     }
@@ -19,59 +19,59 @@ public static class FixVectorExtensions
     /// <summary>
     /// Uses MaxLimit or MinLimit depending on the 'max' vector direction
     /// </summary>
-    public static FixVector2 LimitDirection(this in FixVector2 v, in FixVector2 max)
+    public static fix2 LimitDirection(this in fix2 v, in fix2 max)
     {
-        Fix64 x;
-        Fix64 y;
+        fix x;
+        fix y;
 
-        x = (max.x > 0) ? FixMath.Min(max.x, v.x) : FixMath.Max(max.x, v.x);
-        y = (max.y > 0) ? FixMath.Min(max.y, v.y) : FixMath.Max(max.y, v.y);
+        x = (max.x > 0) ? fixMath.Min(max.x, v.x) : fixMath.Max(max.x, v.x);
+        y = (max.y > 0) ? fixMath.Min(max.y, v.y) : fixMath.Max(max.y, v.y);
 
-        return new FixVector2(x, y);
+        return new fix2(x, y);
     }
     /// <summary>
     /// Uses MaxLimit or MinLimit depending on the 'max' vector direction
     /// </summary>
-    public static FixVector3 LimitDirection(this in FixVector3 v, in FixVector3 max)
+    public static fix3 LimitDirection(this in fix3 v, in fix3 max)
     {
-        Fix64 x;
-        Fix64 y;
-        Fix64 z;
+        fix x;
+        fix y;
+        fix z;
 
-        x = (max.x > 0) ? FixMath.Min(max.x, v.x) : FixMath.Max(max.x, v.x);
-        y = (max.y > 0) ? FixMath.Min(max.y, v.y) : FixMath.Max(max.y, v.y);
-        z = (max.z > 0) ? FixMath.Min(max.z, v.z) : FixMath.Max(max.z, v.z);
+        x = (max.x > 0) ? fixMath.Min(max.x, v.x) : fixMath.Max(max.x, v.x);
+        y = (max.y > 0) ? fixMath.Min(max.y, v.y) : fixMath.Max(max.y, v.y);
+        z = (max.z > 0) ? fixMath.Min(max.z, v.z) : fixMath.Max(max.z, v.z);
 
-        return new FixVector3(x, y, z);
+        return new fix3(x, y, z);
     }
 
     /// <summary>
     /// Return a vector where each component is lower or equal to its equivalent in 'max'
     /// </summary>
-    public static FixVector2 MaxLimit(this in FixVector2 v, in FixVector2 max)
+    public static fix2 MaxLimit(this in fix2 v, in fix2 max)
     {
-        return new FixVector2(FixMath.Min(v.x, max.x), FixMath.Min(v.y, max.y));
+        return new fix2(fixMath.Min(v.x, max.x), fixMath.Min(v.y, max.y));
     }
     /// <summary>
     /// Return a vector where each component is lower or equal to its equivalent in 'max'
     /// </summary>
-    public static FixVector3 MaxLimit(this in FixVector3 v, in FixVector3 max)
+    public static fix3 MaxLimit(this in fix3 v, in fix3 max)
     {
-        return new FixVector3(FixMath.Min(v.x, max.x), FixMath.Min(v.y, max.y), FixMath.Min(v.z, max.z));
+        return new fix3(fixMath.Min(v.x, max.x), fixMath.Min(v.y, max.y), fixMath.Min(v.z, max.z));
     }
 
     /// <summary>
     /// Return a vector where each component is higher or equal to its equivalent in 'max'
     /// </summary>
-    public static FixVector2 MinLimit(this in FixVector2 v, in FixVector2 min)
+    public static fix2 MinLimit(this in fix2 v, in fix2 min)
     {
-        return new FixVector2(FixMath.Max(v.x, min.x), FixMath.Max(v.y, min.y));
+        return new fix2(fixMath.Max(v.x, min.x), fixMath.Max(v.y, min.y));
     }
     /// <summary>
     /// Return a vector where each component is higher or equal to its equivalent in 'max'
     /// </summary>
-    public static FixVector3 MinLimit(this in FixVector3 v, in FixVector3 min)
+    public static fix3 MinLimit(this in fix3 v, in fix3 min)
     {
-        return new FixVector3(FixMath.Max(v.x, min.x), FixMath.Max(v.y, min.y), FixMath.Max(v.z, min.z));
+        return new fix3(fixMath.Max(v.x, min.x), fixMath.Max(v.y, min.y), fixMath.Max(v.z, min.z));
     }
 }

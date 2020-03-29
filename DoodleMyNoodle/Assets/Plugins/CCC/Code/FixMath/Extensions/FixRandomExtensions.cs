@@ -8,15 +8,15 @@ public static class FixRandomExtensions
     public static bool2 NextBool2(this FixRandom random)                                           => new bool2(random.NextBool(), random.NextBool());
     public static bool3 NextBool3(this FixRandom random)                                           => new bool3(random.NextBool(), random.NextBool(), random.NextBool());
     public static bool4 NextBool4(this FixRandom random)                                           => new bool4(random.NextBool(), random.NextBool(), random.NextBool(), random.NextBool());
-    public static FixVector2 NextFixVector2(this FixRandom random)                                 => new FixVector2(random.NextFix64(), random.NextFix64());
-    public static FixVector2 NextFixVector2(this FixRandom random, FixVector2 max)                 => new FixVector2(random.NextFix64(max.x), random.NextFix64(max.y));
-    public static FixVector2 NextFixVector2(this FixRandom random, FixVector2 min, FixVector2 max) => new FixVector2(random.NextFix64(min.x, max.x), random.NextFix64(min.y, max.y));
-    public static FixVector3 NextFixVector3(this FixRandom random)                                 => new FixVector3(random.NextFix64(), random.NextFix64(), random.NextFix64());
-    public static FixVector3 NextFixVector3(this FixRandom random, FixVector3 max)                 => new FixVector3(random.NextFix64(max.x), random.NextFix64(max.y), random.NextFix64(max.z));
-    public static FixVector3 NextFixVector3(this FixRandom random, FixVector3 min, FixVector3 max) => new FixVector3(random.NextFix64(min.x, max.x), random.NextFix64(min.y, max.y), random.NextFix64(min.z, max.z));
-    public static FixVector4 NextFixVector4(this FixRandom random)                                 => new FixVector4(random.NextFix64(), random.NextFix64(), random.NextFix64(), random.NextFix64());
-    public static FixVector4 NextFixVector4(this FixRandom random, FixVector4 max)                 => new FixVector4(random.NextFix64(max.x), random.NextFix64(max.y), random.NextFix64(max.z), random.NextFix64(max.w));
-    public static FixVector4 NextFixVector4(this FixRandom random, FixVector4 min, FixVector4 max) => new FixVector4(random.NextFix64(min.x, max.x), random.NextFix64(min.y, max.y), random.NextFix64(min.z, max.z), random.NextFix64(min.w, max.w));
+    public static fix2 NextFixVector2(this FixRandom random)                                 => new fix2(random.NextFix64(), random.NextFix64());
+    public static fix2 NextFixVector2(this FixRandom random, fix2 max)                 => new fix2(random.NextFix64(max.x), random.NextFix64(max.y));
+    public static fix2 NextFixVector2(this FixRandom random, fix2 min, fix2 max) => new fix2(random.NextFix64(min.x, max.x), random.NextFix64(min.y, max.y));
+    public static fix3 NextFixVector3(this FixRandom random)                                 => new fix3(random.NextFix64(), random.NextFix64(), random.NextFix64());
+    public static fix3 NextFixVector3(this FixRandom random, fix3 max)                 => new fix3(random.NextFix64(max.x), random.NextFix64(max.y), random.NextFix64(max.z));
+    public static fix3 NextFixVector3(this FixRandom random, fix3 min, fix3 max) => new fix3(random.NextFix64(min.x, max.x), random.NextFix64(min.y, max.y), random.NextFix64(min.z, max.z));
+    public static fix4 NextFixVector4(this FixRandom random)                                 => new fix4(random.NextFix64(), random.NextFix64(), random.NextFix64(), random.NextFix64());
+    public static fix4 NextFixVector4(this FixRandom random, fix4 max)                 => new fix4(random.NextFix64(max.x), random.NextFix64(max.y), random.NextFix64(max.z), random.NextFix64(max.w));
+    public static fix4 NextFixVector4(this FixRandom random, fix4 min, fix4 max) => new fix4(random.NextFix64(min.x, max.x), random.NextFix64(min.y, max.y), random.NextFix64(min.z, max.z), random.NextFix64(min.w, max.w));
     public static int2 NextInt2(this FixRandom random)                                             => new int2(random.NextInt(), random.NextInt());
     public static int2 NextInt2(this FixRandom random, int2 max)                                   => new int2(random.NextInt(max.x), random.NextInt(max.y));
     public static int2 NextInt2(this FixRandom random, int2 min, int2 max)                         => new int2(random.NextInt(min.x, max.x), random.NextInt(min.y, max.y));
@@ -42,27 +42,27 @@ public static class FixRandomExtensions
     /// <summary>
     /// Vector will be normalized
     /// </summary>
-    public static FixVector2 NextFixVector2Direction(this FixRandom random)
+    public static fix2 NextFixVector2Direction(this FixRandom random)
     {
-        Fix64 angle = random.NextFix64Ratio() * Fix64.PiTimes2;
+        fix angle = random.NextFix64Ratio() * fix.PiTimes2;
 
-        return new FixVector2(
-            Fix64.Cos(angle),   // x
-            Fix64.Sin(angle));  // y
+        return new fix2(
+            fix.Cos(angle),   // x
+            fix.Sin(angle));  // y
     }
 
     /// <summary>
     /// Vector will be normalized
     /// </summary>
-    public static FixVector3 NextFixVector3Direction(this FixRandom random)
+    public static fix3 NextFixVector3Direction(this FixRandom random)
     {
-        Fix64 phi = random.NextFix64Ratio() * Fix64.PiTimes2;
-        Fix64 costheta = random.NextFix64(-1, 1);
-        Fix64 theta = Fix64.Acos(costheta);
+        fix phi = random.NextFix64Ratio() * fix.PiTimes2;
+        fix costheta = random.NextFix64(-1, 1);
+        fix theta = fix.Acos(costheta);
 
-        return new FixVector3(
-            Fix64.Sin(theta) * Fix64.Cos(phi), // x
-            Fix64.Sin(theta) * Fix64.Sin(phi), // y
-            Fix64.Cos(theta));                 // z
+        return new fix3(
+            fix.Sin(theta) * fix.Cos(phi), // x
+            fix.Sin(theta) * fix.Sin(phi), // y
+            fix.Cos(theta));                 // z
     }
 }

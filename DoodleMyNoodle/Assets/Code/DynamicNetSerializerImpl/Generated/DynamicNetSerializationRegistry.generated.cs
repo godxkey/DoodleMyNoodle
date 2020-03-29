@@ -6,29 +6,29 @@ using System.Collections.Generic;
 
 public static class DynamicNetSerializationRegistry
 {
-    public static readonly ulong crc = 4694214729567990383;
+    public static readonly ulong crc = 403150429784348620;
 
     public static readonly Type[] types = new Type[]
     {
-        typeof(Fix64)
+        typeof(fix)
         ,
-        typeof(FixMatrix)
+        typeof(fix2)
         ,
-        typeof(FixMatrix2x2)
+        typeof(fix2x2)
         ,
-        typeof(FixMatrix2x3)
+        typeof(fix2x3)
         ,
-        typeof(FixMatrix3x2)
+        typeof(fix3)
         ,
-        typeof(FixMatrix3x3)
+        typeof(fix3x2)
         ,
-        typeof(FixQuaternion)
+        typeof(fix3x3)
         ,
-        typeof(FixVector2)
+        typeof(fix4)
         ,
-        typeof(FixVector3)
+        typeof(fix4x4)
         ,
-        typeof(FixVector4)
+        typeof(fixQuaternion)
         ,
         typeof(InputSubmissionId)
         ,
@@ -129,64 +129,64 @@ public static class DynamicNetSerializationRegistry
 
     public static readonly Dictionary<Type, Func<object, int>> map_GetBitSize = new Dictionary<Type, Func<object, int>>()
     {
-        [typeof(Fix64)] = (obj) =>
+        [typeof(fix)] = (obj) =>
         {
-            Fix64 castedObj = (Fix64)obj;
-            return StaticNetSerializer_Fix64.GetNetBitSize(ref castedObj);
+            fix castedObj = (fix)obj;
+            return StaticNetSerializer_fix.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(FixMatrix)] = (obj) =>
+        [typeof(fix2)] = (obj) =>
         {
-            FixMatrix castedObj = (FixMatrix)obj;
-            return StaticNetSerializer_FixMatrix.GetNetBitSize(ref castedObj);
+            fix2 castedObj = (fix2)obj;
+            return StaticNetSerializer_fix2.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(FixMatrix2x2)] = (obj) =>
+        [typeof(fix2x2)] = (obj) =>
         {
-            FixMatrix2x2 castedObj = (FixMatrix2x2)obj;
-            return StaticNetSerializer_FixMatrix2x2.GetNetBitSize(ref castedObj);
+            fix2x2 castedObj = (fix2x2)obj;
+            return StaticNetSerializer_fix2x2.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(FixMatrix2x3)] = (obj) =>
+        [typeof(fix2x3)] = (obj) =>
         {
-            FixMatrix2x3 castedObj = (FixMatrix2x3)obj;
-            return StaticNetSerializer_FixMatrix2x3.GetNetBitSize(ref castedObj);
+            fix2x3 castedObj = (fix2x3)obj;
+            return StaticNetSerializer_fix2x3.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(FixMatrix3x2)] = (obj) =>
+        [typeof(fix3)] = (obj) =>
         {
-            FixMatrix3x2 castedObj = (FixMatrix3x2)obj;
-            return StaticNetSerializer_FixMatrix3x2.GetNetBitSize(ref castedObj);
+            fix3 castedObj = (fix3)obj;
+            return StaticNetSerializer_fix3.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(FixMatrix3x3)] = (obj) =>
+        [typeof(fix3x2)] = (obj) =>
         {
-            FixMatrix3x3 castedObj = (FixMatrix3x3)obj;
-            return StaticNetSerializer_FixMatrix3x3.GetNetBitSize(ref castedObj);
+            fix3x2 castedObj = (fix3x2)obj;
+            return StaticNetSerializer_fix3x2.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(FixQuaternion)] = (obj) =>
+        [typeof(fix3x3)] = (obj) =>
         {
-            FixQuaternion castedObj = (FixQuaternion)obj;
-            return StaticNetSerializer_FixQuaternion.GetNetBitSize(ref castedObj);
+            fix3x3 castedObj = (fix3x3)obj;
+            return StaticNetSerializer_fix3x3.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(FixVector2)] = (obj) =>
+        [typeof(fix4)] = (obj) =>
         {
-            FixVector2 castedObj = (FixVector2)obj;
-            return StaticNetSerializer_FixVector2.GetNetBitSize(ref castedObj);
+            fix4 castedObj = (fix4)obj;
+            return StaticNetSerializer_fix4.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(FixVector3)] = (obj) =>
+        [typeof(fix4x4)] = (obj) =>
         {
-            FixVector3 castedObj = (FixVector3)obj;
-            return StaticNetSerializer_FixVector3.GetNetBitSize(ref castedObj);
+            fix4x4 castedObj = (fix4x4)obj;
+            return StaticNetSerializer_fix4x4.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(FixVector4)] = (obj) =>
+        [typeof(fixQuaternion)] = (obj) =>
         {
-            FixVector4 castedObj = (FixVector4)obj;
-            return StaticNetSerializer_FixVector4.GetNetBitSize(ref castedObj);
+            fixQuaternion castedObj = (fixQuaternion)obj;
+            return StaticNetSerializer_fixQuaternion.GetNetBitSize(ref castedObj);
         }
         ,
         [typeof(InputSubmissionId)] = (obj) =>
@@ -432,7 +432,7 @@ public static class DynamicNetSerializationRegistry
         [typeof(SimTileId_OLD)] = (obj) =>
         {
             SimTileId_OLD castedObj = (SimTileId_OLD)obj;
-            return StaticNetSerializer_SimTileId.GetNetBitSize(ref castedObj);
+            return StaticNetSerializer_SimTileId_OLD.GetNetBitSize(ref castedObj);
         }
         ,
         [typeof(SimulationControl.NetMessageSimTick)] = (obj) =>
@@ -480,64 +480,64 @@ public static class DynamicNetSerializationRegistry
 
     public static readonly Dictionary<Type, Action<object, BitStreamWriter>> map_Serialize = new Dictionary<Type, Action<object, BitStreamWriter>>()
     {
-        [typeof(Fix64)] = (obj, writer) =>
+        [typeof(fix)] = (obj, writer) =>
         {
-            Fix64 castedObj = (Fix64)obj;
-            StaticNetSerializer_Fix64.NetSerialize(ref castedObj, writer);
+            fix castedObj = (fix)obj;
+            StaticNetSerializer_fix.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(FixMatrix)] = (obj, writer) =>
+        [typeof(fix2)] = (obj, writer) =>
         {
-            FixMatrix castedObj = (FixMatrix)obj;
-            StaticNetSerializer_FixMatrix.NetSerialize(ref castedObj, writer);
+            fix2 castedObj = (fix2)obj;
+            StaticNetSerializer_fix2.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(FixMatrix2x2)] = (obj, writer) =>
+        [typeof(fix2x2)] = (obj, writer) =>
         {
-            FixMatrix2x2 castedObj = (FixMatrix2x2)obj;
-            StaticNetSerializer_FixMatrix2x2.NetSerialize(ref castedObj, writer);
+            fix2x2 castedObj = (fix2x2)obj;
+            StaticNetSerializer_fix2x2.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(FixMatrix2x3)] = (obj, writer) =>
+        [typeof(fix2x3)] = (obj, writer) =>
         {
-            FixMatrix2x3 castedObj = (FixMatrix2x3)obj;
-            StaticNetSerializer_FixMatrix2x3.NetSerialize(ref castedObj, writer);
+            fix2x3 castedObj = (fix2x3)obj;
+            StaticNetSerializer_fix2x3.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(FixMatrix3x2)] = (obj, writer) =>
+        [typeof(fix3)] = (obj, writer) =>
         {
-            FixMatrix3x2 castedObj = (FixMatrix3x2)obj;
-            StaticNetSerializer_FixMatrix3x2.NetSerialize(ref castedObj, writer);
+            fix3 castedObj = (fix3)obj;
+            StaticNetSerializer_fix3.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(FixMatrix3x3)] = (obj, writer) =>
+        [typeof(fix3x2)] = (obj, writer) =>
         {
-            FixMatrix3x3 castedObj = (FixMatrix3x3)obj;
-            StaticNetSerializer_FixMatrix3x3.NetSerialize(ref castedObj, writer);
+            fix3x2 castedObj = (fix3x2)obj;
+            StaticNetSerializer_fix3x2.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(FixQuaternion)] = (obj, writer) =>
+        [typeof(fix3x3)] = (obj, writer) =>
         {
-            FixQuaternion castedObj = (FixQuaternion)obj;
-            StaticNetSerializer_FixQuaternion.NetSerialize(ref castedObj, writer);
+            fix3x3 castedObj = (fix3x3)obj;
+            StaticNetSerializer_fix3x3.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(FixVector2)] = (obj, writer) =>
+        [typeof(fix4)] = (obj, writer) =>
         {
-            FixVector2 castedObj = (FixVector2)obj;
-            StaticNetSerializer_FixVector2.NetSerialize(ref castedObj, writer);
+            fix4 castedObj = (fix4)obj;
+            StaticNetSerializer_fix4.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(FixVector3)] = (obj, writer) =>
+        [typeof(fix4x4)] = (obj, writer) =>
         {
-            FixVector3 castedObj = (FixVector3)obj;
-            StaticNetSerializer_FixVector3.NetSerialize(ref castedObj, writer);
+            fix4x4 castedObj = (fix4x4)obj;
+            StaticNetSerializer_fix4x4.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(FixVector4)] = (obj, writer) =>
+        [typeof(fixQuaternion)] = (obj, writer) =>
         {
-            FixVector4 castedObj = (FixVector4)obj;
-            StaticNetSerializer_FixVector4.NetSerialize(ref castedObj, writer);
+            fixQuaternion castedObj = (fixQuaternion)obj;
+            StaticNetSerializer_fixQuaternion.NetSerialize(ref castedObj, writer);
         }
         ,
         [typeof(InputSubmissionId)] = (obj, writer) =>
@@ -783,7 +783,7 @@ public static class DynamicNetSerializationRegistry
         [typeof(SimTileId_OLD)] = (obj, writer) =>
         {
             SimTileId_OLD castedObj = (SimTileId_OLD)obj;
-            StaticNetSerializer_SimTileId.NetSerialize(ref castedObj, writer);
+            StaticNetSerializer_SimTileId_OLD.NetSerialize(ref castedObj, writer);
         }
         ,
         [typeof(SimulationControl.NetMessageSimTick)] = (obj, writer) =>
@@ -833,71 +833,71 @@ public static class DynamicNetSerializationRegistry
     {
         [0] = (reader) =>
         {
-            Fix64 obj = new Fix64();
-            StaticNetSerializer_Fix64.NetDeserialize(ref obj, reader);
+            fix obj = new fix();
+            StaticNetSerializer_fix.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
         [1] = (reader) =>
         {
-            FixMatrix obj = new FixMatrix();
-            StaticNetSerializer_FixMatrix.NetDeserialize(ref obj, reader);
+            fix2 obj = new fix2();
+            StaticNetSerializer_fix2.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
         [2] = (reader) =>
         {
-            FixMatrix2x2 obj = new FixMatrix2x2();
-            StaticNetSerializer_FixMatrix2x2.NetDeserialize(ref obj, reader);
+            fix2x2 obj = new fix2x2();
+            StaticNetSerializer_fix2x2.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
         [3] = (reader) =>
         {
-            FixMatrix2x3 obj = new FixMatrix2x3();
-            StaticNetSerializer_FixMatrix2x3.NetDeserialize(ref obj, reader);
+            fix2x3 obj = new fix2x3();
+            StaticNetSerializer_fix2x3.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
         [4] = (reader) =>
         {
-            FixMatrix3x2 obj = new FixMatrix3x2();
-            StaticNetSerializer_FixMatrix3x2.NetDeserialize(ref obj, reader);
+            fix3 obj = new fix3();
+            StaticNetSerializer_fix3.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
         [5] = (reader) =>
         {
-            FixMatrix3x3 obj = new FixMatrix3x3();
-            StaticNetSerializer_FixMatrix3x3.NetDeserialize(ref obj, reader);
+            fix3x2 obj = new fix3x2();
+            StaticNetSerializer_fix3x2.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
         [6] = (reader) =>
         {
-            FixQuaternion obj = new FixQuaternion();
-            StaticNetSerializer_FixQuaternion.NetDeserialize(ref obj, reader);
+            fix3x3 obj = new fix3x3();
+            StaticNetSerializer_fix3x3.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
         [7] = (reader) =>
         {
-            FixVector2 obj = new FixVector2();
-            StaticNetSerializer_FixVector2.NetDeserialize(ref obj, reader);
+            fix4 obj = new fix4();
+            StaticNetSerializer_fix4.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
         [8] = (reader) =>
         {
-            FixVector3 obj = new FixVector3();
-            StaticNetSerializer_FixVector3.NetDeserialize(ref obj, reader);
+            fix4x4 obj = new fix4x4();
+            StaticNetSerializer_fix4x4.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
         [9] = (reader) =>
         {
-            FixVector4 obj = new FixVector4();
-            StaticNetSerializer_FixVector4.NetDeserialize(ref obj, reader);
+            fixQuaternion obj = new fixQuaternion();
+            StaticNetSerializer_fixQuaternion.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
@@ -1184,7 +1184,7 @@ public static class DynamicNetSerializationRegistry
         [50] = (reader) =>
         {
             SimTileId_OLD obj = new SimTileId_OLD();
-            StaticNetSerializer_SimTileId.NetDeserialize(ref obj, reader);
+            StaticNetSerializer_SimTileId_OLD.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,

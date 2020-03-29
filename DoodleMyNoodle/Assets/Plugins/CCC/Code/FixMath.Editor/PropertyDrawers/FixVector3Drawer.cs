@@ -3,23 +3,23 @@ using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(FixVector3))]
+[CustomPropertyDrawer(typeof(fix3))]
 public class FixFixVector3Drawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        SerializedProperty xProp = property.FindPropertyRelative(nameof(FixVector3.x)).FindPropertyRelative(nameof(Fix64.RawValue));
-        SerializedProperty yProp = property.FindPropertyRelative(nameof(FixVector3.y)).FindPropertyRelative(nameof(Fix64.RawValue));
-        SerializedProperty zProp = property.FindPropertyRelative(nameof(FixVector3.z)).FindPropertyRelative(nameof(Fix64.RawValue));
+        SerializedProperty xProp = property.FindPropertyRelative(nameof(fix3.x)).FindPropertyRelative(nameof(fix.RawValue));
+        SerializedProperty yProp = property.FindPropertyRelative(nameof(fix3.y)).FindPropertyRelative(nameof(fix.RawValue));
+        SerializedProperty zProp = property.FindPropertyRelative(nameof(fix3.z)).FindPropertyRelative(nameof(fix.RawValue));
 
-        Fix64 xVal;
-        Fix64 yVal;
-        Fix64 zVal;
+        fix xVal;
+        fix yVal;
+        fix zVal;
         xVal.RawValue = xProp.longValue;
         yVal.RawValue = yProp.longValue;
         zVal.RawValue = zProp.longValue;
 
-        FixVector3 oldFixVec = new FixVector3(xVal, yVal, zVal);        
+        fix3 oldFixVec = new fix3(xVal, yVal, zVal);        
 
         // Using BeginProperty / EndProperty on the parent property means that
         // prefab override logic works on the entire property.
@@ -34,7 +34,7 @@ public class FixFixVector3Drawer : PropertyDrawer
         // Change ?
         if (oldVec != newVec)
         {
-            FixVector3 newFixVec = newVec.ToFixVec();
+            fix3 newFixVec = newVec.ToFixVec();
 
             xProp.longValue = newFixVec.x.RawValue;
             yProp.longValue = newFixVec.y.RawValue;
@@ -55,9 +55,9 @@ public class FixFixVector3Drawer : PropertyDrawer
 
 [CustomEntityPropertyDrawer]
 public class FixVector3EntityDrawer : IMGUIAdapter,
-        IVisitAdapter<FixVector3>
+        IVisitAdapter<fix3>
 {
-    VisitStatus IVisitAdapter<FixVector3>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref FixVector3 value, ref ChangeTracker changeTracker)
+    VisitStatus IVisitAdapter<fix3>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref fix3 value, ref ChangeTracker changeTracker)
     {
         DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
         {

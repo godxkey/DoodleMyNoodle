@@ -7,19 +7,19 @@ internal class SimModuleRandom : SimModuleBase
     internal uint RandomUInt() => 0;
     internal bool RandomBool() => false;
 
-    internal Fix64 Random01() => 0;
+    internal fix Random01() => 0;
 
-    internal Fix64 RandomRange(Fix64 min, Fix64 max) => 0;
-
-    /// <summary>
-    /// Vector will be normalized
-    /// </summary>
-    internal FixVector2 RandomDirection2D() => FixVector2.Zero;
+    internal fix RandomRange(fix min, fix max) => 0;
 
     /// <summary>
     /// Vector will be normalized
     /// </summary>
-    internal FixVector3 RandomDirection3D() => FixVector3.zero;
+    internal fix2 RandomDirection2D() => fix2.Zero;
+
+    /// <summary>
+    /// Vector will be normalized
+    /// </summary>
+    internal fix3 RandomDirection3D() => fix3.zero;
     //internal int RandomInt()
     //{
     //    return GetGenerator().Next();

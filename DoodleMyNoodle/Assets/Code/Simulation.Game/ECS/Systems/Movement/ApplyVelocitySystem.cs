@@ -7,7 +7,7 @@ public class ApplyVelocitySystem : SimJobComponentSystem
 {
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        Fix64 deltaTime = Time.DeltaTime;
+        fix deltaTime = Time.DeltaTime;
 
         Entities.ForEach((ref FixTranslation pos, in Velocity vel) =>
         {

@@ -3,15 +3,15 @@ using UnityEngine;
 using CCC.Editor;
 using Unity.Properties;
 
-[CustomPropertyDrawer(typeof(Fix64))]
+[CustomPropertyDrawer(typeof(fix))]
 public class Fix64Drawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        SerializedProperty valueProperty = property.FindPropertyRelative(nameof(Fix64.RawValue));
+        SerializedProperty valueProperty = property.FindPropertyRelative(nameof(fix.RawValue));
         long valueRaw = valueProperty.longValue;
 
-        Fix64 value;
+        fix value;
         value.RawValue = valueRaw;
 
         float floatValue = (float)value;
@@ -26,7 +26,7 @@ public class Fix64Drawer : PropertyDrawer
         // Change ?
         if(newFloatValue != floatValue)
         {
-            Fix64 newValue = (Fix64)newFloatValue;
+            fix newValue = (fix)newFloatValue;
             valueProperty.longValue = newValue.RawValue;
         }
 
@@ -42,15 +42,15 @@ public class Fix64Drawer : PropertyDrawer
 
 [CustomEntityPropertyDrawer]
 public class Fix64EntityDrawer : IMGUIAdapter,
-        IVisitAdapter<Fix64>
+        IVisitAdapter<fix>
 {
-    VisitStatus IVisitAdapter<Fix64>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref Fix64 value, ref ChangeTracker changeTracker)
+    VisitStatus IVisitAdapter<fix>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref fix value, ref ChangeTracker changeTracker)
     {
         DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
         {
             var newValue = EditorGUILayout.FloatField(label, (float)val);
 
-            return Application.isPlaying ? val : (Fix64)newValue; // we don't support runtime modif
+            return Application.isPlaying ? val : (fix)newValue; // we don't support runtime modif
         });
 
         return VisitStatus.Handled;

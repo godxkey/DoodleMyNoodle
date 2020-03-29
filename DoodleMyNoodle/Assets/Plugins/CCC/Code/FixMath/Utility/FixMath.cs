@@ -4,27 +4,27 @@ using Unity.Mathematics;
 /// <summary>
 /// Contains helper math methods.
 /// </summary>
-public static class FixMath
+public static class fixMath
 {
     /// <summary>
     /// Approximate value of Pi.
     /// </summary>
-    public static readonly Fix64 Pi = Fix64.Pi;
+    public static readonly fix Pi = global::fix.Pi;
 
     /// <summary>
     /// Approximate value of Pi multiplied by two.
     /// </summary>
-    public static readonly Fix64 TwoPi = Fix64.PiTimes2;
+    public static readonly fix TwoPi = global::fix.PiTimes2;
 
     /// <summary>
     /// Approximate value of Pi divided by two.
     /// </summary>
-    public static readonly Fix64 PiOver2 = Fix64.PiOver2;
+    public static readonly fix PiOver2 = global::fix.PiOver2;
 
     /// <summary>
     /// Approximate value of Pi divided by four.
     /// </summary>
-    public static readonly Fix64 PiOver4 = Fix64.Pi / new Fix64(4);
+    public static readonly fix PiOver4 = global::fix.Pi / new fix(4);
 
     /// <summary>
     /// Calculate remainder of of Fix64 division using same algorithm
@@ -33,9 +33,9 @@ public static class FixMath
     /// <param name="dividend">Dividend</param>
     /// <param name="divisor">Divisor</param>
     /// <returns>Remainder</returns>
-    public static Fix64 IEEERemainder(in Fix64 dividend, in Fix64 divisor)
+    public static fix IEEERemainder(in fix dividend, in fix divisor)
     {
-        return dividend - (divisor * Fix64.Round(dividend / divisor));
+        return dividend - (divisor * global::fix.Round(dividend / divisor));
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public static class FixMath
     /// </summary>
     /// <param name="angle">Angle to wrap.</param>
     /// <returns>Wrapped angle.</returns>
-    public static Fix64 WrapAngle(Fix64 angle)
+    public static fix WrapAngle(fix angle)
     {
         angle = IEEERemainder(angle, TwoPi);
         if (angle < -Pi)
@@ -66,7 +66,7 @@ public static class FixMath
     /// <param name="min">Minimum value.  If the value is less than this, the minimum is returned instead.</param>
     /// <param name="max">Maximum value.  If the value is more than this, the maximum is returned instead.</param>
     /// <returns>Clamped value.</returns>
-    public static Fix64 Clamp(in Fix64 value, in Fix64 min, in Fix64 max)
+    public static fix Clamp(in fix value, in fix min, in fix max)
     {
         if (value < min)
             return min;
@@ -81,7 +81,7 @@ public static class FixMath
     /// <param name="a">First value.</param>
     /// <param name="b">Second value.</param>
     /// <returns>Higher value of the two parameters.</returns>
-    public static Fix64 Max(in Fix64 a, in Fix64 b)
+    public static fix Max(in fix a, in fix b)
     {
         return a > b ? a : b;
     }
@@ -92,7 +92,7 @@ public static class FixMath
     /// <param name="a">First value.</param>
     /// <param name="b">Second value.</param>
     /// <returns>Lower value of the two parameters.</returns>
-    public static Fix64 Min(in Fix64 a, in Fix64 b)
+    public static fix Min(in fix a, in fix b)
     {
         return a < b ? a : b;
     }
@@ -102,7 +102,7 @@ public static class FixMath
     /// </summary>
     /// <param name="degrees">Degrees to convert.</param>
     /// <returns>Radians equivalent to the input degrees.</returns>
-    public static Fix64 ToRadians(in Fix64 degrees)
+    public static fix ToRadians(in fix degrees)
     {
         return degrees * (Pi / F64.C180);
     }
@@ -112,58 +112,58 @@ public static class FixMath
     /// </summary>
     /// <param name="radians">Radians to convert.</param>
     /// <returns>Degrees equivalent to the input radians.</returns>
-    public static Fix64 ToDegrees(in Fix64 radians)
+    public static fix ToDegrees(in fix radians)
     {
         return radians * (F64.C180 / Pi);
     }
 
-    public static bool AlmostEqual(in FixVector3 a, in FixVector3 b)
+    public static bool AlmostEqual(in fix3 a, in fix3 b)
     {
-        return AlmostEqual(a, b, (Fix64)0.001);
+        return AlmostEqual(a, b, (fix)0.001);
     }
-    public static bool AlmostEqual(in FixVector3 a, in FixVector3 b, in Fix64 epsilon)
+    public static bool AlmostEqual(in fix3 a, in fix3 b, in fix epsilon)
     {
-        return FixVector3.DistanceSquared(a, b) < epsilon;
+        return global::fix3.DistanceSquared(a, b) < epsilon;
     }
 
 
 
 
 
-    public static Fix64         fix(int value)                                       => new Fix64(value);
-    public static Fix64         fix(float value)                                     => (Fix64)value;
+    public static fix         fix(int value)                                       => new fix(value);
+    public static fix         fix(float value)                                     => (fix)value;
 
-    public static FixVector2    fix2(in Fix64 v)                                     => new FixVector2(v, v);
-    public static FixVector3    fix3(in Fix64 v)                                     => new FixVector3(v, v, v);
-    public static FixVector4    fix4(in Fix64 v)                                     => new FixVector4(v, v, v, v);
+    public static fix2    fix2(in fix v)                                     => new fix2(v, v);
+    public static fix3    fix3(in fix v)                                     => new fix3(v, v, v);
+    public static fix4    fix4(in fix v)                                     => new fix4(v, v, v, v);
 
-    public static FixVector2    fix2(in Fix64 x, in Fix64 y)                         => new FixVector2(x, y);
-    public static FixVector3    fix3(in Fix64 x, in Fix64 y, in Fix64 z)             => new FixVector3(x, y, z);
-    public static FixVector4    fix4(in Fix64 x, in Fix64 y, in Fix64 z, in Fix64 w) => new FixVector4(x, y, z, w);
+    public static fix2    fix2(in fix x, in fix y)                         => new fix2(x, y);
+    public static fix3    fix3(in fix x, in fix y, in fix z)             => new fix3(x, y, z);
+    public static fix4    fix4(in fix x, in fix y, in fix z, in fix w) => new fix4(x, y, z, w);
 
-    public static FixVector2    fix2(in int x, in int y)                             => new FixVector2(x, y);
-    public static FixVector3    fix3(in int x, in int y, in int z)                   => new FixVector3(x, y, z);
-    public static FixVector4    fix4(in int x, in int y, in int z, in int w)         => new FixVector4(x, y, z, w);
+    public static fix2    fix2(in int x, in int y)                             => new fix2(x, y);
+    public static fix3    fix3(in int x, in int y, in int z)                   => new fix3(x, y, z);
+    public static fix4    fix4(in int x, in int y, in int z, in int w)         => new fix4(x, y, z, w);
 
-    public static FixVector3    fix3(in FixVector2 xy, in Fix64 z)                   => new FixVector3(xy.x, xy.y, z);
-    public static FixVector3    fix3(in Fix64 x, in FixVector2 yz)                   => new FixVector3(x, yz.x, yz.y);
-    public static FixVector3    fix3(in FixVector2 xy, in int z)                     => new FixVector3(xy.x, xy.y, z);
-    public static FixVector3    fix3(in int x, in FixVector2 yz)                     => new FixVector3(x, yz.x, yz.y);
-    public static FixVector3    fix3(in int2 xy, in int z)                           => new FixVector3(xy.x, xy.y, z);
-    public static FixVector3    fix3(in int x, in int2 yz)                           => new FixVector3(x, yz.x, yz.y);
-
-
-    public static Fix64 length(in FixVector2 v) => v.length;
-    public static Fix64 length(in FixVector3 v) => v.length;
-    public static Fix64 length(in FixVector4 v) => v.length;
-    public static Fix64 lengthsq(in FixVector2 v) => v.lengthSquared;
-    public static Fix64 lengthsq(in FixVector3 v) => v.lengthSquared;
-    public static Fix64 lengthsq(in FixVector4 v) => v.lengthSquared;
+    public static fix3    fix3(in fix2 xy, in fix z)                   => new fix3(xy.x, xy.y, z);
+    public static fix3    fix3(in fix x, in fix2 yz)                   => new fix3(x, yz.x, yz.y);
+    public static fix3    fix3(in fix2 xy, in int z)                     => new fix3(xy.x, xy.y, z);
+    public static fix3    fix3(in int x, in fix2 yz)                     => new fix3(x, yz.x, yz.y);
+    public static fix3    fix3(in int2 xy, in int z)                           => new fix3(xy.x, xy.y, z);
+    public static fix3    fix3(in int x, in int2 yz)                           => new fix3(x, yz.x, yz.y);
 
 
-    public static Fix64      round(in Fix64 v)      =>      Fix64.Round(v);
-    public static FixVector2 round(in FixVector2 v) => fix2(Fix64.Round(v.x), Fix64.Round(v.y));
-    public static FixVector3 round(in FixVector3 v) => fix3(Fix64.Round(v.x), Fix64.Round(v.y), Fix64.Round(v.z));
-    public static FixVector4 round(in FixVector4 v) => fix4(Fix64.Round(v.x), Fix64.Round(v.y), Fix64.Round(v.z), Fix64.Round(v.w));
+    public static fix length(in fix2 v) => v.length;
+    public static fix length(in fix3 v) => v.length;
+    public static fix length(in fix4 v) => v.length;
+    public static fix lengthsq(in fix2 v) => v.lengthSquared;
+    public static fix lengthsq(in fix3 v) => v.lengthSquared;
+    public static fix lengthsq(in fix4 v) => v.lengthSquared;
+
+
+    public static fix      round(in fix v)      =>      global::fix.Round(v);
+    public static fix2 round(in fix2 v) => fix2(global::fix.Round(v.x), global::fix.Round(v.y));
+    public static fix3 round(in fix3 v) => fix3(global::fix.Round(v.x), global::fix.Round(v.y), global::fix.Round(v.z));
+    public static fix4 round(in fix4 v) => fix4(global::fix.Round(v.x), global::fix.Round(v.y), global::fix.Round(v.z), global::fix.Round(v.w));
 
 }

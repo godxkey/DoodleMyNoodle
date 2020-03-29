@@ -24,14 +24,14 @@ public class Simulation : SimulationBase
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    public static SimEntity Instantiate(SimEntity entity, in FixVector3 position, in FixQuaternion rotation)
+    public static SimEntity Instantiate(SimEntity entity, in fix3 position, in fixQuaternion rotation)
         => SimModules._EntityManager.Instantiate(entity, in position, in rotation);
     /// <summary>
     /// Duplicate the entity using Unity's traditional Instantiate replication model and inject it into the simulation
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    public static SimEntity Instantiate(SimEntity entity, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent)
+    public static SimEntity Instantiate(SimEntity entity, in fix3 position, in fixQuaternion rotation, SimTransformComponent parent)
         => SimModules._EntityManager.Instantiate(entity, in position, in rotation, parent);
 
     /// <summary>
@@ -53,14 +53,14 @@ public class Simulation : SimulationBase
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    public static T Instantiate<T>(T component, in FixVector3 position, in FixQuaternion rotation) where T : SimComponent
+    public static T Instantiate<T>(T component, in fix3 position, in fixQuaternion rotation) where T : SimComponent
         => SimModules._EntityManager.Instantiate(component.SimEntity, in position, in rotation).GetComponent<T>();
     /// <summary>
     /// Duplicate the entity using Unity's traditional Instantiate replication model and inject it into the simulation
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    public static T Instantiate<T>(T component, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent) where T : SimComponent
+    public static T Instantiate<T>(T component, in fix3 position, in fixQuaternion rotation, SimTransformComponent parent) where T : SimComponent
         => SimModules._EntityManager.Instantiate(component.SimEntity, in position, in rotation, parent).GetComponent<T>();
 
     /// <summary>
@@ -82,14 +82,14 @@ public class Simulation : SimulationBase
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    public static SimEntity Instantiate(in SimBlueprint original, in FixVector3 position, in FixQuaternion rotation) 
+    public static SimEntity Instantiate(in SimBlueprint original, in fix3 position, in fixQuaternion rotation) 
         => SimModules._EntityManager.Instantiate(original, position, rotation);
     /// <summary>
     /// Instantiate entity from the blueprint and inject it into the simulation
     /// <para/>
     /// NB: not called if reloading/reconstructing a saved game
     /// </summary>
-    public static SimEntity Instantiate(in SimBlueprint original, in FixVector3 position, in FixQuaternion rotation, SimTransformComponent parent) 
+    public static SimEntity Instantiate(in SimBlueprint original, in fix3 position, in fixQuaternion rotation, SimTransformComponent parent) 
         => SimModules._EntityManager.Instantiate(original, position, rotation, parent);
 
     public static T AddComponent<T>(SimEntity entity) where T : SimComponent 
@@ -112,15 +112,15 @@ public class Simulation : SimulationBase
         public static int Int() => SimModules._Random.RandomInt();
         public static uint UInt() => SimModules._Random.RandomUInt();
         public static bool Bool() => SimModules._Random.RandomBool();
-        public static Fix64 Range01() => SimModules._Random.Random01();
-        public static Fix64 Range(in Fix64 min, in Fix64 max) => SimModules._Random.RandomRange(min, max);
+        public static fix Range01() => SimModules._Random.Random01();
+        public static fix Range(in fix min, in fix max) => SimModules._Random.RandomRange(min, max);
         /// <summary>
         /// Vector will be normalized
         /// </summary>
-        public static FixVector2 Direction2D() => SimModules._Random.RandomDirection2D();
+        public static fix2 Direction2D() => SimModules._Random.RandomDirection2D();
         /// <summary>
         /// Vector will be normalized
         /// </summary>
-        public static FixVector3 Direction3D() => SimModules._Random.RandomDirection3D();
+        public static fix3 Direction3D() => SimModules._Random.RandomDirection3D();
     }
 }

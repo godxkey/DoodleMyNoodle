@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using Unity.Entities;
 using Unity.Transforms;
 using static Unity.Mathematics.math;
-using static FixMath;
+using static fixMath;
 
 public class DirectToDestinationSystem : SimComponentSystem
 {
@@ -16,8 +16,8 @@ public class DirectToDestinationSystem : SimComponentSystem
             ref Destination destination, 
             ref MoveSpeed moveSpeed) =>
         {
-            FixVector3 deltaMove = destination.Value - translation.Value;
-            Fix64 moveLength = length(deltaMove);
+            fix3 deltaMove = destination.Value - translation.Value;
+            fix moveLength = length(deltaMove);
 
             if (moveLength < fix(0.01f))
             {
@@ -29,8 +29,8 @@ public class DirectToDestinationSystem : SimComponentSystem
             else
             {
                 // update velocity
-                FixVector3 normalVel = (deltaMove / moveLength) * moveSpeed.Value;
-                FixVector3 teleportToDestinationVelocity = deltaMove / Time.DeltaTime;
+                fix3 normalVel = (deltaMove / moveLength) * moveSpeed.Value;
+                fix3 teleportToDestinationVelocity = deltaMove / Time.DeltaTime;
 
                 if (lengthsq(teleportToDestinationVelocity) < lengthsq(normalVel))
                 {

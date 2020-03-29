@@ -7,10 +7,10 @@ public class SimVelocityComponent : SimComponent, ISimTickable
     [System.Serializable]
     struct SerializedData
     {
-        public FixVector2 Velocity;
+        public fix2 Velocity;
     }
 
-    public FixVector2 Value { get => _data.Velocity; set => _data.Velocity = value; }
+    public fix2 Value { get => _data.Velocity; set => _data.Velocity = value; }
 
     public void OnSimTick()
     {

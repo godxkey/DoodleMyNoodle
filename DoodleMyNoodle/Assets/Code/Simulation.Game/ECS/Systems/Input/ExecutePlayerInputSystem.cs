@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using static FixMath;
+using static fixMath;
 
 public class ExecutePlayerInputSystem : SimComponentSystem
 {
@@ -93,7 +93,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                     if (keycodeInput.keyCode == UnityEngine.KeyCode.T && keycodeInput.state == SimInputKeycode.State.Pressed
                         && EntityManager.HasComponent<FixTranslation>(pawn))
                     {
-                        FixVector2 newPosition = SimWorld.Random().NextFixVector2(
+                        fix2 newPosition = SimWorld.Random().NextFixVector2(
                             min: fix2(-5, -5),
                             max: fix2(5, 5));
 

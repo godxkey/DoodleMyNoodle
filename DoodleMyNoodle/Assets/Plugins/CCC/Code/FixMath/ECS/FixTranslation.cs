@@ -4,5 +4,5 @@ using Unity.Entities;
 [Serializable]
 public struct FixTranslation : IComponentData
 {
-    public FixVector3 Value;
+    public fix3 Value;
 }

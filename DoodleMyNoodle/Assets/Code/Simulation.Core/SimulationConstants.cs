@@ -10,8 +10,8 @@ public static class SimulationConstants
     public static readonly float TICK_RATE_F = TICK_RATE_CONST; 
     public static readonly float TIME_STEP_F = 1f / TICK_RATE_F; // must match unity's Fixed timestep
 
-    public static readonly Fix64 TICK_RATE = (Fix64)TICK_RATE_CONST; 
-    public static readonly Fix64 TIME_STEP = 1 / TICK_RATE; // must match unity's Fixed timestep
+    public static readonly fix TICK_RATE = (fix)TICK_RATE_CONST; 
+    public static readonly fix TIME_STEP = 1 / TICK_RATE; // must match unity's Fixed timestep
 
     
     public static readonly float CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED = 3f;

@@ -3,20 +3,20 @@ using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(FixVector2))]
+[CustomPropertyDrawer(typeof(fix2))]
 public class FixVector2Drawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        SerializedProperty xProp = property.FindPropertyRelative(nameof(FixVector2.x)).FindPropertyRelative(nameof(Fix64.RawValue));
-        SerializedProperty yProp = property.FindPropertyRelative(nameof(FixVector2.y)).FindPropertyRelative(nameof(Fix64.RawValue));
+        SerializedProperty xProp = property.FindPropertyRelative(nameof(fix2.x)).FindPropertyRelative(nameof(fix.RawValue));
+        SerializedProperty yProp = property.FindPropertyRelative(nameof(fix2.y)).FindPropertyRelative(nameof(fix.RawValue));
 
-        Fix64 xVal;
-        Fix64 yVal;
+        fix xVal;
+        fix yVal;
         xVal.RawValue = xProp.longValue;
         yVal.RawValue = yProp.longValue;
 
-        FixVector2 oldFixVec = new FixVector2(xVal, yVal);
+        fix2 oldFixVec = new fix2(xVal, yVal);
 
         // Using BeginProperty / EndProperty on the parent property means that
         // prefab override logic works on the entire property.
@@ -29,7 +29,7 @@ public class FixVector2Drawer : PropertyDrawer
         // Change ?
         if (oldVec != newVec)
         {
-            FixVector2 newFixVec = newVec.ToFixVec();
+            fix2 newFixVec = newVec.ToFixVec();
 
             xProp.longValue = newFixVec.x.RawValue;
             yProp.longValue = newFixVec.y.RawValue;
@@ -48,9 +48,9 @@ public class FixVector2Drawer : PropertyDrawer
 
 [CustomEntityPropertyDrawer]
 public class FixVector2EntityDrawer : IMGUIAdapter,
-        IVisitAdapter<FixVector2>
+        IVisitAdapter<fix2>
 {
-    VisitStatus IVisitAdapter<FixVector2>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref FixVector2 value, ref ChangeTracker changeTracker)
+    VisitStatus IVisitAdapter<fix2>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref fix2 value, ref ChangeTracker changeTracker)
     {
         DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
         {

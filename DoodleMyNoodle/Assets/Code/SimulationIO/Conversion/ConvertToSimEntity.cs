@@ -30,12 +30,12 @@ public class ConvertToSimEntity : ConvertToEntityMultiWorld
     }
 
 
-    private static FixQuaternion ToFix(in Quaternion fixQuat)
+    private static fixQuaternion ToFix(in Quaternion fixQuat)
     {
-        return new FixQuaternion((Fix64)fixQuat.x, (Fix64)fixQuat.y, (Fix64)fixQuat.z, (Fix64)fixQuat.w);
+        return new fixQuaternion((fix)fixQuat.x, (fix)fixQuat.y, (fix)fixQuat.z, (fix)fixQuat.w);
     }
-    private static FixVector3 ToFix(in Vector3 vec)
+    private static fix3 ToFix(in Vector3 vec)
     {
-        return new FixVector3((Fix64)vec.x, (Fix64)vec.y, (Fix64)vec.z);
+        return new fix3((fix)vec.x, (fix)vec.y, (fix)vec.z);
     }
 }

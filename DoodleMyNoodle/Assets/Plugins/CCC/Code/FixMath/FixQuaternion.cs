@@ -5,27 +5,27 @@
 /// </summary>
 [NetSerializable]
 [Serializable]
-public struct FixQuaternion : IEquatable<FixQuaternion>
+public struct fixQuaternion : IEquatable<fixQuaternion>
 {
     /// <summary>
     /// X component of the quaternion.
     /// </summary>
-    public Fix64 x;
+    public fix x;
 
     /// <summary>
     /// Y component of the quaternion.
     /// </summary>
-    public Fix64 y;
+    public fix y;
 
     /// <summary>
     /// Z component of the quaternion.
     /// </summary>
-    public Fix64 z;
+    public fix z;
 
     /// <summary>
     /// W component of the quaternion.
     /// </summary>
-    public Fix64 w;
+    public fix w;
 
     /// <summary>
     /// Constructs a new FixQuaternion.
@@ -34,7 +34,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="y">Y component of the quaternion.</param>
     /// <param name="z">Z component of the quaternion.</param>
     /// <param name="w">W component of the quaternion.</param>
-    public FixQuaternion(in Fix64 x, in Fix64 y, in Fix64 z, in Fix64 w)
+    public fixQuaternion(in fix x, in fix y, in fix z, in fix w)
     {
         this.x = x;
         this.y = y;
@@ -48,7 +48,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="a">First quaternion to add.</param>
     /// <param name="b">Second quaternion to add.</param>
     /// <param name="result">Sum of the addition.</param>
-    public static void Add(in FixQuaternion a, in FixQuaternion b, out FixQuaternion result)
+    public static void Add(in fixQuaternion a, in fixQuaternion b, out fixQuaternion result)
     {
         result.x = a.x + b.x;
         result.y = a.y + b.y;
@@ -62,16 +62,16 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="a">First quaternion to multiply.</param>
     /// <param name="b">Second quaternion to multiply.</param>
     /// <param name="result">Product of the multiplication.</param>
-    public static void Multiply(in FixQuaternion a, in FixQuaternion b, out FixQuaternion result)
+    public static void Multiply(in fixQuaternion a, in fixQuaternion b, out fixQuaternion result)
     {
-        Fix64 x = a.x;
-        Fix64 y = a.y;
-        Fix64 z = a.z;
-        Fix64 w = a.w;
-        Fix64 bX = b.x;
-        Fix64 bY = b.y;
-        Fix64 bZ = b.z;
-        Fix64 bW = b.w;
+        fix x = a.x;
+        fix y = a.y;
+        fix z = a.z;
+        fix w = a.w;
+        fix bX = b.x;
+        fix bY = b.y;
+        fix bZ = b.z;
+        fix bW = b.w;
         result.x = x * bW + bX * w + y * bZ - z * bY;
         result.y = y * bW + bY * w + z * bX - x * bZ;
         result.z = z * bW + bZ * w + x * bY - y * bX;
@@ -84,7 +84,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="q">FixQuaternion to multiply.</param>
     /// <param name="scale">Amount to multiply each component of the quaternion by.</param>
     /// <param name="result">Scaled quaternion.</param>
-    public static void Multiply(in FixQuaternion q, in Fix64 scale, out FixQuaternion result)
+    public static void Multiply(in fixQuaternion q, in fix scale, out fixQuaternion result)
     {
         result.x = q.x * scale;
         result.y = q.y * scale;
@@ -98,16 +98,16 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="a">First quaternion to multiply.</param>
     /// <param name="b">Second quaternion to multiply.</param>
     /// <param name="result">Product of the multiplication.</param>
-    public static void Concatenate(in FixQuaternion a, in FixQuaternion b, out FixQuaternion result)
+    public static void Concatenate(in fixQuaternion a, in fixQuaternion b, out fixQuaternion result)
     {
-        Fix64 aX = a.x;
-        Fix64 aY = a.y;
-        Fix64 aZ = a.z;
-        Fix64 aW = a.w;
-        Fix64 bX = b.x;
-        Fix64 bY = b.y;
-        Fix64 bZ = b.z;
-        Fix64 bW = b.w;
+        fix aX = a.x;
+        fix aY = a.y;
+        fix aZ = a.z;
+        fix aW = a.w;
+        fix bX = b.x;
+        fix bY = b.y;
+        fix bZ = b.z;
+        fix bW = b.w;
 
         result.x = aW * bX + aX * bW + aZ * bY - aY * bZ;
         result.y = aW * bY + aY * bW + aX * bZ - aZ * bX;
@@ -123,9 +123,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="a">First quaternion to multiply.</param>
     /// <param name="b">Second quaternion to multiply.</param>
     /// <returns>Product of the multiplication.</returns>
-    public static FixQuaternion Concatenate(in FixQuaternion a, in FixQuaternion b)
+    public static fixQuaternion Concatenate(in fixQuaternion a, in fixQuaternion b)
     {
-        FixQuaternion result;
+        fixQuaternion result;
         Concatenate(in a, in b, out result);
         return result;
     }
@@ -133,11 +133,11 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <summary>
     /// FixQuaternion representing the identity transform.
     /// </summary>
-    public static FixQuaternion Identity
+    public static fixQuaternion Identity
     {
         get
         {
-            return new FixQuaternion(F64.C0, F64.C0, F64.C0, F64.C1);
+            return new fixQuaternion(F64.C0, F64.C0, F64.C0, F64.C1);
         }
     }
 
@@ -149,15 +149,15 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="r">Rotation matrix to create the quaternion from.</param>
     /// <param name="q">FixQuaternion based on the rotation matrix.</param>
-    public static void CreateFromRotationMatrix(in FixMatrix3x3 r, out FixQuaternion q)
+    public static void CreateFromRotationMatrix(in fix3x3 r, out fixQuaternion q)
     {
-        Fix64 trace = r.M11 + r.M22 + r.M33;
+        fix trace = r.M11 + r.M22 + r.M33;
 #if !WINDOWS
-        q = new FixQuaternion();
+        q = new fixQuaternion();
 #endif
         if (trace >= F64.C0)
         {
-            var S = Fix64.Sqrt(trace + F64.C1) * F64.C2; // S=4*qw 
+            var S = fix.Sqrt(trace + F64.C1) * F64.C2; // S=4*qw 
             var inverseS = F64.C1 / S;
             q.w = F64.C0p25 * S;
             q.x = (r.M23 - r.M32) * inverseS;
@@ -166,7 +166,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
         }
         else if ((r.M11 > r.M22) & (r.M11 > r.M33))
         {
-            var S = Fix64.Sqrt(F64.C1 + r.M11 - r.M22 - r.M33) * F64.C2; // S=4*qx 
+            var S = fix.Sqrt(F64.C1 + r.M11 - r.M22 - r.M33) * F64.C2; // S=4*qx 
             var inverseS = F64.C1 / S;
             q.w = (r.M23 - r.M32) * inverseS;
             q.x = F64.C0p25 * S;
@@ -175,7 +175,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
         }
         else if (r.M22 > r.M33)
         {
-            var S = Fix64.Sqrt(F64.C1 + r.M22 - r.M11 - r.M33) * F64.C2; // S=4*qy
+            var S = fix.Sqrt(F64.C1 + r.M22 - r.M11 - r.M33) * F64.C2; // S=4*qy
             var inverseS = F64.C1 / S;
             q.w = (r.M31 - r.M13) * inverseS;
             q.x = (r.M21 + r.M12) * inverseS;
@@ -184,7 +184,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
         }
         else
         {
-            var S = Fix64.Sqrt(F64.C1 + r.M33 - r.M11 - r.M22) * F64.C2; // S=4*qz
+            var S = fix.Sqrt(F64.C1 + r.M33 - r.M11 - r.M22) * F64.C2; // S=4*qz
             var inverseS = F64.C1 / S;
             q.w = (r.M12 - r.M21) * inverseS;
             q.x = (r.M31 + r.M13) * inverseS;
@@ -198,9 +198,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="r">Rotation matrix used to create a new quaternion.</param>
     /// <returns>FixQuaternion representing the same rotation as the matrix.</returns>
-    public static FixQuaternion CreateFromRotationMatrix(in FixMatrix3x3 r)
+    public static fixQuaternion CreateFromRotationMatrix(in fix3x3 r)
     {
-        FixQuaternion toReturn;
+        fixQuaternion toReturn;
         CreateFromRotationMatrix(in r, out toReturn);
         return toReturn;
     }
@@ -210,10 +210,10 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="r">Rotation matrix to create the quaternion from.</param>
     /// <param name="q">FixQuaternion based on the rotation matrix.</param>
-    public static void CreateFromRotationMatrix(in FixMatrix r, out FixQuaternion q)
+    public static void CreateFromRotationMatrix(in fix4x4 r, out fixQuaternion q)
     {
-        FixMatrix3x3 downsizedMatrix;
-        FixMatrix3x3.CreateFromMatrix(in r, out downsizedMatrix);
+        fix3x3 downsizedMatrix;
+        fix3x3.CreateFromMatrix(in r, out downsizedMatrix);
         CreateFromRotationMatrix(in downsizedMatrix, out q);
     }
 
@@ -222,9 +222,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="r">Rotation matrix used to create a new quaternion.</param>
     /// <returns>FixQuaternion representing the same rotation as the matrix.</returns>
-    public static FixQuaternion CreateFromRotationMatrix(in FixMatrix r)
+    public static fixQuaternion CreateFromRotationMatrix(in fix4x4 r)
     {
-        FixQuaternion toReturn;
+        fixQuaternion toReturn;
         CreateFromRotationMatrix(in r, out toReturn);
         return toReturn;
     }
@@ -235,9 +235,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="quaternion">FixQuaternion to normalize.</param>
     /// <returns>Normalized quaternion.</returns>
-    public static FixQuaternion Normalize(in FixQuaternion quaternion)
+    public static fixQuaternion Normalize(in fixQuaternion quaternion)
     {
-        FixQuaternion toReturn;
+        fixQuaternion toReturn;
         Normalize(in quaternion, out toReturn);
         return toReturn;
     }
@@ -247,9 +247,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="quaternion">FixQuaternion to normalize.</param>
     /// <param name="toReturn">Normalized quaternion.</param>
-    public static void Normalize(in FixQuaternion quaternion, out FixQuaternion toReturn)
+    public static void Normalize(in fixQuaternion quaternion, out fixQuaternion toReturn)
     {
-        Fix64 inverse = F64.C1 / Fix64.Sqrt(quaternion.x * quaternion.x + quaternion.y * quaternion.y + quaternion.z * quaternion.z + quaternion.w * quaternion.w);
+        fix inverse = F64.C1 / fix.Sqrt(quaternion.x * quaternion.x + quaternion.y * quaternion.y + quaternion.z * quaternion.z + quaternion.w * quaternion.w);
         toReturn.x = quaternion.x * inverse;
         toReturn.y = quaternion.y * inverse;
         toReturn.z = quaternion.z * inverse;
@@ -261,7 +261,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     public void Normalize()
     {
-        Fix64 inverse = F64.C1 / Fix64.Sqrt(x * x + y * y + z * z + w * w);
+        fix inverse = F64.C1 / fix.Sqrt(x * x + y * y + z * z + w * w);
         x *= inverse;
         y *= inverse;
         z *= inverse;
@@ -272,13 +272,13 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// Computes the squared length of the quaternion.
     /// </summary>
     /// <returns>Squared length of the quaternion.</returns>
-    public Fix64 lengthSquared => x * x + y * y + z * z + w * w;
+    public fix lengthSquared => x * x + y * y + z * z + w * w;
 
     /// <summary>
     /// Computes the length of the quaternion.
     /// </summary>
     /// <returns>Length of the quaternion.</returns>
-    public Fix64 length => Fix64.Sqrt(x * x + y * y + z * z + w * w);
+    public fix length => fix.Sqrt(x * x + y * y + z * z + w * w);
 
 
     /// <summary>
@@ -288,9 +288,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="end">Ending point of the interpolation.</param>
     /// <param name="interpolationAmount">Amount of the end point to use.</param>
     /// <param name="result">Interpolated intermediate quaternion.</param>
-    public static void Slerp(in FixQuaternion start, FixQuaternion end, in Fix64 interpolationAmount, out FixQuaternion result)
+    public static void Slerp(in fixQuaternion start, fixQuaternion end, in fix interpolationAmount, out fixQuaternion result)
     {
-        Fix64 cosHalfTheta = start.w * end.w + start.x * end.x + start.y * end.y + start.z * end.z;
+        fix cosHalfTheta = start.w * end.w + start.x * end.x + start.y * end.y + start.z * end.z;
         if (cosHalfTheta < F64.C0)
         {
             //Negating a quaternion results in the same orientation, 
@@ -311,17 +311,17 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
             return;
         }
         // Calculate temporary values.
-        Fix64 halfTheta = Fix64.Acos(cosHalfTheta);
-        Fix64 sinHalfTheta = Fix64.Sqrt(F64.C1 - cosHalfTheta * cosHalfTheta);
+        fix halfTheta = fix.Acos(cosHalfTheta);
+        fix sinHalfTheta = fix.Sqrt(F64.C1 - cosHalfTheta * cosHalfTheta);
 
-        Fix64 aFraction = Fix64.Sin((F64.C1 - interpolationAmount) * halfTheta) / sinHalfTheta;
-        Fix64 bFraction = Fix64.Sin(interpolationAmount * halfTheta) / sinHalfTheta;
+        fix aFraction = fix.Sin((F64.C1 - interpolationAmount) * halfTheta) / sinHalfTheta;
+        fix bFraction = fix.Sin(interpolationAmount * halfTheta) / sinHalfTheta;
 
         //Blend the two quaternions to get the result!
-        result.x = (Fix64)(start.x * aFraction + end.x * bFraction);
-        result.y = (Fix64)(start.y * aFraction + end.y * bFraction);
-        result.z = (Fix64)(start.z * aFraction + end.z * bFraction);
-        result.w = (Fix64)(start.w * aFraction + end.w * bFraction);
+        result.x = (fix)(start.x * aFraction + end.x * bFraction);
+        result.y = (fix)(start.y * aFraction + end.y * bFraction);
+        result.z = (fix)(start.z * aFraction + end.z * bFraction);
+        result.w = (fix)(start.w * aFraction + end.w * bFraction);
 
 
 
@@ -335,9 +335,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="end">Ending point of the interpolation.</param>
     /// <param name="interpolationAmount">Amount of the end point to use.</param>
     /// <returns>Interpolated intermediate quaternion.</returns>
-    public static FixQuaternion Slerp(in FixQuaternion start, in FixQuaternion end, in Fix64 interpolationAmount)
+    public static fixQuaternion Slerp(in fixQuaternion start, in fixQuaternion end, in fix interpolationAmount)
     {
-        FixQuaternion toReturn;
+        fixQuaternion toReturn;
         Slerp(in start, end, interpolationAmount, out toReturn);
         return toReturn;
     }
@@ -348,7 +348,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="quaternion">FixQuaternion to conjugate.</param>
     /// <param name="result">Conjugated quaternion.</param>
-    public static void Conjugate(in FixQuaternion quaternion, out FixQuaternion result)
+    public static void Conjugate(in fixQuaternion quaternion, out fixQuaternion result)
     {
         result.x = -quaternion.x;
         result.y = -quaternion.y;
@@ -361,9 +361,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="quaternion">FixQuaternion to conjugate.</param>
     /// <returns>Conjugated quaternion.</returns>
-    public static FixQuaternion Conjugate(in FixQuaternion quaternion)
+    public static fixQuaternion Conjugate(in fixQuaternion quaternion)
     {
-        FixQuaternion toReturn;
+        fixQuaternion toReturn;
         Conjugate(in quaternion, out toReturn);
         return toReturn;
     }
@@ -375,9 +375,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="quaternion">FixQuaternion to invert.</param>
     /// <param name="result">Result of the inversion.</param>
-    public static void Inverse(in FixQuaternion quaternion, out FixQuaternion result)
+    public static void Inverse(in fixQuaternion quaternion, out fixQuaternion result)
     {
-        Fix64 inverseSquaredNorm = quaternion.x * quaternion.x + quaternion.y * quaternion.y + quaternion.z * quaternion.z + quaternion.w * quaternion.w;
+        fix inverseSquaredNorm = quaternion.x * quaternion.x + quaternion.y * quaternion.y + quaternion.z * quaternion.z + quaternion.w * quaternion.w;
         result.x = -quaternion.x * inverseSquaredNorm;
         result.y = -quaternion.y * inverseSquaredNorm;
         result.z = -quaternion.z * inverseSquaredNorm;
@@ -389,9 +389,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="quaternion">FixQuaternion to invert.</param>
     /// <returns>Result of the inversion.</returns>
-    public static FixQuaternion Inverse(in FixQuaternion quaternion)
+    public static fixQuaternion Inverse(in fixQuaternion quaternion)
     {
-        FixQuaternion result;
+        fixQuaternion result;
         Inverse(in quaternion, out result);
         return result;
 
@@ -403,7 +403,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="a">First quaternion to test for equivalence.</param>
     /// <param name="b">Second quaternion to test for equivalence.</param>
     /// <returns>Whether or not the quaternions' components were equal.</returns>
-    public static bool operator ==(in FixQuaternion a, in FixQuaternion b)
+    public static bool operator ==(in fixQuaternion a, in fixQuaternion b)
     {
         return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
     }
@@ -414,7 +414,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="a">First quaternion to test for equivalence.</param>
     /// <param name="b">Second quaternion to test for equivalence.</param>
     /// <returns>Whether the quaternions' components were not equal.</returns>
-    public static bool operator !=(in FixQuaternion a, in FixQuaternion b)
+    public static bool operator !=(in fixQuaternion a, in fixQuaternion b)
     {
         return a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w;
     }
@@ -424,7 +424,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="a">FixQuaternion to negate.</param>
     /// <param name="b">Negated result.</param>
-    public static void Negate(in FixQuaternion a, out FixQuaternion b)
+    public static void Negate(in fixQuaternion a, out fixQuaternion b)
     {
         b.x = -a.x;
         b.y = -a.y;
@@ -437,7 +437,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="q">FixQuaternion to negate.</param>
     /// <returns>Negated result.</returns>
-    public static FixQuaternion Negate(in FixQuaternion q)
+    public static fixQuaternion Negate(in fixQuaternion q)
     {
         Negate(in q, out var result);
         return result;
@@ -448,7 +448,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="q">FixQuaternion to negate.</param>
     /// <returns>Negated result.</returns>
-    public static FixQuaternion operator -(in FixQuaternion q)
+    public static fixQuaternion operator -(in fixQuaternion q)
     {
         Negate(in q, out var result);
         return result;
@@ -461,7 +461,7 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// true if the current object is equal to the <paramin name="other"/> parameter; otherwise, false.
     /// </returns>
     /// <param name="other">An object to compare with this object.</param>
-    public bool Equals(FixQuaternion other)
+    public bool Equals(fixQuaternion other)
     {
         return x == other.x && y == other.y && z == other.z && w == other.w;
     }
@@ -475,9 +475,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="obj">Another object to compare to. </param><filterpriority>2</filterpriority>
     public override bool Equals(object obj)
     {
-        if (obj is FixQuaternion)
+        if (obj is fixQuaternion)
         {
-            return Equals((FixQuaternion)obj);
+            return Equals((fixQuaternion)obj);
         }
         return false;
     }
@@ -500,28 +500,28 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="v">Vector to transform.</param>
     /// <param name="rotation">Rotation to apply to the vector.</param>
     /// <param name="result">Transformed vector.</param>
-    public static void Transform(in FixVector3 v, in FixQuaternion rotation, out FixVector3 result)
+    public static void Transform(in fix3 v, in fixQuaternion rotation, out fix3 result)
     {
         //This operation is an optimized-down version of v' = q * v * q^-1.
         //The expanded form would be to treat v as an 'axis only' quaternion
         //and perform standard quaternion multiplication.  Assuming q is normalized,
         //q^-1 can be replaced by a conjugation.
-        Fix64 x2 = rotation.x + rotation.x;
-        Fix64 y2 = rotation.y + rotation.y;
-        Fix64 z2 = rotation.z + rotation.z;
-        Fix64 xx2 = rotation.x * x2;
-        Fix64 xy2 = rotation.x * y2;
-        Fix64 xz2 = rotation.x * z2;
-        Fix64 yy2 = rotation.y * y2;
-        Fix64 yz2 = rotation.y * z2;
-        Fix64 zz2 = rotation.z * z2;
-        Fix64 wx2 = rotation.w * x2;
-        Fix64 wy2 = rotation.w * y2;
-        Fix64 wz2 = rotation.w * z2;
+        fix x2 = rotation.x + rotation.x;
+        fix y2 = rotation.y + rotation.y;
+        fix z2 = rotation.z + rotation.z;
+        fix xx2 = rotation.x * x2;
+        fix xy2 = rotation.x * y2;
+        fix xz2 = rotation.x * z2;
+        fix yy2 = rotation.y * y2;
+        fix yz2 = rotation.y * z2;
+        fix zz2 = rotation.z * z2;
+        fix wx2 = rotation.w * x2;
+        fix wy2 = rotation.w * y2;
+        fix wz2 = rotation.w * z2;
         //Defer the component setting since they're used in computation.
-        Fix64 transformedX = v.x * (F64.C1 - yy2 - zz2) + v.y * (xy2 - wz2) + v.z * (xz2 + wy2);
-        Fix64 transformedY = v.x * (xy2 + wz2) + v.y * (F64.C1 - xx2 - zz2) + v.z * (yz2 - wx2);
-        Fix64 transformedZ = v.x * (xz2 - wy2) + v.y * (yz2 + wx2) + v.z * (F64.C1 - xx2 - yy2);
+        fix transformedX = v.x * (F64.C1 - yy2 - zz2) + v.y * (xy2 - wz2) + v.z * (xz2 + wy2);
+        fix transformedY = v.x * (xy2 + wz2) + v.y * (F64.C1 - xx2 - zz2) + v.z * (yz2 - wx2);
+        fix transformedZ = v.x * (xz2 - wy2) + v.y * (yz2 + wx2) + v.z * (F64.C1 - xx2 - yy2);
         result.x = transformedX;
         result.y = transformedY;
         result.z = transformedZ;
@@ -534,9 +534,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="v">Vector to transform.</param>
     /// <param name="rotation">Rotation to apply to the vector.</param>
     /// <returns>Transformed vector.</returns>
-    public static FixVector3 Transform(in FixVector3 v, in FixQuaternion rotation)
+    public static fix3 Transform(in fix3 v, in fixQuaternion rotation)
     {
-        FixVector3 toReturn;
+        fix3 toReturn;
         Transform(in v, in rotation, out toReturn);
         return toReturn;
     }
@@ -547,24 +547,24 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="x">X component of the vector to transform.</param>
     /// <param name="rotation">Rotation to apply to the vector.</param>
     /// <param name="result">Transformed vector.</param>
-    public static void TransformX(Fix64 x, in FixQuaternion rotation, out FixVector3 result)
+    public static void TransformX(fix x, in fixQuaternion rotation, out fix3 result)
     {
         //This operation is an optimized-down version of v' = q * v * q^-1.
         //The expanded form would be to treat v as an 'axis only' quaternion
         //and perform standard quaternion multiplication.  Assuming q is normalized,
         //q^-1 can be replaced by a conjugation.
-        Fix64 y2 = rotation.y + rotation.y;
-        Fix64 z2 = rotation.z + rotation.z;
-        Fix64 xy2 = rotation.x * y2;
-        Fix64 xz2 = rotation.x * z2;
-        Fix64 yy2 = rotation.y * y2;
-        Fix64 zz2 = rotation.z * z2;
-        Fix64 wy2 = rotation.w * y2;
-        Fix64 wz2 = rotation.w * z2;
+        fix y2 = rotation.y + rotation.y;
+        fix z2 = rotation.z + rotation.z;
+        fix xy2 = rotation.x * y2;
+        fix xz2 = rotation.x * z2;
+        fix yy2 = rotation.y * y2;
+        fix zz2 = rotation.z * z2;
+        fix wy2 = rotation.w * y2;
+        fix wz2 = rotation.w * z2;
         //Defer the component setting since they're used in computation.
-        Fix64 transformedX = x * (F64.C1 - yy2 - zz2);
-        Fix64 transformedY = x * (xy2 + wz2);
-        Fix64 transformedZ = x * (xz2 - wy2);
+        fix transformedX = x * (F64.C1 - yy2 - zz2);
+        fix transformedY = x * (xy2 + wz2);
+        fix transformedZ = x * (xz2 - wy2);
         result.x = transformedX;
         result.y = transformedY;
         result.z = transformedZ;
@@ -577,25 +577,25 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="y">Y component of the vector to transform.</param>
     /// <param name="rotation">Rotation to apply to the vector.</param>
     /// <param name="result">Transformed vector.</param>
-    public static void TransformY(Fix64 y, in FixQuaternion rotation, out FixVector3 result)
+    public static void TransformY(fix y, in fixQuaternion rotation, out fix3 result)
     {
         //This operation is an optimized-down version of v' = q * v * q^-1.
         //The expanded form would be to treat v as an 'axis only' quaternion
         //and perform standard quaternion multiplication.  Assuming q is normalized,
         //q^-1 can be replaced by a conjugation.
-        Fix64 x2 = rotation.x + rotation.x;
-        Fix64 y2 = rotation.y + rotation.y;
-        Fix64 z2 = rotation.z + rotation.z;
-        Fix64 xx2 = rotation.x * x2;
-        Fix64 xy2 = rotation.x * y2;
-        Fix64 yz2 = rotation.y * z2;
-        Fix64 zz2 = rotation.z * z2;
-        Fix64 wx2 = rotation.w * x2;
-        Fix64 wz2 = rotation.w * z2;
+        fix x2 = rotation.x + rotation.x;
+        fix y2 = rotation.y + rotation.y;
+        fix z2 = rotation.z + rotation.z;
+        fix xx2 = rotation.x * x2;
+        fix xy2 = rotation.x * y2;
+        fix yz2 = rotation.y * z2;
+        fix zz2 = rotation.z * z2;
+        fix wx2 = rotation.w * x2;
+        fix wz2 = rotation.w * z2;
         //Defer the component setting since they're used in computation.
-        Fix64 transformedX = y * (xy2 - wz2);
-        Fix64 transformedY = y * (F64.C1 - xx2 - zz2);
-        Fix64 transformedZ = y * (yz2 + wx2);
+        fix transformedX = y * (xy2 - wz2);
+        fix transformedY = y * (F64.C1 - xx2 - zz2);
+        fix transformedZ = y * (yz2 + wx2);
         result.x = transformedX;
         result.y = transformedY;
         result.z = transformedZ;
@@ -608,25 +608,25 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="z">Z component of the vector to transform.</param>
     /// <param name="rotation">Rotation to apply to the vector.</param>
     /// <param name="result">Transformed vector.</param>
-    public static void TransformZ(Fix64 z, in FixQuaternion rotation, out FixVector3 result)
+    public static void TransformZ(fix z, in fixQuaternion rotation, out fix3 result)
     {
         //This operation is an optimized-down version of v' = q * v * q^-1.
         //The expanded form would be to treat v as an 'axis only' quaternion
         //and perform standard quaternion multiplication.  Assuming q is normalized,
         //q^-1 can be replaced by a conjugation.
-        Fix64 x2 = rotation.x + rotation.x;
-        Fix64 y2 = rotation.y + rotation.y;
-        Fix64 z2 = rotation.z + rotation.z;
-        Fix64 xx2 = rotation.x * x2;
-        Fix64 xz2 = rotation.x * z2;
-        Fix64 yy2 = rotation.y * y2;
-        Fix64 yz2 = rotation.y * z2;
-        Fix64 wx2 = rotation.w * x2;
-        Fix64 wy2 = rotation.w * y2;
+        fix x2 = rotation.x + rotation.x;
+        fix y2 = rotation.y + rotation.y;
+        fix z2 = rotation.z + rotation.z;
+        fix xx2 = rotation.x * x2;
+        fix xz2 = rotation.x * z2;
+        fix yy2 = rotation.y * y2;
+        fix yz2 = rotation.y * z2;
+        fix wx2 = rotation.w * x2;
+        fix wy2 = rotation.w * y2;
         //Defer the component setting since they're used in computation.
-        Fix64 transformedX = z * (xz2 + wy2);
-        Fix64 transformedY = z * (yz2 - wx2);
-        Fix64 transformedZ = z * (F64.C1 - xx2 - yy2);
+        fix transformedX = z * (xz2 + wy2);
+        fix transformedY = z * (yz2 - wx2);
+        fix transformedZ = z * (F64.C1 - xx2 - yy2);
         result.x = transformedX;
         result.y = transformedY;
         result.z = transformedZ;
@@ -640,9 +640,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="a">First quaternion to multiply.</param>
     /// <param name="b">Second quaternion to multiply.</param>
     /// <returns>Product of the multiplication.</returns>
-    public static FixQuaternion operator *(in FixQuaternion a, in FixQuaternion b)
+    public static fixQuaternion operator *(in fixQuaternion a, in fixQuaternion b)
     {
-        FixQuaternion toReturn;
+        fixQuaternion toReturn;
         Multiply(in a, in b, out toReturn);
         return toReturn;
     }
@@ -653,15 +653,15 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="axis">Axis of rotation.</param>
     /// <param name="angle">Angle to rotate around the axis.</param>
     /// <returns>FixQuaternion representing the axis and angle rotation.</returns>
-    public static FixQuaternion CreateFromAxisAngle(in FixVector3 axis, in Fix64 angle)
+    public static fixQuaternion CreateFromAxisAngle(in fix3 axis, in fix angle)
     {
-        Fix64 halfAngle = angle * F64.C0p5;
-        Fix64 s = Fix64.Sin(halfAngle);
-        FixQuaternion q;
+        fix halfAngle = angle * F64.C0p5;
+        fix s = fix.Sin(halfAngle);
+        fixQuaternion q;
         q.x = axis.x * s;
         q.y = axis.y * s;
         q.z = axis.z * s;
-        q.w = Fix64.Cos(halfAngle);
+        q.w = fix.Cos(halfAngle);
         return q;
     }
 
@@ -671,14 +671,14 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="axis">Axis of rotation.</param>
     /// <param name="angle">Angle to rotate around the axis.</param>
     /// <param name="q">FixQuaternion representing the axis and angle rotation.</param>
-    public static void CreateFromAxisAngle(in FixVector3 axis, in Fix64 angle, out FixQuaternion q)
+    public static void CreateFromAxisAngle(in fix3 axis, in fix angle, out fixQuaternion q)
     {
-        Fix64 halfAngle = angle * F64.C0p5;
-        Fix64 s = Fix64.Sin(halfAngle);
+        fix halfAngle = angle * F64.C0p5;
+        fix s = fix.Sin(halfAngle);
         q.x = axis.x * s;
         q.y = axis.y * s;
         q.z = axis.z * s;
-        q.w = Fix64.Cos(halfAngle);
+        q.w = fix.Cos(halfAngle);
     }
 
     /// <summary>
@@ -688,9 +688,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="pitch">Pitch of the rotation.</param>
     /// <param name="roll">Roll of the rotation.</param>
     /// <returns>FixQuaternion representing the yaw, pitch, and roll.</returns>
-    public static FixQuaternion CreateFromYawPitchRoll(in Fix64 yaw, in Fix64 pitch, in Fix64 roll)
+    public static fixQuaternion CreateFromYawPitchRoll(in fix yaw, in fix pitch, in fix roll)
     {
-        FixQuaternion toReturn;
+        fixQuaternion toReturn;
         CreateFromYawPitchRoll(yaw, pitch, roll, out toReturn);
         return toReturn;
     }
@@ -702,24 +702,24 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="pitch">Pitch of the rotation.</param>
     /// <param name="roll">Roll of the rotation.</param>
     /// <param name="q">FixQuaternion representing the yaw, pitch, and roll.</param>
-    public static void CreateFromYawPitchRoll(in Fix64 yaw, in Fix64 pitch, in Fix64 roll, out FixQuaternion q)
+    public static void CreateFromYawPitchRoll(in fix yaw, in fix pitch, in fix roll, out fixQuaternion q)
     {
-        Fix64 halfRoll = roll * F64.C0p5;
-        Fix64 halfPitch = pitch * F64.C0p5;
-        Fix64 halfYaw = yaw * F64.C0p5;
+        fix halfRoll = roll * F64.C0p5;
+        fix halfPitch = pitch * F64.C0p5;
+        fix halfYaw = yaw * F64.C0p5;
 
-        Fix64 sinRoll = Fix64.Sin(halfRoll);
-        Fix64 sinPitch = Fix64.Sin(halfPitch);
-        Fix64 sinYaw = Fix64.Sin(halfYaw);
+        fix sinRoll = fix.Sin(halfRoll);
+        fix sinPitch = fix.Sin(halfPitch);
+        fix sinYaw = fix.Sin(halfYaw);
 
-        Fix64 cosRoll = Fix64.Cos(halfRoll);
-        Fix64 cosPitch = Fix64.Cos(halfPitch);
-        Fix64 cosYaw = Fix64.Cos(halfYaw);
+        fix cosRoll = fix.Cos(halfRoll);
+        fix cosPitch = fix.Cos(halfPitch);
+        fix cosYaw = fix.Cos(halfYaw);
 
-        Fix64 cosYawCosPitch = cosYaw * cosPitch;
-        Fix64 cosYawSinPitch = cosYaw * sinPitch;
-        Fix64 sinYawCosPitch = sinYaw * cosPitch;
-        Fix64 sinYawSinPitch = sinYaw * sinPitch;
+        fix cosYawCosPitch = cosYaw * cosPitch;
+        fix cosYawSinPitch = cosYaw * sinPitch;
+        fix sinYawCosPitch = sinYaw * cosPitch;
+        fix sinYawSinPitch = sinYaw * sinPitch;
 
         q.x = cosYawSinPitch * cosRoll + sinYawCosPitch * sinRoll;
         q.y = sinYawCosPitch * cosRoll - cosYawSinPitch * sinRoll;
@@ -733,12 +733,12 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// </summary>
     /// <param name="q">FixQuaternion to be converted.</param>
     /// <returns>Angle around the axis represented by the quaternion.</returns>
-    public static Fix64 GetAngleFromQuaternion(in FixQuaternion q)
+    public static fix GetAngleFromQuaternion(in fixQuaternion q)
     {
-        Fix64 qw = Fix64.Abs(q.w);
+        fix qw = fix.Abs(q.w);
         if (qw > F64.C1)
             return F64.C0;
-        return F64.C2 * Fix64.Acos(qw);
+        return F64.C2 * fix.Acos(qw);
     }
 
     /// <summary>
@@ -747,12 +747,12 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="q">FixQuaternion to be converted.</param>
     /// <param name="axis">Axis represented by the quaternion.</param>
     /// <param name="angle">Angle around the axis represented by the quaternion.</param>
-    public static void GetAxisAngleFromQuaternion(in FixQuaternion q, out FixVector3 axis, out Fix64 angle)
+    public static void GetAxisAngleFromQuaternion(in fixQuaternion q, out fix3 axis, out fix angle)
     {
 #if !WINDOWS
-        axis = new FixVector3();
+        axis = new fix3();
 #endif
-        Fix64 qw = q.w;
+        fix qw = q.w;
         if (qw > F64.C0)
         {
             axis.x = q.x;
@@ -767,15 +767,15 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
             qw = -qw;
         }
 
-        Fix64 lengthSquared = axis.lengthSquared;
+        fix lengthSquared = axis.lengthSquared;
         if (lengthSquared > F64.C1em14)
         {
-            FixVector3.Divide(in axis, Fix64.Sqrt(lengthSquared), out axis);
-            angle = F64.C2 * Fix64.Acos(FixMath.Clamp(qw, -1, F64.C1));
+            fix3.Divide(in axis, fix.Sqrt(lengthSquared), out axis);
+            angle = F64.C2 * fix.Acos(fixMath.Clamp(qw, -1, F64.C1));
         }
         else
         {
-            axis = FixVector3.up;
+            axis = fix3.up;
             angle = F64.C0;
         }
     }
@@ -786,10 +786,10 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="v1">First unit-length vector.</param>
     /// <param name="v2">Second unit-length vector.</param>
     /// <param name="q">FixQuaternion representing the rotation from v1 to v2.</param>
-    public static void GetQuaternionBetweenNormalizedVectors(in FixVector3 v1, in FixVector3 v2, out FixQuaternion q)
+    public static void GetQuaternionBetweenNormalizedVectors(in fix3 v1, in fix3 v2, out fixQuaternion q)
     {
-        Fix64 dot;
-        FixVector3.Dot(v1, v2, out dot);
+        fix dot;
+        fix3.Dot(v1, v2, out dot);
         //For non-normal vectors, the multiplying the axes length squared would be necessary:
         //Fix64 w = dot + (Fix64)Math.Sqrt(v1.lengthSquared * v2.lengthSquared);
         if (dot < F64.Cm0p9999) //parallel, opposing direction
@@ -799,21 +799,21 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
             //The solution is to pick an arbitrary perpendicular axis.
             //Project onto the plane which has the lowest component magnitude.
             //On that 2d plane, perform a 90 degree rotation.
-            Fix64 absX = Fix64.Abs(v1.x);
-            Fix64 absY = Fix64.Abs(v1.y);
-            Fix64 absZ = Fix64.Abs(v1.z);
+            fix absX = fix.Abs(v1.x);
+            fix absY = fix.Abs(v1.y);
+            fix absZ = fix.Abs(v1.z);
             if (absX < absY && absX < absZ)
-                q = new FixQuaternion(F64.C0, -v1.z, v1.y, F64.C0);
+                q = new fixQuaternion(F64.C0, -v1.z, v1.y, F64.C0);
             else if (absY < absZ)
-                q = new FixQuaternion(-v1.z, F64.C0, v1.x, F64.C0);
+                q = new fixQuaternion(-v1.z, F64.C0, v1.x, F64.C0);
             else
-                q = new FixQuaternion(-v1.y, v1.x, F64.C0, F64.C0);
+                q = new fixQuaternion(-v1.y, v1.x, F64.C0, F64.C0);
         }
         else
         {
-            FixVector3 axis;
-            FixVector3.Cross(in v1, in v2, out axis);
-            q = new FixQuaternion(axis.x, axis.y, axis.z, dot + F64.C1);
+            fix3 axis;
+            fix3.Cross(in v1, in v2, out axis);
+            q = new fixQuaternion(axis.x, axis.y, axis.z, dot + F64.C1);
         }
         q.Normalize();
     }
@@ -827,9 +827,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="start">Starting orientation.</param>
     /// <param name="end">Ending orientation.</param>
     /// <param name="relative">Relative rotation from the start to the end orientation.</param>
-    public static void GetRelativeRotation(in FixQuaternion start, in FixQuaternion end, out FixQuaternion relative)
+    public static void GetRelativeRotation(in fixQuaternion start, in fixQuaternion end, out fixQuaternion relative)
     {
-        FixQuaternion startInverse;
+        fixQuaternion startInverse;
         Conjugate(in start, out startInverse);
         Concatenate(in startInverse, in end, out relative);
     }
@@ -841,9 +841,9 @@ public struct FixQuaternion : IEquatable<FixQuaternion>
     /// <param name="rotation">Rotation in the original frame of inerence.</param>
     /// <param name="targetBasis">Basis in the original frame of inerence to transform the rotation into.</param>
     /// <param name="localRotation">Rotation in the local space of the target basis.</param>
-    public static void GetLocalRotation(in FixQuaternion rotation, in FixQuaternion targetBasis, out FixQuaternion localRotation)
+    public static void GetLocalRotation(in fixQuaternion rotation, in fixQuaternion targetBasis, out fixQuaternion localRotation)
     {
-        FixQuaternion basisInverse;
+        fixQuaternion basisInverse;
         Conjugate(in targetBasis, out basisInverse);
         Concatenate(in rotation, in basisInverse, out localRotation);
     }

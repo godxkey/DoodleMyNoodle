@@ -9,19 +9,19 @@ public class SimTransformComponent : SimComponent
     [System.Serializable]
     public struct SerializedData
     {
-        public FixVector3 LocalPosition;
-        public FixQuaternion LocalRotation;
-        public FixVector3 LocalScale;
+        public fix3 LocalPosition;
+        public fixQuaternion LocalRotation;
+        public fix3 LocalScale;
         public SimTransformComponent Parent;
         public int SiblingIndex;
     }
 
-    public FixVector3 LocalScale { get => _data.LocalScale; set { _data.LocalScale = value; DirtyCachedRelativeToSelfValues(); } }
-    public FixVector3 LocalPosition { get => _data.LocalPosition; set { _data.LocalPosition = value; DirtyCachedRelativeToSelfValues(); } }
-    public FixQuaternion LocalRotation { get => _data.LocalRotation; set { _data.LocalRotation = value; DirtyCachedRelativeToSelfValues(); } }
+    public fix3 LocalScale { get => _data.LocalScale; set { _data.LocalScale = value; DirtyCachedRelativeToSelfValues(); } }
+    public fix3 LocalPosition { get => _data.LocalPosition; set { _data.LocalPosition = value; DirtyCachedRelativeToSelfValues(); } }
+    public fixQuaternion LocalRotation { get => _data.LocalRotation; set { _data.LocalRotation = value; DirtyCachedRelativeToSelfValues(); } }
 
 
-    public FixMatrix LocalToWorldMatrix
+    public fix4x4 LocalToWorldMatrix
     {
         get
         {
@@ -29,7 +29,7 @@ public class SimTransformComponent : SimComponent
             return _localToWorldMatrix.Val;
         }
     }
-    public FixMatrix WorldToLocalMatrix
+    public fix4x4 WorldToLocalMatrix
     {
         get
         {
@@ -37,7 +37,7 @@ public class SimTransformComponent : SimComponent
             return _worldToLocalMatrix.Val;
         }
     }
-    public FixVector3 WorldPosition
+    public fix3 WorldPosition
     {
         get
         {
@@ -48,7 +48,7 @@ public class SimTransformComponent : SimComponent
             else
             {
                 UpdateLocalToWorldMatrix();
-                return FixMatrix.TransformPoint(_data.LocalPosition, _localToWorldMatrix.Val);
+                return fix4x4.TransformPoint(_data.LocalPosition, _localToWorldMatrix.Val);
             }
         }
         set
@@ -60,7 +60,7 @@ public class SimTransformComponent : SimComponent
             else
             {
                 UpdateWorldToLocalMatrix();
-                _data.LocalPosition = FixMatrix.TransformPoint(value, _worldToLocalMatrix.Val);
+                _data.LocalPosition = fix4x4.TransformPoint(value, _worldToLocalMatrix.Val);
             }
         }
     }
@@ -99,7 +99,7 @@ public class SimTransformComponent : SimComponent
 
         Debug.Log("UpdateMatrix");
 
-        FixMatrix.CreateTRS(_data.LocalPosition, _data.LocalRotation, _data.LocalScale, out _matrix.Val);
+        fix4x4.CreateTRS(_data.LocalPosition, _data.LocalRotation, _data.LocalScale, out _matrix.Val);
 
         // mark as up-to-date
         _matrix.UpToDate = true;
@@ -133,14 +133,14 @@ public class SimTransformComponent : SimComponent
         Debug.Log("UpdateWorldToLocalMatrix");
 
         UpdateLocalToWorldMatrix(); // needed for calculations
-        FixMatrix.Invert(_localToWorldMatrix.Val, out _worldToLocalMatrix.Val);
+        fix4x4.Invert(_localToWorldMatrix.Val, out _worldToLocalMatrix.Val);
 
         _worldToLocalMatrix.UpToDate = true;
     }
 
     struct LazyMatrix
     {
-        public FixMatrix Val;
+        public fix4x4 Val;
         public bool UpToDate;
     }
 
@@ -180,7 +180,7 @@ public class SimTransformComponent : SimComponent
     [CCC.InspectorDisplay.AlwaysExpand]
     public SerializedData _data = new SerializedData() // needs to be public for Editor access
     {
-        LocalScale = new FixVector3(1, 1, 1)
+        LocalScale = new fix3(1, 1, 1)
     };
     public override void PushToDataStack(SimComponentDataStack dataStack)
     {
