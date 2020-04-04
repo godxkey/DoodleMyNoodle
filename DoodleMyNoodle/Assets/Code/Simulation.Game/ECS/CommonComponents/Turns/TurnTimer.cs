@@ -3,9 +3,7 @@ using Unity.Collections;
 using Unity.Entities;
 
 [Serializable]
-public struct TurnTimer : IComponentData, IStatFix
+public struct TurnTimer : IComponentData
 {
     public fix Value;
-
-    fix IStatFix.Value { get => Value; set => Value = value; }
 }

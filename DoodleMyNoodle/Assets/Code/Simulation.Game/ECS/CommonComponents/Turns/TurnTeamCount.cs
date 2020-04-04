@@ -3,7 +3,7 @@ using Unity.Collections;
 using Unity.Entities;
 
 [Serializable]
-public struct TurnCurrentTeam : IComponentData
+public struct TurnTeamCount : IComponentData
 {
     public int Value;
 }

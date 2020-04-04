@@ -1,6 +1,6 @@
 ﻿using Unity.Entities;
 
-public class TurnSystem : SimComponentSystem
+public class ChangeTurnSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
@@ -35,10 +35,10 @@ internal static partial class CommonWrites
     {
         Entity turnSystemData = system.GetSingletonEntity<TurnTimer>();
         TurnDuration turnDuration = system.EntityManager.GetComponentData<TurnDuration>(turnSystemData);
-        MaximumInt<TurnCurrentTeam> teamAmount = system.EntityManager.GetComponentData<MaximumInt<TurnCurrentTeam>>(turnSystemData);
+        TurnTeamCount teamAmount = system.EntityManager.GetComponentData<TurnTeamCount>(turnSystemData);
 
         int newCurrentTeam = team;
-        if (newCurrentTeam >= teamAmount.Value || newCurrentTeam < 0)
+        if (newCurrentTeam > teamAmount.Value)
         {
             newCurrentTeam = 0;
         }

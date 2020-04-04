@@ -89,7 +89,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
 
                                 // Damage Health Debug 
                                 case UnityEngine.KeyCode.M:
-                                    EntityManager.SetComponentData(pawn, new Health()
+                                    CommonWrites.SetStatInt(World, pawn, new Health()
                                     {
                                         Value = EntityManager.GetComponentData<Health>(pawn).Value - 1
                                     });

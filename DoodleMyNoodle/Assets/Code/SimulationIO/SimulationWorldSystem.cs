@@ -12,7 +12,7 @@ namespace SimulationControl
         World IWorldOwner.OwnedWorld => SimulationWorld;
         internal SimulationWorld SimulationWorld { get; private set; }
         public World PresentationWorld => World;
-        public SimWorldAccessor SimWorldAccessor { get; private set; }
+        public ExternalSimWorldAccessor SimWorldAccessor { get; private set; }
         public bool ReadyForEntityInjections { get; set; } = false;
 
         protected override void OnCreate()
@@ -25,9 +25,14 @@ namespace SimulationControl
             World.GetOrCreateSystem<LoadSimulationSceneSystem>();
             World.GetOrCreateSystem<TickSimulationSystem>();
 
-            SimWorldAccessor = new SimWorldAccessor();
-            SimWorldAccessor.SimWorld = SimulationWorld;
-            SimWorldAccessor.SomeSimSystem = SimulationWorld.GetExistingSystem<SimPreInitializationSystemGroup>(); // could be any system
+            SimulationWorld.InternalAccessor.SimWorld = SimulationWorld;
+            SimulationWorld.InternalAccessor.EntityManager = SimulationWorld.EntityManager;
+            SimulationWorld.InternalAccessor.SomeSimSystem = SimulationWorld.GetExistingSystem<SimPreInitializationSystemGroup>();
+
+            SimWorldAccessor = new ExternalSimWorldAccessor();
+            SimWorldAccessor.SimWorld = SimulationWorld.InternalAccessor.SimWorld;
+            SimWorldAccessor.EntityManager = SimulationWorld.InternalAccessor.EntityManager;
+            SimWorldAccessor.SomeSimSystem = SimulationWorld.InternalAccessor.SomeSimSystem; // could be any system
         }
 
         protected override void OnDestroy()

@@ -5,7 +5,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class TurnAuth : MonoBehaviour, IConvertGameObjectToEntity
+public class TurnSystemSetting : MonoBehaviour, IConvertGameObjectToEntity
 {
     public enum Team
     {
@@ -21,7 +21,8 @@ public class TurnAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponentData(entity, new TurnDuration { Value = TurnDuration });
 
         dstManager.AddComponentData(entity, new TurnCurrentTeam { Value = (int)StartingTeam });
-        dstManager.AddComponentData(entity, new MaximumInt<TurnCurrentTeam> { Value = (int)Enum.GetValues(typeof(Team)).Length });
+
+        dstManager.AddComponentData(entity, new TurnTeamCount { Value = (int)Enum.GetValues(typeof(Team)).Length - 1 });
 
         dstManager.AddComponentData(entity, new TurnTimer { Value = TurnDuration });
     }
