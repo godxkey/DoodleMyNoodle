@@ -38,7 +38,7 @@ internal static partial class CommonWrites
         TurnTeamCount teamAmount = accessor.GetComponentData<TurnTeamCount>(turnSystemData);
 
         int newCurrentTeam = team;
-        if (newCurrentTeam > teamAmount.Value)
+        if (newCurrentTeam >= teamAmount.Value)
         {
             newCurrentTeam = 0;
         }
