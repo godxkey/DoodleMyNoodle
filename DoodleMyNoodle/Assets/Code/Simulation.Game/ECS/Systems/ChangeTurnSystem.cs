@@ -11,7 +11,7 @@ public class ChangeTurnSystem : SimComponentSystem
         fix newTimerValue = turnTimer.Value - Time.DeltaTime;
         if (newTimerValue <= 0)
         {
-            CommonWrites.NextTurn(this);
+            CommonWrites.NextTurn(Accessor);
         }
         else
         {
@@ -22,20 +22,20 @@ public class ChangeTurnSystem : SimComponentSystem
 
 internal static partial class CommonWrites
 {
-    public static void NextTurn(ComponentSystemBase system)
+    public static void NextTurn(ISimWorldReadWriteAccessor accessor)
     {
-        Entity turnSystemData = system.GetSingletonEntity<TurnTimer>();
-        TurnCurrentTeam turnCurrentTeam = system.EntityManager.GetComponentData<TurnCurrentTeam>(turnSystemData);
+        Entity turnSystemData = accessor.GetSingletonEntity<TurnTimer>();
+        TurnCurrentTeam turnCurrentTeam = accessor.GetComponentData<TurnCurrentTeam>(turnSystemData);
 
         int newCurrentTeam = turnCurrentTeam.Value + 1;
-        SetTurn(system, newCurrentTeam);
+        SetTurn(accessor, newCurrentTeam);
     }
 
-    public static void SetTurn(ComponentSystemBase system, int team)
+    public static void SetTurn(ISimWorldReadWriteAccessor accessor, int team)
     {
-        Entity turnSystemData = system.GetSingletonEntity<TurnTimer>();
-        TurnDuration turnDuration = system.EntityManager.GetComponentData<TurnDuration>(turnSystemData);
-        TurnTeamCount teamAmount = system.EntityManager.GetComponentData<TurnTeamCount>(turnSystemData);
+        Entity turnSystemData = accessor.GetSingletonEntity<TurnTimer>();
+        TurnDuration turnDuration = accessor.GetComponentData<TurnDuration>(turnSystemData);
+        TurnTeamCount teamAmount = accessor.GetComponentData<TurnTeamCount>(turnSystemData);
 
         int newCurrentTeam = team;
         if (newCurrentTeam > teamAmount.Value)
@@ -43,8 +43,8 @@ internal static partial class CommonWrites
             newCurrentTeam = 0;
         }
 
-        system.EntityManager.SetComponentData(turnSystemData, new TurnCurrentTeam { Value = newCurrentTeam });
+        accessor.SetComponentData(turnSystemData, new TurnCurrentTeam { Value = newCurrentTeam });
 
-        system.EntityManager.SetComponentData(turnSystemData, new TurnTimer { Value = turnDuration.Value });
+        accessor.SetComponentData(turnSystemData, new TurnTimer { Value = turnDuration.Value });
     }
 }
