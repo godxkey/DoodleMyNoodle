@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SimTeamMemberComponent : SimComponent
 {
-    public Team Team { get => _data.Team; set => _data.Team = value; }
+    public OLD_Team Team { get => _data.Team; set => _data.Team = value; }
 
     [System.Serializable]
     struct SerializedData
     {
-        public Team Team;
+        public OLD_Team Team;
     }
 
     #region Serialized Data Methods

@@ -34,14 +34,14 @@ public class TimerDisplay : MonoBehaviour
             }
 
             // Team Text
-            Team currentTeam = SimTurnManager.Instance.CurrentTeam;
+            OLD_Team currentTeam = SimTurnManager.Instance.CurrentTeam;
             CurrentTeamName.text = currentTeam.ToString();
             switch (currentTeam)
             {
-                case Team.Player:
+                case OLD_Team.Player:
                     CurrentTeamName.color = Color.green;
                     break;
-                case Team.AI:
+                case OLD_Team.AI:
                     CurrentTeamName.color = Color.red;
                     break;
                 default:

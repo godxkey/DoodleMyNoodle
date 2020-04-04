@@ -8,7 +8,7 @@ public class GameOverScreen : MonoBehaviour
     public Text WinnerDisplay;
     public GameObject Container;
 
-    public void DisplayWinner(Team winningTeam)
+    public void DisplayWinner(OLD_Team winningTeam)
     {
         WinnerDisplay.text = winningTeam + " wins !";
         Container.SetActive(true);
