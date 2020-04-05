@@ -94,6 +94,8 @@ public interface ISimWorldReadAccessor
     ref FixTimeData Time { get; }
 
     uint EntityClearAndReplaceCount { get; }
+    SimInput[] TickInputs { get; }
+
 
     // fbessette: 
     //  Here we are giving the presentation access to a query builder in the simulation.

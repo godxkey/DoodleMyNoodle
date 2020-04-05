@@ -40,6 +40,8 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
         => throw new System.NotImplementedException("EntitiesJob is not yet supported. Unity's codegen makes it difficult" +
             " to implement. Use typical struct job declaration instead.");
 
+    public SimInput[] TickInputs => SimWorld.TickInputs;
+
     public ComponentDataFromEntity<T> GetComponentDataFromEntity<T>() where T : struct, IComponentData
         => SomeSimSystem.GetComponentDataFromEntity<T>(true);
 

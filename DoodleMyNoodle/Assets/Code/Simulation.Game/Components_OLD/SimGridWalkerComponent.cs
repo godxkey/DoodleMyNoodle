@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public struct WalkedOnTileEventData
@@ -124,7 +125,7 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
         fix3 currentPosition = SimTransform.WorldPosition;
         fix3 targetPathPosition = _data.Path[0].GetWorldPosition3D();
 
-        if (TileId == _data.Path[0] && fixMath.AlmostEqual(currentPosition, targetPathPosition))
+        if (TileId == _data.Path[0] && math.all(fixMath.almostEqual(currentPosition, targetPathPosition)))
         {
             // we've reached the node
             SimTransform.WorldPosition = targetPathPosition;

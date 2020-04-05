@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Runtime.Serialization;
+using Unity.Mathematics;
 
 /// <summary>
 /// Provides XNA-like 2D vector math.
@@ -25,10 +26,18 @@ public struct fix2 : IEquatable<fix2>
     /// </summary>
     /// <param name="x">X component of the vector.</param>
     /// <param name="y">Y component of the vector.</param>
-    public fix2(fix x, fix y)
+    public fix2(in fix x, in fix y)
     {
         this.x = x;
         this.y = y;
+    }
+    /// <summary>
+    /// Constructs a new two dimensional vector.
+    /// </summary>
+    public fix2(in fix v)
+    {
+        this.x = v;
+        this.y = v;
     }
 
     /// <summary>
@@ -327,6 +336,22 @@ public struct fix2 : IEquatable<fix2>
     }
 
     /// <summary>
+    /// Divides a vector.
+    /// </summary>
+    /// <param name="v">Vector 1 to divide.</param>
+    /// <param name="f">Vector 2 to divide.</param>
+    /// <returns>Divided vector.</returns>
+    public static fix2 operator /(in fix2 v1, fix2 v2)
+    {
+        return new fix2(v1.x / v2.x, v1.y / v2.y);
+    }
+
+    public static fix2 operator /(in fix v, fix2 v2)
+    {
+        return new fix2(v / v2.x, v / v2.y);
+    }
+
+    /// <summary>
     /// Subtracts two vectors.
     /// </summary>
     /// <param name="a">Vector to be subtracted from.</param>
@@ -383,6 +408,26 @@ public struct fix2 : IEquatable<fix2>
     public static bool operator !=(in fix2 a, in fix2 b)
     {
         return a.x != b.x || a.y != b.y;
+    }
+    
+    public static bool2 operator >(in fix2 a, in fix2 b)
+    {
+        return new bool2(a.x > b.x, a.y > b.y);
+    }
+
+    public static bool2 operator <(in fix2 a, in fix2 b)
+    {
+        return new bool2(a.x < b.x, a.y < b.y);
+    }
+
+    public static bool2 operator >=(in fix2 a, in fix2 b)
+    {
+        return new bool2(a.x >= b.x, a.y >= b.y);
+    }
+
+    public static bool2 operator <=(in fix2 a, in fix2 b)
+    {
+        return new bool2(a.x <= b.x, a.y <= b.y);
     }
 
     /// <summary>

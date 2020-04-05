@@ -1,12 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.ComponentModel;
+using Unity.Mathematics;
 
 /// <summary>
 /// Provides XNA-like 3D vector math.
 /// </summary>
 [NetSerializable]
 [Serializable]
-[JsonObject(IsReference =false)]
+[JsonObject(IsReference = false)]
 public struct fix3 : IEquatable<fix3>
 {
     /// <summary>
@@ -60,6 +62,16 @@ public struct fix3 : IEquatable<fix3>
     }
 
     /// <summary>
+    /// Constructs a new three dimensional vector.
+    /// </summary>
+    public fix3(in fix v)
+    {
+        this.x = v;
+        this.y = v;
+        this.z = v;
+    }
+
+    /// <summary>
     /// Computes the squared length of the vector.
     /// </summary>
     /// <returns>Squared length of the vector.</returns>
@@ -91,6 +103,21 @@ public struct fix3 : IEquatable<fix3>
         {
             fix inverse = F64.C1 / fix.Sqrt(x * x + y * y + z * z);
             return new fix3(x * inverse, y * inverse, z * inverse);
+        }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public fix3 yzx
+    {
+        get
+        {
+            return new fix3(y, z, x);
+        }
+        set
+        {
+            y = value.x;
+            z = value.y;
+            x = value.z;
         }
     }
 
@@ -245,6 +272,21 @@ public struct fix3 : IEquatable<fix3>
         toReturn.z = v.z * f;
         return toReturn;
     }
+
+
+    /// <summary>
+    /// Divides a vector.
+    /// </summary>
+    public static fix3 operator /(in fix3 v1, fix3 v2)
+    {
+        return new fix3(v1.x / v2.x, v1.y / v2.y, v1.z / v2.z);
+    }
+
+    public static fix3 operator /(in fix v, fix3 v2)
+    {
+        return new fix3(v / v2.x, v / v2.y, v / v2.z);
+    }
+
     /// <summary>
     /// Subtracts two vectors.
     /// </summary>
@@ -303,6 +345,26 @@ public struct fix3 : IEquatable<fix3>
     public static bool operator !=(in fix3 a, in fix3 b)
     {
         return a.x != b.x || a.y != b.y || a.z != b.z;
+    }
+
+    public static bool3 operator >(in fix3 a, in fix3 b)
+    {
+        return new bool3(a.x > b.x, a.y > b.y, a.z > b.z);
+    }
+
+    public static bool3 operator <(in fix3 a, in fix3 b)
+    {
+        return new bool3(a.x < b.x, a.y < b.y, a.z < b.z);
+    }
+
+    public static bool3 operator >=(in fix3 a, in fix3 b)
+    {
+        return new bool3(a.x >= b.x, a.y >= b.y, a.z >= b.z);
+    }
+
+    public static bool3 operator <=(in fix3 a, in fix3 b)
+    {
+        return new bool3(a.x <= b.x, a.y <= b.y, a.z <= b.z);
     }
 
     /// <summary>
@@ -628,4 +690,5 @@ public struct fix3 : IEquatable<fix3>
     public static readonly fix3 backward = new fix3 { z = -F64.C1 };
 
     public static explicit operator fix2(in fix3 v) => new fix2(v.x, v.y);
+    public static implicit operator fix3(in int3 v) => new fix3(v.x, v.y, v.z);
 }

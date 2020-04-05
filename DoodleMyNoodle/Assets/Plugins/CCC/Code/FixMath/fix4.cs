@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.Mathematics;
 
 /// <summary>
 /// Provides XNA-like 4-component vector math.
@@ -121,6 +122,16 @@ public struct fix4 : IEquatable<fix4>
         this.w = zw.y;
     }
 
+    /// <summary>
+    /// Constructs a new four dimensional vector.
+    /// </summary>
+    public fix4(in fix v)
+    {
+        this.x = v;
+        this.y = v;
+        this.z = v;
+        this.w = v;
+    }
 
     /// <summary>
     /// Computes the squared length of the vector.
@@ -308,6 +319,20 @@ public struct fix4 : IEquatable<fix4>
         toReturn.w = v.w * f;
         return toReturn;
     }
+
+    /// <summary>
+    /// Divides a vector.
+    /// </summary>
+    public static fix4 operator /(in fix4 v1, fix4 v2)
+    {
+        return new fix4(v1.x / v2.x, v1.y / v2.y, v1.z / v2.z, v1.w / v2.w);
+    }
+
+    public static fix4 operator /(in fix v, fix4 v2)
+    {
+        return new fix4(v / v2.x, v / v2.y, v / v2.z, v / v2.w);
+    }
+
     /// <summary>
     /// Subtracts two vectors.
     /// </summary>
@@ -368,6 +393,26 @@ public struct fix4 : IEquatable<fix4>
     public static bool operator !=(in fix4 a, in fix4 b)
     {
         return a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w;
+    }
+
+    public static bool4 operator >(in fix4 a, in fix4 b)
+    {
+        return new bool4(a.x > b.x, a.y > b.y, a.z > b.z, a.w > b.w);
+    }
+
+    public static bool4 operator <(in fix4 a, in fix4 b)
+    {
+        return new bool4(a.x < b.x, a.y < b.y, a.z < b.z, a.w < b.w);
+    }
+
+    public static bool4 operator >=(in fix4 a, in fix4 b)
+    {
+        return new bool4(a.x >= b.x, a.y >= b.y, a.z >= b.z, a.w >= b.w);
+    }
+
+    public static bool4 operator <=(in fix4 a, in fix4 b)
+    {
+        return new bool4(a.x <= b.x, a.y <= b.y, a.z <= b.z, a.w <= b.w);
     }
 
     /// <summary>
