@@ -94,7 +94,13 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                                         Value = EntityManager.GetComponentData<Health>(pawn).Value - 1
                                     });
                                     break;
-
+                                // Consume 1 Action Debug 
+                                case UnityEngine.KeyCode.N:
+                                    CommonWrites.SetStatInt(Accessor, pawn, new ActionPoints()
+                                    {
+                                        Value = EntityManager.GetComponentData<ActionPoints>(pawn).Value - 1
+                                    });
+                                    break;
                             }
                         }
                     }
