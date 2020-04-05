@@ -59,12 +59,12 @@ internal static partial class CommonWrites
     {
         if (accessor.TryGetComponentData(entity, out MinimumFix<T> minimum))
         {
-            compData.Value = Max(minimum.Value, compData.Value);
+            compData.Value = max(minimum.Value, compData.Value);
         }
 
         if (accessor.TryGetComponentData(entity, out MaximumFix<T> maximum))
         {
-            compData.Value = Min(maximum.Value, compData.Value);
+            compData.Value = min(maximum.Value, compData.Value);
         }
 
         accessor.SetComponentData(entity, compData);
