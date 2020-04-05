@@ -1,9 +1,15 @@
 ﻿using Unity.Entities;
 using static Unity.Mathematics.math;
+using static fixMath;
 
 public interface IStatInt
 {
     int Value { get; set; }
+}
+
+public interface IStatFix
+{
+    fix Value { get; set; }
 }
 
 public struct MinimumInt<T> : IComponentData
@@ -18,21 +24,49 @@ public struct MaximumInt<T> : IComponentData
     public int Value;
 }
 
+public struct MinimumFix<T> : IComponentData
+    where T : IComponentData, IStatFix
+{
+    public fix Value;
+}
+
+public struct MaximumFix<T> : IComponentData
+    where T : IComponentData, IStatFix
+{
+    public fix Value;
+}
+
 internal static partial class CommonWrites
 {
-    public static void SetStat<T>(ISimWorldReadWriteAccessor world, Entity entity, T compData)
+    public static void SetStatInt<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T compData)
         where T : struct, IComponentData, IStatInt
     {
-        if (world.TryGetComponentData(entity, out MinimumInt<T> minimum))
+        if (accessor.TryGetComponentData(entity, out MinimumInt<T> minimum))
         {
             compData.Value = max(minimum.Value, compData.Value);
         }
 
-        if (world.TryGetComponentData(entity, out MaximumInt<T> maximum))
+        if (accessor.TryGetComponentData(entity, out MaximumInt<T> maximum))
         {
             compData.Value = min(maximum.Value, compData.Value);
         }
 
-        world.SetComponentData(entity, compData);
+        accessor.SetComponentData(entity, compData);
+    }
+
+    public static void SetStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T compData)
+    where T : struct, IComponentData, IStatFix
+    {
+        if (accessor.TryGetComponentData(entity, out MinimumFix<T> minimum))
+        {
+            compData.Value = Max(minimum.Value, compData.Value);
+        }
+
+        if (accessor.TryGetComponentData(entity, out MaximumFix<T> maximum))
+        {
+            compData.Value = Min(maximum.Value, compData.Value);
+        }
+
+        accessor.SetComponentData(entity, compData);
     }
 }

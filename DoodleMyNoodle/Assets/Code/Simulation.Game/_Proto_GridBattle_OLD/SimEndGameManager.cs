@@ -7,14 +7,14 @@ public class SimEndGameManager : SimSingleton<SimEndGameManager>, ISimTickable
     public static bool ReturnToMenu = false;
 
     public bool GameEnded = false;
-    public Team WinningTeam;
+    public OLD_Team WinningTeam;
 
     void ISimTickable.OnSimTick()
     {
         if (Simulation.Time < 5)
             return;
 
-        List<Team> teamsWithPawns = new List<Team>();
+        List<OLD_Team> teamsWithPawns = new List<OLD_Team>();
         foreach (SimPawnComponent pawn in Simulation.EntitiesWithComponent<SimPawnComponent>())
         {
             SimTeamMemberComponent teamMemberComponent = pawn.GetComponent<SimTeamMemberComponent>();
@@ -24,17 +24,17 @@ public class SimEndGameManager : SimSingleton<SimEndGameManager>, ISimTickable
             }
         }
 
-        if (!teamsWithPawns.Contains(Team.AI))
+        if (!teamsWithPawns.Contains(OLD_Team.AI))
         {
-            GameOver(Team.Player);
+            GameOver(OLD_Team.Player);
         }
-        else if(!teamsWithPawns.Contains(Team.Player))
+        else if(!teamsWithPawns.Contains(OLD_Team.Player))
         {
-            GameOver(Team.AI);
+            GameOver(OLD_Team.AI);
         }
     }
 
-    private void GameOver(Team winningTeam)
+    private void GameOver(OLD_Team winningTeam)
     {
         if (!GameEnded)
         {
