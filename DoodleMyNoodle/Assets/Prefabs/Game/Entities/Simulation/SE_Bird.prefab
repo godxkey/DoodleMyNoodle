@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7591131864914787085}
   - component: {fileID: 8435132431937638192}
   - component: {fileID: 6657921186239294675}
+  - component: {fileID: 947375423039552990}
   m_Layer: 0
   m_Name: SE_Bird
   m_TagString: Untagged
@@ -108,5 +109,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartValue: 4
-  MinValue: 0
   MaxValue: 4
+--- !u!114 &947375423039552990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951368162375339519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 453c4b2c151f39243b7228f0ce379c93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InitialItems:
+  - {fileID: 5742253346417087641, guid: d170c0eb81b945e458f35303555d6027, type: 3}

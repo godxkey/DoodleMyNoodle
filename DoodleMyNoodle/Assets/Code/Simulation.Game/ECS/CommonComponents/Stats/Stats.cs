@@ -1,6 +1,7 @@
 ﻿using Unity.Entities;
 using static Unity.Mathematics.math;
 using static fixMath;
+using System.Collections.Generic;
 
 public interface IStatInt
 {
@@ -55,7 +56,7 @@ internal static partial class CommonWrites
     }
 
     public static void SetStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T compData)
-    where T : struct, IComponentData, IStatFix
+        where T : struct, IComponentData, IStatFix
     {
         if (accessor.TryGetComponentData(entity, out MinimumFix<T> minimum))
         {
@@ -70,3 +71,5 @@ internal static partial class CommonWrites
         accessor.SetComponentData(entity, compData);
     }
 }
+
+

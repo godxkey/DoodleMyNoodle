@@ -1,12 +1,15 @@
 ﻿using Unity.Entities;
 using static Unity.Mathematics.math;
 using static fixMath;
+using CCC.Debug;
 
 [UpdateBefore(typeof(ApplyVelocitySystem))]
 public class DirectAlongPathSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
+        Entities.ForEach((ref FixTranslation pos) => DebugGraph.Log("", (float)pos.Value.x));
+
         Entities.ForEach(
             (Entity entity,
             DynamicBuffer<PathPosition> pathPositions,

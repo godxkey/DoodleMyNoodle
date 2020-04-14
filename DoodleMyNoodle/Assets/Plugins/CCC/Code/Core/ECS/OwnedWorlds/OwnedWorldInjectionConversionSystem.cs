@@ -21,14 +21,16 @@ public class OwnedWorldInjectionPreConversionSystem : GameObjectConversionSystem
                 if (EntityManager.HasComponent<InjectedInOwnedWorldFlag>(entity))
                 {
                     var comp = EntityManager.GetComponentObject<InjectedInOwnedWorldFlag>(entity);
-                    scenes.Add(comp.gameObject.scene);
+                    scenes.AddUnique(comp.gameObject.scene);
                 }
             });
 
             if (ownedWorld.Owner != null)
             {
                 ownedWorld.Owner.OnBeginEntitiesInjectionFromGameObjectConversion(scenes);
-                ownedWorld.Owner.OnEndEntitiesInjectionFromGameObjectConversion();
+
+                var postInjectSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<OwnedWorldInjectionPostConversionSystem>();
+                postInjectSystem.WorldOwnersToNotify.Add(ownedWorld.Owner);
             }
             else
             {
@@ -38,21 +40,18 @@ public class OwnedWorldInjectionPreConversionSystem : GameObjectConversionSystem
     }
 }
 
-[UpdateInGroup(typeof(GameObjectAfterConversionGroup))]
-public class OwnedWorldInjectionPostConversionSystem : GameObjectConversionSystem
+[UpdateAfter(typeof(ConvertToEntitySystem))]
+[UpdateInGroup(typeof(InitializationSystemGroup))]
+public class OwnedWorldInjectionPostConversionSystem : ComponentSystem
 {
+    public List<IWorldOwner> WorldOwnersToNotify = new List<IWorldOwner>();
+
     protected override void OnUpdate()
     {
-        if (DstEntityManager.World is IOwnedWorld ownedWorld)
+        foreach (var worldOwner in WorldOwnersToNotify)
         {
-            if (ownedWorld.Owner != null)
-            {
-                ownedWorld.Owner.OnEndEntitiesInjectionFromGameObjectConversion();
-            }
-            else
-            {
-                DebugService.LogWarning($"The owned world '{DstEntityManager.World.Name}' doesn't appear to have an owner.");
-            }
+            worldOwner.OnEndEntitiesInjectionFromGameObjectConversion();
         }
+        WorldOwnersToNotify.Clear();
     }
 }

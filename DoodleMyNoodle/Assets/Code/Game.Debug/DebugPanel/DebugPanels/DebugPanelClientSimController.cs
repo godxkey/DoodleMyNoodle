@@ -86,13 +86,13 @@ public class DebugPanelClientSimController : DebugPanel
     {
         base.OnStartDisplay();
 
-        UpdaterService.AddFixedUpdateCallback(OnFixedUpdate);
+        Updater.FixedUpdate += OnFixedUpdate;
     }
 
     public override void OnStopDisplay()
     {
         base.OnStopDisplay();
 
-        UpdaterService.RemoveFixedUpdateCallback(OnFixedUpdate);
+        Updater.FixedUpdate -= OnFixedUpdate;
     }
 }

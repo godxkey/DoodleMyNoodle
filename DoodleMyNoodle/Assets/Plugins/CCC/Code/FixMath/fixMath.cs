@@ -187,6 +187,13 @@ public static partial class fixMath
     public static int4 roundToInt(in fix4 v) => int4(global::fix.RoundToInt(v.x), global::fix.RoundToInt(v.y), global::fix.RoundToInt(v.z), global::fix.RoundToInt(v.w));
 
 
+    public static fix lengthmanhattan(fix2 v) => abs(v.x) +abs(v.y);
+    public static fix lengthmanhattan(fix3 v) => abs(v.x) + abs(v.y) + abs(v.z);
+    public static fix lengthmanhattan(fix4 v) => abs(v.x) + abs(v.y) + abs(v.z) + abs(v.w);
+    public static int lengthmanhattan(int2 v) => math.abs(v.x) + math.abs(v.y);
+    public static int lengthmanhattan(int3 v) => math.abs(v.x) + math.abs(v.y) + math.abs(v.z);
+    public static int lengthmanhattan(int4 v) => math.abs(v.x) + math.abs(v.y) + math.abs(v.z) + math.abs(v.w);
+
     //public static fix sqrt(fix x) { return global::fix.Sqrt(x); }
     //public static fix2 sqrt(fix2 x) { return new fix2(sqrt(x.x), sqrt(x.y)); }
     //public static fix3 sqrt(fix3 x) { return new fix3(sqrt(x.x), sqrt(x.y), sqrt(x.z)); }

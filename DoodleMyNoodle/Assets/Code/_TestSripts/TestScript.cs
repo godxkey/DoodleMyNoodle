@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using CCC.Debug;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Text;
 using Unity.Collections;
@@ -12,38 +14,73 @@ using UnityEngine.UI;
 
 public class TestScript : MonoBehaviour
 {
-    public InputField x1;
-    public InputField y1;
-    public InputField x2;
-    public InputField y2;
-    public Button Button;
+    public ModelSpaceTimeDebugger model = new ModelSpaceTimeDebugger();
 
     private void Start()
     {
-        Button.onClick.AddListener(OnClick);
+        //new ViewSpaceTimeDebugger(model);
     }
 
-    private void OnClick()
+    private void Update()
     {
-        //s_debugPerform = false;
-        var pathFound = CommonReads.FindNavigablePath(GameMonoBehaviourHelpers.SimulationWorld, 
-            new int2(int.Parse(x1.text), int.Parse(y1.text)),
-            new int2(int.Parse(x2.text), int.Parse(y2.text)), Allocator.Temp, out NativeList<int2> _pathArray);
+        
+    }
+}
 
-        StringBuilder stringBuilder = new StringBuilder();
-        if (pathFound)
+
+public static class SpaceTimeDebugger
+{
+    private class Stream
+    {
+        public readonly string Name;
+        public List<LoggedValue> Values = new List<LoggedValue>();
+
+        public Stream(string name)
         {
-            foreach (var item in _pathArray)
-            {
-                stringBuilder.Append($"{item}  -");
-            }
+            Name = name ?? throw new ArgumentNullException(nameof(name));
         }
-        else
+    }
+
+    private struct LoggedValue
+    {
+        public long Tick;
+        public float Value;
+    }
+
+    private static Dictionary<string, Stream> s_streams = new Dictionary<string, Stream>();
+    private static Stopwatch s_stopwatch;
+
+    public static void Log(string streamName, float value)
+    {
+
+        LoggedValue loggedValue = new LoggedValue()
         {
-            stringBuilder.Append($"not found");
+            Tick = GetCurrentTicks(),
+            Value = value
+        };
+
+        var stream = GetOrCreateStream(streamName);
+        stream.Values.Add(loggedValue);
+    }
+
+    private static long GetCurrentTicks()
+    {
+        if (s_stopwatch == null)
+        {
+            s_stopwatch = new Stopwatch();
+            s_stopwatch.Start();
         }
 
-        _pathArray.Dispose();
-        DebugService.Log(stringBuilder.ToString());
+        return s_stopwatch.Elapsed.Ticks;
+    }
+
+    private static Stream GetOrCreateStream(string name)
+    {
+        if(!s_streams.TryGetValue(name, out Stream s))
+        {
+            s = new Stream(name);
+        }
+
+        return s;
     }
 }

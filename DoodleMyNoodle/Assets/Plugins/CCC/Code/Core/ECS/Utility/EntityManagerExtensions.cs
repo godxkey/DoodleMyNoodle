@@ -2,6 +2,19 @@
 
 public static class EntityManagerExtensions
 {
+    public static bool TryGetBuffer<T>(this EntityManager entityManager, Entity entity, out DynamicBuffer<T> buffer)
+         where T : struct, IBufferElementData
+    {
+        if (entityManager.HasComponent<T>(entity))
+        {
+            buffer = entityManager.GetBuffer<T>(entity);
+            return true;
+        }
+
+        buffer = default;
+        return false;
+    }
+
     public static bool TryGetComponentData<T>(this EntityManager entityManager, Entity entity, out T componentData)
          where T : struct, IComponentData
     {

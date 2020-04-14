@@ -58,6 +58,8 @@ namespace SimulationControl
             _incomingEntityInjections.Remove(sceneName);
         }
 
+        private int _ongoingInjections = 0;
+
         void IWorldOwner.OnBeginEntitiesInjectionFromGameObjectConversion(List<Scene> comingFromScenes)
         {
             foreach (var scene in comingFromScenes)
@@ -69,19 +71,28 @@ namespace SimulationControl
                 }
             }
 
-            var changeDetectionEnd = SimulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
-            if (changeDetectionEnd != null)
+            if (_ongoingInjections == 0)
             {
-                changeDetectionEnd.ForceEndSample();
+                var changeDetectionEnd = SimulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
+                if (changeDetectionEnd != null)
+                {
+                    changeDetectionEnd.ForceEndSample();
+                }
             }
+            _ongoingInjections++;
         }
 
         void IWorldOwner.OnEndEntitiesInjectionFromGameObjectConversion()
         {
-            var changeDetectionBegin = SimulationWorld.GetExistingSystem<ChangeDetectionSystemBegin>();
-            if (changeDetectionBegin != null)
+            _ongoingInjections--;
+
+            if (_ongoingInjections == 0)
             {
-                changeDetectionBegin.ResetSample();
+                var changeDetectionBegin = SimulationWorld.GetExistingSystem<ChangeDetectionSystemBegin>();
+                if (changeDetectionBegin != null)
+                {
+                    changeDetectionBegin.ResetSample();
+                }
             }
         }
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace CCC.GraphHidden
+namespace CCC.Debug
 {
     [System.Serializable]
     public class ColoredCurve

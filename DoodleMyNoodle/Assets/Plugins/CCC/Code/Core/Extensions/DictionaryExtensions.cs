@@ -2,6 +2,21 @@
 
 public static class DictionaryExtensions
 {
+    /// <summary>
+    /// Returns the first key with the corresponding value
+    /// </summary>
+    public static TKey FindFirstKeyWithValue<TKey, TValue>(this IDictionary<TKey, TValue> dict, TValue value)
+    {
+        foreach (KeyValuePair<TKey, TValue> item in dict)
+        {
+            if(EqualityComparer<TValue>.Default.Equals(item.Value, value))
+            {
+                return item.Key;
+            }
+        }
+        return default;
+    }
+
     public static TValue GetOrAddNew<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
         where TValue : new()
     {

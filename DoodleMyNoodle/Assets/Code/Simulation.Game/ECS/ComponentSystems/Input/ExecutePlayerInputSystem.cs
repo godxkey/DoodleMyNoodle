@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using static fixMath;
+using static Unity.Mathematics.math;
 
 public class ExecutePlayerInputSystem : SimComponentSystem
 {
@@ -57,10 +58,29 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                             {
                                 case UnityEngine.KeyCode.LeftArrow:
                                 case UnityEngine.KeyCode.A:
-                                    EntityManager.SetOrAddComponentData(pawn, new Destination()
+
+                                    if (EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
                                     {
-                                        Value = round(pawnPos.Value) + fix3(-1, 0, 0)
-                                    });
+                                        Entity itemEntity = inventory[0].ItemEntity;
+
+                                        GameActionId actionId = EntityManager.GetComponentData<GameActionId>(itemEntity);
+                                        GameAction gameAction = GameActionBank.GetAction(actionId);
+
+                                        GameAction.UseData useData = new GameAction.UseData()
+                                        {
+                                            ParameterDatas = new GameAction.ParameterData[]
+                                            {
+                                                new GameActionParameterTile.Data()
+                                                {
+                                                    ParamIndex = 0,
+                                                    Tile = roundToInt(pawnPos.Value).xy + int2(-1, 0)
+                                                }
+                                            }
+                                        };
+
+                                        gameAction.Use(Accessor, pawn, useData);
+                                    }
+
                                     break;
 
                                 case UnityEngine.KeyCode.RightArrow:

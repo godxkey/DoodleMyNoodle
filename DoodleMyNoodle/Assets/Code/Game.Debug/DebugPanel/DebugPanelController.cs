@@ -5,26 +5,18 @@ using UnityEngine;
 
 public class DebugPanelController
 {
-    static bool panelVisible;
+    static bool s_panelVisible;
 
-    [RuntimeInitializeOnLoadMethod]
-    static void OnRuntimeMethodLoad() // Executed after scene is loaded and game is running
-    {
-        CoreServiceManager.AddInitializationCallback(() =>
-        {
-            UpdaterService.AddGUICallback(OnGUI);
-            UpdaterService.AddUpdateCallback(OnUpdate);
-        });
-    }
-
+    [Updater.StaticUpdateMethod(UpdateType.Update)]
     static void OnUpdate()
     {
         if (Input.GetKeyDown(KeyCode.F2))
         {
-            panelVisible = !panelVisible;
+            s_panelVisible = !s_panelVisible;
         }
     }
 
+    [Updater.StaticUpdateMethod(UpdateType.GUI)]
     static void OnGUI()
     {
         if (!DebugPanelStyles.initialized)
@@ -32,7 +24,7 @@ public class DebugPanelController
             DebugPanelStyles.Initialize();
         }
 
-        if (panelVisible)
+        if (s_panelVisible)
         {
             DebugPanelStyles.ApplyStyles();
 

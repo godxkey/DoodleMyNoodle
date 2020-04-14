@@ -32,6 +32,7 @@ public class ChangeDetectionSystemEnd : ComponentSystem
 
         // compare 'begin values' with 'end values'
         CompareAndLogChanges(beginSystem.SummedVersionNumbers, _summedVersionNumbers);
+
     }
 
     public void ForceEndSample()

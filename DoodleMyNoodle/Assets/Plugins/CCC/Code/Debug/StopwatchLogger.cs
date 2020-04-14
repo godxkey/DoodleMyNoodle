@@ -22,7 +22,7 @@ public class StopwatchLogger
     /// </summary>
     public void Print(string prefix = "")
     {
-        float deltaTicks = stopwatch.ElapsedTicks;
+        float deltaTicks = stopwatch.Elapsed.Ticks;
         switch (printType)
         {
             default:
@@ -39,7 +39,7 @@ public class StopwatchLogger
 
     public float GetTime()
     {
-        float deltaTicks = stopwatch.ElapsedTicks;
+        float deltaTicks = stopwatch.Elapsed.Ticks;
         switch (printType)
         {
             default:
