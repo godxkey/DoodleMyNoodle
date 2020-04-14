@@ -21,8 +21,8 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
     {
         base.OnCreate();
 
-        _newSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<NewlyCreatedTag>(), ComponentType.ReadOnly<BlueprintId>());
-        _allSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<BlueprintId>());
+        _newSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<NewlyCreatedTag>(), ComponentType.ReadOnly<SimAssetId>());
+        _allSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<SimAssetId>());
         _ecbSystem = World.GetOrCreateSystem<PostSimulationBindingCommandBufferSystem>();
 
         RequireSingletonForUpdate<Settings_ViewBindingSystem_BlueprintDefinition>();
@@ -62,12 +62,12 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
 
     [BurstCompile]
     [RequireComponentTag(typeof(NewlyCreatedTag))]
-    struct FetchNewSimEntitiesJob : IJobForEachWithEntity_EC<BlueprintId>
+    struct FetchNewSimEntitiesJob : IJobForEachWithEntity_EC<SimAssetId>
     {
         [ReadOnly] public DynamicBuffer<Settings_ViewBindingSystem_BlueprintDefinition> BlueprintDefinitions;
         public EntityCommandBuffer.Concurrent Ecb;
 
-        public void Execute(Entity simEntity, int index, [ReadOnly] ref BlueprintId blueprintId)
+        public void Execute(Entity simEntity, int index, [ReadOnly] ref SimAssetId blueprintId)
         {
             for (int i = 0; i < BlueprintDefinitions.Length; i++)
             {
@@ -83,12 +83,12 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
 
     // Same code, no RequireComponentTag
     [BurstCompile]
-    struct FetchAllSimEntitiesJob : IJobForEachWithEntity_EC<BlueprintId>
+    struct FetchAllSimEntitiesJob : IJobForEachWithEntity_EC<SimAssetId>
     {
         [ReadOnly] public DynamicBuffer<Settings_ViewBindingSystem_BlueprintDefinition> BlueprintDefinitions;
         public EntityCommandBuffer.Concurrent Ecb;
 
-        public void Execute(Entity simEntity, int index, [ReadOnly] ref BlueprintId blueprintId)
+        public void Execute(Entity simEntity, int index, [ReadOnly] ref SimAssetId blueprintId)
         {
             for (int i = 0; i < BlueprintDefinitions.Length; i++)
             {

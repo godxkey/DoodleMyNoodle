@@ -10,6 +10,6 @@ public class BlueprintIdAuth : MonoBehaviour, IConvertGameObjectToEntity
     
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new BlueprintId() { Value = Value });
+        dstManager.AddComponentData(entity, new SimAssetId() { Value = Value });
     }
 }

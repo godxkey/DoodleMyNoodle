@@ -13,7 +13,7 @@ public class BlueprintDefinition : MonoBehaviour
     public int BlueprintIdValue;
     public ESplitMode SplitMode = ESplitMode.SecondChildIsView;
 
-    public BlueprintId GetBlueprintId() => new BlueprintId() { Value = BlueprintIdValue };
+    public SimAssetId GetBlueprintId() => new SimAssetId() { Value = BlueprintIdValue };
 
     public GameObject GetGameObject(GameWorldType gameWorldType)
     {
