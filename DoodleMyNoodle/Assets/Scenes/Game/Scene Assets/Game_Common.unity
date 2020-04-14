@@ -882,7 +882,7 @@ GameObject:
   - component: {fileID: 1887098639}
   - component: {fileID: 1887098640}
   m_Layer: 0
-  m_Name: Esacpe Menu System
+  m_Name: Escape Menu System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

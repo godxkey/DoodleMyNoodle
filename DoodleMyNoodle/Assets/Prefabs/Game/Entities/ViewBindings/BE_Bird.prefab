@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3039350714159551396}
-  - component: {fileID: 5180520187915386772}
+  - component: {fileID: 2215584610862801426}
   - component: {fileID: 1516881635305629881}
   m_Layer: 0
-  m_Name: BP_Bird
+  m_Name: BE_Bird
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,7 +34,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5180520187915386772
+--- !u!114 &2215584610862801426
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,7 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 583c333082b03dc44904def59508e564, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BlueprintIdValue: 0
   SplitMode: 1
 --- !u!114 &1516881635305629881
 MonoBehaviour:
@@ -61,6 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
+  SplitMode: 1
 --- !u!1001 &6934763543154504256
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -126,7 +126,7 @@ PrefabInstance:
     - target: {fileID: 4579007285563623200, guid: 01981a84d884036488559a6bef722fba,
         type: 3}
       propertyPath: m_Name
-      value: PE_Bird
+      value: VE_Bird
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01981a84d884036488559a6bef722fba, type: 3}

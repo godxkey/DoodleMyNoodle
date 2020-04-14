@@ -4,14 +4,14 @@ using Unity.Entities;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequireComponent(typeof(BlueprintDefinition))]
-public class ConvertBlueprintToEntities : ConvertToEntity
+[RequireComponent(typeof(ViewBindingDefinition))]
+public class ConvertViewBindingDefinitionToEntities : ConvertToEntity
 {
     void Awake()
     {
         // let parent handle the conversion we have one
         Transform parent = transform.parent;
-        if (parent && parent.GetComponent<ConvertBlueprintToEntities>())
+        if (parent && parent.GetComponent<ConvertViewBindingDefinitionToEntities>())
             return;
 
         //PrepareChildForConversion(GameWorldType.Presentation, null);
@@ -21,8 +21,8 @@ public class ConvertBlueprintToEntities : ConvertToEntity
 
     void PrepareChildForConversion(GameWorldType worldType, Transform newParent)
     {
-        BlueprintDefinition blueprintDefinition = GetComponent<BlueprintDefinition>();
-        GameObject childGO = blueprintDefinition.GetGameObject(worldType);
+        ViewBindingDefinition simToViewBinding = GetComponent<ViewBindingDefinition>();
+        GameObject childGO = simToViewBinding.GetGameObject(worldType);
 
         if (!childGO)
             return;
@@ -52,9 +52,6 @@ public class ConvertBlueprintToEntities : ConvertToEntity
             childConverter.ConversionMode = ConversionMode;
         }
 
-        // add the blueprint Id
-        childGO.AddComponent<BlueprintIdAuth>().Value = blueprintDefinition.BlueprintIdValue;
-
         // separate the child
         Transform tr = transform;
         childTr.SetParent(newParent, worldPositionStays: false);
@@ -70,12 +67,10 @@ public class ConvertBlueprintToEntities : ConvertToEntity
         {
             // recursive 'PrepareChildForConversion'
             Transform child = tr.GetChild(i);
-            if (child.TryGetComponent(out ConvertBlueprintToEntities subConvert))
+            if (child.TryGetComponent(out ConvertViewBindingDefinitionToEntities subConvert))
             {
                 subConvert.PrepareChildForConversion(worldType, childTr);
             }
         }
     }
-
-
 }

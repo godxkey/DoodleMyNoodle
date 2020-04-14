@@ -13,8 +13,8 @@ using UnityEngine;
 //    public BlobArray<int> BlueprintIds;
 //}
 
-public struct Settings_ViewBindingSystem_BlueprintDefinition : IBufferElementData
+public struct Settings_ViewBindingSystem_Binding : IBufferElementData
 {
     public Entity PresentationEntity;
-    public int BlueprintId;
+    public SimAssetId SimAssetId;
 }

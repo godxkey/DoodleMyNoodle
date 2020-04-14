@@ -186,7 +186,7 @@ PrefabInstance:
     - target: {fileID: 7450699186811970701, guid: 7425eff6bd23f2c4ea2111a45a3037d4,
         type: 3}
       propertyPath: m_Name
-      value: BP_Bird
+      value: BE_Bird
       objectReference: {fileID: 0}
     - target: {fileID: 8000120740850577698, guid: 7425eff6bd23f2c4ea2111a45a3037d4,
         type: 3}

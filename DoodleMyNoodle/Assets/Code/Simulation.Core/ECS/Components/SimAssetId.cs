@@ -6,7 +6,12 @@ public struct SimAssetId : IComponentData, IEquatable<SimAssetId>
 {
     public int Value;
 
-    public static SimAssetId Null => new SimAssetId();
+    public static SimAssetId Invalid => new SimAssetId();
+
+    public SimAssetId(int value)
+    {
+        Value = value;
+    }
 
     public override bool Equals(object obj) => Equals((SimAssetId)obj);
     public override int GetHashCode() => Value.GetHashCode();

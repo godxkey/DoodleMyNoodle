@@ -8,7 +8,7 @@ public class DirectAlongPathSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
-        Entities.ForEach((ref FixTranslation pos) => DebugGraph.Log("", (float)pos.Value.x));
+        //Entities.ForEach((ref FixTranslation pos) => DebugGraph.Log("", (float)pos.Value.x));
 
         Entities.ForEach(
             (Entity entity,

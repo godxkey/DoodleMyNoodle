@@ -6,25 +6,25 @@ using UnityEngine;
 
 public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
-    public List<BlueprintDefinition> BlueprintDefinitions;
+    public List<ViewBindingDefinition> ViewBindingDefinitions;
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
-        foreach (var item in BlueprintDefinitions)
+        foreach (var item in ViewBindingDefinitions)
             referencedPrefabs.Add(item.GetViewGameObject());
     }
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        var buffer = dstManager.AddBuffer<Settings_ViewBindingSystem_BlueprintDefinition>(entity);
-        buffer.Capacity = BlueprintDefinitions.Count;
+        var buffer = dstManager.AddBuffer<Settings_ViewBindingSystem_Binding>(entity);
+        buffer.Capacity = ViewBindingDefinitions.Count;
         
-        for (int i = 0; i < BlueprintDefinitions.Count; i++)
+        for (int i = 0; i < ViewBindingDefinitions.Count; i++)
         {
-            buffer.Add(new Settings_ViewBindingSystem_BlueprintDefinition()
+            buffer.Add(new Settings_ViewBindingSystem_Binding()
             {
-                BlueprintId = BlueprintDefinitions[i].GetBlueprintId().Value,
-                PresentationEntity = conversionSystem.GetPrimaryEntity(BlueprintDefinitions[i].GetViewGameObject())
+                SimAssetId = ViewBindingDefinitions[i].GetSimAssetId(),
+                PresentationEntity = conversionSystem.GetPrimaryEntity(ViewBindingDefinitions[i].GetViewGameObject())
             });
         }
     }

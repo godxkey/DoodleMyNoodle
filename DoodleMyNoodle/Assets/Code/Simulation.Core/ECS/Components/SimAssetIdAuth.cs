@@ -4,7 +4,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class BlueprintIdAuth : MonoBehaviour, IConvertGameObjectToEntity
+public class SimAssetIdAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public int Value;
     
