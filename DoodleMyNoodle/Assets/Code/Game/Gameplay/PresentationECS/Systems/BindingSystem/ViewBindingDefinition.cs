@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ViewBindingDefinition : MonoBehaviour
@@ -30,7 +29,7 @@ public class ViewBindingDefinition : MonoBehaviour
             return SimAssetId.Invalid;
         }
 
-        return new SimAssetId(assetIdAuth.Value);
+        return assetIdAuth.GetSimAssetId();
     }
 
     public GameObject GetGameObject(GameWorldType gameWorldType)

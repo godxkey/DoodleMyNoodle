@@ -10,13 +10,13 @@ public static partial class NetSerializerCodeGenerator
     static HashSet<Type> generateArrayCode = new HashSet<Type>();
 
 
-    [MenuItem(NetSerializationCodeGenSettings.MenuName_Generate_Serializers)]
+    [MenuItem(NetSerializationCodeGenSettings.MenuName_Generate_Serializers, priority = NetSerializationCodeGenSettings.MenuPriority_Generate_Serializers)]
     public static void Generate()
     {
         Generate(false);
     }
 
-    [MenuItem(NetSerializationCodeGenSettings.MenuName_Clear_Serializers)]
+    [MenuItem(NetSerializationCodeGenSettings.MenuName_Clear_Serializers, priority = NetSerializationCodeGenSettings.MenuPriority_Clear_Serializers)]
     public static void Clear()
     {
         Generate(true);

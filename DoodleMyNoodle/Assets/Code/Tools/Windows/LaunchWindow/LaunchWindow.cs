@@ -10,7 +10,7 @@ public class LaunchWindow : EditorWindow
 {
     const string PATH = "Assets/Code/Tools/Windows/LaunchWindow/";
 
-    [MenuItem("Tools/Launch Window")]
+    [MenuItem("Tools/Launch Window", priority = 100)]
     public static void ShowExample()
     {
         LaunchWindow wnd = GetWindow<LaunchWindow>();

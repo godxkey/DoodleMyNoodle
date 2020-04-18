@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6908395f999bafc4db8ea9ab93056ceb, type: 3}
+  m_Name: ViewBindingDefinitionBank
+  m_EditorClassIdentifier: 
+  ViewBindingDefinitions:
+  - {fileID: 2215584610862801426, guid: 7425eff6bd23f2c4ea2111a45a3037d4, type: 3}

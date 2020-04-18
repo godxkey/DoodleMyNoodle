@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 6657921186239294675}
   - component: {fileID: 947375423039552990}
   m_Layer: 0
-  m_Name: SE_Bird
+  m_Name: SE_Bird 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: 0
-  Guid: 8029a8339c41fdc459279bcc5978cc42
+  Guid: 0d3bd6078e6111b419f71c2602f0037d
 --- !u!114 &5072555852515810054
 MonoBehaviour:
   m_ObjectHideFlags: 0
