@@ -18,7 +18,7 @@ public class SimPrefabBankUpdater : AssetPostprocessor
     //    }
     //}
 
-    [MenuItem("Tools/Data Management/Update Sim Prefab Bank")]
+    //[MenuItem("Tools/Data Management/Update Sim Prefab Bank")]
     public static void UpdateBlueprintBank()
     {
         AssetDatabase.Refresh();

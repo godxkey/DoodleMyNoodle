@@ -12,22 +12,30 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
-        foreach (var item in Definitions)
-            referencedPrefabs.Add(item.GetViewGameObject());
+        foreach (ViewBindingDefinition item in Definitions)
+        {
+            if (item)
+            {
+                referencedPrefabs.Add(item.GetViewGameObject());
+            }
+        }
     }
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         var buffer = dstManager.AddBuffer<Settings_ViewBindingSystem_Binding>(entity);
         buffer.Capacity = Definitions.Count;
-        
-        for (int i = 0; i < Definitions.Count; i++)
+
+        foreach (ViewBindingDefinition item in Definitions)
         {
-            buffer.Add(new Settings_ViewBindingSystem_Binding()
+            if (item)
             {
-                SimAssetId = Definitions[i].GetSimAssetId(),
-                PresentationEntity = conversionSystem.GetPrimaryEntity(Definitions[i].GetViewGameObject())
-            });
+                buffer.Add(new Settings_ViewBindingSystem_Binding()
+                {
+                    SimAssetId = item.GetSimAssetId(),
+                    PresentationEntity = conversionSystem.GetPrimaryEntity(item.GetViewGameObject())
+                });
+            }
         }
     }
 

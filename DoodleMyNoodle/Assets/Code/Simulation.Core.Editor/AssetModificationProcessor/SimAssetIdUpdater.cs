@@ -25,7 +25,7 @@ public class SimAssetIdUpdater : AssetPostprocessor
         }
     }
 
-    [MenuItem("Tools/Data Management/Force Update Prefab SimAssetIds", priority = 999)]
+    [MenuItem("Tools/Data Management/Force Update SimAssetIds", priority = 999)]
     public static void UpdateSimAssetIds()
     {
         AssetDatabaseX.FindPrefabsAssetsWithComponent<SimAssetIdAuth>(out List<KeyValuePair<string, GameObject>> searchResult);
