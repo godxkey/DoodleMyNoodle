@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SceneMetaDataBankUpdater : AssetPostprocessor
 {
-    const string ASSET_PATH = "Assets/ScriptableObjects/SceneMetaData/SceneMetaDataBank.asset";
+    const string ASSET_PATH = "Assets/ScriptableObjects/Generated/SceneMetaDataBank.asset";
 
     [MenuItem("Tools/Data Management/Force Update Scene Meta-data Bank", priority = 999)]
     static void UpdateMetaData()

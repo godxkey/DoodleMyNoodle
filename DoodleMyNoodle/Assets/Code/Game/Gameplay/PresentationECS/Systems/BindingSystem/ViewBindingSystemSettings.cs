@@ -2,7 +2,6 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using UnityEngine;
 
 //[assembly: RegisterGenericComponentType(typeof(BlobAssetReferenceComponent<ViewBindingSystemSettings>))]
 

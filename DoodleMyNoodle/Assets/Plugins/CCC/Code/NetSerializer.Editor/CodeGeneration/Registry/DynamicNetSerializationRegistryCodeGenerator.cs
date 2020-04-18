@@ -11,7 +11,7 @@ public static class DynamicNetSerializationRegistryCodeGenerator
     static readonly string CompletePath = NetSerializationCodeGenSettings.Registry_FilePath + '/' + NetSerializationCodeGenSettings.Registry_FileName;
 
 
-    [MenuItem(NetSerializationCodeGenSettings.MenuName_Generate_Registry)]
+    [MenuItem(NetSerializationCodeGenSettings.MenuName_Generate_Registry, priority = NetSerializationCodeGenSettings.MenuPriority_Generate_Registry)]
     public static void Generate()
     {
         var types = NetSerializationCodeGenUtility.GetNetSerializableTypes();
@@ -21,7 +21,7 @@ public static class DynamicNetSerializationRegistryCodeGenerator
         AssetDatabase.Refresh();
     }
 
-    [MenuItem(NetSerializationCodeGenSettings.MenuName_Clear_Registry)]
+    [MenuItem(NetSerializationCodeGenSettings.MenuName_Clear_Registry, priority = NetSerializationCodeGenSettings.MenuPriority_Clear_Registry)]
     public static void Clear()
     {
         GenerateCode(new Type[0]);

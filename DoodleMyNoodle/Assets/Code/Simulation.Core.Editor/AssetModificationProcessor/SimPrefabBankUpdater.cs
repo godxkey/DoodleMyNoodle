@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SimPrefabBankUpdater : AssetPostprocessor
 {
-    const string ASSET_PATH = "Assets/ScriptableObjects/SimBlueprintProviders/SimPrefabBank.asset";
+    const string ASSET_PATH = "Assets/ScriptableObjects/Generated/SimPrefabBank.asset";
 
     // Disabled for now because it causes a lag spike in the editor. Could probably be optimized and re-enabled
 

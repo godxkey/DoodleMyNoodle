@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21b6702d20c65fa41908ed24708d18bb, type: 3}
+  m_Name: SimAssetIdMap
+  m_EditorClassIdentifier: 
+  _guids:
+  - 8029a8339c41fdc459279bcc5978cc42
+  - 0d3bd6078e6111b419f71c2602f0037d

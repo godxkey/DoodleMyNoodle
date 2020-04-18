@@ -77,7 +77,6 @@ public class SimulationController : GameSystem<SimulationController>
         base.OnDestroy();
 
         World.DefaultGameObjectInjectionWorld?.GetExistingSystem<SimulationControlSystemGroup>()?.Shutdown();
-
         //#if DEBUG_BUILD
         //        GameConsole.RemoveCommand("sim.load");
         //        GameConsole.RemoveCommand("sim.save");
