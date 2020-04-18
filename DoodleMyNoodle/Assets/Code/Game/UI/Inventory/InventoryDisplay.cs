@@ -1,60 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 
-public class InventoryDisplay : MonoBehaviour
+public class InventoryDisplaySystem : GameMonoBehaviour
 {
-    public GameObject InventoryTileContainer;
-    public GameObject InventoryTilePrefab;
+    private Entity _localPawn = Entity.Null;
 
-    private bool _hasBeenSetup = false;
-
-    private SimInventoryComponent _inventory = null;
-
-    public void ToggleInventory()
+    public override void OnGameStart()
     {
-        if (!_hasBeenSetup)
-        {
-            // PORT TO ECS
+        base.OnGameStart();
 
-            //SimPawnComponent playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
-
-            //_inventory = playerPawn.GetComponent<SimInventoryComponent>();
-
-            //for (int i = 0; i < _inventory.InventorySize; i++)
-            //{
-            //    SimItem item = _inventory.GetItem(i);
-            //    UIInventorySlot newSlot = Instantiate(InventoryTilePrefab, InventoryTileContainer.transform).GetComponent<UIInventorySlot>();
-            //    newSlot.Init(item);
-            //}
-
-            _hasBeenSetup = true;
-        }
-        gameObject.SetActive(!gameObject.activeSelf);
+        _localPawn = PlayerIdHelpers.GetLocalSimPawnEntity(GameMonoBehaviourHelpers.SimulationWorld);
     }
 
-    private void Update()
+    public override void OnGameUpdate()
     {
-        if (_hasBeenSetup)
+        if(GameMonoBehaviourHelpers.SimulationWorld.TryGetBuffer(_localPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
-            if (_inventory.InventorySize == InventoryTileContainer.transform.childCount)
+            foreach (InventoryItemReference item in inventory)
             {
-                return;
-            }
-            else if (_inventory.InventorySize < InventoryTileContainer.transform.childCount)
-            {
-                for (int i = 0; i < InventoryTileContainer.transform.childCount - _inventory.InventorySize; ++i) 
+                if (GameMonoBehaviourHelpers.SimulationWorld.TryGetComponentData(item.ItemEntity,out SimAssetId itemIDComponent))
                 {
-                    Destroy(InventoryTileContainer.transform.GetChild(i).gameObject);
-                }
-            }
-            else if (_inventory.InventorySize > InventoryTileContainer.transform.childCount)
-            {
-                for (int i = InventoryTileContainer.transform.childCount; i <= _inventory.InventorySize - InventoryTileContainer.transform.childCount; ++i)
-                {
-                    SimItem item = _inventory.GetItem(i);
-                    UIInventorySlot newSlot = Instantiate(InventoryTilePrefab, InventoryTileContainer.transform).GetComponent<UIInventorySlot>();
-                    newSlot.Init(item);
+                    ItemInfo itemInfo = ItemInfoBank.GetItemInfoFromID(itemIDComponent.Value);
+                    // We have the item info !
                 }
             }
         }

@@ -28,4 +28,17 @@ public static class SimWorldAccessorExtensions
         componentData = default;
         return false;
     }
+
+    public static bool TryGetBuffer<T>(this ISimWorldReadAccessor accessor, Entity entity, out DynamicBuffer<T> buffer)
+         where T : struct, IBufferElementData
+    {
+        if (accessor.HasComponent<T>(entity))
+        {
+            buffer = accessor.GetBuffer<T>(entity);
+            return true;
+        }
+
+        buffer = default;
+        return false;
+    }
 }
