@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemInfo : ScriptableObject
+[CreateAssetMenu(menuName = "DoodleMyNoodle/Items/Information Scriptable Object")]
+public class ItemVisualInfo : ScriptableObject
 {
-    public ushort ID;
+    public SimAssetIdAuth ID;
     public Sprite Icon;
     public string Name;
     public string Description;

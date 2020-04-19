@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using Unity.Collections;
+using Unity.Entities;
 
 public static class SimWorldAccessorExtensions
 {
@@ -29,12 +30,12 @@ public static class SimWorldAccessorExtensions
         return false;
     }
 
-    public static bool TryGetBuffer<T>(this ISimWorldReadAccessor accessor, Entity entity, out DynamicBuffer<T> buffer)
+    public static bool TryGetBuffer<T>(this ISimWorldReadAccessor accessor, Entity entity, [ReadOnly] out DynamicBuffer<T> buffer)
          where T : struct, IBufferElementData
     {
         if (accessor.HasComponent<T>(entity))
         {
-            buffer = accessor.GetBuffer<T>(entity);
+            buffer = accessor.GetBufferFromEntity<T>()[entity];
             return true;
         }
 

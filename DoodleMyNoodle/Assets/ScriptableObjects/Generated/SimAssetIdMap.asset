@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: SimAssetIdMap
   m_EditorClassIdentifier: 
   _guids:
+  - d170c0eb81b945e458f35303555d6027
   - 8029a8339c41fdc459279bcc5978cc42
