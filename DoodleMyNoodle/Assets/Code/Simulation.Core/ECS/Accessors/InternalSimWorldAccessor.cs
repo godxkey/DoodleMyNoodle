@@ -48,6 +48,9 @@ public class InternalSimWorldAccessor : SimWorldReadAccessor, ISimWorldReadWrite
     void ISimWorldWriteAccessor.AddSharedComponentData<T>(EntityQuery entityQuery, T componentData)
             => EntityManager.AddSharedComponentData<T>(entityQuery, componentData);
 
+    DynamicBuffer<T> ISimWorldWriteAccessor.GetBuffer<T>(Entity entity)
+        => EntityManager.GetBuffer<T>(entity);
+
     bool ISimWorldWriteAccessor.RemoveChunkComponent<T>(Entity entity)
             => EntityManager.RemoveChunkComponent<T>(entity);
 
