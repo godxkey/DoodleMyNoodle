@@ -7,8 +7,24 @@ using Unity.Mathematics;
 /// Indicates that an entity is controllable (like a pawn)
 /// </summary>
 [Serializable]
-[GenerateAuthoringComponent]
 public struct ControllableTag : IComponentData
 {
 
+}
+
+/// <summary>
+/// Indicates a controllable entity's default controller
+/// </summary>
+[Serializable]
+public struct DefaultControllerPrefab : IComponentData
+{
+    public Entity Value;
+}
+
+/// <summary>
+/// An entity with this tag will have its default controller instantiated
+/// </summary>
+[Serializable]
+public struct InstantiateAndUseDefaultControllerTag : IComponentData
+{
 }

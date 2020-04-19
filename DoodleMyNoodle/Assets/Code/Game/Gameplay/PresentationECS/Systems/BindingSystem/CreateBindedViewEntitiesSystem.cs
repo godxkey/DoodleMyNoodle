@@ -30,6 +30,18 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
 
     protected override JobHandle OnUpdate(JobHandle jobHandle)
     {
+        Entity localPawn = PlayerIdHelpers.GetLocalSimPawnEntity(SimWorldAccessor);
+
+        if(localPawn != Entity.Null)
+        {
+
+            BufferFromEntity<InventoryItemReference> bufferFromEntity = SimWorldAccessor.GetBufferFromEntity<InventoryItemReference>();
+
+
+            var t = bufferFromEntity[localPawn];
+
+        }
+
         var settingsEntity = GetSingletonEntity<Settings_ViewBindingSystem_Binding>();
 
         // fbessette: we use the 'EntityClearAndReplaceCount' to mesure when we should replace all view entities.

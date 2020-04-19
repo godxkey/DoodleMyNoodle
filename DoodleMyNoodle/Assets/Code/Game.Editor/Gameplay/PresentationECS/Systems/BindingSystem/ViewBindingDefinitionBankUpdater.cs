@@ -13,7 +13,8 @@ public class ViewBindingDefinitionBankUpdater : AssetPostprocessor
         if (importedAssets.Contains(ASSET_PATH))
             return;
 
-        ViewBindingDefinitionBank bank = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<ViewBindingDefinitionBank>(ASSET_PATH);
+        ViewBindingDefinitionBank bank = null;
+        bool setDirty = false;
 
         importedAssets.Where((assetPath) => assetPath.EndsWith(".prefab"))
                .Select((assetPath) => AssetDatabase.LoadAssetAtPath<GameObject>(assetPath))
@@ -22,14 +23,20 @@ public class ViewBindingDefinitionBankUpdater : AssetPostprocessor
                .ToList()
                .ForEach((prefab) =>
                {
+                   if (bank == null)
+                       bank = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<ViewBindingDefinitionBank>(ASSET_PATH);
+
                    if (!bank.ViewBindingDefinitions.Contains(prefab))
                    {
+                       setDirty = true;
                        bank.ViewBindingDefinitions.Add(prefab);
-                       EditorUtility.SetDirty(bank);
 
                        DebugEditor.LogAssetIntegrity($"Added {prefab.gameObject.name} to ViewBindingDefinitionBank.");
                    }
                });
+
+        if(setDirty)
+            EditorUtility.SetDirty(bank);
     }
 
     [MenuItem("Tools/Data Management/Force Update ViewBindingBank", priority = 999)]

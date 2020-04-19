@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 6657921186239294675}
   - component: {fileID: 947375423039552990}
   m_Layer: 0
-  m_Name: SE_Bird
+  m_Name: SE_BasicCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Guid: 8029a8339c41fdc459279bcc5978cc42
+  Guid: d6dc46a8018045e48ae6776580ff1d2b
 --- !u!114 &5072555852515810054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,8 +62,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 163fb4195b8908b4e92639b05057568a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultControllerPrefab: {fileID: 0}
-  SpawnBehaviour: 0
+  DefaultAIPrefab: {fileID: 0}
+  InstantiateAIOnSpawn: 1
 --- !u!114 &-8888525555049467793
 MonoBehaviour:
   m_ObjectHideFlags: 0
