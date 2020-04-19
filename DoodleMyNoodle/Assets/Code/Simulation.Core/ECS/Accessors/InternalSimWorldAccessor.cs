@@ -78,6 +78,9 @@ public class InternalSimWorldAccessor : SimWorldReadAccessor, ISimWorldReadWrite
     void ISimWorldWriteAccessor.DestroyEntity(Entity entity)
         => EntityManager.DestroyEntity(entity);
 
+    T ISimWorldWriteAccessor.GetOrCreateSystem<T>()
+        => SimWorld.GetOrCreateSystem<T>();
+
     Entity ISimWorldWriteAccessor.Instantiate(Entity srcEntity)
         => EntityManager.Instantiate(srcEntity);
 

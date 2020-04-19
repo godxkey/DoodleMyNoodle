@@ -15,12 +15,16 @@ public class ChangeTurnSystem : SimComponentSystem
 
     protected override void OnCreate()
     {
-        _eventsEntityQuery = EntityManager.CreateEntityQuery(typeof(NewTurnEventData));
         base.OnCreate();
+
+        _eventsEntityQuery = EntityManager.CreateEntityQuery(typeof(NewTurnEventData));
     }
 
     protected override void OnUpdate()
     {
+        // destroy events
+        EntityManager.DestroyEntity(_eventsEntityQuery);
+
         // NB: We do that first to make sure we don't override a changeTurnRequest when we update the turn timer
         ChangeTurnIfRequested();
 
@@ -29,8 +33,6 @@ public class ChangeTurnSystem : SimComponentSystem
 
     private void ChangeTurnIfRequested()
     {
-        //EntityManager.DestroyEntity()
-
         if (this.TryGetSingleton(out RequestChangeTurnData requestData))
         {
             // wrap team if necessary

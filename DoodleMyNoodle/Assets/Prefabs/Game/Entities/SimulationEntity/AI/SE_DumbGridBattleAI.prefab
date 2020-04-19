@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6327200456021105715}
   - component: {fileID: 7140861320853094418}
   - component: {fileID: -5935686035446486479}
+  - component: {fileID: 1571923857312126397}
   m_Layer: 0
   m_Name: SE_DumbGridBattleAI
   m_TagString: Untagged
@@ -56,3 +57,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31a5b1eace4363449a20d937eb7be8f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1571923857312126397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6327200456021105714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4cf23c916e82a4096a06602c4785be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartingTeam: 1

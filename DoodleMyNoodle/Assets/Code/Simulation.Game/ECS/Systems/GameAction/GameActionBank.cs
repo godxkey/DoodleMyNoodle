@@ -19,7 +19,7 @@ public static class GameActionBank
 
         IEnumerable<Type> gameActionTypes = TypeUtility.GetTypesDerivedFrom(typeof(GameAction));
 
-        ushort id = 0;
+        ushort id = 1; // 0 is invalid
         foreach (Type gameActionType in gameActionTypes)
         {
             GameAction instance = (GameAction)Activator.CreateInstance(gameActionType);

@@ -60,7 +60,9 @@ public class CreatePlayerSystem : SimComponentSystem
     private bool IsEntityControlled(Entity entity)
     {
         bool result = false;
-        Entities.ForEach((ref ControlledEntity x) =>
+        Entities
+            .WithNone<InstantiateAndUseDefaultControllerTag>() // entities with this tag will have their DefaultController spawned
+            .ForEach((ref ControlledEntity x) =>
         {
             if (entity == x.Value)
             {

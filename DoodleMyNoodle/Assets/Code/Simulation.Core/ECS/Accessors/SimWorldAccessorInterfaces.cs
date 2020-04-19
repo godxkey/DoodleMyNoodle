@@ -736,6 +736,8 @@ public interface ISimWorldWriteAccessor
     void SetSingleton<T>(T value) where T : struct, IComponentData;
 
     void SetName(Entity entity, string name);
+
+    T GetOrCreateSystem<T>() where T : ComponentSystemBase;
 }
 
 public interface ISimWorldReadAccessor

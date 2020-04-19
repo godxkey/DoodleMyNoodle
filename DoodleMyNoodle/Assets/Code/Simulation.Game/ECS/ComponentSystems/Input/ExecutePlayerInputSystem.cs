@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -66,19 +65,14 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                                         GameActionId actionId = EntityManager.GetComponentData<GameActionId>(itemEntity);
                                         GameAction gameAction = GameActionBank.GetAction(actionId);
 
-                                        GameAction.UseData useData = new GameAction.UseData()
-                                        {
-                                            ParameterDatas = new GameAction.ParameterData[]
+                                        GameAction.UseData useData = GameAction.UseData.Create(
+                                            new GameActionParameterTile.Data()
                                             {
-                                                new GameActionParameterTile.Data()
-                                                {
-                                                    ParamIndex = 0,
-                                                    Tile = roundToInt(pawnPos.Value).xy + int2(-1, 0)
-                                                }
-                                            }
-                                        };
+                                                ParamIndex = 0,
+                                                Tile = roundToInt(pawnPos.Value).xy + int2(-1, 0)
+                                            });
 
-                                        gameAction.Use(Accessor, pawn, useData);
+                                        gameAction.Use(Accessor, playerEntity, pawn, useData);
                                     }
 
                                     break;
