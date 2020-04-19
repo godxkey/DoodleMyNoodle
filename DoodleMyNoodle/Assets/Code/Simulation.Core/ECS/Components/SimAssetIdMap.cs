@@ -29,7 +29,7 @@ public class SimAssetIdMap : ScriptableObject
             }
 
             Debug.LogError($"[SimAssetIdMap.LookUp] Could not find runtime id for guid {guid}. " +
-                $"Stop playing and try forcing an update with \"Tools > Data Management > Force Update Prefab SimAssetIds\"");
+                $"Stop playing and try forcing an update with \"Tools > Data Management > Force Update SimAssetIds\"");
             return -1;
         }
     }

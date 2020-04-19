@@ -16,7 +16,7 @@ public class PrefabBlueprintIdUpdater : AssetPostprocessor
                .ForEach((prefab) => ValidateBlueprintIdForPrefab(prefab));
     }
 
-    [MenuItem("Tools/Data Management/Force Update Prefab BlueprintIds", priority = 999)]
+    //[MenuItem("Tools/Data Management/Force Update Prefab BlueprintIds", priority = 999)]
     public static void UpdateBlueprintBank()
     {
         AssetDatabaseX.FindPrefabsAssetsWithComponent<SimEntity>(out List<KeyValuePair<string, GameObject>> searchResult);
