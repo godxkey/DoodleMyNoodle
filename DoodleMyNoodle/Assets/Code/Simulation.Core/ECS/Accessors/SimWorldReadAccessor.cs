@@ -105,8 +105,8 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     public void GetAllUniqueSharedComponentData<T>(List<T> sharedComponentValues, List<int> sharedComponentIndices) where T : struct, ISharedComponentData
         => EntityManager.GetAllUniqueSharedComponentData<T>(sharedComponentValues, sharedComponentIndices);
 
-    public DynamicBuffer<T> GetBuffer<T>(Entity entity) where T : struct, IBufferElementData
-        => EntityManager.GetBuffer<T>(entity);
+    public DynamicBuffer<T> GetBufferReadOnly<T>(Entity entity) where T : struct, IBufferElementData
+        => EntityManager.GetBufferReadOnly<T>(entity);
 
     public ArchetypeChunk GetChunk(Entity entity)
         => EntityManager.GetChunk(entity);

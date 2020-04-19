@@ -90,6 +90,9 @@ public class InternalSimWorldAccessor : SimWorldReadAccessor, ISimWorldReadWrite
     NativeArray<Entity> ISimWorldWriteAccessor.Instantiate(Entity srcEntity, int instanceCount, Allocator allocator)
         => EntityManager.Instantiate(srcEntity, instanceCount, allocator);
 
+    DynamicBuffer<T> ISimWorldWriteAccessor.GetBuffer<T>(Entity entity)
+        => EntityManager.GetBuffer<T>(entity);
+
     bool ISimWorldWriteAccessor.RemoveChunkComponent<T>(Entity entity)
         => EntityManager.RemoveChunkComponent<T>(entity);
 

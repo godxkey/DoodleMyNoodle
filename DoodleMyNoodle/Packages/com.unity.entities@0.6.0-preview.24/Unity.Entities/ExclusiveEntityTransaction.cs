@@ -193,10 +193,21 @@ namespace Unity.Entities
 
         public DynamicBuffer<T> GetBuffer<T>(Entity entity) where T : struct, IBufferElementData
         {
-            CheckReadAccess();
+            CheckWriteAccess();
             return m_EntityDataAccess.GetBuffer<T>(entity
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
                 ,m_Safety, m_Safety
+#endif
+                );
+        }
+
+        // added by fbessette 2020-04-19
+        public DynamicBuffer<T> GetBufferReadOnly<T>(Entity entity) where T : struct, IBufferElementData
+        {
+            CheckReadAccess();
+            return m_EntityDataAccess.GetBufferReadOnly<T>(entity
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                , m_Safety, m_Safety
 #endif
                 );
         }
