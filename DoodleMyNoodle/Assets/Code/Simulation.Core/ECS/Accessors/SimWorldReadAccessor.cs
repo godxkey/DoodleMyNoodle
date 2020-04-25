@@ -117,4 +117,8 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     public bool GetEnabled(Entity entity)
         => EntityManager.GetEnabled(entity);
 
+#if UNITY_EDITOR
+    public string GetName(Entity entity)
+        => EntityManager.GetName(entity);
+#endif
 }

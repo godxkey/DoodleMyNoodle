@@ -15,7 +15,6 @@ public static class SimWorldAccessorExtensions
         }
     }
 
-
     public static bool TryGetComponentData<T>(this ISimWorldReadAccessor accessor, Entity entity, out T componentData)
          where T : struct, IComponentData
     {
@@ -27,5 +26,81 @@ public static class SimWorldAccessorExtensions
 
         componentData = default;
         return false;
+    }
+
+    public static bool TryGetBuffer<T>(this ISimWorldReadWriteAccessor accessor, Entity entity, out DynamicBuffer<T> buffer)
+         where T : struct, IBufferElementData
+    {
+        if (accessor.HasComponent<T>(entity))
+        {
+            buffer = accessor.GetBuffer<T>(entity);
+            return true;
+        }
+
+        buffer = default;
+        return false;
+    }
+
+    public static bool TryGetBufferReadOnly<T>(this ISimWorldReadAccessor accessor, Entity entity, out DynamicBuffer<T> buffer)
+         where T : struct, IBufferElementData
+    {
+        if (accessor.HasComponent<T>(entity))
+        {
+            buffer = accessor.GetBufferReadOnly<T>(entity);
+            return true;
+        }
+
+        buffer = default;
+        return false;
+    }
+
+    public static bool TryGetSingletonEntity<T>(this ISimWorldReadAccessor accessor, out Entity entity)
+         where T : struct, IComponentData
+    {
+        if (accessor.HasSingleton<T>())
+        {
+            entity = accessor.GetSingletonEntity<T>();
+            return true;
+        }
+
+        entity = Entity.Null;
+        return false;
+    }
+
+    public static void SetOrCreateSingleton<T>(this ISimWorldReadWriteAccessor accessor, in T componentData)
+        where T : struct, IComponentData
+    {
+        if (!accessor.HasSingleton<T>())
+        {
+            accessor.CreateNamedSingleton<T>();
+        }
+
+        accessor.SetSingleton(componentData);
+    }
+
+    private static Entity CreateNamedSingleton<T>(this ISimWorldWriteAccessor accessor)
+        where T : struct, IComponentData
+    {
+        var singletonEntity = accessor.CreateEntity(typeof(T));
+
+#if UNITY_EDITOR
+        accessor.SetName(singletonEntity, typeof(T).Name);
+#endif
+
+        return singletonEntity;
+    }
+
+    public static Entity CreateEventEntity<T>(this ISimWorldReadWriteAccessor entityManager) 
+        where T : struct, IComponentData
+    {
+        return entityManager.CreateEntity(typeof(EventEntityTag), ComponentType.ReadWrite<T>());
+    }
+
+    public static Entity CreateEventEntity<T>(this ISimWorldReadWriteAccessor accessor, T data)
+         where T : struct, IComponentData
+    {
+        Entity e = accessor.CreateEventEntity<T>();
+        accessor.SetComponentData(e, data);
+        return e;
     }
 }

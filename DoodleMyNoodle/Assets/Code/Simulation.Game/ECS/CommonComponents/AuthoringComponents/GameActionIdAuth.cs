@@ -11,9 +11,6 @@ public class GameActionIdAuth : MonoBehaviour, IConvertGameObjectToEntity
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new GameActionId()
-        {
-            Value = GameActionBank.GetActionId(GameActionBank.GetAction(Value))
-        });
+        dstManager.AddComponentData(entity, GameActionBank.GetActionId(Value));
     }
 }

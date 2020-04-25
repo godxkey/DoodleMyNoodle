@@ -45,9 +45,12 @@ public class CreatePlayerSystem : SimComponentSystem
     {
         Entity uncontrolledEntity = Entity.Null;
 
-        Entities.ForEach((Entity controllableEntity, ref ControllableTag controlledTag) =>
+        Entities
+            .WithNone<InstantiateAndUseDefaultControllerTag>() // entities with this tag will have their DefaultController spawned
+            .WithAll<ControllableTag>()
+            .ForEach((Entity controllableEntity) =>
         {
-            if (!IsEntityControlled(controllableEntity))
+            if (!CommonReads.IsPawnControlled(Accessor, controllableEntity))
             {
                 uncontrolledEntity = controllableEntity;
                 return;
@@ -56,19 +59,27 @@ public class CreatePlayerSystem : SimComponentSystem
 
         return uncontrolledEntity;
     }
+}
 
-    private bool IsEntityControlled(Entity entity)
+public partial class CommonReads
+{
+    public static Entity GetPawnController(ISimWorldReadAccessor accessor, Entity pawn)
     {
-        bool result = false;
-        Entities.ForEach((ref ControlledEntity x) =>
+        Entity result = Entity.Null;
+        accessor.Entities.ForEach((Entity controller, ref ControlledEntity x) =>
         {
-            if (entity == x.Value)
+            if (pawn == x.Value)
             {
-                result = true;
+                result = controller;
                 return;
             }
         });
 
         return result;
+    }
+
+    public static bool IsPawnControlled(ISimWorldReadAccessor accessor, Entity pawn)
+    {
+        return GetPawnController(accessor, pawn) != Entity.Null;
     }
 }
