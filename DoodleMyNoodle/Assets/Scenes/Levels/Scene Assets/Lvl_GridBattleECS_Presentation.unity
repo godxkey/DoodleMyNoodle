@@ -1412,7 +1412,7 @@ GameObject:
   - component: {fileID: 1504223441}
   - component: {fileID: 1504223440}
   m_Layer: 0
-  m_Name: TileHighlights
+  m_Name: TileHighlightsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1430,7 +1430,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dbcb22869238e649860035d0647f866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightPrefab: {fileID: 1504223439}
+  HighlightPrefab: {fileID: 8589829087157937559, guid: d1542b07390bf3d4e8b8151bd28471f4,
+    type: 3}
 --- !u!4 &1504223441
 Transform:
   m_ObjectHideFlags: 0

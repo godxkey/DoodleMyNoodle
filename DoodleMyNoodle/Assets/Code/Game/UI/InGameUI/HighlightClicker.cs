@@ -1,14 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class HighlightClicker : GameMonoBehaviour
 {
-    public class OnHighlightClicked : UnityEvent<Vector2> { }
-
-    [HideInInspector]
-    public OnHighlightClicked OnClicked = new OnHighlightClicked();
+    public Action<Vector2> OnClicked;
 
     public override void OnGameUpdate()
     {
@@ -26,7 +24,8 @@ public class HighlightClicker : GameMonoBehaviour
         Ray ray = CameraService.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
 
         float enter = 0.0f;
-        if (SimTileManager.Instance.FloorPlane.Raycast(ray, out enter))
+        Plane FloorPlane = new Plane(CommonReads.GetFloorPlaneNormal(SimWorld).ToUnityVec(),0);
+        if (FloorPlane.Raycast(ray, out enter))
         {
             Vector3 hitPoint = ray.GetPoint(enter);
             return hitPoint;

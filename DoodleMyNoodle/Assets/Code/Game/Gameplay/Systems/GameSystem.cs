@@ -41,7 +41,7 @@ public abstract class GameSystem<T> : GameSystem where T : GameSystem<T>
         base.Awake();
 
         if (Instance != null)
-            DebugService.LogError("We have 2 instances of " + nameof(T));
+            DebugService.LogError("We have 2 instances of " + typeof(T).Name);
 
         Instance = (T)this;
     }

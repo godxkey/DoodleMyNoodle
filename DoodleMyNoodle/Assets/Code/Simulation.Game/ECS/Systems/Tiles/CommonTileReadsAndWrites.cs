@@ -6,6 +6,11 @@ using Unity.Entities;
 
 public partial class CommonReads
 {
+    public static fix3 GetFloorPlaneNormal(ISimWorldReadAccessor accessor) 
+    {
+        return fix3(0, 0, -1);
+    }
+
     public static void FindEntitiesOnTileWithComponent<T>(ISimWorldReadAccessor accessor, int2 tile, NativeList<Entity> result)
         where T : struct, IComponentData
     {

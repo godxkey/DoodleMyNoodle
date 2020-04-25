@@ -63,13 +63,11 @@ public class InventoryDisplay : GameMonoBehaviour
     {
         if (GameMonoBehaviourHelpers.SimulationWorld.TryGetBufferReadOnly(_localPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
-            if(inventory.Length < ItemIndex && ItemIndex > -1)
+            if(inventory.Length > ItemIndex && ItemIndex > -1)
             {
                 InventoryItemReference item = inventory[ItemIndex];
                 if (GameMonoBehaviourHelpers.SimulationWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
                 {
-                    OnStartUsingNewItem();
-
                     Entity itemEntity = item.ItemEntity;
 
                     SimWorld.TryGetComponentData(itemEntity, out GameActionId actionId);
@@ -77,30 +75,37 @@ public class InventoryDisplay : GameMonoBehaviour
 
                     GameAction.UseContract itemUseContract = itemGameAction.GetUseContract(SimWorld, PlayerHelpers.GetLocalSimPlayerEntity(SimWorld), _localPawn);
 
-                    QueryUseDataFromPlayer(itemUseContract);
-                    GameAction.UseData itemUseData = _currentItemUseData;
+                    OnStartUsingNewItem(itemUseContract);
 
-                    SimPlayerInputUseItem simInput = new SimPlayerInputUseItem(ItemIndex, itemUseData);
-                    SimWorld.SubmitInput(simInput);
+                    QueryUseDataFromPlayer(itemUseContract,()=> 
+                    {
+                        SimPlayerInputUseItem simInput = new SimPlayerInputUseItem(ItemIndex, _currentItemUseData);
+                        SimWorld.SubmitInput(simInput);
+                    });
+
                 }
             }
         }
     }
 
-    private void OnStartUsingNewItem()
+    private void OnStartUsingNewItem(GameAction.UseContract NewItemContact)
     {
-        _currentItemUseData = GameAction.UseData.Create();
+        // clean up in case we try to use two items one after the other (cancel feature)
+        _currentItemUseData = GameAction.UseData.Create(new GameActionParameterTile.Data[NewItemContact.ParameterTypes.Length]);
     }
 
     private GameAction.UseData _currentItemUseData;
-    private void QueryUseDataFromPlayer(GameAction.UseContract itemUseContact, int DataToExtract = 0)
+    private void QueryUseDataFromPlayer(GameAction.UseContract itemUseContact, Action onComplete, int DataToExtract = 0)
     {
-        if (itemUseContact.ParameterTypes.Length >= DataToExtract)
+        if (DataToExtract >= itemUseContact.ParameterTypes.Length) 
+        {
+            onComplete?.Invoke();
             return;
+        }
 
         IdentifyAndGatherDataForParameterDescription(itemUseContact.ParameterTypes[DataToExtract], DataToExtract, ()=> 
         {
-            QueryUseDataFromPlayer(itemUseContact, DataToExtract + 1);
+            QueryUseDataFromPlayer(itemUseContact, onComplete, DataToExtract + 1);
         });
     }
     
