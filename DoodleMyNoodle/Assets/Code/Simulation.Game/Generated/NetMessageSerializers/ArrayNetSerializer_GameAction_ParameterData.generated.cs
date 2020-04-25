@@ -4,21 +4,21 @@
 using System;
 using System.Collections.Generic;
 
-public static class ArrayNetSerializer_System_Byte
+public static class ArrayNetSerializer_GameAction_ParameterData
 {
-    public static int GetNetBitSize(ref System.Byte[] obj)
+    public static int GetNetBitSize(ref GameAction.ParameterData[] obj)
     {
         if (obj == null)
             return 1;
         int result = 1 + sizeof(UInt32) * 8;
         for (int i = 0; i < obj.Length; i++)
         {
-            result += StaticNetSerializer_System_Byte.GetNetBitSize(ref obj[i]);
+            result += StaticNetSerializer_GameAction_ParameterData.GetNetBitSize_Class(obj[i]);
         }
         return result;
     }
 
-    public static void NetSerialize(ref System.Byte[] obj, BitStreamWriter writer)
+    public static void NetSerialize(ref GameAction.ParameterData[] obj, BitStreamWriter writer)
     {
         if (obj == null)
         {
@@ -29,21 +29,21 @@ public static class ArrayNetSerializer_System_Byte
         writer.WriteUInt32((UInt32)obj.Length);
         for (int i = 0; i < obj.Length; i++)
         {
-            StaticNetSerializer_System_Byte.NetSerialize(ref obj[i], writer);
+            StaticNetSerializer_GameAction_ParameterData.NetSerialize_Class(obj[i], writer);
         }
     }
 
-    public static void NetDeserialize(ref System.Byte[] obj, BitStreamReader reader)
+    public static void NetDeserialize(ref GameAction.ParameterData[] obj, BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
             obj = null;
             return;
         }
-        obj = new System.Byte[reader.ReadUInt32()];
+        obj = new GameAction.ParameterData[reader.ReadUInt32()];
         for (int i = 0; i < obj.Length; i++)
         {
-            StaticNetSerializer_System_Byte.NetDeserialize(ref obj[i], reader);
+            obj[i] = StaticNetSerializer_GameAction_ParameterData.NetDeserialize_Class(reader);
         }
     }
 }

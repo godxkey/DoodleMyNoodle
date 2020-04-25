@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class ArrayNetSerializer_System_Int32
 {
-    public static int GetNetBitSize(ref Int32[] obj)
+    public static int GetNetBitSize(ref System.Int32[] obj)
     {
         if (obj == null)
             return 1;

@@ -24,6 +24,8 @@ public class GameActionParameterTile
     {
         public int2 Tile;
 
+        public Data() { }
+
         public Data(int parameterIndex, int2 tile)
             : base(parameterIndex)
         {

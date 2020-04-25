@@ -9,7 +9,7 @@ public static class StaticNetSerializer_GameAction_ParameterData
     {
         if (obj == null)
             return 1;
-        return 1 + GetNetBitSize(obj);
+        return 1 + DynamicNetSerializer.GetNetBitSize(obj);
     }
 
     public static int GetNetBitSize(GameAction.ParameterData obj)
@@ -27,22 +27,20 @@ public static class StaticNetSerializer_GameAction_ParameterData
             return;
         }
         writer.WriteBit(true);
-        NetSerialize(obj, writer);
+        DynamicNetSerializer.NetSerialize(obj, writer);
     }
     public static void NetSerialize(GameAction.ParameterData obj, BitStreamWriter writer)
     {
         StaticNetSerializer_System_Int32.NetSerialize(ref obj.ParamIndex, writer);
     }
 
-    public static ParameterData NetDeserialize_Class(BitStreamReader reader)
+    public static GameAction.ParameterData NetDeserialize_Class(BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
             return null;
         }
-        GameAction.ParameterData obj = new GameAction.ParameterData();
-        NetDeserialize(obj, reader);
-        return obj;
+        return (GameAction.ParameterData)DynamicNetSerializer.NetDeserialize(reader);
     }
     public static void NetDeserialize(GameAction.ParameterData obj, BitStreamReader reader)
     {

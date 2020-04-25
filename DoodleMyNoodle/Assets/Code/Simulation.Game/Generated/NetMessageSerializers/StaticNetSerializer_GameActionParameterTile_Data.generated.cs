@@ -38,7 +38,7 @@ public static class StaticNetSerializer_GameActionParameterTile_Data
         StaticNetSerializer_GameAction_ParameterData.NetSerialize(obj, writer);
     }
 
-    public static Data NetDeserialize_Class(BitStreamReader reader)
+    public static GameActionParameterTile.Data NetDeserialize_Class(BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {

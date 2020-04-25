@@ -9,10 +9,12 @@ public abstract class GameAction
     {
     }
 
-    [NetSerializable]
+    [NetSerializable(baseClass = true)]
     public abstract class ParameterData
     {
         public int ParamIndex;
+
+        public ParameterData() { }
 
         protected ParameterData(int paramIndex)
         {
@@ -30,11 +32,12 @@ public abstract class GameAction
         }
     }
 
+    [NetSerializable]
     public sealed class UseData
     {
         public ParameterData[] ParameterDatas;
 
-        private UseData(params ParameterData[] parameterDatas)
+        public UseData(params ParameterData[] parameterDatas)
         {
             ParameterDatas = parameterDatas ?? throw new ArgumentNullException(nameof(parameterDatas));
         }
