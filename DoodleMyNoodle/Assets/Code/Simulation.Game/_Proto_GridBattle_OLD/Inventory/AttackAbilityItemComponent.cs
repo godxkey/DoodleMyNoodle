@@ -49,7 +49,7 @@ public class AttackAbilityItemComponent : SimComponent, IItemOnEquip, IItemOnUne
                 {
                     object[] ItemUsageInfo = { Destination };
 
-                    simPlayerInputUseItem.Informations = ItemUsageInfo;
+                    //simPlayerInputUseItem.Informations = ItemUsageInfo;
 
                     OnContextReady.Invoke(simPlayerInputUseItem);
                 });

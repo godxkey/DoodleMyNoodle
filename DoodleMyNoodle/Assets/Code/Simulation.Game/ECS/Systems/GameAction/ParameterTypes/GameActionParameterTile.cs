@@ -19,6 +19,7 @@ public class GameActionParameterTile
         public TileFilterFlags Filter;
     }
 
+    [NetSerializable]
     public class Data : GameAction.ParameterData
     {
         public int2 Tile;

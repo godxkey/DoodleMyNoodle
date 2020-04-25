@@ -6,12 +6,15 @@ using System.Collections.Generic;
 /// </summary>
 public class GameMonoBehaviour : MonoBehaviour
 {
-    static List<GameMonoBehaviour> _registeredBehaviours = new List<GameMonoBehaviour>();
-    public static ReadOnlyList<GameMonoBehaviour> RegisteredBehaviours => _registeredBehaviours.AsReadOnlyNoAlloc();
+    static List<GameMonoBehaviour> s_registeredBehaviours = new List<GameMonoBehaviour>();
+    public static ReadOnlyList<GameMonoBehaviour> RegisteredBehaviours => s_registeredBehaviours.AsReadOnlyNoAlloc();
+
+    public ExternalSimWorldAccessor SimWorld => GameMonoBehaviourHelpers.SimulationWorld;
+    public Unity.Entities.World PresWorld => GameMonoBehaviourHelpers.PresentationWorld;
 
     protected virtual void Awake()
     {
-        _registeredBehaviours.Add(this);
+        s_registeredBehaviours.Add(this);
         if (Game.Ready)
             OnGameReady();
         if (Game.Started)
@@ -22,7 +25,7 @@ public class GameMonoBehaviour : MonoBehaviour
     {
         if(ApplicationUtilityService.ApplicationIsQuitting == false)
         {
-            _registeredBehaviours.Remove(this);
+            s_registeredBehaviours.Remove(this);
             OnSafeDestroy();
         }
     }

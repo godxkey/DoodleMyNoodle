@@ -27,24 +27,22 @@ public class InventorySlot : GameMonoBehaviour, IPointerEnterHandler, IPointerEx
     public Color HoverBackgroundColor = Color.white;
     private Color _startBackgroundColor;
 
-    public class OnItemUsedEvent : UnityEvent<SimAssetId> { }
-    [HideInInspector]
-    public OnItemUsedEvent OnItemUsed;
+    public Action<int> OnItemUsed;
     
     private ItemVisualInfo _currentItem;
+    private int _currentItemIndex;
 
     private void Start()
     {
         _startBackgroundColor = Background.color;
     }
 
-    public void UpdateCurrentItemSlot(ItemVisualInfo Item, InventorySlotInfo SlotInfo, UnityAction<SimAssetId> OnItemUsed)
+    public void UpdateCurrentItemSlot(ItemVisualInfo item, int itemIndex, InventorySlotInfo slotInfo, Action<int> onItemUsed)
     {
-        _currentItem = Item;
-        Info = SlotInfo;
-
-        if(OnItemUsed != null)
-            this.OnItemUsed.AddListener(OnItemUsed);
+        _currentItem = item;
+        _currentItemIndex = itemIndex;
+        Info = slotInfo;
+        OnItemUsed = onItemUsed;
 
         UpdateDisplay();
     }
@@ -86,7 +84,7 @@ public class InventorySlot : GameMonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         if (eventData.button == PointerEventData.InputButton.Right) 
         {
-            OnItemUsed.Invoke(_currentItem.ID.GetSimAssetId());
+            OnItemUsed.Invoke(_currentItemIndex);
         }
     }
 }

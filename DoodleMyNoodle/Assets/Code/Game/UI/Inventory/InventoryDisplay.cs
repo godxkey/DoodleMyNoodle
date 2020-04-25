@@ -31,14 +31,14 @@ public class InventoryDisplay : GameMonoBehaviour
         UpdateCurrentPlayerPawn();
 
         int itemIndex = 0;
-        if (GameMonoBehaviourHelpers.SimulationWorld.TryGetBuffer(_localPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if (SimWorld.TryGetBufferReadOnly(_localPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             foreach (InventoryItemReference item in inventory)
             {
-                if (GameMonoBehaviourHelpers.SimulationWorld.TryGetComponentData(item.ItemEntity,out SimAssetId itemIDComponent))
+                if (SimWorld.TryGetComponentData(item.ItemEntity,out SimAssetId itemIDComponent))
                 {
                     ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
-                    _inventorySlots[itemIndex].UpdateCurrentItemSlot(itemInfo, InventorySlotShortcuts[itemIndex], OnItemUsed);
+                    _inventorySlots[itemIndex].UpdateCurrentItemSlot(itemInfo, itemIndex, InventorySlotShortcuts[itemIndex], OnIntentionToUseItem);
                     itemIndex++;
                 }
             }
@@ -47,7 +47,7 @@ public class InventoryDisplay : GameMonoBehaviour
         // Clear the rest of the inventory slots
         for (int i = _inventorySlots.Count - 1; i > itemIndex; i--)
         {
-            _inventorySlots[i].UpdateCurrentItemSlot(null, InventorySlotShortcuts[i], null);
+            _inventorySlots[i].UpdateCurrentItemSlot(null, i, InventorySlotShortcuts[i], null);
         }
     }
 
@@ -55,35 +55,33 @@ public class InventoryDisplay : GameMonoBehaviour
     {
         if(_localPawn == Entity.Null)
         {
-            _localPawn = PlayerIdHelpers.GetLocalSimPawnEntity(GameMonoBehaviourHelpers.SimulationWorld);
+            _localPawn = PlayerHelpers.GetLocalSimPawnEntity(SimWorld);
         }
     }
 
-    private void OnItemUsed(SimAssetId ItemAssetID)
+    private void OnIntentionToUseItem(int ItemIndex)
     {
-        if (GameMonoBehaviourHelpers.SimulationWorld.TryGetBuffer(_localPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if (GameMonoBehaviourHelpers.SimulationWorld.TryGetBufferReadOnly(_localPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
-            foreach (InventoryItemReference item in inventory)
+            if(inventory.Length < ItemIndex && ItemIndex > -1)
             {
+                InventoryItemReference item = inventory[ItemIndex];
                 if (GameMonoBehaviourHelpers.SimulationWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
                 {
-                    if (itemIDComponent == ItemAssetID)
-                    {
-                        OnStartUsingNewItem();
+                    OnStartUsingNewItem();
 
-                        Entity itemEntity = item.ItemEntity;
+                    Entity itemEntity = item.ItemEntity;
 
-                        GameMonoBehaviourHelpers.SimulationWorld.TryGetComponentData(itemEntity, out GameActionId actionId);
-                        GameAction itemGameAction = GameActionBank.GetAction(actionId);
+                    SimWorld.TryGetComponentData(itemEntity, out GameActionId actionId);
+                    GameAction itemGameAction = GameActionBank.GetAction(actionId);
 
-                        GameAction.UseContract itemUseContract = itemGameAction.GetUseContract(GameMonoBehaviourHelpers.SimulationWorld, _localPawn);
+                    GameAction.UseContract itemUseContract = itemGameAction.GetUseContract(SimWorld, PlayerHelpers.GetLocalSimPlayerEntity(SimWorld), _localPawn);
 
-                        QueryUseDataFromPlayer(itemUseContract);
-                        GameAction.UseData itemUseData = _currentItemUseData;
+                    QueryUseDataFromPlayer(itemUseContract);
+                    GameAction.UseData itemUseData = _currentItemUseData;
 
-                        // USE ITEM - SIM INPUT
-                        //itemGameAction.Use(GameMonoBehaviourHelpers.SimulationWorld, _localPawn, itemUseData);
-                    }
+                    SimPlayerInputUseItem simInput = new SimPlayerInputUseItem(ItemIndex, itemUseData);
+                    SimWorld.SubmitInput(simInput);
                 }
             }
         }
@@ -91,7 +89,7 @@ public class InventoryDisplay : GameMonoBehaviour
 
     private void OnStartUsingNewItem()
     {
-        _currentItemUseData = new GameAction.UseData() { ParameterDatas = new GameAction.ParameterData[] { } };
+        _currentItemUseData = GameAction.UseData.Create();
     }
 
     private GameAction.UseData _currentItemUseData;

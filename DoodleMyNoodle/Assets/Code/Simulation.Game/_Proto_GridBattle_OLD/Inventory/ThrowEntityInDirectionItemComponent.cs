@@ -58,7 +58,7 @@ public class ThrowEntityInDirectionItemComponent : SimComponent, IItemOnEquip, I
                 {
                     object[] ItemUsageInfo = { new fix2(PawnComponent.SimTransform.WorldPosition.x, PawnComponent.SimTransform.WorldPosition.y), Destination };
 
-                    simPlayerInputUseItem.Informations = ItemUsageInfo;
+                    //simPlayerInputUseItem.Informations = ItemUsageInfo;
 
                     OnContextReady.Invoke(simPlayerInputUseItem);
                 });

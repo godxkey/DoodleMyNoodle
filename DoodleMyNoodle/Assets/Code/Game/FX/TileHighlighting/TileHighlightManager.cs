@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using static Unity.Mathematics.math;
 using UnityEngine;
 
 public class TileHighlightManager : GameSystem<TileHighlightManager>
@@ -22,10 +23,13 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
         _highlights.Clear();
     }
 
+    private Action<GameActionParameterTile.Data> _currentTileSelectionCallback;
     public void AskForSingleTileSelectionAroundPlayer(GameActionParameterTile.Description TileParameters, Action<GameActionParameterTile.Data> TileSelectedData)
     {
-        AddHilightsAroundPlayer(TileParameters.InstigatorTilePosition, TileParameters.RangeFromInstigator, TileParameters.Filter);
-        // remember this action is the one to do when highlight is selected
+        OnNewHighlightPromptRequestStarted();
+        GameMonoBehaviourHelpers.SimulationWorld.TryGetComponentData<FixTranslation>(PlayerHelpers.GetLocalSimPawnEntity(GameMonoBehaviourHelpers.SimulationWorld), out FixTranslation localPawnPosition);
+        AddHilightsAroundPlayer(localPawnPosition.Value, TileParameters.RangeFromInstigator, TileParameters.Filter);
+        _currentTileSelectionCallback = TileSelectedData;
     }
 
     private void AddHilightsAroundPlayer(fix3 pos, int depth, TileFilterFlags ignoredTileFlags)
@@ -71,6 +75,21 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
         }
     }
 
+    private void OnHighlightClicked(Vector2 tileHighlightClicked)
+    {
+        if(_currentTileSelectionCallback != null) 
+        {
+            GameActionParameterTile.Data TileSelectionData = new GameActionParameterTile.Data(0, int2((int)tileHighlightClicked.x, (int)tileHighlightClicked.y));
+            _currentTileSelectionCallback?.Invoke(TileSelectionData);
+            HideAll();
+        }
+    }
+
+    private void OnNewHighlightPromptRequestStarted()
+    {
+        _currentTileSelectionCallback = null;
+    }
+
     private void NeedNewTileAtPosition(fix2 position)
     {
         GameObject newHighlight = HighlightPrefab.Duplicate();
@@ -80,11 +99,6 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
         newHighlight.transform.position = new Vector3((float)position.x, (float)position.y,0);
 
         newHighlight.GetComponent<HighlightClicker>()?.OnClicked.AddListener(OnHighlightClicked);
-    }
-
-    private void OnHighlightClicked(Vector2 tileHighlightClicked)
-    {
-        // trigger current action to be done when highlight is clicked, see AskForTileSelection
     }
 
     private void HideAll()
