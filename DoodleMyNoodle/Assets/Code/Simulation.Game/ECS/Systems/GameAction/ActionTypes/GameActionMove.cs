@@ -64,21 +64,20 @@ public class GameActionMove : GameAction
 
     public override void Use(ISimWorldReadWriteAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn, UseData useData)
     {
-        if(useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             int instigatorAP = accessor.GetComponentData<ActionPoints>(instigatorPawn).Value;
-            fix3 instigatorPos = accessor.GetComponentData<FixTranslation>(instigatorPawn).Value;
-            int2 instigatorTile = roundToInt(instigatorPos).xy;
+            int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(instigatorPawn).Value).xy;
 
             int costToMove = lengthmanhattan(paramTile.Tile - instigatorTile);
 
-            if(costToMove > instigatorAP)
+            if (costToMove > instigatorAP)
             {
                 return;
             }
 
             // reduce instigator AP
-            CommonWrites.SetStatInt(accessor, instigatorPawn, new ActionPoints() { Value = instigatorAP - costToMove });
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, instigatorPawn, -costToMove);
 
             // set destination
             accessor.SetOrAddComponentData(instigatorPawn, new Destination() { Value = fix3(paramTile.Tile, 0) });

@@ -5,7 +5,7 @@ public enum TileFilterFlags
 {
     Navigable = 1 << 0,
     NonNavigable = 1 << 1,
-    
+
 
     Occupied = 1 << 2,
     Inoccupied = 1 << 3,
@@ -22,5 +22,11 @@ public class GameActionParameterTile
     public class Data : GameAction.ParameterData
     {
         public int2 Tile;
+
+        public Data(int parameterIndex, int2 tile)
+            : base(parameterIndex)
+        {
+            Tile = tile;
+        }
     }
 }

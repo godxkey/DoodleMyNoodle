@@ -39,6 +39,24 @@ public struct MaximumFix<T> : IComponentData
 
 internal static partial class CommonWrites
 {
+    public static void ModifyStatInt<T>(ISimWorldReadWriteAccessor accessor, Entity entity, int value)
+        where T : struct, IComponentData, IStatInt
+    {
+        int currentValue = accessor.GetComponentData<T>(entity).Value;
+        int newValue = currentValue + value;
+
+        accessor.SetComponentData(entity, new T { Value = newValue });
+    }
+
+    public static void ModifyStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, int value)
+        where T : struct, IComponentData, IStatFix
+    {
+        fix currentValue = accessor.GetComponentData<T>(entity).Value;
+        fix newValue = currentValue + value;
+
+        accessor.SetComponentData(entity, new T { Value = newValue });
+    }
+
     public static void SetStatInt<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T compData)
         where T : struct, IComponentData, IStatInt
     {

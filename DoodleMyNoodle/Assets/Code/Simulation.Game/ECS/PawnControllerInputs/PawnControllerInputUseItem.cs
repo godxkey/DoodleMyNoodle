@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 
 public class PawnControllerInputUseItem : PawnControllerInputBase
@@ -8,7 +9,8 @@ public class PawnControllerInputUseItem : PawnControllerInputBase
     public int ItemIndex;
     public GameAction.UseData GameActionData;
 
-    public PawnControllerInputUseItem(int itemIndex, GameAction.UseData gameActionData)
+    public PawnControllerInputUseItem(Entity pawnController, int itemIndex, GameAction.UseData gameActionData)
+        : base(pawnController)
     {
         ItemIndex = itemIndex;
         GameActionData = gameActionData ?? throw new ArgumentNullException(nameof(gameActionData));

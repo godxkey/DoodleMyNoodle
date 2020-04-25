@@ -132,8 +132,10 @@ public class InternalSimWorldAccessor : SimWorldReadAccessor, ISimWorldReadWrite
     void ISimWorldWriteAccessor.SetEnabled(Entity entity, bool enabled)
         => EntityManager.SetEnabled(entity, enabled);
 
+#if UNITY_EDITOR
     void ISimWorldWriteAccessor.SetName(Entity entity, string name)
         => EntityManager.SetName(entity, name);
+#endif
 
     void ISimWorldWriteAccessor.SetSharedComponentData<T>(Entity entity, T componentData)
         => EntityManager.SetSharedComponentData(entity, componentData);

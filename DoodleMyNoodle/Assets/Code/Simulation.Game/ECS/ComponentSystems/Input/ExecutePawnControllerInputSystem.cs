@@ -6,6 +6,11 @@ using Unity.Entities;
 public abstract class PawnControllerInputBase
 {
     public Entity PawnController;
+
+    protected PawnControllerInputBase(Entity pawnController)
+    {
+        PawnController = pawnController;
+    }
 }
 
 /// <summary>
@@ -40,7 +45,7 @@ public class ClearPawnControllerInputSystem : SimComponentSystem
 /// </summary>
 public class ExecutePawnControllerInputSystem : SimComponentSystem
 {
-    public List<PawnControllerInputBase> Inputs;
+    public readonly List<PawnControllerInputBase> Inputs = new List<PawnControllerInputBase>();
 
     protected override void OnUpdate()
     {

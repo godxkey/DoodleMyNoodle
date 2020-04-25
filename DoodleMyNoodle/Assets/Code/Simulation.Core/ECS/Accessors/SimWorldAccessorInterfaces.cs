@@ -744,7 +744,9 @@ public interface ISimWorldWriteAccessor
     /// <seealso cref="EntityQuery.SetSingleton{T}"/>
     void SetSingleton<T>(T value) where T : struct, IComponentData;
 
+#if UNITY_EDITOR
     void SetName(Entity entity, string name);
+#endif
 
     T GetOrCreateSystem<T>() where T : ComponentSystemBase;
 }
@@ -1003,4 +1005,14 @@ public interface ISimWorldReadAccessor
     /// Returns false if the component has the 'Disabled' component. Disabled entities are excluded from entity queries by default
     /// </summary>
     bool GetEnabled(Entity entity);
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// Gets the name assigned to an entity.
+    /// </summary>
+    /// <remarks>For performance, entity names only exist when running in the Unity Editor.</remarks>
+    /// <param name="entity">The Entity object of the entity of interest.</param>
+    /// <returns>The entity name.</returns>
+    string GetName(Entity entity);
+#endif
 }

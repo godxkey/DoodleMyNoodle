@@ -15,7 +15,6 @@ public static class SimWorldAccessorExtensions
         }
     }
 
-
     public static bool TryGetComponentData<T>(this ISimWorldReadAccessor accessor, Entity entity, out T componentData)
          where T : struct, IComponentData
     {
@@ -26,6 +25,32 @@ public static class SimWorldAccessorExtensions
         }
 
         componentData = default;
+        return false;
+    }
+
+    public static bool TryGetBuffer<T>(this ISimWorldReadWriteAccessor accessor, Entity entity, out DynamicBuffer<T> buffer)
+         where T : struct, IBufferElementData
+    {
+        if (accessor.HasComponent<T>(entity))
+        {
+            buffer = accessor.GetBuffer<T>(entity);
+            return true;
+        }
+
+        buffer = default;
+        return false;
+    }
+
+    public static bool TryGetBufferReadOnly<T>(this ISimWorldReadAccessor accessor, Entity entity, out DynamicBuffer<T> buffer)
+         where T : struct, IBufferElementData
+    {
+        if (accessor.HasComponent<T>(entity))
+        {
+            buffer = accessor.GetBufferReadOnly<T>(entity);
+            return true;
+        }
+
+        buffer = default;
         return false;
     }
 

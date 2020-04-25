@@ -14,6 +14,11 @@ public abstract class GameAction
     public abstract class ParameterData
     {
         public int ParamIndex;
+
+        protected ParameterData(int paramIndex)
+        {
+            ParamIndex = paramIndex;
+        }
     }
 
     public sealed class UseContract

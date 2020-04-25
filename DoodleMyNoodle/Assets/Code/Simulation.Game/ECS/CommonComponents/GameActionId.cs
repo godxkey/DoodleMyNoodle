@@ -9,7 +9,7 @@ public struct GameActionId : IComponentData, IEquatable<GameActionId>
     public ushort Value;
 
     public static GameActionId Invalid => default;
-    public bool IsValid => Equals(Invalid);
+    public bool IsValid => !Equals(Invalid);
 
     public bool Equals(GameActionId other)
     {
