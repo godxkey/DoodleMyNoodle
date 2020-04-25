@@ -13,7 +13,8 @@ public class CreatePlayerSystem : SimComponentSystem
                     typeof(PlayerTag),
                     typeof(PersistentId),
                     typeof(Name),
-                    typeof(ControlledEntity));
+                    typeof(ControlledEntity),
+                    typeof(Team));
 
                 // set persistent id
                 EntityManager.SetComponentData(newPlayerEntity, this.MakeUniquePersistentId());
@@ -25,13 +26,17 @@ public class CreatePlayerSystem : SimComponentSystem
 
                 // set name
                 EntityManager.SetComponentData(newPlayerEntity, new Name() { Value = playerName });
-
+                
                 // assign controllable entity if possible
                 Entity uncontrolledEntity = FindUncontrolledPawn();
                 if (uncontrolledEntity != Entity.Null)
                 {
                     EntityManager.SetComponentData(newPlayerEntity, new ControlledEntity() { Value = uncontrolledEntity });
                 }
+
+                // set team
+                EntityManager.SetComponentData(newPlayerEntity, new Team() { Value = 0 });
+
 
                 // FOR DEBUGGING ONLY
 #if UNITY_EDITOR

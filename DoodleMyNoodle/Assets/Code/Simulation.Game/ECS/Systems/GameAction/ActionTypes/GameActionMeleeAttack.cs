@@ -49,7 +49,7 @@ public class GameActionMeleeAttack : GameAction
 
             // reduce target health
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, instigatorTile, victims);
+            CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, paramTile.Tile, victims);
             foreach (var entity in victims)
             {
                 DebugService.Log("Attack " + accessor.GetName(entity));
