@@ -49,22 +49,6 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
 
                 Entity pawn = controlledPawn.Value;
 
-                switch (World.Random().NextInt(4))
-                {
-                    case 0:
-                        PawnPerform_Move(controller, pawn, int2(-1, 0)); // move left
-                        break;
-                    case 1:
-                        PawnPerform_Move(controller, pawn, int2(1, 0)); // move right
-                        break;
-                    case 2:
-                        PawnPerform_Move(controller, pawn, int2(0, 1)); // move up
-                        break;
-                    case 3:
-                        PawnPerform_Move(controller, pawn, int2(0, -1)); // move down
-                        break;
-                }
-
                 if (EntityManager.TryGetComponentData(pawn, out FixTranslation pawnPos))
                 {
                     int2 tile = Helpers.GetTile(pawnPos);
@@ -86,6 +70,22 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
                     {
                         PawnPerform_MeleeAttack(controller, pawn, attackTile);
                     }
+                }
+
+                switch (World.Random().NextInt(4))
+                {
+                    case 0:
+                        PawnPerform_Move(controller, pawn, int2(-1, 0)); // move left
+                        break;
+                    case 1:
+                        PawnPerform_Move(controller, pawn, int2(1, 0)); // move right
+                        break;
+                    case 2:
+                        PawnPerform_Move(controller, pawn, int2(0, 1)); // move up
+                        break;
+                    case 3:
+                        PawnPerform_Move(controller, pawn, int2(0, -1)); // move down
+                        break;
                 }
 
                 EntityManager.AddComponent<HasAlreadyPlayedTag>(controller);
