@@ -3,41 +3,6 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class GameActionJump : GameAction
-{
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity instigator)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, Entity instigator)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Use(ISimWorldReadWriteAccessor accessor, Entity instigator, UseData useData)
-    {
-        throw new System.NotImplementedException();
-    }
-}
-public class GameActionShoot : GameAction
-{
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity instigator)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, Entity instigator)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Use(ISimWorldReadWriteAccessor accessor, Entity instigator, UseData useData)
-    {
-        throw new System.NotImplementedException();
-    }
-}
-
 public class GameActionMove : GameAction
 {
     public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, Entity instigator)
@@ -54,6 +19,7 @@ public class GameActionMove : GameAction
             new GameActionParameterTile.Description()
             {
                 IsOptional = false,
+                InstigatorTilePosition = accessor.GetComponentData<FixTranslation>(instigator).Value,
                 RangeFromInstigator = accessor.GetComponentData<ActionPoints>(instigator).Value,
                 Filter = TileFilterFlags.Navigable | TileFilterFlags.Inoccupied
             }
