@@ -16,7 +16,6 @@ public class GameActionMeleeAttack : GameAction
             new GameActionParameterTile.Description()
             {
                 Filter = TileFilterFlags.Occupied | TileFilterFlags.Navigable | TileFilterFlags.NonNavigable,
-                IsOptional = false,
                 RangeFromInstigator = RANGE
             });
     }
@@ -33,7 +32,7 @@ public class GameActionMeleeAttack : GameAction
         {
             int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(instigatorPawn).Value).xy;
 
-            // melee attack has a range of 1
+            // melee attack has a range of RANGE
             if (lengthmanhattan(paramTile.Tile - instigatorTile) > RANGE)
             {
                 return;

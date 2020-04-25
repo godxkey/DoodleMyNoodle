@@ -6,8 +6,7 @@ using Unity.Entities;
 public abstract class GameAction
 {
     public abstract class ParameterDescription
-    {        
-        public bool IsOptional;
+    {
     }
 
     [NetSerializable]

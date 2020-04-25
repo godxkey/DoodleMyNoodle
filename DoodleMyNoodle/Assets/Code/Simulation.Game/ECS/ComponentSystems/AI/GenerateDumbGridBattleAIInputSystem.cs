@@ -51,22 +51,22 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
 
                 if (EntityManager.TryGetComponentData(pawn, out FixTranslation pawnPos))
                 {
-                    int2 tile = Helpers.GetTile(pawnPos);
+                    int2 pawnTile = Helpers.GetTile(pawnPos);
 
                     int2 attackTile = default;
-                    if (HasEnemiesOnTile(controller, pawn, attackTile = tile + int2(-1, 0))) // attack left
+                    if (HasEnemiesOnTile(controller, pawn, attackTile = pawnTile + int2(-1, 0))) // attack left
                     {
                         PawnPerform_MeleeAttack(controller, pawn, attackTile);
                     }
-                    else if (HasEnemiesOnTile(controller, pawn, attackTile = tile + int2(1, 0))) // attack right
+                    else if (HasEnemiesOnTile(controller, pawn, attackTile = pawnTile + int2(1, 0))) // attack right
                     {
                         PawnPerform_MeleeAttack(controller, pawn, attackTile);
                     }
-                    else if (HasEnemiesOnTile(controller, pawn, attackTile = tile + int2(0, 1))) // attack up
+                    else if (HasEnemiesOnTile(controller, pawn, attackTile = pawnTile + int2(0, 1))) // attack up
                     {
                         PawnPerform_MeleeAttack(controller, pawn, attackTile);
                     }
-                    else if (HasEnemiesOnTile(controller, pawn, attackTile = tile + int2(0, -1))) // attac down
+                    else if (HasEnemiesOnTile(controller, pawn, attackTile = pawnTile + int2(0, -1))) // attac down
                     {
                         PawnPerform_MeleeAttack(controller, pawn, attackTile);
                     }

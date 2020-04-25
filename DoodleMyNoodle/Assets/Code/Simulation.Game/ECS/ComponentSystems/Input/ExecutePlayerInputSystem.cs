@@ -66,7 +66,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                                         GameAction gameAction = GameActionBank.GetAction(actionId);
 
                                         GameAction.UseData useData = GameAction.UseData.Create(
-                                            new GameActionParameterTile.Data(0, roundToInt(pawnPos.Value).xy + int2(-1, 0)));
+                                            new GameActionParameterTile.Data(0, Helpers.GetTile(pawnPos) + int2(-1, 0)));
 
                                         gameAction.Use(Accessor, playerEntity, pawn, useData);
                                     }
