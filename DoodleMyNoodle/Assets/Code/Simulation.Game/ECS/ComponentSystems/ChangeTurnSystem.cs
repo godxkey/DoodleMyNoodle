@@ -1,50 +1,102 @@
 ﻿using Unity.Entities;
 
+public struct NewTurnEventData : IComponentData
+{
+}
+
+public struct RequestChangeTurnData : IComponentData
+{
+    public int TeamToPlay;
+}
+
 public class ChangeTurnSystem : SimComponentSystem
 {
+    EntityQuery _eventsEntityQuery;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        _eventsEntityQuery = EntityManager.CreateEntityQuery(typeof(NewTurnEventData));
+    }
+
     protected override void OnUpdate()
     {
-        Entity turnSystemData = GetSingletonEntity<TurnTimer>();
-        
-        TurnTimer turnTimer = EntityManager.GetComponentData<TurnTimer>(turnSystemData);
+        // destroy events
+        EntityManager.DestroyEntity(_eventsEntityQuery);
+
+        // NB: We do that first to make sure we don't override a changeTurnRequest when we update the turn timer
+        ChangeTurnIfRequested();
+
+        UpdateTurnTimer();
+    }
+
+    private void ChangeTurnIfRequested()
+    {
+        if (this.TryGetSingleton(out RequestChangeTurnData requestData))
+        {
+            // wrap team if necessary
+            if (requestData.TeamToPlay >= GetSingleton<TurnTeamCount>().Value)
+            {
+                requestData.TeamToPlay = 0;
+            }
+
+            // set new turn
+            SetSingleton(new TurnCurrentTeam { Value = requestData.TeamToPlay });
+            SetSingleton(new TurnTimer { Value = GetSingleton<TurnDuration>().Value });
+
+            // fire event
+            EntityManager.CreateEventEntity<NewTurnEventData>();
+
+            this.DestroySingleton<RequestChangeTurnData>();
+        }
+    }
+
+    private void UpdateTurnTimer()
+    {
+        TurnTimer turnTimer = GetSingleton<TurnTimer>();
 
         fix newTimerValue = turnTimer.Value - Time.DeltaTime;
         if (newTimerValue <= 0)
         {
-            CommonWrites.NextTurn(Accessor);
+            CommonWrites.RequestNextTurn(Accessor);
         }
         else
         {
-            EntityManager.SetComponentData(turnSystemData, new TurnTimer { Value = newTimerValue });
+            SetSingleton(new TurnTimer { Value = newTimerValue });
         }
+    }
+}
+
+public static partial class CommonReads
+{
+    public static int GetCurrentTurnTeam(ISimWorldReadAccessor accessor)
+    {
+        return accessor.GetSingleton<TurnCurrentTeam>().Value;
+    }
+
+    public static bool CanTeamPlay(ISimWorldReadAccessor accessor, Team team)
+    {
+        return GetCurrentTurnTeam(accessor) == team.Value;
     }
 }
 
 internal static partial class CommonWrites
 {
-    public static void NextTurn(ISimWorldReadWriteAccessor accessor)
+    public static void RequestNextTurn(ISimWorldReadWriteAccessor accessor)
     {
-        Entity turnSystemData = accessor.GetSingletonEntity<TurnTimer>();
-        TurnCurrentTeam turnCurrentTeam = accessor.GetComponentData<TurnCurrentTeam>(turnSystemData);
+        TurnCurrentTeam turnCurrentTeam = accessor.GetSingleton<TurnCurrentTeam>();
 
         int newCurrentTeam = turnCurrentTeam.Value + 1;
-        SetTurn(accessor, newCurrentTeam);
+
+        RequestSetTurn(accessor, newCurrentTeam);
     }
 
-    public static void SetTurn(ISimWorldReadWriteAccessor accessor, int team)
+    public static void RequestSetTurn(ISimWorldReadWriteAccessor accessor, int team)
     {
-        Entity turnSystemData = accessor.GetSingletonEntity<TurnTimer>();
-        TurnDuration turnDuration = accessor.GetComponentData<TurnDuration>(turnSystemData);
-        TurnTeamCount teamAmount = accessor.GetComponentData<TurnTeamCount>(turnSystemData);
-
-        int newCurrentTeam = team;
-        if (newCurrentTeam >= teamAmount.Value)
+        accessor.SetOrCreateSingleton(new RequestChangeTurnData()
         {
-            newCurrentTeam = 0;
-        }
-
-        accessor.SetComponentData(turnSystemData, new TurnCurrentTeam { Value = newCurrentTeam });
-
-        accessor.SetComponentData(turnSystemData, new TurnTimer { Value = turnDuration.Value });
+            TeamToPlay = team
+        });
     }
 }

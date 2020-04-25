@@ -7,7 +7,6 @@ using Unity.Mathematics;
 /// ComponentData found on controllers of controllable entities (like PawnController)
 /// </summary>
 [Serializable]
-[GenerateAuthoringComponent]
 public struct ControlledEntity : IComponentData
 {
     public Entity Value;

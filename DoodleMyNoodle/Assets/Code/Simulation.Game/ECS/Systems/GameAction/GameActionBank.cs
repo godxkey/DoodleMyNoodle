@@ -7,6 +7,7 @@ public static class GameActionBank
     private static Dictionary<ushort, GameAction> s_idToGameAction = new Dictionary<ushort, GameAction>();
     private static Dictionary<string, GameAction> s_nameToGameAction = new Dictionary<string, GameAction>();
     private static Dictionary<GameAction, ushort> s_gameActionToId = new Dictionary<GameAction, ushort>();
+    private static Dictionary<Type, ushort> s_typeToId = new Dictionary<Type, ushort>();
 
     private static bool s_initialized = false;
 
@@ -19,28 +20,51 @@ public static class GameActionBank
 
         IEnumerable<Type> gameActionTypes = TypeUtility.GetTypesDerivedFrom(typeof(GameAction));
 
-        ushort id = 0;
+        ushort id = 1; // 0 is invalid
         foreach (Type gameActionType in gameActionTypes)
         {
             GameAction instance = (GameAction)Activator.CreateInstance(gameActionType);
             s_idToGameAction.Add(id, instance);
             s_nameToGameAction.Add(gameActionType.Name, instance);
             s_gameActionToId.Add(instance, id);
-            
+            s_typeToId.Add(gameActionType, id);
+
             id++;
         }
     }
 
-    public static ushort GetActionId(GameAction gameAction)
+    public static GameActionId GetActionId(string gameActionTypeName)
+    {
+        return GetActionId(GetAction(gameActionTypeName));
+    }
+
+    public static GameActionId GetActionId<T>() where T : GameAction
+    {
+        return GetActionId(typeof(T));
+    }
+
+    public static GameActionId GetActionId(Type gameActionType)
+    {
+        if (s_typeToId.TryGetValue(gameActionType, out ushort result))
+        {
+            return new GameActionId { Value = result };
+        }
+
+        DebugService.LogError($"Failed to find action id from type {gameActionType}");
+
+        return GameActionId.Invalid;
+    }
+
+    public static GameActionId GetActionId(GameAction gameAction)
     {
         if (s_gameActionToId.TryGetValue(gameAction, out ushort result))
         {
-            return result;
+            return new GameActionId { Value = result };
         }
 
         DebugService.LogError($"Failed to find action id from action instance {gameAction}");
 
-        return ushort.MaxValue;
+        return GameActionId.Invalid;
     }
 
     public static GameAction GetAction(GameActionId id)
@@ -62,7 +86,7 @@ public static class GameActionBank
 
     public static GameAction GetAction(string typeName)
     {
-        if(s_nameToGameAction.TryGetValue(typeName, out GameAction result))
+        if (s_nameToGameAction.TryGetValue(typeName, out GameAction result))
         {
             return result;
         }

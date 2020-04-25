@@ -38,12 +38,3 @@ public abstract class SimJobComponentSystem : JobComponentSystem
         Accessor = World.InternalAccessor;
     }
 }
-
-
-// should we use this instead ?
-
-//[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-//public class CreateInSimWorldAttribute : Attribute
-//{
-
-//}

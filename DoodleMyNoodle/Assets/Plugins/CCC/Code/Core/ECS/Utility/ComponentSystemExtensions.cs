@@ -53,4 +53,11 @@ public static class ComponentSystemExtensions
         componentData = default;
         return false;
     }
+
+    public static void DestroySingleton<T>(this ComponentSystem componentSystem)
+        where T : struct, IComponentData
+    {
+        Entity e = componentSystem.GetSingletonEntity<T>();
+        componentSystem.EntityManager.DestroyEntity(e);
+    }
 }

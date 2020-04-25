@@ -12,6 +12,185 @@ public interface ISimWorldWriteAccessor
     // ----------------------------------------------------------------------------------------------------------
 
     /// <summary>
+    /// Creates an entity having the specified archetype.
+    /// </summary>
+    /// <remarks>
+    /// The EntityManager creates the entity in the first available chunk with the matching archetype that has
+    /// enough space.
+    ///
+    /// **Important:** This function creates a sync point, which means that the EntityManager waits for all
+    /// currently running Jobs to complete before creating the entity and no additional Jobs can start before
+    /// the function is finished. A sync point can cause a drop in performance because the ECS framework may not
+    /// be able to make use of the processing power of all available cores.
+    /// </remarks>
+    /// <param name="archetype">The archetype for the new entity.</param>
+    /// <returns>The Entity object that you can use to access the entity.</returns>
+    Entity CreateEntity(EntityArchetype archetype);
+
+    /// <summary>
+    /// Creates an entity having components of the specified types.
+    /// </summary>
+    /// <remarks>
+    /// The EntityManager creates the entity in the first available chunk with the matching archetype that has
+    /// enough space.
+    ///
+    /// **Important:** This function creates a sync point, which means that the EntityManager waits for all
+    /// currently running Jobs to complete before creating the entity and no additional Jobs can start before
+    /// the function is finished. A sync point can cause a drop in performance because the ECS framework may not
+    /// be able to make use of the processing power of all available cores.
+    /// </remarks>
+    /// <param name="types">The types of components to add to the new entity.</param>
+    /// <returns>The Entity object that you can use to access the entity.</returns>
+    Entity CreateEntity(params ComponentType[] types);
+
+    Entity CreateEntity();
+
+    /// <summary>
+    /// Creates a set of entities of the specified archetype.
+    /// </summary>
+    /// <remarks>Fills the [NativeArray](https://docs.unity3d.com/ScriptReference/Unity.Collections.NativeArray_1.html)
+    /// object assigned to the `entities` parameter with the Entity objects of the created entities. Each entity
+    /// has the components specified by the <see cref="EntityArchetype"/> object assigned
+    /// to the `archetype` parameter. The EntityManager adds these entities to the <see cref="World"/> entity list. Use the
+    /// Entity objects in the array for further processing, such as setting the component values.</remarks>
+    /// <param name="archetype">The archetype defining the structure for the new entities.</param>
+    /// <param name="entities">An array to hold the Entity objects needed to access the new entities.
+    /// The length of the array determines how many entities are created.</param>
+    void CreateEntity(EntityArchetype archetype, NativeArray<Entity> entities);
+
+    /// <summary>
+    /// Creates a set of entities of the specified archetype.
+    /// </summary>
+    /// <remarks>Creates a [NativeArray](https://docs.unity3d.com/ScriptReference/Unity.Collections.NativeArray_1.html) of entities,
+    /// each of which has the components specified by the <see cref="EntityArchetype"/> object assigned
+    /// to the `archetype` parameter. The EntityManager adds these entities to the <see cref="World"/> entity list.</remarks>
+    /// <param name="archetype">The archetype defining the structure for the new entities.</param>
+    /// <param name="entityCount">The number of entities to create with the specified archetype.</param>
+    /// <param name="allocator">How the created native array should be allocated.</param>
+    /// <returns>
+    /// A [NativeArray](https://docs.unity3d.com/ScriptReference/Unity.Collections.NativeArray_1.html) of entities
+    /// with the given archetype.
+    /// </returns>
+    NativeArray<Entity> CreateEntity(EntityArchetype archetype, int entityCount, Allocator allocator);
+
+    /// <summary>
+    /// Destroy all entities having a common set of component types.
+    /// </summary>
+    /// <remarks>Since entities in the same chunk share the same component structure, this function effectively destroys
+    /// the chunks holding any entities identified by the `entityQueryFilter` parameter.</remarks>
+    /// <param name="entityQueryFilter">Defines the components an entity must have to qualify for destruction.</param>
+    void DestroyEntity(EntityQuery entityQuery);
+
+    /// <summary>
+    /// Destroys all entities in an array.
+    /// </summary>
+    /// <remarks>
+    /// **Important:** This function creates a sync point, which means that the EntityManager waits for all
+    /// currently running Jobs to complete before destroying the entity and no additional Jobs can start before
+    /// the function is finished. A sync point can cause a drop in performance because the ECS framework may not
+    /// be able to make use of the processing power of all available cores.
+    /// </remarks>
+    /// <param name="entities">An array containing the Entity objects of the entities to destroy.</param>
+    void DestroyEntity(NativeArray<Entity> entities);
+
+    /// <summary>
+    /// Destroys all entities in a slice of an array.
+    /// </summary>
+    /// <remarks>
+    /// **Important:** This function creates a sync point, which means that the EntityManager waits for all
+    /// currently running Jobs to complete before destroying the entity and no additional Jobs can start before
+    /// the function is finished. A sync point can cause a drop in performance because the ECS framework may not
+    /// be able to make use of the processing power of all available cores.
+    /// </remarks>
+    /// <param name="entities">The slice of an array containing the Entity objects of the entities to destroy.</param>
+    void DestroyEntity(NativeSlice<Entity> entities);
+
+    /// <summary>
+    /// Destroys an entity.
+    /// </summary>
+    /// <remarks>
+    /// **Important:** This function creates a sync point, which means that the EntityManager waits for all
+    /// currently running Jobs to complete before destroying the entity and no additional Jobs can start before
+    /// the function is finished. A sync point can cause a drop in performance because the ECS framework may not
+    /// be able to make use of the processing power of all available cores.
+    /// </remarks>
+    /// <param name="entity">The Entity object of the entity to destroy.</param>
+    void DestroyEntity(Entity entity);
+
+    /// <summary>
+    /// Clones an entity.
+    /// </summary>
+    /// <remarks>
+    /// The new entity has the same archetype and component values as the original.
+    ///
+    /// If the source entity was converted from a prefab and thus has a <see cref="LinkedEntityGroup"/> component, 
+    /// the entire group is cloned as a new set of entities.
+    ///
+    /// **Important:** This function creates a sync point, which means that the EntityManager waits for all
+    /// currently running Jobs to complete before creating the entity and no additional Jobs can start before
+    /// the function is finished. A sync point can cause a drop in performance because the ECS framework may not
+    /// be able to make use of the processing power of all available cores.
+    /// </remarks>
+    /// <param name="srcEntity">The entity to clone</param>
+    /// <returns>The Entity object for the new entity.</returns>
+    Entity Instantiate(Entity srcEntity);
+
+    /// <summary>
+    /// Makes multiple clones of an entity.
+    /// </summary>
+    /// <remarks>
+    /// The new entities have the same archetype and component values as the original.
+    ///
+    /// If the source entity has a <see cref="LinkedEntityGroup"/> component, the entire group is cloned as a new
+    /// set of entities.
+    ///
+    /// **Important:** This function creates a sync point, which means that the EntityManager waits for all
+    /// currently running Jobs to complete before creating these entities and no additional Jobs can start before
+    /// the function is finished. A sync point can cause a drop in performance because the ECS framework may not
+    /// be able to make use of the processing power of all available cores.
+    /// </remarks>
+    /// <param name="srcEntity">The entity to clone.</param>
+    /// <param name="outputEntities">An array to receive the Entity objects of the root entity in each clone.
+    /// The length of this array determines the number of clones.</param>
+    void Instantiate(Entity srcEntity, NativeArray<Entity> outputEntities);
+
+    /// <summary>
+    /// Makes multiple clones of an entity.
+    /// </summary>
+    /// <remarks>
+    /// The new entities have the same archetype and component values as the original.
+    /// 
+    /// If the source entity has a <see cref="LinkedEntityGroup"/> component, the entire group is cloned as a new
+    /// set of entities.
+    /// 
+    /// **Important:** This function creates a sync point, which means that the EntityManager waits for all
+    /// currently running Jobs to complete before creating these entities and no additional Jobs can start before
+    /// the function is finished. A sync point can cause a drop in performance because the ECS framework may not
+    /// be able to make use of the processing power of all available cores.
+    /// </remarks>
+    /// <param name="srcEntity">The entity to clone.</param>
+    /// <param name="instanceCount">The number of entities to instantiate with the same components as the source entity.</param>
+    /// <param name="allocator">How the created native array should be allocated.</param>
+    /// <returns>A [NativeArray](https://docs.unity3d.com/ScriptReference/Unity.Collections.NativeArray_1.html) of entities.</returns>
+    NativeArray<Entity> Instantiate(Entity srcEntity, int instanceCount, Allocator allocator);
+
+    /// <summary>
+    /// Creates a set of chunks containing the specified number of entities having the specified archetype.
+    /// </summary>
+    /// <remarks>
+    /// The EntityManager creates enough chunks to hold the required number of entities.
+    ///
+    /// **Important:** This function creates a sync point, which means that the EntityManager waits for all
+    /// currently running Jobs to complete before creating these chunks and no additional Jobs can start before
+    /// the function is finished. A sync point can cause a drop in performance because the ECS framework may not
+    /// be able to make use of the processing power of all available cores.
+    /// </remarks>
+    /// <param name="archetype">The archetype for the chunk and entities.</param>
+    /// <param name="chunks">An empty array to receive the created chunks.</param>
+    /// <param name="entityCount">The number of entities to create.</param>
+    void CreateChunk(EntityArchetype archetype, NativeArray<ArchetypeChunk> chunks, int entityCount);
+
+    /// <summary>
     /// Adds a component to an entity.
     /// </summary>
     /// <remarks>
@@ -556,6 +735,20 @@ public interface ISimWorldWriteAccessor
     /// the `leftChunk`. It also does not need to be in the same World as `leftChunk`.</param>
     /// <param name="rightIndex">The index within the `rightChunk`  of the entity and components to swap.</param>
     void SwapComponents(ArchetypeChunk leftChunk, int leftIndex, ArchetypeChunk rightChunk, int rightIndex);
+
+    /// <summary>
+    /// Sets the value of a singleton component.
+    /// </summary>
+    /// <param name="value">A component containing the value to assign to the singleton.</param>
+    /// <typeparam name="T">The <see cref="IComponentData"/> subtype of the singleton component.</typeparam>
+    /// <seealso cref="EntityQuery.SetSingleton{T}"/>
+    void SetSingleton<T>(T value) where T : struct, IComponentData;
+
+#if UNITY_EDITOR
+    void SetName(Entity entity, string name);
+#endif
+
+    T GetOrCreateSystem<T>() where T : ComponentSystemBase;
 }
 
 public interface ISimWorldReadAccessor
@@ -812,4 +1005,14 @@ public interface ISimWorldReadAccessor
     /// Returns false if the component has the 'Disabled' component. Disabled entities are excluded from entity queries by default
     /// </summary>
     bool GetEnabled(Entity entity);
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// Gets the name assigned to an entity.
+    /// </summary>
+    /// <remarks>For performance, entity names only exist when running in the Unity Editor.</remarks>
+    /// <param name="entity">The Entity object of the entity of interest.</param>
+    /// <returns>The entity name.</returns>
+    string GetName(Entity entity);
+#endif
 }
