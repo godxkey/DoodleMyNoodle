@@ -1,6 +1,6 @@
 ﻿using Unity.Entities;
 
-public class EntitiesOnTile : IBufferElementData
+public struct EntitiesOnTile : IBufferElementData
 {
     public Entity EntityOnTile;
 }

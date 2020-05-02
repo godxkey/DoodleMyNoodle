@@ -38,15 +38,30 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Grid_LastBackground
+    uniqueID: 443418115
+    locked: 0
+  - name: Grid_BackgroundWall
+    uniqueID: 910406721
+    locked: 0
+  - name: Grid_Surroundings
+    uniqueID: 1675978301
+    locked: 0
   - name: Ground
     uniqueID: 984740141
     locked: 0
-  - name: TileHighlight
-    uniqueID: 3513164091
+  - name: Grid_Addons
+    uniqueID: 2829513087
     locked: 0
   - name: PlayerCharacters
     uniqueID: 3005221959
     locked: 0
-  - name: Default
-    uniqueID: 0
+  - name: Grid_Foreground
+    uniqueID: 2818352545
+    locked: 0
+  - name: TileHighlight
+    uniqueID: 3513164091
     locked: 0
