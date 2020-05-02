@@ -17,7 +17,7 @@ public class SimPlayerInputItemInteractionHandler : SimComponent, ISimPlayerInpu
 
             SimItem ItemUsed = Inventory?.GetItem(simPlayerInputUseItem.ItemIndex);
 
-            ItemUsed?.OnUse(simPlayerActions, simPlayerInputUseItem.Informations);
+            //ItemUsed?.OnUse(simPlayerActions, simPlayerInputUseItem.Informations);
         }
 
         return false;

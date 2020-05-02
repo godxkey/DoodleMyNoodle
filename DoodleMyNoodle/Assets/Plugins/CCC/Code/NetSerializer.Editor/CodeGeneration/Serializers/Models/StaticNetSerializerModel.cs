@@ -159,7 +159,7 @@ using System.Collections.Generic;
 
                     if (couldBeDynamic)
                     {
-                        writer.WriteLine("    public static " + type.Name + " NetDeserialize_Class(BitStreamReader reader)");
+                        writer.WriteLine("    public static " + type.GetNiceFullName() + " NetDeserialize_Class(BitStreamReader reader)");
                         writer.WriteLine("    {");
                         if (clear)
                         {

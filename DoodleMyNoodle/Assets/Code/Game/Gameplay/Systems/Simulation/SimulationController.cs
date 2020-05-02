@@ -48,7 +48,7 @@ public class SimulationController : GameSystem<SimulationController>
 
     private bool ValidateSimInput(SimInput input, INetworkInterfaceConnection instigator)
     {
-        PlayerInfo instigatorPlayer = PlayerIdHelpers.GetPlayerInfo(instigator);
+        PlayerInfo instigatorPlayer = PlayerHelpers.GetPlayerInfo(instigator);
 
         if (instigatorPlayer == null)
         {

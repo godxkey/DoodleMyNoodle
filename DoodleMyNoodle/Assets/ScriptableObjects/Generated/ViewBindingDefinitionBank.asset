@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ViewBindingDefinitionBank
   m_EditorClassIdentifier: 
   ViewBindingDefinitions:
+  - {fileID: 5278598673461480541, guid: 547bbec06cc37e745ab68a1e9826a885, type: 3}
   - {fileID: 2215584610862801426, guid: 7425eff6bd23f2c4ea2111a45a3037d4, type: 3}
   - {fileID: 5278598673461480541, guid: 1a5f24ef86385f9419561244500948ec, type: 3}
-  - {fileID: 5278598673461480541, guid: 547bbec06cc37e745ab68a1e9826a885, type: 3}

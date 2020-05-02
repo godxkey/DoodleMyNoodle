@@ -5,6 +5,7 @@ using Unity.Transforms;
 using static fixMath;
 using static Unity.Mathematics.math;
 
+[UpdateBefore(typeof(ExecutePawnControllerInputSystem))]
 public class ExecutePlayerInputSystem : SimComponentSystem
 {
     protected override void OnUpdate()
@@ -127,6 +128,10 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                 }
                 break;
             }
+            case SimPlayerInputUseItem ItemUsedInput:
+                ExecutePawnControllerInputSystem pawnControllerInputSystem = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, ItemUsedInput.ItemIndex, ItemUsedInput.UseData));
+                break;
         }
     }
 

@@ -36,7 +36,7 @@ public class SimShieldItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip
         {
             object[] ItemUsageInfo = {  };
 
-            simPlayerInputUseItem.Informations = ItemUsageInfo;
+            //simPlayerInputUseItem.Informations = ItemUsageInfo;
 
             OnContextReady.Invoke(simPlayerInputUseItem);
         }

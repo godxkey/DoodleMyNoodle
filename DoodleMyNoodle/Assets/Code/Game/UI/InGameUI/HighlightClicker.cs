@@ -1,115 +1,20 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class HighlightClicker : GameMonoBehaviour
 {
-    private SimPawnComponent _playerPawn;
-    private SimGridWalkerComponent _playerGridWalkerComponent;
-    private SimCharacterAttackComponent _playerCharacterAttackComponent;
-    private SimCharacterHealComponent _playerCharacterHealComponent;
+    public Action<Vector2> OnClicked;
 
     public override void OnGameUpdate()
     {
-        // PORT TO ECS
-
-        //if (_playerPawn == null)
-        //    _playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
-
-        if (_playerPawn != null)
+        if(gameObject.activeSelf && IsMouseInsideHighlight(GetMousePositionOnTile()))
         {
-            if (_playerGridWalkerComponent == null)
-                _playerGridWalkerComponent = _playerPawn.GetComponent<SimGridWalkerComponent>();
-
-            if (_playerCharacterAttackComponent == null)
-                _playerCharacterAttackComponent = _playerPawn.GetComponent<SimCharacterAttackComponent>();
-
-            if (_playerCharacterHealComponent == null)
-                _playerCharacterHealComponent = _playerPawn.GetComponent<SimCharacterHealComponent>();
-
-            if (_playerGridWalkerComponent != null)
+            if (Input.GetMouseButtonDown(0))
             {
-                if (_playerGridWalkerComponent.WantsToWalk && IsMouseInsideHighlight(GetMousePositionOnTile()))
-                {
-                    if (SimTurnManager.Instance.IsMyTurn(OLD_Team.Player))
-                    {
-                        if (Input.GetMouseButtonDown(0)) 
-                        {
-                            SimTileId_OLD currentTileID = new SimTileId_OLD((int)transform.position.x, (int)transform.position.y);
-
-                            _playerGridWalkerComponent.OnDestinationChoosen(currentTileID);
-
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        _playerGridWalkerComponent.OnCancelWalkRequest();
-                    }
-                }
-            }
-
-            if (_playerCharacterAttackComponent != null)
-            {
-                if (_playerCharacterAttackComponent.WantsToAttack && IsMouseInsideHighlight(GetMousePositionOnTile()))
-                {
-                    if (SimTurnManager.Instance.IsMyTurn(OLD_Team.Player))
-                    {
-                        if (Input.GetMouseButtonDown(0)) 
-                        {
-                            SimTileId_OLD currentTileID = new SimTileId_OLD((int)transform.position.x, (int)transform.position.y);
-
-                            _playerCharacterAttackComponent.OnAttackDestinationChoosen(currentTileID);
-
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        _playerCharacterAttackComponent.OnCancelAttackRequest();
-                    }
-                }
-
-                if (_playerCharacterAttackComponent.WantsToShootProjectile && IsMouseInsideHighlight(GetMousePositionOnTile()))
-                {
-                    if (SimTurnManager.Instance.IsMyTurn(OLD_Team.Player))
-                    {
-                        if (Input.GetMouseButtonDown(0))
-                        {
-                            SimTileId_OLD currentTileID = new SimTileId_OLD((int)transform.position.x, (int)transform.position.y);
-
-                            _playerCharacterAttackComponent.OnShootDestinationChoosen(currentTileID);
-
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        _playerCharacterAttackComponent.OnCancelShootRequest();
-                    }
-                }
-
-                if(_playerCharacterHealComponent != null)
-                {
-                    if (_playerCharacterHealComponent.WantsToHeal && IsMouseInsideHighlight(GetMousePositionOnTile()))
-                    {
-                        if (SimTurnManager.Instance.IsMyTurn(OLD_Team.Player))
-                        {
-                            if (Input.GetMouseButtonDown(0))
-                            {
-                                SimTileId_OLD currentTileID = new SimTileId_OLD((int)transform.position.x, (int)transform.position.y);
-
-                                _playerCharacterHealComponent.OnHealDestinationChoosen(currentTileID);
-
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            _playerCharacterHealComponent.OnCancelHealRequest();
-                        }
-                    }
-                }
+                OnClicked.Invoke(new Vector2(transform.position.x, transform.position.y));
             }
         }
     }
@@ -119,7 +24,8 @@ public class HighlightClicker : GameMonoBehaviour
         Ray ray = CameraService.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
 
         float enter = 0.0f;
-        if (SimTileManager.Instance.FloorPlane.Raycast(ray, out enter))
+        Plane FloorPlane = new Plane(CommonReads.GetFloorPlaneNormal(SimWorld).ToUnityVec(),0);
+        if (FloorPlane.Raycast(ray, out enter))
         {
             Vector3 hitPoint = ray.GetPoint(enter);
             return hitPoint;
