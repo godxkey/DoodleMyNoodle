@@ -12,4 +12,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 183c9d1fa1609684096ba27128affa75, type: 3}
   m_Name: SceneMetaDataBank
   m_EditorClassIdentifier: 
-  SceneMetaDatasInternal: []
+  SceneMetaDatasInternal:
+  - Name: EmptyScene
+    Path: Assets/Scenes/EmptyScene.unity
+    BuildIndex: 0
+    AssetGuid: 15380d7d3d5178b40abcc7edd37c1d78
+  - Name: Boot_ApplicationBoot
+    Path: Assets/Scenes/Boot/Scene Assets/Boot_ApplicationBoot.unity
+    BuildIndex: 1
+    AssetGuid: 3ecf88b34e92221408ccd16b8746997c
+  - Name: Boot_LoadedOnceOnStart
+    Path: Assets/Scenes/Boot/Scene Assets/Boot_LoadedOnceOnStart.unity
+    BuildIndex: 2
+    AssetGuid: c10039067683ddc48a01134931665ed8
+  - Name: Misc_LoadingScreen
+    Path: Assets/Scenes/Misc/Scene Assets/Misc_LoadingScreen.unity
+    BuildIndex: 3
+    AssetGuid: 92ee440d69c9efe4ab4fab7a571a1558
+  - Name: Menu_OnlineRoleChoice
+    Path: Assets/Scenes/Menu/Scene Assets/Menu_OnlineRoleChoice.unity
+    BuildIndex: 4
+    AssetGuid: 7c2acb5dea68c0f49ac848ac0d7bcdaa
+  - Name: Menu_OnlineServerSessionCreation
+    Path: Assets/Scenes/Menu/Scene Assets/Menu_OnlineServerSessionCreation.unity
+    BuildIndex: 5
+    AssetGuid: cb80e7a3f25cdd34aa78b7b55273f4df
+  - Name: Menu_OnlineClientSessionChoice
+    Path: Assets/Scenes/Menu/Scene Assets/Menu_OnlineClientSessionChoice.unity
+    BuildIndex: 6
+    AssetGuid: 8604ebda00836304f802fc028ca9979a
+  - Name: Game_Common
+    Path: Assets/Scenes/Game/Scene Assets/Game_Common.unity
+    BuildIndex: 7
+    AssetGuid: b3695b8f43019e040858a9dfdbc524f7
+  - Name: Menu_InGameEscape
+    Path: Assets/Scenes/Menu/Scene Assets/Menu_InGameEscape.unity
+    BuildIndex: 8
+    AssetGuid: 526cbea577512dc42a4c0e329783b3b0
+  - Name: Game_Client
+    Path: Assets/Scenes/Game/Scene Assets/Game_Client.unity
+    BuildIndex: 9
+    AssetGuid: 89c09be2ea7a787418bc64f4cdb83b20
+  - Name: Game_Server
+    Path: Assets/Scenes/Game/Scene Assets/Game_Server.unity
+    BuildIndex: 10
+    AssetGuid: fa9ca71823e5fc44c8096a44b275a0a9
+  - Name: Game_Local
+    Path: Assets/Scenes/Game/Scene Assets/Game_Local.unity
+    BuildIndex: 11
+    AssetGuid: 6832c9c496e32854086ae3c970b86b4f
+  - Name: Lvl_Ballpit
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Ballpit.unity
+    BuildIndex: 12
+    AssetGuid: f5a2b98580807744584ddf179221a3d5
+  - Name: Lvl_GridBattle
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity
+    BuildIndex: 13
+    AssetGuid: 4c8245514883b6c4ba63476b942bba11
+  - Name: Game_SimulationManagers
+    Path: Assets/Scenes/Game/Scene Assets/Game_SimulationManagers.unity
+    BuildIndex: 14
+    AssetGuid: 47ac98eafdf2257458009be782cc980c
+  - Name: Lvl_GridBattle_Presentation
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
+    BuildIndex: 15
+    AssetGuid: 60fc40dbdb1e23144a5055ed9a5d1563
+  - Name: Game_SimulationBasePresentation
+    Path: Assets/Scenes/Game/Scene Assets/Game_SimulationBasePresentation.unity
+    BuildIndex: 16
+    AssetGuid: 02fa011c09404914098c6019b2610a09
+  - Name: Lvl_GridBattleECS_Presentation
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattleECS_Presentation.unity
+    BuildIndex: 17
+    AssetGuid: 1cd9718281f9895408333cb8fc99bc29
+  - Name: Lvl_GridBattleECS
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattleECS.unity
+    BuildIndex: 18
+    AssetGuid: 815b8536c98c51447a9e715207ed3330
