@@ -17,7 +17,7 @@ public abstract class SimComponentSystem : ComponentSystem
     {
         base.OnCreate();
         World = ((SimulationWorld)base.World);
-        Accessor = World.InternalAccessor;
+        Accessor = World.GetInternalAccessor();
     }
 }
 
@@ -35,6 +35,6 @@ public abstract class SimJobComponentSystem : JobComponentSystem
     {
         base.OnCreate();
         World = ((SimulationWorld)base.World);
-        Accessor = World.InternalAccessor;
+        Accessor = World.GetInternalAccessor();
     }
 }

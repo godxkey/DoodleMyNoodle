@@ -14,8 +14,7 @@ public class SimulationWorld : World, IOwnedWorld
     // TODO fbessette: move this out of here. The simulation shouldn't know
     public uint EntityClearAndReplaceCount { get; internal set; } = 0;
 
-    // provides easy access to data
-    public InternalSimWorldAccessor InternalAccessor = new InternalSimWorldAccessor();
+
 
     internal uint SeedToPickIfInitializing;
     public uint ExpectedNewTickId { get; internal set; }
@@ -30,10 +29,26 @@ public class SimulationWorld : World, IOwnedWorld
 
     // cached value - the real data is on an entity
     public uint LatestTickId { get; internal set; }
-    
+
     // cached value - the real data is on an entity
     public uint Seed { get; internal set; }
 
     // cached value - the real data is on an entity
     internal WorldModuleTickRandom RandomModule;
+
+    // provides easy access to data
+    private InternalSimWorldAccessor _internalAccessor;
+    public InternalSimWorldAccessor GetInternalAccessor()
+    {
+        if (_internalAccessor == null)
+        {
+            _internalAccessor = new InternalSimWorldAccessor();
+            _internalAccessor.SimWorld = this;
+            _internalAccessor.EntityManager = EntityManager;
+            _internalAccessor.SomeSimSystem = GetOrCreateSystem<SimPreInitializationSystemGroup>();
+        }
+
+        return _internalAccessor;
+    }
+
 }
