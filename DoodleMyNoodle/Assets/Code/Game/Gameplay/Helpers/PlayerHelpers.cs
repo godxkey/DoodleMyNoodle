@@ -4,7 +4,7 @@ using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
-public static class PlayerIdHelpers
+public static class PlayerHelpers
 {
     public static PlayerId GetLocalPlayerID()
     {
@@ -36,7 +36,7 @@ public static class PlayerIdHelpers
 
     public static Entity GetLocalSimPawnEntity(ExternalSimWorldAccessor simulationWorld)
     {
-        Entity localPlayerEntity = PlayerIdHelpers.GetLocalSimPlayerEntity(simulationWorld);
+        Entity localPlayerEntity = PlayerHelpers.GetLocalSimPlayerEntity(simulationWorld);
 
         if (localPlayerEntity != Entity.Null)
         {
@@ -54,7 +54,7 @@ public static class PlayerIdHelpers
         if (PlayerRepertoireSystem.Instance == null)
             return Entity.Null;
 
-        return PlayerIdHelpers.GetSimPlayerFromPlayer(PlayerRepertoireSystem.Instance.GetLocalPlayerInfo(), simulationWorld);
+        return PlayerHelpers.GetSimPlayerFromPlayer(PlayerRepertoireSystem.Instance.GetLocalPlayerInfo(), simulationWorld);
     }
 
     public static PlayerInfo GetPlayerFromSimPlayer(Entity playerEntity, ExternalSimWorldAccessor simWorldAccessor)

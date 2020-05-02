@@ -66,7 +66,7 @@ public class AssignSimPlayersSystem : ViewComponentSystem
             {
                 foreach (Entity playerEntity in simPlayers)
                 {
-                    if (PlayerIdHelpers.GetPlayerFromSimPlayer(playerEntity, SimWorldAccessor) == null)
+                    if (PlayerHelpers.GetPlayerFromSimPlayer(playerEntity, SimWorldAccessor) == null)
                     {
                         return playerEntity;
                     }

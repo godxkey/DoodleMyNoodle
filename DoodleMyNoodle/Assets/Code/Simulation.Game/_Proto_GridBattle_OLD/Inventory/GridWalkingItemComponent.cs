@@ -49,7 +49,7 @@ public class GridWalkingItemComponent : SimComponent, IItemOnEquip, IItemOnUnequ
                 {
                     object[] ItemUsageInfo = { Destination };
 
-                    simPlayerInputUseItem.Informations = ItemUsageInfo;
+                    //simPlayerInputUseItem.Informations = ItemUsageInfo;
 
                     OnContextReady.Invoke(simPlayerInputUseItem);
                 });

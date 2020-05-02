@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using Unity.Mathematics;
 
 public static class StaticNetSerializer_System_Int64
 {
@@ -153,7 +154,7 @@ public static class StaticNetSerializer_System_String
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetNetBitSize(ref String value)
     {
-        if(value != null)
+        if (value != null)
         {
             return 1 + (value.Length * sizeof(Char) * 8 + sizeof(UInt32) * 8);
         }
@@ -272,5 +273,25 @@ public static class StaticNetSerializer_System_Object
             return null;
         }
         return DynamicNetSerializer.NetDeserialize(reader);
+    }
+}
+
+public static class StaticNetSerializer_Unity_Mathematics_int2
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize(ref int2 value) => 2 * sizeof(Int32) * 8;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetSerialize(ref int2 value, BitStreamWriter writer)
+    {
+        writer.WriteInt32(value.x);
+        writer.WriteInt32(value.y);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NetDeserialize(ref int2 value, BitStreamReader reader)
+    {
+        value.x = reader.ReadInt32();
+        value.y = reader.ReadInt32();
     }
 }

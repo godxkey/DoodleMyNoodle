@@ -41,7 +41,7 @@ public class AoeAttackItemComponent : SimComponent, IItemOnEquip, IItemOnUnequip
         {
             object[] ItemUsageInfo = { PawnComponent.SimTransform.WorldPosition };
 
-            simPlayerInputUseItem.Informations = ItemUsageInfo;
+            //simPlayerInputUseItem.Informations = ItemUsageInfo;
 
             OnContextReady.Invoke(simPlayerInputUseItem);
         }

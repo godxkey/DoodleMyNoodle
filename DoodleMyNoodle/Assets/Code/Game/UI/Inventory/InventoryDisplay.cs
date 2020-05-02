@@ -1,62 +1,126 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 
-public class InventoryDisplay : MonoBehaviour
+public class InventoryDisplay : GameMonoBehaviour
 {
-    public GameObject InventoryTileContainer;
-    public GameObject InventoryTilePrefab;
+    public List<InventorySlotInfo> InventorySlotShortcuts = new List<InventorySlotInfo>();
 
-    private bool _hasBeenSetup = false;
+    public GameObject SlotsContainer;
+    public GameObject InventorySlotPrefab;
 
-    private SimInventoryComponent _inventory = null;
+    private List<InventorySlot> _inventorySlots = new List<InventorySlot>();
 
-    public void ToggleInventory()
+    private Entity _localPawn = Entity.Null;
+
+    public override void OnGameReady()
     {
-        if (!_hasBeenSetup)
+        base.OnGameReady();
+
+        for (int i = 0; i < InventorySlotShortcuts.Count; i++)
         {
-            // PORT TO ECS
-
-            //SimPawnComponent playerPawn = PlayerIdHelpers.GetLocalSimPawnComponent();
-
-            //_inventory = playerPawn.GetComponent<SimInventoryComponent>();
-
-            //for (int i = 0; i < _inventory.InventorySize; i++)
-            //{
-            //    SimItem item = _inventory.GetItem(i);
-            //    UIInventorySlot newSlot = Instantiate(InventoryTilePrefab, InventoryTileContainer.transform).GetComponent<UIInventorySlot>();
-            //    newSlot.Init(item);
-            //}
-
-            _hasBeenSetup = true;
+            InventorySlot inventorySlot = Instantiate(InventorySlotPrefab, SlotsContainer.transform).GetComponent<InventorySlot>();
+            _inventorySlots.Add(inventorySlot);
         }
-        gameObject.SetActive(!gameObject.activeSelf);
     }
 
-    private void Update()
+    public override void OnGameUpdate()
     {
-        if (_hasBeenSetup)
+        UpdateCurrentPlayerPawn();
+
+        int itemIndex = 0;
+        if (SimWorld.TryGetBufferReadOnly(_localPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
-            if (_inventory.InventorySize == InventoryTileContainer.transform.childCount)
+            foreach (InventoryItemReference item in inventory)
             {
-                return;
-            }
-            else if (_inventory.InventorySize < InventoryTileContainer.transform.childCount)
-            {
-                for (int i = 0; i < InventoryTileContainer.transform.childCount - _inventory.InventorySize; ++i) 
+                if (SimWorld.TryGetComponentData(item.ItemEntity,out SimAssetId itemIDComponent))
                 {
-                    Destroy(InventoryTileContainer.transform.GetChild(i).gameObject);
-                }
-            }
-            else if (_inventory.InventorySize > InventoryTileContainer.transform.childCount)
-            {
-                for (int i = InventoryTileContainer.transform.childCount; i <= _inventory.InventorySize - InventoryTileContainer.transform.childCount; ++i)
-                {
-                    SimItem item = _inventory.GetItem(i);
-                    UIInventorySlot newSlot = Instantiate(InventoryTilePrefab, InventoryTileContainer.transform).GetComponent<UIInventorySlot>();
-                    newSlot.Init(item);
+                    ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
+                    _inventorySlots[itemIndex].UpdateCurrentItemSlot(itemInfo, itemIndex, InventorySlotShortcuts[itemIndex], OnIntentionToUseItem);
+                    itemIndex++;
                 }
             }
         }
+
+        // Clear the rest of the inventory slots
+        for (int i = _inventorySlots.Count - 1; i > itemIndex; i--)
+        {
+            _inventorySlots[i].UpdateCurrentItemSlot(null, i, InventorySlotShortcuts[i], null);
+        }
+    }
+
+    private void UpdateCurrentPlayerPawn()
+    {
+        if(_localPawn == Entity.Null)
+        {
+            _localPawn = PlayerHelpers.GetLocalSimPawnEntity(SimWorld);
+        }
+    }
+
+    private void OnIntentionToUseItem(int ItemIndex)
+    {
+        if (GameMonoBehaviourHelpers.SimulationWorld.TryGetBufferReadOnly(_localPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        {
+            if(inventory.Length > ItemIndex && ItemIndex > -1)
+            {
+                InventoryItemReference item = inventory[ItemIndex];
+                if (GameMonoBehaviourHelpers.SimulationWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
+                {
+                    Entity itemEntity = item.ItemEntity;
+
+                    SimWorld.TryGetComponentData(itemEntity, out GameActionId actionId);
+                    GameAction itemGameAction = GameActionBank.GetAction(actionId);
+
+                    GameAction.UseContract itemUseContract = itemGameAction.GetUseContract(SimWorld, PlayerHelpers.GetLocalSimPlayerEntity(SimWorld), _localPawn);
+
+                    OnStartUsingNewItem(itemUseContract);
+
+                    QueryUseDataFromPlayer(itemUseContract,()=> 
+                    {
+                        SimPlayerInputUseItem simInput = new SimPlayerInputUseItem(ItemIndex, _currentItemUseData);
+                        SimWorld.SubmitInput(simInput);
+                    });
+
+                }
+            }
+        }
+    }
+
+    private void OnStartUsingNewItem(GameAction.UseContract NewItemContact)
+    {
+        // clean up in case we try to use two items one after the other (cancel feature)
+        _currentItemUseData = GameAction.UseData.Create(new GameActionParameterTile.Data[NewItemContact.ParameterTypes.Length]);
+    }
+
+    private GameAction.UseData _currentItemUseData;
+    private void QueryUseDataFromPlayer(GameAction.UseContract itemUseContact, Action onComplete, int DataToExtract = 0)
+    {
+        if (DataToExtract >= itemUseContact.ParameterTypes.Length) 
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        IdentifyAndGatherDataForParameterDescription(itemUseContact.ParameterTypes[DataToExtract], DataToExtract, ()=> 
+        {
+            QueryUseDataFromPlayer(itemUseContact, onComplete, DataToExtract + 1);
+        });
+    }
+    
+    private void IdentifyAndGatherDataForParameterDescription(GameAction.ParameterDescription parameterDescription, int index, Action OnComplete)
+    {
+        GameActionParameterTile.Description TileDescription = (GameActionParameterTile.Description)parameterDescription;
+        if (TileDescription != null)
+        {
+            TileHighlightManager.Instance.AskForSingleTileSelectionAroundPlayer(TileDescription,(GameActionParameterTile.Data TileSelectedData) => 
+            {
+                _currentItemUseData.ParameterDatas[index] = TileSelectedData;
+                OnComplete?.Invoke();
+            });
+        }
+
+        // other types of Parameter Description here ...
     }
 }

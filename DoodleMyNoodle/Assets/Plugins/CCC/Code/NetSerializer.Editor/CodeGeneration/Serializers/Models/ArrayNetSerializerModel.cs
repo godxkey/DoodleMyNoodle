@@ -39,7 +39,7 @@ public static partial class NetSerializerCodeGenerator
                     writer.WriteLine();
                     writer.WriteLine("public static class " + NetSerializationCodeGenUtility.GetSerializerNameFromType(arrayType));
                     writer.WriteLine("{");
-                    writer.WriteLine("    public static int GetNetBitSize(ref " + elementType.Name + "[] obj)");
+                    writer.WriteLine("    public static int GetNetBitSize(ref " + elementType.GetNiceFullName() + "[] obj)");
                     writer.WriteLine("    {");
 
                     if (clear)

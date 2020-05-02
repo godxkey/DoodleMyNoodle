@@ -62,7 +62,7 @@ public class DebugPanelSimPlayers : DebugPanel
         for (int i = 0; i < simPlayers.Count; i++)
         {
             ApplyPlayerTextColor(simPlayers[i]);
-            GUILayout.Label(PlayerIdHelpers.GetPlayerFromSimPlayer(simPlayers[i], GameMonoBehaviourHelpers.SimulationWorld) == null ? "false" : "true");
+            GUILayout.Label(PlayerHelpers.GetPlayerFromSimPlayer(simPlayers[i], GameMonoBehaviourHelpers.SimulationWorld) == null ? "false" : "true");
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -72,7 +72,7 @@ public class DebugPanelSimPlayers : DebugPanel
 
     static void ApplyPlayerTextColor(Entity simPlayer)
     {
-        PlayerInfo p = PlayerIdHelpers.GetPlayerFromSimPlayer(simPlayer, GameMonoBehaviourHelpers.SimulationWorld);
+        PlayerInfo p = PlayerHelpers.GetPlayerFromSimPlayer(simPlayer, GameMonoBehaviourHelpers.SimulationWorld);
         GUI.color = p == null ? Color.red : Color.white;
     }
     static void ResetTextColor()
