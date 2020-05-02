@@ -20,17 +20,15 @@ public class InventorySlot : GameMonoBehaviour, IPointerEnterHandler, IPointerEx
 {
     public Image Background;
     public Image ItemIcon;
-
     public TextMeshProUGUI ShortcutDisplay;
-    public InventorySlotInfo Info;
-
     public Color HoverBackgroundColor = Color.white;
-    private Color _startBackgroundColor;
 
-    public Action<int> OnItemUsed;
-    
+    private InventorySlotInfo _info;
+    private Color _startBackgroundColor;
     private ItemVisualInfo _currentItem;
     private int _currentItemIndex;
+
+    public Action<int> OnItemUsed;
 
     private void Start()
     {
@@ -41,7 +39,7 @@ public class InventorySlot : GameMonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         _currentItem = item;
         _currentItemIndex = itemIndex;
-        Info = slotInfo;
+        _info = slotInfo;
         OnItemUsed = onItemUsed;
 
         UpdateDisplay();
@@ -49,7 +47,7 @@ public class InventorySlot : GameMonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void UpdateDisplay()
     {
-        ShortcutDisplay.text = Info.InputShortcut.ToString();
+        ShortcutDisplay.text = _info.InputShortcut.ToString();
 
         if (_currentItem != null)
         {

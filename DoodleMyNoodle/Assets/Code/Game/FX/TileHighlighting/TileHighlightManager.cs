@@ -32,19 +32,10 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
             HideAll();
         }
     }
-
-    private void OnNewHighlightPromptRequestStarted()
-    {
-        _currentTileSelectionCallback = null;
-    }
-
-    private void NeedNewTileAtPosition(fix2 position)
+    private void CreateTile()
     {
         GameObject newHighlight = Instantiate(HighlightPrefab, transform);
         _highlights.Add(newHighlight);
-
-        newHighlight.SetActive(true);
-        newHighlight.transform.position = new Vector3((float)position.x, (float)position.y, 0);
 
         newHighlight.GetComponent<HighlightClicker>().OnClicked = OnHighlightClicked;
     }
@@ -62,8 +53,8 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
     private Action<GameActionParameterTile.Data> _currentTileSelectionCallback;
     public void AskForSingleTileSelectionAroundPlayer(GameActionParameterTile.Description TileParameters, Action<GameActionParameterTile.Data> TileSelectedData)
     {
-        OnNewHighlightPromptRequestStarted();
-        GameMonoBehaviourHelpers.SimulationWorld.TryGetComponentData<FixTranslation>(PlayerHelpers.GetLocalSimPawnEntity(GameMonoBehaviourHelpers.SimulationWorld), out FixTranslation localPawnPosition);
+        _currentTileSelectionCallback = null;
+        SimWorld.TryGetComponentData<FixTranslation>(PlayerHelpers.GetLocalSimPawnEntity(SimWorld), out FixTranslation localPawnPosition);
         AddHilightsAroundPlayer(localPawnPosition.Value, TileParameters.RangeFromInstigator, TileParameters.Filter);
         _currentTileSelectionCallback = TileSelectedData;
     }
@@ -107,18 +98,14 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
 
                 // TODO : Check filters of tile
 
-                // We need a tile highlight
-                if(_highlights.Count - numberOfTiles <= 0)
+                while (_highlights.Count - numberOfTiles <= 0)
                 {
-                    // We dont have enough, need to spawn one
-                    NeedNewTileAtPosition(new fix2(newPossibleDestination.x, newPossibleDestination.y));
+                    // We dont have enough, need to spawn a new one
+                    CreateTile();
                 }
-                else
-                {
-                    // re-use that was already spawned
-                    _highlights[numberOfTiles].SetActive(true);
-                    _highlights[numberOfTiles].transform.position = new Vector3((float)newPossibleDestination.x, (float)newPossibleDestination.y, 0);
-                }
+
+                _highlights[numberOfTiles].SetActive(true);
+                _highlights[numberOfTiles].transform.position = new Vector3((float)newPossibleDestination.x, (float)newPossibleDestination.y, 0);
 
                 numberOfTiles++;
             }

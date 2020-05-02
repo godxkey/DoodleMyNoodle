@@ -3,37 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MouseDisplay : GameMonoBehaviour
+public class MouseDisplay : GameSystem<MouseDisplay>
 {
-    public static MouseDisplay Instance = null;
-
     // TOOLTIP
     public GameObject TooltipPanel;
     public Text TooltipName;
     public Text TooltipDescription;
 
-    public override void OnGameReady()
-    {
-        base.OnGameReady();
+    public override bool SystemReady => true;
 
-        if (Instance == null)
+    public override void OnGameUpdate()
+    {
+        base.OnGameUpdate();
+
+        if (TooltipPanel.activeSelf)
         {
-            Instance = this;
+            transform.position = Input.mousePosition;
         }
-    }
-
-    public void Update()
-    {
-        transform.position = Input.mousePosition;
     }
 
     private void UpdateHoverText(string name, string description)
     {
-        if (!name.IsNullOrEmpty() || !description.IsNullOrEmpty())
-        {
-            TooltipName.text = name;
-            TooltipDescription.text = description;
-        }
+        TooltipName.text = name;
+        TooltipDescription.text = description;
     }
 
     public void SetToolTipDisplay(bool IsActive, string name = "", string description = "")
