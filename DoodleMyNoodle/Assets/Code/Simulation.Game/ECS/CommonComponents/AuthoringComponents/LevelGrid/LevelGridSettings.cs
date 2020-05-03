@@ -13,6 +13,8 @@ public struct TileAddonsDefinition
 [CreateAssetMenu(menuName = "DoodleMyNoodle/Grid/Settings")]
 public class LevelGridSettings : ScriptableObject
 {
+    public int GridSize = 11;
+
     public List<TileAddonsDefinition> AddonsDefinition = new List<TileAddonsDefinition>();
 
     public GameObject GetPrefabFromSprite(Sprite sprite)

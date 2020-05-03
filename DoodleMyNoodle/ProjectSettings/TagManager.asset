@@ -65,3 +65,6 @@ TagManager:
   - name: TileHighlight
     uniqueID: 3513164091
     locked: 0
+  - name: InGameInterface
+    uniqueID: 4025601779
+    locked: 0
