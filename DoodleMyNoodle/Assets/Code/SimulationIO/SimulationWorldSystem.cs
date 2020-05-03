@@ -25,14 +25,10 @@ namespace SimulationControl
             World.GetOrCreateSystem<LoadSimulationSceneSystem>();
             World.GetOrCreateSystem<TickSimulationSystem>();
 
-            SimulationWorld.InternalAccessor.SimWorld = SimulationWorld;
-            SimulationWorld.InternalAccessor.EntityManager = SimulationWorld.EntityManager;
-            SimulationWorld.InternalAccessor.SomeSimSystem = SimulationWorld.GetExistingSystem<SimPreInitializationSystemGroup>();
-
             SimWorldAccessor = new ExternalSimWorldAccessor();
-            SimWorldAccessor.SimWorld = SimulationWorld.InternalAccessor.SimWorld;
-            SimWorldAccessor.EntityManager = SimulationWorld.InternalAccessor.EntityManager;
-            SimWorldAccessor.SomeSimSystem = SimulationWorld.InternalAccessor.SomeSimSystem; // could be any system
+            SimWorldAccessor.SimWorld = SimulationWorld.GetInternalAccessor().SimWorld;
+            SimWorldAccessor.EntityManager = SimulationWorld.GetInternalAccessor().EntityManager;
+            SimWorldAccessor.SomeSimSystem = SimulationWorld.GetInternalAccessor().SomeSimSystem; // could be any system
         }
 
         protected override void OnDestroy()

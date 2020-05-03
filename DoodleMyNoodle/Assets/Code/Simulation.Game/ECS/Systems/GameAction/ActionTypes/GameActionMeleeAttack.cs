@@ -52,7 +52,9 @@ public class GameActionMeleeAttack : GameAction
             CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, paramTile.Tile, victims);
             foreach (var entity in victims)
             {
+#if UNITY_EDITOR
                 DebugService.Log("Attack " + accessor.GetName(entity));
+#endif
                 CommonWrites.ModifyStatInt<Health>(accessor, entity, -DAMAGE);
             }
 
