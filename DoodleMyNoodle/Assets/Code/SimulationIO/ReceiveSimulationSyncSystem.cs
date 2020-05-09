@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CCC.Operations;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 
@@ -14,7 +15,7 @@ namespace SimulationControl
         private SimulationWorldSystem _simWorldSystem;
         private ReceiveSimulationTickSystem _receiveTickSystem;
 
-        private SimulationSyncFromTransferClientOperation _ongoingSyncOp;
+        private CoroutineOperation _ongoingSyncOp;
 
         public bool IsSynchronizing { get; private set; }
 
@@ -50,7 +51,7 @@ namespace SimulationControl
             }
         }
 
-        SimulationSyncFromTransferClientOperation SyncSimulationWithServer()
+        CoroutineOperation SyncSimulationWithServer()
         {
             if (IsSynchronizing)
             {
@@ -62,6 +63,8 @@ namespace SimulationControl
 
             _receiveTickSystem.ClearAccumulatedTicks();
             _receiveTickSystem.StartShelvingTicks();
+
+            //_ongoingSyncOp = new SimulationSyncFromDiskClientOperation(_session, _simWorldSystem.SimulationWorld);
 
             _ongoingSyncOp = new SimulationSyncFromTransferClientOperation(_session, _simWorldSystem.SimulationWorld);
 

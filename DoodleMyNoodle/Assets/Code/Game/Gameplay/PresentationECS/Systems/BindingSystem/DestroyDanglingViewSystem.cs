@@ -15,7 +15,6 @@ public class DestroyDanglingViewSystem : ViewJobComponentSystem
 
     protected override JobHandle OnUpdate(JobHandle jobHandle)
     {
-        // TODO fbessette: mini clean-up
         _simWorldEntityClearAndReplaceCount.Set(SimWorldAccessor.EntityClearAndReplaceCount);
         if (_simWorldEntityClearAndReplaceCount.IsDirty)
         {
@@ -47,9 +46,9 @@ public class DestroyDanglingViewSystem : ViewJobComponentSystem
         public EntityCommandBuffer.Concurrent Ecb;
         public SimWorldAccessorJob SimWorld;
 
-        public void Execute(Entity viewEntity, int jobIndex, [Unity.Collections.ReadOnly] ref BindedSimEntity linkedSimEntity)
+        public void Execute(Entity viewEntity, int jobIndex, [ReadOnly] ref BindedSimEntity linkedSimEntity)
         {
-            if (!SimWorld.Exists(linkedSimEntity.SimWorldEntity))
+            if (!SimWorld.Exists(linkedSimEntity.SimEntity))
             {
                 Ecb.DestroyEntity(jobIndex, viewEntity);
             }
@@ -60,7 +59,7 @@ public class DestroyDanglingViewSystem : ViewJobComponentSystem
     {
         public EntityCommandBuffer.Concurrent Ecb;
 
-        public void Execute(Entity viewEntity, int jobIndex, [Unity.Collections.ReadOnly] ref BindedSimEntity linkedSimEntity)
+        public void Execute(Entity viewEntity, int jobIndex, [ReadOnly] ref BindedSimEntity linkedSimEntity)
         {
             Ecb.DestroyEntity(jobIndex, viewEntity);
         }

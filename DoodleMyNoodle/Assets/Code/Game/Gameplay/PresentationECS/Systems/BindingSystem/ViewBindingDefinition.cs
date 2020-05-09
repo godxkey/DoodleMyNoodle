@@ -8,8 +8,14 @@ public class ViewBindingDefinition : MonoBehaviour
         FirstChildIsView,
         SecondChildIsView
     }
+    public enum ETechType
+    {
+        GameObject,
+        Entity
+    }
 
     public ESplitMode SplitMode = ESplitMode.SecondChildIsView;
+    public ETechType ViewTechType = ETechType.Entity;
 
     public SimAssetId GetSimAssetId()
     {
