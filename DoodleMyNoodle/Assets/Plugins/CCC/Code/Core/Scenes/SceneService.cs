@@ -83,16 +83,23 @@ public class SceneService : MonoCoreService<SceneService>
             localPhysicsMode = loadSettings.LocalPhysicsMode
         };
 
-        switch (loadSettings.LoadSceneMode)
+        try
         {
-            case LoadSceneMode.Single:
-                SceneManager.LoadScene(sceneName, loadParameters);
-                break;
-            case LoadSceneMode.Additive:
-                SceneManager.LoadSceneAsync(sceneName, loadParameters);
-                break;
-            default:
-                throw new NotSupportedException();
+            switch (loadSettings.LoadSceneMode)
+            {
+                case LoadSceneMode.Single:
+                    SceneManager.LoadScene(sceneName, loadParameters);
+                    break;
+                case LoadSceneMode.Additive:
+                    SceneManager.LoadSceneAsync(sceneName, loadParameters);
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
         }
 
         return scenePromise;

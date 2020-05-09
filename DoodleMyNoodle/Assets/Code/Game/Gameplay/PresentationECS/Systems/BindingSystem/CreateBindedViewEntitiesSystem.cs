@@ -2,6 +2,7 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
+using UnityEngine;
 
 [UpdateAfter(typeof(CreateBindedViewEntitiesSystem))]
 [UpdateBefore(typeof(CopyTransformToViewSystem))]
@@ -30,75 +31,151 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
 
     protected override JobHandle OnUpdate(JobHandle jobHandle)
     {
-        var settingsEntity = GetSingletonEntity<Settings_ViewBindingSystem_Binding>();
-
         // fbessette: we use the 'EntityClearAndReplaceCount' to mesure when we should replace all view entities.
         //            This doesn't feel like the best way to do it... Feel free to refactor
         _simWorldEntityClearAndReplaceCount.Set(SimWorldAccessor.EntityClearAndReplaceCount);
+
+
+        EntityQuery simEntitiesInNeedOfViewBindingQ;
         if (_simWorldEntityClearAndReplaceCount.IsDirty)
         {
             _simWorldEntityClearAndReplaceCount.Reset();
 
-            jobHandle = new FetchAllSimEntitiesJob()
-            {
-                Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent(),
-                BlueprintDefinitions = EntityManager.GetBuffer<Settings_ViewBindingSystem_Binding>(settingsEntity)
-            }.Schedule(_allSimEntitiesQ, jobHandle);
+            simEntitiesInNeedOfViewBindingQ = _allSimEntitiesQ;
         }
         else
         {
-            jobHandle = new FetchNewSimEntitiesJob()
-            {
-                Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent(),
-                Bindings = EntityManager.GetBuffer<Settings_ViewBindingSystem_Binding>(settingsEntity)
-            }.Schedule(_newSimEntitiesQ, jobHandle);
+            simEntitiesInNeedOfViewBindingQ = _newSimEntitiesQ;
         }
 
+        jobHandle = new CreateBindedEntitiesForSimEntities()
+        {
+            Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent(),
+            Bindings = EntityManager.GetBuffer<Settings_ViewBindingSystem_Binding>(GetSingletonEntity<Settings_ViewBindingSystem_Binding>())
+        }.Schedule(simEntitiesInNeedOfViewBindingQ, jobHandle);
+
         _ecbSystem.AddJobHandleForProducer(jobHandle);
+
 
         jobHandle.Complete();
         return jobHandle;
     }
 
     [BurstCompile]
-    [RequireComponentTag(typeof(NewlyCreatedTag))]
-    struct FetchNewSimEntitiesJob : IJobForEachWithEntity_EC<SimAssetId>
+    struct CreateBindedEntitiesForSimEntities : IJobForEachWithEntity_EC<SimAssetId>
     {
         [ReadOnly] public DynamicBuffer<Settings_ViewBindingSystem_Binding> Bindings;
         public EntityCommandBuffer.Concurrent Ecb;
 
         public void Execute(Entity simEntity, int index, [ReadOnly] ref SimAssetId simAssetId)
         {
+            if (!FindBindingSetting(ref simAssetId, out Settings_ViewBindingSystem_Binding bindingSetting))
+                return;
+
+            Entity presentationEntity;
+
+            if (bindingSetting.UseGameObjectInsteadOfEntity)
+            {
+                presentationEntity = Ecb.CreateEntity(index);
+                Ecb.AddComponent(index, presentationEntity, new BindedGameObject() { PresentationGameObjectPrefabIndex = bindingSetting.PresentationGameObjectPrefabIndex });
+            }
+            else
+            {
+                presentationEntity = Ecb.Instantiate(index, bindingSetting.PresentationEntity);
+            }
+
+            Ecb.AddComponent(index, presentationEntity, new BindedSimEntity() { SimEntity = simEntity });
+        }
+
+        bool FindBindingSetting([ReadOnly] ref SimAssetId simAssetId, out Settings_ViewBindingSystem_Binding bindingSetting)
+        {
             for (int i = 0; i < Bindings.Length; i++)
             {
                 if (Bindings[i].SimAssetId == simAssetId)
                 {
-                    Entity presentationEntity = Ecb.Instantiate(index, Bindings[i].PresentationEntity);
-                    Ecb.AddComponent(index, presentationEntity, new BindedSimEntity() { SimWorldEntity = simEntity });
-                    break;
+                    bindingSetting = Bindings[i];
+                    return true;
                 }
             }
+
+            bindingSetting = default;
+            return false;
         }
     }
+}
 
-    // Same code, no RequireComponentTag
-    [BurstCompile]
-    struct FetchAllSimEntitiesJob : IJobForEachWithEntity_EC<SimAssetId>
+public struct BindedGameObject : IComponentData
+{
+    public int PresentationGameObjectPrefabIndex;
+}
+public struct BindedGameObjectInstantiatedTag : ISystemStateComponentData
+{
+}
+
+[UpdateAfter(typeof(PostSimulationBindingCommandBufferSystem))]
+[UpdateBefore(typeof(CopyTransformToViewSystem))]
+public class CreateBindedViewGameObjectsSystem : ViewComponentSystem
+{
+    Settings_ViewBindingSystem_BindingGameObjectList _cachedSettings = null;
+
+    Settings_ViewBindingSystem_BindingGameObjectList GetSettings()
     {
-        [ReadOnly] public DynamicBuffer<Settings_ViewBindingSystem_Binding> BlueprintDefinitions;
-        public EntityCommandBuffer.Concurrent Ecb;
-
-        public void Execute(Entity simEntity, int index, [ReadOnly] ref SimAssetId simAssetId)
+        if (_cachedSettings == null)
         {
-            for (int i = 0; i < BlueprintDefinitions.Length; i++)
-            {
-                if (BlueprintDefinitions[i].SimAssetId == simAssetId)
-                {
-                    Entity presentationEntity = Ecb.Instantiate(index, BlueprintDefinitions[i].PresentationEntity);
-                    Ecb.AddComponent(index, presentationEntity, new BindedSimEntity() { SimWorldEntity = simEntity });
-                    break;
-                }
-            }
+            _cachedSettings = EntityManager.GetComponentObject<Settings_ViewBindingSystem_BindingGameObjectList>(GetSingletonEntity<Settings_ViewBindingSystem_BindingGameObjectList>());
         }
+
+        return _cachedSettings;
+    }
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        RequireSingletonForUpdate<Settings_ViewBindingSystem_BindingGameObjectList>();
+    }
+
+    protected override void OnUpdate()
+    {
+        // Destroy GameObjects from entities that were destroyed
+        Entities
+            .WithAll<BindedGameObjectInstantiatedTag>()
+            .WithNone<BindedGameObject>()
+            .ForEach((Entity entity) =>
+            {
+                if (EntityManager.HasComponent<BindedSimEntityManaged>(entity))
+                {
+                    BindedSimEntityManaged goComponent = EntityManager.GetComponentObject<BindedSimEntityManaged>(entity);
+
+                    if (goComponent)
+                    {
+                        Object.Destroy(goComponent.gameObject);
+                    }
+                }
+
+                EntityManager.RemoveComponent<BindedGameObjectInstantiatedTag>(entity);
+            });
+
+        // Instantiate GameObjects for new entities
+        Entities
+            .WithAll<BindedGameObject>()
+            .WithNone<BindedGameObjectInstantiatedTag>()
+            .ForEach((Entity entity, ref BindedGameObject go, ref BindedSimEntity bindedSimEntity) =>
+        {
+            var settings = GetSettings();
+            var goIndex = go.PresentationGameObjectPrefabIndex;
+
+            if (goIndex >= 0 && goIndex < settings.PresentationGameObjects.Count)
+            {
+                GameObject gameObject = Object.Instantiate(settings.PresentationGameObjects[goIndex]);
+                
+                var bindedSimEntityManaged = gameObject.GetOrAddComponent<BindedSimEntityManaged>();
+                bindedSimEntityManaged.SimEntity = bindedSimEntity.SimEntity;
+                EntityManager.AddComponentObject(entity, bindedSimEntityManaged);
+                EntityManager.AddComponentObject(entity, gameObject.transform);
+            }
+
+            EntityManager.AddComponent<BindedGameObjectInstantiatedTag>(entity);
+        });
     }
 }

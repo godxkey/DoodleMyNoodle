@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// A GameMonoBehaviour is a monobehaviour class that receives common game events
 /// </summary>
-public class GameMonoBehaviour : MonoBehaviour
+public class GameMonoBehaviour : MonoBehaviour, IIndexedInList
 {
     static List<GameMonoBehaviour> s_registeredBehaviours = new List<GameMonoBehaviour>();
     public static ReadOnlyList<GameMonoBehaviour> RegisteredBehaviours => s_registeredBehaviours.AsReadOnlyNoAlloc();
@@ -12,9 +12,12 @@ public class GameMonoBehaviour : MonoBehaviour
     public ExternalSimWorldAccessor SimWorld => GameMonoBehaviourHelpers.SimulationWorld;
     public Unity.Entities.World PresWorld => GameMonoBehaviourHelpers.PresentationWorld;
 
+    int IIndexedInList.Index { get; set; }
+
     protected virtual void Awake()
     {
-        s_registeredBehaviours.Add(this);
+        s_registeredBehaviours.AddIndexed(this);
+
         if (Game.Ready)
             OnGameReady();
         if (Game.Started)
@@ -23,9 +26,10 @@ public class GameMonoBehaviour : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        if(ApplicationUtilityService.ApplicationIsQuitting == false)
+        s_registeredBehaviours.RemoveIndexed(this);
+
+        if (ApplicationUtilityService.ApplicationIsQuitting == false)
         {
-            s_registeredBehaviours.Remove(this);
             OnSafeDestroy();
         }
     }

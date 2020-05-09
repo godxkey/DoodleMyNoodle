@@ -116,6 +116,15 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                         }
                     }
 
+                    if (keycodeInput.keyCode == UnityEngine.KeyCode.X && keycodeInput.state == SimInputKeycode.State.Pressed)
+                    {
+                        Entities.ForEach((Entity aiController, ref AITag aiTag, ref ControlledEntity p) =>
+                        {
+                            EntityManager.DestroyEntity(p.Value);
+                        });
+
+                    }
+
                     if (keycodeInput.keyCode == UnityEngine.KeyCode.T && keycodeInput.state == SimInputKeycode.State.Pressed
                         && EntityManager.HasComponent<FixTranslation>(pawn))
                     {

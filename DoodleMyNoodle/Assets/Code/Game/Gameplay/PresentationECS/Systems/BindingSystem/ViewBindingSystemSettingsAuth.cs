@@ -14,7 +14,7 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
     {
         foreach (ViewBindingDefinition item in Definitions)
         {
-            if (item)
+            if (item && item.ViewTechType == ViewBindingDefinition.ETechType.Entity)
             {
                 referencedPrefabs.Add(item.GetViewGameObject());
             }
@@ -23,18 +23,39 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        var buffer = dstManager.AddBuffer<Settings_ViewBindingSystem_Binding>(entity);
-        buffer.Capacity = Definitions.Count;
+        var bindingGOs = new Settings_ViewBindingSystem_BindingGameObjectList();
+        dstManager.AddComponentObject(entity, bindingGOs);
+
+        var bindingSettings = dstManager.AddBuffer<Settings_ViewBindingSystem_Binding>(entity);
+        bindingSettings.Capacity = Definitions.Count;
 
         foreach (ViewBindingDefinition item in Definitions)
         {
             if (item)
             {
-                buffer.Add(new Settings_ViewBindingSystem_Binding()
+                if (item.ViewTechType == ViewBindingDefinition.ETechType.Entity)
                 {
-                    SimAssetId = item.GetSimAssetId(),
-                    PresentationEntity = conversionSystem.GetPrimaryEntity(item.GetViewGameObject())
-                });
+                    bindingSettings.Add(new Settings_ViewBindingSystem_Binding()
+                    {
+                        SimAssetId = item.GetSimAssetId(),
+                        PresentationEntity = conversionSystem.GetPrimaryEntity(item.GetViewGameObject()),
+                        UseGameObjectInsteadOfEntity = false,
+                        PresentationGameObjectPrefabIndex = -1,
+                    });
+                }
+                else
+                {
+                    bindingSettings.Add(new Settings_ViewBindingSystem_Binding()
+                    {
+                        SimAssetId = item.GetSimAssetId(),
+                        PresentationEntity = Entity.Null,
+                        UseGameObjectInsteadOfEntity = true,
+                        PresentationGameObjectPrefabIndex = bindingGOs.PresentationGameObjects.Count
+                    });
+
+                    bindingGOs.PresentationGameObjects.Add(item.GetViewGameObject());
+                }
+
             }
         }
     }
