@@ -56,7 +56,7 @@ TagManager:
   - name: Grid_Addons
     uniqueID: 2829513087
     locked: 0
-  - name: PlayerCharacters
+  - name: Characters
     uniqueID: 3005221959
     locked: 0
   - name: Grid_Foreground
