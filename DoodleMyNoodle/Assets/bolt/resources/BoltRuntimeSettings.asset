@@ -20,7 +20,7 @@ MonoBehaviour:
     maxPropertyPriority: 2048
     scopeMode: 0
     logTargets: 0
-    disableDejitterBuffer: 0
+    disableDejitterBuffer: 1
     clientSendRate: 3
     clientDejitterDelay: 6
     clientDejitterDelayMin: 3
@@ -62,7 +62,7 @@ MonoBehaviour:
   showBoltEntityHints: 0
   serializeProjectAsText: 0
   photonAppId: d4be9c84-bd33-4178-a833-37a2f12aac9b
-  photonUsePunch: 1
+  photonUsePunch: 0
   photonCloudRegionIndex: 12
   instantiateMode: 2
   globalEntityBehaviourQueryOption: 3

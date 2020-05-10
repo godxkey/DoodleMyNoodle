@@ -6,10 +6,27 @@ using System.Collections.ObjectModel;
 using UdpKit;
 using UnityEngine;
 
-using OperationResultCallback = System.Action<bool, string>;
-
 namespace Internals.PhotonNetwokInterface
 {
+    public class StreamChannel : IStreamChannel
+    {
+        public UdpChannelName UdpChannelName;
+
+        public StreamChannel(UdpChannelName udpChannelName, string name, bool isReliable, int priority)
+        {
+            UdpChannelName = udpChannelName;
+            Name = name;
+            IsReliable = isReliable;
+            Priority = priority;
+        }
+
+        public string Name { get; private set; }
+
+        public bool IsReliable { get; private set; }
+
+        public int Priority { get; private set; }
+    }
+
     public class PhotonNetworkInterface : NetworkInterface
     {
         const bool log = true;
@@ -39,27 +56,27 @@ namespace Internals.PhotonNetwokInterface
             CreateBoltListener();
         }
 
-        public override void LaunchClient(OperationResultCallback onComplete)
+        public override void LaunchClient(OperationResultDelegate onComplete)
         {
             _operationCallbackLaunch = onComplete;
             State = NetworkState.Launching;
             BoltLauncher.StartClient();
         }
-        public override void LaunchServer(OperationResultCallback onComplete)
+        public override void LaunchServer(OperationResultDelegate onComplete)
         {
             _operationCallbackLaunch = onComplete;
             State = NetworkState.Launching;
             BoltLauncher.StartServer();
         }
 
-        public override void Shutdown(OperationResultCallback onComplete)
+        public override void Shutdown(OperationResultDelegate onComplete)
         {
             _operationCallbackShutdown = onComplete;
             State = NetworkState.ShuttingDown;
             BoltLauncher.Shutdown();
         }
 
-        public override void CreateSession(string sessionName, OperationResultCallback onComplete)
+        public override void CreateSession(string sessionName, OperationResultDelegate onComplete)
         {
             if (State != NetworkState.Running)
             {
@@ -90,7 +107,7 @@ namespace Internals.PhotonNetwokInterface
                 DebugService.Log("[PhotonNetworkInterface] Session creation begun...");
         }
 
-        public override void ConnectToSession(INetworkInterfaceSession session, OperationResultCallback onComplete)
+        public override void ConnectToSession(INetworkInterfaceSession session, OperationResultDelegate onComplete)
         {
             _operationCallbackSessionConnected = onComplete;
 
@@ -101,7 +118,7 @@ namespace Internals.PhotonNetwokInterface
             _connectedSessionInfo = session;
         }
 
-        public override void DisconnectFromSession(OperationResultCallback onComplete)
+        public override void DisconnectFromSession(OperationResultDelegate onComplete)
         {
             _connectedSessionInfo = null;
             Shutdown(onComplete); // with bolt, we have no way of returning to 'lobby' state
@@ -171,13 +188,43 @@ namespace Internals.PhotonNetwokInterface
         {
             DestroyListener();
         }
+        
+        public override IStreamChannel GetStreamChannel(StreamChannelType channel)
+        {
+            return _streamChannels[channel];
+        }
 
         #region Event Handling
         public void Event_BoltStartBegin()
         {
             if (log)
                 DebugService.Log("[PhotonNetworkInterface] BoltStartBegin");
-            RegisterTokenClasses();
+
+            // class needed to set room properties
+            BoltNetwork.RegisterTokenClass<PhotonRoomProperties>();
+
+            CreateStreamChannels();
+        }
+
+        private void CreateStreamChannels()
+        {
+            _streamChannels.Clear();
+
+            string[] streamChannelNames = Enum.GetNames(typeof(StreamChannelType));
+            int[] streamChannelValues = Enum.GetValues(typeof(StreamChannelType)) as int[];
+
+            for (int i = 0; i < streamChannelValues.Length; i++)
+            {
+                StreamChannelType type = (StreamChannelType)streamChannelValues[i];
+
+                GetStreamChannelSettings(type, out bool reliable, out int priority);
+
+                UdpChannelName photonChannelName = BoltNetwork.CreateStreamChannel(streamChannelNames[i], reliable ? UdpChannelMode.Reliable : UdpChannelMode.Unreliable, priority);
+
+                StreamChannel channel = new StreamChannel(photonChannelName, streamChannelNames[i], reliable, priority);
+
+                _streamChannels.Add(type, channel);
+            }
         }
 
         public void Event_BoltStartDone()
@@ -212,6 +259,9 @@ namespace Internals.PhotonNetwokInterface
             if (log)
                 DebugService.Log("[PhotonNetworkInterface] Connected: " + connection.ToString());
             _connections.Add(new PhotonNetworkInterfaceConnection(connection));
+
+            connection.SetStreamBandwidth(1024 * 2000);
+
 
             // NOTE: this event will get called for each new connection
             //     client: called once when we join the session
@@ -353,13 +403,7 @@ namespace Internals.PhotonNetwokInterface
             }
         }
 
-        void RegisterTokenClasses()
-        {
-            // class needed to set room properties
-            BoltNetwork.RegisterTokenClass<PhotonRoomProperties>();
-        }
-
-        void ConcludeOperationCallback(ref OperationResultCallback callback, bool success, string message)
+        void ConcludeOperationCallback(ref OperationResultDelegate callback, bool success, string message)
         {
             callback?.Invoke(success, message);
             callback = null;
@@ -369,15 +413,16 @@ namespace Internals.PhotonNetwokInterface
         Action<INetworkInterfaceConnection, byte[]> _messageReader;
         List<INetworkInterfaceConnection> _connections = new List<INetworkInterfaceConnection>();
         List<INetworkInterfaceSession> _sessions = new List<INetworkInterfaceSession>();
+        Dictionary<StreamChannelType, IStreamChannel> _streamChannels = new Dictionary<StreamChannelType, IStreamChannel>();
         INetworkInterfaceSession _connectedSessionInfo;
         GameObject _photonCallbackListener;
         float _sessionClearTimer; // used to clear the session list after a timeout
         const float SESSION_CLEAR_TIMEOUT = 7;
 
-        OperationResultCallback _operationCallbackLaunch;
-        OperationResultCallback _operationCallbackShutdown;
-        OperationResultCallback _operationCallbackSessionCreated;
-        OperationResultCallback _operationCallbackSessionConnected;
-        OperationResultCallback _operationCallbackDisconnectedFromSession;
+        OperationResultDelegate _operationCallbackLaunch;
+        OperationResultDelegate _operationCallbackShutdown;
+        OperationResultDelegate _operationCallbackSessionCreated;
+        OperationResultDelegate _operationCallbackSessionConnected;
+        OperationResultDelegate _operationCallbackDisconnectedFromSession;
     }
 }

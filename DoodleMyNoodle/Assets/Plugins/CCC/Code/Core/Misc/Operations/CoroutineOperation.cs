@@ -25,9 +25,17 @@ namespace CCC.Operations
         }
         public LogFlag LogFlags = LogFlag.Failure;
 
-        bool _hasRun = false;
-        Coroutine _coroutine;
-        List<CoroutineOperation> _ongoingSubOperations;
+        private bool _hasRun = false;
+        private Coroutine _coroutine;
+        private List<CoroutineOperation> _ongoingSubOperations;
+        private readonly List<IDisposable> _disposeOnTerminate = new List<IDisposable>();
+
+        public T DisposeOnTerminate<T>(T disposable) where T : IDisposable
+        {
+            _disposeOnTerminate.Add(disposable);
+
+            return disposable;
+        }
 
         public void Execute()
         {
@@ -105,6 +113,12 @@ namespace CCC.Operations
                 CoroutineLauncherService.Instance.StopCoroutine(_coroutine);
                 _coroutine = null;
             }
+
+            for (int i = 0; i < _disposeOnTerminate.Count; i++)
+            {
+                _disposeOnTerminate[i].Dispose();
+            }
+
             OnTerminate();
             OnTerminateCallback?.SafeInvoke(this);
         }

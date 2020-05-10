@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CCC.Online.DataTransfer;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ public class UIDataTransferWidget : MonoBehaviour
 {
     public UIDataTransferWidgetElement ElementPrefab;
     public Transform ElementsSpawnContainer;
-    public AudioPlayable NewTransferSFX; 
+    public AudioPlayable NewTransferSFX;
 
     SessionInterface _session;
     List<UIDataTransferWidgetElement> _elements = new List<UIDataTransferWidgetElement>();
@@ -40,16 +41,18 @@ public class UIDataTransferWidget : MonoBehaviour
             }
             for (int i = 0; i < outgoing.Count; i++)
             {
-                var transfer = outgoing[i];
-                var element = GetOrAddActiveElement(elementIterator);
+                if (outgoing[i] is SendViaManualPacketsOperation viaPackets)
+                {
+                    var element = GetOrAddActiveElement(elementIterator);
 
-                element.Description.Set(transfer.Description);
-                element.TotalDataSize.Set(transfer.DataSize);
-                element.CurrentDataSize.Set(Mathf.FloorToInt(transfer.Progress * transfer.DataSize));
-                element.IsIncoming.Set(false);
-                element.UpdateDisplay();
+                    element.Description.Set(viaPackets.Description);
+                    element.TotalDataSize.Set(viaPackets.DataSize);
+                    element.CurrentDataSize.Set(Mathf.FloorToInt(viaPackets.Progress * viaPackets.DataSize));
+                    element.IsIncoming.Set(false);
+                    element.UpdateDisplay();
 
-                elementIterator++;
+                    elementIterator++;
+                }
             }
 
             DeactivateElementsFrom(elementIterator);
@@ -115,7 +118,7 @@ public class UIDataTransferWidget : MonoBehaviour
         }
     }
 
-    private void OnBeginReceiveLargeDataTransfer(ReceiveDataTransferOperation arg1, INetworkInterfaceConnection arg2)
+    private void OnBeginReceiveLargeDataTransfer(ReceiveViaManualPacketsOperation arg1, INetworkInterfaceConnection arg2)
     {
         DefaultAudioSourceService.Instance.PlayStaticSFX(NewTransferSFX);
     }

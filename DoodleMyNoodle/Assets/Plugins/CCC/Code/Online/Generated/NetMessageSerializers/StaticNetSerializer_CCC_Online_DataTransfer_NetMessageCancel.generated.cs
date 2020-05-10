@@ -3,21 +3,21 @@
 
 using System;
 using System.Collections.Generic;
-public static class StaticNetSerializer_NetMessageDataTransferCancel
+public static class StaticNetSerializer_CCC_Online_DataTransfer_NetMessageCancel
 {
-    public static int GetNetBitSize(ref NetMessageDataTransferCancel obj)
+    public static int GetNetBitSize(ref CCC.Online.DataTransfer.NetMessageCancel obj)
     {
         int result = 0;
         result += StaticNetSerializer_System_UInt16.GetNetBitSize(ref obj.TransferId);
         return result;
     }
 
-    public static void NetSerialize(ref NetMessageDataTransferCancel obj, BitStreamWriter writer)
+    public static void NetSerialize(ref CCC.Online.DataTransfer.NetMessageCancel obj, BitStreamWriter writer)
     {
         StaticNetSerializer_System_UInt16.NetSerialize(ref obj.TransferId, writer);
     }
 
-    public static void NetDeserialize(ref NetMessageDataTransferCancel obj, BitStreamReader reader)
+    public static void NetDeserialize(ref CCC.Online.DataTransfer.NetMessageCancel obj, BitStreamReader reader)
     {
         StaticNetSerializer_System_UInt16.NetDeserialize(ref obj.TransferId, reader);
     }

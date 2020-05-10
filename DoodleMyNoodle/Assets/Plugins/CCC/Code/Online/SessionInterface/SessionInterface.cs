@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
+using CCC.Online.DataTransfer;
+using CCC.Operations;
 
 public abstract class SessionInterface : IDisposable
 {
@@ -17,12 +19,13 @@ public abstract class SessionInterface : IDisposable
     public bool IsClientType => !IsServerType;
     public INetworkInterfaceSession SessionInfo => _networkInterface.ConnectedSessionInfo;
     public ReadOnlyList<INetworkInterfaceConnection> Connections => _networkInterface.Connections;
-    public ReadOnlyList<ReceiveDataTransferOperation> IncomingDataTransfers => _incomingDataTransfers.AsReadOnlyNoAlloc();
-    public ReadOnlyList<SendDataTransferOperation> OutgoingDataTransfer => _outgoingDataTransfers.AsReadOnlyNoAlloc();
+    public ReadOnlyList<ReceiveViaManualPacketsOperation> IncomingDataTransfers => _incomingDataTransfers.AsReadOnlyNoAlloc();
+    public ReadOnlyList<CoroutineOperation> OutgoingDataTransfer => _outgoingDataTransfers.AsReadOnlyNoAlloc();
     public event Action OnTerminate;
     public event Action<INetworkInterfaceConnection> OnConnectionAdded;
     public event Action<INetworkInterfaceConnection> OnConnectionRemoved;
-    public event Action<ReceiveDataTransferOperation, INetworkInterfaceConnection> OnBeginReceiveLargeDataTransfer;
+    public event Action<ReceiveViaManualPacketsOperation, INetworkInterfaceConnection> OnBeginReceiveLargeDataTransfer;
+    internal NetworkInterface NetworkInterface => _networkInterface;
 
 
     public SessionInterface(NetworkInterface networkInterface)
@@ -33,7 +36,7 @@ public abstract class SessionInterface : IDisposable
         _networkInterface.OnDisconnect += InterfaceOnDisconnect;
         _networkInterface.OnConnect += Interface_OnConnect;
 
-        RegisterNetMessageReceiver<NetMessageDataTransferHeader>(OnReceiveDataTransferHeader);
+        RegisterNetMessageReceiver<NetMessageViaManualPacketsHeader>(OnReceiveDataTransferHeader);
     }
 
     public virtual void Dispose()
@@ -99,11 +102,12 @@ public abstract class SessionInterface : IDisposable
         return _networkInterface.Connections.Contains(connection);
     }
 
-    public SendDataTransferOperation BeginLargeDataTransfer(object netMessage, INetworkInterfaceConnection connection, string description = "")
+    public CoroutineOperation BeginLargeDataTransfer(object netMessage, INetworkInterfaceConnection connection, string description = "")
     {
         if (NetMessageInterpreter.GetDataFromMessage(netMessage, out byte[] messageData, byteLimit: int.MaxValue))
         {
-            SendDataTransferOperation op = new SendDataTransferOperation(messageData, connection, this, description);
+            SendViaStreamChannelOperation op = new SendViaStreamChannelOperation(messageData, connection, this, description);
+            //SendViaManualPacketsOperation op = new SendViaManualPacketsOperation(messageData, connection, this, description);
 
             _outgoingDataTransfers.Add(op);
 
@@ -124,9 +128,9 @@ public abstract class SessionInterface : IDisposable
         }
     }
 
-    void OnReceiveDataTransferHeader(NetMessageDataTransferHeader netMessage, INetworkInterfaceConnection source)
+    void OnReceiveDataTransferHeader(NetMessageViaManualPacketsHeader netMessage, INetworkInterfaceConnection source)
     {
-        ReceiveDataTransferOperation op = new ReceiveDataTransferOperation(netMessage, source, this);
+        ReceiveViaManualPacketsOperation op = new ReceiveViaManualPacketsOperation(netMessage, source, this);
 
         _incomingDataTransfers.Add(op);
 
@@ -182,8 +186,8 @@ public abstract class SessionInterface : IDisposable
 
     protected NetworkInterface _networkInterface;
     protected Dictionary<Type, NetMessageReceiverList> _netMessageReceivers = new Dictionary<Type, NetMessageReceiverList>();
-    protected List<SendDataTransferOperation> _outgoingDataTransfers = new List<SendDataTransferOperation>();
-    protected List<ReceiveDataTransferOperation> _incomingDataTransfers = new List<ReceiveDataTransferOperation>();
+    protected List<CoroutineOperation> _outgoingDataTransfers = new List<CoroutineOperation>();
+    protected List<ReceiveViaManualPacketsOperation> _incomingDataTransfers = new List<ReceiveViaManualPacketsOperation>();
 
     protected abstract class NetMessageReceiverList
     {
