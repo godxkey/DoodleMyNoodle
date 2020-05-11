@@ -260,8 +260,6 @@ namespace Internals.PhotonNetwokInterface
                 DebugService.Log("[PhotonNetworkInterface] Connected: " + connection.ToString());
             _connections.Add(new PhotonNetworkInterfaceConnection(connection));
 
-            connection.SetStreamBandwidth(1024 * 2000);
-
 
             // NOTE: this event will get called for each new connection
             //     client: called once when we join the session

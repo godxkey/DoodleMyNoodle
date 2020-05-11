@@ -99,11 +99,6 @@ public class SimpleClientAndServerLDTViaPackets : /*MonoBehaviour,*/ Bolt.Global
         return new string(d);
     }
 
-    INetworkInterfaceConnection GetDestination()
-    {
-        return OnlineService.OnlineInterface.SessionInterface.Connections[0];
-    }
-
     void UpdateDisplay(float progress, Color color)
     {
         ProgressSlider.normalizedValue = progress;
@@ -120,10 +115,15 @@ public class SimpleClientAndServerLDTViaPackets : /*MonoBehaviour,*/ Bolt.Global
 
     public void SendLargeData()
     {
-        _op = OnlineService.OnlineInterface.SessionInterface.BeginLargeDataTransfer(
-            new NetMessageChatMessage() { message = GetDataToSend() },
-            GetDestination(),
-            description: "A chat message");
+        string dataToSend = GetDataToSend();
+
+        foreach (var connection in OnlineService.OnlineInterface.SessionInterface.Connections)
+        {
+            _op = OnlineService.OnlineInterface.SessionInterface.BeginLargeDataTransfer(
+                new NetMessageChatMessage() { message = dataToSend },
+                connection,
+                description: "A chat message");
+        }
     }
 
     public void ReceiveLargeData(NetMessageChatMessage netMessage, INetworkInterfaceConnection source)

@@ -62,7 +62,6 @@ namespace CCC.Online.DataTransfer
 
             var streamChannel = _sessionInterface.NetworkInterface.GetStreamChannel(StreamChannelType.LargeDataTransfer);
 
-            _destination.SetStreamBandwidth(1024 * s_streamBandwidth.IntValue);
             _destination.StreamBytes(streamChannel, _data);
 
 
