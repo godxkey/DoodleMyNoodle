@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: GridBattleBaseSetting
   m_EditorClassIdentifier: 
   GridSize: 11
-  AddonsDefinition: []
+  AddonsDefinition:
+  - SpriteVisual: {fileID: 21300000, guid: f1387057f2498b1489e2d40fd2e7ad15, type: 3}
+    AddonSimulationPrefab: {fileID: 7442072573239097383, guid: f53a6289e788d4945ab27ef53b9a7c80,
+      type: 3}
