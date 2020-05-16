@@ -5,7 +5,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(ViewBindingDefinition))]
-public class ConvertViewBindingDefinitionToEntities : ConvertToEntity
+public class ConvertViewBindingDefinitionToEntities : ConvertToEntity, IConvertGameObjectToEntity
 {
     void Awake()
     {
@@ -71,6 +71,16 @@ public class ConvertViewBindingDefinitionToEntities : ConvertToEntity
             {
                 subConvert.PrepareChildForConversion(worldType, childTr);
             }
+        }
+    }
+
+    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    {
+        if (!gameObject.scene.IsValid())
+        {
+            Debug.LogWarning($"The prefab {gameObject.name} (a ViewBindingDefinition) is being converted to an entity. This should not happen." +
+                $" You probably want to reference and convert the sim entity {GetComponent<ViewBindingDefinition>().GetSimGameObject().name} instead.");
+            return;
         }
     }
 }
