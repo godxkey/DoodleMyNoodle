@@ -5,41 +5,39 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-//public static class DeleteEmptyFolders
-//{
-//    [MenuItem("Tools/Delete Empty Folders")]
-//    public static void Execute()
-//    {
-//        string deletedFolders = string.Empty;
+public static class DeleteEmptyFolders
+{
+    [MenuItem("Tools/Delete Empty Folders")]
+    public static void Execute()
+    {
+        string deletedFolders = string.Empty;
 
-//        DirectoryInfo directoryInfo = new DirectoryInfo(Application.dataPath);
-//        foreach (var subDirectory in directoryInfo.GetDirectories("*.*", SearchOption.AllDirectories))
-//        {
-//            if (subDirectory.Exists)
-//            {
-//                deletedFolders += ScanDirectory(subDirectory);
-//            }
-//        }
+        DirectoryInfo directoryInfo = new DirectoryInfo(Application.dataPath);
+        foreach (var subDirectory in directoryInfo.GetDirectories("*.*", SearchOption.AllDirectories))
+        {
+            if (subDirectory.Exists && IsDirectoryEmpty(subDirectory))
+            {
+                subDirectory.Delete(true);
 
-//        Debug.Log("Deleted Folders:\n" + (deletedFolders.Length > 0 ? deletedFolders : "NONE"));
-//    }
+                string folderMetaFile = subDirectory.FullName + ".meta";
+                if (File.Exists(folderMetaFile))
+                {
+                    File.Delete(folderMetaFile);
+                }
 
-//    private static string ScanDirectory(DirectoryInfo subDirectory)
-//    {
-//        string deletedFolders = string.Empty;
+                deletedFolders += subDirectory.FullName + '\n';
+            }
+        }
 
-//        var filesInSubDirectory = subDirectory.GetFiles("*.*", SearchOption.AllDirectories);
+        Debug.Log("Deleted Folders:\n" + (deletedFolders.Length > 0 ? deletedFolders : "NONE"));
 
-//        if (filesInSubDirectory.Length == 0 || !filesInSubDirectory.Any(t => t.FullName.EndsWith(".meta") == false))
-//        {
-//            subDirectory.Delete(true);
-//            deletedFolders += subDirectory.FullName + "\n";
-//        }
-//        else
-//        {
+        AssetDatabase.Refresh();
+    }
 
-//        }
+    private static bool IsDirectoryEmpty(DirectoryInfo subDirectory)
+    {
+        var filesInSubDirectory = subDirectory.GetFiles("*.*", SearchOption.AllDirectories);
 
-//        return deletedFolders;
-//    }
-//}
+        return filesInSubDirectory.Length == 0 || filesInSubDirectory.All(t => t.FullName.EndsWith(".meta"));
+    }
+}
