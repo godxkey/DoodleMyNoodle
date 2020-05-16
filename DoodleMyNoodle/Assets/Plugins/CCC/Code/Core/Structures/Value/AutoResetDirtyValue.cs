@@ -61,6 +61,11 @@ public struct AutoResetDirtyValue<T>
     {
         _notForcedDirty = false;
     }
+
+    public override string ToString()
+    {
+        return Get().ToString();
+    }
 }
 
 /// <summary>
@@ -77,7 +82,7 @@ public struct AutoResetDirtyRef<T> where T : class
     T _ref;
 
     public T GetPrevious() => _previousRef;
-    public T Ref() => _ref;
+    public T Get() => _ref;
 
     /// <summary>
     /// Is the current reference different from the previous one ?
@@ -121,5 +126,10 @@ public struct AutoResetDirtyRef<T> where T : class
     public void ForceDirty()
     {
         _notForcedDirty = false;
+    }
+
+    public override string ToString()
+    {
+        return Get().ToString();
     }
 }

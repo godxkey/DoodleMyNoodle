@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using CCC.Online.DataTransfer;
+using CCC.Operations;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +8,7 @@ public class UIDataTransferWidget : MonoBehaviour
 {
     public UIDataTransferWidgetElement ElementPrefab;
     public Transform ElementsSpawnContainer;
-    public AudioPlayable NewTransferSFX; 
+    public AudioPlayable NewTransferSFX;
 
     SessionInterface _session;
     List<UIDataTransferWidgetElement> _elements = new List<UIDataTransferWidgetElement>();
@@ -18,41 +20,118 @@ public class UIDataTransferWidget : MonoBehaviour
             TryHook();
         }
 
+        int elementIterator = 0;
+
+        UIDataTransferWidgetElement GetOrAddWidget()
+        {
+            return this.GetOrAddWidget(elementIterator++);
+        }
 
         if (IsHooked)
         {
             var incoming = _session.IncomingDataTransfers;
             var outgoing = _session.OutgoingDataTransfer;
 
-            int elementIterator = 0;
+
             for (int i = 0; i < incoming.Count; i++)
             {
-                var transfer = incoming[i];
-                var element = GetOrAddActiveElement(elementIterator);
+                if(incoming[i] is ReceiveViaManualPacketsOperation receiveViaPackets)
+                {
+                    var widget = GetOrAddWidget();
 
-                element.Description.Set(transfer.Description);
-                element.TotalDataSize.Set(transfer.DataSize);
-                element.CurrentDataSize.Set(Mathf.FloorToInt(transfer.Progress * transfer.DataSize));
-                element.IsIncoming.Set(true);
-                element.UpdateDisplay();
+                    widget.Description.Set(receiveViaPackets.Description);
+                    widget.TotalDataSize.Set(receiveViaPackets.DataSize);
+                    widget.CurrentDataSize.Set(Mathf.FloorToInt(receiveViaPackets.Progress * receiveViaPackets.DataSize));
+                    widget.IsIncoming.Set(true);
+                    widget.UpdateDisplay();
+                }
+                else if(incoming[i] is ReceiveViaStreamChannelOperation receiveViaStream)
+                {
+                    var widget = GetOrAddWidget();
 
-                elementIterator++;
+                    widget.Description.Set(receiveViaStream.Description);
+                    widget.TotalDataSize.Set(receiveViaStream.DataSize);
+                    widget.CurrentDataSize.Set(-1);
+                    widget.State.Set(StateToString(receiveViaStream.CurrentState));
+                    widget.IsIncoming.Set(true);
+                    widget.UpdateDisplay();
+                }
             }
+
             for (int i = 0; i < outgoing.Count; i++)
             {
-                var transfer = outgoing[i];
-                var element = GetOrAddActiveElement(elementIterator);
+                if (outgoing[i] is SendViaManualPacketsOperation sendViaPackets)
+                {
+                    var widget = GetOrAddWidget();
 
-                element.Description.Set(transfer.Description);
-                element.TotalDataSize.Set(transfer.DataSize);
-                element.CurrentDataSize.Set(Mathf.FloorToInt(transfer.Progress * transfer.DataSize));
-                element.IsIncoming.Set(false);
-                element.UpdateDisplay();
+                    widget.Description.Set(sendViaPackets.Description);
+                    widget.TotalDataSize.Set(sendViaPackets.DataSize);
+                    widget.CurrentDataSize.Set(Mathf.FloorToInt(sendViaPackets.Progress * sendViaPackets.DataSize));
+                    widget.IsIncoming.Set(false);
+                    widget.UpdateDisplay();
+                }
+                else if(outgoing[i] is SendViaStreamChannelOperation sendViaStream)
+                {
+                    var widget = GetOrAddWidget();
 
-                elementIterator++;
+                    widget.Description.Set(sendViaStream.Description);
+                    widget.TotalDataSize.Set(sendViaStream.DataSize);
+                    widget.CurrentDataSize.Set(-1);
+                    widget.State.Set(StateToString(sendViaStream.CurrentState));
+                    widget.IsIncoming.Set(false);
+                    widget.UpdateDisplay();
+                }
             }
 
-            DeactivateElementsFrom(elementIterator);
+        }
+        
+        DeactivateElementsFrom(elementIterator);
+    }
+
+    private string StateToString(ReceiveViaStreamChannelOperation.TransferState state)
+    {
+        switch (state)
+        {
+            default:
+                return "Invalid state";
+
+            case ReceiveViaStreamChannelOperation.TransferState.NotStarted:
+                return "Not started";
+
+            case ReceiveViaStreamChannelOperation.TransferState.SendingReady:
+                return "Starting transfer";
+
+            case ReceiveViaStreamChannelOperation.TransferState.WaitingForCompletedStreamData:
+                return "Receiving data...";
+            
+            case ReceiveViaStreamChannelOperation.TransferState.Terminated:
+                return "Transfer terminated";
+        }
+    }
+
+    private string StateToString(SendViaStreamChannelOperation.TransferState state)
+    {
+        switch (state)
+        {
+            default:
+                return "Invalid state";
+
+            case SendViaStreamChannelOperation.TransferState.NotStarted:
+                return "Not started";
+
+            case SendViaStreamChannelOperation.TransferState.WaitingForStreamToBeAvailable:
+                return "Waiting for available stream";
+
+            case SendViaStreamChannelOperation.TransferState.SendingHeader:
+            case SendViaStreamChannelOperation.TransferState.WaitingForReady:
+                return "Starting transfer";
+
+            case SendViaStreamChannelOperation.TransferState.SendingData:
+            case SendViaStreamChannelOperation.TransferState.WaitingCompleteDataACK:
+                return "Transfering data...";
+
+            case SendViaStreamChannelOperation.TransferState.Terminated:
+                return "Tranfer terminated";
         }
     }
 
@@ -61,7 +140,7 @@ public class UIDataTransferWidget : MonoBehaviour
         Unhook();
     }
 
-    UIDataTransferWidgetElement GetOrAddActiveElement(int i)
+    UIDataTransferWidgetElement GetOrAddWidget(int i)
     {
         while (i >= _elements.Count)
         {
@@ -115,7 +194,7 @@ public class UIDataTransferWidget : MonoBehaviour
         }
     }
 
-    private void OnBeginReceiveLargeDataTransfer(ReceiveDataTransferOperation arg1, INetworkInterfaceConnection arg2)
+    private void OnBeginReceiveLargeDataTransfer(CoroutineOperation arg1, INetworkInterfaceConnection arg2)
     {
         DefaultAudioSourceService.Instance.PlayStaticSFX(NewTransferSFX);
     }

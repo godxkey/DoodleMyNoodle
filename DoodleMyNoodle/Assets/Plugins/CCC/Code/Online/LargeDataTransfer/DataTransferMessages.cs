@@ -2,44 +2,67 @@
 using System.Collections;
 using UnityEngine;
 
-////////////////////////////////////////////////////////////////////////////////////////
-//      Sent by uploader
-////////////////////////////////////////////////////////////////////////////////////////
-
-[NetSerializable]
-public struct NetMessageDataTransferPaquet
+namespace CCC.Online.DataTransfer
 {
-    public ushort TransferId;
-    public int PaquetIndex;
-    public byte[] Data;
-}
+    ////////////////////////////////////////////////////////////////////////////////////////
+    //      Sent by uploader
+    ////////////////////////////////////////////////////////////////////////////////////////
 
-[NetSerializable]
-public struct NetMessageDataTransferHeader
-{
-    public ushort TransferId;
-    public int DataSize; // in bytes
-    public int PaquetCount;
-    public string Description;
-}
+    [NetSerializable]
+    public struct NetMessagePacket
+    {
+        public ushort TransferId;
+        public int PacketIndex;
+        public byte[] Data;
+    }
 
-////////////////////////////////////////////////////////////////////////////////////////
-//      Sent by downloader
-////////////////////////////////////////////////////////////////////////////////////////
+    [NetSerializable]
+    public struct NetMessageViaManualPacketsHeader
+    {
+        public ushort TransferId;
+        public int DataSize; // in bytes
+        public int PacketCount;
+        public string Description;
+    }
 
-[NetSerializable]
-public struct NetMessageDataTransferPaquetACK
-{
-    public ushort TransferId;
-    public int PaquetIndex;
-}
+    [NetSerializable]
+    public struct NetMessageViaStreamChannelHeader
+    {
+        public ushort TransferId;
+        public int DataSize; // in bytes
+        public string Description;
+    }
 
-////////////////////////////////////////////////////////////////////////////////////////
-//      Sent by downloader or uploader
-////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
+    //      Sent by downloader
+    ////////////////////////////////////////////////////////////////////////////////////////
 
-[NetSerializable]
-public struct NetMessageDataTransferCancel
-{
-    public ushort TransferId;
+    [NetSerializable]
+    public struct NetMessagePacketACK
+    {
+        public ushort TransferId;
+        public int PacketIndex;
+    }
+
+    [NetSerializable]
+    public struct NetMessageViaStreamReady
+    {
+        public ushort TransferId;
+    }
+
+    [NetSerializable]
+    public struct NetMessageViaStreamACK
+    {
+        public ushort TransferId;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    //      Sent by downloader or uploader
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    [NetSerializable]
+    public struct NetMessageCancel
+    {
+        public ushort TransferId;
+    }
 }

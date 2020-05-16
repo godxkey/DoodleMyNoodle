@@ -37,7 +37,7 @@ namespace SimulationControl
             foreach (var item in _ongoingOperations)
             {
                 if (item.IsRunning)
-                    item.TerminateWithFailure();
+                    item.TerminateWithAbnormalFailure();
             }
 
             base.OnDestroy();

@@ -35,7 +35,7 @@ namespace CCC.Operations
 
             if (!errorMessage.IsNullOrEmpty())
             {
-                TerminateWithFailure($"Failed to load text from file {_filePath} : {errorMessage}");
+                TerminateWithAbnormalFailure($"Failed to load text from file {_filePath} : {errorMessage}");
                 yield break;
             }
 

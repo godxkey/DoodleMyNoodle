@@ -75,7 +75,7 @@ public struct DirtyRef<T> where T : class
     T _ref;
 
     public T GetPrevious() => _previousRef;
-    public T Ref() => _ref;
+    public T Get() => _ref;
 
     /// <summary>
     /// Is the current reference different from the previous one ?
@@ -86,7 +86,7 @@ public struct DirtyRef<T> where T : class
         {
             if (!_notForcedDirty)
                 return true;
-            return ReferenceEquals(_previousRef, _ref);
+            return !ReferenceEquals(_previousRef, _ref);
         }
     }
 
