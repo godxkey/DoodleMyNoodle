@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
-public class ActionsDisplay : GameMonoBehaviour
+public class ActionsDisplay : LocalPlayerGameDisplay
 {
     public GameObject ActionPointPrefab;
 
     private List<ActionPointDisplay> _actionPoints = new List<ActionPointDisplay>();
 
-    private Entity _localPawn = Entity.Null;
-
     public override void OnGameUpdate()
     {
-        UpdateCurrentPlayerPawn();
+        base.OnGameUpdate();
 
         if (SimWorld.TryGetComponentData(_localPawn, out ActionPoints actions))
         {
@@ -51,14 +49,6 @@ public class ActionsDisplay : GameMonoBehaviour
             {
                 _actionPoints[i].SetAsAvailable(true);
             }
-        }
-    }
-
-    private void UpdateCurrentPlayerPawn()
-    {
-        if (_localPawn == Entity.Null)
-        {
-            _localPawn = PlayerHelpers.GetLocalSimPawnEntity(SimWorld);
         }
     }
 }
