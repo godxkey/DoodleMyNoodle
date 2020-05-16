@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CCC.Online.DataTransfer
 {
-    public class SendViaManualPacketsOperation : CoroutineOperation
+    public class SendViaManualPacketsOperation : OnlineTransferCoroutineOperation
     {
         enum PacketState : byte
         {
@@ -19,9 +19,6 @@ namespace CCC.Online.DataTransfer
 
         // init data
         readonly byte[] _data;
-        readonly SessionInterface _sessionInterface;
-        readonly INetworkInterfaceConnection _destination;
-        readonly ushort _transferId;
 
         // state
         PacketState[] _packetStates;
@@ -30,7 +27,6 @@ namespace CCC.Online.DataTransfer
 
 
         public string Description { get; private set; }
-        public bool WasCancelledByDestination { get; private set; }
         public int DataSize => _data.Length;
         public float Progress => 1 - ((float)_remainingUnacknowledgedPackets / _packetStates.Length);
 
@@ -38,26 +34,27 @@ namespace CCC.Online.DataTransfer
         /// DO NOT MODIFY THE BYTE[] DATA WILL THE TRANSFER IS ONGOING
         /// </summary>
         public SendViaManualPacketsOperation(byte[] data, INetworkInterfaceConnection destination, SessionInterface sessionInterface, string description = "")
+            : base(sessionInterface, destination, Transfers.s_NextTransferId++)
         {
             if (data.Length > Transfers.MAX_TRANSFER_SIZE)
                 throw new Exception($"Data transfer ({data.Length} bytes) cannot exceed {Transfers.MAX_TRANSFER_SIZE} bytes.");
 
             _data = data;
-            _sessionInterface = sessionInterface;
             int totalPacketCount = data.Length / Transfers.PAQUET_BYTE_ARRAY_SIZE;
             if (data.Length % Transfers.PAQUET_BYTE_ARRAY_SIZE != 0)
                 totalPacketCount++;
 
             _packetStates = new PacketState[totalPacketCount];
-            _destination = destination;
             _remainingUnacknowledgedPackets = totalPacketCount;
-            _transferId = Transfers.s_NextTransferId++;
             Description = description;
         }
 
 
         protected override IEnumerator ExecuteRoutine()
         {
+            if (!PreExecuteRoutine())
+                yield break;
+
             ////////////////////////////////////////////////////////////////////////////////////////
             //      Send header to destination (contains essential details about the transfer)
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -68,14 +65,13 @@ namespace CCC.Online.DataTransfer
                 PacketCount = _remainingUnacknowledgedPackets,
                 Description = Description
             };
-            _sessionInterface.SendNetMessage(header, _destination);
+            _sessionInterface.SendNetMessage(header, _connection);
 
 
             ////////////////////////////////////////////////////////////////////////////////////////
             //      Update Transfer
             ////////////////////////////////////////////////////////////////////////////////////////
             _sessionInterface.RegisterNetMessageReceiver<NetMessagePacketACK>(OnPacketAcknowledged);
-            _sessionInterface.RegisterNetMessageReceiver<NetMessageCancel>(OnTransferCancelled);
 
             while (_remainingUnacknowledgedPackets > 0)
             {
@@ -101,16 +97,9 @@ namespace CCC.Online.DataTransfer
             TerminateWithSuccess();
         }
 
-        private void OnTransferCancelled(NetMessageCancel arg1, INetworkInterfaceConnection arg2)
-        {
-            WasCancelledByDestination = true;
-            LogFlags = LogFlag.None;
-            TerminateWithAbnormalFailure("Destination has cancelled the transfer");
-        }
-
         void UpdateDataTransfer()
         {
-            if (_sessionInterface.IsConnectionValid(_destination))
+            if (_sessionInterface.IsConnectionValid(_connection))
             {
                 if (s_packetsSentThisFrame < Transfers.MAX_SENT_PAQUETS_PER_FRAME)
                 {
@@ -123,7 +112,7 @@ namespace CCC.Online.DataTransfer
                         if (_packetStates[_packetIterator] != PacketState.Acknowledged)
                         {
                             _packetStates[_packetIterator] = PacketState.Unacknowledged;
-                            SendPacket(_destination, _packetIterator);
+                            SendPacket(_connection, _packetIterator);
 
                             s_packetsSentThisFrame++;
                             if (s_packetsSentThisFrame >= Transfers.MAX_SENT_PAQUETS_PER_FRAME)
@@ -167,7 +156,7 @@ namespace CCC.Online.DataTransfer
             // Our destination has confirmed a packet receival!
 
             // the message comes from our target ?
-            if (source != _destination)
+            if (source != _connection)
             {
                 return;
             }
@@ -201,24 +190,11 @@ namespace CCC.Online.DataTransfer
             }
         }
 
-        protected override void OnFail()
-        {
-            base.OnFail();
-
-            if (!WasCancelledByDestination)
-            {
-                // notify destination we're cancelling the transfer
-                if (_sessionInterface.IsConnectionValid(_destination))
-                    _sessionInterface.SendNetMessage(new NetMessageCancel() { TransferId = _transferId }, _destination);
-            }
-        }
-
         protected override void OnTerminate()
         {
             base.OnTerminate();
 
             _sessionInterface.UnregisterNetMessageReceiver<NetMessagePacketACK>(OnPacketAcknowledged);
-            _sessionInterface.UnregisterNetMessageReceiver<NetMessageCancel>(OnTransferCancelled);
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CCC.Online.DataTransfer
 {
-    public class ReceiveViaManualPacketsOperation : CoroutineOperation
+    public class ReceiveViaManualPacketsOperation : OnlineTransferCoroutineOperation
     {
         enum PacketState : byte
         {
@@ -14,36 +14,35 @@ namespace CCC.Online.DataTransfer
 
         // init data
         readonly byte[] _data;
-        readonly SessionInterface _sessionInterface;
-        readonly INetworkInterfaceConnection _source;
         readonly NetMessageViaManualPacketsHeader _transferInfo;
 
         // state
         PacketState[] _paquetStates;
         int _remainingUnreceivedPaquets;
 
-        public bool WasCancelledBySource { get; private set; }
         public Action<ReceiveViaManualPacketsOperation, byte[]> OnDataReceived;
         public string Description => _transferInfo.Description;
         public int DataSize => _transferInfo.DataSize;
         public float Progress => 1 - ((float)_remainingUnreceivedPaquets / _transferInfo.PacketCount);
 
         public ReceiveViaManualPacketsOperation(NetMessageViaManualPacketsHeader transferHeader, INetworkInterfaceConnection source, SessionInterface sessionInterface)
+            : base(sessionInterface, source, transferHeader.TransferId)
         {
             _transferInfo = transferHeader;
             if (_transferInfo.DataSize > Transfers.MAX_TRANSFER_SIZE)
                 return;
 
             _data = new byte[_transferInfo.DataSize];
-            _sessionInterface = sessionInterface;
             _paquetStates = new PacketState[_transferInfo.PacketCount];
-            _source = source;
             _remainingUnreceivedPaquets = _transferInfo.PacketCount;
         }
 
 
         protected override IEnumerator ExecuteRoutine()
         {
+            if (!PreExecuteRoutine())
+                yield break;
+
             if (_data == null)
             {
                 TerminateWithAbnormalFailure($"Transfer size({_transferInfo.DataSize}) exceeds limit of {Transfers.MAX_TRANSFER_SIZE}");
@@ -51,7 +50,6 @@ namespace CCC.Online.DataTransfer
             }
 
             _sessionInterface.RegisterNetMessageReceiver<NetMessagePacket>(OnPaquetReceived);
-            _sessionInterface.RegisterNetMessageReceiver<NetMessageCancel>(OnTransferCancelled);
 
             while (_remainingUnreceivedPaquets > 0)
             {
@@ -65,19 +63,12 @@ namespace CCC.Online.DataTransfer
             TerminateWithSuccess();
         }
 
-        private void OnTransferCancelled(NetMessageCancel arg1, INetworkInterfaceConnection arg2)
-        {
-            WasCancelledBySource = true;
-            LogFlags = LogFlag.None;
-            TerminateWithAbnormalFailure("Source has cancelled the transfer");
-        }
-
         void OnPaquetReceived(NetMessagePacket netMessage, INetworkInterfaceConnection source)
         {
             // Our source has sent us a paquet!
 
             // the message comes from our source ?
-            if (source != _source)
+            if (source != _connection)
             {
                 return;
             }
@@ -128,24 +119,11 @@ namespace CCC.Online.DataTransfer
             _sessionInterface.SendNetMessage(acknowledgeMessage, source);
         }
 
-        protected override void OnFail()
-        {
-            base.OnFail();
-
-            if (!WasCancelledBySource)
-            {
-                // notify source we're cancelling the transfer
-                if (_sessionInterface.IsConnectionValid(_source))
-                    _sessionInterface.SendNetMessage(new NetMessageCancel() { TransferId = _transferInfo.TransferId }, _source);
-            }
-        }
-
         protected override void OnTerminate()
         {
             base.OnTerminate();
 
             _sessionInterface.UnregisterNetMessageReceiver<NetMessagePacket>(OnPaquetReceived);
-            _sessionInterface.UnregisterNetMessageReceiver<NetMessageCancel>(OnTransferCancelled);
         }
     }
 }
