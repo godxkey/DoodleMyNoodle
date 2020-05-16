@@ -20,20 +20,17 @@ namespace CCC.Online
         {
             _hasReceivedResponse = false;
             _sessionInterface.RegisterNetMessageReceiver<T>(OnResponse);
-            DebugService.Log($"RegisterNetMessageReceiver<{typeof(T).Name}>");
+
             while (!_hasReceivedResponse)
             {
-                DebugService.Log($"yield return null <{typeof(T).Name}>");
                 yield return null;
             }
 
-            DebugService.Log($"UnregisterNetMessageReceiver<{typeof(T).Name}>");
             _sessionInterface.UnregisterNetMessageReceiver<T>(OnResponse);
         }
 
         private void OnResponse(T arg1, INetworkInterfaceConnection arg2)
         {
-            DebugService.Log($"OnResponse<{typeof(T).Name}>");
             _hasReceivedResponse = true;
             Response = arg1;
             Source = arg2;

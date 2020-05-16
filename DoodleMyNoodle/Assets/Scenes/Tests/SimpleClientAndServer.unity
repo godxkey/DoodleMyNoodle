@@ -981,20 +981,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f362ba37392a8449b73b7641cf07e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseMachineNameAsRoom: 1
-  RoomName: 
-  ProgressSlider: {fileID: 1314818174}
-  DataToSend: {fileID: 1522313097}
-  DataReceived: {fileID: 1181485534}
-  DataMultiplierText: {fileID: 1113809518}
-  DataSizeDisplay: {fileID: 1098940707}
+  UseMachineNameAsRoom: 0
+  RoomName: chat
   ConnectClientButton: {fileID: 608378993}
   DisconnectButton: {fileID: 794011693}
   ConnectServerButton: {fileID: 1255859809}
   JoinRoomButton: {fileID: 185880169}
-  SendButton: {fileID: 1684510616}
-  CancelButton: {fileID: 708805876}
-  DataMultiplier: 0
 --- !u!1 &684343638
 GameObject:
   m_ObjectHideFlags: 0

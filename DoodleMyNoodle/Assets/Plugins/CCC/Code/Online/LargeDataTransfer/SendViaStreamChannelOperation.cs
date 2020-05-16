@@ -54,7 +54,6 @@ namespace CCC.Online.DataTransfer
                 ////////////////////////////////////////////////////////////////////////////////////////
                 //      Wait for stream to be available
                 ////////////////////////////////////////////////////////////////////////////////////////
-                DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] WaitingForStreamToBeAvailable");
 
                 CurrentState = TransferState.WaitingForStreamToBeAvailable;
                 // if there's already an ongoing transfer to this destination, wait
@@ -70,7 +69,6 @@ namespace CCC.Online.DataTransfer
                 ////////////////////////////////////////////////////////////////////////////////////////
                 //      Send header to destination (contains essential details about the transfer)
                 ////////////////////////////////////////////////////////////////////////////////////////
-                DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] SendingHeader");
                 CurrentState = TransferState.SendingHeader;
                 NetMessageViaStreamChannelHeader header = new NetMessageViaStreamChannelHeader()
                 {
@@ -87,7 +85,6 @@ namespace CCC.Online.DataTransfer
                 ////////////////////////////////////////////////////////////////////////////////////////
                 var readyResponse = DisposeOnTerminate(new AwaitNetMessage<NetMessageViaStreamReady>(_sessionInterface));
 
-                DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] WaitingForReady");
                 CurrentState = TransferState.WaitingForReady;
                 while (readyResponse.Source != _connection || readyResponse.Response.TransferId != _transferId)
                 {
@@ -100,7 +97,6 @@ namespace CCC.Online.DataTransfer
                 ////////////////////////////////////////////////////////////////////////////////////////
                 //      Send data
                 ////////////////////////////////////////////////////////////////////////////////////////
-                DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] SendingData");
                 CurrentState = TransferState.SendingData;
                 var streamChannel = _sessionInterface.NetworkInterface.GetStreamChannel(StreamChannelType.LargeDataTransfer);
 
@@ -113,7 +109,6 @@ namespace CCC.Online.DataTransfer
                 ////////////////////////////////////////////////////////////////////////////////////////
                 var ackResponse = DisposeOnTerminate(new AwaitNetMessage<NetMessageViaStreamACK>(_sessionInterface));
 
-                DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] WaitingCompleteDataACK");
                 CurrentState = TransferState.WaitingCompleteDataACK;
                 while (ackResponse.Source != _connection || ackResponse.Response.TransferId != _transferId)
                 {
@@ -121,7 +116,6 @@ namespace CCC.Online.DataTransfer
                 }
             }
 
-            DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] TerminateWithSuccess");
             TerminateWithSuccess();
         }
 

@@ -48,9 +48,6 @@ namespace CCC.Online.DataTransfer
                 ////////////////////////////////////////////////////////////////////////////////////////
                 //      Cancel if stream not available
                 ////////////////////////////////////////////////////////////////////////////////////////
-
-                DebugService.Log($"[{nameof(ReceiveViaStreamChannelOperation)}] Start operation");
-                // if there's already an ongoing transfer from this source, cancel
                 if (s_ongoingOperations.ContainsKey(_connection))
                 {
                     TerminateWithAbnormalFailure("We're already receiving a LargeDataTransfer from this source.");
@@ -65,7 +62,6 @@ namespace CCC.Online.DataTransfer
                 //      Send 'Ready'
                 ////////////////////////////////////////////////////////////////////////////////////////
 
-                DebugService.Log($"[{nameof(ReceiveViaStreamChannelOperation)}] SendingReady");
                 CurrentState = TransferState.SendingReady;
 
                 if (!_sessionInterface.IsConnectionValid(_connection))
@@ -81,8 +77,6 @@ namespace CCC.Online.DataTransfer
                 ////////////////////////////////////////////////////////////////////////////////////////
                 //      Wait for stream data
                 ////////////////////////////////////////////////////////////////////////////////////////
-
-                DebugService.Log($"[{nameof(ReceiveViaStreamChannelOperation)}] Wait for stream data");
                 CurrentState = TransferState.WaitingForCompletedStreamData;
                 _sessionInterface.NetworkInterface.StreamDataReceived += OnStreamDataReceived;
 
@@ -103,14 +97,11 @@ namespace CCC.Online.DataTransfer
 
             OnDataReceived?.Invoke(this, ReceivedData);
 
-            DebugService.Log($"[{nameof(ReceiveViaStreamChannelOperation)}] TerminateWithSuccess");
-
             TerminateWithSuccess();
         }
 
         private void OnStreamDataReceived(byte[] data, IStreamChannel streamChannel, INetworkInterfaceConnection source)
         {
-            DebugService.Log($"[{nameof(ReceiveViaStreamChannelOperation)}] OnStreamDataReceived");
             if (source == _connection)
             {
                 _streamDataReceived = true;

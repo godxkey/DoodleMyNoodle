@@ -13,6 +13,9 @@ public abstract class SessionInterface : IDisposable
 #if DEBUG_BUILD
     [ConfigVar(name: "log.netmessage", defaultValue: "0", ConfigVarFlag.Save, "Should we log the sent/received NetMessages.")]
     static ConfigVar s_logNetMessages;
+    
+    [ConfigVar(name: "transfer_with_stream", defaultValue: "true", ConfigVarFlag.Save, "Should we use a UDP Stream Channel for large data transfers?")]
+    static ConfigVar s_transferWithStream;
 #endif
 
     public abstract bool IsServerType { get; }
@@ -134,7 +137,16 @@ public abstract class SessionInterface : IDisposable
                 DebugService.Log($"[Session] BeginLargeDataTransfer '{netMessage}-{description}' to connection {connection.Id}");
             }
 #endif
-            SendViaStreamChannelOperation op = new SendViaStreamChannelOperation(messageData, connection, this, description);
+            CoroutineOperation op = null;
+
+            if (s_transferWithStream.BoolValue)
+            {
+                op = new SendViaStreamChannelOperation(messageData, connection, this, description);
+            }
+            else
+            {
+                op = new SendViaManualPacketsOperation(messageData, connection, this, description);
+            }
 
             _outgoingDataTransfers.Add(op);
 
