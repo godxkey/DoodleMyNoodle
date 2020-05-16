@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SplitMode: 1
+  ViewTechType: 0
 --- !u!114 &6347848117257768954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,6 +147,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SE_BasicCharacterVariant_GridBattleSoldier
+      objectReference: {fileID: 0}
+    - target: {fileID: 3980668864915185908, guid: fe36a28ed936c19459a39e66b5d9eecb,
+        type: 3}
+      propertyPath: MaxValue
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8132708406327359654, guid: fe36a28ed936c19459a39e66b5d9eecb,
         type: 3}

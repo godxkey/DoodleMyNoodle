@@ -2,26 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemVisualInfoBank : GameMonoBehaviour
+public class ItemVisualInfoBank : GameSystem<ItemVisualInfoBank>
 {
-    public static ItemVisualInfoBank Instance = null;
-
     public List<ItemVisualInfo> ItemsVisualInfo = new List<ItemVisualInfo>();
 
     private Dictionary<SimAssetId, ItemVisualInfo> _idToItemInfo = new Dictionary<SimAssetId, ItemVisualInfo>();
+
+    public override bool SystemReady => true;
 
     public override void OnGameReady()
     {
         base.OnGameReady();
 
-        if (Instance == null)
+        foreach (ItemVisualInfo ItemInfo in ItemsVisualInfo)
         {
-            Instance = this;
-
-            foreach (ItemVisualInfo ItemInfo in ItemsVisualInfo)
-            {
-                _idToItemInfo.Add(ItemInfo.ID.GetSimAssetId(), ItemInfo);
-            }
+            _idToItemInfo.Add(ItemInfo.ID.GetSimAssetId(), ItemInfo);
         }
     }
 
