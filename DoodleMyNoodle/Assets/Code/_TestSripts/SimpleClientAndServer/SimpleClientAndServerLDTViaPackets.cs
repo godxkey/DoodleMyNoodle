@@ -110,7 +110,7 @@ public class SimpleClientAndServerLDTViaPackets : /*MonoBehaviour,*/ Bolt.Global
     private void Cancel()
     {
         _op.LogFlags = CoroutineOperation.LogFlag.None;
-        _op.TerminateWithFailure("Cancelled");
+        _op.TerminateWithAbnormalFailure("Cancelled");
     }
 
     public void SendLargeData()
@@ -145,6 +145,7 @@ public class SimpleClientAndServerLDTViaPackets : /*MonoBehaviour,*/ Bolt.Global
     {
         base.StreamDataReceived(connection, data);
 
-        DebugScreenMessage.DisplayMessage($"received {data.Data.Length} from {data.Channel}");
+        Debug.Log($"received {data.Data.Length} from {data.Channel}");
+        //DebugScreenMessage.DisplayMessage($"received {data.Data.Length} from {data.Channel}");
     }
 }

@@ -46,7 +46,7 @@ namespace CCC.Online.DataTransfer
         {
             if (_data == null)
             {
-                TerminateWithFailure($"Transfer size({_transferInfo.DataSize}) exceeds limit of {Transfers.MAX_TRANSFER_SIZE}");
+                TerminateWithAbnormalFailure($"Transfer size({_transferInfo.DataSize}) exceeds limit of {Transfers.MAX_TRANSFER_SIZE}");
                 yield break;
             }
 
@@ -69,7 +69,7 @@ namespace CCC.Online.DataTransfer
         {
             WasCancelledBySource = true;
             LogFlags = LogFlag.None;
-            TerminateWithFailure("Source has cancelled the transfer");
+            TerminateWithAbnormalFailure("Source has cancelled the transfer");
         }
 
         void OnPaquetReceived(NetMessagePacket netMessage, INetworkInterfaceConnection source)

@@ -25,5 +25,6 @@ namespace Internals.PhotonNetwokInterface
         public override void SessionCreated(UdpSession session) => photonNetworkInterface.Event_SessionCreated(session);
         public override void SessionCreationFailed(UdpSession session) => photonNetworkInterface.Event_SessionCreationFailed(session);
         public override void OnEvent(BoltCommunicationEvent evnt) => photonNetworkInterface.Event_OnEvent(evnt);
+        public override void StreamDataReceived(BoltConnection connection, UdpStreamData data) => photonNetworkInterface.Event_StreamDataReceived(connection, data);
     }
 }

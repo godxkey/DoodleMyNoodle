@@ -11,6 +11,7 @@ public interface IStreamChannel
     string Name { get; }
     bool IsReliable { get; }
     int Priority { get; }
+    StreamChannelType Type { get; }
 }
 
 public enum StreamChannelType
@@ -39,6 +40,7 @@ public abstract class NetworkInterface : IDisposable
     public abstract event Action<INetworkInterfaceConnection> OnDisconnect;
     public abstract event Action<INetworkInterfaceConnection> OnConnect;
     public abstract event Action OnSessionListUpdated;
+    public abstract event Action<byte[], IStreamChannel, INetworkInterfaceConnection> StreamDataReceived;
 
     public NetworkState State { get; protected set; } = NetworkState.Stopped;
 
@@ -60,7 +62,7 @@ public abstract class NetworkInterface : IDisposable
 
     public abstract void SendMessage(INetworkInterfaceConnection connection, byte[] data, bool reliableAndOrdered);
     public abstract void SetMessageReader(Action<INetworkInterfaceConnection, byte[]> messageReader);
-    
+
     public abstract IStreamChannel GetStreamChannel(StreamChannelType channel);
 
     public virtual void Dispose() { }

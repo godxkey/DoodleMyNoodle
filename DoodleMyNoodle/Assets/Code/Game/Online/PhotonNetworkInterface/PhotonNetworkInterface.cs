@@ -3,6 +3,7 @@ using Bolt.photon;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using UdpKit;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Internals.PhotonNetwokInterface
     {
         public UdpChannelName UdpChannelName;
 
-        public StreamChannel(UdpChannelName udpChannelName, string name, bool isReliable, int priority)
+        public StreamChannel(UdpChannelName udpChannelName, string name, bool isReliable, int priority, StreamChannelType type)
         {
             UdpChannelName = udpChannelName;
             Name = name;
@@ -25,6 +26,8 @@ namespace Internals.PhotonNetwokInterface
         public bool IsReliable { get; private set; }
 
         public int Priority { get; private set; }
+
+        public StreamChannelType Type { get; private set; }
     }
 
     public class PhotonNetworkInterface : NetworkInterface
@@ -37,6 +40,7 @@ namespace Internals.PhotonNetwokInterface
         public override event Action<INetworkInterfaceConnection> OnDisconnect;
         public override event Action<INetworkInterfaceConnection> OnConnect;
         public override event Action OnSessionListUpdated;
+        public override event Action<byte[], IStreamChannel, INetworkInterfaceConnection> StreamDataReceived;
 
         public override bool IsServer => BoltNetwork.IsServer;
         public override ReadOnlyList<INetworkInterfaceConnection> Connections => _connections.AsReadOnlyNoAlloc();
@@ -120,6 +124,7 @@ namespace Internals.PhotonNetwokInterface
 
         public override void DisconnectFromSession(OperationResultDelegate onComplete)
         {
+            //_operationCallbackDisconnectedFromSession = onComplete;
             _connectedSessionInfo = null;
             Shutdown(onComplete); // with bolt, we have no way of returning to 'lobby' state
         }
@@ -206,27 +211,6 @@ namespace Internals.PhotonNetwokInterface
             CreateStreamChannels();
         }
 
-        private void CreateStreamChannels()
-        {
-            _streamChannels.Clear();
-
-            string[] streamChannelNames = Enum.GetNames(typeof(StreamChannelType));
-            int[] streamChannelValues = Enum.GetValues(typeof(StreamChannelType)) as int[];
-
-            for (int i = 0; i < streamChannelValues.Length; i++)
-            {
-                StreamChannelType type = (StreamChannelType)streamChannelValues[i];
-
-                GetStreamChannelSettings(type, out bool reliable, out int priority);
-
-                UdpChannelName photonChannelName = BoltNetwork.CreateStreamChannel(streamChannelNames[i], reliable ? UdpChannelMode.Reliable : UdpChannelMode.Unreliable, priority);
-
-                StreamChannel channel = new StreamChannel(photonChannelName, streamChannelNames[i], reliable, priority);
-
-                _streamChannels.Add(type, channel);
-            }
-        }
-
         public void Event_BoltStartDone()
         {
             State = NetworkState.Running;
@@ -274,22 +258,17 @@ namespace Internals.PhotonNetwokInterface
             if (log)
                 DebugService.Log("[PhotonNetworkInterface] Disconnected: " + connection.ToString());
 
-            INetworkInterfaceConnection connectionInterface = null;
+            INetworkInterfaceConnection connectionInterface = FindInterfaceConnection(connection);
 
-            for (int i = _connections.Count - 1; i >= 0; i--)
+            if(connectionInterface != null)
             {
-                if (_connections[i].Id == connection.ConnectionId)
-                {
-                    connectionInterface = _connections[i];
-                    _connections.RemoveAt(i);
-                }
+                _connections.Remove(connectionInterface);
+                OnDisconnect?.Invoke(connectionInterface);
             }
-
-            OnDisconnect?.Invoke(connectionInterface);
 
             if (IsClient && _connections.Count == 0 && _connectedSessionInfo != null)
             {
-                ConcludeOperationCallback(ref _operationCallbackDisconnectedFromSession, true, null);
+                ConcludeOperationCallback(ref _operationCallbackDisconnectedFromSession, success: true, message: null);
 
                 OnDisconnectedFromSession?.Invoke();
                 _connectedSessionInfo = null;
@@ -378,9 +357,79 @@ namespace Internals.PhotonNetwokInterface
                 DebugService.Log("[PhotonNetworkInterface] OnEvent: (length)" + evnt.BinaryData.Length);
             _messageReader?.Invoke(connection, evnt.BinaryData);
         }
+
+        public void Event_StreamDataReceived(BoltConnection connection, UdpStreamData streamData)
+        {
+            INetworkInterfaceConnection interfaceConnection = FindInterfaceConnection(connection);
+
+            if(interfaceConnection == null)
+            {
+                DebugService.LogError("[PhotonNetworkInterface] Received stream data from an unknown connection. This should not happen.");
+                return;
+            }
+
+            IStreamChannel streamChannel = FindStreamChannel(streamData.Channel);
+
+            if(streamChannel == null)
+            {
+                DebugService.LogError($"[PhotonNetworkInterface] Received stream data from an unknown channel '{streamData.Channel}'.");
+                return;
+            }
+
+            StreamDataReceived?.Invoke(streamData.Data, streamChannel, interfaceConnection);
+
+            if (intenseLog)
+                DebugService.Log("[PhotonNetworkInterface] StreamDataReceived: (length)" + streamData.Data.Length);
+        }
         #endregion
 
         #region Private Methods
+        private void CreateStreamChannels()
+        {
+            _streamChannels.Clear();
+
+            string[] streamChannelNames = Enum.GetNames(typeof(StreamChannelType));
+            int[] streamChannelValues = Enum.GetValues(typeof(StreamChannelType)) as int[];
+
+            for (int i = 0; i < streamChannelValues.Length; i++)
+            {
+                StreamChannelType type = (StreamChannelType)streamChannelValues[i];
+
+                GetStreamChannelSettings(type, out bool reliable, out int priority);
+
+                UdpChannelName photonChannelName = BoltNetwork.CreateStreamChannel(streamChannelNames[i], reliable ? UdpChannelMode.Reliable : UdpChannelMode.Unreliable, priority);
+
+                StreamChannel channel = new StreamChannel(photonChannelName, streamChannelNames[i], reliable, priority, type);
+
+                _streamChannels.Add(type, channel);
+            }
+        }
+
+        INetworkInterfaceConnection FindInterfaceConnection(BoltConnection boltConnection)
+        {
+            for (int i = _connections.Count - 1; i >= 0; i--)
+            {
+                if (_connections[i].Id == boltConnection.ConnectionId)
+                {
+                    return _connections[i];
+                }
+            }
+            return null;
+        }
+        
+        IStreamChannel FindStreamChannel(UdpChannelName channelName)
+        {
+            IEqualityComparer<UdpChannelName> equalityComparer = UdpChannelName.EqualityComparer.Instance;
+            foreach (var item in _streamChannels)
+            {
+                if (equalityComparer.Equals(((StreamChannel)item.Value).UdpChannelName, channelName))
+                {
+                    return item.Value;
+                }
+            }
+            return null;
+        }
+
         void CreateBoltListener()
         {
             if (_photonCallbackListener == null)

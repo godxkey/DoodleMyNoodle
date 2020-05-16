@@ -105,7 +105,7 @@ namespace CCC.Online.DataTransfer
         {
             WasCancelledByDestination = true;
             LogFlags = LogFlag.None;
-            TerminateWithFailure("Destination has cancelled the transfer");
+            TerminateWithAbnormalFailure("Destination has cancelled the transfer");
         }
 
         void UpdateDataTransfer()
@@ -134,7 +134,7 @@ namespace CCC.Online.DataTransfer
             }
             else
             {
-                TerminateWithFailure("Connection to destination is no longer valid.");
+                TerminateWithAbnormalFailure("Connection to destination is no longer valid.");
             }
         }
 

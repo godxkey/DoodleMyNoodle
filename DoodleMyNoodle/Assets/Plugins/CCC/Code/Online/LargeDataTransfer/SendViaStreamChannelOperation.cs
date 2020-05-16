@@ -1,98 +1,141 @@
 ﻿using CCC.Operations;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace CCC.Online.DataTransfer
 {
-    public class SendViaStreamChannelOperation : CoroutineOperation
+    public class SendViaStreamChannelOperation : OnlineTransferCoroutineOperation
     {
-        [ConfigVar(name: "stream_bandwidth", defaultValue: "20", description: "The stream bandwidth used while transfering large data between server and client (in KB/s)")]
-        static ConfigVar s_streamBandwidth;
+        static Dictionary<INetworkInterfaceConnection, CoroutineOperation> s_ongoingOperations = new Dictionary<INetworkInterfaceConnection, CoroutineOperation>();
+
+        public enum TransferState
+        {
+            NotStarted,
+            WaitingForStreamToBeAvailable,
+            SendingHeader,
+            WaitingForReady,
+            SendingData,
+            WaitingCompleteDataACK,
+
+            Terminated
+        }
 
         // init data
         readonly byte[] _data;
-        readonly SessionInterface _sessionInterface;
         readonly INetworkInterfaceConnection _destination;
-        readonly ushort _transferId;
 
         // state
+        public TransferState CurrentState { get; private set; }
         public string Description { get; private set; }
-        public bool WasCancelledByDestination { get; private set; }
         public int DataSize => _data.Length;
 
         /// <summary>
         /// DO NOT MODIFY THE BYTE[] DATA WILL THE TRANSFER IS ONGOING
         /// </summary>
         public SendViaStreamChannelOperation(byte[] data, INetworkInterfaceConnection destination, SessionInterface sessionInterface, string description = "")
+            : base(sessionInterface, destination, Transfers.s_NextTransferId++)
         {
             if (data.Length > Transfers.MAX_TRANSFER_SIZE)
                 throw new Exception($"Data transfer ({data.Length} bytes) cannot exceed {Transfers.MAX_TRANSFER_SIZE} bytes.");
 
             _data = data;
-            _sessionInterface = sessionInterface;
-
-            _destination = destination;
-            _transferId = Transfers.s_NextTransferId++;
             Description = description;
+            CurrentState = TransferState.NotStarted;
         }
 
 
         protected override IEnumerator ExecuteRoutine()
         {
-            ////////////////////////////////////////////////////////////////////////////////////////
-            //      Send header to destination (contains essential details about the transfer)
-            ////////////////////////////////////////////////////////////////////////////////////////
-            NetMessageViaStreamChannelHeader header = new NetMessageViaStreamChannelHeader()
+            if (!PreExecuteRoutine())
+                yield break;
+
             {
-                TransferId = _transferId,
-                DataSize = _data.Length,
-                Description = Description,
-                ChannelName = "pogo"
-            };
-            _sessionInterface.SendNetMessage(header, _destination);
+                ////////////////////////////////////////////////////////////////////////////////////////
+                //      Wait for stream to be available
+                ////////////////////////////////////////////////////////////////////////////////////////
+                DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] WaitingForStreamToBeAvailable");
 
-            // listen for cancel
-            _sessionInterface.RegisterNetMessageReceiver<NetMessageCancel>(OnTransferCancelled);
+                CurrentState = TransferState.WaitingForStreamToBeAvailable;
+                // if there's already an ongoing transfer to this destination, wait
+                while (s_ongoingOperations.ContainsKey(_connection))
+                {
+                    yield return null;
+                }
 
-
-            ////////////////////////////////////////////////////////////////////////////////////////
-            //      Update Transfer
-            ////////////////////////////////////////////////////////////////////////////////////////
-            yield return null;
-
-            var streamChannel = _sessionInterface.NetworkInterface.GetStreamChannel(StreamChannelType.LargeDataTransfer);
-
-            _destination.StreamBytes(streamChannel, _data);
-
-
-
-            TerminateWithSuccess();
-        }
-
-        private void OnTransferCancelled(NetMessageCancel arg1, INetworkInterfaceConnection arg2)
-        {
-            WasCancelledByDestination = true;
-            LogFlags = LogFlag.None;
-            TerminateWithFailure("Destination has cancelled the transfer");
-        }
-
-        protected override void OnFail()
-        {
-            base.OnFail();
-
-            if (!WasCancelledByDestination)
-            {
-                // notify destination we're cancelling the transfer
-                if (_sessionInterface.IsConnectionValid(_destination))
-                    _sessionInterface.SendNetMessage(new NetMessageCancel() { TransferId = _transferId }, _destination);
+                s_ongoingOperations.Add(_connection, this);
             }
+
+            {
+                ////////////////////////////////////////////////////////////////////////////////////////
+                //      Send header to destination (contains essential details about the transfer)
+                ////////////////////////////////////////////////////////////////////////////////////////
+                DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] SendingHeader");
+                CurrentState = TransferState.SendingHeader;
+                NetMessageViaStreamChannelHeader header = new NetMessageViaStreamChannelHeader()
+                {
+                    TransferId = _transferId,
+                    DataSize = _data.Length,
+                    Description = Description,
+                };
+                _sessionInterface.SendNetMessage(header, _connection);
+            }
+
+            {
+                ////////////////////////////////////////////////////////////////////////////////////////
+                //      Await the 'ready!' reponse
+                ////////////////////////////////////////////////////////////////////////////////////////
+                var readyResponse = DisposeOnTerminate(new AwaitNetMessage<NetMessageViaStreamReady>(_sessionInterface));
+
+                DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] WaitingForReady");
+                CurrentState = TransferState.WaitingForReady;
+                while (readyResponse.Source != _connection || readyResponse.Response.TransferId != _transferId)
+                {
+                    yield return readyResponse.WaitForResponse();
+                }
+
+            }
+
+            {
+                ////////////////////////////////////////////////////////////////////////////////////////
+                //      Send data
+                ////////////////////////////////////////////////////////////////////////////////////////
+                DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] SendingData");
+                CurrentState = TransferState.SendingData;
+                var streamChannel = _sessionInterface.NetworkInterface.GetStreamChannel(StreamChannelType.LargeDataTransfer);
+
+                _connection.StreamBytes(streamChannel, _data);
+            }
+
+            {
+                ////////////////////////////////////////////////////////////////////////////////////////
+                //      Await reponse from the destination that indicates that it received all of the data
+                ////////////////////////////////////////////////////////////////////////////////////////
+                var ackResponse = DisposeOnTerminate(new AwaitNetMessage<NetMessageViaStreamACK>(_sessionInterface));
+
+                DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] WaitingCompleteDataACK");
+                CurrentState = TransferState.WaitingCompleteDataACK;
+                while (ackResponse.Source != _connection || ackResponse.Response.TransferId != _transferId)
+                {
+                    yield return ackResponse.WaitForResponse();
+                }
+            }
+
+            DebugService.Log($"[{nameof(SendViaStreamChannelOperation)}] TerminateWithSuccess");
+            TerminateWithSuccess();
         }
 
         protected override void OnTerminate()
         {
             base.OnTerminate();
 
-            _sessionInterface.UnregisterNetMessageReceiver<NetMessageCancel>(OnTransferCancelled);
+            CurrentState = TransferState.Terminated;
+
+            // remove self from 's_ongoingOperations'
+            if (s_ongoingOperations.TryGetValue(_connection, out CoroutineOperation op) && op == this)
+            {
+                s_ongoingOperations.Remove(_connection);
+            }
         }
     }
 }

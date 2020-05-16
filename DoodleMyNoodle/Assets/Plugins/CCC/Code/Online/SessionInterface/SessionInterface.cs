@@ -19,12 +19,12 @@ public abstract class SessionInterface : IDisposable
     public bool IsClientType => !IsServerType;
     public INetworkInterfaceSession SessionInfo => _networkInterface.ConnectedSessionInfo;
     public ReadOnlyList<INetworkInterfaceConnection> Connections => _networkInterface.Connections;
-    public ReadOnlyList<ReceiveViaManualPacketsOperation> IncomingDataTransfers => _incomingDataTransfers.AsReadOnlyNoAlloc();
+    public ReadOnlyList<CoroutineOperation> IncomingDataTransfers => _incomingDataTransfers.AsReadOnlyNoAlloc();
     public ReadOnlyList<CoroutineOperation> OutgoingDataTransfer => _outgoingDataTransfers.AsReadOnlyNoAlloc();
     public event Action OnTerminate;
     public event Action<INetworkInterfaceConnection> OnConnectionAdded;
     public event Action<INetworkInterfaceConnection> OnConnectionRemoved;
-    public event Action<ReceiveViaManualPacketsOperation, INetworkInterfaceConnection> OnBeginReceiveLargeDataTransfer;
+    public event Action<CoroutineOperation, INetworkInterfaceConnection> OnBeginReceiveLargeDataTransfer;
     internal NetworkInterface NetworkInterface => _networkInterface;
 
 
@@ -37,26 +37,35 @@ public abstract class SessionInterface : IDisposable
         _networkInterface.OnConnect += Interface_OnConnect;
 
         RegisterNetMessageReceiver<NetMessageViaManualPacketsHeader>(OnReceiveDataTransferHeader);
+        RegisterNetMessageReceiver<NetMessageViaStreamChannelHeader>(OnReceiveDataTransferHeader);
     }
 
     public virtual void Dispose()
     {
+        Disposed = true;
+
         OnTerminate?.Invoke();
 
         _networkInterface.OnDisconnect -= InterfaceOnDisconnect;
         _networkInterface.OnConnect -= Interface_OnConnect;
+
+        _outgoingDataTransfers.ForEach((x) => { if (x.IsRunning) x.TerminateWithAbnormalFailure(); });
+        _incomingDataTransfers.ForEach((x) => { if (x.IsRunning) x.TerminateWithAbnormalFailure(); });
+        _outgoingDataTransfers.Clear();
+        _incomingDataTransfers.Clear();
     }
 
     public virtual void Update()
     {
-        // nothing to do
-
         _outgoingDataTransfers.RemoveAll((x) => !x.IsRunning);
         _incomingDataTransfers.RemoveAll((x) => !x.IsRunning);
     }
 
     public void RegisterNetMessageReceiver<NetMessageType>(Action<NetMessageType, INetworkInterfaceConnection> callback)
     {
+        if (Disposed)
+            return;
+
         Type t = typeof(NetMessageType);
 
         if (_netMessageReceivers.ContainsKey(t) == false)
@@ -69,6 +78,9 @@ public abstract class SessionInterface : IDisposable
 
     public void UnregisterNetMessageReceiver<NetMessageType>(Action<NetMessageType, INetworkInterfaceConnection> callback)
     {
+        if (Disposed)
+            return;
+
         Type t = typeof(NetMessageType);
 
         if (_netMessageReceivers.ContainsKey(t))
@@ -79,46 +91,55 @@ public abstract class SessionInterface : IDisposable
 
     public void Disconnect()
     {
+        if (Disposed)
+            return;
+
         _networkInterface.DisconnectFromSession(null);
     }
 
     public void SendNetMessage<T>(in T netMessage, INetworkInterfaceConnection connection, bool reliableAndOrdered = true)
     {
+        if (Disposed)
+            return;
+
         if (NetMessageInterpreter.GetDataFromMessage(netMessage, out byte[] messageData, byteLimit: OnlineConstants.MAX_MESSAGE_SIZE))
         {
-            _networkInterface.SendMessage(connection, messageData, reliableAndOrdered);
-
 #if DEBUG_BUILD
             if (s_logNetMessages.BoolValue)
             {
                 DebugService.Log($"[Session] Send message '{netMessage}' to connection {connection.Id}");
             }
 #endif
+            _networkInterface.SendMessage(connection, messageData, reliableAndOrdered);
         }
     }
 
     public bool IsConnectionValid(INetworkInterfaceConnection connection)
     {
+        if (Disposed)
+            return false;
         return _networkInterface.Connections.Contains(connection);
     }
 
     public CoroutineOperation BeginLargeDataTransfer(object netMessage, INetworkInterfaceConnection connection, string description = "")
     {
+        if (Disposed)
+            return null;
+
         if (NetMessageInterpreter.GetDataFromMessage(netMessage, out byte[] messageData, byteLimit: int.MaxValue))
         {
-            SendViaStreamChannelOperation op = new SendViaStreamChannelOperation(messageData, connection, this, description);
-            //SendViaManualPacketsOperation op = new SendViaManualPacketsOperation(messageData, connection, this, description);
-
-            _outgoingDataTransfers.Add(op);
-
-            op.Execute();
-
 #if DEBUG_BUILD
             if (s_logNetMessages.BoolValue)
             {
                 DebugService.Log($"[Session] BeginLargeDataTransfer '{netMessage}-{description}' to connection {connection.Id}");
             }
 #endif
+            SendViaStreamChannelOperation op = new SendViaStreamChannelOperation(messageData, connection, this, description);
+
+            _outgoingDataTransfers.Add(op);
+
+            op.Execute();
+
 
             return op;
         }
@@ -130,6 +151,12 @@ public abstract class SessionInterface : IDisposable
 
     void OnReceiveDataTransferHeader(NetMessageViaManualPacketsHeader netMessage, INetworkInterfaceConnection source)
     {
+#if DEBUG_BUILD
+        if (s_logNetMessages.BoolValue)
+        {
+            DebugService.Log($"[Session] OnReceiveDataTransferHeader '{netMessage}-{netMessage.Description}' from connection {source.Id}");
+        }
+#endif
         ReceiveViaManualPacketsOperation op = new ReceiveViaManualPacketsOperation(netMessage, source, this);
 
         _incomingDataTransfers.Add(op);
@@ -141,12 +168,27 @@ public abstract class SessionInterface : IDisposable
 
         op.Execute();
 
+        OnBeginReceiveLargeDataTransfer?.Invoke(op, source);
+    }
+
+    void OnReceiveDataTransferHeader(NetMessageViaStreamChannelHeader netMessage, INetworkInterfaceConnection source)
+    {
 #if DEBUG_BUILD
         if (s_logNetMessages.BoolValue)
         {
             DebugService.Log($"[Session] OnReceiveDataTransferHeader '{netMessage}-{netMessage.Description}' from connection {source.Id}");
         }
 #endif
+        ReceiveViaStreamChannelOperation op = new ReceiveViaStreamChannelOperation(netMessage, source, this);
+
+        _incomingDataTransfers.Add(op);
+
+        op.OnDataReceived += (o, data) =>
+        {
+            OnReceiveMessage(source, data);
+        };
+
+        op.Execute();
 
         OnBeginReceiveLargeDataTransfer?.Invoke(op, source);
     }
@@ -187,7 +229,8 @@ public abstract class SessionInterface : IDisposable
     protected NetworkInterface _networkInterface;
     protected Dictionary<Type, NetMessageReceiverList> _netMessageReceivers = new Dictionary<Type, NetMessageReceiverList>();
     protected List<CoroutineOperation> _outgoingDataTransfers = new List<CoroutineOperation>();
-    protected List<ReceiveViaManualPacketsOperation> _incomingDataTransfers = new List<ReceiveViaManualPacketsOperation>();
+    protected List<CoroutineOperation> _incomingDataTransfers = new List<CoroutineOperation>();
+    protected bool Disposed { get; private set; }
 
     protected abstract class NetMessageReceiverList
     {

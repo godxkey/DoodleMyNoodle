@@ -53,7 +53,7 @@ namespace Sim.Operations
             if (s_CachedSerializationOp.HasSucceeded)
                 TerminateWithSuccess(s_CachedSerializationOp.Message);
             else
-                TerminateWithFailure(s_CachedSerializationOp.Message);
+                TerminateWithAbnormalFailure(s_CachedSerializationOp.Message);
         }
     }
 
@@ -241,7 +241,7 @@ namespace Sim.Operations
                     {
                         DebugService.LogError($"Failed to serialize SimSerializableWorld.\n{result.ErrorMessage}");
 
-                        TerminateWithFailure();
+                        TerminateWithAbnormalFailure();
                     }
                 });
         }

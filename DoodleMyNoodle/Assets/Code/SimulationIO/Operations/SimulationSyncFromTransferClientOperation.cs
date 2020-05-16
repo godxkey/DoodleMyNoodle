@@ -3,45 +3,6 @@ using System;
 using System.Collections;
 using Unity.Entities;
 
-public class AwaitNetMessage<T> : IDisposable
-{
-    private SessionInterface _sessionInterface;
-    private bool _hasReceivedResponse;
-
-    public T Response;
-    public INetworkInterfaceConnection Source;
-
-    public AwaitNetMessage(SessionInterface sessionInterface)
-    {
-        _hasReceivedResponse = false;
-        _sessionInterface = sessionInterface ?? throw new ArgumentNullException(nameof(sessionInterface));
-    }
-
-    public IEnumerator WaitForResponse()
-    {
-        _sessionInterface.RegisterNetMessageReceiver<T>(OnResponse);
-
-        while (_hasReceivedResponse)
-        {
-            yield return null;
-        }
-
-        _sessionInterface.UnregisterNetMessageReceiver<T>(OnResponse);
-    }
-
-    private void OnResponse(T arg1, INetworkInterfaceConnection arg2)
-    {
-        _hasReceivedResponse = true;
-        Response = arg1;
-        Source = arg2;
-    }
-
-    public void Dispose()
-    {
-        _sessionInterface.UnregisterNetMessageReceiver<T>(OnResponse);
-    }
-}
-
 //public class SimulationSyncFromTransferOrDiskClientOperation : CoroutineOperation
 //{
 //    public bool IsServerReadyToSendSimTicksForSimulationWeAreSyncingTo { get; private set; }
@@ -115,7 +76,7 @@ public class SimulationSyncFromTransferClientOperation : CoroutineOperation
         // terminate if load path is invalid
         if (_simData.IsNullOrEmpty())
         {
-            TerminateWithFailure($"Invalid simulation data received from the server. Prehaps it failed to serialize it.");
+            TerminateWithAbnormalFailure($"Invalid simulation data received from the server. Prehaps it failed to serialize it.");
             yield break;
         }
 

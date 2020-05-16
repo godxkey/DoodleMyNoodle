@@ -31,7 +31,6 @@ namespace CCC.Online.DataTransfer
         public ushort TransferId;
         public int DataSize; // in bytes
         public string Description;
-        public string ChannelName;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +42,18 @@ namespace CCC.Online.DataTransfer
     {
         public ushort TransferId;
         public int PacketIndex;
+    }
+
+    [NetSerializable]
+    public struct NetMessageViaStreamReady
+    {
+        public ushort TransferId;
+    }
+
+    [NetSerializable]
+    public struct NetMessageViaStreamACK
+    {
+        public ushort TransferId;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////

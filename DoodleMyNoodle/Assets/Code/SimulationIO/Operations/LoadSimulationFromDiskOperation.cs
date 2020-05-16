@@ -23,7 +23,7 @@ public class LoadSimulationFromDiskOperation : CoroutineOperation
 
         if (serializedData.IsNullOrEmpty())
         {
-            TerminateWithFailure($"Failed to load valid simulation from file {_filePath}");
+            TerminateWithAbnormalFailure($"Failed to load valid simulation from file {_filePath}");
             yield break;
         }
 

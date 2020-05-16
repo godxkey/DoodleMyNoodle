@@ -70,7 +70,7 @@ namespace Sim.Operations
             // early exit if world invalid
             if (serializableWorld == null)
             {
-                TerminateWithFailure();
+                TerminateWithAbnormalFailure();
                 yield break;
             }
 

@@ -20,10 +20,11 @@ namespace CCC.Operations
         {
             None = 0,
             Success = 1 << 0,
-            Failure = 1 << 1,
-            All = Success | Failure
+            NormalFailure = 1 << 1,
+            AbnormalFailure = 1 << 2,
+            All = Success | NormalFailure | AbnormalFailure
         }
-        public LogFlag LogFlags = LogFlag.Failure;
+        public LogFlag LogFlags = LogFlag.NormalFailure | LogFlag.AbnormalFailure;
 
         private bool _hasRun = false;
         private Coroutine _coroutine;
@@ -64,9 +65,14 @@ namespace CCC.Operations
             Terminate_Internal(success: true, message, LogFlag.Success);
         }
 
-        public void TerminateWithFailure(string message = null)
+        public void TerminateWithNormalFailure(string message = null)
         {
-            Terminate_Internal(success: false, message, LogFlag.Failure);
+            Terminate_Internal(success: false, message, LogFlag.NormalFailure);
+        }
+
+        public void TerminateWithAbnormalFailure(string message = null)
+        {
+            Terminate_Internal(success: false, message, LogFlag.AbnormalFailure);
         }
 
         void Terminate_Internal(bool success, string message, LogFlag requiredLogFlagToLog)
@@ -104,7 +110,20 @@ namespace CCC.Operations
 
             if (!message.IsNullOrEmpty() && (LogFlags & requiredLogFlagToLog) != LogFlag.None)
             {
-                DebugService.LogError(message);
+                switch (requiredLogFlagToLog)
+                {
+                    case LogFlag.Success:
+                        DebugService.Log(message);
+                        break;
+                    case LogFlag.NormalFailure:
+                        DebugService.Log(message);
+                        break;
+                    
+                    default:
+                    case LogFlag.AbnormalFailure:
+                        DebugService.LogError(message);
+                        break;
+                }
             }
 
             // tell unity to stop maintaning and running the coroutine

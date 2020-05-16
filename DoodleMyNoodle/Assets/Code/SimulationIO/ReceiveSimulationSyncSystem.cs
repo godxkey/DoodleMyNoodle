@@ -39,7 +39,7 @@ namespace SimulationControl
             base.OnDestroy();
 
             if (_ongoingSyncOp != null && _ongoingSyncOp.IsRunning)
-                _ongoingSyncOp.TerminateWithFailure();
+                _ongoingSyncOp.TerminateWithAbnormalFailure();
         }
 
         protected override void OnUpdate()
