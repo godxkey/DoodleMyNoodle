@@ -3,35 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
 using Unity.Collections;
+using static fixMath;
 
-public class CreateLevelGrid : SimComponentSystem
+public class CreateLevelGridSystem : SimComponentSystem
 {
     protected override void OnUpdate() 
     {
-        if(!Accessor.HasSingleton<GridTag>() && Accessor.HasSingleton<GridInfoContainer>())
+        if(Accessor.HasSingleton<GridInfo>())
         {
             // Creating singleton with a buffer of all tile entities (container of tiles)
             CreateTileReferenceList();
 
             // Setup All Grids Info
-            Entity GridInfoEntity = Accessor.GetSingletonEntity<GridInfoContainer>();
+            Entity GridInfoEntity = Accessor.GetSingletonEntity<GridInfo>();
 
-            Accessor.TryGetBufferReadOnly(GridInfoEntity, out DynamicBuffer<StartingTileAddonData> tileAddonsBuffer);
+            DynamicBuffer<StartingTileAddonData> tileAddonsBuffer = Accessor.GetBufferReadOnly<StartingTileAddonData>(GridInfoEntity);
             NativeArray<StartingTileAddonData> tileAddons = tileAddonsBuffer.ToNativeArray(Allocator.Temp);
 
-            int GridSize = Accessor.GetComponentData<GridInfoContainer>(GridInfoEntity).GridSize;
+            RectInt GridSize = Accessor.GetSingleton<GridInfo>().GridSize;
 
             // Spawn Addons
             NativeArray<Entity> tileAddonInstances = new NativeArray<Entity>(tileAddons.Length, Allocator.Temp);
             for (int i = 0; i < tileAddons.Length; i++)
             {
                 tileAddonInstances[i] = Accessor.Instantiate(tileAddons[i].Prefab);
-                Accessor.SetComponentData(tileAddonInstances[i], new FixTranslation() { Value = new fix3(tileAddons[i].Position.x, tileAddons[i].Position.y, 0) });
+                Accessor.SetComponentData(tileAddonInstances[i], new FixTranslation() { Value = new fix3(tileAddons[i].Position, 0) });
             }
 
             // Create All tiles
             // middle row and same amount on each side
-            int halfGridSize = (GridSize - 1) / 2;
+            int halfGridSize = (GridSize.width - 1) / 2;
 
             for (int l = -halfGridSize; l <= halfGridSize; l++)
             {
@@ -40,28 +41,22 @@ public class CreateLevelGrid : SimComponentSystem
                     CreateTileEntity(new fix2() { x = l, y = h }, tileAddonInstances);
                 }
             }
-
-            // Clean up
-            tileAddonInstances.Dispose();
-            tileAddons.Dispose();
         }
     }
 
     private void CreateTileReferenceList()
     {
-        Accessor.SetOrCreateSingleton(new GridTag());
-        EntityManager.AddBuffer<GridTileReference>(Accessor.GetSingletonEntity<GridTag>());
+        EntityManager.AddBuffer<GridTileReference>(Accessor.GetSingletonEntity<GridInfo>());
     }
 
     private void CreateTileEntity(fix2 tilePosition, NativeArray<Entity> tileAddonInstances)
     {
         // Create Tile
-        Entity newTileEntity = EntityManager.CreateEntity(typeof(FixTranslation),typeof(TileTag));
-        EntityManager.AddBuffer<EntitiesOnTile>(newTileEntity);
+        Entity newTileEntity = EntityManager.CreateEntity(typeof(FixTranslation),typeof(TileTag),typeof(EntityOnTile));
         EntityManager.SetComponentData(newTileEntity, new FixTranslation() { Value = new fix3(tilePosition.x, tilePosition.y,0) });
 
         // Add it to the list of Tiles
-        DynamicBuffer<GridTileReference> gridTilesBuffer = EntityManager.GetBuffer<GridTileReference>(Accessor.GetSingletonEntity<GridTag>());
+        DynamicBuffer<GridTileReference> gridTilesBuffer = EntityManager.GetBuffer<GridTileReference>(Accessor.GetSingletonEntity<GridInfo>());
         gridTilesBuffer.Add(new GridTileReference() { Tile = newTileEntity });
 
         // Add addons reference on the tile for those with the same position
@@ -79,7 +74,7 @@ public partial class CommonReads
 {
     public static Entity GetTile(ISimWorldReadAccessor accessor, fix2 gridPosition)
     {
-        accessor.TryGetBufferReadOnly(accessor.GetSingletonEntity<GridTag>(), out DynamicBuffer<GridTileReference> gridTileReferences);
+        accessor.TryGetBufferReadOnly(accessor.GetSingletonEntity<GridInfo>(), out DynamicBuffer<GridTileReference> gridTileReferences);
 
         for (int i = 0; i < gridTileReferences.Length; i++)
         {
@@ -96,12 +91,12 @@ public partial class CommonReads
 
     public static List<Entity> GetEntitiesOnTile(ISimWorldReadAccessor accessor, Entity tile)
     {
-        accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<EntitiesOnTile> entities);
+        accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<EntityOnTile> entities);
 
         List<Entity> allEntitiesOnTile = new List<Entity>();
         for (int i = 0; i < entities.Length; i++)
         {
-            allEntitiesOnTile.Add(entities[i].EntityOnTile);
+            allEntitiesOnTile.Add(entities[i].TileEntity);
         }
 
         return allEntitiesOnTile;
@@ -112,16 +107,16 @@ internal partial class CommonWrites
 {
     public static void AddEntityOnTile(ISimWorldReadWriteAccessor accessor, Entity entity, Entity tile)
     {
-        DynamicBuffer<EntitiesOnTile> entities = accessor.GetBuffer<EntitiesOnTile>(tile);
-        entities.Add(new EntitiesOnTile() { EntityOnTile = entity });
+        DynamicBuffer<EntityOnTile> entities = accessor.GetBuffer<EntityOnTile>(tile);
+        entities.Add(new EntityOnTile() { TileEntity = entity });
     }
 
     public static void RemoveEntityOnTile(ISimWorldReadWriteAccessor accessor, Entity entity, Entity tile)
     {
-        DynamicBuffer<EntitiesOnTile> entities = accessor.GetBuffer<EntitiesOnTile>(tile);
+        DynamicBuffer<EntityOnTile> entities = accessor.GetBuffer<EntityOnTile>(tile);
         for (int i = 0; i < entities.Length; i++)
         {
-            if(entities[i].EntityOnTile == entity)
+            if(entities[i].TileEntity == entity)
             {
                 entities.RemoveAt(i);
             }

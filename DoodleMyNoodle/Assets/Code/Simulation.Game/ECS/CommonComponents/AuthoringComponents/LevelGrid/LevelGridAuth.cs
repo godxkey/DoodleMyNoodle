@@ -14,7 +14,8 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
     {
         // Lets get all tilemaps and spawn whatever was drawn on them
 
-        dstManager.AddComponentData(entity, new GridInfoContainer() { GridSize = LevelGridSetting.GridSize });
+        int gridSize = LevelGridSetting.GridSize;
+        dstManager.AddComponentData(entity, new GridInfo() { GridSize = new RectInt(-gridSize / 2, -gridSize / 2, gridSize, gridSize) });
         DynamicBuffer<StartingTileAddonData> TileAddons = dstManager.AddBuffer<StartingTileAddonData>(entity);
 
         Grid[] grids = gameObject.GetComponentsInChildren<Grid>();
@@ -24,7 +25,7 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
             foreach (Tilemap tileMap in tileMaps)
             {
                 // middle row and same amount on each side
-                int halfGridSize = (LevelGridSetting.GridSize - 1) / 2;
+                int halfGridSize = Mathf.CeilToInt(LevelGridSetting.GridSize / 2f);
 
                 for (int l = -halfGridSize; l <= halfGridSize; l++)
                 {
@@ -33,19 +34,18 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
                         Vector3 worldCoordinate = new Vector3(l, h, 0);
                         Vector3Int gridCoordinate = grid.WorldToCell(worldCoordinate);
 
-                        GameObject tileAddonPrefab = LevelGridSetting.GetPrefabFromSprite(tileMap.GetSprite(gridCoordinate));
+                        GameObject tileAddonSimulationPrefab = LevelGridSetting.GetPrefabFromSprite(tileMap.GetSprite(gridCoordinate));
 
-                        if(tileAddonPrefab != null)
+                        if(tileAddonSimulationPrefab != null)
                         {
-                            TileAddons.Add(new StartingTileAddonData() { Prefab = conversionSystem.GetPrimaryEntity(tileAddonPrefab), Position = new fix2(x: (fix)worldCoordinate.x, y: (fix)worldCoordinate.y) });
+                            Entity tileAddonEntity = conversionSystem.GetPrimaryEntity(tileAddonSimulationPrefab);
+                            fix2 tileAddonPosition = new fix2(x: (fix)worldCoordinate.x, y: (fix)worldCoordinate.y);
+                            StartingTileAddonData newTileAddonData = new StartingTileAddonData() { Prefab = tileAddonEntity, Position = tileAddonPosition };
+                            TileAddons.Add(newTileAddonData);
                         }
                     }
                 }
-
-                tileMap.gameObject.SetActive(false);
             }
-
-            grid.gameObject.SetActive(false);
         }
     }
 
@@ -53,7 +53,7 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
     {
         foreach (TileAddonsDefinition TileAddonsDef in LevelGridSetting.AddonsDefinition)
         {
-            referencedPrefabs.Add(TileAddonsDef.AddonPrefab);
+            referencedPrefabs.Add(TileAddonsDef.AddonSimulationPrefab);
         }
     }
 }

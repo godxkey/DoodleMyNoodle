@@ -7,7 +7,7 @@ using UnityEngine;
 public struct TileAddonsDefinition
 {
     public Sprite SpriteVisual;
-    public GameObject AddonPrefab;
+    public GameObject AddonSimulationPrefab;
 }
 
 [CreateAssetMenu(menuName = "DoodleMyNoodle/Grid/Settings")]
@@ -19,11 +19,14 @@ public class LevelGridSettings : ScriptableObject
 
     public GameObject GetPrefabFromSprite(Sprite sprite)
     {
-        foreach (TileAddonsDefinition tileAddon in AddonsDefinition)
+        if(sprite != null)
         {
-            if(tileAddon.SpriteVisual == sprite)
+            foreach (TileAddonsDefinition tileAddon in AddonsDefinition)
             {
-                return tileAddon.AddonPrefab;
+                if (tileAddon.SpriteVisual == sprite)
+                {
+                    return tileAddon.AddonSimulationPrefab;
+                }
             }
         }
 

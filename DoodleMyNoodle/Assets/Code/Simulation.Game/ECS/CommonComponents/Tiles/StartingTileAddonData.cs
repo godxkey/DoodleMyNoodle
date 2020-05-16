@@ -9,7 +9,7 @@ public struct StartingTileAddonData : IBufferElementData
     public fix2 Position;
 }
 
-public struct GridInfoContainer : IComponentData
+public struct GridInfo : IComponentData
 {
-    public int GridSize;
+    public RectInt GridSize;
 }
