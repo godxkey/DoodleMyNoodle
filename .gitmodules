@@ -1,0 +1,3 @@
+[submodule "DoodleMyNoodle/Packages/com.ccc.unityengine-x"]
+	path = DoodleMyNoodle/Packages/com.ccc.unityengine-x
+	url = https://github.com/Unity-X/UnityEngine-X.git
