@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Entities;
 using UnityEngine;
 
 public class TurnTeamDisplay : SingletonEntityDataDisplay<TurnCurrentTeam>
@@ -19,15 +20,9 @@ public class TurnTeamDisplay : SingletonEntityDataDisplay<TurnCurrentTeam>
     public override void OnGameUpdate()
     {
         base.OnGameUpdate();
-        //if (SimWorld.HasSingleton<TurnCurrentTeam>())
-        //{
-        //    SetCurrentTeam((TeamAuth.DesignerFriendlyTeam)SimWorld.GetSingleton<TurnCurrentTeam>().Value);
-        //}
 
-        if(_singletonData != Entity.Null) 
-        {
-
-        }
+        int currentTeam = _singletonData != Entity.Null ? SimWorld.GetComponentData<TurnCurrentTeam>(_singletonData).Value : -1;
+        SetCurrentTeam((TeamAuth.DesignerFriendlyTeam)currentTeam);
     }
 
     private void SetCurrentTeam(TeamAuth.DesignerFriendlyTeam team)
@@ -37,7 +32,10 @@ public class TurnTeamDisplay : SingletonEntityDataDisplay<TurnCurrentTeam>
             if(TeamTurnTexts[i].Team == team)
             {
                 TextDisplay.text = TeamTurnTexts[i].Text;
+                return;
             }
         }
+
+        TextDisplay.text = "Wait";
     }
 }

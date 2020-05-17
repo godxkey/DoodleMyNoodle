@@ -1,18 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class TimerBarDisplay : MonoBehaviour
+public class TimerBarDisplay : SingletonEntityDataDisplay<TurnTimer>
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Slider TimerBar;
 
-    // Update is called once per frame
-    void Update()
+    public override void OnGameUpdate()
     {
-        
+        base.OnGameUpdate();
+
+        if(_singletonData != Entity.Null)
+        {
+            TimerBar.value = (float)(SimWorld.GetComponentData<TurnTimer>(_singletonData).Value / SimWorld.GetComponentData<TurnDuration>(_singletonData).Value);
+        }
     }
 }
