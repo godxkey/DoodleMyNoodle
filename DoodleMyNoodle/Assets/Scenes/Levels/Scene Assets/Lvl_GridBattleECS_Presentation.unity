@@ -128,29 +128,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7296775559219619878, guid: a7200335e35bad04b86d33a75c7a7361,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
+    - target: {fileID: 1851045850, guid: a7200335e35bad04b86d33a75c7a7361, type: 3}
+      propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7296775559219619878, guid: a7200335e35bad04b86d33a75c7a7361,
-        type: 3}
-      propertyPath: m_textInfo.spaceCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7296775559219619878, guid: a7200335e35bad04b86d33a75c7a7361,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7296775559219619878, guid: a7200335e35bad04b86d33a75c7a7361,
-        type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7296775559219619878, guid: a7200335e35bad04b86d33a75c7a7361,
-        type: 3}
-      propertyPath: m_textInfo.pageCount
+    - target: {fileID: 1851045850, guid: a7200335e35bad04b86d33a75c7a7361, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7296775561025126664, guid: a7200335e35bad04b86d33a75c7a7361,

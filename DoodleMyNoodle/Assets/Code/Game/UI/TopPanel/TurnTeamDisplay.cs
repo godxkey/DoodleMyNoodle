@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class TurnTeamDisplay : GameMonoBehaviour
+public class TurnTeamDisplay : SingletonEntityDataDisplay<TurnCurrentTeam>
 {
     [System.Serializable]
     public struct TeamTurnText
@@ -18,9 +18,15 @@ public class TurnTeamDisplay : GameMonoBehaviour
 
     public override void OnGameUpdate()
     {
-        if (SimWorld.HasSingleton<TurnCurrentTeam>())
+        base.OnGameUpdate();
+        //if (SimWorld.HasSingleton<TurnCurrentTeam>())
+        //{
+        //    SetCurrentTeam((TeamAuth.DesignerFriendlyTeam)SimWorld.GetSingleton<TurnCurrentTeam>().Value);
+        //}
+
+        if(_singletonData != Entity.Null) 
         {
-            SetCurrentTeam((TeamAuth.DesignerFriendlyTeam)SimWorld.GetSingleton<TurnCurrentTeam>().Value);
+
         }
     }
 
