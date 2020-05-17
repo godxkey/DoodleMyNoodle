@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+
 /// <summary>
 /// This is like the ReadOnlyCollection provided by .NET but in struct (instead of class) meaning it does't produce garbage
 /// </summary>
@@ -115,4 +116,17 @@ public struct ReadOnlyList<ListType, ReadType>
         }
     }
     #endregion
+}
+
+public static class ReadOnlyListExtensions
+{
+    public static ReadOnlyList<ListType> AsReadOnlyNoAlloc<ListType>(this List<ListType> list)
+    {
+        return new ReadOnlyList<ListType>(list);
+    }
+    public static ReadOnlyList<ListType, ReadType> AsReadOnlyNoAlloc<ListType, ReadType>(this List<ListType> list)
+        where ListType : ReadType
+    {
+        return new ReadOnlyList<ListType, ReadType>(list);
+    }
 }

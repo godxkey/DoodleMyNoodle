@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
-using UnityEngine;
+using Unity.MathematicsX;
 
 public struct StartingTileAddonData : IBufferElementData
 {
@@ -11,5 +11,5 @@ public struct StartingTileAddonData : IBufferElementData
 
 public struct GridInfo : IComponentData
 {
-    public RectInt GridSize;
+    public intRect GridRect;
 }

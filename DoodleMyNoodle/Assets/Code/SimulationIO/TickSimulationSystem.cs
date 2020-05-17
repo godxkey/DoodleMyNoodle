@@ -5,6 +5,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
+using UnityEngineX;
 
 namespace SimulationControl
 {
@@ -87,8 +88,8 @@ namespace SimulationControl
             _simPostPresGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemBegin>());
 
 
-            var simSystemTypes = TypeUtility.GetECSTypesDerivedFrom(typeof(SimComponentSystem))
-                .Concat(TypeUtility.GetECSTypesDerivedFrom(typeof(SimJobComponentSystem)));
+            var simSystemTypes = TypeUtility.GetTypesDerivedFrom(typeof(SimComponentSystem))
+                .Concat(TypeUtility.GetTypesDerivedFrom(typeof(SimJobComponentSystem)));
 
             AddSystemsToRootLevelSystemGroups(_simulationWorld, simSystemTypes);
 

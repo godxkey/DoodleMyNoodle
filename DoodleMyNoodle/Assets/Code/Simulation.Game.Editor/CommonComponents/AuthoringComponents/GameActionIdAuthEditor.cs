@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-
+using UnityEngineX;
 
 [CustomEditor(typeof(GameActionIdAuth))]
 public class GameActionIdAuthEditor : Editor

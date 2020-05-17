@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using Unity.MathematicsX;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -15,7 +16,7 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
         // Lets get all tilemaps and spawn whatever was drawn on them
 
         int gridSize = LevelGridSetting.GridSize;
-        dstManager.AddComponentData(entity, new GridInfo() { GridSize = new RectInt(-gridSize / 2, -gridSize / 2, gridSize, gridSize) });
+        dstManager.AddComponentData(entity, new GridInfo() { GridRect = new intRect(-gridSize / 2, -gridSize / 2, gridSize, gridSize) });
         DynamicBuffer<StartingTileAddonData> TileAddons = dstManager.AddBuffer<StartingTileAddonData>(entity);
 
         Grid[] grids = gameObject.GetComponentsInChildren<Grid>();

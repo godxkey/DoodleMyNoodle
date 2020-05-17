@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Entities;
+using UnityEngineX;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 public class MasterOnlyAttribute : Attribute
@@ -30,9 +31,9 @@ public class ViewSystemGroup : ManualCreationComponentSystemGroup, IManualSystem
         IEnumerable<Type> viewComponentSystemTypes =
 
                     // get all ViewComponent systems
-                    TypeUtility.GetECSTypesDerivedFrom(typeof(ViewComponentSystem))
-            .Concat(TypeUtility.GetECSTypesDerivedFrom(typeof(ViewJobComponentSystem)))
-            .Concat(TypeUtility.GetECSTypesDerivedFrom(typeof(ViewEntityCommandBufferSystem)))
+                    TypeUtility.GetTypesDerivedFrom(typeof(ViewComponentSystem))
+            .Concat(TypeUtility.GetTypesDerivedFrom(typeof(ViewJobComponentSystem)))
+            .Concat(TypeUtility.GetTypesDerivedFrom(typeof(ViewEntityCommandBufferSystem)))
 
             // exlude those with the DisableAutoCreate attribute
             .Where((type) =>
