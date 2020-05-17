@@ -45,7 +45,7 @@ public class SimulationSyncFromDiskClientOperation : CoroutineOperation
         // terminate if load path is invalid
         if (_simLoadFile.IsNullOrEmpty())
         {
-            TerminateWithFailure($"Invalid simulation load file path received from the server ({_simLoadFile}). Prehaps it failed to serialize it.");
+            TerminateWithAbnormalFailure($"Invalid simulation load file path received from the server ({_simLoadFile}). Prehaps it failed to serialize it.");
             yield break;
         }
 

@@ -35,7 +35,7 @@ namespace CCC.Operations
 
             if (!errorMessage.IsNullOrEmpty())
             {
-                TerminateWithFailure($"Failed to save text to file {_filePath} : {errorMessage}");
+                TerminateWithAbnormalFailure($"Failed to save text to file {_filePath} : {errorMessage}");
                 yield break;
             }
 

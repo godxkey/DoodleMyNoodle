@@ -35,7 +35,7 @@ namespace SimulationControl
             GameConsole.RemoveCommand("sim.load");
 
             if (_ongoingCmdOperation != null && _ongoingCmdOperation.IsRunning)
-                _ongoingCmdOperation.TerminateWithFailure();
+                _ongoingCmdOperation.TerminateWithAbnormalFailure();
 
             base.OnDestroy();
         }
