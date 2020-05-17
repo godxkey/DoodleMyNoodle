@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngineX;
 
 /// <summary>
 /// Interface to the canvas that the brushes use

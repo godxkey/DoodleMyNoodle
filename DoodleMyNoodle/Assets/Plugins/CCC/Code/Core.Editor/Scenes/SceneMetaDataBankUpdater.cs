@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngineX;
 
 public class SceneMetaDataBankUpdater : AssetPostprocessor
 {

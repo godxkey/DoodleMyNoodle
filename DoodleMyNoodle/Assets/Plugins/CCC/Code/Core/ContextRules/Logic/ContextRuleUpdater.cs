@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX;
 
 [CreateAssetMenu(menuName = "CCC/Context Rules/Context Rule Updater")]
 public class ContextRuleUpdater : ScriptableObject

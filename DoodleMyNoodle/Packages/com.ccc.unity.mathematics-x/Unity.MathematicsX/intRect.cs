@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExitGames.Client.Photon;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -38,7 +39,9 @@ namespace Unity.MathematicsX
         /// </summary>
         public int2 min { get { return new int2(xMin, yMin); } set { xMin = value.x; yMin = value.y; } }
 
-        // Bottom right corner of the rectangle.
+        /// <summary>
+        /// Bottom right corner of the rectangle. 
+        /// </summary>
         public int2 max { get { return new int2(xMax, yMax); } set { xMax = value.x; yMax = value.y; } }
 
         public int xMin { get { return math.min(x, x + width); } set { int oldxmax = xMax; x = value; width = oldxmax - x; } }
@@ -91,6 +94,18 @@ namespace Unity.MathematicsX
 
     public partial class mathX
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static intRect intRect(int xMin, int yMin, int width, int height)
+        {
+            return new intRect(xMin, yMin, width, height);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static intRect intRect(int2 position, int2 size)
+        {
+            return new intRect(position, size);
+        }
+
         /// <summary>
         /// Center coordinate of the rectangle.
         /// </summary>
