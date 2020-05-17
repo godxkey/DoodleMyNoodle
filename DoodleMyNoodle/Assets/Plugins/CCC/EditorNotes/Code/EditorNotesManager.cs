@@ -52,7 +52,7 @@ public class EditorNotesManager
 
                     if (s_noteId.IsDirty)
                     {
-                        if (!s_noteId.GetPrevious().IsNullOrEmpty())
+                        if (!string.IsNullOrEmpty(s_noteId.GetPrevious()))
                         {
                             OnEndNote(s_noteId.GetPrevious());
                         }
@@ -132,7 +132,7 @@ public class EditorNotesManager
 
         if (EditorNotesViewData.NoteText != database.GetNote(id))
         {
-            if (EditorNotesViewData.NoteText.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(EditorNotesViewData.NoteText))
             {
                 database.DeleteNote(id);
             }

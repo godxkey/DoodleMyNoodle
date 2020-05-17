@@ -95,11 +95,11 @@ public class UIDataTransferWidgetElement : MonoBehaviour
 
             if (commaIndex > 0 && commaIndex < digits)
             {
-                return s.RemoveFrom(digits + 1);
+                return s.TrimEnd(digits + 1);
             }
             else
             {
-                return s.RemoveFrom(commaIndex);
+                return s.TrimEnd(commaIndex);
             }
         }
     }

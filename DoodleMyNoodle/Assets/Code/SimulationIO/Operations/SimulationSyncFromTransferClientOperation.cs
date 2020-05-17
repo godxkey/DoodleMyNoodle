@@ -74,7 +74,7 @@ public class SimulationSyncFromTransferClientOperation : CoroutineOperation
         _sessionInterface.UnregisterNetMessageReceiver<NetMessageSerializedSimulation>(OnNetMessageSerializedSimulation);
 
         // terminate if load path is invalid
-        if (_simData.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(_simData))
         {
             TerminateWithAbnormalFailure($"Invalid simulation data received from the server. Prehaps it failed to serialize it.");
             yield break;

@@ -78,7 +78,7 @@ public class LevelManager : GameSystem<LevelManager>
 
     private void OnLevelSet(in SyncedValueCurrentLevel newValue)
     {
-        if (!newValue.Name.IsNullOrEmpty())
+        if (!string.IsNullOrEmpty(newValue.Name))
         {
             string levelName = newValue.Name;
             Level lvl = LevelBank.Levels.Find((x) => x.name == levelName);

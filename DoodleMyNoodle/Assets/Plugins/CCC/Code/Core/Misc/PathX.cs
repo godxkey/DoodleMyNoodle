@@ -8,7 +8,7 @@ namespace CCC.IO
     {
         public static string RemoveExtension(string path)
         {
-            return path.RemoveFrom(path.LastIndexOf('.'));
+            return path.TrimEnd(path.LastIndexOf('.'));
         }
     }
 }

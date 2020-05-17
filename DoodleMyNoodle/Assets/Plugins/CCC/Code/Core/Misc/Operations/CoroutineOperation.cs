@@ -108,7 +108,7 @@ namespace CCC.Operations
                 OnFailCallback?.SafeInvoke(this);
             }
 
-            if (!message.IsNullOrEmpty() && (LogFlags & requiredLogFlagToLog) != LogFlag.None)
+            if (!string.IsNullOrEmpty(message) && (LogFlags & requiredLogFlagToLog) != LogFlag.None)
             {
                 switch (requiredLogFlagToLog)
                 {

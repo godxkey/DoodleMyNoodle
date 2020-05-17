@@ -142,7 +142,7 @@ public class SimBlueprintProviderSceneObject : MonoBehaviour, ISimBlueprintProvi
     public static bool ParseBlueprintId(in SimBlueprintId blueprintId, out string sceneGuid, out string gameObjectGuid)
     {
         string stringData = blueprintId.Value;
-        if (!stringData.IsNullOrEmpty())
+        if (!string.IsNullOrEmpty(stringData))
         {
             int indexOfSplit = stringData.IndexOf('/');
             gameObjectGuid = (indexOfSplit > 0) ? stringData.Remove(stringData.IndexOf('/')) : "";
