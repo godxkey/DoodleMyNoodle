@@ -1,3 +1,6 @@
 [submodule "DoodleMyNoodle/Packages/com.unity-x.unityengine-x"]
 	path = DoodleMyNoodle/Packages/com.unity-x.unityengine-x
 	url = https://github.com/Unity-X/UnityEngine-X.git
+[submodule "DoodleMyNoodle/Packages/com.unity-x.unityeditor-x"]
+	path = DoodleMyNoodle/Packages/com.unity-x.unityeditor-x
+	url = https://github.com/Unity-X/UnityEditor-X.git
