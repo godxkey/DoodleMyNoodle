@@ -1,10 +1,6 @@
 {
-    "name": "CCC.NetSerializer",
-    "references": [
-        "GUID:c886ee09f9545f74f85dd4e7b076b17c",
-        "GUID:d8b63aba1907145bea998dd612889d6b",
-        "GUID:7c20dcb71e66d344fbc11361fb6ad799"
-    ],
+    "name": "UnityEngineX-Backup",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

@@ -2,7 +2,8 @@
     "name": "CCC.NetSerializer.Editor",
     "references": [
         "GUID:389edd8433a26384eb01215cc0adad2a",
-        "GUID:c886ee09f9545f74f85dd4e7b076b17c"
+        "GUID:c886ee09f9545f74f85dd4e7b076b17c",
+        "GUID:7c20dcb71e66d344fbc11361fb6ad799"
     ],
     "includePlatforms": [
         "Editor"

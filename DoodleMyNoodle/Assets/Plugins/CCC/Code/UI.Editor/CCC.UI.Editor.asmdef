@@ -2,7 +2,8 @@
     "name": "CCC.UI.Editor",
     "references": [
         "GUID:57b1a9c17326d5046ad25c424bce6793",
-        "GUID:7e29b333690cedd478380f8826492a9c"
+        "GUID:7e29b333690cedd478380f8826492a9c",
+        "GUID:7c20dcb71e66d344fbc11361fb6ad799"
     ],
     "includePlatforms": [
         "Editor"

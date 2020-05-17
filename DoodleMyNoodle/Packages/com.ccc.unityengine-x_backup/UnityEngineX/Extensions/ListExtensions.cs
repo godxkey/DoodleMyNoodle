@@ -154,16 +154,6 @@ public static class ListExtensions
         }
     }
 
-    public static ReadOnlyList<ListType> AsReadOnlyNoAlloc<ListType>(this List<ListType> list)
-    {
-        return new ReadOnlyList<ListType>(list);
-    }
-    public static ReadOnlyList<ListType, ReadType> AsReadOnlyNoAlloc<ListType, ReadType>(this List<ListType> list)
-        where ListType : ReadType
-    {
-        return new ReadOnlyList<ListType, ReadType>(list);
-    }
-
     public static bool Contains<T>(this IEnumerable enumerable)
     {
         foreach (var item in enumerable)
