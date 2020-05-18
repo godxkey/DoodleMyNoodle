@@ -3,6 +3,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using UnityEngine;
+using UnityEngineX;
 
 [UpdateAfter(typeof(CreateBindedViewEntitiesSystem))]
 [UpdateBefore(typeof(CopyTransformToViewSystem))]

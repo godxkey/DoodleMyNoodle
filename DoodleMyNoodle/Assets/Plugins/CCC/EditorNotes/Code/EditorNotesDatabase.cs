@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngineX;
 
 /// <summary>
 /// Used to permanently store notes
@@ -56,7 +57,11 @@ public class EditorNotesDatabase : ScriptableObject
 
     public string GetNote(string id)
     {
-        return _noteDictionary.TryGetValue(id, defaultValue: null);
+        if(!_noteDictionary.TryGetValue(id, out string result))
+        {
+            result = null;
+        }
+        return result;
     }
 
     public void SetOrAddNote(string id, string text)

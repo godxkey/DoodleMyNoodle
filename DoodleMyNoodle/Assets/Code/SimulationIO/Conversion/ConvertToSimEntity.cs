@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngineX;
 
 public class ConvertToSimEntity : ConvertToEntityMultiWorld
 {

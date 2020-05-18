@@ -2,6 +2,7 @@
 using CCC.InspectorDisplay;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX.InspectorDisplay;
 
 public class ItemBank : SimSingleton<ItemBank>
 {

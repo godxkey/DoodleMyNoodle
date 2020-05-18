@@ -23,7 +23,7 @@ public static class SimTileHelpers
     {
         foreach (SimPawnComponent pawn in Simulation.EntitiesWithComponent<SimPawnComponent>())
         {
-            if(pawn.GetComponent(out SimTransformComponent transform))
+            if(pawn.TryGetComponent(out SimTransformComponent transform))
             {
                 if (transform.GetTileId() == tileId)
                 {
@@ -42,7 +42,7 @@ public static class SimTileHelpers
     {
         foreach (SimObstacleComponent obstacle in Simulation.EntitiesWithComponent<SimObstacleComponent>())
         {
-            if (obstacle.GetComponent(out SimTransformComponent transform))
+            if (obstacle.TryGetComponent(out SimTransformComponent transform))
             {
                 if (transform.GetTileId() == tileId)
                 {

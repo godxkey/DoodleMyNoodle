@@ -1,4 +1,6 @@
 ﻿
+using UnityEngineX.InspectorDisplay;
+
 public class SimNameComponent : SimComponent
 {
     [System.Serializable]
@@ -11,7 +13,7 @@ public class SimNameComponent : SimComponent
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [CCC.InspectorDisplay.AlwaysExpand]
+    [AlwaysExpand]
     SerializedData _data = new SerializedData()
     {
         // define default values here

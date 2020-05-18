@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using UnityEngineX;
 
 public class SimGlobalEventEmitterInternal : SimSingleton<SimGlobalEventEmitterInternal>
 {

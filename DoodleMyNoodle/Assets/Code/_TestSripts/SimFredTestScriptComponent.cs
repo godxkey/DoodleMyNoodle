@@ -1,5 +1,5 @@
 ﻿using CCC.InspectorDisplay;
-
+using UnityEngineX.InspectorDisplay;
 
 public class SimFredTestScriptComponent : SimComponent, ISimTickable
 {
@@ -20,7 +20,7 @@ public class SimFredTestScriptComponent : SimComponent, ISimTickable
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [CCC.InspectorDisplay.AlwaysExpand]
+    [AlwaysExpand]
     SerializedData _data = new SerializedData()
     {
         // define default values here

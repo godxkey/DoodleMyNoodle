@@ -1,7 +1,7 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngineX;
 
 public class AlphaAnimationFlash : MonoBehaviour
 {

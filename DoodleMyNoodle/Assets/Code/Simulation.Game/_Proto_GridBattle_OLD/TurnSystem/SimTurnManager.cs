@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX.InspectorDisplay;
 
 public enum OLD_Team
 {
@@ -64,7 +65,7 @@ public class SimTurnManager : SimSingleton<SimTurnManager>, ISimTickable
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [CCC.InspectorDisplay.AlwaysExpand]
+    [AlwaysExpand]
     SerializedData _data = new SerializedData()
     {
         DurationOfATurn = 3,

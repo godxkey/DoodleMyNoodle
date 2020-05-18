@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngineX;
 
 public class EscapeMenuSystem : GameSystem<EscapeMenuSystem>
 {
@@ -19,7 +20,7 @@ public class EscapeMenuSystem : GameSystem<EscapeMenuSystem>
 
     void OnEscapeMenuSceneLoaded(ISceneLoadPromise sceneLoadPromise)
     {
-        _menuInGameEscape = sceneLoadPromise.Scene.FindRootObject<MenuInGameEscape>();
+        _menuInGameEscape = sceneLoadPromise.Scene.FindComponentOnRoots<MenuInGameEscape>();
         _loadPromise = null;
     }
 

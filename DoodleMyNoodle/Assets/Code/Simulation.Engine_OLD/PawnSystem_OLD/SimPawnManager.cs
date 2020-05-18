@@ -16,7 +16,7 @@ public class SimPawnManager : SimEventSingleton<SimPawnManager>,
     public void OnEventRaised(in SimPlayerCreatedEventData eventData)
     {
         // if the player can control pawns
-        if (eventData.PlayerEntity.GetComponent(out SimPawnControllerComponent pawnController))
+        if (eventData.PlayerEntity.TryGetComponent(out SimPawnControllerComponent pawnController))
         {
             // and the player has no pawn
             if (pawnController.TargetPawn == null)
@@ -35,7 +35,7 @@ public class SimPawnManager : SimEventSingleton<SimPawnManager>,
 
     public void OnEventRaised(in SimPlayerDestroyedEventData eventData)
     {
-        if(eventData.PlayerEntity.GetComponent(out SimPawnControllerComponent targetPawnComponent))
+        if(eventData.PlayerEntity.TryGetComponent(out SimPawnControllerComponent targetPawnComponent))
         {
             UnhookControllerFromPawn(targetPawnComponent);
         }

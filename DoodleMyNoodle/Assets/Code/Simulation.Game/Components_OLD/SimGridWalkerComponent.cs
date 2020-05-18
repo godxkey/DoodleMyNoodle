@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
+using UnityEngineX.InspectorDisplay;
 
 public struct WalkedOnTileEventData
 {
@@ -144,7 +145,7 @@ public class SimGridWalkerComponent : SimEventComponent, ISimTickable
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [CCC.InspectorDisplay.AlwaysExpand]
+    [AlwaysExpand]
     SerializedData _data = new SerializedData()
     {
         // define default values here

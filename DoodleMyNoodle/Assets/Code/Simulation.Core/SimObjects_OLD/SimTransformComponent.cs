@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX.InspectorDisplay;
 
 [DisallowMultipleComponent]
 public class SimTransformComponent : SimComponent
@@ -177,7 +178,7 @@ public class SimTransformComponent : SimComponent
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [CCC.InspectorDisplay.AlwaysExpand]
+    [AlwaysExpand]
     public SerializedData _data = new SerializedData() // needs to be public for Editor access
     {
         LocalScale = new fix3(1, 1, 1)

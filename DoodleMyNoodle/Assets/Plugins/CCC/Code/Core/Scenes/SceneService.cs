@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngineX;
 
 public interface ISceneLoadPromise
 {
@@ -44,7 +45,7 @@ public class SceneService : MonoCoreService<SceneService>
         public void Complete()
         {
             IsComplete = true;
-            OnCompleteInternal?.SafeInvoke(this);
+            OnCompleteInternal?.InvokeCatchException(this);
         }
     }
 

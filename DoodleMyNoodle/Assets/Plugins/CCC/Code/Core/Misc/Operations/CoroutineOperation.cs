@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX;
 
 namespace CCC.Operations
 {
@@ -100,12 +101,12 @@ namespace CCC.Operations
             if (success)
             {
                 OnSucceed();
-                OnSucceedCallback?.SafeInvoke(this);
+                OnSucceedCallback?.InvokeCatchException(this);
             }
             else
             {
                 OnFail();
-                OnFailCallback?.SafeInvoke(this);
+                OnFailCallback?.InvokeCatchException(this);
             }
 
             if (!string.IsNullOrEmpty(message) && (LogFlags & requiredLogFlagToLog) != LogFlag.None)
@@ -139,7 +140,7 @@ namespace CCC.Operations
             }
 
             OnTerminate();
-            OnTerminateCallback?.SafeInvoke(this);
+            OnTerminateCallback?.InvokeCatchException(this);
         }
 
         protected IEnumerator ExecuteSubOperationAndWaitForSuccess(CoroutineOperation subOp)

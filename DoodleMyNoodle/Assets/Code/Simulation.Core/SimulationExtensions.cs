@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngineX;
 
 public static class SimulationExtensions
 {
@@ -18,7 +17,7 @@ public static class SimulationExtensions
 
     public static bool TryFindEntityDeepFromGameObjectGuid(GameObject gameObject, in SimBlueprintId simBlueprintId, out SimEntity result)
     {
-        if (gameObject.GetComponent(out SimEntity simEntity))
+        if (gameObject.TryGetComponent(out SimEntity simEntity))
         {
             // check gameobject
             if (SimBlueprintProviderSceneObject.CompareGameObjectGuid(simEntity.BlueprintId, simBlueprintId))
