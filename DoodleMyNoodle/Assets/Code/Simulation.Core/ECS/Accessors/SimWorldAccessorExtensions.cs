@@ -54,6 +54,19 @@ public static class SimWorldAccessorExtensions
         return false;
     }
 
+    public static bool TryGetSingleton<T>(this ISimWorldReadAccessor accessor, out T entity)
+             where T : struct, IComponentData
+    {
+        if (accessor.HasSingleton<T>())
+        {
+            entity = accessor.GetSingleton<T>();
+            return true;
+        }
+
+        entity = default;
+        return false;
+    }
+
     public static bool TryGetSingletonEntity<T>(this ISimWorldReadAccessor accessor, out Entity entity)
          where T : struct, IComponentData
     {

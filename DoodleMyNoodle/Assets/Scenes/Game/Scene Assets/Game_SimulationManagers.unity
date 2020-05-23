@@ -550,7 +550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartingTeam: 0
   TurnDuration:
-    RawValue: 4294967296
+    RawValue: 21474836480
 --- !u!114 &1308979965
 MonoBehaviour:
   m_ObjectHideFlags: 0
