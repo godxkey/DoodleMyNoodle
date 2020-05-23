@@ -175,6 +175,9 @@ public abstract class ScriptTemplate
 
 public class DefaultSmartScriptResolver : SmartScriptResolver
 {
+    /// <summary>
+    /// Expected signature:  public static <see cref="string"/>[] GetAdditionalIncludes(<see cref="DefaultSmartScriptResolver.Info"/> info)
+    /// </summary>
     public class AdditionalUsingsProviderAttribute : Attribute { }
 
     public class Info

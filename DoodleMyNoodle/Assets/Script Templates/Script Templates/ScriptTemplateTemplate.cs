@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class NewScriptTemplate : ScriptTemplate
+public class ScriptTemplateTemplate : ScriptTemplate
 {
     public override string GetScriptContent()
     {
