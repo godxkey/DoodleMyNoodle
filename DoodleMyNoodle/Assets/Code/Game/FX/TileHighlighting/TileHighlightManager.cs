@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using static Unity.Mathematics.math;
 using UnityEngine;
+using Unity.Entities;
 
 public class TileHighlightManager : GameSystem<TileHighlightManager>
 {
@@ -54,9 +55,15 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
     public void AskForSingleTileSelectionAroundPlayer(GameActionParameterTile.Description TileParameters, Action<GameActionParameterTile.Data> TileSelectedData)
     {
         _currentTileSelectionCallback = null;
-        SimWorld.TryGetComponentData<FixTranslation>(PlayerHelpers.GetLocalSimPawnEntity(SimWorld), out FixTranslation localPawnPosition);
+        SimWorld.TryGetComponentData(PlayerHelpers.GetLocalSimPawnEntity(SimWorld), out FixTranslation localPawnPosition);
         AddHilightsAroundPlayer(localPawnPosition.Value, TileParameters.RangeFromInstigator, TileParameters.Filter);
         _currentTileSelectionCallback = TileSelectedData;
+    }
+
+    public void InterruptTileSelectionProcess()
+    {
+        _currentTileSelectionCallback = null;
+        HideAll();
     }
 
     private void AddHilightsAroundPlayer(fix3 pos, int depth, TileFilterFlags ignoredTileFlags)
@@ -68,47 +75,81 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
             {
                 fix2 newPossibleDestination = new fix2(pos.x, pos.y);
 
-                int currentQuadran = Mathf.CeilToInt((float)j / i);
-
-                int displacementForward = ((currentQuadran * i + 1) - j);
-                int displacementSide = (j - (((currentQuadran - 1) * i) + 1));
-
-                // 4 Quadran
-                switch (currentQuadran)
-                {
-                    case 1:
-                        newPossibleDestination.x += -1 * displacementForward;
-                        newPossibleDestination.y += displacementSide;
-                        break;
-                    case 2:
-                        newPossibleDestination.x += displacementSide;
-                        newPossibleDestination.y += displacementForward;
-                        break;
-                    case 3:
-                        newPossibleDestination.x += displacementForward;
-                        newPossibleDestination.y += -1 * displacementSide;
-                        break;
-                    case 4:
-                        newPossibleDestination.x += -1 * displacementSide;
-                        newPossibleDestination.y += -1 * displacementForward;
-                        break;
-                    default:
-                        break;
-                }
-
-                // TODO : Check filters of tile
-
-                while (_highlights.Count - numberOfTiles <= 0)
-                {
-                    // We dont have enough, need to spawn a new one
-                    CreateTile();
-                }
-
-                _highlights[numberOfTiles].SetActive(true);
-                _highlights[numberOfTiles].transform.position = new Vector3((float)newPossibleDestination.x, (float)newPossibleDestination.y, 0);
-
-                numberOfTiles++;
+                AddHilight(newPossibleDestination, ref numberOfTiles, i, j, ignoredTileFlags);
             }
         }
+    }
+
+    private void AddHilight(fix2 newPossibleDestination, ref int numberOfTiles, int height, int lenght, TileFilterFlags ignoredTileFlags)
+    {
+        int currentQuadran = Mathf.CeilToInt((float)lenght / height);
+
+        int displacementForward = ((currentQuadran * height + 1) - lenght);
+        int displacementSide = (lenght - (((currentQuadran - 1) * height) + 1));
+
+        // 4 Quadran
+        switch (currentQuadran)
+        {
+            case 1:
+                newPossibleDestination.x += -1 * displacementForward;
+                newPossibleDestination.y += displacementSide;
+                break;
+            case 2:
+                newPossibleDestination.x += displacementSide;
+                newPossibleDestination.y += displacementForward;
+                break;
+            case 3:
+                newPossibleDestination.x += displacementForward;
+                newPossibleDestination.y += -1 * displacementSide;
+                break;
+            case 4:
+                newPossibleDestination.x += -1 * displacementSide;
+                newPossibleDestination.y += -1 * displacementForward;
+                break;
+            default:
+                break;
+        }
+
+        // TILE FILTERS
+
+        Entity currentTile = CommonReads.GetTile(SimWorld, newPossibleDestination);
+        List<Entity> entitiesOnTile = CommonReads.GetEntitiesOnTile(SimWorld, currentTile);
+
+        if (entitiesOnTile.Count > 0)
+        {
+            foreach (Entity entity in entitiesOnTile)
+            {
+                if ((ignoredTileFlags & TileFilterFlags.Navigable) != 0)
+                {
+                    if (SimWorld.HasComponent<NonNavigable>(entity))
+                    {
+                        return;
+                    }
+                }
+
+                if ((ignoredTileFlags & TileFilterFlags.Inoccupied) != 0)
+                {
+                    if (SimWorld.HasComponent<Occupied>(entity))
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+
+        // ADDING MISSING TILE
+
+        while (_highlights.Count - numberOfTiles <= 0)
+        {
+            // We dont have enough, need to spawn a new one
+            CreateTile();
+        }
+
+        // ACTIVATE TILE
+
+        _highlights[numberOfTiles].SetActive(true);
+        _highlights[numberOfTiles].transform.position = new Vector3((float)newPossibleDestination.x, (float)newPossibleDestination.y, 0);
+
+        numberOfTiles++;
     }
 }

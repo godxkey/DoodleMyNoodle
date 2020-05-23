@@ -13,8 +13,6 @@ public class InventoryDisplay : GameMonoBehaviour
 
     private List<InventorySlot> _inventorySlots = new List<InventorySlot>();
 
-    private Entity _localPawn = Entity.Null;
-
     public override void OnGameReady()
     {
         base.OnGameReady();
@@ -28,40 +26,46 @@ public class InventoryDisplay : GameMonoBehaviour
 
     public override void OnGameUpdate()
     {
-        UpdateCurrentPlayerPawn();
-
-        int itemIndex = 0;
-        if (SimWorld.TryGetBufferReadOnly(_localPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if(GamePresentationCache.Instance.LocalPawn != Entity.Null)
         {
-            foreach (InventoryItemReference item in inventory)
+            Action<int> onItemUsedCallback = null;
+
+            Entity pawnController = CommonReads.GetPawnController(SimWorld, GamePresentationCache.Instance.LocalPawn);
+            if (!CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(pawnController)))
             {
-                if (SimWorld.TryGetComponentData(item.ItemEntity,out SimAssetId itemIDComponent))
+                TileHighlightManager.Instance.InterruptTileSelectionProcess();
+            }
+            else
+            {
+                onItemUsedCallback = OnIntentionToUseItem;
+            }
+
+            int itemIndex = 0;
+            if (SimWorld.TryGetBufferReadOnly(GamePresentationCache.Instance.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
+            {
+                foreach (InventoryItemReference item in inventory)
                 {
-                    ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
-                    _inventorySlots[itemIndex].UpdateCurrentItemSlot(itemInfo, itemIndex, InventorySlotShortcuts[itemIndex], OnIntentionToUseItem);
-                    itemIndex++;
+                    if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
+                    {
+                        ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
+
+                        _inventorySlots[itemIndex].UpdateCurrentItemSlot(itemInfo, itemIndex, InventorySlotShortcuts[itemIndex], onItemUsedCallback);
+                        itemIndex++;
+                    }
                 }
             }
-        }
 
-        // Clear the rest of the inventory slots
-        for (int i = _inventorySlots.Count - 1; i > itemIndex; i--)
-        {
-            _inventorySlots[i].UpdateCurrentItemSlot(null, i, InventorySlotShortcuts[i], null);
-        }
-    }
-
-    private void UpdateCurrentPlayerPawn()
-    {
-        if(_localPawn == Entity.Null)
-        {
-            _localPawn = PlayerHelpers.GetLocalSimPawnEntity(SimWorld);
+            // Clear the rest of the inventory slots
+            for (int i = _inventorySlots.Count - 1; i >= itemIndex; i--)
+            {
+                _inventorySlots[i].UpdateCurrentItemSlot(null, i, InventorySlotShortcuts[i], null);
+            }
         }
     }
 
     private void OnIntentionToUseItem(int ItemIndex)
     {
-        if (GameMonoBehaviourHelpers.SimulationWorld.TryGetBufferReadOnly(_localPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if (GameMonoBehaviourHelpers.SimulationWorld.TryGetBufferReadOnly(GamePresentationCache.Instance.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             if(inventory.Length > ItemIndex && ItemIndex > -1)
             {
@@ -73,7 +77,7 @@ public class InventoryDisplay : GameMonoBehaviour
                     SimWorld.TryGetComponentData(itemEntity, out GameActionId actionId);
                     GameAction itemGameAction = GameActionBank.GetAction(actionId);
 
-                    GameAction.UseContract itemUseContract = itemGameAction.GetUseContract(SimWorld, PlayerHelpers.GetLocalSimPlayerEntity(SimWorld), _localPawn);
+                    GameAction.UseContract itemUseContract = itemGameAction.GetUseContract(SimWorld, PlayerHelpers.GetLocalSimPlayerEntity(SimWorld), GamePresentationCache.Instance.LocalPawn);
 
                     OnStartUsingNewItem(itemUseContract);
 

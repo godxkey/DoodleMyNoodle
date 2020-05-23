@@ -40,6 +40,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
         // fbessette: For now, we simply do a switch. 
         //            In the future, we'll probably want to implement something dynamic instead
 
+        // THIS IS MAINLY FOR DEBUG
 
         switch (input)
         {
@@ -56,48 +57,6 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                         {
                             switch (keycodeInput.keyCode)
                             {
-                                case UnityEngine.KeyCode.LeftArrow:
-                                case UnityEngine.KeyCode.A:
-
-                                    if (EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
-                                    {
-                                        Entity itemEntity = inventory[0].ItemEntity;
-
-                                        GameActionId actionId = EntityManager.GetComponentData<GameActionId>(itemEntity);
-                                        GameAction gameAction = GameActionBank.GetAction(actionId);
-
-                                        GameAction.UseData useData = GameAction.UseData.Create(
-                                            new GameActionParameterTile.Data(0, Helpers.GetTile(pawnPos) + int2(-1, 0)));
-
-                                        gameAction.Use(Accessor, playerEntity, pawn, useData);
-                                    }
-
-                                    break;
-
-                                case UnityEngine.KeyCode.RightArrow:
-                                case UnityEngine.KeyCode.D:
-                                    EntityManager.SetOrAddComponentData(pawn, new Destination()
-                                    {
-                                        Value = round(pawnPos.Value) + fix3(1, 0, 0)
-                                    });
-                                    break;
-
-                                case UnityEngine.KeyCode.UpArrow:
-                                case UnityEngine.KeyCode.W:
-                                    EntityManager.SetOrAddComponentData(pawn, new Destination()
-                                    {
-                                        Value = round(pawnPos.Value) + fix3(0, 1, 0)
-                                    });
-                                    break;
-
-                                case UnityEngine.KeyCode.DownArrow:
-                                case UnityEngine.KeyCode.S:
-                                    EntityManager.SetOrAddComponentData(pawn, new Destination()
-                                    {
-                                        Value = round(pawnPos.Value) + fix3(0, -1, 0)
-                                    });
-                                    break;
-
                                 // Damage Health Debug 
                                 case UnityEngine.KeyCode.M:
                                     CommonWrites.SetStatInt(Accessor, pawn, new Health()

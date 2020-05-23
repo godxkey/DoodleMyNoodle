@@ -82,7 +82,7 @@ public class InventorySlot : GameMonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         if (eventData.button == PointerEventData.InputButton.Left) 
         {
-            OnItemUsed.Invoke(_currentItemIndex);
+            OnItemUsed?.Invoke(_currentItemIndex);
         }
     }
 }
