@@ -4,7 +4,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TimerBarDisplay : SingletonEntityDataDisplay<TurnTimer>
+public class TimerBarDisplay : GameMonoBehaviour
 {
     public Slider TimerBar;
 
@@ -12,9 +12,9 @@ public class TimerBarDisplay : SingletonEntityDataDisplay<TurnTimer>
     {
         base.OnGameUpdate();
 
-        if(s_singletonData != Entity.Null)
+        if (SimWorld.TryGetSingleton(out TurnTimer turnTimer) && SimWorld.TryGetSingleton(out TurnDuration turnDuration))
         {
-            TimerBar.value = (float)(SimWorld.GetComponentData<TurnTimer>(s_singletonData).Value / SimWorld.GetComponentData<TurnDuration>(s_singletonData).Value);
+            TimerBar.value = (float)(turnTimer.Value / turnDuration.Value);
         }
     }
 }

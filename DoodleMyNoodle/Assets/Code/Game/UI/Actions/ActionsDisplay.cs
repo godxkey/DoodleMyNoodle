@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
-public class ActionsDisplay : LocalPlayerGameDisplay
+public class ActionsDisplay : GameMonoBehaviour
 {
     public GameObject ActionPointPrefab;
 
@@ -13,9 +13,9 @@ public class ActionsDisplay : LocalPlayerGameDisplay
     {
         base.OnGameUpdate();
 
-        if (SimWorld.TryGetComponentData(s_localPawn, out ActionPoints actions))
+        if (SimWorld.TryGetComponentData(GamePresentationCache.Instance.LocalPawn, out ActionPoints actions))
         {
-            if(SimWorld.TryGetComponentData(s_localPawn, out MaximumInt<ActionPoints> maximumActions))
+            if(SimWorld.TryGetComponentData(GamePresentationCache.Instance.LocalPawn, out MaximumInt<ActionPoints> maximumActions))
             {
                 int actionPointsDifference = Mathf.Abs(_actionPoints.Count - maximumActions.Value);
 

@@ -4,7 +4,7 @@ using TMPro;
 using Unity.Entities;
 using UnityEngine;
 
-public class TurnTeamDisplay : SingletonEntityDataDisplay<TurnCurrentTeam>
+public class TurnTeamDisplay : GameMonoBehaviour
 {
     [System.Serializable]
     public struct TeamTurnText
@@ -21,7 +21,13 @@ public class TurnTeamDisplay : SingletonEntityDataDisplay<TurnCurrentTeam>
     {
         base.OnGameUpdate();
 
-        int currentTeam = s_singletonData != Entity.Null ? SimWorld.GetComponentData<TurnCurrentTeam>(s_singletonData).Value : -1;
+        int currentTeam = -1;
+
+        if (SimWorld.TryGetSingleton(out TurnCurrentTeam turnCurrentTeam))
+        {
+            currentTeam = turnCurrentTeam.Value;
+        }
+
         SetCurrentTeam((TeamAuth.DesignerFriendlyTeam)currentTeam);
     }
 
