@@ -5,13 +5,17 @@ using UnityEngine;
 
 public class SingletonEntityDataDisplay<T> : GameMonoBehaviour where T : struct, IComponentData
 {
-    protected Entity _singletonData = Entity.Null;
+    protected static Entity s_singletonData = Entity.Null;
 
     public override void OnGameUpdate()
     {
-        if(_singletonData == Entity.Null && SimWorld.HasSingleton<T>())
+        if(SimWorld.HasSingleton<T>())
         {
-            _singletonData = SimWorld.GetSingletonEntity<T>();
+            Entity currentSingletonData = SimWorld.GetSingletonEntity<T>();
+            if(currentSingletonData != s_singletonData)
+            {
+                s_singletonData = currentSingletonData;
+            }
         }
     } 
 }

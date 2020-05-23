@@ -9,7 +9,7 @@ public class ConvertViewBindingDefinitionToEntities : ConvertToEntity, IConvertG
 {
     void Awake()
     {
-        // let parent handle the conversion we have one
+        // let parent handle the conversion if we have one
         Transform parent = transform.parent;
         if (parent && parent.GetComponent<ConvertViewBindingDefinitionToEntities>())
             return;
@@ -73,6 +73,7 @@ public class ConvertViewBindingDefinitionToEntities : ConvertToEntity, IConvertG
             }
         }
     }
+
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {

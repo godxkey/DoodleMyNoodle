@@ -2,8 +2,8 @@
 
 public class LocalPlayerGameDisplay : GameMonoBehaviour
 {
-    protected Entity _localPawn = Entity.Null;
-    protected Entity _localController = Entity.Null;
+    protected static Entity s_localPawn = Entity.Null;
+    protected static Entity s_localController = Entity.Null;
 
     public override void OnGameUpdate()
     {
@@ -12,10 +12,16 @@ public class LocalPlayerGameDisplay : GameMonoBehaviour
 
       private void UpdateCurrentPlayerPawn()
     {
-        if (_localPawn == Entity.Null)
+        Entity currentLocalPawn = PlayerHelpers.GetLocalSimPawnEntity(SimWorld);
+        if(currentLocalPawn != s_localPawn)
         {
-            _localPawn = PlayerHelpers.GetLocalSimPawnEntity(SimWorld);
-            _localController = CommonReads.GetPawnController(SimWorld, _localPawn);
+            s_localPawn = currentLocalPawn;
+        }
+
+        Entity currentLocalController = CommonReads.GetPawnController(SimWorld, s_localPawn);
+        if (currentLocalController != s_localController)
+        {
+            s_localController = currentLocalController;
         }
     }
 }

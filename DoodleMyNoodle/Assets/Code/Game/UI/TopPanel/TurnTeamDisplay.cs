@@ -21,7 +21,7 @@ public class TurnTeamDisplay : SingletonEntityDataDisplay<TurnCurrentTeam>
     {
         base.OnGameUpdate();
 
-        int currentTeam = _singletonData != Entity.Null ? SimWorld.GetComponentData<TurnCurrentTeam>(_singletonData).Value : -1;
+        int currentTeam = s_singletonData != Entity.Null ? SimWorld.GetComponentData<TurnCurrentTeam>(s_singletonData).Value : -1;
         SetCurrentTeam((TeamAuth.DesignerFriendlyTeam)currentTeam);
     }
 

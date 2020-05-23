@@ -12,9 +12,9 @@ public class TimerBarDisplay : SingletonEntityDataDisplay<TurnTimer>
     {
         base.OnGameUpdate();
 
-        if(_singletonData != Entity.Null)
+        if(s_singletonData != Entity.Null)
         {
-            TimerBar.value = (float)(SimWorld.GetComponentData<TurnTimer>(_singletonData).Value / SimWorld.GetComponentData<TurnDuration>(_singletonData).Value);
+            TimerBar.value = (float)(SimWorld.GetComponentData<TurnTimer>(s_singletonData).Value / SimWorld.GetComponentData<TurnDuration>(s_singletonData).Value);
         }
     }
 }

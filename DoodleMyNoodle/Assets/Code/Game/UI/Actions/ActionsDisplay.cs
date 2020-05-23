@@ -13,9 +13,9 @@ public class ActionsDisplay : LocalPlayerGameDisplay
     {
         base.OnGameUpdate();
 
-        if (SimWorld.TryGetComponentData(_localPawn, out ActionPoints actions))
+        if (SimWorld.TryGetComponentData(s_localPawn, out ActionPoints actions))
         {
-            if(SimWorld.TryGetComponentData(_localPawn, out MaximumInt<ActionPoints> maximumActions))
+            if(SimWorld.TryGetComponentData(s_localPawn, out MaximumInt<ActionPoints> maximumActions))
             {
                 int actionPointsDifference = Mathf.Abs(_actionPoints.Count - maximumActions.Value);
 
@@ -31,23 +31,18 @@ public class ActionsDisplay : LocalPlayerGameDisplay
                 // Remove Action Point Display
                 else if (_actionPoints.Count > maximumActions.Value)
                 {
-                    for (int i = 1; i <= actionPointsDifference; i++)
+                    for (int i = 0; i < actionPointsDifference; i++)
                     {
+                        Destroy(_actionPoints[_actionPoints.Count - i]);
                         _actionPoints.RemoveAt(_actionPoints.Count - i);
                     }
                 }
             }
 
-            // Reset all
+            // Reset all & Set filled or available ones
             for (int i = 0; i < _actionPoints.Count; i++)
             {
-                _actionPoints[i].SetAsAvailable(false);
-            }
-
-            // Set filled or available ones
-            for (int i = 0; i < actions.Value; i++)
-            {
-                _actionPoints[i].SetAsAvailable(true);
+                _actionPoints[i].SetAsAvailable(i < actions.Value);
             }
         }
     }
