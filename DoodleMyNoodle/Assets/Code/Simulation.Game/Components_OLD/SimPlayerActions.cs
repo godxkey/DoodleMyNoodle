@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CCC.InspectorDisplay;
+using UnityEngineX.InspectorDisplay;
 
 public class SimPlayerActions : SimClampedStatComponent, ISimTickable
 {

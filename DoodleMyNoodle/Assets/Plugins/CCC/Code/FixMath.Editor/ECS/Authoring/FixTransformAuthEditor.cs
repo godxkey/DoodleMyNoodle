@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngineX;
 
 [CustomEditor(typeof(FixTransformAuth), editorForChildClasses: true)]
 public class FixTransformAuthEditor : Editor

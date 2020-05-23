@@ -21,7 +21,7 @@ public class LoadSimulationFromDiskOperation : CoroutineOperation
         yield return ExecuteSubOperationAndWaitForSuccess(loadOp);
         string serializedData = loadOp.TextResult;
 
-        if (serializedData.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(serializedData))
         {
             TerminateWithAbnormalFailure($"Failed to load valid simulation from file {_filePath}");
             yield break;

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using UnityEngineX;
 
 //#pragma warning disable IDE0052 // Remove unread private members
 [DataContract]

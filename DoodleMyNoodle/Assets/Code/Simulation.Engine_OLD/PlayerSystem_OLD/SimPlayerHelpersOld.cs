@@ -19,7 +19,7 @@ public static class SimPlayerHelpersOld
 
     public static string GetPlayerName(SimPlayerComponent player)
     {
-        if (player.GetComponent(out SimNameComponent nameComponent))
+        if (player.TryGetComponent(out SimNameComponent nameComponent))
         {
             return nameComponent.Value;
         }

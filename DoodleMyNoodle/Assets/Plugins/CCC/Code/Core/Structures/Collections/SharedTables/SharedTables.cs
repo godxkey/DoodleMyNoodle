@@ -1,8 +1,8 @@
 ﻿using CCC.InspectorDisplay;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using UnityEngine;
+using UnityEngineX;
 
 [CreateAssetMenu(menuName = "CCC/Structures/Shared Tables")]
 public class SharedTables : ScriptableObject

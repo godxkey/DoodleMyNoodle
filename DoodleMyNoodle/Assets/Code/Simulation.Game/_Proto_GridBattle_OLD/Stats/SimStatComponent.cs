@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using CCC.InspectorDisplay;
+using UnityEngineX.InspectorDisplay;
 
 public class SimStatComponent : SimComponent
 {

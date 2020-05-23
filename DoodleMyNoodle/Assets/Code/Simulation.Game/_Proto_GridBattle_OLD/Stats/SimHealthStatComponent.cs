@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX.InspectorDisplay;
 
 public class SimHealthStatComponent : SimClampedStatComponent, ISimTickable
 {
@@ -54,7 +55,7 @@ public class SimHealthStatComponent : SimClampedStatComponent, ISimTickable
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [CCC.InspectorDisplay.AlwaysExpand]
+    [AlwaysExpand]
     SerializedData _data = new SerializedData()
     {
         Invincible = false

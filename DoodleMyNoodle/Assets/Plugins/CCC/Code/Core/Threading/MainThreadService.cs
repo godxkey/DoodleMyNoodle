@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
+using UnityEngineX;
 
 public class MainThreadService : MonoCoreService<MainThreadService>
 {
@@ -36,7 +37,7 @@ public class MainThreadService : MonoCoreService<MainThreadService>
     {
         while (mainThreadCallbacks.Count > 0)
         {
-            mainThreadCallbacks.Dequeue().SafeInvokeInEditor();
+            mainThreadCallbacks.Dequeue().InvokeCatchExceptionInEditor();
         }
     }
 

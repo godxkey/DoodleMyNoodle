@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CCC.InspectorDisplay;
 using UnityEngine;
+using UnityEngineX.InspectorDisplay;
 
 public class SimClampedStatComponent : SimStatComponent
 {

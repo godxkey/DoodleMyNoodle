@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX.InspectorDisplay;
 
 public class SimEventComponent : SimComponent, ISimEventListener
 {
@@ -50,7 +51,7 @@ public class SimEventComponent : SimComponent, ISimEventListener
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [CCC.InspectorDisplay.AlwaysExpand]
+    [AlwaysExpand]
     [HideInInspector]
     SerializedData _evtComponentData = new SerializedData()
     {

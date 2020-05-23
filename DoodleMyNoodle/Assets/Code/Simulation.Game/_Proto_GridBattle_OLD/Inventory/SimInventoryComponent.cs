@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX;
+using UnityEngineX.InspectorDisplay;
 
 public class SimInventoryComponent : SimComponent
 {

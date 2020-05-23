@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine.Profiling;
 using UnityEngine.Scripting;
+using UnityEngineX;
 
 internal class UpdaterService : MonoCoreService<UpdaterService>
 {

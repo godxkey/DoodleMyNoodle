@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using CCC.InspectorDisplay;
+using UnityEngineX.InspectorDisplay;
 
 [RequireComponent(typeof(ScrollRect))]
 public class ScrollRectSnap : MonoBehaviour, IPointerDownHandler, IPointerUpHandler

@@ -16,7 +16,7 @@ public class LoadSimulationFromMemoryOperation : CoroutineOperation
     {
         // get data
         string serializedData = SaveSimulationToMemoryOperation.s_SerializedSimulation;
-        if (serializedData.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(serializedData))
         {
             TerminateWithAbnormalFailure("No valid simulation to load was found in memory");
             yield break;

@@ -86,7 +86,7 @@ public static class SceneShortcuts
 
                 string sceneName = Path.GetFileNameWithoutExtension(scene.Path);
                 string scenePathNoExt = PathX.RemoveExtension(scene.Path);
-                string folder = scenePathNoExt.Remove(sceneName);
+                string folder = scenePathNoExt.RemoveFirst(sceneName);
                 string methodName = scenePathNoExt.Replace(' ', '_').Replace('/', '_');
 
                 if (lastFolder != folder)
@@ -110,7 +110,7 @@ public static class SceneShortcuts
 
                     foreach (var word in MENU_ITEM_STRIPPED_WORDS)
                     {
-                        menuItemName = menuItemName.Remove(word);
+                        menuItemName = menuItemName.RemoveFirst(word);
                     }
                 }
 

@@ -97,7 +97,7 @@ public static class QuickStart
             yield return null;
         }
 
-        if (settings.serverName.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(settings.serverName))
         {
             LoadingScreenUIController.displayedStatus = "Loading...";
             GameStateManager.TransitionToState(Assets.lobbyClient);
@@ -182,7 +182,7 @@ public static class QuickStart
             yield return null;
         }
 
-        if (settings.serverName.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(settings.serverName))
         {
             LoadingScreenUIController.displayedStatus = "Loading...";
             GameStateManager.TransitionToState(Assets.lobbyServer);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngineX;
 
 public abstract class SafeEventBase<ActionClass>
 {
@@ -60,21 +61,21 @@ public class SafeEvent : SafeEventBase<Action>
         a.RemoveAction(b);
         return a;
     }
-    public void SafeInvoke(SafeInvokeLogMode logMode = SafeInvokeLogMode.Error)
+    public void SafeInvoke(LogMode logMode = LogMode.Error)
     {
         BeginActionExecution();
         for (; currentActionExecutionIndex < actions.Count; currentActionExecutionIndex++)
         {
-            actions[currentActionExecutionIndex].SafeInvoke(logMode);
+            actions[currentActionExecutionIndex].InvokeCatchException(logMode);
         }
         EndActionExecution();
     }
-    public void SafeInvokeInEditor(SafeInvokeLogMode logMode = SafeInvokeLogMode.Error)
+    public void SafeInvokeInEditor(LogMode logMode = LogMode.Error)
     {
         BeginActionExecution();
         for (; currentActionExecutionIndex < actions.Count; currentActionExecutionIndex++)
         {
-            actions[currentActionExecutionIndex].SafeInvokeInEditor(logMode);
+            actions[currentActionExecutionIndex].InvokeCatchExceptionInEditor(logMode);
         }
         EndActionExecution();
     }
@@ -92,21 +93,21 @@ public class SafeEvent<T> : SafeEventBase<Action<T>>
         a.RemoveAction(b);
         return a;
     }
-    public void SafeInvoke(T value, SafeInvokeLogMode logMode = SafeInvokeLogMode.Error)
+    public void SafeInvoke(T value, LogMode logMode = LogMode.Error)
     {
         BeginActionExecution();
         for (; currentActionExecutionIndex < actions.Count; currentActionExecutionIndex++)
         {
-            actions[currentActionExecutionIndex].SafeInvoke(value, logMode);
+            actions[currentActionExecutionIndex].InvokeCatchException(value, logMode);
         }
         EndActionExecution();
     }
-    public void SafeInvokeInEditor(T value, SafeInvokeLogMode logMode = SafeInvokeLogMode.Error)
+    public void SafeInvokeInEditor(T value, LogMode logMode = LogMode.Error)
     {
         BeginActionExecution();
         for (; currentActionExecutionIndex < actions.Count; currentActionExecutionIndex++)
         {
-            actions[currentActionExecutionIndex].SafeInvokeInEditor(value, logMode);
+            actions[currentActionExecutionIndex].InvokeCatchExceptionInEditor(value, logMode);
         }
         EndActionExecution();
     }
@@ -124,21 +125,21 @@ public class SafeEvent<T1, T2> : SafeEventBase<Action<T1, T2>>
         a.RemoveAction(b);
         return a;
     }
-    public void SafeInvoke(T1 value1, T2 value2, SafeInvokeLogMode logMode = SafeInvokeLogMode.Error)
+    public void SafeInvoke(T1 value1, T2 value2, LogMode logMode = LogMode.Error)
     {
         BeginActionExecution();
         for (; currentActionExecutionIndex < actions.Count; currentActionExecutionIndex++)
         {
-            actions[currentActionExecutionIndex].SafeInvoke(value1, value2, logMode);
+            actions[currentActionExecutionIndex].InvokeCatchException(value1, value2, logMode);
         }
         EndActionExecution();
     }
-    public void SafeInvokeInEditor(T1 value1, T2 value2, SafeInvokeLogMode logMode = SafeInvokeLogMode.Error)
+    public void SafeInvokeInEditor(T1 value1, T2 value2, LogMode logMode = LogMode.Error)
     {
         BeginActionExecution();
         for (; currentActionExecutionIndex < actions.Count; currentActionExecutionIndex++)
         {
-            actions[currentActionExecutionIndex].SafeInvokeInEditor(value1, value2, logMode);
+            actions[currentActionExecutionIndex].InvokeCatchExceptionInEditor(value1, value2, logMode);
         }
         EndActionExecution();
     }

@@ -30,7 +30,7 @@ public class SimPlayerManager : SimSingleton<SimPlayerManager>, ISimInputProcess
 
                 SimEntity playerEntity = Simulation.Instantiate(_playerPrefab.SimEntity);
 
-                if (playerEntity.GetComponent(out SimNameComponent nameComponent))
+                if (playerEntity.TryGetComponent(out SimNameComponent nameComponent))
                 {
                     nameComponent.Value = playerCreate.SimPlayerInfo.Name;
                 }

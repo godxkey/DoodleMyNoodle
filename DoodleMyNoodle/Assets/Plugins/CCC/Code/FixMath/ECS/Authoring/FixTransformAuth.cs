@@ -1,6 +1,7 @@
 ﻿using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngineX.InspectorDisplay;
 
 public class FixTransformAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
@@ -21,8 +22,8 @@ public class FixTransformAuth : MonoBehaviour, IConvertGameObjectToEntity
     public fix3 LocalPosition { get => _data.LocalPosition; set { _data.LocalPosition = value; } }
     public fixQuaternion LocalRotation { get => _data.LocalRotation; set { _data.LocalRotation = value; } }
 
-    [UnityEngine.SerializeField]
-    [CCC.InspectorDisplay.AlwaysExpand]
+    [SerializeField]
+    [AlwaysExpand]
     public SerializedData _data = new SerializedData() // needs to be public for Editor access
     {
         LocalScale = new fix3(1, 1, 1)

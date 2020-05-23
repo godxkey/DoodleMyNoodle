@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX.InspectorDisplay;
 
 public class SimVelocityComponent : SimComponent, ISimTickable
 {
@@ -19,7 +20,7 @@ public class SimVelocityComponent : SimComponent, ISimTickable
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [CCC.InspectorDisplay.AlwaysExpand]
+    [AlwaysExpand]
     SerializedData _data = new SerializedData()
     {
         // define default values here

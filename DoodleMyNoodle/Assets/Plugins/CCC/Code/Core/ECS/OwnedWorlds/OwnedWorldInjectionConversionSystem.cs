@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngineX;
 
 // These systems take care of notifying any 'owned worlds' that converted entities are being injected into it
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngineX;
 
 [CustomEditor(typeof(SimTransformComponent), editorForChildClasses: true)]
 public class SimTransformEditor : Editor

@@ -139,7 +139,7 @@ public static class JsonSerializationUtility
     {
         DeserializationResult result = default;
 
-        if (data.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(data))
         {
             result.Success = true;
             result.Object = default;

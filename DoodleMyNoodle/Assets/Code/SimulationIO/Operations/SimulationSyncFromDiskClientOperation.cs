@@ -43,7 +43,7 @@ public class SimulationSyncFromDiskClientOperation : CoroutineOperation
         _sessionInterface.UnregisterNetMessageReceiver<NetMessageSimSyncFromFile>(OnNetMessageSimSyncFromFile);
 
         // terminate if load path is invalid
-        if (_simLoadFile.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(_simLoadFile))
         {
             TerminateWithAbnormalFailure($"Invalid simulation load file path received from the server ({_simLoadFile}). Prehaps it failed to serialize it.");
             yield break;

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX.InspectorDisplay;
 
 /// <summary>
 /// An entity with this component can control a pawn
@@ -25,7 +26,7 @@ public class SimPawnControllerComponent : SimComponent
 
     #region Serialized Data Methods
     [UnityEngine.SerializeField]
-    [CCC.InspectorDisplay.AlwaysExpand]
+    [AlwaysExpand]
     SerializedData _data = new SerializedData()
     {
         // define default values here

@@ -253,7 +253,7 @@ public class LaunchProfileElement : VisualElement
         finalArguments.Append(' ');
 
         string level = EditorLaunchData.level;
-        if (level.IsNullOrEmpty() == false)
+        if (string.IsNullOrEmpty(level) == false)
         {
             finalArguments.Append("-level ");
             finalArguments.Append(level);
@@ -261,7 +261,7 @@ public class LaunchProfileElement : VisualElement
         }
 
         string serverName = EditorLaunchData.serverName;
-        if (serverName.IsNullOrEmpty() == false)
+        if (string.IsNullOrEmpty(serverName) == false)
         {
             finalArguments.Append("-servername ");
             finalArguments.Append('\"' + serverName + '\"'); // we need to wrap the string with quotes "" to allow for spaces

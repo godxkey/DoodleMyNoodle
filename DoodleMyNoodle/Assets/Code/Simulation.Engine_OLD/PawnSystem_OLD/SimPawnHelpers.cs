@@ -9,7 +9,7 @@ public static class SimPawnHelpers
         if (pawnController == null)
             return null;
 
-        if (pawnController.GetComponent(out SimPawnControllerComponent pawnControllerComponent))
+        if (pawnController.TryGetComponent(out SimPawnControllerComponent pawnControllerComponent))
         {
             if (pawnControllerComponent.TargetPawn)
                 return pawnControllerComponent.TargetPawn.gameObject.GetComponent<T>();
@@ -23,7 +23,7 @@ public static class SimPawnHelpers
         if (pawnController == null)
             return null;
 
-        if (pawnController.GetComponent(out SimPawnControllerComponent pawnControllerComponent))
+        if (pawnController.TryGetComponent(out SimPawnControllerComponent pawnControllerComponent))
         {
             return pawnControllerComponent.TargetPawn;
         }

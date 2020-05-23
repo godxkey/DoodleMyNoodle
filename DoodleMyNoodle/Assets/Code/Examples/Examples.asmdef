@@ -2,7 +2,8 @@
     "name": "Examples",
     "references": [
         "GUID:c886ee09f9545f74f85dd4e7b076b17c",
-        "GUID:7c20dcb71e66d344fbc11361fb6ad799"
+        "GUID:7c20dcb71e66d344fbc11361fb6ad799",
+        "GUID:7a8d7696eb7a56745b9cdb92a8a28234"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

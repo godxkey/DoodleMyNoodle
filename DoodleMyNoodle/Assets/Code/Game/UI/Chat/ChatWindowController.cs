@@ -41,7 +41,7 @@ public class ChatWindowController : GameMonoBehaviour
                 _chatWindow.focused = false;
                 _chatWindow.ResetScroll();
 
-                if (_chatWindow.inputText.IsNullOrEmpty() == false)
+                if (string.IsNullOrEmpty(_chatWindow.inputText) == false)
                 {
                     ChatSystem.Instance.SubmitMessage(_chatWindow.inputText);
                     _chatWindow.inputText = string.Empty;

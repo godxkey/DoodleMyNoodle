@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngineX;
 
 [Serializable]
 public class SimEventInternal : IDisposable

@@ -33,7 +33,7 @@ namespace CCC.Operations
 
             yield return thread.StartAndWaitForComplete();
 
-            if (!errorMessage.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(errorMessage))
             {
                 TerminateWithAbnormalFailure($"Failed to save text to file {_filePath} : {errorMessage}");
                 yield break;

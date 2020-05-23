@@ -33,7 +33,7 @@ namespace CCC.Operations
 
             yield return loadThread.StartAndWaitForComplete();
 
-            if (!errorMessage.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(errorMessage))
             {
                 TerminateWithAbnormalFailure($"Failed to load text from file {_filePath} : {errorMessage}");
                 yield break;

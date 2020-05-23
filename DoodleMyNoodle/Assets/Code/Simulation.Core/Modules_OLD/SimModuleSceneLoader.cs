@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngineX;
 
 internal class SimModuleSceneLoader : SimModuleBase
 {
