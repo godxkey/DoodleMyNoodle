@@ -5,6 +5,7 @@ using Unity.Entities;
 using Unity.Collections;
 using static fixMath;
 using Unity.MathematicsX;
+using Unity.Mathematics;
 
 public class CreateLevelGridSystem : SimComponentSystem
 {
@@ -84,7 +85,7 @@ public class CreateLevelGridSystem : SimComponentSystem
 
 public partial class CommonReads
 {
-    public static Entity GetTile(ISimWorldReadAccessor accessor, fix2 gridPosition)
+    public static Entity GetTile(ISimWorldReadAccessor accessor, int2 gridPosition)
     {
         accessor.TryGetBufferReadOnly(accessor.GetSingletonEntity<GridInfo>(), out DynamicBuffer<GridTileReference> gridTileReferences);
 
@@ -92,7 +93,7 @@ public partial class CommonReads
         {
             Entity tileEntity = gridTileReferences[i].Tile;
             FixTranslation position = accessor.GetComponentData<FixTranslation>(tileEntity);
-            if (gridPosition == position.Value)
+            if (gridPosition.Equals(roundToInt(position.Value).xy))
             {
                 return tileEntity;
             }
@@ -101,7 +102,7 @@ public partial class CommonReads
         return Entity.Null;
     }
 
-    public static List<Entity> GetEntitiesOnTile(ISimWorldReadAccessor accessor, Entity tile)
+    public static List<Entity> GetTileAddons(ISimWorldReadAccessor accessor, Entity tile)
     {
         accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<EntityOnTile> entities);
 

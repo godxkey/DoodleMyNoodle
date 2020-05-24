@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2215584610862801426}
   - component: {fileID: 1516881635305629881}
   m_Layer: 0
-  m_Name: BE_Bird
+  m_Name: BE_Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SplitMode: 1
+  ViewTechType: 0
 --- !u!114 &1516881635305629881
 MonoBehaviour:
   m_ObjectHideFlags: 0

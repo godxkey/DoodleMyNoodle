@@ -23,5 +23,16 @@ public class ClearDestinationSystem : SimComponentSystem
                 EntityManager.RemoveComponent<Destination>(entity);
             }
         });
-    }
+
+        //Entities.ForEach((Entity entity,
+        //ref FixTranslation translation,
+        //ref PotentialNewTranslation potentialNewTranslation,
+        //ref Destination destination) =>
+        //{
+        //    if(potentialNewTranslation.Value == translation.Value)
+        //    {
+        //        destination.Value = new Destination() { Value = fix3(currentTilePos, 0) });
+        //    }
+        //});
+    }       
 }

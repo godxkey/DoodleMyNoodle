@@ -15,16 +15,19 @@ public class ActionRefillSystem : SimComponentSystem
             .ForEach((Entity pawn, ref ActionPoints pawnActionPoints, ref MaximumInt<ActionPoints> pawnMaximumActionPoints) =>
             {
                 Entity pawnController = CommonReads.GetPawnController(Accessor, pawn);
-                Team pawnTeam = Accessor.GetComponentData<Team>(pawnController);
-
-                if ((pawnTeam.Value != currentTeam) || !HasSingleton<ActionRefillAmount>())
+                if(pawnController != Entity.Null)
                 {
-                    return;
+                    Team pawnTeam = Accessor.GetComponentData<Team>(pawnController);
+
+                    if ((pawnTeam.Value != currentTeam) || !HasSingleton<ActionRefillAmount>())
+                    {
+                        return;
+                    }
+
+                    int actionPointsToAdd = GetSingleton<ActionRefillAmount>().Value;
+
+                    pawnActionPoints.Value = Mathf.Clamp(pawnActionPoints.Value + actionPointsToAdd, 0, pawnMaximumActionPoints.Value);
                 }
-
-                int actionPointsToAdd = GetSingleton<ActionRefillAmount>().Value;
-
-                pawnActionPoints.Value = Mathf.Clamp(pawnActionPoints.Value + actionPointsToAdd, 0, pawnMaximumActionPoints.Value);
             });
         }
     }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using static Unity.Mathematics.math;
 using UnityEngine;
 using Unity.Entities;
+using Unity.Mathematics;
+using static fixMath;
 
 public class TileHighlightManager : GameSystem<TileHighlightManager>
 {
@@ -56,7 +58,7 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
     {
         _currentTileSelectionCallback = null;
         SimWorld.TryGetComponentData(PlayerHelpers.GetLocalSimPawnEntity(SimWorld), out FixTranslation localPawnPosition);
-        AddHilightsAroundPlayer(localPawnPosition.Value, TileParameters.RangeFromInstigator, TileParameters.Filter);
+        AddHilightsAroundPlayer(roundToInt(localPawnPosition.Value).xy, TileParameters.RangeFromInstigator, TileParameters.Filter);
         _currentTileSelectionCallback = TileSelectedData;
     }
 
@@ -66,7 +68,7 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
         HideAll();
     }
 
-    private void AddHilightsAroundPlayer(fix3 pos, int depth, TileFilterFlags ignoredTileFlags)
+    private void AddHilightsAroundPlayer(int2 pos, int depth, TileFilterFlags ignoredTileFlags)
     {
         int numberOfTiles = 0;
         for (int i = 1; i <= depth; i++)
@@ -112,29 +114,10 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
 
         // TILE FILTERS
 
-        Entity currentTile = CommonReads.GetTile(SimWorld, newPossibleDestination);
-        List<Entity> entitiesOnTile = CommonReads.GetEntitiesOnTile(SimWorld, currentTile);
-
-        if (entitiesOnTile.Count > 0)
+        Entity currentTile = CommonReads.GetTile(SimWorld, roundToInt(newPossibleDestination).xy);
+        if(!CommonReads.DoesTileRespectFilters(SimWorld, currentTile, ignoredTileFlags))
         {
-            foreach (Entity entity in entitiesOnTile)
-            {
-                if ((ignoredTileFlags & TileFilterFlags.Navigable) != 0)
-                {
-                    if (SimWorld.HasComponent<NonNavigable>(entity))
-                    {
-                        return;
-                    }
-                }
-
-                if ((ignoredTileFlags & TileFilterFlags.Inoccupied) != 0)
-                {
-                    if (SimWorld.HasComponent<Occupied>(entity))
-                    {
-                        return;
-                    }
-                }
-            }
+            return;
         }
 
         // ADDING MISSING TILE
