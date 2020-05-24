@@ -1,0 +1,30 @@
+{
+    "name": "ScriptTemplates",
+    "references": [
+        "GUID:7e29b333690cedd478380f8826492a9c",
+        "GUID:737e1c04c3dd3e046bedb5be72aec1d7",
+        "GUID:389edd8433a26384eb01215cc0adad2a",
+        "GUID:7a50bbf1a327d1b4392a4b0c9480cc00",
+        "GUID:a695b5a3e8c39e14fb9d86d3205fadf9",
+        "GUID:967bf62d84e8bce4fb02b8adb322ac64",
+        "GUID:f5823330910b6a446a2095347107fb53",
+        "GUID:2665a8d13d1b3f18800f46e256720795",
+        "GUID:734d92eba21c94caba915361bd5ac177",
+        "GUID:8819f35a0fc84499b990e90a4ca1911f",
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:a5baed0c9693541a5bd947d336ec7659",
+        "GUID:735109854ac7b3d40bffa04c3f643492",
+        "GUID:7a8d7696eb7a56745b9cdb92a8a28234"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

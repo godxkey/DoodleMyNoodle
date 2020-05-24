@@ -1,0 +1,24 @@
+using UnityEngine;
+
+// if UnityEngineX
+using UnityEngineX;
+
+// if Unity.Mathematics
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
+
+// if Unity.MathematicsX
+using Unity.MathematicsX;
+using static Unity.MathematicsX.mathX;
+
+// if UnityX.FixMath
+using UnityX.FixMath;
+using static UnityX.FixMath.FixMath;
+
+public class $SCRIPT_NAME$ : MonoBehaviour
+{
+    void Start()
+    {
+    
+    }
+}
