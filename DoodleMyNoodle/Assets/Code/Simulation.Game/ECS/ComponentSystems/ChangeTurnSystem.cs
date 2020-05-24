@@ -18,6 +18,8 @@ public class ChangeTurnSystem : SimComponentSystem
         base.OnCreate();
 
         _eventsEntityQuery = EntityManager.CreateEntityQuery(typeof(NewTurnEventData));
+
+        RequireSingletonForUpdate<TurnTimer>();
     }
 
     protected override void OnUpdate()
@@ -54,7 +56,7 @@ public class ChangeTurnSystem : SimComponentSystem
 
     private void UpdateTurnTimer()
     {
-        TurnTimer turnTimer = GetSingleton<TurnTimer>();
+        TurnTimer turnTimer = this.GetOrCreateSingleton<TurnTimer>();
 
         fix newTimerValue = turnTimer.Value - Time.DeltaTime;
         if (newTimerValue <= 0)

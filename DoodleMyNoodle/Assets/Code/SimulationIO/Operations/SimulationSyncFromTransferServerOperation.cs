@@ -33,7 +33,7 @@ public class SimulationSyncFromTransferServerOperation : CoroutineOperation
         {
             SerializedSimulation = serializedData
         };
-        var transferOp = _sessionInterface.BeginLargeDataTransfer(netMessage, _client, description: $"Simulation-{((SimulationWorld)_simulationWorld).LatestTickId}");
+        var transferOp = _sessionInterface.BeginLargeDataTransfer(netMessage, _client, description: $"Simulation-{((SimulationWorld)_simulationWorld).GetLastedTickIdFromEntity()}");
         yield return ExecuteSubOperationAndWaitForSuccess(transferOp);
 
         // Terminate

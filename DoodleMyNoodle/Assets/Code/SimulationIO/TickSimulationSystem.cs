@@ -291,10 +291,12 @@ namespace SimulationControl
             if (_isPausedByCmd)
             {
                 UnpauseSimulation(key: "cmd");
+                _isPausedByCmd = false;
             }
             else
             {
                 PauseSimulation(key: "cmd");
+                _isPausedByCmd = true;
             }
         }
 #endif

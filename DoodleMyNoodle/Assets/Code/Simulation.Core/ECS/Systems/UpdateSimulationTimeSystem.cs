@@ -14,41 +14,16 @@ public struct SimulationOngoingTickId : IComponentData
 [AlwaysUpdateSystem]
 public class UpdateSimulationTimeSystem : ComponentSystem
 {
-    protected Entity TickDataSingleton
-    {
-        get
-        {
-            if (_tickSingletonQuery.IsEmptyIgnoreFilter)
-            {
-#if UNITY_EDITOR
-                var entity = EntityManager.CreateEntity(typeof(SimulationOngoingTickId));
-                EntityManager.SetName(entity, "WorldTick");
-#else
-                EntityManager.CreateEntity(typeof(SimulationOngoingTickId));
-#endif
-            }
-
-            return _tickSingletonQuery.GetSingletonEntity();
-        }
-    }
-
-    private EntityQuery _tickSingletonQuery;
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-
-        _tickSingletonQuery = EntityManager.CreateEntityQuery(ComponentType.ReadWrite<SimulationOngoingTickId>());
-    }
-
     protected override void OnUpdate()
     {
         if (World is SimulationWorld simWorld)
         {
+            Entity tickDataSingleton = simWorld.TickDataSingleton;
+
             // Increment tick id
-            uint oldTickId = EntityManager.GetComponentData<SimulationOngoingTickId>(TickDataSingleton).TickId;
+            uint oldTickId = EntityManager.GetComponentData<SimulationOngoingTickId>(tickDataSingleton).TickId;
             uint newTickId = ValidateTickId(oldTickId + 1);
-            EntityManager.SetComponentData(TickDataSingleton, new SimulationOngoingTickId(newTickId));
+            EntityManager.SetComponentData(tickDataSingleton, new SimulationOngoingTickId(newTickId));
 
             // Set cached tick id
             simWorld.LatestTickId = newTickId;
