@@ -8,7 +8,10 @@ public class SimulationWorld : World, IOwnedWorld
 {
     // The SimulationWorldSystem instance (in another world) that owns this world
     public IWorldOwner Owner { get; set; }
-    public SimulationWorld(string name) : base(name) { }
+    public SimulationWorld(string name) : base(name)
+    {
+        _tickSingletonQuery = EntityManager.CreateEntityQuery(ComponentType.ReadWrite<SimulationOngoingTickId>());
+    }
 
 
     // TODO fbessette: move this out of here. The simulation shouldn't know
@@ -46,9 +49,29 @@ public class SimulationWorld : World, IOwnedWorld
             _internalAccessor.SimWorld = this;
             _internalAccessor.EntityManager = EntityManager;
             _internalAccessor.SomeSimSystem = GetOrCreateSystem<SimPreInitializationSystemGroup>();
+            UnityEngine.Debug.Log("Create internal accessor");
         }
 
         return _internalAccessor;
     }
 
+    private EntityQuery _tickSingletonQuery;
+    internal uint GetLastedTickIdFromEntity() { return EntityManager.GetComponentData<SimulationOngoingTickId>(TickDataSingleton).TickId; }
+    internal Entity TickDataSingleton
+    {
+        get
+        {
+            if (_tickSingletonQuery.IsEmptyIgnoreFilter)
+            {
+#if UNITY_EDITOR
+                var entity = EntityManager.CreateEntity(typeof(SimulationOngoingTickId));
+                EntityManager.SetName(entity, "WorldTick");
+#else
+                EntityManager.CreateEntity(typeof(SimulationOngoingTickId));
+#endif
+            }
+
+            return _tickSingletonQuery.GetSingletonEntity();
+        }
+    }
 }

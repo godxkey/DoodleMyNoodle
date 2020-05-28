@@ -64,15 +64,13 @@ namespace SimulationControl
             _receiveTickSystem.ClearAccumulatedTicks();
             _receiveTickSystem.StartShelvingTicks();
 
-            //_ongoingSyncOp = new SimulationSyncFromDiskClientOperation(_session, _simWorldSystem.SimulationWorld);
-
             _ongoingSyncOp = new SimulationSyncFromTransferClientOperation(_session, _simWorldSystem.SimulationWorld);
 
             _ongoingSyncOp.OnTerminateCallback = (op) =>
             {
                 // restore ticks we received while syncing
                 _receiveTickSystem.ClearAccumulatedTicks();
-                _receiveTickSystem.RestoreTicksFromShelf(_simWorldSystem.SimulationWorld.LatestTickId + 1);
+                _receiveTickSystem.RestoreTicksFromShelf(_simWorldSystem.SimulationWorld.GetLastedTickIdFromEntity() + 1);
                 _receiveTickSystem.StopShelvingTicks();
 
                 _tickSystem.UnpauseSimulation(key: "sync");

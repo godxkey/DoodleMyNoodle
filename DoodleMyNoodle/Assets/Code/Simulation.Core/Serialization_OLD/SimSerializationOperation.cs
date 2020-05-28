@@ -35,11 +35,11 @@ namespace Sim.Operations
 
         protected override IEnumerator ExecuteRoutine()
         {
-            if(_world is SimulationWorld simWorld && simWorld.LatestTickId != s_CachedSerializationTickId)
+            if(_world is SimulationWorld simWorld && simWorld.GetLastedTickIdFromEntity() != s_CachedSerializationTickId)
             {
                 s_CachedSerializationOp = new SimSerializationOperation(_simObjectJsonConverter, _jsonSerializerSettings, _world);
                 s_CachedSerializationOp.Execute();
-                s_CachedSerializationTickId = simWorld.LatestTickId;
+                s_CachedSerializationTickId = simWorld.GetLastedTickIdFromEntity();
             }
 
             if (s_CachedSerializationOp.IsRunning)
