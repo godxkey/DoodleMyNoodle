@@ -24,11 +24,29 @@ public class ApplyVelocitySystem : SimJobComponentSystem
 }
 
 [UpdateAfter(typeof(ValidatePotentialNewTranslationSystem))]
+public class RecordPreviousTranslationSystem : SimJobComponentSystem
+{
+    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    {
+        Entities
+            .WithChangeFilter<FixTranslation>()
+            .ForEach((ref PreviousFixTranslation pos, in FixTranslation newTranslation) =>
+            {
+                pos.Value = newTranslation.Value;
+            }).Schedule(inputDeps).Complete();
+
+        return default;
+    }
+}
+
+[UpdateAfter(typeof(ValidatePotentialNewTranslationSystem))]
 public class ApplyPotentialNewTranslationSystem : SimJobComponentSystem
 {
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        Entities.ForEach((ref FixTranslation pos, in PotentialNewTranslation newTranslation) =>
+        Entities
+            .WithChangeFilter<PotentialNewTranslation>()
+            .ForEach((ref FixTranslation pos, in PotentialNewTranslation newTranslation) =>
         {
             pos.Value = newTranslation.Value;
         }).Schedule(inputDeps).Complete();

@@ -114,6 +114,37 @@ public partial class CommonReads
 
         return allEntitiesOnTile;
     }
+
+    //public static List<Entity> GetTileAddonsOfType(ISimWorldReadAccessor accessor, Entity tile)
+    //{
+    //    accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<EntityOnTile> entities);
+
+    //    List<Entity> allEntitiesOnTile = new List<Entity>();
+    //    for (int i = 0; i < entities.Length; i++)
+    //    {
+    //        allEntitiesOnTile.Add(entities[i].TileEntity);
+    //    }
+
+    //    return allEntitiesOnTile;
+    //}
+
+    public static Entity GetSingleTileAddonOfType<T>(ISimWorldReadAccessor accessor, Entity tile) where T : IComponentData
+    {
+        List<Entity> tileAddons = GetTileAddons(accessor, tile);
+
+        if (tileAddons.Count > 0)
+        {
+            foreach (Entity addon in tileAddons)
+            {
+                if (accessor.HasComponent<T>(addon))
+                {
+                    return addon;
+                }
+            }
+        }
+
+        return Entity.Null;
+    }
 }
 
 internal partial class CommonWrites

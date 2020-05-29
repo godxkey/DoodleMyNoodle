@@ -9,20 +9,20 @@ public class ClearDestinationSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
-        Entities.ForEach((Entity entity,
-            ref FixTranslation translation,
-            ref Destination destination) =>
-        {
-            fix3 deltaMove = destination.Value - translation.Value;
-            fix moveLengthSq = lengthsq(deltaMove);
+        //Entities.ForEach((Entity entity,
+        //    ref FixTranslation translation,
+        //    ref Destination destination) =>
+        //{
+        //    fix3 deltaMove = destination.Value - translation.Value;
+        //    fix moveLengthSq = lengthsq(deltaMove);
 
-            if (moveLengthSq < fix(0.0001f))
-            {
-                // arrived to destination
-                translation.Value = destination.Value;
-                EntityManager.RemoveComponent<Destination>(entity);
-            }
-        });
+        //    if (moveLengthSq < fix(0.0001f))
+        //    {
+        //        // arrived to destination
+        //        translation.Value = destination.Value;
+        //        EntityManager.RemoveComponent<Destination>(entity);
+        //    }
+        //});
 
         //Entities.ForEach((Entity entity,
         //ref FixTranslation translation,

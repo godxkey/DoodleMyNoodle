@@ -11,10 +11,9 @@ public class TileOccupationSystem : SimComponentSystem
     {
         Entities
             .WithAll<Velocity>()
-            .ForEach((Entity pawn, ref FixTranslation pawnTranslation) =>
+            .ForEach((Entity pawn, ref FixTranslation pawnTranslation, ref PreviousFixTranslation previousPawnTranslation) =>
             {
-                int2 tilePosition = CalculateCurrentTilePosition(pawn);
-
+                int2 tilePosition = CalculateCurrentTilePosition(pawnTranslation.Value);
                 Entity currentTile = CommonReads.GetTile(Accessor, tilePosition);
 
                 if (!IsTileAlreadyOccupied(currentTile))
@@ -28,15 +27,23 @@ public class TileOccupationSystem : SimComponentSystem
 
                     CommonWrites.AddEntityOnTile(Accessor, newTileEntity, currentTile);
                 }
+
+                int2 previousTilePosition = CalculateCurrentTilePosition(previousPawnTranslation.Value);
+                Entity previousTile = CommonReads.GetTile(Accessor, previousTilePosition);
+
+                if (currentTile != previousTile)
+                {
+                    Entity occupiedAddonEntity = CommonReads.GetSingleTileAddonOfType<Occupied>(Accessor, previousTile);
+                    CommonWrites.RemoveEntityOnTile(Accessor, occupiedAddonEntity, previousTile);
+                    EntityManager.DestroyEntity(occupiedAddonEntity);
+                }
             });
         
     }
 
-    private int2 CalculateCurrentTilePosition(Entity pawn)
+    private int2 CalculateCurrentTilePosition(fix3 translation)
     {
-        fix3 pawnPosition = Accessor.GetComponentData<FixTranslation>(pawn).Value;
-
-        return roundToInt(pawnPosition).xy;
+        return roundToInt(translation).xy;
     }
 
     private bool IsTileAlreadyOccupied(Entity tile)

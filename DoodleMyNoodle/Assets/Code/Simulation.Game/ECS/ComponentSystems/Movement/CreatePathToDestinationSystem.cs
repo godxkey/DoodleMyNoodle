@@ -24,8 +24,7 @@ public class CreatePathToDestinationSystem : SimComponentSystem
 
     protected override void OnUpdate()
     {
-        Entities.
-            WithNone<PathPosition>()
+        Entities
             .ForEach((Entity entity, ref FixTranslation pos, ref Destination destination) =>
         {
             int2 from = roundToInt(pos.Value).xy;
@@ -35,12 +34,15 @@ public class CreatePathToDestinationSystem : SimComponentSystem
 
             if (pathFound)
             {
-                var pathBuffer = EntityManager.AddBuffer<PathPosition>(entity);
+                DynamicBuffer<PathPosition> pathBuffer = EntityManager.GetOrAddBuffer<PathPosition>(entity);
+                pathBuffer.Clear();
 
                 for (int i = 0; i < _pathArray.Length; i++)
                 {
                     pathBuffer.Add(new PathPosition() { Position = fix3(_pathArray[i], 0) });
                 }
+
+                EntityManager.RemoveComponent<Destination>(entity);
             }
         });
     }
