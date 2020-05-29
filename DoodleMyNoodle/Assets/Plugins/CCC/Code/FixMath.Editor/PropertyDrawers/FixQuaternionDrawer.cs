@@ -1,5 +1,6 @@
 ﻿using CCC.Editor;
 using Unity.Properties;
+using Unity.Properties.Adapters;
 using UnityEditor;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ public class FixQuaternionDrawer : PropertyDrawer
         zVal.RawValue = zProp.longValue;
         wVal.RawValue = wProp.longValue;
 
-        fixQuaternion oldQuat = new fixQuaternion(xVal, yVal, zVal, wVal);        
+        fixQuaternion oldQuat = new fixQuaternion(xVal, yVal, zVal, wVal);
 
         // Using BeginProperty / EndProperty on the parent property means that
         // prefab override logic works on the entire property.
@@ -30,7 +31,7 @@ public class FixQuaternionDrawer : PropertyDrawer
 
         // Editor Field
         Vector3 oldEuler = oldQuat.ToUnityQuat().eulerAngles;
-        Vector3 newEuler =  EditorGUI.Vector3Field(position, label, oldEuler);
+        Vector3 newEuler = EditorGUI.Vector3Field(position, label, oldEuler);
 
         // Change ?
         if (oldEuler != newEuler)
@@ -55,17 +56,19 @@ public class FixQuaternionDrawer : PropertyDrawer
 
 [CustomEntityPropertyDrawer]
 public class FixQuaternionEntityDrawer : IMGUIAdapter,
-        IVisitAdapter<fixQuaternion>
+        IVisit<fixQuaternion>
 {
-    VisitStatus IVisitAdapter<fixQuaternion>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref fixQuaternion value, ref ChangeTracker changeTracker)
+    VisitStatus IVisit<fixQuaternion>.Visit<TContainer>(Property<TContainer, fixQuaternion> property, ref TContainer container, ref fixQuaternion value)
     {
-        DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
+        Vector3 oldValue = value.ToUnityQuat().eulerAngles;
+
+        Vector3 newValue = EditorGUILayout.Vector3Field(GetDisplayName(property), oldValue);
+
+        if (!newValue.Equals(oldValue) && !Application.isPlaying) // we do not support runtime changes due to loss of precision
         {
-            EditorGUILayout.Vector3Field(label, val.ToUnityQuat().eulerAngles);
+            value = fixQuaternion.FromEuler(newValue.ToFixVec());
+        }
 
-            return val; // we don't support modifs for now
-        });
-
-        return VisitStatus.Handled;
+        return VisitStatus.Stop;
     }
 }

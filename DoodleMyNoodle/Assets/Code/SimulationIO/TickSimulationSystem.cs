@@ -140,6 +140,7 @@ namespace SimulationControl
                 SimTickData tick = AvailableTicks.First();
                 AvailableTicks.RemoveAt(0);
 
+                Debug.Log($"Tick " + tick.ExpectedNewTickId);
                 _simulationWorld.TickInputs = tick.ToSimInputArray();
                 _simulationWorld.ExpectedNewTickId = tick.ExpectedNewTickId;
 

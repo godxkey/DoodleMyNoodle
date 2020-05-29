@@ -27,6 +27,13 @@ public static class Pathfinding
     public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, NativeList<int2> result)
     {
         result.Clear();
+        
+        if(start.Equals(goal))
+        {
+            result.Add(goal);
+            return true;
+        }
+
         NativeList<int2> resultInvertedPath = new NativeList<int2>(Allocator.Temp);
         NativeList<int2> neighbors = new NativeList<int2>(Allocator.Temp);
 

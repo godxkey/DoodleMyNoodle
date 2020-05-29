@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using UnityEngine;
 
 namespace SimulationControl
 {
@@ -59,6 +60,7 @@ namespace SimulationControl
                 return null;
             }
 
+            Debug.Log($"Starting sync (old world was at {_simWorldSystem.SimulationWorld.GetLastedTickIdFromEntity()})");
             _tickSystem.PauseSimulation(key: "sync");
 
             _receiveTickSystem.ClearAccumulatedTicks();
@@ -69,6 +71,7 @@ namespace SimulationControl
             _ongoingSyncOp.OnTerminateCallback = (op) =>
             {
                 // restore ticks we received while syncing
+                Debug.Log($"Post sync, restore shelve from {_simWorldSystem.SimulationWorld.GetLastedTickIdFromEntity() + 1} (new world is at {_simWorldSystem.SimulationWorld.GetLastedTickIdFromEntity()})");
                 _receiveTickSystem.ClearAccumulatedTicks();
                 _receiveTickSystem.RestoreTicksFromShelf(_simWorldSystem.SimulationWorld.GetLastedTickIdFromEntity() + 1);
                 _receiveTickSystem.StopShelvingTicks();

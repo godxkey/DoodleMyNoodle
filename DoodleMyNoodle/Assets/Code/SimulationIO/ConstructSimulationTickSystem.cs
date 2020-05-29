@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using UnityEngine;
 using UnityEngineX;
 
 namespace SimulationControl
@@ -97,6 +98,8 @@ namespace SimulationControl
                         InputSubmissions = _inputSubmissionQueue.ToArray(),
                         ExpectedNewTickId = FindExpectedNewTickId()
                     };
+
+                    Debug.Log($"Construct Tick {tickData.ExpectedNewTickId}");
 
                     World.GetExistingSystem<SendSimulationTickSystem>()?.ConstructedTicks.Add(tickData);
 
