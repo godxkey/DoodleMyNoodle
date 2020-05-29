@@ -28,7 +28,9 @@ public class ApplyPotentialNewTranslationSystem : SimJobComponentSystem
 {
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        Entities.ForEach((ref FixTranslation pos, in PotentialNewTranslation newTranslation) =>
+        Entities
+            .WithChangeFilter<PotentialNewTranslation>()
+            .ForEach((ref FixTranslation pos, in PotentialNewTranslation newTranslation) =>
         {
             pos.Value = newTranslation.Value;
         }).Schedule(inputDeps).Complete();

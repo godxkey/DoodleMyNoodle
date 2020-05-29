@@ -25,6 +25,6 @@ public static class GameMonoBehaviourHelpers
 
     public static T GetPresentationWorldSystem<T>() where T : ComponentSystem
     {
-        return PresentationWorld.GetExistingSystem<T>();
+        return PresentationWorld?.GetExistingSystem<T>();
     }
 }
