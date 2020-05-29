@@ -115,6 +115,8 @@ public partial class CommonReads
         return allEntitiesOnTile;
     }
 
+    // TODO CHANGE INSTED OF RETURNING LIST RETURN DYNAMIC BUFFER
+
     //public static List<Entity> GetTileAddonsOfType(ISimWorldReadAccessor accessor, Entity tile)
     //{
     //    accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<EntityOnTile> entities);
