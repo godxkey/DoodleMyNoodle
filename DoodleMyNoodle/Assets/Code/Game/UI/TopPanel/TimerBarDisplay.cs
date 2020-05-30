@@ -12,9 +12,23 @@ public class TimerBarDisplay : GameMonoBehaviour
     {
         base.OnGameUpdate();
 
-        if (SimWorld.TryGetSingleton(out TurnTimer turnTimer) && SimWorld.TryGetSingleton(out TurnDuration turnDuration))
+        if (SimWorld.TryGetSingleton(out TurnTimer turnTimer) 
+            && SimWorld.TryGetSingleton(out TurnDuration turnDuration)
+            && SimWorld.TryGetSingleton(out TurnCurrentTeam turnTeam))
         {
             TimerBar.value = (float)(turnTimer.Value / turnDuration.Value);
+
+            switch (turnTeam.Value)
+            {
+                case (int)TurnSystemSetting.Team.AI:
+                    TimerBar.fillRect.GetComponent<Image>().color = Color.red;
+                    break;
+                case (int)TurnSystemSetting.Team.Players:
+                    TimerBar.fillRect.GetComponent<Image>().color = Color.blue;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

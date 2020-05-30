@@ -8,33 +8,21 @@ public class SimAssetIdAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public string Guid;
 
-    private bool _hasCreatedRuntimeId = false;
-    private SimAssetId _runtimeId;
-
     public SimAssetId GetSimAssetId()
     {
-        if (_hasCreatedRuntimeId)
+        if (SimAssetIdMapInstance.Get() != null)
         {
-            return _runtimeId;
+            return new SimAssetId()
+            {
+                Value = SimAssetIdMapInstance.Get().EditIdToRuntimeId(Guid)
+            };
         }
         else
         {
-            _hasCreatedRuntimeId = true;
-
-            if (SimAssetIdMapInstance.Get() != null)
-            {
-                _runtimeId = new SimAssetId()
-                {
-                    Value = SimAssetIdMapInstance.Get().EditIdToRuntimeId(Guid)
-                };
-            }
-            else
-            {
-                Debug.LogError("SimAssetIdMapInstance is null. The converted SimAssetId will be invalid.");
-            }
-
-            return _runtimeId;
+            Debug.LogError("SimAssetIdMapInstance is null. The converted SimAssetId will be invalid.");
         }
+
+        return SimAssetId.Invalid;
     }
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

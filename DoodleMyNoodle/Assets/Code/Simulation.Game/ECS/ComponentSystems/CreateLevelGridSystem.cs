@@ -102,45 +102,24 @@ public partial class CommonReads
         return Entity.Null;
     }
 
-    public static List<Entity> GetTileAddons(ISimWorldReadAccessor accessor, Entity tile)
+    public static NativeArray<EntityOnTile> GetTileAddons(ISimWorldReadAccessor accessor, Entity tile)
     {
         accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<EntityOnTile> entities);
 
-        List<Entity> allEntitiesOnTile = new List<Entity>();
-        for (int i = 0; i < entities.Length; i++)
-        {
-            allEntitiesOnTile.Add(entities[i].TileEntity);
-        }
-
-        return allEntitiesOnTile;
+        return entities.ToNativeArray(Allocator.Temp);
     }
-
-    // TODO CHANGE INSTED OF RETURNING LIST RETURN DYNAMIC BUFFER
-
-    //public static List<Entity> GetTileAddonsOfType(ISimWorldReadAccessor accessor, Entity tile)
-    //{
-    //    accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<EntityOnTile> entities);
-
-    //    List<Entity> allEntitiesOnTile = new List<Entity>();
-    //    for (int i = 0; i < entities.Length; i++)
-    //    {
-    //        allEntitiesOnTile.Add(entities[i].TileEntity);
-    //    }
-
-    //    return allEntitiesOnTile;
-    //}
 
     public static Entity GetSingleTileAddonOfType<T>(ISimWorldReadAccessor accessor, Entity tile) where T : IComponentData
     {
-        List<Entity> tileAddons = GetTileAddons(accessor, tile);
+        NativeArray<EntityOnTile> tileAddons = GetTileAddons(accessor, tile);
 
-        if (tileAddons.Count > 0)
+        if (tileAddons.Length > 0)
         {
-            foreach (Entity addon in tileAddons)
+            foreach (EntityOnTile addon in tileAddons)
             {
-                if (accessor.HasComponent<T>(addon))
+                if (accessor.HasComponent<T>(addon.TileEntity))
                 {
-                    return addon;
+                    return addon.TileEntity;
                 }
             }
         }

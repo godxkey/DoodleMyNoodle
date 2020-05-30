@@ -78,7 +78,7 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
                         PawnPerform_Move(controller, pawn, int2(-1, 0)); // move left
                         break;
                     case 1:
-                        PawnPerform_Move(controller, pawn, int2(1, 0)); // move right
+                        PawnPerform_Move(controller, pawn, int2(-1, 0)); // move left
                         break;
                     case 2:
                         PawnPerform_Move(controller, pawn, int2(0, 1)); // move up

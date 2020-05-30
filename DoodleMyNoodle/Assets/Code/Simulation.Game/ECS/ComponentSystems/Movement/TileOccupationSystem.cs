@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
@@ -48,10 +49,10 @@ public class TileOccupationSystem : SimComponentSystem
 
     private bool IsTileAlreadyOccupied(Entity tile)
     {
-        List<Entity> entitiesOnTile = CommonReads.GetTileAddons(Accessor, tile);
-        foreach (Entity entity in entitiesOnTile)
+        NativeArray<EntityOnTile> entitiesOnTile = CommonReads.GetTileAddons(Accessor, tile);
+        foreach (EntityOnTile entity in entitiesOnTile)
         {
-            if (Accessor.HasComponent<Occupied>(entity))
+            if (Accessor.HasComponent<Occupied>(entity.TileEntity))
             {
                 return true;
             }

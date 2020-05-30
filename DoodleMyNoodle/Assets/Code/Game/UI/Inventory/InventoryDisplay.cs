@@ -3,9 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryDisplay : GameMonoBehaviour
 {
+    public Image Background;
+    public Image BlockedDisplay;
+
     public List<InventorySlotInfo> InventorySlotShortcuts = new List<InventorySlotInfo>();
 
     public GameObject SlotsContainer;
@@ -34,10 +38,14 @@ public class InventoryDisplay : GameMonoBehaviour
             if (!CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(pawnController)))
             {
                 TileHighlightManager.Instance.InterruptTileSelectionProcess();
+                Background.color = Color.white;
+                BlockedDisplay.gameObject.SetActive(true);
             }
             else
             {
                 onItemUsedCallback = OnIntentionToUseItem;
+                Background.color = Color.green;
+                BlockedDisplay.gameObject.SetActive(false);
             }
 
             int itemIndex = 0;

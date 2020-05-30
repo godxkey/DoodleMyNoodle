@@ -15,7 +15,7 @@ public class GameActionMeleeAttack : GameAction
         return new UseContract(
             new GameActionParameterTile.Description()
             {
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.Navigable | TileFilterFlags.NonNavigable,
+                Filter = TileFilterFlags.Occupied,
                 RangeFromInstigator = RANGE
             });
     }

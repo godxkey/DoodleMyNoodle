@@ -115,6 +115,11 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
         // TILE FILTERS
 
         Entity currentTile = CommonReads.GetTile(SimWorld, roundToInt(newPossibleDestination).xy);
+        if(currentTile == Entity.Null)
+        {
+            return;
+        }
+
         if(!CommonReads.DoesTileRespectFilters(SimWorld, currentTile, ignoredTileFlags))
         {
             return;
