@@ -5,6 +5,7 @@ using static Unity.Mathematics.math;
 using static fixMath;
 using Unity.Mathematics;
 using Unity.Collections;
+using UnityEngine.Profiling;
 
 public struct TileCollisionEventData : IComponentData
 {
@@ -85,7 +86,7 @@ public partial class CommonReads
 {
     public static bool DoesTileRespectFilters(ISimWorldReadAccessor accessor, Entity tile, TileFilterFlags filter)
     {
-        NativeArray<EntityOnTile> tileAddons = CommonReads.GetTileAddons(accessor, tile);
+        DynamicBuffer<EntityOnTile> tileAddons = accessor.GetBufferReadOnly<EntityOnTile>(tile);
 
         if (tileAddons.Length > 0)
         {

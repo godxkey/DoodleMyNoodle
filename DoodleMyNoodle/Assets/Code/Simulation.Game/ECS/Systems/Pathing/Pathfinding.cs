@@ -1,37 +1,54 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngine;
+using UnityEngine.Profiling;
 using static fixMath;
 using static Unity.Mathematics.math;
 
 
 public static partial class CommonReads
 {
-    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, in int2 from, in int2 to, Allocator allocator, 
+    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, in int2 from, in int2 to, fix maxCost, Allocator allocator, 
         out NativeList<int2> resultList)
     {
         resultList = new NativeList<int2>(allocator);
-        return Pathfinding.FindNavigablePath(accessor, from, to, resultList);
+        return Pathfinding.FindNavigablePath(accessor, from, to, maxCost, resultList);
     }
 
-    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal,
+    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, fix maxCost,
         NativeList<int2> outResult)
     {
-        return Pathfinding.FindNavigablePath(accessor, start, goal, outResult);
+        return Pathfinding.FindNavigablePath(accessor, start, goal, maxCost, outResult);
     }
 }
 
 public static class Pathfinding
 {
-    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, NativeList<int2> result)
+    public const int MAX_PATH_COST = 20;
+
+    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, fix maxCost, NativeList<int2> result)
     {
         result.Clear();
+
+        if(maxCost > MAX_PATH_COST)
+        {
+            Debug.LogWarning($"Path Finding Max Cost cannot exceed {MAX_PATH_COST}");
+            maxCost = MAX_PATH_COST;
+        }
 
         if (start.Equals(goal))
         {
             result.Add(goal);
             return true;
+        }
+
+        // Destination cannot be reached
+        if(!IsTileValid(goal, accessor))
+        {
+            return false;
         }
 
         NativeList<int2> resultInvertedPath = new NativeList<int2>(Allocator.Temp);
@@ -98,13 +115,13 @@ public static class Pathfinding
 
             openSet.RemoveAtSwapBack(openSet.IndexOf(current));
 
-            get_neighbors(current, neighbors);
+            get_neighbors(current, neighbors, accessor);
             for (int i = 0; i < neighbors.Length; i++)
             {
                 // d(current,neighbor) is the weight of the edge from current to neighbor
                 // tentative_gScore is the distance from start to the neighbor through current
                 fix tentative_gScore = gScore[current] + d(current, neighbors[i]);
-                if (!gScore.TryGetValue(neighbors[i], out fix s) || tentative_gScore < s)
+                if (tentative_gScore <= maxCost && (!gScore.TryGetValue(neighbors[i], out fix s) || tentative_gScore < s))
                 {
                     // This path to neighbor is better than any previous one. Record it!
 
@@ -158,7 +175,7 @@ public static class Pathfinding
         return 1; // in a 2D grid, neighbor weight is always 1
     }
 
-    private static void get_neighbors(in int2 tile, NativeList<int2> neighbors)
+    private static void get_neighbors(in int2 tile, NativeList<int2> neighbors, ISimWorldReadAccessor accessor)
     {
         // temporary hard code
         const int TILE_MIN = -99;
@@ -166,13 +183,46 @@ public static class Pathfinding
 
         neighbors.Clear();
         if (tile.x > TILE_MIN)
-            neighbors.Add(tile + int2(-1, 0)); // neighbor left
+        {
+            int2 neighborTilePos = tile + int2(-1, 0);
+            if (IsTileValid(neighborTilePos, accessor))
+            {
+                neighbors.Add(neighborTilePos); // neighbor left
+            }
+        }
+
         if (tile.x < TILE_MAX)
-            neighbors.Add(tile + int2(1, 0)); // neighbor right
+        {
+            int2 neighborTilePos = tile + int2(1, 0);
+            if (IsTileValid(neighborTilePos, accessor))
+            {
+                neighbors.Add(neighborTilePos); // neighbor right
+            }
+        }
+
         if (tile.y > TILE_MIN)
-            neighbors.Add(tile + int2(0, -1)); // neighbor down
+        {
+            int2 neighborTilePos = tile + int2(0, -1);
+            if (IsTileValid(neighborTilePos, accessor))
+            {
+                neighbors.Add(neighborTilePos); // neighbor down
+            }
+        }
+
         if (tile.y < TILE_MAX)
-            neighbors.Add(tile + int2(0, 1)); // neighbor up
+        {
+            int2 neighborTilePos = tile + int2(0, 1);
+            if (IsTileValid(neighborTilePos, accessor))
+            {
+                neighbors.Add(neighborTilePos); // neighbor up
+            }
+        }
+    }
+
+    private static bool IsTileValid(int2 tilePos, ISimWorldReadAccessor accessor)
+    {
+        Entity tile = CommonReads.GetTile(accessor, tilePos);
+        return CommonReads.DoesTileRespectFilters(accessor, tile, TileFilterFlags.Navigable | TileFilterFlags.Inoccupied);
     }
 
     // h is the heuristic function. h(n) estimates the cost to reach goal from node n.

@@ -6,6 +6,7 @@ using Unity.Collections;
 using static fixMath;
 using Unity.MathematicsX;
 using Unity.Mathematics;
+using UnityEngine.Profiling;
 
 public class CreateLevelGridSystem : SimComponentSystem
 {
@@ -42,9 +43,9 @@ public class CreateLevelGridSystem : SimComponentSystem
         // middle row and same amount on each side
         int halfGridSize = (gridRect.width - 1) / 2;
 
-        for (int l = -halfGridSize; l <= halfGridSize; l++)
+        for (int h = -halfGridSize; h <= halfGridSize; h++)
         {
-            for (int h = -halfGridSize; h <= halfGridSize; h++)
+            for (int l = -halfGridSize; l <= halfGridSize; l++)
             {
                 CreateTileEntity(new fix2() { x = l, y = h }, tileAddonInstances);
             }
@@ -87,31 +88,19 @@ public partial class CommonReads
 {
     public static Entity GetTile(ISimWorldReadAccessor accessor, int2 gridPosition)
     {
+        GridInfo gridInfo = accessor.GetSingleton<GridInfo>();
+        intRect gridRect = gridInfo.GridRect;
+
         accessor.TryGetBufferReadOnly(accessor.GetSingletonEntity<GridInfo>(), out DynamicBuffer<GridTileReference> gridTileReferences);
 
-        for (int i = 0; i < gridTileReferences.Length; i++)
-        {
-            Entity tileEntity = gridTileReferences[i].Tile;
-            FixTranslation position = accessor.GetComponentData<FixTranslation>(tileEntity);
-            if (gridPosition.Equals(roundToInt(position.Value).xy))
-            {
-                return tileEntity;
-            }
-        }
-
-        return Entity.Null;
-    }
-
-    public static NativeArray<EntityOnTile> GetTileAddons(ISimWorldReadAccessor accessor, Entity tile)
-    {
-        accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<EntityOnTile> entities);
-
-        return entities.ToNativeArray(Allocator.Temp);
+        int index = (gridPosition.x - gridRect.xMin) + ((gridPosition.y - gridRect.yMin) * gridRect.width);
+        
+        return index < 0 || index >= gridTileReferences.Length ? Entity.Null : gridTileReferences[index].Tile;
     }
 
     public static Entity GetSingleTileAddonOfType<T>(ISimWorldReadAccessor accessor, Entity tile) where T : IComponentData
     {
-        NativeArray<EntityOnTile> tileAddons = GetTileAddons(accessor, tile);
+        DynamicBuffer<EntityOnTile> tileAddons = accessor.GetBufferReadOnly<EntityOnTile>(tile);
 
         if (tileAddons.Length > 0)
         {

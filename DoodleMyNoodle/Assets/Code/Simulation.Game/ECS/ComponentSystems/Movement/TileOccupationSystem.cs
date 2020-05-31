@@ -49,8 +49,8 @@ public class TileOccupationSystem : SimComponentSystem
 
     private bool IsTileAlreadyOccupied(Entity tile)
     {
-        NativeArray<EntityOnTile> entitiesOnTile = CommonReads.GetTileAddons(Accessor, tile);
-        foreach (EntityOnTile entity in entitiesOnTile)
+        DynamicBuffer<EntityOnTile> tileAddons = Accessor.GetBufferReadOnly<EntityOnTile>(tile);
+        foreach (EntityOnTile entity in tileAddons)
         {
             if (Accessor.HasComponent<Occupied>(entity.TileEntity))
             {

@@ -6,6 +6,7 @@ using UnityEngine;
 using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
+using Unity.Collections;
 
 public class TileHighlightManager : GameSystem<TileHighlightManager>
 {
@@ -77,13 +78,15 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
             {
                 fix2 newPossibleDestination = new fix2(pos.x, pos.y);
 
-                AddHilight(newPossibleDestination, ref numberOfTiles, i, j, ignoredTileFlags);
+                AddHilight(newPossibleDestination, ref numberOfTiles, i, j, depth, ignoredTileFlags);
             }
         }
     }
 
-    private void AddHilight(fix2 newPossibleDestination, ref int numberOfTiles, int height, int lenght, TileFilterFlags ignoredTileFlags)
+    private void AddHilight(fix2 newPossibleDestination, ref int numberOfTiles, int height, int lenght, int maxPathCost, TileFilterFlags ignoredTileFlags)
     {
+        fix2 originPos = newPossibleDestination;
+
         int currentQuadran = Mathf.CeilToInt((float)lenght / height);
 
         int displacementForward = ((currentQuadran * height + 1) - lenght);
@@ -121,6 +124,12 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
         }
 
         if(!CommonReads.DoesTileRespectFilters(SimWorld, currentTile, ignoredTileFlags))
+        {
+            return;
+        }
+
+        NativeList<int2> _highlightNavigablePath = new NativeList<int2>(Allocator.Temp);
+        if (!CommonReads.FindNavigablePath(SimWorld, roundToInt(originPos).xy, roundToInt(newPossibleDestination).xy, maxPathCost, _highlightNavigablePath))
         {
             return;
         }
