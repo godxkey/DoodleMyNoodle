@@ -6,7 +6,7 @@ using static fixMath;
 public class GameActionMeleeAttack : GameAction
 {
     // TODO: add settings on the item itself
-    const int DAMAGE = 1;
+    const int DAMAGE = 10;
     const int AP_COST = 1;
     const int RANGE = 1;
 
