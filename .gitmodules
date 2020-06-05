@@ -4,3 +4,6 @@
 [submodule "DoodleMyNoodle/Packages/com.unity-x.unity.mathematicsx"]
 	path = DoodleMyNoodle/Packages/com.unity-x.unity.mathematicsx
 	url = https://github.com/Unity-X/Unity.Mathematics-X.git
+[submodule "DoodleMyNoodle/Packages/com.unity.entities-ccc-modified"]
+	path = DoodleMyNoodle/Packages/com.unity.entities-ccc-modified
+	url = https://github.com/CCC-Development/Unity.Entities-Modified.git
