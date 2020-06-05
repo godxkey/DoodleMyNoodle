@@ -18,9 +18,11 @@ public class FrameService : MonoCoreService<FrameService>
 
     IEnumerator FrameUpdateRoutine()
     {
+        WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
+
         while (true)
         {
-            yield return new WaitForEndOfFrame();
+            yield return waitForEndOfFrame;
             FrameCount++;
         }
     }

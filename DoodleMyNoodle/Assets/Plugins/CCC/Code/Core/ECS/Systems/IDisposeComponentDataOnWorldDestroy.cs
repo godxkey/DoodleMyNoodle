@@ -1,3 +1,3 @@
 ﻿using System;
 
-public interface IDisposeComponentDataOnWorldDestroy : IDisposable { }
+//public interface IDisposeComponentDataOnWorldDestroy : IDisposable { }

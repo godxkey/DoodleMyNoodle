@@ -688,10 +688,24 @@ public struct fixQuaternion : IEquatable<fixQuaternion>
     /// <param name="pitch">Pitch of the rotation.</param>
     /// <param name="roll">Roll of the rotation.</param>
     /// <returns>FixQuaternion representing the yaw, pitch, and roll.</returns>
-    public static fixQuaternion CreateFromYawPitchRoll(in fix yaw, in fix pitch, in fix roll)
+    public static fixQuaternion FromEuler(in fix yaw, in fix pitch, in fix roll)
     {
         fixQuaternion toReturn;
-        CreateFromYawPitchRoll(yaw, pitch, roll, out toReturn);
+        FromEuler(yaw, pitch, roll, out toReturn);
+        return toReturn;
+    }
+
+    /// <summary>
+    /// Constructs a quaternion from yaw, pitch, and roll.
+    /// </summary>
+    /// <param name="yaw">Yaw of the rotation.</param>
+    /// <param name="pitch">Pitch of the rotation.</param>
+    /// <param name="roll">Roll of the rotation.</param>
+    /// <returns>FixQuaternion representing the yaw, pitch, and roll.</returns>
+    public static fixQuaternion FromEuler(in fix3 euler)
+    {
+        fixQuaternion toReturn;
+        FromEuler(euler.x, euler.y, euler.z, out toReturn);
         return toReturn;
     }
 
@@ -702,7 +716,7 @@ public struct fixQuaternion : IEquatable<fixQuaternion>
     /// <param name="pitch">Pitch of the rotation.</param>
     /// <param name="roll">Roll of the rotation.</param>
     /// <param name="q">FixQuaternion representing the yaw, pitch, and roll.</param>
-    public static void CreateFromYawPitchRoll(in fix yaw, in fix pitch, in fix roll, out fixQuaternion q)
+    public static void FromEuler(in fix yaw, in fix pitch, in fix roll, out fixQuaternion q)
     {
         fix halfRoll = roll * F64.C0p5;
         fix halfPitch = pitch * F64.C0p5;

@@ -1,5 +1,6 @@
 ﻿using CCC.Editor;
 using Unity.Properties;
+using Unity.Properties.Adapters;
 using UnityEditor;
 using UnityEngine;
 
@@ -48,17 +49,19 @@ public class FixVector2Drawer : PropertyDrawer
 
 [CustomEntityPropertyDrawer]
 public class FixVector2EntityDrawer : IMGUIAdapter,
-        IVisitAdapter<fix2>
+        IVisit<fix2>
 {
-    VisitStatus IVisitAdapter<fix2>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref fix2 value, ref ChangeTracker changeTracker)
+    VisitStatus IVisit<fix2>.Visit<TContainer>(Property<TContainer, fix2> property, ref TContainer container, ref fix2 value)
     {
-        DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
+        Vector2 oldValue = value.ToUnityVec();
+
+        Vector2 newValue = EditorGUILayout.Vector2Field(GetDisplayName(property), oldValue);
+
+        if (!newValue.Equals(oldValue) && !Application.isPlaying)
         {
-            var newValue = EditorGUILayout.Vector2Field(label, val.ToUnityVec());
+            value = newValue.ToFixVec();
+        }
 
-            return Application.isPlaying ? val : newValue.ToFixVec(); // we don't support runtime modif
-        });
-
-        return VisitStatus.Handled;
+        return VisitStatus.Stop;
     }
 }

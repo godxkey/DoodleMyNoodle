@@ -79,11 +79,11 @@ namespace SimulationControl
 #if UNITY_EDITOR
             // This is a hack to force the EntityDebugger to correctly update the list of displayed systems
             {
-                PlayerLoopSystem playerLoop = ScriptBehaviourUpdateOrder.CurrentPlayerLoop;
+                PlayerLoopSystem playerLoop = PlayerLoop.GetCurrentPlayerLoop();
                 PlayerLoopSystem[] oldArray = playerLoop.subSystemList;
                 playerLoop.subSystemList = new PlayerLoopSystem[oldArray.Length];
                 Array.Copy(oldArray, 0, playerLoop.subSystemList, 0, oldArray.Length);
-                ScriptBehaviourUpdateOrder.SetPlayerLoop(playerLoop);
+                PlayerLoop.SetPlayerLoop(playerLoop);
             }
 #endif
         }

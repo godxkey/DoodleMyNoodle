@@ -1,4 +1,5 @@
 ﻿using CCC.Online;
+using SimulationControl;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,12 +17,16 @@ public class LevelManager : GameSystem<LevelManager>
     public SceneInfo SimBasePresentationScene;
     public LevelBank LevelBank;
 
+    private const string LEVEL_NOT_STARTED = "level-not-started";
+
     public override bool SystemReady => true;
     public bool IsLevelStarted { get; private set; }
 
     public override void OnGameStart()
     {
         base.OnGameStart();
+
+        GameMonoBehaviourHelpers.PresentationWorld.GetExistingSystem<TickSimulationSystem>().PauseSimulation(LEVEL_NOT_STARTED);
 
         SyncedValues.RegisterValueListener<SyncedValueCurrentLevel>(OnLevelSet, callImmediatelyIfValueExits: true);
 
@@ -53,6 +58,7 @@ public class LevelManager : GameSystem<LevelManager>
             SyncedValues.Destroy<SyncedValueCurrentLevel>();
         }
 
+        GameMonoBehaviourHelpers.PresentationWorld?.GetExistingSystem<TickSimulationSystem>()?.PauseSimulation(LEVEL_NOT_STARTED);
         SyncedValues.UnregisterValueListener<SyncedValueCurrentLevel>(OnLevelSet);
 
         base.OnDestroy();
@@ -106,6 +112,7 @@ public class LevelManager : GameSystem<LevelManager>
             return;
         }
         IsLevelStarted = true;
+        GameMonoBehaviourHelpers.PresentationWorld.GetExistingSystem<TickSimulationSystem>().UnpauseSimulation(LEVEL_NOT_STARTED);
 
         if (Game.PlayingAsMaster)
         {

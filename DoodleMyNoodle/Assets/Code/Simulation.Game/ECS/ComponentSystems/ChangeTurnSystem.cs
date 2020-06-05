@@ -74,7 +74,9 @@ public static partial class CommonReads
 {
     public static int GetCurrentTurnTeam(ISimWorldReadAccessor accessor)
     {
-        return accessor.GetSingleton<TurnCurrentTeam>().Value;
+        if (accessor.TryGetSingleton(out TurnCurrentTeam v))
+            return v.Value;
+        return -1;
     }
 
     public static bool CanTeamPlay(ISimWorldReadAccessor accessor, Team team)

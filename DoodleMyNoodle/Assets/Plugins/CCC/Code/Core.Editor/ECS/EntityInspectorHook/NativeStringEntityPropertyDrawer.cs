@@ -1,107 +1,56 @@
 ﻿using Unity.Properties;
 using UnityEditor;
 using Unity.Collections;
+using Unity.Properties.Adapters;
+using System;
 
 namespace CCC.Editor
 {
     [CustomEntityPropertyDrawer]
     public class NativeStringEntityPropertyDrawer : IMGUIAdapter,
-        IVisitAdapter<NativeString32>,
-        IVisitAdapter<NativeString64>,
-        IVisitAdapter<NativeString128>,
-        IVisitAdapter<NativeString512>
+        IVisit<NativeString32>,
+        IVisit<NativeString64>,
+        IVisit<NativeString128>,
+        IVisit<NativeString512>
     {
-
-        #region Native String
         const int NATIVE_STRING_32_MAX_CHAR_LENGTH = NativeString32.MaxLength / sizeof(char);
         const int NATIVE_STRING_64_MAX_CHAR_LENGTH = NativeString64.MaxLength / sizeof(char);
         const int NATIVE_STRING_128_MAX_CHAR_LENGTH = NativeString128.MaxLength / sizeof(char);
         const int NATIVE_STRING_512_MAX_CHAR_LENGTH = NativeString512.MaxLength / sizeof(char);
 
-        VisitStatus IVisitAdapter<NativeString32>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref NativeString32 value, ref ChangeTracker changeTracker)
+
+        VisitStatus IVisit<NativeString32>.Visit<TContainer>(Property<TContainer, NativeString32> property, ref TContainer container, ref NativeString32 value)
         {
-            DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
-            {
-                var currentValue = val.ToString();
-                var newValue = EditorGUILayout.TextField(label, currentValue);
-
-                if (!newValue.Equals(currentValue))
-                {
-                    if (newValue.Length > NATIVE_STRING_32_MAX_CHAR_LENGTH)
-                    {
-                        newValue = newValue.Substring(0, NATIVE_STRING_32_MAX_CHAR_LENGTH);
-                    }
-                    return new NativeString32(newValue);
-                }
-
-                return val;
-            });
-
-            return VisitStatus.Handled;
+            return VisitString(property, ref value, NATIVE_STRING_32_MAX_CHAR_LENGTH);
         }
-        VisitStatus IVisitAdapter<NativeString64>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref NativeString64 value, ref ChangeTracker changeTracker)
+        VisitStatus IVisit<NativeString64>.Visit<TContainer>(Property<TContainer, NativeString64> property, ref TContainer container, ref NativeString64 value)
         {
-            DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
-            {
-                var currentValue = val.ToString();
-                var newValue = EditorGUILayout.TextField(label, currentValue);
-
-                if (!newValue.Equals(currentValue))
-                {
-                    if (newValue.Length > NATIVE_STRING_64_MAX_CHAR_LENGTH)
-                    {
-                        newValue = newValue.Substring(0, NATIVE_STRING_64_MAX_CHAR_LENGTH);
-                    }
-                    return new NativeString64(newValue);
-                }
-
-                return val;
-            });
-
-            return VisitStatus.Handled;
+            return VisitString(property, ref value, NATIVE_STRING_64_MAX_CHAR_LENGTH);
         }
-        VisitStatus IVisitAdapter<NativeString128>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref NativeString128 value, ref ChangeTracker changeTracker)
+        VisitStatus IVisit<NativeString128>.Visit<TContainer>(Property<TContainer, NativeString128> property, ref TContainer container, ref NativeString128 value)
         {
-            DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
-            {
-                var currentValue = val.ToString();
-                var newValue = EditorGUILayout.TextField(label, currentValue);
-
-                if (!newValue.Equals(currentValue))
-                {
-                    if (newValue.Length > NATIVE_STRING_128_MAX_CHAR_LENGTH)
-                    {
-                        newValue = newValue.Substring(0, NATIVE_STRING_128_MAX_CHAR_LENGTH);
-                    }
-                    return new NativeString128(newValue);
-                }
-
-                return val;
-            });
-
-            return VisitStatus.Handled;
+            return VisitString(property, ref value, NATIVE_STRING_128_MAX_CHAR_LENGTH);
         }
-        VisitStatus IVisitAdapter<NativeString512>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref NativeString512 value, ref ChangeTracker changeTracker)
+        VisitStatus IVisit<NativeString512>.Visit<TContainer>(Property<TContainer, NativeString512> property, ref TContainer container, ref NativeString512 value)
         {
-            DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
-            {
-                var currentValue = val.ToString();
-                var newValue = EditorGUILayout.TextField(label, currentValue);
-
-                if (!newValue.Equals(currentValue))
-                {
-                    if (newValue.Length > NATIVE_STRING_512_MAX_CHAR_LENGTH)
-                    {
-                        newValue = newValue.Substring(0, NATIVE_STRING_512_MAX_CHAR_LENGTH);
-                    }
-                    return new NativeString512(newValue);
-                }
-
-                return val;
-            });
-
-            return VisitStatus.Handled;
+            return VisitString(property, ref value, NATIVE_STRING_512_MAX_CHAR_LENGTH);
         }
-        #endregion
+
+        private VisitStatus VisitString<TContainer, TStringType>(Property<TContainer, TStringType> property, ref TStringType value, int maxChar)
+        {
+            string currentValue = value.ToString();
+            string newValue = EditorGUILayout.TextField(GetDisplayName(property), currentValue);
+
+            if (!newValue.Equals(currentValue))
+            {
+                if (newValue.Length > maxChar)
+                {
+                    newValue = newValue.Substring(0, maxChar);
+                }
+                value = (TStringType)Activator.CreateInstance(typeof(TStringType), newValue);
+            }
+
+            return VisitStatus.Stop;
+        }
     }
 }

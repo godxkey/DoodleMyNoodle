@@ -87,7 +87,6 @@ namespace Sim.Operations
                 }
 
                 World tempWorld = GetEntityWorldFromByteArray(serializableWorld.ECSWorld);
-                _simulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>().Enabled = false;
                 _simulationWorld.EntityManager.CopyAndReplaceEntitiesFrom(tempWorld.EntityManager);
                 tempWorld.Dispose();
 

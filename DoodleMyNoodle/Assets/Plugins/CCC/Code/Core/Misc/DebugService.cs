@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class DebugService : MonoCoreService<DebugService>
@@ -73,20 +74,28 @@ public class DebugService : MonoCoreService<DebugService>
 
     static void LogCallback(string message, string stack, LogType logtype)
     {
+        StringBuilder stringBuilder = StringBuilderPool.Take();
+        stringBuilder.AppendLine(message);
+        stringBuilder.AppendLine(stack);
+
+        string str = stringBuilder.ToString();
+
+        StringBuilderPool.Release(stringBuilder);
+
         switch (logtype)
         {
             default:
             case LogType.Log:
-                _Log(message);
+                InternalLogInfo(str);
                 break;
             case LogType.Warning:
-                _LogWarning(message);
+                InternalLogWarning(str);
                 break;
+
             case LogType.Assert:
             case LogType.Exception:
             case LogType.Error:
-                _LogError(message);
-                _LogError(stack);
+                InternalLogError(str);
                 break;
         }
     }
@@ -98,7 +107,7 @@ public class DebugService : MonoCoreService<DebugService>
             if (forwardToNativeUnityDebug)
                 Debug.Log(message);
             else
-                _Log(message);
+                InternalLogInfo(message);
 
             if (displayOnScreen)
             {
@@ -116,9 +125,14 @@ public class DebugService : MonoCoreService<DebugService>
         if (ThreadUtility.IsMainThread)
         {
             if (forwardToNativeUnityDebug)
+            {
                 Debug.LogError(message);
+            }
             else
-                _LogError(message);
+            {
+                string messageWithStack = CombineMessageAndStack(message, StackTraceUtility.ExtractStackTrace());
+                InternalLogError(messageWithStack);
+            }
 
             if (displayOnScreen)
             {
@@ -138,7 +152,7 @@ public class DebugService : MonoCoreService<DebugService>
             if (forwardToNativeUnityDebug)
                 Debug.LogWarning(message);
             else
-                _LogWarning(message);
+                InternalLogWarning(message);
 
             if (displayOnScreen)
             {
@@ -151,36 +165,60 @@ public class DebugService : MonoCoreService<DebugService>
         }
     }
 
-    static void _Log(string message)
+    private static void InternalLogInfo(string message)
     {
-        string result = FrameService.FrameCount + ": " + message;
+        InternalLogX(message, "", GameConsole.LineColor.Normal);
+    }
 
-        GameConsole.Write(result, GameConsole.LineColor.Normal); // console GUI 
+    private static void InternalLogError(string message)
+    {
+        InternalLogX(message, "[ERR]", GameConsole.LineColor.Error);
+    }
+
+    private static void InternalLogWarning(string message)
+    {
+        InternalLogX(message, "[WARN]", GameConsole.LineColor.Warning);
+    }
+
+    private static void InternalLogX(string message, string prefix, GameConsole.LineColor lineColor)
+    {
+        string result = ProcessMessage(message, prefix);
+
+        GameConsole.Write(result, lineColor); // console GUI 
 
         if (logFile != null)
             logFile.WriteLine(result + "\n");
     }
 
-    static void _LogError(string message, bool stackTrace = true)
+    private static string CombineMessageAndStack(string message, string stack)
     {
-        string result = FrameService.FrameCount + ": [ERR] " + message;
-        if (stackTrace)
-        {
-            result += '\n' + StackTraceUtility.ExtractStackTrace();
-        }
+        StringBuilder stringBuilder = StringBuilderPool.Take();
+        stringBuilder.AppendLine(message);
+        stringBuilder.AppendLine(stack);
 
-        GameConsole.Write(result, GameConsole.LineColor.Error);
-        if (logFile != null)
-            logFile.WriteLine(result + "\n");
+        string str = stringBuilder.ToString();
+
+        StringBuilderPool.Release(stringBuilder);
+
+        return str;
     }
 
-    static void _LogWarning(string message)
+    private static string ProcessMessage(string message, string prefix = null)
     {
-        string result = FrameService.FrameCount + ": [WARN] " + message;
+        StringBuilder stringBuilder = StringBuilderPool.Take();
+        stringBuilder.Append('[');
+        stringBuilder.Append(FrameService.FrameCount);
+        stringBuilder.Append(']');
 
-        GameConsole.Write(result, GameConsole.LineColor.Warning);
+        if (!string.IsNullOrEmpty(prefix))
+            stringBuilder.Append(prefix);
 
-        if (logFile != null)
-            logFile.WriteLine(result + "\n");
+        stringBuilder.Append(message);
+
+        string str = stringBuilder.ToString();
+
+        StringBuilderPool.Release(stringBuilder);
+
+        return str;
     }
 }
