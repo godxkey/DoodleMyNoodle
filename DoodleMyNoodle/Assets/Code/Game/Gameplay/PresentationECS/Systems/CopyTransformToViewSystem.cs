@@ -14,18 +14,30 @@ public class CopyTransformToViewSystem : ViewJobComponentSystem
 {
     protected override JobHandle OnUpdate(JobHandle jobHandle)
     {
-        var simTranslations = SimWorldAccessor.GetComponentDataFromEntity<FixTranslation>();
-        var simRotations = SimWorldAccessor.GetComponentDataFromEntity<FixRotation>();
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Copy Rotation
+        ////////////////////////////////////////////////////////////////////////////////////////
+        ComponentDataFromEntity<FixRotation> simRotations = SimWorldAccessor.GetComponentDataFromEntity<FixRotation>();
 
-        var copyRotJobHandle = Entities.ForEach((ref Rotation rotation, in BindedSimEntity linkedSimEntity)=>
+        var copyRotJobHandle = Entities
+            .WithReadOnly(simRotations)
+            .ForEach((ref Rotation rotation, in BindedSimEntity linkedSimEntity)=>
         {
             if (simRotations.Exists(linkedSimEntity.SimEntity))
             {
                 rotation.Value = simRotations[linkedSimEntity.SimEntity].Value.ToUnityQuat();
             }
         }).Schedule(jobHandle);
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Copy Translation
+        ////////////////////////////////////////////////////////////////////////////////////////
+        ComponentDataFromEntity<FixTranslation> simTranslations = SimWorldAccessor.GetComponentDataFromEntity<FixTranslation>();
         
-        var copyTrJobHandle = Entities.ForEach((ref Translation translation, in BindedSimEntity linkedSimEntity) =>
+        var copyTrJobHandle = Entities
+            .WithReadOnly(simTranslations)
+            .ForEach((ref Translation translation, in BindedSimEntity linkedSimEntity) =>
         {
             if (simTranslations.Exists(linkedSimEntity.SimEntity))
             {

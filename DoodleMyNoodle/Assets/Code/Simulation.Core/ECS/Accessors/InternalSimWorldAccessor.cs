@@ -48,9 +48,6 @@ public class InternalSimWorldAccessor : SimWorldReadAccessor, ISimWorldReadWrite
     void ISimWorldWriteAccessor.AddSharedComponentData<T>(EntityQuery entityQuery, T componentData)
         => EntityManager.AddSharedComponentData<T>(entityQuery, componentData);
 
-    void ISimWorldWriteAccessor.CreateChunk(EntityArchetype archetype, NativeArray<ArchetypeChunk> chunks, int entityCount)
-        => EntityManager.CreateChunk(archetype, chunks, entityCount);
-
     Entity ISimWorldWriteAccessor.CreateEntity(EntityArchetype archetype)
         => EntityManager.CreateEntity(archetype);
 

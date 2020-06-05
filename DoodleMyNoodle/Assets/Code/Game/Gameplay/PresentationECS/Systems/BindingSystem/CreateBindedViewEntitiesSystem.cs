@@ -10,7 +10,7 @@ using UnityEngineX;
 public class PostSimulationBindingCommandBufferSystem : ViewEntityCommandBufferSystem { }
 
 [UpdateAfter(typeof(DestroyDanglingViewSystem))]
-[UpdateAfter(typeof(BeginViewSystem))]
+//[UpdateAfter(typeof(BeginViewSystem))]
 public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
 {
     private EntityQuery _newSimEntitiesQ;
@@ -36,7 +36,6 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
         //            This doesn't feel like the best way to do it... Feel free to refactor
         _simWorldEntityClearAndReplaceCount.Set(SimWorldAccessor.EntityClearAndReplaceCount);
 
-
         EntityQuery simEntitiesInNeedOfViewBindingQ;
         if (_simWorldEntityClearAndReplaceCount.IsDirty)
         {
@@ -51,6 +50,9 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
 
         jobHandle = new CreateBindedEntitiesForSimEntities()
         {
+            SimEntityAccessor = SimWorldAccessor.EntityManager.GetArchetypeChunkEntityType(),
+            SimAssetIdAccessor = SimWorldAccessor.EntityManager.GetArchetypeChunkComponentType<SimAssetId>(true),
+
             Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent(),
             Bindings = EntityManager.GetBuffer<Settings_ViewBindingSystem_Binding>(GetSingletonEntity<Settings_ViewBindingSystem_Binding>())
         }.Schedule(simEntitiesInNeedOfViewBindingQ, jobHandle);
@@ -63,32 +65,48 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
     }
 
     [BurstCompile]
-    struct CreateBindedEntitiesForSimEntities : IJobForEachWithEntity_EC<SimAssetId>
+    private struct CreateBindedEntitiesForSimEntities : IJobChunk
     {
-        [ReadOnly] public DynamicBuffer<Settings_ViewBindingSystem_Binding> Bindings;
+        [ReadOnly] 
+        public DynamicBuffer<Settings_ViewBindingSystem_Binding> Bindings;
+
+        // Entity command buffer used to create new presentation entities
         public EntityCommandBuffer.Concurrent Ecb;
 
-        public void Execute(Entity simEntity, int index, [ReadOnly] ref SimAssetId simAssetId)
+        [ReadOnly]
+        public ArchetypeChunkComponentType<SimAssetId> SimAssetIdAccessor;
+        [ReadOnly]
+        public ArchetypeChunkEntityType SimEntityAccessor;
+
+
+        public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
-            if (!FindBindingSetting(ref simAssetId, out Settings_ViewBindingSystem_Binding bindingSetting))
-                return;
+            NativeArray<SimAssetId> simAssetIds = chunk.GetNativeArray<SimAssetId>(SimAssetIdAccessor);
+            NativeArray<Entity> simEntities = chunk.GetNativeArray(SimEntityAccessor);
 
-            Entity presentationEntity;
-
-            if (bindingSetting.UseGameObjectInsteadOfEntity)
+            for (int i = 0; i < simEntities.Length; i++)
             {
-                presentationEntity = Ecb.CreateEntity(index);
-                Ecb.AddComponent(index, presentationEntity, new BindedGameObject() { PresentationGameObjectPrefabIndex = bindingSetting.PresentationGameObjectPrefabIndex });
-            }
-            else
-            {
-                presentationEntity = Ecb.Instantiate(index, bindingSetting.PresentationEntity);
-            }
+                if (!FindBindingSetting(simAssetIds[i], out Settings_ViewBindingSystem_Binding bindingSetting))
+                    continue;
 
-            Ecb.AddComponent(index, presentationEntity, new BindedSimEntity() { SimEntity = simEntity });
+                Entity newPresentationEntity;
+
+                if (bindingSetting.UseGameObjectInsteadOfEntity)
+                {
+                    newPresentationEntity = Ecb.CreateEntity(chunkIndex);
+                    Ecb.AddComponent(chunkIndex, newPresentationEntity, new BindedGameObject() { PresentationGameObjectPrefabIndex = bindingSetting.PresentationGameObjectPrefabIndex });
+                }
+                else
+                {
+                    newPresentationEntity = Ecb.Instantiate(chunkIndex, bindingSetting.PresentationEntity);
+                }
+
+                Ecb.AddComponent(chunkIndex, newPresentationEntity, new BindedSimEntity() { SimEntity = simEntities[i] });
+            }
         }
 
-        bool FindBindingSetting([ReadOnly] ref SimAssetId simAssetId, out Settings_ViewBindingSystem_Binding bindingSetting)
+
+        bool FindBindingSetting(in SimAssetId simAssetId, out Settings_ViewBindingSystem_Binding bindingSetting)
         {
             for (int i = 0; i < Bindings.Length; i++)
             {
@@ -168,8 +186,11 @@ public class CreateBindedViewGameObjectsSystem : ViewComponentSystem
 
             if (goIndex >= 0 && goIndex < settings.PresentationGameObjects.Count)
             {
+                Debug.Log(settings);
+                Debug.Log(settings.PresentationGameObjects);
+                Debug.Log(settings.PresentationGameObjects[goIndex]);
                 GameObject gameObject = Object.Instantiate(settings.PresentationGameObjects[goIndex]);
-                
+
                 var bindedSimEntityManaged = gameObject.GetOrAddComponent<BindedSimEntityManaged>();
                 bindedSimEntityManaged.SimEntity = bindedSimEntity.SimEntity;
                 EntityManager.AddComponentObject(entity, bindedSimEntityManaged);

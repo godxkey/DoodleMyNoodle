@@ -69,6 +69,9 @@ namespace SimulationControl
             _simPostPresGroup = _simulationWorld.CreateSystem<SimPostPresentationSystemGroup>();
 
             // pre init group
+            Debug.Log("add ChangeDetectionSystemEnd");
+
+            //why u not visible in EntityDebugger!
             _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemEnd>());
             _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<UpdateSimulationTimeSystem>());
             _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<InitializeRandomSeedSystem>());
@@ -123,7 +126,7 @@ namespace SimulationControl
                 // !! IMPORTANT !!
                 // Even if we update the simulation manually, we have to add our ComponentSystemGroups to the player loop if we want them to
                 // show up in the EntityDebugger window.
-                ScriptBehaviourUpdateOrderEx.AddWorldSystemGroupsIntoPlayerLoop(_simulationWorld, ScriptBehaviourUpdateOrder.CurrentPlayerLoop);
+                ScriptBehaviourUpdateOrderEx.AddWorldSystemGroupsIntoPlayerLoop(_simulationWorld, PlayerLoop.GetCurrentPlayerLoop());
                 _updatePlayerLoop = false;
             }
 
@@ -140,7 +143,6 @@ namespace SimulationControl
                 SimTickData tick = AvailableTicks.First();
                 AvailableTicks.RemoveAt(0);
 
-                Debug.Log($"Tick " + tick.ExpectedNewTickId);
                 _simulationWorld.TickInputs = tick.ToSimInputArray();
                 _simulationWorld.ExpectedNewTickId = tick.ExpectedNewTickId;
 
@@ -190,7 +192,7 @@ namespace SimulationControl
         //    return false;
         //}
 
-            // fbessette: This code mostly comes from the DefaultWorldInitialization
+        // fbessette: This code mostly comes from the DefaultWorldInitialization
         /// <summary>
         /// Adds the collection of systems to the world by injecting them into the root level system groups
         /// (InitializationSystemGroup, SimulationSystemGroup and PresentationSystemGroup)
@@ -231,7 +233,7 @@ namespace SimulationControl
                         continue;
                     }
 
-                    if (type == typeof(SimPreInitializationSystemGroup)||
+                    if (type == typeof(SimPreInitializationSystemGroup) ||
                         type == typeof(SimPostPresentationSystemGroup))
                     {
                         Debug.LogError($"Invalid [UpdateInGroup] attribute for {type}: {group.GroupType} is reserved for internal stuff.");
@@ -252,7 +254,7 @@ namespace SimulationControl
                             $"Skipping creation of {type} due to errors creating the group {group.GroupType}. Fix these errors before continuing.");
                         continue;
                     }
-                    
+
                     groupSys.AddSystemToUpdateList(GetOrCreateSystemAndLogException(world, type));
                 }
             }
@@ -269,7 +271,7 @@ namespace SimulationControl
             {
                 if (type == typeof(InitializationSystemGroup))
                     type = typeof(SimInitializationSystemGroup);
-                
+
                 if (type == typeof(SimulationSystemGroup))
                     type = typeof(SimSimulationSystemGroup);
 
@@ -320,39 +322,22 @@ namespace SimulationControl
                     {
                         if (playerLoop.subSystemList[i].type == typeof(Update))
                         {
-                            playerLoop.subSystemList[i].subSystemList =
-                                AddSystem<SimSimulationSystemGroup>(
-                                    world,
-                                    playerLoop.subSystemList[i].subSystemList);
+                            playerLoop.subSystemList[i].subSystemList = AddSystem<SimSimulationSystemGroup>(world, playerLoop.subSystemList[i].subSystemList);
                         }
                         else if (playerLoop.subSystemList[i].type == typeof(PreLateUpdate))
                         {
-                            playerLoop.subSystemList[i].subSystemList =
-                                AddSystem<SimPresentationSystemGroup>(
-                                    world,
-                                    playerLoop.subSystemList[i].subSystemList);
-
-                            playerLoop.subSystemList[i].subSystemList =
-                                AddSystem<SimPostPresentationSystemGroup>(
-                                    world,
-                                    playerLoop.subSystemList[i].subSystemList);
+                            playerLoop.subSystemList[i].subSystemList = AddSystem<SimPresentationSystemGroup>(world, playerLoop.subSystemList[i].subSystemList);
+                            playerLoop.subSystemList[i].subSystemList = AddSystem<SimPostPresentationSystemGroup>(world, playerLoop.subSystemList[i].subSystemList);
                         }
                         else if (playerLoop.subSystemList[i].type == typeof(Initialization))
                         {
-                            playerLoop.subSystemList[i].subSystemList =
-                                AddSystem<SimPreInitializationSystemGroup>(
-                                    world,
-                                    playerLoop.subSystemList[i].subSystemList);
-
-                            playerLoop.subSystemList[i].subSystemList =
-                                AddSystem<SimInitializationSystemGroup>(
-                                    world,
-                                    playerLoop.subSystemList[i].subSystemList);
+                            playerLoop.subSystemList[i].subSystemList = AddSystem<SimPreInitializationSystemGroup>(world, playerLoop.subSystemList[i].subSystemList);
+                            playerLoop.subSystemList[i].subSystemList = AddSystem<SimInitializationSystemGroup>(world, playerLoop.subSystemList[i].subSystemList);
                         }
                     }
                 }
 
-                ScriptBehaviourUpdateOrder.SetPlayerLoop(playerLoop);
+                PlayerLoop.SetPlayerLoop(playerLoop);
             }
 
             static PlayerLoopSystem[] AddSystem<T>(World world, PlayerLoopSystem[] oldArray)

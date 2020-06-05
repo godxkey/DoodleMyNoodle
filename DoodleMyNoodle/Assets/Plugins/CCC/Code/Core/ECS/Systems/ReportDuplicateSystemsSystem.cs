@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Entities;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]

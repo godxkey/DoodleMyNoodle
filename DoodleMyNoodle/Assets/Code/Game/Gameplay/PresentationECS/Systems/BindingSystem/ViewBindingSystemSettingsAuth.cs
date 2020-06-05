@@ -33,12 +33,20 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
         {
             if (item)
             {
+                GameObject viewGameObject = item.GetViewGameObject();
+
+                if (viewGameObject == null)
+                {
+                    Debug.LogWarning($"The view binding definition {item.gameObject.name} doesn't have a valid 'view' gameobject. It will be ignored");
+                    continue;
+                }
+
                 if (item.ViewTechType == ViewBindingDefinition.ETechType.Entity)
                 {
                     bindingSettings.Add(new Settings_ViewBindingSystem_Binding()
                     {
                         SimAssetId = item.GetSimAssetId(),
-                        PresentationEntity = conversionSystem.GetPrimaryEntity(item.GetViewGameObject()),
+                        PresentationEntity = conversionSystem.GetPrimaryEntity(viewGameObject),
                         UseGameObjectInsteadOfEntity = false,
                         PresentationGameObjectPrefabIndex = -1,
                     });
@@ -53,7 +61,8 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
                         PresentationGameObjectPrefabIndex = bindingGOs.PresentationGameObjects.Count
                     });
 
-                    bindingGOs.PresentationGameObjects.Add(item.GetViewGameObject());
+                    Debug.Log($"adding view go: {viewGameObject}, scene: {viewGameObject.scene}");
+                    bindingGOs.PresentationGameObjects.Add(viewGameObject);
                 }
 
             }

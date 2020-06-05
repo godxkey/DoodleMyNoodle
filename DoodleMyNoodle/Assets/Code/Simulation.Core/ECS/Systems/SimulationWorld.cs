@@ -49,7 +49,6 @@ public class SimulationWorld : World, IOwnedWorld
             _internalAccessor.SimWorld = this;
             _internalAccessor.EntityManager = EntityManager;
             _internalAccessor.SomeSimSystem = GetOrCreateSystem<SimPreInitializationSystemGroup>();
-            UnityEngine.Debug.Log("Create internal accessor");
         }
 
         return _internalAccessor;

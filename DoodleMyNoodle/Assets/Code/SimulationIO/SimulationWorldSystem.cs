@@ -58,6 +58,7 @@ namespace SimulationControl
 
         void IWorldOwner.OnBeginEntitiesInjectionFromGameObjectConversion(List<Scene> comingFromScenes)
         {
+            DebugService.Log($"OnBeginEntitiesInjectionFromGameObjectConversion");
             foreach (var scene in comingFromScenes)
             {
                 if (!_incomingEntityInjections.Contains(scene.name))
@@ -72,6 +73,7 @@ namespace SimulationControl
                 var changeDetectionEnd = SimulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
                 if (changeDetectionEnd != null)
                 {
+                    DebugService.Log($"OnBeginEntitiesInjectionFromGameObjectConversion.ForceEndSample");
                     changeDetectionEnd.ForceEndSample();
                 }
             }
@@ -80,6 +82,7 @@ namespace SimulationControl
 
         void IWorldOwner.OnEndEntitiesInjectionFromGameObjectConversion()
         {
+            DebugService.Log($"OnEndEntitiesInjectionFromGameObjectConversion");
             _ongoingInjections--;
 
             if (_ongoingInjections == 0)
@@ -87,6 +90,7 @@ namespace SimulationControl
                 var changeDetectionBegin = SimulationWorld.GetExistingSystem<ChangeDetectionSystemBegin>();
                 if (changeDetectionBegin != null)
                 {
+                    DebugService.Log($"OnEndEntitiesInjectionFromGameObjectConversion.ResetSample");
                     changeDetectionBegin.ResetSample();
                 }
             }
@@ -122,7 +126,7 @@ namespace SimulationControl
 
         public static void ClearAllSimulationWorlds()
         {
-            foreach (World world in World.AllWorlds)
+            foreach (World world in World.All)
             {
                 var simWorldOwner = world.GetExistingSystem<SimulationWorldSystem>();
                 if (simWorldOwner != null)
