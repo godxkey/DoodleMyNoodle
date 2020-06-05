@@ -68,10 +68,7 @@ namespace SimulationControl
             _simPresGroup = _simulationWorld.CreateSystem<SimPresentationSystemGroup>();
             _simPostPresGroup = _simulationWorld.CreateSystem<SimPostPresentationSystemGroup>();
 
-            // pre init group
-            Debug.Log("add ChangeDetectionSystemEnd");
-
-            //why u not visible in EntityDebugger!
+            // pre init group (not visible in EntityDebugger for some reason ...)
             _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemEnd>());
             _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<UpdateSimulationTimeSystem>());
             _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<InitializeRandomSeedSystem>());

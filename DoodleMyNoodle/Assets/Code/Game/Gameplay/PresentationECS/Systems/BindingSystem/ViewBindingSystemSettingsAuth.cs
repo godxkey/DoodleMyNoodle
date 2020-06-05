@@ -61,7 +61,6 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
                         PresentationGameObjectPrefabIndex = bindingGOs.PresentationGameObjects.Count
                     });
 
-                    Debug.Log($"adding view go: {viewGameObject}, scene: {viewGameObject.scene}");
                     bindingGOs.PresentationGameObjects.Add(viewGameObject);
                 }
 

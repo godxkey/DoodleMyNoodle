@@ -186,9 +186,6 @@ public class CreateBindedViewGameObjectsSystem : ViewComponentSystem
 
             if (goIndex >= 0 && goIndex < settings.PresentationGameObjects.Count)
             {
-                Debug.Log(settings);
-                Debug.Log(settings.PresentationGameObjects);
-                Debug.Log(settings.PresentationGameObjects[goIndex]);
                 GameObject gameObject = Object.Instantiate(settings.PresentationGameObjects[goIndex]);
 
                 var bindedSimEntityManaged = gameObject.GetOrAddComponent<BindedSimEntityManaged>();

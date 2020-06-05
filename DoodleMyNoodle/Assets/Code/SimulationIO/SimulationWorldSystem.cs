@@ -58,7 +58,6 @@ namespace SimulationControl
 
         void IWorldOwner.OnBeginEntitiesInjectionFromGameObjectConversion(List<Scene> comingFromScenes)
         {
-            DebugService.Log($"OnBeginEntitiesInjectionFromGameObjectConversion");
             foreach (var scene in comingFromScenes)
             {
                 if (!_incomingEntityInjections.Contains(scene.name))
@@ -73,7 +72,6 @@ namespace SimulationControl
                 var changeDetectionEnd = SimulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
                 if (changeDetectionEnd != null)
                 {
-                    DebugService.Log($"OnBeginEntitiesInjectionFromGameObjectConversion.ForceEndSample");
                     changeDetectionEnd.ForceEndSample();
                 }
             }
@@ -82,7 +80,6 @@ namespace SimulationControl
 
         void IWorldOwner.OnEndEntitiesInjectionFromGameObjectConversion()
         {
-            DebugService.Log($"OnEndEntitiesInjectionFromGameObjectConversion");
             _ongoingInjections--;
 
             if (_ongoingInjections == 0)
@@ -90,7 +87,6 @@ namespace SimulationControl
                 var changeDetectionBegin = SimulationWorld.GetExistingSystem<ChangeDetectionSystemBegin>();
                 if (changeDetectionBegin != null)
                 {
-                    DebugService.Log($"OnEndEntitiesInjectionFromGameObjectConversion.ResetSample");
                     changeDetectionBegin.ResetSample();
                 }
             }
@@ -114,15 +110,6 @@ namespace SimulationControl
                 changeDetectionBegin.ResetSample();
             }
         }
-
-        //private void SetChangeDetectionLogMode(ChangeDetectionSystemEnd.LogMode logMode)
-        //{
-        //    var changeDetectionEnd = SimulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
-        //    if (changeDetectionEnd != null)
-        //    {
-        //        changeDetectionEnd.LoggingMode = logMode;
-        //    }
-        //}
 
         public static void ClearAllSimulationWorlds()
         {
