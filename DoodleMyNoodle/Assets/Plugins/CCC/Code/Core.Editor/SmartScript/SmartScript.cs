@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEditor;
@@ -256,7 +257,8 @@ public class DefaultSmartScriptResolver : SmartScriptResolver
 
         foreach (string additionalUsing in additionalUsings)
         {
-            stringBuilder.AppendLine(additionalUsing);
+            if (!scriptContent.Contains(additionalUsing))
+                stringBuilder.AppendLine(additionalUsing);
         }
 
         stringBuilder.AppendLine(scriptContent);
@@ -369,6 +371,6 @@ public class #SCRIPTNAME# : {nameof(MonoBehaviour)}
                 $"but doesn't respect the following criteria: {reason}");
         }
 
-        return additionalUsings.ToArray();
+        return additionalUsings.Distinct().ToArray();
     }
 }
