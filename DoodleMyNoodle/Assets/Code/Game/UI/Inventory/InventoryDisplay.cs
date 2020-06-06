@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
@@ -32,41 +33,64 @@ public class InventoryDisplay : GameMonoBehaviour
     {
         if(GamePresentationCache.Instance.LocalPawn != Entity.Null)
         {
-            Action<int> onItemUsedCallback = null;
+            UpdateInventorySlots();
+        }
+    }
 
-            Entity pawnController = CommonReads.GetPawnController(SimWorld, GamePresentationCache.Instance.LocalPawn);
-            if (!CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(pawnController)))
-            {
-                TileHighlightManager.Instance.InterruptTileSelectionProcess();
-                Background.color = Color.white;
-                BlockedDisplay.gameObject.SetActive(true);
-            }
-            else
-            {
-                onItemUsedCallback = OnIntentionToUseItem;
-                Background.color = Color.green;
-                BlockedDisplay.gameObject.SetActive(false);
-            }
+    private void UpdateInventorySlots()
+    {
+        Action<int> onItemUsedCallback = null;
 
-            int itemIndex = 0;
-            if (SimWorld.TryGetBufferReadOnly(GamePresentationCache.Instance.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        Entity pawnController = CommonReads.GetPawnController(SimWorld, GamePresentationCache.Instance.LocalPawn);
+        if (!CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(pawnController)))
+        {
+            TileHighlightManager.Instance.InterruptTileSelectionProcess();
+            Background.color = Color.white;
+            BlockedDisplay.gameObject.SetActive(true);
+        }
+        else
+        {
+            onItemUsedCallback = OnIntentionToUseItem;
+            Background.color = Color.green;
+            BlockedDisplay.gameObject.SetActive(false);
+
+            VerifyButtonInputForSlots();
+        }
+
+        int itemIndex = 0;
+        if (SimWorld.TryGetBufferReadOnly(GamePresentationCache.Instance.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        {
+            foreach (InventoryItemReference item in inventory)
             {
-                foreach (InventoryItemReference item in inventory)
+                if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
                 {
-                    if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
-                    {
-                        ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
+                    ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
 
-                        _inventorySlots[itemIndex].UpdateCurrentItemSlot(itemInfo, itemIndex, InventorySlotShortcuts[itemIndex], onItemUsedCallback);
-                        itemIndex++;
-                    }
+                    _inventorySlots[itemIndex].UpdateCurrentItemSlot(itemInfo, itemIndex, InventorySlotShortcuts[itemIndex], onItemUsedCallback);
+                    itemIndex++;
                 }
             }
+        }
 
-            // Clear the rest of the inventory slots
-            for (int i = _inventorySlots.Count - 1; i >= itemIndex; i--)
+        // Clear the rest of the inventory slots
+        for (int i = _inventorySlots.Count - 1; i >= itemIndex; i--)
+        {
+            _inventorySlots[i].UpdateCurrentItemSlot(null, i, InventorySlotShortcuts[i], null);
+        }
+    }
+
+    private void VerifyButtonInputForSlots()
+    {
+        // We permit one input per frame
+        for (int i = 0; i < InventorySlotShortcuts.Count; i++)
+        {
+            if (Input.GetKeyDown(InventorySlotShortcuts[i].InputShortcut))
             {
-                _inventorySlots[i].UpdateCurrentItemSlot(null, i, InventorySlotShortcuts[i], null);
+                if(_inventorySlots.Count > i)
+                {
+                    _inventorySlots[i].UseInventorySlot();
+                }
+                return;
             }
         }
     }
@@ -123,14 +147,26 @@ public class InventoryDisplay : GameMonoBehaviour
     
     private void IdentifyAndGatherDataForParameterDescription(GameAction.ParameterDescription parameterDescription, int index, Action OnComplete)
     {
-        GameActionParameterTile.Description TileDescription = (GameActionParameterTile.Description)parameterDescription;
-        if (TileDescription != null)
+        // SELECT A SINGLE TILE
+        if (parameterDescription is GameActionParameterTile.Description TileDescription)
         {
-            TileHighlightManager.Instance.AskForSingleTileSelectionAroundPlayer(TileDescription,(GameActionParameterTile.Data TileSelectedData) => 
+            if (TileDescription != null)
             {
-                _currentItemUseData.ParameterDatas[index] = TileSelectedData;
-                OnComplete?.Invoke();
-            });
+                TileHighlightManager.Instance.AskForSingleTileSelectionAroundPlayer(TileDescription, (GameActionParameterTile.Data TileSelectedData) =>
+                {
+                    _currentItemUseData.ParameterDatas[index] = TileSelectedData;
+                    OnComplete?.Invoke();
+                });
+                return;
+            }
+        }
+
+        // SELF TARGETING
+        if (parameterDescription is GameActionParameterSelfTarget.Description SelfDescription)
+        {
+            _currentItemUseData.ParameterDatas[index] = new GameActionParameterSelfTarget.Popo(0);
+            OnComplete?.Invoke();
+            return;
         }
 
         // other types of Parameter Description here ...

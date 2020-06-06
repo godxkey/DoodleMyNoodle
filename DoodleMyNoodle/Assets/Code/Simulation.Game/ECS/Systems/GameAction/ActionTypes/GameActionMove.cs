@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using Unity.Collections;
+using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
@@ -33,7 +34,9 @@ public class GameActionMove : GameAction
             int instigatorAP = accessor.GetComponentData<ActionPoints>(instigatorPawn).Value;
             int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(instigatorPawn).Value).xy;
 
-            int costToMove = lengthmanhattan(paramTile.Tile - instigatorTile);
+            NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);
+            CommonReads.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_COST, _path);
+            int costToMove = _path.Length - 1;
 
             if (costToMove > instigatorAP)
             {
