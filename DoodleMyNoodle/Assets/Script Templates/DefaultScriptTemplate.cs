@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
-
+using UnityEngineX;
 
 public class DefaultScriptTemplate : ScriptTemplate
 {
@@ -13,6 +13,7 @@ public class DefaultScriptTemplate : ScriptTemplate
         return
 $@"using {nameof(System)};
 using {nameof(UnityEngine)};
+using {nameof(UnityEngineX)};
 
 public class #SCRIPTNAME# : {nameof(MonoBehaviour)}
 {{
@@ -41,8 +42,8 @@ public class #SCRIPTNAME# : {nameof(MonoBehaviour)}
         {
             return new string[]
             {
-                $"using {nameof(Unity.Mathematics)};",
-                $"using static {nameof(Unity.Mathematics.math)};"
+                $"using Unity.Mathematics;",
+                $"using static {typeof(Unity.Mathematics.math).GetPrettyFullName()};"
             };
         }
 

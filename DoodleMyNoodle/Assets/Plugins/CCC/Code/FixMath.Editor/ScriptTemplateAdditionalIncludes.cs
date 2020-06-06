@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngineX;
 
 namespace UnityX.FixMath
 {
@@ -13,7 +14,7 @@ namespace UnityX.FixMath
             {
                 return new string[]
                 {
-                    $"using static {nameof(fixMath)};"
+                    $"using static {typeof(fixMath).GetPrettyFullName()};"
                 };
             }
 
