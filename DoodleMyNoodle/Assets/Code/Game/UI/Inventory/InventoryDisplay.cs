@@ -127,7 +127,7 @@ public class InventoryDisplay : GameMonoBehaviour
     private void OnStartUsingNewItem(GameAction.UseContract NewItemContact)
     {
         // clean up in case we try to use two items one after the other (cancel feature)
-        _currentItemUseData = GameAction.UseData.Create(new GameActionParameterTile.Data[NewItemContact.ParameterTypes.Length]);
+        _currentItemUseData = GameAction.UseData.Create(new GameAction.ParameterData[NewItemContact.ParameterTypes.Length]);
     }
 
     private GameAction.UseData _currentItemUseData;

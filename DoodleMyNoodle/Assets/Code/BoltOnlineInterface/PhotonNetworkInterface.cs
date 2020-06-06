@@ -65,13 +65,13 @@ namespace Internals.PhotonNetwokInterface
         {
             _operationCallbackLaunch = onComplete;
             State = NetworkState.Launching;
-            BoltLauncher.StartClient();
+            BoltLauncher.StartClient(GameBoltConfig.GetConfig());
         }
         public override void LaunchServer(OperationResultDelegate onComplete)
         {
             _operationCallbackLaunch = onComplete;
             State = NetworkState.Launching;
-            BoltLauncher.StartServer();
+            BoltLauncher.StartServer(GameBoltConfig.GetConfig());
         }
 
         public override void Shutdown(OperationResultDelegate onComplete)
@@ -134,7 +134,7 @@ namespace Internals.PhotonNetwokInterface
         {
             if (!IsServer)
             {
-                if (_sessionClearTimer < 0 && BoltNetwork.IsRunning)
+                if (_sessionClearTimer < 0 && BoltNetwork.IsRunning && State == NetworkState.Running)
                 {
                     // clear the session list. 
                     // This is needed because we apparently don't get session updates if there are no sessions
