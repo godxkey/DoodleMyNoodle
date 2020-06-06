@@ -69,7 +69,7 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
         HideAll();
     }
 
-    private void AddHilightsAroundPlayer(int2 pos, int depth, TileFilterFlags ignoredTileFlags)
+    private void AddHilightsAroundPlayer(int2 pos, int depth, TileFilterFlags tileFlags)
     {
         int numberOfTiles = 0;
         for (int i = 1; i <= depth; i++)
@@ -78,12 +78,12 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
             {
                 fix2 newPossibleDestination = new fix2(pos.x, pos.y);
 
-                AddHilight(newPossibleDestination, ref numberOfTiles, i, j, depth, ignoredTileFlags);
+                AddHilight(newPossibleDestination, ref numberOfTiles, i, j, depth, tileFlags);
             }
         }
     }
 
-    private void AddHilight(fix2 newPossibleDestination, ref int numberOfTiles, int height, int lenght, int maxPathCost, TileFilterFlags ignoredTileFlags)
+    private void AddHilight(fix2 newPossibleDestination, ref int numberOfTiles, int height, int lenght, int maxPathCost, TileFilterFlags tileFlags)
     {
         fix2 originPos = newPossibleDestination;
 
@@ -117,21 +117,27 @@ public class TileHighlightManager : GameSystem<TileHighlightManager>
 
         // TILE FILTERS
 
+        // tile valid
         Entity currentTile = CommonReads.GetTile(SimWorld, roundToInt(newPossibleDestination).xy);
         if(currentTile == Entity.Null)
         {
             return;
         }
 
-        if(!CommonReads.DoesTileRespectFilters(SimWorld, currentTile, ignoredTileFlags))
+        // tile filters
+        if(!CommonReads.DoesTileRespectFilters(SimWorld, currentTile, tileFlags))
         {
             return;
         }
 
-        NativeList<int2> _highlightNavigablePath = new NativeList<int2>(Allocator.Temp);
-        if (!CommonReads.FindNavigablePath(SimWorld, roundToInt(originPos).xy, roundToInt(newPossibleDestination).xy, maxPathCost, _highlightNavigablePath))
+        // tile reachable
+        if ((tileFlags & TileFilterFlags.Navigable) != 0)
         {
-            return;
+            NativeList<int2> _highlightNavigablePath = new NativeList<int2>(Allocator.Temp);
+            if (!CommonReads.FindNavigablePath(SimWorld, roundToInt(originPos).xy, roundToInt(newPossibleDestination).xy, maxPathCost, _highlightNavigablePath))
+            {
+                return;
+            }
         }
 
         // ADDING MISSING TILE

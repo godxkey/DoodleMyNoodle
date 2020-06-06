@@ -23,6 +23,12 @@ public class HealthDisplayManagementSystem : GameMonoBehaviour
 
             healthBarAmount++;
         });
+
+        // Deactivate extra HealthBar
+        for (int i = healthBarAmount; i < _healthBarInstances.Count; i++)
+        {
+            _healthBarInstances[i].SetActive(false);
+        }
     }
 
     private void SetOrAddHealthBar(int index, fix3 position, fix ratio)
@@ -40,6 +46,7 @@ public class HealthDisplayManagementSystem : GameMonoBehaviour
 
         currentHealthBar.transform.position = (position + new fix3(0,fix(0.6f),fix(-0.1f))).ToUnityVec();
         currentHealthBar.GetComponent<UIBarDisplay>()?.AjustDisplay((float)ratio);
+        currentHealthBar.SetActive(true);
     }
 }
 

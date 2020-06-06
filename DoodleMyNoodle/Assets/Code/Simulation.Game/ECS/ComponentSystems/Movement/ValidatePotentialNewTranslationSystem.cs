@@ -125,6 +125,15 @@ public partial class CommonReads
                 }
             }
         }
+        else
+        {
+            // No AddOn on tile (empty tile)
+            // Does the action support empty tile ?
+            if ((filter & TileFilterFlags.NotEmpty) != 0)
+            {
+                return false;
+            }
+        }
 
         return true;
     }

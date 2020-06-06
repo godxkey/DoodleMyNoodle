@@ -9,6 +9,8 @@ public enum TileFilterFlags
 
     Occupied = 1 << 2,
     Inoccupied = 1 << 3,
+
+    NotEmpty = 1 << 4,
 }
 
 public class GameActionParameterTile
