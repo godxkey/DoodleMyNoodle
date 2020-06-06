@@ -33,13 +33,18 @@ public class GameOverDetectionSystem : SimComponentSystem
             if (aiAlive <= 0)
             {
                 // Player wins !
-                Debug.Log("Player wins!");
-
+                if (!HasSingleton<WinningTeam>())
+                {
+                    Accessor.SetOrCreateSingleton(new WinningTeam { Value = (int)TeamAuth.DesignerFriendlyTeam.Player });
+                }
             }
             else if (playerAlive <= 0)
             {
                 // AI wins !
-                Debug.Log("AI wins!");
+                if (!HasSingleton<WinningTeam>())
+                {
+                    Accessor.SetOrCreateSingleton(new WinningTeam { Value = (int)TeamAuth.DesignerFriendlyTeam.Baddies });
+                }
             }
         }
     }
