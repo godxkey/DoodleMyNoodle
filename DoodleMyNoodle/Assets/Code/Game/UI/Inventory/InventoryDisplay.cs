@@ -147,14 +147,26 @@ public class InventoryDisplay : GameMonoBehaviour
     
     private void IdentifyAndGatherDataForParameterDescription(GameAction.ParameterDescription parameterDescription, int index, Action OnComplete)
     {
-        GameActionParameterTile.Description TileDescription = (GameActionParameterTile.Description)parameterDescription;
-        if (TileDescription != null)
+        // SELECT A SINGLE TILE
+        if (parameterDescription is GameActionParameterTile.Description TileDescription)
         {
-            TileHighlightManager.Instance.AskForSingleTileSelectionAroundPlayer(TileDescription,(GameActionParameterTile.Data TileSelectedData) => 
+            if (TileDescription != null)
             {
-                _currentItemUseData.ParameterDatas[index] = TileSelectedData;
-                OnComplete?.Invoke();
-            });
+                TileHighlightManager.Instance.AskForSingleTileSelectionAroundPlayer(TileDescription, (GameActionParameterTile.Data TileSelectedData) =>
+                {
+                    _currentItemUseData.ParameterDatas[index] = TileSelectedData;
+                    OnComplete?.Invoke();
+                });
+                return;
+            }
+        }
+
+        // SELF TARGETING
+        if (parameterDescription is GameActionParameterSelfTarget.Description SelfDescription)
+        {
+            _currentItemUseData.ParameterDatas[index] = new GameActionParameterSelfTarget.Popo(0);
+            OnComplete?.Invoke();
+            return;
         }
 
         // other types of Parameter Description here ...
