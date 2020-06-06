@@ -57,24 +57,20 @@ namespace SimulationControl
             {
                 // if we receive ticks while we're syncing, shelve the tick so we can restored it later
                 _shelvedSimTicks.Add(tick);
-                Debug.Log($"Receive Tick {tick.TickData.ExpectedNewTickId} (SHELVE)");
                 return;
             }
 
             // The server has sent a tick message
             _simTicksDropper.Enqueue(tick, (float)SimulationConstants.TIME_STEP);
-            Debug.Log($"Receive Tick {tick.TickData.ExpectedNewTickId}");
         }
 
         public void StartShelvingTicks()
         {
-            Debug.Log($"START SHELVING");
             _shelveTicks = true;
         }
 
         public void StopShelvingTicks()
         {
-            Debug.Log($"STOP SHELVING");
             _shelveTicks = false;
         }
 
@@ -90,7 +86,6 @@ namespace SimulationControl
                 if (_shelvedSimTicks[i].TickData.ExpectedNewTickId >= minimumTickId)
                 {
                     _simTicksDropper.Enqueue(_shelvedSimTicks[i], (float)SimulationConstants.TIME_STEP);
-                    Debug.Log($"Unshelve Tick {_shelvedSimTicks[i].TickData.ExpectedNewTickId}");
                 }
             }
         }
