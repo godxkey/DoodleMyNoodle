@@ -45,7 +45,7 @@ internal static partial class CommonWrites
         int currentValue = accessor.GetComponentData<T>(entity).Value;
         int newValue = currentValue + value;
 
-        accessor.SetComponentData(entity, new T { Value = newValue });
+        SetStatInt(accessor, entity, new T { Value = newValue });
     }
 
     public static void ModifyStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, int value)
@@ -54,7 +54,7 @@ internal static partial class CommonWrites
         fix currentValue = accessor.GetComponentData<T>(entity).Value;
         fix newValue = currentValue + value;
 
-        accessor.SetComponentData(entity, new T { Value = newValue });
+        SetStatFix(accessor, entity, new T { Value = newValue });
     }
 
     public static void SetStatInt<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T compData)
