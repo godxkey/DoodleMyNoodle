@@ -1,17 +1,16 @@
-﻿using System.Collections.Generic;
-using Unity.Collections;
-using Unity.Entities;
+﻿using Unity.Entities;
 
+[AlwaysUpdateSystem]
 public class ChangeDetectionSystemBegin : ComponentSystem
 {
     public bool HasUpdatedAtLeastOnce = false;
-    public Dictionary<ComponentType, uint> SummedVersionNumbers = new Dictionary<ComponentType, uint>();
+    public ChangeDetection.EntityManagerTrace Trace = new ChangeDetection.EntityManagerTrace();
 
     public void ResetSample() => OnUpdate();
 
     protected override void OnUpdate()
     {
         HasUpdatedAtLeastOnce = true;
-        ChangeDetectionSystemUtility.GatherAllVersionNumbers(EntityManager, SummedVersionNumbers);
+        ChangeDetection.RecordEntityTrace(EntityManager, Trace);
     }
 }

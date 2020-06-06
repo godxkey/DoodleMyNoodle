@@ -111,18 +111,9 @@ namespace SimulationControl
             }
         }
 
-        //private void SetChangeDetectionLogMode(ChangeDetectionSystemEnd.LogMode logMode)
-        //{
-        //    var changeDetectionEnd = SimulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
-        //    if (changeDetectionEnd != null)
-        //    {
-        //        changeDetectionEnd.LoggingMode = logMode;
-        //    }
-        //}
-
         public static void ClearAllSimulationWorlds()
         {
-            foreach (World world in World.AllWorlds)
+            foreach (World world in World.All)
             {
                 var simWorldOwner = world.GetExistingSystem<SimulationWorldSystem>();
                 if (simWorldOwner != null)

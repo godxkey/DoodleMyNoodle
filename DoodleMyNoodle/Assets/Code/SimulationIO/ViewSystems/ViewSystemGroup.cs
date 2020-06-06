@@ -25,7 +25,7 @@ public class ViewSystemGroup : ManualCreationComponentSystemGroup, IManualSystem
     public void Initialize(SimulationControlSystemGroup simControlGroup)
     {
         // TODO: create/destroy systems + Initialize() + Shutdown() pattern
-        ManualCreateAndAddSystem<BeginViewSystem>();
+        //ManualCreateAndAddSystem<BeginViewSystem>();
         ManualCreateAndAddSystem<EndViewSystem>(); 
 
         IEnumerable<Type> viewComponentSystemTypes =
@@ -69,11 +69,11 @@ public class ViewSystemGroup : ManualCreationComponentSystemGroup, IManualSystem
     {
         base.SortSystemUpdateList();
 
-        int i = m_systemsToUpdate.IndexOf(World.GetExistingSystem<BeginViewSystem>());
-        if (i != -1)
-            m_systemsToUpdate.MoveFirst(i);
+        //int i = m_systemsToUpdate.IndexOf(World.GetExistingSystem<BeginViewSystem>());
+        //if (i != -1)
+        //    m_systemsToUpdate.MoveFirst(i);
 
-         i = m_systemsToUpdate.IndexOf(World.GetExistingSystem<EndViewSystem>());
+        int i = m_systemsToUpdate.IndexOf(World.GetExistingSystem<EndViewSystem>());
         if (i != -1)
             m_systemsToUpdate.MoveLast(i);
 

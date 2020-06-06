@@ -19,6 +19,7 @@ public class EndViewSystem : ComponentSystem
             return;
 
         World.EntityManager.CompleteAllJobs();
-        _worldMaster.SimulationWorld.EntityManager.EndExclusiveEntityTransaction();
+        //_worldMaster.SimulationWorld.EntityManager.EndExclusiveEntityTransaction();
+        //DebugService.Log("EndExclusiveEntityTransaction");
     }
 }

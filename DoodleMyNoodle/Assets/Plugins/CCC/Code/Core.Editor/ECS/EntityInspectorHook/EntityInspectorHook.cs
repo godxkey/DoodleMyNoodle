@@ -6,10 +6,12 @@ using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
+using Unity.Properties.Adapters;
+using Unity.Collections;
 
 namespace CCC.Editor
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class CustomEntityPropertyDrawer : Attribute
     {
 
@@ -43,16 +45,16 @@ namespace CCC.Editor
 
     public class IMGUIAdapter : IPropertyVisitorAdapter
     {
-        protected static void DoField<TProperty, TContainer, TValue>(TProperty property, ref TContainer container, ref TValue value, ref ChangeTracker changeTracker, Func<GUIContent, TValue, TValue> drawer)
-            where TProperty : IProperty<TContainer, TValue>
+        public static string GetDisplayName(IProperty property)
         {
-            EditorGUI.BeginChangeCheck();
-
-            value = drawer(new GUIContent(property.GetName()), value);
-
-            if (EditorGUI.EndChangeCheck())
+            switch (property)
             {
-                changeTracker.MarkChanged();
+                case IListElementProperty listElementProperty:
+                    return $"Element {listElementProperty.Index}";
+                case IDictionaryElementProperty dictionaryElementProperty:
+                    return $"Element {dictionaryElementProperty.ObjectKey}";
+                default:
+                    return property.Name;
             }
         }
     }

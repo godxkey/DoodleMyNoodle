@@ -1,5 +1,6 @@
 ﻿using CCC.Editor;
 using Unity.Properties;
+using Unity.Properties.Adapters;
 using UnityEditor;
 using UnityEngine;
 
@@ -55,17 +56,19 @@ public class FixFixVector3Drawer : PropertyDrawer
 
 [CustomEntityPropertyDrawer]
 public class FixVector3EntityDrawer : IMGUIAdapter,
-        IVisitAdapter<fix3>
+        IVisit<fix3>
 {
-    VisitStatus IVisitAdapter<fix3>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref fix3 value, ref ChangeTracker changeTracker)
+    VisitStatus IVisit<fix3>.Visit<TContainer>(Property<TContainer, fix3> property, ref TContainer container, ref fix3 value)
     {
-        DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
+        Vector3 oldValue = value.ToUnityVec();
+
+        Vector3 newValue = EditorGUILayout.Vector3Field(GetDisplayName(property), oldValue);
+
+        if (!newValue.Equals(oldValue) && !Application.isPlaying) // we do not support runtime changes due to loss of precision
         {
-            var newValue = EditorGUILayout.Vector3Field(label, val.ToUnityVec());
+            value = newValue.ToFixVec();
+        }
 
-            return Application.isPlaying ? val : newValue.ToFixVec(); // we don't support runtime modif
-        });
-
-        return VisitStatus.Handled;
+        return VisitStatus.Stop;
     }
 }

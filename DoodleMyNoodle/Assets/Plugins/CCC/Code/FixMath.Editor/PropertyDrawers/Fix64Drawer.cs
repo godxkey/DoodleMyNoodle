@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using CCC.Editor;
+using Unity.Properties.Adapters;
 using Unity.Properties;
 
 [CustomPropertyDrawer(typeof(fix))]
@@ -42,17 +43,19 @@ public class Fix64Drawer : PropertyDrawer
 
 [CustomEntityPropertyDrawer]
 public class Fix64EntityDrawer : IMGUIAdapter,
-        IVisitAdapter<fix>
+        IVisit<fix>
 {
-    VisitStatus IVisitAdapter<fix>.Visit<TProperty, TContainer>(IPropertyVisitor visitor, TProperty property, ref TContainer container, ref fix value, ref ChangeTracker changeTracker)
+    VisitStatus IVisit<fix>.Visit<TContainer>(Property<TContainer, fix> property, ref TContainer container, ref fix value)
     {
-        DoField(property, ref container, ref value, ref changeTracker, (label, val) =>
+        float oldValue = (float)value;
+
+        float newValue = EditorGUILayout.FloatField(GetDisplayName(property), oldValue);
+
+        if (!newValue.Equals(oldValue) && !Application.isPlaying) // we do not support runtime changes due to loss of precision
         {
-            var newValue = EditorGUILayout.FloatField(label, (float)val);
+            value = (fix)newValue;
+        }
 
-            return Application.isPlaying ? val : (fix)newValue; // we don't support runtime modif
-        });
-
-        return VisitStatus.Handled;
+        return VisitStatus.Stop;
     }
 }

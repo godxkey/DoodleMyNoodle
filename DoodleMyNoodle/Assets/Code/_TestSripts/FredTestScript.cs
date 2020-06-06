@@ -158,19 +158,31 @@ public class FredTestScript : MonoBehaviour
 }
 
 
-public class TestSystem : ComponentSystem
-{
-    protected override void OnUpdate()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            using (var allEntities = EntityManager.GetAllEntities(Unity.Collections.Allocator.Temp))
-            {
-                foreach (var entity in allEntities)
-                {
-                    EntityManager.DestroyEntity(entity);
-                }
-            }
-        }
-    }
-}
+//public class TestSystem : ComponentSystem
+//{
+//    protected override void OnUpdate()
+//    {
+//        if (Input.GetKeyDown(KeyCode.Alpha1))
+//        {
+//            var entities = simEntityManager().CreateEntityQuery(typeof(FixTranslation)).ToEntityArray(Unity.Collections.Allocator.TempJob);
+//            simEntityManager().Instantiate(entities[0]);
+
+//            entities.Dispose();
+//        }
+
+//        if (Input.GetKeyDown(KeyCode.Alpha2))
+//        {
+//            var entities = simEntityManager().CreateEntityQuery(typeof(FixTranslation)).ToEntityArray(Unity.Collections.Allocator.TempJob);
+//            simEntityManager().DestroyEntity(entities[0]);
+            
+//            entities.Dispose();
+//        }
+
+//        if (Input.GetKeyDown(KeyCode.Alpha3))
+//        {
+//            simEntityManager().SetComponentData(GamePresentationCache.Instance.LocalPawn, new FixTranslation());
+//        }
+
+//        EntityManager simEntityManager()=> GameMonoBehaviourHelpers.SimulationWorld.EntityManager;
+//    }
+//}

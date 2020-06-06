@@ -5,7 +5,7 @@ using Unity.Entities.CodeGeneratedJobForEach;
 public class SimWorldReadAccessor : ISimWorldReadAccessor
 {
     internal SimulationWorld SimWorld;
-    internal EntityManager EntityManager;
+    public EntityManager EntityManager;
     internal SimPreInitializationSystemGroup SomeSimSystem;
 
     public string Name

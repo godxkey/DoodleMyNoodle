@@ -1,7 +1,9 @@
 ﻿using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
+using UnityEngine;
 
+[AlwaysUpdateSystem]
 public class DestroyDanglingViewSystem : ViewJobComponentSystem
 {
     private PostSimulationBindingCommandBufferSystem _ecbSystem;
@@ -15,53 +17,43 @@ public class DestroyDanglingViewSystem : ViewJobComponentSystem
 
     protected override JobHandle OnUpdate(JobHandle jobHandle)
     {
+        EntityCommandBuffer.Concurrent Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent();
+
+        // If sim world was cleared and replaced
         _simWorldEntityClearAndReplaceCount.Set(SimWorldAccessor.EntityClearAndReplaceCount);
         if (_simWorldEntityClearAndReplaceCount.IsDirty)
         {
             _simWorldEntityClearAndReplaceCount.Reset();
 
-            jobHandle = new DestroyAllViewSystemJob()
+            ////////////////////////////////////////////////////////////////////////////////////////
+            //      Destroy all binded view entities
+            ////////////////////////////////////////////////////////////////////////////////////////
+            jobHandle = Entities.WithAll<BindedSimEntity>()
+                .ForEach((Entity viewEntity, int entityInQueryIndex) =>
             {
-                Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent()
-            }.Schedule(this, jobHandle);
+                Ecb.DestroyEntity(entityInQueryIndex, viewEntity);
+            }).Schedule(jobHandle);
         }
         else
         {
-            jobHandle = new DestroyDanglingViewSystemJob()
+            var simEntities = SimWorldAccessor.GetComponentDataFromEntity<SimAssetId>();
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            //      Destroy view entities binded with non-existant sim entities
+            ////////////////////////////////////////////////////////////////////////////////////////
+            jobHandle = Entities.WithReadOnly(simEntities)
+                .ForEach((Entity viewEntity, int entityInQueryIndex, in BindedSimEntity linkedSimEntity) =>
             {
-                SimWorld = SimWorldAccessor.JobAccessor,
-                Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent()
-            }.Schedule(this, jobHandle);
+                if (!simEntities.Exists(linkedSimEntity.SimEntity))
+                {
+                    Ecb.DestroyEntity(entityInQueryIndex, viewEntity);
+                }
+            }).Schedule(jobHandle);
         }
 
 
         _ecbSystem.AddJobHandleForProducer(jobHandle);
-        
-        // Now that the job is set up, schedule it to be run. 
+
         return jobHandle;
-    }
-
-    struct DestroyDanglingViewSystemJob : IJobForEachWithEntity<BindedSimEntity>
-    {
-        public EntityCommandBuffer.Concurrent Ecb;
-        public SimWorldAccessorJob SimWorld;
-
-        public void Execute(Entity viewEntity, int jobIndex, [ReadOnly] ref BindedSimEntity linkedSimEntity)
-        {
-            if (!SimWorld.Exists(linkedSimEntity.SimEntity))
-            {
-                Ecb.DestroyEntity(jobIndex, viewEntity);
-            }
-        }
-    }
-
-    struct DestroyAllViewSystemJob : IJobForEachWithEntity<BindedSimEntity>
-    {
-        public EntityCommandBuffer.Concurrent Ecb;
-
-        public void Execute(Entity viewEntity, int jobIndex, [ReadOnly] ref BindedSimEntity linkedSimEntity)
-        {
-            Ecb.DestroyEntity(jobIndex, viewEntity);
-        }
     }
 }
