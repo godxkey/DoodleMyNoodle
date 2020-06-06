@@ -1,16 +1,8 @@
 ﻿using CCC.Debug;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Runtime.Serialization;
-using System.Text;
-using Unity.Collections;
-using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TestScript : MonoBehaviour
 {
