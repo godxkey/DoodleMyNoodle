@@ -19,6 +19,7 @@ public class GameActionParameterTile
     {
         public int RangeFromInstigator = int.MaxValue;
         public TileFilterFlags Filter;
+        public bool IncludeSelf = false;
     }
 
     [NetSerializable]
