@@ -7,6 +7,7 @@ public class GameActionShield : GameAction
 {
     // TODO: add settings on the item itself
     const int DURATION = 1;
+    const int AP_COST = 2;
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
     {
@@ -16,6 +17,7 @@ public class GameActionShield : GameAction
     public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
     {
         return accessor.HasComponent<Health>(instigatorPawn)
+            && accessor.HasComponent<ActionPoints>(instigatorPawn)
             && accessor.HasComponent<FixTranslation>(instigatorPawn);
     }
 
@@ -23,7 +25,15 @@ public class GameActionShield : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterSelfTarget.Data paramTile))
         {
-            accessor.AddComponentData(instigatorPawnController, new Invincible() { Duration = DURATION });
+            if (accessor.GetComponentData<ActionPoints>(instigatorPawn).Value < AP_COST)
+            {
+                return;
+            }
+
+            // reduce instigator AP
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, instigatorPawn, -AP_COST);
+
+            accessor.AddComponentData(instigatorPawn, new Invincible() { Duration = DURATION });
         }
     }
 }

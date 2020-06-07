@@ -52,10 +52,10 @@ public class GameActionMeleeAttack : GameAction
             CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, paramTile.Tile, victims);
             foreach (var entity in victims)
             {
-#if UNITY_EDITOR
-                DebugService.Log("Attack " + accessor.GetName(entity));
-#endif
-                CommonWrites.ModifyStatInt<Health>(accessor, entity, -DAMAGE);
+                if (!accessor.HasComponent<Invincible>(entity))
+                {
+                    CommonWrites.ModifyStatInt<Health>(accessor, entity, -DAMAGE);
+                }
             }
 
             // NB: we might want to queue a 'DamageRequest' in some sort of ProcessDamageSystem instead

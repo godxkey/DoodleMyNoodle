@@ -12,16 +12,29 @@ public class InvincibleRemoverSystem : SimComponentSystem
     {
         if (HasSingleton<NewTurnEventData>())
         {
+            int currentTeam = CommonReads.GetCurrentTurnTeam(Accessor);
+
             Entities
             .ForEach((Entity entity, ref Invincible invincible) =>
             {
-                if(invincible.Duration <= 1)
+                Entity pawnController = CommonReads.GetPawnController(Accessor, entity);
+                if (pawnController != Entity.Null)
                 {
-                    Accessor.RemoveComponent<Invincible>(entity);
-                }
-                else
-                {
-                    Accessor.SetComponentData(entity, new Invincible() { Duration = invincible.Duration - 1 });
+                    Team pawnTeam = Accessor.GetComponentData<Team>(pawnController);
+
+                    if ((pawnTeam.Value != currentTeam))
+                    {
+                        return;
+                    }
+
+                    if (invincible.Duration <= 1)
+                    {
+                        Accessor.RemoveComponent<Invincible>(entity);
+                    }
+                    else
+                    {
+                        Accessor.SetComponentData(entity, new Invincible() { Duration = invincible.Duration - 1 });
+                    }
                 }
             });
         }
