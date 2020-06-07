@@ -38,12 +38,12 @@ public class BindedSimEntityManagedEditor : Editor
     {
         base.OnInspectorGUI();
 
-        if (GameMonoBehaviourHelpers.SimulationWorld != null)
+        if (GameMonoBehaviourHelpers.GetSimulationWorld() != null)
         {
             Entity simEntity = ((BindedSimEntityManaged)target).SimEntity;
-            if (GameMonoBehaviourHelpers.SimulationWorld.Exists(simEntity))
+            if (GameMonoBehaviourHelpers.GetSimulationWorld().Exists(simEntity))
             {
-                string entityName = GameMonoBehaviourHelpers.SimulationWorld.GetName(simEntity);
+                string entityName = GameMonoBehaviourHelpers.GetSimulationWorld().GetName(simEntity);
                 EditorGUILayout.LabelField($"Binded to: {entityName} - {simEntity}", EditorStyles.boldLabel);
             }
             else

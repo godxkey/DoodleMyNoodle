@@ -93,7 +93,7 @@ public class Game : MonoBehaviour
 
                 foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
                 {
-                    b.OnGameReady();
+                    b.OnGameAwake();
                 }
             }
         }

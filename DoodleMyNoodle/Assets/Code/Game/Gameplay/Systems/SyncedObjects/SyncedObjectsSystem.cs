@@ -9,9 +9,9 @@ public class SyncedObjectsSystem : GameSystem<SyncedObjectsSystem>
 
     public override bool SystemReady => _driver != null && _driver.IsReady;
 
-    public override void OnGameReady()
+    public override void OnGameAwake()
     {
-        base.OnGameReady();
+        base.OnGameAwake();
 
         switch (GameStateManager.currentGameState)
         {

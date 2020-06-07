@@ -10,7 +10,7 @@ public class GizmoGridRect : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        ExternalSimWorldAccessor simWorld = GameMonoBehaviourHelpers.SimulationWorld;
+        ExternalSimWorldAccessor simWorld = GameMonoBehaviourHelpers.GetSimulationWorld();
 
         if (simWorld == null && !simWorld.HasSingleton<GridInfo>())
             return;

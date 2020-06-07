@@ -11,7 +11,7 @@ public class GizmoPathPositions : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        var simWorld = GameMonoBehaviourHelpers.SimulationWorld;
+        var simWorld = GameMonoBehaviourHelpers.GetSimulationWorld();
 
         if (simWorld == null)
             return;

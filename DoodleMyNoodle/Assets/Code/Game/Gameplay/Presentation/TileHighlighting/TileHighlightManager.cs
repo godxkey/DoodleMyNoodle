@@ -8,7 +8,7 @@ using Unity.Mathematics;
 using static fixMath;
 using Unity.Collections;
 
-public class TileHighlightManager : GameSystem<TileHighlightManager>
+public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
 {
     public GameObject HighlightPrefab;
 

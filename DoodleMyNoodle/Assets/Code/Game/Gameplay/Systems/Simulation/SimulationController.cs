@@ -18,9 +18,9 @@ public class SimulationController : GameSystem<SimulationController>
 
     //public abstract void SubmitInput(SimInput input);
 
-    public override void OnGameReady()
+    public override void OnGameAwake()
     {
-        base.OnGameReady();
+        base.OnGameAwake();
 
         Time.fixedDeltaTime = (float)SimulationConstants.TIME_STEP;
         

@@ -55,7 +55,7 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
     protected List<PlayerInfo> _players;
     protected PlayerInfo _localPlayerInfo = new PlayerInfo();
 
-    public override void OnGameReady()
+    public override void OnGameAwake()
     {
         _localPlayerInfo.PlayerName = PlayerProfileService.Instance.playerName;
 

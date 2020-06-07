@@ -4,9 +4,9 @@ public class ChatSystemServer : ChatSystem
 {
     SessionServerInterface _session;
 
-    public override void OnGameReady()
+    public override void OnGameAwake()
     {
-        base.OnGameReady();
+        base.OnGameAwake();
 
         _session = OnlineService.ServerInterface.SessionServerInterface;
         _session.RegisterNetMessageReceiver<NetMessageChatMessageSubmission>(OnNetMessageChatMessageSubmission);
