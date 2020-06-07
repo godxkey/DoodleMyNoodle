@@ -164,7 +164,7 @@ public class InventoryDisplay : GamePresentationBehaviour
         // SELF TARGETING
         if (parameterDescription is GameActionParameterSelfTarget.Description SelfDescription)
         {
-            _currentItemUseData.ParameterDatas[index] = new GameActionParameterSelfTarget.Popo(0);
+            _currentItemUseData.ParameterDatas[index] = new GameActionParameterSelfTarget.Data(0);
             OnComplete?.Invoke();
             return;
         }

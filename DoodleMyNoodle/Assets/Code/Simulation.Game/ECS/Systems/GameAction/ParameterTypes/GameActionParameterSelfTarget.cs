@@ -4,10 +4,10 @@ public class GameActionParameterSelfTarget
     public class Description : GameAction.ParameterDescription { }
 
     [NetSerializable]
-    public class Popo : GameAction.ParameterData
+    public class Data : GameAction.ParameterData
     {
-        public Popo() { }
+        public Data() { }
 
-        public Popo(int parameterIndex) : base(parameterIndex) { }
+        public Data(int parameterIndex) : base(parameterIndex) { }
     }
 }

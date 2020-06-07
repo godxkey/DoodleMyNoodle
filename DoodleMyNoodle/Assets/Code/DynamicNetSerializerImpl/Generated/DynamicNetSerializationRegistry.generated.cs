@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class DynamicNetSerializationRegistry
 {
-    public static readonly ulong crc = 9806356369634343647;
+    public static readonly ulong crc = 6066679584167151933;
 
     public static readonly Type[] types = new Type[]
     {
@@ -48,7 +48,7 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(GameAction.UseData)
         ,
-        typeof(GameActionParameterSelfTarget.Popo)
+        typeof(GameActionParameterSelfTarget.Data)
         ,
         typeof(GameActionParameterTile.Data)
         ,
@@ -259,10 +259,10 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_GameAction_UseData.GetNetBitSize(castedObj);
         }
         ,
-        [typeof(GameActionParameterSelfTarget.Popo)] = (obj) =>
+        [typeof(GameActionParameterSelfTarget.Data)] = (obj) =>
         {
-            GameActionParameterSelfTarget.Popo castedObj = (GameActionParameterSelfTarget.Popo)obj;
-            return StaticNetSerializer_GameActionParameterSelfTarget_Popo.GetNetBitSize(castedObj);
+            GameActionParameterSelfTarget.Data castedObj = (GameActionParameterSelfTarget.Data)obj;
+            return StaticNetSerializer_GameActionParameterSelfTarget_Data.GetNetBitSize(castedObj);
         }
         ,
         [typeof(GameActionParameterTile.Data)] = (obj) =>
@@ -658,10 +658,10 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_GameAction_UseData.NetSerialize(castedObj, writer);
         }
         ,
-        [typeof(GameActionParameterSelfTarget.Popo)] = (obj, writer) =>
+        [typeof(GameActionParameterSelfTarget.Data)] = (obj, writer) =>
         {
-            GameActionParameterSelfTarget.Popo castedObj = (GameActionParameterSelfTarget.Popo)obj;
-            StaticNetSerializer_GameActionParameterSelfTarget_Popo.NetSerialize(castedObj, writer);
+            GameActionParameterSelfTarget.Data castedObj = (GameActionParameterSelfTarget.Data)obj;
+            StaticNetSerializer_GameActionParameterSelfTarget_Data.NetSerialize(castedObj, writer);
         }
         ,
         [typeof(GameActionParameterTile.Data)] = (obj, writer) =>
@@ -1078,8 +1078,8 @@ public static class DynamicNetSerializationRegistry
         ,
         [19] = (reader) =>
         {
-            GameActionParameterSelfTarget.Popo obj = new GameActionParameterSelfTarget.Popo();
-            StaticNetSerializer_GameActionParameterSelfTarget_Popo.NetDeserialize(obj, reader);
+            GameActionParameterSelfTarget.Data obj = new GameActionParameterSelfTarget.Data();
+            StaticNetSerializer_GameActionParameterSelfTarget_Data.NetDeserialize(obj, reader);
             return obj;
         }
         ,
