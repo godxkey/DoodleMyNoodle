@@ -797,6 +797,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7296775561025126664}
     m_Modifications:
+    - target: {fileID: 5833488720529872690, guid: 6b8c03eb2be7d1142a4d0e25b1ec1288,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 5833488720985743014, guid: 6b8c03eb2be7d1142a4d0e25b1ec1288,
         type: 3}
       propertyPath: m_Name
@@ -930,12 +935,42 @@ PrefabInstance:
     - target: {fileID: 5833488720988650453, guid: 6b8c03eb2be7d1142a4d0e25b1ec1288,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 217.28998
+      value: 331.66
       objectReference: {fileID: 0}
     - target: {fileID: 5833488720988650453, guid: 6b8c03eb2be7d1142a4d0e25b1ec1288,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 47.320007
+      value: 100.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833488720988650453, guid: 6b8c03eb2be7d1142a4d0e25b1ec1288,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 166.89
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833488720988650453, guid: 6b8c03eb2be7d1142a4d0e25b1ec1288,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 47.87
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833488720988650454, guid: 6b8c03eb2be7d1142a4d0e25b1ec1288,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833488721234907952, guid: 6b8c03eb2be7d1142a4d0e25b1ec1288,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833488721234907959, guid: 6b8c03eb2be7d1142a4d0e25b1ec1288,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -17.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833488721234907959, guid: 6b8c03eb2be7d1142a4d0e25b1ec1288,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -35.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6b8c03eb2be7d1142a4d0e25b1ec1288, type: 3}
