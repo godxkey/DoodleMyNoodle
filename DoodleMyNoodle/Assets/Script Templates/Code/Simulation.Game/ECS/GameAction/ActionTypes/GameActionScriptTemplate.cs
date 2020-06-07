@@ -21,7 +21,7 @@ public class #SCRIPTNAME# : {nameof(GameAction)}
     const int AP_COST = 1;
     const int RANGE = 1;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {{
         return new UseContract(
             new GameActionParameterTile.Description()
@@ -31,13 +31,13 @@ public class #SCRIPTNAME# : {nameof(GameAction)}
             }});
     }}
 
-    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
+    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context)
     {{
         return accessor.HasComponent<ActionPoints>(instigatorPawn)
             && accessor.HasComponent<FixTranslation>(instigatorPawn);
     }}
 
-    public override void Use(ISimWorldReadWriteAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn, UseData useData)
+    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseData useData)
     {{
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {{

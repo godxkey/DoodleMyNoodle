@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using UnityEngine;
 
 public abstract class GameAction
 {
@@ -33,25 +34,31 @@ public abstract class GameAction
     }
 
     [NetSerializable]
-    public sealed class UseData
+    public sealed class UseParameters
     {
         public ParameterData[] ParameterDatas;
 
-        public UseData(params ParameterData[] parameterDatas)
+        public UseParameters(params ParameterData[] parameterDatas)
         {
             ParameterDatas = parameterDatas ?? throw new ArgumentNullException(nameof(parameterDatas));
         }
 
         // using this instead with a private constructor will allow us to later use pooling without changing much code
-        public static UseData Create(params ParameterData[] parameterDescription)
+        public static UseParameters Create(params ParameterData[] parameterDescription)
         {
-            return new UseData(parameterDescription);
+            return new UseParameters(parameterDescription);
         }
 
         public bool TryGetParameter<T>(int index, out T parameterData) where T : ParameterData
         {
             for (int i = 0; i < ParameterDatas.Length; i++)
             {
+                if (ParameterDatas[i] == null)
+                {
+                    Debug.LogWarning($"GameAction parameters[{i}] is null");
+                    continue;
+                }
+
                 if (ParameterDatas[i].ParamIndex == index && ParameterDatas[i] is T p)
                 {
                     parameterData = p;
@@ -64,7 +71,14 @@ public abstract class GameAction
         }
     }
 
-    public abstract void Use(ISimWorldReadWriteAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn, UseData useData);
-    public abstract bool IsInstigatorValid(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn);
-    public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn);
+    public struct UseContext
+    {
+        public Entity InstigatorPawnController;
+        public Entity InstigatorPawn;
+        public Entity ItemEntity;
+    }
+
+    public abstract void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters);
+    public abstract bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context);
+    public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context);
 }

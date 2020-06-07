@@ -4,4 +4,5 @@ using Unity.Entities;
 public struct DamageOnContact : IComponentData
 {
     public int Value;
+    public bool DestroySelf;
 }

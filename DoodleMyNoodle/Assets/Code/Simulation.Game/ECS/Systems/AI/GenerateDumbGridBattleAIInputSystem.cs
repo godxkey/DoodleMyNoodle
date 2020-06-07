@@ -136,7 +136,7 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
                 int2 destinationTile = roundToInt(pawnPos.Value).xy + tileMoveDelta;
 
                 // create game action's use data
-                var useData = GameAction.UseData.Create(
+                var useData = GameAction.UseParameters.Create(
                     new GameActionParameterTile.Data(0, destinationTile));
 
                 // create input
@@ -155,7 +155,7 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
         if (item != Entity.Null)
         {
             // create game action's use data
-            var useData = GameAction.UseData.Create(
+            var useData = GameAction.UseParameters.Create(
                 new GameActionParameterTile.Data(0, tile));
 
             // create input

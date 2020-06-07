@@ -109,7 +109,14 @@ public class InventoryDisplay : GamePresentationBehaviour
                     SimWorld.TryGetComponentData(itemEntity, out GameActionId actionId);
                     GameAction itemGameAction = GameActionBank.GetAction(actionId);
 
-                    GameAction.UseContract itemUseContract = itemGameAction.GetUseContract(SimWorld, PlayerHelpers.GetLocalSimPlayerEntity(SimWorld), GamePresentationCache.Instance.LocalPawn);
+                    GameAction.UseContext useContext = new GameAction.UseContext()
+                    {
+                        InstigatorPawn = SimWorldCache.LocalPawn,
+                        InstigatorPawnController = SimWorldCache.LocalController,
+                        ItemEntity = itemEntity
+                    };
+
+                    GameAction.UseContract itemUseContract = itemGameAction.GetUseContract(SimWorld, useContext);
 
                     OnStartUsingNewItem(itemUseContract);
 
@@ -127,10 +134,10 @@ public class InventoryDisplay : GamePresentationBehaviour
     private void OnStartUsingNewItem(GameAction.UseContract NewItemContact)
     {
         // clean up in case we try to use two items one after the other (cancel feature)
-        _currentItemUseData = GameAction.UseData.Create(new GameAction.ParameterData[NewItemContact.ParameterTypes.Length]);
+        _currentItemUseData = GameAction.UseParameters.Create(new GameAction.ParameterData[NewItemContact.ParameterTypes.Length]);
     }
 
-    private GameAction.UseData _currentItemUseData;
+    private GameAction.UseParameters _currentItemUseData;
     private void QueryUseDataFromPlayer(GameAction.UseContract itemUseContact, Action onComplete, int DataToExtract = 0)
     {
         if (DataToExtract >= itemUseContact.ParameterTypes.Length) 
@@ -139,8 +146,14 @@ public class InventoryDisplay : GamePresentationBehaviour
             return;
         }
 
-        IdentifyAndGatherDataForParameterDescription(itemUseContact.ParameterTypes[DataToExtract], DataToExtract, ()=> 
+        IdentifyAndGatherDataForParameterDescription(itemUseContact.ParameterTypes[DataToExtract], DataToExtract, ()=>
         {
+            if (DataToExtract >= itemUseContact.ParameterTypes.Length)
+            {
+                onComplete?.Invoke();
+                return;
+            }
+
             // Little Delay between choices
             this.DelayedCall(0.1f, ()=> { QueryUseDataFromPlayer(itemUseContact, onComplete, DataToExtract + 1); });
         });

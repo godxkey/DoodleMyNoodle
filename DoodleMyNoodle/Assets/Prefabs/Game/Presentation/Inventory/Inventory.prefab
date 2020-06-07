@@ -91,13 +91,16 @@ MonoBehaviour:
   Background: {fileID: 3639621347635510573}
   BlockedDisplay: {fileID: 8749636224395279939}
   InventorySlotShortcuts:
-  - InputShortcut: 113
-  - InputShortcut: 119
-  - InputShortcut: 101
-  - InputShortcut: 100
-  - InputShortcut: 102
-  - InputShortcut: 118
-  - InputShortcut: 114
+  - InputShortcut: 49
+  - InputShortcut: 50
+  - InputShortcut: 51
+  - InputShortcut: 52
+  - InputShortcut: 53
+  - InputShortcut: 54
+  - InputShortcut: 55
+  - InputShortcut: 56
+  - InputShortcut: 57
+  - InputShortcut: 48
   SlotsContainer: {fileID: 3639621349132393506}
   InventorySlotPrefab: {fileID: 7927445112559427497, guid: ab43f7e70c7b4084f97231bf6a9e63ce,
     type: 3}

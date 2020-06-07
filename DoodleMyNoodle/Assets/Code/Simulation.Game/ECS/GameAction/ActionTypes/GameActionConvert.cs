@@ -11,7 +11,7 @@ public class GameActionConvert : GameAction
     const int RANGE = 5;
     const int DURATION = 2;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
             new GameActionParameterTile.Description()
@@ -21,23 +21,23 @@ public class GameActionConvert : GameAction
             });
     }
 
-    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
+    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return accessor.HasComponent<ActionPoints>(instigatorPawn)
-            && accessor.HasComponent<FixTranslation>(instigatorPawn);
+        return accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
+            && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);
     }
 
-    public override void Use(ISimWorldReadWriteAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn, UseData useData)
+    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
     {
-        if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            if (accessor.GetComponentData<ActionPoints>(instigatorPawn).Value < AP_COST)
+            if (accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value < AP_COST)
             {
                 return;
             }
 
             // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, instigatorPawn, -AP_COST);
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST);
 
             // find target
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);

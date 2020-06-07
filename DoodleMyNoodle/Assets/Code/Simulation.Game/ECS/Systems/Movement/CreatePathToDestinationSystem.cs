@@ -41,9 +41,9 @@ public class CreatePathToDestinationSystem : SimComponentSystem
                 {
                     pathBuffer.Add(new PathPosition() { Position = fix3(_pathArray[i], 0) });
                 }
-
-                EntityManager.RemoveComponent<Destination>(entity);
             }
+            
+            EntityManager.RemoveComponent<Destination>(entity);
         });
     }
 }

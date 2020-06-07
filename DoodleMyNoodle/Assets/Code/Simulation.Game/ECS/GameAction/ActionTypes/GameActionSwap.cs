@@ -10,7 +10,7 @@ public class GameActionSwap : GameAction
     const int AP_COST = 1;
     const int RANGE = 3;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
             new GameActionParameterTile.Description()
@@ -20,25 +20,25 @@ public class GameActionSwap : GameAction
             });
     }
 
-    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
+    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return accessor.HasComponent<ActionPoints>(instigatorPawn)
-            && accessor.HasComponent<FixTranslation>(instigatorPawn);
+        return accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
+            && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);
     }
 
-    public override void Use(ISimWorldReadWriteAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn, UseData useData)
+    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            if (accessor.GetComponentData<ActionPoints>(instigatorPawn).Value < AP_COST)
+            if (accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value < AP_COST)
             {
                 return;
             }
 
             // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, instigatorPawn, -AP_COST);
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST);
 
-            fix3 instigatorPos = accessor.GetComponentData<FixTranslation>(instigatorPawn).Value;
+            fix3 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value;
 
             // find target
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
@@ -48,7 +48,7 @@ public class GameActionSwap : GameAction
                 if (accessor.HasComponent<FixTranslation>(entity))
                 {
                     fix3 targetPos = accessor.GetComponentData<FixTranslation>(entity).Value;
-                    accessor.SetComponentData(instigatorPawn, new FixTranslation() { Value = targetPos });
+                    accessor.SetComponentData(context.InstigatorPawn, new FixTranslation() { Value = targetPos });
                     accessor.SetComponentData(entity, new FixTranslation() { Value = instigatorPos });
                 }
             }

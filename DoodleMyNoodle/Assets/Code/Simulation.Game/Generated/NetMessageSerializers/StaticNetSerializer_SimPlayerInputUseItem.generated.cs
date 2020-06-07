@@ -16,7 +16,7 @@ public static class StaticNetSerializer_SimPlayerInputUseItem
     {
         int result = 0;
         result += StaticNetSerializer_System_Int32.GetNetBitSize(ref obj.ItemIndex);
-        result += StaticNetSerializer_GameAction_UseData.GetNetBitSize_Class(obj.UseData);
+        result += StaticNetSerializer_GameAction_UseParameters.GetNetBitSize_Class(obj.UseData);
         result += StaticNetSerializer_SimPlayerId.GetNetBitSize(ref obj.SimPlayerIdOld);
         result += StaticNetSerializer_PersistentId.GetNetBitSize(ref obj.SimPlayerId);
         result += StaticNetSerializer_SimPlayerInput.GetNetBitSize(obj);
@@ -36,7 +36,7 @@ public static class StaticNetSerializer_SimPlayerInputUseItem
     public static void NetSerialize(SimPlayerInputUseItem obj, BitStreamWriter writer)
     {
         StaticNetSerializer_System_Int32.NetSerialize(ref obj.ItemIndex, writer);
-        StaticNetSerializer_GameAction_UseData.NetSerialize_Class(obj.UseData, writer);
+        StaticNetSerializer_GameAction_UseParameters.NetSerialize_Class(obj.UseData, writer);
         StaticNetSerializer_SimPlayerId.NetSerialize(ref obj.SimPlayerIdOld, writer);
         StaticNetSerializer_PersistentId.NetSerialize(ref obj.SimPlayerId, writer);
         StaticNetSerializer_SimPlayerInput.NetSerialize(obj, writer);
@@ -55,7 +55,7 @@ public static class StaticNetSerializer_SimPlayerInputUseItem
     public static void NetDeserialize(SimPlayerInputUseItem obj, BitStreamReader reader)
     {
         StaticNetSerializer_System_Int32.NetDeserialize(ref obj.ItemIndex, reader);
-        obj.UseData = StaticNetSerializer_GameAction_UseData.NetDeserialize_Class(reader);
+        obj.UseData = StaticNetSerializer_GameAction_UseParameters.NetDeserialize_Class(reader);
         StaticNetSerializer_SimPlayerId.NetDeserialize(ref obj.SimPlayerIdOld, reader);
         StaticNetSerializer_PersistentId.NetDeserialize(ref obj.SimPlayerId, reader);
         StaticNetSerializer_SimPlayerInput.NetDeserialize(obj, reader);

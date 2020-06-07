@@ -24,21 +24,38 @@ public class DamageOnContactSystem : SimComponentSystem
                     }
                 });
 
+            NativeList<Entity> toDestroy = new NativeList<Entity>(Allocator.Temp);
             foreach (Entity otherEntity in collidedEntities)
             {
-                DebugService.Log($"Collision between {EntityManager.GetName(entity)} and {EntityManager.GetName(otherEntity)}");
-                ProcessEntityPair(entity, otherEntity);
-                ProcessEntityPair(otherEntity, entity);
+                ProcessEntityPair(entity, otherEntity, toDestroy);
+                ProcessEntityPair(otherEntity, entity, toDestroy);
+            }
+
+            if (EntityManager.TryGetComponentData(entity, out DamageOnContact damageOnContact) && damageOnContact.DestroySelf)
+            {
+                toDestroy.AddUnique(entity);
+            }
+
+            foreach (var item in toDestroy)
+            {
+                PostUpdateCommands.DestroyEntity(item);
             }
         });
     }
 
-    private void ProcessEntityPair(Entity instigator, Entity target)
+    private void ProcessEntityPair(Entity instigator, Entity target, NativeList<Entity> toDestroy)
     {
-        if (EntityManager.TryGetComponentData(instigator, out DamageOnContact damageOnContact) &&
-            EntityManager.HasComponent<Health>(target))
+        if (EntityManager.TryGetComponentData(instigator, out DamageOnContact damageOnContact))
         {
-            CommonWrites.ModifyStatInt<Health>(Accessor, target, -damageOnContact.Value);
+            if (EntityManager.HasComponent<Health>(target))
+            {
+                CommonWrites.ModifyStatInt<Health>(Accessor, target, -damageOnContact.Value);
+            }
+
+            if (damageOnContact.DestroySelf)
+            {
+                toDestroy.AddUnique(instigator);
+            }
         }
     }
 }

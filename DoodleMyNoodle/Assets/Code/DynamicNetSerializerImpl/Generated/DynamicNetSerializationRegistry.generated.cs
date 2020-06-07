@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class DynamicNetSerializationRegistry
 {
-    public static readonly ulong crc = 6066679584167151933;
+    public static readonly ulong crc = 16381015995286927851;
 
     public static readonly Type[] types = new Type[]
     {
@@ -46,7 +46,7 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(fixQuaternion)
         ,
-        typeof(GameAction.UseData)
+        typeof(GameAction.UseParameters)
         ,
         typeof(GameActionParameterSelfTarget.Data)
         ,
@@ -253,10 +253,10 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_fixQuaternion.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(GameAction.UseData)] = (obj) =>
+        [typeof(GameAction.UseParameters)] = (obj) =>
         {
-            GameAction.UseData castedObj = (GameAction.UseData)obj;
-            return StaticNetSerializer_GameAction_UseData.GetNetBitSize(castedObj);
+            GameAction.UseParameters castedObj = (GameAction.UseParameters)obj;
+            return StaticNetSerializer_GameAction_UseParameters.GetNetBitSize(castedObj);
         }
         ,
         [typeof(GameActionParameterSelfTarget.Data)] = (obj) =>
@@ -652,10 +652,10 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_fixQuaternion.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(GameAction.UseData)] = (obj, writer) =>
+        [typeof(GameAction.UseParameters)] = (obj, writer) =>
         {
-            GameAction.UseData castedObj = (GameAction.UseData)obj;
-            StaticNetSerializer_GameAction_UseData.NetSerialize(castedObj, writer);
+            GameAction.UseParameters castedObj = (GameAction.UseParameters)obj;
+            StaticNetSerializer_GameAction_UseParameters.NetSerialize(castedObj, writer);
         }
         ,
         [typeof(GameActionParameterSelfTarget.Data)] = (obj, writer) =>
@@ -1071,8 +1071,8 @@ public static class DynamicNetSerializationRegistry
         ,
         [18] = (reader) =>
         {
-            GameAction.UseData obj = new GameAction.UseData();
-            StaticNetSerializer_GameAction_UseData.NetDeserialize(obj, reader);
+            GameAction.UseParameters obj = new GameAction.UseParameters();
+            StaticNetSerializer_GameAction_UseParameters.NetDeserialize(obj, reader);
             return obj;
         }
         ,

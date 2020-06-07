@@ -116,13 +116,20 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             return;
         }
 
-        if(!gameAction.IsInstigatorValid(Accessor, inputUseItem.PawnController, pawn))
+        GameAction.UseContext useContext = new GameAction.UseContext()
+        {
+            InstigatorPawn = pawn,
+            InstigatorPawnController = inputUseItem.PawnController,
+            ItemEntity = item
+        };
+
+        if (!gameAction.IsInstigatorValid(Accessor, useContext))
         {
             LogDiscardReason($"Instigator is not valid for {gameAction}");
             return;
         }
 
-        gameAction.Use(Accessor, inputUseItem.PawnController, pawn, inputUseItem.GameActionData);
+        gameAction.Use(Accessor, useContext, inputUseItem.GameActionData);
     }
 
 }

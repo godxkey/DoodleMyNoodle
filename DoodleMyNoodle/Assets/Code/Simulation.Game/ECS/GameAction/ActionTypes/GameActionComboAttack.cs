@@ -10,7 +10,7 @@ public class GameActionComboAttack : GameAction
     const int AP_COST_PER_ATTACK = 1;
     const int RANGE = 1;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
             new GameActionParameterTile.Description()
@@ -25,20 +25,20 @@ public class GameActionComboAttack : GameAction
             });
     }
 
-    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
+    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return accessor.HasComponent<ActionPoints>(instigatorPawn)
-            && accessor.HasComponent<FixTranslation>(instigatorPawn);
+        return accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
+            && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);
     }
 
-    public override void Use(ISimWorldReadWriteAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn, UseData useData)
+    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
     {
         // TODO Find a better way to go through all Parameters (foreach)
 
-        int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(instigatorPawn).Value).xy;
+        int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value).xy;
         NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
 
-        if (useData.TryGetParameter(0, out GameActionParameterTile.Data firstTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterTile.Data firstTile))
         {
             // melee attack has a range of RANGE
             if (lengthmanhattan(firstTile.Tile - instigatorTile) > RANGE)
@@ -46,19 +46,19 @@ public class GameActionComboAttack : GameAction
                 return;
             }
 
-            if (accessor.GetComponentData<ActionPoints>(instigatorPawn).Value < AP_COST_PER_ATTACK)
+            if (accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value < AP_COST_PER_ATTACK)
             {
                 return;
             }
 
             // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, instigatorPawn, -AP_COST_PER_ATTACK);
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST_PER_ATTACK);
 
             // find victims
             CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, firstTile.Tile, victims);
         }
 
-        if (useData.TryGetParameter(1, out GameActionParameterTile.Data secondTile))
+        if (parameters.TryGetParameter(1, out GameActionParameterTile.Data secondTile))
         {
             // melee attack has a range of RANGE
             if (lengthmanhattan(secondTile.Tile - instigatorTile) > RANGE)
@@ -66,13 +66,13 @@ public class GameActionComboAttack : GameAction
                 return;
             }
 
-            if (accessor.GetComponentData<ActionPoints>(instigatorPawn).Value < AP_COST_PER_ATTACK)
+            if (accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value < AP_COST_PER_ATTACK)
             {
                 return;
             }
 
             // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, instigatorPawn, -AP_COST_PER_ATTACK);
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST_PER_ATTACK);
 
             // find victims
             CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, secondTile.Tile, victims);

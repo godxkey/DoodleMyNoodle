@@ -6,11 +6,11 @@ using UnityEngine;
 public class SimPlayerInputUseItem : SimPlayerInput
 {
     public int ItemIndex;
-    public GameAction.UseData UseData;
+    public GameAction.UseParameters UseData;
 
     public SimPlayerInputUseItem() {}
 
-    public SimPlayerInputUseItem(int itemIndex, GameAction.UseData useData)
+    public SimPlayerInputUseItem(int itemIndex, GameAction.UseParameters useData)
     {
         ItemIndex = itemIndex;
         UseData = useData;
