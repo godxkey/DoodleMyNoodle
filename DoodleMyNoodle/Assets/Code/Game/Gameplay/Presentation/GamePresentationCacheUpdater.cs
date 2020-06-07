@@ -7,45 +7,38 @@ public class GamePresentationCache
 {
     public readonly static GamePresentationCache Instance = new GamePresentationCache();
 
+    public bool Ready = false;
+
     public Entity LocalPawn = Entity.Null;
+    public fix3 LocalPawnPosition = fix3.zero;
+    public Vector3 LocalPawnPositionFloat = Vector3.zero;
     public Entity LocalController = Entity.Null;
     public ExternalSimWorldAccessor SimWorld = null;
 }
 
-public class GamePresentationCacheUpdater : GameSystem
+// should we change this to a component system ?
+[AlwaysUpdateSystem]
+public class GamePresentationCacheUpdater : ViewComponentSystem
 {
-    private Coroutine _fetchSimWorldCoroutine;
-
-    public override bool SystemReady => Cache.SimWorld != null;
-
     GamePresentationCache Cache => GamePresentationCache.Instance;
 
-    public override void OnGameAwake()
+    protected override void OnCreate()
     {
-        base.OnGameAwake();
+        base.OnCreate();
 
-        _fetchSimWorldCoroutine = StartCoroutine(FetchSimWorldReference());
-    }
-
-    IEnumerator FetchSimWorldReference()
-    {
-        while (Cache.SimWorld == null)
-        {
-            Cache.SimWorld = GameMonoBehaviourHelpers.GetSimulationWorld();
-            yield return null;
-        }
+        Cache.Ready = true;
+        Cache.SimWorld = SimWorldAccessor;
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
 
-        if (_fetchSimWorldCoroutine != null)
-            StopCoroutine(_fetchSimWorldCoroutine);
+        Cache.Ready = false;
+        Cache.SimWorld = null;
     }
 
-
-    public override void OnGameUpdate()
+    protected override void OnUpdate()
     {
         UpdateCurrentPlayerPawn();
     }
@@ -54,5 +47,10 @@ public class GamePresentationCacheUpdater : GameSystem
     {
         Cache.LocalPawn = PlayerHelpers.GetLocalSimPawnEntity(Cache.SimWorld);
         Cache.LocalController = CommonReads.GetPawnController(Cache.SimWorld, Cache.LocalPawn);
+        if(Cache.LocalPawn != Entity.Null)
+        {
+            Cache.LocalPawnPosition = Cache.SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn).Value;
+            Cache.LocalPawnPositionFloat = Cache.LocalPawnPosition.ToUnityVec();
+        }
     }
 }
