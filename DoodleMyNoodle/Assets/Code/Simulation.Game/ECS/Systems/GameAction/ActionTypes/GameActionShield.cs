@@ -6,7 +6,7 @@ using static fixMath;
 public class GameActionShield : GameAction
 {
     // TODO: add settings on the item itself
-    const int HEAL = 100; // TEMP
+    const int DURATION = 1;
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
     {
@@ -21,13 +21,9 @@ public class GameActionShield : GameAction
 
     public override void Use(ISimWorldReadWriteAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn, UseData useData)
     {
-        if (useData.TryGetParameter(0, out GameActionParameterSelfTarget.Popo paramTile))
+        if (useData.TryGetParameter(0, out GameActionParameterSelfTarget.Data paramTile))
         {
-            CommonWrites.ModifyStatInt<Health>(accessor, instigatorPawn, HEAL);
-
-#if UNITY_EDITOR
-            DebugService.Log("hp SHIELD on " + accessor.GetName(instigatorPawnController));
-#endif
+            accessor.AddComponentData(instigatorPawnController, new Invincible() { Duration = DURATION });
         }
     }
 }
