@@ -18,10 +18,9 @@ public class #SCRIPTNAME# : ScriptTemplate
         // This helps keeping the templates up-to-date when types are renamed or removed.
 
         return
-$@""using {{nameof({nameof(System)})}};
-using {{nameof({nameof(UnityEngine)})}};
+$@""using UnityEngine;
 
-public class #%STRIPME%SCRIPTNAME%STRIPME%# : {{nameof({nameof(MonoBehaviour)})}}
+public class #%STRIPME%SCRIPTNAME%STRIPME%# : {{typeof({nameof(MonoBehaviour)}).GetPrettyName()}}
 {{{{
     void Start()
     {{{{
