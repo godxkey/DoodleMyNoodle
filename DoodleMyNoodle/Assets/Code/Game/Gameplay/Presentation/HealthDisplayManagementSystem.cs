@@ -49,7 +49,3 @@ public class HealthDisplayManagementSystem : GameMonoBehaviour
         currentHealthBar.SetActive(true);
     }
 }
-
-
-
-
