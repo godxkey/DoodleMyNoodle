@@ -216,9 +216,9 @@ MonoBehaviour:
   TextDisplay: {fileID: 8099840156021901270}
   TeamTurnTexts:
   - Team: 0
-    Text: YOUR TURN
+    Text: PLAYER TURN
   - Team: 1
-    Text: ENNEMY TURN
+    Text: ENEMY TURN
 --- !u!1 &8099840157971749617
 GameObject:
   m_ObjectHideFlags: 0
