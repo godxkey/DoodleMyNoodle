@@ -86,7 +86,7 @@ public class CreateLevelGridSystem : SimComponentSystem
 
 public partial class CommonReads
 {
-    public static Entity GetTile(ISimWorldReadAccessor accessor, int2 gridPosition)
+    public static Entity GetTileEntity(ISimWorldReadAccessor accessor, int2 gridPosition)
     {
         GridInfo gridInfo = accessor.GetSingleton<GridInfo>();
         intRect gridRect = gridInfo.GridRect;

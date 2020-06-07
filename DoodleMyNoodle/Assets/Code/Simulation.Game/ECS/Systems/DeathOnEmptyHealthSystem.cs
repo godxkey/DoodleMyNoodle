@@ -32,7 +32,7 @@ public class DeathOnEmptyHealthSystem : SimComponentSystem
                 EntityManager.CreateEventEntity(new EntityDeathEventData() { Entity = entity });
 
                 // If the entity was an addon, Remove it from grid system
-                Entity tile = CommonReads.GetTile(Accessor, roundToInt(translation.Value).xy);
+                Entity tile = CommonReads.GetTileEntity(Accessor, roundToInt(translation.Value).xy);
                 CommonWrites.RemoveEntityOnTile(Accessor, entity, tile);
 
                 // If the entity was a character, we need to remove that he is occupying the tile

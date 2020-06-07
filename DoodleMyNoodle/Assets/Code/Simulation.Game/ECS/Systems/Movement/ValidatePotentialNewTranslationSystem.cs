@@ -38,17 +38,22 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
             ref Velocity velocity,
             ref PotentialNewTranslation newTranslation) =>
         {
-            int2 tileDestinationPos = roundToInt(newTranslation.Value).xy;
-            int2 currentTilePos = roundToInt(translation.Value).xy;
+            int2 tileDestinationPos = Helpers.GetTile(newTranslation.Value);
+            int2 currentTilePos = Helpers.GetTile(translation.Value);
 
             if (!tileDestinationPos.Equals(currentTilePos))
             {
-                if (!CommonReads.DoesTileRespectFilters(Accessor, CommonReads.GetTile(Accessor, tileDestinationPos), TileFilterFlags.Inoccupied | TileFilterFlags.Navigable))
+                if (!CommonReads.DoesTileRespectFilters(Accessor, CommonReads.GetTileEntity(Accessor, tileDestinationPos), TileFilterFlags.Inoccupied | TileFilterFlags.Navigable))
                 {
-                    EntityManager.CreateEventEntity(new TileCollisionEventData() { Entity = entity, Tile = tileDestinationPos });
+                    // create event
+                    EntityManager.CreateEventEntity(new TileCollisionEventData()
+                    {
+                        Entity = entity,
+                        Tile = tileDestinationPos
+                    });
 
+                    // cancel movement
                     newTranslation.Value = translation.Value;
-                    Accessor.SetOrAddComponentData(entity, new Destination { Value = roundToInt(newTranslation.Value) });
                 }
             }
         });
@@ -60,22 +65,28 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
            ref Velocity velocity,
            ref PotentialNewTranslation newTranslation) =>
         {
-            int2 tileDestinationPos = roundToInt(newTranslation.Value).xy;
+            int2 tileDestinationPos = Helpers.GetTile(newTranslation.Value);
 
             // Already reserved
             if (reservedTiled.ContainsKey(tileDestinationPos))
             {
-                EntityManager.CreateEventEntity(new TileCollisionEventData() { Entity = entity, Tile = tileDestinationPos });
+                // create event
+                EntityManager.CreateEventEntity(new TileCollisionEventData()
+                {
+                    Entity = entity,
+                    Tile = tileDestinationPos
+                });
 
-                int2 currentTilePos = roundToInt(translation.Value).xy;
+                // cancel movement
+                int2 currentTilePos = Helpers.GetTile(translation);
                 newTranslation.Value = translation.Value;
 
-                Accessor.SetOrAddComponentData(entity, new Destination { Value = roundToInt(newTranslation.Value) });
-
+                // reserve CURRENT tile
                 reservedTiled.SetOrAdd(currentTilePos, entity);
             }
             else
             {
+                // reserve NEW tile
                 reservedTiled.Add(tileDestinationPos, entity);
             }
         });

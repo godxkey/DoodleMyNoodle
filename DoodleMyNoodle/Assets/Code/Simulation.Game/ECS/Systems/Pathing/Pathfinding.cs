@@ -221,7 +221,7 @@ public static class Pathfinding
 
     private static bool IsTileValid(int2 tilePos, ISimWorldReadAccessor accessor)
     {
-        Entity tile = CommonReads.GetTile(accessor, tilePos);
+        Entity tile = CommonReads.GetTileEntity(accessor, tilePos);
         return CommonReads.DoesTileRespectFilters(accessor, tile, TileFilterFlags.Navigable | TileFilterFlags.Inoccupied);
     }
 

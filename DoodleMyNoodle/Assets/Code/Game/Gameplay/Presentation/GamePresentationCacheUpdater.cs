@@ -7,13 +7,13 @@ public class GamePresentationCache
 {
     public readonly static GamePresentationCache Instance = new GamePresentationCache();
 
-    public bool Ready = false;
+    public bool Ready;
 
-    public Entity LocalPawn = Entity.Null;
-    public fix3 LocalPawnPosition = fix3.zero;
-    public Vector3 LocalPawnPositionFloat = Vector3.zero;
-    public Entity LocalController = Entity.Null;
-    public ExternalSimWorldAccessor SimWorld = null;
+    public Entity LocalPawn;
+    public fix3 LocalPawnPosition;
+    public Vector3 LocalPawnPositionFloat;
+    public Entity LocalController;
+    public ExternalSimWorldAccessor SimWorld;
 }
 
 // should we change this to a component system ?
@@ -26,6 +26,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
     {
         base.OnCreate();
 
+        ResetCache();
         Cache.Ready = true;
         Cache.SimWorld = SimWorldAccessor;
     }
@@ -34,8 +35,15 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
     {
         base.OnDestroy();
 
+        ResetCache();
         Cache.Ready = false;
         Cache.SimWorld = null;
+    }
+
+    private void ResetCache()
+    {
+        Cache.LocalController = Entity.Null;
+        Cache.LocalPawn = Entity.Null;
     }
 
     protected override void OnUpdate()

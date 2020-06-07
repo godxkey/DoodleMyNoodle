@@ -8,6 +8,7 @@ public class ScriptTemplateTemplate : ScriptTemplate
         return
 $@"using System;
 using UnityEngine;
+using UnityEngineX;
 
 
 public class #SCRIPTNAME# : ScriptTemplate
