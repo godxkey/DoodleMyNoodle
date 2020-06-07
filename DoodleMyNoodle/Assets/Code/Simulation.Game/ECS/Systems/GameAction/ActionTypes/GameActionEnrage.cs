@@ -1,23 +1,24 @@
-using Unity.Collections;
-using Unity.Entities;
 using Unity.Mathematics;
+using static Unity.Mathematics.math;
 using static fixMath;
+using Unity.Entities;
+using Unity.Collections;
 
-public class GameActionShield : GameAction
+public class GameActionEnrage : GameAction
 {
     // TODO: add settings on the item itself
-    const int DURATION = 1;
-    const int AP_COST = 2;
+    const int HP_COST = 2;
+    const int AP_GAIN = 2;
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
     {
-        return new UseContract(new GameActionParameterSelfTarget.Description() {});
+        return new UseContract(
+            new GameActionParameterSelfTarget.Description() { });
     }
 
     public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, Entity instigatorPawnController, Entity instigatorPawn)
     {
         return accessor.HasComponent<Health>(instigatorPawn)
-            && accessor.HasComponent<ActionPoints>(instigatorPawn)
             && accessor.HasComponent<FixTranslation>(instigatorPawn);
     }
 
@@ -25,16 +26,11 @@ public class GameActionShield : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterSelfTarget.Data self))
         {
-            if (accessor.GetComponentData<ActionPoints>(instigatorPawn).Value < AP_COST)
-            {
-                return;
-            }
+            // reduce instigator HP
+            CommonWrites.ModifyStatInt<Health>(accessor, instigatorPawn, -HP_COST);
 
-            // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, instigatorPawn, -AP_COST);
-
-            accessor.AddComponentData(instigatorPawn, new Invincible() { Duration = DURATION });
+            // increase instigator AP
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, instigatorPawn, AP_GAIN);
         }
     }
 }
-

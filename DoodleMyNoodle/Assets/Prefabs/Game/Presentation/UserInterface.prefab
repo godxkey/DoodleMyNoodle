@@ -622,6 +622,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7296775561025126664}
     m_Modifications:
+    - target: {fileID: 1999249295956734628, guid: b345d2975a15afb4a97218bab1b70f89,
+        type: 3}
+      propertyPath: InventorySlotShortcuts.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1999249295956734628, guid: b345d2975a15afb4a97218bab1b70f89,
+        type: 3}
+      propertyPath: InventorySlotShortcuts.Array.data[7].InputShortcut
+      value: 98
+      objectReference: {fileID: 0}
+    - target: {fileID: 1999249295956734628, guid: b345d2975a15afb4a97218bab1b70f89,
+        type: 3}
+      propertyPath: InventorySlotShortcuts.Array.data[8].InputShortcut
+      value: 114
+      objectReference: {fileID: 0}
+    - target: {fileID: 1999249295956734628, guid: b345d2975a15afb4a97218bab1b70f89,
+        type: 3}
+      propertyPath: InventorySlotShortcuts.Array.data[5].InputShortcut
+      value: 99
+      objectReference: {fileID: 0}
+    - target: {fileID: 1999249295956734628, guid: b345d2975a15afb4a97218bab1b70f89,
+        type: 3}
+      propertyPath: InventorySlotShortcuts.Array.data[6].InputShortcut
+      value: 118
+      objectReference: {fileID: 0}
     - target: {fileID: 3639621347635510574, guid: b345d2975a15afb4a97218bab1b70f89,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -635,7 +660,7 @@ PrefabInstance:
     - target: {fileID: 3639621347635510574, guid: b345d2975a15afb4a97218bab1b70f89,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 89.6
+      value: 102.9
       objectReference: {fileID: 0}
     - target: {fileID: 3639621347635510574, guid: b345d2975a15afb4a97218bab1b70f89,
         type: 3}
@@ -645,7 +670,7 @@ PrefabInstance:
     - target: {fileID: 3639621347635510574, guid: b345d2975a15afb4a97218bab1b70f89,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 601.4
+      value: 966.56
       objectReference: {fileID: 0}
     - target: {fileID: 3639621349529782096, guid: b345d2975a15afb4a97218bab1b70f89,
         type: 3}

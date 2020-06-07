@@ -1,9 +1,5 @@
 using Unity.Mathematics;
-using static Unity.Mathematics.math;
 using static fixMath;
-using System;
-using UnityEngine;
-using UnityEngineX;
 using Unity.Entities;
 using Unity.Collections;
 

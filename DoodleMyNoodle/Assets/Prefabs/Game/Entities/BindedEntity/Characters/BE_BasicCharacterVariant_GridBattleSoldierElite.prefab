@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5278598673461480541}
   - component: {fileID: 6347848117257768954}
   m_Layer: 0
-  m_Name: BE_BasicCharacterVariant_GridBattleSoldier
+  m_Name: BE_BasicCharacterVariant_GridBattleSoldierElite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
