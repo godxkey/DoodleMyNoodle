@@ -17,13 +17,8 @@ using {nameof(UnityEngine)};
 using {nameof(UnityEngineX)};
 
 public class #SCRIPTNAME# : {nameof(GamePresentationBehaviour)}
-{{
-    public override void OnGameStart()
-    {{
-
-    }}
-    
-    public override void OnGameUpdate()
+{{    
+    public override void OnGameLateUpdate()
     {{
 
     }}

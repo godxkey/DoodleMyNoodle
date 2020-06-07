@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngineX;
 using Unity.Entities;
 
-public class LocalPawnHighlighter : GamePresentationBehaviour
+public class LocalPawnHighlightController : GamePresentationBehaviour
 {
     [SerializeField] private GameObject _highlightPrefab;
 
@@ -14,10 +14,10 @@ public class LocalPawnHighlighter : GamePresentationBehaviour
 
     public override void OnGameAwake()
     {
-        _highlight = Instantiate(_highlightPrefab).transform;
+        _highlight = Instantiate(_highlightPrefab, transform).transform;
     }
 
-    public override void OnGameUpdate()
+    public override void OnGameLateUpdate()
     {
         if(SimWorldCache.LocalPawn != Entity.Null)
         {

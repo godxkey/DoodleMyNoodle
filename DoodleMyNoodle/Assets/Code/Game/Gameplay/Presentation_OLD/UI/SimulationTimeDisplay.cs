@@ -8,10 +8,8 @@ public class SimulationTimeDisplay : GameMonoBehaviour
     public Text Text;
     public string Prefix = "SimTime: ";
 
-    public override void OnGameUpdate()
+    public override void OnGameLateUpdate()
     {
-        base.OnGameUpdate();
-
         Text.text = $"{Prefix}{GameMonoBehaviourHelpers.GetSimulationWorld().Time.ElapsedTime:F2}";
     }
 }

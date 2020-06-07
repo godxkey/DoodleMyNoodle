@@ -33,6 +33,7 @@ public class GameMonoBehaviour : MonoBehaviour, IIndexedInList
 
     public virtual void OnGameUpdate() { }
     public virtual void OnGameFixedUpdate() { }
+    public virtual void OnGameLateUpdate() { }
     public virtual void OnGameAwake() { }
     public virtual void OnGameStart() { }
     public virtual void OnSafeDestroy() { }

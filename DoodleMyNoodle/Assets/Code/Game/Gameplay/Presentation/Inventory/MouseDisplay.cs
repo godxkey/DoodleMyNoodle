@@ -12,10 +12,8 @@ public class MouseDisplay : GameSystem<MouseDisplay>
 
     public override bool SystemReady => true;
 
-    public override void OnGameUpdate()
+    public override void OnGameLateUpdate()
     {
-        base.OnGameUpdate();
-
         if (TooltipPanel.activeSelf)
         {
             transform.position = Input.mousePosition;

@@ -135,6 +135,9 @@ namespace SimulationControl
                 if (!CanTick)
                     break;
 
+                // this ensures our previously scheduled view jobs are done (we might want to find a more performant alternative)
+                World.EntityManager.CompleteAllJobs();
+
                 IsTicking = true;
 
                 SimTickData tick = AvailableTicks.First();

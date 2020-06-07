@@ -167,6 +167,30 @@ public class Game : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        if (_started)
+        {
+            foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
+            {
+#if DEBUG_BUILD
+                try
+                {
+#endif
+                    if (b.isActiveAndEnabled)
+                        b.OnGameLateUpdate();
+#if DEBUG_BUILD
+                }
+                catch (Exception e)
+                {
+                    DebugService.LogError(e.Message + " - stack:\n " + e.StackTrace);
+                }
+#endif
+
+            }
+        }
+    }
+
     void OnPlayModeSpecificSceneLoaded(ISceneLoadPromise sceneLoadPromise)
     {
         _playModeSpecificSceneLoaded = true;
