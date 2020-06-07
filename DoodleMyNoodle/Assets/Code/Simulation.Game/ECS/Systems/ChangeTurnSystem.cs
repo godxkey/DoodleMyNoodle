@@ -45,7 +45,18 @@ public class ChangeTurnSystem : SimComponentSystem
 
             // set new turn
             SetSingleton(new TurnCurrentTeam { Value = requestData.TeamToPlay });
-            SetSingleton(new TurnTimer { Value = GetSingleton<TurnDuration>().Value });
+
+            switch ((TeamAuth.DesignerFriendlyTeam)requestData.TeamToPlay)
+            {
+                case TeamAuth.DesignerFriendlyTeam.Player:
+                    SetSingleton(new TurnTimer { Value = GetSingleton<TurnDuration>().DurationPlayer });
+                    break;
+                case TeamAuth.DesignerFriendlyTeam.Baddies:
+                    SetSingleton(new TurnTimer { Value = GetSingleton<TurnDuration>().DurationAI });
+                    break;
+                default:
+                    break;
+            }
 
             // fire event
             EntityManager.CreateEventEntity<NewTurnEventData>();

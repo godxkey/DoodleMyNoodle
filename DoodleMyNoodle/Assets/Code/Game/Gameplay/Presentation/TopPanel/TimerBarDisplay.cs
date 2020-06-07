@@ -16,15 +16,15 @@ public class TimerBarDisplay : GamePresentationBehaviour
             && SimWorld.TryGetSingleton(out TurnDuration turnDuration)
             && SimWorld.TryGetSingleton(out TurnCurrentTeam turnTeam))
         {
-            TimerBar.value = (float)(turnTimer.Value / turnDuration.Value);
-
             switch (turnTeam.Value)
             {
                 case (int)TurnSystemSetting.Team.AI:
                     TimerBar.fillRect.GetComponent<Image>().color = Color.red;
+                    TimerBar.value = (float)(turnTimer.Value / turnDuration.DurationAI);
                     break;
                 case (int)TurnSystemSetting.Team.Players:
                     TimerBar.fillRect.GetComponent<Image>().color = Color.blue;
+                    TimerBar.value = (float)(turnTimer.Value / turnDuration.DurationPlayer);
                     break;
                 default:
                     break;
