@@ -15,7 +15,7 @@ public class TileOccupationSystem : SimComponentSystem
             .ForEach((Entity pawn, ref FixTranslation pawnTranslation, ref PreviousFixTranslation previousPawnTranslation) =>
             {
                 int2 tilePosition = CalculateCurrentTilePosition(pawnTranslation.Value);
-                Entity currentTile = CommonReads.GetTile(Accessor, tilePosition);
+                Entity currentTile = CommonReads.GetTileEntity(Accessor, tilePosition);
 
                 if (!IsTileAlreadyOccupied(currentTile))
                 {
@@ -30,7 +30,7 @@ public class TileOccupationSystem : SimComponentSystem
                 }
 
                 int2 previousTilePosition = CalculateCurrentTilePosition(previousPawnTranslation.Value);
-                Entity previousTile = CommonReads.GetTile(Accessor, previousTilePosition);
+                Entity previousTile = CommonReads.GetTileEntity(Accessor, previousTilePosition);
 
                 if (currentTile != previousTile)
                 {

@@ -136,7 +136,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
         // TILE FILTERS
 
         // tile valid
-        Entity currentTile = CommonReads.GetTile(SimWorld, tilePosition);
+        Entity currentTile = CommonReads.GetTileEntity(SimWorld, tilePosition);
         if (currentTile == Entity.Null)
         {
             return;

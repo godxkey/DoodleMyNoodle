@@ -163,8 +163,6 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
 
             // queue input
             CommonWrites.QueuePawnControllerInput(Accessor, input);
-
-            DebugService.Log("performe melee attack");
         }
     }
 }
