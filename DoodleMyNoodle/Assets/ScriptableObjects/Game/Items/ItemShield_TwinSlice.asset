@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a710da78879440489da5afe5fba6d82, type: 3}
-  m_Name: ItemAttack_Sword
+  m_Name: ItemShield_TwinSlice
   m_EditorClassIdentifier: 
-  ID: {fileID: -8620854387768135619, guid: 8fe72c48eacd0c642818eff638603c62, type: 3}
-  Icon: {fileID: 21300000, guid: f60bb367ece611d429d90e53a56b4f4b, type: 3}
-  Name: Sword
-  Description: Attack an occupied tile (1 AP)
+  ID: {fileID: 971858758830137585, guid: 3fa80de446fd0ed409cdb9374b921d40, type: 3}
+  Icon: {fileID: 21300000, guid: 234c1be7546bf3d47822fd90c5906b82, type: 3}
+  Name: Twin Slice
+  Description: Attack 2 targets (1 AP each)

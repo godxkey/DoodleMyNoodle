@@ -141,7 +141,8 @@ public class InventoryDisplay : GamePresentationBehaviour
 
         IdentifyAndGatherDataForParameterDescription(itemUseContact.ParameterTypes[DataToExtract], DataToExtract, ()=> 
         {
-            QueryUseDataFromPlayer(itemUseContact, onComplete, DataToExtract + 1);
+            // Little Delay between choices
+            this.DelayedCall(0.1f, ()=> { QueryUseDataFromPlayer(itemUseContact, onComplete, DataToExtract + 1); });
         });
     }
     
@@ -154,6 +155,7 @@ public class InventoryDisplay : GamePresentationBehaviour
             {
                 TileHighlightManager.Instance.AskForSingleTileSelectionAroundPlayer(TileDescription, (GameActionParameterTile.Data TileSelectedData) =>
                 {
+                    TileSelectedData.ParamIndex = index;
                     _currentItemUseData.ParameterDatas[index] = TileSelectedData;
                     OnComplete?.Invoke();
                 });
@@ -164,7 +166,7 @@ public class InventoryDisplay : GamePresentationBehaviour
         // SELF TARGETING
         if (parameterDescription is GameActionParameterSelfTarget.Description SelfDescription)
         {
-            _currentItemUseData.ParameterDatas[index] = new GameActionParameterSelfTarget.Data(0);
+            _currentItemUseData.ParameterDatas[index] = new GameActionParameterSelfTarget.Data(index);
             OnComplete?.Invoke();
             return;
         }

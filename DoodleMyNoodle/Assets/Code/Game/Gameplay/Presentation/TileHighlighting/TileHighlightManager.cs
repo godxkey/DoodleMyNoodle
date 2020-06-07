@@ -59,7 +59,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
     {
         _currentTileSelectionCallback = null;
         SimWorld.TryGetComponentData(PlayerHelpers.GetLocalSimPawnEntity(SimWorld), out FixTranslation localPawnPosition);
-        AddHilightsAroundPlayer(roundToInt(localPawnPosition.Value).xy, TileParameters.RangeFromInstigator, TileParameters.Filter);
+        AddHilightsAroundPlayer(roundToInt(localPawnPosition.Value).xy, TileParameters.RangeFromInstigator, TileParameters.Filter, TileParameters.IncludeSelf);
         _currentTileSelectionCallback = TileSelectedData;
     }
 
@@ -69,15 +69,20 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
         HideAll();
     }
 
-    private void AddHilightsAroundPlayer(int2 pos, int depth, TileFilterFlags tileFlags)
+    private void AddHilightsAroundPlayer(int2 pos, int depth, TileFilterFlags tileFlags, bool includeSelf)
     {
         int numberOfTiles = 0;
+        fix2 newPossibleDestination = new fix2(pos.x, pos.y);
+
+        if (includeSelf)
+        {
+            HandleHighlightOnPosition(newPossibleDestination, newPossibleDestination, ref numberOfTiles, depth, tileFlags);
+        }
+        
         for (int i = 1; i <= depth; i++)
         {
             for (int j = 1; j <= (i * 4); j++)
             {
-                fix2 newPossibleDestination = new fix2(pos.x, pos.y);
-
                 AddHilight(newPossibleDestination, ref numberOfTiles, i, j, depth, tileFlags);
             }
         }
@@ -86,7 +91,13 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
     private void AddHilight(fix2 newPossibleDestination, ref int numberOfTiles, int height, int lenght, int maxPathCost, TileFilterFlags tileFlags)
     {
         fix2 originPos = newPossibleDestination;
+        fix2 destinationPos = FindNewPosibleHighlightDestination(newPossibleDestination, height, lenght);
+        
+        HandleHighlightOnPosition(originPos, destinationPos, ref numberOfTiles, maxPathCost, tileFlags);
+    }
 
+    private fix2 FindNewPosibleHighlightDestination(fix2 newPossibleDestination, int height, int lenght)
+    {
         int currentQuadran = Mathf.CeilToInt((float)lenght / height);
 
         int displacementForward = ((currentQuadran * height + 1) - lenght);
@@ -115,17 +126,24 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
                 break;
         }
 
+        return newPossibleDestination;
+    }
+
+    private void HandleHighlightOnPosition(fix2 originPos, fix2 destinationPos, ref int numberOfTiles, int maxPathCost, TileFilterFlags tileFlags)
+    {
+        int2 tilePosition = roundToInt(destinationPos).xy;
+
         // TILE FILTERS
 
         // tile valid
-        Entity currentTile = CommonReads.GetTile(SimWorld, roundToInt(newPossibleDestination).xy);
-        if(currentTile == Entity.Null)
+        Entity currentTile = CommonReads.GetTile(SimWorld, tilePosition);
+        if (currentTile == Entity.Null)
         {
             return;
         }
 
         // tile filters
-        if(!CommonReads.DoesTileRespectFilters(SimWorld, currentTile, tileFlags))
+        if (!CommonReads.DoesTileRespectFilters(SimWorld, currentTile, tileFlags))
         {
             return;
         }
@@ -134,7 +152,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
         if ((tileFlags & TileFilterFlags.Navigable) != 0)
         {
             NativeList<int2> _highlightNavigablePath = new NativeList<int2>(Allocator.Temp);
-            if (!CommonReads.FindNavigablePath(SimWorld, roundToInt(originPos).xy, roundToInt(newPossibleDestination).xy, maxPathCost, _highlightNavigablePath))
+            if (!CommonReads.FindNavigablePath(SimWorld, roundToInt(originPos).xy, tilePosition, maxPathCost, _highlightNavigablePath))
             {
                 return;
             }
@@ -151,7 +169,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
         // ACTIVATE TILE
 
         _highlights[numberOfTiles].SetActive(true);
-        _highlights[numberOfTiles].transform.position = new Vector3((float)newPossibleDestination.x, (float)newPossibleDestination.y, 0);
+        _highlights[numberOfTiles].transform.position = new Vector3((float)destinationPos.x, (float)destinationPos.y, 0);
 
         numberOfTiles++;
     }
