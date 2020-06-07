@@ -45,8 +45,20 @@ public class GameActionConvert : GameAction
             foreach (Entity entity in victims)
             {
                 Entity pawnController = CommonReads.GetPawnController(accessor, entity);
-                accessor.SetOrAddComponentData(pawnController, new NeedToBeConverted());
-                accessor.SetOrAddComponentData(pawnController, new Converted() { Duration = DURATION });
+                if (pawnController != Entity.Null && accessor.TryGetComponentData(pawnController, out Team currentTeam))
+                {
+                    var newTeam = currentTeam.Value == 0 ? 1 : 0;
+
+                    accessor.SetComponentData(pawnController, new Team() { Value = newTeam });
+                    if (accessor.HasComponent<Converted>(pawnController))
+                    {
+                        accessor.RemoveComponent<Converted>(pawnController);
+                    }
+                    else
+                    {
+                        accessor.AddComponentData(pawnController, new Converted() { Duration = DURATION });
+                    }
+                }
             }
         }
     }

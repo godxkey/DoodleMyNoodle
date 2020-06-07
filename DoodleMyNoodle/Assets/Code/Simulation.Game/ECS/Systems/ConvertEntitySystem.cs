@@ -10,7 +10,7 @@ public class ConvertEntitySystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
-        ApplyConvertedState();
+        //ApplyConvertedState();
 
         if (HasSingleton<NewTurnEventData>())
         {
@@ -29,7 +29,7 @@ public class ConvertEntitySystem : SimComponentSystem
                 if (converted.Duration <= 1)
                 {
                     Accessor.SetComponentData(entity, new Team() { Value = (int)TeamAuth.DesignerFriendlyTeam.Baddies });
-                    Accessor.RemoveComponent<Converted>(entity);
+                    PostUpdateCommands.RemoveComponent<Converted>(entity);
                 }
                 else
                 {

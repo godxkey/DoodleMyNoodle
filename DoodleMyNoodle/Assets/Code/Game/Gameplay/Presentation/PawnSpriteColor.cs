@@ -7,7 +7,7 @@ using UnityEngineX;
 using Unity.Collections;
 using Unity.Entities;
 
-public class PawnSpriteColor : GameMonoBehaviour
+public class PawnSpriteColor : GamePresentationBehaviour
 {
     public SpriteRenderer SpriteRenderer;
 
@@ -15,15 +15,10 @@ public class PawnSpriteColor : GameMonoBehaviour
 
     public override void OnGameLateUpdate()
     {
-        int2 currentTilePos = new int2((int)transform.position.x,(int)transform.position.y);
-        ExternalSimWorldAccessor accessor = GameMonoBehaviourHelpers.GetSimulationWorld();
-
-        NativeList<Entity> pawnsOnTile = new NativeList<Entity>(Allocator.Temp);
-        CommonReads.FindEntitiesOnTileWithComponent<ControllableTag>(accessor, currentTilePos, pawnsOnTile);
-        foreach (Entity pawn in pawnsOnTile)
+        if (TryGetComponent(out BindedSimEntityManaged bindedSimEntity))
         {
-            Entity pawnController = CommonReads.GetPawnController(accessor, pawn);
-            if (accessor.TryGetComponentData(pawnController, out Team pawnTeam))
+            Entity pawnController = CommonReads.GetPawnController(SimWorld, bindedSimEntity.SimEntity);
+            if (SimWorld.TryGetComponentData(pawnController, out Team pawnTeam))
             {
                 Color spriteColor = new Color();
                 switch ((TeamAuth.DesignerFriendlyTeam)pawnTeam.Value)
@@ -31,6 +26,7 @@ public class PawnSpriteColor : GameMonoBehaviour
                     case TeamAuth.DesignerFriendlyTeam.Player:
                         spriteColor = Color.white;
                         break;
+
                     case TeamAuth.DesignerFriendlyTeam.Baddies:
                         if (IsElite)
                         {
@@ -40,8 +36,6 @@ public class PawnSpriteColor : GameMonoBehaviour
                         {
                             spriteColor = Color.red;
                         }
-                        break;
-                    default:
                         break;
                 }
 
