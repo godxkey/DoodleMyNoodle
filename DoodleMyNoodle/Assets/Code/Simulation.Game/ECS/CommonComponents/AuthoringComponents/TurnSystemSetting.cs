@@ -14,16 +14,17 @@ public class TurnSystemSetting : MonoBehaviour, IConvertGameObjectToEntity
     }
 
     public Team StartingTeam = Team.Players;
-    public fix TurnDuration = 10;
+    public fix AITurnDuration = 2;
+    public fix PlayerTurnDuration = 20;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new TurnDuration { Value = TurnDuration });
+        dstManager.AddComponentData(entity, new TurnDuration { DurationAI = AITurnDuration, DurationPlayer = PlayerTurnDuration });
 
         dstManager.AddComponentData(entity, new TurnCurrentTeam { Value = (int)StartingTeam });
 
         dstManager.AddComponentData(entity, new TurnTeamCount { Value = (int)Enum.GetValues(typeof(Team)).Length });
 
-        dstManager.AddComponentData(entity, new TurnTimer { Value = TurnDuration });
+        dstManager.AddComponentData(entity, new TurnTimer { Value = PlayerTurnDuration });
     }
 }
