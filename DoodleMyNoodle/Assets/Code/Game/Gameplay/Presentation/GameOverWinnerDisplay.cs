@@ -22,10 +22,8 @@ public class GameOverWinnerDisplay : GamePresentationBehaviour
 
     public List<WinningTeamText> WinTeamTexts = new List<WinningTeamText>();
 
-    public override void OnGameUpdate()
+    public override void OnGameLateUpdate()
     {
-        base.OnGameUpdate();
-
         if (SimWorld.TryGetSingleton(out WinningTeam currentWinner))
         {
             DisplayContainer.SetActive(true);

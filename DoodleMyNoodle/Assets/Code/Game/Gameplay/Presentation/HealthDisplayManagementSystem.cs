@@ -12,7 +12,7 @@ public class HealthDisplayManagementSystem : GameMonoBehaviour
 
     private List<GameObject> _healthBarInstances = new List<GameObject>();
 
-    public override void OnGameUpdate() 
+    public override void OnGameLateUpdate() 
     {
         int healthBarAmount = 0;
         GameMonoBehaviourHelpers.GetSimulationWorld().Entities.ForEach((ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation)=>

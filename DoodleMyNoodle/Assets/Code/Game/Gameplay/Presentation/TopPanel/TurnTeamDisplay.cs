@@ -17,10 +17,8 @@ public class TurnTeamDisplay : GamePresentationBehaviour
 
     public List<TeamTurnText> TeamTurnTexts = new List<TeamTurnText>();
 
-    public override void OnGameUpdate()
+    public override void OnGameLateUpdate()
     {
-        base.OnGameUpdate();
-
         int currentTeam = -1;
 
         if (SimWorld.TryGetSingleton(out TurnCurrentTeam turnCurrentTeam))

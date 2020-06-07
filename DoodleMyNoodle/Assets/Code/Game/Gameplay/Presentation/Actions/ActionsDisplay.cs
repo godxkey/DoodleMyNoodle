@@ -9,10 +9,8 @@ public class ActionsDisplay : GamePresentationBehaviour
 
     private List<ActionPointDisplay> _actionPoints = new List<ActionPointDisplay>();
 
-    public override void OnGameUpdate()
+    public override void OnGameLateUpdate()
     {
-        base.OnGameUpdate();
-
         if (SimWorld.TryGetComponentData(SimWorldCache.LocalPawn, out ActionPoints actions))
         {
             if(SimWorld.TryGetComponentData(SimWorldCache.LocalPawn, out MaximumInt<ActionPoints> maximumActions))

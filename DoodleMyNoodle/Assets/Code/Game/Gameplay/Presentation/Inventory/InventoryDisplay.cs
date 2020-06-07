@@ -29,7 +29,7 @@ public class InventoryDisplay : GamePresentationBehaviour
         }
     }
 
-    public override void OnGameUpdate()
+    public override void OnGameLateUpdate()
     {
         if(SimWorldCache.LocalPawn != Entity.Null)
         {
