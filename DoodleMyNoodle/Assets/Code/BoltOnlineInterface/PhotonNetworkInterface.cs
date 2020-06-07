@@ -42,6 +42,9 @@ namespace Internals.PhotonNetwokInterface
         public override event Action<INetworkInterfaceConnection> OnConnect;
         public override event Action OnSessionListUpdated;
         public override event Action<byte[], IStreamChannel, INetworkInterfaceConnection> StreamDataReceived;
+        public override event StreamDataStartedDelegate StreamDataStarted;
+        public override event StreamDataProgressDelegate StreamDataProgress;
+        public override event StreamDataAbortedDelegate StreamDataAborted;
 
         public override bool IsServer => BoltNetwork.IsServer;
         public override ReadOnlyList<INetworkInterfaceConnection> Connections => _connections.AsReadOnlyNoAlloc();
@@ -366,20 +369,73 @@ namespace Internals.PhotonNetwokInterface
 
         public void Event_StreamDataStarted(BoltConnection connection, UdpChannelName channel, ulong streamID)
         {
+            INetworkInterfaceConnection interfaceConnection = FindInterfaceConnection(connection);
+
+            if (interfaceConnection == null)
+            {
+                DebugService.LogError($"[PhotonNetworkInterface] StreamDataStarted from unknown connection: {connection}.");
+                return;
+            }
+
+            IStreamChannel streamChannel = FindStreamChannel(channel);
+
+            if (streamChannel == null)
+            {
+                DebugService.LogError($"[PhotonNetworkInterface] StreamDataStarted from an unknown channel '{channel}'.");
+                return;
+            }
+
+            StreamDataStarted?.Invoke(interfaceConnection, streamChannel, streamID);
         }
+
         public void Event_StreamDataProgress(BoltConnection connection, UdpChannelName channel, ulong streamID, float progress)
         {
+            INetworkInterfaceConnection interfaceConnection = FindInterfaceConnection(connection);
+
+            if (interfaceConnection == null)
+            {
+                DebugService.LogError($"[PhotonNetworkInterface] StreamDataProgress from unknown connection: {connection}.");
+                return;
+            }
+
+            IStreamChannel streamChannel = FindStreamChannel(channel);
+
+            if (streamChannel == null)
+            {
+                DebugService.LogError($"[PhotonNetworkInterface] StreamDataProgress from an unknown channel '{channel}'.");
+                return;
+            }
+
+            StreamDataProgress?.Invoke(interfaceConnection, streamChannel, streamID, progress);
         }
+
         public void Event_StreamDataAborted(BoltConnection connection, UdpChannelName channel, ulong streamID)
         {
+            INetworkInterfaceConnection interfaceConnection = FindInterfaceConnection(connection);
+
+            if (interfaceConnection == null)
+            {
+                DebugService.Log($"[PhotonNetworkInterface] StreamDataAborted from unknown connection: {connection}.");
+            }
+
+            IStreamChannel streamChannel = FindStreamChannel(channel);
+
+            if (streamChannel == null)
+            {
+                DebugService.LogError($"[PhotonNetworkInterface] StreamDataAborted from an unknown channel '{channel}'.");
+                return;
+            }
+
+            StreamDataAborted?.Invoke(interfaceConnection, streamChannel, streamID);
         }
+
         public void Event_StreamDataReceived(BoltConnection connection, UdpStreamData streamData)
         {
             INetworkInterfaceConnection interfaceConnection = FindInterfaceConnection(connection);
 
             if(interfaceConnection == null)
             {
-                DebugService.LogError("[PhotonNetworkInterface] Received stream data from an unknown connection. This should not happen.");
+                DebugService.LogError($"[PhotonNetworkInterface] Received stream data from an unknown connection: {connection}.");
                 return;
             }
 

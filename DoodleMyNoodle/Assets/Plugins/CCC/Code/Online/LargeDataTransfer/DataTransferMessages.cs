@@ -50,6 +50,13 @@ namespace CCC.Online.DataTransfer
         public ushort TransferId;
     }
 
+    // sent by the downloader to notify the uploader of the progress (needed because of limitation of Bolt api ...)
+    [NetSerializable]
+    public struct NetMessageViaStreamUpdate
+    {
+        public float Progress;
+    }
+
     [NetSerializable]
     public struct NetMessageViaStreamACK
     {
