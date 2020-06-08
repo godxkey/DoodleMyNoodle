@@ -8,6 +8,6 @@ public class GameActionParameterSelfTarget
     {
         public Data() { }
 
-        public Data(int parameterIndex) : base(parameterIndex) { }
+        public Data(byte parameterIndex) : base(parameterIndex) { }
     }
 }

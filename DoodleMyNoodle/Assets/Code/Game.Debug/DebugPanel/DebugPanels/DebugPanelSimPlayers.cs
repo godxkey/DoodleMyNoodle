@@ -16,15 +16,12 @@ public class DebugPanelSimPlayers : DebugPanel
     {
         _cachedPlayers.Clear();
 
-        using (EntityQuery query = GameMonoBehaviourHelpers.GetSimulationWorld().CreateEntityQuery(
-            ComponentType.ReadOnly<PlayerTag>(),
-            ComponentType.ReadOnly<PersistentId>()))
+        GameMonoBehaviourHelpers.GetSimulationWorld().Entities
+            .WithAll<PlayerTag, Name, PersistentId>()
+            .ForEach((Entity playerEntity) =>
         {
-            using (NativeArray<Entity> simPlayers = query.ToEntityArray(Allocator.TempJob))
-            {
-                _cachedPlayers.AddRange(simPlayers);
-            }
-        }
+            _cachedPlayers.Add(playerEntity);
+        });
     }
 
     public override void OnGUI()

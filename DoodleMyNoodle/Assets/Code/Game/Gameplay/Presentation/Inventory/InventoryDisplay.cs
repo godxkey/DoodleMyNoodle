@@ -138,7 +138,7 @@ public class InventoryDisplay : GamePresentationBehaviour
     }
 
     private GameAction.UseParameters _currentItemUseData;
-    private void QueryUseDataFromPlayer(GameAction.UseContract itemUseContact, Action onComplete, int DataToExtract = 0)
+    private void QueryUseDataFromPlayer(GameAction.UseContract itemUseContact, Action onComplete, byte DataToExtract = 0)
     {
         if (DataToExtract >= itemUseContact.ParameterTypes.Length) 
         {
@@ -155,11 +155,11 @@ public class InventoryDisplay : GamePresentationBehaviour
             }
 
             // Little Delay between choices
-            this.DelayedCall(0.1f, ()=> { QueryUseDataFromPlayer(itemUseContact, onComplete, DataToExtract + 1); });
+            this.DelayedCall(0.1f, ()=> { QueryUseDataFromPlayer(itemUseContact, onComplete, (byte)(DataToExtract + 1)); });
         });
     }
     
-    private void IdentifyAndGatherDataForParameterDescription(GameAction.ParameterDescription parameterDescription, int index, Action OnComplete)
+    private void IdentifyAndGatherDataForParameterDescription(GameAction.ParameterDescription parameterDescription, byte index, Action OnComplete)
     {
         // SELECT A SINGLE TILE
         if (parameterDescription is GameActionParameterTile.Description TileDescription)

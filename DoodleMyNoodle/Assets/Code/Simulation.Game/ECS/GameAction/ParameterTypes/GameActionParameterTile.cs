@@ -29,7 +29,7 @@ public class GameActionParameterTile
 
         public Data() { }
 
-        public Data(int parameterIndex, int2 tile)
+        public Data(byte parameterIndex, int2 tile)
             : base(parameterIndex)
         {
             Tile = tile;

@@ -15,7 +15,7 @@ public static class StaticNetSerializer_GameActionParameterSelfTarget_Data
     public static int GetNetBitSize(GameActionParameterSelfTarget.Data obj)
     {
         int result = 0;
-        result += StaticNetSerializer_System_Int32.GetNetBitSize(ref obj.ParamIndex);
+        result += StaticNetSerializer_System_Byte.GetNetBitSize(ref obj.ParamIndex);
         result += StaticNetSerializer_GameAction_ParameterData.GetNetBitSize(obj);
         return result;
     }
@@ -32,7 +32,7 @@ public static class StaticNetSerializer_GameActionParameterSelfTarget_Data
     }
     public static void NetSerialize(GameActionParameterSelfTarget.Data obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_System_Int32.NetSerialize(ref obj.ParamIndex, writer);
+        StaticNetSerializer_System_Byte.NetSerialize(ref obj.ParamIndex, writer);
         StaticNetSerializer_GameAction_ParameterData.NetSerialize(obj, writer);
     }
 
@@ -48,7 +48,7 @@ public static class StaticNetSerializer_GameActionParameterSelfTarget_Data
     }
     public static void NetDeserialize(GameActionParameterSelfTarget.Data obj, BitStreamReader reader)
     {
-        StaticNetSerializer_System_Int32.NetDeserialize(ref obj.ParamIndex, reader);
+        StaticNetSerializer_System_Byte.NetDeserialize(ref obj.ParamIndex, reader);
         StaticNetSerializer_GameAction_ParameterData.NetDeserialize(obj, reader);
     }
 }

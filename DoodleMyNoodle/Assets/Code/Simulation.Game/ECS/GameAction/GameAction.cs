@@ -13,11 +13,11 @@ public abstract class GameAction
     [NetSerializable(baseClass = true)]
     public abstract class ParameterData
     {
-        public int ParamIndex;
+        public byte ParamIndex;
 
         public ParameterData() { }
 
-        protected ParameterData(int paramIndex)
+        protected ParameterData(byte paramIndex)
         {
             ParamIndex = paramIndex;
         }

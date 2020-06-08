@@ -16,7 +16,7 @@ public static class StaticNetSerializer_GameActionParameterTile_Data
     {
         int result = 0;
         result += StaticNetSerializer_Unity_Mathematics_int2.GetNetBitSize(ref obj.Tile);
-        result += StaticNetSerializer_System_Int32.GetNetBitSize(ref obj.ParamIndex);
+        result += StaticNetSerializer_System_Byte.GetNetBitSize(ref obj.ParamIndex);
         result += StaticNetSerializer_GameAction_ParameterData.GetNetBitSize(obj);
         return result;
     }
@@ -34,7 +34,7 @@ public static class StaticNetSerializer_GameActionParameterTile_Data
     public static void NetSerialize(GameActionParameterTile.Data obj, BitStreamWriter writer)
     {
         StaticNetSerializer_Unity_Mathematics_int2.NetSerialize(ref obj.Tile, writer);
-        StaticNetSerializer_System_Int32.NetSerialize(ref obj.ParamIndex, writer);
+        StaticNetSerializer_System_Byte.NetSerialize(ref obj.ParamIndex, writer);
         StaticNetSerializer_GameAction_ParameterData.NetSerialize(obj, writer);
     }
 
@@ -51,7 +51,7 @@ public static class StaticNetSerializer_GameActionParameterTile_Data
     public static void NetDeserialize(GameActionParameterTile.Data obj, BitStreamReader reader)
     {
         StaticNetSerializer_Unity_Mathematics_int2.NetDeserialize(ref obj.Tile, reader);
-        StaticNetSerializer_System_Int32.NetDeserialize(ref obj.ParamIndex, reader);
+        StaticNetSerializer_System_Byte.NetDeserialize(ref obj.ParamIndex, reader);
         StaticNetSerializer_GameAction_ParameterData.NetDeserialize(obj, reader);
     }
 }
