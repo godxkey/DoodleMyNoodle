@@ -7,7 +7,7 @@ using Unity.Collections;
 public class GameActionSwap : GameAction
 {
     // TODO: add settings on the item itself
-    const int AP_COST = 1;
+    const int AP_COST = 2;
     const int RANGE = 3;
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

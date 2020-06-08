@@ -15,4 +15,4 @@ MonoBehaviour:
   ID: {fileID: 971858758830137585, guid: dd26b8361948f49449226bab932fbc08, type: 3}
   Icon: {fileID: 21300000, guid: 508a3170a83f6b54eb3d7c13394d2b15, type: 3}
   Name: Enrage
-  Description: Consume 2 HP for 2 AP
+  Description: Consume 6 HP for 2 AP

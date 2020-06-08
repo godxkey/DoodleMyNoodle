@@ -15,4 +15,4 @@ MonoBehaviour:
   ID: {fileID: 971858758830137585, guid: aa0538731df87df429b0362fd7f15397, type: 3}
   Icon: {fileID: 21300000, guid: 11713e7ebd98e9d499dd6621de2b0f1b, type: 3}
   Name: Swap
-  Description: You swap place with a target
+  Description: You swap place with a target (2 AP, Range 3)

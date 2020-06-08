@@ -6,7 +6,7 @@ using Unity.Collections;
 public class GameActionComboAttack : GameAction
 {
     // TODO: add settings on the item itself
-    const int DAMAGE = 10;
+    const int DAMAGE = 1;
     const int AP_COST_PER_ATTACK = 1;
     const int RANGE = 1;
 

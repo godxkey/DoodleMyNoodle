@@ -6,8 +6,8 @@ using static fixMath;
 public class GameActionMeleeAttack : GameAction
 {
     // TODO: add settings on the item itself
-    const int DAMAGE = 10;
-    const int AP_COST = 1;
+    const int DAMAGE = 2;
+    const int AP_COST = 2;
     const int RANGE = 1;
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

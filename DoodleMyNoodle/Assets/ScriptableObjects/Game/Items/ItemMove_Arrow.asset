@@ -15,4 +15,4 @@ MonoBehaviour:
   ID: {fileID: 2677628293349642642, guid: 5ec303c45ea534846b16e38711b73617, type: 3}
   Icon: {fileID: 21300000, guid: 514c76da9d3bfcc4dadc46d14da8cc15, type: 3}
   Name: Bow
-  Description: Throw an arrow in the given direction
+  Description: Throw an arrow in the given direction (3 AP, 4 DMG)

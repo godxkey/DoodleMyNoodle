@@ -15,4 +15,4 @@ MonoBehaviour:
   ID: {fileID: 971858758830137585, guid: 3fa80de446fd0ed409cdb9374b921d40, type: 3}
   Icon: {fileID: 21300000, guid: 555fa951575fd004bac4906f4f6a5366, type: 3}
   Name: Twin Slice
-  Description: Attack 2 targets (1 AP each)
+  Description: Attack 2 targets nearby (1 AP each, 1 DMG each)

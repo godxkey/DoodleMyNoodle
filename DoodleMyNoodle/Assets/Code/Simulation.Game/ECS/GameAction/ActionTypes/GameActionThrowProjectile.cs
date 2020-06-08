@@ -8,7 +8,7 @@ using UnityEngine;
 public class GameActionThrowProjectile : GameAction
 {
     // TODO: add settings on the item itself
-    const int AP_COST = 1;
+    const int AP_COST = 3;
     const int RANGE = 1;
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

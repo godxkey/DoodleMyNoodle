@@ -11,7 +11,7 @@ public class GameActionHeal : GameAction
 {
     const int RANGE = 3;
     const int AP_COST = 2;
-    const int HEAL = 3;
+    const int HEAL = 4;
 
     public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context)
     {

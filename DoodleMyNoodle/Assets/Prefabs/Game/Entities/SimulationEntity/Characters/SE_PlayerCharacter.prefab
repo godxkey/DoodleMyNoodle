@@ -102,9 +102,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a89527d159470b84f86b6f252684cff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartValue: 100
+  StartValue: 20
   MinValue: 0
-  MaxValue: 100
+  MaxValue: 20
 --- !u!114 &6657921186239294675
 MonoBehaviour:
   m_ObjectHideFlags: 0
