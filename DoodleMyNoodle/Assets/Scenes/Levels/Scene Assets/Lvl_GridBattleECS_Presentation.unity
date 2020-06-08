@@ -191,6 +191,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: -35.1
       objectReference: {fileID: 0}
+    - target: {fileID: 5512142366094619893, guid: a7200335e35bad04b86d33a75c7a7361,
+        type: 3}
+      propertyPath: InventorySlotShortcuts.Array.size
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 7296775561025126664, guid: a7200335e35bad04b86d33a75c7a7361,
         type: 3}
       propertyPath: m_LocalPosition.x

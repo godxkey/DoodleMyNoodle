@@ -7,7 +7,7 @@ using Unity.Collections;
 public class GameActionEnrage : GameAction
 {
     // TODO: add settings on the item itself
-    const int HP_COST = 2;
+    const int HP_COST = 6;
     const int AP_GAIN = 2;
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
