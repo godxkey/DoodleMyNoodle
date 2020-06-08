@@ -45,7 +45,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
         switch (input)
         {
             // temporary
-            case SimInputKeycode keycodeInput:
+            /* case SimInputKeycode keycodeInput:
             {
                 Entity pawn = GetPlayerPawn(playerEntity);
 
@@ -95,7 +95,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                     }
                 }
                 break;
-            }
+            }*/
             case SimPlayerInputUseItem ItemUsedInput:
                 ExecutePawnControllerInputSystem pawnControllerInputSystem = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, ItemUsedInput.ItemIndex, ItemUsedInput.UseData));
