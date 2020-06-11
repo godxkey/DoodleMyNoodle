@@ -37,7 +37,7 @@ public class Fix64Drawer : PropertyDrawer
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        return 16;
+        return 18;
     }
 }
 

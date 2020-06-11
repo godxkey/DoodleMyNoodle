@@ -9,9 +9,6 @@ public class GameMonoBehaviour : MonoBehaviour, IIndexedInList
     static List<GameMonoBehaviour> s_registeredBehaviours = new List<GameMonoBehaviour>();
     public static ReadOnlyList<GameMonoBehaviour> RegisteredBehaviours => s_registeredBehaviours.AsReadOnlyNoAlloc();
 
-    public ExternalSimWorldAccessor SimWorld => GameMonoBehaviourHelpers.SimulationWorld;
-    public Unity.Entities.World PresWorld => GameMonoBehaviourHelpers.PresentationWorld;
-
     int IIndexedInList.Index { get; set; }
 
     protected virtual void Awake()
@@ -19,7 +16,7 @@ public class GameMonoBehaviour : MonoBehaviour, IIndexedInList
         s_registeredBehaviours.AddIndexed(this);
 
         if (Game.Ready)
-            OnGameReady();
+            OnGameAwake();
         if (Game.Started)
             OnGameStart();
     }
@@ -36,7 +33,8 @@ public class GameMonoBehaviour : MonoBehaviour, IIndexedInList
 
     public virtual void OnGameUpdate() { }
     public virtual void OnGameFixedUpdate() { }
-    public virtual void OnGameReady() { }
+    public virtual void OnGameLateUpdate() { }
+    public virtual void OnGameAwake() { }
     public virtual void OnGameStart() { }
     public virtual void OnSafeDestroy() { }
 }

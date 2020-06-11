@@ -1,0 +1,18 @@
+{
+    "name": "BoltOnlineInterface",
+    "references": [
+        "GUID:c886ee09f9545f74f85dd4e7b076b17c",
+        "GUID:5247503e82c702442b628f2c8a2f6f51",
+        "GUID:8cd1d7a2fefc849a8a7618c0e950d050",
+        "GUID:7a8d7696eb7a56745b9cdb92a8a28234"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

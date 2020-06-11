@@ -15,4 +15,4 @@ MonoBehaviour:
   ID: {fileID: 971858758830137585, guid: d170c0eb81b945e458f35303555d6027, type: 3}
   Icon: {fileID: 21300000, guid: 96b3c2698e8fd3f409b90140f23df342, type: 3}
   Name: Boots
-  Description: Move your Character
+  Description: Move your Character (1 AP per Tile)

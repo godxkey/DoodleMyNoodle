@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace CCC.Online.DataTransfer
 {
@@ -26,11 +27,17 @@ namespace CCC.Online.DataTransfer
 
 
         // state
+        public float Progress { get; private set; } = 0;
         public TransferState CurrentState { get; private set; }
         public bool WasCancelledBySource { get; private set; }
         public int DataSize => _transferHeader.DataSize;
         public string Description => _transferHeader.Description;
         public Action<ReceiveViaStreamChannelOperation, byte[]> OnDataReceived;
+
+        private ulong _streamID = ulong.MaxValue;
+        private float _nextProgressUpdateTime = 0;
+
+        private const float PROGRESS_UPDATE_INTERVAL = 2f; // update the uploader on the progress every 2s
 
         public ReceiveViaStreamChannelOperation(NetMessageViaStreamChannelHeader transferHeader, INetworkInterfaceConnection source, SessionInterface sessionInterface)
             : base(sessionInterface, source, transferHeader.TransferId)
@@ -78,6 +85,9 @@ namespace CCC.Online.DataTransfer
                 //      Wait for stream data
                 ////////////////////////////////////////////////////////////////////////////////////////
                 CurrentState = TransferState.WaitingForCompletedStreamData;
+                _sessionInterface.NetworkInterface.StreamDataStarted += OnStreamDataStarted;
+                _sessionInterface.NetworkInterface.StreamDataProgress += OnStreamDataProgress;
+                _sessionInterface.NetworkInterface.StreamDataAborted += OnStreamDataAborted;
                 _sessionInterface.NetworkInterface.StreamDataReceived += OnStreamDataReceived;
 
                 while (!_streamDataReceived)
@@ -100,6 +110,40 @@ namespace CCC.Online.DataTransfer
             TerminateWithSuccess();
         }
 
+        private void OnStreamDataStarted(INetworkInterfaceConnection connection, IStreamChannel channel, ulong streamID)
+        {
+            // if our id is unset and the connection and channel match, associate streamID
+            if(connection == _connection && channel.Type == StreamChannelType.LargeDataTransfer && _streamID == ulong.MaxValue)
+            {
+                _streamID = streamID;
+            }
+        }
+
+        private void OnStreamDataProgress(INetworkInterfaceConnection connection, IStreamChannel channel, ulong streamID, float progress)
+        {
+            if(streamID == _streamID)
+            {
+                Progress = progress;
+
+                // send a message back to the uploader with the 'progress' of the large data transfer (needed because of a Bolt api limitation ...)
+                if(_nextProgressUpdateTime < Time.time)
+                {
+                    _nextProgressUpdateTime = Time.time + PROGRESS_UPDATE_INTERVAL;
+
+                    _sessionInterface.SendNetMessage(new NetMessageViaStreamUpdate() { Progress = progress }, connection);
+                }
+            }
+        }
+
+        private void OnStreamDataAborted(INetworkInterfaceConnection connection, IStreamChannel channel, ulong streamID)
+        {
+            if(streamID == _streamID)
+            {
+                WasCancelledByDestination = true;
+                TerminateWithNormalFailure("StreamData aborted");
+            }
+        }
+
         private void OnStreamDataReceived(byte[] data, IStreamChannel streamChannel, INetworkInterfaceConnection source)
         {
             if (source == _connection)
@@ -119,8 +163,14 @@ namespace CCC.Online.DataTransfer
 
             CurrentState = TransferState.Terminated;
 
+
             if (_sessionInterface.NetworkInterface != null)
+            {
+                _sessionInterface.NetworkInterface.StreamDataStarted -= OnStreamDataStarted;
+                _sessionInterface.NetworkInterface.StreamDataProgress -= OnStreamDataProgress;
+                _sessionInterface.NetworkInterface.StreamDataAborted -= OnStreamDataAborted;
                 _sessionInterface.NetworkInterface.StreamDataReceived -= OnStreamDataReceived;
+            }
 
             // remove self from 's_ongoingOperations'
             if (s_ongoingOperations.TryGetValue(_connection, out CoroutineOperation op) && op == this)

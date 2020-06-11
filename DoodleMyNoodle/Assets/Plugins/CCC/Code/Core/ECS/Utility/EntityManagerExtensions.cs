@@ -16,6 +16,19 @@ public static class EntityManagerExtensions
         return false;
     }
 
+    public static DynamicBuffer<T> GetOrAddBuffer<T>(this EntityManager entityManager, Entity entity)
+        where T : struct, IBufferElementData
+    {
+        if (entityManager.HasComponent<T>(entity))
+        {
+            return entityManager.GetBuffer<T>(entity);
+        }
+        else
+        {
+            return entityManager.AddBuffer<T>(entity);
+        }
+    }
+
     public static bool TryGetComponentData<T>(this EntityManager entityManager, Entity entity, out T componentData)
          where T : struct, IComponentData
     {

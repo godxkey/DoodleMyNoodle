@@ -15,7 +15,6 @@ public static class NetMessageInterpreter
     static BitStreamReader s_reader = new BitStreamReader(null);
     static BitStreamWriter s_writer = new BitStreamWriter(null);
 
-
     public static Type GetMessageType(byte[] messageData)
     {
         s_reader.SetNewBuffer(messageData);
@@ -42,7 +41,7 @@ public static class NetMessageInterpreter
 #if DEBUG_BUILD
         if (s_logNetMessageData.BoolValue)
         {
-            DebugService.Log($"[NetMessage Interpretter] Receive Message byte[{messageData.Length}]");
+            DebugService.Log($"[{nameof(NetMessageInterpreter)}] Receive Message byte[{messageData.Length}]");
             DebugLogUtility.LogByteArray(messageData);
         }
 #endif
@@ -50,7 +49,7 @@ public static class NetMessageInterpreter
 
         if (!ThreadUtility.IsMainThread) // need main thread because of static s_reader
         {
-            DebugService.LogError($"[NetMessage Interpretter] Interpreting from thread not yet supported (but it should be!). ");
+            DebugService.LogError($"[{nameof(NetMessageInterpreter)}] Interpreting from thread not yet supported (but it should be!). ");
             return false;
         }
 
@@ -59,7 +58,7 @@ public static class NetMessageInterpreter
 
         if (messageData.Length < 2) // 2 minimum bytes required for the message type
         {
-            DebugService.LogError($"[NetMessageInterpreter] Error interpreting: data size to small ({messageData.Length} bytes)");
+            DebugService.LogError($"[{nameof(NetMessageInterpreter)}] Error interpreting: data size to small ({messageData.Length} bytes)");
             return false;
         }
 
@@ -71,7 +70,7 @@ public static class NetMessageInterpreter
         }
         catch (Exception e)
         {
-            DebugService.LogError($"[NetMessageInterpreter] Failed to deserialize Message. {e.Message} - {e.StackTrace}");
+            DebugService.LogError($"[{nameof(NetMessageInterpreter)}] Failed to deserialize Message. {e.Message} - {e.StackTrace}");
             return false;
         }
     }
@@ -85,7 +84,7 @@ public static class NetMessageInterpreter
         
         if (!ThreadUtility.IsMainThread) // need main thread because of static s_writer
         {
-            DebugService.LogError($"[NetMessage Interpretter] Interpreting from thread not yet supported (but it should be!). ");
+            DebugService.LogError($"[{nameof(NetMessageInterpreter)}] Interpreting from thread not yet supported (but it should be!). ");
             return false;
         }
 
@@ -94,7 +93,7 @@ public static class NetMessageInterpreter
 
         if (messageSizeByte > byteLimit)
         {
-            DebugService.LogError($"The net message ({GetMessageType(data)}) is exceeding the {byteLimit} byte capacity.");
+            DebugService.LogError($"The net message's ({data}) size ({messageSizeByte}) is exceeding the {byteLimit} byte capacity.");
             return false;
         }
         data = new byte[messageSizeByte];
@@ -108,7 +107,7 @@ public static class NetMessageInterpreter
 #if DEBUG_BUILD
             if (s_logNetMessageData.BoolValue)
             {
-                DebugService.Log($"[NetMessageInterpreter] Serialize Message '{message}' to byte[{data.Length}]");
+                DebugService.Log($"[{nameof(NetMessageInterpreter)}] Serialize Message '{message}' to byte[{data.Length}]");
                 if(data.Length <= 128)
                     DebugLogUtility.LogByteArray(data);
                 else
@@ -130,7 +129,7 @@ public static class NetMessageInterpreter
         }
         catch (Exception e)
         {
-            DebugService.LogError($"[NetMessageInterpreter] Failed to serialize Message'{message}'. {e.Message} - {e.StackTrace}");
+            DebugService.LogError($"[{nameof(NetMessageInterpreter)}] Failed to serialize Message'{message}'. {e.Message} - {e.StackTrace}");
             return false;
         }
     }

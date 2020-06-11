@@ -8,9 +8,9 @@ public abstract class ChatSystem : GameSystem<ChatSystem>
     public override bool SystemReady => true;
     public event Action<ChatLine> OnNewLine;
 
-    public override void OnGameReady()
+    public override void OnGameAwake()
     {
-        base.OnGameReady();
+        base.OnGameAwake();
 
         GameConsole.AddCommand("chat", OnConsoleCommand_chat, "Send a chat message to all other players");
     }

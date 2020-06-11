@@ -51,6 +51,7 @@ public class FixTransformAuth : MonoBehaviour, IConvertGameObjectToEntity
         }
 
         dstManager.AddComponentData(entity, new FixTranslation() { Value = LocalPosition });
+        dstManager.AddComponentData(entity, new PreviousFixTranslation() { Value = LocalPosition });
         dstManager.AddComponentData(entity, new FixRotation() { Value = LocalRotation });
         dstManager.AddComponent<RemoveTransformInConversionTag>(entity);
 

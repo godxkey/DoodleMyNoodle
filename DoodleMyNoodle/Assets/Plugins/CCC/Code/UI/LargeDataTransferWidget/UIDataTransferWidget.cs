@@ -32,6 +32,7 @@ public class UIDataTransferWidget : MonoBehaviour
             var incoming = _session.IncomingDataTransfers;
             var outgoing = _session.OutgoingDataTransfer;
 
+            // fbessette: we could refactor a little a reuse code
 
             for (int i = 0; i < incoming.Count; i++)
             {
@@ -51,7 +52,7 @@ public class UIDataTransferWidget : MonoBehaviour
 
                     widget.Description.Set(receiveViaStream.Description);
                     widget.TotalDataSize.Set(receiveViaStream.DataSize);
-                    widget.CurrentDataSize.Set(-1);
+                    widget.CurrentDataSize.Set(Mathf.FloorToInt(receiveViaStream.Progress * receiveViaStream.DataSize));
                     widget.State.Set(StateToString(receiveViaStream.CurrentState));
                     widget.IsIncoming.Set(true);
                     widget.UpdateDisplay();
@@ -76,7 +77,7 @@ public class UIDataTransferWidget : MonoBehaviour
 
                     widget.Description.Set(sendViaStream.Description);
                     widget.TotalDataSize.Set(sendViaStream.DataSize);
-                    widget.CurrentDataSize.Set(-1);
+                    widget.CurrentDataSize.Set(Mathf.FloorToInt(sendViaStream.Progress * sendViaStream.DataSize));
                     widget.State.Set(StateToString(sendViaStream.CurrentState));
                     widget.IsIncoming.Set(false);
                     widget.UpdateDisplay();

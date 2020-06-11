@@ -7,9 +7,9 @@ using UnityEngine;
 public class PawnControllerInputUseItem : PawnControllerInputBase
 {
     public int ItemIndex;
-    public GameAction.UseData GameActionData;
+    public GameAction.UseParameters GameActionData;
 
-    public PawnControllerInputUseItem(Entity pawnController, int itemIndex, GameAction.UseData gameActionData)
+    public PawnControllerInputUseItem(Entity pawnController, int itemIndex, GameAction.UseParameters gameActionData)
         : base(pawnController)
     {
         ItemIndex = itemIndex;

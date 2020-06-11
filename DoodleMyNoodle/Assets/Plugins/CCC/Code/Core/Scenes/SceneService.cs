@@ -114,39 +114,11 @@ public class SceneService : MonoCoreService<SceneService>
     {
         return Load(sceneName, new SceneLoadSettings() { Async = false, LoadSceneMode = mode, LocalPhysicsMode = localPhysicsMode });
     }
-    // fbessette: should not be used anymore. If we add it back, we should refactor it a bit so that SceneInfo doesn't contain all of these misplaced
-    //            properties like the 'default load scene mode'
-    //public static void Load(SceneInfo sceneInfo, Action<Scene> callback = null)
-    //{
-    //    Load(sceneInfo.SceneName, sceneInfo.LoadMode, callback, sceneInfo.AllowMultiple);
-    //}
 
     public static ISceneLoadPromise LoadAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive, LocalPhysicsMode localPhysicsMode = LocalPhysicsMode.Physics3D)
     {
         return Load(sceneName, new SceneLoadSettings() { Async = true, LoadSceneMode = mode, LocalPhysicsMode = localPhysicsMode });
     }
-    // fbessette: should not be used anymore. If we add it back, we should refactor it a bit so that SceneInfo doesn't contain all of these misplaced
-    //            properties like the 'default load scene mode'
-    //public static void LoadAsync(SceneInfo sceneInfo, Action<Scene> callback = null)
-    //{
-    //    LoadAsync(sceneInfo.SceneName, sceneInfo.LoadMode, callback, sceneInfo.AllowMultiple);
-    //}
-
-    //private static bool TryHandleUniqueLoad(string sceneName, Action<Scene> callback)
-    //{
-    //    ScenePromise scenePromise = GetLoadingScenePromise(sceneName);
-    //    if (scenePromise != null) // means the scene is currently being loaded
-    //    {
-    //        scenePromise.OnComplete += callback;
-    //        return true;
-    //    }
-    //    else if (IsLoaded(sceneName))
-    //    {
-    //        callback?.Invoke(GetLoaded(sceneName));
-    //        return true;
-    //    }
-    //    return false;
-    //}
 
     public static void UnloadAsync(Scene scene)
     {

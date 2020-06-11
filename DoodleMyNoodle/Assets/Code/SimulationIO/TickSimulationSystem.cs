@@ -135,6 +135,7 @@ namespace SimulationControl
                 if (!CanTick)
                     break;
 
+
                 IsTicking = true;
 
                 SimTickData tick = AvailableTicks.First();
@@ -150,6 +151,9 @@ namespace SimulationControl
                 ManualUpdate(_simPostPresGroup);
 
                 ManualUpdate(_viewGroup);
+
+                // this ensures our previously scheduled view jobs are done (we might want to find a more performant alternative)
+                World.EntityManager.CompleteAllJobs();
 
                 _simulationWorld.TickInputs = null;
 

@@ -42,6 +42,15 @@ public abstract class NetworkInterface : IDisposable
     public abstract event Action OnSessionListUpdated;
     public abstract event Action<byte[], IStreamChannel, INetworkInterfaceConnection> StreamDataReceived;
 
+    public delegate void StreamDataStartedDelegate(INetworkInterfaceConnection connection, IStreamChannel channel, ulong streamID);
+    public abstract event StreamDataStartedDelegate StreamDataStarted;
+    
+    public delegate void StreamDataProgressDelegate(INetworkInterfaceConnection connection, IStreamChannel channel, ulong streamID, float progress);
+    public abstract event StreamDataProgressDelegate StreamDataProgress;
+    
+    public delegate void StreamDataAbortedDelegate(INetworkInterfaceConnection connection, IStreamChannel channel, ulong streamID);
+    public abstract event StreamDataAbortedDelegate StreamDataAborted;
+
     public NetworkState State { get; protected set; } = NetworkState.Stopped;
 
     public abstract bool IsServer { get; }

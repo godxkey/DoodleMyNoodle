@@ -23,12 +23,12 @@ namespace CCC.Online.DataTransfer
 
         // init data
         readonly byte[] _data;
-        readonly INetworkInterfaceConnection _destination;
 
         // state
         public TransferState CurrentState { get; private set; }
         public string Description { get; private set; }
         public int DataSize => _data.Length;
+        public float Progress { get; private set; } = 0;
 
         /// <summary>
         /// DO NOT MODIFY THE BYTE[] DATA WILL THE TRANSFER IS ONGOING
@@ -101,6 +101,9 @@ namespace CCC.Online.DataTransfer
                 var streamChannel = _sessionInterface.NetworkInterface.GetStreamChannel(StreamChannelType.LargeDataTransfer);
 
                 _connection.StreamBytes(streamChannel, _data);
+
+                // listen for progress update
+                _sessionInterface.RegisterNetMessageReceiver<NetMessageViaStreamUpdate>(OnProgressUpdate);
             }
 
             {
@@ -119,10 +122,19 @@ namespace CCC.Online.DataTransfer
             TerminateWithSuccess();
         }
 
+        private void OnProgressUpdate(NetMessageViaStreamUpdate message, INetworkInterfaceConnection connection)
+        {
+            if(connection == _connection)
+            {
+                Progress = message.Progress;
+            }
+        }
+
         protected override void OnTerminate()
         {
             base.OnTerminate();
 
+            _sessionInterface.UnregisterNetMessageReceiver<NetMessageViaStreamUpdate>(OnProgressUpdate);
             CurrentState = TransferState.Terminated;
 
             // remove self from 's_ongoingOperations'

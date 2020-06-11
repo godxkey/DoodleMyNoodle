@@ -1,10 +1,12 @@
-﻿namespace CCC.Online.DataTransfer
+﻿using UnityEngine;
+
+namespace CCC.Online.DataTransfer
 {
     public abstract class OnlineTransferCoroutineOperation : OnlineComCoroutineOperation
     {
         protected readonly ushort _transferId;
 
-        public bool WasCancelledByDestination { get; private set; }
+        public bool WasCancelledByDestination { get; protected set; }
 
         protected OnlineTransferCoroutineOperation(SessionInterface sessionInterface, INetworkInterfaceConnection destination, ushort transferId)
             : base(sessionInterface, destination)

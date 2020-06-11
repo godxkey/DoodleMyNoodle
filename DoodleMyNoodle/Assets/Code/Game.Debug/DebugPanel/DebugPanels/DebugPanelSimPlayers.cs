@@ -8,7 +8,7 @@ public class DebugPanelSimPlayers : DebugPanel
 {
     public override string title => "Sim Players";
 
-    public override bool canBeDisplayed => GameMonoBehaviourHelpers.SimulationWorld != null;
+    public override bool canBeDisplayed => GameMonoBehaviourHelpers.GetSimulationWorld() != null;
 
     List<Entity> _cachedPlayers = new List<Entity>();
 
@@ -16,22 +16,19 @@ public class DebugPanelSimPlayers : DebugPanel
     {
         _cachedPlayers.Clear();
 
-        using (EntityQuery query = GameMonoBehaviourHelpers.SimulationWorld.CreateEntityQuery(
-            ComponentType.ReadOnly<PlayerTag>(),
-            ComponentType.ReadOnly<PersistentId>()))
+        GameMonoBehaviourHelpers.GetSimulationWorld().Entities
+            .WithAll<PlayerTag, Name, PersistentId>()
+            .ForEach((Entity playerEntity) =>
         {
-            using (NativeArray<Entity> simPlayers = query.ToEntityArray(Allocator.TempJob))
-            {
-                _cachedPlayers.AddRange(simPlayers);
-            }
-        }
+            _cachedPlayers.Add(playerEntity);
+        });
     }
 
     public override void OnGUI()
     {
         UpdateCachedPlayers();
         var simPlayers = _cachedPlayers;
-        var simWorldAccessor = GameMonoBehaviourHelpers.SimulationWorld;
+        var simWorldAccessor = GameMonoBehaviourHelpers.GetSimulationWorld();
 
         GUILayout.BeginHorizontal();
 
@@ -62,7 +59,7 @@ public class DebugPanelSimPlayers : DebugPanel
         for (int i = 0; i < simPlayers.Count; i++)
         {
             ApplyPlayerTextColor(simPlayers[i]);
-            GUILayout.Label(PlayerHelpers.GetPlayerFromSimPlayer(simPlayers[i], GameMonoBehaviourHelpers.SimulationWorld) == null ? "false" : "true");
+            GUILayout.Label(PlayerHelpers.GetPlayerFromSimPlayer(simPlayers[i], GameMonoBehaviourHelpers.GetSimulationWorld()) == null ? "false" : "true");
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -72,7 +69,7 @@ public class DebugPanelSimPlayers : DebugPanel
 
     static void ApplyPlayerTextColor(Entity simPlayer)
     {
-        PlayerInfo p = PlayerHelpers.GetPlayerFromSimPlayer(simPlayer, GameMonoBehaviourHelpers.SimulationWorld);
+        PlayerInfo p = PlayerHelpers.GetPlayerFromSimPlayer(simPlayer, GameMonoBehaviourHelpers.GetSimulationWorld());
         GUI.color = p == null ? Color.red : Color.white;
     }
     static void ResetTextColor()

@@ -7,7 +7,7 @@ public class DefaultScriptTemplate : ScriptTemplate
 {
     public override string GetScriptContent()
     {
-        // When refering to a type, it is recommended to use {nameof(TheType)}.
+        // When refering to a type, it is recommended to use {typeof(TheType).GetPrettyName()}.
         // This helps keeping the templates up-to-date when types are renamed or removed.
 
         return
