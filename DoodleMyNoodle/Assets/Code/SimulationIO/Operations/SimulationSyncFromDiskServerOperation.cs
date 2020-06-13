@@ -7,8 +7,8 @@ public class SimulationSyncFromDiskServerOperation : CoroutineOperation
 {
     const string LOCAL_FILE_NAME_PREFIX = "SerializedSim";
 
-    INetworkInterfaceConnection _client;
-    SessionServerInterface _sessionInterface;
+    private INetworkInterfaceConnection _client;
+    private SessionServerInterface _sessionInterface;
     private World _simulationWorld;
 
     public SimulationSyncFromDiskServerOperation(SessionServerInterface sessionInterface, INetworkInterfaceConnection clientConnection, World simulationWorld)
@@ -26,7 +26,17 @@ public class SimulationSyncFromDiskServerOperation : CoroutineOperation
 
         // file name example: SerializedSim-515433
 
-        string filePath = $"{Application.persistentDataPath}/{LOCAL_FILE_NAME_PREFIX}-{SimulationView.TickId}.txt";
+        string filePath;
+        if (_simulationWorld is SimulationWorld simWorld)
+        {
+            var latestTick = simWorld.GetLastedTickIdFromEntity();
+
+            filePath = $"{Application.persistentDataPath}/{LOCAL_FILE_NAME_PREFIX}-{latestTick}.txt";
+        }
+        else
+        {
+            filePath = $"{Application.persistentDataPath}/{LOCAL_FILE_NAME_PREFIX}-.txt";
+        }
 
         // Save sim to disk
         yield return ExecuteSubOperationAndWaitForSuccess(new SaveSimulationToDiskOperation(filePath, _simulationWorld));

@@ -39,25 +39,16 @@ EditorBuildSettings:
     path: Assets/Scenes/Game/Scene Assets/Game_Local.unity
     guid: 6832c9c496e32854086ae3c970b86b4f
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_Ballpit.unity
-    guid: f5a2b98580807744584ddf179221a3d5
-  - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity
-    guid: 4c8245514883b6c4ba63476b942bba11
-  - enabled: 1
     path: Assets/Scenes/Game/Scene Assets/Game_SimulationManagers.unity
     guid: 47ac98eafdf2257458009be782cc980c
-  - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
-    guid: 60fc40dbdb1e23144a5055ed9a5d1563
   - enabled: 1
     path: Assets/Scenes/Game/Scene Assets/Game_SimulationBasePresentation.unity
     guid: 02fa011c09404914098c6019b2610a09
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattleECS_Presentation.unity
+    path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
     guid: 1cd9718281f9895408333cb8fc99bc29
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattleECS.unity
+    path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity
     guid: 815b8536c98c51447a9e715207ed3330
   - enabled: 0
     path: Assets/Scenes/Tests/SimpleClientAndServer.unity

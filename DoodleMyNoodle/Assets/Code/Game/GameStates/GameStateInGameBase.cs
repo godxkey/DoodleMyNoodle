@@ -9,18 +9,6 @@ public class GameStateInGameBase : GameState
         GameStateManager.TransitionToState(((GameStateDefinitionInGameBase)Definition).gameStateIfReturn);
     }
 
-    public override void Update()
-    {
-        base.Update();
-
-        // Hackish solution - TO REMOVE
-        if (SimEndGameManager.ReturnToMenu)
-        {
-            SimEndGameManager.ReturnToMenu = false;
-            ReturnToMenu();
-        }
-    }
-
     public virtual void ExitApplication()
     {
         Application.Quit();

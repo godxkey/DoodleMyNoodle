@@ -17,12 +17,12 @@ public class SaveSimulationToDiskOperation : CoroutineOperation
     protected override IEnumerator ExecuteRoutine()
     {
         // Serialize sim
-        SimSerializationOperationWithCache serializeOp = SimulationView.SerializeSimulation(_simulationWorld);
+        SimSerializationOperationWithCache serializeOp = new SimSerializationOperationWithCache(_simulationWorld);
         yield return ExecuteSubOperationAndWaitForSuccess(serializeOp);
-        string serializedData = serializeOp.SerializationData;
+        byte[] serializedData = serializeOp.SerializationData;
 
         // Save data to file
-        yield return ExecuteSubOperationAndWaitForSuccess(new WriteTextToDiskOperation(serializedData, _filePath));
+        yield return ExecuteSubOperationAndWaitForSuccess(new WriteBytesToDiskOperation(serializedData, _filePath));
 
         TerminateWithSuccess($"Simulation sent to client through file: {_filePath}");
     }

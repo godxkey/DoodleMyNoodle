@@ -1,4 +1,5 @@
 ﻿using CCC.Operations;
+using Sim.Operations;
 using System.Collections;
 using Unity.Entities;
 
@@ -17,18 +18,18 @@ public class LoadSimulationFromDiskOperation : CoroutineOperation
     protected override IEnumerator ExecuteRoutine()
     {
         // get data
-        ReadTextFromDiskOperation loadOp = new ReadTextFromDiskOperation(_filePath);
+        ReadBytesFromDiskOperation loadOp = new ReadBytesFromDiskOperation(_filePath);
         yield return ExecuteSubOperationAndWaitForSuccess(loadOp);
-        string serializedData = loadOp.TextResult;
+        byte[] serializedData = loadOp.Result;
 
-        if (string.IsNullOrEmpty(serializedData))
+        if (serializedData == null || serializedData.Length == 0)
         {
             TerminateWithAbnormalFailure($"Failed to load valid simulation from file {_filePath}");
             yield break;
         }
 
         // deserialize 
-        yield return ExecuteSubOperationAndWaitForSuccess(SimulationView.DeserializeSimulation(serializedData, _simulationWorld));
+        yield return ExecuteSubOperationAndWaitForSuccess(new SimDeserializationOperation(serializedData, _simulationWorld));
 
         TerminateWithSuccess();
     }

@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class DebugPanelRegistry
 {
-    public static DebugPanel[] registeredPanels = new DebugPanel[]
+    public static DebugPanel[] s_registeredPanels = new DebugPanel[]
     {
         new DebugPanelGameState(),
         new DebugPanelPlayerRepertoire(),
         new DebugPanelSimPlayers(),
         new DebugPanelClientSimController(),
-        new DebugPanelSimEntities(),
     };
 }

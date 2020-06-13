@@ -34,34 +34,25 @@ public static class SceneShortcuts
     [MenuItem("Scene Shortcuts/Game_SimulationManagers", priority = 3008)]
     public static void Assets_Scenes_Game_Scene_Assets_Game_SimulationManagers() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_SimulationManagers.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_Ballpit", priority = 4009)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Ballpit() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Ballpit.unity");
-
-    [MenuItem("Scene Shortcuts/Lvl_GridBattle", priority = 4010)]
+    [MenuItem("Scene Shortcuts/Lvl_GridBattle", priority = 4009)]
     public static void Assets_Scenes_Levels_Scene_Assets_Lvl_GridBattle() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_GridBattle_Presentation", priority = 4011)]
+    [MenuItem("Scene Shortcuts/Lvl_GridBattle_Presentation", priority = 4010)]
     public static void Assets_Scenes_Levels_Scene_Assets_Lvl_GridBattle_Presentation() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_GridBattleECS", priority = 4012)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_GridBattleECS() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_GridBattleECS.unity");
-
-    [MenuItem("Scene Shortcuts/Lvl_GridBattleECS_Presentation", priority = 4013)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_GridBattleECS_Presentation() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_GridBattleECS_Presentation.unity");
-
-    [MenuItem("Scene Shortcuts/Menu_InGameEscape", priority = 5014)]
+    [MenuItem("Scene Shortcuts/Menu_InGameEscape", priority = 5011)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_InGameEscape() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_InGameEscape.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineClientSessionChoice", priority = 5015)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineClientSessionChoice", priority = 5012)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineClientSessionChoice() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineClientSessionChoice.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineRoleChoice", priority = 5016)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineRoleChoice", priority = 5013)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineRoleChoice() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineRoleChoice.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineServerSessionCreation", priority = 5017)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineServerSessionCreation", priority = 5014)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineServerSessionCreation() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineServerSessionCreation.unity");
 
-    [MenuItem("Scene Shortcuts/Misc_LoadingScreen", priority = 6018)]
+    [MenuItem("Scene Shortcuts/Misc_LoadingScreen", priority = 6015)]
     public static void Assets_Scenes_Misc_Scene_Assets_Misc_LoadingScreen() => LoadScene("Assets/Scenes/Misc/Scene Assets/Misc_LoadingScreen.unity");
 
 

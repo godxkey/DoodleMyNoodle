@@ -22,18 +22,17 @@ public class SimulationSyncFromTransferServerOperation : CoroutineOperation
     protected override IEnumerator ExecuteRoutine()
     {
         // Serialize sim
-        SimSerializationOperationWithCache serializeOp = SimulationView.SerializeSimulation(_simulationWorld);
+        SimSerializationOperationWithCache serializeOp = new SimSerializationOperationWithCache(_simulationWorld);
         yield return ExecuteSubOperationAndWaitForSuccess(serializeOp);
-
-        string serializedData = serializeOp.SerializationData;
-
 
         // Transfer sim
         NetMessageSerializedSimulation netMessage = new NetMessageSerializedSimulation()
         {
-            SerializedSimulation = serializedData
+            SerializedSimulation = serializeOp.SerializationData
         };
+
         var transferOp = _sessionInterface.BeginLargeDataTransfer(netMessage, _client, description: $"Simulation-{((SimulationWorld)_simulationWorld).GetLastedTickIdFromEntity()}");
+        
         yield return ExecuteSubOperationAndWaitForSuccess(transferOp);
 
         // Terminate

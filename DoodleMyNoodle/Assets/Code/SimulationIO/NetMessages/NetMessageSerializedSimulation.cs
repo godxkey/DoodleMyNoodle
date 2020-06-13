@@ -5,5 +5,5 @@
 [NetSerializable]
 public struct NetMessageSerializedSimulation
 {
-    public string SerializedSimulation;
+    public byte[] SerializedSimulation;
 }
