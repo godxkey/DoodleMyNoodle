@@ -57,39 +57,27 @@ MonoBehaviour:
     Path: Assets/Scenes/Game/Scene Assets/Game_Local.unity
     BuildIndex: 10
     AssetGuid: 6832c9c496e32854086ae3c970b86b4f
-  - Name: Lvl_Ballpit
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Ballpit.unity
-    BuildIndex: 11
-    AssetGuid: f5a2b98580807744584ddf179221a3d5
-  - Name: Lvl_GridBattle
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity
-    BuildIndex: 12
-    AssetGuid: 4c8245514883b6c4ba63476b942bba11
   - Name: Game_SimulationManagers
     Path: Assets/Scenes/Game/Scene Assets/Game_SimulationManagers.unity
-    BuildIndex: 13
+    BuildIndex: 11
     AssetGuid: 47ac98eafdf2257458009be782cc980c
-  - Name: Lvl_GridBattle_Presentation
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
-    BuildIndex: 14
-    AssetGuid: 60fc40dbdb1e23144a5055ed9a5d1563
   - Name: Game_SimulationBasePresentation
     Path: Assets/Scenes/Game/Scene Assets/Game_SimulationBasePresentation.unity
-    BuildIndex: 15
+    BuildIndex: 12
     AssetGuid: 02fa011c09404914098c6019b2610a09
-  - Name: Lvl_GridBattleECS_Presentation
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattleECS_Presentation.unity
-    BuildIndex: 16
+  - Name: Lvl_GridBattle_Presentation
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
+    BuildIndex: 13
     AssetGuid: 1cd9718281f9895408333cb8fc99bc29
-  - Name: Lvl_GridBattleECS
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattleECS.unity
-    BuildIndex: 17
+  - Name: Lvl_GridBattle
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity
+    BuildIndex: 14
     AssetGuid: 815b8536c98c51447a9e715207ed3330
   - Name: SimpleClientAndServer
     Path: Assets/Scenes/Tests/SimpleClientAndServer.unity
-    BuildIndex: 18
+    BuildIndex: 15
     AssetGuid: e76ee58ade737004383d3e6eeae3f771
   - Name: EmptyScene
     Path: Assets/Scenes/EmptyScene.unity
-    BuildIndex: 19
+    BuildIndex: 16
     AssetGuid: 15380d7d3d5178b40abcc7edd37c1d78
