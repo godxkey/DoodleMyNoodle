@@ -130,7 +130,7 @@ namespace CCC.Operations
             // tell unity to stop maintaning and running the coroutine
             if (_coroutine != null)
             {
-                CoroutineLauncherService.Instance.StopCoroutine(_coroutine);
+                CoroutineLauncherService.Instance?.StopCoroutine(_coroutine);
                 _coroutine = null;
             }
 

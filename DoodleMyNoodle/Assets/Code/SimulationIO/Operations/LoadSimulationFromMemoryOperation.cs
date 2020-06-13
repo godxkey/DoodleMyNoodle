@@ -1,4 +1,5 @@
 ﻿using System;
+using Sim.Operations;
 using System.Collections;
 using CCC.Operations;
 using Unity.Entities;
@@ -15,15 +16,15 @@ public class LoadSimulationFromMemoryOperation : CoroutineOperation
     protected override IEnumerator ExecuteRoutine()
     {
         // get data
-        string serializedData = SaveSimulationToMemoryOperation.s_SerializedSimulation;
-        if (string.IsNullOrEmpty(serializedData))
+        byte[] serializedData = SaveSimulationToMemoryOperation.s_SerializedSimulation;
+        if (serializedData == null || serializedData.Length == 1)
         {
             TerminateWithAbnormalFailure("No valid simulation to load was found in memory");
             yield break;
         }
 
         // deserialize 
-        yield return ExecuteSubOperationAndWaitForSuccess(SimulationView.DeserializeSimulation(serializedData, _simulationWorld));
+        yield return ExecuteSubOperationAndWaitForSuccess(new SimDeserializationOperation(serializedData, _simulationWorld));
 
         TerminateWithSuccess();
     }

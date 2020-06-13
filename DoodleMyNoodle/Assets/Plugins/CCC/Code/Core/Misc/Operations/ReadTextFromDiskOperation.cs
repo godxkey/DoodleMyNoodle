@@ -42,4 +42,44 @@ namespace CCC.Operations
             TerminateWithSuccess();
         }
     }
+
+    public class ReadBytesFromDiskOperation : CoroutineOperation
+    {
+        string _filePath;
+
+        public byte[] Result;
+
+        public ReadBytesFromDiskOperation(string filePath)
+        {
+            _filePath = filePath;
+        }
+
+        protected override IEnumerator ExecuteRoutine()
+        {
+            string errorMessage = null;
+
+            // get data
+            Thread loadThread = new Thread(() =>
+            {
+                try
+                {
+                    Result = System.IO.File.ReadAllBytes(_filePath);
+                }
+                catch (System.Exception e)
+                {
+                    errorMessage = e.Message;
+                }
+            });
+
+            yield return loadThread.StartAndWaitForComplete();
+
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                TerminateWithAbnormalFailure($"Failed to load text from file {_filePath} : {errorMessage}");
+                yield break;
+            }
+
+            TerminateWithSuccess();
+        }
+    }
 }

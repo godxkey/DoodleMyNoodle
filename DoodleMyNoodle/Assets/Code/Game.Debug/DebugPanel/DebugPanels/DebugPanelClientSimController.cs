@@ -56,10 +56,12 @@ public class DebugPanelClientSimController : DebugPanel
 
     void OnFixedUpdate()
     {
-        if (!SimulationView.IsRunningOrReadyToRun)
+        if (!GamePresentationCache.Instance.Ready)
             return;
 
-        _currentSimTick.Set(SimulationView.TickId);
+        SimulationWorld simWorld = (SimulationWorld)GamePresentationCache.Instance.SimWorld.EntityManager.World;
+
+        _currentSimTick.Set(simWorld.LatestTickId);
 
         // 'not dirty' means no change. That means the simulation has NOT played a sim tick this past fixed update
         _offsettedSimTicks[_offsettedSimTicksIterator] = !_currentSimTick.IsDirty;

@@ -36,7 +36,7 @@ public class DebugPanelController
 
             GUILayout.BeginArea(new Rect(Vector2.zero, new Vector2(350, Screen.height)));
 
-            DebugPanel[] panels = DebugPanelRegistry.registeredPanels;
+            DebugPanel[] panels = DebugPanelRegistry.s_registeredPanels;
 
             for (int i = 0; i < panels.Length; i++)
             {

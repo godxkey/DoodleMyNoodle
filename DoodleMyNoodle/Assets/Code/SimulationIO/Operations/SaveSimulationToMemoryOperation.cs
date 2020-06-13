@@ -9,7 +9,7 @@ using Unity.Entities;
 /// </summary>
 public class SaveSimulationToMemoryOperation : CoroutineOperation
 {
-    public static string s_SerializedSimulation;
+    public static byte[] s_SerializedSimulation;
 
     World _simulationWorld;
 
@@ -20,7 +20,7 @@ public class SaveSimulationToMemoryOperation : CoroutineOperation
 
     protected override IEnumerator ExecuteRoutine()
     {
-        SimSerializationOperationWithCache serializeOp = SimulationView.SerializeSimulation(_simulationWorld);
+        SimSerializationOperationWithCache serializeOp = new SimSerializationOperationWithCache(_simulationWorld);
 
         yield return ExecuteSubOperationAndWaitForSuccess(serializeOp);
 
