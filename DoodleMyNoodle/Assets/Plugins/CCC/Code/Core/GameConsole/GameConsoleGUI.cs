@@ -247,6 +247,31 @@ namespace Internals.GameConsoleInterals
             return Color.grey;
         }
 
+        public void OutputLog(int channelId, string condition, string stackTrace, LogType logType)
+        {
+            // TODO: better than this!
+            GameConsole.LineColor lineColor;
+            switch (logType)
+            {
+                default:
+                case LogType.Error:
+                case LogType.Assert:
+                case LogType.Exception:
+                    lineColor = GameConsole.LineColor.Error;
+                    OutputString($"{condition}\n{stackTrace}", lineColor);
+                    break;
+                case LogType.Warning:
+                    lineColor = GameConsole.LineColor.Warning;
+                    OutputString($"{condition}", lineColor);
+                    break;
+                case LogType.Log:
+                    lineColor = GameConsole.LineColor.Normal;
+                    OutputString($"{condition}", lineColor);
+                    break;
+            }
+
+        }
+
         class LineList
         {
             int _begin;

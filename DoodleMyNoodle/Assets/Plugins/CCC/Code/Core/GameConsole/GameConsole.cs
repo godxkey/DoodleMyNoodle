@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using Internals.GameConsoleInterals;
 using UnityX;
+using System.Collections.Concurrent;
 
 public class GameConsole
 {
@@ -14,18 +15,21 @@ public class GameConsole
         Error
     }
 
-    static IGameConsoleUI s_ConsoleUI;
+    static IGameConsoleUI s_consoleUI;
+    static ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)> s_queuedLogs = new ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)>();
 
     public static void Init(IGameConsoleUI consoleUI)
     {
-        if (s_ConsoleUI != null)
+        if (s_consoleUI != null)
         {
             Log.Error("Initializing the Console for a second time.");
             return;
         }
 
-        s_ConsoleUI = consoleUI;
-        s_ConsoleUI.Init();
+        Log.Internals.LogMessageReceivedThreaded += OnLogMessageReceivedThreaded;
+
+        s_consoleUI = consoleUI;
+        s_consoleUI.Init();
         AddCommand("help", Cmd_Help, "Show available commands");
         AddCommand("vars", Cmd_Vars, "Show available variables");
         AddCommand("exec", Cmd_Exec, "Executes commands from file");
@@ -34,25 +38,31 @@ public class GameConsole
 
     public static void Shutdown()
     {
-        s_ConsoleUI.Shutdown();
+        Log.Internals.LogMessageReceivedThreaded -= OnLogMessageReceivedThreaded;
+        s_consoleUI.Shutdown();
+    }
+
+    private static void OnLogMessageReceivedThreaded(int channelId, string condition, string stackTrace, LogType logType)
+    {
+        if (ThreadUtility.IsMainThread)
+        {
+            if (s_consoleUI != null)
+                s_consoleUI.OutputLog(channelId, condition, stackTrace, logType);
+        }
+        else
+        {
+            s_queuedLogs.Enqueue((channelId, condition, stackTrace, logType));
+        }
     }
 
     static void OutputString(string message, LineColor lineColor)
     {
-        if (s_ConsoleUI != null)
-            s_ConsoleUI.OutputString(message, lineColor);
+        if (s_consoleUI != null)
+            s_consoleUI.OutputString(message, lineColor);
     }
 
-    static string lastMsg = "";
-    static double timeLastMsg;
     public static void Write(string msg, LineColor lineColor)
     {
-        // Have to condition on cvar being null as this may run before cvar system is initialized
-        if (consoleShowLastLine != null && consoleShowLastLine.IntValue > 0)
-        {
-            lastMsg = msg;
-            timeLastMsg = Time.time; // Game.frameTime;
-        }
         OutputString(msg, lineColor);
     }
 
@@ -120,21 +130,18 @@ public class GameConsole
 
     public static bool IsOpen()
     {
-        return s_ConsoleUI.IsOpen();
+        return s_consoleUI.IsOpen();
     }
 
     public static void SetOpen(bool open)
     {
-        s_ConsoleUI.SetOpen(open);
+        s_consoleUI.SetOpen(open);
     }
 
     public static void ConsoleUpdate()
     {
-        //var lastMsgTime = Time.time - timeLastMsg;
-        //if (lastMsgTime < 1.0)
-        //    DebugOverlay.Write(0, 0, lastMsg);
-
-        s_ConsoleUI.ConsoleUpdate();
+        ProcessQueuedLogs();
+        s_consoleUI.ConsoleUpdate();
 
         while (s_PendingCommands.Count > 0)
         {
@@ -147,7 +154,24 @@ public class GameConsole
 
     public static void ConsoleLateUpdate()
     {
-        s_ConsoleUI.ConsoleLateUpdate();
+        ProcessQueuedLogs();
+
+        s_consoleUI.ConsoleLateUpdate();
+    }
+
+    private static void ProcessQueuedLogs()
+    {
+        var strBuilder = StringBuilderPool.Take();
+
+        while (s_queuedLogs.TryDequeue(out (int channelId, string condition, string stackTrace, LogType logType) result))
+        {
+            strBuilder.Clear();
+            strBuilder.Append("[Deferred to main thread] ");
+            strBuilder.Append(result.condition);
+            s_consoleUI.OutputLog(result.channelId, strBuilder.ToString(), result.stackTrace, result.logType);
+        }
+
+        StringBuilderPool.Release(strBuilder);
     }
 
     static void SkipWhite(string input, ref int pos)
@@ -299,7 +323,7 @@ public class GameConsole
         }
         catch (Exception e)
         {
-            if(!silent)
+            if (!silent)
                 OutputString("Exec failed: " + e.Message, LineColor.Error);
         }
     }

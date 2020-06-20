@@ -13,6 +13,12 @@ public class TestScript : MonoBehaviour
     private void Start()
     {
         //new ViewSpaceTimeDebugger(model);
+
+        new Thread(() =>
+        {
+            Thread.Sleep(1000);
+            Log.Warning("warning !!");
+        }).Start();
     }
 
     private void Update()
