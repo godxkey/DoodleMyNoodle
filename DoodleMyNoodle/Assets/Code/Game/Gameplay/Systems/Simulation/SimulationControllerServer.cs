@@ -62,7 +62,7 @@ public class SimulationControllerServer : SimulationControllerMaster
     //void OnSimSyncRequest(NetMessageRequestSimSync netMessage, INetworkInterfaceConnection clientConnection)
     //{
     //    // A client wants a complete simulatio sync
-    //    DebugService.Log($"Client {clientConnection.Id} requested a simulation sync");
+    //    Log.Info($"Client {clientConnection.Id} requested a simulation sync");
 
     //    LaunchSyncForClient(clientConnection);
     //}
@@ -98,18 +98,18 @@ public class SimulationControllerServer : SimulationControllerMaster
 
     //SimulationSyncFromTransferServerOperation LaunchSyncForClient(INetworkInterfaceConnection clientConnection)
     //{
-    //    DebugService.Log($"Starting new sync...");
+    //    Log.Info($"Starting new sync...");
 
     //    var newOp = new SimulationSyncFromTransferServerOperation(_session, clientConnection, SimulationWorld);
 
     //    newOp.OnFailCallback = (op) =>
     //    {
-    //        DebugService.Log($"Sync failed. {op.Message}");
+    //        Log.Info($"Sync failed. {op.Message}");
     //    };
 
     //    newOp.OnSucceedCallback = (op) =>
     //    {
-    //        DebugService.Log($"Sync complete. {op.Message}");
+    //        Log.Info($"Sync complete. {op.Message}");
     //    };
 
     //    newOp.Execute();

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngineX;
+using UnityX;
 
 public class CommandLineBoot : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class CommandLineBoot : MonoBehaviour
     void OnCoreServicesReady()
     {
         // read the command line arguments
-        DebugService.Log("CommandLine: " + CommandLine.CompleteCommandLine);
+        Log.Info("CommandLine: " + CommandLine.CompleteCommandLine);
 
         QuickStartSettings quickStartSettings = new QuickStartSettings();
 

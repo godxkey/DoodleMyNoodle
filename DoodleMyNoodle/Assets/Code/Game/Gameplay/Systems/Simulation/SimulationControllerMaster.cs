@@ -19,7 +19,7 @@ public class SimulationControllerMaster : SimulationController
     //{
     //    if (input == null)
     //    {
-    //        DebugService.LogError("Trying to submit a null input");
+    //        Log.Error("Trying to submit a null input");
     //        return;
     //    }
 
@@ -43,7 +43,7 @@ public class SimulationControllerMaster : SimulationController
     //        }
     //        else
     //        {
-    //            DebugService.Log($"[{nameof(SimulationControllerMaster)}] We refused {playerInfo.PlayerName}'s input because he doesn't have a " +
+    //            Log.Info($"[{nameof(SimulationControllerMaster)}] We refused {playerInfo.PlayerName}'s input because he doesn't have a " +
     //                $"valid SimPlayerId yet.");
     //            return; // player cannot submit inputs yet
     //        }

@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityX;
 
 namespace CCC.ConfigVarInterals
 {
@@ -18,12 +19,12 @@ namespace CCC.ConfigVarInterals
                             continue;
                         if (!field.IsStatic)
                         {
-                            DebugService.LogError("Cannot use " + nameof(ConfigVarType) + " attribute on non-static fields");
+                            Log.Error("Cannot use " + nameof(ConfigVarType) + " attribute on non-static fields");
                             continue;
                         }
                         if (field.FieldType != typeof(ConfigVarType))
                         {
-                            DebugService.LogError("Cannot use " + nameof(ConfigVarType) + " attribute on fields not of type " + nameof(ConfigVarType) + "");
+                            Log.Error("Cannot use " + nameof(ConfigVarType) + " attribute on fields not of type " + nameof(ConfigVarType) + "");
                             continue;
                         }
                         var attr = field.GetCustomAttributes(typeof(ConfigVarAttributeType), false)[0] as ConfigVarAttributeType;
@@ -31,7 +32,7 @@ namespace CCC.ConfigVarInterals
                         var cvar = field.GetValue(null) as ConfigVarType;
                         if (cvar != null)
                         {
-                            DebugService.LogError("ConfigVars (" + name + ") should not be initialized from code; just marked with attribute");
+                            Log.Error("ConfigVars (" + name + ") should not be initialized from code; just marked with attribute");
                             continue;
                         }
                         cvar = varBuilder(name, attr.Description, attr.Flags);

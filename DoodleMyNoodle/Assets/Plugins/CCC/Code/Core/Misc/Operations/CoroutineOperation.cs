@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngineX;
+using UnityX;
 
 namespace CCC.Operations
 {
@@ -114,15 +115,15 @@ namespace CCC.Operations
                 switch (requiredLogFlagToLog)
                 {
                     case LogFlag.Success:
-                        DebugService.Log(message);
+                        Log.Info(message);
                         break;
                     case LogFlag.NormalFailure:
-                        DebugService.Log(message);
+                        Log.Info(message);
                         break;
                     
                     default:
                     case LogFlag.AbnormalFailure:
-                        DebugService.LogError(message);
+                        Log.Error(message);
                         break;
                 }
             }

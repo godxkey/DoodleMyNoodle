@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -51,11 +52,47 @@ public class LaunchWindow : EditorWindow
 
         root.Q<Button>(name: "refreshButton").clickable.clicked += Rebuild;
 
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Build Target
+        ////////////////////////////////////////////////////////////////////////////////////////
         {
             var element = root.Q<Label>(name: "buildTarget");
             element.text = EditorUserBuildSettings.activeBuildTarget.ToString();
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Symbols Profile
+        ////////////////////////////////////////////////////////////////////////////////////////
+        /*{
+            List<string> choices = new List<string>(ScriptDefineSymbolManager.Profiles.ToArray().Select(p => p.Name));
+
+            if (choices.Count == 0)
+            {
+                choices.Add("");
+            }
+
+            int currentChoice = choices.IndexOf(EditorLaunchData.symbolsProfile);
+
+            if (currentChoice == -1)
+            {
+                EditorLaunchData.symbolsProfile = choices[0];
+                currentChoice = 0;
+            }
+
+            PopupField<string> popupField = new PopupField<string>("Symbols Profile", choices, currentChoice);
+            popupField.RegisterValueChangedCallback(
+                (ChangeEvent<string> changeEvent) =>
+                {
+                    EditorLaunchData.symbolsProfile = changeEvent.newValue;
+                });
+
+            var element = root.Q<VisualElement>(name: "symbolsProfile");
+            element.Add(popupField);
+        }*/
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Developement Build
+        ////////////////////////////////////////////////////////////////////////////////////////
         {
             var element = root.Q<Toggle>(name: "developmentBuild");
             element.value = EditorLaunchData.developmentBuild;
@@ -307,14 +344,18 @@ public class LaunchWindow : EditorWindow
             developmentBuild = EditorLaunchData.developmentBuild,
             allowDebugging = EditorLaunchData.allowDebugging
         };
+        
+        var scriptSymbolsProfile = ScriptDefineSymbolManager.GetProfile(EditorLaunchData.symbolsProfile);
+        string[] scriptingSymbols = scriptSymbolsProfile != null ? scriptSymbolsProfile.DefinedSymbols.ToArray() : new string[] { };
 
         BuildTools.BuildGame(
-            PipelineSettings.AutoBuildPath,                // path
-            PipelineSettings.AutoBuildExecutableName,      // exec name
-            buildData.ProduceBuildOptions(),  // build options
+            PipelineSettings.AutoBuildPath,             // path
+            PipelineSettings.AutoBuildExecutableName,   // exec name
+            buildData.ProduceBuildOptions(),            // build options
             "AutoBuild",                                // build id
             GetAllEnabledScenes(),                      // scenes
-            EditorUserBuildSettings.activeBuildTarget); // build target
+            EditorUserBuildSettings.activeBuildTarget/*,  // build target
+            scriptingSymbols*/);                          // scripting symbols
     }
 
     static string[] GetAllEnabledScenes()

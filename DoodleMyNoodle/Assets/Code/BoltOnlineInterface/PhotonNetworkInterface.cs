@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UdpKit;
 using UnityEngine;
 using UnityEngineX;
+using UnityX;
 
 namespace Internals.PhotonNetwokInterface
 {
@@ -89,14 +90,14 @@ namespace Internals.PhotonNetwokInterface
             if (State != NetworkState.Running)
             {
                 if (log)
-                    DebugService.Log("[PhotonNetworkInterface] Cannot create session if not in running state");
+                    Log.Info("[PhotonNetworkInterface] Cannot create session if not in running state");
                 return;
             }
 
             if (!BoltNetwork.IsServer)
             {
                 if (log)
-                    DebugService.Log("[PhotonNetworkInterface] Cannot create session if not of type server");
+                    Log.Info("[PhotonNetworkInterface] Cannot create session if not of type server");
                 return;
             }
 
@@ -112,7 +113,7 @@ namespace Internals.PhotonNetwokInterface
             BoltMatchmaking.CreateSession(sessionName, roomProperties);
 
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] Session creation begun...");
+                Log.Info("[PhotonNetworkInterface] Session creation begun...");
         }
 
         public override void ConnectToSession(INetworkInterfaceSession session, OperationResultDelegate onComplete)
@@ -155,7 +156,7 @@ namespace Internals.PhotonNetwokInterface
                 {
                     _connections.Clear();
                     if (log)
-                        DebugService.Log("[PhotonNetworkInterface] Shut down complete weirdness: m_connections.Count > 0");
+                        Log.Info("[PhotonNetworkInterface] Shut down complete weirdness: m_connections.Count > 0");
                 }
 
                 if (_connectedSessionInfo != null)
@@ -173,7 +174,7 @@ namespace Internals.PhotonNetwokInterface
         {
             if (connection == null)
             {
-                DebugService.LogError("[PhotonNetworkInterface] Cannot send message to null connection");
+                Log.Error("[PhotonNetworkInterface] Cannot send message to null connection");
                 return;
             }
 
@@ -207,7 +208,7 @@ namespace Internals.PhotonNetwokInterface
         public void Event_BoltStartBegin()
         {
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] BoltStartBegin");
+                Log.Info("[PhotonNetworkInterface] BoltStartBegin");
 
             // class needed to set room properties
             BoltNetwork.RegisterTokenClass<PhotonRoomProperties>();
@@ -219,7 +220,7 @@ namespace Internals.PhotonNetwokInterface
         {
             State = NetworkState.Running;
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] BoltStartDone");
+                Log.Info("[PhotonNetworkInterface] BoltStartDone");
 
             _operationCallbackLaunch?.Invoke(true, null);
         }
@@ -228,7 +229,7 @@ namespace Internals.PhotonNetwokInterface
         {
             State = NetworkState.Stopped;
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] BoltStartFailed: "+ disconnectReason);
+                Log.Info("[PhotonNetworkInterface] BoltStartFailed: "+ disconnectReason);
 
             _operationCallbackLaunch?.Invoke(false, "Bolt failed to start: " + disconnectReason);
         }
@@ -237,7 +238,7 @@ namespace Internals.PhotonNetwokInterface
         {
             State = NetworkState.ShuttingDown;
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] BoltShutdownBegin: " + disconnectReason);
+                Log.Info("[PhotonNetworkInterface] BoltShutdownBegin: " + disconnectReason);
 
             OnShutdownBegin?.Invoke();
         }
@@ -245,7 +246,7 @@ namespace Internals.PhotonNetwokInterface
         public void Event_Connected(BoltConnection connection)
         {
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] Connected: " + connection.ToString());
+                Log.Info("[PhotonNetworkInterface] Connected: " + connection.ToString());
             _connections.Add(new PhotonNetworkInterfaceConnection(connection));
 
 
@@ -260,7 +261,7 @@ namespace Internals.PhotonNetwokInterface
         public void Event_Disconnected(BoltConnection connection)
         {
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] Disconnected: " + connection.ToString());
+                Log.Info("[PhotonNetworkInterface] Disconnected: " + connection.ToString());
 
             INetworkInterfaceConnection connectionInterface = FindInterfaceConnection(connection);
 
@@ -282,13 +283,13 @@ namespace Internals.PhotonNetwokInterface
         public void Event_ConnectAttempt(UdpEndPoint endpoint, IProtocolToken token)
         {
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] ConnectAttempt: " + endpoint.Address + "  port: " + endpoint.Port);
+                Log.Info("[PhotonNetworkInterface] ConnectAttempt: " + endpoint.Address + "  port: " + endpoint.Port);
         }
 
         public void Event_ConnectFailed(UdpEndPoint endpoint, IProtocolToken token)
         {
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] ConnectFailed: " + endpoint.Address + "  port: " + endpoint.Port);
+                Log.Info("[PhotonNetworkInterface] ConnectFailed: " + endpoint.Address + "  port: " + endpoint.Port);
 
             ConcludeOperationCallback(ref _operationCallbackSessionConnected, false, "Connection failed");
         }
@@ -296,7 +297,7 @@ namespace Internals.PhotonNetwokInterface
         public void Event_ConnectRefused(UdpEndPoint endpoint, IProtocolToken token)
         {
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] ConnectRefused: " + endpoint.Address + "  port: " + endpoint.Port);
+                Log.Info("[PhotonNetworkInterface] ConnectRefused: " + endpoint.Address + "  port: " + endpoint.Port);
 
             ConcludeOperationCallback(ref _operationCallbackSessionConnected, false, "Connection refused");
         }
@@ -304,7 +305,7 @@ namespace Internals.PhotonNetwokInterface
         public void Event_ConnectRequest(UdpEndPoint endpoint, IProtocolToken token)
         {
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] ConnectRequest: " + endpoint.Address + "  port: " + endpoint.Port);
+                Log.Info("[PhotonNetworkInterface] ConnectRequest: " + endpoint.Address + "  port: " + endpoint.Port);
         }
 
         public void Event_SessionListUpdated(Map<Guid, UdpSession> sessionList)
@@ -324,7 +325,7 @@ namespace Internals.PhotonNetwokInterface
         public void Event_SessionConnectFailed(UdpSession session, IProtocolToken token, UdpSessionError errorReason)
         {
             if (log)
-                DebugService.Log($"[PhotonNetworkInterface] SessionConnectFailed: session:{session.Id} name:{session.HostName} reason:{errorReason}");
+                Log.Info($"[PhotonNetworkInterface] SessionConnectFailed: session:{session.Id} name:{session.HostName} reason:{errorReason}");
 
             ConcludeOperationCallback(ref _operationCallbackSessionConnected, false, null);
         }
@@ -332,7 +333,7 @@ namespace Internals.PhotonNetwokInterface
         public void Event_SessionCreated(UdpSession session)
         {
             if (log)
-                DebugService.Log($"[PhotonNetworkInterface] SessionCreated: session:{session.Id} name:{session.HostName}");
+                Log.Info($"[PhotonNetworkInterface] SessionCreated: session:{session.Id} name:{session.HostName}");
             _connectedSessionInfo = new PhotonNetworkInterfaceSession(session);
 
             ConcludeOperationCallback(ref _operationCallbackSessionCreated, true, null);
@@ -341,7 +342,7 @@ namespace Internals.PhotonNetwokInterface
         public void Event_SessionCreationFailed(UdpSession session, UdpSessionError errorReason)
         {
             if (log)
-                DebugService.Log($"[PhotonNetworkInterface] SessionCreationFailed: session:{session.Id} name:{session.HostName} reason:{errorReason}");
+                Log.Info($"[PhotonNetworkInterface] SessionCreationFailed: session:{session.Id} name:{session.HostName} reason:{errorReason}");
 
             ConcludeOperationCallback(ref _operationCallbackSessionCreated, false, null);
         }
@@ -358,12 +359,12 @@ namespace Internals.PhotonNetwokInterface
             if (connection == null)
             {
                 if (log)
-                    DebugService.Log("[PhotonNetworkInterface] Failed to find who raised the event: " + evnt.GetType() + " / " + evnt.RaisedBy);
+                    Log.Info("[PhotonNetworkInterface] Failed to find who raised the event: " + evnt.GetType() + " / " + evnt.RaisedBy);
                 return;
             }
 
             if (intenseLog)
-                DebugService.Log("[PhotonNetworkInterface] OnEvent: (length)" + evnt.BinaryData.Length);
+                Log.Info("[PhotonNetworkInterface] OnEvent: (length)" + evnt.BinaryData.Length);
             _messageReader?.Invoke(connection, evnt.BinaryData);
         }
 
@@ -373,7 +374,7 @@ namespace Internals.PhotonNetwokInterface
 
             if (interfaceConnection == null)
             {
-                DebugService.LogError($"[PhotonNetworkInterface] StreamDataStarted from unknown connection: {connection}.");
+                Log.Error($"[PhotonNetworkInterface] StreamDataStarted from unknown connection: {connection}.");
                 return;
             }
 
@@ -381,7 +382,7 @@ namespace Internals.PhotonNetwokInterface
 
             if (streamChannel == null)
             {
-                DebugService.LogError($"[PhotonNetworkInterface] StreamDataStarted from an unknown channel '{channel}'.");
+                Log.Error($"[PhotonNetworkInterface] StreamDataStarted from an unknown channel '{channel}'.");
                 return;
             }
 
@@ -394,7 +395,7 @@ namespace Internals.PhotonNetwokInterface
 
             if (interfaceConnection == null)
             {
-                DebugService.LogError($"[PhotonNetworkInterface] StreamDataProgress from unknown connection: {connection}.");
+                Log.Error($"[PhotonNetworkInterface] StreamDataProgress from unknown connection: {connection}.");
                 return;
             }
 
@@ -402,7 +403,7 @@ namespace Internals.PhotonNetwokInterface
 
             if (streamChannel == null)
             {
-                DebugService.LogError($"[PhotonNetworkInterface] StreamDataProgress from an unknown channel '{channel}'.");
+                Log.Error($"[PhotonNetworkInterface] StreamDataProgress from an unknown channel '{channel}'.");
                 return;
             }
 
@@ -415,14 +416,14 @@ namespace Internals.PhotonNetwokInterface
 
             if (interfaceConnection == null)
             {
-                DebugService.Log($"[PhotonNetworkInterface] StreamDataAborted from unknown connection: {connection}.");
+                Log.Info($"[PhotonNetworkInterface] StreamDataAborted from unknown connection: {connection}.");
             }
 
             IStreamChannel streamChannel = FindStreamChannel(channel);
 
             if (streamChannel == null)
             {
-                DebugService.LogError($"[PhotonNetworkInterface] StreamDataAborted from an unknown channel '{channel}'.");
+                Log.Error($"[PhotonNetworkInterface] StreamDataAborted from an unknown channel '{channel}'.");
                 return;
             }
 
@@ -435,7 +436,7 @@ namespace Internals.PhotonNetwokInterface
 
             if(interfaceConnection == null)
             {
-                DebugService.LogError($"[PhotonNetworkInterface] Received stream data from an unknown connection: {connection}.");
+                Log.Error($"[PhotonNetworkInterface] Received stream data from an unknown connection: {connection}.");
                 return;
             }
 
@@ -443,14 +444,14 @@ namespace Internals.PhotonNetwokInterface
 
             if(streamChannel == null)
             {
-                DebugService.LogError($"[PhotonNetworkInterface] Received stream data from an unknown channel '{streamData.Channel}'.");
+                Log.Error($"[PhotonNetworkInterface] Received stream data from an unknown channel '{streamData.Channel}'.");
                 return;
             }
 
             StreamDataReceived?.Invoke(streamData.Data, streamChannel, interfaceConnection);
 
             if (log)
-                DebugService.Log("[PhotonNetworkInterface] StreamDataReceived: (length)" + streamData.Data.Length);
+                Log.Info("[PhotonNetworkInterface] StreamDataReceived: (length)" + streamData.Data.Length);
         }
         #endregion
 

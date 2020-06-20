@@ -1,7 +1,9 @@
-﻿using System;
+﻿
+using System;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityX;
 
 public class Game : MonoBehaviour
 {
@@ -125,17 +127,17 @@ public class Game : MonoBehaviour
         {
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
-#if DEBUG_BUILD
+#if DEBUG
                 try
                 {
 #endif
                     if (b.isActiveAndEnabled)
                         b.OnGameUpdate();
-#if DEBUG_BUILD
+#if DEBUG
                 }
                 catch (Exception e)
                 {
-                    DebugService.LogError(e.Message + " - stack:\n " + e.StackTrace);
+                    Log.Exception(e);
                 }
 #endif
 
@@ -149,17 +151,17 @@ public class Game : MonoBehaviour
         {
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
-#if DEBUG_BUILD
+#if DEBUG
                 try
                 {
 #endif
                     if (b.isActiveAndEnabled)
                         b.OnGameFixedUpdate();
-#if DEBUG_BUILD
+#if DEBUG
                 }
                 catch (Exception e)
                 {
-                    DebugService.LogError(e.Message + " - stack:\n " + e.StackTrace);
+                    Log.Error(e.Message + " - stack:\n " + e.StackTrace);
                 }
 #endif
 
@@ -173,17 +175,17 @@ public class Game : MonoBehaviour
         {
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
-#if DEBUG_BUILD
+#if DEBUG
                 try
                 {
 #endif
                     if (b.isActiveAndEnabled)
                         b.OnGameLateUpdate();
-#if DEBUG_BUILD
+#if DEBUG
                 }
                 catch (Exception e)
                 {
-                    DebugService.LogError(e.Message + " - stack:\n " + e.StackTrace);
+                    Log.Error(e.Message + " - stack:\n " + e.StackTrace);
                 }
 #endif
 

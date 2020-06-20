@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityX;
 
 public class PlayerRepertoireServer : PlayerRepertoireMaster
 {
@@ -68,11 +69,11 @@ public class PlayerRepertoireServer : PlayerRepertoireMaster
 
     void OnClientHello(NetMessageClientHello message, INetworkInterfaceConnection clientConnection)
     {
-        DebugService.Log("[PlayerRepertoireServer] OnClientHello");
+        Log.Info("[PlayerRepertoireServer] OnClientHello");
         int index = _newConnectionsNotYetPlayers.IndexOf(clientConnection);
         if (index == -1)
         {
-            DebugService.LogWarning("[PlayerRepertoireServer] We received a client hello, but the client is not in the _newConnectionsNotYetPlayers list. The hello will be ignored.");
+            Log.Warning("[PlayerRepertoireServer] We received a client hello, but the client is not in the _newConnectionsNotYetPlayers list. The hello will be ignored.");
             return;
         }
 
@@ -88,7 +89,7 @@ public class PlayerRepertoireServer : PlayerRepertoireMaster
             playerInfo = newPlayerInfo
         };
         _serverSession.SendNetMessage(playerJoinedMessage, _playerConnections);
-        DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerJoined");
+        Log.Info("[PlayerRepertoireServer] sent NetMessagePlayerJoined");
 
         // add new connection
         _playerConnections.Add(clientConnection);
@@ -99,7 +100,7 @@ public class PlayerRepertoireServer : PlayerRepertoireMaster
             playerId = newPlayerInfo.PlayerId
         };
         _serverSession.SendNetMessage(playerIdAssignementMessage, clientConnection);
-        DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerIdAssignment");
+        Log.Info("[PlayerRepertoireServer] sent NetMessagePlayerIdAssignment");
 
 
         // Send the complete player list to the new player
@@ -108,12 +109,12 @@ public class PlayerRepertoireServer : PlayerRepertoireMaster
             players = _players.ToArray()
         };
         _serverSession.SendNetMessage(syncMessage, clientConnection);
-        DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerRepertoireSync");
+        Log.Info("[PlayerRepertoireServer] sent NetMessagePlayerRepertoireSync");
     }
 
     void OnConnectionRemoved(INetworkInterfaceConnection oldConnection)
     {
-        DebugService.Log("[PlayerRepertoireServer] OnConnectionRemoved: " + oldConnection.Id);
+        Log.Info("[PlayerRepertoireServer] OnConnectionRemoved: " + oldConnection.Id);
         _newConnectionsNotYetPlayers.Remove(oldConnection);
 
         int playerIndex = _playerConnections.IndexOf(oldConnection);
@@ -138,6 +139,6 @@ public class PlayerRepertoireServer : PlayerRepertoireMaster
             playerId = playerId
         };
         _serverSession.SendNetMessage(playerLeftMessage, _playerConnections);
-        DebugService.Log("[PlayerRepertoireServer] sent NetMessagePlayerLeft");
+        Log.Info("[PlayerRepertoireServer] sent NetMessagePlayerLeft");
     }
 }

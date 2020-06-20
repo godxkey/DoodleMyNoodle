@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityX;
 
 /// <summary>
 /// A Game System is a singleton logic class accessible ingame. The game will only start when all GameSystems are ready
@@ -41,7 +42,7 @@ public abstract class GameSystem<T> : GameSystem where T : GameSystem<T>
         base.Awake();
 
         if (Instance != null)
-            DebugService.LogError("We have 2 instances of " + typeof(T).Name);
+            Log.Error("We have 2 instances of " + typeof(T).Name);
 
         Instance = (T)this;
     }

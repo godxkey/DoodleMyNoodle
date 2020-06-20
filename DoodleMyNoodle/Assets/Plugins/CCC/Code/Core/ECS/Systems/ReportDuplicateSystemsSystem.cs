@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Unity.Entities;
+using UnityX;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public class AllowMultipleAttribute : Attribute
@@ -8,7 +9,7 @@ public class AllowMultipleAttribute : Attribute
 
 }
 
-#if DEBUG_BUILD
+#if DEBUG
 public class ReportDuplicateSystemsSystem : ComponentSystem
 {
     List<Type> _exclude = new List<Type>();
@@ -30,7 +31,7 @@ public class ReportDuplicateSystemsSystem : ComponentSystem
             {
                 _exclude.Add(type);
 
-                DebugService.LogWarning($"There are {count} instances of {type} in the {World.Name} world." +
+                Log.Warning($"There are {count} instances of {type} in the {World.Name} world." +
                     $" If this is intended, add the [AllowMultiple] attribute to your system class.");
             }
         }

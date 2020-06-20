@@ -27,7 +27,7 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "DEBUG_BUILD"
+        "DEBUG"
     ],
     "versionDefines": [],
     "noEngineReferences": false

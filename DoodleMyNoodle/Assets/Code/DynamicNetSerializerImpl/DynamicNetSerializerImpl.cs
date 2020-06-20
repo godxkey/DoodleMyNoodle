@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityX;
 
 namespace Internals.OnlineServiceImpl
 {
@@ -48,7 +49,7 @@ namespace Internals.OnlineServiceImpl
 
             if (s_typeToId.Count > ushort.MaxValue)
             {
-                DebugService.LogError("To many NetMessage types for a UInt16.");
+                Log.Error("To many NetMessage types for a UInt16.");
             }
         }
 
@@ -58,7 +59,7 @@ namespace Internals.OnlineServiceImpl
             {
                 if (!s_typeToId.ContainsKey(message.GetType()))
                 {
-                    DebugService.LogError("Cannot get typeId for netMessage of type " + message.GetType()
+                    Log.Error("Cannot get typeId for netMessage of type " + message.GetType()
                         + ".  It has not been registered. Try re-running the registration code-gen");
                     return ushort.MaxValue;
                 }
@@ -78,7 +79,7 @@ namespace Internals.OnlineServiceImpl
 
         public int GetNetBitSize(object message)
         {
-#if DEBUG_BUILD
+#if DEBUG
             try
             {
 #endif
@@ -86,11 +87,11 @@ namespace Internals.OnlineServiceImpl
                 return 16 + DynamicNetSerializationRegistry.map_GetBitSize[message.GetType()].Invoke(message);
 
 
-#if DEBUG_BUILD
+#if DEBUG
             }
             catch (Exception e)
             {
-                DebugService.LogError($"[NetMessageFactoryImpl] " +
+                Log.Error($"[NetMessageFactoryImpl] " +
                     $"Failed to get message bit size from type [{message.GetType()}] : {e.Message} - {e.StackTrace}");
                 return 0;
             }
@@ -99,7 +100,7 @@ namespace Internals.OnlineServiceImpl
 
         public Type GetMessageType(BitStreamReader reader)
         {
-#if DEBUG_BUILD
+#if DEBUG
             try
             {
 #endif
@@ -108,11 +109,11 @@ namespace Internals.OnlineServiceImpl
                 return s_idToType[typeId];
 
 
-#if DEBUG_BUILD
+#if DEBUG
             }
             catch (Exception e)
             {
-                DebugService.LogError($"[NetMessageFactoryImpl]" +
+                Log.Error($"[NetMessageFactoryImpl]" +
                     $" Failed to GetMessageType : {e.Message} - {e.StackTrace}");
                 return null;
             }
@@ -120,7 +121,7 @@ namespace Internals.OnlineServiceImpl
         }
         public void NetSerialize(object message, BitStreamWriter writer)
         {
-#if DEBUG_BUILD
+#if DEBUG
             try
             {
 #endif
@@ -129,11 +130,11 @@ namespace Internals.OnlineServiceImpl
                 DynamicNetSerializationRegistry.map_Serialize[message.GetType()].Invoke(message, writer);
 
 
-#if DEBUG_BUILD
+#if DEBUG
             }
             catch (Exception e)
             {
-                DebugService.LogError($"[NetMessageFactoryImpl]" +
+                Log.Error($"[NetMessageFactoryImpl]" +
                     $" Failed to serialize message of type [{message.GetType()}] : {e.Message} - {e.StackTrace}");
             }
 #endif
@@ -141,7 +142,7 @@ namespace Internals.OnlineServiceImpl
 
         public object NetDeserialize(BitStreamReader reader)
         {
-#if DEBUG_BUILD
+#if DEBUG
             try
             {
 #endif
@@ -150,11 +151,11 @@ namespace Internals.OnlineServiceImpl
                 return DynamicNetSerializationRegistry.map_Deserialize[typeId].Invoke(reader);
 
 
-#if DEBUG_BUILD
+#if DEBUG
             }
             catch (Exception e)
             {
-                DebugService.LogError($"[NetMessageFactoryImpl]" +
+                Log.Error($"[NetMessageFactoryImpl]" +
                     $" Failed to deserialize message : {e.Message} - {e.StackTrace}");
                 return null;
             }

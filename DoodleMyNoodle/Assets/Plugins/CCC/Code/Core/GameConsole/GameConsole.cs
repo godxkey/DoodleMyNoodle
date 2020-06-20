@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using Internals.GameConsoleInterals;
+using UnityX;
 
 public class GameConsole
 {
@@ -19,7 +20,7 @@ public class GameConsole
     {
         if (s_ConsoleUI != null)
         {
-            DebugService.LogError("Initializing the Console for a second time.");
+            Log.Error("Initializing the Console for a second time.");
             return;
         }
 
@@ -224,7 +225,7 @@ public class GameConsole
         {
             var arguments = tokens.GetRange(1, tokens.Count - 1).ToArray();
             consoleCommand.method(arguments);
-            DebugService.Log($"cmd: {command}");
+            Log.Info($"cmd: {command}");
         }
         else if (ConfigVarService.Instance.configVarRegistry.ConfigVars.TryGetValue(commandName, out configVar))
         {

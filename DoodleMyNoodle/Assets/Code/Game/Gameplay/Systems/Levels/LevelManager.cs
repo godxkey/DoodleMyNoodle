@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityX;
 
 [NetSerializable]
 public struct SyncedValueCurrentLevel
@@ -68,7 +69,7 @@ public class LevelManager : GameSystem<LevelManager>
     {
         if (!SystemReady)
         {
-            DebugService.LogError("LevelManagerSystem is not ready");
+            Log.Error("LevelManagerSystem is not ready");
             return;
         }
 
@@ -78,7 +79,7 @@ public class LevelManager : GameSystem<LevelManager>
         }
         else
         {
-            DebugService.LogError("Client cannot start a level. The server must do that.");
+            Log.Error("Client cannot start a level. The server must do that.");
         }
     }
 
@@ -108,7 +109,7 @@ public class LevelManager : GameSystem<LevelManager>
     {
         if (IsLevelStarted)
         {
-            DebugService.LogError("Cannot start another level (not yet implemented)");
+            Log.Error("Cannot start another level (not yet implemented)");
             return;
         }
         IsLevelStarted = true;

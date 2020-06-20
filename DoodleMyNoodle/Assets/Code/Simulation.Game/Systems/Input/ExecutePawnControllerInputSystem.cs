@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Unity.Entities;
+using UnityX;
 
 
 // THIS CLASS SHOULD NOT BE SERIALIZABLE
@@ -33,7 +34,7 @@ public class ClearPawnControllerInputSystem : SimComponentSystem
     {
         foreach (PawnControllerInputBase input in _executeSys.Inputs)
         {
-            DebugService.LogWarning($"The PawnControllerInput {input} seems to have been queued too late. " +
+            Log.Warning($"The PawnControllerInput {input} seems to have been queued too late. " +
                 $"Use [UpdateBefore({nameof(ExecutePawnControllerInputSystem)})] to make sure you deliver the input in time.");
         }
         _executeSys.Inputs.Clear();
@@ -70,7 +71,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
     {
         void LogDiscardReason(string str)
         {
-            DebugService.Log($"[{nameof(ExecutePawnControllerInputSystem)}::ExecuteInput] " +
+            Log.Info($"[{nameof(ExecutePawnControllerInputSystem)}::ExecuteInput] " +
                 $"Discarding input {inputUseItem} : {str}");
         }
 

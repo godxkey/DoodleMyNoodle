@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
-
+using UnityX;
 
 namespace SimulationControl
 {
@@ -35,7 +35,7 @@ namespace SimulationControl
         {
             if (input == null)
             {
-                DebugService.LogError("Trying to submit a null input");
+                Log.Error("Trying to submit a null input");
                 return InputSubmissionId.Invalid;
             }
 
@@ -46,7 +46,7 @@ namespace SimulationControl
                 var syncSystem = World.GetExistingSystem<ReceiveSimulationSyncSystem>();
                 if (syncSystem != null && syncSystem.IsSynchronizing)
                 {
-                    DebugService.Log("Discarding input since we are syncing to the simulation");
+                    Log.Info("Discarding input since we are syncing to the simulation");
                     return InputSubmissionId.Invalid;
                 }
 

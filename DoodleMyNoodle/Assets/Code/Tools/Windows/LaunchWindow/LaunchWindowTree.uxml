@@ -5,12 +5,13 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:editor="UnityEditor.UIElements"
     xmlns:upm="UnityEditor.PackageManager.UI"
 
-xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd"
+xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
 >
   <engine:ScrollView>
     <engine:VisualElement class="category">
       <engine:Label text="Build" class="title"/>
       <engine:Label name="buildTarget" text="Building for:"/>
+      <engine:VisualElement name="symbolsProfile" label="Symbols Profile"/>
       <engine:Toggle name="developmentBuild" label="Development Build"/>
       <engine:Toggle name="allowDebugging" label="Allow Debugging"/>
 

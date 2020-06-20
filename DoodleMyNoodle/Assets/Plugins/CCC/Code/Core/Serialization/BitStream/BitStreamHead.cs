@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityX;
 
 public abstract class BitStreamHead
 {
@@ -55,7 +56,7 @@ public abstract class BitStreamHead
 
         if(ByteIndex < 0)
         {
-            DebugService.LogError("BitStreamHead - Trying to move head below 0");
+            Log.Error("BitStreamHead - Trying to move head below 0");
             ByteIndex = 0;
         }
     }

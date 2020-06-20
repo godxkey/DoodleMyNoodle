@@ -1,7 +1,10 @@
-﻿using SimulationControl;
+﻿
+
+using SimulationControl;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityX;
 
 public static class QuickStart
 {
@@ -16,7 +19,7 @@ public static class QuickStart
         HasEverQuickStarted = true;
         CoreServiceManager.AddInitializationCallback(() =>
         {
-            DebugService.Log("QuickStart: " + settings.ToString());
+            Log.Info("QuickStart: " + settings.ToString());
             StopRoutine();
             s_currentRoutine = CoroutineLauncherService.Instance.StartCoroutine(StartRoutine(settings));
         });
@@ -27,7 +30,7 @@ public static class QuickStart
         HasEverQuickStarted = true;
         CoreServiceManager.AddInitializationCallback(() =>
         {
-            DebugService.Log("QuickStart: from scratch - profile:" + playerProfileLocalId);
+            Log.Info("QuickStart: from scratch - profile:" + playerProfileLocalId);
             StopRoutine();
             PlayerProfileService.Instance.SetPlayerProfile(playerProfileLocalId);
             GameStateManager.TransitionToState(Assets.rootMenu);
@@ -131,7 +134,9 @@ public static class QuickStart
 
             if (foundSession == null)
             {
-                DebugService.LogWarning("Failed client quickstart. Could not find server with name [" + settings.serverName + "] in time.", true);
+                string message = "Failed client quickstart. Could not find server with name [" + settings.serverName + "] in time.";
+                DebugScreenMessage.DisplayMessage(message);
+                Log.Warning(message);
                 GameStateManager.TransitionToState(Assets.rootMenu);
             }
             else
@@ -155,7 +160,10 @@ public static class QuickStart
 
                 if (success == 0)
                 {
-                    DebugService.LogError("Failed client quickstart. Could not connect to server [" + settings.serverName + "].", true);
+                    string message = "Failed client quickstart. Could not connect to server [" + settings.serverName + "].";
+                    DebugScreenMessage.DisplayMessage(message);
+                    Log.Error(message);
+
                     GameStateManager.TransitionToState(Assets.rootMenu);
                 }
                 else
@@ -210,7 +218,9 @@ public static class QuickStart
 
             if (success == 0)
             {
-                DebugService.LogError("Failed server quickstart. Could not create session [" + settings.serverName + "].", true);
+                string message = "Failed server quickstart. Could not create session [" + settings.serverName + "].";
+                DebugScreenMessage.DisplayMessage(message);
+                Log.Error(message);
                 GameStateManager.TransitionToState(Assets.rootMenu);
             }
             else

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityX;
 
 public class ViewBindingDefinition : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class ViewBindingDefinition : MonoBehaviour
         GameObject simGO = GetSimGameObject();
         if (!simGO)
         {
-            DebugService.LogError($"[{nameof(ViewBindingDefinition)}] ({gameObject.name}) Failed to find Sim GameObject... The binding will not work.");
+            Log.Error($"[{nameof(ViewBindingDefinition)}] ({gameObject.name}) Failed to find Sim GameObject... The binding will not work.");
             return SimAssetId.Invalid;
         }
 
@@ -30,7 +31,7 @@ public class ViewBindingDefinition : MonoBehaviour
 
         if (!assetIdAuth)
         {
-            DebugService.LogError($"[{nameof(ViewBindingDefinition)}] ({gameObject.name}) The Sim GameObject {simGO.name} doesn't " +
+            Log.Error($"[{nameof(ViewBindingDefinition)}] ({gameObject.name}) The Sim GameObject {simGO.name} doesn't " +
                 $"have any {nameof(SimAssetIdAuth)} component attached to it. The binding will not work.");
             return SimAssetId.Invalid;
         }

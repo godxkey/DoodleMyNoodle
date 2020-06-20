@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityX;
 
 public abstract class OnlineInterface : IDisposable
 {
@@ -20,7 +21,7 @@ public abstract class OnlineInterface : IDisposable
 
         if (LOG)
 #pragma warning disable CS0162 // Unreachable code detected
-            DebugService.Log("Online interface created");
+            Log.Info("Online interface created");
 #pragma warning restore CS0162 // Unreachable code detected
     }
 
@@ -42,7 +43,7 @@ public abstract class OnlineInterface : IDisposable
 
         if (LOG)
 #pragma warning disable CS0162 // Unreachable code detected
-            DebugService.Log("Online interface terminating");
+            Log.Info("Online interface terminating");
 #pragma warning restore CS0162 // Unreachable code detected
 
         OnTerminate?.Invoke();

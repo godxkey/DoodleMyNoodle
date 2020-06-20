@@ -5,6 +5,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngineX;
+using UnityX;
 
 // These systems take care of notifying any 'owned worlds' that converted entities are being injected into it
 
@@ -35,7 +36,7 @@ public class OwnedWorldInjectionPreConversionSystem : GameObjectConversionSystem
             }
             else
             {
-                DebugService.LogWarning($"The owned world '{DstEntityManager.World.Name}' doesn't appear to have an owner.");
+                Log.Warning($"The owned world '{DstEntityManager.World.Name}' doesn't appear to have an owner.");
             }
         }
     }

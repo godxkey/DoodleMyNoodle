@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityX;
 
 public class GameStateInGameOnline : GameStateInGameBase
 {
@@ -21,7 +22,7 @@ public class GameStateInGameOnline : GameStateInGameBase
         if (OnlineService.OnlineInterface == null)
         {
             GameStateManager.TransitionToState(_specificDefinition.gameStateIfDisconnect);
-            DebugService.LogError("[GameStateInGameOnline] This game state requires an onlineInterface.");
+            Log.Error("[GameStateInGameOnline] This game state requires an onlineInterface.");
             return;
         }
 
@@ -30,7 +31,7 @@ public class GameStateInGameOnline : GameStateInGameBase
         if (SessionInterface == null)
         {
             GameStateManager.TransitionToState(_specificDefinition.gameStateIfDisconnect);
-            DebugService.LogError("[GameStateInGameOnline] This game state requires a session interface.");
+            Log.Error("[GameStateInGameOnline] This game state requires a session interface.");
             return;
         }
 

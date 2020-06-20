@@ -5,18 +5,17 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 using CCC.Online.DataTransfer;
 using CCC.Operations;
+using UnityX;
 
 public abstract class SessionInterface : IDisposable
 {
     const bool LOG = false;
 
-#if DEBUG_BUILD
     [ConfigVar(name: "log.netmessage", defaultValue: "0", ConfigVarFlag.Save, "Should we log the sent/received NetMessages.")]
     static ConfigVar s_logNetMessages;
     
     [ConfigVar(name: "transfer_with_stream", defaultValue: "true", ConfigVarFlag.Save, "Should we use a UDP Stream Channel for large data transfers?")]
     static ConfigVar s_transferWithStream;
-#endif
 
     public abstract bool IsServerType { get; }
     public bool IsClientType => !IsServerType;
@@ -107,12 +106,11 @@ public abstract class SessionInterface : IDisposable
 
         if (NetMessageInterpreter.GetDataFromMessage(netMessage, out byte[] messageData, byteLimit: OnlineConstants.MAX_MESSAGE_SIZE))
         {
-#if DEBUG_BUILD
             if (s_logNetMessages.BoolValue)
             {
-                DebugService.Log($"[Session] Send message '{netMessage}' to connection {connection.Id}");
+                Log.Info($"[Session] Send message '{netMessage}' to connection {connection.Id}");
             }
-#endif
+
             _networkInterface.SendMessage(connection, messageData, reliableAndOrdered);
         }
     }
@@ -131,12 +129,11 @@ public abstract class SessionInterface : IDisposable
 
         if (NetMessageInterpreter.GetDataFromMessage(netMessage, out byte[] messageData, byteLimit: int.MaxValue))
         {
-#if DEBUG_BUILD
             if (s_logNetMessages.BoolValue)
             {
-                DebugService.Log($"[Session] BeginLargeDataTransfer '{netMessage}-{description}' to connection {connection.Id}");
+                Log.Info($"[Session] BeginLargeDataTransfer '{netMessage}-{description}' to connection {connection.Id}");
             }
-#endif
+
             CoroutineOperation op = null;
 
             if (s_transferWithStream.BoolValue)
@@ -163,12 +160,11 @@ public abstract class SessionInterface : IDisposable
 
     void OnReceiveDataTransferHeader(NetMessageViaManualPacketsHeader netMessage, INetworkInterfaceConnection source)
     {
-#if DEBUG_BUILD
         if (s_logNetMessages.BoolValue)
         {
-            DebugService.Log($"[Session] OnReceiveDataTransferHeader '{netMessage}-{netMessage.Description}' from connection {source.Id}");
+            Log.Info($"[Session] OnReceiveDataTransferHeader '{netMessage}-{netMessage.Description}' from connection {source.Id}");
         }
-#endif
+
         ReceiveViaManualPacketsOperation op = new ReceiveViaManualPacketsOperation(netMessage, source, this);
 
         _incomingDataTransfers.Add(op);
@@ -185,12 +181,11 @@ public abstract class SessionInterface : IDisposable
 
     void OnReceiveDataTransferHeader(NetMessageViaStreamChannelHeader netMessage, INetworkInterfaceConnection source)
     {
-#if DEBUG_BUILD
         if (s_logNetMessages.BoolValue)
         {
-            DebugService.Log($"[Session] OnReceiveDataTransferHeader '{netMessage}-{netMessage.Description}' from connection {source.Id}");
+            Log.Info($"[Session] OnReceiveDataTransferHeader '{netMessage}-{netMessage.Description}' from connection {source.Id}");
         }
-#endif
+
         ReceiveViaStreamChannelOperation op = new ReceiveViaStreamChannelOperation(netMessage, source, this);
 
         _incomingDataTransfers.Add(op);
@@ -219,12 +214,10 @@ public abstract class SessionInterface : IDisposable
     {
         if (NetMessageInterpreter.GetMessageFromData(data, out object netMessage))
         {
-#if DEBUG_BUILD
             if (s_logNetMessages.BoolValue)
             {
-                DebugService.Log($"[Session] Received message '{netMessage}' from connection {source.Id}");
+                Log.Info($"[Session] Received message '{netMessage}' from connection {source.Id}");
             }
-#endif
 
             if (netMessage != null)
             {

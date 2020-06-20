@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityX;
 
 internal static class VariousCommandLines
 {
@@ -42,7 +43,7 @@ internal static class VariousCommandLines
         }
         else
         {
-            DebugService.LogWarning("Cannot open log file location(" + path + "). Directory was not found.");
+            Log.Warning("Cannot open log file location(" + path + "). Directory was not found.");
         }
     }
 }

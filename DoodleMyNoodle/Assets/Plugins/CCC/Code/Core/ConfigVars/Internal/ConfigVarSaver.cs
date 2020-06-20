@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityX;
 
 namespace CCC.ConfigVarInterals
 {
@@ -22,7 +23,7 @@ namespace CCC.ConfigVarInterals
                         st.WriteLine("{0} \"{1}\"", cvar.name, cvar.Value);
                 }
             }
-            DebugService.Log("saved config vars: " + filename);
+            Log.Info("saved config vars: " + filename);
         }
     }
 }

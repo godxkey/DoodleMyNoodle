@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using UnityEngine;
+using UnityX;
 
 public static class DebugLogUtility
 {
@@ -18,7 +19,7 @@ public static class DebugLogUtility
                 strBuilder.Append("  ");
             }
 
-            DebugService.Log(strBuilder.ToString());
+            Log.Info(strBuilder.ToString());
         }
     }
     

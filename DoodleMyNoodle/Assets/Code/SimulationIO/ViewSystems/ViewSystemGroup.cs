@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Entities;
 using UnityEngineX;
+using UnityX;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 public class MasterOnlyAttribute : Attribute
@@ -97,7 +98,7 @@ public abstract class ManualCreationComponentSystemGroup : ComponentSystemGroup
         if (!Attribute.IsDefined(type, typeof(DisableAutoCreationAttribute)) &&
             !Attribute.IsDefined(type.Assembly, typeof(DisableAutoCreationAttribute)))
         {
-            DebugService.LogError($"We should not be manually creating the system {type} since its going to create itself anyway");
+            Log.Error($"We should not be manually creating the system {type} since its going to create itself anyway");
         }
 
         var sys = World.GetOrCreateSystem(type);

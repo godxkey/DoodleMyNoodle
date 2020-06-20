@@ -103,14 +103,14 @@ namespace SimulationControl
             _updatePlayerLoop = true;
 
 
-#if DEBUG_BUILD
+#if DEBUG
             GameConsole.AddCommand("sim.pause", Cmd_SimPause, "Pause the simulation playback");
 #endif
         }
 
         protected override void OnDestroy()
         {
-#if DEBUG_BUILD
+#if DEBUG
             GameConsole.RemoveCommand("sim.pause");
 #endif
             base.OnDestroy();
@@ -288,7 +288,7 @@ namespace SimulationControl
             }
         }
 
-#if DEBUG_BUILD
+#if DEBUG
         private bool _isPausedByCmd = false;
         void Cmd_SimPause(string[] args)
         {

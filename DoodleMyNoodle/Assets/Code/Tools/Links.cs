@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityX;
 
 public class Links : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class Links : MonoBehaviour
         }
         else
         {
-            DebugService.LogWarning("Cannot open log file location(" + path + "). Directory was not found.");
+            Log.Warning("Cannot open log file location(" + path + "). Directory was not found.");
         }
     }
 }

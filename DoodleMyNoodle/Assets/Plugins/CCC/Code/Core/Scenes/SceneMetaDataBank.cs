@@ -36,5 +36,5 @@ public class SceneMetaDataBank : ScriptableObject
 
     [SerializeField]
     internal List<SceneMetaData> SceneMetaDatasInternal;
-    public ReadOnlyList<SceneMetaData, ISceneMetaData> SceneMetaDatas => new ReadOnlyList<SceneMetaData, ISceneMetaData>(SceneMetaDatasInternal);
+    public ReadOnlyListDynamic<ISceneMetaData> SceneMetaDatas => SceneMetaDatasInternal.AsReadOnlyNoAlloc().DynamicCast<ISceneMetaData>();
 }

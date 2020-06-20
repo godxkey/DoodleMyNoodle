@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Internals.MenuSessionChoice;
 using UnityEngineX;
+using UnityX;
 
 public class MenuSessionChoice : MonoBehaviour
 {
@@ -138,7 +139,7 @@ public class MenuSessionChoice : MonoBehaviour
         {
             string message = "Cannot join null session";
             DebugScreenMessage.DisplayMessage(message);
-            DebugService.LogError(message);
+            Log.Error(message);
         }
     }
 

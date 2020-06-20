@@ -22,8 +22,10 @@ namespace SimulationControl
         {
             base.OnCreate();
 
+#if DEBUG
             GameConsole.AddCommand("sim.save", Cmd_SimSave, "Save the simulation in memory (multiplayer unsafe!)");
             GameConsole.AddCommand("sim.load", Cmd_SimLoad, "Load the simulation from memory (multiplayer unsafe!)");
+#endif
 
             _simulationWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
             _tickSystem = World.GetOrCreateSystem<TickSimulationSystem>();
@@ -31,8 +33,10 @@ namespace SimulationControl
 
         protected override void OnDestroy()
         {
+#if DEBUG
             GameConsole.RemoveCommand("sim.save");
             GameConsole.RemoveCommand("sim.load");
+#endif
 
             if (_ongoingCmdOperation != null && _ongoingCmdOperation.IsRunning)
                 _ongoingCmdOperation.TerminateWithAbnormalFailure();
@@ -44,7 +48,7 @@ namespace SimulationControl
         {
         }
 
-#if DEBUG_BUILD
+#if DEBUG
         private void Cmd_SimSave(string[] parameters)
         {
             if (_ongoingCmdOperation != null && _ongoingCmdOperation.IsRunning)

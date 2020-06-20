@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngineX;
+using UnityX;
 
 public class ItemVisualInfoBank : GameSystem<ItemVisualInfoBank>
 {
@@ -28,7 +29,7 @@ public class ItemVisualInfoBank : GameSystem<ItemVisualInfoBank>
             return result;
         }
 
-        DebugService.LogError($"Failed to find item info from the ID {itemID}");
+        Log.Error($"Failed to find item info from the ID {itemID}");
 
         return null;
     }
@@ -41,7 +42,7 @@ public class ItemVisualInfoBank : GameSystem<ItemVisualInfoBank>
             return result;
         }
 
-        DebugService.LogError($"Failed to find item ID from item info {itemInfo}");
+        Log.Error($"Failed to find item ID from item info {itemInfo}");
 
         return SimAssetId.Invalid;
     }

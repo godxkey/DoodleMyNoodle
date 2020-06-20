@@ -1,5 +1,6 @@
 ﻿using Unity.Core;
 using Unity.Entities;
+using UnityX;
 
 public struct SimulationOngoingTickId : IComponentData
 {
@@ -44,7 +45,7 @@ public class UpdateSimulationTimeSystem : ComponentSystem
 
             if (newOngoingTick != expectedTickId)
             {
-                DebugService.LogError($"[{nameof(UpdateSimulationTimeSystem)}] " +
+                Log.Error($"[{nameof(UpdateSimulationTimeSystem)}] " +
                     $"Our new tick '{newOngoingTick}' was not as expected: {expectedTickId}.");
 
                 newOngoingTick = expectedTickId;

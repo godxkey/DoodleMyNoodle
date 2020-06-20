@@ -1,4 +1,5 @@
 ﻿using CCC.Operations;
+using UnityX;
 
 namespace CCC.Online.DataTransfer
 {
@@ -49,7 +50,7 @@ namespace CCC.Online.DataTransfer
 
             if (!_preExecutedCalled)
             {
-                DebugService.LogWarning($"An operation of type {GetType().Name} has been terminated " +
+                Log.Warning($"An operation of type {GetType().Name} has been terminated " +
                     $"without ever calling {nameof(PreExecuteRoutine)}. " +
                     $"Make sure to call the method manually in the {nameof(ExecuteRoutine)} method.");
             }

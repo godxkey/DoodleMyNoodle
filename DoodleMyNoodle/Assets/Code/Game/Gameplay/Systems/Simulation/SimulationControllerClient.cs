@@ -35,7 +35,7 @@ public class SimulationControllerClient : SimulationController
     //    //_session = OnlineService.ClientInterface.SessionClientInterface;
     //    //_session.RegisterNetMessageReceiver<NetMessageSimTick>(OnNetMessageSimTick);
 
-    //    //#if DEBUG_BUILD
+    //    //#if DEBUG
     //    //        GameConsole.AddCommand("sim.sync", Cmd_SimSync, "Sync the simulation with the server");
     //    //#endif
     //}
@@ -49,7 +49,7 @@ public class SimulationControllerClient : SimulationController
 
     public override void OnSafeDestroy()
     {
-        //#if DEBUG_BUILD
+        //#if DEBUG
         //        GameConsole.RemoveCommand("sim.sync");
         //#endif
 
@@ -65,13 +65,13 @@ public class SimulationControllerClient : SimulationController
     //{
     //    if (input == null)
     //    {
-    //        DebugService.LogError("Trying to submit a null input");
+    //        Log.Error("Trying to submit a null input");
     //        return;
     //    }
 
     //    if (_ongoingSyncOp != null && _ongoingSyncOp.IsRunning)
     //    {
-    //        DebugService.Log("Discarding input since we are syncing to the simulation");
+    //        Log.Info("Discarding input since we are syncing to the simulation");
     //        return;
     //    }
 
@@ -119,7 +119,7 @@ public class SimulationControllerClient : SimulationController
     //    {
     //        if (SimulationView.TickId != tick.tickId)
     //        {
-    //            DebugService.LogError($"We forcefully set the next simulation's tick at {tick.tickId}" +
+    //            Log.Error($"We forcefully set the next simulation's tick at {tick.tickId}" +
     //                $" (from {SimulationView.TickId}) to match with the server. This should not happen if 'join in progress' works correctly");
     //            SimulationView.ForceSetTickId(tick.tickId);
     //        }
@@ -186,7 +186,7 @@ public class SimulationControllerClient : SimulationController
     //    return _ongoingSyncOp;
     //}
 
-    //#if DEBUG_BUILD
+    //#if DEBUG
     //    private void Cmd_SimSync(string[] obj)
     //    {
     //        if (_ongoingCmdOperation != null && _ongoingCmdOperation.IsRunning)

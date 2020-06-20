@@ -1,6 +1,7 @@
 ﻿using CCC.InspectorDisplay;
 using System;
 using UnityEngine;
+using UnityX;
 
 public abstract class GameStateManager : MonoCoreService<GameStateManager>
 {
@@ -48,7 +49,7 @@ public abstract class GameStateManager : MonoCoreService<GameStateManager>
     {
         if (gameStateSettings == null)
         {
-            DebugService.LogError("[GameStateManager] Trying to transition to a null GameState");
+            Log.Error("[GameStateManager] Trying to transition to a null GameState");
             return;
         }
 
@@ -59,7 +60,7 @@ public abstract class GameStateManager : MonoCoreService<GameStateManager>
 
         if (newGameState == null)
         {
-            DebugService.LogError("[GameStateManager] Failed to create a GameState from gameStateSettings: " + gameStateSettings.GetType()
+            Log.Error("[GameStateManager] Failed to create a GameState from gameStateSettings: " + gameStateSettings.GetType()
                 + ". You may have forgot to register it in the factory.");
             return;
         }
@@ -68,7 +69,7 @@ public abstract class GameStateManager : MonoCoreService<GameStateManager>
 
         if (log)
 #pragma warning disable CS0162 // Unreachable code detected
-            DebugService.Log("[GameStateManager] Transitioning from " + GetPrintGameStateName(_currentGameState) + " to " + GetPrintGameStateName(_targetGameState) + "...");
+            Log.Info("[GameStateManager] Transitioning from " + GetPrintGameStateName(_currentGameState) + " to " + GetPrintGameStateName(_targetGameState) + "...");
 #pragma warning restore CS0162 // Unreachable code detected
         _currentGameState?.BeginExit(_parameters);
     }
@@ -92,7 +93,7 @@ public abstract class GameStateManager : MonoCoreService<GameStateManager>
                     _currentGameState = _targetGameState;
                     if (log)
 #pragma warning disable CS0162 // Unreachable code detected
-                        DebugService.Log("[GameStateManager] Entering " + GetPrintGameStateName(_currentGameState));
+                        Log.Info("[GameStateManager] Entering " + GetPrintGameStateName(_currentGameState));
 #pragma warning restore CS0162 // Unreachable code detected
                     _currentGameState?.Enter(_parameters);
 
