@@ -47,62 +47,21 @@ public class ExecutePlayerInputSystem : SimComponentSystem
         // fbessette: For now, we simply do a switch. 
         //            In the future, we'll probably want to implement something dynamic instead
 
-        // THIS IS MAINLY FOR DEBUG
-
         switch (input)
         {
-            // temporary
-            /* case SimInputKeycode keycodeInput:
-            {
-                Entity pawn = GetPlayerPawn(playerEntity);
-
-                if (pawn != Entity.Null)
+            case SimPlayerInputNextTurn NextTurnInput:
+                if (Accessor.HasSingleton<NextTurnInputCounter>())
                 {
-                    if (EntityManager.TryGetComponentData(pawn, out FixTranslation pawnPos))
-                    {
-                        if (keycodeInput.state == SimInputKeycode.State.Pressed)
-                        {
-                            switch (keycodeInput.keyCode)
-                            {
-                                // Damage Health Debug 
-                                case UnityEngine.KeyCode.M:
-                                    CommonWrites.SetStatInt(Accessor, pawn, new Health()
-                                    {
-                                        Value = EntityManager.GetComponentData<Health>(pawn).Value - 1
-                                    });
-                                    break;
-                                // Consume 1 Action Debug 
-                                case UnityEngine.KeyCode.N:
-                                    CommonWrites.SetStatInt(Accessor, pawn, new ActionPoints()
-                                    {
-                                        Value = EntityManager.GetComponentData<ActionPoints>(pawn).Value - 1
-                                    });
-                                    break;
-                            }
-                        }
-                    }
-
-                    if (keycodeInput.keyCode == UnityEngine.KeyCode.X && keycodeInput.state == SimInputKeycode.State.Pressed)
-                    {
-                        Entities.ForEach((Entity aiController, ref AITag aiTag, ref ControlledEntity p) =>
-                        {
-                            EntityManager.DestroyEntity(p.Value);
-                        });
-
-                    }
-
-                    if (keycodeInput.keyCode == UnityEngine.KeyCode.T && keycodeInput.state == SimInputKeycode.State.Pressed
-                        && EntityManager.HasComponent<FixTranslation>(pawn))
-                    {
-                        fix2 newPosition = World.Random().NextFixVector2(
-                            min: fix2(-5, -5),
-                            max: fix2(5, 5));
-
-                        EntityManager.SetComponentData(pawn, new FixTranslation() { Value = fix3(newPosition, 0) });
-                    }
+                    int currentNextTurnInputCounter = Accessor.GetSingleton<NextTurnInputCounter>().Value;
+                    Accessor.SetSingleton(new NextTurnInputCounter() { Value = currentNextTurnInputCounter + 1 });
                 }
+                else
+                {
+                    Accessor.SetOrCreateSingleton(new NextTurnInputCounter() { Value = 1 });
+                }
+                
                 break;
-            }*/
+
             case SimPlayerInputUseItem ItemUsedInput:
                 ExecutePawnControllerInputSystem pawnControllerInputSystem = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, ItemUsedInput.ItemIndex, ItemUsedInput.UseData));
