@@ -78,7 +78,25 @@ public abstract class GameAction
         public Entity ItemEntity;
     }
 
+    public bool TryUse(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
+    {
+        if (!IsContextValid(accessor, context))
+        {
+            LogUsageErrorReason($"Context isn't valid for {this}");
+            return false;
+        }
+
+        Use(accessor, context, parameters);
+        return true;
+    }
+
     public abstract void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters);
-    public abstract bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context);
+    public abstract bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context);
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context);
+
+    private void LogUsageErrorReason(string str)
+    {
+        DebugService.Log($"[{nameof(GameAction)}::TryUse] " +
+            $"Game Action cannot be used, {str}");
+    }
 }
