@@ -11,6 +11,7 @@ public class RequestNextTurnIfTeamMembersReadySystem : SimComponentSystem
     {
         int teamCurrentlyPlaying = CommonReads.GetCurrentTurnTeam(Accessor);
         bool everyoneIsReady = true;
+        bool atLeastOneReady = false;
 
         foreach (Unity.Entities.Entity pawnController in CommonReads.GetEntitiesFromTeam(Accessor, teamCurrentlyPlaying))
         {
@@ -21,6 +22,10 @@ public class RequestNextTurnIfTeamMembersReadySystem : SimComponentSystem
                     // he toggle it off so he's not ready
                     everyoneIsReady = false;
                 }
+                else
+                {
+                    atLeastOneReady = true;
+                }
             }
             else
             {
@@ -29,7 +34,7 @@ public class RequestNextTurnIfTeamMembersReadySystem : SimComponentSystem
             }
         }
 
-        if (everyoneIsReady)
+        if (everyoneIsReady && atLeastOneReady)
         {
             // Clear all Ready For Next Turn
             foreach (Unity.Entities.Entity pawnController in CommonReads.GetEntitiesFromTeam(Accessor, teamCurrentlyPlaying))

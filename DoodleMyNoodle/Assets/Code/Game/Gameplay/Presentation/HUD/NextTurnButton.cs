@@ -59,6 +59,7 @@ public class NextTurnButton : GamePresentationBehaviour
                         _wasMyTurn = true;
 
                         _canBeClicked = true;
+                        Text.text = WaitingForNextTurnText;
                     }
                 }
                 else
