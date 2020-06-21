@@ -21,11 +21,17 @@ public class NextTurnButton : GamePresentationBehaviour
     public Color WaitingForNextTurnColor = Color.white;
     public Color ReadyColor = Color.green;
 
-    private bool _hasPressedOnce = false;
+    private bool _isPressed = false;
+    private bool _canBeClicked = false;
+    private bool _wasMyTurn = false;
+
+    private const float UPDATE_DELAY = 0.5f;
 
     protected override void Awake()
     {
         Button.onClick.AddListener(OnNextTurnClicked);
+
+        this.DelayedCall(UPDATE_DELAY, () => UpdateButtonState());
 
         base.Awake();
     }
@@ -34,38 +40,67 @@ public class NextTurnButton : GamePresentationBehaviour
     {
         if (SimWorld.HasSingleton<NewTurnEventData>())
         {
-            _hasPressedOnce = false;
+            UpdateButtonState(false);
+        }
+    }
 
-            Image.color = WaitingForNextTurnColor;
-
-            if (SimWorld.TryGetSingleton(out TurnCurrentTeam turnCurrentTeam))
+    private void UpdateButtonState(bool triggerDelay = true)
+    {
+        Entity pawnController = CommonReads.GetPawnController(SimWorld, SimWorldCache.LocalPawn);
+        if (SimWorld.TryGetSingleton(out TurnCurrentTeam turnCurrentTeam))
+        {
+            if (SimWorld.TryGetComponentData(pawnController, out Team team))
             {
-                switch ((TeamAuth.DesignerFriendlyTeam)turnCurrentTeam.Value)
+                // its our turn
+                if (turnCurrentTeam.Value == team.Value)
                 {
-                    case TeamAuth.DesignerFriendlyTeam.Player:
-                        Text.text = WaitingForNextTurnText;
-                        break;
-                    case TeamAuth.DesignerFriendlyTeam.Baddies:
+                    if (!_wasMyTurn)
+                    {
+                        _wasMyTurn = true;
+
+                        _canBeClicked = true;
+                    }
+                }
+                else
+                {
+                    // it's not my turn
+                    if (_wasMyTurn)
+                    {
+                        _wasMyTurn = false;
+
+                        _isPressed = false;
+                        _canBeClicked = false;
+
+                        Image.color = WaitingForNextTurnColor;
                         Text.text = WaitingForYourTurn;
-                        break;
-                    default:
-                        break;
+                    }
                 }
             }
         }
+
+        if(triggerDelay)
+            this.DelayedCall(UPDATE_DELAY, () => UpdateButtonState());
     }
 
     private void OnNextTurnClicked()
     {
-        if (!_hasPressedOnce)
-        {
-            SimPlayerInputNextTurn simInput = new SimPlayerInputNextTurn();
-            SimWorld.SubmitInput(simInput);
+        if (!_canBeClicked)
+            return;
 
+        _isPressed = !_isPressed;
+
+        PlayerInputNextTurn simInput = new PlayerInputNextTurn(_isPressed);
+        SimWorld.SubmitInput(simInput);
+
+        if (_isPressed)
+        {
             Text.text = ReadyText;
             Image.color = ReadyColor;
-
-            _hasPressedOnce = true;
+        }
+        else
+        {
+            Text.text = WaitingForNextTurnText;
+            Image.color = WaitingForNextTurnColor;
         }
     }
 }

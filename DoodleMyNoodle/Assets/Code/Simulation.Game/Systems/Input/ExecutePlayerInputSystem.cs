@@ -46,24 +46,14 @@ public class ExecutePlayerInputSystem : SimComponentSystem
     {
         // fbessette: For now, we simply do a switch. 
         //            In the future, we'll probably want to implement something dynamic instead
-
+        ExecutePawnControllerInputSystem pawnControllerInputSystem = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
         switch (input)
         {
-            case SimPlayerInputNextTurn NextTurnInput:
-                if (Accessor.HasSingleton<NextTurnInputCounter>())
-                {
-                    int currentNextTurnInputCounter = Accessor.GetSingleton<NextTurnInputCounter>().Value;
-                    Accessor.SetSingleton(new NextTurnInputCounter() { Value = currentNextTurnInputCounter + 1 });
-                }
-                else
-                {
-                    Accessor.SetOrCreateSingleton(new NextTurnInputCounter() { Value = 1 });
-                }
-                
+            case PlayerInputNextTurn NextTurnInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnInputNextTurn(playerEntity, NextTurnInput.ReadyForNextTurn));
                 break;
 
             case SimPlayerInputUseItem ItemUsedInput:
-                ExecutePawnControllerInputSystem pawnControllerInputSystem = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, ItemUsedInput.ItemIndex, ItemUsedInput.UseData));
                 break;
         }

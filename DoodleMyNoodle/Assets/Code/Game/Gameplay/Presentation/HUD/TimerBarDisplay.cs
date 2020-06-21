@@ -22,25 +22,25 @@ public class TimerBarDisplay : GamePresentationBehaviour
             if (turnTimer.Value <= TimeToStartShowing)
             {
                 BarContainer.SetActive(true);
+
+                Color color;
+                fix teamTurnDuration;
                 switch (turnTeam.Value)
                 {
                     case (int)TurnSystemSetting.Team.AI:
-                        TimerBar.fillRect.GetComponent<Image>().color = Color.red;
-
-                        fix totalTimerBarAITime = turnDuration.DurationAI < TimeToStartShowing ? turnDuration.DurationAI : TimeToStartShowing;
-
-                        TimerBar.value = (float)(turnTimer.Value / totalTimerBarAITime);
+                        color = Color.red;
+                        teamTurnDuration = turnDuration.DurationAI;
                         break;
-                    case (int)TurnSystemSetting.Team.Players:
-                        TimerBar.fillRect.GetComponent<Image>().color = Color.blue;
 
-                        fix totalTimerBarPlayerTime = turnDuration.DurationPlayer < TimeToStartShowing ? turnDuration.DurationPlayer : TimeToStartShowing;
-
-                        TimerBar.value = (float)(turnTimer.Value / totalTimerBarPlayerTime);
-                        break;
                     default:
+                    case (int)TurnSystemSetting.Team.Players:
+                        color = Color.blue;
+                        teamTurnDuration = turnDuration.DurationPlayer;
                         break;
                 }
+
+                TimerBar.fillRect.GetComponent<Image>().color = Color.blue;
+                TimerBar.value = (float)(turnTimer.Value / fixMath.min(teamTurnDuration, TimeToStartShowing));
             }
             else
             {
