@@ -6,7 +6,7 @@ using static Unity.Mathematics.math;
 
 public class GameActionMove : GameAction
 {
-    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context)
+    public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
             && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);

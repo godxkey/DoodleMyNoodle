@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 5742253346417087590}
   - component: {fileID: 4575763512178357569}
   - component: {fileID: -8620854387768135619}
+  - component: {fileID: 3299017414084186147}
+  - component: {fileID: 8131632806168632648}
+  - component: {fileID: 8082962243016166225}
   m_Layer: 0
   m_Name: SE_Item_MeleeAttack
   m_TagString: Untagged
@@ -71,3 +74,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Guid: 8fe72c48eacd0c642818eff638603c62
+--- !u!114 &3299017414084186147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74e0f80fdb97df84d8b02247406eeab6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: 5
+--- !u!114 &8131632806168632648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e09ca8c09567a04680a09cc6754ecbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: 2
+--- !u!114 &8082962243016166225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e6bae790eddcfb49abc9db66df07ccc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: 1

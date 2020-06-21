@@ -13,7 +13,7 @@ public class GameActionHeal : GameAction
     const int AP_COST = 2;
     const int HEAL = 4;
 
-    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context)
+    public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
             && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);

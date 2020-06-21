@@ -14,7 +14,7 @@ public class GameActionShield : GameAction
         return new UseContract(new GameActionParameterSelfTarget.Description() {});
     }
 
-    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context)
+    public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return accessor.HasComponent<Health>(context.InstigatorPawn)
             && accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
