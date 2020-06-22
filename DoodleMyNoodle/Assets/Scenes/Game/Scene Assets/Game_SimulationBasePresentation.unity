@@ -917,8 +917,8 @@ MonoBehaviour:
   playMode: 0
   overrideServerName: 0
   serverName: 
-  overrideLevel: 0
-  level: {fileID: 0}
+  overrideLevel: 1
+  level: {fileID: 11400000, guid: 855f239a70fa0fa45b87ada7e9937f76, type: 2}
 --- !u!4 &433594086
 Transform:
   m_ObjectHideFlags: 0
@@ -1131,6 +1131,7 @@ GameObject:
   - component: {fileID: 1210510931}
   - component: {fileID: 1210510930}
   - component: {fileID: 1210510929}
+  - component: {fileID: 1210510933}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -1221,6 +1222,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1210510933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1210510928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad676cf45dfd06f47b2802bf231eac7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ScreenEdgeBorderThickness: 20
+  Cam: {fileID: 1210510931}
+  Speed: 10
+  ZoomSpeed: 0.25
+  EnableMovementLimits: 1
+  MaxZoom: 5
+  DisableMouseControlsInEditor: 1
 --- !u!1 &1279029295
 GameObject:
   m_ObjectHideFlags: 0
