@@ -87,7 +87,7 @@ public class LevelManager : GameSystem<LevelManager>
         if (!string.IsNullOrEmpty(newValue.Name))
         {
             string levelName = newValue.Name;
-            Level lvl = LevelBank.Levels.Find((x) => x.name == levelName);
+            Level lvl = LevelBank.Levels.Find((x) => x && x.name == levelName);
             if (!lvl)
             {
                 Debug.LogError($"Could not start level {levelName}. It was not found in the level bank. " +

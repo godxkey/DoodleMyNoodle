@@ -12,7 +12,7 @@ public class GizmoGridRect : MonoBehaviour
     {
         ExternalSimWorldAccessor simWorld = GameMonoBehaviourHelpers.GetSimulationWorld();
 
-        if (simWorld == null && !simWorld.HasSingleton<GridInfo>())
+        if (simWorld == null || !simWorld.HasSingleton<GridInfo>())
             return;
 
         intRect gridRect = simWorld.GetSingleton<GridInfo>().GridRect;

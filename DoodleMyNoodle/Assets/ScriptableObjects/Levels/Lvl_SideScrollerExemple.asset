@@ -14,5 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SimulationScenes:
   - {fileID: 11400000, guid: 70420e760248b464b866ae7a9cea7039, type: 2}
-  PresentationScenes:
-  - {fileID: 11400000, guid: eec72236025c90e499f2ea731761dfbc, type: 2}
+  PresentationScenes: []
