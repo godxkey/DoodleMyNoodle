@@ -60,6 +60,10 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
     {
         switch (input)
         {
+            case PawnInputNextTurn pawnInputNextTurn:
+                Accessor.SetOrAddComponentData(pawnInputNextTurn.PawnController, new ReadyForNextTurn() { Value = pawnInputNextTurn.ReadyForNextTurn });
+                break;
+        
             case PawnControllerInputUseItem useItemInput:
                 ExecuteInput(useItemInput);
                 break;

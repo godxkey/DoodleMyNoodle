@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class TimerBarDisplay : GamePresentationBehaviour
 {
     public Slider TimerBar;
+    public int TimeToStartShowing = 10;
+
+    public GameObject BarContainer;
 
     public override void OnGameUpdate()
     {
@@ -16,18 +19,32 @@ public class TimerBarDisplay : GamePresentationBehaviour
             && SimWorld.TryGetSingleton(out TurnDuration turnDuration)
             && SimWorld.TryGetSingleton(out TurnCurrentTeam turnTeam))
         {
-            switch (turnTeam.Value)
+            if (turnTimer.Value <= TimeToStartShowing)
             {
-                case (int)TurnSystemSetting.Team.AI:
-                    TimerBar.fillRect.GetComponent<Image>().color = Color.red;
-                    TimerBar.value = (float)(turnTimer.Value / turnDuration.DurationAI);
-                    break;
-                case (int)TurnSystemSetting.Team.Players:
-                    TimerBar.fillRect.GetComponent<Image>().color = Color.blue;
-                    TimerBar.value = (float)(turnTimer.Value / turnDuration.DurationPlayer);
-                    break;
-                default:
-                    break;
+                BarContainer.SetActive(true);
+
+                Color color;
+                fix teamTurnDuration;
+                switch (turnTeam.Value)
+                {
+                    case (int)TurnSystemSetting.Team.AI:
+                        color = Color.red;
+                        teamTurnDuration = turnDuration.DurationAI;
+                        break;
+
+                    default:
+                    case (int)TurnSystemSetting.Team.Players:
+                        color = Color.blue;
+                        teamTurnDuration = turnDuration.DurationPlayer;
+                        break;
+                }
+
+                TimerBar.fillRect.GetComponent<Image>().color = Color.blue;
+                TimerBar.value = (float)(turnTimer.Value / fixMath.min(teamTurnDuration, TimeToStartShowing));
+            }
+            else
+            {
+                BarContainer.SetActive(false);
             }
         }
     }
