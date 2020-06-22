@@ -1,5 +1,6 @@
 using Unity.Entities;
 
+[NetSerializable]
 public class PlayerInputNextTurn : SimPlayerInput
 {
     public bool ReadyForNextTurn = false;
