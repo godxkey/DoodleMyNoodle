@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityX;
+using UnityEngineX;
 
 public class ViewBindingDefinition : MonoBehaviour
 {

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngineX;
-using UnityX;
 
 public class CommandLineBoot : MonoBehaviour
 {

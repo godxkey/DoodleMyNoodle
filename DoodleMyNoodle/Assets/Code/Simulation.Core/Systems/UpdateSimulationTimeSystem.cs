@@ -1,6 +1,6 @@
 ﻿using Unity.Core;
 using Unity.Entities;
-using UnityX;
+using UnityEngineX;
 
 public struct SimulationOngoingTickId : IComponentData
 {

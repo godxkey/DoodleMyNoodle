@@ -1,7 +1,7 @@
 ﻿using CCC.InspectorDisplay;
 using System;
 using UnityEngine;
-using UnityX;
+using UnityEngineX;
 
 public abstract class GameStateManager : MonoCoreService<GameStateManager>
 {

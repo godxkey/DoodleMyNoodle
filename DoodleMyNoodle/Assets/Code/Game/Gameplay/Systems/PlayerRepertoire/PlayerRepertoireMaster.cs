@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityX;
+using UnityEngineX;
 
 public abstract class PlayerRepertoireMaster : PlayerRepertoireSystem
 {

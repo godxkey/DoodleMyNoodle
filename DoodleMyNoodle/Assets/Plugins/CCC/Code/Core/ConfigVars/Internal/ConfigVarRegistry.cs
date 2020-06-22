@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using UnityX;
+using UnityEngineX;
 
 namespace CCC.ConfigVarInterals
 {

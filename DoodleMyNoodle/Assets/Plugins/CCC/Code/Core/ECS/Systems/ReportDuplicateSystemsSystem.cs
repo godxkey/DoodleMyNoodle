@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Unity.Entities;
-using UnityX;
+using UnityEngineX;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public class AllowMultipleAttribute : Attribute

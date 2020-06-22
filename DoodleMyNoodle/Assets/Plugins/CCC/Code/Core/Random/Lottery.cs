@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
-using UnityX;
+using UnityEngineX;
 
 public interface IWeight
 {

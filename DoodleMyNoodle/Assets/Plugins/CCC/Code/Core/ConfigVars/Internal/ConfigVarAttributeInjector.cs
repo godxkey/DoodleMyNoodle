@@ -1,5 +1,5 @@
 ﻿using System;
-using UnityX;
+using UnityEngineX;
 
 namespace CCC.ConfigVarInterals
 {

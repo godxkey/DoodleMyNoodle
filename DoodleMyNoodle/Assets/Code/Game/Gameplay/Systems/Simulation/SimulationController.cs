@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
-using UnityX;
+using UnityEngineX;
 
 public class SimulationController : GameSystem<SimulationController>
 {

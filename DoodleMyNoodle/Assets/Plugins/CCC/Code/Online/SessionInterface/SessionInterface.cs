@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using CCC.Online.DataTransfer;
 using CCC.Operations;
-using UnityX;
 using UnityEngineX;
 
 public abstract class SessionInterface : IDisposable

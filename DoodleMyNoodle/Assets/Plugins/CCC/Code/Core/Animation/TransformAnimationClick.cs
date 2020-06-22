@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using DG.Tweening;
 using UnityEngine.EventSystems;
-using UnityX;
+using UnityEngineX;
 
 public class TransformAnimationClick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {

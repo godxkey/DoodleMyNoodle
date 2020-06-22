@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
-using UnityX;
 
 namespace SimulationControl
 {

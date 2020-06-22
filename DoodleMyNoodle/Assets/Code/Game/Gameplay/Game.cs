@@ -3,7 +3,7 @@ using System;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityX;
+using UnityEngineX;
 
 public class Game : MonoBehaviour
 {

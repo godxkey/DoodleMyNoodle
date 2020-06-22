@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using UnityEngine;
-using UnityX;
+using UnityEngineX;
 
 public class TestScript : MonoBehaviour
 {

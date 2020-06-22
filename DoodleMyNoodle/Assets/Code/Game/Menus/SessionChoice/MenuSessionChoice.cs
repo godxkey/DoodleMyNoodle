@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Internals.MenuSessionChoice;
 using UnityEngineX;
-using UnityX;
 
 public class MenuSessionChoice : MonoBehaviour
 {

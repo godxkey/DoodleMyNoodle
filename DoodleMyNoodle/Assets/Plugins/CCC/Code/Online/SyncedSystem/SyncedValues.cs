@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngineX;
-using UnityX;
 
 namespace CCC.Online
 {

@@ -4,7 +4,7 @@ using SimulationControl;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityX;
+using UnityEngineX;
 
 public static class QuickStart
 {

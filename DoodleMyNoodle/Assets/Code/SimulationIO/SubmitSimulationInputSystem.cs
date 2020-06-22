@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
-using UnityX;
+using UnityEngineX;
 
 namespace SimulationControl
 {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityX;
+using UnityEngineX;
 
 public class PlayerProfileService : MonoCoreService<PlayerProfileService>
 {

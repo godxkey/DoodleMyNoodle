@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngineX;
-using UnityX;
 
 public class ItemVisualInfoBank : GameSystem<ItemVisualInfoBank>
 {

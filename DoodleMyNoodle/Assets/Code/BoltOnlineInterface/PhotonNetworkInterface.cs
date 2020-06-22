@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using UdpKit;
 using UnityEngine;
 using UnityEngineX;
-using UnityX;
 
 namespace Internals.PhotonNetwokInterface
 {

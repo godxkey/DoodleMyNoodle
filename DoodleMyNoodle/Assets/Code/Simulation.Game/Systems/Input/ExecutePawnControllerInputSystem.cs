@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Unity.Entities;
-using UnityX;
+using UnityEngineX;
 
 
 // THIS CLASS SHOULD NOT BE SERIALIZABLE

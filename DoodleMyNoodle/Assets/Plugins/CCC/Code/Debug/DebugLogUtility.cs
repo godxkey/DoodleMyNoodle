@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 using UnityEngine;
-using UnityX;
+using UnityEngineX;
 
 public static class DebugLogUtility
 {

@@ -3,7 +3,7 @@ using System.Collections;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
-using UnityX;
+using UnityEngineX;
 
 public class DefaultAudioSourceService : MonoCoreService<DefaultAudioSourceService>
 {
