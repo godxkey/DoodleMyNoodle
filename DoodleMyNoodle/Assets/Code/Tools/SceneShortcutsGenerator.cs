@@ -1,10 +1,8 @@
 ﻿using CCC.IO;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using UnityEngineX;
 using UnityEditor;
-using UnityEngine;
 
 public static class SceneShortcutsGenerator
 {

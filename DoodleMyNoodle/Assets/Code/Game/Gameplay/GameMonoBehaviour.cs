@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngineX;
 
 /// <summary>
 /// A GameMonoBehaviour is a monobehaviour class that receives common game events

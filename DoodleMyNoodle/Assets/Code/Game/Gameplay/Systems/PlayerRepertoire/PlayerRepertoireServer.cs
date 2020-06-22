@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngineX;
 using UnityX;
 
 public class PlayerRepertoireServer : PlayerRepertoireMaster

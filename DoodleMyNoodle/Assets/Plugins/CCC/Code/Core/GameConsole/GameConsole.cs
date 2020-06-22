@@ -4,6 +4,8 @@ using System;
 using Internals.GameConsoleInterals;
 using UnityX;
 using System.Collections.Concurrent;
+using UnityEngineX;
+using System.Reflection;
 
 public class GameConsole
 {
@@ -30,10 +32,49 @@ public class GameConsole
 
         s_consoleUI = consoleUI;
         s_consoleUI.Init();
+
+        PopulateAllCommands();
+
         AddCommand("help", Cmd_Help, "Show available commands");
         AddCommand("vars", Cmd_Vars, "Show available variables");
         AddCommand("exec", Cmd_Exec, "Executes commands from file");
         Write("Console ready", LineColor.Normal);
+    }
+
+    private static void PopulateAllCommands()
+    {
+        var commandMethods = TypeUtility.GetStaticMethodsWithAttribute(typeof(CommandAttribute));
+
+        foreach (MethodInfo method in commandMethods)
+        {
+            if (method.IsAsync())
+            {
+                Log.Warning($"Ignoring command {method.Name} because it is async.");
+                continue;
+            }
+
+            GameConsoleCommand command = new GameConsoleCommand(method);
+
+            bool conflict = false;
+            foreach (GameConsoleCommand otherCommand in s_commands)
+            {
+                if (command.ConflictsWith(otherCommand))
+                {
+                    conflict = true;
+                    break;
+                }
+            }
+
+            if (conflict)
+            {
+                Log.Warning($"Ignoring command {method.Name} because it conflicts with an already existing command.");
+                continue;
+            }
+
+
+            Log.Info($"Adding command {command.Name}");
+            s_commands.Add(command);
+        }
     }
 
     public static void Shutdown()
@@ -71,26 +112,26 @@ public class GameConsole
     /// <para/>
     /// E.g: inventory.drop_item
     /// </summary>
-    public static void AddCommand(string name, Action<string[]> method, string description, int tag = 0)
+    public static void AddCommand(string name, Action<string[]> method, string description)
     {
         name = name.ToLower();
-        if (s_Commands.ContainsKey(name))
+        if (s_commandsMap.ContainsKey(name))
         {
             OutputString("Cannot add command " + name + " twice", LineColor.Error);
             return;
         }
-        s_Commands.Add(name, new ConsoleCommand(name, method, description, tag));
+        s_commandsMap.Add(name, new ConsoleCommand(name, method, description, 0));
     }
 
     public static bool RemoveCommand(string name)
     {
-        return s_Commands.Remove(name.ToLower());
+        return s_commandsMap.Remove(name.ToLower());
     }
 
     public static void RemoveCommandsWithTag(int tag)
     {
         var removals = new List<string>();
-        foreach (var c in s_Commands)
+        foreach (var c in s_commandsMap)
         {
             if (c.Value.tag == tag)
                 removals.Add(c.Key);
@@ -143,11 +184,11 @@ public class GameConsole
         ProcessQueuedLogs();
         s_consoleUI.ConsoleUpdate();
 
-        while (s_PendingCommands.Count > 0)
+        while (s_pendingCommands.Count > 0)
         {
             // Remove before executing as we may hit an 'exec' command that wants to insert commands
-            var cmd = s_PendingCommands[0];
-            s_PendingCommands.RemoveAt(0);
+            var cmd = s_pendingCommands[0];
+            s_pendingCommands.RemoveAt(0);
             ExecuteCommand(cmd, LineColor.Command);
         }
     }
@@ -174,68 +215,9 @@ public class GameConsole
         StringBuilderPool.Release(strBuilder);
     }
 
-    static void SkipWhite(string input, ref int pos)
-    {
-        while (pos < input.Length && " \t".IndexOf(input[pos]) > -1)
-        {
-            pos++;
-        }
-    }
-
-    static string ParseQuoted(string input, ref int pos)
-    {
-        pos++;
-        int startPos = pos;
-        while (pos < input.Length)
-        {
-            if (input[pos] == '"' && input[pos - 1] != '\\')
-            {
-                pos++;
-                return input.Substring(startPos, pos - startPos - 1);
-            }
-            pos++;
-        }
-        return input.Substring(startPos);
-    }
-
-    static string Parse(string input, ref int pos)
-    {
-        int startPos = pos;
-        while (pos < input.Length)
-        {
-            if (" \t".IndexOf(input[pos]) > -1)
-            {
-                return input.Substring(startPos, pos - startPos);
-            }
-            pos++;
-        }
-        return input.Substring(startPos);
-    }
-
-    static List<string> Tokenize(string input)
-    {
-        var pos = 0;
-        var res = new List<string>();
-        var c = 0;
-        while (pos < input.Length && c++ < 10000)
-        {
-            SkipWhite(input, ref pos);
-            if (pos == input.Length)
-                break;
-
-            if (input[pos] == '"' && (pos == 0 || input[pos - 1] != '\\'))
-            {
-                res.Add(ParseQuoted(input, ref pos));
-            }
-            else
-                res.Add(Parse(input, ref pos));
-        }
-        return res;
-    }
-
     public static void ExecuteCommand(string command, LineColor lineColor)
     {
-        List<string> tokens = Tokenize(command);
+        List<string> tokens = GameConsoleParser.Tokenize(command);
         if (tokens.Count < 1)
             return;
 
@@ -245,7 +227,7 @@ public class GameConsole
         ConsoleCommand consoleCommand;
         CCC.ConfigVarInterals.ConfigVarBase configVar;
 
-        if (s_Commands.TryGetValue(commandName, out consoleCommand))
+        if (s_commandsMap.TryGetValue(commandName, out consoleCommand))
         {
             var arguments = tokens.GetRange(1, tokens.Count - 1).ToArray();
             consoleCommand.method(arguments);
@@ -273,14 +255,16 @@ public class GameConsole
         }
     }
 
+    [Command]
     static void Cmd_Help(string[] arguments)
     {
         OutputString("Available commands:", LineColor.Normal);
 
-        foreach (var c in s_Commands)
+        foreach (var c in s_commandsMap)
             OutputString(c.Value.name + ": " + c.Value.description, LineColor.Normal);
     }
 
+    [Command]
     static void Cmd_Vars(string[] arguments)
     {
         var varNames = new List<string>(ConfigVarService.Instance.configVarRegistry.ConfigVars.Keys);
@@ -292,6 +276,7 @@ public class GameConsole
         }
     }
 
+    [Command]
     static void Cmd_Exec(string[] arguments)
     {
         bool silent = false;
@@ -314,10 +299,10 @@ public class GameConsole
         try
         {
             var lines = System.IO.File.ReadAllLines(filename);
-            s_PendingCommands.InsertRange(0, lines);
-            if (s_PendingCommands.Count > 128)
+            s_pendingCommands.InsertRange(0, lines);
+            if (s_pendingCommands.Count > 128)
             {
-                s_PendingCommands.Clear();
+                s_pendingCommands.Clear();
                 OutputString("Command overflow. Flushing pending commands!!!", LineColor.Warning);
             }
         }
@@ -330,8 +315,7 @@ public class GameConsole
 
     public static void EnqueueCommandNoHistory(string command)
     {
-        //CDebug.Log("cmd: " + command); // useless log that seems to fills the console for nothing
-        s_PendingCommands.Add(command);
+        s_pendingCommands.Add(command);
     }
 
     public static void EnqueueCommand(string command)
@@ -349,7 +333,7 @@ public class GameConsole
         // Look for possible tab completions
         List<string> matches = new List<string>();
 
-        foreach (var c in s_Commands)
+        foreach (var c in s_commandsMap)
         {
             var name = c.Key;
             if (!name.StartsWith(prefix, true, null))
@@ -441,11 +425,9 @@ public class GameConsole
         }
     }
 
-    [ConfigVar(name: "config.showlastline", defaultValue: "0", description: "Show last logged line briefly at top of screen")]
-    static ConfigVar consoleShowLastLine;
-
-    static List<string> s_PendingCommands = new List<string>();
-    static Dictionary<string, ConsoleCommand> s_Commands = new Dictionary<string, ConsoleCommand>();
+    static List<string> s_pendingCommands = new List<string>();
+    static Dictionary<string, ConsoleCommand> s_commandsMap = new Dictionary<string, ConsoleCommand>();
+    static List<GameConsoleCommand> s_commands = new List<GameConsoleCommand>();
     const int k_HistoryCount = 50;
     static string[] s_History = new string[k_HistoryCount];
     static int s_HistoryNextIndex = 0;
