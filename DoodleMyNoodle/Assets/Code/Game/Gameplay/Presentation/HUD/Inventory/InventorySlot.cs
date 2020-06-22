@@ -24,6 +24,8 @@ public class InventorySlot : GameMonoBehaviour, IPointerEnterHandler, IPointerEx
     public TextMeshProUGUI ShortcutDisplay;
     public Color HoverBackgroundColor = Color.white;
 
+    public GameObject UnavailableSpriteObject;
+
     private InventorySlotInfo _info;
     private Color _startBackgroundColor;
     private ItemVisualInfo _currentItem;
@@ -43,7 +45,14 @@ public class InventorySlot : GameMonoBehaviour, IPointerEnterHandler, IPointerEx
         _info = slotInfo;
         OnItemUsed = onItemUsed;
 
+        UnavailableSpriteObject.SetActive(false);
+
         UpdateDisplay();
+    }
+
+    public void UpdateDisplayAsUnavailable()
+    {
+        UnavailableSpriteObject.SetActive(true);
     }
 
     private void UpdateDisplay()
