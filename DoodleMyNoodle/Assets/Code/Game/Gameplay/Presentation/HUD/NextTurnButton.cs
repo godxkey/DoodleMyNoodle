@@ -15,23 +15,29 @@ public class NextTurnButton : GamePresentationBehaviour
     public Image Image;
 
     public string WaitingForYourTurn = "Wait";
-    public string WaitingForNextTurnText = "Next Turn";
+    public string WaitingForButtonPressText = "Next Turn";
     public string ReadyText = "Ready";
 
     public Color WaitingForNextTurnColor = Color.white;
     public Color ReadyColor = Color.green;
 
-    private bool _isPressed = false;
-    private bool _canBeClicked = false;
-    private bool _wasMyTurn = false;
+    private enum TurnState
+    {
+        Ready,
+        NotReady,
+        NotMyTurn
+    }
 
+    private DirtyValue<TurnState> _state;
+
+    private float _updateTimer = 0;
     private const float UPDATE_DELAY = 0.5f;
 
     protected override void Awake()
     {
         Button.onClick.AddListener(OnNextTurnClicked);
 
-        this.DelayedCall(UPDATE_DELAY, () => UpdateButtonState());
+        _updateTimer = UPDATE_DELAY;
 
         base.Awake();
     }
@@ -40,68 +46,68 @@ public class NextTurnButton : GamePresentationBehaviour
     {
         if (SimWorld.HasSingleton<NewTurnEventData>())
         {
-            UpdateButtonState(false);
+            _updateTimer = UPDATE_DELAY; // reset timer as we're manually updating
+
+            UpdateButtonState();
+        }
+        else
+        {
+            _updateTimer -= Time.deltaTime;
+            if(_updateTimer <= 0)
+            {
+                _updateTimer = UPDATE_DELAY;
+
+                UpdateButtonState();
+            }
         }
     }
 
-    private void UpdateButtonState(bool triggerDelay = true)
+    private void UpdateButtonState()
     {
-        Entity pawnController = CommonReads.GetPawnController(SimWorld, SimWorldCache.LocalPawn);
-        if (SimWorld.TryGetSingleton(out TurnCurrentTeam turnCurrentTeam))
+        if (SimWorldCache.CurrentTeam.Value == SimWorldCache.LocalPawnTeam.Value)
         {
-            if (SimWorld.TryGetComponentData(pawnController, out Team team))
+            if (SimWorld.TryGetComponentData(SimWorldCache.LocalController, out ReadyForNextTurn ready) && ready.Value)
             {
-                // its our turn
-                if (turnCurrentTeam.Value == team.Value)
-                {
-                    if (!_wasMyTurn)
-                    {
-                        _wasMyTurn = true;
-
-                        _canBeClicked = true;
-                        Text.text = WaitingForNextTurnText;
-                    }
-                }
-                else
-                {
-                    // it's not my turn
-                    if (_wasMyTurn)
-                    {
-                        _wasMyTurn = false;
-
-                        _isPressed = false;
-                        _canBeClicked = false;
-
-                        Image.color = WaitingForNextTurnColor;
-                        Text.text = WaitingForYourTurn;
-                    }
-                }
+                _state.Set(TurnState.Ready);
+            }
+            else
+            {
+                _state.Set(TurnState.NotReady);
             }
         }
+        else
+        {
+            _state.Set(TurnState.NotMyTurn);
+        }
 
-        if(triggerDelay)
-            this.DelayedCall(UPDATE_DELAY, () => UpdateButtonState());
+        if (_state.IsDirty)
+        {
+            switch (_state.Get())
+            {
+                case TurnState.Ready:
+                    Text.text = ReadyText;
+                    Image.color = ReadyColor;
+                    break;
+                case TurnState.NotReady:
+                    Text.text = WaitingForButtonPressText;
+                    Image.color = WaitingForNextTurnColor;
+                    break;
+                default:
+                case TurnState.NotMyTurn:
+                    Text.text = WaitingForYourTurn;
+                    Image.color = WaitingForNextTurnColor;
+                    break;
+            }
+            _state.Reset();
+        }
     }
 
     private void OnNextTurnClicked()
     {
-        if (!_canBeClicked)
+        if (_state.Get() == TurnState.NotMyTurn)
             return;
 
-        _isPressed = !_isPressed;
-
-        PlayerInputNextTurn simInput = new PlayerInputNextTurn(_isPressed);
+        PlayerInputNextTurn simInput = new PlayerInputNextTurn(_state.Get() == TurnState.NotReady);
         SimWorld.SubmitInput(simInput);
-
-        if (_isPressed)
-        {
-            Text.text = ReadyText;
-            Image.color = ReadyColor;
-        }
-        else
-        {
-            Text.text = WaitingForNextTurnText;
-            Image.color = WaitingForNextTurnColor;
-        }
     }
 }
