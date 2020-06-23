@@ -46,7 +46,7 @@ public static class Pathfinding
         }
 
         // Destination cannot be reached
-        if(!IsTileValid(goal, accessor))
+        if(!IsTileWalkable(goal, accessor))
         {
             return false;
         }
@@ -175,54 +175,87 @@ public static class Pathfinding
         return 1; // in a 2D grid, neighbor weight is always 1
     }
 
+    private enum NeighborDirection { Left, Right, Up, Down }
+
     private static void get_neighbors(in int2 tile, NativeList<int2> neighbors, ISimWorldReadAccessor accessor)
+    {
+        neighbors.Clear();
+        for (int i = 0; i < System.Enum.GetNames(typeof(NeighborDirection)).Length; i++)
+        {
+            if (get_neighbor(tile, (NeighborDirection)i, accessor, out int2 neighborPos) && IsTileWalkable(neighborPos, accessor))
+            {
+                neighbors.Add(neighborPos);
+            }
+        }
+    }
+
+    private static bool get_neighbor(in int2 tile, NeighborDirection neighborDirection, ISimWorldReadAccessor accessor, out int2 Result)
     {
         // temporary hard code
         const int TILE_MIN = -99;
         const int TILE_MAX = 99;
 
-        neighbors.Clear();
-        if (tile.x > TILE_MIN)
+        if ((tile.x > TILE_MIN) && (neighborDirection == NeighborDirection.Left))
         {
-            int2 neighborTilePos = tile + int2(-1, 0);
-            if (IsTileValid(neighborTilePos, accessor))
-            {
-                neighbors.Add(neighborTilePos); // neighbor left
-            }
+            Result = tile + int2(-1, 0); // neighbor left
+            return true;
         }
 
-        if (tile.x < TILE_MAX)
+        if ((tile.x < TILE_MAX) && (neighborDirection == NeighborDirection.Right))
         {
-            int2 neighborTilePos = tile + int2(1, 0);
-            if (IsTileValid(neighborTilePos, accessor))
-            {
-                neighbors.Add(neighborTilePos); // neighbor right
-            }
+            Result = tile + int2(1, 0); // neighbor right
+            return true;
         }
 
-        if (tile.y > TILE_MIN)
+        if ((tile.y > TILE_MIN) && (neighborDirection == NeighborDirection.Down))
         {
-            int2 neighborTilePos = tile + int2(0, -1);
-            if (IsTileValid(neighborTilePos, accessor))
-            {
-                neighbors.Add(neighborTilePos); // neighbor down
-            }
+            Result = tile + int2(0, -1); // neighbor down
+            return true;
         }
 
-        if (tile.y < TILE_MAX)
+        if ((tile.y < TILE_MAX) && (neighborDirection == NeighborDirection.Up))
         {
-            int2 neighborTilePos = tile + int2(0, 1);
-            if (IsTileValid(neighborTilePos, accessor))
-            {
-                neighbors.Add(neighborTilePos); // neighbor up
-            }
+            Result = tile + int2(0, 1); // neighbor up
+            return true;
         }
+
+        Result = new int2() { x = 0, y = 0 }; // default
+        return false;
     }
 
-    private static bool IsTileValid(int2 tilePos, ISimWorldReadAccessor accessor)
+    private static bool IsTileValidAndCanStandOnTile(int2 tilePos, ISimWorldReadAccessor accessor)
     {
         Entity tile = CommonReads.GetTileEntity(accessor, tilePos);
-        return CommonReads.DoesTileRespectFilters(accessor, tile, TileFilterFlags.Navigable | TileFilterFlags.Inoccupied);
+
+        // Can we walk on tile ?
+        bool canStand = CommonReads.DoesTileRespectFilters(accessor, tile, TileFilterFlags.Navigable | TileFilterFlags.Inoccupied);
+
+        return (tile != Entity.Null) && canStand; // The Tile Exist on the grid and we can stand on it
+    }
+
+    private static bool IsTileWalkable(int2 tilePos, ISimWorldReadAccessor accessor)
+    {
+        if (!IsTileValidAndCanStandOnTile(tilePos, accessor))
+        {
+            return false;
+        }
+
+        // Does tile have something solid underneath
+        bool solidUnderneath = false;
+        if (get_neighbor(tilePos, NeighborDirection.Down, accessor, out int2 neighborTilePos))
+        {
+            Entity tileUnderneath = CommonReads.GetTileEntity(accessor, neighborTilePos);
+            if (!CommonReads.DoesTileRespectFilters(accessor, tileUnderneath, TileFilterFlags.Navigable))
+            {
+                solidUnderneath = true;
+            }
+        }
+
+        // Is tile ascendable
+        Entity tile = CommonReads.GetTileEntity(accessor, tilePos);
+        bool isAscendable = CommonReads.DoesTileRespectFilters(accessor, tile, TileFilterFlags.Ascendable | TileFilterFlags.NotEmpty);
+
+        return solidUnderneath || isAscendable;
     }
 
     // h is the heuristic function. h(n) estimates the cost to reach goal from node n.
