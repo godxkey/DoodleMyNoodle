@@ -8,12 +8,18 @@ using UnityEngine;
 public class TileFiltersAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public bool IsTileNavigable = false;
+    public bool IsTileAscendable = false;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         if (!IsTileNavigable)
         {
-            dstManager.AddComponentData(entity, new NonNavigable());
+            dstManager.AddComponentData(entity, new SolidWall());
+        }
+
+        if (IsTileAscendable)
+        {
+            dstManager.AddComponentData(entity, new Ascendable());
         }
     }
 }
