@@ -68,7 +68,7 @@ public class InventoryDisplay : GamePresentationBehaviour
                     GameAction.UseContext context = new GameAction.UseContext() 
                     { 
                         InstigatorPawn = SimWorldCache.LocalPawn,
-                        InstigatorPawnController = pawnController,
+                        InstigatorPawnController = SimWorldCache.LocalController,
                         ItemEntity = item.ItemEntity
                     };
 
