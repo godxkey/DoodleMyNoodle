@@ -13,7 +13,7 @@ namespace Internals.GameConsoleInterals
         {
         }
 
-        public void Init()
+        public void Init(GameConsoleDatabase database)
         {
         }
 

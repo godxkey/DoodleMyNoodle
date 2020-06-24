@@ -550,7 +550,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    1: BOLT_CLOUD;DEBUG;UNITY_X_LOG_ASSERT;UNITY_X_LOG_ERROR;UNITY_X_LOG_EXCEPTION;UNITY_X_LOG_INFO;UNITY_X_LOG_WARNING
+    1: DEBUG;UNITY_X_LOG_ERROR;UNITY_X_LOG_ASSERT;UNITY_X_LOG_INFO;UNITY_X_LOG_EXCEPTION;UNITY_X_LOG_WARNING;BOLT_CLOUD
   platformArchitecture: {}
   scriptingBackend:
     Standalone: 0

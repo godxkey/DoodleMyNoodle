@@ -5,6 +5,7 @@ using Internals.GameConsoleInterals;
 using UnityEngineX;
 using System.Collections.Concurrent;
 using System.Reflection;
+using CCC.ConfigVarInterals;
 
 public class GameConsole
 {
@@ -17,26 +18,37 @@ public class GameConsole
     }
 
     static IGameConsoleUI s_consoleUI;
+    static GameConsoleDatabase s_database = new GameConsoleDatabase();
+    static int s_historyIndex = 0;
     static ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)> s_queuedLogs = new ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)>();
+    private static bool s_init;
 
-    public static void Init(IGameConsoleUI consoleUI)
+    public static void SetUI(IGameConsoleUI consoleUI)
     {
+        s_consoleUI?.Shutdown();
+        s_consoleUI = consoleUI;
+
         if (s_consoleUI != null)
         {
-            Log.Error("Initializing the Console for a second time.");
-            return;
+            Log.Internals.LogMessageReceivedThreaded += OnLogMessageReceivedThreaded;
+            s_consoleUI.Init(s_database);
+        }
+        else
+        {
+            Log.Internals.LogMessageReceivedThreaded -= OnLogMessageReceivedThreaded;
         }
 
-        Log.Internals.LogMessageReceivedThreaded += OnLogMessageReceivedThreaded;
+        InitIfNeeded();
+    }
 
-        s_consoleUI = consoleUI;
-        s_consoleUI.Init();
+    public static void InitIfNeeded()
+    {
+        if (s_init)
+            return;
+        s_init = true;
 
         PopulateAllCommands();
 
-        AddCommand("help", Cmd_Help, "Show available commands");
-        AddCommand("vars", Cmd_Vars, "Show available variables");
-        AddCommand("exec", Cmd_Exec, "Executes commands from file");
         Write("Console ready", LineColor.Normal);
     }
 
@@ -48,14 +60,22 @@ public class GameConsole
         {
             if (method.IsAsync())
             {
-                Log.Warning($"Ignoring command {method.Name} because it is async.");
+                Log.Warning($"Ignoring command '{method.Name}' because it is async.");
                 continue;
             }
 
             GameConsoleCommand command = new GameConsoleCommand(method);
 
+            Type unsupportedParameterType = command.GetFirstUnsupportedParameter();
+
+            if (unsupportedParameterType != null)
+            {
+                Log.Warning($"Ignoring command '{command.DisplayName}' because it has an unsupported parameter type: {unsupportedParameterType.GetPrettyName()}");
+                continue;
+            }
+
             bool conflict = false;
-            foreach (GameConsoleCommand otherCommand in s_commands)
+            foreach (GameConsoleCommand otherCommand in s_database.Commands)
             {
                 if (command.ConflictsWith(otherCommand))
                 {
@@ -66,20 +86,13 @@ public class GameConsole
 
             if (conflict)
             {
-                Log.Warning($"Ignoring command {method.Name} because it conflicts with an already existing command.");
+                Log.Warning($"Ignoring command '{command.DisplayName}' because its signature conflicts with an already existing command.");
                 continue;
             }
 
-
-            Log.Info($"Adding command {command.Name}");
-            s_commands.Add(command);
+            s_database.Commands.Add(command);
+            s_database.CommandsMap.Add(command.Name, command);
         }
-    }
-
-    public static void Shutdown()
-    {
-        Log.Internals.LogMessageReceivedThreaded -= OnLogMessageReceivedThreaded;
-        s_consoleUI.Shutdown();
     }
 
     private static void OnLogMessageReceivedThreaded(int channelId, string condition, string stackTrace, LogType logType)
@@ -87,7 +100,7 @@ public class GameConsole
         if (ThreadUtility.IsMainThread)
         {
             if (s_consoleUI != null)
-                s_consoleUI.OutputLog(channelId, condition, stackTrace, logType);
+                s_consoleUI?.OutputLog(channelId, condition, stackTrace, logType);
         }
         else
         {
@@ -103,100 +116,41 @@ public class GameConsole
 
     public static void Write(string msg, LineColor lineColor)
     {
+        InitIfNeeded();
         OutputString(msg, lineColor);
-    }
-
-    /// <summary>
-    /// Name Guideline: Separate terms by . Separate words of a term by _
-    /// <para/>
-    /// E.g: inventory.drop_item
-    /// </summary>
-    public static void AddCommand(string name, Action<string[]> method, string description)
-    {
-        name = name.ToLower();
-        if (s_commandsMap.ContainsKey(name))
-        {
-            OutputString("Cannot add command " + name + " twice", LineColor.Error);
-            return;
-        }
-        s_commandsMap.Add(name, new ConsoleCommand(name, method, description, 0));
-    }
-
-    public static bool RemoveCommand(string name)
-    {
-        return s_commandsMap.Remove(name.ToLower());
-    }
-
-    public static void RemoveCommandsWithTag(int tag)
-    {
-        var removals = new List<string>();
-        foreach (var c in s_commandsMap)
-        {
-            if (c.Value.tag == tag)
-                removals.Add(c.Key);
-        }
-        foreach (var c in removals)
-            RemoveCommand(c);
-    }
-
-    public static void ProcessCommandLineArguments(string[] arguments)
-    {
-        // Process arguments that have '+' prefix as console commands. Ignore all other arguments
-
-        OutputString("ProcessCommandLineArguments: " + string.Join(" ", arguments), LineColor.Normal);
-
-        var commands = new List<string>();
-
-        foreach (var argument in arguments)
-        {
-            var newCommandStarting = argument.StartsWith("+") || argument.StartsWith("-");
-
-            // Skip leading arguments before we have seen '-' or '+'
-            if (commands.Count == 0 && !newCommandStarting)
-                continue;
-
-            if (newCommandStarting)
-                commands.Add(argument);
-            else
-                commands[commands.Count - 1] += " " + argument;
-        }
-
-        foreach (var command in commands)
-        {
-            if (command.StartsWith("+"))
-                EnqueueCommandNoHistory(command.Substring(1));
-        }
     }
 
     public static bool IsOpen()
     {
-        return s_consoleUI.IsOpen();
+        return s_consoleUI != null ? s_consoleUI.IsOpen() : false;
     }
 
     public static void SetOpen(bool open)
     {
-        s_consoleUI.SetOpen(open);
+        s_consoleUI?.SetOpen(open);
     }
 
     public static void ConsoleUpdate()
     {
+        InitIfNeeded();
         ProcessQueuedLogs();
-        s_consoleUI.ConsoleUpdate();
+        s_consoleUI?.ConsoleUpdate();
 
-        while (s_pendingCommands.Count > 0)
+        while (s_database.PendingCommands.Count > 0)
         {
             // Remove before executing as we may hit an 'exec' command that wants to insert commands
-            var cmd = s_pendingCommands[0];
-            s_pendingCommands.RemoveAt(0);
+            var cmd = s_database.PendingCommands[0];
+            s_database.PendingCommands.RemoveAt(0);
             ExecuteCommand(cmd, LineColor.Command);
         }
     }
 
     public static void ConsoleLateUpdate()
     {
+        InitIfNeeded();
         ProcessQueuedLogs();
 
-        s_consoleUI.ConsoleLateUpdate();
+        s_consoleUI?.ConsoleLateUpdate();
     }
 
     private static void ProcessQueuedLogs()
@@ -214,7 +168,7 @@ public class GameConsole
         StringBuilderPool.Release(strBuilder);
     }
 
-    public static void ExecuteCommand(string command, LineColor lineColor)
+    private static void ExecuteCommand(string command, LineColor lineColor)
     {
         List<string> tokens = GameConsoleParser.Tokenize(command);
         if (tokens.Count < 1)
@@ -223,16 +177,18 @@ public class GameConsole
         OutputString('>' + command, lineColor);
         string commandName = tokens[0].ToLower();
 
-        ConsoleCommand consoleCommand;
-        CCC.ConfigVarInterals.ConfigVarBase configVar;
-
-        if (s_commandsMap.TryGetValue(commandName, out consoleCommand))
+        if (s_database.CommandsMap.TryGetValue(commandName, out GameConsoleCommand consoleCommand))
         {
-            var arguments = tokens.GetRange(1, tokens.Count - 1).ToArray();
-            consoleCommand.method(arguments);
-            Log.Info($"cmd: {command}");
+            if (consoleCommand.Enabled)
+            {
+                consoleCommand.Invoke(tokens.GetRange(1, tokens.Count - 1).ToArray());
+            }
+            else
+            {
+                Log.Warning($"Command '{commandName}' is disabled.");
+            }
         }
-        else if (ConfigVarService.Instance.configVarRegistry.ConfigVars.TryGetValue(commandName, out configVar))
+        else if (ConfigVarService.Instance.configVarRegistry.ConfigVars.TryGetValue(commandName, out ConfigVarBase configVar))
         {
             if (tokens.Count == 2)
             {
@@ -254,89 +210,36 @@ public class GameConsole
         }
     }
 
-    [Command]
-    static void Cmd_Help(string[] arguments)
-    {
-        OutputString("Available commands:", LineColor.Normal);
-
-        foreach (var c in s_commandsMap)
-            OutputString(c.Value.name + ": " + c.Value.description, LineColor.Normal);
-    }
-
-    [Command]
-    static void Cmd_Vars(string[] arguments)
-    {
-        var varNames = new List<string>(ConfigVarService.Instance.configVarRegistry.ConfigVars.Keys);
-        varNames.Sort();
-        foreach (var v in varNames)
-        {
-            var cv = ConfigVarService.Instance.configVarRegistry.ConfigVars[v];
-            OutputString($"{cv.name} = {cv.Value}    // {cv.description}", LineColor.Normal);
-        }
-    }
-
-    [Command]
-    static void Cmd_Exec(string[] arguments)
-    {
-        bool silent = false;
-        string filename = "";
-        if (arguments.Length == 1)
-        {
-            filename = arguments[0];
-        }
-        else if (arguments.Length == 2 && arguments[0] == "-s")
-        {
-            silent = true;
-            filename = arguments[1];
-        }
-        else
-        {
-            OutputString("Usage: exec [-s] <filename>", LineColor.Normal);
-            return;
-        }
-
-        try
-        {
-            var lines = System.IO.File.ReadAllLines(filename);
-            s_pendingCommands.InsertRange(0, lines);
-            if (s_pendingCommands.Count > 128)
-            {
-                s_pendingCommands.Clear();
-                OutputString("Command overflow. Flushing pending commands!!!", LineColor.Warning);
-            }
-        }
-        catch (Exception e)
-        {
-            if (!silent)
-                OutputString("Exec failed: " + e.Message, LineColor.Error);
-        }
-    }
-
     public static void EnqueueCommandNoHistory(string command)
     {
-        s_pendingCommands.Add(command);
+        InitIfNeeded();
+        s_database.PendingCommands.Add(command);
     }
 
     public static void EnqueueCommand(string command)
     {
-        s_History[s_HistoryNextIndex % k_HistoryCount] = command;
-        s_HistoryNextIndex++;
-        s_HistoryIndex = s_HistoryNextIndex;
+        InitIfNeeded();
+        s_database.PushInHistory(command);
+        s_historyIndex = -1;
 
         EnqueueCommandNoHistory(command);
     }
 
-
     public static string TabComplete(string prefix)
     {
+        InitIfNeeded();
         // Look for possible tab completions
         List<string> matches = new List<string>();
 
-        foreach (var c in s_commandsMap)
+        foreach (var c in s_database.CommandsMap)
         {
+            if (!c.Value.Enabled)
+                continue;
+
             var name = c.Key;
             if (!name.StartsWith(prefix, true, null))
                 continue;
+
             matches.Add(name);
         }
 
@@ -355,7 +258,7 @@ public class GameConsole
         int lcp = matches[0].Length;
         for (var i = 0; i < matches.Count - 1; i++)
         {
-            lcp = Mathf.Min(lcp, CommonPrefix(matches[i], matches[i + 1]));
+            lcp = Mathf.Min(lcp, commonPrefix(matches[i], matches[i + 1]));
         }
         prefix += matches[0].Substring(prefix.Length, lcp - prefix.Length);
         if (matches.Count > 1)
@@ -369,66 +272,107 @@ public class GameConsole
             prefix += " ";
         }
         return prefix;
+
+        // Returns length of largest common prefix of two strings
+        int commonPrefix(string a, string b)
+        {
+            int minl = Mathf.Min(a.Length, b.Length);
+            for (int i = 1; i <= minl; i++)
+            {
+                if (!a.StartsWith(b.Substring(0, i), true, null))
+                    return i - 1;
+            }
+            return minl;
+        }
     }
 
-    public static string HistoryUp(string current)
+    public static string HistoryUp()
     {
-        if (s_HistoryIndex == 0 || s_HistoryNextIndex - s_HistoryIndex >= k_HistoryCount - 1)
-            return "";
-
-        if (s_HistoryIndex == s_HistoryNextIndex)
-        {
-            s_History[s_HistoryIndex % k_HistoryCount] = current;
-        }
-
-        s_HistoryIndex--;
-
-        return s_History[s_HistoryIndex % k_HistoryCount];
+        InitIfNeeded();
+        return HistoryMove(1);
     }
 
     public static string HistoryDown()
     {
-        if (s_HistoryIndex == s_HistoryNextIndex)
-            return "";
-
-        s_HistoryIndex++;
-
-        return s_History[s_HistoryIndex % k_HistoryCount];
+        InitIfNeeded();
+        return HistoryMove(-1);
     }
 
-    // Returns length of largest common prefix of two strings
-    static int CommonPrefix(string a, string b)
+    public static string HistoryDownCompletely()
     {
-        int minl = Mathf.Min(a.Length, b.Length);
-        for (int i = 1; i <= minl; i++)
-        {
-            if (!a.StartsWith(b.Substring(0, i), true, null))
-                return i - 1;
-        }
-        return minl;
+        InitIfNeeded();
+        return HistoryMove(-s_database.History.Count);
     }
 
-    class ConsoleCommand
+    private static string HistoryMove(int move)
     {
-        public string name;
-        public Action<string[]> method;
-        public string description;
-        public int tag;
+        s_historyIndex = Mathf.Clamp(s_historyIndex + move, -1, s_database.History.Count - 1);
 
-        public ConsoleCommand(string name, Action<string[]> method, string description, int tag)
+        if (s_historyIndex == -1)
+            return string.Empty;
+        if (s_database.History.Count == 0)
+            return string.Empty;
+
+        return s_database.History[s_historyIndex];
+    }
+
+    public static void SetCommandEnabled(string command, bool enabled)
+    {
+        InitIfNeeded();
+
+        command = command.ToLower();
+
+        if (s_database.CommandsMap.TryGetValue(command, out GameConsoleCommand c))
         {
-            this.name = name;
-            this.method = method;
-            this.description = description;
-            this.tag = tag;
+            c.Enabled = enabled;
+        }
+        else
+        {
+            Log.Error($"Command '{command}' does not exist.");
         }
     }
 
-    static List<string> s_pendingCommands = new List<string>();
-    static Dictionary<string, ConsoleCommand> s_commandsMap = new Dictionary<string, ConsoleCommand>();
-    static List<GameConsoleCommand> s_commands = new List<GameConsoleCommand>();
-    const int k_HistoryCount = 50;
-    static string[] s_History = new string[k_HistoryCount];
-    static int s_HistoryNextIndex = 0;
-    static int s_HistoryIndex = 0;
+    [Command("help", "Show available commands")]
+    static void Help()
+    {
+        OutputString("Available commands:", LineColor.Normal);
+
+        foreach (var c in s_database.Commands)
+        {
+            if (c.Enabled)
+                OutputString(c.DisplayName + ": " + c.Description, LineColor.Normal);
+        }
+    }
+
+    [Command("cvars", "Show available config-vars")]
+    static void CVars()
+    {
+        var varNames = new List<string>(ConfigVarService.Instance.configVarRegistry.ConfigVars.Keys);
+        varNames.Sort();
+        foreach (var v in varNames)
+        {
+            var cv = ConfigVarService.Instance.configVarRegistry.ConfigVars[v];
+            OutputString($"{cv.name} = {cv.Value}    // {cv.description}", LineColor.Normal);
+        }
+    }
+
+    [Command("exec", "Execute commands stored in a text file")]
+    static void Exec(string fileName, bool silent = false)
+    {
+        try
+        {
+            var lines = System.IO.File.ReadAllLines(fileName);
+            s_database.PendingCommands.InsertRange(0, lines);
+            if (s_database.PendingCommands.Count > 128)
+            {
+                s_database.PendingCommands.Clear();
+                OutputString("Command overflow. Flushing pending commands!!!", LineColor.Warning);
+            }
+        }
+        catch (Exception e)
+        {
+            if (!silent)
+                OutputString("Exec failed: " + e.Message, LineColor.Error);
+        }
+    }
 }

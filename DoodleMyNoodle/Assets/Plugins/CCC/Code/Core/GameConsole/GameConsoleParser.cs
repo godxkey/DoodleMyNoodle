@@ -73,6 +73,25 @@ public static class GameConsoleParser
             result = value;
             return true;
         }
+        else if (type == typeof(bool))
+        {
+            bool success = bool.TryParse(value, out bool r);
+            result = r;
+            if (!success)
+            {
+                if (value == "1")
+                {
+                    result = true;
+                    success = true;
+                }
+                else if (value == "0")
+                {
+                    result = false;
+                    success = true;
+                }
+            }
+            return success;
+        }
         else if (type.IsEnum)
         {
             try

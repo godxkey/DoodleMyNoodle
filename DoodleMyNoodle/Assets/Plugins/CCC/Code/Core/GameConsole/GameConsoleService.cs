@@ -26,7 +26,7 @@ namespace Internals.GameConsoleInterals
 
                 GameConsoleTextWin consoleUI = new GameConsoleTextWin(consoleTitle, consoleRestoreFocus);
 
-                GameConsole.Init(consoleUI);
+                GameConsole.SetUI(consoleUI);
             }
             else
             {
@@ -34,11 +34,9 @@ namespace Internals.GameConsoleInterals
                 DontDestroyOnLoad(consoleGUIGameObject);
 
                 GameConsoleGUI consoleGUI = consoleGUIGameObject.GetComponent<GameConsoleGUI>();
-                GameConsole.Init(consoleGUI);
+                GameConsole.SetUI(consoleGUI);
                 GameConsole.SetOpen(openConsoleAtLaunch);
             }
-
-            GameConsole.AddCommand("quit", CmdQuit, "Quits");
 
             onComplete(this);
         }
@@ -53,14 +51,9 @@ namespace Internals.GameConsoleInterals
             GameConsole.ConsoleLateUpdate();
         }
 
-        void CmdQuit(string[] arguments)
-        {
-            Application.Quit();
-        }
-
         protected override void OnDestroy()
         {
-            GameConsole.Shutdown();
+            GameConsole.SetUI(null);
             base.OnDestroy();
         }
     }

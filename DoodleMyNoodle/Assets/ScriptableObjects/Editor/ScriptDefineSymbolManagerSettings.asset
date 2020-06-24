@@ -12,7 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1b9cae11ae2b5346a1314393e3da505, type: 3}
   m_Name: ScriptDefineSymbolManagerSettings
   m_EditorClassIdentifier: 
-  Profiles: []
+  Profiles:
+  - Name: Debug
+    Symbols:
+    - DEBUG
+    - UNITY_X_LOG_INFO
+    - UNITY_X_LOG_EXCEPTION
+    - UNITY_X_LOG_WARNING
+    - BOLT_CLOUD
+    - UNITY_X_LOG_ASSERT
+    - UNITY_X_LOG_ERROR
+  - Name: Release
+    Symbols:
+    - UNITY_X_LOG_ERROR
+    - UNITY_X_LOG_EXCEPTION
+    - BOLT_CLOUD
   Symbols:
   - Name: DEBUG
-    Description: Enables various debuggin features (e.g GameConsole, additional logs)
+    Description: "Enables various debugging features such as \n* GameConsole\n* Ingame
+      debug overlays \n* Additional logs"
+  - Name: BOLT_CLOUD
+    Description: 

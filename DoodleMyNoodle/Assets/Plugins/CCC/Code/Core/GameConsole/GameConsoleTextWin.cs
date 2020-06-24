@@ -40,7 +40,7 @@ namespace Internals.GameConsoleInterals
             m_ConsoleTitle = consoleTitle;
         }
 
-        public void Init()
+        public void Init(GameConsoleDatabase database)
         {
             if (!AttachConsole(0xffffffff))
             {
@@ -97,7 +97,7 @@ namespace Internals.GameConsoleInterals
                     DrawInputline();
                     break;
                 case ConsoleKey.UpArrow:
-                    m_CurrentLine = GameConsole.HistoryUp(m_CurrentLine);
+                    m_CurrentLine = GameConsole.HistoryUp();
                     DrawInputline();
                     break;
                 case ConsoleKey.DownArrow:

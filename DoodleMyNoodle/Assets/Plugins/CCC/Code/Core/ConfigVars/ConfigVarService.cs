@@ -19,10 +19,6 @@ public class ConfigVarService : MonoCoreService<ConfigVarService>
 
         // Clear dirty flags as default values shouldn't count as dirtying
         ConfigVar.DirtyFlags = ConfigVarFlag.None;
-        
-        // add commands to load/save user configs
-        GameConsole.AddCommand("saveconfig", (string[] obj) => SaveUserConfigs(), "Save the user config variables");
-        GameConsole.AddCommand("loadconfig", (string[] obj) => LoadUserConfigs(), "Load the user config variables");
 
         onComplete(this);
     }
@@ -35,15 +31,17 @@ public class ConfigVarService : MonoCoreService<ConfigVarService>
         }
     }
 
-    public void SaveUserConfigs()
+    [Command("SaveConfigVar", "Save the user config variables")]
+    public static void SaveUserConfigs()
     {
-        ConfigVarSaver.Save(configVarRegistry, (int)ConfigVarFlag.Save, userConfigFileName);
+        ConfigVarSaver.Save(Instance.configVarRegistry, (int)ConfigVarFlag.Save, userConfigFileName);
 
         // turn 'Save' bit OFF
         ConfigVar.DirtyFlags &= ~ConfigVarFlag.Save;
     }
 
-    public void LoadUserConfigs()
+    [Command("LoadConfigVar", "Load the user config variables")]
+    public static void LoadUserConfigs()
     {
         GameConsole.EnqueueCommandNoHistory("exec " + userConfigFileName);
     }

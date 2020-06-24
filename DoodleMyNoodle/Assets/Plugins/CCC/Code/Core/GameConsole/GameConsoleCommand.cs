@@ -9,6 +9,20 @@ public class CommandAttribute : Attribute
 {
     public string Name;
     public string Description;
+    public bool EnabledByDefault = true;
+
+    public CommandAttribute() { }
+
+    public CommandAttribute(string name, string description)
+    {
+        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Description = description ?? throw new ArgumentNullException(nameof(description));
+    }
+
+    public CommandAttribute(string name, string description, bool enabledByDefault) : this(name, description)
+    {
+        EnabledByDefault = enabledByDefault;
+    }
 }
 
 public class GameConsoleCommand
@@ -29,27 +43,34 @@ public class GameConsoleCommand
         }
     }
 
+    public bool Enabled = true;
+
     public readonly string Name;
+    public readonly string DisplayName;
     public readonly string Description;
     public readonly Parameter[] Parameters;
     public readonly int MandatoryParameterCount;
-
     private readonly MethodInfo _methodInfo;
 
     public GameConsoleCommand(MethodInfo methodInfo)
     {
+        _methodInfo = methodInfo;
         CommandAttribute commandAttribute = methodInfo.GetCustomAttribute<CommandAttribute>();
 
         if (string.IsNullOrEmpty(commandAttribute.Name))
         {
-            Name = methodInfo.Name;
+            DisplayName = methodInfo.Name;
         }
         else
         {
-            Name = commandAttribute.Name;
+            DisplayName = commandAttribute.Name;
         }
 
+        Name = DisplayName.ToLower();
+
         Description = commandAttribute.Description;
+
+        Enabled = commandAttribute.EnabledByDefault;
 
         List<Parameter> parameters = new List<Parameter>();
         foreach (ParameterInfo paramInfo in methodInfo.GetParameters())
@@ -59,6 +80,18 @@ public class GameConsoleCommand
         Parameters = parameters.ToArray();
 
         MandatoryParameterCount = Parameters.Count((p) => !p.Optional);
+    }
+
+    public Type GetFirstUnsupportedParameter()
+    {
+        foreach (var param in Parameters)
+        {
+            if (!GameConsoleParser.IsSupportedParameterType(param.Type))
+            {
+                return param.Type;
+            }
+        }
+        return null;
     }
 
     public bool ConflictsWith(GameConsoleCommand other)
@@ -85,10 +118,9 @@ public class GameConsoleCommand
         //}
     }
 
-    public void Invoke(string joinedParams)
+    public void Invoke(string[] paramStrings)
     {
         object[] paramObjs = new object[Parameters.Length];
-
 
         // fill default values
         for (int i = 0; i < Parameters.Length; i++)
@@ -99,25 +131,23 @@ public class GameConsoleCommand
             }
         }
 
-        List<string> paramStrings = GameConsoleParser.Tokenize(joinedParams);
-
-        if (paramStrings.Count > Parameters.Length)
+        if (paramStrings.Length > Parameters.Length)
         {
-            Log.Error($"The command {Name} does not take {paramStrings.Count} arguments. It takes {Parameters.Length}.");
+            Log.Warning($"The command {DisplayName} does not take {paramStrings.Length} arguments. It takes {Parameters.Length}.");
             return;
         }
 
-        if (paramStrings.Count < MandatoryParameterCount)
+        if (paramStrings.Length < MandatoryParameterCount)
         {
-            Log.Error($"The command {Name} needs at least {MandatoryParameterCount} parameters.");
+            Log.Warning($"The command {DisplayName} needs at least {MandatoryParameterCount} parameters.");
             return;
         }
 
-        for (int i = 0; i < paramStrings.Count; i++)
+        for (int i = 0; i < paramStrings.Length; i++)
         {
             if (!GameConsoleParser.Parse(paramStrings[i], Parameters[i].Type, out paramObjs[i]))
             {
-                Log.Error($"The {ToPositionNumber(i + 1)} parameter ({Parameters[i].Name}) is expected to be of type '{Parameters[i].Type.GetPrettyName()}'");
+                Log.Warning($"The {ToPositionNumber(i + 1)} parameter ({Parameters[i].Name}) is expected to be of type '{Parameters[i].Type.GetPrettyName()}'");
                 return;
             }
         }

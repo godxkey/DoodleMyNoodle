@@ -12,21 +12,20 @@ public abstract class ChatSystem : GameSystem<ChatSystem>
     {
         base.OnGameAwake();
 
-        GameConsole.AddCommand("chat", OnConsoleCommand_chat, "Send a chat message to all other players");
-    }
-    public override void OnSafeDestroy()
-    {
-        base.OnSafeDestroy();
-        GameConsole.RemoveCommand("chat");
+        GameConsole.SetCommandEnabled("Chat", true);
     }
 
-    void OnConsoleCommand_chat(string[] args)
+    protected override void OnDestroy()
     {
-        if(args.Length > 0)
-        {
-            string join = string.Join(" ", args);
-            SubmitMessage(join);
-        }
+        base.OnDestroy();
+
+        GameConsole.SetCommandEnabled("Chat", false);
+    }
+
+    [Command(Description = "Send a chat message to all other players")]
+    private static void Chat(string message)
+    {
+        Instance?.SubmitMessage(message);
     }
 
     public abstract void SubmitMessage(string message);

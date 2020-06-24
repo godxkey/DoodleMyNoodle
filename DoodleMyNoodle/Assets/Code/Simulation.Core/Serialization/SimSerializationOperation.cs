@@ -35,11 +35,9 @@ namespace Sim.Operations
 
             if (s_CachedSerializationOp.IsRunning)
             {
-                Log.Info($"ExecuteSubOperationAndWaitForSuccess(s_CachedSerializationOp)...");
                 yield return ExecuteSubOperationAndWaitForSuccess(s_CachedSerializationOp);
             }
 
-            Log.Info($"SerializationData = s_CachedSerializationOp.SerializationData");
             SerializationData = s_CachedSerializationOp.SerializationData;
 
             if (s_CachedSerializationOp.HasSucceeded)
