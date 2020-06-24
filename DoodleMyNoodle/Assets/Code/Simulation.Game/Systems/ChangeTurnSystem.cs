@@ -37,6 +37,8 @@ public class ChangeTurnSystem : SimComponentSystem
     {
         if (this.TryGetSingleton(out RequestChangeTurnData requestData))
         {
+            this.DestroySingleton<RequestChangeTurnData>();
+
             // wrap team if necessary
             if (requestData.TeamToPlay >= GetSingleton<TurnTeamCount>().Value)
             {
@@ -58,10 +60,18 @@ public class ChangeTurnSystem : SimComponentSystem
                     break;
             }
 
+            // mark all 'ready' entities as 'unready'
+            Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn) =>
+            {
+                if(team.Value == requestData.TeamToPlay)
+                {
+                    readyForNextTurn.Value = false;
+                }
+            });
+
             // fire event
             EntityManager.CreateEventEntity<NewTurnEventData>();
 
-            this.DestroySingleton<RequestChangeTurnData>();
         }
     }
 

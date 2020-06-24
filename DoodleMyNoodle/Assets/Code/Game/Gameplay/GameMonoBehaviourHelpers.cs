@@ -11,7 +11,7 @@ public static class GameMonoBehaviourHelpers
 
     public static void SubmitInput(SimInput input, bool throwErrorIfFailed = false)
     {
-        var submitSystem = PresentationWorld.GetExistingSystem<SubmitSimulationInputSystem>();
+        var submitSystem = PresentationWorld?.GetExistingSystem<SubmitSimulationInputSystem>();
         if (submitSystem != null)
         {
             submitSystem.SubmitInput(input);
@@ -19,7 +19,7 @@ public static class GameMonoBehaviourHelpers
         else
         {
             if (throwErrorIfFailed)
-                throw new System.Exception($"Failed to submit input: {input}");
+                throw new System.Exception($"Failed to submit input: {input}. Could not find '{nameof(SubmitSimulationInputSystem)}'");
         }
     }
 

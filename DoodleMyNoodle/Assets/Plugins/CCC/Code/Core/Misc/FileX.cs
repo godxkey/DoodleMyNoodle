@@ -12,11 +12,13 @@ namespace CCC.IO
 {
     public static class FileX
     {
-        public static void MakeSureExits(string fileFolder, string fileNameWithExtension)
+        public static bool CreateIfInexistant(string fileFolder, string fileNameWithExtension)
         {
+            bool created = false;
             if (!Directory.Exists(fileFolder))
             {
                 Directory.CreateDirectory(fileFolder);
+                created = true;
             }
 
             string completePath = fileFolder + '/' + fileNameWithExtension;
@@ -24,11 +26,15 @@ namespace CCC.IO
             if (!File.Exists(completePath))
             {
                 File.Create(completePath).Close();
+                created = true;
             }
+
+            return created;
         }
-        public static void MakeSureExits(string fullPath)
+
+        public static bool CreateIfInexistant(string fullPath)
         {
-            MakeSureExits(Path.GetDirectoryName(fullPath), Path.GetFileName(fullPath));
+            return CreateIfInexistant(Path.GetDirectoryName(fullPath), Path.GetFileName(fullPath));
         }
 
         public class AssetFileAndWriter : IDisposable
@@ -55,7 +61,7 @@ namespace CCC.IO
 
         public static AssetFileAndWriter OpenFileFlushedAndReadyToWrite(string fullPath)
         {
-            MakeSureExits(fullPath);
+            CreateIfInexistant(fullPath);
 
             FileStream fileStream = File.Open(fullPath, FileMode.Truncate);
             StreamWriter writer = new StreamWriter(fileStream);

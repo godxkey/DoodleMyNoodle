@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngineX;
 
 public static class PlayerHelpers
 {
@@ -38,9 +39,13 @@ public static class PlayerHelpers
     {
         Entity localPlayerEntity = PlayerHelpers.GetLocalSimPlayerEntity(simulationWorld);
 
-        if (localPlayerEntity != Entity.Null)
+        // player is controlling an entity
+        if (localPlayerEntity != Entity.Null &&
+            simulationWorld.TryGetComponentData(localPlayerEntity, out ControlledEntity controlledEntity))
         {
-            if (simulationWorld.TryGetComponentData(localPlayerEntity, out ControlledEntity controlledEntity))
+            // entity still exists and is controllable
+            if (simulationWorld.Exists(controlledEntity.Value) &&
+                simulationWorld.HasComponent<ControllableTag>(controlledEntity.Value))
             {
                 return controlledEntity.Value;
             }

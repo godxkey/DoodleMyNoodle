@@ -1,6 +1,4 @@
-﻿
-
-using SimulationControl;
+﻿using SimulationControl;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;

@@ -8,10 +8,10 @@ using UnityEditor;
 
 public static class DynamicNetSerializationRegistryCodeGenerator
 {
-    static readonly string CompletePath = NetSerializationCodeGenSettings.Registry_FilePath + '/' + NetSerializationCodeGenSettings.Registry_FileName;
+    static readonly string CompletePath = NetSerializationCodeGenSettings.REGISTRY_FILEPATH + '/' + NetSerializationCodeGenSettings.REGISTRY_FILENAME;
 
 
-    [MenuItem(NetSerializationCodeGenSettings.MenuName_Generate_Registry, priority = NetSerializationCodeGenSettings.MenuPriority_Generate_Registry)]
+    [MenuItem(NetSerializationCodeGenSettings.MENUNAME_GENERATE_REGISTRY, priority = NetSerializationCodeGenSettings.MENUPRIORITY_GENERATE_REGISTRY)]
     public static void Generate()
     {
         var types = NetSerializationCodeGenUtility.GetNetSerializableTypes();
@@ -21,7 +21,7 @@ public static class DynamicNetSerializationRegistryCodeGenerator
         AssetDatabase.Refresh();
     }
 
-    [MenuItem(NetSerializationCodeGenSettings.MenuName_Clear_Registry, priority = NetSerializationCodeGenSettings.MenuPriority_Clear_Registry)]
+    [MenuItem(NetSerializationCodeGenSettings.MENUNAME_CLEAR_REGISTRY, priority = NetSerializationCodeGenSettings.MENUPRIORITY_CLEAR_REGISTRY)]
     public static void Clear()
     {
         GenerateCode(new Type[0]);
@@ -53,9 +53,9 @@ public static class DynamicNetSerializationRegistryCodeGenerator
     {
         ulong crc = GetHashFromNetMessageTypes(netMessageTypes);
 
-        if (!Directory.Exists(NetSerializationCodeGenSettings.Registry_FilePath))
+        if (!Directory.Exists(NetSerializationCodeGenSettings.REGISTRY_FILEPATH))
         {
-            Directory.CreateDirectory(NetSerializationCodeGenSettings.Registry_FilePath);
+            Directory.CreateDirectory(NetSerializationCodeGenSettings.REGISTRY_FILEPATH);
         }
 
         if (!File.Exists(CompletePath))
@@ -75,7 +75,7 @@ public static class DynamicNetSerializationRegistryCodeGenerator
                 writer.WriteLine("using System;");
                 writer.WriteLine("using System.Collections.Generic;");
                 writer.WriteLine();
-                writer.WriteLine("public static class " + NetSerializationCodeGenSettings.Registry_ClassName);
+                writer.WriteLine("public static class " + NetSerializationCodeGenSettings.REGISTRY_CLASSNAME);
                 writer.WriteLine("{");
 
                 writer.WriteLine("    public static readonly ulong crc = " + crc + ";");

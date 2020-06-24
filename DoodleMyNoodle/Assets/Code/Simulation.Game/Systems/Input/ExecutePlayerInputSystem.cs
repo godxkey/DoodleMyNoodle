@@ -21,25 +21,10 @@ public class ExecutePlayerInputSystem : SimComponentSystem
         {
             if (input is SimPlayerInput playerInput)
             {
-                Entity playerEntity = FindPlayerEntity(playerInput.SimPlayerId);
+                Entity playerEntity = CommonReads.FindPlayerEntity(Accessor, playerInput.SimPlayerId);
                 ExecutePlayerInput(playerInput, playerEntity);
             }
         }
-    }
-
-    private Entity FindPlayerEntity(PersistentId simPlayerId)
-    {
-        Entity playerEntity = Entity.Null;
-        Entities.ForEach((Entity entity, ref PersistentId id, ref PlayerTag playerTag) =>
-        {
-            if (id == simPlayerId)
-            {
-                playerEntity = entity;
-                return;
-            }
-        });
-
-        return playerEntity;
     }
 
     private void ExecutePlayerInput(SimPlayerInput input, Entity playerEntity)
@@ -49,7 +34,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
         ExecutePawnControllerInputSystem pawnControllerInputSystem = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
         switch (input)
         {
-            case PlayerInputNextTurn NextTurnInput:
+            case SimPlayerInputNextTurn NextTurnInput:
                 pawnControllerInputSystem.Inputs.Add(new PawnInputNextTurn(playerEntity, NextTurnInput.ReadyForNextTurn));
                 break;
 
@@ -72,5 +57,23 @@ public class ExecutePlayerInputSystem : SimComponentSystem
         }
 
         return Entity.Null;
+    }
+}
+
+public partial class CommonReads
+{
+    public static Entity FindPlayerEntity(ISimWorldReadAccessor readAccessor, PersistentId simPlayerId)
+    {
+        Entity playerEntity = Entity.Null;
+        readAccessor.Entities.ForEach((Entity entity, ref PersistentId id, ref PlayerTag playerTag) =>
+        {
+            if (id == simPlayerId)
+            {
+                playerEntity = entity;
+                return;
+            }
+        });
+
+        return playerEntity;
     }
 }

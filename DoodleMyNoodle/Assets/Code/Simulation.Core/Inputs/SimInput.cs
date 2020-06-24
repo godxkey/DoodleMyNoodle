@@ -13,3 +13,11 @@ public abstract class SimInput
 public abstract class SimMasterInput : SimInput
 {
 }
+
+/// <summary>
+/// Inputs meant for triggering cheats (removed from certain builds)
+/// </summary>
+[NetSerializable(baseClass = true)]
+public abstract class SimCheatInput : SimInput
+{
+}

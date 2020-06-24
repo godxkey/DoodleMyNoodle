@@ -15,7 +15,7 @@ public class ChatWindowController : GameMonoBehaviour
         if (ChatSystem.Instance != null)
         {
             ChatSystem.Instance.OnNewLine += OnNewLine;
-            _chatWindow = _chatWindowPrefab.DuplicateGO();
+            _chatWindow = Instantiate(_chatWindowPrefab);
             _chatWindow.displayed = false;
             _chatWindow.focused = false;
         }
@@ -34,7 +34,7 @@ public class ChatWindowController : GameMonoBehaviour
 
     public override void OnGameUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return) && !GameConsole.IsOpen())
         {
             if (_chatWindow.focused)
             {

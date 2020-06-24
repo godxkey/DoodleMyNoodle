@@ -38,9 +38,9 @@ public class DeathOnEmptyHealthSystem : SimComponentSystem
                 // If the entity was a character, we need to remove that he is occupying the tile
                 Entity occupiedEntity = CommonReads.GetSingleTileAddonOfType<Occupied>(Accessor, tile);
                 CommonWrites.RemoveEntityOnTile(Accessor, occupiedEntity, tile);
-                Accessor.DestroyEntity(occupiedEntity);
+                PostUpdateCommands.DestroyEntity(occupiedEntity);
 
-                Accessor.DestroyEntity(entity);
+                PostUpdateCommands.DestroyEntity(entity);
             }
         });
     }

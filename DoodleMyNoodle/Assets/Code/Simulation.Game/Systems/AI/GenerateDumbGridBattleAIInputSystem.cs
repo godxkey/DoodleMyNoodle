@@ -6,9 +6,10 @@ using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using static fixMath;
 
-public struct HasAlreadyPlayedTag : IComponentData
+public struct ReadyForNextTurnDelayed : IComponentData
 {
-
+    // used to toggle 'ReadyForNextTurn' after playing
+    public fix Timer;
 }
 
 /// <summary>
@@ -23,7 +24,7 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
     {
         base.OnCreate();
 
-        _hasAlreadyPlayedEntityQ = EntityManager.CreateEntityQuery(typeof(HasAlreadyPlayedTag));
+        _hasAlreadyPlayedEntityQ = EntityManager.CreateEntityQuery(typeof(ReadyForNextTurnDelayed));
     }
 
     protected override void OnUpdate()
@@ -31,14 +32,14 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
         // On turn change, remove the 'HasAlreadyPlayed' tag
         if (HasSingleton<NewTurnEventData>())
         {
-            EntityManager.RemoveComponent<HasAlreadyPlayedTag>(_hasAlreadyPlayedEntityQ);
+            EntityManager.RemoveComponent<ReadyForNextTurnDelayed>(_hasAlreadyPlayedEntityQ);
         }
 
         int currentTeam = CommonReads.GetCurrentTurnTeam(Accessor);
 
         Entities
             .WithAll<DumbGridBattleAITag>()
-            .WithNone<HasAlreadyPlayedTag>()
+            .WithNone<ReadyForNextTurnDelayed>()
             .ForEach((Entity controller, ref Team team, ref ControlledEntity controlledPawn) =>
             {
                 // Can the corresponding team play ?
@@ -88,7 +89,22 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
                         break;
                 }
 
-                EntityManager.AddComponent<HasAlreadyPlayedTag>(controller);
+                EntityManager.AddComponentData(controller, new ReadyForNextTurnDelayed() { Timer = 1 });
+            });
+
+
+        // Trigger all 'ReadyForNextTurn' if timer has expired
+        Entities
+            .WithAll<DumbGridBattleAITag>()
+            .ForEach((Entity entity, ref ReadyForNextTurnDelayed delayedReady, ref ReadyForNextTurn readyForNextTurn) =>
+            {
+                delayedReady.Timer -= Time.DeltaTime;
+
+                if(delayedReady.Timer <= 0)
+                {
+                    readyForNextTurn.Value = true;
+                    PostUpdateCommands.RemoveComponent<ReadyForNextTurnDelayed>(entity);
+                }
             });
     }
 

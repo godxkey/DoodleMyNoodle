@@ -65,14 +65,14 @@ MonoBehaviour:
     Path: Assets/Scenes/Game/Scene Assets/Game_SimulationBasePresentation.unity
     BuildIndex: 12
     AssetGuid: 02fa011c09404914098c6019b2610a09
-  - Name: Lvl_GridBattle_Presentation
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
-    BuildIndex: 13
-    AssetGuid: 1cd9718281f9895408333cb8fc99bc29
   - Name: Lvl_GridBattle
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity
-    BuildIndex: 14
+    BuildIndex: 13
     AssetGuid: 815b8536c98c51447a9e715207ed3330
+  - Name: Lvl_GridBattle_Presentation
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
+    BuildIndex: 14
+    AssetGuid: 1cd9718281f9895408333cb8fc99bc29
   - Name: SimpleClientAndServer
     Path: Assets/Scenes/Tests/SimpleClientAndServer.unity
     BuildIndex: 15
