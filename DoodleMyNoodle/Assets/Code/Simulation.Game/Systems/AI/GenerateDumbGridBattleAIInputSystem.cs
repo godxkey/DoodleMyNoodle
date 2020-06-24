@@ -40,10 +40,16 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
         Entities
             .WithAll<DumbGridBattleAITag>()
             .WithNone<ReadyForNextTurnDelayed>()
-            .ForEach((Entity controller, ref Team team, ref ControlledEntity controlledPawn) =>
+            .ForEach((Entity controller, ref Team team, ref ControlledEntity controlledPawn, ref ReadyForNextTurn readyForNextTurn) =>
             {
                 // Can the corresponding team play ?
                 if (team.Value != currentTeam)
+                {
+                    return;
+                }
+
+                // have we already said 'ready for next turn' ?
+                if(readyForNextTurn.Value)
                 {
                     return;
                 }

@@ -63,10 +63,7 @@ public class ChangeTurnSystem : SimComponentSystem
             // mark all 'ready' entities as 'unready'
             Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn) =>
             {
-                if(team.Value == requestData.TeamToPlay)
-                {
-                    readyForNextTurn.Value = false;
-                }
+                readyForNextTurn.Value = false;
             });
 
             // fire event
