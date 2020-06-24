@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SplitMode: 1
+  ViewTechType: 1
 --- !u!114 &6347848117257768954
 MonoBehaviour:
   m_ObjectHideFlags: 0

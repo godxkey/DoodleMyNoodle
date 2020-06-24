@@ -17,7 +17,7 @@ public class LocalPawnHighlightController : GamePresentationBehaviour
         _highlight = Instantiate(_highlightPrefab, transform).transform;
     }
 
-    public override void OnGameLateUpdate()
+    protected override void OnGamePresentationUpdate()
     {
         if(SimWorldCache.LocalPawn != Entity.Null)
         {

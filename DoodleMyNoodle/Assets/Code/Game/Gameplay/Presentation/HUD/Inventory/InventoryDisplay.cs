@@ -29,7 +29,7 @@ public class InventoryDisplay : GamePresentationBehaviour
         }
     }
 
-    public override void OnGameLateUpdate()
+    protected override void OnGamePresentationUpdate()
     {
         if(SimWorldCache.LocalPawn != Entity.Null && SimWorldCache.LocalController != Entity.Null)
         {

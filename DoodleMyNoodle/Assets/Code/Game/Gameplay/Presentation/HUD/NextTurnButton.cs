@@ -42,7 +42,7 @@ public class NextTurnButton : GamePresentationBehaviour
         base.Awake();
     }
 
-    public override void OnGameLateUpdate()
+    protected override void OnGamePresentationUpdate()
     {
         if (SimWorld.HasSingleton<NewTurnEventData>())
         {

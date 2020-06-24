@@ -17,7 +17,7 @@ public class TurnTeamDisplay : GamePresentationBehaviour
 
     public List<TeamTurnText> TeamTurnTexts = new List<TeamTurnText>();
 
-    public override void OnGameLateUpdate()
+    protected override void OnGamePresentationUpdate()
     {
         int currentTeam = -1;
 

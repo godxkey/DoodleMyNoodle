@@ -15,6 +15,8 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
     List<GameObject> _highlights = new List<GameObject>();
 
     public override bool SystemReady => true;
+    
+    protected override void OnGamePresentationUpdate() { }
 
     public override void OnSafeDestroy()
     {
