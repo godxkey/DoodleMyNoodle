@@ -61,6 +61,10 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
     {
         switch (input)
         {
+            case PawnInputNextTurn pawnInputNextTurn:
+                Accessor.SetOrAddComponentData(pawnInputNextTurn.PawnController, new ReadyForNextTurn() { Value = pawnInputNextTurn.ReadyForNextTurn });
+                break;
+        
             case PawnControllerInputUseItem useItemInput:
                 ExecuteInput(useItemInput);
                 break;
@@ -124,13 +128,11 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             ItemEntity = item
         };
 
-        if (!gameAction.IsInstigatorValid(Accessor, useContext))
+        if(!gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData))
         {
-            LogDiscardReason($"Instigator is not valid for {gameAction}");
+            LogDiscardReason($"Can't Trigger {gameAction}");
             return;
         }
-
-        gameAction.Use(Accessor, useContext, inputUseItem.GameActionData);
     }
 
 }

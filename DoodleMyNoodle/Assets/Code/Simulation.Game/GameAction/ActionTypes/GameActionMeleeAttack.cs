@@ -7,8 +7,6 @@ public class GameActionMeleeAttack : GameAction
 {
     // TODO: add settings on the item itself
     const int DAMAGE = 2;
-    const int AP_COST = 2;
-    const int RANGE = 1;
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
@@ -16,12 +14,18 @@ public class GameActionMeleeAttack : GameAction
             new GameActionParameterTile.Description()
             {
                 Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = RANGE
+                RangeFromInstigator = accessor.GetComponentData<ItemRangeData>(context.ItemEntity).Value
             });
     }
 
-    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context)
+    public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
     {
+        // Cooldown
+        if (accessor.HasComponent<ItemCooldownCounter>(context.ItemEntity) && accessor.GetComponentData<ItemCooldownCounter>(context.ItemEntity).Value > 0)
+        {
+            return false;
+        }
+
         return accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
             && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);
     }
@@ -33,19 +37,12 @@ public class GameActionMeleeAttack : GameAction
             int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value).xy;
 
             // melee attack has a range of RANGE
-            if (lengthmanhattan(paramTile.Tile - instigatorTile) > RANGE)
+            if (lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<ItemRangeData>(context.ItemEntity).Value)
             {
                 return;
             }
 
-            if (accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value < AP_COST)
-            {
-                return;
-            }
-
-            // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST);
-
+            accessor.SetOrAddComponentData(context.ItemEntity, new ItemCooldownCounter() { Value = accessor.GetComponentData<ItemCooldownData>(context.ItemEntity).Value });
 
             // reduce target health
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
@@ -54,7 +51,7 @@ public class GameActionMeleeAttack : GameAction
             {
                 if (!accessor.HasComponent<Invincible>(entity))
                 {
-                    CommonWrites.ModifyStatInt<Health>(accessor, entity, -DAMAGE);
+                    CommonWrites.ModifyStatInt<Health>(accessor, entity, -accessor.GetComponentData<ItemDamageData>(context.ItemEntity).Value);
                 }
             }
 

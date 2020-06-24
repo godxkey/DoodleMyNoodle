@@ -11,7 +11,7 @@ public class GameOverDetectionSystem : SimComponentSystem
             int aiAlive = 0;
 
             Entities
-                .ForEach((Entity pawn, ref ControllableTag pos, ref Health health) =>
+                .ForEach((Entity pawn, ref ControllableTag tag, ref Health health) =>
                 {
                     Entity pawnController = CommonReads.GetPawnController(Accessor, pawn);
 

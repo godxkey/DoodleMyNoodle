@@ -65,7 +65,22 @@ public class InventoryDisplay : GamePresentationBehaviour
                 {
                     ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
 
-                    _inventorySlots[itemIndex].UpdateCurrentItemSlot(itemInfo, itemIndex, InventorySlotShortcuts[itemIndex], onItemUsedCallback);
+                    GameAction.UseContext context = new GameAction.UseContext() 
+                    { 
+                        InstigatorPawn = SimWorldCache.LocalPawn,
+                        InstigatorPawnController = pawnController,
+                        ItemEntity = item.ItemEntity
+                    };
+
+                    if (GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).IsContextValid(SimWorld, context))
+                    {
+                        _inventorySlots[itemIndex].UpdateCurrentItemSlot(itemInfo, itemIndex, InventorySlotShortcuts[itemIndex], onItemUsedCallback);
+                    }
+                    else
+                    {
+                        _inventorySlots[itemIndex].UpdateDisplayAsUnavailable();
+                    }
+                   
                     itemIndex++;
                 }
             }
