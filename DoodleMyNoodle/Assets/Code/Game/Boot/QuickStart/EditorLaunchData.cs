@@ -12,6 +12,12 @@ public class EditorLaunchData
         set => EditorPrefs.SetBool("EditorLaunch-devBuild", value);
     }
 
+    public static string symbolsProfile
+    {
+        get => EditorPrefs.GetString("EditorLaunch-symbolsProfile", "");
+        set => EditorPrefs.SetString("EditorLaunch-symbolsProfile", value);
+    }
+
     public static bool allowDebugging
     {
         get => EditorPrefs.GetBool("EditorLaunch-allowDebugging", true);

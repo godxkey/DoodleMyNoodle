@@ -59,7 +59,7 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
             playerName = _localPlayerInfo.PlayerName
         };
         _clientSession.SendNetMessageToServer(helloMessage);
-        DebugService.Log("[PlayerRepertoireClient] Hello sent");
+        Log.Info("[PlayerRepertoireClient] Hello sent");
     }
 
     public override void OnGameUpdate()
@@ -89,7 +89,7 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
 
     void OnMsg_PlayerIdAssignement(NetMessagePlayerIdAssignment message, INetworkInterfaceConnection source)
     {
-        DebugService.Log("[PlayerRepertoireClient] OnMsg_PlayerIdAssignement");
+        Log.Info("[PlayerRepertoireClient] OnMsg_PlayerIdAssignement");
         _localPlayerInfo.PlayerId = message.playerId;
 
         _localPlayerIdAssigned = true;
@@ -97,7 +97,7 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
 
     void OnMsg_NetMessagePlayerRepertoireSync(NetMessagePlayerRepertoireSync message, INetworkInterfaceConnection source)
     {
-        DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessagePlayerRepertoireSync");
+        Log.Info("[PlayerRepertoireClient] OnMsg_NetMessagePlayerRepertoireSync");
         _players.Clear();
         foreach (var playerInfo in message.players)
         {
@@ -113,12 +113,12 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
     {
         if (SystemReady)
         {
-            DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessagePlayerJoined");
+            Log.Info("[PlayerRepertoireClient] OnMsg_NetMessagePlayerJoined");
             _players.Add(new PlayerInfo(message.playerInfo));
         }
         else
         {
-            DebugService.Log("[PlayerRepertoireClient] *Deferring* OnMsg_NetMessagePlayerJoined");
+            Log.Info("[PlayerRepertoireClient] *Deferring* OnMsg_NetMessagePlayerJoined");
             _deferredNetMessages.Enqueue(message);
         }
     }
@@ -127,12 +127,12 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
     {
         if (SystemReady)
         {
-            DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessagePlayerLeft");
+            Log.Info("[PlayerRepertoireClient] OnMsg_NetMessagePlayerLeft");
             _players.RemoveFirst((p) => p.PlayerId == message.playerId);
         }
         else
         {
-            DebugService.Log("[PlayerRepertoireClient] *Deferring* OnMsg_NetMessagePlayerLeft");
+            Log.Info("[PlayerRepertoireClient] *Deferring* OnMsg_NetMessagePlayerLeft");
             _deferredNetMessages.Enqueue(message);
         }
     }
@@ -141,11 +141,11 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
     {
         if (SystemReady)
         {
-            DebugService.Log("[PlayerRepertoireClient] OnMsg_NetMessageSimPlayerIdAssignement");
+            Log.Info("[PlayerRepertoireClient] OnMsg_NetMessageSimPlayerIdAssignement");
             PlayerInfo playerInfo = GetPlayerInfo(message.PlayerId);
             if (playerInfo == null)
             {
-                DebugService.LogError("The server told us to assign a simPlayerId to a player but that player could not be found.");
+                Log.Error("The server told us to assign a simPlayerId to a player but that player could not be found.");
                 return;
             }
 
@@ -153,7 +153,7 @@ public class PlayerRepertoireClient : PlayerRepertoireSystem
         }
         else
         {
-            DebugService.Log("[PlayerRepertoireClient] *Deferring* OnMsg_NetMessageSimPlayerIdAssignement");
+            Log.Info("[PlayerRepertoireClient] *Deferring* OnMsg_NetMessageSimPlayerIdAssignement");
             _deferredNetMessages.Enqueue(message);
         }
     }

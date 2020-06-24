@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngineX;
 
 public interface IWeight
 {
@@ -111,7 +112,7 @@ public class Lottery<T>
 
         if (list.Count <= 0)
         {
-            DebugService.LogError("No lottery item to pick from. Add some before picking.");
+            Log.Error("No lottery item to pick from. Add some before picking.");
             return default(T);
         }
 
@@ -129,7 +130,7 @@ public class Lottery<T>
             }
         }
 
-        DebugService.LogError("Error in lottery.");
+        Log.Error("Error in lottery.");
         return default(T);
     }
 

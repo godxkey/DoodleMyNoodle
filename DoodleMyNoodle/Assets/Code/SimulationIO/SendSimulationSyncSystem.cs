@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using UnityEngineX;
 
 namespace SimulationControl
 {
@@ -68,18 +69,18 @@ namespace SimulationControl
 
         SimulationSyncFromTransferServerOperation LaunchSyncForClient(INetworkInterfaceConnection clientConnection)
         {
-            DebugService.Log($"Starting new sync...");
+            Log.Info($"Starting new sync...");
 
             var newOp = new SimulationSyncFromTransferServerOperation(_session, clientConnection, _simWorldSystem.SimulationWorld);
 
             newOp.OnFailCallback = (op) =>
             {
-                DebugService.Log($"Sync failed. {op.Message}");
+                Log.Info($"Sync failed. {op.Message}");
             };
 
             newOp.OnSucceedCallback = (op) =>
             {
-                DebugService.Log($"Sync complete. {op.Message}");
+                Log.Info($"Sync complete. {op.Message}");
             };
 
             newOp.Execute();

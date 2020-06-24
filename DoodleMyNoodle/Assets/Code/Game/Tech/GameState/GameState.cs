@@ -38,7 +38,7 @@ public abstract class GameState
             _sceneLoadPromise.OnComplete -= OnDefaultSceneLoaded;
     }
 
-#if DEBUG_BUILD
+#if DEBUG
     public virtual void OnDebugPanelGUI()
     {
 

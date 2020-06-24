@@ -6,7 +6,7 @@
         "GUID:737e1c04c3dd3e046bedb5be72aec1d7",
         "GUID:0b6bd9a723470084f89587c43491cee8",
         "GUID:a695b5a3e8c39e14fb9d86d3205fadf9",
-        "GUID:7c20dcb71e66d344fbc11361fb6ad799",
+        "GUID:735109854ac7b3d40bffa04c3f643492",
         "GUID:7a8d7696eb7a56745b9cdb92a8a28234"
     ],
     "includePlatforms": [
@@ -18,5 +18,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }

@@ -40,7 +40,7 @@ namespace Internals.GameConsoleInterals
             m_ConsoleTitle = consoleTitle;
         }
 
-        public void Init()
+        public void Init(GameConsoleDatabase database)
         {
             if (!AttachConsole(0xffffffff))
             {
@@ -97,7 +97,7 @@ namespace Internals.GameConsoleInterals
                     DrawInputline();
                     break;
                 case ConsoleKey.UpArrow:
-                    m_CurrentLine = GameConsole.HistoryUp(m_CurrentLine);
+                    m_CurrentLine = GameConsole.HistoryUp();
                     DrawInputline();
                     break;
                 case ConsoleKey.DownArrow:
@@ -174,6 +174,28 @@ namespace Internals.GameConsoleInterals
                 default:
                     return ConsoleColor.White;
             }
+        }
+
+        public void OutputLog(int channelId, string condition, string stackTrace, LogType logType)
+        {
+            GameConsole.LineColor lineColor;
+            switch (logType)
+            {
+                default:
+                case LogType.Error:
+                case LogType.Assert:
+                case LogType.Exception:
+                    lineColor = GameConsole.LineColor.Error;
+                    break;
+                case LogType.Warning:
+                    lineColor = GameConsole.LineColor.Warning;
+                    break;
+                case LogType.Log:
+                    lineColor = GameConsole.LineColor.Normal;
+                    break;
+            }
+
+            OutputString($"{condition}\n{stackTrace}", lineColor);
         }
 
         bool m_RestoreFocus;

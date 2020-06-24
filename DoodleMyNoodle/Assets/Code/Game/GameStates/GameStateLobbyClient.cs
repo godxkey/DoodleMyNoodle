@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX;
 
 public class GameStateLobbyClient : GameStateLobbyOnlineBase
 {
@@ -22,7 +23,7 @@ public class GameStateLobbyClient : GameStateLobbyOnlineBase
         if (OnlineService.OnlineInterface != null && OnlineService.OnlineInterface.IsClientType == false)
         {
             GameStateManager.TransitionToState(_specificDefinition.gameStateIfReturn);
-            DebugService.LogError("[GameStateLobbyClient] The available onlineInterface is of type Server. " +
+            Log.Error("[GameStateLobbyClient] The available onlineInterface is of type Server. " +
                 "This game state requires a Client type.");
             return;
         }
@@ -54,7 +55,7 @@ public class GameStateLobbyClient : GameStateLobbyOnlineBase
         else
         {
             DebugScreenMessage.DisplayMessage("Failed to join the session: " + message);
-            DebugService.Log("[GameStateLobbyClient] Failed to join session: " + message);
+            Log.Info("[GameStateLobbyClient] Failed to join session: " + message);
         }
     }
 }

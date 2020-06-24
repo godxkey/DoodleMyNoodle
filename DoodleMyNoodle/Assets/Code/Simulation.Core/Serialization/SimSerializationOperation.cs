@@ -4,6 +4,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using Unity.Entities;
 using Unity.Entities.Serialization;
+using UnityEngineX;
 
 namespace Sim.Operations
 {
@@ -34,11 +35,9 @@ namespace Sim.Operations
 
             if (s_CachedSerializationOp.IsRunning)
             {
-                DebugService.Log($"ExecuteSubOperationAndWaitForSuccess(s_CachedSerializationOp)...");
                 yield return ExecuteSubOperationAndWaitForSuccess(s_CachedSerializationOp);
             }
 
-            DebugService.Log($"SerializationData = s_CachedSerializationOp.SerializationData");
             SerializationData = s_CachedSerializationOp.SerializationData;
 
             if (s_CachedSerializationOp.HasSucceeded)
@@ -74,7 +73,7 @@ namespace Sim.Operations
 
         protected override IEnumerator ExecuteRoutine()
         {
-            DebugService.Log("Start Serialization Process...");
+            Log.Info("Start Serialization Process...");
 
             using (var binaryWriter = new MemoryBinaryWriter())
             {
@@ -82,7 +81,7 @@ namespace Sim.Operations
 
                 foreach (var obj in referencedObjects)
                 {
-                    DebugService.LogWarning($"The ECS simulation references {obj}, which is a managed object. " +
+                    Log.Warning($"The ECS simulation references {obj}, which is a managed object. " +
                         $"This is not allowed for now due to serialization");
                 }
 

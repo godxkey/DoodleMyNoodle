@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditorX;
 using UnityEngine;
 using UnityEngineX;
 
@@ -47,7 +48,7 @@ public class ViewBindingDefinitionBankUpdater : AssetPostprocessor
 
         bank.ViewBindingDefinitions.Clear();
 
-        AssetDatabaseX.FindPrefabsAssetsWithComponent<ViewBindingDefinition>(out List<KeyValuePair<string, GameObject>> searchResult);
+        AssetDatabaseX.LoadPrefabAssetsWithComponentOnRoot<ViewBindingDefinition>(out List<KeyValuePair<string, GameObject>> searchResult);
         foreach (KeyValuePair<string, GameObject> item in searchResult)
         {
             bank.ViewBindingDefinitions.Add(item.Value.GetComponent<ViewBindingDefinition>());

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngineX;
 
 namespace SimulationControl
 {
@@ -22,8 +23,13 @@ namespace SimulationControl
         {
             base.OnCreate();
 
-            GameConsole.AddCommand("sim.save", Cmd_SimSave, "Save the simulation in memory (multiplayer unsafe!)");
-            GameConsole.AddCommand("sim.load", Cmd_SimLoad, "Load the simulation from memory (multiplayer unsafe!)");
+#if DEBUG
+            s_commandInstance = this;
+            GameConsole.SetCommandEnabled("sim.saveToMemory", true);
+            GameConsole.SetCommandEnabled("sim.saveToFile", true);
+            GameConsole.SetCommandEnabled("sim.loadFromMemory", true);
+            GameConsole.SetCommandEnabled("sim.loadFromFile", true);
+#endif
 
             _simulationWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
             _tickSystem = World.GetOrCreateSystem<TickSimulationSystem>();
@@ -31,8 +37,13 @@ namespace SimulationControl
 
         protected override void OnDestroy()
         {
-            GameConsole.RemoveCommand("sim.save");
-            GameConsole.RemoveCommand("sim.load");
+#if DEBUG
+            GameConsole.SetCommandEnabled("sim.saveToMemory", false);
+            GameConsole.SetCommandEnabled("sim.saveToFile", false);
+            GameConsole.SetCommandEnabled("sim.loadFromMemory", false);
+            GameConsole.SetCommandEnabled("sim.loadFromFile", false);
+            s_commandInstance = null;
+#endif
 
             if (_ongoingCmdOperation != null && _ongoingCmdOperation.IsRunning)
                 _ongoingCmdOperation.TerminateWithAbnormalFailure();
@@ -44,96 +55,112 @@ namespace SimulationControl
         {
         }
 
-#if DEBUG_BUILD
-        private void Cmd_SimSave(string[] parameters)
+#if DEBUG
+        private static SaveAndLoadSimulationSystem s_commandInstance;
+
+        [Command("sim.saveToMemory", "Save the simulation in memory (multiplayer unsafe!)", enabledByDefault: false)]
+        private static void Cmd_SimSaveToMemory()
         {
-            if (_ongoingCmdOperation != null && _ongoingCmdOperation.IsRunning)
+            if (s_commandInstance._ongoingCmdOperation != null && s_commandInstance._ongoingCmdOperation.IsRunning)
             {
                 Debug.LogWarning("Cannot SaveSim because another operation is ongoing");
                 return;
             }
 
-            // pick operation to launch
-            string locationTxt;
-            if (parameters.Length > 0)
-            {
-                string fileNameToSaveTo = parameters[0];
-                if (!fileNameToSaveTo.EndsWith(".txt"))
-                {
-                    fileNameToSaveTo += ".txt";
-                }
+            s_commandInstance._ongoingCmdOperation = new SaveSimulationToMemoryOperation(s_commandInstance._simulationWorldSystem.SimulationWorld);
+            Cmd_PostSimSave_Internal(locationTxt: "memory");
+        }
 
-                _ongoingCmdOperation = new SaveSimulationToDiskOperation($"{Application.persistentDataPath}/{fileNameToSaveTo}", _simulationWorldSystem.SimulationWorld);
-                locationTxt = $"file {fileNameToSaveTo}";
-            }
-            else
+        [Command("sim.saveToFile", "Save the simulation to a text file (multiplayer unsafe!)", enabledByDefault: false)]
+        private static void Cmd_SimSaveToFile(string fileNameToSaveTo)
+        {
+            if (s_commandInstance._ongoingCmdOperation != null && s_commandInstance._ongoingCmdOperation.IsRunning)
             {
-                _ongoingCmdOperation = new SaveSimulationToMemoryOperation(_simulationWorldSystem.SimulationWorld);
-                locationTxt = "memory";
+                Debug.LogWarning("Cannot SaveSim because another operation is ongoing");
+                return;
             }
 
-            _tickSystem.PauseSimulation("save_cmd");
+            if (!fileNameToSaveTo.EndsWith(".txt"))
+            {
+                fileNameToSaveTo += ".txt";
+            }
 
-            _ongoingCmdOperation.OnTerminateCallback = (op) => _tickSystem.UnpauseSimulation("save_cmd");
+            s_commandInstance._ongoingCmdOperation = new SaveSimulationToDiskOperation($"{Application.persistentDataPath}/{fileNameToSaveTo}", s_commandInstance._simulationWorldSystem.SimulationWorld);
 
-            _ongoingCmdOperation.OnSucceedCallback = (op) =>
+            Cmd_PostSimSave_Internal(locationTxt: $"file {fileNameToSaveTo}");
+        }
+
+        private static void Cmd_PostSimSave_Internal(string locationTxt)
+        {
+            s_commandInstance._tickSystem.PauseSimulation("save_cmd");
+
+            s_commandInstance._ongoingCmdOperation.OnTerminateCallback = (op) => s_commandInstance._tickSystem.UnpauseSimulation("save_cmd");
+
+            s_commandInstance._ongoingCmdOperation.OnSucceedCallback = (op) =>
             {
                 DebugScreenMessage.DisplayMessage($"Saved sim to {locationTxt}. {op.Message}");
             };
 
-            _ongoingCmdOperation.OnFailCallback = (op) =>
+            s_commandInstance._ongoingCmdOperation.OnFailCallback = (op) =>
             {
                 DebugScreenMessage.DisplayMessage($"Could not save sim to {locationTxt}. {op.Message}");
             };
 
             // start operation
-            _ongoingCmdOperation.Execute();
+            s_commandInstance._ongoingCmdOperation.Execute();
         }
 
-        private void Cmd_SimLoad(string[] parameters)
+        [Command("sim.loadFromMemory", "Load the simulation from memory (multiplayer unsafe!)", enabledByDefault: false)]
+        private static void Cmd_SimLoadFromMemory(string fileNameToReadFrom)
         {
-            if (_ongoingCmdOperation != null && _ongoingCmdOperation.IsRunning)
+            if (s_commandInstance._ongoingCmdOperation != null && s_commandInstance._ongoingCmdOperation.IsRunning)
             {
-                Debug.LogWarning("Cannot LoadSim because another operation is ongoing");
+                Log.Warning("Cannot load sim because another operation is ongoing");
                 return;
             }
 
-            string locationTxt;
+            s_commandInstance._ongoingCmdOperation = new LoadSimulationFromMemoryOperation(s_commandInstance._simulationWorldSystem.SimulationWorld);
+            Cmd_PostSimLoad_Internal(locationTxt: "memory");
+        }
 
-            if (parameters.Length > 0)
+        [Command("sim.loadFromFile", "Load the simulation from a text file (multiplayer unsafe!)", enabledByDefault: false)]
+        private static void Cmd_SimLoadFromFile(string fileName)
+        {
+            if (s_commandInstance._ongoingCmdOperation != null && s_commandInstance._ongoingCmdOperation.IsRunning)
             {
-                string fileNameToReadFrom = parameters[0];
-                if (!fileNameToReadFrom.EndsWith(".txt"))
-                {
-                    fileNameToReadFrom += ".txt";
-                }
-
-                _ongoingCmdOperation = new LoadSimulationFromDiskOperation(
-                    $"{Application.persistentDataPath}/{fileNameToReadFrom}",
-                    _simulationWorldSystem.SimulationWorld);
-                locationTxt = $"file {fileNameToReadFrom}";
-            }
-            else
-            {
-                _ongoingCmdOperation = new LoadSimulationFromMemoryOperation(_simulationWorldSystem.SimulationWorld);
-                locationTxt = "memory";
+                Log.Warning("Cannot load sim because another operation is ongoing");
+                return;
             }
 
-            _tickSystem.PauseSimulation("load_cmd");
+            if (!fileName.EndsWith(".txt"))
+            {
+                fileName += ".txt";
+            }
 
-            _ongoingCmdOperation.OnTerminateCallback = (op) => _tickSystem.UnpauseSimulation("load_cmd");
+            s_commandInstance._ongoingCmdOperation = new LoadSimulationFromDiskOperation(
+                $"{Application.persistentDataPath}/{fileName}",
+                s_commandInstance._simulationWorldSystem.SimulationWorld);
 
-            _ongoingCmdOperation.OnSucceedCallback = (op) =>
+            Cmd_PostSimLoad_Internal(locationTxt: $"file {fileName}");
+        }
+
+        private static void Cmd_PostSimLoad_Internal(string locationTxt)
+        {
+            s_commandInstance._tickSystem.PauseSimulation("load_cmd");
+
+            s_commandInstance._ongoingCmdOperation.OnTerminateCallback = (op) => s_commandInstance._tickSystem.UnpauseSimulation("load_cmd");
+
+            s_commandInstance._ongoingCmdOperation.OnSucceedCallback = (op) =>
             {
                 DebugScreenMessage.DisplayMessage($"Loaded sim from {locationTxt}. {op.Message}");
             };
 
-            _ongoingCmdOperation.OnFailCallback = (op) =>
+            s_commandInstance._ongoingCmdOperation.OnFailCallback = (op) =>
             {
                 DebugScreenMessage.DisplayMessage($"Could not load sim from {locationTxt}. {op.Message}");
             };
 
-            _ongoingCmdOperation.Execute();
+            s_commandInstance._ongoingCmdOperation.Execute();
         }
 #endif
     }

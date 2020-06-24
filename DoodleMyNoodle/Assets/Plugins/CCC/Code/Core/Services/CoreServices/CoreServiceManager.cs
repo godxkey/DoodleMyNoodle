@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX;
 
 public class CoreServiceManager
 {
@@ -40,7 +41,7 @@ public class CoreServiceManager
     {
         if (onComplete == null)
         {
-            DebugService.LogError("CoreServiceManager.AddInitializationCallback: Received a null callback.");
+            Log.Error("CoreServiceManager.AddInitializationCallback: Received a null callback.");
             return;
         }
 
@@ -88,7 +89,7 @@ public class CoreServiceManager
     {
         if (onComplete == null)
         {
-            DebugService.LogError("CoreServiceManager.AddInitializationCallback: Received a null callback.");
+            Log.Error("CoreServiceManager.AddInitializationCallback: Received a null callback.");
             return;
         }
 

@@ -2,6 +2,7 @@
 using System.IO;
 using System;
 using System.Runtime.Serialization;
+using UnityEngineX;
 
 public static class SaveHelper
 {
@@ -34,7 +35,7 @@ public static class SaveHelper
         }
         catch (Exception e)
         {
-            DebugService.LogError("Failed to deserialize the following file:\n" + path + "\n\nError:\n" + e.Message);
+            Log.Error("Failed to deserialize the following file:\n" + path + "\n\nError:\n" + e.Message);
         }
 
         file.Close();

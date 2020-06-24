@@ -24,6 +24,6 @@ public class SaveSimulationToDiskOperation : CoroutineOperation
         // Save data to file
         yield return ExecuteSubOperationAndWaitForSuccess(new WriteBytesToDiskOperation(serializedData, _filePath));
 
-        TerminateWithSuccess($"Simulation sent to client through file: {_filePath}");
+        TerminateWithSuccess($"Simulation saved to file: {_filePath}");
     }
 }

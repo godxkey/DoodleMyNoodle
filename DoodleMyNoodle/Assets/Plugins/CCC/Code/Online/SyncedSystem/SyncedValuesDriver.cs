@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX;
 
 [NetSerializable]
 public struct NetMessageRequestValueSync
@@ -179,7 +180,7 @@ namespace CCC.Online
             {
                 if (SyncedValues.s_DriverInstance != null)
                 {
-                    DebugService.LogError($"[{nameof(Driver)}] There appears to alrady be an existing instance");
+                    Log.Error($"[{nameof(Driver)}] There appears to alrady be an existing instance");
                 }
                 SyncedValues.s_DriverInstance = this;
             }

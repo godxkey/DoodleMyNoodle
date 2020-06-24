@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEngineX;
 
 namespace CCC.ConfigVarInterals
 {
@@ -13,12 +14,12 @@ namespace CCC.ConfigVarInterals
         {
             if (ConfigVars.ContainsKey(cvar.name))
             {
-                DebugService.LogError("Trying to register cvar " + cvar.name + " twice");
+                Log.Error("Trying to register cvar " + cvar.name + " twice");
                 return;
             }
             if (!validVarNameRegex.IsMatch(cvar.name))
             {
-                DebugService.LogError("Trying to register cvar with invalid name: " + cvar.name);
+                Log.Error("Trying to register cvar with invalid name: " + cvar.name);
                 return;
             }
             ConfigVars.Add(cvar.name, cvar);

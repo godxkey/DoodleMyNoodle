@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using DG.Tweening;
 using UnityEngine.EventSystems;
+using UnityEngineX;
 
 public class TransformAnimationClick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {
@@ -25,7 +26,7 @@ public class TransformAnimationClick : MonoBehaviour, IPointerDownHandler, IPoin
     {
         if (GetComponent<RectTransform>() == null)
         {
-            DebugService.LogError("Cannot put TransformAnimationClick on a non-UI gameObject");
+            Log.Error("Cannot put TransformAnimationClick on a non-UI gameObject");
             enabled = false;
             return;
         }

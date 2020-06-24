@@ -138,7 +138,7 @@ public class MenuSessionChoice : MonoBehaviour
         {
             string message = "Cannot join null session";
             DebugScreenMessage.DisplayMessage(message);
-            DebugService.LogError(message);
+            Log.Error(message);
         }
     }
 

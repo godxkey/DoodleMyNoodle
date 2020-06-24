@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX;
 
 public class GameStateRootMenu : GameState
 {
@@ -100,7 +101,7 @@ public class GameStateRootMenu : GameState
     void OnOnlineRoleChangeTimeout()
     {
         chosenRole = Role.None;
-        DebugService.LogError("[GameStateRootMenu] Timeout: Failed to change online role" +
+        Log.Error("[GameStateRootMenu] Timeout: Failed to change online role" +
             " within " + _specificDefinition.onlineRolePickTimeout + " seconds.");
         WaitSpinnerService.Disable(this);
     }
