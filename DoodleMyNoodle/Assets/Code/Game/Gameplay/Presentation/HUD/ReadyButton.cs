@@ -8,14 +8,15 @@ using Unity.Entities;
 using UnityEngine.UI;
 using TMPro;
 
-public class NextTurnButton : GamePresentationBehaviour
+public class ReadyButton : GamePresentationBehaviour
 {
     public Button Button;
     public TextMeshProUGUI Text;
     public Image Image;
 
     public string WaitingForYourTurn = "Wait";
-    public string WaitingForButtonPressText = "Next Turn";
+    public string WaitingForButtonPressText = "Not Ready";
+    public string WaitingForStartGameConfirmation = "";
     public string ReadyText = "Ready";
 
     public Color WaitingForNextTurnColor = Color.white;
@@ -53,7 +54,7 @@ public class NextTurnButton : GamePresentationBehaviour
         else
         {
             _updateTimer -= Time.deltaTime;
-            if(_updateTimer <= 0)
+            if (_updateTimer <= 0)
             {
                 _updateTimer = UPDATE_DELAY;
 
@@ -77,7 +78,7 @@ public class NextTurnButton : GamePresentationBehaviour
         }
         else
         {
-            _state.Set(TurnState.NotMyTurn);
+            _state.Set(SimWorld.HasSingleton<GameReadyToStart>() ? TurnState.NotMyTurn : TurnState.NotReady );
         }
 
         if (_state.IsDirty)
