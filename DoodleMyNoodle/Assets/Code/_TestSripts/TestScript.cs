@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using UnityEngine;
+using UnityEngineX;
 
 public class TestScript : MonoBehaviour
 {
@@ -11,10 +13,37 @@ public class TestScript : MonoBehaviour
     private void Start()
     {
         //new ViewSpaceTimeDebugger(model);
+
+        new Thread(() =>
+        {
+            Thread.Sleep(1000);
+            Log.Warning("warning !!");
+        }).Start();
     }
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            Application.logMessageReceived -= Application_logMessageReceived;
+            Application.logMessageReceived += Application_logMessageReceived;
+            Application.logMessageReceivedThreaded -= Application_logMessageReceivedThreaded;
+            Application.logMessageReceivedThreaded += Application_logMessageReceivedThreaded;
+            UnityEngine.Debug.Log("hello");
+            Log.Info("hello");
+
+            new Thread(() => { Thread.Sleep(100); UnityEngine.Debug.Log("threaded hello"); }).Start();
+        }
+    }
+
+    private void Application_logMessageReceivedThreaded(string condition, string stackTrace, LogType type)
+    {
+        UnityEngine.Debug.Log("Application_logMessageReceivedThreaded: " + condition);
+    }
+
+    private void Application_logMessageReceived(string condition, string stackTrace, LogType type)
+    {
+        UnityEngine.Debug.Log("Application_logMessageReceived: " + condition);
     }
 }
 
@@ -67,7 +96,7 @@ public static class SpaceTimeDebugger
 
     private static Stream GetOrCreateStream(string name)
     {
-        if(!s_streams.TryGetValue(name, out Stream s))
+        if (!s_streams.TryGetValue(name, out Stream s))
         {
             s = new Stream(name);
         }

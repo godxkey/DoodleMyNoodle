@@ -2,6 +2,7 @@
 using System.Collections;
 using Unity.Entities;
 using Unity.Entities.Serialization;
+using UnityEngineX;
 
 namespace Sim.Operations
 {
@@ -38,7 +39,7 @@ namespace Sim.Operations
 
         protected override IEnumerator ExecuteRoutine()
         {
-            DebugService.Log("Start Deserialization Process...");
+            Log.Info("Start Deserialization Process...");
 
             // force the 'ChangeDetectionSystem' to end the current sample, making our entity changes undetectable.
             var changeDetectionSystemEnd = _simulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();

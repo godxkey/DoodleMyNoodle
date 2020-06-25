@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX;
 
 public abstract class GameStateLobbyOnlineBase : GameState
 {
@@ -21,7 +22,7 @@ public abstract class GameStateLobbyOnlineBase : GameState
         if (OnlineService.OnlineInterface == null)
         {
             GameStateManager.TransitionToState(_specificDefinition.gameStateIfReturn);
-            DebugService.LogError("[" + ToString() + "] Failed to get onlineInterface." +
+            Log.Error("[" + ToString() + "] Failed to get onlineInterface." +
                 "This game state should be reachable if a valid onlineInterface is available.");
             return;
         }
@@ -49,6 +50,6 @@ public abstract class GameStateLobbyOnlineBase : GameState
         GameStateManager.TransitionToState(_specificDefinition.gameStateIfReturn);
 
         DebugScreenMessage.DisplayMessage("Disconnected from online service. Check your connection.");
-        DebugService.LogWarning("[" + ToString() + "] OnlineInterface has terminated itself without user intent.");
+        Log.Warning("[" + ToString() + "] OnlineInterface has terminated itself without user intent.");
     }
 }

@@ -8,7 +8,7 @@ public class HighlightClicker : GamePresentationBehaviour
 {
     public Action<Vector2> OnClicked;
 
-    public override void OnGameLateUpdate()
+    protected override void OnGamePresentationUpdate()
     {
         if(gameObject.activeSelf && IsMouseInsideHighlight(GetMousePositionOnTile()))
         {

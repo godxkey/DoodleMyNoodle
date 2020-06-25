@@ -246,7 +246,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartingTeam: 0
   AITurnDuration:
-    RawValue: 8589934592
+    RawValue: 85899345920
   PlayerTurnDuration:
     RawValue: 85899345920
 --- !u!114 &1308979965

@@ -3,6 +3,7 @@ using System.Collections;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using UnityEngineX;
 
 public class DefaultAudioSourceService : MonoCoreService<DefaultAudioSourceService>
 {
@@ -327,7 +328,7 @@ public class DefaultAudioSourceService : MonoCoreService<DefaultAudioSourceServi
     {
         if (musicSource0 == null || musicSource1 == null)
         {
-            DebugService.LogError("Il manque 1 ou 2 AudioSource de musique sur l'instance de SoundManager");
+            Log.Error("Il manque 1 ou 2 AudioSource de musique sur l'instance de SoundManager");
             return false;
         }
 
@@ -337,7 +338,7 @@ public class DefaultAudioSourceService : MonoCoreService<DefaultAudioSourceServi
     {
         if (voiceSource == null)
         {
-            DebugService.LogError("Aucune 'Voice' AudioSource sur l'instance de SoundManager");
+            Log.Error("Aucune 'Voice' AudioSource sur l'instance de SoundManager");
             return false;
         }
 
@@ -347,7 +348,7 @@ public class DefaultAudioSourceService : MonoCoreService<DefaultAudioSourceServi
     {
         if (SFXSource == null)
         {
-            DebugService.LogError("Aucune 'SFX' AudioSource sur l'instance de SoundManager");
+            Log.Error("Aucune 'SFX' AudioSource sur l'instance de SoundManager");
             return false;
         }
 

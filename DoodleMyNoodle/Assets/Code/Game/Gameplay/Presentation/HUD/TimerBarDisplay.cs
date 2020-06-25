@@ -11,10 +11,8 @@ public class TimerBarDisplay : GamePresentationBehaviour
 
     public GameObject BarContainer;
 
-    public override void OnGameUpdate()
+    protected override void OnGamePresentationUpdate()
     {
-        base.OnGameUpdate();
-
         if (SimWorld.TryGetSingleton(out TurnTimer turnTimer) 
             && SimWorld.TryGetSingleton(out TurnDuration turnDuration)
             && SimWorld.TryGetSingleton(out TurnCurrentTeam turnTeam))

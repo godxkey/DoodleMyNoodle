@@ -4,6 +4,7 @@ using static fixMath;
 using System;
 using UnityEngine;
 using UnityEngineX;
+using Unity.Entities;
 
 public class RequestNextTurnIfTeamMembersReadySystem : SimComponentSystem
 {
@@ -11,37 +12,18 @@ public class RequestNextTurnIfTeamMembersReadySystem : SimComponentSystem
     {
         int teamCurrentlyPlaying = CommonReads.GetCurrentTurnTeam(Accessor);
         bool everyoneIsReady = true;
-        bool atLeastOneReady = false;
 
-        foreach (Unity.Entities.Entity pawnController in CommonReads.GetEntitiesFromTeam(Accessor, teamCurrentlyPlaying))
+        Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn) =>
         {
-            if (Accessor.TryGetComponentData(pawnController, out ReadyForNextTurn IsReady))
+            // if a team member is NOT ready
+            if(team.Value == teamCurrentlyPlaying && !readyForNextTurn.Value)
             {
-                if (!IsReady.Value)
-                {
-                    // he toggle it off so he's not ready
-                    everyoneIsReady = false;
-                }
-                else
-                {
-                    atLeastOneReady = true;
-                }
-            }
-            else
-            {
-                // No Component, he's not ready
                 everyoneIsReady = false;
             }
-        }
+        });
 
-        if (everyoneIsReady && atLeastOneReady)
+        if (everyoneIsReady)
         {
-            // Clear all Ready For Next Turn
-            foreach (Unity.Entities.Entity pawnController in CommonReads.GetEntitiesFromTeam(Accessor, teamCurrentlyPlaying))
-            {
-                Accessor.RemoveComponent<ReadyForNextTurn>(pawnController);
-            }
-
             CommonWrites.RequestNextTurn(Accessor);
         }
     }

@@ -68,7 +68,7 @@ namespace SimulationControl
 
             if (input is SimMasterInput && instigatorConnection != null)
             {
-                DebugService.LogWarning($"Connection({instigatorConnection.Id}) tried to submit a Master input {input.GetType()}." +
+                Log.Warning($"Connection({instigatorConnection.Id}) tried to submit a Master input {input.GetType()}." +
                     $" Only the local master of the simulation is allowed to submit those.");
                 return false;
             }

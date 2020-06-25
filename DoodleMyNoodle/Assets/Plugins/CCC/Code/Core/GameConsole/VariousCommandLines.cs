@@ -3,36 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngineX;
 
 internal static class VariousCommandLines
 {
-    static bool done = false;
-
-    [RuntimeInitializeOnLoadMethod]
-    static void OnRuntimeMethodLoad() // Executed after scene is loaded and game is running
+    [Command]
+    private static void SetResolution(int width, int height, bool fullScreen)
     {
-        if (done == false)
+        if (Application.isEditor)
         {
-            done = true;
-            RegisterCommands();
+            Log.Warning("Setting resolution in editor has no effect");
+        }
+        else
+        {
+            Screen.SetResolution(width, height, fullScreen);
         }
     }
 
-    static void RegisterCommands()
-    {
-        GameConsole.AddCommand("openlog", Cmd_OpenLog, "Open the log file location");
-        GameConsole.AddCommand("set_resolution", Cmd_SetResolution, "set screen resolution");
-    }
-
-    private static void Cmd_SetResolution(string[] args)
-    {
-        if (args.Length == 3)
-            Screen.SetResolution(int.Parse(args[0]), int.Parse(args[1]), bool.Parse(args[2]));
-        else
-            Screen.SetResolution(int.Parse(args[0]), int.Parse(args[1]), Screen.fullScreenMode);
-    }
-
-    static void Cmd_OpenLog(string[] args)
+    [Command(Description = "Open the log file location")]
+    static void OpenLog()
     {
         string path = Application.persistentDataPath;
         path = path.Replace('/', '\\');
@@ -42,7 +31,17 @@ internal static class VariousCommandLines
         }
         else
         {
-            DebugService.LogWarning("Cannot open log file location(" + path + "). Directory was not found.");
+            Log.Warning("Cannot open log file location(" + path + "). Directory was not found.");
         }
+    }
+
+    [Command(Description = "Exit the application")]
+    static void Quit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

@@ -20,7 +20,8 @@ public class CreatePlayerSystem : SimComponentSystem
                     typeof(PersistentId),
                     typeof(Name),
                     typeof(ControlledEntity),
-                    typeof(Team));
+                    typeof(Team),
+                    typeof(ReadyForNextTurn));
 
                 // set persistent id
                 EntityManager.SetComponentData(newPlayerEntity, this.MakeUniquePersistentId());
@@ -42,6 +43,9 @@ public class CreatePlayerSystem : SimComponentSystem
 
                 // set team
                 EntityManager.SetComponentData(newPlayerEntity, new Team() { Value = 0 });
+
+                // set 'not ready for next turn'
+                EntityManager.SetComponentData(newPlayerEntity, new ReadyForNextTurn() { Value = false });
 
 
                 // FOR DEBUGGING ONLY

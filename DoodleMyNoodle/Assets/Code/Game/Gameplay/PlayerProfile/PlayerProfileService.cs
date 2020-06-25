@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngineX;
 
 public class PlayerProfileService : MonoCoreService<PlayerProfileService>
 {
@@ -74,7 +75,7 @@ public class PlayerProfileService : MonoCoreService<PlayerProfileService>
 
         if (profile == null)
         {
-            DebugService.LogError("Failed to deserialize player profile: " + filePath);
+            Log.Error("Failed to deserialize player profile: " + filePath);
         }
 
         return profile;

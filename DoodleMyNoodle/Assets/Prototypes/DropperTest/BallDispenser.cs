@@ -80,7 +80,7 @@ public class BallDispenser : MonoBehaviour
 
     void SpawnBall(Color color)
     {
-        var ball = ballPrefab.Duplicate(spawnPosition.position, Quaternion.identity);
+        var ball = Instantiate(ballPrefab, spawnPosition.position, Quaternion.identity);
         ball.GetComponent<Rigidbody2D>().AddForce(spawnForce, ForceMode2D.Impulse);
         ball.GetComponent<SpriteRenderer>().color = color;
     }

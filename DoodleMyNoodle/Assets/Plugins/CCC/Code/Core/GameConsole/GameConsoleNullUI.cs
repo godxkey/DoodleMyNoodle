@@ -1,4 +1,6 @@
 ﻿
+using UnityEngine;
+
 namespace Internals.GameConsoleInterals
 {
     public class GameConsoleNullUI : IGameConsoleUI
@@ -11,7 +13,7 @@ namespace Internals.GameConsoleInterals
         {
         }
 
-        public void Init()
+        public void Init(GameConsoleDatabase database)
         {
         }
 
@@ -29,6 +31,10 @@ namespace Internals.GameConsoleInterals
         }
 
         public void SetOpen(bool open)
+        {
+        }
+
+        public void OutputLog(int channelId, string condition, string stackTrace, LogType logType)
         {
         }
     }

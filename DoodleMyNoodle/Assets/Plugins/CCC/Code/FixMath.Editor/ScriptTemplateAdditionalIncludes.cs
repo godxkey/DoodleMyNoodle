@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngineX;
 
-namespace UnityX.FixMath
+namespace UnityEngineX.FixMath
 {
     public class ScriptTemplateAdditionalIncludes
     {

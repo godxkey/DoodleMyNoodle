@@ -30,6 +30,6 @@ using Unity.Entities;
 //        if (_simWorldSystem.SimulationWorld?.EntityManager == null)
 //            return;
 //        //ExclusiveSimWorld = _simWorldSystem.SimulationWorld.EntityManager.BeginExclusiveEntityTransaction();
-//        //DebugService.Log("BeginExclusiveEntityTransaction");
+//        //Log.Info("BeginExclusiveEntityTransaction");
 //    }
 //}

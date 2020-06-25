@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine.SceneManagement;
+using UnityEngineX;
 
 namespace SimulationControl
 {
@@ -62,7 +63,7 @@ namespace SimulationControl
             {
                 if (!_incomingEntityInjections.Contains(scene.name))
                 {
-                    DebugService.LogError($"Unexpected entities coming from {scene.name} are being injected into the simulation. " +
+                    Log.Error($"Unexpected entities coming from {scene.name} are being injected into the simulation. " +
                         $"This should not happen");
                 }
             }
@@ -94,7 +95,7 @@ namespace SimulationControl
 
         public void ClearSimWorld()
         {
-            DebugService.Log($"Clearing {SimulationWorld.Name} ...");
+            Log.Info($"Clearing {SimulationWorld.Name} ...");
             var changeDetectionEnd = SimulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
             var changeDetectionBegin = SimulationWorld.GetExistingSystem<ChangeDetectionSystemBegin>();
 

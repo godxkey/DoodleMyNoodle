@@ -103,15 +103,17 @@ namespace SimulationControl
             _updatePlayerLoop = true;
 
 
-#if DEBUG_BUILD
-            GameConsole.AddCommand("sim.pause", Cmd_SimPause, "Pause the simulation playback");
+#if DEBUG
+            s_commandInstance = this;
+            GameConsole.SetCommandEnabled("sim.pause", true);
 #endif
         }
 
         protected override void OnDestroy()
         {
-#if DEBUG_BUILD
-            GameConsole.RemoveCommand("sim.pause");
+#if DEBUG
+            GameConsole.SetCommandEnabled("sim.pause", false);
+            s_commandInstance = null;
 #endif
             base.OnDestroy();
         }
@@ -288,19 +290,21 @@ namespace SimulationControl
             }
         }
 
-#if DEBUG_BUILD
+#if DEBUG
         private bool _isPausedByCmd = false;
-        void Cmd_SimPause(string[] args)
+        private static TickSimulationSystem s_commandInstance;
+        [Command("sim.pause", "Pause the simulation playback", enabledByDefault: false)]
+        private static void Cmd_SimPause()
         {
-            if (_isPausedByCmd)
+            if (s_commandInstance._isPausedByCmd)
             {
-                UnpauseSimulation(key: "cmd");
-                _isPausedByCmd = false;
+                s_commandInstance.UnpauseSimulation(key: "cmd");
+                s_commandInstance._isPausedByCmd = false;
             }
             else
             {
-                PauseSimulation(key: "cmd");
-                _isPausedByCmd = true;
+                s_commandInstance.PauseSimulation(key: "cmd");
+                s_commandInstance._isPausedByCmd = true;
             }
         }
 #endif

@@ -84,7 +84,7 @@ public class MenuSessionChoice : MonoBehaviour
             if (i == _sessionButtons.Count)
             {
                 // create new button!
-                SessionButton newButton = _sessionButtonPrefab.DuplicateGO(_sessionButtonContainer);
+                SessionButton newButton = Instantiate(_sessionButtonPrefab, _sessionButtonContainer);
                 newButton.onClick += OnSessionButtonClick;
                 _sessionButtons.Add(newButton);
             }
@@ -138,7 +138,7 @@ public class MenuSessionChoice : MonoBehaviour
         {
             string message = "Cannot join null session";
             DebugScreenMessage.DisplayMessage(message);
-            DebugService.LogError(message);
+            Log.Error(message);
         }
     }
 

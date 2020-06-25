@@ -9,7 +9,7 @@ public class ActionsDisplay : GamePresentationBehaviour
 
     private List<ActionPointDisplay> _actionPoints = new List<ActionPointDisplay>();
 
-    public override void OnGameLateUpdate()
+    protected override void OnGamePresentationUpdate()
     {
         if (SimWorld.TryGetComponentData(SimWorldCache.LocalPawn, out ActionPoints actions))
         {

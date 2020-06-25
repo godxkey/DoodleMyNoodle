@@ -29,9 +29,9 @@ public class InventoryDisplay : GamePresentationBehaviour
         }
     }
 
-    public override void OnGameLateUpdate()
+    protected override void OnGamePresentationUpdate()
     {
-        if(SimWorldCache.LocalPawn != Entity.Null)
+        if(SimWorldCache.LocalPawn != Entity.Null && SimWorldCache.LocalController != Entity.Null)
         {
             UpdateInventorySlots();
         }
@@ -41,8 +41,7 @@ public class InventoryDisplay : GamePresentationBehaviour
     {
         Action<int> onItemUsedCallback = null;
 
-        Entity pawnController = CommonReads.GetPawnController(SimWorld, SimWorldCache.LocalPawn);
-        if (!CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(pawnController)))
+        if (!CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(SimWorldCache.LocalController)))
         {
             TileHighlightManager.Instance.InterruptTileSelectionProcess();
             Background.color = Color.white;
@@ -69,7 +68,7 @@ public class InventoryDisplay : GamePresentationBehaviour
                     GameAction.UseContext context = new GameAction.UseContext() 
                     { 
                         InstigatorPawn = SimWorldCache.LocalPawn,
-                        InstigatorPawnController = pawnController,
+                        InstigatorPawnController = SimWorldCache.LocalController,
                         ItemEntity = item.ItemEntity
                     };
 

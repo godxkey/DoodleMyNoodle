@@ -61,7 +61,7 @@ public class ChatWindow : MonoBehaviour
         }
         else
         {
-            chatLineGameObjects.Add(chatLinePrefab.DuplicateGO(chatLineContainer));
+            chatLineGameObjects.Add(Instantiate(chatLinePrefab, chatLineContainer));
         }
 
         chatLineGameObjects.Last().Fill(chatLine);

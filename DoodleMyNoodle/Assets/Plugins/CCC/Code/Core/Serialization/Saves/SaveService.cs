@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System;
 using UnityEngine;
+using UnityEngineX;
 
 public class SaveService : MonoCoreService<SaveService>
 {
@@ -59,7 +60,7 @@ public class SaveService : MonoCoreService<SaveService>
         }
         catch (Exception e)
         {
-            DebugService.LogError("Failed to deserialize the following file:\n" + path + "\n\nError:\n" + e.Message);
+            Log.Error("Failed to deserialize the following file:\n" + path + "\n\nError:\n" + e.Message);
         }
         file.Close();
 
@@ -70,7 +71,7 @@ public class SaveService : MonoCoreService<SaveService>
             });
     }
 
-    static private void ErrorLogThreadMethodInNonPlaying() { DebugService.LogError("Cannot use " + nameof(SaveService) + "'s threaded methods when the game is not running"); }
+    static private void ErrorLogThreadMethodInNonPlaying() { Log.Error("Cannot use " + nameof(SaveService) + "'s threaded methods when the game is not running"); }
 
     public void InstantSave(string path, object graph)
     {

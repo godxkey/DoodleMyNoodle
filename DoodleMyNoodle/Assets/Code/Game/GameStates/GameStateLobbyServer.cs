@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngineX;
 
 public class GameStateLobbyServer : GameStateLobbyOnlineBase
 {
@@ -19,7 +20,7 @@ public class GameStateLobbyServer : GameStateLobbyOnlineBase
         if (OnlineService.OnlineInterface != null && OnlineService.OnlineInterface.IsServerType == false)
         {
             GameStateManager.TransitionToState(_specificDefinition.gameStateIfReturn);
-            DebugService.LogError("[GameStateLobbyServer] The available onlineInterface is of type Client. " +
+            Log.Error("[GameStateLobbyServer] The available onlineInterface is of type Client. " +
                 "This game state requires a Server type.");
             return;
         }
@@ -51,7 +52,7 @@ public class GameStateLobbyServer : GameStateLobbyOnlineBase
         else
         {
             DebugScreenMessage.DisplayMessage("Failed to create the session: " + message);
-            DebugService.Log("[GameStateLobbyServer] Failed to create session: " + message);
+            Log.Info("[GameStateLobbyServer] Failed to create session: " + message);
         }
     }
 }

@@ -42,7 +42,7 @@ public class NextTurnButton : GamePresentationBehaviour
         base.Awake();
     }
 
-    public override void OnGameLateUpdate()
+    protected override void OnGamePresentationUpdate()
     {
         if (SimWorld.HasSingleton<NewTurnEventData>())
         {
@@ -107,7 +107,7 @@ public class NextTurnButton : GamePresentationBehaviour
         if (_state.Get() == TurnState.NotMyTurn)
             return;
 
-        PlayerInputNextTurn simInput = new PlayerInputNextTurn(_state.Get() == TurnState.NotReady);
+        SimPlayerInputNextTurn simInput = new SimPlayerInputNextTurn(_state.Get() == TurnState.NotReady);
         SimWorld.SubmitInput(simInput);
     }
 }

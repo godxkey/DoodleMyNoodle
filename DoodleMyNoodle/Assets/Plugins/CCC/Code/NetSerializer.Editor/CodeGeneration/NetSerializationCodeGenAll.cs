@@ -3,14 +3,14 @@ using UnityEngine;
 
 public static class NetSerializationCodeGenAll
 {
-    [MenuItem(NetSerializationCodeGenSettings.MenuName_Generate_All, priority = NetSerializationCodeGenSettings.MenuPriority_Generate_All)]
+    [MenuItem(NetSerializationCodeGenSettings.MENUNAME_GENERATE_ALL, priority = NetSerializationCodeGenSettings.MENUPRIORITY_GENERATE_ALL)]
     public static void GenerateAll()
     {
         NetSerializerCodeGenerator.Generate();
         DynamicNetSerializationRegistryCodeGenerator.Generate();
     }
 
-    [MenuItem(NetSerializationCodeGenSettings.MenuName_Clear_All, priority = NetSerializationCodeGenSettings.MenuPriority_Clear_All)]
+    [MenuItem(NetSerializationCodeGenSettings.MENUNAME_CLEAR_ALL, priority = NetSerializationCodeGenSettings.MENUPRIORITY_CLEAR_ALL)]
     public static void ClearAll()
     {
         NetSerializerCodeGenerator.Clear();

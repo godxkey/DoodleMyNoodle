@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using UnityEditor;
 using UnityEditor.Compilation;
+using UnityEditorX;
 using UnityEngine;
 using UnityEngineX;
 
@@ -197,7 +198,6 @@ public class DefaultSmartScriptResolver : SmartScriptResolver
 
     public override void GetNewScriptContent(string path, out string content, out string defaultName)
     {
-        string[] additionalUsings = GetAdditionalProvidedUsings(path);
         TextAsset scriptTemplateAsset = FindScriptTemplateAsset(path);
 
         if (scriptTemplateAsset == null)
@@ -248,7 +248,8 @@ public class DefaultSmartScriptResolver : SmartScriptResolver
             defaultName = scriptTemplateInstance.GetScriptDefaultName();
         }
 
-        content = InsertAdditionalUsings(content, additionalUsings);
+        // disabled for now, not sure we want that feature anymore :/
+        //content = InsertAdditionalUsings(content, GetAdditionalProvidedUsings(path));
     }
 
     protected string InsertAdditionalUsings(string scriptContent, string[] additionalUsings)

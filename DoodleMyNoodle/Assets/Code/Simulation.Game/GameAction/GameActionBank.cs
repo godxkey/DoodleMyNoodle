@@ -51,7 +51,7 @@ public static class GameActionBank
             return new GameActionId { Value = result };
         }
 
-        DebugService.LogError($"Failed to find action id from type {gameActionType}");
+        Log.Error($"Failed to find action id from type {gameActionType}");
 
         return GameActionId.Invalid;
     }
@@ -63,7 +63,7 @@ public static class GameActionBank
             return new GameActionId { Value = result };
         }
 
-        DebugService.LogError($"Failed to find action id from action instance {gameAction}");
+        Log.Error($"Failed to find action id from action instance {gameAction}");
 
         return GameActionId.Invalid;
     }
@@ -80,7 +80,7 @@ public static class GameActionBank
             return result;
         }
 
-        DebugService.LogError($"Failed to find action from id {id}");
+        Log.Error($"Failed to find action from id {id}");
 
         return null;
     }
@@ -92,7 +92,7 @@ public static class GameActionBank
             return result;
         }
 
-        DebugService.LogError($"Failed to find action from type name {typeName}");
+        Log.Error($"Failed to find action from type name {typeName}");
 
         return null;
     }

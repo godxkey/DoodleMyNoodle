@@ -12,7 +12,8 @@ public class BuildTools
         BuildOptions options,
         string buildId,
         string[] scenes,
-        BuildTarget buildTarget)
+        BuildTarget buildTarget/*, 
+        string[] scriptingSymbols*/)
     {
         switch (buildTarget)
         {
@@ -31,24 +32,29 @@ public class BuildTools
         Directory.CreateDirectory(buildPath);
 
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+        
+        //string previousSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+        //PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, string.Join(";", scriptingSymbols));
 
         Environment.SetEnvironmentVariable("BUILD_ID", buildId, EnvironmentVariableTarget.Process);
-        var result = BuildPipeline.BuildPlayer(scenes, exePathName, buildTarget, options);
+        BuildReport report = BuildPipeline.BuildPlayer(scenes, exePathName, buildTarget, options);
         Environment.SetEnvironmentVariable("BUILD_ID", "", EnvironmentVariableTarget.Process);
 
-        int stepCount = result.steps.Length;
+        int stepCount = report.steps.Length;
         Debug.Log(" Steps:" + stepCount);
         for (var i = 0; i < stepCount; i++)
         {
-            var step = result.steps[i];
+            var step = report.steps[i];
             Debug.Log("-- " + (i + 1) + "/" + stepCount + " " + step.name + " " + step.duration.Seconds + "s --");
             foreach (var msg in step.messages)
                 Debug.Log(msg.content);
         }
 
-        Debug.Log("<color=green> ==== Build Done ===== </color>");
+        Debug.Log($"<color=green> ==== Build Done ({report.summary.totalTime.TotalSeconds}s) ===== </color>");
+        
+        //PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, previousSymbols);
 
-        return result;
+        return report;
     }
 
 

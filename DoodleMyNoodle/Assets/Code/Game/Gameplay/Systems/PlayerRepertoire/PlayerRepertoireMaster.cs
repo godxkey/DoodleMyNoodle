@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngineX;
 
 public abstract class PlayerRepertoireMaster : PlayerRepertoireSystem
 {
@@ -15,7 +16,7 @@ public abstract class PlayerRepertoireMaster : PlayerRepertoireSystem
 
         if (playerInfo == null)
         {
-            DebugService.LogError("Trying to assign a SimPlayerId to a player that does not exist: " + playerId);
+            Log.Error("Trying to assign a SimPlayerId to a player that does not exist: " + playerId);
             return;
         }
 

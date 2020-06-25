@@ -20,6 +20,6 @@ using Unity.Entities;
 
 //        //World.EntityManager.CompleteAllJobs();
 //        //_worldMaster.SimulationWorld.EntityManager.EndExclusiveEntityTransaction();
-//        //DebugService.Log("EndExclusiveEntityTransaction");
+//        //Log.Info("EndExclusiveEntityTransaction");
 //    }
 //}

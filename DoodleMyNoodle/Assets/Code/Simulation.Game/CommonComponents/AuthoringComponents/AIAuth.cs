@@ -13,5 +13,6 @@ public class AIAuth : MonoBehaviour, IConvertGameObjectToEntity
     {
         dstManager.AddComponent<AITag>(entity);
         dstManager.AddComponent<ControlledEntity>(entity);
+        dstManager.AddComponentData(entity, new ReadyForNextTurn() { Value = false });
     }
 }

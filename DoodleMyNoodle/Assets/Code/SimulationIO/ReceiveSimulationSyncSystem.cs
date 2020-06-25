@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngineX;
 
 namespace SimulationControl
 {
@@ -56,7 +57,7 @@ namespace SimulationControl
         {
             if (IsSynchronizing)
             {
-                DebugService.LogWarning("Trying to start a SimSync process while we are already in one");
+                Log.Warning("Trying to start a SimSync process while we are already in one");
                 return null;
             }
 

@@ -9,9 +9,6 @@ public class TestNetMessage : GameMonoBehaviour
     {
         base.OnGameAwake();
 
-        GameConsole.AddCommand("test_net_message", Command_TestNetMessage,
-            "Send a complexe Net message to your peers to test the system.");
-
         SessionInterface sessionInterface = OnlineService.OnlineInterface?.SessionInterface;
         if (sessionInterface != null)
         {
@@ -23,8 +20,6 @@ public class TestNetMessage : GameMonoBehaviour
     {
         base.OnSafeDestroy();
 
-        GameConsole.RemoveCommand("test_net_message");
-
         SessionInterface sessionInterface = OnlineService.OnlineInterface?.SessionInterface;
         if (sessionInterface != null)
         {
@@ -32,7 +27,8 @@ public class TestNetMessage : GameMonoBehaviour
         }
     }
 
-    void Command_TestNetMessage(string[] parameters)
+    [Command(Description = "Send a complexe Net message to your peers to test the system.")]
+    private static void SendTestNetMessage()
     {
         SessionInterface sessionInterface = OnlineService.OnlineInterface?.SessionInterface;
 

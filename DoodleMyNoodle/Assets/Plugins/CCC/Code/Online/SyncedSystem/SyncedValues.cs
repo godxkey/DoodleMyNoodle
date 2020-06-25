@@ -29,7 +29,7 @@ namespace CCC.Online
         {
             if (!CanWriteValues)
             {
-                DebugService.LogError($"[{nameof(SyncedValues)}] Only a master can create or set a synced value.");
+                Log.Error($"[{nameof(SyncedValues)}] Only a master can create or set a synced value.");
                 return;
             }
 
@@ -41,13 +41,13 @@ namespace CCC.Online
         {
             if (!CanWriteValues)
             {
-                DebugService.LogError($"[{nameof(SyncedValues)}] Only a master can create a synced value.");
+                Log.Error($"[{nameof(SyncedValues)}] Only a master can create a synced value.");
                 return;
             }
 
             if (Exists<T>())
             {
-                DebugService.LogError($"A synced value of type {nameof(T)} already exists.");
+                Log.Error($"A synced value of type {nameof(T)} already exists.");
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace CCC.Online
         {
             if (!CanWriteValues)
             {
-                DebugService.LogError($"[{nameof(SyncedValues)}] Only a master can destroy a synced value.");
+                Log.Error($"[{nameof(SyncedValues)}] Only a master can destroy a synced value.");
                 return false;
             }
 
@@ -82,7 +82,7 @@ namespace CCC.Online
         {
             if (!CanWriteValues)
             {
-                DebugService.LogError($"[{nameof(SyncedValues)}] Only a master can set a synced value.");
+                Log.Error($"[{nameof(SyncedValues)}] Only a master can set a synced value.");
                 return;
             }
 
@@ -109,7 +109,7 @@ namespace CCC.Online
             var container = GetContainer<T>();
             if (container == null)
             {
-                DebugService.LogError($"Could not get SyncedValue of type {nameof(T)}. " +
+                Log.Error($"Could not get SyncedValue of type {nameof(T)}. " +
                     $"Please use Exists<T>() or TryGet<T>() if you are unsure about the values existance.");
                 return default;
             }
@@ -228,7 +228,7 @@ namespace CCC.Online
         {
             if (container == null)
             {
-                DebugService.LogError($"[{nameof(SyncedValues)}] No synced value of type {nameof(T)} exits.");
+                Log.Error($"[{nameof(SyncedValues)}] No synced value of type {nameof(T)} exits.");
                 return;
             }
 

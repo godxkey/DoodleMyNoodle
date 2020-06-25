@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditorX;
 using UnityEngine;
 
 public class SimAssetIdUpdater : AssetPostprocessor
@@ -28,8 +29,8 @@ public class SimAssetIdUpdater : AssetPostprocessor
     [MenuItem("Tools/Data Management/Force Update SimAssetIds", priority = 999)]
     public static void UpdateSimAssetIds()
     {
-        AssetDatabaseX.FindPrefabsAssetsWithComponent<SimAssetIdAuth>(out List<KeyValuePair<string, GameObject>> searchResult);
-        foreach (KeyValuePair<string, GameObject> item in searchResult)
+        AssetDatabaseX.LoadPrefabAssetsWithComponentOnRoot<SimAssetIdAuth>(out List<KeyValuePair<string, GameObject>> loadResult);
+        foreach (KeyValuePair<string, GameObject> item in loadResult)
         {
             ValidateSimAssetIdForPrefab(item.Value.gameObject);
         }
@@ -64,8 +65,8 @@ public class SimAssetIdUpdater : AssetPostprocessor
 
         map.EditorGuids.Clear();
         
-        AssetDatabaseX.FindPrefabsAssetsWithComponent<SimAssetIdAuth>(out List<KeyValuePair<string, GameObject>> searchResult);
-        foreach (KeyValuePair<string, GameObject> item in searchResult)
+        AssetDatabaseX.LoadPrefabAssetsWithComponentOnRoot<SimAssetIdAuth>(out List<KeyValuePair<string, GameObject>> loadResult);
+        foreach (KeyValuePair<string, GameObject> item in loadResult)
         {
             if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(item.Value, out string guid, out long localId))
             {
