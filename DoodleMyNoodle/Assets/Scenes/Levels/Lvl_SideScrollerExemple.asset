@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35853ace5228d364e8cd9cc4f9e840ec, type: 3}
-  m_Name: Lvl_GridBattle_Presentation
+  m_Name: Lvl_SideScrollerExemple
   m_EditorClassIdentifier: 
-  scene: {fileID: 102900000, guid: 60fc40dbdb1e23144a5055ed9a5d1563, type: 3}
-  sceneName: Lvl_GridBattle_Presentation
+  scene: {fileID: 102900000, guid: 338675daabe37b244b3e80a4f0d73201, type: 3}
+  sceneName: Lvl_SideScrollerExemple
   loadMode: 1
   allowMultiple: 0
