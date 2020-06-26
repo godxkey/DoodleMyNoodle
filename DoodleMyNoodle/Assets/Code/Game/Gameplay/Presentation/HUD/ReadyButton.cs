@@ -16,7 +16,6 @@ public class ReadyButton : GamePresentationBehaviour
 
     public string WaitingForYourTurn = "Wait";
     public string WaitingForButtonPressText = "Not Ready";
-    public string WaitingForStartGameConfirmation = "";
     public string ReadyText = "Ready";
 
     public Color WaitingForNextTurnColor = Color.white;
