@@ -9,8 +9,9 @@ public class EditorNotesManager
 {
     static EditorNotesManager()
     {
-        EditorApplication.projectWindowItemOnGUI += OnProjectWindowItemOnGUI;
-        EditorApplication.update += Update;
+        // TEMPORARILY DISABLED
+        //EditorApplication.projectWindowItemOnGUI += OnProjectWindowItemOnGUI;
+        //EditorApplication.update += Update;
     }
 
     static double s_lastDrawTime;
