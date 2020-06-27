@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEditor;
 using UnityEditorX;
 using UnityEngine;
@@ -24,8 +25,11 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
 
     static void UpdateMetaData(LogMode logMode)
     {
+        Log.Info("UpdateMetaData()");
+        Log.Info($"UpdateMetaData: LoadOrCreateScriptableObjectAsset<SceneMetaDataBank>({ASSET_PATH})");
         SceneMetaDataBank dataAsset = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<SceneMetaDataBank>(ASSET_PATH);
 
+        Log.Info($"UpdateMetaData: dataAsset == {dataAsset}");
         if (dataAsset == null)
         {
             Debug.LogWarning($"Could not update SceneMetaDataBank. None found at [{ASSET_PATH}]");
@@ -33,9 +37,11 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
         }
 
         List<SceneMetaDataBank.SceneMetaData> oldData = dataAsset.SceneMetaDatasInternal;
+        Log.Info($"UpdateMetaData: oldData == {(oldData == null ? "null" : oldData.Count.ToString())}");
         List<SceneMetaDataBank.SceneMetaData> newData = new List<SceneMetaDataBank.SceneMetaData>();
 
         int buildIndex = 0;
+        Log.Info($"UpdateMetaData: foreach...");
         foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
         {
             SceneMetaDataBank.SceneMetaData metaData = new SceneMetaDataBank.SceneMetaData();
@@ -50,10 +56,12 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
         }
 
         dataAsset.SceneMetaDatasInternal = newData;
+        Log.Info($"UpdateMetaData: newData == {newData.Count}");
 
 
         // fbessette this diff algo could be optimized
-        if(logMode == LogMode.Full || logMode == LogMode.ChangesOnly)
+        Log.Info($"UpdateMetaData: Logs");
+        if (logMode == LogMode.Full || logMode == LogMode.ChangesOnly)
         {
             if (oldData != null)
             {
@@ -86,26 +94,66 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
             }
         }
 
-        if(logMode == LogMode.Full)
+        if (logMode == LogMode.Full)
         {
             DebugEditor.LogAssetIntegrity("Scene meta-data bank updated");
         }
 
+        Log.Info($"UpdateMetaData: SetDirty(dataAsset)");
         EditorUtility.SetDirty(dataAsset);
     }
 
 
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.Append("importedAssets {");
+        foreach (var item in importedAssets)
+        {
+            stringBuilder.Append(item);
+            stringBuilder.Append(", ");
+        }
+        stringBuilder.Append("}   ");
+
+        stringBuilder.Append("deletedAssets {");
+        foreach (var item in deletedAssets)
+        {
+            stringBuilder.Append(item);
+            stringBuilder.Append(", ");
+        }
+        stringBuilder.Append("}   ");
+
+        stringBuilder.Append("movedAssets {");
+        foreach (var item in movedAssets)
+        {
+            stringBuilder.Append(item);
+            stringBuilder.Append(", ");
+        }
+        stringBuilder.Append("}   ");
+
+        stringBuilder.Append("movedFromAssetPaths {");
+        foreach (var item in movedFromAssetPaths)
+        {
+            stringBuilder.Append(item);
+            stringBuilder.Append(", ");
+        }
+        stringBuilder.Append("}   ");
+
+        Log.Info(stringBuilder.ToString());
         if (importedAssets.Contains(ASSET_PATH))
+        {
+            Log.Info("return!");
+
             return;
+        }
 
         System.Predicate<string> sceneAssetPath = (x) => x.EndsWith(".unity");
 
-        if(importedAssets.Contains(sceneAssetPath)
+        if (importedAssets.Contains(sceneAssetPath)
             || deletedAssets.Contains(sceneAssetPath)
             || movedAssets.Contains(sceneAssetPath))
         {
+            Log.Info("UpdateMetaData(LogMode.ChangesOnly)!");
             UpdateMetaData(LogMode.ChangesOnly);
         }
     }
