@@ -18,9 +18,9 @@ using {nameof(UnityEngineX)};
 
 public class #SCRIPTNAME# : {nameof(GamePresentationBehaviour)}
 {{    
-    public override void OnGameLateUpdate()
+    protected override void OnGamePresentationUpdate()
     {{
-
+        
     }}
 }}";
     }

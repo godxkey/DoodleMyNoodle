@@ -7,6 +7,7 @@ using UnityEngineX;
 using Unity.Entities;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 public class ReadyButton : GamePresentationBehaviour
 {
@@ -14,14 +15,16 @@ public class ReadyButton : GamePresentationBehaviour
     public TextMeshProUGUI Text;
     public Image Image;
 
-    public string WaitingForYourTurn = "Wait";
-    public string WaitingForButtonPressText = "Not Ready";
+    public string CantReadyYetText = "Wait";
+    public string WaitingForReadyText = "Not Ready";
     public string ReadyText = "Ready";
 
     public Color WaitingForNextTurnColor = Color.white;
     public Color ReadyColor = Color.green;
 
-    private enum TurnState
+    public UnityEvent OnReady = new UnityEvent();
+
+    public enum TurnState
     {
         Ready,
         NotReady,
@@ -30,14 +33,18 @@ public class ReadyButton : GamePresentationBehaviour
 
     private DirtyValue<TurnState> _state;
 
+    public TurnState GetState() { return _state.Get(); }
+
     private float _updateTimer = 0;
     private const float UPDATE_DELAY = 0.5f;
 
     protected override void Awake()
     {
-        Button.onClick.AddListener(OnNextTurnClicked);
+        Button.onClick.AddListener(OnReadyClicked);
 
         _updateTimer = UPDATE_DELAY;
+
+        _state.Set(TurnState.NotMyTurn); // default value
 
         base.Awake();
     }
@@ -89,12 +96,12 @@ public class ReadyButton : GamePresentationBehaviour
                     Image.color = ReadyColor;
                     break;
                 case TurnState.NotReady:
-                    Text.text = WaitingForButtonPressText;
+                    Text.text = WaitingForReadyText;
                     Image.color = WaitingForNextTurnColor;
                     break;
                 default:
                 case TurnState.NotMyTurn:
-                    Text.text = WaitingForYourTurn;
+                    Text.text = CantReadyYetText;
                     Image.color = WaitingForNextTurnColor;
                     break;
             }
@@ -102,10 +109,12 @@ public class ReadyButton : GamePresentationBehaviour
         }
     }
 
-    private void OnNextTurnClicked()
+    private void OnReadyClicked()
     {
         if (_state.Get() == TurnState.NotMyTurn)
             return;
+
+        OnReady?.Invoke();
 
         SimPlayerInputNextTurn simInput = new SimPlayerInputNextTurn(_state.Get() == TurnState.NotReady);
         SimWorld.SubmitInput(simInput);

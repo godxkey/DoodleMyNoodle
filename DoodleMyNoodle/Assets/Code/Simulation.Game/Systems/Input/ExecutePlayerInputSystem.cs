@@ -34,6 +34,10 @@ public class ExecutePlayerInputSystem : SimComponentSystem
         ExecutePawnControllerInputSystem pawnControllerInputSystem = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
         switch (input)
         {
+            case SimPlayerStartingInventorySelectionInput StartingInventorySelected:
+                pawnControllerInputSystem.Inputs.Add(new PawnStartingInventorySelectionInput(playerEntity, StartingInventorySelected.KitNumber));
+                break;
+
             case SimPlayerInputNextTurn NextTurnInput:
                 pawnControllerInputSystem.Inputs.Add(new PawnInputNextTurn(playerEntity, NextTurnInput.ReadyForNextTurn));
                 break;
