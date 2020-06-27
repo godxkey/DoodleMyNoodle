@@ -143,6 +143,8 @@ namespace SimulationControl
                 SimTickData tick = AvailableTicks.First();
                 AvailableTicks.RemoveAt(0);
 
+                Log.Info(SimulationIO.LogChannel, $"Begin sim tick '{tick.ExpectedNewTickId}' with {tick.InputSubmissions.Length} inputs.");
+
                 _simulationWorld.TickInputs = tick.ToSimInputArray();
                 _simulationWorld.ExpectedNewTickId = tick.ExpectedNewTickId;
 
@@ -151,6 +153,8 @@ namespace SimulationControl
                 ManualUpdate(_simSimGroup);
                 ManualUpdate(_simPresGroup);
                 ManualUpdate(_simPostPresGroup);
+                
+                Log.Info(SimulationIO.LogChannel, $"End sim tick '{tick.ExpectedNewTickId}'");
 
                 ManualUpdate(_viewGroup);
 

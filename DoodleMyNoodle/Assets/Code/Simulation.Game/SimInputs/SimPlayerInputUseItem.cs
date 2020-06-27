@@ -15,4 +15,9 @@ public class SimPlayerInputUseItem : SimPlayerInput
         ItemIndex = itemIndex;
         UseData = useData;
     }
+
+    public override string ToString()
+    {
+        return $"SimPlayerInputUseItem(player:{SimPlayerId.Value}, ItemIndex: {ItemIndex}, ParamCount:{UseData?.ParameterDatas?.Length})";
+    }
 }
