@@ -9,10 +9,11 @@ using UnityEngineX;
 public class ViewBindingDefinitionBankUpdater : AssetPostprocessor
 {
     const string ASSET_PATH = "Assets/ScriptableObjects/Generated/ViewBindingDefinitionBank.asset";
+    private static int s_importLoopCounter;
 
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
-        if (importedAssets.Contains(ASSET_PATH))
+        if (AssetPostprocessorUtility.ExitImportLoop(importedAssets, ASSET_PATH, ref s_importLoopCounter))
             return;
 
         ViewBindingDefinitionBank bank = null;
@@ -26,10 +27,15 @@ public class ViewBindingDefinitionBankUpdater : AssetPostprocessor
                .ForEach((prefab) =>
                {
                    if (bank == null)
+                   {
+                       Log.Info("ViewBindingDefinitionBankUpdater: load bank...");
+
                        bank = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<ViewBindingDefinitionBank>(ASSET_PATH);
+                   }
 
                    if (!bank.ViewBindingDefinitions.Contains(prefab))
                    {
+                       Log.Info("ViewBindingDefinitionBankUpdater: add to bank...");
                        setDirty = true;
                        bank.ViewBindingDefinitions.Add(prefab);
 
@@ -37,8 +43,12 @@ public class ViewBindingDefinitionBankUpdater : AssetPostprocessor
                    }
                });
 
-        if(setDirty)
+        if (setDirty)
+        {
+            Log.Info("ViewBindingDefinitionBankUpdater: save bank...");
             EditorUtility.SetDirty(bank);
+            AssetDatabase.SaveAssets();
+        }
     }
 
     [MenuItem("Tools/Data Management/Force Update ViewBindingBank", priority = 999)]
@@ -56,5 +66,6 @@ public class ViewBindingDefinitionBankUpdater : AssetPostprocessor
 
         DebugEditor.LogAssetIntegrity($"ViewBindingDefinitionBank updated.");
         EditorUtility.SetDirty(bank);
+        AssetDatabase.SaveAssets();
     }
 }

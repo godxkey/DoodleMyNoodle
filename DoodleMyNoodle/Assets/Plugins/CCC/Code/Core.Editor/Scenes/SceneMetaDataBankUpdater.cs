@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using UnityEditor;
 using UnityEditorX;
@@ -9,6 +10,7 @@ using UnityEngineX;
 public class SceneMetaDataBankUpdater : AssetPostprocessor
 {
     const string ASSET_PATH = "Assets/ScriptableObjects/Generated/SceneMetaDataBank.asset";
+    private static int s_importLoopCounter;
 
     [MenuItem("Tools/Data Management/Force Update Scene Meta-data Bank", priority = 999)]
     static void UpdateMetaData()
@@ -48,7 +50,7 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
 
             metaData.AssetGuid = scene.guid.ToString();
             metaData.Path = scene.path;
-            metaData.Name = AssetDatabaseX.GetAssetNameFromPath(scene.path);
+            metaData.Name = Path.GetFileNameWithoutExtension(scene.path);
             metaData.BuildIndex = buildIndex;
 
             newData.Add(metaData);
@@ -101,11 +103,15 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
 
         Log.Info($"UpdateMetaData: SetDirty(dataAsset)");
         EditorUtility.SetDirty(dataAsset);
+        AssetDatabase.SaveAssets();
     }
 
 
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
+        if (AssetPostprocessorUtility.ExitImportLoop(importedAssets, ASSET_PATH, ref s_importLoopCounter))
+            return;
+
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.Append("importedAssets {");
         foreach (var item in importedAssets)
@@ -139,20 +145,10 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
         }
         stringBuilder.Append("}   ");
 
-        Log.Info(stringBuilder.ToString());
-        if (importedAssets.Contains(ASSET_PATH))
+
+        if (importedAssets.Contains("ProjectSettings/EditorBuildSettings.asset"))
         {
-            Log.Info("return!");
-
-            return;
-        }
-
-        System.Predicate<string> sceneAssetPath = (x) => x.EndsWith(".unity");
-
-        if (importedAssets.Contains(sceneAssetPath)
-            || deletedAssets.Contains(sceneAssetPath)
-            || movedAssets.Contains(sceneAssetPath))
-        {
+            Log.Info(stringBuilder.ToString());
             Log.Info("UpdateMetaData(LogMode.ChangesOnly)!");
             UpdateMetaData(LogMode.ChangesOnly);
         }
