@@ -353,7 +353,7 @@ public static class StaticNetSerializer_SimPlayerInput
     {
         if (obj == null)
             return 1;
-        return 1 + GetNetBitSize(obj);
+        return 1 + DynamicNetSerializer.GetNetBitSize(obj);
     }
 
     public static int GetNetBitSize(SimPlayerInput obj)
@@ -372,7 +372,7 @@ public static class StaticNetSerializer_SimPlayerInput
             return;
         }
         writer.WriteBit(true);
-        NetSerialize(obj, writer);
+        DynamicNetSerializer.NetSerialize(obj, writer);
     }
     public static void NetSerialize(SimPlayerInput obj, BitStreamWriter writer)
     {
@@ -386,9 +386,7 @@ public static class StaticNetSerializer_SimPlayerInput
         {
             return null;
         }
-        SimPlayerInput obj = new SimPlayerInput();
-        NetDeserialize(obj, reader);
-        return obj;
+        return (SimPlayerInput)DynamicNetSerializer.NetDeserialize(reader);
     }
     public static void NetDeserialize(SimPlayerInput obj, BitStreamReader reader)
     {

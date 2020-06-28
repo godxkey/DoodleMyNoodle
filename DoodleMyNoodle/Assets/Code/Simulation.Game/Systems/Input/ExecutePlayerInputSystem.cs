@@ -1,15 +1,15 @@
-﻿using System.Collections;
-using Unity.Entities;
-using Unity.Mathematics;
-using Unity.Transforms;
-using static fixMath;
-using static Unity.Mathematics.math;
+﻿using Unity.Entities;
 
-[NetSerializable]
-public class SimPlayerInput : SimInput
+[NetSerializable(baseClass = true)]
+public abstract class SimPlayerInput : SimInput
 {
     // this will be assigned by the server when its about to enter the simulation
     public PersistentId SimPlayerId;
+
+    public override string ToString()
+    {
+        return $"{GetType().Name}(player:{SimPlayerId.Value})";
+    }
 }
 
 [UpdateBefore(typeof(ExecutePawnControllerInputSystem))]
