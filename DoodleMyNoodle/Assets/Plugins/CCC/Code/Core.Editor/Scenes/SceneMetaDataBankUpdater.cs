@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEditorX;
 using UnityEngine;
@@ -8,6 +10,7 @@ using UnityEngineX;
 public class SceneMetaDataBankUpdater : AssetPostprocessor
 {
     const string ASSET_PATH = "Assets/ScriptableObjects/Generated/SceneMetaDataBank.asset";
+    private static int s_importLoopCounter;
 
     [MenuItem("Tools/Data Management/Force Update Scene Meta-data Bank", priority = 999)]
     static void UpdateMetaData()
@@ -24,8 +27,11 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
 
     static void UpdateMetaData(LogMode logMode)
     {
+        Log.Info("UpdateMetaData()");
+        Log.Info($"UpdateMetaData: LoadOrCreateScriptableObjectAsset<SceneMetaDataBank>({ASSET_PATH})");
         SceneMetaDataBank dataAsset = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<SceneMetaDataBank>(ASSET_PATH);
 
+        Log.Info($"UpdateMetaData: dataAsset == {dataAsset}");
         if (dataAsset == null)
         {
             Debug.LogWarning($"Could not update SceneMetaDataBank. None found at [{ASSET_PATH}]");
@@ -33,16 +39,18 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
         }
 
         List<SceneMetaDataBank.SceneMetaData> oldData = dataAsset.SceneMetaDatasInternal;
+        Log.Info($"UpdateMetaData: oldData == {(oldData == null ? "null" : oldData.Count.ToString())}");
         List<SceneMetaDataBank.SceneMetaData> newData = new List<SceneMetaDataBank.SceneMetaData>();
 
         int buildIndex = 0;
+        Log.Info($"UpdateMetaData: foreach...");
         foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
         {
             SceneMetaDataBank.SceneMetaData metaData = new SceneMetaDataBank.SceneMetaData();
 
             metaData.AssetGuid = scene.guid.ToString();
             metaData.Path = scene.path;
-            metaData.Name = AssetDatabaseX.GetAssetNameFromPath(scene.path);
+            metaData.Name = Path.GetFileNameWithoutExtension(scene.path);
             metaData.BuildIndex = buildIndex;
 
             newData.Add(metaData);
@@ -50,10 +58,12 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
         }
 
         dataAsset.SceneMetaDatasInternal = newData;
+        Log.Info($"UpdateMetaData: newData == {newData.Count}");
 
 
         // fbessette this diff algo could be optimized
-        if(logMode == LogMode.Full || logMode == LogMode.ChangesOnly)
+        Log.Info($"UpdateMetaData: Logs");
+        if (logMode == LogMode.Full || logMode == LogMode.ChangesOnly)
         {
             if (oldData != null)
             {
@@ -86,26 +96,60 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
             }
         }
 
-        if(logMode == LogMode.Full)
+        if (logMode == LogMode.Full)
         {
             DebugEditor.LogAssetIntegrity("Scene meta-data bank updated");
         }
 
+        Log.Info($"UpdateMetaData: SetDirty(dataAsset)");
         EditorUtility.SetDirty(dataAsset);
+        AssetDatabase.SaveAssets();
     }
 
 
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
-        if (importedAssets.Contains(ASSET_PATH))
+        if (AssetPostprocessorUtility.ExitImportLoop(importedAssets, ASSET_PATH, ref s_importLoopCounter))
             return;
 
-        System.Predicate<string> sceneAssetPath = (x) => x.EndsWith(".unity");
-
-        if(importedAssets.Contains(sceneAssetPath)
-            || deletedAssets.Contains(sceneAssetPath)
-            || movedAssets.Contains(sceneAssetPath))
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.Append("importedAssets {");
+        foreach (var item in importedAssets)
         {
+            stringBuilder.Append(item);
+            stringBuilder.Append(", ");
+        }
+        stringBuilder.Append("}   ");
+
+        stringBuilder.Append("deletedAssets {");
+        foreach (var item in deletedAssets)
+        {
+            stringBuilder.Append(item);
+            stringBuilder.Append(", ");
+        }
+        stringBuilder.Append("}   ");
+
+        stringBuilder.Append("movedAssets {");
+        foreach (var item in movedAssets)
+        {
+            stringBuilder.Append(item);
+            stringBuilder.Append(", ");
+        }
+        stringBuilder.Append("}   ");
+
+        stringBuilder.Append("movedFromAssetPaths {");
+        foreach (var item in movedFromAssetPaths)
+        {
+            stringBuilder.Append(item);
+            stringBuilder.Append(", ");
+        }
+        stringBuilder.Append("}   ");
+
+
+        if (importedAssets.Contains("ProjectSettings/EditorBuildSettings.asset"))
+        {
+            Log.Info(stringBuilder.ToString());
+            Log.Info("UpdateMetaData(LogMode.ChangesOnly)!");
             UpdateMetaData(LogMode.ChangesOnly);
         }
     }

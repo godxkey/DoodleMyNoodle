@@ -3,14 +3,17 @@ using System.Linq;
 using UnityEditor;
 using UnityEditorX;
 using UnityEngine;
+using UnityEngineX;
 
 public class SimAssetIdUpdater : AssetPostprocessor
 {
     const string ASSET_PATH = "Assets/ScriptableObjects/Generated/SimAssetIdMap.asset";
-    
+
+    static int s_importLoopCounter = 0;
+
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
-        if (importedAssets.Contains(ASSET_PATH))
+        if (AssetPostprocessorUtility.ExitImportLoop(importedAssets, ASSET_PATH, ref s_importLoopCounter))
             return;
 
         bool thereWasAChange = false;
@@ -23,6 +26,8 @@ public class SimAssetIdUpdater : AssetPostprocessor
         if (thereWasAChange)
         {
             UpdateSimAssetIdMap();
+            Log.Info($"SimAssetIdUpdater: SaveAssets");
+            AssetDatabase.SaveAssets();
         }
     }
 
@@ -36,16 +41,19 @@ public class SimAssetIdUpdater : AssetPostprocessor
         }
 
         UpdateSimAssetIdMap();
+        AssetDatabase.SaveAssets();
     }
 
     static bool ValidateSimAssetIdForPrefab(GameObject prefab)
     {
+        Log.Info($"SimAssetIdUpdater: ValidateSimAssetIdForPrefab({prefab.name})");
         if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(prefab, out string guid, out long localId))
         {
             SimAssetIdAuth assetIdAuth = prefab.GetComponent<SimAssetIdAuth>();
 
             if (assetIdAuth.Guid != guid)
             {
+                Log.Info($"SimAssetIdUpdater: ValidateSimAssetIdForPrefab -> there was a change");
                 assetIdAuth.Guid = guid;
                 DebugEditor.LogAssetIntegrity($"updated {prefab.name}'s assetId to: {guid}");
 
@@ -61,10 +69,11 @@ public class SimAssetIdUpdater : AssetPostprocessor
 
     static void UpdateSimAssetIdMap()
     {
-        SimAssetIdMap map = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<SimAssetIdMap>("Assets/ScriptableObjects/Generated/SimAssetIdMap.asset");
+        Log.Info($"SimAssetIdUpdater: UpdateSimAssetIdMap");
+        SimAssetIdMap map = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<SimAssetIdMap>(ASSET_PATH);
 
         map.EditorGuids.Clear();
-        
+
         AssetDatabaseX.LoadPrefabAssetsWithComponentOnRoot<SimAssetIdAuth>(out List<KeyValuePair<string, GameObject>> loadResult);
         foreach (KeyValuePair<string, GameObject> item in loadResult)
         {

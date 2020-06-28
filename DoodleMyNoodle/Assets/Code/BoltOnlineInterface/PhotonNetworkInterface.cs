@@ -135,18 +135,6 @@ namespace Internals.PhotonNetwokInterface
 
         public override void Update()
         {
-            if (!IsServer)
-            {
-                if (_sessionClearTimer < 0 && BoltNetwork.IsRunning && State == NetworkState.Running)
-                {
-                    // clear the session list. 
-                    // This is needed because we apparently don't get session updates if there are no sessions
-                    BoltNetwork.UpdateSessionList(new Map<Guid, UdpSession>());
-                }
-
-                _sessionClearTimer -= Time.deltaTime;
-            }
-
             if (State == NetworkState.ShuttingDown && !BoltNetwork.IsRunning)
             {
                 State = NetworkState.Stopped;
@@ -197,7 +185,7 @@ namespace Internals.PhotonNetwokInterface
         {
             DestroyListener();
         }
-        
+
         public override IStreamChannel GetStreamChannel(StreamChannelType channel)
         {
             return _streamChannels[channel];
@@ -228,7 +216,7 @@ namespace Internals.PhotonNetwokInterface
         {
             State = NetworkState.Stopped;
             if (log)
-                Log.Info("[PhotonNetworkInterface] BoltStartFailed: "+ disconnectReason);
+                Log.Info("[PhotonNetworkInterface] BoltStartFailed: " + disconnectReason);
 
             _operationCallbackLaunch?.Invoke(false, "Bolt failed to start: " + disconnectReason);
         }
@@ -264,7 +252,7 @@ namespace Internals.PhotonNetwokInterface
 
             INetworkInterfaceConnection connectionInterface = FindInterfaceConnection(connection);
 
-            if(connectionInterface != null)
+            if (connectionInterface != null)
             {
                 _connections.Remove(connectionInterface);
                 OnDisconnect?.Invoke(connectionInterface);
@@ -309,11 +297,9 @@ namespace Internals.PhotonNetwokInterface
 
         public void Event_SessionListUpdated(Map<Guid, UdpSession> sessionList)
         {
-            // will clear the session list in X seconds
-            _sessionClearTimer = SESSION_CLEAR_TIMEOUT;
-
             _sessions.Clear();
-            foreach (KeyValuePair<Guid, UdpSession> session in BoltNetwork.SessionList)
+
+            foreach (KeyValuePair<Guid, UdpSession> session in sessionList)
             {
                 _sessions.Add(new PhotonNetworkInterfaceSession(session.Value));
             }
@@ -345,7 +331,7 @@ namespace Internals.PhotonNetwokInterface
 
             ConcludeOperationCallback(ref _operationCallbackSessionCreated, false, null);
         }
-        
+
         public void Event_SessionConnected(UdpSession session, IProtocolToken token)
         {
             // nothing to do at the moment
@@ -433,7 +419,7 @@ namespace Internals.PhotonNetwokInterface
         {
             INetworkInterfaceConnection interfaceConnection = FindInterfaceConnection(connection);
 
-            if(interfaceConnection == null)
+            if (interfaceConnection == null)
             {
                 Log.Error($"[PhotonNetworkInterface] Received stream data from an unknown connection: {connection}.");
                 return;
@@ -441,7 +427,7 @@ namespace Internals.PhotonNetwokInterface
 
             IStreamChannel streamChannel = FindStreamChannel(streamData.Channel);
 
-            if(streamChannel == null)
+            if (streamChannel == null)
             {
                 Log.Error($"[PhotonNetworkInterface] Received stream data from an unknown channel '{streamData.Channel}'.");
                 return;
@@ -487,7 +473,7 @@ namespace Internals.PhotonNetwokInterface
             }
             return null;
         }
-        
+
         IStreamChannel FindStreamChannel(UdpChannelName channelName)
         {
             IEqualityComparer<UdpChannelName> equalityComparer = UdpChannelName.EqualityComparer.Instance;
@@ -534,8 +520,6 @@ namespace Internals.PhotonNetwokInterface
         Dictionary<StreamChannelType, IStreamChannel> _streamChannels = new Dictionary<StreamChannelType, IStreamChannel>();
         INetworkInterfaceSession _connectedSessionInfo;
         GameObject _photonCallbackListener;
-        float _sessionClearTimer; // used to clear the session list after a timeout
-        const float SESSION_CLEAR_TIMEOUT = 7;
 
         OperationResultDelegate _operationCallbackLaunch;
         OperationResultDelegate _operationCallbackShutdown;

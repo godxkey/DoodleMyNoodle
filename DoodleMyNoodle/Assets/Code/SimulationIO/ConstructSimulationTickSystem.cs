@@ -49,14 +49,21 @@ namespace SimulationControl
 
         public void SubmitInputInternal(SimInput input, INetworkInterfaceConnection instigatorConnection, InputSubmissionId submissionId)
         {
+
             if (ValidateInput(input, instigatorConnection))
             {
+                Log.Info(SimulationIO.LogChannel, $"Accepted sim input from '{(instigatorConnection == null ? "local player" : instigatorConnection.Id.ToString())}': {input}");
+
                 _inputSubmissionQueue.Enqueue(new SimInputSubmission()
                 {
                     Input = input,
                     InstigatorConnectionId = instigatorConnection == null ? uint.MaxValue : instigatorConnection.Id,
                     ClientSubmissionId = submissionId
                 });
+            }
+            else
+            {
+                Log.Info(SimulationIO.LogChannel, $"Refused sim input from '{(instigatorConnection == null ? "local player" : instigatorConnection.Id.ToString())}': {input}");
             }
         }
 
@@ -98,6 +105,8 @@ namespace SimulationControl
                         InputSubmissions = _inputSubmissionQueue.ToArray(),
                         ExpectedNewTickId = FindExpectedNewTickId()
                     };
+                    
+                    Log.Info(SimulationIO.LogChannel, $"Construct tick '{tickData.ExpectedNewTickId}' with {tickData.InputSubmissions.Length} inputs.");
 
                     World.GetExistingSystem<SendSimulationTickSystem>()?.ConstructedTicks.Add(tickData);
 
