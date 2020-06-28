@@ -17,7 +17,7 @@ public class LevelGridSettings : ScriptableObject
 
     public List<TileAddonsDefinition> AddonsDefinition = new List<TileAddonsDefinition>();
 
-    public GameObject GetPrefabFromSprite(Sprite sprite)
+    public GameObject GetSimEntityPrefabFromSprite(Sprite sprite)
     {
         if(sprite != null)
         {
@@ -25,14 +25,7 @@ public class LevelGridSettings : ScriptableObject
             {
                 if (tileAddon.SpriteVisual == sprite)
                 {
-                    if (tileAddon.AddonSimulationPrefab.name.StartsWith("BE"))
-                    {
-                        return tileAddon.AddonSimulationPrefab.transform.GetChild(0).gameObject;
-                    }
-                    else
-                    {
-                        return tileAddon.AddonSimulationPrefab;
-                    }
+                    return tileAddon.AddonSimulationPrefab;
                 }
             }
         }

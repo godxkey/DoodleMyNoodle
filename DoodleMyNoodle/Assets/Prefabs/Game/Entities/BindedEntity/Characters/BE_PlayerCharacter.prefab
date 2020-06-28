@@ -198,11 +198,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_Player
       objectReference: {fileID: 0}
-    - target: {fileID: 6657921186239294675, guid: 8029a8339c41fdc459279bcc5978cc42,
-        type: 3}
-      propertyPath: MaxValue
-      value: 15
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8029a8339c41fdc459279bcc5978cc42, type: 3}
 --- !u!4 &7682738278826219818 stripped

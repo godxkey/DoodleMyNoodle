@@ -1,4 +1,5 @@
 using Unity.MathematicsX;
+using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
@@ -18,43 +19,55 @@ public class CameraMovementController : GameMonoBehaviour
     public bool EnableMovementLimits;
     public float MaxZoom;
 
-    [Header("Debug Options")]
-    public bool DisableMouseControlsInEditor = true;
+#if UNITY_EDITOR
+    [Command(Description = "Enable/Disable the game camera moving when moving the mouse pointer near the edges of the screen.")]
+    private static void ToggleCameraMouseBorderMove()
+    {
+        MouseMovementsEnabled = !MouseMovementsEnabled;
+    }
+#endif
 
-    private bool _shouldDisableMouseMovements = false;
-
-    void Start()
+    private static bool MouseMovementsEnabled
     {
 #if UNITY_EDITOR
-        _shouldDisableMouseMovements = DisableMouseControlsInEditor;
+        set => EditorPrefs.SetBool("CameraMovementController_MouseMovementsEnabled", value);
 #endif
+        get
+        {
+#if UNITY_EDITOR
+            return EditorPrefs.GetBool("CameraMovementController_MouseMovementsEnabled", true);
+#else
+        return true;
+#endif
+        }
     }
 
     void Update()
     {
-        Vector3 _panMovement = Vector3.zero;
+        Vector3 movement = Vector3.zero;
 
-        if (Input.GetKey(KeyCode.W) || (!_shouldDisableMouseMovements && (Screen.height <= Screen.height && Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
+        if (Input.GetKey(KeyCode.W) || (!MouseMovementsEnabled && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
         {
-            _panMovement += Vector3.up * Speed * Time.deltaTime;
+            movement += Vector3.up;
         }
 
-        if (Input.GetKey(KeyCode.S) || (!_shouldDisableMouseMovements && (Input.mousePosition.y > 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
+        if (Input.GetKey(KeyCode.S) || (!MouseMovementsEnabled && (Input.mousePosition.y > 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
         {
-            _panMovement -= Vector3.up * Speed * Time.deltaTime;
+            movement -= Vector3.up;
         }
 
-        if (Input.GetKey(KeyCode.A) || (!_shouldDisableMouseMovements && (Input.mousePosition.x > 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
+        if (Input.GetKey(KeyCode.A) || (!MouseMovementsEnabled && (Input.mousePosition.x > 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
         {
-            _panMovement += Vector3.left * Speed * Time.deltaTime;
+            movement += Vector3.left;
         }
 
-        if (Input.GetKey(KeyCode.D) || (!_shouldDisableMouseMovements && (Screen.height <= Screen.width && Input.mousePosition.x >= (Screen.width - ScreenEdgeBorderThickness))))
+        if (Input.GetKey(KeyCode.D) || (!MouseMovementsEnabled && (Input.mousePosition.x >= (Screen.width - ScreenEdgeBorderThickness))))
         {
-            _panMovement += Vector3.right * Speed * Time.deltaTime;
+            movement += Vector3.right;
         }
 
-        transform.Translate(_panMovement, Space.World);
+        if (movement != Vector3.zero) movement.Normalize();
+        transform.Translate(movement * Speed * Time.deltaTime, Space.World);
 
         Cam.orthographicSize -= Input.mouseScrollDelta.y * ZoomSpeed;
         Cam.orthographicSize = Mathf.Clamp(Cam.orthographicSize, 1, MaxZoom);

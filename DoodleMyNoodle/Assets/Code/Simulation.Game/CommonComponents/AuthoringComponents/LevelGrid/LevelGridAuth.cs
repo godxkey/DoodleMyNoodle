@@ -35,7 +35,7 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
                         Vector3 worldCoordinate = new Vector3(l, h, 0);
                         Vector3Int gridCoordinate = grid.WorldToCell(worldCoordinate);
 
-                        GameObject tileAddonSimulationPrefab = LevelGridSetting.GetPrefabFromSprite(tileMap.GetSprite(gridCoordinate));
+                        GameObject tileAddonSimulationPrefab = LevelGridSetting.GetSimEntityPrefabFromSprite(tileMap.GetSprite(gridCoordinate));
 
                         if(tileAddonSimulationPrefab != null)
                         {

@@ -103,7 +103,7 @@ public partial class CommonReads
             {
                 if ((filter & TileFilterFlags.Navigable) != 0)
                 {
-                    if (accessor.HasComponent<SolidWall>(addon.TileEntity))
+                    if (accessor.HasComponent<SolidWallTag>(addon.TileEntity))
                     {
                         return false;
                     }
@@ -111,7 +111,7 @@ public partial class CommonReads
 
                 if ((filter & TileFilterFlags.NonNavigable) != 0)
                 {
-                    if (!accessor.HasComponent<SolidWall>(addon.TileEntity))
+                    if (!accessor.HasComponent<SolidWallTag>(addon.TileEntity))
                     {
                         return false;
                     }
@@ -135,7 +135,7 @@ public partial class CommonReads
 
                 if ((filter & TileFilterFlags.Ascendable) != 0)
                 {
-                    if (!accessor.HasComponent<Ascendable>(addon.TileEntity))
+                    if (!accessor.HasComponent<AscendableTag>(addon.TileEntity))
                     {
                         return false;
                     }

@@ -14,12 +14,12 @@ public class TileFiltersAuth : MonoBehaviour, IConvertGameObjectToEntity
     {
         if (!IsTileNavigable)
         {
-            dstManager.AddComponentData(entity, new SolidWall());
+            dstManager.AddComponentData(entity, new SolidWallTag());
         }
 
         if (IsTileAscendable)
         {
-            dstManager.AddComponentData(entity, new Ascendable());
+            dstManager.AddComponentData(entity, new AscendableTag());
         }
     }
 }

@@ -176,11 +176,12 @@ public static class Pathfinding
     }
 
     private enum NeighborDirection { Left, Right, Up, Down }
+    private static readonly int s_neighborDirectionLenght = System.Enum.GetNames(typeof(NeighborDirection)).Length;
 
     private static void get_neighbors(in int2 tile, NativeList<int2> neighbors, ISimWorldReadAccessor accessor)
     {
         neighbors.Clear();
-        for (int i = 0; i < System.Enum.GetNames(typeof(NeighborDirection)).Length; i++)
+        for (int i = 0; i < s_neighborDirectionLenght; i++)
         {
             if (get_neighbor(tile, (NeighborDirection)i, accessor, out int2 neighborPos) && IsTileWalkable(neighborPos, accessor))
             {
