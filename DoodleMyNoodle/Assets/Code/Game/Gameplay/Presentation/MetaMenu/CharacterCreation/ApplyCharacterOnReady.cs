@@ -14,6 +14,9 @@ public class ApplyCharacterOnReady : GamePresentationBehaviour
     // Linked to Ready Button in editor
     public void ApplyCharacterSettings()
     {
+        if (!gameObject.activeSelf)
+            return;
+
         // todo name of the character
 
         // todo sprite of the character
