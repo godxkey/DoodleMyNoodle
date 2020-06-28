@@ -16,8 +16,8 @@ namespace SimulationControl
     [UpdateInGroup(typeof(SimulationControlSystemGroup))]
     public class ConstructSimulationTickSystem : ComponentSystem
     {
-        [ConfigVar("sim.tick_rate_scale", "1", description: "The number of ticks executed per fixed update")]
-        static ConfigVar s_tickRateScale;
+        [ConsoleVar("Sim.TickSpeed", "The speed at which sim ticks are executed. 1 = default. 2 = twice as fast")]
+        static float s_tickSpeed = 1;
 
         private float _tickTimeCounter;
         private Queue<SimInputSubmission> _inputSubmissionQueue = new Queue<SimInputSubmission>();
@@ -93,7 +93,7 @@ namespace SimulationControl
         protected override void OnUpdate()
         {
             // this counter makes sure we construct ticks at the desired rate
-            _tickTimeCounter += Time.DeltaTime * s_tickRateScale.FloatValue;
+            _tickTimeCounter += Time.DeltaTime * s_tickSpeed;
 
             while (_tickTimeCounter > SimulationConstants.TIME_STEP_F)
             {

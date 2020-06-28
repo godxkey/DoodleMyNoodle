@@ -10,102 +10,97 @@ using System.Threading;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Internals.GameConsoleInterals
+namespace GameConsoleInterals
 {
-public class GameConsoleTextLinux : IConsoleUI
-{
-    bool IsDumb()
+    public class GameConsoleTextLinux : IGameConsoleUI
     {
-        return System.Console.BufferWidth == 0 || System.Console.IsInputRedirected || System.Console.IsOutputRedirected;
-    }
-
-    void ReaderThread()
-    {
-
-    }
-
-    char[] buf = new char[1024];
-    public void Init()
-    {
-        System.Console.WriteLine("Dumb console: " + IsDumb());
-        if (IsDumb())
+        bool IsDumb()
         {
-            m_ReaderThread = new Thread(() =>
+            return System.Console.BufferWidth == 0 || System.Console.IsInputRedirected || System.Console.IsOutputRedirected;
+        }
+
+        char[] buf = new char[1024];
+        public void Init(GameConsoleDatabase database)
+        {
+            System.Console.WriteLine("Dumb console: " + IsDumb());
+            if (IsDumb())
             {
-                Thread.CurrentThread.IsBackground = true;
-                while (true)
+                m_ReaderThread = new Thread(() =>
                 {
-                    var read = System.Console.In.Read(buf, 0, buf.Length);
-                    if (read > 0)
+                    Thread.CurrentThread.IsBackground = true;
+                    while (true)
                     {
-                        m_CurrentLine += new string(buf, 0, read);
+                        var read = System.Console.In.Read(buf, 0, buf.Length);
+                        if (read > 0)
+                        {
+                            m_CurrentLine += new string(buf, 0, read);
+                        }
+                        else
+                            break;
                     }
-                    else
-                        break;
-                }
-            });
-            m_ReaderThread.Start();
-        }
-        System.Console.Clear();
-        m_CurrentLine = "";
-        DrawInputline();
-    }
-
-    public void Shutdown()
-    {
-        OutputString("Console shutdown");
-    }
-
-    public void ConsoleUpdate()
-    {
-        // Handling for cases where the terminal is 'dumb', i.e. cursor etc.
-        // and no individual keys fired
-        if (IsDumb())
-        {
-            var lines = m_CurrentLine.Split('\n');
-            if (lines.Length > 1)
-            {
-                for (int i = 0; i < lines.Length - 1; i++)
-                    GameConsole.EnqueueCommand(lines[i]);
-                m_CurrentLine = lines[lines.Length - 1];
+                });
+                m_ReaderThread.Start();
             }
-            return;
+            System.Console.Clear();
+            m_CurrentLine = "";
+            DrawInputline();
         }
 
-        if (!System.Console.KeyAvailable)
-            return;
-
-        var keyInfo = System.Console.ReadKey();
-
-        switch (keyInfo.Key)
+        public void Shutdown()
         {
-            case ConsoleKey.Enter:
-                GameConsole.EnqueueCommand(m_CurrentLine);
-                m_CurrentLine = "";
-                DrawInputline();
-                break;
-            case ConsoleKey.Escape:
-                m_CurrentLine = "";
-                DrawInputline();
-                break;
-            case ConsoleKey.Backspace:
-                if (m_CurrentLine.Length > 0)
-                    m_CurrentLine = m_CurrentLine.Substring(0, m_CurrentLine.Length - 1);
-                DrawInputline();
-                break;
-            case ConsoleKey.UpArrow:
-                m_CurrentLine = GameConsole.HistoryUp(m_CurrentLine);
-                DrawInputline();
-                break;
-            case ConsoleKey.DownArrow:
-                m_CurrentLine = GameConsole.HistoryDown();
-                DrawInputline();
-                break;
-            case ConsoleKey.Tab:
-                m_CurrentLine = GameConsole.TabComplete(m_CurrentLine);
-                DrawInputline();
-                break;
-            default:
+            OutputString("Console shutdown", GameConsole.LineColor.Normal);
+        }
+
+        public void ConsoleUpdate()
+        {
+            // Handling for cases where the terminal is 'dumb', i.e. cursor etc.
+            // and no individual keys fired
+            if (IsDumb())
+            {
+                var lines = m_CurrentLine.Split('\n');
+                if (lines.Length > 1)
+                {
+                    for (int i = 0; i < lines.Length - 1; i++)
+                        GameConsole.EnqueueCommand(lines[i]);
+                    m_CurrentLine = lines[lines.Length - 1];
+                }
+                return;
+            }
+
+            if (!System.Console.KeyAvailable)
+                return;
+
+            var keyInfo = System.Console.ReadKey();
+
+            switch (keyInfo.Key)
+            {
+                case ConsoleKey.Enter:
+                    GameConsole.EnqueueCommand(m_CurrentLine);
+                    m_CurrentLine = "";
+                    DrawInputline();
+                    break;
+                case ConsoleKey.Escape:
+                    m_CurrentLine = "";
+                    DrawInputline();
+                    break;
+                case ConsoleKey.Backspace:
+                    if (m_CurrentLine.Length > 0)
+                        m_CurrentLine = m_CurrentLine.Substring(0, m_CurrentLine.Length - 1);
+                    DrawInputline();
+                    break;
+                case ConsoleKey.UpArrow:
+                    m_CurrentLine = GameConsole.HistoryUp();
+                    DrawInputline();
+                    break;
+                case ConsoleKey.DownArrow:
+                    m_CurrentLine = GameConsole.HistoryDown();
+                    DrawInputline();
+                    break;
+                case ConsoleKey.Tab:
+                    m_CurrentLine = GameConsole.TabComplete(m_CurrentLine);
+                    DrawInputline();
+                    break;
+                default:
                 {
                     if (keyInfo.KeyChar != '\u0000')
                     {
@@ -114,64 +109,87 @@ public class GameConsoleTextLinux : IConsoleUI
                     }
                 }
                 break;
+            }
         }
-    }
 
-    public void ConsoleLateUpdate()
-    {
-    }
-
-    public bool IsOpen()
-    {
-        return true;
-    }
-
-    public void OutputString(string message)
-    {
-        ClearInputLine();
-
-        if (!IsDumb() && message.Length > 0 && message[0] == '>')
+        public void ConsoleLateUpdate()
         {
-            var oldColor = System.Console.ForegroundColor;
-            System.Console.ForegroundColor = System.ConsoleColor.Green;
-            System.Console.WriteLine(message);
-            System.Console.ForegroundColor = oldColor;
         }
-        else
-            System.Console.WriteLine(message);
 
-        DrawInputline();
+        public bool IsOpen()
+        {
+            return true;
+        }
+
+
+        public void OutputLog(int channelId, string condition, string stackTrace, LogType logType)
+        {
+            GameConsole.LineColor lineColor;
+            switch (logType)
+            {
+                default:
+                case LogType.Error:
+                case LogType.Assert:
+                case LogType.Exception:
+                    lineColor = GameConsole.LineColor.Error;
+                    break;
+                case LogType.Warning:
+                    lineColor = GameConsole.LineColor.Warning;
+                    break;
+                case LogType.Log:
+                    lineColor = GameConsole.LineColor.Normal;
+                    break;
+            }
+
+            OutputString($"{condition}\n{stackTrace}", lineColor);
+        }
+
+        public void OutputString(string message, GameConsole.LineColor lineColor)
+        {
+            ClearInputLine();
+
+            if (!IsDumb() && message.Length > 0 && message[0] == '>')
+            {
+                var oldColor = System.Console.ForegroundColor;
+                System.Console.ForegroundColor = System.ConsoleColor.Green;
+                System.Console.WriteLine(message);
+                System.Console.ForegroundColor = oldColor;
+            }
+            else
+                System.Console.WriteLine(message);
+
+            DrawInputline();
+        }
+
+        public void SetOpen(bool open)
+        {
+        }
+
+        void ClearInputLine()
+        {
+            if (IsDumb())
+                return;
+
+            System.Console.CursorLeft = 0;
+            System.Console.CursorTop = System.Console.BufferHeight - 1;
+            System.Console.Write(new string(' ', System.Console.BufferWidth - 1));
+            System.Console.CursorLeft = 0;
+        }
+
+        void DrawInputline()
+        {
+            if (IsDumb())
+                return;
+
+            System.Console.CursorLeft = 0;
+            System.Console.CursorTop = System.Console.BufferHeight - 1;
+            System.Console.Write(m_CurrentLine + new string(' ', System.Console.BufferWidth - m_CurrentLine.Length - 1));
+            System.Console.CursorLeft = m_CurrentLine.Length;
+        }
+
+        string m_CurrentLine;
+        private Thread m_ReaderThread;
+        //TextWriter m_PreviousOutput;
     }
-
-    public void SetOpen(bool open)
-    {
-    }
-
-    void ClearInputLine()
-    {
-        if (IsDumb())
-            return;
-
-        System.Console.CursorLeft = 0;
-        System.Console.CursorTop = System.Console.BufferHeight - 1;
-        System.Console.Write(new string(' ', System.Console.BufferWidth - 1));
-        System.Console.CursorLeft = 0;
-    }
-
-    void DrawInputline()
-    {
-        if (IsDumb())
-            return;
-
-        System.Console.CursorLeft = 0;
-        System.Console.CursorTop = System.Console.BufferHeight - 1;
-        System.Console.Write(m_CurrentLine + new string(' ', System.Console.BufferWidth - m_CurrentLine.Length - 1));
-        System.Console.CursorLeft = m_CurrentLine.Length;
-    }
-
-    string m_CurrentLine;
-    private Thread m_ReaderThread;
-    //TextWriter m_PreviousOutput;
-}
 }
 #endif

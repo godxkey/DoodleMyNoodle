@@ -5,7 +5,7 @@ using UnityEngineX;
 using System;
 using System.Text;
 
-public class GameConsoleGUISuggestionList : MonoBehaviour
+internal class GameConsoleGUISuggestionList : MonoBehaviour
 {
     [SerializeField] private RectTransform _selectionHighlight = null;
     [SerializeField] private Transform _suggestionTextContainer = null;
@@ -17,11 +17,11 @@ public class GameConsoleGUISuggestionList : MonoBehaviour
     [SerializeField] private Color _inlineParameterColor;
 
     private GameConsoleDatabase _database;
-    private List<(int score, GameConsoleCommand command)> _suggestionsAndScores = new List<(int score, GameConsoleCommand command)>();
+    private List<(int score, GameConsoleInvokable command)> _suggestionsAndScores = new List<(int score, GameConsoleInvokable command)>();
     private int _selectionIndex = -1;
     private VerticalLayoutGroup _layoutGroup;
 
-    public GameConsoleCommand HighlightedSuggestion
+    public GameConsoleInvokable HighlightedSuggestion
     {
         get
         {
@@ -31,7 +31,7 @@ public class GameConsoleGUISuggestionList : MonoBehaviour
         }
     }
 
-    public event Action<GameConsoleCommand> SuggestionPicked;
+    public event Action<GameConsoleInvokable> SuggestionPicked;
 
     private void Awake()
     {
@@ -84,9 +84,9 @@ public class GameConsoleGUISuggestionList : MonoBehaviour
             _strBuilder.EndHTMLColor();
 
             _strBuilder.BeginHTMLColor(_inlineParameterColor);
-            for (int i = currentTokenCount - 1; i < HighlightedSuggestion.Parameters.Length; i++)
+            for (int i = currentTokenCount - 1; i < HighlightedSuggestion.InvokeParameters.Length; i++)
             {
-                AppendParam(_strBuilder, HighlightedSuggestion.Parameters[i]);
+                AppendParam(_strBuilder, HighlightedSuggestion.InvokeParameters[i]);
             }
             _strBuilder.EndHTMLColor();
 
@@ -100,16 +100,13 @@ public class GameConsoleGUISuggestionList : MonoBehaviour
 
     private void UpdateSelectorVisualPosition()
     {
-        float padding = _layoutGroup.padding.top;
-        float spacing = _layoutGroup.spacing;
-        float elementSize = _suggestionTexts[0].rectTransform.rect.height;
-        float height = (_selectionIndex * (elementSize + spacing)) + padding;
+        var rectTr = _suggestionTexts[_selectionIndex].rectTransform;
 
-        Vector2 p = _selectionHighlight.anchoredPosition;
-
-        p.y = -height;
-
-        _selectionHighlight.anchoredPosition = p;
+        _selectionHighlight.pivot = rectTr.pivot;
+        _selectionHighlight.anchorMax = rectTr.anchorMax;
+        _selectionHighlight.anchorMin = rectTr.anchorMin;
+        _selectionHighlight.sizeDelta = rectTr.sizeDelta;
+        _selectionHighlight.anchoredPosition = rectTr.anchoredPosition;
     }
 
     private void MoveSelection(int move)
@@ -129,27 +126,27 @@ public class GameConsoleGUISuggestionList : MonoBehaviour
         if (onlyExactMatches)
         {
             text = text.Substring(0, text.IndexOf(' '));
-            for (int i = 0; i < _database.Commands.Count; i++)
+            for (int i = 0; i < _database.Invokables.Count; i++)
             {
-                if (!_database.Commands[i].Enabled)
+                if (!_database.Invokables[i].Enabled)
                     continue;
 
-                if (string.Equals(text, _database.Commands[i].Name))
+                if (string.Equals(text, _database.Invokables[i].Name))
                 {
-                    _suggestionsAndScores.Add((score: _database.Commands[i].Parameters.Length, _database.Commands[i]));
+                    _suggestionsAndScores.Add((score: _database.Invokables[i].InvokeParameters.Length, _database.Invokables[i]));
                 }
             }
         }
         else
         {
-            for (int i = 0; i < _database.Commands.Count; i++)
+            for (int i = 0; i < _database.Invokables.Count; i++)
             {
-                if (!_database.Commands[i].Enabled)
+                if (!_database.Invokables[i].Enabled)
                     continue;
 
-                int score = GetScore(text, _database.Commands[i].Name);
+                int score = GetScore(text, _database.Invokables[i].Name);
                 if (score > 0)
-                    _suggestionsAndScores.Add((score, _database.Commands[i]));
+                    _suggestionsAndScores.Add((score, _database.Invokables[i]));
             }
         }
 
@@ -171,7 +168,7 @@ public class GameConsoleGUISuggestionList : MonoBehaviour
         gameObject.SetActive(_suggestionsAndScores.Count > 0);
     }
 
-    private void DisplaySuggestions(List<(int score, GameConsoleCommand command)> suggestions)
+    private void DisplaySuggestions(List<(int score, GameConsoleInvokable command)> suggestions)
     {
         int i = 0;
         for (; i < suggestions.Count; i++)
@@ -194,7 +191,7 @@ public class GameConsoleGUISuggestionList : MonoBehaviour
     private StringBuilder _strBuilder = new StringBuilder();
     private string _text;
 
-    private void FormatSuggestion(Text text, GameConsoleCommand command)
+    private void FormatSuggestion(Text text, GameConsoleInvokable command)
     {
         _strBuilder.Clear();
 
@@ -202,7 +199,7 @@ public class GameConsoleGUISuggestionList : MonoBehaviour
         _strBuilder.Append("  ");
 
         _strBuilder.BeginHTMLColor(_parameterColor);
-        foreach (GameConsoleCommand.Parameter param in command.Parameters)
+        foreach (GameConsoleInvokable.Parameter param in command.InvokeParameters)
         {
             AppendParam(_strBuilder, param);
         }
@@ -287,14 +284,18 @@ public class GameConsoleGUISuggestionList : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void AppendParam(StringBuilder stringBuilder, GameConsoleCommand.Parameter param)
+    private void AppendParam(StringBuilder stringBuilder, GameConsoleInvokable.Parameter param)
     {
         stringBuilder.Append('[');
         stringBuilder.Append(param.Type.GetPrettyName());
-        stringBuilder.Append(' ');
-        stringBuilder.Append(param.Name);
 
-        if (param.Optional)
+        if (!string.IsNullOrEmpty(param.Name))
+        {
+            stringBuilder.Append(' ');
+            stringBuilder.Append(param.Name);
+        }
+
+        if (param.HasDefaultValue)
         {
             stringBuilder.Append(" = ");
             stringBuilder.Append(param.DefaultValue ?? "null");

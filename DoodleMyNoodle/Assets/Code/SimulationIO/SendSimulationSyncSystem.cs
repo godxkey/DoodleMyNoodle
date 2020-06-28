@@ -12,8 +12,8 @@ namespace SimulationControl
     [UpdateBefore(typeof(TickSimulationSystem))]
     public class SendSimulationSyncSystem : ComponentSystem
     {
-        [ConfigVar("sim.pause_while_join", "true", description: "Should the simulation be paused while players are joining the game?")]
-        static ConfigVar s_pauseSimulationWhilePlayersAreJoining;
+        [ConsoleVar("Sim.PauseWhileOthersJoin", "Should the simulation be paused while players are joining the game?", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
+        static bool s_pauseSimulationWhilePlayersAreJoining = true;
 
         private SessionServerInterface _session;
         private List<CoroutineOperation> _ongoingOperations = new List<CoroutineOperation>();
@@ -87,7 +87,7 @@ namespace SimulationControl
 
             _ongoingOperations.Add(newOp);
 
-            if (s_pauseSimulationWhilePlayersAreJoining.BoolValue)
+            if (s_pauseSimulationWhilePlayersAreJoining)
             {
                 _tickSystem.PauseSimulation(key: "PlayerJoining");
             }

@@ -105,14 +105,14 @@ namespace SimulationControl
 
 #if DEBUG
             s_commandInstance = this;
-            GameConsole.SetCommandEnabled("sim.pause", true);
+            GameConsole.SetCommandOrVarEnabled("sim.pause", true);
 #endif
         }
 
         protected override void OnDestroy()
         {
 #if DEBUG
-            GameConsole.SetCommandEnabled("sim.pause", false);
+            GameConsole.SetCommandOrVarEnabled("sim.pause", false);
             s_commandInstance = null;
 #endif
             base.OnDestroy();
@@ -297,7 +297,7 @@ namespace SimulationControl
 #if DEBUG
         private bool _isPausedByCmd = false;
         private static TickSimulationSystem s_commandInstance;
-        [Command("sim.pause", "Pause the simulation playback", enabledByDefault: false)]
+        [ConsoleCommand("sim.pause", "Pause the simulation playback", EnabledByDefault = false)]
         private static void Cmd_SimPause()
         {
             if (s_commandInstance._isPausedByCmd)

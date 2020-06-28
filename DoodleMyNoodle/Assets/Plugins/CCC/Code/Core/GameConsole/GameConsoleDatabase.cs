@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngineX;
 
-public class GameConsoleDatabase
+internal class GameConsoleDatabase
 {
-    public List<string> PendingCommands = new List<string>();
-    public Dictionary<string, GameConsoleCommand> CommandsMap = new Dictionary<string, GameConsoleCommand>();
-    public List<GameConsoleCommand> Commands = new List<GameConsoleCommand>();
+    public List<string> PendingInvokes = new List<string>();
+    public Dictionary<string, GameConsoleInvokable> InvokablesMap = new Dictionary<string, GameConsoleInvokable>();
+    public List<GameConsoleInvokable> Invokables = new List<GameConsoleInvokable>();
 
 
     const int HISTORY_COUNT = 50;

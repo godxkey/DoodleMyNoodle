@@ -1,9 +1,9 @@
 ﻿
 using UnityEngine;
 
-namespace Internals.GameConsoleInterals
+namespace GameConsoleInterals
 {
-    public interface IGameConsoleUI
+    internal interface IGameConsoleUI
     {
         void Init(GameConsoleDatabase database);
         void Shutdown();
