@@ -5,14 +5,21 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngineX;
 
-public class StartingKitButtonDisplay : GamePresentationBehaviour, IPointerClickHandler
+public class StartingKitButtonDisplay : GamePresentationBehaviour
 {
-    public Image ButtonBG;
-    public Color SelectedColor;
+    [SerializeField]
+    private Button _kitButton;
+
+    [SerializeField]
+    private Image _buttonBG;
+    [SerializeField]
+    private Color _selectedColor;
     private Color _unSelectedColor;
 
-    public GameObject ItemSlotPrefab;
-    public Transform ItemSlotContainer;
+    [SerializeField]
+    private GameObject _itemSlotPrefab;
+    [SerializeField]
+    private Transform _itemSlotContainer;
 
     [HideInInspector]
     public int CurrentKitNumber;
@@ -22,48 +29,36 @@ public class StartingKitButtonDisplay : GamePresentationBehaviour, IPointerClick
 
     public void Start()
     {
-        _unSelectedColor = ButtonBG.color;
+        _unSelectedColor = _buttonBG.color;
+
+        _kitButton.onClick.AddListener(KitButtonClicked);
     }
 
-    public void DisplayKit(Action<int> selectedKitCallback, int kitNumber, NativeArray<NewInventoryItem> items)
+    public void InitDisplayKit(Action<int> selectedKitCallback, int kitNumber, NativeArray<NewInventoryItem> items)
     {
         _currentKitSelectedCallback = selectedKitCallback;
         CurrentKitNumber = kitNumber;
 
         foreach (NewInventoryItem item in items)
         {
-            GameObject newItemSlot = Instantiate(ItemSlotPrefab, ItemSlotContainer);
-            if (newItemSlot != null)
+            GameObject newItemSlot = Instantiate(_itemSlotPrefab, _itemSlotContainer);
+            ItemSlot itemSlot = newItemSlot.GetComponent<ItemSlot>();
+            if (SimWorld.TryGetComponentData(item.ItemEntityPrefab, out SimAssetId itemIDComponent))
             {
-                ItemSlot itemSlot = newItemSlot.GetComponent<ItemSlot>();
-                if (itemSlot != null)
-                {
-                    if(SimWorld.TryGetComponentData(item.ItemEntityPrefab, out SimAssetId itemIDComponent))
-                    {
-                        ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
-                        itemSlot.UpdateCurrentItemSlot(itemInfo, KitButtonClicked);
-                    }
-                }
+                ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
+                itemSlot.UpdateCurrentItemSlot(itemInfo, KitButtonClicked);
             }
         }
     }
 
-    public void SelectButton()
+    private void SelectButton()
     {
-        ButtonBG.color = SelectedColor;
+        _buttonBG.color = _selectedColor;
     }
 
-    public void DeSelectButton()
+    public void DeselectButton()
     {
-        ButtonBG.color = _unSelectedColor;
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            KitButtonClicked();
-        }
+        _buttonBG.color = _unSelectedColor;
     }
 
     public void KitButtonClicked()
@@ -73,7 +68,7 @@ public class StartingKitButtonDisplay : GamePresentationBehaviour, IPointerClick
         SelectButton();
     }
 
-    public void StartingKitSelected()
+    private void StartingKitSelected()
     {
         _currentKitSelectedCallback?.Invoke(CurrentKitNumber);
     }

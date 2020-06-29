@@ -20,7 +20,7 @@ public class ItemBundleAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     {
         if (IsStartingKit)
         {
-            dstManager.AddComponentData(entity, new ItemKitNumber());
+            dstManager.AddComponentData(entity, new ItemKitTag());
         }
 
         DynamicBuffer<NewInventoryItem> newItems = dstManager.AddBuffer<NewInventoryItem>(entity);
@@ -59,8 +59,5 @@ internal partial class CommonWrites
         {
             inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
         }
-
-        itemInstances.Dispose();
-        itemsBuffer.Dispose();
     }
 }

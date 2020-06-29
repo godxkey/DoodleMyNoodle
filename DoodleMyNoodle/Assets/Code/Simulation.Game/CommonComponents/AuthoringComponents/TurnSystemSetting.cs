@@ -24,6 +24,6 @@ public class TurnSystemSetting : MonoBehaviour, IConvertGameObjectToEntity
 
         dstManager.AddComponentData(entity, new TurnTeamCount { Value = (int)Enum.GetValues(typeof(Team)).Length });
 
-        dstManager.AddComponentData(entity, new TurnTimer { Value = 99999 });
+        dstManager.AddComponentData(entity, new TurnTimer { Value = PlayerTurnDuration });
     }
 }

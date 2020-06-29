@@ -63,14 +63,18 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         {
             case PawnStartingInventorySelectionInput equipItemInput:
                 Entities
-                    .WithAll<NewInventoryItem>()
-                    .ForEach((Entity itemKitEntity, ref ItemKitNumber kitNumber, ref SimAssetId assetID) =>
+                    .WithAll<NewInventoryItem, ItemKitTag>()
+                    .ForEach((Entity itemKitEntity, ref SimAssetId assetID) =>
                 {
                     if (equipItemInput.KitNumber == assetID.Value)
                     {
                         ControlledEntity pawn = Accessor.GetComponentData<ControlledEntity>(equipItemInput.PawnController);
                         DynamicBuffer<NewInventoryItem> inventoryItems = Accessor.GetBufferReadOnly<NewInventoryItem>(itemKitEntity);
-                        CommonWrites.EquipItemBundle(Accessor, pawn.Value, inventoryItems);
+
+                        if (EntityManager.Exists(pawn.Value))
+                        {
+                            CommonWrites.EquipItemBundle(Accessor, pawn.Value, inventoryItems);
+                        }
                     }
                 });
                 break;

@@ -15,11 +15,10 @@ public class CharacterCreationStartingInventorySelection : GamePresentationBehav
     protected override void OnGamePresentationUpdate()
     {
         SimWorld.Entities
-            .WithAll<NewInventoryItem>()
-            .ForEach((Entity startingKit, ref ItemKitNumber kitNumber) =>
+            .WithAll<NewInventoryItem, ItemKitTag>()
+            .ForEach((Entity startingKit, ref SimAssetId kitID) =>
         {
-            SimAssetId kitID = SimWorld.GetComponentData<SimAssetId>(startingKit);
-
+            // check if the kit is already displayed, if it's the case don't go further
             foreach (StartingKitButtonDisplay startingKitButton in _kitButtons)
             {
                 if (startingKitButton.CurrentKitNumber == kitID.Value)
@@ -29,17 +28,12 @@ public class CharacterCreationStartingInventorySelection : GamePresentationBehav
             }
 
             DynamicBuffer<NewInventoryItem> items = SimWorld.GetBufferReadOnly<NewInventoryItem>(startingKit);
-
+            
+            // display current kit with list of items
             GameObject newKitButton = Instantiate(KitButtonPrefab, transform);
-            if(newKitButton != null)
-            {
-                StartingKitButtonDisplay StartingKitDisplay = newKitButton.GetComponent<StartingKitButtonDisplay>();
-                if(StartingKitDisplay != null)
-                {
-                    _kitButtons.Add(StartingKitDisplay);
-                    StartingKitDisplay.DisplayKit(NewKitSelected, kitID.Value, items.ToNativeArray(Allocator.Temp));
-                }
-            }
+            StartingKitButtonDisplay startingKitDisplay = newKitButton.GetComponent<StartingKitButtonDisplay>();
+            _kitButtons.Add(startingKitDisplay);
+            startingKitDisplay.InitDisplayKit(NewKitSelected, kitID.Value, items.ToNativeArray(Allocator.Temp));
         });
     }
 
@@ -49,7 +43,7 @@ public class CharacterCreationStartingInventorySelection : GamePresentationBehav
 
         foreach (StartingKitButtonDisplay kitButton in _kitButtons)
         {
-            kitButton.DeSelectButton();
+            kitButton.DeselectButton();
         }
     }
 }
