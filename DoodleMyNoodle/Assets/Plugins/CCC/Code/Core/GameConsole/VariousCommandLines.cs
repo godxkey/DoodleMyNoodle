@@ -7,7 +7,7 @@ using UnityEngineX;
 
 internal static class VariousCommandLines
 {
-    [Command]
+    [ConsoleCommand]
     private static void SetResolution(int width, int height, bool fullScreen)
     {
         if (Application.isEditor)
@@ -20,7 +20,7 @@ internal static class VariousCommandLines
         }
     }
 
-    [Command(Description = "Open the log file location")]
+    [ConsoleCommand(Description = "Open the log file location")]
     static void OpenLog()
     {
         string path = Application.persistentDataPath;
@@ -35,7 +35,7 @@ internal static class VariousCommandLines
         }
     }
 
-    [Command(Description = "Exit the application")]
+    [ConsoleCommand(Description = "Exit the application")]
     static void Quit()
     {
 #if UNITY_EDITOR

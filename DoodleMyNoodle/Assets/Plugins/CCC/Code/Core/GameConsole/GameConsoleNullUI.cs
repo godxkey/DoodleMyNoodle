@@ -1,9 +1,9 @@
 ﻿
 using UnityEngine;
 
-namespace Internals.GameConsoleInterals
+namespace GameConsoleInterals
 {
-    public class GameConsoleNullUI : IGameConsoleUI
+    internal class GameConsoleNullUI : IGameConsoleUI
     {
         public void ConsoleUpdate()
         {

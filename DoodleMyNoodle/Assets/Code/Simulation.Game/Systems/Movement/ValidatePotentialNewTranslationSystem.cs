@@ -97,15 +97,13 @@ public partial class CommonReads
 {
     public static bool DoesTileRespectFilters(ISimWorldReadAccessor accessor, Entity tile, TileFilterFlags filter)
     {
-        DynamicBuffer<EntityOnTile> tileAddons = accessor.GetBufferReadOnly<EntityOnTile>(tile);
-
-        if (tileAddons.Length > 0)
+        if (accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<EntityOnTile> tileAddons) && tileAddons.Length > 0)
         {
             foreach (EntityOnTile addon in tileAddons)
             {
                 if ((filter & TileFilterFlags.Navigable) != 0)
                 {
-                    if (accessor.HasComponent<NonNavigable>(addon.TileEntity))
+                    if (accessor.HasComponent<SolidWallTag>(addon.TileEntity))
                     {
                         return false;
                     }
@@ -113,7 +111,7 @@ public partial class CommonReads
 
                 if ((filter & TileFilterFlags.NonNavigable) != 0)
                 {
-                    if (!accessor.HasComponent<NonNavigable>(addon.TileEntity))
+                    if (!accessor.HasComponent<SolidWallTag>(addon.TileEntity))
                     {
                         return false;
                     }
@@ -130,6 +128,14 @@ public partial class CommonReads
                 if ((filter & TileFilterFlags.Occupied) != 0)
                 {
                     if (!accessor.HasComponent<Occupied>(addon.TileEntity))
+                    {
+                        return false;
+                    }
+                }
+
+                if ((filter & TileFilterFlags.Ascendable) != 0)
+                {
+                    if (!accessor.HasComponent<AscendableTag>(addon.TileEntity))
                     {
                         return false;
                     }

@@ -65,19 +65,23 @@ MonoBehaviour:
     Path: Assets/Scenes/Game/Scene Assets/Game_SimulationBasePresentation.unity
     BuildIndex: 12
     AssetGuid: 02fa011c09404914098c6019b2610a09
-  - Name: 
-    Path: 
-    BuildIndex: 13
-    AssetGuid: 815b8536c98c51447a9e715207ed3330
-  - Name: 
-    Path: 
-    BuildIndex: 14
-    AssetGuid: 1cd9718281f9895408333cb8fc99bc29
   - Name: SimpleClientAndServer
     Path: Assets/Scenes/Tests/SimpleClientAndServer.unity
-    BuildIndex: 15
+    BuildIndex: 13
     AssetGuid: e76ee58ade737004383d3e6eeae3f771
   - Name: EmptyScene
     Path: Assets/Scenes/EmptyScene.unity
-    BuildIndex: 16
+    BuildIndex: 14
     AssetGuid: 15380d7d3d5178b40abcc7edd37c1d78
+  - Name: Lvl_GridBattle
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity
+    BuildIndex: 15
+    AssetGuid: 815b8536c98c51447a9e715207ed3330
+  - Name: Lvl_GridBattle_Presentation
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
+    BuildIndex: 16
+    AssetGuid: 1cd9718281f9895408333cb8fc99bc29
+  - Name: Lvl_SideScrollerExemple
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_SideScrollerExemple.unity
+    BuildIndex: 17
+    AssetGuid: 338675daabe37b244b3e80a4f0d73201

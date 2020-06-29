@@ -8,11 +8,12 @@ public abstract class SessionInterface : IDisposable
 {
     const bool LOG = false;
 
-    [ConfigVar(name: "log.netmessage", defaultValue: "0", ConfigVarFlag.Save, "Should we log the sent/received NetMessages.")]
-    static ConfigVar s_logNetMessages;
-    
-    [ConfigVar(name: "transfer_with_stream", defaultValue: "true", ConfigVarFlag.Save, "Should we use a UDP Stream Channel for large data transfers?")]
-    static ConfigVar s_transferWithStream;
+    static LogChannel s_netMessageLogChannel = Log.CreateChannel("NetMessages", activeByDefault: false);
+
+    [ConsoleVar("Online.TransferWithStream", 
+        "Should we use a UDP Stream Channel for large data transfers? If false, we will fallback to manual paquet handling.",
+        Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
+    static bool s_transferWithStream = true;
 
     public abstract bool IsServerType { get; }
     public bool IsClientType => !IsServerType;
@@ -103,10 +104,7 @@ public abstract class SessionInterface : IDisposable
 
         if (NetMessageInterpreter.GetDataFromMessage(netMessage, out byte[] messageData, byteLimit: OnlineConstants.MAX_MESSAGE_SIZE))
         {
-            if (s_logNetMessages.BoolValue)
-            {
-                Log.Info($"[Session] Send message '{netMessage}' to connection {connection.Id}");
-            }
+            Log.Info(s_netMessageLogChannel, $"[Session] Send message '{netMessage}' to connection {connection.Id}");
 
             _networkInterface.SendMessage(connection, messageData, reliableAndOrdered);
         }
@@ -126,14 +124,10 @@ public abstract class SessionInterface : IDisposable
 
         if (NetMessageInterpreter.GetDataFromMessage(netMessage, out byte[] messageData, byteLimit: int.MaxValue))
         {
-            if (s_logNetMessages.BoolValue)
-            {
-                Log.Info($"[Session] BeginLargeDataTransfer '{netMessage}-{description}' to connection {connection.Id}");
-            }
+            Log.Info(s_netMessageLogChannel, $"[Session] BeginLargeDataTransfer '{netMessage}-{description}' to connection {connection.Id}");
 
-            CoroutineOperation op = null;
-
-            if (s_transferWithStream.BoolValue)
+            CoroutineOperation op;
+            if (s_transferWithStream)
             {
                 op = new SendViaStreamChannelOperation(messageData, connection, this, description);
             }
@@ -157,10 +151,7 @@ public abstract class SessionInterface : IDisposable
 
     void OnReceiveDataTransferHeader(NetMessageViaManualPacketsHeader netMessage, INetworkInterfaceConnection source)
     {
-        if (s_logNetMessages.BoolValue)
-        {
-            Log.Info($"[Session] OnReceiveDataTransferHeader '{netMessage}-{netMessage.Description}' from connection {source.Id}");
-        }
+        Log.Info(s_netMessageLogChannel, $"[Session] OnReceiveDataTransferHeader '{netMessage}-{netMessage.Description}' from connection {source.Id}");
 
         ReceiveViaManualPacketsOperation op = new ReceiveViaManualPacketsOperation(netMessage, source, this);
 
@@ -178,10 +169,7 @@ public abstract class SessionInterface : IDisposable
 
     void OnReceiveDataTransferHeader(NetMessageViaStreamChannelHeader netMessage, INetworkInterfaceConnection source)
     {
-        if (s_logNetMessages.BoolValue)
-        {
-            Log.Info($"[Session] OnReceiveDataTransferHeader '{netMessage}-{netMessage.Description}' from connection {source.Id}");
-        }
+        Log.Info(s_netMessageLogChannel, $"[Session] OnReceiveDataTransferHeader '{netMessage}-{netMessage.Description}' from connection {source.Id}");
 
         ReceiveViaStreamChannelOperation op = new ReceiveViaStreamChannelOperation(netMessage, source, this);
 
@@ -211,10 +199,7 @@ public abstract class SessionInterface : IDisposable
     {
         if (NetMessageInterpreter.GetMessageFromData(data, out object netMessage))
         {
-            if (s_logNetMessages.BoolValue)
-            {
-                Log.Info($"[Session] Received message '{netMessage}' from connection {source.Id}");
-            }
+            Log.Info(s_netMessageLogChannel, $"[Session] Received message '{netMessage}' from connection {source.Id}");
 
             if (netMessage != null)
             {

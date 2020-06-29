@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Internals.GameConsoleInterals
+namespace GameConsoleInterals
 {
-    public class GameConsoleService : MonoCoreService<GameConsoleService>
+    internal class GameConsoleService : MonoCoreService<GameConsoleService>
     {
         [SerializeField]
         bool openConsoleAtLaunch = true;

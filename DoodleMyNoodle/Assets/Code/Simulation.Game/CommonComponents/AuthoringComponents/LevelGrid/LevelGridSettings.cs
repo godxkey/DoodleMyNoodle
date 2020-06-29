@@ -17,7 +17,7 @@ public class LevelGridSettings : ScriptableObject
 
     public List<TileAddonsDefinition> AddonsDefinition = new List<TileAddonsDefinition>();
 
-    public GameObject GetPrefabFromSprite(Sprite sprite)
+    public GameObject GetSimEntityPrefabFromSprite(Sprite sprite)
     {
         if(sprite != null)
         {

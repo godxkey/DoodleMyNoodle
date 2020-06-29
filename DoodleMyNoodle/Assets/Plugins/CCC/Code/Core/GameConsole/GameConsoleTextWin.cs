@@ -6,9 +6,9 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Internals.GameConsoleInterals
+namespace GameConsoleInterals
 {
-    public class GameConsoleTextWin : IGameConsoleUI
+    internal class GameConsoleTextWin : IGameConsoleUI
     {
         [DllImport("Kernel32.dll")]
         private static extern bool AttachConsole(uint processId);
