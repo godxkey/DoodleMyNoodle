@@ -20,54 +20,52 @@ public class CameraMovementController : GameMonoBehaviour
     public float MaxZoom;
 
 #if UNITY_EDITOR
-    [Command(Description = "Enable/Disable the game camera moving when moving the mouse pointer near the edges of the screen.")]
-    private static void ToggleCameraMouseBorderMove()
-    {
-        MouseMovementsEnabled = !MouseMovementsEnabled;
-    }
+    [ConsoleVar("CameraMouseMovementEnabledInEditor", "Enable/Disable the game camera moving when moving the mouse pointer near the edges of the screen.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
+    private static bool s_mouseMovementsEnabledInEditor = false;
 #endif
 
     private static bool MouseMovementsEnabled
     {
-#if UNITY_EDITOR
-        set => EditorPrefs.SetBool("CameraMovementController_MouseMovementsEnabled", value);
-#endif
         get
         {
 #if UNITY_EDITOR
-            return EditorPrefs.GetBool("CameraMovementController_MouseMovementsEnabled", true);
+            return s_mouseMovementsEnabledInEditor;
 #else
-        return true;
+            return true;
 #endif
         }
     }
+
 
     void Update()
     {
         Vector3 movement = Vector3.zero;
 
-        if (Input.GetKey(KeyCode.W) || (!MouseMovementsEnabled && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
+        if (Input.GetKey(KeyCode.W) || (MouseMovementsEnabled && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
         {
             movement += Vector3.up;
         }
 
-        if (Input.GetKey(KeyCode.S) || (!MouseMovementsEnabled && (Input.mousePosition.y > 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
+        if (Input.GetKey(KeyCode.S) || (MouseMovementsEnabled && (Input.mousePosition.y > 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
         {
             movement -= Vector3.up;
         }
 
-        if (Input.GetKey(KeyCode.A) || (!MouseMovementsEnabled && (Input.mousePosition.x > 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
+        if (Input.GetKey(KeyCode.A) || (MouseMovementsEnabled && (Input.mousePosition.x > 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
         {
             movement += Vector3.left;
         }
 
-        if (Input.GetKey(KeyCode.D) || (!MouseMovementsEnabled && (Input.mousePosition.x >= (Screen.width - ScreenEdgeBorderThickness))))
+        if (Input.GetKey(KeyCode.D) || (MouseMovementsEnabled && (Input.mousePosition.x >= (Screen.width - ScreenEdgeBorderThickness))))
         {
             movement += Vector3.right;
         }
 
-        if (movement != Vector3.zero) movement.Normalize();
-        transform.Translate(movement * Speed * Time.deltaTime, Space.World);
+        if (movement != Vector3.zero)
+        {
+            movement.Normalize();
+            transform.Translate(movement * Speed * Time.deltaTime, Space.World);
+        }
 
         Cam.orthographicSize -= Input.mouseScrollDelta.y * ZoomSpeed;
         Cam.orthographicSize = Mathf.Clamp(Cam.orthographicSize, 1, MaxZoom);
@@ -87,8 +85,8 @@ public class CameraMovementController : GameMonoBehaviour
             Vector2 TopRight = new Vector2(gridRect.max.x, gridRect.max.y);
 
             Vector3 cameraPostion = transform.position;
-            transform.position = new Vector3(Mathf.Clamp(cameraPostion.x, gridRect.min.x, gridRect.max.x), 
-                                             Mathf.Clamp(cameraPostion.y, gridRect.min.y, gridRect.max.y), 
+            transform.position = new Vector3(Mathf.Clamp(cameraPostion.x, gridRect.min.x, gridRect.max.x),
+                                             Mathf.Clamp(cameraPostion.y, gridRect.min.y, gridRect.max.y),
                                              cameraPostion.z);
         }
     }
