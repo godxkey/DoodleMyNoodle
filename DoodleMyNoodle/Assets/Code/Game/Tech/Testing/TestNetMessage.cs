@@ -27,7 +27,7 @@ public class TestNetMessage : GameMonoBehaviour
         }
     }
 
-    [Command(Description = "Send a complexe Net message to your peers to test the system.")]
+    [ConsoleCommand(Description = "Send a complexe Net message to your peers to test the system.")]
     private static void SendTestNetMessage()
     {
         SessionInterface sessionInterface = OnlineService.OnlineInterface?.SessionInterface;

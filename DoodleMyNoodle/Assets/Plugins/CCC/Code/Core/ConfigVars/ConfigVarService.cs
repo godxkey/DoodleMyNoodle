@@ -31,7 +31,7 @@ public class ConfigVarService : MonoCoreService<ConfigVarService>
         }
     }
 
-    [Command("SaveConfigVar", "Save the user config variables")]
+    [ConsoleCommand("SaveConfigVar", "Save the user config variables")]
     public static void SaveUserConfigs()
     {
         ConfigVarSaver.Save(Instance.configVarRegistry, (int)ConfigVarFlag.Save, userConfigFileName);
@@ -40,7 +40,7 @@ public class ConfigVarService : MonoCoreService<ConfigVarService>
         ConfigVar.DirtyFlags &= ~ConfigVarFlag.Save;
     }
 
-    [Command("LoadConfigVar", "Load the user config variables")]
+    [ConsoleCommand("LoadConfigVar", "Load the user config variables")]
     public static void LoadUserConfigs()
     {
         GameConsole.EnqueueCommandNoHistory("exec " + userConfigFileName);

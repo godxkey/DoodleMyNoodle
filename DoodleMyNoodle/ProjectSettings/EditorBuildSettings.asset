@@ -44,16 +44,19 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game/Scene Assets/Game_SimulationBasePresentation.unity
     guid: 02fa011c09404914098c6019b2610a09
-  - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity
-    guid: 815b8536c98c51447a9e715207ed3330
-  - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
-    guid: 1cd9718281f9895408333cb8fc99bc29
   - enabled: 0
     path: Assets/Scenes/Tests/SimpleClientAndServer.unity
     guid: e76ee58ade737004383d3e6eeae3f771
   - enabled: 0
     path: Assets/Scenes/EmptyScene.unity
     guid: 15380d7d3d5178b40abcc7edd37c1d78
+  - enabled: 1
+    path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity
+    guid: 815b8536c98c51447a9e715207ed3330
+  - enabled: 1
+    path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
+    guid: 1cd9718281f9895408333cb8fc99bc29
+  - enabled: 1
+    path: Assets/Scenes/Levels/Scene Assets/Lvl_SideScrollerExemple.unity
+    guid: 338675daabe37b244b3e80a4f0d73201
   m_configObjects: {}

@@ -9,8 +9,7 @@ using UnityEngineX;
 public static class NetMessageInterpreter
 {
 #if DEBUG
-    [ConfigVar(name: "log.netmessage_data", defaultValue: "0", ConfigVarFlag.Save, "Should we log the sent/received NetMessages.")]
-    static ConfigVar s_logNetMessageData;
+    static LogChannel s_dataLogChannel = Log.CreateChannel("NetMessageByteData", activeByDefault: false);
 #endif
 
     static BitStreamReader s_reader = new BitStreamReader(null);
@@ -40,10 +39,10 @@ public static class NetMessageInterpreter
     public static bool GetMessageFromData(byte[] messageData, out object message)
     {
 #if DEBUG
-        if (s_logNetMessageData.BoolValue)
+        if (s_dataLogChannel.Active)
         {
-            Log.Info($"[{nameof(NetMessageInterpreter)}] Receive Message byte[{messageData.Length}]");
-            DebugLogUtility.LogByteArray(messageData);
+            Log.Info(s_dataLogChannel, $"[{nameof(NetMessageInterpreter)}] Receive Message byte[{messageData.Length}]");
+            DebugLogUtility.LogByteArray(s_dataLogChannel, messageData);
         }
 #endif
         message = null;
@@ -104,11 +103,11 @@ public static class NetMessageInterpreter
         try
         {
             DynamicNetSerializer.NetSerialize(message, s_writer);
-
+            
 #if DEBUG
-            if (s_logNetMessageData.BoolValue)
+            if (s_dataLogChannel.Active)
             {
-                Log.Info($"[{nameof(NetMessageInterpreter)}] Serialize Message '{message}' to byte[{data.Length}]");
+                Log.Info(s_dataLogChannel, $"[{nameof(NetMessageInterpreter)}] Serialize Message '{message}' to byte[{data.Length}]");
                 if(data.Length <= 128)
                     DebugLogUtility.LogByteArray(data);
                 else
@@ -122,7 +121,7 @@ public static class NetMessageInterpreter
                     {
                         DebugLogUtility.LogByteArrayToFile(data, writer.StreamWriter);
                     }
-                    Log.Info($"Data too long, logged to file {filePath}");
+                    Log.Info(s_dataLogChannel, $"Data too long, logged to file {filePath}");
                 }
             }
 #endif

@@ -22,6 +22,25 @@ public static class DebugLogUtility
             Log.Info(strBuilder.ToString());
         }
     }
+    public static void LogByteArray(LogChannel logChannel, byte[] bytes)
+    {
+        if (logChannel.Active)
+        {
+            StringBuilder strBuilder = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i += 4)
+            {
+                strBuilder.Clear();
+
+                for (int j = Mathf.Min(i + 3, bytes.Length - 1); j >= i; j--)
+                {
+                    strBuilder.Append(Convert.ToString(bytes[j], 2).PadLeft(8, '0'));
+                    strBuilder.Append("  ");
+                }
+
+                Log.Info(logChannel, strBuilder.ToString());
+            }
+        }
+    }
     
     public static void LogByteArrayToFile(byte[] bytes, StreamWriter fileStream)
     {

@@ -25,10 +25,10 @@ namespace SimulationControl
 
 #if DEBUG
             s_commandInstance = this;
-            GameConsole.SetCommandEnabled("sim.saveToMemory", true);
-            GameConsole.SetCommandEnabled("sim.saveToFile", true);
-            GameConsole.SetCommandEnabled("sim.loadFromMemory", true);
-            GameConsole.SetCommandEnabled("sim.loadFromFile", true);
+            GameConsole.SetCommandOrVarEnabled("sim.saveToMemory", true);
+            GameConsole.SetCommandOrVarEnabled("sim.saveToFile", true);
+            GameConsole.SetCommandOrVarEnabled("sim.loadFromMemory", true);
+            GameConsole.SetCommandOrVarEnabled("sim.loadFromFile", true);
 #endif
 
             _simulationWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
@@ -38,10 +38,10 @@ namespace SimulationControl
         protected override void OnDestroy()
         {
 #if DEBUG
-            GameConsole.SetCommandEnabled("sim.saveToMemory", false);
-            GameConsole.SetCommandEnabled("sim.saveToFile", false);
-            GameConsole.SetCommandEnabled("sim.loadFromMemory", false);
-            GameConsole.SetCommandEnabled("sim.loadFromFile", false);
+            GameConsole.SetCommandOrVarEnabled("sim.saveToMemory", false);
+            GameConsole.SetCommandOrVarEnabled("sim.saveToFile", false);
+            GameConsole.SetCommandOrVarEnabled("sim.loadFromMemory", false);
+            GameConsole.SetCommandOrVarEnabled("sim.loadFromFile", false);
             s_commandInstance = null;
 #endif
 
@@ -58,7 +58,7 @@ namespace SimulationControl
 #if DEBUG
         private static SaveAndLoadSimulationSystem s_commandInstance;
 
-        [Command("sim.saveToMemory", "Save the simulation in memory (multiplayer unsafe!)", enabledByDefault: false)]
+        [ConsoleCommand("sim.saveToMemory", "Save the simulation in memory (multiplayer unsafe!)", EnabledByDefault = false)]
         private static void Cmd_SimSaveToMemory()
         {
             if (s_commandInstance._ongoingCmdOperation != null && s_commandInstance._ongoingCmdOperation.IsRunning)
@@ -71,7 +71,7 @@ namespace SimulationControl
             Cmd_PostSimSave_Internal(locationTxt: "memory");
         }
 
-        [Command("sim.saveToFile", "Save the simulation to a text file (multiplayer unsafe!)", enabledByDefault: false)]
+        [ConsoleCommand("sim.saveToFile", "Save the simulation to a text file (multiplayer unsafe!)", EnabledByDefault = false)]
         private static void Cmd_SimSaveToFile(string fileNameToSaveTo)
         {
             if (s_commandInstance._ongoingCmdOperation != null && s_commandInstance._ongoingCmdOperation.IsRunning)
@@ -110,7 +110,7 @@ namespace SimulationControl
             s_commandInstance._ongoingCmdOperation.Execute();
         }
 
-        [Command("sim.loadFromMemory", "Load the simulation from memory (multiplayer unsafe!)", enabledByDefault: false)]
+        [ConsoleCommand("sim.loadFromMemory", "Load the simulation from memory (multiplayer unsafe!)", EnabledByDefault = false)]
         private static void Cmd_SimLoadFromMemory(string fileNameToReadFrom)
         {
             if (s_commandInstance._ongoingCmdOperation != null && s_commandInstance._ongoingCmdOperation.IsRunning)
@@ -123,7 +123,7 @@ namespace SimulationControl
             Cmd_PostSimLoad_Internal(locationTxt: "memory");
         }
 
-        [Command("sim.loadFromFile", "Load the simulation from a text file (multiplayer unsafe!)", enabledByDefault: false)]
+        [ConsoleCommand("sim.loadFromFile", "Load the simulation from a text file (multiplayer unsafe!)", EnabledByDefault = false)]
         private static void Cmd_SimLoadFromFile(string fileName)
         {
             if (s_commandInstance._ongoingCmdOperation != null && s_commandInstance._ongoingCmdOperation.IsRunning)

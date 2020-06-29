@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
-using Internals.GameConsoleInterals;
+using GameConsoleInterals;
 using UnityEngineX;
 using System.Collections.Concurrent;
 using System.Reflection;
@@ -9,6 +9,24 @@ using CCC.ConfigVarInterals;
 
 public class GameConsole
 {
+    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
+    public static int poto = 5;
+
+    [ConsoleVar]
+    public static string playername = "jean-pooo";
+
+    [ConsoleVar]
+    public static bool Propriété { get; set; }
+
+    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
+    public static string pogo { get; set; }
+
+    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
+    public static string WriteOnly { set { } }
+
+    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
+    public static string ReadOnly { get; } = "woah";
+
     public enum LineColor
     {
         Normal,
@@ -23,7 +41,7 @@ public class GameConsole
     static ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)> s_queuedLogs = new ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)>();
     private static bool s_init;
 
-    public static void SetUI(IGameConsoleUI consoleUI)
+    internal static void SetUI(IGameConsoleUI consoleUI)
     {
         s_consoleUI?.Shutdown();
         s_consoleUI = consoleUI;
@@ -47,51 +65,77 @@ public class GameConsole
             return;
         s_init = true;
 
-        PopulateAllCommands();
+        PopulateAllInvokables();
 
         Write("Console ready", LineColor.Normal);
     }
 
-    private static void PopulateAllCommands()
+    private static void PopulateAllInvokables()
     {
-        var commandMethods = TypeUtility.GetStaticMethodsWithAttribute(typeof(CommandAttribute));
-
-        foreach (MethodInfo method in commandMethods)
+        List<GameConsoleInvokable> potentialInvokable = new List<GameConsoleInvokable>();
+        foreach (MethodInfo method in TypeUtility.GetStaticMethodsWithAttribute(typeof(ConsoleCommandAttribute)))
         {
             if (method.IsAsync())
             {
                 Log.Warning($"Ignoring command '{method.Name}' because it is async.");
                 continue;
             }
+            potentialInvokable.Add(new GameConsoleCommand(method));
+        }
 
-            GameConsoleCommand command = new GameConsoleCommand(method);
+        foreach (FieldInfo field in TypeUtility.GetStaticFieldsWithAttribute(typeof(ConsoleVarAttribute)))
+        {
+            potentialInvokable.Add(new GameConsoleField(field));
+        }
 
-            Type unsupportedParameterType = command.GetFirstUnsupportedParameter();
+        foreach (PropertyInfo property in TypeUtility.GetStaticPropertiesWithAttribute(typeof(ConsoleVarAttribute)))
+        {
+            potentialInvokable.Add(new GameConsoleProperty(property));
+        }
+
+        foreach (var invokable in potentialInvokable)
+        {
+            Type unsupportedParameterType = invokable.GetFirstUnsupportedParameter();
 
             if (unsupportedParameterType != null)
             {
-                Log.Warning($"Ignoring command '{command.DisplayName}' because it has an unsupported parameter type: {unsupportedParameterType.GetPrettyName()}");
+                if (invokable is GameConsoleCommand)
+                    Log.Warning($"Ignoring ConsoleCommand '{invokable.DisplayName}' because it has an unsupported parameter type: {unsupportedParameterType.GetPrettyName()}");
+                else
+                    Log.Warning($"Ignoring ConsoleVar '{invokable.DisplayName}' because it is of an unsupported type: {unsupportedParameterType.GetPrettyName()}");
                 continue;
             }
 
-            bool conflict = false;
-            foreach (GameConsoleCommand otherCommand in s_database.Commands)
+            if (conflictsWithAnyInvokable(invokable))
             {
-                if (command.ConflictsWith(otherCommand))
+                if (invokable is GameConsoleCommand)
+                    Log.Warning($"Ignoring ConsoleCommand '{invokable.DisplayName}' because its signature conflicts with another ConsoleVar or ConsoleCommand.");
+                else
+                    Log.Warning($"Ignoring ConsoleVar '{invokable.DisplayName}' because its signature conflicts with another ConsoleVar or ConsoleCommand.");
+                continue;
+            }
+
+            s_database.Invokables.Add(invokable);
+            s_database.InvokablesMap.Add(invokable.Name, invokable);
+        }
+
+
+        foreach (GameConsoleInvokable invokable in s_database.Invokables)
+        {
+            invokable.Init();
+        }
+
+
+        bool conflictsWithAnyInvokable(GameConsoleInvokable inv)
+        {
+            foreach (GameConsoleInvokable invokable in s_database.Invokables)
+            {
+                if (inv.ConflictsWith(invokable))
                 {
-                    conflict = true;
-                    break;
+                    return true;
                 }
             }
-
-            if (conflict)
-            {
-                Log.Warning($"Ignoring command '{command.DisplayName}' because its signature conflicts with an already existing command.");
-                continue;
-            }
-
-            s_database.Commands.Add(command);
-            s_database.CommandsMap.Add(command.Name, command);
+            return false;
         }
     }
 
@@ -136,11 +180,11 @@ public class GameConsole
         ProcessQueuedLogs();
         s_consoleUI?.ConsoleUpdate();
 
-        while (s_database.PendingCommands.Count > 0)
+        while (s_database.PendingInvokes.Count > 0)
         {
             // Remove before executing as we may hit an 'exec' command that wants to insert commands
-            var cmd = s_database.PendingCommands[0];
-            s_database.PendingCommands.RemoveAt(0);
+            var cmd = s_database.PendingInvokes[0];
+            s_database.PendingInvokes.RemoveAt(0);
             ExecuteCommand(cmd, LineColor.Command);
         }
     }
@@ -175,20 +219,20 @@ public class GameConsole
             return;
 
         OutputString('>' + command, lineColor);
-        string commandName = tokens[0].ToLower();
+        string invokableName = tokens[0].ToLower();
 
-        if (s_database.CommandsMap.TryGetValue(commandName, out GameConsoleCommand consoleCommand))
+        if (s_database.InvokablesMap.TryGetValue(invokableName, out GameConsoleInvokable invokable))
         {
-            if (consoleCommand.Enabled)
+            if (invokable.Enabled)
             {
-                consoleCommand.Invoke(tokens.GetRange(1, tokens.Count - 1).ToArray());
+                invokable.Invoke(tokens.GetRange(1, tokens.Count - 1).ToArray());
             }
             else
             {
-                Log.Warning($"Command '{commandName}' is disabled.");
+                Log.Warning($"'{invokableName}' is disabled.");
             }
         }
-        else if (ConfigVarService.Instance.configVarRegistry.ConfigVars.TryGetValue(commandName, out ConfigVarBase configVar))
+        else if (ConfigVarService.Instance.configVarRegistry.ConfigVars.TryGetValue(invokableName, out ConfigVarBase configVar))
         {
             if (tokens.Count == 2)
             {
@@ -213,7 +257,7 @@ public class GameConsole
     public static void EnqueueCommandNoHistory(string command)
     {
         InitIfNeeded();
-        s_database.PendingCommands.Add(command);
+        s_database.PendingInvokes.Add(command);
     }
 
     public static void EnqueueCommand(string command)
@@ -231,7 +275,7 @@ public class GameConsole
         // Look for possible tab completions
         List<string> matches = new List<string>();
 
-        foreach (var c in s_database.CommandsMap)
+        foreach (var c in s_database.InvokablesMap)
         {
             if (!c.Value.Enabled)
                 continue;
@@ -316,13 +360,13 @@ public class GameConsole
         return s_database.History[s_historyIndex];
     }
 
-    public static void SetCommandEnabled(string command, bool enabled)
+    public static void SetCommandOrVarEnabled(string command, bool enabled)
     {
         InitIfNeeded();
 
         command = command.ToLower();
 
-        if (s_database.CommandsMap.TryGetValue(command, out GameConsoleCommand c))
+        if (s_database.InvokablesMap.TryGetValue(command, out GameConsoleInvokable c))
         {
             c.Enabled = enabled;
         }
@@ -332,19 +376,19 @@ public class GameConsole
         }
     }
 
-    [Command("help", "Show available commands")]
+    [ConsoleCommand("help", "Show available commands")]
     static void Help()
     {
         OutputString("Available commands:", LineColor.Normal);
 
-        foreach (var c in s_database.Commands)
+        foreach (var c in s_database.Invokables)
         {
             if (c.Enabled)
                 OutputString(c.DisplayName + ": " + c.Description, LineColor.Normal);
         }
     }
 
-    [Command("cvars", "Show available config-vars")]
+    [ConsoleCommand("cvars", "Show available config-vars")]
     static void CVars()
     {
         var varNames = new List<string>(ConfigVarService.Instance.configVarRegistry.ConfigVars.Keys);
@@ -356,16 +400,16 @@ public class GameConsole
         }
     }
 
-    [Command("exec", "Execute commands stored in a text file")]
+    [ConsoleCommand("exec", "Execute commands stored in a text file")]
     static void Exec(string fileName, bool silent = false)
     {
         try
         {
             var lines = System.IO.File.ReadAllLines(fileName);
-            s_database.PendingCommands.InsertRange(0, lines);
-            if (s_database.PendingCommands.Count > 128)
+            s_database.PendingInvokes.InsertRange(0, lines);
+            if (s_database.PendingInvokes.Count > 128)
             {
-                s_database.PendingCommands.Clear();
+                s_database.PendingInvokes.Clear();
                 OutputString("Command overflow. Flushing pending commands!!!", LineColor.Warning);
             }
         }

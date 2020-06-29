@@ -7,9 +7,9 @@ using UnityEngine.EventSystems;
 using System.Linq;
 using UnityEngineX;
 
-namespace Internals.GameConsoleInterals
+namespace GameConsoleInterals
 {
-    public class GameConsoleGUI : MonoBehaviour, IGameConsoleUI
+    internal class GameConsoleGUI : MonoBehaviour, IGameConsoleUI
     {
         struct Line
         {
@@ -60,11 +60,11 @@ namespace Internals.GameConsoleInterals
             _suggestionList.SuggestionPicked += OnSuggestionPicked;
         }
 
-        private void OnSuggestionPicked(GameConsoleCommand command)
+        private void OnSuggestionPicked(GameConsoleInvokable command)
         {
             if (!_inputField.text.Contains(" "))
             {
-                _inputField.text = command.DisplayName + " ";
+                _inputField.text = command.DisplayName;
                 _inputField.caretPosition = _inputField.text.Length;
             }
         }

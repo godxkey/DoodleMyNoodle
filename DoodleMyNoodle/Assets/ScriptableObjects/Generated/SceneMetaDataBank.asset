@@ -76,11 +76,11 @@ MonoBehaviour:
   - Name: Lvl_GridBattle
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity
     BuildIndex: 15
-    AssetGuid: 4c8245514883b6c4ba63476b942bba11
+    AssetGuid: 815b8536c98c51447a9e715207ed3330
   - Name: Lvl_GridBattle_Presentation
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
     BuildIndex: 16
-    AssetGuid: 60fc40dbdb1e23144a5055ed9a5d1563
+    AssetGuid: 1cd9718281f9895408333cb8fc99bc29
   - Name: Lvl_SideScrollerExemple
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_SideScrollerExemple.unity
     BuildIndex: 17
