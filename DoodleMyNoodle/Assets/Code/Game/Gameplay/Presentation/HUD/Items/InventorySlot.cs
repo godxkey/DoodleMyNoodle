@@ -104,7 +104,7 @@ public class InventorySlot : GameMonoBehaviour, IPointerEnterHandler, IPointerEx
         if(_currentItem != null)
         {
             Background.color = Color.white;
-            TooltipDisplay.Instance.SetToolTipDisplay(true, _currentItem.Name, _currentItem.Description);
+            TooltipDisplay.Instance.SetToolTipDisplay(true, _currentItem);
         }
     }
 
@@ -113,7 +113,7 @@ public class InventorySlot : GameMonoBehaviour, IPointerEnterHandler, IPointerEx
         if (_currentItem != null)
         {
             Background.color = _startBackgroundColor;
-            TooltipDisplay.Instance.SetToolTipDisplay(false);
+            TooltipDisplay.Instance.SetToolTipDisplay(false, _currentItem);
         }
     }
 

@@ -1,6 +1,6 @@
 using Unity.Entities;
+using UnityEngine;
 
-[GenerateAuthoringComponent]
 public struct ItemCooldownData : IComponentData
 {
     public int Value;

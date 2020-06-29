@@ -1,6 +1,6 @@
 using Unity.Entities;
+using UnityEngine;
 
-[GenerateAuthoringComponent]
 public struct ItemDamageData : IComponentData
 {
     public int Value;
