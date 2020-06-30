@@ -9,24 +9,6 @@ using CCC.ConfigVarInterals;
 
 public class GameConsole
 {
-    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
-    public static int poto = 5;
-
-    [ConsoleVar]
-    public static string playername = "jean-pooo";
-
-    [ConsoleVar]
-    public static bool Propriété { get; set; }
-
-    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
-    public static string pogo { get; set; }
-
-    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
-    public static string WriteOnly { set { } }
-
-    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
-    public static string ReadOnly { get; } = "woah";
-
     public enum LineColor
     {
         Normal,
