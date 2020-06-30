@@ -131,11 +131,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6fc729471ca8ad48b60c49b3fdc447b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ButtonBG: {fileID: 6843301105352293457}
-  SelectedColor: {r: 0, g: 1, b: 0.008930683, a: 1}
-  ItemSlotPrefab: {fileID: 5426785830483470210, guid: 548be1d067817c44ea08d5e4bd222188,
+  _kitButton: {fileID: 6843301105352293456}
+  _buttonBG: {fileID: 6843301105352293457}
+  _selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  _itemSlotPrefab: {fileID: 5426785830483470210, guid: 548be1d067817c44ea08d5e4bd222188,
     type: 3}
-  ItemSlotContainer: {fileID: 6843301106710979479}
+  _itemSlotContainer: {fileID: 6843301106710979479}
+  CurrentKitNumber: 0
 --- !u!1 &6843301106710979478
 GameObject:
   m_ObjectHideFlags: 0
