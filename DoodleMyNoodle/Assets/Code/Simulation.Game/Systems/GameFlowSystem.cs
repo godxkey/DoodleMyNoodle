@@ -1,16 +1,14 @@
-using Unity.Mathematics;
-using static Unity.Mathematics.math;
-using static fixMath;
-using System;
-using UnityEngine;
-using UnityEngineX;
 using Unity.Entities;
+using Unity.Mathematics;
+using static fixMath;
+using static Unity.Mathematics.math;
 
-public class RequestNextTurnIfTeamMembersReadySystem : SimComponentSystem
+public class GameFlowSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
         int teamCurrentlyPlaying = CommonReads.GetCurrentTurnTeam(Accessor);
+
         bool everyoneIsReady = true;
 
         Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn) =>
@@ -22,8 +20,11 @@ public class RequestNextTurnIfTeamMembersReadySystem : SimComponentSystem
             }
         });
 
-        if (everyoneIsReady && teamCurrentlyPlaying != -1)
+        // if a team member is NOT ready
+        if (teamCurrentlyPlaying == -1 && !Accessor.HasSingleton<GameReadyToStart>() && everyoneIsReady)
         {
+            Accessor.SetOrCreateSingleton(new GameReadyToStart());
+
             CommonWrites.RequestNextTurn(Accessor);
         }
     }

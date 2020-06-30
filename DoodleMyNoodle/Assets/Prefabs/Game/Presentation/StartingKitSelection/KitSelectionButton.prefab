@@ -133,7 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _kitButton: {fileID: 6843301105352293456}
   _buttonBG: {fileID: 6843301105352293457}
-  _selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  _selectedColor: {r: 0, g: 1, b: 0.13595366, a: 1}
   _itemSlotPrefab: {fileID: 5426785830483470210, guid: 548be1d067817c44ea08d5e4bd222188,
     type: 3}
   _itemSlotContainer: {fileID: 6843301106710979479}
