@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using UnityEngineX;
 
 public static partial class NetSerializerCodeGenerator
 {
@@ -14,13 +15,13 @@ public static partial class NetSerializerCodeGenerator
             List<FieldInfo> fields = new List<FieldInfo>(type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public));
             fields.RemoveAll((f) => NetSerializationCodeGenUtility.ShouldIgnoreCodeGeneration(f));
 
-
+            string typeFullName = type.GetPrettyFullName();
             Type baseClass = type.BaseType == typeof(object) || type.BaseType == typeof(ValueType) ? null : type.BaseType;
             bool couldBeDynamic = !NetSerializationCodeGenUtility.ConsideredAsValueType(type);
             bool isDynamicType = serializableAttribute != null ? serializableAttribute.baseClass : false;
             string methodObjParameter_Rcv = couldBeDynamic ?
-                (type.GetNiceFullName() + " obj") :
-                ("ref " + type.GetNiceFullName() + " obj");
+                (typeFullName + " obj") :
+                ("ref " + typeFullName + " obj");
 
 
             StreamWriter writer = GetFileStream(completePath);
@@ -78,9 +79,13 @@ using System.Collections.Generic;
 
                 foreach (var field in fields)
                 {
-                    if (field.FieldType.IsArray && !s_generateArrayCode.Contains(field.FieldType))
+                    if (field.FieldType.IsArray)
                     {
                         s_generateArrayCode.Add(field.FieldType);
+                    }
+                    else if(field.FieldType.IsGenericType && field.FieldType.GetGenericTypeDefinition() == typeof(List<>))
+                    {
+                        s_generateListCode.Add(field.FieldType);
                     }
                     writer.WriteLine("        " + ModelHelpers.GetSerializerFieldLine_GetNetBitSize(field.FieldType, '.' + field.Name));
                 }
@@ -142,7 +147,7 @@ using System.Collections.Generic;
 
             if (couldBeDynamic)
             {
-                writer.WriteLine("    public static " + type.GetNiceFullName() + " NetDeserialize_Class(BitStreamReader reader)");
+                writer.WriteLine("    public static " + typeFullName + " NetDeserialize_Class(BitStreamReader reader)");
                 writer.WriteLine("    {");
                 if (clear)
                 {
@@ -157,11 +162,11 @@ using System.Collections.Generic;
 
                     if (isDynamicType)
                     {
-                        writer.WriteLine("        return (" + type.GetNiceFullName() + ")DynamicNetSerializer.NetDeserialize(reader);");
+                        writer.WriteLine("        return (" + typeFullName + ")DynamicNetSerializer.NetDeserialize(reader);");
                     }
                     else
                     {
-                        writer.WriteLine("        " + type.GetNiceFullName() + " obj = new " + type.GetNiceFullName() + "();");
+                        writer.WriteLine("        " + typeFullName + " obj = new " + typeFullName + "();");
                         writer.WriteLine("        NetDeserialize(obj, reader);");
                         writer.WriteLine("        return obj;");
                     }

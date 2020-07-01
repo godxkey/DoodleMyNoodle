@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngineX;
 
 public static class NetSerializationCodeGenUtility
 {
@@ -11,6 +12,10 @@ public static class NetSerializationCodeGenUtility
         if (type.IsArray)
         {
             return "ArrayNetSerializer_" + type.GetElementType().GetNiceFullNameWithUnderscores();
+        }
+        else if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+        {
+            return "ListNetSerializer_" + type.GetGenericArguments()[0].GetNiceFullNameWithUnderscores();
         }
         else if (type.IsEnum)
         {
@@ -22,19 +27,9 @@ public static class NetSerializationCodeGenUtility
         }
     }
 
-    public static string GetNiceFullName(this Type type)
-    {
-        string result = type.FullName;
-
-        if (result.Contains("+"))
-            result = result.Replace('+', '.');
-
-        return result;
-    }
-
     public static string GetNiceFullNameWithUnderscores(this Type type)
     {
-        string result = type.FullName;
+        string result = type.GetPrettyFullName();
 
         if (result.Contains("+"))
             result = result.Replace('+', '_');

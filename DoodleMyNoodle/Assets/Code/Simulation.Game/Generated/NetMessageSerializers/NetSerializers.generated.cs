@@ -508,7 +508,7 @@ public static class ArrayNetSerializer_GameAction_ParameterData
     {
         if (obj == null)
             return 1;
-        int result = 1 + sizeof(UInt32) * 8;
+        int result = 1 + sizeof(Int32) * 8;
         for (int i = 0; i < obj.Length; i++)
         {
             result += StaticNetSerializer_GameAction_ParameterData.GetNetBitSize_Class(obj[i]);
@@ -524,7 +524,7 @@ public static class ArrayNetSerializer_GameAction_ParameterData
             return;
         }
         writer.WriteBit(true);
-        writer.WriteUInt32((UInt32)obj.Length);
+        writer.WriteInt32(obj.Length);
         for (int i = 0; i < obj.Length; i++)
         {
             StaticNetSerializer_GameAction_ParameterData.NetSerialize_Class(obj[i], writer);
@@ -538,7 +538,7 @@ public static class ArrayNetSerializer_GameAction_ParameterData
             obj = null;
             return;
         }
-        obj = new GameAction.ParameterData[reader.ReadUInt32()];
+        obj = new GameAction.ParameterData[reader.ReadInt32()];
         for (int i = 0; i < obj.Length; i++)
         {
             obj[i] = StaticNetSerializer_GameAction_ParameterData.NetDeserialize_Class(reader);

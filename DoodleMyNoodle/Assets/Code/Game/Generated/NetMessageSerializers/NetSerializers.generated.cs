@@ -340,7 +340,8 @@ public static class StaticNetSerializer_TestMessage
         result += StaticNetSerializer_System_UInt16.GetNetBitSize(ref obj.valueUShort);
         result += StaticNetSerializer_System_Boolean.GetNetBitSize(ref obj.valueBool);
         result += StaticNetSerializer_System_Byte.GetNetBitSize(ref obj.valueByte);
-        result += ArrayNetSerializer_System_Int32.GetNetBitSize(ref obj.listOnInts);
+        result += ArrayNetSerializer_System_Int32.GetNetBitSize(ref obj.arrayOfInts);
+        result += ListNetSerializer_System_Int32.GetNetBitSize_Class(obj.listOfInts);
         result += StaticNetSerializer_TestMessageCat.GetNetBitSize_Class(obj.cat);
         result += StaticNetSerializer_TestMessageDog.GetNetBitSize_Class(obj.dog);
         result += StaticNetSerializer_TestMessageAnimal.GetNetBitSize_Class(obj.animal);
@@ -367,7 +368,8 @@ public static class StaticNetSerializer_TestMessage
         StaticNetSerializer_System_UInt16.NetSerialize(ref obj.valueUShort, writer);
         StaticNetSerializer_System_Boolean.NetSerialize(ref obj.valueBool, writer);
         StaticNetSerializer_System_Byte.NetSerialize(ref obj.valueByte, writer);
-        ArrayNetSerializer_System_Int32.NetSerialize(ref obj.listOnInts, writer);
+        ArrayNetSerializer_System_Int32.NetSerialize(ref obj.arrayOfInts, writer);
+        ListNetSerializer_System_Int32.NetSerialize_Class(obj.listOfInts, writer);
         StaticNetSerializer_TestMessageCat.NetSerialize_Class(obj.cat, writer);
         StaticNetSerializer_TestMessageDog.NetSerialize_Class(obj.dog, writer);
         StaticNetSerializer_TestMessageAnimal.NetSerialize_Class(obj.animal, writer);
@@ -393,7 +395,8 @@ public static class StaticNetSerializer_TestMessage
         StaticNetSerializer_System_UInt16.NetDeserialize(ref obj.valueUShort, reader);
         StaticNetSerializer_System_Boolean.NetDeserialize(ref obj.valueBool, reader);
         StaticNetSerializer_System_Byte.NetDeserialize(ref obj.valueByte, reader);
-        ArrayNetSerializer_System_Int32.NetDeserialize(ref obj.listOnInts, reader);
+        ArrayNetSerializer_System_Int32.NetDeserialize(ref obj.arrayOfInts, reader);
+        obj.listOfInts = ListNetSerializer_System_Int32.NetDeserialize_Class(reader);
         obj.cat = StaticNetSerializer_TestMessageCat.NetDeserialize_Class(reader);
         obj.dog = StaticNetSerializer_TestMessageDog.NetDeserialize_Class(reader);
         obj.animal = StaticNetSerializer_TestMessageAnimal.NetDeserialize_Class(reader);
@@ -555,7 +558,7 @@ public static class ArrayNetSerializer_PlayerInfo
     {
         if (obj == null)
             return 1;
-        int result = 1 + sizeof(UInt32) * 8;
+        int result = 1 + sizeof(Int32) * 8;
         for (int i = 0; i < obj.Length; i++)
         {
             result += StaticNetSerializer_PlayerInfo.GetNetBitSize_Class(obj[i]);
@@ -571,7 +574,7 @@ public static class ArrayNetSerializer_PlayerInfo
             return;
         }
         writer.WriteBit(true);
-        writer.WriteUInt32((UInt32)obj.Length);
+        writer.WriteInt32(obj.Length);
         for (int i = 0; i < obj.Length; i++)
         {
             StaticNetSerializer_PlayerInfo.NetSerialize_Class(obj[i], writer);
@@ -585,7 +588,7 @@ public static class ArrayNetSerializer_PlayerInfo
             obj = null;
             return;
         }
-        obj = new PlayerInfo[reader.ReadUInt32()];
+        obj = new PlayerInfo[reader.ReadInt32()];
         for (int i = 0; i < obj.Length; i++)
         {
             obj[i] = StaticNetSerializer_PlayerInfo.NetDeserialize_Class(reader);
@@ -599,7 +602,7 @@ public static class ArrayNetSerializer_TestMessageAnimal
     {
         if (obj == null)
             return 1;
-        int result = 1 + sizeof(UInt32) * 8;
+        int result = 1 + sizeof(Int32) * 8;
         for (int i = 0; i < obj.Length; i++)
         {
             result += StaticNetSerializer_TestMessageAnimal.GetNetBitSize_Class(obj[i]);
@@ -615,7 +618,7 @@ public static class ArrayNetSerializer_TestMessageAnimal
             return;
         }
         writer.WriteBit(true);
-        writer.WriteUInt32((UInt32)obj.Length);
+        writer.WriteInt32(obj.Length);
         for (int i = 0; i < obj.Length; i++)
         {
             StaticNetSerializer_TestMessageAnimal.NetSerialize_Class(obj[i], writer);
@@ -629,7 +632,7 @@ public static class ArrayNetSerializer_TestMessageAnimal
             obj = null;
             return;
         }
-        obj = new TestMessageAnimal[reader.ReadUInt32()];
+        obj = new TestMessageAnimal[reader.ReadInt32()];
         for (int i = 0; i < obj.Length; i++)
         {
             obj[i] = StaticNetSerializer_TestMessageAnimal.NetDeserialize_Class(reader);
