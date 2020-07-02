@@ -3,7 +3,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemCooldownDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescriptionText, IItemSettingDescriptionColor
+public class ItemCooldownDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemCooldownData>
 {
     public int Cooldown;
 
@@ -17,8 +17,8 @@ public class ItemCooldownDataAuth : MonoBehaviour, IConvertGameObjectToEntity, I
         return Color.white;
     }
 
-    public string GetDescription(object[] inputValues)
+    public string GetDescription(ItemCooldownData inputData)
     {
-        return $"Cooldown : {inputValues[0]} ({Cooldown})";
+        return $"Cooldown : {inputData.Value} ({Cooldown})";
     }
 }

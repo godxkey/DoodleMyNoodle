@@ -3,7 +3,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemDamageDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescriptionText, IItemSettingDescriptionColor
+public class ItemDamageDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemDamageData>
 {
     public int Damage;
 
@@ -17,8 +17,8 @@ public class ItemDamageDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IIt
         return Color.white;
     }
 
-    public string GetDescription(object[] inputValues)
+    public string GetDescription(ItemDamageData inputData)
     {
-        return $"Damage : {inputValues[0]} ({Damage})";
+        return $"Damage : {inputData.Value} ({Damage})";
     }
 }

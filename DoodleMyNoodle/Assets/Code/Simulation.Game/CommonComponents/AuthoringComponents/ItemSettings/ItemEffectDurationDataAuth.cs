@@ -3,7 +3,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemEffectDurationDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescriptionText, IItemSettingDescriptionColor
+public class ItemEffectDurationDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemEffectDurationData>
 {
     public int Duration;
 
@@ -17,8 +17,8 @@ public class ItemEffectDurationDataAuth : MonoBehaviour, IConvertGameObjectToEnt
         return Color.white;
     }
 
-    public string GetDescription(object[] inputValues)
+    public string GetDescription(ItemEffectDurationData inputData)
     {
-        return $"Duration : {inputValues[0]} ({Duration})";
+        return $"Duration : {inputData} ({Duration})";
     }
 }

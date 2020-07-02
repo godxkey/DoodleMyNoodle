@@ -3,7 +3,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemHealthPointCostDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescriptionText, IItemSettingDescriptionColor
+public class ItemHealthPointCostDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemHealthPointCostData>
 {
     public int HealthCost;
 
@@ -17,8 +17,8 @@ public class ItemHealthPointCostDataAuth : MonoBehaviour, IConvertGameObjectToEn
         return Color.white;
     }
 
-    public string GetDescription(object[] inputValues)
+    public string GetDescription(ItemHealthPointCostData inputData)
     {
-        return $"HP Cost : {inputValues[0]} ({HealthCost})";
+        return $"HP Cost : {inputData.Value} ({HealthCost})";
     }
 }

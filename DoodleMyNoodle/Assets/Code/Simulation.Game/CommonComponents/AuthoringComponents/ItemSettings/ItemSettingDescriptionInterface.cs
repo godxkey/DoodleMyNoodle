@@ -1,4 +1,8 @@
+using Unity.Entities;
 using UnityEngine;
 
-public interface IItemSettingDescriptionText { string GetDescription(object[] inputValues); }
-public interface IItemSettingDescriptionColor { Color GetColor(); }
+public interface IItemSettingDescription<T> where T : struct, IComponentData, IStatInt
+{ 
+    string GetDescription(T inputData);
+    Color GetColor();
+}

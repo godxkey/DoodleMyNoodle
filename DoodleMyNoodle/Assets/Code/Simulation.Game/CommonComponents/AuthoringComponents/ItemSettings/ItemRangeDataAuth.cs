@@ -3,7 +3,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemRangeDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescriptionText, IItemSettingDescriptionColor
+public class ItemRangeDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemRangeData>
 {
     public int Range;
 
@@ -17,8 +17,8 @@ public class ItemRangeDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IIte
         return Color.white;
     }
 
-    public string GetDescription(object[] inputValues)
+    public string GetDescription(ItemRangeData inputData)
     {
-        return $"Range : {inputValues[0]} ({Range})";
+        return $"Range : {inputData.Value} ({Range})";
     }
 }

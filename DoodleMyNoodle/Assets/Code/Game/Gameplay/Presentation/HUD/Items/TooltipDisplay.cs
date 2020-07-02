@@ -103,26 +103,25 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         if(item != Entity.Null)
         {
             // Order of appearance
-            TryAddTooltipItemDescription<ItemDamageData, ItemDamageDataAuth>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemHealthPointsToHealData, ItemHealthPointsToHealDataAuth>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemRangeData, ItemRangeDataAuth>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemActionPointCostData, ItemActionPointCostDataAuth>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemHealthPointCostData, ItemHealthPointCostDataAuth>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemCooldownData, ItemCooldownDataAuth>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemEffectDurationData, ItemEffectDurationDataAuth>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemDamageData>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemHealthPointsToHealData>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemRangeData>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemActionPointCostData>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemHealthPointCostData>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemCooldownData>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemEffectDurationData>(item, itemPrefab);
 
             CreateTooltipItemDescription(description, Color.white);
         }
     }
 
-    private void TryAddTooltipItemDescription<Item, ItemAuth>(Entity itemEntity, GameObject itemPrefab) 
-        where Item : struct, IComponentData, IStatInt 
-        where ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescriptionText, IItemSettingDescriptionColor
+    private void TryAddTooltipItemDescription<TItem>(Entity itemEntity, GameObject itemPrefab) 
+        where TItem : struct, IComponentData, IStatInt
     {
-        ItemAuth itemAuth = itemPrefab.GetComponent<ItemAuth>();
-        if (SimWorld.TryGetComponentData(itemEntity, out Item item) && (itemAuth != null))
+        IItemSettingDescription<TItem> itemAuth = itemPrefab.GetComponent<IItemSettingDescription<TItem>>();
+        if (SimWorld.TryGetComponentData(itemEntity, out TItem item) && (itemAuth != null))
         {
-            CreateTooltipItemDescription(itemAuth.GetDescription(new object[] { item.Value }), itemAuth.GetColor());
+            CreateTooltipItemDescription(itemAuth.GetDescription(item), itemAuth.GetColor());
         }
     }
 

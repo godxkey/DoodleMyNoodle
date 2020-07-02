@@ -3,7 +3,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemActionPointCostDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescriptionText, IItemSettingDescriptionColor
+public class ItemActionPointCostDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemActionPointCostData>
 {
     public int ActionPointCost;
 
@@ -17,8 +17,8 @@ public class ItemActionPointCostDataAuth : MonoBehaviour, IConvertGameObjectToEn
         return Color.white;
     }
 
-    public string GetDescription(object[] inputValues)
+    public string GetDescription(ItemActionPointCostData inputData)
     {
-        return $"AP Cost : {inputValues[0]} ({ActionPointCost})";
+        return $"AP Cost : {inputData.Value} ({ActionPointCost})";
     }
 }

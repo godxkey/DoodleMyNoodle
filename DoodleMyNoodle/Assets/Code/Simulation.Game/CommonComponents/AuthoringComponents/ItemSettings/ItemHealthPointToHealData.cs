@@ -3,7 +3,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemHealthPointsToHealDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescriptionText, IItemSettingDescriptionColor
+public class ItemHealthPointsToHealDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemHealthPointsToHealData>
 {
     public int HealthToHeal;
 
@@ -17,8 +17,8 @@ public class ItemHealthPointsToHealDataAuth : MonoBehaviour, IConvertGameObjectT
         return Color.white;
     }
 
-    public string GetDescription(object[] inputValues)
+    public string GetDescription(ItemHealthPointsToHealData inputData)
     {
-        return $"Healing : {inputValues[0]} ({HealthToHeal})";
+        return $"Healing : {inputData.Value} ({HealthToHeal})";
     }
 }
