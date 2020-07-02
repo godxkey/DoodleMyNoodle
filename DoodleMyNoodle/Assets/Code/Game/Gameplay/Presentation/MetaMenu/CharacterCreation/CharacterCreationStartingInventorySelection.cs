@@ -15,7 +15,7 @@ public class CharacterCreationStartingInventorySelection : GamePresentationBehav
     protected override void OnGamePresentationUpdate()
     {
         SimWorld.Entities
-            .WithAll<NewInventoryItem, ItemKitTag>()
+            .WithAll<InventoryItemPrefabReference, ItemKitTag>()
             .ForEach((Entity startingKit, ref SimAssetId kitID) =>
         {
             // check if the kit is already displayed, if it's the case don't go further
@@ -27,7 +27,7 @@ public class CharacterCreationStartingInventorySelection : GamePresentationBehav
                 }
             }
 
-            DynamicBuffer<NewInventoryItem> items = SimWorld.GetBufferReadOnly<NewInventoryItem>(startingKit);
+            DynamicBuffer<InventoryItemPrefabReference> items = SimWorld.GetBufferReadOnly<InventoryItemPrefabReference>(startingKit);
             
             // display current kit with list of items
             GameObject newKitButton = Instantiate(KitButtonPrefab, transform);

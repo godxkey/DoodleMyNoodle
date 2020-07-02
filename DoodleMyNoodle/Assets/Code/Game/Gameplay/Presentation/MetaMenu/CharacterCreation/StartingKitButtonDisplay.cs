@@ -34,12 +34,12 @@ public class StartingKitButtonDisplay : GamePresentationBehaviour
         _kitButton.onClick.AddListener(KitButtonClicked);
     }
 
-    public void InitDisplayKit(Action<int> selectedKitCallback, int kitNumber, NativeArray<NewInventoryItem> items)
+    public void InitDisplayKit(Action<int> selectedKitCallback, int kitNumber, NativeArray<InventoryItemPrefabReference> items)
     {
         _currentKitSelectedCallback = selectedKitCallback;
         CurrentKitNumber = kitNumber;
 
-        foreach (NewInventoryItem item in items)
+        foreach (InventoryItemPrefabReference item in items)
         {
             GameObject newItemSlot = Instantiate(_itemSlotPrefab, _itemSlotContainer);
             ItemSlot itemSlot = newItemSlot.GetComponent<ItemSlot>();

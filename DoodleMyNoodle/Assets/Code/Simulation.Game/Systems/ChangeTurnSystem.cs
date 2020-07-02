@@ -80,6 +80,7 @@ public class ChangeTurnSystem : SimComponentSystem
                 return;
         }
 
+
         TurnTimer turnTimer = this.GetOrCreateSingleton<TurnTimer>();
 
         fix newTimerValue = turnTimer.Value - Time.DeltaTime;

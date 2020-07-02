@@ -10,18 +10,23 @@ public class GameFlowSystem : SimComponentSystem
         int teamCurrentlyPlaying = CommonReads.GetCurrentTurnTeam(Accessor);
 
         bool everyoneIsReady = true;
+        bool atLeastOnePlayerExist = false;
 
         Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn) =>
         {
-            // if a team member is NOT ready
-            if (team.Value == teamCurrentlyPlaying && !readyForNextTurn.Value)
+            if (team.Value == (int)TeamAuth.DesignerFriendlyTeam.Player)
             {
-                everyoneIsReady = false;
+                atLeastOnePlayerExist = true;
+
+                if (!readyForNextTurn.Value)
+                {
+                    everyoneIsReady = false; // if a team member is NOT ready
+                }
             }
         });
 
         // if a team member is NOT ready
-        if (teamCurrentlyPlaying == -1 && !Accessor.HasSingleton<GameReadyToStart>() && everyoneIsReady)
+        if (teamCurrentlyPlaying == -1 && atLeastOnePlayerExist && !Accessor.HasSingleton<GameReadyToStart>() && everyoneIsReady)
         {
             Accessor.SetOrCreateSingleton(new GameReadyToStart());
 

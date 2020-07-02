@@ -23,11 +23,15 @@ public class ItemBundleAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
             dstManager.AddComponentData(entity, new ItemKitTag());
         }
 
-        DynamicBuffer<NewInventoryItem> newItems = dstManager.AddBuffer<NewInventoryItem>(entity);
+        if (ItemPrefabs.Count <= 0)
+            return;
 
-        foreach (GameObject itemPrefab in ItemPrefabs)
+        DynamicBuffer<InventoryItemPrefabReference> itemPrefabsInventory = dstManager.GetOrAddBuffer<InventoryItemPrefabReference>(entity);
+
+        // Convert Prefabs to Entity Prefabs
+        for (int i = 0; i < ItemPrefabs.Count; i++)
         {
-            newItems.Add(new NewInventoryItem() { ItemEntityPrefab = conversionSystem.GetPrimaryEntity(itemPrefab) });
+            itemPrefabsInventory.Add(new InventoryItemPrefabReference() { ItemEntityPrefab = conversionSystem.GetPrimaryEntity(ItemPrefabs[i]) } );
         }
     }
 
@@ -39,21 +43,29 @@ public class ItemBundleAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
 
 internal partial class CommonWrites
 {
-    public static void EquipItemBundle(ISimWorldReadWriteAccessor accessor, Entity pawn, DynamicBuffer<NewInventoryItem> newInventoryItems)
+    // We empty the bundle / container after giving the items
+    public static void MoveToInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, DynamicBuffer<InventoryItemPrefabReference> newInventoryItemPrefabs)
     {
-        if (newInventoryItems.Length <= 0)
+        CopyToInventory(accessor, pawn, newInventoryItemPrefabs);
+
+        newInventoryItemPrefabs.Clear();
+    }
+
+    // We keep the item reference into the bundle / container even after transfering the items
+    public static void CopyToInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, DynamicBuffer<InventoryItemPrefabReference> newInventoryItemPrefabs)
+    {
+        if (newInventoryItemPrefabs.Length <= 0)
             return;
 
-        NativeArray<NewInventoryItem> itemsBuffer = newInventoryItems.ToNativeArray(Allocator.Temp);
-        NativeArray<Entity> itemInstances = new NativeArray<Entity>(itemsBuffer.Length, Allocator.Temp);
+        NativeArray<InventoryItemPrefabReference> itemPrefabsBuffer = newInventoryItemPrefabs.ToNativeArray(Allocator.Temp);
+        NativeArray<Entity> itemInstances = new NativeArray<Entity>(itemPrefabsBuffer.Length, Allocator.Temp);
 
         // Spawn items
-        for (int i = 0; i < itemsBuffer.Length; i++)
+        for (int i = 0; i < itemPrefabsBuffer.Length; i++)
         {
-            itemInstances[i] = accessor.Instantiate(itemsBuffer[i].ItemEntityPrefab);
+            itemInstances[i] = accessor.Instantiate(itemPrefabsBuffer[i].ItemEntityPrefab);
         }
 
-        // Add item references into inventory
         DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(pawn);
         foreach (Entity itemInstance in itemInstances)
         {
