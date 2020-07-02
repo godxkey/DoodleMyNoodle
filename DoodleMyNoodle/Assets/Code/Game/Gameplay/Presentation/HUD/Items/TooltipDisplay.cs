@@ -1,31 +1,46 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.Entities;
 
 public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
 {
     // TOOLTIP
-    public GameObject ToolTipDisplay;
-    public Image TooltipContour;
-    public TextMeshProUGUI ItemName;
+    [SerializeField]
+    private GameObject ToolTipDisplay;
+    [SerializeField]
+    private Image TooltipContour;
+    [SerializeField]
+    private TextMeshProUGUI ItemName;
 
-    public Transform ItemDescriptionContainer;
-    public GameObject ItemDescriptionPrefab;
+    [SerializeField]
+    private Transform ItemDescriptionContainer;
+    [SerializeField]
+    private GameObject ItemDescriptionPrefab;
 
-    public Color Common = Color.white;
-    public Color Uncommon = Color.green;
-    public Color Rare = Color.blue;
-    public Color Mythic = Color.magenta;
-    public Color Legendary = Color.yellow;
+    [SerializeField]
+    private Color Common = Color.white;
+    [SerializeField]
+    private Color Uncommon = Color.green;
+    [SerializeField]
+    private Color Rare = Color.blue;
+    [SerializeField]
+    private Color Mythic = Color.magenta;
+    [SerializeField]
+    private Color Legendary = Color.yellow;
 
-    public float ScreenEdgeToolTipLimit = 200.0f;
+    [SerializeField]
+    private float ScreenEdgeToolTipLimit = 200.0f;
 
     public override bool SystemReady { get => true; }
 
-    public float DisplacementX = 0;
-    public float DisplacementY = 0;
+    [SerializeField]
+    private float DisplacementX = 0;
+    [SerializeField]
+    private float DisplacementY = 0;
 
     protected override void Awake()
     {
@@ -42,100 +57,79 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         }
     }
 
-    // Switch to using this function after branch merge
-    public void SetToolTipDisplay(bool IsActive, ItemVisualInfo itemInfo)
+    public void ActivateToolTipDisplay(ItemVisualInfo itemInfo, Entity itemOwner)
     {
         foreach (TooltipItemDescription itemDescription in ItemDescriptionContainer.GetComponentsInChildren<TooltipItemDescription>())
         {
             Destroy(itemDescription.gameObject);
         }
 
-        ItemName.text = itemInfo.Name; // update title Text
-        UpdateToolTipDescription(itemInfo.EffectDescription, itemInfo.ItemPrefab);
-        UpdateTooltipColors(itemInfo.Rarity);
-        ToolTipDisplay.SetActive(IsActive);
+        Entity itemEntity = GetToolTipItemEntity(itemInfo.ID.GetSimAssetId(), itemOwner);
+        if(itemEntity != Entity.Null)
+        {
+            ItemName.text = itemInfo.Name; // update title Text
+            UpdateToolTipDescription(itemInfo.EffectDescription, itemEntity, itemInfo.ItemPrefab);
+            UpdateTooltipColors(itemInfo.Rarity);
+            ToolTipDisplay.SetActive(true);
+        }
     }
 
-    private void UpdateToolTipDescription(string description, GameObject itemPrefab = null)
+    public void DeactivateToolTipDisplay()
     {
-        if(itemPrefab != null)
+        ToolTipDisplay.SetActive(false);
+    }
+
+    private Entity GetToolTipItemEntity(SimAssetId ID, Entity itemOwner)
+    {
+        if (SimWorld.TryGetBufferReadOnly(itemOwner, out DynamicBuffer<InventoryItemReference> inventory))
         {
-            ItemDamageDataAuth DamageSetting = itemPrefab.GetComponent<ItemDamageDataAuth>();
-            if(DamageSetting != null)
+            foreach (InventoryItemReference item in inventory)
             {
-                TooltipItemDescription newItemDescription = Instantiate(ItemDescriptionPrefab, ItemDescriptionContainer).GetComponent<TooltipItemDescription>();
-                if(newItemDescription != null)
+                if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemID))
                 {
-                    newItemDescription.UpdateDescription("Damage : " + DamageSetting.Damage, Color.white);
+                    if (itemID.Value == ID.Value)
+                    {
+                        return item.ItemEntity;
+                    }
                 }
-            }
-
-            ItemHealthPointsToHealDataAuth HealthHealSetting = itemPrefab.GetComponent<ItemHealthPointsToHealDataAuth>();
-            if (HealthHealSetting != null)
-            {
-                TooltipItemDescription newItemDescription = Instantiate(ItemDescriptionPrefab, ItemDescriptionContainer).GetComponent<TooltipItemDescription>();
-                if (newItemDescription != null)
-                {
-                    newItemDescription.UpdateDescription("Health Cost : " + HealthHealSetting.HealthToHeal, Color.white);
-                }
-            }
-
-            ItemRangeDataAuth RangeSetting = itemPrefab.GetComponent<ItemRangeDataAuth>();
-            if (RangeSetting != null)
-            {
-                TooltipItemDescription newItemDescription = Instantiate(ItemDescriptionPrefab, ItemDescriptionContainer).GetComponent<TooltipItemDescription>();
-                if (newItemDescription != null)
-                {
-                    newItemDescription.UpdateDescription("Range : " + RangeSetting.Range, Color.white);
-                }
-            }
-
-            ItemActionPointCostDataAuth ActionPointCostSetting = itemPrefab.GetComponent<ItemActionPointCostDataAuth>();
-            if (ActionPointCostSetting != null)
-            {
-                TooltipItemDescription newItemDescription = Instantiate(ItemDescriptionPrefab, ItemDescriptionContainer).GetComponent<TooltipItemDescription>();
-                if (newItemDescription != null)
-                {
-                    newItemDescription.UpdateDescription("Action Point Cost : " + ActionPointCostSetting.ActionPointCost, Color.white);
-                }
-            }
-
-            ItemHealthPointCostDataAuth HealthPointCostSetting = itemPrefab.GetComponent<ItemHealthPointCostDataAuth>();
-            if (HealthPointCostSetting != null)
-            {
-                TooltipItemDescription newItemDescription = Instantiate(ItemDescriptionPrefab, ItemDescriptionContainer).GetComponent<TooltipItemDescription>();
-                if (newItemDescription != null)
-                {
-                    newItemDescription.UpdateDescription("Health Cost : " + HealthPointCostSetting.HealthCost, Color.white);
-                }
-            }
-
-            ItemCooldownDataAuth CooldownSetting = itemPrefab.GetComponent<ItemCooldownDataAuth>();
-            if (CooldownSetting != null)
-            {
-                TooltipItemDescription newItemDescription = Instantiate(ItemDescriptionPrefab, ItemDescriptionContainer).GetComponent<TooltipItemDescription>();
-                if (newItemDescription != null)
-                {
-                    newItemDescription.UpdateDescription("Cooldown : " + CooldownSetting.Cooldown, Color.white);
-                }
-            }
-
-            ItemEffectDurationDataAuth EffectDurationSetting = itemPrefab.GetComponent<ItemEffectDurationDataAuth>();
-            if (EffectDurationSetting != null)
-            {
-                TooltipItemDescription newItemDescription = Instantiate(ItemDescriptionPrefab, ItemDescriptionContainer).GetComponent<TooltipItemDescription>();
-                if (newItemDescription != null)
-                {
-                    newItemDescription.UpdateDescription("Duration : " + EffectDurationSetting.Duration, Color.white);
-                }
-            }
-
-            TooltipItemDescription newDescription = Instantiate(ItemDescriptionPrefab, ItemDescriptionContainer).GetComponent<TooltipItemDescription>();
-            if (newDescription != null)
-            {
-                newDescription.UpdateDescription(description, Color.white);
             }
         }
+
+        return Entity.Null;
+    }
+
+    private void UpdateToolTipDescription(string description, Entity item, GameObject itemPrefab)
+    {
+        if(item != Entity.Null)
+        {
+            // Order of appearance
+            TryAddTooltipItemDescription<ItemDamageData, ItemDamageDataAuth>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemHealthPointsToHealData, ItemHealthPointsToHealDataAuth>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemRangeData, ItemRangeDataAuth>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemActionPointCostData, ItemActionPointCostDataAuth>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemHealthPointCostData, ItemHealthPointCostDataAuth>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemCooldownData, ItemCooldownDataAuth>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemEffectDurationData, ItemEffectDurationDataAuth>(item, itemPrefab);
+
+            CreateTooltipItemDescription(description, Color.white);
+        }
+    }
+
+    private void TryAddTooltipItemDescription<Item, ItemAuth>(Entity itemEntity, GameObject itemPrefab) 
+        where Item : struct, IComponentData, IStatInt 
+        where ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescriptionText, IItemSettingDescriptionColor
+    {
+        ItemAuth itemAuth = itemPrefab.GetComponent<ItemAuth>();
+        if (SimWorld.TryGetComponentData(itemEntity, out Item item) && (itemAuth != null))
+        {
+            CreateTooltipItemDescription(itemAuth.GetDescription(new object[] { item.Value }), itemAuth.GetColor());
+        }
+    }
+
+    private void CreateTooltipItemDescription(string description, Color color)
+    {
+        TooltipItemDescription newItemDescription = Instantiate(ItemDescriptionPrefab, ItemDescriptionContainer).GetComponent<TooltipItemDescription>();
+        newItemDescription.UpdateDescription(description, color);
     }
 
     private void UpdateTooltipColors(ItemVisualInfo.ItemRarity rarity)

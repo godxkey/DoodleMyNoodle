@@ -73,12 +73,12 @@ MonoBehaviour:
     Path: Assets/Scenes/EmptyScene.unity
     BuildIndex: 14
     AssetGuid: 15380d7d3d5178b40abcc7edd37c1d78
-  - Name: 
-    Path: 
+  - Name: Lvl_GridBattle
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle.unity
     BuildIndex: 15
     AssetGuid: 815b8536c98c51447a9e715207ed3330
-  - Name: 
-    Path: 
+  - Name: Lvl_GridBattle_Presentation
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_GridBattle_Presentation.unity
     BuildIndex: 16
     AssetGuid: 1cd9718281f9895408333cb8fc99bc29
   - Name: Lvl_SideScrollerExemple

@@ -5,7 +5,8 @@ using TMPro;
 
 public class TooltipItemDescription : GamePresentationBehaviour
 {
-    public TextMeshProUGUI DescriptionText;
+    [SerializeField]
+    private TextMeshProUGUI DescriptionText;
 
     protected override void OnGamePresentationUpdate() { }
 
