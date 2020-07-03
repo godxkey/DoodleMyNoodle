@@ -15,8 +15,14 @@ public class HealthDisplayManagementSystem : GameMonoBehaviour
     public override void OnGameLateUpdate() 
     {
         int healthBarAmount = 0;
-        GameMonoBehaviourHelpers.GetSimulationWorld().Entities.ForEach((ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation)=>
+        GameMonoBehaviourHelpers.GetSimulationWorld().Entities.ForEach((Entity pawn, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation)=>
         {
+            Entity pawnController = CommonReads.GetPawnController(GameMonoBehaviourHelpers.GetSimulationWorld(), pawn);
+            if (!GameMonoBehaviourHelpers.GetSimulationWorld().HasComponent<DumbGridBattleAITag>(pawnController))
+            {
+                return;
+            }
+
             fix healthRatio = (fix)entityHealth.Value / (fix)entityMaximumHealth.Value;
 
             SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, healthRatio);
