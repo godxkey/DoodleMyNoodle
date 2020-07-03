@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a710da78879440489da5afe5fba6d82, type: 3}
-  m_Name: ItemShield_TwinSlice
+  m_Name: Item_Convert
   m_EditorClassIdentifier: 
-  ID: {fileID: 971858758830137585, guid: 3fa80de446fd0ed409cdb9374b921d40, type: 3}
-  Icon: {fileID: 21300000, guid: 555fa951575fd004bac4906f4f6a5366, type: 3}
-  Name: Twin Slice
-  Description: Attack 2 targets nearby (1 AP each, 1 DMG each)
+  ID: {fileID: 971858758830137585, guid: 605fd0327d22176429bfc3496ef54d7d, type: 3}
+  ItemPrefab: {fileID: 5742253346417087641, guid: 605fd0327d22176429bfc3496ef54d7d,
+    type: 3}
+  Icon: {fileID: 21300000, guid: da6c4bec40c7dfa489aa30d34092ea0a, type: 3}
+  Name: Convert
+  Rarity: 4
+  EffectDescription: Make an ennemy fight for you

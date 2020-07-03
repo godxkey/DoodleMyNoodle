@@ -1,7 +1,9 @@
 using Unity.Entities;
+using UnityEngine;
 
-[GenerateAuthoringComponent]
-public struct ItemCooldownData : IComponentData
+public struct ItemCooldownData : IComponentData, IStatInt
 {
     public int Value;
+
+    int IStatInt.Value { get => Value; set => Value = value; }
 }
