@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a710da78879440489da5afe5fba6d82, type: 3}
-  m_Name: ItemShield_Enrage
+  m_Name: Item_Potion
   m_EditorClassIdentifier: 
-  ID: {fileID: 971858758830137585, guid: dd26b8361948f49449226bab932fbc08, type: 3}
-  Icon: {fileID: 21300000, guid: 508a3170a83f6b54eb3d7c13394d2b15, type: 3}
-  Name: Enrage
-  Description: Consume 6 HP for 2 AP
+  ID: {fileID: 971858758830137585, guid: 166d88cc590b26d488bbf68259324b1c, type: 3}
+  ItemPrefab: {fileID: 5742253346417087641, guid: 166d88cc590b26d488bbf68259324b1c,
+    type: 3}
+  Icon: {fileID: 21300000, guid: 2e772c182ce66684083eb92cdc4cca45, type: 3}
+  Name: Healing Potion
+  Rarity: 1
+  EffectDescription: Heal you or an Ally
