@@ -8,12 +8,12 @@ using UnityEngine;
 /// (world.InjectScene(sceneName) devrait être appelé de l'intérieur de la simulation)
 /// </summary>
 [NetSerializable]
-public class SimCommandLoadScene : SimCommand
+public class SimCommandLoadScene : SimInput
 {
     public string SceneName;
 
-    public override void Execute()
+    public override string ToString()
     {
-        //Simulation.LoadScene(SceneName);
+        return $"SimCommandLoadScene({SceneName})";
     }
 }

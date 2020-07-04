@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class KeyCodeInputSender : MonoBehaviour
 {
     // fbessette: we should make an editor window for that
@@ -299,3 +299,4 @@ public class KeyCodeInputSender : MonoBehaviour
         GameMonoBehaviourHelpers.SubmitInput(new SimInputKeycode() { keyCode = keyCode, state = state });
     }
 }
+*/

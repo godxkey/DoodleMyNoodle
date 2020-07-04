@@ -139,7 +139,7 @@ namespace CCC.Online.DataTransfer
 
             // copy slice of array into message data
             int byteIndex = packetIndex * Transfers.PAQUET_BYTE_ARRAY_SIZE;
-            System.Array.Copy(
+            Array.Copy(
                 sourceArray: _data,
                 sourceIndex: byteIndex,
                 destinationArray: netMessage.Data,

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngineX;
 
 namespace SimulationControl
 {
@@ -56,12 +57,15 @@ namespace SimulationControl
             if (_shelveTicks)
             {
                 // if we receive ticks while we're syncing, shelve the tick so we can restored it later
+                Log.Info(SimulationIO.LogChannel, $"Receiving tick {tick.TickData.ExpectedNewTickId}. Shelving for later!");
                 _shelvedSimTicks.Add(tick);
-                return;
             }
-
-            // The server has sent a tick message
-            _simTicksDropper.Enqueue(tick, (float)SimulationConstants.TIME_STEP);
+            else
+            {
+                // The server has sent a tick message
+                Log.Info(SimulationIO.LogChannel, $"Receiving tick {tick.TickData.ExpectedNewTickId}. Queueing for execution.");
+                _simTicksDropper.Enqueue(tick, (float)SimulationConstants.TIME_STEP);
+            }
         }
 
         public void StartShelvingTicks()

@@ -11,5 +11,10 @@ namespace SimulationControl
         /// All of the inputs to process in the simulation tick
         /// </summary>
         public SimTickData TickData;
+
+        public override string ToString()
+        {
+            return $"NetMessage({TickData})";
+        }
     }
 }
