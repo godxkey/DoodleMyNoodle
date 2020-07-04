@@ -47,15 +47,10 @@ public class GameActionMeleeAttack : GameAction
             // reduce target health
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
             CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, paramTile.Tile, victims);
-            foreach (var entity in victims)
+            foreach (Entity entity in victims)
             {
-                if (!accessor.HasComponent<Invincible>(entity))
-                {
-                    CommonWrites.ModifyStatInt<Health>(accessor, entity, -accessor.GetComponentData<ItemDamageData>(context.ItemEntity).Value);
-                }
+                CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, accessor.GetComponentData<ItemDamageData>(context.ItemEntity).Value);
             }
-
-            // NB: we might want to queue a 'DamageRequest' in some sort of ProcessDamageSystem instead
         }
     }
 }

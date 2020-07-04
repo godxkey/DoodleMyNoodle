@@ -80,17 +80,12 @@ public class GameActionComboAttack : GameAction
 
         foreach (Entity entity in victims)
         {
-            AttackEntityOnTile(accessor, entity);
+            AttackEntityOnTile(accessor, context.InstigatorPawn, entity);
         }
     }
 
-    private void AttackEntityOnTile(ISimWorldReadWriteAccessor accessor, Entity entity)
+    private void AttackEntityOnTile(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity entity)
     {
-        if (!accessor.HasComponent<Invincible>(entity))
-        {
-            CommonWrites.ModifyStatInt<Health>(accessor, entity, -DAMAGE);
-        }
-
-        // NB: we might want to queue a 'DamageRequest' in some sort of ProcessDamageSystem instead
+        CommonWrites.RequestDamageOnTarget(accessor, instigator, entity, DAMAGE);
     }
 }

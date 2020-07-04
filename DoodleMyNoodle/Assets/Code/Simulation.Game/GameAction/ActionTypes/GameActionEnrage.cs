@@ -27,7 +27,7 @@ public class GameActionEnrage : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterSelfTarget.Data self))
         {
             // reduce instigator HP
-            CommonWrites.ModifyStatInt<Health>(accessor, context.InstigatorPawn, -HP_COST);
+            CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, HP_COST);
 
             // increase instigator AP
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, AP_GAIN);

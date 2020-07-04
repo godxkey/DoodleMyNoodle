@@ -8,10 +8,6 @@ public class HealthPoolDisplay : GamePresentationBehaviour
     public Image HealthPool;
     public Image ArmorPool;
 
-    public int HealthValue = 8;
-    public int ArmorValue = 2;
-    public int TotalValue = 10;
-
     protected override void OnGamePresentationUpdate()
     {
         Health hp = SimWorld.GetComponentData<Health>(SimWorldCache.LocalPawn);
