@@ -9,24 +9,6 @@ using CCC.ConfigVarInterals;
 
 public class GameConsole
 {
-    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
-    public static int poto = 5;
-
-    [ConsoleVar]
-    public static string playername = "jean-pooo";
-
-    [ConsoleVar]
-    public static bool Propriété { get; set; }
-
-    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
-    public static string pogo { get; set; }
-
-    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
-    public static string WriteOnly { set { } }
-
-    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
-    public static string ReadOnly { get; } = "woah";
-
     public enum LineColor
     {
         Normal,
@@ -75,11 +57,6 @@ public class GameConsole
         List<GameConsoleInvokable> potentialInvokable = new List<GameConsoleInvokable>();
         foreach (MethodInfo method in TypeUtility.GetStaticMethodsWithAttribute(typeof(ConsoleCommandAttribute)))
         {
-            if (method.IsAsync())
-            {
-                Log.Warning($"Ignoring command '{method.Name}' because it is async.");
-                continue;
-            }
             potentialInvokable.Add(new GameConsoleCommand(method));
         }
 

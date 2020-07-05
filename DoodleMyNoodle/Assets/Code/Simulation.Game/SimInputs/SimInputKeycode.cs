@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 [NetSerializable]
 public class SimInputKeycode : SimPlayerInput
 {
@@ -15,3 +15,4 @@ public class SimInputKeycode : SimPlayerInput
     public State state = State.Pressed;
     public KeyCode keyCode;
 }
+*/

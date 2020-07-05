@@ -39,6 +39,11 @@ public class CameraMovementController : GameMonoBehaviour
 
     void Update()
     {
+        if (GameConsole.IsOpen())
+        {
+            return;
+        }
+
         Vector3 movement = Vector3.zero;
 
         if (Input.GetKey(KeyCode.W) || (MouseMovementsEnabled && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
@@ -78,11 +83,6 @@ public class CameraMovementController : GameMonoBehaviour
                 return;
 
             intRect gridRect = simWorld.GetSingleton<GridInfo>().GridRect;
-
-            Vector2 bottomLeft = new Vector2(gridRect.min.x, gridRect.min.y);
-            Vector2 bottomRight = new Vector2(gridRect.max.x, gridRect.min.y);
-            Vector2 TopLeft = new Vector2(gridRect.min.x, gridRect.max.y);
-            Vector2 TopRight = new Vector2(gridRect.max.x, gridRect.max.y);
 
             Vector3 cameraPostion = transform.position;
             transform.position = new Vector3(Mathf.Clamp(cameraPostion.x, gridRect.min.x, gridRect.max.x),

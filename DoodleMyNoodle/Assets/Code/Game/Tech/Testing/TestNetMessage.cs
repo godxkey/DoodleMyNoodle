@@ -44,7 +44,8 @@ public class TestNetMessage : GameMonoBehaviour
             msg.valueUShort = 33;     // 2
             msg.valueBool = true;     // 0.2
             msg.valueByte = 12;       // 1
-            msg.listOnInts = new int[] { 0, 1, 2 };
+            msg.arrayOfInts = new int[] { 0, 1, 2 };
+            msg.listOfInts = new List<int> { 0, 1, 2 };
 
 
             msg.cat = new TestMessageCat("FirstCat", 9);
@@ -77,7 +78,8 @@ public class TestMessage
     public ushort valueUShort;
     public bool valueBool;
     public byte valueByte;
-    public int[] listOnInts;
+    public int[] arrayOfInts;
+    public List<int> listOfInts;
     public TestMessageCat cat;
     public TestMessageDog dog;
     public TestMessageAnimal animal;
@@ -100,7 +102,12 @@ public class TestMessage
         str.AppendLine(valueByte.ToString());
         str.AppendLine(valueInt.ToString());
 
-        foreach (var integer in listOnInts)
+        foreach (var integer in arrayOfInts)
+        {
+            str.AppendLine(integer.ToString());
+        }
+
+        foreach (var integer in listOfInts)
         {
             str.AppendLine(integer.ToString());
         }

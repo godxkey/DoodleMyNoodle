@@ -6,8 +6,6 @@ using UnityEngineX;
 
 public abstract class SessionInterface : IDisposable
 {
-    const bool LOG = false;
-
     static LogChannel s_netMessageLogChannel = Log.CreateChannel("NetMessages", activeByDefault: false);
 
     [ConsoleVar("Online.TransferWithStream", 

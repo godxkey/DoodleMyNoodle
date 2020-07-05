@@ -17,26 +17,37 @@ public struct InventorySlotInfo
     // other possible info that changes the display : class / ultimate / consumables
 }
 
-public class InventorySlot : ItemSlot, IPointerClickHandler
+public class InventorySlot : GameMonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    public Image Background;
+    public Image ItemIcon;
     public TextMeshProUGUI ShortcutDisplay;
+    public Color HoverBackgroundColor = Color.white;
 
     public GameObject UnavailableSpriteObject;
 
     private InventorySlotInfo _info;
+    private Color _startBackgroundColor;
+    private ItemVisualInfo _currentItem;
     private int _currentItemIndex;
 
     public Action<int> OnItemUsed;
 
-    public void UpdateCurrentInventorySlot(ItemVisualInfo item, int itemIndex, InventorySlotInfo slotInfo, Action<int> onItemUsed)
+    private void Start()
     {
+        _startBackgroundColor = Background.color;
+    }
+
+    public void UpdateCurrentItemSlot(ItemVisualInfo item, int itemIndex, InventorySlotInfo slotInfo, Action<int> onItemUsed)
+    {
+        _currentItem = item;
         _currentItemIndex = itemIndex;
         _info = slotInfo;
         OnItemUsed = onItemUsed;
 
         UnavailableSpriteObject.SetActive(false);
 
-        UpdateCurrentItemSlot(item, null);
+        UpdateDisplay();
     }
 
     public void UpdateDisplayAsUnavailable()
@@ -44,11 +55,19 @@ public class InventorySlot : ItemSlot, IPointerClickHandler
         UnavailableSpriteObject.SetActive(true);
     }
 
-    protected override void UpdateDisplay()
+    private void UpdateDisplay()
     {
         ShortcutDisplay.text = GetPrettyName(_info.InputShortcut);
 
-        base.UpdateDisplay();
+        if (_currentItem != null)
+        {
+            ItemIcon.color = ItemIcon.color.ChangedAlpha(1);
+            ItemIcon.sprite = _currentItem.Icon;
+        }
+        else
+        {
+            ItemIcon.color = ItemIcon.color.ChangedAlpha(0);
+        }
     }
 
     private string GetPrettyName(KeyCode keyCode)
@@ -80,10 +99,34 @@ public class InventorySlot : ItemSlot, IPointerClickHandler
         }
     }
 
-    public override void UseItemSlot()
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        base.UseItemSlot();
+        if(_currentItem != null)
+        {
+            Background.color = Color.white;
+            TooltipDisplay.Instance.ActivateToolTipDisplay(_currentItem, GamePresentationCache.Instance.LocalPawn);
+        }
+    }
 
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (_currentItem != null)
+        {
+            Background.color = _startBackgroundColor;
+            TooltipDisplay.Instance.DeactivateToolTipDisplay();
+        }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Left) 
+        {
+            UseInventorySlot();
+        }
+    }
+
+    public void UseInventorySlot()
+    {
         OnItemUsed?.Invoke(_currentItemIndex);
     }
 }

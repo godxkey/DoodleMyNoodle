@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using UnityEngineX;
 
 public static partial class NetSerializerCodeGenerator
 {
@@ -13,20 +14,24 @@ public static partial class NetSerializerCodeGenerator
             return $"result += {NetSerializationCodeGenUtility.GetSerializerNameFromType(baseType)}.GetNetBitSize(obj);";
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetSerializerFieldLine_GetNetBitSize(Type fieldType, string fieldAccessor)
+        public static string GetSerializerFieldLine_GetNetBitSize(Type fieldType, string fieldAccessor, string fullFieldAccessor = null)
         {
+            if (fullFieldAccessor == null)
+            {
+                fullFieldAccessor = "obj" + fieldAccessor;
+            }
+
             if (fieldType.IsEnum)
             {
                 return $"result += {NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.GetNetBitSize();";
             }
             if (NetSerializationCodeGenUtility.ConsideredAsValueType(fieldType))
             {
-                return $"result += {NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.GetNetBitSize(ref obj{fieldAccessor});";
+                return $"result += {NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.GetNetBitSize(ref {fullFieldAccessor});";
             }
             else
             {
-                return $"result += {NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.GetNetBitSize_Class(obj{fieldAccessor});";
+                return $"result += {NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.GetNetBitSize_Class({fullFieldAccessor});";
             }
         }
 
@@ -36,20 +41,24 @@ public static partial class NetSerializerCodeGenerator
             return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(baseType)}.NetSerialize(obj, writer);";
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetSerializerFieldLine_Serialize(Type fieldType, string fieldAccessor)
+        public static string GetSerializerFieldLine_Serialize(Type fieldType, string fieldAccessor, string fullFieldAccessor = null)
         {
+            if (fullFieldAccessor == null)
+            {
+                fullFieldAccessor = "obj" + fieldAccessor;
+            }
+
             if (fieldType.IsEnum)
             {
-                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetSerialize(({fieldType.GetEnumUnderlyingType()})obj{fieldAccessor}, writer);";
+                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetSerialize(({fieldType.GetEnumUnderlyingType()}){fullFieldAccessor}, writer);";
             }
             if (NetSerializationCodeGenUtility.ConsideredAsValueType(fieldType))
             {
-                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetSerialize(ref obj{fieldAccessor}, writer);";
+                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetSerialize(ref {fullFieldAccessor}, writer);";
             }
             else
             {
-                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetSerialize_Class(obj{fieldAccessor}, writer);";
+                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetSerialize_Class({fullFieldAccessor}, writer);";
             }
         }
 
@@ -59,20 +68,24 @@ public static partial class NetSerializerCodeGenerator
             return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(baseType)}.NetDeserialize(obj, reader);";
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetSerializerFieldLine_Deserialize(Type fieldType, string fieldAccessor)
+        public static string GetSerializerFieldLine_Deserialize(Type fieldType, string fieldAccessor, string fullFieldAccessor = null)
         {
+            if(fullFieldAccessor == null)
+            {
+                fullFieldAccessor = "obj" + fieldAccessor;
+            }
+
             if (fieldType.IsEnum)
             {
-                return $"obj{fieldAccessor} = ({fieldType.GetNiceFullName()}){NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetDeserialize(reader);";
+                return $"{fullFieldAccessor} = ({fieldType.GetPrettyFullName()}){NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetDeserialize(reader);";
             }
             else if (NetSerializationCodeGenUtility.ConsideredAsValueType(fieldType))
             {
-                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetDeserialize(ref obj{fieldAccessor}, reader);";
+                return $"{NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetDeserialize(ref {fullFieldAccessor}, reader);";
             }
             else
             {
-                return $"obj{fieldAccessor} = {NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetDeserialize_Class(reader);";
+                return $"{fullFieldAccessor} = {NetSerializationCodeGenUtility.GetSerializerNameFromType(fieldType)}.NetDeserialize_Class(reader);";
             }
         }
     }

@@ -215,16 +215,15 @@ namespace GameConsoleInterals
             if (Input.GetKey(KeyCode.PageUp))
             {
                 _accumulatedScroll -= Time.deltaTime * _kbScrollSpeed;
-
-                if (_accumulatedScroll < -1)
-                {
-                    _lines.SetWindowPosition(_lines.WindowPosition + Mathf.CeilToInt(_accumulatedScroll));
-                    _accumulatedScroll -= Mathf.CeilToInt(_accumulatedScroll);
-                }
             }
             else if (Input.GetKey(KeyCode.PageDown))
             {
                 _accumulatedScroll += Time.deltaTime * _kbScrollSpeed;
+            }
+            else if (Input.GetKey(KeyCode.End))
+            {
+                _accumulatedScroll = 0;
+                _lines.SetWindowPosition(_lines.Count - 1);
             }
 
             _accumulatedScroll -= Input.mouseScrollDelta.y * _mouseScrollSpeed;
@@ -345,8 +344,7 @@ namespace GameConsoleInterals
 
             public void SetWindowPosition(int position)
             {
-                WindowPosition = Mathf.Max(position, 0);
-                WindowPosition = Mathf.Min(WindowPosition, Count - 1);
+                WindowPosition = Mathf.Clamp(position, 0, Count - 1);
             }
 
             public void AddLine(Line line)

@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a710da78879440489da5afe5fba6d82, type: 3}
-  m_Name: ItemShield_Swap
+  m_Name: ItemAttack_TwinSlice
   m_EditorClassIdentifier: 
-  ID: {fileID: 971858758830137585, guid: aa0538731df87df429b0362fd7f15397, type: 3}
-  Icon: {fileID: 21300000, guid: 11713e7ebd98e9d499dd6621de2b0f1b, type: 3}
-  Name: Swap
-  Description: You swap place with a target (2 AP, Range 3)
+  ID: {fileID: 971858758830137585, guid: 3fa80de446fd0ed409cdb9374b921d40, type: 3}
+  ItemPrefab: {fileID: 5742253346417087641, guid: 3fa80de446fd0ed409cdb9374b921d40,
+    type: 3}
+  Icon: {fileID: 21300000, guid: 555fa951575fd004bac4906f4f6a5366, type: 3}
+  Name: Twin Slice
+  Rarity: 1
+  EffectDescription: Attack 2 character nearby

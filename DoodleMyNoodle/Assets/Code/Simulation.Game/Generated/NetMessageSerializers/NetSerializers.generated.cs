@@ -243,61 +243,6 @@ public static class StaticNetSerializer_SimInputCheatKillPlayerPawn
         StaticNetSerializer_SimCheatInput.NetDeserialize(obj, reader);
     }
 }
-public static class StaticNetSerializer_SimInputKeycode
-{
-    public static int GetNetBitSize_Class(SimInputKeycode obj)
-    {
-        if (obj == null)
-            return 1;
-        return 1 + GetNetBitSize(obj);
-    }
-
-    public static int GetNetBitSize(SimInputKeycode obj)
-    {
-        int result = 0;
-        result += StaticNetSerializer_System_Int32.GetNetBitSize();
-        result += StaticNetSerializer_System_Int32.GetNetBitSize();
-        result += StaticNetSerializer_PersistentId.GetNetBitSize(ref obj.SimPlayerId);
-        result += StaticNetSerializer_SimPlayerInput.GetNetBitSize(obj);
-        return result;
-    }
-
-    public static void NetSerialize_Class(SimInputKeycode obj, BitStreamWriter writer)
-    {
-        if (obj == null)
-        {
-            writer.WriteBit(false);
-            return;
-        }
-        writer.WriteBit(true);
-        NetSerialize(obj, writer);
-    }
-    public static void NetSerialize(SimInputKeycode obj, BitStreamWriter writer)
-    {
-        StaticNetSerializer_System_Int32.NetSerialize((System.Int32)obj.state, writer);
-        StaticNetSerializer_System_Int32.NetSerialize((System.Int32)obj.keyCode, writer);
-        StaticNetSerializer_PersistentId.NetSerialize(ref obj.SimPlayerId, writer);
-        StaticNetSerializer_SimPlayerInput.NetSerialize(obj, writer);
-    }
-
-    public static SimInputKeycode NetDeserialize_Class(BitStreamReader reader)
-    {
-        if (reader.ReadBit() == false)
-        {
-            return null;
-        }
-        SimInputKeycode obj = new SimInputKeycode();
-        NetDeserialize(obj, reader);
-        return obj;
-    }
-    public static void NetDeserialize(SimInputKeycode obj, BitStreamReader reader)
-    {
-        obj.state = (SimInputKeycode.State)StaticNetSerializer_System_Int32.NetDeserialize(reader);
-        obj.keyCode = (UnityEngine.KeyCode)StaticNetSerializer_System_Int32.NetDeserialize(reader);
-        StaticNetSerializer_PersistentId.NetDeserialize(ref obj.SimPlayerId, reader);
-        StaticNetSerializer_SimPlayerInput.NetDeserialize(obj, reader);
-    }
-}
 public static class StaticNetSerializer_SimInputPlayerCreate
 {
     public static int GetNetBitSize_Class(SimInputPlayerCreate obj)
@@ -508,7 +453,7 @@ public static class ArrayNetSerializer_GameAction_ParameterData
     {
         if (obj == null)
             return 1;
-        int result = 1 + sizeof(UInt32) * 8;
+        int result = 1 + sizeof(Int32) * 8;
         for (int i = 0; i < obj.Length; i++)
         {
             result += StaticNetSerializer_GameAction_ParameterData.GetNetBitSize_Class(obj[i]);
@@ -524,7 +469,7 @@ public static class ArrayNetSerializer_GameAction_ParameterData
             return;
         }
         writer.WriteBit(true);
-        writer.WriteUInt32((UInt32)obj.Length);
+        writer.WriteInt32(obj.Length);
         for (int i = 0; i < obj.Length; i++)
         {
             StaticNetSerializer_GameAction_ParameterData.NetSerialize_Class(obj[i], writer);
@@ -538,7 +483,7 @@ public static class ArrayNetSerializer_GameAction_ParameterData
             obj = null;
             return;
         }
-        obj = new GameAction.ParameterData[reader.ReadUInt32()];
+        obj = new GameAction.ParameterData[reader.ReadInt32()];
         for (int i = 0; i < obj.Length; i++)
         {
             obj[i] = StaticNetSerializer_GameAction_ParameterData.NetDeserialize_Class(reader);

@@ -10,6 +10,7 @@ public static partial class NetSerializerCodeGenerator
 {
     static HashSet<Type> s_doNoRegenerate = new HashSet<Type>();
     static HashSet<Type> s_generateArrayCode = new HashSet<Type>();
+    static HashSet<Type> s_generateListCode = new HashSet<Type>();
     static Dictionary<string, (FileStream file, StreamWriter writer)> s_fileStreams = new Dictionary<string, (FileStream file, StreamWriter writer)>();
 
     [MenuItem(NetSerializationCodeGenSettings.MENUNAME_GENERATE_SERIALIZERS, priority = NetSerializationCodeGenSettings.MENUPRIORITY_GENERATE_SERIALIZERS)]
@@ -28,6 +29,7 @@ public static partial class NetSerializerCodeGenerator
     {
         s_doNoRegenerate.Clear();
         s_generateArrayCode.Clear();
+        s_generateListCode.Clear();
 
         List<Type> serializableTypes = NetSerializationCodeGenUtility.GetNetSerializableTypes();
 
@@ -37,6 +39,11 @@ public static partial class NetSerializerCodeGenerator
         }
 
         foreach (Type type in s_generateArrayCode)
+        {
+            GenerateCode(type, clear);
+        }
+
+        foreach (Type type in s_generateListCode)
         {
             GenerateCode(type, clear);
         }
@@ -53,7 +60,13 @@ public static partial class NetSerializerCodeGenerator
             return;
         }
 
-        string assemblyName = type.Assembly.GetName().Name;
+        Type elementType = type;
+        if(elementType.IsGenericType && elementType.GetGenericTypeDefinition() == typeof(List<>))
+        {
+            elementType = elementType.GetGenericArguments()[0];
+        }
+
+        string assemblyName = elementType.Assembly.GetName().Name;
         if (NetSerializationCodeGenSettings.s_GeneratedSerializersPath.ContainsKey(assemblyName))
         {
             s_doNoRegenerate.Add(type);
@@ -68,6 +81,10 @@ public static partial class NetSerializerCodeGenerator
             if (type.IsArray)
             {
                 ArrayNetSerializerModel.Generate(type, filePath, clear, appendInFile);
+            }
+            else if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                ListNetSerializerModel.Generate(type, filePath, clear, appendInFile);
             }
             else
             {
