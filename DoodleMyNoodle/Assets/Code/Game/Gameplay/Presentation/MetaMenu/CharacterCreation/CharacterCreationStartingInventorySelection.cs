@@ -33,7 +33,7 @@ public class CharacterCreationStartingInventorySelection : GamePresentationBehav
             GameObject newKitButton = Instantiate(KitButtonPrefab, transform);
             StartingKitButtonDisplay startingKitDisplay = newKitButton.GetComponent<StartingKitButtonDisplay>();
             _kitButtons.Add(startingKitDisplay);
-            startingKitDisplay.InitDisplayKit(NewKitSelected, kitID.Value, items.ToNativeArray(Allocator.Temp));
+            startingKitDisplay.InitDisplayKit(NewKitSelected, kitID.Value, items.ToNativeArray(Allocator.Temp), startingKit);
         });
     }
 

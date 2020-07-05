@@ -1,5 +1,6 @@
 using System;
 using Unity.Collections;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -34,7 +35,7 @@ public class StartingKitButtonDisplay : GamePresentationBehaviour
         _kitButton.onClick.AddListener(KitButtonClicked);
     }
 
-    public void InitDisplayKit(Action<int> selectedKitCallback, int kitNumber, NativeArray<InventoryItemPrefabReference> items)
+    public void InitDisplayKit(Action<int> selectedKitCallback, int kitNumber, NativeArray<InventoryItemPrefabReference> items, Entity startingKit)
     {
         _currentKitSelectedCallback = selectedKitCallback;
         CurrentKitNumber = kitNumber;
@@ -46,7 +47,7 @@ public class StartingKitButtonDisplay : GamePresentationBehaviour
             if (SimWorld.TryGetComponentData(item.ItemEntityPrefab, out SimAssetId itemIDComponent))
             {
                 ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
-                itemSlot.UpdateCurrentItemSlot(itemInfo, KitButtonClicked);
+                itemSlot.UpdateCurrentItemSlot(itemInfo, KitButtonClicked, startingKit);
             }
         }
     }

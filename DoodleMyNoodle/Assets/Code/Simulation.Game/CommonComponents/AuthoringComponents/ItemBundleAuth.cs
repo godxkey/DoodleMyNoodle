@@ -56,11 +56,12 @@ internal partial class CommonWrites
     }
 
     // We keep the item reference into the bundle / container even after transfering the items
-    public static void CopyToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, DynamicBuffer<InventoryItemPrefabReference> sourceItems)
+    public static void CopyToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, DynamicBuffer<InventoryItemPrefabReference> sourceItemsBuffer)
     {
-        if (sourceItems.Length <= 0)
+        if (sourceItemsBuffer.Length <= 0)
             return;
 
+        NativeArray<InventoryItemPrefabReference> sourceItems = sourceItemsBuffer.ToNativeArray(Allocator.Temp);
         NativeArray<Entity> itemInstances = new NativeArray<Entity>(sourceItems.Length, Allocator.Temp);
 
         // Spawn items

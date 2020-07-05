@@ -1,10 +1,11 @@
 ﻿using System;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngineX;
 
-public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public Image Background;
     public Image ItemIcon;
@@ -14,6 +15,8 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
     private ItemVisualInfo _currentItem;
     public Action OnItemClicked; // index of item in list, not used here
 
+    private Entity _itemsOwner;
+
     private void Start()
     {
         _startBackgroundColor = Background.color;
@@ -21,10 +24,11 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     protected override void OnGamePresentationUpdate() { }
 
-    public virtual void UpdateCurrentItemSlot(ItemVisualInfo item, Action onItemClicked)
+    public virtual void UpdateCurrentItemSlot(ItemVisualInfo item, Action onItemClicked, Entity owner)
     {
         _currentItem = item;
         OnItemClicked = onItemClicked;
+        _itemsOwner = owner;
 
         UpdateDisplay();
     }
@@ -47,7 +51,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         if (_currentItem != null)
         {
             Background.color = Color.white;
-            MouseDisplay.Instance.SetToolTipDisplay(true, _currentItem.Name, _currentItem.Description);
+            TooltipDisplay.Instance.ActivateToolTipDisplay(_currentItem, _itemsOwner);
         }
     }
 
@@ -56,7 +60,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         if (_currentItem != null)
         {
             Background.color = _startBackgroundColor;
-            MouseDisplay.Instance.SetToolTipDisplay(false);
+            TooltipDisplay.Instance.DeactivateToolTipDisplay();
         }
     }
 
