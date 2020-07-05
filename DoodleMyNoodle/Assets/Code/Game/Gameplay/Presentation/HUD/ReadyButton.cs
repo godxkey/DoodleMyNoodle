@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.Entities;
+using System;
 
 public class ReadyButton : GamePresentationBehaviour
 {
@@ -29,6 +30,8 @@ public class ReadyButton : GamePresentationBehaviour
     private const float UPDATE_DELAY = 0.5f;
 
     public TurnState GetState() { return _viewState.Get(); }
+
+    public event Action ButtonPressed;
 
     protected override void Awake()
     {
@@ -128,5 +131,7 @@ public class ReadyButton : GamePresentationBehaviour
         SimWorld.SubmitInput(new SimPlayerInputNextTurn(!currentlyReady));
 
         _viewState.Set(currentlyReady ? TurnState.NotReady : TurnState.Ready);
+
+        ButtonPressed?.Invoke();
     }
 }
