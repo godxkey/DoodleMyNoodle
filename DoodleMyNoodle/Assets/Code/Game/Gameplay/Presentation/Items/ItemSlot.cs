@@ -5,8 +5,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngineX;
 
-public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [SerializeField]
+    private Button _itemSlotButton;
+
     public Image Background;
     public Image ItemIcon;
     public Color HoverBackgroundColor = Color.white;
@@ -20,6 +23,8 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
     private void Start()
     {
         _startBackgroundColor = Background.color;
+
+        _itemSlotButton.onClick.AddListener(ItemSlotClicked);
     }
 
     protected override void OnGamePresentationUpdate() { }
@@ -64,12 +69,9 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         }
     }
 
-    public virtual void OnPointerClick(PointerEventData eventData)
+    public void ItemSlotClicked()
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            UseItemSlot();
-        }
+        UseItemSlot();
     }
 
     public virtual void UseItemSlot()
