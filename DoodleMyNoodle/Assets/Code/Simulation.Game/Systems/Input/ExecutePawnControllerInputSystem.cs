@@ -73,7 +73,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
 
                         if (EntityManager.Exists(pawn.Value))
                         {
-                            CommonWrites.CopyToInventory(Accessor, pawn.Value, inventoryItems);
+                            CommonWrites.CopyToEntityInventory(Accessor, pawn.Value, inventoryItems);
                         }
                     }
                 });
