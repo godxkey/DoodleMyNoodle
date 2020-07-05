@@ -23,13 +23,13 @@ public class RequestNextTurnIfTeamMembersReadySystem : SimComponentSystem
         Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn) =>
         {
             // if a team member is NOT ready
-            if(team.Value == teamCurrentlyPlaying && !readyForNextTurn.Value)
+            if (team.Value == teamCurrentlyPlaying && !readyForNextTurn.Value)
             {
                 everyoneIsReady = false;
             }
         });
 
-        if (everyoneIsReady)
+        if (everyoneIsReady && teamCurrentlyPlaying != -1)
         {
             CommonWrites.RequestNextTurn(Accessor);
         }

@@ -6,6 +6,13 @@ public struct InventoryItemReference : IBufferElementData
     public Entity ItemEntity;
 }
 
+// used for item bundle added dynamicly while in game
+public struct InventoryItemPrefabReference : IBufferElementData
+{
+    public Entity ItemEntityPrefab;
+}
+
+// Used for default base inventory when creating it
 public struct StartingInventoryItem : IBufferElementData
 {
     public Entity ItemEntityPrefab;
