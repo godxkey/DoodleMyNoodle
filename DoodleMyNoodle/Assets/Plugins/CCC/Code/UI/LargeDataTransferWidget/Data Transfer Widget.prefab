@@ -135,7 +135,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 999
   m_TargetDisplay: 0
 --- !u!114 &7864758683150869124
 MonoBehaviour:
@@ -191,3 +191,4 @@ MonoBehaviour:
   ElementPrefab: {fileID: 5581175024397897043, guid: 8b83d4daa6c1e044abaad5d57d162244,
     type: 3}
   ElementsSpawnContainer: {fileID: 7864758681702938042}
+  NewTransferSFX: {fileID: 0}
