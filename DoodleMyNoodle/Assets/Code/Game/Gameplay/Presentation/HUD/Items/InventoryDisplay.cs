@@ -74,7 +74,7 @@ public class InventoryDisplay : GamePresentationBehaviour
 
                     if (GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).IsContextValid(SimWorld, context))
                     {
-                        _inventorySlots[itemIndex].UpdateCurrentItemSlot(itemInfo, itemIndex, InventorySlotShortcuts[itemIndex], onItemUsedCallback);
+                        _inventorySlots[itemIndex].UpdateCurrentInventorySlot(itemInfo, itemIndex, InventorySlotShortcuts[itemIndex], onItemUsedCallback);
                     }
                     else
                     {
@@ -89,7 +89,7 @@ public class InventoryDisplay : GamePresentationBehaviour
         // Clear the rest of the inventory slots
         for (int i = _inventorySlots.Count - 1; i >= itemIndex; i--)
         {
-            _inventorySlots[i].UpdateCurrentItemSlot(null, i, InventorySlotShortcuts[i], null);
+            _inventorySlots[i].UpdateCurrentInventorySlot(null, i, InventorySlotShortcuts[i], null);
         }
     }
 
@@ -102,7 +102,7 @@ public class InventoryDisplay : GamePresentationBehaviour
             {
                 if(_inventorySlots.Count > i)
                 {
-                    _inventorySlots[i].UseInventorySlot();
+                    _inventorySlots[i].UseItemSlot();
                 }
                 return;
             }
