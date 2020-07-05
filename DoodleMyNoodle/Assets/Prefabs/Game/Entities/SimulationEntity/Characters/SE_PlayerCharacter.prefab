@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value:
-    RawValue: 0
+    RawValue: 17179869184
 --- !u!114 &8435132431937638192
 MonoBehaviour:
   m_ObjectHideFlags: 0

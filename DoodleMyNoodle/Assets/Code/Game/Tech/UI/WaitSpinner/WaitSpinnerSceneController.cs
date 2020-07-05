@@ -16,10 +16,6 @@ namespace Internals.WaitSpinnerService
         }
 
         [SerializeField] Image _inputBlocker;
-        [SerializeField] RectTransform _spinner;
-        [SerializeField] float _spinSpeed = 1;
-
-        Tween spinAnim;
 
         void Awake()
         {
@@ -35,20 +31,5 @@ namespace Internals.WaitSpinnerService
         {
             gameObject.SetActive(false);
         }
-
-        void OnEnable()
-        {
-            spinAnim = _spinner.DORotate(Vector3.back * 360, 1f / _spinSpeed, RotateMode.LocalAxisAdd)
-                .SetLoops(-1, LoopType.Restart)
-                .SetUpdate(true);
-        }
-
-        void OnDisable()
-        {
-            spinAnim.Kill();
-            spinAnim = null;
-        }
-
     }
-
 }

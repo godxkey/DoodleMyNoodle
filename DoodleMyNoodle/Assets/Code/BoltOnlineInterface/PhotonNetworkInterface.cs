@@ -71,14 +71,22 @@ namespace Internals.PhotonNetwokInterface
 
         public override void LaunchClient(OperationResultDelegate onComplete)
         {
+            if (State != NetworkState.Stopped)
+                throw new Exception("Cannot launch client when state is not 'Stopped'.");
+
             _operationCallbackLaunch = onComplete;
             State = NetworkState.Launching;
+            Log.Info(s_logChannel, "[PhotonNetworkInterface] LaunchClient...");
             BoltLauncher.StartClient(GameBoltConfig.GetConfig());
         }
         public override void LaunchServer(OperationResultDelegate onComplete)
         {
+            if (State != NetworkState.Stopped)
+                throw new Exception("Cannot launch server when state is not 'Stopped'.");
+
             _operationCallbackLaunch = onComplete;
             State = NetworkState.Launching;
+            Log.Info(s_logChannel, "[PhotonNetworkInterface] LaunchServer...");
             BoltLauncher.StartServer(GameBoltConfig.GetConfig());
         }
 
@@ -139,22 +147,32 @@ namespace Internals.PhotonNetwokInterface
         {
             if (State == NetworkState.ShuttingDown && !BoltNetwork.IsRunning)
             {
-                State = NetworkState.Stopped;
-
-                if (_connections.Count != 0)
+                // This timer inserts a delay between Bolt's alleged 'Shutdown complete' and our state 'Stopped'
+                // This an ugly fix to a bug where requesting a StartClient or StartServer too soon after the shutdown breaks Bolt's state
+                if (_shutdownCompleteTimer > 0)
                 {
-                    _connections.Clear();
-                    Log.Info(s_logChannel, "[PhotonNetworkInterface] Shut down complete weirdness: m_connections.Count > 0");
+                    _shutdownCompleteTimer -= Time.unscaledDeltaTime;
                 }
-
-                if (_connectedSessionInfo != null)
+                else
                 {
-                    _connectedSessionInfo = null;
-                    OnDisconnectedFromSession?.Invoke();
-                }
+                    Log.Info(s_logChannel, "[PhotonNetworkInterface] BoltShutdownComplete");
+                    State = NetworkState.Stopped;
 
-                ConcludeOperationCallback(ref _operationCallbackDisconnectedFromSession, true, null);
-                ConcludeOperationCallback(ref _operationCallbackShutdown, true, null);
+                    if (_connections.Count != 0)
+                    {
+                        _connections.Clear();
+                        Log.Info(s_logChannel, "[PhotonNetworkInterface] Shutdown weirdness: m_connections.Count > 0");
+                    }
+
+                    if (_connectedSessionInfo != null)
+                    {
+                        _connectedSessionInfo = null;
+                        OnDisconnectedFromSession?.Invoke();
+                    }
+
+                    ConcludeOperationCallback(ref _operationCallbackDisconnectedFromSession, true, null);
+                    ConcludeOperationCallback(ref _operationCallbackShutdown, true, null);
+                }
             }
         }
 
@@ -222,6 +240,7 @@ namespace Internals.PhotonNetwokInterface
 
         public void Event_BoltShutdownBegin(AddCallback registerDoneCallback, UdpConnectionDisconnectReason disconnectReason)
         {
+            _shutdownCompleteTimer = BOLT_SHUTDOWNCOMPLETE_DELAY;
             State = NetworkState.ShuttingDown;
             Log.Info(s_logChannel, "[PhotonNetworkInterface] BoltShutdownBegin: " + disconnectReason);
 
@@ -513,5 +532,10 @@ namespace Internals.PhotonNetwokInterface
         OperationResultDelegate _operationCallbackSessionCreated;
         OperationResultDelegate _operationCallbackSessionConnected;
         OperationResultDelegate _operationCallbackDisconnectedFromSession;
+
+        // This timer inserts a delay between Bolt's alleged 'Shutdown complete' and our state 'Stopped'
+        // This an ugly fix to a bug where requesting a StartClient or StartServer too soon after the shutdown breaks Bolt's state
+        private const float BOLT_SHUTDOWNCOMPLETE_DELAY = 1f;
+        private float _shutdownCompleteTimer;
     }
 }
