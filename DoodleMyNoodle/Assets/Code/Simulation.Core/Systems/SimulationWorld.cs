@@ -55,22 +55,41 @@ public class SimulationWorld : World, IOwnedWorld
     }
 
     private EntityQuery _tickSingletonQuery;
-    internal uint GetLastedTickIdFromEntity() { return EntityManager.GetComponentData<SimulationOngoingTickId>(TickDataSingleton).TickId; }
-    internal Entity TickDataSingleton
+    internal uint GetLastedTickIdFromEntity()
     {
-        get
+        if (TryGetTickDataSingleton(out Entity singleton))
         {
-            if (_tickSingletonQuery.IsEmptyIgnoreFilter)
-            {
-#if UNITY_EDITOR
-                var entity = EntityManager.CreateEntity(typeof(SimulationOngoingTickId));
-                EntityManager.SetName(entity, "WorldTick");
-#else
-                EntityManager.CreateEntity(typeof(SimulationOngoingTickId));
-#endif
-            }
-
-            return _tickSingletonQuery.GetSingletonEntity();
+            return EntityManager.GetComponentData<SimulationOngoingTickId>(singleton).TickId;
         }
+        return 0;
+    }
+
+    internal bool TryGetTickDataSingleton(out Entity singleton)
+    {
+        if (!_tickSingletonQuery.IsEmptyIgnoreFilter)
+        {
+            singleton = _tickSingletonQuery.GetSingletonEntity();
+        }
+        else
+        {
+            singleton = Entity.Null;
+        }
+
+        return singleton != Entity.Null;
+    }
+
+    internal Entity GetOrCreateTickDataSingleton()
+    {
+        if (_tickSingletonQuery.IsEmptyIgnoreFilter)
+        {
+#if UNITY_EDITOR
+            var entity = EntityManager.CreateEntity(typeof(SimulationOngoingTickId));
+            EntityManager.SetName(entity, "WorldTick");
+#else
+            EntityManager.CreateEntity(typeof(SimulationOngoingTickId));
+#endif
+        }
+
+        return _tickSingletonQuery.GetSingletonEntity();
     }
 }
