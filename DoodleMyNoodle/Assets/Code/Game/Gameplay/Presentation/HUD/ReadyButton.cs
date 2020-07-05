@@ -71,7 +71,11 @@ public class ReadyButton : GamePresentationBehaviour
 
     private void UpdateButtonState()
     {
-        if (SimWorldCache.CurrentTeam.Value == SimWorldCache.LocalPawnTeam.Value)
+        if ((SimWorldCache.CurrentTeam.Value != SimWorldCache.LocalPawnTeam.Value) && (SimWorldCache.CurrentTeam.Value != -1))
+        {
+            _state.Set(SimWorld.HasSingleton<GameReadyToStart>() ? TurnState.NotMyTurn : TurnState.NotReady);
+        }
+        else
         {
             if (SimWorld.TryGetComponentData(SimWorldCache.LocalController, out ReadyForNextTurn ready) && ready.Value)
             {
@@ -81,10 +85,6 @@ public class ReadyButton : GamePresentationBehaviour
             {
                 _state.Set(TurnState.NotReady);
             }
-        }
-        else
-        {
-            _state.Set(SimWorld.HasSingleton<GameReadyToStart>() ? TurnState.NotMyTurn : TurnState.NotReady );
         }
 
         if (_state.IsDirty)

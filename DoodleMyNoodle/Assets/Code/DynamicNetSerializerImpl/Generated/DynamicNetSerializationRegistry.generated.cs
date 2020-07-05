@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class DynamicNetSerializationRegistry
 {
-    public static readonly ulong crc = 810402559978047222;
+    public static readonly ulong crc = 14955727417163746621;
 
     public static readonly Type[] types = new Type[]
     {
@@ -107,6 +107,8 @@ public static class DynamicNetSerializationRegistry
         typeof(SimPlayerInputNextTurn)
         ,
         typeof(SimPlayerInputUseItem)
+        ,
+        typeof(SimPlayerStartingInventorySelectionInput)
         ,
         typeof(SimulationControl.NetMessageSimTick)
         ,
@@ -417,6 +419,12 @@ public static class DynamicNetSerializationRegistry
         {
             SimPlayerInputUseItem castedObj = (SimPlayerInputUseItem)obj;
             return StaticNetSerializer_SimPlayerInputUseItem.GetNetBitSize(castedObj);
+        }
+        ,
+        [typeof(SimPlayerStartingInventorySelectionInput)] = (obj) =>
+        {
+            SimPlayerStartingInventorySelectionInput castedObj = (SimPlayerStartingInventorySelectionInput)obj;
+            return StaticNetSerializer_SimPlayerStartingInventorySelectionInput.GetNetBitSize(castedObj);
         }
         ,
         [typeof(SimulationControl.NetMessageSimTick)] = (obj) =>
@@ -756,6 +764,12 @@ public static class DynamicNetSerializationRegistry
         {
             SimPlayerInputUseItem castedObj = (SimPlayerInputUseItem)obj;
             StaticNetSerializer_SimPlayerInputUseItem.NetSerialize(castedObj, writer);
+        }
+        ,
+        [typeof(SimPlayerStartingInventorySelectionInput)] = (obj, writer) =>
+        {
+            SimPlayerStartingInventorySelectionInput castedObj = (SimPlayerStartingInventorySelectionInput)obj;
+            StaticNetSerializer_SimPlayerStartingInventorySelectionInput.NetSerialize(castedObj, writer);
         }
         ,
         [typeof(SimulationControl.NetMessageSimTick)] = (obj, writer) =>
@@ -1148,47 +1162,54 @@ public static class DynamicNetSerializationRegistry
         ,
         [49] = (reader) =>
         {
+            SimPlayerStartingInventorySelectionInput obj = new SimPlayerStartingInventorySelectionInput();
+            StaticNetSerializer_SimPlayerStartingInventorySelectionInput.NetDeserialize(obj, reader);
+            return obj;
+        }
+        ,
+        [50] = (reader) =>
+        {
             SimulationControl.NetMessageSimTick obj = new SimulationControl.NetMessageSimTick();
             StaticNetSerializer_SimulationControl_NetMessageSimTick.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
-        [50] = (reader) =>
+        [51] = (reader) =>
         {
             SimulationControl.SimTickData obj = new SimulationControl.SimTickData();
             StaticNetSerializer_SimulationControl_SimTickData.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
-        [51] = (reader) =>
+        [52] = (reader) =>
         {
             SyncedValueCurrentLevel obj = new SyncedValueCurrentLevel();
             StaticNetSerializer_SyncedValueCurrentLevel.NetDeserialize(ref obj, reader);
             return obj;
         }
         ,
-        [52] = (reader) =>
+        [53] = (reader) =>
         {
             TestMessage obj = new TestMessage();
             StaticNetSerializer_TestMessage.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [53] = (reader) =>
+        [54] = (reader) =>
         {
             TestMessageAnimal obj = new TestMessageAnimal();
             StaticNetSerializer_TestMessageAnimal.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [54] = (reader) =>
+        [55] = (reader) =>
         {
             TestMessageCat obj = new TestMessageCat();
             StaticNetSerializer_TestMessageCat.NetDeserialize(obj, reader);
             return obj;
         }
         ,
-        [55] = (reader) =>
+        [56] = (reader) =>
         {
             TestMessageDog obj = new TestMessageDog();
             StaticNetSerializer_TestMessageDog.NetDeserialize(obj, reader);
