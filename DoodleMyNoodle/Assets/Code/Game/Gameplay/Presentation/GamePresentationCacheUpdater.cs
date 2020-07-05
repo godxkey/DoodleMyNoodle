@@ -14,7 +14,7 @@ public class GamePresentationCache
     public Vector3 LocalPawnPositionFloat;
     public Entity LocalController;
     public Team LocalPawnTeam;
-    public TurnCurrentTeam CurrentTeam;
+    public Team CurrentTeam;
     public ExternalSimWorldAccessor SimWorld;
 }
 
@@ -52,7 +52,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
     {
         UpdateCurrentPlayerPawn();
 
-        Cache.CurrentTeam = Cache.SimWorld.GetSingleton<TurnCurrentTeam>();
+        Cache.CurrentTeam = new Team() { Value = Cache.SimWorld.GetSingleton<TurnCurrentTeam>().Value };
     }
 
     private void UpdateCurrentPlayerPawn()
@@ -60,7 +60,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
         Cache.LocalPawn = PlayerHelpers.GetLocalSimPawnEntity(Cache.SimWorld);
         Cache.LocalController = CommonReads.GetPawnController(Cache.SimWorld, Cache.LocalPawn);
 
-        if(Cache.SimWorld.TryGetComponentData(Cache.LocalController, out Team pawnTeam))
+        if (Cache.SimWorld.TryGetComponentData(Cache.LocalController, out Team pawnTeam))
         {
             Cache.LocalPawnTeam = pawnTeam;
         }

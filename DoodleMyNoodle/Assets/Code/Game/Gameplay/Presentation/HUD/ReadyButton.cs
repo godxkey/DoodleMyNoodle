@@ -1,28 +1,21 @@
-using Unity.Mathematics;
-using static Unity.Mathematics.math;
-using static fixMath;
-using System;
 using UnityEngine;
-using UnityEngineX;
-using Unity.Entities;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Events;
+using Unity.Entities;
 
 public class ReadyButton : GamePresentationBehaviour
 {
-    public Button Button;
-    public TextMeshProUGUI Text;
-    public Image Image;
+    [SerializeField] private Button _button;
+    [SerializeField] private TextMeshProUGUI _text;
+    [SerializeField] private Image _image;
 
-    public string CantReadyYetText = "Wait";
-    public string WaitingForReadyText = "Not Ready";
-    public string ReadyText = "Ready";
+    [SerializeField] private string _cantReadyYetText = "Wait";
+    [SerializeField] private Color _cantReadyYetColor = Color.white;
+    [SerializeField] private string _waitingForReadyText = "Not Ready";
+    [SerializeField] private Color _waitingForReadyColor = Color.green;
+    [SerializeField] private string _readyText = "Ready";
+    [SerializeField] private Color _readyColor = Color.white;
 
-    public Color WaitingForNextTurnColor = Color.white;
-    public Color ReadyColor = Color.green;
-
-    public UnityEvent OnReady = new UnityEvent();
 
     public enum TurnState
     {
@@ -31,20 +24,19 @@ public class ReadyButton : GamePresentationBehaviour
         NotMyTurn
     }
 
-    private DirtyValue<TurnState> _state;
-
-    public TurnState GetState() { return _state.Get(); }
-
+    private DirtyValue<TurnState> _viewState;
     private float _updateTimer = 0;
     private const float UPDATE_DELAY = 0.5f;
 
+    public TurnState GetState() { return _viewState.Get(); }
+
     protected override void Awake()
     {
-        Button.onClick.AddListener(OnReadyClicked);
+        _button.onClick.AddListener(OnReadyClicked);
 
         _updateTimer = UPDATE_DELAY;
 
-        _state.Set(TurnState.NotMyTurn); // default value
+        _viewState.Set(TurnState.NotMyTurn); // default value
 
         base.Awake();
     }
@@ -55,7 +47,7 @@ public class ReadyButton : GamePresentationBehaviour
         {
             _updateTimer = UPDATE_DELAY; // reset timer as we're manually updating
 
-            UpdateButtonState();
+            UpdateState();
         }
         else
         {
@@ -64,59 +56,77 @@ public class ReadyButton : GamePresentationBehaviour
             {
                 _updateTimer = UPDATE_DELAY;
 
-                UpdateButtonState();
+                UpdateState();
+            }
+        }
+
+        UpdateView();
+    }
+
+    private void UpdateState()
+    {
+        if (SimWorldCache.LocalPawn == Entity.Null)
+        {
+            // If we don't have a pawn
+            _viewState.Set(TurnState.NotMyTurn);
+        }
+        else if (SimWorldCache.CurrentTeam != SimWorldCache.LocalPawnTeam && SimWorldCache.CurrentTeam.Value != -1)
+        {
+            // if it's not our turn to play
+            _viewState.Set(SimWorld.HasSingleton<GameReadyToStart>() ? TurnState.NotMyTurn : TurnState.NotReady);
+        }
+        else
+        {
+            // if it's our turn to play
+            if (SimWorld.TryGetComponentData(SimWorldCache.LocalController, out ReadyForNextTurn ready) && ready.Value)
+            {
+                _viewState.Set(TurnState.Ready);
+            }
+            else
+            {
+                _viewState.Set(TurnState.NotReady);
             }
         }
     }
 
-    private void UpdateButtonState()
+    private void UpdateView()
     {
-        if ((SimWorldCache.CurrentTeam.Value != SimWorldCache.LocalPawnTeam.Value) && (SimWorldCache.CurrentTeam.Value != -1))
+        if (_viewState.IsDirty)
         {
-            _state.Set(SimWorld.HasSingleton<GameReadyToStart>() ? TurnState.NotMyTurn : TurnState.NotReady);
-        }
-        else
-        {
-            if (SimWorld.TryGetComponentData(SimWorldCache.LocalController, out ReadyForNextTurn ready) && ready.Value)
-            {
-                _state.Set(TurnState.Ready);
-            }
-            else
-            {
-                _state.Set(TurnState.NotReady);
-            }
-        }
-
-        if (_state.IsDirty)
-        {
-            switch (_state.Get())
+            switch (_viewState.Get())
             {
                 case TurnState.Ready:
-                    Text.text = ReadyText;
-                    Image.color = ReadyColor;
+                    _text.text = _readyText;
+                    _image.color = _readyColor;
                     break;
                 case TurnState.NotReady:
-                    Text.text = WaitingForReadyText;
-                    Image.color = WaitingForNextTurnColor;
+                    _text.text = _waitingForReadyText;
+                    _image.color = _waitingForReadyColor;
                     break;
                 default:
                 case TurnState.NotMyTurn:
-                    Text.text = CantReadyYetText;
-                    Image.color = WaitingForNextTurnColor;
+                    _text.text = _cantReadyYetText;
+                    _image.color = _cantReadyYetColor;
                     break;
             }
-            _state.Reset();
+            _viewState.Reset();
         }
     }
 
     private void OnReadyClicked()
     {
-        if (_state.Get() == TurnState.NotMyTurn)
+        ToggleReady();
+    }
+
+    private void ToggleReady()
+    {
+        if (_viewState.Get() == TurnState.NotMyTurn)
             return;
 
-        OnReady?.Invoke();
+        bool currentlyReady = _viewState.Get() == TurnState.Ready;
 
-        SimPlayerInputNextTurn simInput = new SimPlayerInputNextTurn(_state.Get() == TurnState.NotReady);
-        SimWorld.SubmitInput(simInput);
+        SimWorld.SubmitInput(new SimPlayerInputNextTurn(!currentlyReady));
+
+        _viewState.Set(currentlyReady ? TurnState.NotReady : TurnState.Ready);
     }
 }
