@@ -74,6 +74,13 @@ public class ChangeTurnSystem : SimComponentSystem
 
     private void UpdateTurnTimer()
     {
+        if(this.TryGetSingleton(out TurnCurrentTeam currentTeam))
+        {
+            if (currentTeam.Value == -1) // no team, no change turn
+                return;
+        }
+
+
         TurnTimer turnTimer = this.GetOrCreateSingleton<TurnTimer>();
 
         fix newTimerValue = turnTimer.Value - Time.DeltaTime;

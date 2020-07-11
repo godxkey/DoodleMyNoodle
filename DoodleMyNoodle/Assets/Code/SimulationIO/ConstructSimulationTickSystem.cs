@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
@@ -49,7 +50,6 @@ namespace SimulationControl
 
         public void SubmitInputInternal(SimInput input, INetworkInterfaceConnection instigatorConnection, InputSubmissionId submissionId)
         {
-
             if (ValidateInput(input, instigatorConnection))
             {
                 Log.Info(SimulationIO.LogChannel, $"Accepted sim input from '{(instigatorConnection == null ? "local player" : instigatorConnection.Id.ToString())}': {input}");
@@ -102,19 +102,36 @@ namespace SimulationControl
                     // bundle them up in a tick
                     SimTickData tickData = new SimTickData()
                     {
-                        InputSubmissions = _inputSubmissionQueue.ToArray(),
+                        InputSubmissions = _inputSubmissionQueue.ToList(),
                         ExpectedNewTickId = FindExpectedNewTickId()
                     };
-                    
-                    Log.Info(SimulationIO.LogChannel, $"Construct tick '{tickData.ExpectedNewTickId}' with {tickData.InputSubmissions.Length} inputs.");
+                    _inputSubmissionQueue.Clear();
 
-                    World.GetExistingSystem<SendSimulationTickSystem>()?.ConstructedTicks.Add(tickData);
+                    var sendTickSystem = World.GetExistingSystem<SendSimulationTickSystem>();
 
-                    // give tick to tick system    fbessette: Maybe we should go through entities to communicate that data ?
+                    if (sendTickSystem != null)
+                    {
+                        while (sendTickSystem.ExceedsSizeLimit(tickData))
+                        {
+                            _inputSubmissionQueue.Enqueue(tickData.InputSubmissions.Pop());
+                        }
+
+                        if (_inputSubmissionQueue.Count > 100)
+                        {
+                            Log.Warning("Too many sim inputs clugging the tick creation. Clearing the list...");
+                            _inputSubmissionQueue.Clear();
+                        }
+                    }
+
+                    sendTickSystem?.ConstructedTicks.Add(tickData);
+
+                    // give tick to tick system
                     _tickSystem.AvailableTicks.Add(tickData);
+
+                    Log.Info(SimulationIO.LogChannel, $"Construct tick '{tickData.ExpectedNewTickId}' with {tickData.InputSubmissions.Count} inputs. " +
+                        $"{(_inputSubmissionQueue.Count > 0 ? $"{_inputSubmissionQueue.Count} input(s) were buffered onto the next tick because of size limit." : "")}");
                 }
 
-                _inputSubmissionQueue.Clear();
 
                 _tickTimeCounter -= SimulationConstants.TIME_STEP_F;
             }

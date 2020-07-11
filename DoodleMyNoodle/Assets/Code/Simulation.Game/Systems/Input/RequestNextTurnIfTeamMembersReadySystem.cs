@@ -8,21 +8,28 @@ using Unity.Entities;
 
 public class RequestNextTurnIfTeamMembersReadySystem : SimComponentSystem
 {
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        RequireSingletonForUpdate<TurnCurrentTeam>();
+    }
+
     protected override void OnUpdate()
     {
-        int teamCurrentlyPlaying = CommonReads.GetCurrentTurnTeam(Accessor);
+        int teamCurrentlyPlaying = GetSingleton<TurnCurrentTeam>().Value;
         bool everyoneIsReady = true;
 
         Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn) =>
         {
             // if a team member is NOT ready
-            if(team.Value == teamCurrentlyPlaying && !readyForNextTurn.Value)
+            if (team.Value == teamCurrentlyPlaying && !readyForNextTurn.Value)
             {
                 everyoneIsReady = false;
             }
         });
 
-        if (everyoneIsReady)
+        if (everyoneIsReady && teamCurrentlyPlaying != -1)
         {
             CommonWrites.RequestNextTurn(Accessor);
         }

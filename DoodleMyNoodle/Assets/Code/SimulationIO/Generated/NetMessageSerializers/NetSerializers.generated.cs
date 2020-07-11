@@ -136,7 +136,7 @@ public static class StaticNetSerializer_SimCommandLoadScene
     {
         int result = 0;
         result += StaticNetSerializer_System_String.GetNetBitSize(ref obj.SceneName);
-        result += StaticNetSerializer_SimCommand.GetNetBitSize(obj);
+        result += StaticNetSerializer_SimInput.GetNetBitSize(obj);
         return result;
     }
 
@@ -153,7 +153,7 @@ public static class StaticNetSerializer_SimCommandLoadScene
     public static void NetSerialize(SimCommandLoadScene obj, BitStreamWriter writer)
     {
         StaticNetSerializer_System_String.NetSerialize(ref obj.SceneName, writer);
-        StaticNetSerializer_SimCommand.NetSerialize(obj, writer);
+        StaticNetSerializer_SimInput.NetSerialize(obj, writer);
     }
 
     public static SimCommandLoadScene NetDeserialize_Class(BitStreamReader reader)
@@ -169,7 +169,7 @@ public static class StaticNetSerializer_SimCommandLoadScene
     public static void NetDeserialize(SimCommandLoadScene obj, BitStreamReader reader)
     {
         StaticNetSerializer_System_String.NetDeserialize(ref obj.SceneName, reader);
-        StaticNetSerializer_SimCommand.NetDeserialize(obj, reader);
+        StaticNetSerializer_SimInput.NetDeserialize(obj, reader);
     }
 }
 public static class StaticNetSerializer_SimInputSubmission
@@ -222,38 +222,39 @@ public static class StaticNetSerializer_SimulationControl_SimTickData
     {
         int result = 0;
         result += StaticNetSerializer_System_UInt32.GetNetBitSize(ref obj.ExpectedNewTickId);
-        result += ArrayNetSerializer_SimInputSubmission.GetNetBitSize(ref obj.InputSubmissions);
+        result += ListNetSerializer_SimInputSubmission.GetNetBitSize_Class(obj.InputSubmissions);
         return result;
     }
 
     public static void NetSerialize(ref SimulationControl.SimTickData obj, BitStreamWriter writer)
     {
         StaticNetSerializer_System_UInt32.NetSerialize(ref obj.ExpectedNewTickId, writer);
-        ArrayNetSerializer_SimInputSubmission.NetSerialize(ref obj.InputSubmissions, writer);
+        ListNetSerializer_SimInputSubmission.NetSerialize_Class(obj.InputSubmissions, writer);
     }
 
     public static void NetDeserialize(ref SimulationControl.SimTickData obj, BitStreamReader reader)
     {
         StaticNetSerializer_System_UInt32.NetDeserialize(ref obj.ExpectedNewTickId, reader);
-        ArrayNetSerializer_SimInputSubmission.NetDeserialize(ref obj.InputSubmissions, reader);
+        obj.InputSubmissions = ListNetSerializer_SimInputSubmission.NetDeserialize_Class(reader);
     }
 }
 
-public static class ArrayNetSerializer_SimInputSubmission
+public static class ListNetSerializer_SimInputSubmission
 {
-    public static int GetNetBitSize(ref SimInputSubmission[] obj)
+    public static int GetNetBitSize_Class(List<SimInputSubmission> obj)
     {
         if (obj == null)
             return 1;
-        int result = 1 + sizeof(UInt32) * 8;
-        for (int i = 0; i < obj.Length; i++)
+        int result = 1 + sizeof(Int32) * 8;
+        for (int i = 0; i < obj.Count; i++)
         {
-            result += StaticNetSerializer_SimInputSubmission.GetNetBitSize(ref obj[i]);
+            var x = obj[i];
+            result += StaticNetSerializer_SimInputSubmission.GetNetBitSize(ref x);
         }
         return result;
     }
 
-    public static void NetSerialize(ref SimInputSubmission[] obj, BitStreamWriter writer)
+    public static void NetSerialize_Class(List<SimInputSubmission> obj, BitStreamWriter writer)
     {
         if (obj == null)
         {
@@ -261,24 +262,28 @@ public static class ArrayNetSerializer_SimInputSubmission
             return;
         }
         writer.WriteBit(true);
-        writer.WriteUInt32((UInt32)obj.Length);
-        for (int i = 0; i < obj.Length; i++)
+        writer.WriteInt32(obj.Count);
+        for (int i = 0; i < obj.Count; i++)
         {
-            StaticNetSerializer_SimInputSubmission.NetSerialize(ref obj[i], writer);
+            var x = obj[i];
+            StaticNetSerializer_SimInputSubmission.NetSerialize(ref x, writer);
         }
     }
 
-    public static void NetDeserialize(ref SimInputSubmission[] obj, BitStreamReader reader)
+    public static List<SimInputSubmission> NetDeserialize_Class(BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
-            obj = null;
-            return;
+            return null;
         }
-        obj = new SimInputSubmission[reader.ReadUInt32()];
-        for (int i = 0; i < obj.Length; i++)
+        int size = reader.ReadInt32();
+        List<SimInputSubmission> obj = new List<SimInputSubmission>(size);
+        for (int i = 0; i < size; i++)
         {
-            StaticNetSerializer_SimInputSubmission.NetDeserialize(ref obj[i], reader);
+            SimInputSubmission x = default;
+            StaticNetSerializer_SimInputSubmission.NetDeserialize(ref x, reader);
+            obj.Add(x);
         }
+        return obj;
     }
 }

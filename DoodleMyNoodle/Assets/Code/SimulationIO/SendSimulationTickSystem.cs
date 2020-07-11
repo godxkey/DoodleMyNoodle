@@ -23,6 +23,20 @@ namespace SimulationControl
             ConstructedTicks.Clear();
         }
 
+        public bool ExceedsSizeLimit(SimTickData tick)
+        {
+            var message = MakeMessage(tick);
+            return StaticNetSerializer_SimulationControl_NetMessageSimTick.GetNetBitSize(ref message) > OnlineConstants.MAX_MESSAGE_SIZE_BITS;
+        }
+
+        private NetMessageSimTick MakeMessage(SimTickData tick)
+        {
+            return new NetMessageSimTick()
+            {
+                TickData = tick
+            };
+        }
+
         void SendTickToConnectedPlayers(SimTickData tick)
         {
             var session = GetSession();
@@ -33,12 +47,7 @@ namespace SimulationControl
                 return;
             }
 
-            NetMessageSimTick netMessage = new NetMessageSimTick()
-            {
-                TickData = tick
-            };
-
-            session.SendNetMessage(netMessage, OnlineService.OnlineInterface.SessionInterface.Connections);
+            session.SendNetMessage(MakeMessage(tick), OnlineService.OnlineInterface.SessionInterface.Connections);
         }
     }
 

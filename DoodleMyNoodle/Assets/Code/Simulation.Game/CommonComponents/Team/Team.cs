@@ -3,9 +3,24 @@ using Unity.Collections;
 using Unity.Entities;
 
 [Serializable]
-public struct Team : IComponentData
+public struct Team : IComponentData, IEquatable<Team>
 {
     public int Value;
+
+    public bool Equals(Team other)
+    {
+        return Value == other.Value;
+    }
+
+    public static bool operator ==(Team left, Team right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(Team left, Team right)
+    {
+        return !(left == right);
+    }
 }
 
 public partial class CommonReads

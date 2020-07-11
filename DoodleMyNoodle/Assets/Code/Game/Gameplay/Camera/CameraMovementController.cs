@@ -19,23 +19,19 @@ public class CameraMovementController : GameMonoBehaviour
     public bool EnableMovementLimits;
     public float MaxZoom;
 
-#if UNITY_EDITOR
-    [ConsoleVar("CameraMouseMovementEnabledInEditor", "Enable/Disable the game camera moving when moving the mouse pointer near the edges of the screen.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
-    private static bool s_mouseMovementsEnabledInEditor = false;
-#endif
+    [ConsoleVar("CameraMouseMovementEnabledWhenWindowed", "Enable/Disable the game camera moving when moving the mouse pointer near the edges of the screen.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
+    private static bool s_mouseMovementsEnabledWindowedMode = false;
 
     private static bool MouseMovementsEnabled
     {
         get
         {
-#if UNITY_EDITOR
-            return s_mouseMovementsEnabledInEditor;
-#else
-            return true;
-#endif
+            if (Application.isEditor || !Screen.fullScreen)
+                return s_mouseMovementsEnabledWindowedMode;
+            else
+                return true;
         }
     }
-
 
     void Update()
     {

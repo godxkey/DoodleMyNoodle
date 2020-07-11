@@ -13,7 +13,7 @@ namespace SimulationControl
     public struct SimTickData : IEquatable<SimTickData>
     {
         public uint ExpectedNewTickId;
-        public SimInputSubmission[] InputSubmissions;
+        public List<SimInputSubmission> InputSubmissions;
 
         public bool Equals(SimTickData other)
         {
@@ -22,12 +22,17 @@ namespace SimulationControl
 
         public SimInput[] ToSimInputArray()
         {
-            SimInput[] array = new SimInput[InputSubmissions.Length];
-            for (int i = 0; i < InputSubmissions.Length; i++)
+            SimInput[] array = new SimInput[InputSubmissions.Count];
+            for (int i = 0; i < InputSubmissions.Count; i++)
             {
                 array[i] = InputSubmissions[i].Input;
             }
             return array;
+        }
+
+        public override string ToString()
+        {
+            return $"tick({ExpectedNewTickId}:{InputSubmissions.Count})";
         }
     }
 
@@ -143,7 +148,7 @@ namespace SimulationControl
                 SimTickData tick = AvailableTicks.First();
                 AvailableTicks.RemoveAt(0);
 
-                Log.Info(SimulationIO.LogChannel, $"Begin sim tick '{tick.ExpectedNewTickId}' with {tick.InputSubmissions.Length} inputs.");
+                Log.Info(SimulationIO.LogChannel, $"Begin sim tick '{tick.ExpectedNewTickId}' with {tick.InputSubmissions.Count} inputs.");
 
                 _simulationWorld.TickInputs = tick.ToSimInputArray();
                 _simulationWorld.ExpectedNewTickId = tick.ExpectedNewTickId;

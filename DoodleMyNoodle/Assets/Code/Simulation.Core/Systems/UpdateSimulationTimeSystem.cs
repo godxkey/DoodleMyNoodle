@@ -19,7 +19,7 @@ public class UpdateSimulationTimeSystem : ComponentSystem
     {
         if (World is SimulationWorld simWorld)
         {
-            Entity tickDataSingleton = simWorld.TickDataSingleton;
+            Entity tickDataSingleton = simWorld.GetOrCreateTickDataSingleton();
 
             // Increment tick id
             uint oldTickId = EntityManager.GetComponentData<SimulationOngoingTickId>(tickDataSingleton).TickId;

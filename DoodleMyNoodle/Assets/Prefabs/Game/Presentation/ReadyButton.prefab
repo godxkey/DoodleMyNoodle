@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3608918365681217935}
   - component: {fileID: 394547502659326283}
   m_Layer: 0
-  m_Name: NextTurnButton
+  m_Name: ReadyButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,8 +98,8 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 0.5377358, g: 0.5377358, b: 0.5377358, a: 1}
     m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.5372549, g: 0.5372549, b: 0.5372549, a: 1}
+    m_SelectedColor: {r: 0.5372549, g: 0.5372549, b: 0.5372549, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -131,14 +131,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 506fcfea03be4284385ab2ce64c42be2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Button: {fileID: 3608918365681217935}
-  Text: {fileID: 7347935827125399988}
-  Image: {fileID: 4471702034804452977}
-  WaitingForYourTurn: Wait
-  WaitingForNextTurnText: Next Turn
-  ReadyText: Ready
-  WaitingForNextTurnColor: {r: 1, g: 1, b: 1, a: 1}
-  ReadyColor: {r: 0, g: 1, b: 0, a: 1}
+  _button: {fileID: 3608918365681217935}
+  _text: {fileID: 7347935827125399988}
+  _image: {fileID: 4471702034804452977}
+  _cantReadyYetText: ...
+  _waitingForReadyText: End Turn
+  _readyText: Waiting others...
+  _waitingForNextTurnColor: {r: 0, g: 1, b: 0, a: 1}
+  _readyColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &5850992920096046272
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,7 +202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Next Turn
+  m_text: Not Ready
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

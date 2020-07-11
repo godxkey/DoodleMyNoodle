@@ -57,11 +57,6 @@ public class GameConsole
         List<GameConsoleInvokable> potentialInvokable = new List<GameConsoleInvokable>();
         foreach (MethodInfo method in TypeUtility.GetStaticMethodsWithAttribute(typeof(ConsoleCommandAttribute)))
         {
-            if (method.IsAsync())
-            {
-                Log.Warning($"Ignoring command '{method.Name}' because it is async.");
-                continue;
-            }
             potentialInvokable.Add(new GameConsoleCommand(method));
         }
 
