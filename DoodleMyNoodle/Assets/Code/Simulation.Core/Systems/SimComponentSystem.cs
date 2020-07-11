@@ -21,7 +21,7 @@ public abstract class SimComponentSystem : ComponentSystem
     }
 }
 
-public abstract class SimJobComponentSystem : JobComponentSystem
+public abstract class SimComponentSystem2 : CCCSystemBase
 {
     /// <summary>
     /// The current Time data for this system's world.
@@ -38,3 +38,21 @@ public abstract class SimJobComponentSystem : JobComponentSystem
         Accessor = World.GetInternalAccessor();
     }
 }
+
+//public abstract class SimJobComponentSystem : JobComponentSystem
+//{
+//    /// <summary>
+//    /// The current Time data for this system's world.
+//    /// </summary>
+//    public new ref readonly FixTimeData Time => ref World.FixTime;
+
+//    public new SimulationWorld World { get; private set; }
+//    public ISimWorldReadWriteAccessor Accessor { get; private set; }
+
+//    protected override void OnCreate()
+//    {
+//        base.OnCreate();
+//        World = ((SimulationWorld)base.World);
+//        Accessor = World.GetInternalAccessor();
+//    }
+//}

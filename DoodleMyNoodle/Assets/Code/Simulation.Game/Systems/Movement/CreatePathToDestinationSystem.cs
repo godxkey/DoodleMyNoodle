@@ -27,8 +27,8 @@ public class CreatePathToDestinationSystem : SimComponentSystem
         Entities
             .ForEach((Entity entity, ref FixTranslation pos, ref Destination destination) =>
         {
-            int2 from = roundToInt(pos.Value).xy;
-            int2 to = roundToInt(destination.Value).xy;
+            int2 from = Helpers.GetTile(pos);
+            int2 to = Helpers.GetTile(destination.Value);
 
             bool pathFound = CommonReads.FindNavigablePath(Accessor, from, to, Pathfinding.MAX_PATH_COST, _pathArray);
 
@@ -42,7 +42,7 @@ public class CreatePathToDestinationSystem : SimComponentSystem
                     pathBuffer.Add(new PathPosition() { Position = fix3(_pathArray[i], 0) });
                 }
             }
-            
+
             EntityManager.RemoveComponent<Destination>(entity);
         });
     }

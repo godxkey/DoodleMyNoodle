@@ -19,8 +19,8 @@ public class InstantiateDefaultControllerSystem : SimComponentSystem
             {
                 Entity newController = EntityManager.Instantiate(defaultControllerPrefab.Value);
 
-                EntityManager.SetOrAddComponentData(newController, new ControlledEntity() { Value = pawnEntity });
-                
+                EntityManager.SetComponentData(newController, new ControlledEntity() { Value = pawnEntity });
+
                 PostUpdateCommands.RemoveComponent<InstantiateAndUseDefaultControllerTag>(pawnEntity);
             });
     }

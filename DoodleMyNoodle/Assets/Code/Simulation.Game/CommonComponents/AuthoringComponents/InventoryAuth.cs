@@ -11,11 +11,13 @@ public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        DynamicBuffer<StartingInventoryItem> inventory = dstManager.AddBuffer<StartingInventoryItem>(entity);
+        dstManager.AddBuffer<InventoryItemReference>(entity);
+
+        DynamicBuffer<StartingInventoryItem> startingInventory = dstManager.AddBuffer<StartingInventoryItem>(entity);
 
         foreach (GameObject itemGO in InitialItems)
         {
-            inventory.Add(new StartingInventoryItem() { ItemEntityPrefab = conversionSystem.GetPrimaryEntity(itemGO) });
+            startingInventory.Add(new StartingInventoryItem() { ItemEntityPrefab = conversionSystem.GetPrimaryEntity(itemGO) });
         }
     }
 

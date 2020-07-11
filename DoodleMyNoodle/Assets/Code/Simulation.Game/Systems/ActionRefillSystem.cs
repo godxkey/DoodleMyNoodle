@@ -5,30 +5,36 @@ using UnityEngine;
 
 public class ActionRefillSystem : SimComponentSystem
 {
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        RequireSingletonForUpdate<ActionRefillAmount>();
+    }
+
     protected override void OnUpdate()
     {
         if (HasSingleton<NewTurnEventData>())
         {
             int currentTeam = CommonReads.GetCurrentTurnTeam(Accessor);
+            int actionPointsToAdd = GetSingleton<ActionRefillAmount>().Value;
 
             Entities
-            .ForEach((Entity pawn, ref ActionPoints pawnActionPoints, ref MaximumInt<ActionPoints> pawnMaximumActionPoints) =>
-            {
-                Entity pawnController = CommonReads.GetPawnController(Accessor, pawn);
-                if(pawnController != Entity.Null)
+                .ForEach((Entity pawn, ref ActionPoints actionPoints) =>
                 {
-                    Team pawnTeam = Accessor.GetComponentData<Team>(pawnController);
-
-                    if ((pawnTeam.Value != currentTeam) || !HasSingleton<ActionRefillAmount>())
+                    Entity pawnController = CommonReads.GetPawnController(Accessor, pawn);
+                    if (pawnController != Entity.Null)
                     {
-                        return;
+                        Team pawnTeam = EntityManager.GetComponentData<Team>(pawnController);
+
+                        if (pawnTeam.Value != currentTeam)
+                        {
+                            return;
+                        }
+
+                        CommonWrites.ModifyStatInt<ActionPoints>(Accessor, pawn, actionPointsToAdd);
                     }
-
-                    int actionPointsToAdd = GetSingleton<ActionRefillAmount>().Value;
-
-                    pawnActionPoints.Value = Mathf.Clamp(pawnActionPoints.Value + actionPointsToAdd, 0, pawnMaximumActionPoints.Value);
-                }
-            });
+                });
         }
     }
 }

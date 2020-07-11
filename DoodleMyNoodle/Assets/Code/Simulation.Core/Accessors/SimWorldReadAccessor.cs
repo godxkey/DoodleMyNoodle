@@ -13,7 +13,7 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
 
     public override string ToString()
     {
-        return $"Accessor({SimWorld.ToString()})";
+        return $"Accessor({SimWorld})";
     }
 
     public int Version

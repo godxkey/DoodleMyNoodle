@@ -7,13 +7,16 @@ public class CooldownCounterManagementSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
-        Entities.ForEach((Entity item, ref ItemCooldownCounter cooldownCounter) => 
-        {
-            cooldownCounter.Value -= Time.DeltaTime;
-            if(cooldownCounter.Value <= 0)
+        var deltaTime = Time.DeltaTime;
+
+        Entities
+            .ForEach((Entity item, ref ItemCooldownCounter cooldownCounter) =>
             {
-                PostUpdateCommands.RemoveComponent<ItemCooldownCounter>(item);
-            }
-        });
+                cooldownCounter.Value -= deltaTime;
+                if (cooldownCounter.Value <= 0)
+                {
+                    PostUpdateCommands.RemoveComponent<ItemCooldownCounter>(item);
+                }
+            });
     }
 }

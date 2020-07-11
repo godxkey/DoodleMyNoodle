@@ -8,49 +8,41 @@ public struct PotentialNewTranslation : IComponentData
     public fix3 Value;
 }
 
-public class ApplyVelocitySystem : SimJobComponentSystem
+public class ApplyVelocitySystem : SimComponentSystem
 {
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    protected override void OnUpdate()
     {
         fix deltaTime = Time.DeltaTime;
 
-        Entities.ForEach((ref PotentialNewTranslation newTranslation, in FixTranslation pos, in Velocity vel) =>
+        Entities.ForEach((ref PotentialNewTranslation newTranslation, ref FixTranslation pos, ref Velocity vel) =>
         {
             newTranslation.Value = pos.Value + (vel.Value * deltaTime);
-        }).Schedule(inputDeps).Complete();
-
-        return default;
+        });
     }
 }
 
 [UpdateAfter(typeof(ValidatePotentialNewTranslationSystem))]
-public class RecordPreviousTranslationSystem : SimJobComponentSystem
+public class ApplyPotentialNewTranslationSystem : SimComponentSystem
 {
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    protected override void OnUpdate()
     {
-        Entities
-            .WithChangeFilter<FixTranslation>()
-            .ForEach((ref PreviousFixTranslation pos, in FixTranslation newTranslation) =>
+        Entities//            .WithChangeFilter<PotentialNewTranslation>() UNDO
+            .ForEach((ref FixTranslation pos, ref PotentialNewTranslation newTranslation) =>
             {
                 pos.Value = newTranslation.Value;
-            }).Schedule(inputDeps).Complete();
-
-        return default;
+            });
     }
 }
 
-[UpdateAfter(typeof(ValidatePotentialNewTranslationSystem))]
-public class ApplyPotentialNewTranslationSystem : SimJobComponentSystem
+[UpdateAfter(typeof(ApplyPotentialNewTranslationSystem))]
+public class RecordPreviousTranslationSystem : SimComponentSystem
 {
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    protected override void OnUpdate()
     {
-        Entities
-            .WithChangeFilter<PotentialNewTranslation>()
-            .ForEach((ref FixTranslation pos, in PotentialNewTranslation newTranslation) =>
-        {
-            pos.Value = newTranslation.Value;
-        }).Schedule(inputDeps).Complete();
-
-        return default;
+        Entities//            .WithChangeFilter<FixTranslation>() UNDO
+            .ForEach((ref PreviousFixTranslation pos, ref FixTranslation newTranslation) =>
+            {
+                pos.Value = newTranslation.Value;
+            });
     }
 }
