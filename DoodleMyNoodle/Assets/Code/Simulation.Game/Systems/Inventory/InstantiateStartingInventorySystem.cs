@@ -9,7 +9,8 @@ public class InstantiateStartingInventorySystem : SimComponentSystem
     protected override void OnUpdate()
     {
         Entities
-            .ForEach((Entity entity, DynamicBuffer<StartingInventoryItem> startingInventoryBuffer, DynamicBuffer<InventoryItemReference> inventory) =>
+            .WithAll<InventoryItemReference>()
+            .ForEach((Entity entity, DynamicBuffer<StartingInventoryItem> startingInventoryBuffer) =>
             {
                 NativeArray<StartingInventoryItem> startingInventory = startingInventoryBuffer.ToNativeArray(Allocator.Temp);
                 NativeArray<Entity> itemInstances = new NativeArray<Entity>(startingInventory.Length, Allocator.Temp);
@@ -21,6 +22,7 @@ public class InstantiateStartingInventorySystem : SimComponentSystem
                 }
 
                 // Add item references into inventory
+                var inventory = EntityManager.GetBuffer<InventoryItemReference>(entity);
                 foreach (Entity itemInstance in itemInstances)
                 {
                     inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });

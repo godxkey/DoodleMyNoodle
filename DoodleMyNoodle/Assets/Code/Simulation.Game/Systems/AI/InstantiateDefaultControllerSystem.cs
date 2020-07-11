@@ -17,9 +17,9 @@ public class InstantiateDefaultControllerSystem : SimComponentSystem
             .WithAll<InstantiateAndUseDefaultControllerTag>()
             .ForEach((Entity pawnEntity, ref DefaultControllerPrefab defaultControllerPrefab) =>
             {
-                Entity newController = EntityManager.Instantiate(defaultControllerPrefab.Value);
+                Entity newController = PostUpdateCommands.Instantiate(defaultControllerPrefab.Value);
 
-                EntityManager.SetComponentData(newController, new ControlledEntity() { Value = pawnEntity });
+                PostUpdateCommands.SetComponent(newController, new ControlledEntity() { Value = pawnEntity });
 
                 PostUpdateCommands.RemoveComponent<InstantiateAndUseDefaultControllerTag>(pawnEntity);
             });

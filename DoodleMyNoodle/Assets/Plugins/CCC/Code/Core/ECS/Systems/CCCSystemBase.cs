@@ -5,7 +5,7 @@ using UnityEngineX;
 
 public abstract class CCCSystemBase : SystemBase
 {
-    protected Entity CreateSingleton<T>()
+    public Entity CreateSingleton<T>()
         where T : struct, IComponentData
     {
         var singletonEntity = EntityManager.CreateEntity(typeof(T));
@@ -17,7 +17,7 @@ public abstract class CCCSystemBase : SystemBase
         return singletonEntity;
     }
 
-    protected Entity CreateSingleton<T>(T value)
+    public Entity CreateSingleton<T>(T value)
         where T : struct, IComponentData
     {
         var singletonEntity = EntityManager.CreateEntity(typeof(T));
@@ -31,7 +31,7 @@ public abstract class CCCSystemBase : SystemBase
         return singletonEntity;
     }
 
-    protected void SetOrCreateSingleton<T>(in T componentData)
+    public void SetOrCreateSingleton<T>(in T componentData)
         where T : struct, IComponentData
     {
         if (!HasSingleton<T>())
@@ -44,7 +44,7 @@ public abstract class CCCSystemBase : SystemBase
         }
     }
 
-    protected T GetOrCreateSingleton<T>(T defaultValue = default)
+    public T GetOrCreateSingleton<T>(T defaultValue = default)
         where T : struct, IComponentData
     {
         if (HasSingleton<T>())
@@ -58,7 +58,7 @@ public abstract class CCCSystemBase : SystemBase
         }
     }
 
-    protected bool TryGetSingleton<T>(out T componentData)
+    public bool TryGetSingleton<T>(out T componentData)
         where T : struct, IComponentData
     {
         if (HasSingleton<T>())
@@ -71,14 +71,14 @@ public abstract class CCCSystemBase : SystemBase
         return false;
     }
 
-    protected void DestroySingleton<T>()
+    public void DestroySingleton<T>()
         where T : struct, IComponentData
     {
         Entity e = GetSingletonEntity<T>();
         EntityManager.DestroyEntity(e);
     }
 
-    protected bool TryGetComponent<T>(Entity entity, out T value) where T : struct, IComponentData
+    public bool TryGetComponent<T>(Entity entity, out T value) where T : struct, IComponentData
     {
         if (HasComponent<T>(entity))
         {

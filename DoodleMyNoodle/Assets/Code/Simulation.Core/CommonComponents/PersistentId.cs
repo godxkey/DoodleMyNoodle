@@ -47,16 +47,16 @@ public static class PersistentIdExtensions
         return nextPersistentId.NextId;
     }
 
-    public static PersistentId MakeUniquePersistentId(this SystemBase componentSystem)
+    public static PersistentId MakeUniquePersistentId(this CCCSystemBase system)
     {
-        NextPersistentId nextPersistentId = componentSystem.GetOrCreateSingleton<NextPersistentId>();
+        NextPersistentId nextPersistentId = system.GetOrCreateSingleton<NextPersistentId>();
 
         nextPersistentId.NextId.Value++;
 
         if (nextPersistentId.NextId == PersistentId.Invalid)
             nextPersistentId.NextId.Value++;
 
-        componentSystem.SetOrCreateSingleton(nextPersistentId);
+        system.SetOrCreateSingleton(nextPersistentId);
 
         return nextPersistentId.NextId;
     }
