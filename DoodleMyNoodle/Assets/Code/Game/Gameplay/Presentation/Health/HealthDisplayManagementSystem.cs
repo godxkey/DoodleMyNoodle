@@ -6,19 +6,24 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using static fixMath;
 
-public class HealthDisplayManagementSystem : GameMonoBehaviour
+public class HealthDisplayManagementSystem : GamePresentationBehaviour
 {
     public GameObject HealthBarPrefab;
 
     private List<GameObject> _healthBarInstances = new List<GameObject>();
 
-    public override void OnGameLateUpdate() 
+    protected override void OnGamePresentationUpdate()
     {
         int healthBarAmount = 0;
-        GameMonoBehaviourHelpers.GetSimulationWorld().Entities.ForEach((Entity pawn, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation)=>
+        SimWorldCache.SimWorld.Entities.ForEach((Entity pawn, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
         {
-            Entity pawnController = CommonReads.GetPawnController(GameMonoBehaviourHelpers.GetSimulationWorld(), pawn);
-            if (!GameMonoBehaviourHelpers.GetSimulationWorld().HasComponent<DumbGridBattleAITag>(pawnController))
+            Entity pawnController = CommonReads.GetPawnController(SimWorldCache.SimWorld, pawn);
+            if (!SimWorldCache.SimWorld.HasComponent<AITag>(pawnController))
+            {
+                return;
+            }
+
+            if (pawnController == Entity.Null)
             {
                 return;
             }

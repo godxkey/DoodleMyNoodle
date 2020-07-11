@@ -3,7 +3,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public struct DamageToApplyDataContainer : IComponentData
+public struct DamageToApplySingletonTag : IComponentData
 {
 }
 
@@ -16,41 +16,47 @@ public struct DamageToApplyData : IBufferElementData
 
 public class ApplyDamageSystem : SimComponentSystem
 {
-    protected override void OnCreate()
+    public static DynamicBuffer<DamageToApplyData> GetDamageToApplySingletonBuffer(ISimWorldReadWriteAccessor accessor)
     {
-        base.OnCreate();
+        if (!accessor.HasSingleton<DamageToApplySingletonTag>())
+        {
+            accessor.CreateEntity(typeof(DamageToApplySingletonTag), typeof(DamageToApplyData));
+        }
 
-        Accessor.SetOrCreateSingleton(new DamageToApplyDataContainer());
-        Accessor.AddBuffer<DamageToApplyData>(Accessor.GetSingletonEntity<DamageToApplyDataContainer>());
+        return accessor.GetBuffer<DamageToApplyData>(accessor.GetSingletonEntity<DamageToApplySingletonTag>());
     }
 
     protected override void OnUpdate()
     {
-        Accessor.Entities.ForEach((Entity singleton, ref DamageToApplyDataContainer containerTag, DynamicBuffer<DamageToApplyData> readyForNextTurn) =>
+        DynamicBuffer<DamageToApplyData> DamageToApplyBuffer = GetDamageToApplySingletonBuffer(Accessor);
+
+        foreach (DamageToApplyData damageData in DamageToApplyBuffer)
         {
-            foreach (DamageToApplyData damageData in readyForNextTurn)
+            int remainingDamage = damageData.Amount;
+            Entity target = damageData.Target;
+
+            // Invincible
+            if (Accessor.HasComponent<Invincible>(target))
             {
-                int realDamageToApply = damageData.Amount;
-                Entity target = damageData.Target;
-                if (!Accessor.HasComponent<Invincible>(target))
-                {
-                    if (Accessor.TryGetComponentData(target, out Armor armor))
-                    {
-                        int newArmorValue = armor.Value - realDamageToApply;
-                        if(newArmorValue < 0)
-                        {
-                            realDamageToApply = math.abs(newArmorValue);
-                        }
-
-                        CommonWrites.SetStatInt(Accessor, target, new Armor() { Value = math.max(newArmorValue, 0) });
-                    }
-
-                    CommonWrites.ModifyStatInt<Health>(Accessor, target, -realDamageToApply);
-                }
+                remainingDamage = 0;
             }
 
-            readyForNextTurn.Clear();
-        });
+            // Armor
+            if (remainingDamage > 0 && Accessor.TryGetComponentData(target, out Armor armor))
+            {
+                CommonWrites.ModifyStatInt<Armor>(Accessor, target, -remainingDamage);
+                remainingDamage -= armor.Value;
+            }
+
+            // Health
+            if (remainingDamage > 0 && Accessor.TryGetComponentData(target, out Health health))
+            {
+                CommonWrites.ModifyStatInt<Health>(Accessor, target, -remainingDamage);
+                remainingDamage -= health.Value;
+            }
+        }
+
+        DamageToApplyBuffer.Clear();
     }
 }
 
@@ -58,8 +64,7 @@ internal static partial class CommonWrites
 {
     public static void RequestDamageOnTarget(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity target, int amount)
     {
-        Entity container = accessor.GetSingletonEntity<DamageToApplyDataContainer>();
-        DynamicBuffer<DamageToApplyData> damageDataBuffer = accessor.GetBuffer<DamageToApplyData>(container);
+        DynamicBuffer<DamageToApplyData> damageDataBuffer = ApplyDamageSystem.GetDamageToApplySingletonBuffer(accessor);
 
         damageDataBuffer.Add(new DamageToApplyData() { Amount = amount, Instigator = instigator, Target = target });
     }
