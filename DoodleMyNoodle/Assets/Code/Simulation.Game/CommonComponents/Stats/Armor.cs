@@ -1,5 +1,6 @@
 ﻿using Unity.Entities;
 
+[assembly: RegisterGenericComponentType(typeof(MaximumInt<Armor>))]
 [assembly: RegisterGenericComponentType(typeof(MinimumInt<Armor>))]
 
 public struct Armor : IComponentData, IStatInt
