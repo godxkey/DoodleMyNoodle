@@ -94,7 +94,7 @@ namespace SimulationControl
 
 
             var simSystemTypes = TypeUtility.GetTypesDerivedFrom(typeof(SimComponentSystem))
-                         .Concat(TypeUtility.GetTypesDerivedFrom(typeof(SimComponentSystem2)));
+                         .Concat(TypeUtility.GetTypesDerivedFrom(typeof(SimJobComponentSystem)));
 
             AddSystemsToRootLevelSystemGroups(_simulationWorld, simSystemTypes);
 

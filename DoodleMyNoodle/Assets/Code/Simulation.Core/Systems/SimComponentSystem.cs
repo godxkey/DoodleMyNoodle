@@ -21,7 +21,7 @@ public abstract class SimComponentSystem : ComponentSystem
     }
 }
 
-public abstract class SimComponentSystem2 : CCCSystemBase
+public abstract class SimJobComponentSystem : JobComponentSystem
 {
     /// <summary>
     /// The current Time data for this system's world.
@@ -39,7 +39,7 @@ public abstract class SimComponentSystem2 : CCCSystemBase
     }
 }
 
-//public abstract class SimJobComponentSystem : JobComponentSystem
+//public abstract class SimSystemBase : CCCSystemBase
 //{
 //    /// <summary>
 //    /// The current Time data for this system's world.
