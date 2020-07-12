@@ -26,7 +26,7 @@ public class GameOverDetectionSystem : SimComponentSystem
             Entities.ForEach((ref Team pawnControllerTeam, ref ControlledEntity pawn) =>
             {
                 // if the team member controls a pawn with Health
-                if(EntityManager.Exists(pawn.Value) && EntityManager.HasComponent<Health>(pawn.Value))
+                if (EntityManager.Exists(pawn.Value) && EntityManager.HasComponent<Health>(pawn.Value))
                 {
                     if (pawnControllerTeam.Value == (int)TeamAuth.DesignerFriendlyTeam.Baddies)
                     {

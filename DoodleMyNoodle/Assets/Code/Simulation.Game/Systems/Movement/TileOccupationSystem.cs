@@ -26,7 +26,7 @@ public class TileOccupationSystem : SimComponentSystem
                     EntityManager.SetName(newTileEntity, $"SE_OccupiedTile {tilePosition.x}, {tilePosition.y}");
 #endif
 
-                    CommonWrites.AddEntityOnTile(Accessor, newTileEntity, currentTile);
+                    CommonWrites.AddTileAddon(Accessor, newTileEntity, currentTile);
                 }
 
                 int2 previousTilePosition = CalculateCurrentTilePosition(previousPawnTranslation.Value);
@@ -34,8 +34,8 @@ public class TileOccupationSystem : SimComponentSystem
 
                 if (currentTile != previousTile)
                 {
-                    Entity occupiedAddonEntity = CommonReads.GetSingleTileAddonOfType<Occupied>(Accessor, previousTile);
-                    CommonWrites.RemoveEntityOnTile(Accessor, occupiedAddonEntity, previousTile);
+                    Entity occupiedAddonEntity = CommonReads.GetFirstTileAddonWithComponent<Occupied>(Accessor, previousTile);
+                    CommonWrites.RemoveTileAddon(Accessor, occupiedAddonEntity, previousTile);
                     EntityManager.DestroyEntity(occupiedAddonEntity);
                 }
             });
@@ -49,10 +49,10 @@ public class TileOccupationSystem : SimComponentSystem
 
     private bool IsTileAlreadyOccupied(Entity tile)
     {
-        DynamicBuffer<EntityOnTile> tileAddons = Accessor.GetBufferReadOnly<EntityOnTile>(tile);
-        foreach (EntityOnTile entity in tileAddons)
+        DynamicBuffer<TileAddonReference> tileAddons = EntityManager.GetBufferReadOnly<TileAddonReference>(tile);
+        foreach (TileAddonReference entity in tileAddons)
         {
-            if (Accessor.HasComponent<Occupied>(entity.TileEntity))
+            if (EntityManager.HasComponent<Occupied>(entity.Value))
             {
                 return true;
             }

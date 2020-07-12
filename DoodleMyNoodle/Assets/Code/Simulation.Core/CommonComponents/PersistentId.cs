@@ -46,4 +46,18 @@ public static class PersistentIdExtensions
 
         return nextPersistentId.NextId;
     }
+
+    public static PersistentId MakeUniquePersistentId(this CCCSystemBase system)
+    {
+        NextPersistentId nextPersistentId = system.GetOrCreateSingleton<NextPersistentId>();
+
+        nextPersistentId.NextId.Value++;
+
+        if (nextPersistentId.NextId == PersistentId.Invalid)
+            nextPersistentId.NextId.Value++;
+
+        system.SetOrCreateSingleton(nextPersistentId);
+
+        return nextPersistentId.NextId;
+    }
 }

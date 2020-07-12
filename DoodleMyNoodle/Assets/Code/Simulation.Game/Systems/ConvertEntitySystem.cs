@@ -10,43 +10,26 @@ public class ConvertEntitySystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
-        //ApplyConvertedState();
-
         if (HasSingleton<NewTurnEventData>())
         {
-            int currentTeam = CommonReads.GetCurrentTurnTeam(Accessor);
+            int currentPlayingTeam = CommonReads.GetCurrentTurnTeam(Accessor);
 
             Entities
-            .ForEach((Entity entity, ref Converted converted) =>
-            {
-                Team entityTeam = Accessor.GetComponentData<Team>(entity);
+                .ForEach((Entity entity, ref Converted converted, ref Team team) =>
+                {
+                    // decrease duration
+                    if (team.Value != currentPlayingTeam)
+                    {
+                        converted.RemainingTurns--;
+                    }
 
-                if ((entityTeam.Value == currentTeam))
-                {
-                    return;
-                }
-
-                if (converted.Duration <= 1)
-                {
-                    Accessor.SetComponentData(entity, new Team() { Value = (int)TeamAuth.DesignerFriendlyTeam.Baddies });
-                    PostUpdateCommands.RemoveComponent<Converted>(entity);
-                }
-                else
-                {
-                    Accessor.SetComponentData(entity, new Converted() { Duration = converted.Duration - 1 });
-                }
-            });
+                    // switch team if convert is complete
+                    if (converted.RemainingTurns <= 0)
+                    {
+                        team.Value = team.Value == 0 ? 1 : 0;
+                        PostUpdateCommands.RemoveComponent<Converted>(entity);
+                    }
+                });
         }
-    }
-
-    private void ApplyConvertedState()
-    {
-        Entities
-            .ForEach((Entity entity, ref NeedToBeConverted needsConvert) =>
-            {
-                Accessor.SetComponentData(entity, new Team() { Value = (int)TeamAuth.DesignerFriendlyTeam.Player });
-
-                PostUpdateCommands.RemoveComponent<NeedToBeConverted>(entity);
-            });
     }
 }

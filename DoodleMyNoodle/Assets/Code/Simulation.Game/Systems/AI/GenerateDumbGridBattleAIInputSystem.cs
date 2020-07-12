@@ -29,7 +29,7 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
 
     protected override void OnUpdate()
     {
-        // On turn change, remove the 'HasAlreadyPlayed' tag
+        // On turn change, remove the 'ReadyForNextTurnDelayed' components to make sure we don't 'Ready up!' when we don't want to
         if (HasSingleton<NewTurnEventData>())
         {
             EntityManager.RemoveComponent<ReadyForNextTurnDelayed>(_hasAlreadyPlayedEntityQ);
@@ -49,31 +49,32 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
                 }
 
                 // have we already said 'ready for next turn' ?
-                if(readyForNextTurn.Value)
+                if (readyForNextTurn.Value)
                 {
                     return;
                 }
 
                 Entity pawn = controlledPawn.Value;
 
+
                 if (EntityManager.TryGetComponentData(pawn, out FixTranslation pawnPos))
                 {
                     int2 pawnTile = Helpers.GetTile(pawnPos);
 
                     int2 attackTile = default;
-                    if (HasEnemiesOnTile(controller, pawn, attackTile = pawnTile + int2(-1, 0))) // attack left
+                    if (HasEnemiesOnTile(controller, attackTile = pawnTile + int2(-1, 0))) // attack left
                     {
                         PawnPerform_MeleeAttack(controller, pawn, attackTile);
                     }
-                    else if (HasEnemiesOnTile(controller, pawn, attackTile = pawnTile + int2(1, 0))) // attack right
+                    else if (HasEnemiesOnTile(controller, attackTile = pawnTile + int2(1, 0))) // attack right
                     {
                         PawnPerform_MeleeAttack(controller, pawn, attackTile);
                     }
-                    else if (HasEnemiesOnTile(controller, pawn, attackTile = pawnTile + int2(0, 1))) // attack up
+                    else if (HasEnemiesOnTile(controller, attackTile = pawnTile + int2(0, 1))) // attack up
                     {
                         PawnPerform_MeleeAttack(controller, pawn, attackTile);
                     }
-                    else if (HasEnemiesOnTile(controller, pawn, attackTile = pawnTile + int2(0, -1))) // attac down
+                    else if (HasEnemiesOnTile(controller, attackTile = pawnTile + int2(0, -1))) // attac down
                     {
                         PawnPerform_MeleeAttack(controller, pawn, attackTile);
                     }
@@ -98,15 +99,15 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
                 EntityManager.AddComponentData(controller, new ReadyForNextTurnDelayed() { Timer = 1 });
             });
 
-
         // Trigger all 'ReadyForNextTurn' if timer has expired
+        var deltaTime = Time.DeltaTime;
         Entities
             .WithAll<DumbGridBattleAITag>()
             .ForEach((Entity entity, ref ReadyForNextTurnDelayed delayedReady, ref ReadyForNextTurn readyForNextTurn) =>
             {
-                delayedReady.Timer -= Time.DeltaTime;
+                delayedReady.Timer -= deltaTime;
 
-                if(delayedReady.Timer <= 0)
+                if (delayedReady.Timer <= 0)
                 {
                     readyForNextTurn.Value = true;
                     PostUpdateCommands.RemoveComponent<ReadyForNextTurnDelayed>(entity);
@@ -114,7 +115,7 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
             });
     }
 
-    bool HasEnemiesOnTile(Entity controller, Entity pawn, int2 tile)
+    bool HasEnemiesOnTile(Entity controller, int2 tile)
     {
         // get team
         if (!EntityManager.TryGetComponentData(controller, out Team controllerTeam))

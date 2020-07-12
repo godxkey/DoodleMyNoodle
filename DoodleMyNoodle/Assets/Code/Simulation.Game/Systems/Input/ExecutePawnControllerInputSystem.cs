@@ -29,7 +29,7 @@ public class ClearPawnControllerInputSystem : SimComponentSystem
 
         _executeSys = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
     }
-    
+
     protected override void OnUpdate()
     {
         foreach (PawnControllerInputBase input in _executeSys.Inputs)
@@ -63,13 +63,12 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         {
             case PawnStartingInventorySelectionInput equipItemInput:
                 Entities
-                    .WithAll<InventoryItemPrefabReference, ItemKitTag>()
-                    .ForEach((Entity itemKitEntity, ref SimAssetId assetID) =>
+                    .WithAll<ItemKitTag>()
+                    .ForEach((DynamicBuffer<InventoryItemPrefabReference> inventoryItems, ref SimAssetId assetID) =>
                 {
                     if (equipItemInput.KitNumber == assetID.Value)
                     {
-                        ControlledEntity pawn = Accessor.GetComponentData<ControlledEntity>(equipItemInput.PawnController);
-                        DynamicBuffer<InventoryItemPrefabReference> inventoryItems = Accessor.GetBufferReadOnly<InventoryItemPrefabReference>(itemKitEntity);
+                        ControlledEntity pawn = EntityManager.GetComponentData<ControlledEntity>(equipItemInput.PawnController);
 
                         if (EntityManager.Exists(pawn.Value))
                         {
@@ -80,9 +79,9 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                 break;
 
             case PawnInputNextTurn pawnInputNextTurn:
-                Accessor.SetOrAddComponentData(pawnInputNextTurn.PawnController, new ReadyForNextTurn() { Value = pawnInputNextTurn.ReadyForNextTurn });
+                EntityManager.SetOrAddComponentData(pawnInputNextTurn.PawnController, new ReadyForNextTurn() { Value = pawnInputNextTurn.ReadyForNextTurn });
                 break;
-        
+
             case PawnControllerInputUseItem useItemInput:
                 ExecuteInput(useItemInput);
                 break;
@@ -105,7 +104,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
 
         Entity pawn = controlledEntity.Value;
 
-        if(!EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if (!EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             LogDiscardReason($"Pawn has no {nameof(DynamicBuffer<InventoryItemReference>)}.");
             return;
@@ -133,7 +132,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
 
         GameAction gameAction = GameActionBank.GetAction(gameActionId);
 
-        if(gameAction == null)
+        if (gameAction == null)
         {
             LogDiscardReason($"Item {item}'s gameActionId is invalid.");
             return;
@@ -146,7 +145,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             ItemEntity = item
         };
 
-        if(!gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData))
+        if (!gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData))
         {
             LogDiscardReason($"Can't Trigger {gameAction}");
             return;
@@ -163,7 +162,7 @@ internal partial class CommonWrites
         input.PawnController = pawnController;
         QueuePawnControllerInput(accessor, input);
     }
-    
+
     public static void QueuePawnControllerInput(ISimWorldReadWriteAccessor accessor, PawnControllerInputBase input)
     {
         ExecutePawnControllerInputSystem system = accessor.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
