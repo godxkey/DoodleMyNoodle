@@ -45,6 +45,10 @@ public class ExecutePlayerInputSystem : SimComponentSystem
             case SimPlayerInputUseItem ItemUsedInput:
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, ItemUsedInput.ItemIndex, ItemUsedInput.UseData));
                 break;
+
+            case SimPlayerInputUseInteractable InteractableUsedInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseInteractable(playerEntity, InteractableUsedInput.InteractablePosition));
+                break;
         }
     }
 

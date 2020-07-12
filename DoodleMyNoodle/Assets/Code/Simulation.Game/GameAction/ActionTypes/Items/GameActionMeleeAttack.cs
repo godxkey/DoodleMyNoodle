@@ -14,14 +14,14 @@ public class GameActionMeleeAttack : GameAction
             new GameActionParameterTile.Description()
             {
                 Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = accessor.GetComponentData<ItemRangeData>(context.ItemEntity).Value
+                RangeFromInstigator = accessor.GetComponentData<ItemRangeData>(context.Entity).Value
             });
     }
 
     public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
     {
         // Cooldown
-        if (accessor.HasComponent<ItemCooldownCounter>(context.ItemEntity) && accessor.GetComponentData<ItemCooldownCounter>(context.ItemEntity).Value > 0)
+        if (accessor.HasComponent<ItemCooldownCounter>(context.Entity) && accessor.GetComponentData<ItemCooldownCounter>(context.Entity).Value > 0)
         {
             return false;
         }
@@ -37,12 +37,12 @@ public class GameActionMeleeAttack : GameAction
             int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value).xy;
 
             // melee attack has a range of RANGE
-            if (lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<ItemRangeData>(context.ItemEntity).Value)
+            if (lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
             {
                 return;
             }
 
-            accessor.SetOrAddComponentData(context.ItemEntity, new ItemCooldownCounter() { Value = accessor.GetComponentData<ItemCooldownData>(context.ItemEntity).Value });
+            accessor.SetOrAddComponentData(context.Entity, new ItemCooldownCounter() { Value = accessor.GetComponentData<ItemCooldownData>(context.Entity).Value });
 
             // reduce target health
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
@@ -51,7 +51,7 @@ public class GameActionMeleeAttack : GameAction
             {
                 if (!accessor.HasComponent<Invincible>(entity))
                 {
-                    CommonWrites.ModifyStatInt<Health>(accessor, entity, -accessor.GetComponentData<ItemDamageData>(context.ItemEntity).Value);
+                    CommonWrites.ModifyStatInt<Health>(accessor, entity, -accessor.GetComponentData<ItemDamageData>(context.Entity).Value);
                 }
             }
 
