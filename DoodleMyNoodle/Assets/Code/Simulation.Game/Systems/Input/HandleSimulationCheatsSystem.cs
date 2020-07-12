@@ -9,7 +9,7 @@ public class SimInputCheatKillPlayerPawn : SimCheatInput
     public PersistentId PlayerId;
 }
 
-public class SimulationCheatsHandler : SimComponentSystem
+public class HandleSimulationCheatsSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {

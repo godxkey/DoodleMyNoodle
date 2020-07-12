@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4120848953196771097}
   - component: {fileID: 5718374214135844852}
   m_Layer: 0
-  m_Name: SE_Item_Arrow
+  m_Name: SE_Item_Bow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,7 +75,7 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 2385346486794747607, guid: 4899e73436da28d43ba3448231f4f76d,
     type: 3}
   ThrowSpeed:
-    RawValue: 8589934592
+    RawValue: 17179869184
 --- !u!114 &5718374214135844852
 MonoBehaviour:
   m_ObjectHideFlags: 0

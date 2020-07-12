@@ -8,7 +8,7 @@ public struct EntityDeathEventData : IComponentData
     public Entity Entity;
 }
 
-public class DeathOnEmptyHealthSystem : SimComponentSystem
+public class DestroyDeadEntitiesSystem : SimComponentSystem
 {
     EntityQuery _eventsEntityQuery;
 

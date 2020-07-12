@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
-public class ActionRefillSystem : SimComponentSystem
+public class RefillActionPointsSystem : SimComponentSystem
 {
     protected override void OnCreate()
     {

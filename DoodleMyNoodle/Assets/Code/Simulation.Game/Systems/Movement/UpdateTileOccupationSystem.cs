@@ -6,11 +6,12 @@ using Unity.Mathematics;
 using static fixMath;
 
 [UpdateAfter(typeof(ApplyPotentialNewTranslationSystem))]
-public class TileOccupationSystem : SimComponentSystem
+public class UpdateTileOccupationSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
         Entities
+
             .WithAll<Velocity>()
             .ForEach((Entity pawn, ref FixTranslation pawnTranslation, ref PreviousFixTranslation previousPawnTranslation) =>
             {

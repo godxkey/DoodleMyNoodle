@@ -76,7 +76,7 @@ public class ReadyButton : GamePresentationBehaviour
         else if (SimWorldCache.CurrentTeam != SimWorldCache.LocalPawnTeam && SimWorldCache.CurrentTeam.Value != -1)
         {
             // if it's not our turn to play
-            _viewState.Set(SimWorld.HasSingleton<GameReadyToStart>() ? TurnState.NotMyTurn : TurnState.NotReady);
+            _viewState.Set(SimWorld.HasSingleton<GameStartedTag>() ? TurnState.NotMyTurn : TurnState.NotReady);
         }
         else
         {

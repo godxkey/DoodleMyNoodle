@@ -6,7 +6,9 @@ using UnityEngine;
 using UnityEngineX;
 using Unity.Entities;
 
-public class InvincibleRemoverSystem : SimComponentSystem
+// ce system devrait être retiré lorsqu'on aura un system de buff/debuff avec durée
+
+public class RemoveInvincibilitySystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {

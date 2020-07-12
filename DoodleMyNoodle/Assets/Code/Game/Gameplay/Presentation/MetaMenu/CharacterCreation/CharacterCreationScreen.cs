@@ -8,6 +8,6 @@ public class CharacterCreationScreen : GamePresentationBehaviour
 
     protected override void OnGamePresentationUpdate()
     {
-        ScreenContainer.SetActive(!SimWorld.HasSingleton<GameReadyToStart>());
+        ScreenContainer.SetActive(!SimWorld.HasSingleton<GameStartedTag>());
     }
 }
