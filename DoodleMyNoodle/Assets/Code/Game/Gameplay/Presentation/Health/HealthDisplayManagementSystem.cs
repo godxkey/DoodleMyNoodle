@@ -18,12 +18,13 @@ public class HealthDisplayManagementSystem : GamePresentationBehaviour
         SimWorldCache.SimWorld.Entities.ForEach((Entity pawn, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
         {
             Entity pawnController = CommonReads.GetPawnController(SimWorldCache.SimWorld, pawn);
-            if (!SimWorldCache.SimWorld.HasComponent<AITag>(pawnController))
+
+            if (pawnController == Entity.Null)
             {
                 return;
             }
 
-            if (pawnController == Entity.Null)
+            if (!SimWorldCache.SimWorld.HasComponent<AITag>(pawnController))
             {
                 return;
             }
