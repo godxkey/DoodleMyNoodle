@@ -15,8 +15,20 @@ public class HealthDisplayManagementSystem : GamePresentationBehaviour
     protected override void OnGamePresentationUpdate()
     {
         int healthBarAmount = 0;
-        GameMonoBehaviourHelpers.GetSimulationWorld().Entities.ForEach((ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation)=>
+        SimWorldCache.SimWorld.Entities.ForEach((Entity pawn, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
         {
+            Entity pawnController = CommonReads.GetPawnController(SimWorldCache.SimWorld, pawn);
+
+            if (pawnController == Entity.Null)
+            {
+                return;
+            }
+
+            if (!SimWorldCache.SimWorld.HasComponent<AITag>(pawnController))
+            {
+                return;
+            }
+
             fix healthRatio = (fix)entityHealth.Value / (fix)entityMaximumHealth.Value;
 
             SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, healthRatio);

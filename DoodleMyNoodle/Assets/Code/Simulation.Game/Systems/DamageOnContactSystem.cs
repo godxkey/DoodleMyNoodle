@@ -58,7 +58,7 @@ public class DamageOnContactSystem : SimComponentSystem
         {
             if (EntityManager.HasComponent<Health>(target))
             {
-                CommonWrites.ModifyStatInt<Health>(Accessor, target, -damageOnContact.Value);
+                CommonWrites.RequestDamageOnTarget(Accessor, instigator, target, damageOnContact.Value);
             }
 
             if (damageOnContact.DestroySelf)
