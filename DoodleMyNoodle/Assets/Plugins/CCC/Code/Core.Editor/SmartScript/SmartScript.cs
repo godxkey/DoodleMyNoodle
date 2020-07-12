@@ -305,8 +305,8 @@ public class DefaultSmartScriptResolver : SmartScriptResolver
     protected virtual string GetDefaultScriptTemplate()
     {
         return $@"using System;
-using Unity.Collections;
-using Unity.Collections.Generic;
+using System.Collections;
+using System.Collections.Generic;
 
 public class #SCRIPTNAME# : {nameof(MonoBehaviour)}
 {{

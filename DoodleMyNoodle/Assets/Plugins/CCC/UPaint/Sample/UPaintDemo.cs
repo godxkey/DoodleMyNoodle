@@ -4,7 +4,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
-
+using UnityEngineX;
 
 public class UPaintDemo : MonoBehaviour
 {
@@ -111,9 +111,7 @@ public class UPaintDemo : MonoBehaviour
 
     float2 DisplayPositionToLayerCoordinate(Vector2 mousePosition)
     {
-        // get render image display rect (from (0, 0) to (screenResX, screenResY))
-        Rect renderImageRect = MainRenderImage.rectTransform.rect;
-        renderImageRect.position = MainRenderImage.rectTransform.anchoredPosition;
+        Rect renderImageRect = MainRenderImage.rectTransform.GetScreenRect();
 
         // get position in 'rect-space' (from (0,0) to (1,1))
         Vector2 rectSpacePosition = renderImageRect.GetPointInRectSpace(mousePosition);
