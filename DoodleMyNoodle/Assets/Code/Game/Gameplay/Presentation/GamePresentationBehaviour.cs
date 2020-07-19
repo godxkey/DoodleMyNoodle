@@ -5,7 +5,12 @@ using System;
 using UnityEngine;
 using UnityEngineX;
 
-public abstract class GamePresentationSystem<T> : GameSystem<T> where T : GamePresentationSystem<T>
+public interface IPostSimulationTick
+{
+    void OnPostSimulationTick();
+}
+
+public abstract class GamePresentationSystem<T> : GameSystem<T>, IPostSimulationTick where T : GamePresentationSystem<T>
 {
     public GamePresentationCache SimWorldCache => GamePresentationCache.Instance;
     public ExternalSimWorldAccessor SimWorld => SimWorldCache.SimWorld;
@@ -20,12 +25,14 @@ public abstract class GamePresentationSystem<T> : GameSystem<T> where T : GamePr
             OnGamePresentationUpdate();
         }
     }
+
+    public virtual void OnPostSimulationTick() { }
 
     protected abstract void OnGamePresentationUpdate();
 }
 
 
-public abstract class GamePresentationBehaviour : GameMonoBehaviour
+public abstract class GamePresentationBehaviour : GameMonoBehaviour, IPostSimulationTick
 {
     public GamePresentationCache SimWorldCache => GamePresentationCache.Instance;
     public ExternalSimWorldAccessor SimWorld => SimWorldCache.SimWorld;
@@ -40,6 +47,8 @@ public abstract class GamePresentationBehaviour : GameMonoBehaviour
             OnGamePresentationUpdate();
         }
     }
+
+    public virtual void OnPostSimulationTick() { }
 
     protected abstract void OnGamePresentationUpdate();
 }

@@ -15,15 +15,18 @@ public class ResetInteractablesSystem : SimComponentSystem
     {
         Accessor.Entities.ForEach((Entity interactable, ref Interactable interactableData, ref Interacted interactedData) =>
         {
-            if (interactableData.OnlyOnce)
+            if (interactedData.Value)
             {
-                // can never be interacted again
-                PostUpdateCommands.RemoveComponent<Interactable>(interactable);
-            }
-            else
-            {
-                // can be interacted again, reset as not interacted
-                Accessor.SetComponentData(interactable, new Interacted() { Value = false });
+                if (interactableData.OnlyOnce)
+                {
+                    // can never be interacted again
+                    PostUpdateCommands.RemoveComponent<Interactable>(interactable);
+                }
+                else
+                {
+                    // can be interacted again, reset as not interacted
+                    Accessor.SetComponentData(interactable, new Interacted() { Value = false });
+                }
             }
         });
     }

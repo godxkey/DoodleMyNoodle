@@ -179,7 +179,8 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                                              0);
 
         fix distanceBetween = fix3.DistanceSquared(pawnPosition.Value, interactablePosition);
-        if(distanceBetween > 1) // range to interact hard coded for now
+        fix minDistanceToInteract = (fix)1.1;
+        if(distanceBetween > minDistanceToInteract) // range to interact, hard coded for now
         {
             return;
         }

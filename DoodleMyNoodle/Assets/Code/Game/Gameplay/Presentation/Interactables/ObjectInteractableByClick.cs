@@ -8,19 +8,39 @@ public class ObjectInteractableByClick : GamePresentationBehaviour
 {
     [SerializeField] private GameObject _outline;
 
-    protected override void OnGamePresentationUpdate()
+    private bool _previousInteractedState = false;
+
+    protected override void OnGamePresentationUpdate() { }
+
+    public override void OnPostSimulationTick()
     {
-        if (SimWorld.TryGetComponentData(GetInteractableEntity(), out Interacted interacted) && interacted.Value && CanTrigger())
+        if (SimWorld.TryGetComponentData(GetInteractableEntity(), out Interacted interactedData))
         {
-            _outline.SetActive(false);
+            if (interactedData.Value != _previousInteractedState)
+            {
+                if (interactedData.Value)
+                {
+                    _outline.SetActive(false);
 
-            InteractionTriggeredByInput();
+                    InteractionTriggeredByInput();
 
-            Debug.Log("Interactable Triggered");
+                    Debug.Log("Interactable Triggered");
+                }
+                else
+                {
+                    InteractionReset();
+
+                    Debug.Log("Interactable Reset");
+                }
+
+                _previousInteractedState = interactedData.Value;
+            }
         }
     }
 
     protected virtual void InteractionTriggeredByInput() { }
+
+    protected virtual void InteractionReset() { }
 
     private void OnMouseOver()
     {
@@ -32,10 +52,7 @@ public class ObjectInteractableByClick : GamePresentationBehaviour
 
     private void OnMouseExit()
     {
-        if (CanTrigger())
-        {
-            _outline.SetActive(false);
-        }
+        _outline.SetActive(false);
     }
 
     private void OnMouseDown()
@@ -56,8 +73,12 @@ public class ObjectInteractableByClick : GamePresentationBehaviour
     private bool CanTrigger()
     {
         Entity interactable = GetInteractableEntity();
-        Interactable interactableData = SimWorld.GetComponentData<Interactable>(interactable);
+        if(interactable == Entity.Null)
+        {
+            return false;
+        }
 
+        Interactable interactableData = SimWorld.GetComponentData<Interactable>(interactable);
         if(SimWorld.TryGetComponentData(interactable, out Interacted interactedData))
         {
             return interactableData.OnlyOnce ? !interactedData.Value : true;
