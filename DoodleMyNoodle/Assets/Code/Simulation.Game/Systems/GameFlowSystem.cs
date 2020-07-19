@@ -1,22 +1,34 @@
+using System;
 using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
+public struct CanTriggerGameOverTag : IComponentData { }
+
+public struct GameStartedTag : IComponentData { }
+
 public class GameFlowSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
+        StartGameIfNeeded();
+        EndGameIfNeeded();
+    }
+
+    private void StartGameIfNeeded()
+    {
         int teamCurrentlyPlaying = CommonReads.GetCurrentTurnTeam(Accessor);
 
         bool everyoneIsReady = true;
-        bool atLeastOnePlayerExist = false;
+        bool atLeastOnePlayerExists = false;
 
+        // check if every player is ready
         Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn) =>
         {
             if (team.Value == (int)TeamAuth.DesignerFriendlyTeam.Player)
             {
-                atLeastOnePlayerExist = true;
+                atLeastOnePlayerExists = true;
 
                 if (!readyForNextTurn.Value)
                 {
@@ -26,11 +38,65 @@ public class GameFlowSystem : SimComponentSystem
         });
 
         // if a team member is NOT ready
-        if (teamCurrentlyPlaying == -1 && atLeastOnePlayerExist && !Accessor.HasSingleton<GameReadyToStart>() && everyoneIsReady)
+        if (teamCurrentlyPlaying == -1 && atLeastOnePlayerExists && !HasSingleton<GameStartedTag>() && everyoneIsReady)
         {
-            Accessor.SetOrCreateSingleton(new GameReadyToStart());
+            this.SetOrCreateSingleton(new GameStartedTag());
 
             CommonWrites.RequestNextTurn(Accessor);
+        }
+    }
+
+    private void EndGameIfNeeded()
+    {
+        // We cannot trigger the 'Game Over' until the two teams have at least had 1 member.
+        // Otherwise, entering a game with no enemy triggers GameOver instantly.
+        if (!HasSingleton<CanTriggerGameOverTag>())
+        {
+            if (CommonReads.GetEntitiesFromTeam(Accessor, (int)TeamAuth.DesignerFriendlyTeam.Baddies).Length > 0 &&
+                CommonReads.GetEntitiesFromTeam(Accessor, (int)TeamAuth.DesignerFriendlyTeam.Player).Length > 0)
+            {
+                this.CreateSingleton<CanTriggerGameOverTag>();
+            }
+        }
+
+        // Upon new turn, check if a team is empty
+        if (HasSingleton<NewTurnEventData>() && HasSingleton<CanTriggerGameOverTag>())
+        {
+            int playerAlive = 0;
+            int aiAlive = 0;
+
+            Entities.ForEach((ref Team pawnControllerTeam, ref ControlledEntity pawn) =>
+            {
+                // if the team member controls a pawn with Health
+                if (EntityManager.Exists(pawn.Value) && EntityManager.HasComponent<Health>(pawn.Value))
+                {
+                    if (pawnControllerTeam.Value == (int)TeamAuth.DesignerFriendlyTeam.Baddies)
+                    {
+                        aiAlive++;
+                    }
+                    else if (pawnControllerTeam.Value == (int)TeamAuth.DesignerFriendlyTeam.Player)
+                    {
+                        playerAlive++;
+                    }
+                }
+            });
+
+            if (aiAlive <= 0)
+            {
+                // Player wins !
+                if (!HasSingleton<WinningTeam>())
+                {
+                    this.CreateSingleton(new WinningTeam { Value = (int)TeamAuth.DesignerFriendlyTeam.Player });
+                }
+            }
+            else if (playerAlive <= 0)
+            {
+                // AI wins !
+                if (!HasSingleton<WinningTeam>())
+                {
+                    this.CreateSingleton(new WinningTeam { Value = (int)TeamAuth.DesignerFriendlyTeam.Baddies });
+                }
+            }
         }
     }
 }

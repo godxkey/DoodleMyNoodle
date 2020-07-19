@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
@@ -8,14 +9,6 @@ public class InstantiateStartingInventorySystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {
-        Entities
-            .WithNone<InventoryItemReference>()
-            .WithAll<StartingInventoryItem>()
-            .ForEach((Entity entity) =>
-        {
-            EntityManager.AddBuffer<InventoryItemReference>(entity);
-        });
-
         Entities
             .WithAll<InventoryItemReference>()
             .ForEach((Entity entity, DynamicBuffer<StartingInventoryItem> startingInventoryBuffer) =>

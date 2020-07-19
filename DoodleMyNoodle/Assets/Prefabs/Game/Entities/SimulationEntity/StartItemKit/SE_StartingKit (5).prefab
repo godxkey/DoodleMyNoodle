@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 4247106082647437157, guid: 301eaaff440d57e46947074f731b89c0,
         type: 3}
       propertyPath: m_Name
-      value: SE_StartingKit (5) Variant
+      value: SE_StartingKit (5)
       objectReference: {fileID: 0}
     - target: {fileID: 4247106082647437158, guid: 301eaaff440d57e46947074f731b89c0,
         type: 3}
@@ -37,7 +37,7 @@ PrefabInstance:
         type: 3}
       propertyPath: ItemPrefabs.Array.data[1]
       value: 
-      objectReference: {fileID: 5742253346417087641, guid: 8fe72c48eacd0c642818eff638603c62,
+      objectReference: {fileID: 2784291058542494111, guid: 5ec303c45ea534846b16e38711b73617,
         type: 3}
     - target: {fileID: 4247106082647437158, guid: 301eaaff440d57e46947074f731b89c0,
         type: 3}

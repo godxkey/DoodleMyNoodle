@@ -208,7 +208,7 @@ namespace UPaintCommonJobs
     public struct CopyLayerOneToTwo : IJob
     {
         [ReadOnly] public UPaintLayer LayerOne;
-        [ReadOnly] public UPaintLayer LayerTwo;
+        public UPaintLayer LayerTwo;
 
         public void Execute()
         {

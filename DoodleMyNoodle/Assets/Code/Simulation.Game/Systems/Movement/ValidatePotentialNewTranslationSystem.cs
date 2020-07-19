@@ -34,9 +34,9 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
         EntityManager.DestroyEntity(_eventsEntityQuery);
 
         Entities.ForEach((Entity entity,
+            ref PotentialNewTranslation newTranslation,
             ref FixTranslation translation,
-            ref Velocity velocity,
-            ref PotentialNewTranslation newTranslation) =>
+            ref Velocity velocity) =>
         {
             int2 tileDestinationPos = Helpers.GetTile(newTranslation.Value);
             int2 currentTilePos = Helpers.GetTile(translation.Value);
@@ -61,9 +61,9 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
         NativeHashMap<int2, Entity> reservedTiled = new NativeHashMap<int2, Entity>(128, Allocator.Temp);
 
         Entities.ForEach((Entity entity,
-           ref FixTranslation translation,
-           ref Velocity velocity,
-           ref PotentialNewTranslation newTranslation) =>
+            ref PotentialNewTranslation newTranslation,
+            ref FixTranslation translation,
+            ref Velocity velocity) =>
         {
             int2 tileDestinationPos = Helpers.GetTile(newTranslation.Value);
 
@@ -97,13 +97,13 @@ public partial class CommonReads
 {
     public static bool DoesTileRespectFilters(ISimWorldReadAccessor accessor, Entity tile, TileFilterFlags filter)
     {
-        if (accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<EntityOnTile> tileAddons) && tileAddons.Length > 0)
+        if (accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<TileAddonReference> tileAddons) && tileAddons.Length > 0)
         {
-            foreach (EntityOnTile addon in tileAddons)
+            foreach (TileAddonReference addon in tileAddons)
             {
                 if ((filter & TileFilterFlags.Navigable) != 0)
                 {
-                    if (accessor.HasComponent<SolidWallTag>(addon.TileEntity))
+                    if (accessor.HasComponent<SolidWallTag>(addon.Value))
                     {
                         return false;
                     }
@@ -111,7 +111,7 @@ public partial class CommonReads
 
                 if ((filter & TileFilterFlags.NonNavigable) != 0)
                 {
-                    if (!accessor.HasComponent<SolidWallTag>(addon.TileEntity))
+                    if (!accessor.HasComponent<SolidWallTag>(addon.Value))
                     {
                         return false;
                     }
@@ -119,7 +119,7 @@ public partial class CommonReads
 
                 if ((filter & TileFilterFlags.Inoccupied) != 0)
                 {
-                    if (accessor.HasComponent<Occupied>(addon.TileEntity))
+                    if (accessor.HasComponent<Occupied>(addon.Value))
                     {
                         return false;
                     }
@@ -127,7 +127,7 @@ public partial class CommonReads
 
                 if ((filter & TileFilterFlags.Occupied) != 0)
                 {
-                    if (!accessor.HasComponent<Occupied>(addon.TileEntity))
+                    if (!accessor.HasComponent<Occupied>(addon.Value))
                     {
                         return false;
                     }
@@ -135,7 +135,7 @@ public partial class CommonReads
 
                 if ((filter & TileFilterFlags.Ascendable) != 0)
                 {
-                    if (!accessor.HasComponent<AscendableTag>(addon.TileEntity))
+                    if (!accessor.HasComponent<AscendableTag>(addon.Value))
                     {
                         return false;
                     }

@@ -76,6 +76,9 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
         int numberOfTiles = 0;
         fix2 newPossibleDestination = new fix2(pos.x, pos.y);
 
+        if (depth > Pathfinding.MAX_PATH_COST)
+            depth = Pathfinding.MAX_PATH_COST;
+
         if (includeSelf)
         {
             HandleHighlightOnPosition(newPossibleDestination, newPossibleDestination, ref numberOfTiles, depth, tileFlags);

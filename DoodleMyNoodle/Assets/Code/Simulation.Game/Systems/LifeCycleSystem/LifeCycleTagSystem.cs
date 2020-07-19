@@ -51,7 +51,7 @@ public class LifeCycleTagSystem : SimComponentSystem
             .ForEach((Entity entity) =>
         {
             EntityManager.AddComponent<NewlyCreatedTag>(entity);
-            EntityManager.AddComponentData(entity, default(MidLifeCycleTag));
+            EntityManager.AddComponent<MidLifeCycleTag>(entity);
             EntityManager.AddComponent<MidLifeCycleSystemTag>(entity);
         });
 

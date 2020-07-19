@@ -20,22 +20,24 @@ public class DirectAlongPathSystem : SimComponentSystem
             }
         });
 
+        var deltaTime = Time.DeltaTime;
+
         // move along path
         Entities.ForEach(
             (Entity entity,
             DynamicBuffer<PathPosition> pathPositions,
-            ref FixTranslation translation,
             ref Velocity velocity,
+            ref FixTranslation translation,
             ref MoveSpeed moveSpeed) =>
         {
             if (pathPositions.Length == 0)
             {
                 velocity.Value = fix3(0);
-                EntityManager.RemoveComponent<PathPosition>(entity);
+                PostUpdateCommands.RemoveComponent<PathPosition>(entity);
                 return;
             }
 
-            fix moveDist = moveSpeed.Value * Time.DeltaTime;
+            fix moveDist = moveSpeed.Value * deltaTime;
 
             fix3 a = translation.Value;
             fix3 b = translation.Value;
@@ -67,7 +69,7 @@ public class DirectAlongPathSystem : SimComponentSystem
 
             fix3 targetPosition = a + (dir * min(moveDist, vLength));
 
-            velocity.Value = (targetPosition - translation.Value) / Time.DeltaTime;
+            velocity.Value = (targetPosition - translation.Value) / deltaTime;
         });
     }
 }

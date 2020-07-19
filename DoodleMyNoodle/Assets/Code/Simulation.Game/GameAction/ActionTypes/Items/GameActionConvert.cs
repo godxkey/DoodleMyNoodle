@@ -56,7 +56,7 @@ public class GameActionConvert : GameAction
                     }
                     else
                     {
-                        accessor.AddComponentData(pawnController, new Converted() { Duration = DURATION });
+                        accessor.AddComponentData(pawnController, new Converted() { RemainingTurns = DURATION });
                     }
                 }
             }

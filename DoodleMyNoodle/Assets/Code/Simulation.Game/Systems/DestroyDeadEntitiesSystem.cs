@@ -8,7 +8,7 @@ public struct EntityDeathEventData : IComponentData
     public Entity Entity;
 }
 
-public class DeathOnEmptyHealthSystem : SimComponentSystem
+public class DestroyDeadEntitiesSystem : SimComponentSystem
 {
     EntityQuery _eventsEntityQuery;
 
@@ -32,13 +32,13 @@ public class DeathOnEmptyHealthSystem : SimComponentSystem
                 EntityManager.CreateEventEntity(new EntityDeathEventData() { Entity = entity });
 
                 // If the entity was an addon, Remove it from grid system
-                Entity tile = CommonReads.GetTileEntity(Accessor, roundToInt(translation.Value).xy);
-                CommonWrites.RemoveEntityOnTile(Accessor, entity, tile);
+                Entity tile = CommonReads.GetTileEntity(Accessor, Helpers.GetTile(translation));
+                CommonWrites.RemoveTileAddon(Accessor, entity, tile);
 
                 // If the entity was a character, we need to remove that he is occupying the tile
-                Entity occupiedEntity = CommonReads.GetSingleTileAddonOfType<Occupied>(Accessor, tile);
-                CommonWrites.RemoveEntityOnTile(Accessor, occupiedEntity, tile);
-                PostUpdateCommands.DestroyEntity(occupiedEntity);
+                Entity occupiedAddon = CommonReads.GetFirstTileAddonWithComponent<Occupied>(Accessor, tile);
+                CommonWrites.RemoveTileAddon(Accessor, occupiedAddon, tile);
+                PostUpdateCommands.DestroyEntity(occupiedAddon);
 
                 PostUpdateCommands.DestroyEntity(entity);
             }

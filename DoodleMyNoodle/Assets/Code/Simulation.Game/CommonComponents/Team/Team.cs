@@ -12,6 +12,16 @@ public struct Team : IComponentData, IEquatable<Team>
         return Value == other.Value;
     }
 
+    public override bool Equals(object obj)
+    {
+        return obj is Team t && this == t;
+    }
+
+    public override int GetHashCode()
+    {
+        return -1937169414 + Value.GetHashCode();
+    }
+
     public static bool operator ==(Team left, Team right)
     {
         return left.Equals(right);
