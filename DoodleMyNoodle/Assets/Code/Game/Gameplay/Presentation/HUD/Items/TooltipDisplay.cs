@@ -42,6 +42,8 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
     [SerializeField]
     private float DisplacementY = 0;
 
+    private bool _tooltipShouldBeDisplayed = false;
+
     protected override void Awake()
     {
         base.Awake();
@@ -51,6 +53,15 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
 
     protected override void OnGamePresentationUpdate()
     {
+        if (Input.GetKey(KeyCode.LeftAlt))
+        {
+            ToolTipDisplay.SetActive(_tooltipShouldBeDisplayed);
+        }
+        else
+        {
+            ToolTipDisplay.SetActive(false);
+        }
+
         if (ToolTipDisplay.activeSelf)
         {
             UpdateToolTipPosition();
@@ -70,13 +81,13 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
             ItemName.text = itemInfo.Name; // update title Text
             UpdateToolTipDescription(itemInfo.EffectDescription, itemEntity, itemInfo.ItemPrefab);
             UpdateTooltipColors(itemInfo.Rarity);
-            ToolTipDisplay.SetActive(true);
+            _tooltipShouldBeDisplayed = true;
         }
     }
 
     public void DeactivateToolTipDisplay()
     {
-        ToolTipDisplay.SetActive(false);
+        _tooltipShouldBeDisplayed = false;
     }
 
     private Entity GetToolTipItemEntity(SimAssetId ID, Entity itemOwner)

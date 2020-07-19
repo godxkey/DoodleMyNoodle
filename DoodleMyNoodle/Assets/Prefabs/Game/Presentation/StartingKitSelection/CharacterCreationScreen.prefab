@@ -297,8 +297,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _readyButton: {fileID: 0}
-  NameField: {fileID: 4549367475386118258}
-  CharacterStartKit: {fileID: 5267175872570895135}
+  _nameField: {fileID: 4549367475386118258}
+  _characterStartKit: {fileID: 5267175872570895135}
 --- !u!1 &1937962844929406015
 GameObject:
   m_ObjectHideFlags: 0

@@ -78,6 +78,17 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                 });
                 break;
 
+            case PawnCharacterNameInput nameInput:
+
+                ControlledEntity playerPawn = EntityManager.GetComponentData<ControlledEntity>(nameInput.PawnController);
+
+                if (EntityManager.Exists(playerPawn.Value))
+                {
+                    EntityManager.SetOrAddComponentData(playerPawn.Value, new Name() { Value = nameInput.Name });
+                }
+                
+                break;
+
             case PawnInputNextTurn pawnInputNextTurn:
                 EntityManager.SetOrAddComponentData(pawnInputNextTurn.PawnController, new ReadyForNextTurn() { Value = pawnInputNextTurn.ReadyForNextTurn });
                 break;
