@@ -1,13 +1,17 @@
 using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngineX;
 
-public class PromptAnswerDisplay : GamePresentationBehaviour
+public class PromptAnswerDisplay : MonoBehaviour
 {
-    [SerializeField] private string Text;
+    [SerializeField] private Button _button;
+    [SerializeField] private TextMeshProUGUI _text;
 
-    protected override void OnGamePresentationUpdate()
+    public void Init(string text, Action onClickCallback)
     {
-        
+        _button.onClick.AddListener(() => { onClickCallback(); });
+        _text.text = text;
     }
 }
