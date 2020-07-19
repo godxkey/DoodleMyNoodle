@@ -403,7 +403,7 @@ public static class StaticNetSerializer_SimPlayerInputUseInteractable
     public static int GetNetBitSize(SimPlayerInputUseInteractable obj)
     {
         int result = 0;
-        result += StaticNetSerializer_UnityEngine_Vector3Int.GetNetBitSize(ref obj.InteractablePosition);
+        result += StaticNetSerializer_Unity_Mathematics_int2.GetNetBitSize(ref obj.InteractablePosition);
         result += StaticNetSerializer_PersistentId.GetNetBitSize(ref obj.SimPlayerId);
         result += StaticNetSerializer_SimPlayerInput.GetNetBitSize(obj);
         return result;
@@ -421,7 +421,7 @@ public static class StaticNetSerializer_SimPlayerInputUseInteractable
     }
     public static void NetSerialize(SimPlayerInputUseInteractable obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_UnityEngine_Vector3Int.NetSerialize(ref obj.InteractablePosition, writer);
+        StaticNetSerializer_Unity_Mathematics_int2.NetSerialize(ref obj.InteractablePosition, writer);
         StaticNetSerializer_PersistentId.NetSerialize(ref obj.SimPlayerId, writer);
         StaticNetSerializer_SimPlayerInput.NetSerialize(obj, writer);
     }
@@ -438,7 +438,7 @@ public static class StaticNetSerializer_SimPlayerInputUseInteractable
     }
     public static void NetDeserialize(SimPlayerInputUseInteractable obj, BitStreamReader reader)
     {
-        StaticNetSerializer_UnityEngine_Vector3Int.NetDeserialize(ref obj.InteractablePosition, reader);
+        StaticNetSerializer_Unity_Mathematics_int2.NetDeserialize(ref obj.InteractablePosition, reader);
         StaticNetSerializer_PersistentId.NetDeserialize(ref obj.SimPlayerId, reader);
         StaticNetSerializer_SimPlayerInput.NetDeserialize(obj, reader);
     }

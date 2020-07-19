@@ -1,17 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 [NetSerializable]
 public class SimPlayerInputUseInteractable : SimPlayerInput
 {
-    public Vector3Int InteractablePosition;
+    public int2 InteractablePosition;
 
     public SimPlayerInputUseInteractable() { }
 
     public SimPlayerInputUseInteractable(Vector3 position)
     {
-        InteractablePosition = new Vector3Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y), Mathf.RoundToInt(position.z));
+        InteractablePosition = new int2() { x = Mathf.RoundToInt(position.x), y = Mathf.RoundToInt(position.y) };
     }
 
     public override string ToString()

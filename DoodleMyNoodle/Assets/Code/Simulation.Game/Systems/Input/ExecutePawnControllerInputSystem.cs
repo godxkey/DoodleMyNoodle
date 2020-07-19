@@ -64,13 +64,12 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         {
             case PawnStartingInventorySelectionInput equipItemInput:
                 Entities
-                    .WithAll<InventoryItemPrefabReference, ItemKitTag>()
-                    .ForEach((Entity itemKitEntity, ref SimAssetId assetID) =>
+                    .WithAll<ItemKitTag>()
+                    .ForEach((DynamicBuffer<InventoryItemPrefabReference> inventoryItems, ref SimAssetId assetID) =>
                 {
                     if (equipItemInput.KitNumber == assetID.Value)
                     {
-                        ControlledEntity pawn = Accessor.GetComponentData<ControlledEntity>(equipItemInput.PawnController);
-                        DynamicBuffer<InventoryItemPrefabReference> inventoryItems = Accessor.GetBufferReadOnly<InventoryItemPrefabReference>(itemKitEntity);
+                        ControlledEntity pawn = EntityManager.GetComponentData<ControlledEntity>(equipItemInput.PawnController);
 
                         if (EntityManager.Exists(pawn.Value))
                         {
@@ -81,7 +80,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                 break;
 
             case PawnInputNextTurn pawnInputNextTurn:
-                Accessor.SetOrAddComponentData(pawnInputNextTurn.PawnController, new ReadyForNextTurn() { Value = pawnInputNextTurn.ReadyForNextTurn });
+                EntityManager.SetOrAddComponentData(pawnInputNextTurn.PawnController, new ReadyForNextTurn() { Value = pawnInputNextTurn.ReadyForNextTurn });
                 break;
         
             case PawnControllerInputUseItem useItemInput:
@@ -176,17 +175,26 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
 
         FixTranslation pawnPosition = EntityManager.GetComponentData<FixTranslation>(pawn);
         fix3 interactablePosition = new fix3(inputUseInteractable.InteractablePosition.x, 
-                                             inputUseInteractable.InteractablePosition.y, 
-                                             inputUseInteractable.InteractablePosition.z);
+                                             inputUseInteractable.InteractablePosition.y,
+                                             0);
 
-        int distanceBetween = fix.RoundToInt(fix3.DistanceSquared(pawnPosition.Value, interactablePosition));
+        fix distanceBetween = fix3.DistanceSquared(pawnPosition.Value, interactablePosition);
         if(distanceBetween > 1) // range to interact hard coded for now
         {
             return;
         }
 
         Entity tile = CommonReads.GetTileEntity(Accessor, new int2(inputUseInteractable.InteractablePosition.x, inputUseInteractable.InteractablePosition.y));
-        Entity interactableEntity = CommonReads.GetSingleTileAddonOfType<InteractableObjectTag>(Accessor, tile);
+        if(tile == Entity.Null)
+        {
+            return;
+        }
+
+        Entity interactableEntity = CommonReads.GetFirstTileAddonWithComponent<Interactable>(Accessor, tile);
+        if (interactableEntity == Entity.Null)
+        {
+            return;
+        }
 
         GameAction gameAction = GetGameActionFromEntity(interactableEntity);
 
@@ -215,12 +223,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
     {
         if (EntityManager.TryGetComponentData(entity, out GameActionId gameActionId) && gameActionId.IsValid)
         {
-            GameAction gameActionFound = GameActionBank.GetAction(gameActionId);
-
-            if (gameActionFound != null)
-            {
-                return gameActionFound;
-            }
+            return GameActionBank.GetAction(gameActionId);
         }
 
         return null;

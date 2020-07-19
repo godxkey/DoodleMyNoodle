@@ -1,12 +1,13 @@
 using System;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PawnControllerInputUseInteractable : PawnControllerInputBase
 {
-    public Vector3Int InteractablePosition;
+    public int2 InteractablePosition;
 
-    public PawnControllerInputUseInteractable(Entity pawnController, Vector3Int interactablePosition) : base(pawnController)
+    public PawnControllerInputUseInteractable(Entity pawnController, int2 interactablePosition) : base(pawnController)
     {
         InteractablePosition = interactablePosition;
     }

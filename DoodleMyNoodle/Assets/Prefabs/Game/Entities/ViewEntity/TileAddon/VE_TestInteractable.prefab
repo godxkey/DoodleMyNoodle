@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4080482587562029612
 Transform:
   m_ObjectHideFlags: 0
@@ -93,7 +93,6 @@ GameObject:
   - component: {fileID: 6426749434503508369}
   - component: {fileID: 5220871894685179433}
   - component: {fileID: 3655183206718088450}
-  - component: {fileID: 8890158628487188424}
   - component: {fileID: 9011136331402803540}
   m_Layer: 0
   m_Name: InteractableSprite
@@ -205,22 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e683ad9c051c1714d834a0ceaf49de14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _highlightContour: {fileID: 8890158628487188424}
-  _canTriggerMultipleTime: 0
---- !u!114 &8890158628487188424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6426749434503508371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afc488f9afbd7204a8b500566f8a08d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   _outline: {fileID: 5720037171082916697}
-  _startDisplayed: 0
 --- !u!114 &9011136331402803540
 MonoBehaviour:
   m_ObjectHideFlags: 0
