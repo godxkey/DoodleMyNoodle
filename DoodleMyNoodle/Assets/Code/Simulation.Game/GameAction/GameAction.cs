@@ -75,7 +75,7 @@ public abstract class GameAction
     {
         public Entity InstigatorPawnController;
         public Entity InstigatorPawn;
-        public Entity ItemEntity;
+        public Entity Entity;
     }
 
     public bool TryUse(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)

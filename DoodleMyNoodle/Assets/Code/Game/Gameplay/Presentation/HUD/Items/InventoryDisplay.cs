@@ -69,7 +69,7 @@ public class InventoryDisplay : GamePresentationBehaviour
                     { 
                         InstigatorPawn = SimWorldCache.LocalPawn,
                         InstigatorPawnController = SimWorldCache.LocalController,
-                        ItemEntity = item.ItemEntity
+                        Entity = item.ItemEntity
                     };
 
                     if (GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).IsContextValid(SimWorld, context))
@@ -127,7 +127,7 @@ public class InventoryDisplay : GamePresentationBehaviour
                     {
                         InstigatorPawn = SimWorldCache.LocalPawn,
                         InstigatorPawnController = SimWorldCache.LocalController,
-                        ItemEntity = itemEntity
+                        Entity = itemEntity
                     };
 
                     GameAction.UseContract itemUseContract = itemGameAction.GetUseContract(SimWorld, useContext);

@@ -44,6 +44,8 @@ namespace SimulationControl
         public bool CanTick => _playSimulation.Evaluate()
             && _simulationLoadSceneSystem.OngoingSceneLoads.Count == 0;
 
+        public event Action<SimTickData> SimulationTicked;
+
         private Blocker _playSimulation = new Blocker();
 
         private SimulationWorld _simulationWorld;
@@ -165,6 +167,8 @@ namespace SimulationControl
 
                 // this ensures our previously scheduled view jobs are done (we might want to find a more performant alternative)
                 World.EntityManager.CompleteAllJobs();
+
+                SimulationTicked?.Invoke(tick);
 
                 _simulationWorld.TickInputs = null;
 

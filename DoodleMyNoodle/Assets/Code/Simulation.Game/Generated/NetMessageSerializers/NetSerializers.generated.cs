@@ -391,6 +391,58 @@ public static class StaticNetSerializer_SimPlayerInputNextTurn
         StaticNetSerializer_SimPlayerInput.NetDeserialize(obj, reader);
     }
 }
+public static class StaticNetSerializer_SimPlayerInputUseInteractable
+{
+    public static int GetNetBitSize_Class(SimPlayerInputUseInteractable obj)
+    {
+        if (obj == null)
+            return 1;
+        return 1 + GetNetBitSize(obj);
+    }
+
+    public static int GetNetBitSize(SimPlayerInputUseInteractable obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_Unity_Mathematics_int2.GetNetBitSize(ref obj.InteractablePosition);
+        result += StaticNetSerializer_PersistentId.GetNetBitSize(ref obj.SimPlayerId);
+        result += StaticNetSerializer_SimPlayerInput.GetNetBitSize(obj);
+        return result;
+    }
+
+    public static void NetSerialize_Class(SimPlayerInputUseInteractable obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        NetSerialize(obj, writer);
+    }
+    public static void NetSerialize(SimPlayerInputUseInteractable obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_Unity_Mathematics_int2.NetSerialize(ref obj.InteractablePosition, writer);
+        StaticNetSerializer_PersistentId.NetSerialize(ref obj.SimPlayerId, writer);
+        StaticNetSerializer_SimPlayerInput.NetSerialize(obj, writer);
+    }
+
+    public static SimPlayerInputUseInteractable NetDeserialize_Class(BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            return null;
+        }
+        SimPlayerInputUseInteractable obj = new SimPlayerInputUseInteractable();
+        NetDeserialize(obj, reader);
+        return obj;
+    }
+    public static void NetDeserialize(SimPlayerInputUseInteractable obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_Unity_Mathematics_int2.NetDeserialize(ref obj.InteractablePosition, reader);
+        StaticNetSerializer_PersistentId.NetDeserialize(ref obj.SimPlayerId, reader);
+        StaticNetSerializer_SimPlayerInput.NetDeserialize(obj, reader);
+    }
+}
 public static class StaticNetSerializer_SimPlayerInputUseItem
 {
     public static int GetNetBitSize_Class(SimPlayerInputUseItem obj)

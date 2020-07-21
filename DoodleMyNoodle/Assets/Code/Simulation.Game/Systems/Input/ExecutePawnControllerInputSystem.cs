@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngineX;
 
 
@@ -29,7 +30,7 @@ public class ClearPawnControllerInputSystem : SimComponentSystem
 
         _executeSys = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
     }
-
+    
     protected override void OnUpdate()
     {
         foreach (PawnControllerInputBase input in _executeSys.Inputs)
@@ -81,22 +82,26 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             case PawnInputNextTurn pawnInputNextTurn:
                 EntityManager.SetOrAddComponentData(pawnInputNextTurn.PawnController, new ReadyForNextTurn() { Value = pawnInputNextTurn.ReadyForNextTurn });
                 break;
-
+        
             case PawnControllerInputUseItem useItemInput:
-                ExecuteInput(useItemInput);
+                ExecuteUseGameActionInput(useItemInput);
+                break;
+
+            case PawnControllerInputUseInteractable useInteractableInput:
+                ExecuteUseGameActionInput(useInteractableInput);
                 break;
         }
     }
 
-    private void ExecuteInput(PawnControllerInputUseItem inputUseItem)
+    private void ExecuteUseGameActionInput(PawnControllerInputBase inputUseGameAction)
     {
         void LogDiscardReason(string str)
         {
-            Log.Info($"[{nameof(ExecutePawnControllerInputSystem)}::ExecuteInput] " +
-                $"Discarding input {inputUseItem} : {str}");
+            Log.Info($"[{nameof(ExecutePawnControllerInputSystem)}::ExecuteUseGameActionInput] " +
+                $"Discarding input {inputUseGameAction} : {str}");
         }
 
-        if (!EntityManager.TryGetComponentData(inputUseItem.PawnController, out ControlledEntity controlledEntity))
+        if (!EntityManager.TryGetComponentData(inputUseGameAction.PawnController, out ControlledEntity controlledEntity))
         {
             LogDiscardReason($"PawnController has no {nameof(ControlledEntity)} component.");
             return;
@@ -104,7 +109,27 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
 
         Entity pawn = controlledEntity.Value;
 
-        if (!EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
+        switch (inputUseGameAction)
+        {
+            case PawnControllerInputUseItem useItemInput:
+                ExecuteUseItemInput(useItemInput, pawn);
+                break;
+
+            case PawnControllerInputUseInteractable useInteractableInput:
+                ExecuteUseInteractableInput(useInteractableInput, pawn);
+                break;
+        }
+    }
+
+    private void ExecuteUseItemInput(PawnControllerInputUseItem inputUseItem, Entity pawn)
+    {
+        void LogDiscardReason(string str)
+        {
+            Log.Info($"[{nameof(ExecutePawnControllerInputSystem)}::ExecuteUseItemInput] " +
+                $"Discarding input {inputUseItem} : {str}");
+        }
+
+        if(!EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             LogDiscardReason($"Pawn has no {nameof(DynamicBuffer<InventoryItemReference>)}.");
             return;
@@ -118,19 +143,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
 
         Entity item = inventory[inputUseItem.ItemIndex].ItemEntity;
 
-        if (!EntityManager.TryGetComponentData(item, out GameActionId gameActionId))
-        {
-            LogDiscardReason($"Item {item} doesn't have a {nameof(GameActionId)} component.");
-            return;
-        }
-
-        if (!gameActionId.IsValid)
-        {
-            LogDiscardReason($"Item {item}'s gameActionId is invalid.");
-            return;
-        }
-
-        GameAction gameAction = GameActionBank.GetAction(gameActionId);
+        GameAction gameAction = GetGameActionFromEntity(item);
 
         if (gameAction == null)
         {
@@ -142,16 +155,80 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         {
             InstigatorPawn = pawn,
             InstigatorPawnController = inputUseItem.PawnController,
-            ItemEntity = item
+            Entity = item
         };
 
-        if (!gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData))
+        if(!gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData))
         {
             LogDiscardReason($"Can't Trigger {gameAction}");
             return;
         }
     }
 
+    private void ExecuteUseInteractableInput(PawnControllerInputUseInteractable inputUseInteractable, Entity pawn)
+    {
+        void LogDiscardReason(string str)
+        {
+            Log.Info($"[{nameof(ExecutePawnControllerInputSystem)}::ExecuteUseInteractableInput] " +
+                $"Discarding input {inputUseInteractable} : {str}");
+        }
+
+        FixTranslation pawnPosition = EntityManager.GetComponentData<FixTranslation>(pawn);
+        fix3 interactablePosition = new fix3(inputUseInteractable.InteractablePosition.x, 
+                                             inputUseInteractable.InteractablePosition.y,
+                                             0);
+
+        fix distanceBetween = fix3.DistanceSquared(pawnPosition.Value, interactablePosition);
+        fix maxDistanceToInteract = (fix)1.1;
+        if(distanceBetween > maxDistanceToInteract) // range to interact, hard coded for now
+        {
+            return;
+        }
+
+        Entity tile = CommonReads.GetTileEntity(Accessor, new int2(inputUseInteractable.InteractablePosition.x, inputUseInteractable.InteractablePosition.y));
+        if(tile == Entity.Null)
+        {
+            return;
+        }
+
+        Entity interactableEntity = CommonReads.GetFirstTileAddonWithComponent<Interactable>(Accessor, tile);
+        if (interactableEntity == Entity.Null)
+        {
+            return;
+        }
+
+        GameAction gameAction = GetGameActionFromEntity(interactableEntity);
+
+        if (gameAction == null)
+        {
+            LogDiscardReason($"Interactable {interactableEntity}'s gameActionId is invalid.");
+            return;
+        }
+
+        GameAction.UseContext useContext = new GameAction.UseContext()
+        {
+            InstigatorPawn = pawn,
+            InstigatorPawnController = inputUseInteractable.PawnController,
+            Entity = interactableEntity
+        };
+
+        // currently no use parameters
+        if (!gameAction.TryUse(Accessor, useContext, null))
+        {
+            LogDiscardReason($"Can't Trigger {gameAction}");
+            return;
+        }
+    }
+
+    private GameAction GetGameActionFromEntity(Entity entity)
+    {
+        if (EntityManager.TryGetComponentData(entity, out GameActionId gameActionId) && gameActionId.IsValid)
+        {
+            return GameActionBank.GetAction(gameActionId);
+        }
+
+        return null;
+    }
 }
 
 
@@ -162,7 +239,7 @@ internal partial class CommonWrites
         input.PawnController = pawnController;
         QueuePawnControllerInput(accessor, input);
     }
-
+    
     public static void QueuePawnControllerInput(ISimWorldReadWriteAccessor accessor, PawnControllerInputBase input)
     {
         ExecutePawnControllerInputSystem system = accessor.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
