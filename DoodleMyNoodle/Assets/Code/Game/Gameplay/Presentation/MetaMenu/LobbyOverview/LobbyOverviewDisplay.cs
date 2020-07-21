@@ -28,16 +28,23 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
 
     protected override void OnGamePresentationUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if ((Input.GetKey(KeyCode.Tab) && !_isVisible) || (!Input.GetKey(KeyCode.Tab) && _isVisible))
         {
-            ToggleLobbyVisibility();
+            ToggleVisibility();
         }
-
 
         _currentTime += Time.deltaTime;
         _serverTimer.text = Mathf.RoundToInt(_currentTime).ToString();
 
-        _serverName.text = OnlineService.NetworkInterface.ConnectedSessionInfo.HostName;
+        if (OnlineService.NetworkInterface.ConnectedSessionInfo != null)
+        {
+            _serverName.text = OnlineService.NetworkInterface.ConnectedSessionInfo.HostName;
+        }
+        else
+        {
+            _serverName.text = "Local Game";
+        }
+        
 
         int currentPlayerIndex = 0;
 
@@ -74,7 +81,7 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
             });
     }
 
-    private void ToggleLobbyVisibility()
+    private void ToggleVisibility()
     {
         if (_doingAnimation)
         {
