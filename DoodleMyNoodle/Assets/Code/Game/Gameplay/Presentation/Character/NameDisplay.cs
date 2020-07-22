@@ -5,31 +5,17 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
 
-public class NameDisplay : GamePresentationBehaviour
+public class NameDisplay : BindedPresentationEntityComponent
 {
     [SerializeField] private TextMeshPro _nameText;
 
-    private Entity _currentEntity = Entity.Null;
-
     protected override void OnGamePresentationUpdate()
     {
-        if(_currentEntity == Entity.Null)
-        {
-            Vector3 currentWorldPosition = transform.parent.transform.position;
-            fix3 position = new fix3() { x = (fix)currentWorldPosition.x, y = (fix)currentWorldPosition.y, z = (fix)currentWorldPosition.z };
+        base.OnGamePresentationUpdate();
 
-            SimWorld.Entities.ForEach((Entity entity, ref Name name, ref FixTranslation translation) =>
-            {
-                if (translation.Value == position)
-                {
-                    _currentEntity = entity;
-                }
-            });
-        }
-
-        if (_currentEntity != Entity.Null)
+        if (SimEntity != Entity.Null && SimWorld.HasComponent<Name>(SimEntity))
         {
-            _nameText.text = SimWorld.GetComponentData<Name>(_currentEntity).Value.ToString();
+            _nameText.text = SimWorld.GetComponentData<Name>(SimEntity).Value.ToString();
         }
     }
 }

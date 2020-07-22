@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &5095112687909612003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5776912470226665749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d72be967185ba5449e3980b2cacc4e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _nameText: {fileID: 3653422281167849313}
 --- !u!1 &4698551844173715227
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,7 +26,6 @@ GameObject:
   - component: {fileID: 546634952906871312}
   - component: {fileID: 7507419610193263544}
   - component: {fileID: 3653422281167849313}
-  - component: {fileID: 5585616031265722031}
   m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -37,7 +49,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.936, y: -0.58}
+  m_AnchoredPosition: {x: 1.936, y: -0.52}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &5077931957103207469
@@ -141,8 +153,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 1
-  m_fontSizeBase: 1
+  m_fontSize: 2
+  m_fontSizeBase: 2
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -158,7 +170,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: -1
+  m_firstOverflowCharacterIndex: 0
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -182,13 +194,13 @@ MonoBehaviour:
   m_margin: {x: 6.7913485, y: 1.2306414, z: 10.672161, w: 3.6171112}
   m_textInfo:
     textComponent: {fileID: 3653422281167849313}
-    characterCount: 11
+    characterCount: 0
     spriteCount: 0
-    spaceCount: 1
-    wordCount: 2
+    spaceCount: 0
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -205,19 +217,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &5585616031265722031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4698551844173715227}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d72be967185ba5449e3980b2cacc4e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _nameText: {fileID: 3653422281167849313}
 --- !u!1001 &1736369821046630993
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -287,6 +286,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 950f116e90b5f1d4f9a86da78a6e1e45, type: 3}
+--- !u!1 &5776912470226665749 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5202612425808145220, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    type: 3}
+  m_PrefabInstance: {fileID: 1736369821046630993}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5776912470226665748 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,

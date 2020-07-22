@@ -207,20 +207,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67a0bb4e7be99474893bbbf9c5bf4d8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ToolTipDisplay: {fileID: 5952095987088667514}
-  TooltipContour: {fileID: 308428497591126463}
-  ItemName: {fileID: 935547925791857808}
-  ItemDescriptionContainer: {fileID: 6445220997590701820}
-  ItemDescriptionPrefab: {fileID: 1735519872103013367, guid: ef40a59325895e74c873d457df67437c,
+  _toolTipDisplay: {fileID: 5952095987088667514}
+  _tooltipContour: {fileID: 308428497591126463}
+  _itemName: {fileID: 935547925791857808}
+  _itemDescriptionContainer: {fileID: 6445220997590701820}
+  _itemDescriptionPrefab: {fileID: 1735519872103013367, guid: ef40a59325895e74c873d457df67437c,
     type: 3}
-  Common: {r: 1, g: 1, b: 1, a: 1}
-  Uncommon: {r: 0, g: 1, b: 0, a: 1}
-  Rare: {r: 0, g: 0.10208559, b: 1, a: 1}
-  Mythic: {r: 0.79332066, g: 0, b: 1, a: 1}
-  Legendary: {r: 1, g: 0.62102604, b: 0, a: 1}
-  ScreenEdgeToolTipLimit: 200
-  DisplacementX: 100
-  DisplacementY: 70
+  _common: {r: 1, g: 1, b: 1, a: 1}
+  _uncommon: {r: 0, g: 1, b: 0, a: 1}
+  _rare: {r: 0, g: 0, b: 1, a: 1}
+  _mythic: {r: 1, g: 0, b: 1, a: 1}
+  _legendary: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _screenEdgeToolTipLimit: 200
+  _displayDelay: 2
+  _displacementX: 100
+  _displacementY: 70
 --- !u!222 &3636927922078595548
 CanvasRenderer:
   m_ObjectHideFlags: 0

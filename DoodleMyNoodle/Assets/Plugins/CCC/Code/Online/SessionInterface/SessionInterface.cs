@@ -15,6 +15,7 @@ public abstract class SessionInterface : IDisposable
 
     public abstract bool IsServerType { get; }
     public bool IsClientType => !IsServerType;
+    public string HostName => _networkInterface.ConnectedSessionInfo.HostName;
     public INetworkInterfaceSession SessionInfo => _networkInterface.ConnectedSessionInfo;
     public ReadOnlyList<INetworkInterfaceConnection> Connections => _networkInterface.Connections;
     public ReadOnlyList<CoroutineOperation> IncomingDataTransfers => _incomingDataTransfers.AsReadOnlyNoAlloc();

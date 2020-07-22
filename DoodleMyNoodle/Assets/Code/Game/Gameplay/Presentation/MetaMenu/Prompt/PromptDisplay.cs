@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngineX;
 
-public class PromptDisplay : GamePresentationSystem<PromptDisplay>
+public class PromptDisplay : GameSystem<PromptDisplay>
 {
     [SerializeField] private TextMeshProUGUI _questionText;
     [SerializeField] private GameObject _answerButtonPrefab;
@@ -11,8 +11,6 @@ public class PromptDisplay : GamePresentationSystem<PromptDisplay>
     [SerializeField] private GameObject _blackScreen;
 
     public override bool SystemReady => true;
-
-    protected override void OnGamePresentationUpdate() { }
 
     public void Ask(string question, Action<int> onAnswerSelected, params string[] answers)
     {

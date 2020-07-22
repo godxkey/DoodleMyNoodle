@@ -13,15 +13,12 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
     [SerializeField] private Transform _playerInfoContainer;
 
     [SerializeField] private TextMeshProUGUI _serverName;
-    [SerializeField] private TextMeshProUGUI _serverTimer;
 
     [SerializeField] private Vector3 _startPosition;
     [SerializeField] private Vector3 _endPosition;
     [SerializeField] private float _animationDuration = 2;
 
     private List<LobbyPlayerInfoDisplay> _playerInfos = new List<LobbyPlayerInfoDisplay>();
-
-    private float _currentTime = 0;
 
     private bool _isVisible = false;
     private bool _doingAnimation = false;
@@ -33,18 +30,14 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
             ToggleVisibility();
         }
 
-        _currentTime += Time.deltaTime;
-        _serverTimer.text = Mathf.RoundToInt(_currentTime).ToString();
-
-        if (OnlineService.NetworkInterface.ConnectedSessionInfo != null)
+        if (OnlineService.OnlineInterface?.SessionInterface != null)
         {
-            _serverName.text = OnlineService.NetworkInterface.ConnectedSessionInfo.HostName;
+            _serverName.text = OnlineService.OnlineInterface.SessionInterface.HostName;
         }
         else
         {
             _serverName.text = "Local Game";
         }
-        
 
         int currentPlayerIndex = 0;
 
@@ -74,7 +67,7 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
                         characterName = characterNameComponent.Value;
                     }
 
-                    _playerInfos[currentPlayerIndex].Init(playerName, characterName);
+                    _playerInfos[currentPlayerIndex].UpdatePlayerInfoDisplay(playerName, characterName);
 
                     currentPlayerIndex++;
                 }
@@ -92,7 +85,7 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
 
         if (_isVisible)
         {
-            transform.DOLocalMove(_startPosition, _animationDuration).OnComplete(()=> 
+            GetComponent<RectTransform>().DOAnchorPos(_startPosition, _animationDuration).OnComplete(()=> 
             { 
                 _isVisible = false;
                 _doingAnimation = false;
@@ -100,7 +93,7 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
         }
         else
         {
-            transform.DOLocalMove(_endPosition, _animationDuration).OnComplete(() => 
+            GetComponent<RectTransform>().DOAnchorPos(_endPosition, _animationDuration).OnComplete(() => 
             { 
                 _isVisible = true;
                 _doingAnimation = false;
