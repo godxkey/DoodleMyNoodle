@@ -22,5 +22,5 @@ public class BindedPresentationEntityComponent : GamePresentationBehaviour
         Log.Assert(_simEntityManaged != null, $"{GetType().GetPrettyName()} components should only be placed on presentation GameObjects with a '{nameof(BindedSimEntityManaged)}'");
     }
 
-    public Entity SimEntity => _simEntityManaged.SimEntity;
+    public Entity SimEntity => _simEntityManaged == null ? Entity.Null : _simEntityManaged.SimEntity;
 }
