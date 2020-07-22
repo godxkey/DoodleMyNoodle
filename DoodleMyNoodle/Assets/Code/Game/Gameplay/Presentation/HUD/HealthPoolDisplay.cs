@@ -6,14 +6,15 @@ using UnityEngineX;
 
 public class HealthPoolDisplay : GamePresentationBehaviour
 {
-    public Image HealthPool;
-    public Image ArmorPool;
+    [SerializeField] GameObject _poolContainer;
+    [SerializeField] Image _healthPool;
+    [SerializeField] Image _armorPool;
 
     protected override void OnGamePresentationUpdate()
     {
         if(SimWorldCache.LocalPawn != Entity.Null)
         {
-            gameObject.SetActive(true);
+            _poolContainer.gameObject.SetActive(true);
 
             Health hp = SimWorld.GetComponentData<Health>(SimWorldCache.LocalPawn);
             MaximumInt<Health> maxHP = SimWorld.GetComponentData<MaximumInt<Health>>(SimWorldCache.LocalPawn);
@@ -21,12 +22,12 @@ public class HealthPoolDisplay : GamePresentationBehaviour
 
             int totalHealth = maxHP.Value + armor.Value;
 
-            HealthPool.fillAmount = (float)hp.Value / totalHealth;
-            ArmorPool.fillAmount = (float)(hp.Value + armor.Value) / totalHealth;
+            _healthPool.fillAmount = (float)hp.Value / totalHealth;
+            _armorPool.fillAmount = (float)(hp.Value + armor.Value) / totalHealth;
         }
         else
         {
-            gameObject.SetActive(false);
+            _poolContainer.gameObject.SetActive(false);
         }
     }
 }

@@ -47,3 +47,6 @@ MonoBehaviour:
   - SpriteVisual: {fileID: 21300000, guid: 0ae04b3b5d4a0984fbcc53173e1e51e4, type: 3}
     AddonSimulationPrefab: {fileID: 30145307963041151, guid: c22c460c2bab90046a7326ddb6fd03b6,
       type: 3}
+  - SpriteVisual: {fileID: 21300000, guid: 3102adf247e081c4f9427f0046e1bed5, type: 3}
+    AddonSimulationPrefab: {fileID: 30145307963041151, guid: fbb1ff4dd208a0948ba4a30eac284ce5,
+      type: 3}

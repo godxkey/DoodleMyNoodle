@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class DynamicNetSerializationRegistry
 {
-    public static readonly ulong crc = 15670968356253440458;
+    public static readonly ulong crc = 1459631145375058295;
 
     public static readonly Type[] types = new Type[]
     {
@@ -104,9 +104,9 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(SimInputSubmission)
         ,
-        typeof(SimPlayerCharacterNameInput)
-        ,
         typeof(SimPlayerInputNextTurn)
+        ,
+        typeof(SimPlayerInputUseInteractable)
         ,
         typeof(SimPlayerInputUseItem)
         ,
@@ -411,16 +411,16 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_SimInputSubmission.GetNetBitSize(ref castedObj);
         }
         ,
-        [typeof(SimPlayerCharacterNameInput)] = (obj) =>
-        {
-            SimPlayerCharacterNameInput castedObj = (SimPlayerCharacterNameInput)obj;
-            return StaticNetSerializer_SimPlayerCharacterNameInput.GetNetBitSize(castedObj);
-        }
-        ,
         [typeof(SimPlayerInputNextTurn)] = (obj) =>
         {
             SimPlayerInputNextTurn castedObj = (SimPlayerInputNextTurn)obj;
             return StaticNetSerializer_SimPlayerInputNextTurn.GetNetBitSize(castedObj);
+        }
+        ,
+        [typeof(SimPlayerInputUseInteractable)] = (obj) =>
+        {
+            SimPlayerInputUseInteractable castedObj = (SimPlayerInputUseInteractable)obj;
+            return StaticNetSerializer_SimPlayerInputUseInteractable.GetNetBitSize(castedObj);
         }
         ,
         [typeof(SimPlayerInputUseItem)] = (obj) =>
@@ -762,16 +762,16 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_SimInputSubmission.NetSerialize(ref castedObj, writer);
         }
         ,
-        [typeof(SimPlayerCharacterNameInput)] = (obj, writer) =>
-        {
-            SimPlayerCharacterNameInput castedObj = (SimPlayerCharacterNameInput)obj;
-            StaticNetSerializer_SimPlayerCharacterNameInput.NetSerialize(castedObj, writer);
-        }
-        ,
         [typeof(SimPlayerInputNextTurn)] = (obj, writer) =>
         {
             SimPlayerInputNextTurn castedObj = (SimPlayerInputNextTurn)obj;
             StaticNetSerializer_SimPlayerInputNextTurn.NetSerialize(castedObj, writer);
+        }
+        ,
+        [typeof(SimPlayerInputUseInteractable)] = (obj, writer) =>
+        {
+            SimPlayerInputUseInteractable castedObj = (SimPlayerInputUseInteractable)obj;
+            StaticNetSerializer_SimPlayerInputUseInteractable.NetSerialize(castedObj, writer);
         }
         ,
         [typeof(SimPlayerInputUseItem)] = (obj, writer) =>
@@ -1162,15 +1162,15 @@ public static class DynamicNetSerializationRegistry
         ,
         [47] = (reader) =>
         {
-            SimPlayerCharacterNameInput obj = new SimPlayerCharacterNameInput();
-            StaticNetSerializer_SimPlayerCharacterNameInput.NetDeserialize(obj, reader);
+            SimPlayerInputNextTurn obj = new SimPlayerInputNextTurn();
+            StaticNetSerializer_SimPlayerInputNextTurn.NetDeserialize(obj, reader);
             return obj;
         }
         ,
         [48] = (reader) =>
         {
-            SimPlayerInputNextTurn obj = new SimPlayerInputNextTurn();
-            StaticNetSerializer_SimPlayerInputNextTurn.NetDeserialize(obj, reader);
+            SimPlayerInputUseInteractable obj = new SimPlayerInputUseInteractable();
+            StaticNetSerializer_SimPlayerInputUseInteractable.NetDeserialize(obj, reader);
             return obj;
         }
         ,

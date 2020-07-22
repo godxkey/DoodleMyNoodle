@@ -39,9 +39,9 @@ public class GameActionThrowProjectile : GameAction
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST);
 
             // get settings
-            if (!accessor.TryGetComponentData(context.ItemEntity, out GameActionThrowProjectileSettings settings))
+            if (!accessor.TryGetComponentData(context.Entity, out GameActionThrowProjectileSettings settings))
             {
-                Debug.LogWarning($"Item {context.ItemEntity} has no {nameof(GameActionThrowProjectileSettings)} component");
+                Debug.LogWarning($"Item {context.Entity} has no {nameof(GameActionThrowProjectileSettings)} component");
                 return;
             }
 
