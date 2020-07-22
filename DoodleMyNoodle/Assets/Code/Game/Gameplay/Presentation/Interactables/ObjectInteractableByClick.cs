@@ -4,17 +4,20 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
 
-public class ObjectInteractableByClick : GamePresentationBehaviour
+public class ObjectInteractableByClick : BindedPresentationEntityComponent
 {
     [SerializeField] private GameObject _outline;
 
     private bool _previousInteractedState = false;
 
-    protected override void OnGamePresentationUpdate() { }
+    protected override void OnGamePresentationUpdate() 
+    {
+        base.OnGamePresentationUpdate();
+    }
 
     public override void OnPostSimulationTick()
     {
-        Entity InteractableEntity = GetInteractableEntity();
+        Entity InteractableEntity = SimEntity;
         if (InteractableEntity != Entity.Null)
         {
             if (SimWorld.TryGetComponentData(InteractableEntity, out Interacted interactedData))
@@ -70,34 +73,26 @@ public class ObjectInteractableByClick : GamePresentationBehaviour
 
     private bool CanTrigger()
     {
-        Entity interactable = GetInteractableEntity();
+        Entity interactable = SimEntity;
         if(interactable == Entity.Null)
         {
             return false;
         }
 
-        Interactable interactableData = SimWorld.GetComponentData<Interactable>(interactable);
-        if(SimWorld.TryGetComponentData(interactable, out Interacted interactedData))
+        if(SimWorld.TryGetComponentData(interactable, out Interactable interactableData))
         {
-            return interactableData.OnlyOnce ? !interactedData.Value : true;
+            if (SimWorld.TryGetComponentData(interactable, out Interacted interactedData))
+            {
+                return interactableData.OnlyOnce ? !interactedData.Value : true;
+            }
+            else
+            {
+                return true;
+            }
         }
         else
         {
-            return true;
-        }
-    }
-
-    private Entity GetInteractableEntity()
-    {
-        BindedSimEntityManaged bindingComponent = GetComponent<BindedSimEntityManaged>();
-        if (bindingComponent != null)
-        {
-            return bindingComponent.SimEntity;
-        }
-        else
-        {
-            Entity tile = CommonReads.GetTileEntity(SimWorld, new int2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)));
-            return CommonReads.GetFirstTileAddonWithComponent<Interactable>(SimWorld, tile);
+            return false;
         }
     }
 }

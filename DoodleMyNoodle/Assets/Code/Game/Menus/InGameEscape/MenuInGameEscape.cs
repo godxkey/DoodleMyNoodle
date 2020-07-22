@@ -33,11 +33,23 @@ public class MenuInGameEscape : MonoBehaviour
 
     public void ExitSession()
     {
-        ((GameStateInGameBase)GameStateManager.currentGameState).ReturnToMenu();
+        PromptDisplay.Instance.Ask("Are you sure you want to quit ?", (int choice) =>
+        {
+            if (choice == 1)
+            {
+                ((GameStateInGameBase)GameStateManager.currentGameState).ReturnToMenu();
+            }
+        }, "No", "Yes");
     }
 
     public void ExitApplication()
     {
-        ((GameStateInGameBase)GameStateManager.currentGameState).ExitApplication();
+        PromptDisplay.Instance.Ask("Are you sure you want to quit ?", (int choice) =>
+        {
+            if (choice == 1)
+            {
+                ((GameStateInGameBase)GameStateManager.currentGameState).ExitApplication();
+            }
+        }, "No", "Yes");
     }
 }

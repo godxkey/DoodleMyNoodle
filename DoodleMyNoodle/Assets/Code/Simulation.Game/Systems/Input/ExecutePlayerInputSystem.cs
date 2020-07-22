@@ -38,6 +38,10 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                 pawnControllerInputSystem.Inputs.Add(new PawnStartingInventorySelectionInput(playerEntity, StartingInventorySelected.KitNumber));
                 break;
 
+            case SimPlayerCharacterNameInput NameSelected:
+                pawnControllerInputSystem.Inputs.Add(new PawnCharacterNameInput(playerEntity, NameSelected.Name));
+                break;
+
             case SimPlayerInputNextTurn NextTurnInput:
                 pawnControllerInputSystem.Inputs.Add(new PawnInputNextTurn(playerEntity, NextTurnInput.ReadyForNextTurn));
                 break;

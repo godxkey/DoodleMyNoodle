@@ -54,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 0
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
-    serializedVersion: 10
+    serializedVersion: 12
     m_Resolution: 2
     m_BakeResolution: 40
     m_AtlasSize: 1024
@@ -62,6 +62,7 @@ LightmapSettings:
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
     m_CompAOExponentDirect: 0
+    m_ExtractAmbientOcclusion: 0
     m_Padding: 2
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
@@ -76,10 +77,16 @@ LightmapSettings:
     m_PVRDirectSampleCount: 32
     m_PVRSampleCount: 500
     m_PVRBounces: 2
+    m_PVREnvironmentSampleCount: 500
+    m_PVREnvironmentReferencePointCount: 2048
+    m_PVRFilteringMode: 2
+    m_PVRDenoiserTypeDirect: 0
+    m_PVRDenoiserTypeIndirect: 0
+    m_PVRDenoiserTypeAO: 0
     m_PVRFilterTypeDirect: 0
     m_PVRFilterTypeIndirect: 0
     m_PVRFilterTypeAO: 0
-    m_PVRFilteringMode: 1
+    m_PVREnvironmentMIS: 0
     m_PVRCulling: 1
     m_PVRFilteringGaussRadiusDirect: 1
     m_PVRFilteringGaussRadiusIndirect: 5
@@ -87,7 +94,9 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
+    m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -176,10 +185,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 443669890}
     m_Modifications:
-    - target: {fileID: 4930252381372217749, guid: 4ca3dd7e894a31b428561fddef993152,
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
-      propertyPath: m_Name
-      value: Settings Button
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_text
+      value: Settings
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4071227387097058212, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
@@ -296,25 +320,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.0000098
       objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+    - target: {fileID: 4930252381372217749, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_text
-      value: Settings
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 8
+      propertyPath: m_Name
+      value: Settings Button
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ca3dd7e894a31b428561fddef993152, type: 3}
@@ -376,7 +385,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 443669889}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1741964061, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
@@ -390,7 +399,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 443669889}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1297475563, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -404,6 +413,8 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
 --- !u!1001 &802338835
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -411,10 +422,45 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 443669890}
     m_Modifications:
-    - target: {fileID: 4930252381372217749, guid: 4ca3dd7e894a31b428561fddef993152,
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
-      propertyPath: m_Name
-      value: Exit Application Button
+      propertyPath: m_havePropertiesChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_text
+      value: Exit to desktop
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4071227387097058212, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
@@ -531,45 +577,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.0000098
       objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+    - target: {fileID: 4930252381372217749, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_text
-      value: Exit to desktop
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_textInfo.spaceCount
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_firstOverflowCharacterIndex
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 1
+      propertyPath: m_Name
+      value: Exit Application Button
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ca3dd7e894a31b428561fddef993152, type: 3}
@@ -588,7 +599,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &875706419
@@ -672,7 +683,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1546929555}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -681,8 +692,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: 5aa3f44b065dbe24cab25d27166f00f0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -692,6 +701,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &1546929558
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -765,7 +775,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1808635480}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1301386320, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreReversedGraphics: 1
@@ -782,7 +792,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1808635480}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
@@ -814,7 +824,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!224 &1808635484
 RectTransform:
@@ -864,14 +874,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0030b9bd1e116ba41b0aeedd0fed433b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startFromScratch: 0
   overridePlayMode: 0
   playMode: 0
-  overridePlayerName: 0
-  playerName: 
   overrideServerName: 0
   serverName: 
   overrideLevel: 0
-  level: 
+  level: {fileID: 0}
 --- !u!1001 &2000144933
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -879,10 +888,35 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 443669890}
     m_Modifications:
-    - target: {fileID: 4930252381372217749, guid: 4ca3dd7e894a31b428561fddef993152,
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
-      propertyPath: m_Name
-      value: Exit Game Button
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_text
+      value: Exit to menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4071227387097058212, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
@@ -999,35 +1033,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.0000098
       objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+    - target: {fileID: 4930252381372217749, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_text
-      value: Exit to menu
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_textInfo.spaceCount
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
-      value: 3
+      propertyPath: m_Name
+      value: Exit Game Button
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ca3dd7e894a31b428561fddef993152, type: 3}
@@ -1046,7 +1055,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &4071227387097058212 stripped
@@ -1062,10 +1071,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 443669890}
     m_Modifications:
-    - target: {fileID: 4930252381372217749, guid: 4ca3dd7e894a31b428561fddef993152,
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
-      propertyPath: m_Name
-      value: ReturnButton
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_text
+      value: Continue
+      objectReference: {fileID: 0}
+    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4071227387097058212, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
@@ -1167,25 +1191,10 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
+    - target: {fileID: 4930252381372217749, guid: 4ca3dd7e894a31b428561fddef993152,
         type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_text
-      value: Continue
-      objectReference: {fileID: 0}
-    - target: {fileID: 172859772791141504, guid: 4ca3dd7e894a31b428561fddef993152,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 8
+      propertyPath: m_Name
+      value: ReturnButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ca3dd7e894a31b428561fddef993152, type: 3}
@@ -1218,6 +1227,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 4930252381372217749}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
