@@ -83,3 +83,5 @@ MonoBehaviour:
     Layer: 1
   - Sprite: {fileID: 21300000, guid: 3102adf247e081c4f9427f0046e1bed5, type: 3}
     Layer: 1
+  - Sprite: {fileID: 21300000, guid: 36d09550dca773644a06ebafccf2d342, type: 3}
+    Layer: 1
