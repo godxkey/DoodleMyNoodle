@@ -10,7 +10,7 @@ public struct NewInventoryItem : IBufferElementData
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemBundleAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
+public class ItemInventoryAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     public bool IsStartingKit = false;
 
@@ -43,7 +43,7 @@ public class ItemBundleAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
 
 internal partial class CommonWrites
 {
-    // We empty the bundle / container after giving the items
+    // We empty the inventory / container after giving the items
     public static void MoveToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, DynamicBuffer<InventoryItemReference> sourceItems)
     {
         DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(pawn);
@@ -55,8 +55,14 @@ internal partial class CommonWrites
         sourceItems.Clear();
     }
 
-    // We keep the item reference into the bundle / container even after transfering the items
-    public static void CopyToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, DynamicBuffer<InventoryItemPrefabReference> sourceItemsBuffer)
+    public static void MoveToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, InventoryItemReference sourceItem)
+    {
+        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(pawn);
+        inventory.Add(sourceItem);
+    }
+
+    // We keep the item reference into the inventory / container even after transfering the items
+    public static void InstantiateToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, DynamicBuffer<InventoryItemPrefabReference> sourceItemsBuffer)
     {
         if (sourceItemsBuffer.Length <= 0)
             return;
@@ -75,5 +81,14 @@ internal partial class CommonWrites
         {
             inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
         }
+    }
+
+    public static void InstantiateToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, InventoryItemPrefabReference sourceItem)
+    {
+        // Spawn item
+        Entity itemInstance = accessor.Instantiate(sourceItem.ItemEntityPrefab);
+
+        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(pawn);
+        inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
     }
 }

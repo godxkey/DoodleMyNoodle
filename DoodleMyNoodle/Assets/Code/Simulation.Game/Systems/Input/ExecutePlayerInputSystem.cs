@@ -53,6 +53,14 @@ public class ExecutePlayerInputSystem : SimComponentSystem
             case SimPlayerInputUseInteractable InteractableUsedInput:
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseInteractable(playerEntity, InteractableUsedInput.InteractablePosition));
                 break;
+
+            case SimPlayerInputEquipItem EquipItemInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnInputEquipItem(playerEntity, EquipItemInput.ItemPrefabID, EquipItemInput.ItemEntityPosition));
+                break;
+
+            case SimPlayerInputDropItem DropItemInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnInputDropItem(playerEntity, DropItemInput.ItemIndex));
+                break;
         }
     }
 

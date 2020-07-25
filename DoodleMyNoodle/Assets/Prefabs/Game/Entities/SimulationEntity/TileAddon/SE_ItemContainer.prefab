@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 30145307963041149}
   - component: {fileID: 8036855083077177727}
   - component: {fileID: 2141080257574752491}
-  - component: {fileID: 144047237767122920}
+  - component: {fileID: -1025191853641028646}
   m_Layer: 0
   m_Name: SE_ItemContainer
   m_TagString: Untagged
@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f323a7842a1de54aaf5f18f57d4ac07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnlyOnce: 1
+  OnlyOnce: 0
 --- !u!114 &2141080257574752491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionInteract
---- !u!114 &144047237767122920
+--- !u!114 &-1025191853641028646
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -136,10 +136,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 30145307963041151}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebf2f555c73ab1a4283f685b2928a298, type: 3}
+  m_Script: {fileID: 11500000, guid: 453c4b2c151f39243b7228f0ce379c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsStartingKit: 0
-  ItemPrefabs:
+  InitialItems:
   - {fileID: 5742253346417087641, guid: dd26b8361948f49449226bab932fbc08, type: 3}
-  - {fileID: 5742253346417087641, guid: d170c0eb81b945e458f35303555d6027, type: 3}
+  - {fileID: 2784291058542494111, guid: 5ec303c45ea534846b16e38711b73617, type: 3}
+  - {fileID: 5742253346417087641, guid: 3fa80de446fd0ed409cdb9374b921d40, type: 3}

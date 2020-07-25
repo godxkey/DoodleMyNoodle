@@ -73,7 +73,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
 
                         if (EntityManager.Exists(pawn.Value))
                         {
-                            CommonWrites.CopyToEntityInventory(Accessor, pawn.Value, inventoryItems);
+                            CommonWrites.InstantiateToEntityInventory(Accessor, pawn.Value, inventoryItems);
                         }
                     }
                 });
@@ -99,6 +99,50 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                 break;
 
             case PawnControllerInputUseInteractable useInteractableInput:
+                ExecuteUseGameActionInput(useInteractableInput);
+                break;
+
+            case PawnInputEquipItem pawnInputEquipItem:
+
+                if (EntityManager.TryGetComponentData(pawnInputEquipItem.PawnController, out ControlledEntity controlledEntity))
+                {
+                    Entity pawn = controlledEntity.Value;
+
+                    if (pawn != Entity.Null)
+                    {
+                        Entity tile = CommonReads.GetTileEntity(Accessor, new int2(pawnInputEquipItem.ItemEntityPosition.x, pawnInputEquipItem.ItemEntityPosition.y));
+                        if (tile == Entity.Null)
+                        {
+                            return;
+                        }
+
+                        foreach (TileAddonReference addon in Accessor.GetBufferReadOnly<TileAddonReference>(tile))
+                        {
+                            if (Accessor.TryGetBuffer(addon.Value, out DynamicBuffer<InventoryItemReference> itemsBuffer))
+                            {
+                                for (int i = 0; i < itemsBuffer.Length; i++)
+                                {
+                                    InventoryItemReference item = itemsBuffer[i];
+
+                                    if (Accessor.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
+                                    {
+                                        if (itemIDComponent.Value == pawnInputEquipItem.ItemPrefabID)
+                                        {
+                                            itemsBuffer.RemoveAt(i);
+
+                                            CommonWrites.MoveToEntityInventory(Accessor, pawn, item);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                break;
+
+            case PawnInputDropItem useInteractableInput:
                 ExecuteUseGameActionInput(useInteractableInput);
                 break;
         }

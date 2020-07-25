@@ -78,4 +78,9 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
     {
         OnItemClicked?.Invoke();
     }
+
+    public ItemVisualInfo GetItemInfoInSlot()
+    {
+        return _currentItem;
+    }
 }
