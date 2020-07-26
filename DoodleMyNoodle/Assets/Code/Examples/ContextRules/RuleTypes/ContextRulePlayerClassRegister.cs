@@ -14,14 +14,13 @@ public class ContextRulePlayerClassRegister : ScriptableObject
     {
         playerClassType.Set(currentPlayerClass);
 
-        if (playerClassType.IsDirty)
+        if (playerClassType.ClearDirty())
         {
             foreach (ContextRulePlayerClass rule in playerClassRules)
             {
                 rule.CurrentPlayerClass = currentPlayerClass;
                 ruleUpdater.DirtyRule(rule);
             }
-            playerClassType.Reset();
         }
     }
 }

@@ -155,14 +155,14 @@ namespace GameConsoleInterals
                     _inputField.text = GameConsole.HistoryUp();
                     _wantedCaretPosition = _inputField.text.Length;
                     _inputText.Set(_inputField.text);
-                    _inputText.Reset();
+                    _inputText.ClearDirty();
                 }
                 else if (Input.GetKeyDown(KeyCode.DownArrow))
                 {
                     _inputField.text = GameConsole.HistoryDown();
                     _inputField.caretPosition = _inputField.text.Length;
                     _inputText.Set(_inputField.text);
-                    _inputText.Reset();
+                    _inputText.ClearDirty();
                 }
             }
             else
@@ -181,21 +181,16 @@ namespace GameConsoleInterals
 
         private void UpdateSuggestionList()
         {
-            if (_tryDisplaySuggestions.IsDirty || _inputText.IsDirty)
+            if (_tryDisplaySuggestions.ClearDirty() || _inputText.ClearDirty())
             {
                 if (_tryDisplaySuggestions.Get())
                 {
                     _suggestionList.DisplaySuggestionsFor(_inputText.Get());
-
-                    _inputText.Reset();
                 }
                 else
                 {
                     _suggestionList.Hide();
                 }
-
-                _inputText.Reset();
-                _tryDisplaySuggestions.Reset();
             }
         }
 

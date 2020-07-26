@@ -79,7 +79,7 @@ public class DebugPanelClientSimController : DebugPanel
             }
         }
 
-        _currentSimTick.Reset();
+        _currentSimTick.ClearDirty();
     }
 
 

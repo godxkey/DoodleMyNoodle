@@ -14,7 +14,7 @@ namespace CCC.Online.DataTransfer
 
         // static fields (shared across data transfer operations)
         static int s_packetsSentThisFrame;
-        static AutoResetDirtyValue<int> s_currentUnityFrame;
+        static DirtyValue<int> s_currentUnityFrame;
         static byte[] s_cachedPacketData = new byte[Transfers.PAQUET_BYTE_ARRAY_SIZE];
 
         // init data
@@ -77,7 +77,7 @@ namespace CCC.Online.DataTransfer
             {
                 // reset 'packetsSentThisFrame'. This value will ensure we don't send to many packets per second to our sessionInterface
                 s_currentUnityFrame.Set(Time.frameCount);
-                if (s_currentUnityFrame.IsDirty)
+                if (s_currentUnityFrame.ClearDirty())
                 {
                     s_packetsSentThisFrame = 0;
                 }

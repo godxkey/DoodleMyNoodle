@@ -24,7 +24,7 @@ namespace CCC.Online
         internal static SyncedValues.DataChangeDelegate<T> s_ValueUpdated;
         internal static SyncedValues.DataDestroyDelegate s_ValueDestroyed;
 
-        internal AutoResetDirtyValue<T> Value;
+        internal DirtyValue<T> Value;
 
         internal SyncedValueContainer() : base(typeof(T)) { }
 
@@ -47,7 +47,7 @@ namespace CCC.Online
 
         internal override void RaiseChangeEventIfNecessary()
         {
-            if (Value.IsDirty)
+            if (Value.ClearDirty())
             {
                 s_ValueUpdated?.Invoke(Value.Get());
             }

@@ -37,10 +37,8 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
         _simWorldEntityClearAndReplaceCount.Set(SimWorldAccessor.EntityClearAndReplaceCount);
 
         EntityQuery simEntitiesInNeedOfViewBindingQ;
-        if (_simWorldEntityClearAndReplaceCount.IsDirty)
+        if (_simWorldEntityClearAndReplaceCount.ClearDirty())
         {
-            _simWorldEntityClearAndReplaceCount.Reset();
-
             simEntitiesInNeedOfViewBindingQ = _allSimEntitiesQ;
         }
         else
