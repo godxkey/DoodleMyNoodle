@@ -6,7 +6,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryDisplay : GamePresentationBehaviour
+public class PlayerInventoryDisplay : GamePresentationBehaviour
 {
     public Image Background;
     public Image BlockedDisplay;
