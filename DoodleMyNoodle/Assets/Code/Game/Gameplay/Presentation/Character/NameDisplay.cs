@@ -9,13 +9,25 @@ public class NameDisplay : BindedPresentationEntityComponent
 {
     [SerializeField] private TextMeshPro _nameText;
 
+    DirtyValue<Name> _displayName;
+
     protected override void OnGamePresentationUpdate()
     {
         base.OnGamePresentationUpdate();
 
-        if (SimEntity != Entity.Null && SimWorld.HasComponent<Name>(SimEntity))
+        if (SimEntity != Entity.Null && SimWorld.TryGetComponentData(SimEntity, out Name name))
         {
-            _nameText.text = SimWorld.GetComponentData<Name>(SimEntity).Value.ToString();
+            _displayName.Set(name);
         }
+        else
+        {
+            _displayName.Set(default);
+        }
+
+        if (_displayName.ClearDirty())
+        {
+            _nameText.text = _displayName.Get().ToString();
+        }
+
     }
 }
