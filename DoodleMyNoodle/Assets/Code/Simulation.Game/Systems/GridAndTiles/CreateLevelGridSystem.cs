@@ -98,7 +98,7 @@ public partial class CommonReads
         return index < 0 || index >= allTiles.Length ? Entity.Null : allTiles[index].Tile;
     }
 
-    public static Entity GetFirstTileAddonWithComponent<T>(ISimWorldReadAccessor accessor, Entity tile) where T : IComponentData
+    public static Entity GetFirstTileAddonWithComponent<T>(ISimWorldReadAccessor accessor, Entity tile)
     {
         foreach (TileAddonReference addon in accessor.GetBufferReadOnly<TileAddonReference>(tile))
         {

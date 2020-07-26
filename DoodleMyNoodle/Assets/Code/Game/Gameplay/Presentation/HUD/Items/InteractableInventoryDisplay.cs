@@ -27,30 +27,36 @@ public class InteractableInventoryDisplay : GamePresentationSystem<InteractableI
     {
         if (_lastInventoryEntity != Entity.Null)
         {
-            DynamicBuffer<InventoryItemReference> items = SimWorld.GetBufferReadOnly<InventoryItemReference>(_lastInventoryEntity);
-
-            if (items.Length != _currentItemSlots.Count)
+            if (SimWorld.Exists(_lastInventoryEntity))
             {
-                ShowAndSetupDisplay(_lastInventoryEntity);
-                return;
+                if(SimWorld.TryGetBufferReadOnly(_lastInventoryEntity, out DynamicBuffer<InventoryItemReference> items)) 
+                {
+                    if (_currentItemSlots.Count != items.Length)
+                    {
+                        UpdateDisplay();
+                    }
+                }
+            }
+            else
+            {
+                CloseDisplay();
             }
         }
     }
 
-    public void ShowAndSetupDisplay(Entity inventoryEntity)
+    private void UpdateDisplay()
     {
-        _lastInventoryEntity = inventoryEntity;
-
         Clear();
 
-        DynamicBuffer<InventoryItemReference> items = SimWorld.GetBufferReadOnly<InventoryItemReference>(inventoryEntity);
+        DynamicBuffer<InventoryItemReference> items = SimWorld.GetBufferReadOnly<InventoryItemReference>(_lastInventoryEntity);
 
         if (items.Length < 1)
         {
+            CloseDisplay();
             return;
         }
 
-        fix3 bundleEntityPosition = SimWorld.GetComponentData<FixTranslation>(inventoryEntity).Value;
+        fix3 bundleEntityPosition = SimWorld.GetComponentData<FixTranslation>(_lastInventoryEntity).Value;
 
         for (int i = 0; i < items.Length; i++)
         {
@@ -64,42 +70,22 @@ public class InteractableInventoryDisplay : GamePresentationSystem<InteractableI
             {
                 // Update Item Slot
                 ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
-                itemSlot.UpdateCurrentItemSlot(itemInfo, null, inventoryEntity);
+                itemSlot.UpdateCurrentItemSlot(itemInfo, null, null, _lastInventoryEntity);
 
                 // Spawn Take Button
                 GameObject newTakeButton = Instantiate(_takeButtonPrefab, _takeButtonContainer);
                 Button button = newTakeButton.GetComponent<Button>();
                 _currentTakeButtons.Add(button);
-                
+
                 // Get position of the entity of sim input
                 int2 bundleTilePosition = new int2() { x = fix.RoundToInt(bundleEntityPosition.x), y = fix.RoundToInt(bundleEntityPosition.y) };
-                int itemSlotID = itemSlot.GetItemInfoInSlot().ID.GetSimAssetId().Value;
+                int itemIndex = i;
 
                 button.onClick.AddListener(() =>
                 {
                     // when clicking on Take Item, we send a sim input
-                    SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIDComponent.Value, bundleTilePosition);
+                    SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, bundleTilePosition);
                     SimWorld.SubmitInput(simInputEquipItem);
-
-                    for (int j = 0; j < _currentItemSlots.Count; j++)
-                    {
-                        ItemSlot currentItemSlot = _currentItemSlots[j];
-
-                        if (currentItemSlot.GetItemInfoInSlot().ID.GetSimAssetId().Value == itemSlotID)
-                        {
-                            // Clear display of itemSlot
-                            Destroy(_currentItemSlots[j].gameObject);
-                            _currentItemSlots.RemoveAt(j);
-                            Destroy(_currentTakeButtons[j].gameObject);
-                            _currentTakeButtons.RemoveAt(j);
-
-                            if (_currentItemSlots.Count < 1)
-                            {
-                                CloseDisplay();
-                                _lastInventoryEntity = Entity.Null;
-                            }
-                        }
-                    }
                 });
             }
         }
@@ -107,9 +93,17 @@ public class InteractableInventoryDisplay : GamePresentationSystem<InteractableI
         _bundleDisplayContainer.SetActive(true);
     }
 
+    public void SetupDisplayForInventory(Entity inventoryEntity)
+    {
+        Clear();
+
+        _lastInventoryEntity = inventoryEntity;
+    }
+
     public void CloseDisplay()
     {
         _bundleDisplayContainer.SetActive(false);
+        _lastInventoryEntity = Entity.Null;
     }
 
     private void Clear()

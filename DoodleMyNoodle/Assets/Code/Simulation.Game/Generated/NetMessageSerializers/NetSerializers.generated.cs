@@ -454,7 +454,7 @@ public static class StaticNetSerializer_SimPlayerInputEquipItem
     {
         int result = 0;
         result += StaticNetSerializer_Unity_Mathematics_int2.GetNetBitSize(ref obj.ItemEntityPosition);
-        result += StaticNetSerializer_System_Int32.GetNetBitSize(ref obj.ItemPrefabID);
+        result += StaticNetSerializer_System_Int32.GetNetBitSize(ref obj.ItemIndex);
         result += StaticNetSerializer_PersistentId.GetNetBitSize(ref obj.SimPlayerId);
         result += StaticNetSerializer_SimPlayerInput.GetNetBitSize(obj);
         return result;
@@ -473,7 +473,7 @@ public static class StaticNetSerializer_SimPlayerInputEquipItem
     public static void NetSerialize(SimPlayerInputEquipItem obj, BitStreamWriter writer)
     {
         StaticNetSerializer_Unity_Mathematics_int2.NetSerialize(ref obj.ItemEntityPosition, writer);
-        StaticNetSerializer_System_Int32.NetSerialize(ref obj.ItemPrefabID, writer);
+        StaticNetSerializer_System_Int32.NetSerialize(ref obj.ItemIndex, writer);
         StaticNetSerializer_PersistentId.NetSerialize(ref obj.SimPlayerId, writer);
         StaticNetSerializer_SimPlayerInput.NetSerialize(obj, writer);
     }
@@ -489,7 +489,7 @@ public static class StaticNetSerializer_SimPlayerInputEquipItem
     public static void NetDeserialize(SimPlayerInputEquipItem obj, BitStreamReader reader)
     {
         StaticNetSerializer_Unity_Mathematics_int2.NetDeserialize(ref obj.ItemEntityPosition, reader);
-        StaticNetSerializer_System_Int32.NetDeserialize(ref obj.ItemPrefabID, reader);
+        StaticNetSerializer_System_Int32.NetDeserialize(ref obj.ItemIndex, reader);
         StaticNetSerializer_PersistentId.NetDeserialize(ref obj.SimPlayerId, reader);
         StaticNetSerializer_SimPlayerInput.NetDeserialize(obj, reader);
     }

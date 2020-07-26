@@ -7,6 +7,6 @@ public class ItemContainerInteractableByClick : ObjectInteractableByClick
 {
     protected override void InteractionTriggeredByInput()
     {
-        InteractableInventoryDisplay.Instance.ShowAndSetupDisplay(SimEntity);
+        InteractableInventoryDisplay.Instance.SetupDisplayForInventory(SimEntity);
     }
 }

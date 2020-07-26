@@ -26,17 +26,24 @@ public class InventorySlot : ItemSlot
     private InventorySlotInfo _info;
     private int _currentItemIndex;
 
-    public Action<int> OnItemUsed;
+    public Action<int> OnItemPrimaryActionUsed;
+    public Action<int> OnItemSecondaryActionUsed;
 
-    public void UpdateCurrentInventorySlot(ItemVisualInfo item, int itemIndex, InventorySlotInfo slotInfo, Action<int> onItemUsed)
+    public void UpdateCurrentInventorySlot(
+        ItemVisualInfo item, 
+        int itemIndex, 
+        InventorySlotInfo slotInfo, 
+        Action<int> onItemPrimaryActionUsed,
+        Action<int> onItemSecondaryActionUsed)
     {
         _currentItemIndex = itemIndex;
         _info = slotInfo;
-        OnItemUsed = onItemUsed;
+        OnItemPrimaryActionUsed = onItemPrimaryActionUsed;
+        OnItemSecondaryActionUsed = onItemSecondaryActionUsed;
 
         UnavailableSpriteObject.SetActive(false);
 
-        UpdateCurrentItemSlot(item, null, GamePresentationCache.Instance.LocalPawn);
+        UpdateCurrentItemSlot(item, null, null, GamePresentationCache.Instance.LocalPawn);
     }
 
     public void UpdateDisplayAsUnavailable()
@@ -80,10 +87,17 @@ public class InventorySlot : ItemSlot
         }
     }
 
-    public override void UseItemSlot()
+    public override void PrimaryUseItemSlot()
     {
-        base.UseItemSlot();
+        base.PrimaryUseItemSlot();
 
-        OnItemUsed?.Invoke(_currentItemIndex);
+        OnItemPrimaryActionUsed?.Invoke(_currentItemIndex);
+    }
+
+    public override void SecondaryUseItemSlot()
+    {
+        base.SecondaryUseItemSlot();
+
+        OnItemSecondaryActionUsed?.Invoke(_currentItemIndex);
     }
 }

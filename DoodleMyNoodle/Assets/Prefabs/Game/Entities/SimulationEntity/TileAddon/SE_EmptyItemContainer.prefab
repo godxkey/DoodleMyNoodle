@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 30145307963041146}
   - component: {fileID: 30145307963041149}
   - component: {fileID: 2141080257574752491}
-  - component: {fileID: 455032939103085602}
+  - component: {fileID: -1025191853641028646}
+  - component: {fileID: 5498494662151174257}
   m_Layer: 0
-  m_Name: SE_TestInteractable
+  m_Name: SE_EmptyItemContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Guid: fbb1ff4dd208a0948ba4a30eac284ce5
+  Guid: d0421163de1d6aa4289ff31f953949e7
 --- !u!114 &30145307963041146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +114,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionInteract
---- !u!114 &455032939103085602
+--- !u!114 &-1025191853641028646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30145307963041151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 453c4b2c151f39243b7228f0ce379c93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InitialItems: []
+--- !u!114 &5498494662151174257
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -125,4 +139,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13492315c65cf204abfe5a85eeb96527, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CanBeInteractedOnlyOnce: 1
+  CanBeInteractedOnlyOnce: 0

@@ -55,7 +55,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                 break;
 
             case SimPlayerInputEquipItem EquipItemInput:
-                pawnControllerInputSystem.Inputs.Add(new PawnInputEquipItem(playerEntity, EquipItemInput.ItemPrefabID, EquipItemInput.ItemEntityPosition));
+                pawnControllerInputSystem.Inputs.Add(new PawnInputEquipItem(playerEntity, EquipItemInput.ItemIndex, EquipItemInput.ItemEntityPosition));
                 break;
 
             case SimPlayerInputDropItem DropItemInput:
