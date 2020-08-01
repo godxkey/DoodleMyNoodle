@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -1025191853641028646}
   - component: {fileID: 5498494662151174257}
   m_Layer: 0
-  m_Name: SE_ItemContainer
+  m_Name: SE_TestItemContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,10 +126,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 453c4b2c151f39243b7228f0ce379c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxStartingSize: 6
   InitialItems:
-  - {fileID: 5742253346417087641, guid: dd26b8361948f49449226bab932fbc08, type: 3}
-  - {fileID: 2784291058542494111, guid: 5ec303c45ea534846b16e38711b73617, type: 3}
-  - {fileID: 5742253346417087641, guid: 3fa80de446fd0ed409cdb9374b921d40, type: 3}
+  - {fileID: 5742253346417087641, guid: 166d88cc590b26d488bbf68259324b1c, type: 3}
+  - {fileID: 5742253346417087641, guid: 166d88cc590b26d488bbf68259324b1c, type: 3}
+  - {fileID: 5742253346417087641, guid: 166d88cc590b26d488bbf68259324b1c, type: 3}
 --- !u!114 &5498494662151174257
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,10 +7,14 @@ using UnityEngine;
 [RequiresEntityConversion]
 public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
+    public int MaxStartingSize = 6;
+
     public List<GameObject> InitialItems = new List<GameObject>();
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
+        dstManager.AddComponentData(entity, new InventorySize() { Value = MaxStartingSize });
+
         dstManager.AddBuffer<InventoryItemReference>(entity);
 
         DynamicBuffer<StartingInventoryItem> startingInventory = dstManager.AddBuffer<StartingInventoryItem>(entity);

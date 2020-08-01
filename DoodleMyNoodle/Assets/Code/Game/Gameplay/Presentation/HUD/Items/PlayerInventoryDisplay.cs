@@ -75,28 +75,54 @@ public class PlayerInventoryDisplay : GamePresentationBehaviour
                         Entity = item.ItemEntity
                     };
 
-                    if (GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).IsContextValid(SimWorld, context))
+                    if(_inventorySlots.Count > itemIndex)
                     {
-                        _inventorySlots[itemIndex].UpdateCurrentInventorySlot(itemInfo, 
-                                                                              itemIndex, 
-                                                                              InventorySlotShortcuts[itemIndex], 
-                                                                              onItemPrimaryActionUsedCallback, 
-                                                                              onItemSecondaryActionUsedCallback);
+                        if (GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).IsContextValid(SimWorld, context))
+                        {
+                            int stacks = -1;
+                            if (SimWorld.TryGetComponentData(item.ItemEntity, out ItemStackableData itemStackableData))
+                            {
+                                stacks = itemStackableData.Value;
+                            }
+
+                            _inventorySlots[itemIndex].UpdateCurrentInventorySlot(itemInfo,
+                                                                                  itemIndex,
+                                                                                  InventorySlotShortcuts[itemIndex],
+                                                                                  onItemPrimaryActionUsedCallback,
+                                                                                  onItemSecondaryActionUsedCallback, 
+                                                                                  stacks);
+                        }
+                        else
+                        {
+                            _inventorySlots[itemIndex].UpdateDisplayAsUnavailable();
+                        }
+
+                        itemIndex++;
                     }
-                    else
-                    {
-                        _inventorySlots[itemIndex].UpdateDisplayAsUnavailable();
-                    }
-                   
-                    itemIndex++;
                 }
             }
-        }
 
-        // Clear the rest of the inventory slots
-        for (int i = _inventorySlots.Count - 1; i >= itemIndex; i--)
-        {
-            _inventorySlots[i].UpdateCurrentInventorySlot(null, i, InventorySlotShortcuts[i], null, null);
+            // Clear the rest of the inventory slots
+            for (int i = _inventorySlots.Count - 1; i >= itemIndex; i--)
+            {
+                _inventorySlots[i].UpdateCurrentInventorySlot(null, i, InventorySlotShortcuts[i], null, null);
+            }
+
+            // Ajust Slot amount according to inventory max size
+            InventorySize inventorySize = SimWorld.GetComponentData<InventorySize>(GamePresentationCache.Instance.LocalPawn);
+
+            while (_inventorySlots.Count < inventorySize.Value)
+            {
+                InventorySlot inventorySlot = Instantiate(InventorySlotPrefab, SlotsContainer.transform).GetComponent<InventorySlot>();
+                _inventorySlots.Add(inventorySlot);
+            }
+
+            for (int i = _inventorySlots.Count - 1; inventorySize.Value < _inventorySlots.Count; i--)
+            {
+                InventorySlot inventorySlot = _inventorySlots[i];
+                _inventorySlots.RemoveAt(i);
+                Destroy(inventorySlot.gameObject);
+            }
         }
     }
 

@@ -23,10 +23,14 @@ public class InstantiateStartingInventorySystem : SimComponentSystem
                 }
 
                 // Add item references into inventory
-                var inventory = EntityManager.GetBuffer<InventoryItemReference>(entity);
+                DynamicBuffer<InventoryItemReference> inventory = EntityManager.GetBuffer<InventoryItemReference>(entity);
+
                 foreach (Entity itemInstance in itemInstances)
                 {
-                    inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
+                    if (!CommonReads.IsInventoryFull(Accessor, entity) || !CommonWrites.TryIncrementStackableItemInInventory(Accessor, entity, itemInstance))
+                    {
+                        inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
+                    }
                 }
 
                 // Remove starting inventory buffer

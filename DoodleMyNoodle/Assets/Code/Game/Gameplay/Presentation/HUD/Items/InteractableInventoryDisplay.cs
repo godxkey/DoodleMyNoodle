@@ -35,11 +35,40 @@ public class InteractableInventoryDisplay : GamePresentationSystem<InteractableI
                     {
                         UpdateDisplay();
                     }
+                    else
+                    {
+                        UpdateItemSlotStacks();
+                    }
                 }
             }
             else
             {
                 CloseDisplay();
+            }
+        }
+    }
+
+    private void UpdateItemSlotStacks()
+    {
+        DynamicBuffer<InventoryItemReference> items = SimWorld.GetBufferReadOnly<InventoryItemReference>(_lastInventoryEntity);
+
+        if (items.Length < 1)
+        {
+            return;
+        }
+
+        for (int i = 0; i < items.Length; i++)
+        {
+            InventoryItemReference item = items[i];
+            ItemSlot itemSlot = _currentItemSlots[i];
+
+            if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
+            {
+                // Update Item Slot Stacks
+                if (SimWorld.TryGetComponentData(item.ItemEntity, out ItemStackableData itemStackableData))
+                {
+                    itemSlot.UpdateStacks(itemStackableData.Value);
+                }
             }
         }
     }
@@ -70,7 +99,14 @@ public class InteractableInventoryDisplay : GamePresentationSystem<InteractableI
             {
                 // Update Item Slot
                 ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
-                itemSlot.UpdateCurrentItemSlot(itemInfo, null, null, _lastInventoryEntity);
+                if (SimWorld.TryGetComponentData(item.ItemEntity, out ItemStackableData itemStackableData))
+                {
+                    itemSlot.UpdateCurrentItemSlot(itemInfo, null, null, _lastInventoryEntity, itemStackableData.Value);
+                }
+                else
+                {
+                    itemSlot.UpdateCurrentItemSlot(itemInfo, null, null, _lastInventoryEntity);
+                }
 
                 // Spawn Take Button
                 GameObject newTakeButton = Instantiate(_takeButtonPrefab, _takeButtonContainer);

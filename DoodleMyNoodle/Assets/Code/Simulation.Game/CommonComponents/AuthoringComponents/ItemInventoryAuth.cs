@@ -44,25 +44,32 @@ public class ItemInventoryAuth : MonoBehaviour, IConvertGameObjectToEntity, IDec
 internal partial class CommonWrites
 {
     // We empty the inventory / container after giving the items
-    public static void MoveToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, DynamicBuffer<InventoryItemReference> sourceItems)
+    public static void MoveToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity destinationEntity, DynamicBuffer<InventoryItemReference> sourceItems)
     {
-        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(pawn);
+        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(destinationEntity);
+
         foreach (InventoryItemReference item in sourceItems)
         {
-            inventory.Add(item);
+            if (!CommonReads.IsInventoryFull(accessor, destinationEntity) || !TryIncrementStackableItemInInventory(accessor, destinationEntity, item.ItemEntity))
+            {
+                inventory.Add(item);
+            }
         }
 
         sourceItems.Clear();
     }
 
-    public static void MoveToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, InventoryItemReference sourceItem)
+    public static void MoveToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity destinationEntity, InventoryItemReference sourceItem)
     {
-        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(pawn);
-        inventory.Add(sourceItem);
+        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(destinationEntity);
+        if (!CommonReads.IsInventoryFull(accessor, destinationEntity) || !TryIncrementStackableItemInInventory(accessor, destinationEntity, sourceItem.ItemEntity))
+        {
+            inventory.Add(sourceItem);
+        }
     }
 
     // We keep the item reference into the inventory / container even after transfering the items
-    public static void InstantiateToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, DynamicBuffer<InventoryItemPrefabReference> sourceItemsBuffer)
+    public static void InstantiateToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity destinationEntity, DynamicBuffer<InventoryItemPrefabReference> sourceItemsBuffer)
     {
         if (sourceItemsBuffer.Length <= 0)
             return;
@@ -76,19 +83,96 @@ internal partial class CommonWrites
             itemInstances[i] = accessor.Instantiate(sourceItems[i].ItemEntityPrefab);
         }
 
-        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(pawn);
+        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(destinationEntity);
         foreach (Entity itemInstance in itemInstances)
         {
-            inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
+            if (!CommonReads.IsInventoryFull(accessor, destinationEntity) || !TryIncrementStackableItemInInventory(accessor, destinationEntity, itemInstance))
+            {
+                inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
+            }
         }
     }
 
-    public static void InstantiateToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity pawn, InventoryItemPrefabReference sourceItem)
+    public static void InstantiateToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity destinationEntity, InventoryItemPrefabReference sourceItem)
     {
         // Spawn item
         Entity itemInstance = accessor.Instantiate(sourceItem.ItemEntityPrefab);
 
-        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(pawn);
-        inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
+        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(destinationEntity);
+        if (!CommonReads.IsInventoryFull(accessor, destinationEntity) || !TryIncrementStackableItemInInventory(accessor, destinationEntity, itemInstance))
+        {
+            inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
+        }
+        
+    }
+
+    public static bool TryIncrementStackableItemInInventory(ISimWorldReadWriteAccessor accessor, Entity InventoryEntity, Entity sourceItemEntity)
+    {
+        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(InventoryEntity);
+        SimAssetId sourceItemID = accessor.GetComponentData<SimAssetId>(sourceItemEntity);
+
+        foreach (InventoryItemReference itemRef in inventory)
+        {
+            SimAssetId inventoryItemID = accessor.GetComponentData<SimAssetId>(itemRef.ItemEntity);
+
+            // Found an identical item in destination inventory
+            if (sourceItemID.Value == inventoryItemID.Value)
+            {
+                // Does the item present in destination inventory is stackable
+                if (accessor.TryGetComponentData(itemRef.ItemEntity, out ItemStackableData stackableData))
+                {
+                    // Stack it, and notify caller transfer is not necesary
+                    accessor.SetComponentData(itemRef.ItemEntity, new ItemStackableData() { Value = stackableData.Value + 1 });
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static void DecrementStackableItemInInventory(ISimWorldReadWriteAccessor accessor, Entity InventoryEntity, Entity sourceItemEntity)
+    {
+        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(InventoryEntity);
+        SimAssetId sourceItemID = accessor.GetComponentData<SimAssetId>(sourceItemEntity);
+
+        for (int i = 0; i < inventory.Length; i++)
+        {
+            InventoryItemReference itemRef = inventory[i];
+            SimAssetId inventoryItemID = accessor.GetComponentData<SimAssetId>(itemRef.ItemEntity);
+
+            // Found an identical item in destination inventory
+            if (sourceItemID.Value == inventoryItemID.Value)
+            {
+                // Does the item present in destination inventory is stackable
+                if (accessor.TryGetComponentData(itemRef.ItemEntity, out ItemStackableData stackableData))
+                {
+                    if (stackableData.Value == 1)
+                    {
+                        inventory.RemoveAt(i);
+                        accessor.DestroyEntity(itemRef.ItemEntity);
+                    }
+                    else
+                    {
+                        // Stack it, and notify caller transfer is not necesary
+                        accessor.SetComponentData(sourceItemEntity, new ItemStackableData() { Value = stackableData.Value - 1 });
+                    }
+
+                    return;
+                }
+            }
+        }
+    }
+}
+
+public partial class CommonReads 
+{
+    public static bool IsInventoryFull(ISimWorldReadWriteAccessor accessor, Entity destinationEntity)
+    {
+        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(destinationEntity);
+        InventorySize inventorySize = accessor.GetComponentData<InventorySize>(destinationEntity);
+
+        return inventory.Length >= inventorySize.Value;
     }
 }

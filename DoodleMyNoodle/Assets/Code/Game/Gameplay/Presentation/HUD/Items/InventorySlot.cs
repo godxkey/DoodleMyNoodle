@@ -34,7 +34,8 @@ public class InventorySlot : ItemSlot
         int itemIndex, 
         InventorySlotInfo slotInfo, 
         Action<int> onItemPrimaryActionUsed,
-        Action<int> onItemSecondaryActionUsed)
+        Action<int> onItemSecondaryActionUsed,
+        int stacks = -1)
     {
         _currentItemIndex = itemIndex;
         _info = slotInfo;
@@ -43,7 +44,7 @@ public class InventorySlot : ItemSlot
 
         UnavailableSpriteObject.SetActive(false);
 
-        UpdateCurrentItemSlot(item, null, null, GamePresentationCache.Instance.LocalPawn);
+        UpdateCurrentItemSlot(item, null, null, GamePresentationCache.Instance.LocalPawn, stacks);
     }
 
     public void UpdateDisplayAsUnavailable()

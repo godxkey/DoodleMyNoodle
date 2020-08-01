@@ -1,4 +1,5 @@
 ﻿using System;
+using TMPro;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,12 +8,13 @@ using UnityEngineX;
 
 public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField]
-    private Button _itemSlotButton;
+    [SerializeField] private Button _itemSlotButton;
 
     public Image Background;
     public Image ItemIcon;
     public Color HoverBackgroundColor = Color.white;
+
+    [SerializeField] private TextMeshProUGUI _stackText;
 
     private Color _startBackgroundColor;
     private ItemVisualInfo _currentItem;
@@ -40,14 +42,29 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         }
     }
 
-    public virtual void UpdateCurrentItemSlot(ItemVisualInfo item, Action onItemLeftClicked, Action onItemRightClicked, Entity owner)
+    public virtual void UpdateCurrentItemSlot(ItemVisualInfo item, Action onItemLeftClicked, Action onItemRightClicked, Entity owner, int stacks = -1)
     {
         _currentItem = item;
         OnItemLeftClicked = onItemLeftClicked;
         OnItemRightClicked = onItemRightClicked;
         _itemsOwner = owner;
 
+        UpdateStacks(stacks);
+
         UpdateDisplay();
+    }
+
+    public void UpdateStacks(int stacks)
+    {
+        if (stacks <= 0)
+        {
+            _stackText.gameObject.SetActive(false);
+        }
+        else
+        {
+            _stackText.text = "x" + stacks;
+            _stackText.gameObject.SetActive(true);
+        }
     }
 
     protected virtual void UpdateDisplay()
