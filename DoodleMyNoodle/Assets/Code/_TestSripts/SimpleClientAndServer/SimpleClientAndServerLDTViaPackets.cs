@@ -33,10 +33,8 @@ public class SimpleClientAndServerLDTViaPackets : /*MonoBehaviour,*/ Bolt.Global
     {
         _sessionInterface.Set(OnlineService.OnlineInterface?.SessionInterface);
 
-        if (_sessionInterface.IsDirty)
+        if (_sessionInterface.ClearDirty())
         {
-            _sessionInterface.Reset();
-
             if(_sessionInterface.Get() != null)
             {
                 _sessionInterface.Get().RegisterNetMessageReceiver<NetMessageChatMessage>(ReceiveLargeData);

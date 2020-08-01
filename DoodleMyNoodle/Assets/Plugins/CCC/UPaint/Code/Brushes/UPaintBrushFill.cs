@@ -14,13 +14,13 @@ namespace UPaintBrushes
         public int ExtrusionCount;
 
         NativeArray<int> _pixelBuffer;
-        AutoResetDirtyValue<int> _pixelCount;
+        DirtyValue<int> _pixelCount;
 
         public void OnPress(IUPaintBrushCanvasInterface canvas, in UPaintContext context)
         {
             // Allocate an array used in the job
             _pixelCount.Set(canvas.PreviewLayer.PixelCount);
-            if (_pixelCount.IsDirty)
+            if (_pixelCount.ClearDirty())
             {
                 if (_pixelBuffer.IsCreated)
                     _pixelBuffer.Dispose();

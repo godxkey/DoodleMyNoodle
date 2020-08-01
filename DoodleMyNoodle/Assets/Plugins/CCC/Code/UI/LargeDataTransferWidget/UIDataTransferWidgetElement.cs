@@ -13,25 +13,25 @@ public class UIDataTransferWidgetElement : MonoBehaviour
     [SerializeField] private TMP_Text _progressText;
     [SerializeField] private Slider _progressSlider;
 
-    public AutoResetDirtyValue<bool> IsIncoming;
-    public AutoResetDirtyValue<string> Description;
-    public AutoResetDirtyValue<int> TotalDataSize;
-    public AutoResetDirtyValue<int> CurrentDataSize;
-    public AutoResetDirtyValue<string> State;
+    public DirtyValue<bool> IsIncoming;
+    public DirtyValue<string> Description;
+    public DirtyValue<int> TotalDataSize;
+    public DirtyValue<int> CurrentDataSize;
+    public DirtyValue<string> State;
 
     public void UpdateDisplay()
     {
-        if (IsIncoming.IsDirty)
+        if (IsIncoming.ClearDirty())
         {
             _incomingText.text = IsIncoming.Get() ? "Receiving:" : "Sending:";
         }
 
-        if (Description.IsDirty)
+        if (Description.ClearDirty())
         {
             _descriptionText.text = Description.Get();
         }
 
-        if (TotalDataSize.IsDirty || CurrentDataSize.IsDirty || State.IsDirty)
+        if (TotalDataSize.ClearDirty() || CurrentDataSize.ClearDirty() || State.ClearDirty())
         {
             if(CurrentDataSize.Get() == -1)
             {
@@ -47,8 +47,6 @@ public class UIDataTransferWidgetElement : MonoBehaviour
                 _progressSlider.value = ratio;
                 _progressText.text = $"{StringUtility.ByteCountRatioToReadableString(CurrentDataSize.Get(), TotalDataSize.Get())} ({(ratio * 100).Rounded()}%)";
             }
-
-
         }
     }
 

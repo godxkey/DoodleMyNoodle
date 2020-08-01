@@ -51,7 +51,7 @@ public class EditorNotesManager
                 {
                     s_noteId.Set(noteId);
 
-                    if (s_noteId.IsDirty)
+                    if (s_noteId.ClearDirty())
                     {
                         if (!string.IsNullOrEmpty(s_noteId.GetPrevious()))
                         {
@@ -59,8 +59,6 @@ public class EditorNotesManager
                         }
 
                         OnBeginNote(s_noteId.Get());
-
-                        s_noteId.Reset();
                     }
                 }
 
@@ -119,7 +117,7 @@ public class EditorNotesManager
         }
         EditorNotesDrawer.CloseDrawings();
         s_noteId.Set(null);
-        s_noteId.Reset();
+        s_noteId.ClearDirty();
     }
 
     static void OnBeginNote(string id)

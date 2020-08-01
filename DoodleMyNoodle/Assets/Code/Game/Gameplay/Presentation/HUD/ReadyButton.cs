@@ -94,7 +94,7 @@ public class ReadyButton : GamePresentationBehaviour
 
     private void UpdateView()
     {
-        if (_viewState.IsDirty)
+        if (_viewState.ClearDirty())
         {
             switch (_viewState.Get())
             {
@@ -112,7 +112,6 @@ public class ReadyButton : GamePresentationBehaviour
                     _image.color = _cantReadyYetColor;
                     break;
             }
-            _viewState.Reset();
         }
     }
 

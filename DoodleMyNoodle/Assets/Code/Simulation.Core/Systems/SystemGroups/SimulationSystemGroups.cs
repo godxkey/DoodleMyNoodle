@@ -10,6 +10,13 @@ internal interface IManualSystemGroupUpdate
 [AlwaysUpdateSystem]
 internal class SimPreInitializationSystemGroup : ComponentSystemGroup, IManualSystemGroupUpdate
 {
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        InitEntityQueryCache(128); // can be expanded
+    }
+
     public bool CanUpdate { get; set; }
     protected override void OnUpdate()
     {

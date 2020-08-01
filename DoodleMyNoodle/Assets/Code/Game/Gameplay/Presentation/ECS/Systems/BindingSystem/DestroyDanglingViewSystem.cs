@@ -21,10 +21,8 @@ public class DestroyDanglingViewSystem : ViewJobComponentSystem
 
         // If sim world was cleared and replaced
         _simWorldEntityClearAndReplaceCount.Set(SimWorldAccessor.EntityClearAndReplaceCount);
-        if (_simWorldEntityClearAndReplaceCount.IsDirty)
+        if (_simWorldEntityClearAndReplaceCount.ClearDirty())
         {
-            _simWorldEntityClearAndReplaceCount.Reset();
-
             ////////////////////////////////////////////////////////////////////////////////////////
             //      Destroy all binded view entities
             ////////////////////////////////////////////////////////////////////////////////////////
