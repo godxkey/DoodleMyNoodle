@@ -239,7 +239,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                     {
                         Entity newItemEntity = EntityManager.Instantiate(item.ItemEntity);
                         EntityManager.SetComponentData(newItemEntity, new ItemStackableData() { Value = 1 });
-                        pawnInventory.Add(new InventoryItemReference() { ItemEntity = newItemEntity });
+                        EntityManager.GetBuffer<InventoryItemReference>(pawn).Add(new InventoryItemReference() { ItemEntity = newItemEntity });
                         CommonWrites.DecrementStackableItemInInventory(Accessor, groundInventoryEntity, item.ItemEntity);
                     }
                     else
