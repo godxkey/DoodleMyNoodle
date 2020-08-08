@@ -19,12 +19,15 @@ public class GameMonoBehaviour : MonoBehaviour, IElementIndexHint
 
         if (Game.Ready)
             OnGameAwake();
+        
         if (Game.Started)
-            OnGameStart();
+            Game.AddLateStarter(this);
     }
 
     protected virtual void OnDestroy()
     {
+        Game.RemoveLateStarter(this);
+
         s_registeredBehaviours.Remove(this);
 
         if (ApplicationUtilityService.ApplicationIsQuitting == false)
