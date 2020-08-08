@@ -8,13 +8,13 @@ public class GameUI : MonoBehaviour
     public class Data
     {
         [SerializeField] private HealthPoolDisplay _healthPool;
-        [SerializeField] private InventoryDisplay _actionBar;
+        [SerializeField] private PlayerActionBarDisplay _actionBar;
         [SerializeField] private TurnTeamDisplay _turnTeam;
         [SerializeField] private TimerBarDisplay _timerBar;
         [SerializeField] private ReadyButton _readyButton;
 
         public HealthPoolDisplay HealthPool => _healthPool;
-        public InventoryDisplay ActionBar => _actionBar;
+        public PlayerActionBarDisplay ActionBar => _actionBar;
         public TurnTeamDisplay TurnTeam => _turnTeam;
         public TimerBarDisplay TimerBar => _timerBar;
         public ReadyButton ReadyButton => _readyButton;

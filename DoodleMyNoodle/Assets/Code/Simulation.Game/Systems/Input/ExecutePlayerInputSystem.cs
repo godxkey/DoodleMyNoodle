@@ -34,24 +34,24 @@ public class ExecutePlayerInputSystem : SimComponentSystem
         ExecutePawnControllerInputSystem pawnControllerInputSystem = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
         switch (input)
         {
-            case SimPlayerStartingInventorySelectionInput StartingInventorySelected:
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputStartingInventorySelection(playerEntity, StartingInventorySelected.KitNumber));
+            case SimPlayerInputSetStartingInventory setStartingInventoryInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputSetStartingInventory(playerEntity, setStartingInventoryInput.KitNumber));
                 break;
 
-            case SimPlayerCharacterNameInput NameSelected:
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputCharacterName(playerEntity, NameSelected.Name));
+            case SimPlayerInputSetPawnName setNameInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputSetPawnName(playerEntity, setNameInput.Name));
                 break;
 
-            case SimPlayerInputNextTurn NextTurnInput:
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputNextTurn(playerEntity, NextTurnInput.ReadyForNextTurn));
+            case SimPlayerInputNextTurn nextTurnInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputNextTurn(playerEntity, nextTurnInput.ReadyForNextTurn));
                 break;
 
-            case SimPlayerInputUseItem ItemUsedInput:
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, ItemUsedInput.ItemIndex, ItemUsedInput.UseData));
+            case SimPlayerInputUseItem useItemInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, useItemInput.ItemIndex, useItemInput.UseData));
                 break;
 
-            case SimPlayerInputUseInteractable InteractableUsedInput:
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseInteractable(playerEntity, InteractableUsedInput.InteractablePosition));
+            case SimPlayerInputUseInteractable useInteractableInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseInteractable(playerEntity, useInteractableInput.InteractablePosition));
                 break;
 
             case SimPlayerInputSetPawnDoodle setPawnDoodleInput:
@@ -63,12 +63,12 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                 }
                 break;
             }
-            case SimPlayerInputEquipItem EquipItemInput:
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputEquipItem(playerEntity, EquipItemInput.ItemIndex, EquipItemInput.ItemEntityPosition));
+            case SimPlayerInputEquipItem equipItemInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputEquipItem(playerEntity, equipItemInput.ItemIndex, equipItemInput.ItemEntityPosition));
                 break;
 
-            case SimPlayerInputDropItem DropItemInput:
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputDropItem(playerEntity, DropItemInput.ItemIndex));
+            case SimPlayerInputDropItem dropItemInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputDropItem(playerEntity, dropItemInput.ItemIndex));
                 break;
         }
     }
