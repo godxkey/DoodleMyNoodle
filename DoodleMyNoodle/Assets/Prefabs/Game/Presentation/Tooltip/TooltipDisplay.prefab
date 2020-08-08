@@ -219,7 +219,7 @@ MonoBehaviour:
   _mythic: {r: 1, g: 0, b: 1, a: 1}
   _legendary: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _screenEdgeToolTipLimit: 200
-  _displayDelay: 2
+  _displayDelay: 1.25
   _displacementX: 100
   _displacementY: 70
 --- !u!222 &3636927922078595548
