@@ -27,7 +27,7 @@ public class InstantiateStartingInventorySystem : SimComponentSystem
 
                 foreach (Entity itemInstance in itemInstances)
                 {
-                    if (!CommonReads.IsInventoryFull(Accessor, entity) || !CommonWrites.TryIncrementStackableItemInInventory(Accessor, entity, itemInstance))
+                    if (!CommonReads.IsInventoryFull(Accessor, entity) || !CommonWrites.TryIncrementStackableItemInInventory(Accessor, entity, itemInstance, inventory))
                     {
                         inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
                     }

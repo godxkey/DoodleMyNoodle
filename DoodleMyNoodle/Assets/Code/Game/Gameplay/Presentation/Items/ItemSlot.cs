@@ -21,8 +21,6 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
     public Action OnItemLeftClicked; // index of item in list, not used here
     public Action OnItemRightClicked; // index of item in list, not used here
 
-    public float DelayForRightClickAgain = 0.25f;
-    private bool _canRightClick = true;
     private bool _mouseInside = false;
 
     private Entity _itemsOwner;
@@ -36,7 +34,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     protected override void OnGamePresentationUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1) && _currentItem != null && _canRightClick && _mouseInside)
+        if (Input.GetKeyDown(KeyCode.Mouse1) && _currentItem != null && _mouseInside)
         {
             SecondaryUseItemSlot();
         }
@@ -49,13 +47,6 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         OnItemRightClicked = onItemRightClicked;
         _itemsOwner = owner;
 
-        UpdateStacks(stacks);
-
-        UpdateDisplay();
-    }
-
-    public void UpdateStacks(int stacks)
-    {
         if (stacks <= 0)
         {
             _stackText.gameObject.SetActive(false);
@@ -65,10 +56,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
             _stackText.text = "x" + stacks;
             _stackText.gameObject.SetActive(true);
         }
-    }
 
-    protected virtual void UpdateDisplay()
-    {
         if (_currentItem != null)
         {
             ItemIcon.color = ItemIcon.color.ChangedAlpha(1);
@@ -83,9 +71,10 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
+        _mouseInside = true;
+
         if (_currentItem != null)
         {
-            _mouseInside = true;
             Background.color = Color.white;
             TooltipDisplay.Instance.ActivateToolTipDisplay(_currentItem, _itemsOwner);
         }
@@ -94,8 +83,10 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
     public virtual void OnPointerExit(PointerEventData eventData)
     {
         _mouseInside = false;
+
         Background.color = _startBackgroundColor;
         TooltipDisplay.Instance.DeactivateToolTipDisplay();
+        ItemContextMenuDisplaySystem.Instance.DeactivateContextMenuDisplay();
     }
 
     public void ItemSlotClicked()
@@ -110,11 +101,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     public virtual void SecondaryUseItemSlot()
     {
-        _canRightClick = false;
-
         OnItemRightClicked?.Invoke();
-
-        this.DelayedCall(DelayForRightClickAgain, ()=> { _canRightClick = true; });
     }
 
     public ItemVisualInfo GetItemInfoInSlot()

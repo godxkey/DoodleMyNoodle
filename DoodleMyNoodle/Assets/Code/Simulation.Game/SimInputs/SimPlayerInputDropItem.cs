@@ -20,13 +20,13 @@ public class SimPlayerInputDropItem : SimPlayerInput
     }
 }
 
-public class PawnInputDropItem : PawnControllerInputBase
+public class PawnControllerInputDropItem : PawnControllerInputBase
 {
     public int ItemIndex;
 
-    public PawnInputDropItem(Entity pawnController) : base(pawnController) { }
+    public PawnControllerInputDropItem(Entity pawnController) : base(pawnController) { }
 
-    public PawnInputDropItem(Entity pawnController, int ItemIndex) : base(pawnController)
+    public PawnControllerInputDropItem(Entity pawnController, int ItemIndex) : base(pawnController)
     {
         this.ItemIndex = ItemIndex;
     }

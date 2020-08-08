@@ -464,7 +464,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1474760226041777802}
+      - m_Target: {fileID: 8876628850696415095}
         m_MethodName: CloseDisplay
         m_Mode: 1
         m_Arguments:
@@ -585,7 +585,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6843301105352293459}
   - component: {fileID: 6843301105352293462}
-  - component: {fileID: 1474760226041777802}
+  - component: {fileID: 8876628850696415095}
   m_Layer: 5
   m_Name: ItemBundleDisplay
   m_TagString: Untagged
@@ -621,7 +621,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6843301105352293458}
   m_CullTransparentMesh: 0
---- !u!114 &1474760226041777802
+--- !u!114 &8876628850696415095
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -630,7 +630,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6843301105352293458}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8acd8756674fe1c49924b29a980b5d0f, type: 3}
+  m_Script: {fileID: 11500000, guid: 3cafd584a5b8a6a4da85ca954ddc60fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _itemSlotPrefab: {fileID: 5426785830483470210, guid: 97d70f953e8f8e94cb26a3e113984cd5,

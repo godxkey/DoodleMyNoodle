@@ -16,13 +16,13 @@ public class SimPlayerStartingInventorySelectionInput : SimPlayerInput
     }
 }
 
-public class PawnStartingInventorySelectionInput : PawnControllerInputBase
+public class PawnControllerInputStartingInventorySelection : PawnControllerInputBase
 {
     public int KitNumber;
 
-    public PawnStartingInventorySelectionInput(Entity pawnController) : base(pawnController) { }
+    public PawnControllerInputStartingInventorySelection(Entity pawnController) : base(pawnController) { }
 
-    public PawnStartingInventorySelectionInput(Entity pawnController, int KitNumber) : base(pawnController)
+    public PawnControllerInputStartingInventorySelection(Entity pawnController, int KitNumber) : base(pawnController)
     {
         this.KitNumber = KitNumber;
     }

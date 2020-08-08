@@ -5,12 +5,14 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
 
-public class MessageDisplaySystem : GamePresentationBehaviour
+public class MessageDisplaySystem : GamePresentationSystem<MessageDisplaySystem>
 {
     [SerializeField] private GameObject _messageBubble;
     [SerializeField] private TextMeshPro _messageText;
 
     [SerializeField] private Vector3 _displacement;
+
+    public override bool SystemReady => true;
 
     protected override void OnGamePresentationUpdate()
     {
@@ -34,6 +36,10 @@ public class MessageDisplaySystem : GamePresentationBehaviour
             {
                 _messageBubble.SetActive(false);
             }
+        }
+        else
+        {
+            _messageBubble.SetActive(false);
         }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngineX;
 
-public class ItemContextMenuDisplay : GamePresentationSystem<ItemContextMenuDisplay>, IPointerEnterHandler , IPointerExitHandler
+public class ItemContextMenuDisplaySystem : GamePresentationSystem<ItemContextMenuDisplaySystem>, IPointerEnterHandler , IPointerExitHandler
 {
     public override bool SystemReady { get => true; }
 
@@ -26,7 +26,7 @@ public class ItemContextMenuDisplay : GamePresentationSystem<ItemContextMenuDisp
 
     protected override void OnGamePresentationUpdate() 
     {
-        if (_IsMouseOutsideContextMenu && (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1)))
+        if (_IsMouseOutsideContextMenu && _contextMenuDisplay.activeSelf &&(Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1)))
         {
             DeactivateContextMenuDisplay();
         }
@@ -44,23 +44,23 @@ public class ItemContextMenuDisplay : GamePresentationSystem<ItemContextMenuDisp
         {
             string name = actionsName[i];
             ContextMenuActionDisplay contextMenuActionDisplay = Instantiate(_contextMenuActionPrefab, _contextMenuActionsContainer).GetComponent<ContextMenuActionDisplay>();
-            if (contextMenuActionDisplay != null)
+            int choiceIndex = i;
+            contextMenuActionDisplay.Init(name, () =>
             {
-                int choiceIndex = i;
-                contextMenuActionDisplay.Init(name, () =>
-                {
-                    actionSelected(choiceIndex);
-                    DeactivateContextMenuDisplay();
-                });
-            }
+                actionSelected(choiceIndex);
+                DeactivateContextMenuDisplay(true);
+            });
         }
 
         _contextMenuDisplay.SetActive(true);
     }
 
-    public void DeactivateContextMenuDisplay()
+    public void DeactivateContextMenuDisplay(bool force = false)
     {
-        _contextMenuDisplay.SetActive(false);
+        if (force || _IsMouseOutsideContextMenu)
+        {
+            _contextMenuDisplay.SetActive(false);
+        }
     }
 
     private void Clear()

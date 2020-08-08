@@ -3,7 +3,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class ClearEmptyInteractableInventorySystem : SimComponentSystem
+public class DestroyEmptyInteractableInventorySystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {

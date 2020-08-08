@@ -11,12 +11,9 @@ public class InteractableInventoryPrefabReferenceAuth : MonoBehaviour, IConvertG
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        if (InventoryPrefab != null)
-        {
-            Entity inventoryAddonEntity = conversionSystem.GetPrimaryEntity(InventoryPrefab);
-            InteractableInventoryPrefabReference inventoryAddonReference = new InteractableInventoryPrefabReference() { Prefab = inventoryAddonEntity };
-            dstManager.AddComponentData(entity, inventoryAddonReference);
-        }
+        Entity inventoryAddonEntity = conversionSystem.GetPrimaryEntity(InventoryPrefab);
+        InteractableInventoryPrefabReferenceSingletonComponent inventoryAddonReference = new InteractableInventoryPrefabReferenceSingletonComponent() { Prefab = inventoryAddonEntity };
+        dstManager.AddComponentData(entity, inventoryAddonReference);
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)

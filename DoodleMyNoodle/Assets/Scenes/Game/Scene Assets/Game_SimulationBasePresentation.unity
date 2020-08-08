@@ -466,6 +466,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 7296775559322173697, guid: a7200335e35bad04b86d33a75c7a7361,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayerActionBar
+      objectReference: {fileID: 0}
     - target: {fileID: 7296775559998528112, guid: a7200335e35bad04b86d33a75c7a7361,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -495,6 +500,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7296775560649128830, guid: a7200335e35bad04b86d33a75c7a7361,
+        type: 3}
+      propertyPath: m_Name
+      value: Container
       objectReference: {fileID: 0}
     - target: {fileID: 7296775560649128831, guid: a7200335e35bad04b86d33a75c7a7361,
         type: 3}

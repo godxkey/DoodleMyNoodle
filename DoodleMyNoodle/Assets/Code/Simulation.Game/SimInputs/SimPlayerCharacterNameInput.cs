@@ -17,13 +17,13 @@ public class SimPlayerCharacterNameInput : SimPlayerInput
     }
 }
 
-public class PawnCharacterNameInput : PawnControllerInputBase
+public class PawnControllerInputCharacterName : PawnControllerInputBase
 {
     public string Name;
 
-    public PawnCharacterNameInput(Entity pawnController) : base(pawnController) { }
+    public PawnControllerInputCharacterName(Entity pawnController) : base(pawnController) { }
 
-    public PawnCharacterNameInput(Entity pawnController, string name) : base(pawnController)
+    public PawnControllerInputCharacterName(Entity pawnController, string name) : base(pawnController)
     {
         Name = name;
     }

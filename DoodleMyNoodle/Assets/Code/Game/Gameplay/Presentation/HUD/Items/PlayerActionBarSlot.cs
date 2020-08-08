@@ -9,21 +9,21 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [System.Serializable]
-public struct InventorySlotInfo 
+public struct PlayerActionBarSlotInfo 
 {
-    public static InventorySlotInfo Invalid => new InventorySlotInfo();
+    public static PlayerActionBarSlotInfo Invalid => new PlayerActionBarSlotInfo();
 
     public KeyCode InputShortcut;
     // other possible info that changes the display : class / ultimate / consumables
 }
 
-public class InventorySlot : ItemSlot
+public class PlayerActionBarSlot : ItemSlot
 {
     public TextMeshProUGUI ShortcutDisplay;
 
     public GameObject UnavailableSpriteObject;
 
-    private InventorySlotInfo _info;
+    private PlayerActionBarSlotInfo _info;
     private int _currentItemIndex;
 
     public Action<int> OnItemPrimaryActionUsed;
@@ -32,7 +32,7 @@ public class InventorySlot : ItemSlot
     public void UpdateCurrentInventorySlot(
         ItemVisualInfo item, 
         int itemIndex, 
-        InventorySlotInfo slotInfo, 
+        PlayerActionBarSlotInfo slotInfo, 
         Action<int> onItemPrimaryActionUsed,
         Action<int> onItemSecondaryActionUsed,
         int stacks = -1)
@@ -44,19 +44,14 @@ public class InventorySlot : ItemSlot
 
         UnavailableSpriteObject.SetActive(false);
 
+        ShortcutDisplay.text = GetPrettyName(_info.InputShortcut);
+
         UpdateCurrentItemSlot(item, null, null, GamePresentationCache.Instance.LocalPawn, stacks);
     }
 
     public void UpdateDisplayAsUnavailable()
     {
         UnavailableSpriteObject.SetActive(true);
-    }
-
-    protected override void UpdateDisplay()
-    {
-        ShortcutDisplay.text = GetPrettyName(_info.InputShortcut);
-
-        base.UpdateDisplay();
     }
 
     private string GetPrettyName(KeyCode keyCode)

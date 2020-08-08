@@ -7,17 +7,17 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerInventoryDisplay : GamePresentationBehaviour
+public class PlayerActionBarDisplay : GamePresentationBehaviour
 {
     public Image Background;
     public Image BlockedDisplay;
 
-    public List<InventorySlotInfo> InventorySlotShortcuts = new List<InventorySlotInfo>();
+    public List<PlayerActionBarSlotInfo> InventorySlotShortcuts = new List<PlayerActionBarSlotInfo>();
 
     public GameObject SlotsContainer;
     public GameObject InventorySlotPrefab;
 
-    private List<InventorySlot> _inventorySlots = new List<InventorySlot>();
+    private List<PlayerActionBarSlot> _inventorySlots = new List<PlayerActionBarSlot>();
 
     public override void OnGameAwake()
     {
@@ -25,7 +25,7 @@ public class PlayerInventoryDisplay : GamePresentationBehaviour
 
         for (int i = 0; i < InventorySlotShortcuts.Count; i++)
         {
-            InventorySlot inventorySlot = Instantiate(InventorySlotPrefab, SlotsContainer.transform).GetComponent<InventorySlot>();
+            PlayerActionBarSlot inventorySlot = Instantiate(InventorySlotPrefab, SlotsContainer.transform).GetComponent<PlayerActionBarSlot>();
             _inventorySlots.Add(inventorySlot);
         }
     }
@@ -60,7 +60,7 @@ public class PlayerInventoryDisplay : GamePresentationBehaviour
         }
 
         int itemIndex = 0;
-        if (SimWorld.TryGetBufferReadOnly(GamePresentationCache.Instance.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if (SimWorld.TryGetBufferReadOnly(SimWorldCache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             foreach (InventoryItemReference item in inventory)
             {
@@ -109,18 +109,18 @@ public class PlayerInventoryDisplay : GamePresentationBehaviour
             }
 
             // Ajust Slot amount according to inventory max size
-            InventorySize inventorySize = SimWorld.GetComponentData<InventorySize>(GamePresentationCache.Instance.LocalPawn);
+            InventorySize inventorySize = SimWorld.GetComponentData<InventorySize>(SimWorldCache.LocalPawn);
 
             while (_inventorySlots.Count < inventorySize.Value)
             {
-                InventorySlot inventorySlot = Instantiate(InventorySlotPrefab, SlotsContainer.transform).GetComponent<InventorySlot>();
+                PlayerActionBarSlot inventorySlot = Instantiate(InventorySlotPrefab, SlotsContainer.transform).GetComponent<PlayerActionBarSlot>();
                 _inventorySlots.Add(inventorySlot);
             }
 
-            for (int i = _inventorySlots.Count - 1; inventorySize.Value < _inventorySlots.Count; i--)
+            while (_inventorySlots.Count > inventorySize.Value)
             {
-                InventorySlot inventorySlot = _inventorySlots[i];
-                _inventorySlots.RemoveAt(i);
+                PlayerActionBarSlot inventorySlot = _inventorySlots[_inventorySlots.Count - 1];
+                _inventorySlots.Remove(inventorySlot);
                 Destroy(inventorySlot.gameObject);
             }
         }
@@ -144,12 +144,12 @@ public class PlayerInventoryDisplay : GamePresentationBehaviour
 
     private void OnIntentionToUsePrimaryActionOnItem(int ItemIndex)
     {
-        if (GameMonoBehaviourHelpers.GetSimulationWorld().TryGetBufferReadOnly(GamePresentationCache.Instance.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if (SimWorld.TryGetBufferReadOnly(SimWorldCache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             if(inventory.Length > ItemIndex && ItemIndex > -1)
             {
                 InventoryItemReference item = inventory[ItemIndex];
-                if (GameMonoBehaviourHelpers.GetSimulationWorld().TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
+                if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
                 {
                     Entity itemEntity = item.ItemEntity;
 
@@ -180,12 +180,12 @@ public class PlayerInventoryDisplay : GamePresentationBehaviour
 
     private void OnIntentionToUseSecondaryActionOnItem(int ItemIndex)
     {
-        if (GameMonoBehaviourHelpers.GetSimulationWorld().TryGetBufferReadOnly(GamePresentationCache.Instance.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if (SimWorld.TryGetBufferReadOnly(SimWorldCache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             if (inventory.Length > ItemIndex && ItemIndex > -1)
             {
                 int currentItemIndex = ItemIndex;
-                ItemContextMenuDisplay.Instance.ActivateContextMenuDisplay((int actionIndex) => 
+                ItemContextMenuDisplaySystem.Instance.ActivateContextMenuDisplay((int actionIndex) => 
                 {
                     if (actionIndex == 0)
                     {

@@ -53,8 +53,8 @@ MonoBehaviour:
   _contextMenuActionsContainer: {fileID: 3198534583194216848}
   _contextMenuActionPrefab: {fileID: 3996207762598919480, guid: 6b2d6511a8826d3469e9b10adf35b7a9,
     type: 3}
-  _displacementX: 0
-  _displacementY: 10
+  _displacementX: 15
+  _displacementY: 15
 --- !u!1 &5840653507448803993
 GameObject:
   m_ObjectHideFlags: 0
