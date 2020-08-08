@@ -19,6 +19,7 @@ public class SmartBrush : GridBrush
     public struct SpriteLayerData
     {
         public Sprite Sprite;
+        public RuleTile RuleTile;
         public TileMapLayers Layer;
     }
 
@@ -26,7 +27,7 @@ public class SmartBrush : GridBrush
 
     public override void Pick(GridLayout gridLayout, GameObject brushTarget, BoundsInt position, Vector3Int pivot)
     {
-        GameObject newLayer = FindLayerObject(FindLayerFromSprite(GetCurrentSelectedSprite(brushTarget, position)));
+        GameObject newLayer = FindLayerObject(FindLayerFromSelection(GetCurrentSelection(brushTarget, position)));
         if (newLayer != null)
         {
             GridPaintingState.scenePaintTarget = newLayer;
@@ -49,25 +50,43 @@ public class SmartBrush : GridBrush
         return null;
     }
 
-    private TileMapLayers FindLayerFromSprite(Sprite sprite)
+    private TileMapLayers FindLayerFromSelection(Sprite selection)
     {
-        foreach (SpriteLayerData spriteLayerData in SpriteLayers)
+        if (selection != null)
         {
-            if (spriteLayerData.Sprite == sprite)
+            foreach (SpriteLayerData spriteLayerData in SpriteLayers)
             {
-                return spriteLayerData.Layer;
+                if (spriteLayerData.RuleTile?.m_DefaultSprite == selection)
+                {
+                    return spriteLayerData.Layer;
+                }
+
+                if (spriteLayerData.Sprite == selection)
+                {
+                    return spriteLayerData.Layer;
+                }
             }
         }
 
-        Debug.LogError("Sprite not found for SmartBrush");
         return TileMapLayers.Background;
     }
 
-    private Sprite GetCurrentSelectedSprite(GameObject brushTarget, BoundsInt position)
+    private Sprite GetCurrentSelection(GameObject brushTarget, BoundsInt position)
     {
         UnityEngine.Tilemaps.Tilemap currentTileMap = brushTarget.GetComponent<UnityEngine.Tilemaps.Tilemap>();
-        Tile currentlySelectedTile = currentTileMap.GetTile(position.position) as Tile;
-        return currentlySelectedTile.sprite;
+        var currentlySelectedTile = currentTileMap.GetTile(position.position);
+
+        if (currentlySelectedTile is Tile tile)
+        {
+            return tile.sprite;
+        }
+
+        if (currentlySelectedTile is RuleTile ruleTile)
+        {
+            return ruleTile.m_DefaultSprite;
+        }
+
+        return null;
     }
 }
 
