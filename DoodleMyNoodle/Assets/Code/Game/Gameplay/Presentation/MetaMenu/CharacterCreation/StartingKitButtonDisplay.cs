@@ -47,7 +47,7 @@ public class StartingKitButtonDisplay : GamePresentationBehaviour
             if (SimWorld.TryGetComponentData(item.ItemEntityPrefab, out SimAssetId itemIDComponent))
             {
                 ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
-                itemSlot.UpdateCurrentItemSlot(itemInfo, KitButtonClicked, startingKit);
+                itemSlot.UpdateCurrentItemSlot(itemInfo, KitButtonClicked, null, startingKit);
             }
         }
     }

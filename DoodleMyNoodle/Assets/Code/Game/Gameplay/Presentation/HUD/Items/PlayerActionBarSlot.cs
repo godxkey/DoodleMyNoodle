@@ -9,46 +9,49 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [System.Serializable]
-public struct InventorySlotInfo 
+public struct PlayerActionBarSlotInfo 
 {
-    public static InventorySlotInfo Invalid => new InventorySlotInfo();
+    public static PlayerActionBarSlotInfo Invalid => new PlayerActionBarSlotInfo();
 
     public KeyCode InputShortcut;
     // other possible info that changes the display : class / ultimate / consumables
 }
 
-public class InventorySlot : ItemSlot
+public class PlayerActionBarSlot : ItemSlot
 {
     public TextMeshProUGUI ShortcutDisplay;
 
     public GameObject UnavailableSpriteObject;
 
-    private InventorySlotInfo _info;
+    private PlayerActionBarSlotInfo _info;
     private int _currentItemIndex;
 
-    public Action<int> OnItemUsed;
+    public Action<int> OnItemPrimaryActionUsed;
+    public Action<int> OnItemSecondaryActionUsed;
 
-    public void UpdateCurrentInventorySlot(ItemVisualInfo item, int itemIndex, InventorySlotInfo slotInfo, Action<int> onItemUsed)
+    public void UpdateCurrentInventorySlot(
+        ItemVisualInfo item, 
+        int itemIndex, 
+        PlayerActionBarSlotInfo slotInfo, 
+        Action<int> onItemPrimaryActionUsed,
+        Action<int> onItemSecondaryActionUsed,
+        int stacks = -1)
     {
         _currentItemIndex = itemIndex;
         _info = slotInfo;
-        OnItemUsed = onItemUsed;
+        OnItemPrimaryActionUsed = onItemPrimaryActionUsed;
+        OnItemSecondaryActionUsed = onItemSecondaryActionUsed;
 
         UnavailableSpriteObject.SetActive(false);
 
-        UpdateCurrentItemSlot(item, null, GamePresentationCache.Instance.LocalPawn);
+        ShortcutDisplay.text = GetPrettyName(_info.InputShortcut);
+
+        UpdateCurrentItemSlot(item, null, null, GamePresentationCache.Instance.LocalPawn, stacks);
     }
 
     public void UpdateDisplayAsUnavailable()
     {
         UnavailableSpriteObject.SetActive(true);
-    }
-
-    protected override void UpdateDisplay()
-    {
-        ShortcutDisplay.text = GetPrettyName(_info.InputShortcut);
-
-        base.UpdateDisplay();
     }
 
     private string GetPrettyName(KeyCode keyCode)
@@ -80,10 +83,17 @@ public class InventorySlot : ItemSlot
         }
     }
 
-    public override void UseItemSlot()
+    public override void PrimaryUseItemSlot()
     {
-        base.UseItemSlot();
+        base.PrimaryUseItemSlot();
 
-        OnItemUsed?.Invoke(_currentItemIndex);
+        OnItemPrimaryActionUsed?.Invoke(_currentItemIndex);
+    }
+
+    public override void SecondaryUseItemSlot()
+    {
+        base.SecondaryUseItemSlot();
+
+        OnItemSecondaryActionUsed?.Invoke(_currentItemIndex);
     }
 }

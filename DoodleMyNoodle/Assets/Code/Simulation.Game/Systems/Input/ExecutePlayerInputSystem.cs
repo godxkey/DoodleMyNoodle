@@ -35,15 +35,15 @@ public class ExecutePlayerInputSystem : SimComponentSystem
         switch (input)
         {
             case SimPlayerStartingInventorySelectionInput StartingInventorySelected:
-                pawnControllerInputSystem.Inputs.Add(new PawnStartingInventorySelectionInput(playerEntity, StartingInventorySelected.KitNumber));
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputStartingInventorySelection(playerEntity, StartingInventorySelected.KitNumber));
                 break;
 
             case SimPlayerCharacterNameInput NameSelected:
-                pawnControllerInputSystem.Inputs.Add(new PawnCharacterNameInput(playerEntity, NameSelected.Name));
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputCharacterName(playerEntity, NameSelected.Name));
                 break;
 
             case SimPlayerInputNextTurn NextTurnInput:
-                pawnControllerInputSystem.Inputs.Add(new PawnInputNextTurn(playerEntity, NextTurnInput.ReadyForNextTurn));
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputNextTurn(playerEntity, NextTurnInput.ReadyForNextTurn));
                 break;
 
             case SimPlayerInputUseItem ItemUsedInput:
@@ -52,6 +52,14 @@ public class ExecutePlayerInputSystem : SimComponentSystem
 
             case SimPlayerInputUseInteractable InteractableUsedInput:
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseInteractable(playerEntity, InteractableUsedInput.InteractablePosition));
+                break;
+
+            case SimPlayerInputEquipItem EquipItemInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputEquipItem(playerEntity, EquipItemInput.ItemIndex, EquipItemInput.ItemEntityPosition));
+                break;
+
+            case SimPlayerInputDropItem DropItemInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputDropItem(playerEntity, DropItemInput.ItemIndex));
                 break;
         }
     }
