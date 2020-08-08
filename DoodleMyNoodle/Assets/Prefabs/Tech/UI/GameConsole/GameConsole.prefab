@@ -1355,7 +1355,7 @@ GameObject:
   - component: {fileID: 3672597210934478895}
   - component: {fileID: 3672597210934478891}
   m_Layer: 5
-  m_Name: Console GUI
+  m_Name: GameConsole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1479,7 +1479,7 @@ MonoBehaviour:
   - {fileID: 2229271912271850140}
   - {fileID: 7871522713008002568}
   _suggestionList: {fileID: 2024063941429584961}
-  _toggleConsoleKeys: 2f0000001a0100007e000000
+  _toggleConsoleKeys: 0b0100001a0100007e000000
   _submitCommandKeys: 0d0000000f010000
   _linePoolSize: 4096
   _kbScrollSpeedMin: 30

@@ -9,11 +9,8 @@ public class ObjectInteractableByClick : BindedPresentationEntityComponent
     [SerializeField] private GameObject _outline;
 
     private bool _previousInteractedState = false;
-
-    protected override void OnGamePresentationUpdate() 
-    {
-        base.OnGamePresentationUpdate();
-    }
+    
+    protected override void OnGamePresentationUpdate() { }
 
     public override void OnPostSimulationTick()
     {
@@ -95,4 +92,5 @@ public class ObjectInteractableByClick : BindedPresentationEntityComponent
             return false;
         }
     }
+
 }

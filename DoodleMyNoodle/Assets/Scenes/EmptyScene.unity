@@ -307,7 +307,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &936629229
 RectTransform:
   m_ObjectHideFlags: 0
@@ -502,6 +502,7 @@ GameObject:
   - component: {fileID: 1648296322}
   - component: {fileID: 1648296321}
   - component: {fileID: 1648296320}
+  - component: {fileID: 1648296324}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -589,3 +590,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1648296324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1648296319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f70db2b9427c1246af5a0fe20015c11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Values:
+  - Val: a
+  - Val: b
+  - Val: c
+  - Val: d
+  - Val: e
+  - Val: f
+  - Val: g
+  - Val: h
+  - Val: i
+  - Val: j

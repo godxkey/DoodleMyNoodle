@@ -64,7 +64,7 @@ namespace GameConsoleInterals
         {
             if (!_inputField.text.Contains(" "))
             {
-                _inputField.text = command.DisplayName;
+                _inputField.text = command.DisplayName + " ";
                 _inputField.caretPosition = _inputField.text.Length;
             }
         }

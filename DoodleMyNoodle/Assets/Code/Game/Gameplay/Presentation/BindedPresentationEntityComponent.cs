@@ -3,24 +3,29 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
-public class BindedPresentationEntityComponent : GamePresentationBehaviour
+public abstract class BindedPresentationEntityComponent : GamePresentationBehaviour
 {
     private BindedSimEntityManaged _simEntityManaged;
 
-    protected override void OnGamePresentationUpdate()
+    private BindedSimEntityManaged SimEntityManaged
     {
-        if (_simEntityManaged != null)
-            return;
-
-        _simEntityManaged = GetComponent<BindedSimEntityManaged>();
-
-        if (_simEntityManaged == null)
+        get
         {
-            _simEntityManaged = GetComponentInParent<BindedSimEntityManaged>();
-        }
+            if (_simEntityManaged == null)
+            {
+                _simEntityManaged = GetComponent<BindedSimEntityManaged>();
 
-        Log.Assert(_simEntityManaged != null, $"{GetType().GetPrettyName()} components should only be placed on presentation GameObjects with a '{nameof(BindedSimEntityManaged)}'");
+                if (_simEntityManaged == null)
+                {
+                    _simEntityManaged = GetComponentInParent<BindedSimEntityManaged>();
+                }
+
+                Log.Assert(_simEntityManaged != null, $"{GetType().GetPrettyName()} components should only be placed on presentation GameObjects with a '{nameof(BindedSimEntityManaged)}'");
+            }
+
+            return _simEntityManaged;
+        }
     }
 
-    public Entity SimEntity => _simEntityManaged == null ? Entity.Null : _simEntityManaged.SimEntity;
+    public Entity SimEntity => SimEntityManaged == null ? Entity.Null : SimEntityManaged.SimEntity;
 }

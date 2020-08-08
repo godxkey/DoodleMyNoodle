@@ -62,14 +62,14 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
     {
         switch (input)
         {
-            case PawnStartingInventorySelectionInput equipItemInput:
+            case PawnControllerInputSelectStartingInventory selectStartingInventoryInput:
                 Entities
                     .WithAll<ItemKitTag>()
                     .ForEach((DynamicBuffer<InventoryItemPrefabReference> inventoryItems, ref SimAssetId assetID) =>
                 {
-                    if (equipItemInput.KitNumber == assetID.Value)
+                    if (selectStartingInventoryInput.KitNumber == assetID.Value)
                     {
-                        ControlledEntity pawn = EntityManager.GetComponentData<ControlledEntity>(equipItemInput.PawnController);
+                        ControlledEntity pawn = EntityManager.GetComponentData<ControlledEntity>(selectStartingInventoryInput.PawnController);
 
                         if (EntityManager.Exists(pawn.Value))
                         {
@@ -79,7 +79,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                 });
                 break;
 
-            case PawnCharacterNameInput nameInput:
+            case PawnControllerInputSetPawnName nameInput:
 
                 ControlledEntity playerPawn = EntityManager.GetComponentData<ControlledEntity>(nameInput.PawnController);
 
@@ -90,7 +90,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                 
                 break;
 
-            case PawnInputNextTurn pawnInputNextTurn:
+            case PawnControllerInputNextTurn pawnInputNextTurn:
                 EntityManager.SetOrAddComponentData(pawnInputNextTurn.PawnController, new ReadyForNextTurn() { Value = pawnInputNextTurn.ReadyForNextTurn });
                 break;
         

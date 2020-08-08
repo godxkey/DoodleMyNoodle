@@ -9,59 +9,77 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngineX;
 
-namespace MyNamespace
+public class FredTestScript : MonoBehaviour
 {
-    public class FredTestScript : MonoBehaviour
+    [Serializable]
+    public struct Value : IElementIndexHint
     {
-        class TestClass<T, U>
-        {
-            public class Potato
-            {
-                public class Legume<X>
-                {
-                    public struct Why<A, B, C, D, E, F, G, H, I, J, K, L, M>
-                    {
+        public string Val;
+        public int IndexHint { get; set; }
 
-                    }
-                }
+        public override string ToString()
+        {
+            return Val.ToString();
+        }
+    }
+
+    public List<Value> Values;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            NoInterruptList<Value> list = new NoInterruptList<Value>(Values);
+
+            foreach (var item in list)
+            {
+                Log.Info(item);
             }
         }
 
-        [ContextMenu("do it")]
-        void TEst()
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            Debug.Log(typeof(TestClass<int, float>.Potato.Legume<FredTestScript>.Why<bool, int, float, bool, bool2, bool2x2, float2x2, int, PointEffector2D, AudioReverbZone, half, WaitForSeconds, float>[]).GetPrettyName());
-            Debug.Log(typeof(TestClass<int, float>.Potato.Legume<FredTestScript>.Why<bool, int, float, bool, bool2, bool2x2, float2x2, int, PointEffector2D, AudioReverbZone, half, WaitForSeconds[], float>[]).GetPrettyFullName());
+            NoInterruptList<Value> list = new NoInterruptList<Value>(Values);
+
+            int i = 0;
+            foreach (var item in list)
+            {
+                if (i % 4 == 0)
+                {
+                    Log.Info("remove " + item + " " + list.Remove(item));
+                }
+                else
+                {
+                    Log.Info(item);
+                }
+
+                i++;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            NoInterruptList<Value> list = new NoInterruptList<Value>(Values);
+
+            int i = 0;
+            foreach (var x in list)
+            {
+                Log.Info("parent " + x);
+
+                foreach (var item in list)
+                {
+                    if (i % 4 == 0)
+                    {
+                        Log.Info("remove " + item + " " + list.Remove(item));
+                    }
+                    else
+                    {
+                        Log.Info(item);
+                    }
+
+                    i++;
+                }
+            }
         }
     }
 }
-
-
-//public class TestSystem : ComponentSystem
-//{
-//    protected override void OnUpdate()
-//    {
-//        if (Input.GetKeyDown(KeyCode.Alpha1))
-//        {
-//            var entities = simEntityManager().CreateEntityQuery(typeof(FixTranslation)).ToEntityArray(Unity.Collections.Allocator.TempJob);
-//            simEntityManager().Instantiate(entities[0]);
-
-//            entities.Dispose();
-//        }
-
-//        if (Input.GetKeyDown(KeyCode.Alpha2))
-//        {
-//            var entities = simEntityManager().CreateEntityQuery(typeof(FixTranslation)).ToEntityArray(Unity.Collections.Allocator.TempJob);
-//            simEntityManager().DestroyEntity(entities[0]);
-            
-//            entities.Dispose();
-//        }
-
-//        if (Input.GetKeyDown(KeyCode.Alpha3))
-//        {
-//            simEntityManager().SetComponentData(GamePresentationCache.Instance.LocalPawn, new FixTranslation());
-//        }
-
-//        EntityManager simEntityManager()=> GameMonoBehaviourHelpers.SimulationWorld.EntityManager;
-//    }
-//}

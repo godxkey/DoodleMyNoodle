@@ -26,7 +26,7 @@ public class EscapeMenuSystem : GameSystem<EscapeMenuSystem>
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.Escape) && !GameConsole.IsOpen())
         {
             _menuInGameEscape?.Open();
         }

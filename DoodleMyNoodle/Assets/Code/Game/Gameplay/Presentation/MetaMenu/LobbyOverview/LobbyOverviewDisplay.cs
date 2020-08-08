@@ -25,7 +25,9 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
 
     protected override void OnGamePresentationUpdate()
     {
-        if ((Input.GetKey(KeyCode.Tab) && !_isVisible) || (!Input.GetKey(KeyCode.Tab) && _isVisible))
+        bool shouldBeVisible = Input.GetKey(KeyCode.Tab) && !GameConsole.IsOpen();
+
+        if (shouldBeVisible != _isVisible)
         {
             ToggleVisibility();
         }

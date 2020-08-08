@@ -13,13 +13,13 @@ public class SimPlayerInputNextTurn : SimPlayerInput
     }
 }
 
-public class PawnInputNextTurn : PawnControllerInputBase
+public class PawnControllerInputNextTurn : PawnControllerInputBase
 {
     public bool ReadyForNextTurn = false;
 
-    public PawnInputNextTurn(Entity pawnController) : base(pawnController) { }
+    public PawnControllerInputNextTurn(Entity pawnController) : base(pawnController) { }
 
-    public PawnInputNextTurn(Entity pawnController, bool isReady) : base(pawnController)
+    public PawnControllerInputNextTurn(Entity pawnController, bool isReady) : base(pawnController)
     {
         ReadyForNextTurn = isReady;
     }
