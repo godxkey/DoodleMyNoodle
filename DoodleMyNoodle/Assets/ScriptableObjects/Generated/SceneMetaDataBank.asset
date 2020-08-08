@@ -77,3 +77,7 @@ MonoBehaviour:
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_SideScrollerExemple.unity
     BuildIndex: 15
     AssetGuid: 338675daabe37b244b3e80a4f0d73201
+  - Name: Lvl_Prototype3
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype3.unity
+    BuildIndex: 16
+    AssetGuid: 01ea5267214d63a479a17157f03d0d1d

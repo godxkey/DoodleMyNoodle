@@ -53,4 +53,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/Scene Assets/Lvl_SideScrollerExemple.unity
     guid: 338675daabe37b244b3e80a4f0d73201
+  - enabled: 1
+    path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype3.unity
+    guid: 01ea5267214d63a479a17157f03d0d1d
   m_configObjects: {}
