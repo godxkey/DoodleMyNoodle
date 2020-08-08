@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngineX;
 
 [NetSerializable]
@@ -190,86 +191,8 @@ public abstract class PlayerAssetManager : GameSystem<PlayerAssetManager>
         {
             return PlayerAssetType.Doodle;
         }
-
         return PlayerAssetType.Invalid;
     }
 
-    /*
-    private static SpriteRenderer s_testSpriteRenderer;
-    private static PlayerDoodleAsset s_asset;
-
-    private static Guid s_guid = new Guid(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-
-    [ConsoleCommand]
-    public static void Test_SetPlayerAssetVisible(bool visible = true)
-    {
-        if (s_testSpriteRenderer == null)
-        {
-            Log.Info("Create sprRenderer");
-            SpriteRenderer sprRenderer = new GameObject("test").AddComponent<SpriteRenderer>();
-            //await Task.Delay(1000);
-
-
-            Log.Info("Get asset");
-            s_asset = (PlayerDoodleAsset)Instance.GetAsset(s_guid);
-            //await Task.Delay(1000);
-
-            if (s_asset == null)
-            {
-                Log.Info("Asset not found, creating!");
-                s_asset = (PlayerDoodleAsset)Instance.CreateAssetInternal(s_guid, PlayerAssetType.Doodle);
-                s_asset.Author = Environment.UserName;
-                s_asset.UtcCreationTime = DateTime.UtcNow;
-
-                //await Task.Delay(1000);
-            }
-
-            Log.Info("Assigning sprite");
-            sprRenderer.sprite = s_asset.Sprite;
-            s_asset.SpriteUpdated += () =>
-            {
-                sprRenderer.sprite = s_asset.Sprite;
-            };
-
-            s_testSpriteRenderer = sprRenderer;
-
-            sprRenderer.transform.localScale = Vector3.one * 2;
-        }
-
-        s_testSpriteRenderer.enabled = visible;
-    }
-
-    [ConsoleCommand]
-    public static async void Test_PlayerAsset_LoadImage(int index = 0)
-    {
-        string path = null;
-        switch (index)
-        {
-            case 0:
-                path = @"D:\Projects\UPaint-Standalone\Test Exports\pogo.png";
-                break;
-            case 1:
-                path = @"D:\Projects\UPaint-Standalone\Test Exports\pogo-happy.png";
-                break;
-            case 2:
-                path = @"D:\Projects\UPaint-Standalone\Test Exports\test.png";
-                break;
-            case 3:
-                path = @"D:\Projects\UPaint-Standalone\Test Exports\toto.png";
-                break;
-            default:
-                break;
-        }
-
-        Test_SetPlayerAssetVisible(true);
-
-        //await Task.Yield();
-        //await Task.Yield();
-
-        byte[] data = File.ReadAllBytes(path);
-
-        s_asset.Load(data);
-
-        Instance.PublishAssetChanges(s_asset.Guid);
-    }*/
+    public ReadOnlyDictionary<Guid, PlayerAsset> GetAssets() => new ReadOnlyDictionary<Guid, PlayerAsset>(_assetMap);
 }
