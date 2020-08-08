@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7101888383991443929}
   - component: {fileID: 7101888383991443928}
   m_Layer: 0
-  m_Name: ConsoleService
+  m_Name: GameConsoleService
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,5 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd2e8b841a4ef294a89d1674fa4cf5dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openConsoleAtLaunch: 0
-  consoleGUIResource: Console GUI
+  _openConsoleAtLaunch: 0
+  _consoleGUIPrefab: {fileID: 3672597210934478864, guid: c784f3ecd060f7a4580359e870913fae,
+    type: 3}

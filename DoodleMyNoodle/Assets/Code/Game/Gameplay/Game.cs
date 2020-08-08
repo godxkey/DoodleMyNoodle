@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,6 +28,7 @@ public class Game : MonoBehaviour
     bool _playModeSpecificSceneLoaded = false;
 
     ISceneLoadPromise _sceneLoadPromise;
+    List<GameMonoBehaviour> _lateStarters = new List<GameMonoBehaviour>();
 
     void Awake()
     {
@@ -125,6 +127,8 @@ public class Game : MonoBehaviour
 
         if (_started)
         {
+            ExecuteLateStarter();
+
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
 #if DEBUG
@@ -199,6 +203,45 @@ public class Game : MonoBehaviour
         _sceneLoadPromise = null;
     }
 
-    
+    int _lateStarterIterator;
 
+    public static void AddLateStarter(GameMonoBehaviour gameMonoBehaviour)
+    {
+        if (!s_instance)
+            throw new Exception("Game instance is null");
+
+        s_instance._lateStarters.Add(gameMonoBehaviour);
+    }
+
+    private void ExecuteLateStarter()
+    {
+        _lateStarterIterator = 0;
+        
+        for (; _lateStarterIterator < _lateStarters.Count; _lateStarterIterator++)
+        {
+            _lateStarters[_lateStarterIterator].OnGameStart();
+        }
+        
+        _lateStarterIterator = -1;
+        
+        _lateStarters.Clear();
+    }
+
+    public static void RemoveLateStarter(GameMonoBehaviour gameMonoBehaviour)
+    {
+        if (!s_instance)
+        {
+            return;
+        }
+
+        int index = s_instance._lateStarters.IndexOf(gameMonoBehaviour);
+        if(index != -1)
+        {
+            if(s_instance._lateStarterIterator >= index)
+            {
+                s_instance._lateStarterIterator--;
+            }
+            s_instance._lateStarters.RemoveAt(index);
+        }
+    }
 }

@@ -5,9 +5,6 @@ using static fixMath;
 
 public class GameActionMeleeAttack : GameAction
 {
-    // TODO: add settings on the item itself
-    const int DAMAGE = 2;
-
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(

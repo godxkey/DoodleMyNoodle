@@ -6,8 +6,7 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
     protected abstract NetworkInterface CreateNetworkInterface();
     protected abstract IDynamicNetSerializerImpl CreateNetMessageFactory();
 
-
-    public static NetworkInterface NetworkInterface => Instance?._networkInterface;
+    private static NetworkInterface NetworkInterface => Instance?._networkInterface;
 
     public static OnlineInterface OnlineInterface => Instance?._onlineInterface;
     public static OnlineClientInterface ClientInterface => OnlineInterface as OnlineClientInterface;

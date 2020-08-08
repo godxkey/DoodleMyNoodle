@@ -7,10 +7,9 @@ namespace GameConsoleInterals
 {
     internal class GameConsoleService : MonoCoreService<GameConsoleService>
     {
-        [SerializeField]
-        bool openConsoleAtLaunch = true;
-        [SerializeField]
-        string consoleGUIResource;
+        [SerializeField] private bool _openConsoleAtLaunch = false;
+        [SerializeField] private GameObject _consoleGUIPrefab;
+
 
         public override void Initialize(Action<ICoreService> onComplete)
         {
@@ -30,12 +29,12 @@ namespace GameConsoleInterals
             }
             else
             {
-                GameObject consoleGUIGameObject = Instantiate((GameObject)Resources.Load(consoleGUIResource));
+                GameObject consoleGUIGameObject = Instantiate(_consoleGUIPrefab);
                 DontDestroyOnLoad(consoleGUIGameObject);
 
                 GameConsoleGUI consoleGUI = consoleGUIGameObject.GetComponent<GameConsoleGUI>();
                 GameConsole.SetUI(consoleGUI);
-                GameConsole.SetOpen(openConsoleAtLaunch);
+                GameConsole.SetOpen(_openConsoleAtLaunch);
             }
 
             onComplete(this);

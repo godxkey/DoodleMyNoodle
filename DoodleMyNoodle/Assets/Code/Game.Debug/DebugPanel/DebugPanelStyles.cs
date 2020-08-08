@@ -50,6 +50,7 @@ public static class DebugPanelStyles
     public static GUIStyle title;
     public static GUIStyle boldText;
     public static GUIStyle text;
+    public static GUIStyle scrollView;
 
 
     static GUIStyle prev_label;

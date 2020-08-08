@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class DebugPanelPlayerRepertoire : DebugPanel
 {
-    public override string title => "Player Repertoire";
-    public override bool canBeDisplayed => PlayerRepertoireSystem.Instance != null;
+    public override string Title => "Player Repertoire";
+    public override bool CanBeDisplayed => PlayerRepertoireSystem.Instance != null;
 
     public override void OnGUI()
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using Unity.Mathematics;
+using UnityEngineX;
 
 public static class StaticNetSerializer_System_Int64
 {
@@ -293,5 +294,55 @@ public static class StaticNetSerializer_Unity_Mathematics_int2
     {
         value.x = reader.ReadInt32();
         value.y = reader.ReadInt32();
+    }
+}
+
+public static class StaticNetSerializer_System_Guid
+{
+    private const int BYTE_COUNT = 16;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize(ref Guid _) => BYTE_COUNT * 8;
+
+    public static void NetSerialize(ref Guid value, BitStreamWriter writer)
+    {
+        byte[] b = value.ToByteArray();
+        
+        if (b.Length != BYTE_COUNT)
+            throw new Exception("wat?");
+        
+        for (int i = 0; i < BYTE_COUNT; i++)
+        {
+            writer.WriteByte(b[i]);
+        }
+    }
+
+    public static void NetDeserialize(ref Guid value, BitStreamReader reader)
+    {
+        byte[] b = new byte[BYTE_COUNT];
+
+        for (int i = 0; i < BYTE_COUNT; i++)
+        {
+            b[i] = reader.ReadByte();
+        }
+
+        value = new Guid(b);
+    }
+}
+
+public static class StaticNetSerializer_System_DateTime
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetNetBitSize(ref DateTime _) => sizeof(long) * 8;
+
+    public static void NetSerialize(ref DateTime value, BitStreamWriter writer)
+    {
+        Log.Assert(value.Kind == DateTimeKind.Utc, "DateTime must be UTC");
+        writer.WriteInt64(value.Ticks);
+    }
+
+    public static void NetDeserialize(ref DateTime value, BitStreamReader reader)
+    {
+        value = new DateTime(reader.ReadInt64(), DateTimeKind.Utc);
     }
 }
