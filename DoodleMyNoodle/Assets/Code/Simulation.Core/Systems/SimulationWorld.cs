@@ -1,7 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Unity.Core;
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngineX;
 
 [DebuggerDisplay("{Name} (#{SequenceNumber})")]
 public class SimulationWorld : World, IOwnedWorld
@@ -14,8 +16,23 @@ public class SimulationWorld : World, IOwnedWorld
     }
 
 
+
+    internal void OnEndDeserialization()
+    {
+        try
+        {
+            OnEntitiesClearedAndReplaced?.Invoke();
+        }
+        catch (Exception e)
+        {
+            Log.Exception(e);
+        }
+        EntityClearAndReplaceCount++;
+    }
+
     // TODO fbessette: move this out of here. The simulation shouldn't know
-    public uint EntityClearAndReplaceCount { get; internal set; } = 0;
+    public event Action OnEntitiesClearedAndReplaced;
+    public uint EntityClearAndReplaceCount { get; private set; } = 0;
 
 
 

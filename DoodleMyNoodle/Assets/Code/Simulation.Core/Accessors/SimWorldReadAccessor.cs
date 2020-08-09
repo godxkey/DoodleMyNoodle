@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Entities.CodeGeneratedJobForEach;
 
@@ -29,6 +30,12 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
 
     public uint EntityClearAndReplaceCount
         => SimWorld.EntityClearAndReplaceCount;
+
+    public event Action OnEntityClearedAndReplaced
+    {
+        add => SimWorld.OnEntitiesClearedAndReplaced += value; 
+        remove => SimWorld.OnEntitiesClearedAndReplaced -= value;
+    }
 
     // fbessette: 
     //  Here we are giving the presentation access to a query builder in the simulation.

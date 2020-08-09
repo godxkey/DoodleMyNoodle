@@ -35,6 +35,11 @@ public class PlayerDoodleAsset : PlayerAsset
         }
     }
 
+    public override byte[] Serialize()
+    {
+        return Texture.EncodeToPNG();
+    }
+
     private void RecreateSprite()
     {
         if (Sprite != null)
@@ -46,10 +51,5 @@ public class PlayerDoodleAsset : PlayerAsset
 
         Sprite = Sprite.Create(Texture, new Rect(0, 0, Texture.width, Texture.height), Vector2.one * 0.5f, pixelsPerUnit: longerDimension);
         SpriteUpdated?.Invoke(Sprite);
-    }
-
-    public override byte[] Serialize()
-    {
-        return Texture.EncodeToPNG();
     }
 }

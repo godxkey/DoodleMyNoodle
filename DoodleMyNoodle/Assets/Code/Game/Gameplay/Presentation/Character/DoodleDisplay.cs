@@ -28,17 +28,17 @@ public class DoodleDisplay : BindedPresentationEntityComponent
     {
         base.OnDestroy();
 
-        if(_doodleAsset.Get() != null)
+        if (_doodleAsset.Get() != null)
         {
             _doodleAsset.Get().SpriteUpdated -= SetSprite;
         }
-        
+
         if (_doodleAsset.GetPrevious() != null)
         {
             _doodleAsset.GetPrevious().SpriteUpdated -= SetSprite;
         }
 
-        if(PlayerAssetManager.Instance != null)
+        if (PlayerAssetManager.Instance != null)
         {
             PlayerAssetManager.Instance.AssetCreated -= OnAssetCreated;
         }

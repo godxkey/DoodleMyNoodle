@@ -39,7 +39,7 @@ namespace Sim.Operations
 
         protected override IEnumerator ExecuteRoutine()
         {
-            Log.Info("Start Deserialization Process...");
+            Log.Info("Start Sim Deserialization Process...");
 
             // force the 'ChangeDetectionSystem' to end the current sample, making our entity changes undetectable.
             var changeDetectionSystemEnd = _simulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
@@ -54,7 +54,7 @@ namespace Sim.Operations
 
             if (_simulationWorld is SimulationWorld simWorld)
             {
-                simWorld.EntityClearAndReplaceCount++;
+                simWorld.OnEndDeserialization();
             }
 
             // force the 'ChangeDetectionSystem' to resample, making our entity changes undetectable.
@@ -64,6 +64,7 @@ namespace Sim.Operations
                 changeDetectionSystemBegin.ResetSample();
             }
 
+            Log.Info("Sim Deserialization Complete!");
             TerminateWithSuccess();
 
             yield break;
