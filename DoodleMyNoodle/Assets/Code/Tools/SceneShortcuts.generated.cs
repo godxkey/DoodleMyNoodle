@@ -16,20 +16,20 @@ public static class SceneShortcuts
     [MenuItem("Scene Shortcuts/EmptyScene", priority = 2002)]
     public static void Assets_Scenes_EmptyScene() => LoadScene("Assets/Scenes/EmptyScene.unity");
 
-    [MenuItem("Scene Shortcuts/Game_Client", priority = 3003)]
-    public static void Assets_Scenes_Game_Scene_Assets_Game_Client() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Client.unity");
+    [MenuItem("Scene Shortcuts/Game_Core", priority = 3003)]
+    public static void Assets_Scenes_Game_Scene_Assets_Game_Core() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Core.unity");
 
-    [MenuItem("Scene Shortcuts/Game_Common", priority = 3004)]
-    public static void Assets_Scenes_Game_Scene_Assets_Game_Common() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Common.unity");
+    [MenuItem("Scene Shortcuts/Game_Core_Client", priority = 3004)]
+    public static void Assets_Scenes_Game_Scene_Assets_Game_Core_Client() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Core_Client.unity");
 
-    [MenuItem("Scene Shortcuts/Game_Local", priority = 3005)]
-    public static void Assets_Scenes_Game_Scene_Assets_Game_Local() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Local.unity");
+    [MenuItem("Scene Shortcuts/Game_Core_Local", priority = 3005)]
+    public static void Assets_Scenes_Game_Scene_Assets_Game_Core_Local() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Core_Local.unity");
 
-    [MenuItem("Scene Shortcuts/Game_Server", priority = 3006)]
-    public static void Assets_Scenes_Game_Scene_Assets_Game_Server() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Server.unity");
+    [MenuItem("Scene Shortcuts/Game_Core_Server", priority = 3006)]
+    public static void Assets_Scenes_Game_Scene_Assets_Game_Core_Server() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Core_Server.unity");
 
-    [MenuItem("Scene Shortcuts/Game_SimulationBasePresentation", priority = 3007)]
-    public static void Assets_Scenes_Game_Scene_Assets_Game_SimulationBasePresentation() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_SimulationBasePresentation.unity");
+    [MenuItem("Scene Shortcuts/Game_Presentation", priority = 3007)]
+    public static void Assets_Scenes_Game_Scene_Assets_Game_Presentation() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Presentation.unity");
 
     [MenuItem("Scene Shortcuts/Game_SimulationManagers", priority = 3008)]
     public static void Assets_Scenes_Game_Scene_Assets_Game_SimulationManagers() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_SimulationManagers.unity");

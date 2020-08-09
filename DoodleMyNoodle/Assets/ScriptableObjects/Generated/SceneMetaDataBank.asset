@@ -37,32 +37,32 @@ MonoBehaviour:
     Path: Assets/Scenes/Menu/Scene Assets/Menu_OnlineClientSessionChoice.unity
     BuildIndex: 5
     AssetGuid: 8604ebda00836304f802fc028ca9979a
-  - Name: Game_Common
-    Path: Assets/Scenes/Game/Scene Assets/Game_Common.unity
+  - Name: Game_Core
+    Path: Assets/Scenes/Game/Scene Assets/Game_Core.unity
     BuildIndex: 6
     AssetGuid: b3695b8f43019e040858a9dfdbc524f7
   - Name: Menu_InGameEscape
     Path: Assets/Scenes/Menu/Scene Assets/Menu_InGameEscape.unity
     BuildIndex: 7
     AssetGuid: 526cbea577512dc42a4c0e329783b3b0
-  - Name: Game_Client
-    Path: Assets/Scenes/Game/Scene Assets/Game_Client.unity
+  - Name: Game_Core_Client
+    Path: Assets/Scenes/Game/Scene Assets/Game_Core_Client.unity
     BuildIndex: 8
     AssetGuid: 89c09be2ea7a787418bc64f4cdb83b20
-  - Name: Game_Server
-    Path: Assets/Scenes/Game/Scene Assets/Game_Server.unity
+  - Name: Game_Core_Server
+    Path: Assets/Scenes/Game/Scene Assets/Game_Core_Server.unity
     BuildIndex: 9
     AssetGuid: fa9ca71823e5fc44c8096a44b275a0a9
-  - Name: Game_Local
-    Path: Assets/Scenes/Game/Scene Assets/Game_Local.unity
+  - Name: Game_Core_Local
+    Path: Assets/Scenes/Game/Scene Assets/Game_Core_Local.unity
     BuildIndex: 10
     AssetGuid: 6832c9c496e32854086ae3c970b86b4f
   - Name: Game_SimulationManagers
     Path: Assets/Scenes/Game/Scene Assets/Game_SimulationManagers.unity
     BuildIndex: 11
     AssetGuid: 47ac98eafdf2257458009be782cc980c
-  - Name: Game_SimulationBasePresentation
-    Path: Assets/Scenes/Game/Scene Assets/Game_SimulationBasePresentation.unity
+  - Name: Game_Presentation
+    Path: Assets/Scenes/Game/Scene Assets/Game_Presentation.unity
     BuildIndex: 12
     AssetGuid: 02fa011c09404914098c6019b2610a09
   - Name: SimpleClientAndServer
