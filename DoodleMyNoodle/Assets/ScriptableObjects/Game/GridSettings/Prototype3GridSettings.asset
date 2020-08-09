@@ -59,3 +59,15 @@ MonoBehaviour:
   - SpriteVisual: {fileID: 21300000, guid: cb4d7058ae9fabf439c46db24c7c068a, type: 3}
     AddonSimulationPrefab: {fileID: 30145307963041151, guid: ee6cc0fda5ef6764a8b29d1090e15e0d,
       type: 3}
+  - SpriteVisual: {fileID: 21300000, guid: c545340dbd6bec1499771aba21350be9, type: 3}
+    AddonSimulationPrefab: {fileID: 30145307963041151, guid: 248ce49109cc6154bbf607e271c0fe65,
+      type: 3}
+  - SpriteVisual: {fileID: 21300000, guid: 0c95d2946e929854d9a581e6afcbb615, type: 3}
+    AddonSimulationPrefab: {fileID: 30145307963041151, guid: 9824e84da3d6234418808fdb8ef988ed,
+      type: 3}
+  - SpriteVisual: {fileID: 21300000, guid: 12ae2e09ef93f16498abbee98f777a8c, type: 3}
+    AddonSimulationPrefab: {fileID: 30145307963041151, guid: 1a9f3e53029a46a4f912894712c146e4,
+      type: 3}
+  - SpriteVisual: {fileID: 21300000, guid: 219656141dee1f4488b4827e65cc9de0, type: 3}
+    AddonSimulationPrefab: {fileID: 30145307963041151, guid: 231606a2fb6b6d04f97fd73bed9770bc,
+      type: 3}
