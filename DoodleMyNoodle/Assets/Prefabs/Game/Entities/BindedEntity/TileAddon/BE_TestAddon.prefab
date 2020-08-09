@@ -141,7 +141,7 @@ PrefabInstance:
     - target: {fileID: 8666840169163924013, guid: cd99c012bf4c5f24e980d5d6570b6560,
         type: 3}
       propertyPath: m_SortingLayer
-      value: 5
+      value: -5
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5307789793212149996, guid: cd99c012bf4c5f24e980d5d6570b6560, type: 3}
