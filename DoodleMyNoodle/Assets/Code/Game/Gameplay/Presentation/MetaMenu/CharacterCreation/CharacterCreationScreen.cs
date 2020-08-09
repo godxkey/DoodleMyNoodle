@@ -83,14 +83,17 @@ public class CharacterCreationScreen : GamePresentationBehaviour
 
     private void ApplyCharacterSettings()
     {
-        if ((GameUI.Instance.ReadyButton.GetState() == ReadyButton.TurnState.Ready) && (gameObject.activeSelf))
+        if ((GameUI.Instance.ReadyButton.GetState() == ReadyButton.TurnState.Ready) && gameObject.activeSelf)
         {
-            // Publish player asset (will sync across network)
-            PlayerAssetManager.Instance.PublishAssetChanges(_doodleAsset.Guid);
+            if (_doodlePreview.enabled)
+            {
+                // Publish player asset (will sync across network)
+                PlayerAssetManager.Instance.PublishAssetChanges(_doodleAsset.Guid);
 
-            // Set doodle
-            SimPlayerInputSetPawnDoodle setPawnDoodleInput = new SimPlayerInputSetPawnDoodle(_doodleAsset.Guid);
-            SimWorld.SubmitInput(setPawnDoodleInput);
+                // Set doodle
+                SimPlayerInputSetPawnDoodle setPawnDoodleInput = new SimPlayerInputSetPawnDoodle(_doodleAsset.Guid);
+                SimWorld.SubmitInput(setPawnDoodleInput);
+            }
 
             // Set name
             SimPlayerInputSetPawnName startNameInput = new SimPlayerInputSetPawnName(_nameField.text);
