@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -746,6 +747,7 @@ public interface ISimWorldReadAccessor
     ref FixTimeData Time { get; }
 
     uint EntityClearAndReplaceCount { get; }
+    event Action OnEntityClearedAndReplaced;
     SimInput[] TickInputs { get; }
 
 

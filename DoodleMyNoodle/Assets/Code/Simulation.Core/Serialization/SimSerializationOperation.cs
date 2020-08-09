@@ -73,7 +73,7 @@ namespace Sim.Operations
 
         protected override IEnumerator ExecuteRoutine()
         {
-            Log.Info("Start Serialization Process...");
+            Log.Info("Start Sim Serialization Process...");
 
             using (var binaryWriter = new MemoryBinaryWriter())
             {
@@ -88,6 +88,7 @@ namespace Sim.Operations
                 SerializationData = GetByteArrayFromBinaryWriter(binaryWriter);
             }
 
+            Log.Info("Sim Serialization Complete!");
             TerminateWithSuccess();
             yield break;
         }

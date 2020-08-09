@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngineX;
 
 public class GamePresentationCache
 {
@@ -28,6 +29,8 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
     {
         base.OnCreate();
 
+        SimWorldAccessor.OnEntityClearedAndReplaced += ResetCache;
+
         ResetCache();
         Cache.Ready = true;
         Cache.SimWorld = SimWorldAccessor;
@@ -36,6 +39,8 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
     protected override void OnDestroy()
     {
         base.OnDestroy();
+
+        SimWorldAccessor.OnEntityClearedAndReplaced -= ResetCache;
 
         ResetCache();
         Cache.Ready = false;

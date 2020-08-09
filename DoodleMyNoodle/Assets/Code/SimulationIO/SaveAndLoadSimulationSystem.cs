@@ -46,7 +46,7 @@ namespace SimulationControl
 #endif
 
             if (_ongoingCmdOperation != null && _ongoingCmdOperation.IsRunning)
-                _ongoingCmdOperation.TerminateWithAbnormalFailure();
+                _ongoingCmdOperation.TerminateWithNormalFailure();
 
             base.OnDestroy();
         }

@@ -17,25 +17,28 @@ public class DoodleDisplay : BindedPresentationEntityComponent
         base.Awake();
 
         _fallbackSprite = _spriteRenderer.sprite;
-     
-        PlayerAssetManager.Instance.AssetCreated += OnAssetCreated;
+
+        if (PlayerAssetManager.Instance != null)
+        {
+            PlayerAssetManager.Instance.AssetCreated += OnAssetCreated;
+        }
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
 
-        if(_doodleAsset.Get() != null)
+        if (_doodleAsset.Get() != null)
         {
             _doodleAsset.Get().SpriteUpdated -= SetSprite;
         }
-        
+
         if (_doodleAsset.GetPrevious() != null)
         {
             _doodleAsset.GetPrevious().SpriteUpdated -= SetSprite;
         }
 
-        if(PlayerAssetManager.Instance != null)
+        if (PlayerAssetManager.Instance != null)
         {
             PlayerAssetManager.Instance.AssetCreated -= OnAssetCreated;
         }
