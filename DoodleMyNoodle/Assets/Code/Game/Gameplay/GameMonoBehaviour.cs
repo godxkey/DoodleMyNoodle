@@ -1,30 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngineX;
+using System;
 
 /// <summary>
 /// A GameMonoBehaviour is a monobehaviour class that receives common game events
 /// </summary>
-public class GameMonoBehaviour : MonoBehaviour, IIndexedInList
+public class GameMonoBehaviour : MonoBehaviour, IElementIndexHint
 {
-    static List<GameMonoBehaviour> s_registeredBehaviours = new List<GameMonoBehaviour>();
-    public static ReadOnlyList<GameMonoBehaviour> RegisteredBehaviours => s_registeredBehaviours.AsReadOnlyNoAlloc();
+    static NoInterruptList<GameMonoBehaviour> s_registeredBehaviours = new NoInterruptList<GameMonoBehaviour>();
+    public static NoInterruptList<GameMonoBehaviour>.Enumerator RegisteredBehaviours => s_registeredBehaviours.GetEnumerator();
 
-    int IIndexedInList.Index { get; set; }
+    int IElementIndexHint.IndexHint { get; set; }
 
     protected virtual void Awake()
     {
-        s_registeredBehaviours.AddIndexed(this);
+        s_registeredBehaviours.Add(this);
 
         if (Game.Ready)
             OnGameAwake();
+        
         if (Game.Started)
-            OnGameStart();
+            Game.AddLateStarter(this);
     }
 
     protected virtual void OnDestroy()
     {
-        s_registeredBehaviours.RemoveIndexed(this);
+        Game.RemoveLateStarter(this);
+
+        s_registeredBehaviours.Remove(this);
 
         if (ApplicationUtilityService.ApplicationIsQuitting == false)
         {

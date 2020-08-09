@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class DebugPanelClientSimController : DebugPanel
 {
-    public override string title => "Sim Controller (Client)";
-    public override bool canBeDisplayed =>
+    public override string Title => "Sim Controller (Client)";
+    public override bool CanBeDisplayed =>
         GameMonoBehaviourHelpers.PresentationWorld?.GetExistingSystem<ReceiveSimulationTickSystem>() != null;
 
     float[] _simTickQueueLengths = new float[60];

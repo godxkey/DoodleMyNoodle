@@ -13,8 +13,6 @@ public class NameDisplay : BindedPresentationEntityComponent
 
     protected override void OnGamePresentationUpdate()
     {
-        base.OnGamePresentationUpdate();
-
         if (SimEntity != Entity.Null && SimWorld.TryGetComponentData(SimEntity, out Name name))
         {
             _displayName.Set(name);
@@ -28,6 +26,5 @@ public class NameDisplay : BindedPresentationEntityComponent
         {
             _nameText.text = _displayName.Get().ToString();
         }
-
     }
 }

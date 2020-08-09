@@ -25,7 +25,7 @@ public class SessionClientInterface : SessionInterface
         }
     }
 
-    public void SendNetMessageToServer(object netMessage)
+    public void SendNetMessageToServer<T>(T netMessage)
     {
         SendNetMessage(netMessage, ServerConnection);
     }

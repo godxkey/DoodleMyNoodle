@@ -30,7 +30,7 @@ public class ClearPawnControllerInputSystem : SimComponentSystem
 
         _executeSys = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
     }
-    
+
     protected override void OnUpdate()
     {
         foreach (PawnControllerInputBase input in _executeSys.Inputs)
@@ -65,16 +65,16 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         if (EntityManager.TryGetComponentData(input.PawnController, out ControlledEntity controlledEntity))
         {
             pawn = controlledEntity.Value;
-            
+
             if (!EntityManager.Exists(pawn))
                 pawn = Entity.Null;
         }
-        
+
         // Handling different types of Sim Inputs
         switch (input)
         {
-            case PawnControllerInputStartingInventorySelection equipStartingInventoryInput:
-                if(pawn != Entity.Null && equipStartingInventoryInput.KitNumber != 0)
+            case PawnControllerInputSetStartingInventory equipStartingInventoryInput:
+                if (pawn != Entity.Null && equipStartingInventoryInput.KitNumber != 0)
                 {
                     DynamicBuffer<InventoryItemPrefabReference> startingInventory = default;
                     Entities
@@ -98,35 +98,35 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                 }
                 break;
 
-            case PawnControllerInputCharacterName nameInput:
+            case PawnControllerInputSetPawnName nameInput:
                 if (pawn != Entity.Null)
                 {
                     EntityManager.SetOrAddComponentData(pawn, new Name() { Value = nameInput.Name });
                 }
-                
+
                 break;
 
             case PawnControllerInputNextTurn pawnInputNextTurn:
                 EntityManager.SetOrAddComponentData(pawnInputNextTurn.PawnController, new ReadyForNextTurn() { Value = pawnInputNextTurn.ReadyForNextTurn });
                 break;
-        
+
             case PawnControllerInputUseItem useItemInput:
-                if(pawn != Entity.Null)
+                if (pawn != Entity.Null)
                     ExecuteUseItemInput(useItemInput, pawn);
                 break;
 
             case PawnControllerInputUseInteractable useInteractableInput:
-                if(pawn != Entity.Null)
+                if (pawn != Entity.Null)
                     ExecuteUseInteractableInput(useInteractableInput, pawn);
                 break;
 
             case PawnControllerInputEquipItem pawnInputEquipItem:
-                if(pawn != Entity.Null)
+                if (pawn != Entity.Null)
                     ExecuteEquipItemInput(pawnInputEquipItem, pawn);
                 break;
 
             case PawnControllerInputDropItem pawnInputDropItem:
-                if(pawn != Entity.Null)
+                if (pawn != Entity.Null)
                     ExecuteDropItemInput(pawnInputDropItem, pawn);
                 break;
         }
@@ -149,51 +149,54 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         }
 
         // Searching for an Inventory addon on tile
-        DynamicBuffer<InventoryItemReference> addonInventoryItemBuffer = default;
+        DynamicBuffer<InventoryItemReference> groundInventory = default;
 
         Entity groundInventoryEntity = CommonReads.GetFirstTileAddonWithComponent<InventoryItemReference>(Accessor, tile);
-        if(groundInventoryEntity != Entity.Null)
+        if (groundInventoryEntity != Entity.Null)
         {
-            addonInventoryItemBuffer = EntityManager.GetBuffer<InventoryItemReference>(groundInventoryEntity);
+            groundInventory = EntityManager.GetBuffer<InventoryItemReference>(groundInventoryEntity);
         }
 
         // Didn't found an inventory, let's spawn one
-        if (!addonInventoryItemBuffer.IsCreated)
+        if (!groundInventory.IsCreated)
         {
             InteractableInventoryPrefabReferenceSingletonComponent interactableInventoryPrefab = GetSingleton<InteractableInventoryPrefabReferenceSingletonComponent>();
             groundInventoryEntity = EntityManager.Instantiate(interactableInventoryPrefab.Prefab);
             EntityManager.SetComponentData(groundInventoryEntity, pawnTranslation);
             CommonWrites.AddTileAddon(Accessor, groundInventoryEntity, tile);
 
-            addonInventoryItemBuffer = Accessor.GetBuffer<InventoryItemReference>(groundInventoryEntity);
+            groundInventory = Accessor.GetBuffer<InventoryItemReference>(groundInventoryEntity);
         }
 
         // Move item from player's inventory to ground inventory
         if (!CommonReads.IsInventoryFull(Accessor, groundInventoryEntity))
         {
-            if (EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> pawnInventory))
+            DynamicBuffer<InventoryItemReference> pawnInventory = EntityManager.GetBuffer<InventoryItemReference>(pawn);
+
+            Entity itemToMove = pawnInventory[pawnInputDropItem.ItemIndex].ItemEntity;
+            if (CommonWrites.TryIncrementStackableItemInInventory(Accessor, groundInventoryEntity, itemToMove, groundInventory))
             {
-                InventoryItemReference itemToMove = pawnInventory[pawnInputDropItem.ItemIndex];
-                if (CommonWrites.TryIncrementStackableItemInInventory(Accessor, groundInventoryEntity, itemToMove.ItemEntity, addonInventoryItemBuffer))
+                CommonWrites.DecrementStackableItemInInventory(Accessor, pawn, itemToMove);
+            }
+            else
+            {
+                Entity entityToGiveToGroundInventory;
+
+                // We did not find any stackable in destination inventory, but we want to transfer only one if stackable
+                if (EntityManager.HasComponent<ItemStackableData>(itemToMove))
                 {
-                    CommonWrites.DecrementStackableItemInInventory(Accessor, pawn, itemToMove.ItemEntity);
+                    entityToGiveToGroundInventory = EntityManager.Instantiate(itemToMove);
+                    EntityManager.SetComponentData(entityToGiveToGroundInventory, new ItemStackableData() { Value = 1 });
+                    CommonWrites.DecrementStackableItemInInventory(Accessor, pawn, itemToMove);
                 }
                 else
                 {
-                    // We did not find any stackable in destination inventory, but we want to transfer only one if stackable
-                    if (EntityManager.TryGetComponentData(itemToMove.ItemEntity, out ItemStackableData stackableData))
-                    {
-                        Entity newItemEntity = EntityManager.Instantiate(itemToMove.ItemEntity);
-                        EntityManager.SetComponentData(newItemEntity, new ItemStackableData() { Value = 1 });
-                        addonInventoryItemBuffer.Add(new InventoryItemReference() { ItemEntity = newItemEntity });
-                        CommonWrites.DecrementStackableItemInInventory(Accessor, pawn, itemToMove.ItemEntity);
-                    }
-                    else
-                    {
-                        pawnInventory.RemoveAt(pawnInputDropItem.ItemIndex);
-                        addonInventoryItemBuffer.Add(itemToMove);
-                    }
+                    entityToGiveToGroundInventory = itemToMove;
+                    pawnInventory.RemoveAt(pawnInputDropItem.ItemIndex);
                 }
+                
+                groundInventory = EntityManager.GetBuffer<InventoryItemReference>(groundInventoryEntity);
+                groundInventory.Add(new InventoryItemReference() { ItemEntity = entityToGiveToGroundInventory });
             }
         }
     }
@@ -206,6 +209,10 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             return;
         }
 
+        // Pawn has inventory ?
+        if (!EntityManager.HasComponent<InventoryItemReference>(pawn))
+            return;
+
         // Find ground inventory
         Entity groundInventoryEntity = CommonReads.GetFirstTileAddonWithComponent<InventoryItemReference>(Accessor, tile);
         if (groundInventoryEntity == Entity.Null)
@@ -214,41 +221,41 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         }
 
         // Get item buffer
-        DynamicBuffer<InventoryItemReference> itemsBuffer = EntityManager.GetBuffer<InventoryItemReference>(groundInventoryEntity);
-        if (itemsBuffer.Length <= pawnInputEquipItem.ItemIndex)
+        DynamicBuffer<InventoryItemReference> groundInventory = EntityManager.GetBuffer<InventoryItemReference>(groundInventoryEntity);
+        if (groundInventory.Length <= pawnInputEquipItem.ItemIndex)
         {
             return;
         }
 
         // Get item to move
-        InventoryItemReference item = itemsBuffer[pawnInputEquipItem.ItemIndex];
+        Entity item = groundInventory[pawnInputEquipItem.ItemIndex].ItemEntity;
 
-        if(!CommonReads.IsInventoryFull(Accessor, pawn))
+        if (!CommonReads.IsInventoryFull(Accessor, pawn))
         {
             // Trying to increment stack on pawn and if succeed decrement original item on ground
-            if (CommonWrites.TryIncrementStackableItemInInventory(Accessor, pawn, item.ItemEntity, EntityManager.GetBuffer<InventoryItemReference>(pawn)))
+            if (CommonWrites.TryIncrementStackableItemInInventory(Accessor, pawn, item, EntityManager.GetBuffer<InventoryItemReference>(pawn)))
             {
-                CommonWrites.DecrementStackableItemInInventory(Accessor, groundInventoryEntity, item.ItemEntity);
+                CommonWrites.DecrementStackableItemInInventory(Accessor, groundInventoryEntity, item);
             }
             else
             {
-                // Move item from ground inventory to player's inventory
-                if (EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> pawnInventory))
+                Entity itemToGiveToPawn;
+
+                // We did not find any stackable in destination inventory, but we want to transfer only one if stackable
+                if (EntityManager.HasComponent<ItemStackableData>(item))
                 {
-                    // We did not find any stackable in destination inventory, but we want to transfer only one if stackable
-                    if (EntityManager.TryGetComponentData(item.ItemEntity, out ItemStackableData stackableData))
-                    {
-                        Entity newItemEntity = EntityManager.Instantiate(item.ItemEntity);
-                        EntityManager.SetComponentData(newItemEntity, new ItemStackableData() { Value = 1 });
-                        pawnInventory.Add(new InventoryItemReference() { ItemEntity = newItemEntity });
-                        CommonWrites.DecrementStackableItemInInventory(Accessor, groundInventoryEntity, item.ItemEntity);
-                    }
-                    else
-                    {
-                        itemsBuffer.RemoveAt(pawnInputEquipItem.ItemIndex);
-                        pawnInventory.Add(item);
-                    }
+                    itemToGiveToPawn = EntityManager.Instantiate(item);
+                    EntityManager.SetComponentData(itemToGiveToPawn, new ItemStackableData() { Value = 1 });
+                    CommonWrites.DecrementStackableItemInInventory(Accessor, groundInventoryEntity, item);
                 }
+                else
+                {
+                    groundInventory.RemoveAt(pawnInputEquipItem.ItemIndex);
+                    itemToGiveToPawn = item;
+                }
+
+                // Move item from ground inventory to player's inventory
+                EntityManager.GetBuffer<InventoryItemReference>(pawn).Add(new InventoryItemReference() { ItemEntity = itemToGiveToPawn });
             }
         }
     }
@@ -261,7 +268,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                 $"Discarding input {inputUseItem} : {str}");
         }
 
-        if(!EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if (!EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             LogDiscardReason($"Pawn has no {nameof(DynamicBuffer<InventoryItemReference>)}.");
             return;
@@ -290,7 +297,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             Entity = item
         };
 
-        if(!gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData))
+        if (!gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData))
         {
             LogDiscardReason($"Can't Trigger {gameAction}");
             return;
@@ -306,19 +313,19 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         }
 
         FixTranslation pawnPosition = EntityManager.GetComponentData<FixTranslation>(pawn);
-        fix3 interactablePosition = new fix3(inputUseInteractable.InteractablePosition.x, 
+        fix3 interactablePosition = new fix3(inputUseInteractable.InteractablePosition.x,
                                              inputUseInteractable.InteractablePosition.y,
                                              0);
 
         fix distanceBetween = fix3.DistanceSquared(pawnPosition.Value, interactablePosition);
         fix maxDistanceToInteract = (fix)1.1;
-        if(distanceBetween > maxDistanceToInteract) // range to interact, hard coded for now
+        if (distanceBetween > maxDistanceToInteract) // range to interact, hard coded for now
         {
             return;
         }
 
         Entity tile = CommonReads.GetTileEntity(Accessor, inputUseInteractable.InteractablePosition);
-        if(tile == Entity.Null)
+        if (tile == Entity.Null)
         {
             return;
         }
@@ -371,7 +378,7 @@ internal partial class CommonWrites
         input.PawnController = pawnController;
         QueuePawnControllerInput(accessor, input);
     }
-    
+
     public static void QueuePawnControllerInput(ISimWorldReadWriteAccessor accessor, PawnControllerInputBase input)
     {
         ExecutePawnControllerInputSystem system = accessor.GetOrCreateSystem<ExecutePawnControllerInputSystem>();

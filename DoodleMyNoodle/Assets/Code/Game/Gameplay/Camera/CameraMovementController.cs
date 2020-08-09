@@ -65,7 +65,7 @@ public class CameraMovementController : GameMonoBehaviour
         if (movement != Vector3.zero)
         {
             movement.Normalize();
-            transform.Translate(movement * Speed * Time.deltaTime, Space.World);
+            transform.Translate(movement * Speed * Cam.orthographicSize * Time.deltaTime, Space.World);
         }
 
         Cam.orthographicSize -= Input.mouseScrollDelta.y * ZoomSpeed;

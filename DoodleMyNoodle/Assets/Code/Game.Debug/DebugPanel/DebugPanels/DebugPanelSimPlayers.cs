@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class DebugPanelSimPlayers : DebugPanel
 {
-    public override string title => "Sim Players";
+    public override string Title => "Sim Players";
 
-    public override bool canBeDisplayed => GameMonoBehaviourHelpers.GetSimulationWorld() != null;
+    public override bool CanBeDisplayed => GameMonoBehaviourHelpers.GetSimulationWorld() != null;
 
     List<Entity> _cachedPlayers = new List<Entity>();
 

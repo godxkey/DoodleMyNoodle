@@ -130,6 +130,56 @@ public static class StaticNetSerializer_NetMessageExample
         ArrayNetSerializer_System_Int32.NetDeserialize(ref obj.listOnInts, reader);
     }
 }
+public static class StaticNetSerializer_NetMessagePlayerAssets
+{
+    public static int GetNetBitSize(ref NetMessagePlayerAssets obj)
+    {
+        int result = 0;
+        result += ArrayNetSerializer_NetMessagePlayerAssets_Data.GetNetBitSize(ref obj.Assets);
+        return result;
+    }
+
+    public static void NetSerialize(ref NetMessagePlayerAssets obj, BitStreamWriter writer)
+    {
+        ArrayNetSerializer_NetMessagePlayerAssets_Data.NetSerialize(ref obj.Assets, writer);
+    }
+
+    public static void NetDeserialize(ref NetMessagePlayerAssets obj, BitStreamReader reader)
+    {
+        ArrayNetSerializer_NetMessagePlayerAssets_Data.NetDeserialize(ref obj.Assets, reader);
+    }
+}
+public static class StaticNetSerializer_NetMessagePlayerAssets_Data
+{
+    public static int GetNetBitSize(ref NetMessagePlayerAssets.Data obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_System_Guid.GetNetBitSize(ref obj.Guid);
+        result += StaticNetSerializer_System_Byte.GetNetBitSize();
+        result += StaticNetSerializer_System_String.GetNetBitSize(ref obj.Author);
+        result += StaticNetSerializer_System_DateTime.GetNetBitSize(ref obj.UtcCreationTime);
+        result += ArrayNetSerializer_System_Byte.GetNetBitSize(ref obj.AssetData);
+        return result;
+    }
+
+    public static void NetSerialize(ref NetMessagePlayerAssets.Data obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_System_Guid.NetSerialize(ref obj.Guid, writer);
+        StaticNetSerializer_System_Byte.NetSerialize((System.Byte)obj.Type, writer);
+        StaticNetSerializer_System_String.NetSerialize(ref obj.Author, writer);
+        StaticNetSerializer_System_DateTime.NetSerialize(ref obj.UtcCreationTime, writer);
+        ArrayNetSerializer_System_Byte.NetSerialize(ref obj.AssetData, writer);
+    }
+
+    public static void NetDeserialize(ref NetMessagePlayerAssets.Data obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_System_Guid.NetDeserialize(ref obj.Guid, reader);
+        obj.Type = (PlayerAssetType)StaticNetSerializer_System_Byte.NetDeserialize(reader);
+        StaticNetSerializer_System_String.NetDeserialize(ref obj.Author, reader);
+        StaticNetSerializer_System_DateTime.NetDeserialize(ref obj.UtcCreationTime, reader);
+        ArrayNetSerializer_System_Byte.NetDeserialize(ref obj.AssetData, reader);
+    }
+}
 public static class StaticNetSerializer_NetMessagePlayerIdAssignment
 {
     public static int GetNetBitSize(ref NetMessagePlayerIdAssignment obj)
@@ -549,6 +599,50 @@ public static class StaticNetSerializer_TestMessageDog
         StaticNetSerializer_System_Boolean.NetDeserialize(ref obj.isAGoodBoy, reader);
         StaticNetSerializer_System_String.NetDeserialize(ref obj.name, reader);
         StaticNetSerializer_TestMessageAnimal.NetDeserialize(obj, reader);
+    }
+}
+
+public static class ArrayNetSerializer_NetMessagePlayerAssets_Data
+{
+    public static int GetNetBitSize(ref NetMessagePlayerAssets.Data[] obj)
+    {
+        if (obj == null)
+            return 1;
+        int result = 1 + sizeof(Int32) * 8;
+        for (int i = 0; i < obj.Length; i++)
+        {
+            result += StaticNetSerializer_NetMessagePlayerAssets_Data.GetNetBitSize(ref obj[i]);
+        }
+        return result;
+    }
+
+    public static void NetSerialize(ref NetMessagePlayerAssets.Data[] obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        writer.WriteInt32(obj.Length);
+        for (int i = 0; i < obj.Length; i++)
+        {
+            StaticNetSerializer_NetMessagePlayerAssets_Data.NetSerialize(ref obj[i], writer);
+        }
+    }
+
+    public static void NetDeserialize(ref NetMessagePlayerAssets.Data[] obj, BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            obj = null;
+            return;
+        }
+        obj = new NetMessagePlayerAssets.Data[reader.ReadInt32()];
+        for (int i = 0; i < obj.Length; i++)
+        {
+            StaticNetSerializer_NetMessagePlayerAssets_Data.NetDeserialize(ref obj[i], reader);
+        }
     }
 }
 

@@ -20,12 +20,14 @@ public abstract class SessionInterface : IDisposable
     public ReadOnlyList<INetworkInterfaceConnection> Connections => _networkInterface.Connections;
     public ReadOnlyList<CoroutineOperation> IncomingDataTransfers => _incomingDataTransfers.AsReadOnlyNoAlloc();
     public ReadOnlyList<CoroutineOperation> OutgoingDataTransfer => _outgoingDataTransfers.AsReadOnlyNoAlloc();
+    
+    public delegate void ConnectionChangeDelegate(INetworkInterfaceConnection connection);
+    public event ConnectionChangeDelegate OnConnectionAdded;
+    public event ConnectionChangeDelegate OnConnectionRemoved;
     public event Action OnTerminate;
-    public event Action<INetworkInterfaceConnection> OnConnectionAdded;
-    public event Action<INetworkInterfaceConnection> OnConnectionRemoved;
     public event Action<CoroutineOperation, INetworkInterfaceConnection> OnBeginReceiveLargeDataTransfer;
-    internal NetworkInterface NetworkInterface => _networkInterface;
 
+    internal NetworkInterface NetworkInterface => _networkInterface;
 
     public SessionInterface(NetworkInterface networkInterface)
     {
@@ -60,7 +62,9 @@ public abstract class SessionInterface : IDisposable
         _incomingDataTransfers.RemoveAll((x) => !x.IsRunning);
     }
 
-    public void RegisterNetMessageReceiver<NetMessageType>(Action<NetMessageType, INetworkInterfaceConnection> callback)
+    public delegate void NetMessageReceiverDelegate<T>(T netMessage, INetworkInterfaceConnection source);
+
+    public void RegisterNetMessageReceiver<NetMessageType>(NetMessageReceiverDelegate<NetMessageType> callback)
     {
         if (Disposed)
             return;
@@ -75,7 +79,7 @@ public abstract class SessionInterface : IDisposable
         _netMessageReceivers[t].AddListener(callback);
     }
 
-    public void UnregisterNetMessageReceiver<NetMessageType>(Action<NetMessageType, INetworkInterfaceConnection> callback)
+    public void UnregisterNetMessageReceiver<NetMessageType>(NetMessageReceiverDelegate<NetMessageType> callback)
     {
         if (Disposed)
             return;
@@ -227,16 +231,16 @@ public abstract class SessionInterface : IDisposable
 
     protected class NetMessageReceiverList<NetMessageType> : NetMessageReceiverList
     {
-        public List<Action<NetMessageType, INetworkInterfaceConnection>> Listeners = new List<Action<NetMessageType, INetworkInterfaceConnection>>();
+        public List<NetMessageReceiverDelegate<NetMessageType>> Listeners = new List<NetMessageReceiverDelegate<NetMessageType>>();
 
         public override void AddListener(object callback)
         {
-            Listeners.Add((Action<NetMessageType, INetworkInterfaceConnection>)callback);
+            Listeners.Add((NetMessageReceiverDelegate<NetMessageType>)callback);
         }
 
         public override void RemoveListener(object callback)
         {
-            Listeners.Remove((Action<NetMessageType, INetworkInterfaceConnection>)callback);
+            Listeners.Remove((NetMessageReceiverDelegate<NetMessageType>)callback);
         }
 
         public override void OnReceive(object netMessage, INetworkInterfaceConnection source)

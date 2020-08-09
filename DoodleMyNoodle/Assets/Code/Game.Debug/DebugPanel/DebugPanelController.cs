@@ -36,28 +36,28 @@ public class DebugPanelController
 
             GUILayout.BeginArea(new Rect(Vector2.zero, new Vector2(350, Screen.height)));
 
-            DebugPanel[] panels = DebugPanelRegistry.s_registeredPanels;
+            DebugPanel[] panels = DebugPanelRegistry.RegisteredPanels;
 
             for (int i = 0; i < panels.Length; i++)
             {
-                if (panels[i].canBeDisplayed)
+                if (panels[i].CanBeDisplayed)
                 {
-                    if (!panels[i].isDisplayed)
+                    if (!panels[i].IsDisplayed)
                     {
-                        panels[i].isDisplayed = true;
+                        panels[i].IsDisplayed = true;
                         panels[i].OnStartDisplay();
                     }
 
-                    GUILayout.Label(panels[i].title, DebugPanelStyles.title);
+                    GUILayout.Label(panels[i].Title, DebugPanelStyles.title);
                     panels[i].OnGUI();
                     GUILayout.Space(12);
                     GUI.color = stdColor;
                 }
                 else
                 {
-                    if (panels[i].isDisplayed)
+                    if (panels[i].IsDisplayed)
                     {
-                        panels[i].isDisplayed = false;
+                        panels[i].IsDisplayed = false;
                         panels[i].OnStopDisplay();
                     }
                 }
