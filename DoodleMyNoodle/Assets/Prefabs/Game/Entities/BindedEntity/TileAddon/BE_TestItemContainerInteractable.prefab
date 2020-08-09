@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2001062058160152561}
   - component: {fileID: 2001062058160152558}
   m_Layer: 0
-  m_Name: BE_ItemContainerInteractable
+  m_Name: BE_TestItemContainerInteractable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
