@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngineX;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
 public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     public int Size = 6;
+    public bool IsRandom = false;
 
     public List<GameObject> InitialItems = new List<GameObject>();
 
@@ -20,8 +22,14 @@ public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
 
         DynamicBuffer<StartingInventoryItem> startingInventory = dstManager.AddBuffer<StartingInventoryItem>(entity);
 
+        if (IsRandom)
+            InitialItems.Shuffle();
+
         foreach (GameObject itemGO in InitialItems)
         {
+            if (startingInventory.Length >= Size)
+                break;
+
             startingInventory.Add(new StartingInventoryItem() { ItemEntityPrefab = conversionSystem.GetPrimaryEntity(itemGO) });
         }
     }
