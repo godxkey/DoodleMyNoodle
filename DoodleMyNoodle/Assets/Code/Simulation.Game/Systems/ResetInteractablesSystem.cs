@@ -24,8 +24,21 @@ public class ResetInteractablesSystem : SimComponentSystem
                 }
                 else
                 {
+                    bool shouldResetInteractable = true;
+                    if (Accessor.HasComponent<Timer>(interactable))
+                    {
+                        shouldResetInteractable = false;
+                        Timer currentInteractableTimer = Accessor.GetComponentData<Timer>(interactable);
+                        if (currentInteractableTimer.Value <= 0)
+                        {
+                            Accessor.SetComponentData(interactable, new Timer() { Value = (fix)interactableData.Delay, CanCountdown = false });
+                            shouldResetInteractable = true;
+                        }
+                    }
+
                     // can be interacted again, reset as not interacted
-                    Accessor.SetComponentData(interactable, new Interacted() { Value = false });
+                    if (shouldResetInteractable) 
+                        Accessor.SetComponentData(interactable, new Interacted() { Value = false });
                 }
             }
         });

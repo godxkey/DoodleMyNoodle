@@ -17,6 +17,12 @@ public class GameActionInteract : GameAction
 
     public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
     {
+        if (accessor.HasComponent<Timer>(context.Entity))
+        {
+            Timer interactableTimer = accessor.GetComponentData<Timer>(context.Entity);
+            accessor.SetComponentData(context.Entity, new Timer() { Value = interactableTimer.Value, CanCountdown = true });
+        }
+
         accessor.SetOrAddComponentData(context.Entity, new Interacted() { Value = true });
     }
 }
