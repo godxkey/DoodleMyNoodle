@@ -187,7 +187,6 @@ public class HighlightService : MonoCoreService<HighlightService>
 
     private void PutInPool(HighlightElement element)
     {
-        Log.Method(element.gameObject.name);
         _activeHighlights.Remove(element);
 
         element.transform.SetParent(null);
