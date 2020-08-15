@@ -24,6 +24,25 @@ public class HighlightService : MonoCoreService<HighlightService>
         High
     }
 
+    [Serializable]
+    public struct Params
+    {
+        public Duration Duration;
+        public FlickerSpeed FlickerSpeed;
+        public Intensity Intensity;
+        public Color Color;
+
+        public Params(Duration duration, FlickerSpeed flickerSpeed, Intensity intensity, Color color)
+        {
+            Duration = duration;
+            FlickerSpeed = flickerSpeed;
+            Intensity = intensity;
+            Color = color;
+        }
+
+        public static Params Default => new Params(Duration.Short, FlickerSpeed.Fast, Intensity.High, Color.white);
+    }
+
     [SerializeField] private HighlightElement _highlightPrefab;
     [SerializeField] private float _fastLoopDuration = 0.75f;
     [SerializeField] private float _slowLoopDuration = 1.5f;
@@ -55,13 +74,16 @@ public class HighlightService : MonoCoreService<HighlightService>
         base.OnDestroy();
     }
 
-    public static void HighlightSprite(SpriteRenderer spriteRenderer, Duration duration = Duration.Short, FlickerSpeed flickerSpeed = FlickerSpeed.Fast, Intensity intensity = Intensity.Normal)
-        => Instance.HighlightSpriteInternal(spriteRenderer, duration, flickerSpeed, intensity);
+    public static void HighlightSprite(SpriteRenderer spriteRenderer)
+        => Instance.HighlightSpriteInternal(spriteRenderer, Params.Default);
+
+    public static void HighlightSprite(SpriteRenderer spriteRenderer, Params param)
+        => Instance.HighlightSpriteInternal(spriteRenderer, param);
 
     public static void StopHighlight(SpriteRenderer spriteRenderer)
         => Instance.StopHighlightInternal(spriteRenderer);
 
-    private void HighlightSpriteInternal(SpriteRenderer spriteRenderer, Duration duration, FlickerSpeed flickerSpeed, Intensity intensity)
+    private void HighlightSpriteInternal(SpriteRenderer spriteRenderer, Params param)
     {
         if (spriteRenderer == null)
             return;
@@ -74,12 +96,13 @@ public class HighlightService : MonoCoreService<HighlightService>
         tr.localScale = Vector3.one;
 
         newHighlight.SetSprite(spriteRenderer.sprite);
+        newHighlight.SetColor(param.Color);
         newHighlight.OnDestroyAction = OnHighlightDestroyed;
         newHighlight.OnCompleteAction = PutInPool;
         newHighlight.Target = spriteRenderer;
 
         float intensityValue;
-        switch (intensity)
+        switch (param.Intensity)
         {
             default:
             case Intensity.Normal:
@@ -91,7 +114,7 @@ public class HighlightService : MonoCoreService<HighlightService>
         }
 
         float loopDuration;
-        switch (flickerSpeed)
+        switch (param.FlickerSpeed)
         {
             default:
             case FlickerSpeed.Slow:
@@ -102,7 +125,7 @@ public class HighlightService : MonoCoreService<HighlightService>
                 break;
         }
 
-        switch (duration)
+        switch (param.Duration)
         {
             case Duration.Short:
                 newHighlight.Play(intensityValue, loopDuration, _shortLoops);
@@ -148,9 +171,14 @@ public class HighlightService : MonoCoreService<HighlightService>
         HighlightElement element;
 
         if (_highlightPool.Count > 0)
+        {
             element = _highlightPool.Pop();
+            element.gameObject.SetActive(true);
+        }
         else
+        {
             element = Instantiate(_highlightPrefab);
+        }
 
         _activeHighlights.Add(element);
 
@@ -159,6 +187,7 @@ public class HighlightService : MonoCoreService<HighlightService>
 
     private void PutInPool(HighlightElement element)
     {
+        Log.Method(element.gameObject.name);
         _activeHighlights.Remove(element);
 
         element.transform.SetParent(null);

@@ -45,6 +45,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _highlightPrefab: {fileID: 3794967395015344377, guid: 2e5cccf73ce95dc47a8628e7026cc99b,
     type: 3}
-  _loopDuration: 0.75
-  _loops: 3
-  _intensity: 1
+  _fastLoopDuration: 0.5
+  _slowLoopDuration: 1.25
+  _longLoops: 6
+  _shortLoops: 3
+  _normalIntensity: 0.75
+  _highIntensity: 1.5

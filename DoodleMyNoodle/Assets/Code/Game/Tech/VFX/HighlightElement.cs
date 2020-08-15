@@ -6,7 +6,8 @@ using UnityEngine.Experimental.Rendering.Universal;
 
 public class HighlightElement : MonoBehaviour
 {
-    [SerializeField] private Light2D _light;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private SpriteLight _lightParams;
 
     private Tween _tween;
 
@@ -17,7 +18,12 @@ public class HighlightElement : MonoBehaviour
 
     public void SetSprite(Sprite sprite)
     {
-        SetLightSprite(_light, sprite);
+        _spriteRenderer.sprite = sprite;
+    }
+
+    public void SetColor(Color color)
+    {
+        _spriteRenderer.color = color;
     }
 
     public void Play(float intensity, float loopDuration)
@@ -37,8 +43,10 @@ public class HighlightElement : MonoBehaviour
             _tween.Kill();
         }
 
-        _tween = DOTween.To(() => _light.intensity, (x) => _light.intensity = x, intensity, loopDuration / 2f)
+        _lightParams.Intensity = 0;
+        _tween = DOTween.To(() => _lightParams.Intensity, (x) => _lightParams.Intensity = x, intensity, loopDuration / 2f)
             .SetLoops(demiLoops, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine)
             .OnComplete(() => OnCompleteAction?.Invoke(this));
     }
 
@@ -51,16 +59,5 @@ public class HighlightElement : MonoBehaviour
     {
         _tween.Kill();
         OnDestroyAction?.Invoke(this);
-    }
-
-
-    private static FieldInfo s_lightCookieSpriteMember;
-    private static void SetLightSprite(Light2D light, Sprite sprite)
-    {
-        if (s_lightCookieSpriteMember == null)
-        {
-            s_lightCookieSpriteMember = typeof(Light2D).GetField("m_LightCookieSprite", BindingFlags.NonPublic | BindingFlags.Instance);
-        }
-        s_lightCookieSpriteMember.SetValue(light, sprite);
     }
 }

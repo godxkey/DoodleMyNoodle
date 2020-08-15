@@ -9,26 +9,18 @@ public class SpriteLightEditor : Editor
 {
     public enum BlendMode
     {
-        Add,
-        Multiply
+        Add
     }
 
-    const string ASSET_PATH_MULT = "Assets/Materials/Generated/MAT_SpriteLight_Mult.mat";
-    const string ASSET_PATH_ADD = "Assets/Materials/Generated/MAT_SpriteLight_Add.mat";
-    const string SHADER_NAME_MULT = "CCC/Sprite-Light-Multiply";
-    const string SHADER_NAME_ADD = "CCC/Sprite-Light-Add";
+    const string ASSET_PATH_ADD = "Assets/Materials/Generated/MAT_SpriteLight.mat";
+    const string SHADER_NAME_ADD = "CCC/Sprite-Light";
 
-    private Shader _shaderMult;
     private Shader _shaderAdd;
 
 
     private void OnEnable()
     {
-        _shaderMult = Shader.Find(SHADER_NAME_MULT);
         _shaderAdd = Shader.Find(SHADER_NAME_ADD);
-
-        if (_shaderMult == null)
-            throw new Exception($"Shader {SHADER_NAME_MULT} could not be found.");
 
         if (_shaderAdd == null)
             throw new Exception($"Shader {SHADER_NAME_ADD} could not be found.");
@@ -46,8 +38,6 @@ public class SpriteLightEditor : Editor
             currentblendMode = BlendMode.Add;
         }
 
-        // Multiply not supported in 2D renderer yet :(
-        //var newBlendMode = (BlendMode)EditorGUILayout.EnumPopup("Mode", currentblendMode.Value); 
         var newBlendMode = BlendMode.Add;
 
         if (newBlendMode != currentblendMode)
@@ -68,10 +58,6 @@ public class SpriteLightEditor : Editor
                 shader = _shaderAdd;
                 assetPath = ASSET_PATH_ADD;
                 break;
-            case BlendMode.Multiply:
-                shader = _shaderMult;
-                assetPath = ASSET_PATH_MULT;
-                break;
         }
 
         Material material = AssetDatabaseX.LoadOrCreateAsset(assetPath, () =>
@@ -90,8 +76,6 @@ public class SpriteLightEditor : Editor
 
         if (spriteRenderer.sharedMaterial?.shader == _shaderAdd)
             return BlendMode.Add;
-        else if (spriteRenderer.sharedMaterial?.shader == _shaderMult)
-            return BlendMode.Multiply;
 
         return null;
     }
