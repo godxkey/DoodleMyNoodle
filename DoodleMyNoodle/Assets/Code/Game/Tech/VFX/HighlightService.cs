@@ -24,6 +24,12 @@ public class HighlightService : MonoCoreService<HighlightService>
         High
     }
 
+    public enum AnimStart
+    {
+        NoHighlight,
+        MidHighlight
+    }
+
     [Serializable]
     public struct Params
     {
@@ -31,16 +37,18 @@ public class HighlightService : MonoCoreService<HighlightService>
         public FlickerSpeed FlickerSpeed;
         public Intensity Intensity;
         public Color Color;
+        public AnimStart AnimStart;
 
-        public Params(Duration duration, FlickerSpeed flickerSpeed, Intensity intensity, Color color)
+        public Params(Duration duration, FlickerSpeed flickerSpeed, Intensity intensity, Color color, AnimStart animStart)
         {
             Duration = duration;
             FlickerSpeed = flickerSpeed;
             Intensity = intensity;
             Color = color;
+            AnimStart = animStart;
         }
 
-        public static Params Default => new Params(Duration.Short, FlickerSpeed.Fast, Intensity.High, Color.white);
+        public static Params Default => new Params(Duration.Short, FlickerSpeed.Fast, Intensity.High, Color.white, AnimStart.NoHighlight);
     }
 
     [SerializeField] private HighlightElement _highlightPrefab;
@@ -86,7 +94,10 @@ public class HighlightService : MonoCoreService<HighlightService>
     private void HighlightSpriteInternal(SpriteRenderer spriteRenderer, Params param)
     {
         if (spriteRenderer == null)
+        {
+            Log.Error($"{nameof(spriteRenderer)} is null.");
             return;
+        }
 
         HighlightElement newHighlight = TakeFromPool();
         Transform tr = newHighlight.transform;
@@ -124,17 +135,19 @@ public class HighlightService : MonoCoreService<HighlightService>
                 loopDuration = _fastLoopDuration;
                 break;
         }
+        
+        bool startMidway = param.AnimStart == AnimStart.MidHighlight;
 
         switch (param.Duration)
         {
             case Duration.Short:
-                newHighlight.Play(intensityValue, loopDuration, _shortLoops);
+                newHighlight.Play(intensityValue, loopDuration, _shortLoops, startMidway);
                 break;
             case Duration.Long:
-                newHighlight.Play(intensityValue, loopDuration, _longLoops);
+                newHighlight.Play(intensityValue, loopDuration, _longLoops, startMidway);
                 break;
             case Duration.UntilManuallyStopped:
-                newHighlight.Play(intensityValue, loopDuration);
+                newHighlight.Play(intensityValue, loopDuration, startMidway);
                 break;
         }
     }

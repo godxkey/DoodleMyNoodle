@@ -5,7 +5,7 @@ using UnityEngineX;
 
 public class ItemContainerInteractableByClick : ObjectInteractableByClick
 {
-    protected override void InteractionTriggeredByInput()
+    protected override void OnInteractionTriggeredByInput()
     {
         InteractableInventoryDisplaySystem.Instance.SetupDisplayForInventory(SimEntity);
     }

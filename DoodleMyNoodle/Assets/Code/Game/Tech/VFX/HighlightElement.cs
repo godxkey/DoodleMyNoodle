@@ -26,25 +26,29 @@ public class HighlightElement : MonoBehaviour
         _spriteRenderer.color = color;
     }
 
-    public void Play(float intensity, float loopDuration)
+    public void Play(float intensity, float loopDuration, bool startMidWay)
     {
-        PlayInternal(intensity, loopDuration, -1);
+        PlayInternal(intensity, loopDuration, -1, startMidWay);
     }
 
-    public void Play(float intensity, float loopDuration, int loops)
+    public void Play(float intensity, float loopDuration, int loops, bool startMidWay)
     {
-        PlayInternal(intensity, loopDuration, loops * 2);
+        PlayInternal(intensity, loopDuration, loops * 2, startMidWay);
     }
 
-    private void PlayInternal(float intensity, float loopDuration, int demiLoops)
+    private void PlayInternal(float intensity, float loopDuration, int demiLoops, bool startMidWay)
     {
         if (_tween != null && _tween.IsActive())
         {
             _tween.Kill();
         }
 
-        _lightParams.Intensity = 0;
-        _tween = DOTween.To(() => _lightParams.Intensity, (x) => _lightParams.Intensity = x, intensity, loopDuration / 2f)
+        float start = startMidWay ? intensity : 0;
+        float end = startMidWay ? 0 : intensity;
+
+        _lightParams.Intensity = start;
+
+        _tween = DOTween.To(() => _lightParams.Intensity, (x) => _lightParams.Intensity = x, end, loopDuration / 2f)
             .SetLoops(demiLoops, LoopType.Yoyo)
             .SetEase(Ease.InOutSine)
             .OnComplete(() => OnCompleteAction?.Invoke(this));

@@ -6,53 +6,47 @@ using UnityEngineX;
 
 public class ObjectInteractableByClick : BindedPresentationEntityComponent
 {
-    [SerializeField] private GameObject _outline;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
 
     private bool _previousInteractedState = false;
-    
+    private bool _highlighted = false;
+
     protected override void OnGamePresentationUpdate() { }
 
     public override void OnPostSimulationTick()
     {
-        Entity InteractableEntity = SimEntity;
-        if (InteractableEntity != Entity.Null)
+        if (SimWorld.TryGetComponentData(SimEntity, out Interacted interacted))
         {
-            if (SimWorld.TryGetComponentData(InteractableEntity, out Interacted interactedData))
+            if (interacted != _previousInteractedState)
             {
-                if (interactedData.Value != _previousInteractedState)
+                if (interacted)
                 {
-                    if (interactedData.Value)
-                    {
-                        _outline.SetActive(false);
-
-                        InteractionTriggeredByInput();
-                    }
-                    else
-                    {
-                        InteractionReset();
-                    }
-
-                    _previousInteractedState = interactedData.Value;
+                    OnInteractionTriggeredByInput();
                 }
+
+                _previousInteractedState = interacted.Value;
+            }
+
+            if (interacted)
+            {
+                SetHighlighted(false);
             }
         }
     }
 
-    protected virtual void InteractionTriggeredByInput() { }
-
-    protected virtual void InteractionReset() { }
+    protected virtual void OnInteractionTriggeredByInput() { }
 
     private void OnMouseOver()
     {
         if (CanTrigger())
         {
-            _outline.SetActive(true);
+            SetHighlighted(true);
         }
     }
 
     private void OnMouseExit()
     {
-        _outline.SetActive(false);
+        SetHighlighted(false);
     }
 
     private void OnMouseDown()
@@ -68,15 +62,39 @@ public class ObjectInteractableByClick : BindedPresentationEntityComponent
         }
     }
 
+    private void SetHighlighted(bool highlighted)
+    {
+        if (_highlighted == highlighted)
+            return;
+
+        _highlighted = highlighted;
+
+        if (highlighted)
+        {
+            HighlightService.Params args = HighlightService.Params.Default;
+
+            args.Duration = HighlightService.Duration.Long;
+            args.FlickerSpeed = HighlightService.FlickerSpeed.Slow;
+            args.Intensity = HighlightService.Intensity.Normal;
+            args.AnimStart = HighlightService.AnimStart.MidHighlight;
+
+            HighlightService.HighlightSprite(_spriteRenderer, args);
+        }
+        else
+        {
+            HighlightService.StopHighlight(_spriteRenderer);
+        }
+    }
+
     private bool CanTrigger()
     {
         Entity interactable = SimEntity;
-        if(interactable == Entity.Null)
+        if (!SimWorld.Exists(interactable))
         {
             return false;
         }
 
-        if(SimWorld.TryGetComponentData(interactable, out Interactable interactableData))
+        if (SimWorld.TryGetComponentData(interactable, out Interactable interactableData))
         {
             if (SimWorld.TryGetComponentData(interactable, out Interacted interactedData))
             {
@@ -92,5 +110,4 @@ public class ObjectInteractableByClick : BindedPresentationEntityComponent
             return false;
         }
     }
-
 }
