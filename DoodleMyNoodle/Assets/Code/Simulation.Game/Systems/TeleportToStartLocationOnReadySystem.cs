@@ -10,14 +10,14 @@ public class TeleportToStartLocationOnReadySystem : SimComponentSystem
     protected override void OnUpdate()
     {
         // How many player in game ?
-        int playerAmount = 0;
+        List<Entity> players = new List<Entity>();
         Entities
         .WithAll<PlayerTag>()
-        .ForEach((ref Active isActive) =>
+        .ForEach((Entity player, ref Active isActive) =>
         {
             if (isActive)
             {
-                playerAmount++;
+                players.Add(player);
             }
         });
 
@@ -35,7 +35,7 @@ public class TeleportToStartLocationOnReadySystem : SimComponentSystem
         });
 
         // Teleport to start location if not already done
-        if ((playerAmount > 0) && (playerAmount == playerReadyAmount) && !HasSingleton<ScenarioHasStarted>())
+        if ((players.Count > 0) && (players.Count == playerReadyAmount) && !HasSingleton<ScenarioHasStarted>())
         {
             // Get Teleport Location
             List<fix3> teleportLocation = new List<fix3>();
@@ -46,21 +46,17 @@ public class TeleportToStartLocationOnReadySystem : SimComponentSystem
                 teleportLocation.Add(translation.Value);
             });
 
-            if (teleportLocation.Count < playerAmount)
+            if (teleportLocation.Count < players.Count)
             {
                 Log.Error("Not Enough Start Location in the level");
                 return;
             }
 
-            int index = 0;
-            teleportLocation.Shuffle();
-            Entities
-            .WithAll<ControllableTag>()
-            .ForEach((Entity entity, ref FixTranslation translation) =>
+            World.Random().Shuffle(teleportLocation);
+            for (int i = 0; i < players.Count; i++)
             {
-                EntityManager.SetComponentData(entity, new FixTranslation() { Value = teleportLocation[index] });
-                index++;
-            });
+                EntityManager.SetComponentData(players[i], new FixTranslation() { Value = teleportLocation[i] });
+            }
 
             EntityManager.CreateEntity(typeof(ScenarioHasStarted));
         }
