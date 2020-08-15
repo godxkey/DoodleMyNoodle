@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngineX;
 
@@ -25,4 +25,4 @@ namespace CCC.ConfigVarInterals
             ConfigVars.Add(cvar.name, cvar);
         }
     }
-}
+}*/

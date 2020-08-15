@@ -18,9 +18,9 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
     
     protected override void OnGamePresentationUpdate() { }
 
-    public override void OnSafeDestroy()
+    protected override void OnDestroy()
     {
-        base.OnSafeDestroy();
+        base.OnDestroy();
 
         for (int i = 0; i < _highlights.Count; i++)
         {

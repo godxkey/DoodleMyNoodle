@@ -23,13 +23,13 @@ MonoBehaviour:
     customBlendFactors:
       multiplicative: 0
       additive: 0
-  - enabled: 0
-    name: Blend Style 1
+  - enabled: 1
+    name: Add
     maskTextureChannel: 0
     renderTextureScale: 1
-    blendMode: 1
+    blendMode: 0
     customBlendFactors:
-      multiplicative: 0
+      multiplicative: 0.26
       additive: 0
   - enabled: 0
     name: Blend Style 2

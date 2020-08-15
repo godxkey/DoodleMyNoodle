@@ -71,8 +71,10 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
         Internal_OnGameReady();
     }
 
-    public override void OnSafeDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
+
         if(SessionInterface != null)
         {
             UnbindFromSession();

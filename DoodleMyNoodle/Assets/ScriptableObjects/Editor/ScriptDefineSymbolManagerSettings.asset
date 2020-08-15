@@ -22,6 +22,7 @@ MonoBehaviour:
     - BOLT_CLOUD
     - UNITY_X_LOG_ASSERT
     - UNITY_X_LOG_ERROR
+    - UNITY_X_LOG_METHOD
   - Name: Release
     Symbols:
     - UNITY_X_LOG_ERROR

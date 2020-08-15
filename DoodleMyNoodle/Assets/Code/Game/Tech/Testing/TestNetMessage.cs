@@ -16,9 +16,9 @@ public class TestNetMessage : GameMonoBehaviour
         }
     }
 
-    public override void OnSafeDestroy()
+    protected override void OnDestroy()
     {
-        base.OnSafeDestroy();
+        base.OnDestroy();
 
         SessionInterface sessionInterface = OnlineService.OnlineInterface?.SessionInterface;
         if (sessionInterface != null)
