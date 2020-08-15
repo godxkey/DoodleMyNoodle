@@ -5,7 +5,6 @@ using GameConsoleInterals;
 using UnityEngineX;
 using System.Collections.Concurrent;
 using System.Reflection;
-using CCC.ConfigVarInterals;
 
 public class GameConsole
 {
@@ -209,22 +208,22 @@ public class GameConsole
                 Log.Warning($"'{invokableName}' is disabled.");
             }
         }
-        else if (ConfigVarService.Instance.configVarRegistry.ConfigVars.TryGetValue(invokableName, out ConfigVarBase configVar))
-        {
-            if (tokens.Count == 2)
-            {
-                configVar.Value = tokens[1];
-            }
-            else if (tokens.Count == 1)
-            {
-                // Print value
-                OutputString(string.Format("{0} = {1}", configVar.name, configVar.Value), LineColor.Normal);
-            }
-            else
-            {
-                OutputString("Too many arguments", LineColor.Warning);
-            }
-        }
+        //else if (ConfigVarService.Instance.configVarRegistry.ConfigVars.TryGetValue(invokableName, out ConfigVarBase configVar))
+        //{
+        //    if (tokens.Count == 2)
+        //    {
+        //        configVar.Value = tokens[1];
+        //    }
+        //    else if (tokens.Count == 1)
+        //    {
+        //        // Print value
+        //        OutputString(string.Format("{0} = {1}", configVar.name, configVar.Value), LineColor.Normal);
+        //    }
+        //    else
+        //    {
+        //        OutputString("Too many arguments", LineColor.Warning);
+        //    }
+        //}
         else
         {
             OutputString("Unknown command: " + tokens[0], LineColor.Warning);
@@ -264,13 +263,13 @@ public class GameConsole
             matches.Add(name);
         }
 
-        foreach (var v in ConfigVarService.Instance.configVarRegistry.ConfigVars)
-        {
-            var name = v.Key;
-            if (!name.StartsWith(prefix, true, null))
-                continue;
-            matches.Add(name);
-        }
+        //foreach (var v in ConfigVarService.Instance.configVarRegistry.ConfigVars)
+        //{
+        //    var name = v.Key;
+        //    if (!name.StartsWith(prefix, true, null))
+        //        continue;
+        //    matches.Add(name);
+        //}
 
         if (matches.Count == 0)
             return prefix;
@@ -365,17 +364,17 @@ public class GameConsole
         }
     }
 
-    [ConsoleCommand("cvars", "Show available config-vars")]
-    static void CVars()
-    {
-        var varNames = new List<string>(ConfigVarService.Instance.configVarRegistry.ConfigVars.Keys);
-        varNames.Sort();
-        foreach (var v in varNames)
-        {
-            var cv = ConfigVarService.Instance.configVarRegistry.ConfigVars[v];
-            OutputString($"{cv.name} = {cv.Value}    // {cv.description}", LineColor.Normal);
-        }
-    }
+    //[ConsoleCommand("cvars", "Show available config-vars")]
+    //static void CVars()
+    //{
+    //    var varNames = new List<string>(ConfigVarService.Instance.configVarRegistry.ConfigVars.Keys);
+    //    varNames.Sort();
+    //    foreach (var v in varNames)
+    //    {
+    //        var cv = ConfigVarService.Instance.configVarRegistry.ConfigVars[v];
+    //        OutputString($"{cv.name} = {cv.Value}    // {cv.description}", LineColor.Normal);
+    //    }
+    //}
 
     [ConsoleCommand("exec", "Execute commands stored in a text file")]
     static void Exec(string fileName, bool silent = false)

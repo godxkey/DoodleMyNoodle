@@ -1,4 +1,4 @@
-﻿
+﻿/*
 namespace CCC.ConfigVarInterals
 {
     public abstract class ConfigVarBase
@@ -62,4 +62,4 @@ namespace CCC.ConfigVarInterals
             return true;
         }
     }
-}
+}*/

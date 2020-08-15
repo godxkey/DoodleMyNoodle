@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngineX;
@@ -26,4 +26,4 @@ namespace CCC.ConfigVarInterals
             Log.Info("saved config vars: " + filename);
         }
     }
-}
+}*/

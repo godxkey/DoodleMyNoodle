@@ -29,11 +29,6 @@ public class GameMonoBehaviour : MonoBehaviour, IElementIndexHint
         Game.RemoveLateStarter(this);
 
         s_registeredBehaviours.Remove(this);
-
-        if (ApplicationUtilityService.ApplicationIsQuitting == false)
-        {
-            OnSafeDestroy();
-        }
     }
 
     public virtual void OnGameUpdate() { }
@@ -41,5 +36,4 @@ public class GameMonoBehaviour : MonoBehaviour, IElementIndexHint
     public virtual void OnGameLateUpdate() { }
     public virtual void OnGameAwake() { }
     public virtual void OnGameStart() { }
-    public virtual void OnSafeDestroy() { }
 }

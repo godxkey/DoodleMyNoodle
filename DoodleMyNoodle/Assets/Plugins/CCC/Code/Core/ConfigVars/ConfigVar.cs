@@ -1,4 +1,4 @@
-﻿using CCC.ConfigVarInterals;
+﻿/*using CCC.ConfigVarInterals;
 
 /// <summary>
 /// Name Guideline: Separate terms by . Separate words of a term by _
@@ -24,3 +24,4 @@ public class ConfigVar : ConfigVarBase
     {
     }
 }
+*/

@@ -12,9 +12,9 @@ public class ChatSystemClient : ChatSystem
         _session.RegisterNetMessageReceiver<NetMessageChatMessage>(OnNetMessageChatMessage);
     }
 
-    public override void OnSafeDestroy()
+    protected override void OnDestroy()
     {
-        base.OnSafeDestroy();
+        base.OnDestroy();
 
         _session?.UnregisterNetMessageReceiver<NetMessageChatMessage>(OnNetMessageChatMessage);
         _session = null;

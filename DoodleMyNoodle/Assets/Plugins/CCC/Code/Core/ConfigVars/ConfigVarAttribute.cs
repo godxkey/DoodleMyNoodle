@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using CCC.ConfigVarInterals;
 
 /// <summary>
@@ -26,3 +26,4 @@ public class ConfigVarAttribute : ConfigVarBaseAttribute
     }
 
 }
+*/

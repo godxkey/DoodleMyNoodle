@@ -12,6 +12,8 @@ public class DoodleDisplay : BindedPresentationEntityComponent
     private DirtyRef<PlayerDoodleAsset> _doodleAsset;
     private Sprite _fallbackSprite = null;
 
+    public SpriteRenderer SpriteRenderer => _spriteRenderer;
+
     protected override void Awake()
     {
         base.Awake();

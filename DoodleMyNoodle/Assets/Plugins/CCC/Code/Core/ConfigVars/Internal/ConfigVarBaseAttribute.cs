@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 
 namespace CCC.ConfigVarInterals
 {
@@ -14,4 +14,4 @@ namespace CCC.ConfigVarInterals
         public int Flags => flags;
         public string Description => description;
     }
-}
+}*/

@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using UnityEngine;
 using CCC.ConfigVarInterals;
 
@@ -45,4 +45,4 @@ public class ConfigVarService : MonoCoreService<ConfigVarService>
     {
         GameConsole.EnqueueCommandNoHistory("exec " + userConfigFileName);
     }
-}
+}*/

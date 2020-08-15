@@ -187,7 +187,8 @@ public class CreateBindedViewGameObjectsSystem : ViewComponentSystem
                 GameObject gameObject = Object.Instantiate(settings.PresentationGameObjects[goIndex]);
 
                 var bindedSimEntityManaged = gameObject.GetOrAddComponent<BindedSimEntityManaged>();
-                bindedSimEntityManaged.SimEntity = bindedSimEntity.SimEntity;
+                bindedSimEntityManaged.Init(bindedSimEntity.SimEntity);
+
                 EntityManager.AddComponentObject(entity, bindedSimEntityManaged);
                 EntityManager.AddComponentObject(entity, gameObject.transform);
             }
