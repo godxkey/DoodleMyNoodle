@@ -52,10 +52,16 @@ public class TeleportToStartLocationOnReadySystem : SimComponentSystem
                 return;
             }
 
-            World.Random().Shuffle(teleportLocation);
+            FixRandom Random = World.Random();
+            Random.Shuffle(teleportLocation);
+
             for (int i = 0; i < players.Count; i++)
             {
-                EntityManager.SetComponentData(players[i], new FixTranslation() { Value = teleportLocation[i] });
+                Entity playerPawn = EntityManager.GetComponentData<ControlledEntity>(players[i]).Value;
+                if (playerPawn != Entity.Null)
+                {
+                    EntityManager.SetComponentData(playerPawn, new FixTranslation() { Value = teleportLocation[i] });
+                }
             }
 
             EntityManager.CreateEntity(typeof(ScenarioHasStarted));
