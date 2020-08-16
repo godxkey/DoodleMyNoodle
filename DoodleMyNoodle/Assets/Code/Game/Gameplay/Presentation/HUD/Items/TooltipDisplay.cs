@@ -139,7 +139,7 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
             TryAddTooltipItemDescription<ItemRangeData>(item, itemPrefab);
             TryAddTooltipItemDescription<ItemActionPointCostData>(item, itemPrefab);
             TryAddTooltipItemDescription<ItemHealthPointCostData>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemCooldownData>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemTimeCooldownData>(item, itemPrefab);
             TryAddTooltipItemDescription<ItemEffectDurationData>(item, itemPrefab);
 
             CreateTooltipItemDescription(description, Color.white);

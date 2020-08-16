@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class CameraMovementController : GameMonoBehaviour
+public class CameraMovementController : GamePresentationBehaviour
 {
     [Header("Mouse Movement Edge Trigger")]
     public float ScreenEdgeBorderThickness = 5.0f;
@@ -19,6 +19,9 @@ public class CameraMovementController : GameMonoBehaviour
     public bool EnableMovementLimits;
     public float MaxZoom;
 
+    private bool _hasTeleportedToPlayerOnGameStart = false;
+    private bool _hasTeleportedToPlayerOnGameBegin = false;
+
     [ConsoleVar("CameraMouseMovementEnabledWhenWindowed", "Enable/Disable the game camera moving when moving the mouse pointer near the edges of the screen.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
     private static bool s_mouseMovementsEnabledWindowedMode = false;
 
@@ -33,7 +36,7 @@ public class CameraMovementController : GameMonoBehaviour
         }
     }
 
-    void Update()
+    protected override void OnGamePresentationUpdate()
     {
         if (GameConsole.IsOpen())
         {
@@ -73,17 +76,33 @@ public class CameraMovementController : GameMonoBehaviour
 
         if (EnableMovementLimits == true)
         {
-            ExternalSimWorldAccessor simWorld = GameMonoBehaviourHelpers.GetSimulationWorld();
+            if (SimWorld.TryGetSingleton(out GridInfo gridInfo))
+            {
+                intRect gridRect = gridInfo.GridRect;
 
-            if (simWorld == null || !simWorld.HasSingleton<GridInfo>())
-                return;
-
-            intRect gridRect = simWorld.GetSingleton<GridInfo>().GridRect;
-
-            Vector3 cameraPostion = transform.position;
-            transform.position = new Vector3(Mathf.Clamp(cameraPostion.x, gridRect.min.x, gridRect.max.x),
-                                             Mathf.Clamp(cameraPostion.y, gridRect.min.y, gridRect.max.y),
-                                             cameraPostion.z);
+                Vector3 cameraPostion = transform.position;
+                transform.position = new Vector3(Mathf.Clamp(cameraPostion.x, gridRect.min.x, gridRect.max.x),
+                                                 Mathf.Clamp(cameraPostion.y, gridRect.min.y, gridRect.max.y),
+                                                 cameraPostion.z);
+            }
         }
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            fix3 playerPosition = SimWorld.GetComponentData<FixTranslation>(SimWorldCache.LocalPawn).Value;
+            Vector3 cameraPostion = transform.position;
+            transform.position = new Vector3((float)playerPosition.x, (float)playerPosition.y, cameraPostion.z);
+        }
+
+        if (SimWorld.HasSingleton<GameStartedTag>() && !_hasTeleportedToPlayerOnGameStart)
+        {
+            _hasTeleportedToPlayerOnGameStart = true;
+
+            fix3 playerPosition = SimWorld.GetComponentData<FixTranslation>(SimWorldCache.LocalPawn).Value;
+            Vector3 cameraPostion = transform.position;
+            transform.position = new Vector3((float)playerPosition.x, (float)playerPosition.y, cameraPostion.z);
+        }
+
+        // todo after starting zone teleport camera here
     }
 }

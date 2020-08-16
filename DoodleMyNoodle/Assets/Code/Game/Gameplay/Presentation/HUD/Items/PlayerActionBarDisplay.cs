@@ -94,7 +94,7 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
                         }
                         else
                         {
-                            _inventorySlots[itemIndex].UpdateDisplayAsUnavailable();
+                            _inventorySlots[itemIndex].UpdateDisplayAsUnavailable(item.ItemEntity);
                         }
 
                         itemIndex++;

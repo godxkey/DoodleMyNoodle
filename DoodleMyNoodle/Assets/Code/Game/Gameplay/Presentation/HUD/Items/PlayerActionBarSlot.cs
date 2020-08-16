@@ -21,6 +21,7 @@ public class PlayerActionBarSlot : ItemSlot
 {
     public TextMeshProUGUI ShortcutDisplay;
 
+    public TextMeshProUGUI UnavailableTimerText;
     public GameObject UnavailableSpriteObject;
 
     private PlayerActionBarSlotInfo _info;
@@ -42,6 +43,7 @@ public class PlayerActionBarSlot : ItemSlot
         OnItemPrimaryActionUsed = onItemPrimaryActionUsed;
         OnItemSecondaryActionUsed = onItemSecondaryActionUsed;
 
+        UnavailableTimerText.gameObject.SetActive(false);
         UnavailableSpriteObject.SetActive(false);
 
         ShortcutDisplay.text = GetPrettyName(_info.InputShortcut);
@@ -49,8 +51,25 @@ public class PlayerActionBarSlot : ItemSlot
         UpdateCurrentItemSlot(item, null, null, GamePresentationCache.Instance.LocalPawn, stacks);
     }
 
-    public void UpdateDisplayAsUnavailable()
+    public void UpdateDisplayAsUnavailable(Entity itemEntity)
     {
+        if (SimWorld.TryGetComponentData(itemEntity, out ItemCooldownTimeCounter timerCounter))
+        {
+            UnavailableSpriteObject.SetActive(true);
+            UnavailableTimerText.gameObject.SetActive(true);
+            UnavailableTimerText.text = fix.RoundToInt(timerCounter.Value).ToString();
+            return;
+        }
+
+        if (SimWorld.TryGetComponentData(itemEntity, out ItemCooldownTurnCounter turnCounter))
+        {
+            UnavailableSpriteObject.SetActive(true);
+            UnavailableTimerText.gameObject.SetActive(true);
+            UnavailableTimerText.text = fix.RoundToInt(turnCounter.Value).ToString();
+            return;
+        }
+
+        UnavailableTimerText.gameObject.SetActive(false);
         UnavailableSpriteObject.SetActive(true);
     }
 
