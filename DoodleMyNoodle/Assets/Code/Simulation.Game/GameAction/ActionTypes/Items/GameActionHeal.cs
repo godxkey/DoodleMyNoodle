@@ -24,11 +24,9 @@ public class GameActionHeal : GameAction
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description()
+            new GameActionParameterTile.Description(RANGE)
             {
-                RangeFromInstigator = RANGE,
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                IncludeSelf = true
+                RequiresAttackableEntity = true,
             }
         };
 

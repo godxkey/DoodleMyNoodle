@@ -10,13 +10,15 @@ public class GameActionSwap : GameAction
     const int AP_COST = 2;
     const int RANGE = 3;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+    public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description()
+            new GameActionParameterTile.Description(RANGE)
             {
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = RANGE
+                IncludeSelf = false,
+
+                // Can swap with any non-static actor
+                CustomTileActorPredicate = (tileActor, accessor) => !accessor.HasComponent<StaticTag>(tileActor)
             });
     }
 
@@ -55,3 +57,4 @@ public class GameActionSwap : GameAction
         }
     }
 }
+TODO: fix all items

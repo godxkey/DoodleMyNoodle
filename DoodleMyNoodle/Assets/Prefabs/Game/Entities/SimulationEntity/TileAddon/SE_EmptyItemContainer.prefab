@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 30145307963041148}
   - component: {fileID: 30145307963041147}
   - component: {fileID: 30145307963041146}
-  - component: {fileID: 30145307963041149}
   - component: {fileID: 2141080257574752491}
   - component: {fileID: -1025191853641028646}
   - component: {fileID: 5498494662151174257}
+  - component: {fileID: 4089162127439891888}
   m_Layer: 0
   m_Name: SE_EmptyItemContainer
   m_TagString: Untagged
@@ -87,20 +87,6 @@ MonoBehaviour:
         RawValue: 4294967296
     Parent: {fileID: 0}
     SiblingIndex: 0
---- !u!114 &30145307963041149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30145307963041151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 667ea73a8387b97499d5234b248ee1c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsTileNavigable: 1
-  IsTileAscendable: 0
 --- !u!114 &2141080257574752491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,6 +112,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 453c4b2c151f39243b7228f0ce379c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Size: 6
+  IsRandom: 0
   InitialItems: []
 --- !u!114 &5498494662151174257
 MonoBehaviour:
@@ -140,3 +128,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanBeInteractedOnlyOnce: 0
+--- !u!114 &4089162127439891888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30145307963041151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5e262d8f98129648ae67986145f644f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _type: 3

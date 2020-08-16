@@ -1,11 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Entities;
 using static Unity.Mathematics.math;
 using static fixMath;
 using Unity.Mathematics;
-using Unity.Collections;
-using UnityEngine.Profiling;
 
 public struct TileCollisionEventData : IComponentData
 {
@@ -38,61 +34,52 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
             ref FixTranslation translation,
             ref Velocity velocity) =>
         {
-            int2 tileDestinationPos = Helpers.GetTile(newTranslation.Value);
-            int2 currentTilePos = Helpers.GetTile(translation.Value);
+            int2 nextTile = Helpers.GetTile(newTranslation.Value);
+            int2 currentTile = Helpers.GetTile(translation.Value);
 
-            if (!tileDestinationPos.Equals(currentTilePos))
+            if (!nextTile.Equals(currentTile))
             {
-                if (!CommonReads.DoesTileRespectFilters(Accessor, CommonReads.GetTileEntity(Accessor, tileDestinationPos), TileFilterFlags.Inoccupied | TileFilterFlags.Navigable))
+                var tileFlags = EntityManager.GetComponentData<TileFlagComponent>(CommonReads.GetTileEntity(Accessor, nextTile));
+
+                if (tileFlags.IsTerrain)
                 {
+                    // collision!
+
+                    // kill velocity
+                    KillVelocityInDirection(ref velocity, dir: nextTile - currentTile);
+                    
+                    // cancel movement
+                    newTranslation.Value = translation.Value;
+
                     // create event
                     EntityManager.CreateEventEntity(new TileCollisionEventData()
                     {
                         Entity = entity,
-                        Tile = tileDestinationPos
+                        Tile = nextTile
                     });
-
-                    // cancel movement
-                    newTranslation.Value = translation.Value;
                 }
             }
         });
+    }
 
-        NativeHashMap<int2, Entity> reservedTiled = new NativeHashMap<int2, Entity>(128, Allocator.Temp);
+    private static void KillVelocityInDirection(ref Velocity velocity, int2 dir)
+    {
+        fix3 vel = velocity.Value;
+        if (dir.x > 0)
+            vel.x = min(vel.x, 0);
+        else if (dir.x < 0)
+            vel.x = max(vel.x, 0);
 
-        Entities.ForEach((Entity entity,
-            ref PotentialNewTranslation newTranslation,
-            ref FixTranslation translation,
-            ref Velocity velocity) =>
-        {
-            int2 tileDestinationPos = Helpers.GetTile(newTranslation.Value);
+        if (dir.y > 0)
+            vel.y = min(vel.y, 0);
+        else if (dir.y < 0)
+            vel.y = max(vel.y, 0);
 
-            // Already reserved
-            if (reservedTiled.ContainsKey(tileDestinationPos))
-            {
-                // create event
-                EntityManager.CreateEventEntity(new TileCollisionEventData()
-                {
-                    Entity = entity,
-                    Tile = tileDestinationPos
-                });
-
-                // cancel movement
-                int2 currentTilePos = Helpers.GetTile(translation);
-                newTranslation.Value = translation.Value;
-
-                // reserve CURRENT tile
-                reservedTiled.SetOrAdd(currentTilePos, entity);
-            }
-            else
-            {
-                // reserve NEW tile
-                reservedTiled.Add(tileDestinationPos, entity);
-            }
-        });
+        velocity.Value = vel;
     }
 }
 
+/*
 public partial class CommonReads
 {
     public static bool DoesTileRespectFilters(ISimWorldReadAccessor accessor, Entity tile, TileFilterFlags filter)
@@ -155,3 +142,4 @@ public partial class CommonReads
         return true;
     }
 }
+*/

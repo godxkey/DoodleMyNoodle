@@ -11,13 +11,13 @@ public class GameActionConvert : GameAction
     const int RANGE = 5;
     const int DURATION = 2;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+    public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description()
+            new GameActionParameterTile.Description(RANGE)
             {
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = RANGE
+                IncludeSelf = false,
+                CustomTileActorPredicate = (tileActor, accessor) => accessor.HasComponent<Team>(tileActor)
             });
     }
 

@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Collections;
@@ -321,4 +321,4 @@ public class StepPhysicsSystem : SimComponentSystem
     protected override void OnUpdate()
     {
     }
-}
+}*/

@@ -8,10 +8,10 @@ public class GameActionMeleeAttack : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description()
+            new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
             {
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = accessor.GetComponentData<ItemRangeData>(context.Entity).Value
+                IncludeSelf = false,
+                RequiresAttackableEntity = true,
             });
     }
 

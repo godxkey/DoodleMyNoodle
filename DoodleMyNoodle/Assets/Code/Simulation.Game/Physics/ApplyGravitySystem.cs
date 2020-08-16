@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
-
+/*
 public class ApplyGravitySystem : SimJobComponentSystem
 {
     protected override JobHandle OnUpdate(JobHandle inputDeps)
@@ -20,4 +20,4 @@ public class ApplyGravitySystem : SimJobComponentSystem
 
         return inputDeps;
     }
-}
+}*/

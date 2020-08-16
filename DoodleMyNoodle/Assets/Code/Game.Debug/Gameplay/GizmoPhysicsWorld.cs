@@ -4,6 +4,7 @@ using UnityEngineX;
 
 public class GizmoPhysicsWorld : MonoBehaviour
 {
+    /*
     private void OnDrawGizmos()
     {
         var simWorld = GameMonoBehaviourHelpers.GetSimulationWorld();
@@ -29,4 +30,5 @@ public class GizmoPhysicsWorld : MonoBehaviour
         var aabb = physicsBody.Aabb;
         Gizmos.DrawWireCube((Vector2)aabb.Center, (Vector2)aabb.Extents);
     }
+    */
 }

@@ -17,10 +17,10 @@ public class GameActionMove : GameAction
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description()
+            new GameActionParameterTile.Description(accessor.GetComponentData<ActionPoints>(context.InstigatorPawn))
             {
-                RangeFromInstigator = accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value,
-                Filter = TileFilterFlags.Navigable | TileFilterFlags.Inoccupied
+                IncludeSelf = false,
+                MustBeReachable = true
             }
         };
 
@@ -31,7 +31,7 @@ public class GameActionMove : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            int instigatorAP = accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value;
+            int instigatorAP = accessor.GetComponentData<ActionPoints>(context.InstigatorPawn);
             int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value).xy;
 
             NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);

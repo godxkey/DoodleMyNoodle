@@ -78,12 +78,12 @@ public class CameraMovementController : GameMonoBehaviour
             if (simWorld == null || !simWorld.HasSingleton<GridInfo>())
                 return;
 
-            intRect gridRect = simWorld.GetSingleton<GridInfo>().GridRect;
+            GridInfo gridRect = simWorld.GetSingleton<GridInfo>();
 
-            Vector3 cameraPostion = transform.position;
-            transform.position = new Vector3(Mathf.Clamp(cameraPostion.x, gridRect.min.x, gridRect.max.x),
-                                             Mathf.Clamp(cameraPostion.y, gridRect.min.y, gridRect.max.y),
-                                             cameraPostion.z);
+            Vector3 cameraPosition = transform.position;
+            transform.position = new Vector3(Mathf.Clamp(cameraPosition.x, gridRect.TileMin.x, gridRect.TileMax.x),
+                                             Mathf.Clamp(cameraPosition.y, gridRect.TileMin.y, gridRect.TileMax.y),
+                                             cameraPosition.z);
         }
     }
 }

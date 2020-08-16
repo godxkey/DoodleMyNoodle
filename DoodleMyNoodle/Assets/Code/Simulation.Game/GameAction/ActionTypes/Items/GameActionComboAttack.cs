@@ -12,17 +12,13 @@ public class GameActionComboAttack : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return new UseContract(
-            new GameActionParameterTile.Description()
-            {
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = RANGE
-            },
-            new GameActionParameterTile.Description()
-            {
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = RANGE
-            });
+        var param = new GameActionParameterTile.Description(RANGE)
+        {
+            IncludeSelf = false,
+            RequiresAttackableEntity = true
+        };
+
+        return new UseContract(param, param);
     }
 
     public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)

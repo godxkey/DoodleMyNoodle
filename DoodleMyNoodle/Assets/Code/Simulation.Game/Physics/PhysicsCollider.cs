@@ -2,7 +2,7 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-
+/*
 [Serializable]
 public struct PhysicsCollider : IComponentData
 {
@@ -11,3 +11,4 @@ public struct PhysicsCollider : IComponentData
     public PhysicsLayer CollidesWith;
     public PhysicsLayer TriggersWith;
 }
+*/

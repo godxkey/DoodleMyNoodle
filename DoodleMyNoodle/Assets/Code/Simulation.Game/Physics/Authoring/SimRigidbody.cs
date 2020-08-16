@@ -2,7 +2,7 @@ using System;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
-
+/*
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
 public class SimRigidbody : MonoBehaviour, IConvertGameObjectToEntity
@@ -57,4 +57,4 @@ public class SimRigidbody : MonoBehaviour, IConvertGameObjectToEntity
         Gizmos.DrawWireCube(transform.position, _colliderSize);
     }
 #endif
-}
+}*/
