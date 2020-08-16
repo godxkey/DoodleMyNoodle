@@ -121,6 +121,20 @@ public struct fix3 : IEquatable<fix3>
         }
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public fix2 xy
+    {
+        get
+        {
+            return new fix2(x, y);
+        }
+        set
+        {
+            x = value.x;
+            y = value.y;
+        }
+    }
+
     /// <summary>
     /// Gets a string representation of the vector.
     /// </summary>
