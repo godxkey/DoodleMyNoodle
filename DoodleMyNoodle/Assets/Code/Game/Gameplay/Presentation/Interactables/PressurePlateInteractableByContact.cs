@@ -10,12 +10,12 @@ public class PressurePlateInteractableByContact : ObjectInteractableOnContact
 
     private bool _changingToDeactivated = false;
 
-    protected override void InteractionTriggeredByInput()
+    protected override void OnInteractionTriggeredByInput()
     {
         _spriteRenderer.sprite = _activatedSprite;
     }
 
-    protected override void InteractionReset()
+    protected override void OnInteractionReset()
     {
         // Dont change the sprite if it has been reactivated again
         if (!_changingToDeactivated)

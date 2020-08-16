@@ -3,7 +3,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
-public class ObjectInteractable : BindedPresentationEntityComponent
+public class InteractableEntityView : BindedPresentationEntityComponent
 {
     protected bool _previousInteractedState = false;
 
@@ -20,11 +20,11 @@ public class ObjectInteractable : BindedPresentationEntityComponent
                 {
                     if (interactedData.Value)
                     {
-                        InteractionTriggeredByInput();
+                        OnInteractionTriggeredByInput();
                     }
                     else
                     {
-                        InteractionReset();
+                        OnInteractionReset();
                     }
 
                     _previousInteractedState = interactedData.Value;
@@ -33,9 +33,9 @@ public class ObjectInteractable : BindedPresentationEntityComponent
         }
     }
 
-    protected virtual void InteractionTriggeredByInput() { }
+    protected virtual void OnInteractionTriggeredByInput() { }
 
-    protected virtual void InteractionReset() { }
+    protected virtual void OnInteractionReset() { }
 
     protected bool CanTrigger()
     {

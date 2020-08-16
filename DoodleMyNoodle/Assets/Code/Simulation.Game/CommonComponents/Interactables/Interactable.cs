@@ -2,7 +2,7 @@ using Unity.Entities;
 
 public struct Interactable : IComponentData
 {
-    public float Range;
+    public fix Range;
     public bool OnlyOnce;
-    public float Delay;
+    public fix Delay;
 }

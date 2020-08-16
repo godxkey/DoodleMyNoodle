@@ -329,10 +329,10 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             return;
         }
 
-        float interactableDistance = Accessor.GetComponentData<Interactable>(interactableEntity).Range;
+        fix interactableDistance = Accessor.GetComponentData<Interactable>(interactableEntity).Range;
 
-        fix distanceBetween = fix3.DistanceSquared(pawnPosition.Value, interactablePosition);
-        fix maxDistanceToInteract = (fix)(interactableDistance + 0.1f);
+        fix distanceBetween = fix3.Distance(pawnPosition.Value, interactablePosition);
+        fix maxDistanceToInteract = interactableDistance + (fix)0.1;
         if (distanceBetween > maxDistanceToInteract) // range to interact, hard coded for now
         {
             return;

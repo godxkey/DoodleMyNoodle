@@ -7,17 +7,20 @@ using static Unity.Mathematics.math;
 
 public class TeleportToStartLocationOnReadySystem : SimComponentSystem
 {
+    private List<Entity> _players = new List<Entity>();
+
     protected override void OnUpdate()
     {
         // How many player in game ?
-        List<Entity> players = new List<Entity>();
+        _players.Clear();
+
         Entities
         .WithAll<PlayerTag>()
         .ForEach((Entity player, ref Active isActive) =>
         {
             if (isActive)
             {
-                players.Add(player);
+                _players.Add(player);
             }
         });
 
@@ -35,7 +38,7 @@ public class TeleportToStartLocationOnReadySystem : SimComponentSystem
         });
 
         // Teleport to start location if not already done
-        if ((players.Count > 0) && (players.Count == playerReadyAmount) && !HasSingleton<ScenarioHasStarted>())
+        if ((_players.Count > 0) && (_players.Count == playerReadyAmount) && !HasSingleton<ScenarioHasStartedSingletonTag>())
         {
             // Get Teleport Location
             List<fix3> teleportLocation = new List<fix3>();
@@ -46,7 +49,7 @@ public class TeleportToStartLocationOnReadySystem : SimComponentSystem
                 teleportLocation.Add(translation.Value);
             });
 
-            if (teleportLocation.Count < players.Count)
+            if (teleportLocation.Count < _players.Count)
             {
                 Log.Error("Not Enough Start Location in the level");
                 return;
@@ -55,16 +58,16 @@ public class TeleportToStartLocationOnReadySystem : SimComponentSystem
             FixRandom Random = World.Random();
             Random.Shuffle(teleportLocation);
 
-            for (int i = 0; i < players.Count; i++)
+            for (int i = 0; i < _players.Count; i++)
             {
-                Entity playerPawn = EntityManager.GetComponentData<ControlledEntity>(players[i]).Value;
-                if (playerPawn != Entity.Null)
+                Entity playerPawn = EntityManager.GetComponentData<ControlledEntity>(_players[i]).Value;
+                if (EntityManager.Exists(playerPawn))
                 {
                     EntityManager.SetComponentData(playerPawn, new FixTranslation() { Value = teleportLocation[i] });
                 }
             }
 
-            EntityManager.CreateEntity(typeof(ScenarioHasStarted));
+            EntityManager.CreateEntity(typeof(ScenarioHasStartedSingletonTag));
         }
     }
 }

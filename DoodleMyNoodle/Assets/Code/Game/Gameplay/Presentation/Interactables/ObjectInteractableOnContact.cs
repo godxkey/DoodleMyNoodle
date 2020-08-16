@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
 
-public class ObjectInteractableOnContact : ObjectInteractable
+public class ObjectInteractableOnContact : InteractableEntityView
 {
     protected override void OnGamePresentationUpdate() 
     {
