@@ -3,11 +3,14 @@ using Unity.Entities;
 
 public class LocalPawnHighlightController : GamePresentationBehaviour
 {
+    [SerializeField] private Color _newTurnHighlightColor = Color.white;
+
     public override void OnPostSimulationTick()
     {
         base.OnPostSimulationTick();
 
-        if (SimWorld.HasSingleton<NewTurnEventData>()) // On new turn
+        // On player's new turn
+        if (SimWorld.HasSingleton<NewTurnEventData>() && SimWorldCache.CurrentTeam == SimWorldCache.LocalPawnTeam) 
         {
             // Find local pawn's doodle
             if (SimWorldCache.LocalPawn != Entity.Null &&
@@ -15,7 +18,12 @@ public class LocalPawnHighlightController : GamePresentationBehaviour
             {
                 if (localPawnViewGO.TryGetComponent(out DoodleDisplay doodleDisplay))
                 {
-                    HighlightService.HighlightSprite(doodleDisplay.SpriteRenderer, HighlightService.Duration.UntilManuallyStopped);
+                    var highlightParams = HighlightService.Params.Default;
+                    highlightParams.Color = _newTurnHighlightColor;
+                    highlightParams.FlickerSpeed = HighlightService.FlickerSpeed.Fast;
+                    highlightParams.Intensity = HighlightService.Intensity.High;
+
+                    HighlightService.HighlightSprite(doodleDisplay.SpriteRenderer, highlightParams);
                 }
             }
         }

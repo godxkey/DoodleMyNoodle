@@ -1,9 +1,10 @@
-﻿Shader "CCC/Sprite-Light-Multiply"
+﻿Shader "CCC/Sprite-Light"
 {
     Properties
     {
         [NoScaleOffset] _MainTex("MainTex", 2D) = "white" {}
         _Intensity("Intensity", Range(0, 3)) = 1
+        _Saturation("Saturation", Range(0, 1)) = 0.5
     }
         SubShader
         {
@@ -23,7 +24,7 @@
             }
 
             // Render State
-            Blend DstColor Zero, One Zero
+            Blend One One, One One
             Cull Back
             ZTest LEqual
             ZWrite Off
@@ -55,6 +56,7 @@
             // Defines
             #define _SURFACE_TYPE_TRANSPARENT 1
             #define _AlphaClip 1
+            #define _BLENDMODE_ADD 1
             #define ATTRIBUTES_NEED_NORMAL
             #define ATTRIBUTES_NEED_TANGENT
             #define ATTRIBUTES_NEED_TEXCOORD0
@@ -75,20 +77,26 @@
             // Graph Properties
             CBUFFER_START(UnityPerMaterial)
             float _Intensity;
+            float _Saturation;
             CBUFFER_END
             TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex); float4 _MainTex_TexelSize;
             SAMPLER(_SampleTexture2D_9EBDDB50_Sampler_3_Linear_Repeat);
 
             // Graph Functions
 
+            void Unity_Lerp_float3(float3 A, float3 B, float3 T, out float3 Out)
+            {
+                Out = lerp(A, B, T);
+            }
+
             void Unity_Multiply_float(float A, float B, out float Out)
             {
                 Out = A * B;
             }
 
-            void Unity_Add_float(float A, float B, out float Out)
+            void Unity_Multiply_float(float3 A, float3 B, out float3 Out)
             {
-                Out = A + B;
+                Out = A * B;
             }
 
             // Graph Vertex
@@ -102,7 +110,8 @@
 
             struct SurfaceDescription
             {
-                float4 Color;
+                //float3 Color; // CHANGE-
+                float4 Color;   // CHANGE+
                 float Alpha;
                 float AlphaClipThreshold;
             };
@@ -110,18 +119,22 @@
             SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
             {
                 SurfaceDescription surface = (SurfaceDescription)0;
-                float _Property_4031A932_Out_0 = _Intensity;
                 float4 _SampleTexture2D_9EBDDB50_RGBA_0 = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv0.xy);
                 float _SampleTexture2D_9EBDDB50_R_4 = _SampleTexture2D_9EBDDB50_RGBA_0.r;
                 float _SampleTexture2D_9EBDDB50_G_5 = _SampleTexture2D_9EBDDB50_RGBA_0.g;
                 float _SampleTexture2D_9EBDDB50_B_6 = _SampleTexture2D_9EBDDB50_RGBA_0.b;
                 float _SampleTexture2D_9EBDDB50_A_7 = _SampleTexture2D_9EBDDB50_RGBA_0.a;
+                float3 _Vector3_84635F87_Out_0 = float3(_SampleTexture2D_9EBDDB50_R_4, _SampleTexture2D_9EBDDB50_G_5, _SampleTexture2D_9EBDDB50_B_6);
+                float _Property_6F3B10E9_Out_0 = _Saturation;
+                float3 _Lerp_7273D232_Out_3;
+                Unity_Lerp_float3(float3(1, 1, 1), _Vector3_84635F87_Out_0, (_Property_6F3B10E9_Out_0.xxx), _Lerp_7273D232_Out_3);
+                float _Property_4031A932_Out_0 = _Intensity;
                 float _Multiply_12234FDA_Out_2;
                 Unity_Multiply_float(_Property_4031A932_Out_0, _SampleTexture2D_9EBDDB50_A_7, _Multiply_12234FDA_Out_2);
-                float _Add_B084FC84_Out_2;
-                //Unity_Add_float(_Multiply_12234FDA_Out_2, 1, _Add_B084FC84_Out_2);
-                //surface.Color = (_Add_B084FC84_Out_2.xxx);        // CHANGE-
-                surface.Color = float4(_Multiply_12234FDA_Out_2.xxx, 1); // CHANGE+
+                float3 _Multiply_1880A19F_Out_2;
+                Unity_Multiply_float(_Lerp_7273D232_Out_3, (_Multiply_12234FDA_Out_2.xxx), _Multiply_1880A19F_Out_2);
+                //surface.Color = _Multiply_1880A19F_Out_2;          // CHANGE-
+                surface.Color = float4(_Multiply_1880A19F_Out_2, 1); // CHANGE+
                 surface.Alpha = 1;
                 surface.AlphaClipThreshold = 0.01;
                 return surface;
@@ -252,42 +265,7 @@
 
             #include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/Varyings.hlsl"
             //#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/UnlitPass.hlsl"       // CHANGE-
-
-            // CHANGE + BEGIN  (taken from  Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/SpriteUnlitPass.hlsl)
-#if ETC1_EXTERNAL_ALPHA
-            TEXTURE2D(_AlphaTex); SAMPLER(sampler_AlphaTex);
-            float _EnableAlphaTexture;
-#endif
-            float4 _RendererColor;
-
-            PackedVaryings vert(Attributes input)
-            {
-                Varyings output = (Varyings)0;
-                output = BuildVaryings(input);
-                PackedVaryings packedOutput = PackVaryings(output);
-                return packedOutput;
-            }
-
-            half4 frag(PackedVaryings packedInput) : SV_TARGET
-            {
-                Varyings unpacked = UnpackVaryings(packedInput);
-                UNITY_SETUP_INSTANCE_ID(unpacked);
-                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(unpacked);
-
-                SurfaceDescriptionInputs surfaceDescriptionInputs = BuildSurfaceDescriptionInputs(unpacked);
-                SurfaceDescription surfaceDescription = SurfaceDescriptionFunction(surfaceDescriptionInputs);
-
-            #if ETC1_EXTERNAL_ALPHA
-                float4 alpha = SAMPLE_TEXTURE2D(_AlphaTex, sampler_AlphaTex, unpacked.texCoord0.xy);
-                surfaceDescription.Color.a = lerp(surfaceDescription.Color.a, alpha.r, _EnableAlphaTexture);
-            #endif
-
-                surfaceDescription.Color *= unpacked.color;
-                surfaceDescription.Color += 1;
-
-                return surfaceDescription.Color;
-            }
-                // CHANGE + END
+            #include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/SpriteUnlitPass.hlsl"   // CHANGE+
 
             ENDHLSL
         }
@@ -301,7 +279,7 @@
             }
 
                 // Render State
-                Blend DstColor Zero, One Zero
+                Blend One One, One One
                 Cull Back
                 ZTest LEqual
                 ZWrite On
@@ -331,6 +309,7 @@
                 // Defines
                 #define _SURFACE_TYPE_TRANSPARENT 1
                 #define _AlphaClip 1
+                #define _BLENDMODE_ADD 1
                 #define ATTRIBUTES_NEED_NORMAL
                 #define ATTRIBUTES_NEED_TANGENT
                 #define SHADERPASS_SHADOWCASTER
@@ -347,6 +326,7 @@
                 // Graph Properties
                 CBUFFER_START(UnityPerMaterial)
                 float _Intensity;
+                float _Saturation;
                 CBUFFER_END
                 TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex); float4 _MainTex_TexelSize;
 
@@ -502,7 +482,7 @@
                 }
 
                     // Render State
-                    Blend DstColor Zero, One Zero
+                    Blend One One, One One
                     Cull Back
                     ZTest LEqual
                     ZWrite On
@@ -532,6 +512,7 @@
                     // Defines
                     #define _SURFACE_TYPE_TRANSPARENT 1
                     #define _AlphaClip 1
+                    #define _BLENDMODE_ADD 1
                     #define ATTRIBUTES_NEED_NORMAL
                     #define ATTRIBUTES_NEED_TANGENT
                     #define SHADERPASS_DEPTHONLY
@@ -548,6 +529,7 @@
                     // Graph Properties
                     CBUFFER_START(UnityPerMaterial)
                     float _Intensity;
+                    float _Saturation;
                     CBUFFER_END
                     TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex); float4 _MainTex_TexelSize;
 

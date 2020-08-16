@@ -6,7 +6,8 @@ using UnityEngine.Experimental.Rendering.Universal;
 
 public class HighlightElement : MonoBehaviour
 {
-    [SerializeField] private Light2D _light;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private SpriteLight _lightParams;
 
     private Tween _tween;
 
@@ -17,28 +18,39 @@ public class HighlightElement : MonoBehaviour
 
     public void SetSprite(Sprite sprite)
     {
-        SetLightSprite(_light, sprite);
+        _spriteRenderer.sprite = sprite;
     }
 
-    public void Play(float intensity, float loopDuration)
+    public void SetColor(Color color)
     {
-        PlayInternal(intensity, loopDuration, -1);
+        _spriteRenderer.color = color;
     }
 
-    public void Play(float intensity, float loopDuration, int loops)
+    public void Play(float intensity, float loopDuration, bool startMidWay)
     {
-        PlayInternal(intensity, loopDuration, loops * 2);
+        PlayInternal(intensity, loopDuration, -1, startMidWay);
     }
 
-    private void PlayInternal(float intensity, float loopDuration, int demiLoops)
+    public void Play(float intensity, float loopDuration, int loops, bool startMidWay)
+    {
+        PlayInternal(intensity, loopDuration, loops * 2, startMidWay);
+    }
+
+    private void PlayInternal(float intensity, float loopDuration, int demiLoops, bool startMidWay)
     {
         if (_tween != null && _tween.IsActive())
         {
             _tween.Kill();
         }
 
-        _tween = DOTween.To(() => _light.intensity, (x) => _light.intensity = x, intensity, loopDuration / 2f)
+        float start = startMidWay ? intensity : 0;
+        float end = startMidWay ? 0 : intensity;
+
+        _lightParams.Intensity = start;
+
+        _tween = DOTween.To(() => _lightParams.Intensity, (x) => _lightParams.Intensity = x, end, loopDuration / 2f)
             .SetLoops(demiLoops, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine)
             .OnComplete(() => OnCompleteAction?.Invoke(this));
     }
 
@@ -51,16 +63,5 @@ public class HighlightElement : MonoBehaviour
     {
         _tween.Kill();
         OnDestroyAction?.Invoke(this);
-    }
-
-
-    private static FieldInfo s_lightCookieSpriteMember;
-    private static void SetLightSprite(Light2D light, Sprite sprite)
-    {
-        if (s_lightCookieSpriteMember == null)
-        {
-            s_lightCookieSpriteMember = typeof(Light2D).GetField("m_LightCookieSprite", BindingFlags.NonPublic | BindingFlags.Instance);
-        }
-        s_lightCookieSpriteMember.SetValue(light, sprite);
     }
 }

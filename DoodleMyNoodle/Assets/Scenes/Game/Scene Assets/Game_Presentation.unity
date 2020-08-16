@@ -522,6 +522,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1fdd5e065aa6574ab1b63bdbb46660c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _newTurnHighlightColor: {r: 0.6084906, g: 0.93200344, b: 1, a: 1}
 --- !u!1 &607901406
 GameObject:
   m_ObjectHideFlags: 0
