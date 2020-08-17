@@ -51,7 +51,7 @@ public class GameActionComboAttack : GameAction
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST_PER_ATTACK);
 
             // find victims
-            CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, firstTile.Tile, victims);
+            CommonReads.FindTileActorsWithComponents<Health>(accessor, firstTile.Tile, victims);
         }
 
         if (parameters.TryGetParameter(1, out GameActionParameterTile.Data secondTile))
@@ -71,7 +71,7 @@ public class GameActionComboAttack : GameAction
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST_PER_ATTACK);
 
             // find victims
-            CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, secondTile.Tile, victims);
+            CommonReads.FindTileActorsWithComponents<Health>(accessor, secondTile.Tile, victims);
         }
 
         foreach (Entity entity in victims)

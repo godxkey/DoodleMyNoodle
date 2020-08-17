@@ -124,13 +124,27 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
         }
 
 
+        Entity tileEntity = CommonReads.GetTileEntity(Accessor, tile);
+
+        if(tileEntity == Entity.Null)
+        {
+            return false;
+        }
+
         // Search for at least 1 entity that matches:
         //  - on the desired tile
         //  - has Health
         //  - has a controller on the opposing team
 
         NativeList<Entity> attackableEntities = new NativeList<Entity>(Allocator.Temp);
-        CommonReads.FindEntitiesOnTileWithComponents<Health, ControllableTag>(Accessor, tile, attackableEntities);
+
+        foreach (var tileActor in EntityManager.GetBufferReadOnly<TileActorReference>(tileEntity))
+        {
+            if(EntityManager.HasComponent<Health>(tileActor) && EntityManager.HasComponent<ControllableTag>(tileActor))
+            {
+                attackableEntities.Add(tileActor);
+            }
+        }
 
         foreach (Entity attackablePawn in attackableEntities)
         {

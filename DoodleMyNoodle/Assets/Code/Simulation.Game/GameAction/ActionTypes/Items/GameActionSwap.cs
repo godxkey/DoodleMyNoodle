@@ -44,17 +44,22 @@ public class GameActionSwap : GameAction
 
             // find target
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindEntitiesOnTileWithComponent<ControllableTag>(accessor, paramTile.Tile, victims);
+
+            CommonReads.FindTileActors(accessor, paramTile.Tile, victims,
+                (tileActor)
+                => accessor.HasComponent<FixTranslation>(tileActor)
+                && !accessor.HasComponent<StaticTag>(tileActor));
+
+            if (victims.Length > 0)
+            {
+                // teleport instigator to destination
+                CommonWrites.RequestTeleport(accessor, context.InstigatorPawn, paramTile.Tile);
+            }
+
             foreach (Entity entity in victims)
             {
-                if (accessor.HasComponent<FixTranslation>(entity))
-                {
-                    fix3 targetPos = accessor.GetComponentData<FixTranslation>(entity).Value;
-                    accessor.SetComponentData(context.InstigatorPawn, new FixTranslation() { Value = targetPos });
-                    accessor.SetComponentData(entity, new FixTranslation() { Value = instigatorPos });
-                }
+                CommonWrites.RequestTeleport(accessor, entity, instigatorPos);
             }
         }
     }
 }
-TODO: fix all items

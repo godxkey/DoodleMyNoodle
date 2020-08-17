@@ -3,6 +3,7 @@ using static Unity.Mathematics.math;
 using static fixMath;
 using Unity.Collections;
 using Unity.Entities;
+using System;
 
 public partial class CommonReads
 {
@@ -11,33 +12,110 @@ public partial class CommonReads
         return fix3(0, 0, -1);
     }
 
-    public static void FindEntitiesOnTileWithComponent<T>(ISimWorldReadAccessor accessor, int2 tile, NativeList<Entity> result)
-        where T : struct, IComponentData
+    public static Entity GetTileEntity(ISimWorldReadAccessor accessor, int2 gridPosition)
     {
-        accessor.Entities
-            .WithAll<T>()
-            .ForEach((Entity entity, ref FixTranslation pos) =>
-            {
-                if (Helpers.GetTile(pos).Equals(tile))
-                {
-                    result.Add(entity);
-                }
-            });
+        GridInfo gridRect = accessor.GetSingleton<GridInfo>();
+
+        if (!gridRect.Contains(gridPosition))
+        {
+            return Entity.Null;
+        }
+
+        int2 offset = gridPosition - gridRect.TileMin;
+        int index = offset.x + (offset.y * gridRect.Width);
+
+        var allTiles = accessor.GetBufferReadOnly<GridTileReference>(accessor.GetSingletonEntity<GridInfo>());
+        return allTiles[index].Tile;
     }
 
-    public static void FindEntitiesOnTileWithComponents<T1, T2>(ISimWorldReadAccessor accessor, int2 tile, NativeList<Entity> result)
-        where T1 : struct, IComponentData
-        where T2 : struct, IComponentData
+    public static Entity FindFirstTileActorWithComponent<T>(ISimWorldReadAccessor accessor, Entity tile)
     {
-        accessor.Entities
-            .WithAll<T1, T2>()
-            .ForEach((Entity entity, ref FixTranslation pos) =>
+        foreach (TileActorReference actor in accessor.GetBufferReadOnly<TileActorReference>(tile))
         {
-            if(Helpers.GetTile(pos).Equals(tile))
+            if (accessor.HasComponent<T>(actor))
             {
-                result.Add(entity);
+                return actor;
             }
-        });
+        }
+
+        return Entity.Null;
+    }
+
+    public static void FindTileActorsWithComponent<T>(ISimWorldReadAccessor accessor, Entity tile, NativeList<Entity> result)
+    {
+        foreach (TileActorReference actor in accessor.GetBufferReadOnly<TileActorReference>(tile))
+        {
+            if (accessor.HasComponent<T>(actor))
+            {
+                result.Add(actor);
+            }
+        }
+    }
+
+    public static void FindTileActors(ISimWorldReadAccessor accessor, Entity tile, NativeList<Entity> result, Predicate<Entity> predicate)
+    {
+        if (predicate is null)
+        {
+            throw new ArgumentNullException(nameof(predicate));
+        }
+
+        foreach (TileActorReference actor in accessor.GetBufferReadOnly<TileActorReference>(tile))
+        {
+            if (predicate(actor))
+            {
+                result.Add(actor);
+            }
+        }
+    }
+
+    public static Entity FindFirstTileActorWithComponent<T>(ISimWorldReadAccessor accessor, int2 tile)
+    {
+        var tileEntity = GetTileEntity(accessor, tile);
+        if (tileEntity != Entity.Null)
+        {
+            return FindFirstTileActorWithComponent<T>(accessor, tileEntity);
+        }
+        else
+        {
+            return Entity.Null;
+        }
+    }
+
+    public static void FindTileActorsWithComponent<T>(ISimWorldReadAccessor accessor, int2 tile, NativeList<Entity> result)
+    {
+        var tileEntity = GetTileEntity(accessor, tile);
+        if (tileEntity != Entity.Null)
+        {
+            FindTileActorsWithComponent<T>(accessor, tileEntity, result);
+        }
+    }
+
+    public static void FindTileActors(ISimWorldReadAccessor accessor, int2 tile, NativeList<Entity> result, Predicate<Entity> predicate)
+    {
+        var tileEntity = GetTileEntity(accessor, tile);
+        if(tileEntity != Entity.Null)
+        {
+            FindTileActors(accessor, tileEntity, result, predicate);
+        }
+    }
+
+    public static void FindTileActorsWithComponents<T>(ISimWorldReadAccessor accessor, int2 tile, NativeList<Entity> result)
+        where T : struct, IComponentData
+    {
+        Entity tileEntity = GetTileEntity(accessor, tile);
+
+        if(tileEntity == Entity.Null)
+        {
+            return;
+        }
+
+        foreach (var tileActor in accessor.GetBufferReadOnly<TileActorReference>(tileEntity))
+        {
+            if (accessor.HasComponent<T>(tileActor))
+            {
+                result.Add(tileActor);
+            }
+        }
     }
 }
 

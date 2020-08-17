@@ -81,7 +81,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
         tileFinder.Find(description, context, tiles);
 
         // Create new highlights (if necessary)
-        while (_highlights.Count <= tiles.Length)
+        while (_highlights.Count < tiles.Length)
         {
             CreateHighlight();
         }

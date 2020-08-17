@@ -100,35 +100,3 @@ public class CreateLevelGridSystem : SimComponentSystem
         return TileFlags.Empty;
     }
 }
-
-public partial class CommonReads
-{
-    public static Entity GetTileEntity(ISimWorldReadAccessor accessor, int2 gridPosition)
-    {
-        GridInfo gridRect = accessor.GetSingleton<GridInfo>();
-
-        if (!gridRect.Contains(gridPosition))
-        {
-            return Entity.Null;
-        }
-
-        int2 offset = gridPosition - gridRect.TileMin;
-        int index = offset.x + (offset.y * gridRect.Width);
-
-        var allTiles = accessor.GetBufferReadOnly<GridTileReference>(accessor.GetSingletonEntity<GridInfo>());
-        return allTiles[index].Tile;
-    }
-
-    public static Entity FindFirstTileActorWithComponent<T>(ISimWorldReadAccessor accessor, Entity tile)
-    {
-        foreach (TileActorReference actor in accessor.GetBufferReadOnly<TileActorReference>(tile))
-        {
-            if (accessor.HasComponent<T>(actor))
-            {
-                return actor;
-            }
-        }
-
-        return Entity.Null;
-    }
-}

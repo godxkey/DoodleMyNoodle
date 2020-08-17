@@ -2,10 +2,17 @@
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Transforms;
+using Unity.Mathematics;
+using UnityEngineX;
+using static fixMath;
 
 public struct PotentialNewTranslation : IComponentData
 {
     public fix3 Value;
+
+
+    public static implicit operator fix3(PotentialNewTranslation val) => val.Value;
+    public static implicit operator PotentialNewTranslation(fix3 val) => new PotentialNewTranslation() { Value = val };
 }
 
 public class ApplyVelocitySystem : SimComponentSystem
@@ -34,15 +41,24 @@ public class ApplyPotentialNewTranslationSystem : SimComponentSystem
     }
 }
 
-[UpdateAfter(typeof(ApplyPotentialNewTranslationSystem))]
-public class RecordPreviousTranslationSystem : SimComponentSystem
+internal static partial class CommonWrites
 {
-    protected override void OnUpdate()
+    public static void RequestTeleport(ISimWorldReadWriteAccessor accessor, Entity entity, int2 destination)
     {
-        Entities//            .WithChangeFilter<FixTranslation>() UNDO
-            .ForEach((ref PreviousFixTranslation pos, ref FixTranslation newTranslation) =>
-            {
-                pos.Value = newTranslation.Value;
-            });
+        RequestTeleport(accessor, entity, fix3(destination, 0));
+    }
+
+    public static void RequestTeleport(ISimWorldReadWriteAccessor accessor, Entity entity, fix3 destination)
+    {
+        bool hasComponent = accessor.HasComponent<PotentialNewTranslation>(entity);
+
+        if (hasComponent)
+        {
+            accessor.SetComponentData<PotentialNewTranslation>(entity, destination);
+        }
+        else
+        {
+            Log.Error($"Cannot teleport {entity}. It doesn't have the required component: {nameof(PotentialNewTranslation)}.");
+        }
     }
 }

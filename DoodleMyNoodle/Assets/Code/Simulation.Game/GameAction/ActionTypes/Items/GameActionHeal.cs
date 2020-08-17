@@ -47,7 +47,7 @@ public class GameActionHeal : GameAction
 
             // reduce target health
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, paramTile.Tile, victims);
+            CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
             foreach (var entity in victims)
             {
                 CommonWrites.ModifyStatInt<Health>(accessor, entity, HEAL);
