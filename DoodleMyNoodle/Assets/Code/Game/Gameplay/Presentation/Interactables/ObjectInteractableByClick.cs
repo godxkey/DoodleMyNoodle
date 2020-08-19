@@ -4,37 +4,13 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
 
-public class ObjectInteractableByClick : BindedPresentationEntityComponent
+public class ObjectInteractableByClick : InteractableEntityView
 {
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
-    private bool _previousInteractedState = false;
     private bool _highlighted = false;
 
     protected override void OnGamePresentationUpdate() { }
-
-    public override void OnPostSimulationTick()
-    {
-        if (SimWorld.TryGetComponentData(SimEntity, out Interacted interacted))
-        {
-            if (interacted != _previousInteractedState)
-            {
-                if (interacted)
-                {
-                    OnInteractionTriggeredByInput();
-                }
-
-                _previousInteractedState = interacted.Value;
-            }
-
-            if (interacted)
-            {
-                SetHighlighted(false);
-            }
-        }
-    }
-
-    protected virtual void OnInteractionTriggeredByInput() { }
 
     private void OnMouseOver()
     {
@@ -83,31 +59,6 @@ public class ObjectInteractableByClick : BindedPresentationEntityComponent
         else
         {
             HighlightService.StopHighlight(_spriteRenderer);
-        }
-    }
-
-    private bool CanTrigger()
-    {
-        Entity interactable = SimEntity;
-        if (!SimWorld.Exists(interactable))
-        {
-            return false;
-        }
-
-        if (SimWorld.TryGetComponentData(interactable, out Interactable interactableData))
-        {
-            if (SimWorld.TryGetComponentData(interactable, out Interacted interactedData))
-            {
-                return interactableData.OnlyOnce ? !interactedData.Value : true;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        else
-        {
-            return false;
         }
     }
 }

@@ -65,4 +65,24 @@ public static class FixRandomExtensions
             fix.Sin(theta) * fix.Sin(phi), // y
             fix.Cos(theta));               // z
     }
+
+    /// <summary>
+    /// Shuffle your list with simulation random
+    /// </summary>
+    public static List<T> Shuffle<T>(this ref FixRandom random, List<T> list)
+    {
+        T temp;
+        for (int i = list.Count - 1; i >= 1; i--)
+        {
+            int chosen = random.NextInt(0, i + 1);
+            if (chosen == i)
+                continue;
+
+            temp = list[chosen];
+            list[chosen] = list[i];
+            list[i] = temp;
+        }
+
+        return list;
+    }
 }

@@ -93,16 +93,18 @@ public partial class CommonReads
 {
     public static Entity FindPlayerEntity(ISimWorldReadAccessor readAccessor, PersistentId simPlayerId)
     {
-        Entity playerEntity = Entity.Null;
-        readAccessor.Entities.ForEach((Entity entity, ref PersistentId id, ref PlayerTag playerTag) =>
-        {
-            if (id == simPlayerId)
-            {
-                playerEntity = entity;
-                return;
-            }
-        });
+        Entity result = Entity.Null;
+        readAccessor.Entities
+                    .WithAll<PlayerTag>()
+                    .ForEach((Entity controller, ref PersistentId id) =>
+                    {
+                        if (id.Value == simPlayerId.Value)
+                        {
+                            result = controller;
+                            return;
+                        }
+                    });
 
-        return playerEntity;
+        return result;
     }
 }
