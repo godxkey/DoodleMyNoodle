@@ -3,7 +3,7 @@ using Unity.Collections;
 using Unity.Entities;
 
 [MasterOnly]
-public class AssignSimPlayersSystem : ViewComponentSystem
+public class UpdateSimPlayersSystem : ViewComponentSystem
 {
     Dictionary<PlayerInfo, double> _dontAskForPlayerCreateCooldownMap = new Dictionary<PlayerInfo, double>();
 
@@ -54,6 +54,22 @@ public class AssignSimPlayersSystem : ViewComponentSystem
                 }
             }
         }
+
+        // Update Active Player State
+        SimWorldAccessor.Entities
+            .WithAll<PlayerTag>()
+            .ForEach((Entity playerEntity, ref PersistentId playerID, ref Active isActive) =>
+            {
+                PlayerInfo playerInfo = PlayerHelpers.GetPlayerFromSimPlayer(playerID);
+                if (playerInfo != null && !isActive.Value) // player connected in game but not active in simulation
+                {
+                    SimWorldAccessor.SubmitInput(new SimInputSetPlayerActive() { IsActive = true, PlayerID = playerID });
+                }
+                else if (playerInfo == null && isActive.Value) // player disconnected but active in simulation
+                {
+                    SimWorldAccessor.SubmitInput(new SimInputSetPlayerActive() { IsActive = false, PlayerID = playerID });
+                }
+            });
     }
 
     Entity GetUnassignedSimPlayer()

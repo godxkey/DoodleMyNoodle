@@ -7,6 +7,6 @@ public struct Interacted : IComponentData
 {
     public bool Value;
 
-    public static implicit operator bool(Interacted val) => val.Value;
-    public static implicit operator Interacted(bool val) => new Interacted() { Value = val };
+    public static implicit operator bool(Interacted interacted) => interacted.Value;
+    public static implicit operator Interacted(bool interacted) => new Interacted() { Value = interacted };
 }

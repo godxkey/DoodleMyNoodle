@@ -316,13 +316,6 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                                              inputUseInteractable.InteractablePosition.y,
                                              0);
 
-        fix distanceBetween = fix3.DistanceSquared(pawnPosition.Value, interactablePosition);
-        fix maxDistanceToInteract = (fix)1.1;
-        if (distanceBetween > maxDistanceToInteract) // range to interact, hard coded for now
-        {
-            return;
-        }
-
         Entity tile = CommonReads.GetTileEntity(Accessor, inputUseInteractable.InteractablePosition);
         if (tile == Entity.Null)
         {
@@ -331,6 +324,15 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
 
         Entity interactableEntity = CommonReads.FindFirstTileActorWithComponent<Interactable>(Accessor, tile);
         if (interactableEntity == Entity.Null)
+        {
+            return;
+        }
+
+        fix interactableDistance = Accessor.GetComponentData<Interactable>(interactableEntity).Range;
+
+        fix distanceBetween = fix3.Distance(pawnPosition.Value, interactablePosition);
+        fix maxDistanceToInteract = interactableDistance + (fix)0.1;
+        if (distanceBetween > maxDistanceToInteract) // range to interact, hard coded for now
         {
             return;
         }

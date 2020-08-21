@@ -17,6 +17,5 @@ public class DestroyEmptyInteractableInventorySystem : SimComponentSystem
                 PostUpdateCommands.DestroyEntity(interactable);
             }
         });
-
     }
 }

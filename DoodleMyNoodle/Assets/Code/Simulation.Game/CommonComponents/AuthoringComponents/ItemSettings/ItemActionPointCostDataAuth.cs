@@ -19,6 +19,6 @@ public class ItemActionPointCostDataAuth : MonoBehaviour, IConvertGameObjectToEn
 
     public string GetDescription(ItemActionPointCostData inputData)
     {
-        return $"AP Cost : {inputData.Value} ({ActionPointCost})";
+        return $"Stamina Cost : {inputData.Value} ({ActionPointCost})";
     }
 }
