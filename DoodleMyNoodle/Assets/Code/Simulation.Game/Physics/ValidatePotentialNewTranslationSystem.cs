@@ -7,6 +7,7 @@ public struct TileCollisionEventData : IComponentData
 {
     public Entity Entity;
     public int2 Tile;
+    public Entity TileEntity;
 }
 
 //public class MovementSystemGroup : ComponentSystemGroup { }
@@ -15,19 +16,26 @@ public struct TileCollisionEventData : IComponentData
 [UpdateAfter(typeof(ApplyVelocitySystem))]
 public class ValidatePotentialNewTranslationSystem : SimComponentSystem
 {
-    EntityQuery _eventsEntityQuery;
+    EntityQuery _eventsGroup;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        _eventsEntityQuery = EntityManager.CreateEntityQuery(typeof(TileCollisionEventData));
+        _eventsGroup = EntityManager.CreateEntityQuery(typeof(TileCollisionEventData));
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        _eventsGroup.Dispose();
     }
 
     protected override void OnUpdate()
     {
         // destroy events
-        EntityManager.DestroyEntity(_eventsEntityQuery);
+        EntityManager.DestroyEntity(_eventsGroup);
 
         Entities.ForEach((Entity entity,
             ref PotentialNewTranslation newTranslation,
@@ -39,7 +47,8 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
 
             if (!nextTile.Equals(currentTile))
             {
-                var tileFlags = EntityManager.GetComponentData<TileFlagComponent>(CommonReads.GetTileEntity(Accessor, nextTile));
+                var nextTileEntity = CommonReads.GetTileEntity(Accessor, nextTile);
+                var tileFlags = EntityManager.GetComponentData<TileFlagComponent>(nextTileEntity);
 
                 if (tileFlags.IsTerrain)
                 {
@@ -55,7 +64,8 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
                     EntityManager.CreateEventEntity(new TileCollisionEventData()
                     {
                         Entity = entity,
-                        Tile = nextTile
+                        Tile = nextTile,
+                        TileEntity = nextTileEntity
                     });
                 }
             }
@@ -78,68 +88,3 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
         velocity.Value = vel;
     }
 }
-
-/*
-public partial class CommonReads
-{
-    public static bool DoesTileRespectFilters(ISimWorldReadAccessor accessor, Entity tile, TileFilterFlags filter)
-    {
-        if (accessor.TryGetBufferReadOnly(tile, out DynamicBuffer<TileAddonReference> tileAddons) && tileAddons.Length > 0)
-        {
-            foreach (TileAddonReference addon in tileAddons)
-            {
-                if ((filter & TileFilterFlags.Navigable) != 0)
-                {
-                    if (accessor.HasComponent<SolidWallTag>(addon.Value))
-                    {
-                        return false;
-                    }
-                }
-
-                if ((filter & TileFilterFlags.NonNavigable) != 0)
-                {
-                    if (!accessor.HasComponent<SolidWallTag>(addon.Value))
-                    {
-                        return false;
-                    }
-                }
-
-                if ((filter & TileFilterFlags.Inoccupied) != 0)
-                {
-                    if (accessor.HasComponent<Occupied>(addon.Value))
-                    {
-                        return false;
-                    }
-                }
-
-                if ((filter & TileFilterFlags.Occupied) != 0)
-                {
-                    if (!accessor.HasComponent<Occupied>(addon.Value))
-                    {
-                        return false;
-                    }
-                }
-
-                if ((filter & TileFilterFlags.Ascendable) != 0)
-                {
-                    if (!accessor.HasComponent<AscendableTag>(addon.Value))
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
-        else
-        {
-            // No AddOn on tile (empty tile)
-            // Does the action support empty tile ?
-            if ((filter & TileFilterFlags.NotEmpty) != 0)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-}
-*/

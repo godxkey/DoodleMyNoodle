@@ -40,6 +40,13 @@ public class InitializeRandomSeedSystem : ComponentSystem
         _seedSingletonQuery = EntityManager.CreateEntityQuery(ComponentType.ReadWrite<Seed>());
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        
+        _seedSingletonQuery.Dispose();
+    }
+
     protected override void OnUpdate()
     {
         if (World is SimulationWorld simWorld)

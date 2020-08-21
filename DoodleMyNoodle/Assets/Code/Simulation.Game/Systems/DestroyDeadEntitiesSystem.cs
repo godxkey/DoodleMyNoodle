@@ -10,19 +10,26 @@ public struct EntityDeathEventData : IComponentData
 
 public class DestroyDeadEntitiesSystem : SimComponentSystem
 {
-    EntityQuery _eventsEntityQuery;
+    EntityQuery _eventsGroup;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        _eventsEntityQuery = EntityManager.CreateEntityQuery(typeof(EntityDeathEventData));
+        _eventsGroup = EntityManager.CreateEntityQuery(typeof(EntityDeathEventData));
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        _eventsGroup.Dispose();
     }
 
     protected override void OnUpdate()
     {
         // destroy events
-        EntityManager.DestroyEntity(_eventsEntityQuery);
+        EntityManager.DestroyEntity(_eventsGroup);
 
         Entities.ForEach((Entity entity, ref Health health, ref FixTranslation translation) =>
         {

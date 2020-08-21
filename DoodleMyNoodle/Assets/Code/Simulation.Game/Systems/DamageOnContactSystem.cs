@@ -6,50 +6,31 @@ using static Unity.Mathematics.math;
 
 public class DamageOnContactSystem : SimComponentSystem
 {
+    private NativeList<Entity> _toDestroy;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        _toDestroy = new NativeList<Entity>(Allocator.Persistent);
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        _toDestroy.Dispose();
+    }
+
     protected override void OnUpdate()
     {
         Entities
-            .ForEach((ref TileCollisionEventData collisionEvent) =>
+            .ForEach((ref TileActorTriggerEnterEventData triggerEvent) =>
             {
-                int2 tile = collisionEvent.Tile;
-                Entity entity = collisionEvent.Entity;
-
-                // find all entities we have collided with
-                NativeList<Entity> collidedEntities = FindCollidedEntities(tile, entity, Allocator.Temp);
-
-                NativeList<Entity> toDestroy = new NativeList<Entity>(Allocator.Temp);
-                foreach (Entity otherEntity in collidedEntities)
-                {
-                    ProcessEntityPair(entity, otherEntity, toDestroy);
-                    ProcessEntityPair(otherEntity, entity, toDestroy);
-                }
-
-                if (EntityManager.TryGetComponentData(entity, out DamageOnContact damageOnContact) && damageOnContact.DestroySelf)
-                {
-                    toDestroy.AddUnique(entity);
-                }
-
-                foreach (var x in toDestroy)
-                {
-                    PostUpdateCommands.DestroyEntity(x);
-                }
-            });
-    }
-
-    private NativeList<Entity> FindCollidedEntities(int2 tile, Entity entity, Allocator allocator)
-    {
-        NativeList<Entity> collidedEntities = new NativeList<Entity>(allocator);
-        Entities
-            .WithAny<Health, DamageOnContact>()
-            .ForEach((Entity otherEntity, ref FixTranslation pos) =>
-            {
-                if (entity != otherEntity && Helpers.GetTile(pos).Equals(tile))
-                {
-                    collidedEntities.Add(otherEntity);
-                }
+                ProcessEntityPair(triggerEvent.TileActorA, triggerEvent.TileActorB, _toDestroy);
+                ProcessEntityPair(triggerEvent.TileActorB, triggerEvent.TileActorA, _toDestroy);
             });
 
-        return collidedEntities;
+        EntityManager.DestroyEntity(_toDestroy);
+        _toDestroy.Clear();
     }
 
     private void ProcessEntityPair(Entity instigator, Entity target, NativeList<Entity> toDestroy)
@@ -59,12 +40,13 @@ public class DamageOnContactSystem : SimComponentSystem
             if (EntityManager.HasComponent<Health>(target))
             {
                 CommonWrites.RequestDamageOnTarget(Accessor, instigator, target, damageOnContact.Value);
+                
+                if (damageOnContact.DestroySelf)
+                {
+                    toDestroy.AddUnique(instigator);
+                }
             }
 
-            if (damageOnContact.DestroySelf)
-            {
-                toDestroy.AddUnique(instigator);
-            }
         }
     }
 }

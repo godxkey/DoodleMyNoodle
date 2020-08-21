@@ -67,10 +67,8 @@ public class CreateLevelGridSystem : SimComponentSystem
         Entity newTileEntity = EntityManager.CreateEntity(
             typeof(TileTag),
             typeof(TileActorReference),
-            typeof(TileFlagComponent),
-            typeof(FixTranslation));
+            typeof(TileFlagComponent));
 
-        EntityManager.SetComponentData(newTileEntity, new FixTranslation() { Value = fix3(tilePosition, 0) });
         EntityManager.SetComponentData(newTileEntity, new TileFlagComponent() { Value = tileFlags });
 
 #if UNITY_EDITOR

@@ -30,6 +30,13 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
         RequireSingletonForUpdate<Settings_ViewBindingSystem_Binding>();
     }
 
+    protected override void OnDestroy()
+    {
+        _newSimEntitiesQ.Dispose();
+        _allSimEntitiesQ.Dispose();
+        base.OnDestroy();
+    }
+
     protected override JobHandle OnUpdate(JobHandle jobHandle)
     {
         // fbessette: we use the 'EntityClearAndReplaceCount' to mesure when we should replace all view entities.
