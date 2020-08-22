@@ -102,7 +102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e941756c87180549863140c41f042e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelGridSetting: {fileID: 11400000, guid: a2c83465bce469443a43cd32eade8ae6, type: 2}
+  Size: 100
+  LevelGridSetting: {fileID: 11400000, guid: bfd4ef707ae10c54fa97e99d02e73b71, type: 2}
 --- !u!1 &5217987043277819719
 GameObject:
   m_ObjectHideFlags: 0
@@ -976,7 +977,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1465454209
-  m_SortingLayer: 5
+  m_SortingLayer: -5
   m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}

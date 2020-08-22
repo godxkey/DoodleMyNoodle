@@ -11,16 +11,15 @@ using UnityEngine.Tilemaps;
 [RequiresEntityConversion]
 public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
+    public int Size = 100;
     public LevelGridSettings LevelGridSetting;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         // Lets get all tilemaps and spawn whatever was drawn on them
 
-        int2 gridSize = LevelGridSetting.GridSize;
-
-        int min = -Mathf.FloorToInt((LevelGridSetting.GridSize - 1) / 2f);
-        int max = Mathf.FloorToInt(LevelGridSetting.GridSize / 2f);
+        int min = -Mathf.FloorToInt((Size - 1) / 2f);
+        int max = Mathf.FloorToInt(Size / 2f);
 
         dstManager.AddComponentData(entity, new GridInfo()
         {
@@ -37,7 +36,7 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
             foreach (Tilemap tileMap in tileMaps)
             {
                 // middle row and same amount on each side
-                int halfGridSize = Mathf.CeilToInt(LevelGridSetting.GridSize / 2f);
+                int halfGridSize = Mathf.CeilToInt(Size / 2f);
 
                 for (int l = -halfGridSize; l <= halfGridSize; l++)
                 {
@@ -63,9 +62,9 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
-        foreach (TileAddonsDefinition TileAddonsDef in LevelGridSetting.AddonsDefinition)
+        foreach (EntitySpriteBinding binding in LevelGridSetting.SimEntitySpriteBindings)
         {
-            referencedPrefabs.Add(TileAddonsDef.AddonSimulationPrefab);
+            referencedPrefabs.Add(binding.EntityPrefab);
         }
     }
 }

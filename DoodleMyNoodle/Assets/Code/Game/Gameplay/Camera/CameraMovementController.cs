@@ -21,7 +21,6 @@ public class CameraMovementController : GamePresentationBehaviour
     public bool EnableMovementLimits;
     public float MaxZoom;
 
-    private DirtyValue<bool> _scenarioHasStarted;
     private Transform _transform;
     private float2 _boundsMin;
     private float2 _boundsMax;

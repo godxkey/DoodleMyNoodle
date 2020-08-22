@@ -26,7 +26,7 @@ public struct TileActorOverlapEndEventData : IComponentData
     public Entity TileEntity;
 }
 
-public class UpdateTileActorReferences : SimJobComponentSystem
+public class UpdateTileActorReferenceSystem : SimJobComponentSystem
 {
     EntityQuery _beginEventsGroup;
     EntityQuery _endEventsGroup;

@@ -19,6 +19,7 @@ public struct TileFlagComponent : IComponentData
 
     public bool IsTerrain => (Value & TileFlags.Terrain) != 0;
     public bool IsLadder => (Value & TileFlags.Ladder) != 0;
+    public bool IsEmpty => (Value & TileFlags.Empty) != 0;
 
     public static implicit operator TileFlags(TileFlagComponent val) => val.Value;
     public static implicit operator TileFlagComponent(TileFlags val) => new TileFlagComponent() { Value = val };
