@@ -2,30 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [Serializable]
-public struct TileAddonsDefinition
+public struct EntitySpriteBinding
 {
     public Sprite SpriteVisual;
-    public GameObject AddonSimulationPrefab;
+    [FormerlySerializedAs("AddonsSimulationPrefab")]
+    public GameObject EntityPrefab;
 }
 
 [CreateAssetMenu(menuName = "DoodleMyNoodle/Grid/Settings")]
 public class LevelGridSettings : ScriptableObject
 {
-    public int GridSize = 11;
-
-    public List<TileAddonsDefinition> AddonsDefinition = new List<TileAddonsDefinition>();
+    [FormerlySerializedAs("AddonsDefinition")]
+    public List<EntitySpriteBinding> SimEntitySpriteBindings = new List<EntitySpriteBinding>();
 
     public GameObject GetSimEntityPrefabFromSprite(Sprite sprite)
     {
         if(sprite != null)
         {
-            foreach (TileAddonsDefinition tileAddon in AddonsDefinition)
+            foreach (EntitySpriteBinding binding in SimEntitySpriteBindings)
             {
-                if (tileAddon.SpriteVisual == sprite)
+                if (binding.SpriteVisual == sprite)
                 {
-                    return tileAddon.AddonSimulationPrefab;
+                    return binding.EntityPrefab;
                 }
             }
         }
