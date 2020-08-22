@@ -33,7 +33,7 @@ public class SimulationController : GameSystem<SimulationController>
             try
             {
 #endif
-                if (b is IPostSimulationTick p && b.isActiveAndEnabled)
+                if (b is IPostSimulationTick p)
                     p.OnPostSimulationTick();
 #if DEBUG
             }
