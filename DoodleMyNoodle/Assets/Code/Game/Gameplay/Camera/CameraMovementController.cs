@@ -25,6 +25,7 @@ public class CameraMovementController : GamePresentationBehaviour
     private Transform _transform;
     private float2 _boundsMin;
     private float2 _boundsMax;
+    private DirtyValue<Entity> _localPawn;
 
     [ConsoleVar("CameraMouseMovementEnabledWhenWindowed", "Enable/Disable the game camera moving when moving the mouse pointer near the edges of the screen.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
     private static bool s_mouseMovementsEnabledWindowedMode = false;
@@ -68,15 +69,7 @@ public class CameraMovementController : GamePresentationBehaviour
     public override void OnPostSimulationTick()
     {
         base.OnPostSimulationTick();
-
-        SimWorld.Entities.ForEach((ref TeleportEventData teleportEvent) =>
-        {
-            // center camera on pawn after teleport
-            if (teleportEvent.Entity == SimWorldCache.LocalPawn)
-            {
-                CamPosition = SimWorldCache.LocalPawnPositionFloat;
-            }
-        });
+        CenterOnPawnIfTeleport();
     }
 
     protected override void OnGamePresentationUpdate() { }
@@ -88,6 +81,39 @@ public class CameraMovementController : GamePresentationBehaviour
             return;
         }
 
+        CenterOnPawnIfChange();
+
+        UpdateMovement();
+
+        UpdateSize();
+
+        UpdateBounds();
+    }
+
+    private void CenterOnPawnIfTeleport()
+    {
+        SimWorld.Entities.ForEach((ref TeleportEventData teleportEvent) =>
+        {
+            // center camera on pawn after teleport
+            if (teleportEvent.Entity == SimWorldCache.LocalPawn)
+            {
+                CamPosition = SimWorldCache.LocalPawnPositionFloat;
+            }
+        });
+    }
+
+    private void CenterOnPawnIfChange()
+    {
+        // center camera on pawn if pawn change (or on game start)
+        _localPawn.Set(SimWorldCache.LocalPawn);
+        if (_localPawn.ClearDirty() && _localPawn.Get() != Entity.Null)
+        {
+            CamPosition = SimWorldCache.LocalPawnPositionFloat;
+        }
+    }
+
+    private void UpdateMovement()
+    {
         Vector2 movement = Vector2.zero;
 
         if (Input.GetKey(KeyCode.W) || (MouseMovementsEnabled && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
@@ -115,9 +141,15 @@ public class CameraMovementController : GamePresentationBehaviour
             movement.Normalize();
             CamPosition += movement * Speed * CamSize * Time.deltaTime;
         }
+    }
 
+    private void UpdateSize()
+    {
         CamSize -= Input.mouseScrollDelta.y * ZoomSpeed;
+    }
 
+    private void UpdateBounds()
+    {
         float2 min = float2(float.MinValue, float.MinValue);
         float2 max = float2(float.MaxValue, float.MaxValue);
 
@@ -134,12 +166,7 @@ public class CameraMovementController : GamePresentationBehaviour
                 max = gridRect.TileMax + float2(0.5f, 0.5f);
             }
         }
-        
-        UpdateBounds(min, max);
-    }
 
-    private void UpdateBounds(float2 min, float2 max)
-    {
         _boundsMin = min;
         _boundsMax = max;
         CamPosition = CamPosition;
