@@ -23,7 +23,7 @@ public class DamageOnContactSystem : SimComponentSystem
     protected override void OnUpdate()
     {
         Entities
-            .ForEach((ref TileActorTriggerEnterEventData triggerEvent) =>
+            .ForEach((ref TileActorOverlapBeginEventData triggerEvent) =>
             {
                 ProcessEntityPair(triggerEvent.TileActorA, triggerEvent.TileActorB, _toDestroy);
                 ProcessEntityPair(triggerEvent.TileActorB, triggerEvent.TileActorA, _toDestroy);

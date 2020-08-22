@@ -10,4 +10,7 @@ using Unity.Mathematics;
 public struct ControlledEntity : IComponentData
 {
     public Entity Value;
+
+    public static implicit operator Entity(ControlledEntity val) => val.Value;
+    public static implicit operator ControlledEntity(Entity val) => new ControlledEntity() { Value = val };
 }

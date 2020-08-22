@@ -1,7 +1,7 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
-public struct Timer : IComponentData
+public struct NoInteractTimer : IComponentData
 {
     public bool CanCountdown;
     public fix Duration;

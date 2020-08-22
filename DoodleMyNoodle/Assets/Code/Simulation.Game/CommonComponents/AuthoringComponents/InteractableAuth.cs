@@ -15,12 +15,12 @@ public class InteractableAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponentData(entity, new Interactable() { OnlyOnce = CanBeInteractedOnlyOnce, Range = (fix)InteractionRange , Delay = (fix)DelayBetweenInteraction });
         if (!CanBeInteractedOnlyOnce)
         {
-            dstManager.AddComponentData(entity, new Timer() { Duration = (fix)DelayBetweenInteraction, CanCountdown = false });
+            dstManager.AddComponentData(entity, new NoInteractTimer() { Duration = (fix)DelayBetweenInteraction, CanCountdown = false });
         }
 
         if (InteractOnContact)
         {
-            dstManager.AddComponentData(entity, new TriggerOnContactTag());
+            dstManager.AddComponentData(entity, new InteractOnOverlapTag());
         }
     }
 }

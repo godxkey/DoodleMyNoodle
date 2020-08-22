@@ -2,4 +2,4 @@ using Unity.Entities;
 using Unity.Mathematics;
 
 [GenerateAuthoringComponent]
-public struct StartLocation : IComponentData { }
+public struct StartLocationTag : IComponentData { }

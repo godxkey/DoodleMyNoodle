@@ -10,7 +10,7 @@ public struct TileActorSystemState : ISystemStateComponentData
     public int2 Tile;
 }
 
-public struct TileActorTriggerEnterEventData : IComponentData
+public struct TileActorOverlapBeginEventData : IComponentData
 {
     public Entity TileActorA;
     public Entity TileActorB;
@@ -18,7 +18,7 @@ public struct TileActorTriggerEnterEventData : IComponentData
     public Entity TileEntity;
 }
 
-public struct TileActorTriggerExitEventData : IComponentData
+public struct TileActorOverlapEndEventData : IComponentData
 {
     public Entity TileActorA;
     public Entity TileActorB;
@@ -28,23 +28,23 @@ public struct TileActorTriggerExitEventData : IComponentData
 
 public class UpdateTileActorReferences : SimJobComponentSystem
 {
-    EntityQuery _enterEventsGroup;
-    EntityQuery _exitEventsGroup;
+    EntityQuery _beginEventsGroup;
+    EntityQuery _endEventsGroup;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        _enterEventsGroup = EntityManager.CreateEntityQuery(typeof(TileActorTriggerEnterEventData));
-        _exitEventsGroup = EntityManager.CreateEntityQuery(typeof(TileActorTriggerExitEventData));
+        _beginEventsGroup = EntityManager.CreateEntityQuery(typeof(TileActorOverlapBeginEventData));
+        _endEventsGroup = EntityManager.CreateEntityQuery(typeof(TileActorOverlapEndEventData));
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
         
-        _enterEventsGroup.Dispose();
-        _exitEventsGroup.Dispose();
+        _beginEventsGroup.Dispose();
+        _endEventsGroup.Dispose();
     }
 
     protected override JobHandle OnUpdate(JobHandle deps)
@@ -52,8 +52,8 @@ public class UpdateTileActorReferences : SimJobComponentSystem
         EntityCommandBuffer ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
 
         // destroy events
-        EntityManager.DestroyEntity(_enterEventsGroup);
-        EntityManager.DestroyEntity(_exitEventsGroup);
+        EntityManager.DestroyEntity(_beginEventsGroup);
+        EntityManager.DestroyEntity(_endEventsGroup);
 
         deps.Complete();
 
@@ -120,7 +120,7 @@ public class UpdateTileActorReferences : SimJobComponentSystem
             // fire 'trigger enter' events for each actor already on tile
             foreach (var actor in buffer)
             {
-                ecb.CreateEventEntity(new TileActorTriggerEnterEventData()
+                ecb.CreateEventEntity(new TileActorOverlapBeginEventData()
                 {
                     Tile = tile,
                     TileActorA = entity,
@@ -146,7 +146,7 @@ public class UpdateTileActorReferences : SimJobComponentSystem
             // fire 'trigger exit' events for each remaining actor on the tile
             foreach (var actor in buffer)
             {
-                ecb.CreateEventEntity(new TileActorTriggerExitEventData()
+                ecb.CreateEventEntity(new TileActorOverlapEndEventData()
                 {
                     Tile = tile,
                     TileActorA = entity,
