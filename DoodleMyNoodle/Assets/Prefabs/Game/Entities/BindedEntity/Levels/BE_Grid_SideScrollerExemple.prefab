@@ -1349,11 +1349,6 @@ PrefabInstance:
       propertyPath: m_Tiles.Array.data[3].first.y
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 7775491354563716868, guid: 962f8e9da5d965e4f907bd597aebe026,
-        type: 3}
-      propertyPath: m_Name
-      value: VE_GridVisuals_SideScrollerExemple
-      objectReference: {fileID: 0}
     - target: {fileID: 7775491354563716869, guid: 962f8e9da5d965e4f907bd597aebe026,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1424,11 +1419,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7905076531735690271}
     m_Modifications:
-    - target: {fileID: 5217987042345694196, guid: 7f42318e051eb134aa54f29111792713,
-        type: 3}
-      propertyPath: m_Name
-      value: SE_GridContent_SideScroller
-      objectReference: {fileID: 0}
     - target: {fileID: 5217987042345694197, guid: 7f42318e051eb134aa54f29111792713,
         type: 3}
       propertyPath: m_LocalPosition.x

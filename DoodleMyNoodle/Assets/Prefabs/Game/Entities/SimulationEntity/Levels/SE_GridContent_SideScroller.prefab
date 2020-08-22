@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e941756c87180549863140c41f042e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Size: 100
+  Size: 17
   LevelGridSetting: {fileID: 11400000, guid: bfd4ef707ae10c54fa97e99d02e73b71, type: 2}
 --- !u!1 &5217987043277819719
 GameObject:
