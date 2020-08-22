@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngineX;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(ViewBindingDefinition))]
@@ -43,10 +44,10 @@ public class ConvertViewBindingDefinitionToEntities : ConvertToEntity, IConvertG
             switch (worldType)
             {
                 case GameWorldType.Simulation:
-                    childConverter = childGO.AddComponent<ConvertToSimEntity>();
+                    childConverter = childGO.GetOrAddComponent<ConvertToSimEntity>();
                     break;
                 case GameWorldType.Presentation:
-                    childConverter = childGO.AddComponent<ConvertToViewEntity>();
+                    childConverter = childGO.GetOrAddComponent<ConvertToViewEntity>();
                     break;
             }
             childConverter.ConversionMode = ConversionMode;

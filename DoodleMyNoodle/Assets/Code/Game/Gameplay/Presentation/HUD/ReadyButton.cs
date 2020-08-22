@@ -130,6 +130,8 @@ public class ReadyButton : GamePresentationBehaviour
         SimWorld.SubmitInput(new SimPlayerInputNextTurn(!currentlyReady));
 
         _viewState.Set(currentlyReady ? TurnState.NotReady : TurnState.Ready);
+        
+        _updateTimer = UPDATE_DELAY; // reset timer as we're manually updating
 
         ButtonPressed?.Invoke();
     }

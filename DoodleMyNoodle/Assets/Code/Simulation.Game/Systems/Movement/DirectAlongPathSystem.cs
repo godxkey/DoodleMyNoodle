@@ -12,12 +12,13 @@ public class DirectAlongPathSystem : SimComponentSystem
         // if entities collide when moving along path, reset their destination
         Entities.ForEach((ref TileCollisionEventData collisionEvent) =>
         {
-            if (EntityManager.HasComponent<PathPosition>(collisionEvent.Entity))
-            {
-                fix3 entityPos = EntityManager.GetComponentData<FixTranslation>(collisionEvent.Entity).Value;
-                fix3 newDestination = Helpers.GetTileCenter(entityPos);
-                EntityManager.SetOrAddComponentData(collisionEvent.Entity, new Destination() { Value = newDestination });
-            }
+            TryCancelPathForEntity(collisionEvent.Entity);
+        });
+
+        // if entities teleports when moving along path, reset their destination
+        Entities.ForEach((ref TeleportEventData teleportEvent) =>
+        {
+            TryCancelPathForEntity(teleportEvent.Entity);
         });
 
         var deltaTime = Time.DeltaTime;
@@ -71,6 +72,16 @@ public class DirectAlongPathSystem : SimComponentSystem
 
             velocity.Value = (targetPosition - translation.Value) / deltaTime;
         });
+    }
+
+    private void TryCancelPathForEntity(Entity entity)
+    {
+        if (EntityManager.HasComponent<PathPosition>(entity))
+        {
+            fix3 entityPos = EntityManager.GetComponentData<FixTranslation>(entity);
+            fix3 newDestination = Helpers.GetTileCenter(entityPos);
+            EntityManager.SetOrAddComponentData(entity, new Destination() { Value = newDestination });
+        }
     }
 }
 

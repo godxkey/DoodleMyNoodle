@@ -26,6 +26,9 @@ public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
             if (startingInventory.Length >= Size)
                 break;
 
+            if (!itemGO)
+                continue;
+
             startingInventory.Add(new StartingInventoryItem() { ItemEntityPrefab = conversionSystem.GetPrimaryEntity(itemGO) });
         }
     }

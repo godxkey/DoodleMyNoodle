@@ -8,10 +8,10 @@ public class GameActionMeleeAttack : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description()
+            new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
             {
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = accessor.GetComponentData<ItemRangeData>(context.Entity).Value
+                IncludeSelf = false,
+                RequiresAttackableEntity = true,
             });
     }
 
@@ -43,7 +43,7 @@ public class GameActionMeleeAttack : GameAction
 
             // reduce target health
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, paramTile.Tile, victims);
+            CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
             foreach (Entity entity in victims)
             {
                 CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, accessor.GetComponentData<ItemDamageData>(context.Entity).Value);

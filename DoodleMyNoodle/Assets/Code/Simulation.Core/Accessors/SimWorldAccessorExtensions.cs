@@ -106,7 +106,7 @@ public static class SimWorldAccessorExtensions
     public static Entity CreateEventEntity<T>(this ISimWorldReadWriteAccessor entityManager) 
         where T : struct, IComponentData
     {
-        return entityManager.CreateEntity(typeof(EventEntityTag), ComponentType.ReadWrite<T>());
+        return entityManager.CreateEntity(ComponentType.ReadWrite<T>());
     }
 
     public static Entity CreateEventEntity<T>(this ISimWorldReadWriteAccessor accessor, T data)

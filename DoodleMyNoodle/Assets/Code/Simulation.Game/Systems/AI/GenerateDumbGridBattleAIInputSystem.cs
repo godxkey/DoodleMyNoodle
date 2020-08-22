@@ -18,21 +18,12 @@ public struct ReadyForNextTurnDelayed : IComponentData
 [UpdateBefore(typeof(ExecutePawnControllerInputSystem))]
 public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
 {
-    private EntityQuery _hasAlreadyPlayedEntityQ;
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-
-        _hasAlreadyPlayedEntityQ = EntityManager.CreateEntityQuery(typeof(ReadyForNextTurnDelayed));
-    }
-
     protected override void OnUpdate()
     {
         // On turn change, remove the 'ReadyForNextTurnDelayed' components to make sure we don't 'Ready up!' when we don't want to
         if (HasSingleton<NewTurnEventData>())
         {
-            EntityManager.RemoveComponent<ReadyForNextTurnDelayed>(_hasAlreadyPlayedEntityQ);
+            EntityManager.RemoveComponent<ReadyForNextTurnDelayed>(GetEntityQuery(typeof(ReadyForNextTurnDelayed)));
         }
 
         int currentTeam = CommonReads.GetCurrentTurnTeam(Accessor);
@@ -124,13 +115,27 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
         }
 
 
+        Entity tileEntity = CommonReads.GetTileEntity(Accessor, tile);
+
+        if(tileEntity == Entity.Null)
+        {
+            return false;
+        }
+
         // Search for at least 1 entity that matches:
         //  - on the desired tile
         //  - has Health
         //  - has a controller on the opposing team
 
         NativeList<Entity> attackableEntities = new NativeList<Entity>(Allocator.Temp);
-        CommonReads.FindEntitiesOnTileWithComponents<Health, ControllableTag>(Accessor, tile, attackableEntities);
+
+        foreach (var tileActor in EntityManager.GetBufferReadOnly<TileActorReference>(tileEntity))
+        {
+            if(EntityManager.HasComponent<Health>(tileActor) && EntityManager.HasComponent<ControllableTag>(tileActor))
+            {
+                attackableEntities.Add(tileActor);
+            }
+        }
 
         foreach (Entity attackablePawn in attackableEntities)
         {

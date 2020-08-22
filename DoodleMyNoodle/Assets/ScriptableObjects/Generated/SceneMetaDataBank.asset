@@ -81,3 +81,7 @@ MonoBehaviour:
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype3.unity
     BuildIndex: 16
     AssetGuid: 01ea5267214d63a479a17157f03d0d1d
+  - Name: Gym_Physics
+    Path: Assets/Scenes/Levels/Scene Assets/Gym_Physics.unity
+    BuildIndex: 17
+    AssetGuid: 22c6279033e4e434d8fd305a9fb702f8

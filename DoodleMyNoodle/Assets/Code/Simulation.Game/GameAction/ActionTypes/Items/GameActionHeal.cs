@@ -24,11 +24,9 @@ public class GameActionHeal : GameAction
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description()
+            new GameActionParameterTile.Description(RANGE)
             {
-                RangeFromInstigator = RANGE,
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                IncludeSelf = true
+                RequiresAttackableEntity = true,
             }
         };
 
@@ -49,7 +47,7 @@ public class GameActionHeal : GameAction
 
             // reduce target health
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, paramTile.Tile, victims);
+            CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
             foreach (var entity in victims)
             {
                 CommonWrites.ModifyStatInt<Health>(accessor, entity, HEAL);

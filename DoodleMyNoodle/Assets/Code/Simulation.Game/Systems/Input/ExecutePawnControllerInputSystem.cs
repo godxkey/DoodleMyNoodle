@@ -151,7 +151,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         // Searching for an Inventory addon on tile
         DynamicBuffer<InventoryItemReference> groundInventory = default;
 
-        Entity groundInventoryEntity = CommonReads.GetFirstTileAddonWithComponent<InventoryItemReference>(Accessor, tile);
+        Entity groundInventoryEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference>(Accessor, tile);
         if (groundInventoryEntity != Entity.Null)
         {
             groundInventory = EntityManager.GetBuffer<InventoryItemReference>(groundInventoryEntity);
@@ -163,7 +163,6 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             InteractableInventoryPrefabReferenceSingletonComponent interactableInventoryPrefab = GetSingleton<InteractableInventoryPrefabReferenceSingletonComponent>();
             groundInventoryEntity = EntityManager.Instantiate(interactableInventoryPrefab.Prefab);
             EntityManager.SetComponentData(groundInventoryEntity, pawnTranslation);
-            CommonWrites.AddTileAddon(Accessor, groundInventoryEntity, tile);
 
             groundInventory = Accessor.GetBuffer<InventoryItemReference>(groundInventoryEntity);
         }
@@ -214,7 +213,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             return;
 
         // Find ground inventory
-        Entity groundInventoryEntity = CommonReads.GetFirstTileAddonWithComponent<InventoryItemReference>(Accessor, tile);
+        Entity groundInventoryEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference>(Accessor, tile);
         if (groundInventoryEntity == Entity.Null)
         {
             return;
@@ -323,7 +322,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             return;
         }
 
-        Entity interactableEntity = CommonReads.GetFirstTileAddonWithComponent<Interactable>(Accessor, tile);
+        Entity interactableEntity = CommonReads.FindFirstTileActorWithComponent<Interactable>(Accessor, tile);
         if (interactableEntity == Entity.Null)
         {
             return;

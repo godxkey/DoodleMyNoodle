@@ -12,17 +12,13 @@ public class GameActionComboAttack : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return new UseContract(
-            new GameActionParameterTile.Description()
-            {
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = RANGE
-            },
-            new GameActionParameterTile.Description()
-            {
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = RANGE
-            });
+        var param = new GameActionParameterTile.Description(RANGE)
+        {
+            IncludeSelf = false,
+            RequiresAttackableEntity = true
+        };
+
+        return new UseContract(param, param);
     }
 
     public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
@@ -55,7 +51,7 @@ public class GameActionComboAttack : GameAction
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST_PER_ATTACK);
 
             // find victims
-            CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, firstTile.Tile, victims);
+            CommonReads.FindTileActorsWithComponents<Health>(accessor, firstTile.Tile, victims);
         }
 
         if (parameters.TryGetParameter(1, out GameActionParameterTile.Data secondTile))
@@ -75,7 +71,7 @@ public class GameActionComboAttack : GameAction
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST_PER_ATTACK);
 
             // find victims
-            CommonReads.FindEntitiesOnTileWithComponent<Health>(accessor, secondTile.Tile, victims);
+            CommonReads.FindTileActorsWithComponents<Health>(accessor, secondTile.Tile, victims);
         }
 
         foreach (Entity entity in victims)

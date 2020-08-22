@@ -25,13 +25,13 @@ public class ResetInteractablesSystem : SimComponentSystem
                 else
                 {
                     bool shouldResetInteractable = true;
-                    if (Accessor.HasComponent<Timer>(interactable))
+                    if (Accessor.HasComponent<NoInteractTimer>(interactable))
                     {
                         shouldResetInteractable = false;
-                        Timer currentInteractableTimer = Accessor.GetComponentData<Timer>(interactable);
+                        NoInteractTimer currentInteractableTimer = Accessor.GetComponentData<NoInteractTimer>(interactable);
                         if (Accessor.Time.ElapsedTime >= currentInteractableTimer.EndTime)
                         {
-                            Accessor.SetComponentData(interactable, new Timer() { Duration = interactableData.Delay, CanCountdown = false });
+                            Accessor.SetComponentData(interactable, new NoInteractTimer() { Duration = interactableData.Delay, CanCountdown = false });
                             shouldResetInteractable = true;
                         }
                     }

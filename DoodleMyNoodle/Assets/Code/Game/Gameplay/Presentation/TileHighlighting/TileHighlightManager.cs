@@ -7,15 +7,18 @@ using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
 using Unity.Collections;
+using UnityEngine.Serialization;
 
 public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
 {
-    public GameObject HighlightPrefab;
+    [FormerlySerializedAs("HighlightPrefab")]
+    [SerializeField] private GameObject _highlightPrefab;
 
-    List<GameObject> _highlights = new List<GameObject>();
+    private List<GameObject> _highlights = new List<GameObject>();
+    private Action<GameActionParameterTile.Data> _currentTileSelectionCallback;
 
     public override bool SystemReady => true;
-    
+
     protected override void OnGamePresentationUpdate() { }
 
     protected override void OnDestroy()
@@ -33,14 +36,19 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
     {
         if (_currentTileSelectionCallback != null)
         {
-            GameActionParameterTile.Data TileSelectionData = new GameActionParameterTile.Data(0, int2((int)tileHighlightClicked.x, (int)tileHighlightClicked.y));
+            int2 tile = int2(Mathf.RoundToInt(tileHighlightClicked.x), Mathf.RoundToInt(tileHighlightClicked.y));
+
+            GameActionParameterTile.Data TileSelectionData = new GameActionParameterTile.Data(0, tile);
+
             _currentTileSelectionCallback?.Invoke(TileSelectionData);
+            _currentTileSelectionCallback = null;
+
             HideAll();
         }
     }
-    private void CreateTile()
+    private void CreateHighlight()
     {
-        GameObject newHighlight = Instantiate(HighlightPrefab, transform);
+        GameObject newHighlight = Instantiate(_highlightPrefab, transform);
         _highlights.Add(newHighlight);
 
         newHighlight.GetComponent<HighlightClicker>().OnClicked = OnHighlightClicked;
@@ -56,13 +64,35 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
 
     // TILE PROMPT
 
-    private Action<GameActionParameterTile.Data> _currentTileSelectionCallback;
-    public void AskForSingleTileSelectionAroundPlayer(GameActionParameterTile.Description TileParameters, Action<GameActionParameterTile.Data> TileSelectedData)
+    public void AskForSingleTileSelectionAroundPlayer(GameActionParameterTile.Description description, Action<GameActionParameterTile.Data> onSelectCallback)
     {
-        _currentTileSelectionCallback = null;
-        SimWorld.TryGetComponentData(PlayerHelpers.GetLocalSimPawnEntity(SimWorld), out FixTranslation localPawnPosition);
-        AddHilightsAroundPlayer(roundToInt(localPawnPosition.Value).xy, TileParameters.RangeFromInstigator, TileParameters.Filter, TileParameters.IncludeSelf);
-        _currentTileSelectionCallback = TileSelectedData;
+        _currentTileSelectionCallback = onSelectCallback;
+
+        TileFinder tileFinder = new TileFinder(SimWorld);
+
+        TileFinder.Context context = new TileFinder.Context()
+        {
+            PawnTile = SimWorldCache.LocalPawnTile,
+            PawnEntity = SimWorldCache.LocalPawn,
+        };
+
+        NativeList<int2> tiles = new NativeList<int2>(Allocator.Temp);
+
+        tileFinder.Find(description, context, tiles);
+
+        // Create new highlights (if necessary)
+        while (_highlights.Count < tiles.Length)
+        {
+            CreateHighlight();
+        }
+
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            // Activate Highlight
+            _highlights[i].SetActive(true);
+            _highlights[i].transform.position = new Vector3(tiles[i].x, tiles[i].y, 0);
+        }
+
     }
 
     public void InterruptTileSelectionProcess()
@@ -71,111 +101,125 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
         HideAll();
     }
 
-    private void AddHilightsAroundPlayer(int2 pos, int depth, TileFilterFlags tileFlags, bool includeSelf)
+    private struct TileFinder
     {
-        int numberOfTiles = 0;
-        fix2 newPossibleDestination = new fix2(pos.x, pos.y);
-
-        if (depth > Pathfinding.MAX_PATH_COST)
-            depth = Pathfinding.MAX_PATH_COST;
-
-        if (includeSelf)
+        public struct Context
         {
-            HandleHighlightOnPosition(newPossibleDestination, newPossibleDestination, ref numberOfTiles, depth, tileFlags);
+            public int2 PawnTile;
+            public Entity PawnEntity;
         }
-        
-        for (int i = 1; i <= depth; i++)
+
+        private ISimWorldReadAccessor _accessor;
+
+        public TileFinder(ISimWorldReadAccessor accessor)
         {
-            for (int j = 1; j <= (i * 4); j++)
+            _accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
+        }
+
+        public void Find(GameActionParameterTile.Description description, Context context, NativeList<int2> result)
+        {
+            int2 tileMin = context.PawnTile - int2(description.RangeFromInstigator);
+            int2 tileMax = context.PawnTile + int2(description.RangeFromInstigator);
+
+            for (int x = tileMin.x; x <= tileMax.x; x++)
             {
-                AddHilight(newPossibleDestination, ref numberOfTiles, i, j, depth, tileFlags);
-            }
-        }
-    }
-
-    private void AddHilight(fix2 newPossibleDestination, ref int numberOfTiles, int height, int lenght, int maxPathCost, TileFilterFlags tileFlags)
-    {
-        fix2 originPos = newPossibleDestination;
-        fix2 destinationPos = FindNewPosibleHighlightDestination(newPossibleDestination, height, lenght);
-        
-        HandleHighlightOnPosition(originPos, destinationPos, ref numberOfTiles, maxPathCost, tileFlags);
-    }
-
-    private fix2 FindNewPosibleHighlightDestination(fix2 newPossibleDestination, int height, int lenght)
-    {
-        int currentQuadran = Mathf.CeilToInt((float)lenght / height);
-
-        int displacementForward = ((currentQuadran * height + 1) - lenght);
-        int displacementSide = (lenght - (((currentQuadran - 1) * height) + 1));
-
-        // 4 Quadran
-        switch (currentQuadran)
-        {
-            case 1:
-                newPossibleDestination.x += -1 * displacementForward;
-                newPossibleDestination.y += displacementSide;
-                break;
-            case 2:
-                newPossibleDestination.x += displacementSide;
-                newPossibleDestination.y += displacementForward;
-                break;
-            case 3:
-                newPossibleDestination.x += displacementForward;
-                newPossibleDestination.y += -1 * displacementSide;
-                break;
-            case 4:
-                newPossibleDestination.x += -1 * displacementSide;
-                newPossibleDestination.y += -1 * displacementForward;
-                break;
-            default:
-                break;
-        }
-
-        return newPossibleDestination;
-    }
-
-    private void HandleHighlightOnPosition(fix2 originPos, fix2 destinationPos, ref int numberOfTiles, int maxPathCost, TileFilterFlags tileFlags)
-    {
-        int2 tilePosition = roundToInt(destinationPos).xy;
-
-        // TILE FILTERS
-
-        // tile valid
-        Entity currentTile = CommonReads.GetTileEntity(SimWorld, tilePosition);
-        if (currentTile == Entity.Null)
-        {
-            return;
-        }
-
-        // tile filters
-        if (!CommonReads.DoesTileRespectFilters(SimWorld, currentTile, tileFlags))
-        {
-            return;
-        }
-
-        // tile reachable
-        if ((tileFlags & TileFilterFlags.Navigable) != 0)
-        {
-            NativeList<int2> _highlightNavigablePath = new NativeList<int2>(Allocator.Temp);
-            if (!CommonReads.FindNavigablePath(SimWorld, roundToInt(originPos).xy, tilePosition, maxPathCost, _highlightNavigablePath))
-            {
-                return;
+                for (int y = tileMin.y; y <= tileMax.y; y++)
+                {
+                    TestTile(int2(x, y), description, context, result);
+                }
             }
         }
 
-        // ADDING MISSING TILE
-
-        while (_highlights.Count - numberOfTiles <= 0)
+        private void TestTile(int2 tilePosition, GameActionParameterTile.Description description, in Context parameters, NativeList<int2> result)
         {
-            // We dont have enough, need to spawn a new one
-            CreateTile();
+            if (IsTileOk(tilePosition, description, parameters))
+            {
+                result.Add(tilePosition);
+            }
         }
 
-        // ACTIVATE TILE
+        private bool IsTileOk(int2 tilePosition, GameActionParameterTile.Description description, in Context parameters)
+        {
+            if (!description.IncludeSelf && parameters.PawnTile.Equals(tilePosition))
+            {
+                return false;
+            }
 
-        _highlights[numberOfTiles].SetActive(true);
-        _highlights[numberOfTiles].transform.position = new Vector3((float)destinationPos.x, (float)destinationPos.y, 0);
+            // tile entity valid
+            Entity tileEntity = CommonReads.GetTileEntity(_accessor, tilePosition);
+            if (tileEntity == Entity.Null)
+            {
+                return false; // invalid entity
+            }
 
-        numberOfTiles++;
+            // tile filters
+            var tileFlags = _accessor.GetComponentData<TileFlagComponent>(tileEntity);
+            if ((tileFlags & description.TileFilter) == 0)
+            {
+                return false; // tile is filtered out
+            }
+
+            // tile requires an attackable target
+            if (description.RequiresAttackableEntity)
+            {
+                bool hasAtLeastOneAttackableActor = false;
+                foreach (TileActorReference tileActor in _accessor.GetBufferReadOnly<TileActorReference>(tileEntity))
+                {
+                    if (_accessor.Exists(tileActor))
+                    {
+                        if (_accessor.HasComponent<Health>(tileActor) || _accessor.HasComponent<Armor>(tileActor))
+                        {
+                            hasAtLeastOneAttackableActor = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!hasAtLeastOneAttackableActor)
+                {
+                    return false;
+                }
+            }
+
+            // Custom tile actor predicate
+            if (description.CustomTileActorPredicate != null)
+            {
+                bool hasAtLeastOneMatch = false;
+                foreach (TileActorReference tileActor in _accessor.GetBufferReadOnly<TileActorReference>(tileEntity))
+                {
+                    if (_accessor.Exists(tileActor) && description.CustomTileActorPredicate(tileActor, _accessor))
+                    {
+                        hasAtLeastOneMatch = true;
+                        break;
+                    }
+                }
+
+                if (!hasAtLeastOneMatch)
+                {
+                    return false;
+                }
+            }
+
+            // Custom tile predicate
+            if (description.CustomTilePredicate != null)
+            {
+                if(!description.CustomTilePredicate(tilePosition, tileEntity, _accessor))
+                {
+                    return false;
+                }
+            }
+
+            // tile reachable
+            if (description.MustBeReachable)
+            {
+                NativeList<int2> _highlightNavigablePath = new NativeList<int2>(Allocator.Temp);
+                if (!CommonReads.FindNavigablePath(_accessor, parameters.PawnTile, tilePosition, description.RangeFromInstigator, _highlightNavigablePath))
+                {
+                    return false; // tile is non-reachable
+                }
+            }
+
+            return true;
+        }
     }
 }
