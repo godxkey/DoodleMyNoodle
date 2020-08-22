@@ -11,13 +11,22 @@ public class GameActionConvert : GameAction
     const int RANGE = 5;
     const int DURATION = 2;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+    public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description()
+            new GameActionParameterTile.Description(RANGE)
             {
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = RANGE
+                IncludeSelf = false,
+                CustomTileActorPredicate = (tileActor, accessor) =>
+                {
+                    if (accessor.HasComponent<ControllableTag>(tileActor))
+                    {
+                        var pawnController = CommonReads.GetPawnController(accessor, tileActor);
+                        
+                        return accessor.Exists(pawnController) && accessor.HasComponent<Team>(pawnController);
+                    }
+                    return false;
+                }
             });
     }
 
@@ -41,7 +50,7 @@ public class GameActionConvert : GameAction
 
             // find target
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindEntitiesOnTileWithComponent<ControllableTag>(accessor, paramTile.Tile, victims);
+            CommonReads.FindTileActorsWithComponents<ControllableTag>(accessor, paramTile.Tile, victims);
             foreach (Entity entity in victims)
             {
                 Entity pawnController = CommonReads.GetPawnController(accessor, entity);

@@ -151,7 +151,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         // Searching for an Inventory addon on tile
         DynamicBuffer<InventoryItemReference> groundInventory = default;
 
-        Entity groundInventoryEntity = CommonReads.GetFirstTileAddonWithComponent<InventoryItemReference>(Accessor, tile);
+        Entity groundInventoryEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference>(Accessor, tile);
         if (groundInventoryEntity != Entity.Null)
         {
             groundInventory = EntityManager.GetBuffer<InventoryItemReference>(groundInventoryEntity);
@@ -163,7 +163,6 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             InteractableInventoryPrefabReferenceSingletonComponent interactableInventoryPrefab = GetSingleton<InteractableInventoryPrefabReferenceSingletonComponent>();
             groundInventoryEntity = EntityManager.Instantiate(interactableInventoryPrefab.Prefab);
             EntityManager.SetComponentData(groundInventoryEntity, pawnTranslation);
-            CommonWrites.AddTileAddon(Accessor, groundInventoryEntity, tile);
 
             groundInventory = Accessor.GetBuffer<InventoryItemReference>(groundInventoryEntity);
         }
@@ -214,7 +213,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             return;
 
         // Find ground inventory
-        Entity groundInventoryEntity = CommonReads.GetFirstTileAddonWithComponent<InventoryItemReference>(Accessor, tile);
+        Entity groundInventoryEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference>(Accessor, tile);
         if (groundInventoryEntity == Entity.Null)
         {
             return;
@@ -317,21 +316,23 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                                              inputUseInteractable.InteractablePosition.y,
                                              0);
 
-        fix distanceBetween = fix3.DistanceSquared(pawnPosition.Value, interactablePosition);
-        fix maxDistanceToInteract = (fix)1.1;
-        if (distanceBetween > maxDistanceToInteract) // range to interact, hard coded for now
-        {
-            return;
-        }
-
         Entity tile = CommonReads.GetTileEntity(Accessor, inputUseInteractable.InteractablePosition);
         if (tile == Entity.Null)
         {
             return;
         }
 
-        Entity interactableEntity = CommonReads.GetFirstTileAddonWithComponent<Interactable>(Accessor, tile);
+        Entity interactableEntity = CommonReads.FindFirstTileActorWithComponent<Interactable>(Accessor, tile);
         if (interactableEntity == Entity.Null)
+        {
+            return;
+        }
+
+        fix interactableDistance = Accessor.GetComponentData<Interactable>(interactableEntity).Range;
+
+        fix distanceBetween = fix3.Distance(pawnPosition.Value, interactablePosition);
+        fix maxDistanceToInteract = interactableDistance + (fix)0.1;
+        if (distanceBetween > maxDistanceToInteract) // range to interact, hard coded for now
         {
             return;
         }

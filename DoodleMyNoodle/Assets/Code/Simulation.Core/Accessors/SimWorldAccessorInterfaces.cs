@@ -750,7 +750,6 @@ public interface ISimWorldReadAccessor
     event Action OnEntityClearedAndReplaced;
     SimInput[] TickInputs { get; }
 
-
     // fbessette: 
     //  Here we are giving the presentation access to a query builder in the simulation.
     //  Potential down sides:
@@ -1001,4 +1000,6 @@ public interface ISimWorldReadAccessor
     /// <returns>The entity name.</returns>
     string GetName(Entity entity);
 #endif
+
+    T GetExistingSystem<T>() where T : ComponentSystemBase;
 }

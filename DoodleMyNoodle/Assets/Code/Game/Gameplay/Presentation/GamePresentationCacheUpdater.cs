@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
 
@@ -12,6 +13,7 @@ public class GamePresentationCache
 
     public Entity LocalPawn;
     public fix3 LocalPawnPosition;
+    public int2 LocalPawnTile;
     public Vector3 LocalPawnPositionFloat;
     public Entity LocalController;
     public Team LocalPawnTeam;
@@ -74,6 +76,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
         {
             Cache.LocalPawnPosition = Cache.SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn).Value;
             Cache.LocalPawnPositionFloat = Cache.LocalPawnPosition.ToUnityVec();
+            Cache.LocalPawnTile = Helpers.GetTile(Cache.LocalPawnPosition);
         }
     }
 }

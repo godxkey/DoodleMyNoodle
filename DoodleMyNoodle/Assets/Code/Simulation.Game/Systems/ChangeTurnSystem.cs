@@ -21,6 +21,12 @@ public class ChangeTurnSystem : SimComponentSystem
 
         RequireSingletonForUpdate<TurnTimer>();
     }
+    
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        _eventsEntityQuery.Dispose();
+    }
 
     protected override void OnUpdate()
     {

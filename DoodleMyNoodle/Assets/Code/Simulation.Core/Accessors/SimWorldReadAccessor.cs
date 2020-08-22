@@ -128,4 +128,9 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     public string GetName(Entity entity)
         => EntityManager.GetName(entity);
 #endif
+
+    public T GetExistingSystem<T>() where T : ComponentSystemBase
+    {
+        return SimWorld.GetExistingSystem<T>();
+    }
 }

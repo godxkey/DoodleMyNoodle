@@ -68,11 +68,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2731522050242419033}
     m_Modifications:
-    - target: {fileID: 5202612425808145220, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
-        type: 3}
-      propertyPath: m_Name
-      value: VE_BasicCharacter
-      objectReference: {fileID: 0}
     - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -143,11 +138,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2731522050242419033}
     m_Modifications:
-    - target: {fileID: 3453511231869190616, guid: fe36a28ed936c19459a39e66b5d9eecb,
-        type: 3}
-      propertyPath: m_Name
-      value: SE_BasicCharacterVariant_GridBattleSoldier
-      objectReference: {fileID: 0}
     - target: {fileID: 8132708406327359654, guid: fe36a28ed936c19459a39e66b5d9eecb,
         type: 3}
       propertyPath: m_LocalPosition.x

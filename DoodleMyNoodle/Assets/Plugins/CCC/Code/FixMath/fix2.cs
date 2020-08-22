@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.Serialization;
 using Unity.Mathematics;
+using UnityEngine;
 
 /// <summary>
 /// Provides XNA-like 2D vector math.
@@ -476,5 +477,9 @@ public struct fix2 : IEquatable<fix2>
     public static readonly fix2 Up = new fix2(0, 1);
     public static readonly fix2 Down = new fix2(0, -1);
 
+    public static explicit operator fix2(in Vector2 v) => new fix2((fix)v.x, (fix)v.y);
+    public static explicit operator fix2(in float2 v) => new fix2((fix)v.x, (fix)v.y);
+    public static explicit operator Vector2(in fix2 v) => new Vector2((float)v.x, (float)v.y);
+    public static explicit operator float2(in fix2 v) => new float2((float)v.x, (float)v.y);
     public static implicit operator fix3(in fix2 v) => new fix3(v.x, v.y, 0);
 }

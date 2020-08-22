@@ -68,11 +68,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7881813799777378236}
     m_Modifications:
-    - target: {fileID: 1046879172597623340, guid: 2b3256c36674f2b4f98a219ad8c081d1,
-        type: 3}
-      propertyPath: m_Name
-      value: SE_BasicCharacterVariant_GridBattleSoldierElite
-      objectReference: {fileID: 0}
     - target: {fileID: 5888238884830352210, guid: 2b3256c36674f2b4f98a219ad8c081d1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -197,11 +192,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9068793075289943063, guid: 2aa6236a09629904ea3d773877e7d421,
-        type: 3}
-      propertyPath: m_Name
-      value: VE_BasicCharacterElite
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2aa6236a09629904ea3d773877e7d421, type: 3}

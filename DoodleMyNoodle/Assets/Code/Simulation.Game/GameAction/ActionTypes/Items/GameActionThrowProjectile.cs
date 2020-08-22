@@ -14,9 +14,10 @@ public class GameActionThrowProjectile : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description()
+            new GameActionParameterTile.Description(rangeFromInstigator: 1)
             {
-                RangeFromInstigator = RANGE
+                IncludeSelf = false,
+                TileFilter = ~TileFlags.Terrain, // All EXCEPT terrain 
             });
     }
 

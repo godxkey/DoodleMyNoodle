@@ -21,7 +21,7 @@ public class MessageDisplaySystem : GamePresentationSystem<MessageDisplaySystem>
             int2 tilePos = Helpers.GetTile(SimWorld.GetComponentData<FixTranslation>(SimWorldCache.LocalPawn).Value);
             Entity tileEntity = CommonReads.GetTileEntity(SimWorld, tilePos);
 
-            Entity messageEntity = CommonReads.GetFirstTileAddonWithComponent<Message>(SimWorld, tileEntity);
+            Entity messageEntity = CommonReads.FindFirstTileActorWithComponent<Message>(SimWorld, tileEntity);
 
             if (messageEntity != Entity.Null)
             {

@@ -21,7 +21,8 @@ public class CreatePlayerSystem : SimComponentSystem
                     typeof(Name),
                     typeof(ControlledEntity),
                     typeof(Team),
-                    typeof(ReadyForNextTurn));
+                    typeof(ReadyForNextTurn),
+                    typeof(Active));
 
                 // set persistent id
                 EntityManager.SetComponentData(newPlayerEntity, this.MakeUniquePersistentId());
@@ -47,11 +48,23 @@ public class CreatePlayerSystem : SimComponentSystem
                 // set 'not ready for next turn'
                 EntityManager.SetComponentData(newPlayerEntity, new ReadyForNextTurn() { Value = false });
 
+                // set new player controller as currently active
+                EntityManager.SetComponentData(newPlayerEntity, new Active() { Value = true });
 
                 // FOR DEBUGGING ONLY
 #if UNITY_EDITOR
                 EntityManager.SetName(newPlayerEntity, $"Player({playerName})");
 #endif
+            }
+
+            if (input is SimInputSetPlayerActive setPlayerActiveInput)
+            {
+                Entity PlayerEntity = CommonReads.FindPlayerEntity(Accessor, setPlayerActiveInput.PlayerID);
+
+                if (PlayerEntity != Entity.Null)
+                {
+                    EntityManager.SetComponentData(PlayerEntity, new Active() { Value = setPlayerActiveInput.IsActive });
+                }
             }
         }
     }

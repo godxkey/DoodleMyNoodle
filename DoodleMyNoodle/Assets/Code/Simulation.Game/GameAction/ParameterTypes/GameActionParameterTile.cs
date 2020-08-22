@@ -1,27 +1,34 @@
-﻿using Unity.Mathematics;
-
-
-public enum TileFilterFlags
-{
-    Navigable = 1 << 0,
-    NonNavigable = 1 << 1,
-
-
-    Occupied = 1 << 2,
-    Inoccupied = 1 << 3,
-
-    Ascendable = 1 << 4,
-
-    NotEmpty = 1 << 5,
-}
+﻿using System;
+using Unity.Entities;
+using Unity.Mathematics;
 
 public class GameActionParameterTile
 {
     public class Description : GameAction.ParameterDescription
     {
-        public int RangeFromInstigator = int.MaxValue;
-        public TileFilterFlags Filter;
-        public bool IncludeSelf = false;
+        // NB: default parameters should match to 'all tiles'
+
+        public int RangeFromInstigator { get; private set; }
+        public TileFlags TileFilter = TileFlags.All;
+        public bool IncludeSelf = true;
+        public bool MustBeReachable = false;
+        public bool RequiresAttackableEntity = false;
+
+        // If used, only tiles with a matching tile actor will be accepted
+        public delegate bool TileActorPredicate(Entity tileActor, ISimWorldReadAccessor accessor);
+        public TileActorPredicate CustomTileActorPredicate = null;
+
+        // If used, only matching tiles will be accepted
+        public delegate bool TilePredicate(int2 tile, Entity tileEntity, ISimWorldReadAccessor accessor);
+        public TilePredicate CustomTilePredicate = null;
+
+        public Description(int rangeFromInstigator)
+        {
+            if (rangeFromInstigator > Pathfinding.MAX_PATH_COST)
+                rangeFromInstigator = Pathfinding.MAX_PATH_COST;
+
+            RangeFromInstigator = rangeFromInstigator;
+        }
     }
 
     [NetSerializable]
