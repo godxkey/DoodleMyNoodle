@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using Unity.MathematicsX;
 using UnityEditor;
 using UnityEngine;
@@ -19,8 +20,9 @@ public class CameraMovementController : GamePresentationBehaviour
     public bool EnableMovementLimits;
     public float MaxZoom;
 
-    private bool _hasTeleportedToPlayerOnGameStart = false;
-    private bool _hasTeleportedToPlayerOnGameBegin = false;
+    private Transform _transform;
+    private float2 _boundsMin;
+    private float2 _boundsMax;
 
     [ConsoleVar("CameraMouseMovementEnabledWhenWindowed", "Enable/Disable the game camera moving when moving the mouse pointer near the edges of the screen.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
     private static bool s_mouseMovementsEnabledWindowedMode = false;
@@ -36,55 +38,92 @@ public class CameraMovementController : GamePresentationBehaviour
         }
     }
 
-    protected override void OnGamePresentationUpdate()
+    private Vector2 CamPosition
+    {
+        get => _transform.position;
+        set
+        {
+            _transform.position = new Vector3(
+                Mathf.Clamp(value.x, _boundsMin.x, _boundsMax.x),
+                Mathf.Clamp(value.y, _boundsMin.y, _boundsMax.y),
+                _transform.position.z);
+        }
+    }
+
+    private float CamSize
+    {
+        get => Cam.orthographicSize;
+        set => Cam.orthographicSize = Mathf.Clamp(value, 1, MaxZoom);
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        _transform = transform;
+    }
+
+    public override void OnPostSimulationTick()
+    {
+        base.OnPostSimulationTick();
+
+        SimWorld.Entities.ForEach((ref TeleportEventData teleportEvent) =>
+        {
+            // center camera on pawn after teleport
+            if (teleportEvent.Entity == SimWorldCache.LocalPawn)
+            {
+                CamPosition = SimWorldCache.LocalPawnPositionFloat;
+            }
+        });
+    }
+
+    protected override void OnGamePresentationUpdate() { }
+
+    void Update()
     {
         if (GameConsole.IsOpen())
         {
             return;
         }
 
-        Vector3 movement = Vector3.zero;
+        Vector2 movement = Vector2.zero;
 
         if (Input.GetKey(KeyCode.W) || (MouseMovementsEnabled && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
         {
-            movement += Vector3.up;
+            movement += Vector2.up;
         }
 
         if (Input.GetKey(KeyCode.S) || (MouseMovementsEnabled && (Input.mousePosition.y > 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
         {
-            movement -= Vector3.up;
+            movement -= Vector2.up;
         }
 
         if (Input.GetKey(KeyCode.A) || (MouseMovementsEnabled && (Input.mousePosition.x > 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
         {
-            movement += Vector3.left;
+            movement += Vector2.left;
         }
 
         if (Input.GetKey(KeyCode.D) || (MouseMovementsEnabled && (Input.mousePosition.x >= (Screen.width - ScreenEdgeBorderThickness))))
         {
-            movement += Vector3.right;
+            movement += Vector2.right;
         }
 
-        if (movement != Vector3.zero)
+        if (movement != Vector2.zero)
         {
             movement.Normalize();
-            transform.Translate(movement * Speed * Cam.orthographicSize * Time.deltaTime, Space.World);
+            CamPosition += movement * Speed * CamSize * Time.deltaTime;
         }
 
-        Cam.orthographicSize -= Input.mouseScrollDelta.y * ZoomSpeed;
-        Cam.orthographicSize = Mathf.Clamp(Cam.orthographicSize, 1, MaxZoom);
+        CamSize -= Input.mouseScrollDelta.y * ZoomSpeed;
 
         if (EnableMovementLimits == true)
         {
-            if (SimWorld.TryGetSingleton(out GridInfo gridInfo))
-            {
-                intRect gridRect = gridInfo.GridRect;
+            if (SimWorld == null || !SimWorld.HasSingleton<GridInfo>())
+                return;
 
-                Vector3 cameraPostion = transform.position;
-                transform.position = new Vector3(Mathf.Clamp(cameraPostion.x, gridRect.min.x, gridRect.max.x),
-                                                 Mathf.Clamp(cameraPostion.y, gridRect.min.y, gridRect.max.y),
-                                                 cameraPostion.z);
-            }
+            GridInfo gridRect = SimWorld.GetSingleton<GridInfo>();
+
+            UpdateBounds(gridRect.TileMin, gridRect.TileMax);
         }
 
         if (Input.GetKey(KeyCode.Space))
@@ -93,16 +132,12 @@ public class CameraMovementController : GamePresentationBehaviour
             Vector3 cameraPostion = transform.position;
             transform.position = new Vector3((float)playerPosition.x, (float)playerPosition.y, cameraPostion.z);
         }
+    }
 
-        if (SimWorld.HasSingleton<GameStartedTag>() && !_hasTeleportedToPlayerOnGameStart)
-        {
-            _hasTeleportedToPlayerOnGameStart = true;
-
-            fix3 playerPosition = SimWorld.GetComponentData<FixTranslation>(SimWorldCache.LocalPawn).Value;
-            Vector3 cameraPostion = transform.position;
-            transform.position = new Vector3((float)playerPosition.x, (float)playerPosition.y, cameraPostion.z);
-        }
-
-        // todo after starting zone teleport camera here
+    private void UpdateBounds(float2 min, float2 max)
+    {
+        _boundsMin = min;
+        _boundsMax = max;
+        CamPosition = CamPosition;
     }
 }
