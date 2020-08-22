@@ -1,5 +1,6 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using static Unity.Mathematics.math;
 using Unity.MathematicsX;
 using UnityEditor;
 using UnityEngine;
@@ -117,6 +118,9 @@ public class CameraMovementController : GamePresentationBehaviour
 
         CamSize -= Input.mouseScrollDelta.y * ZoomSpeed;
 
+        float2 min = float2(float.MinValue, float.MinValue);
+        float2 max = float2(float.MaxValue, float.MaxValue);
+
         if (EnableMovementLimits == true)
         {
             if (SimWorld == null || !SimWorld.HasSingleton<GridInfo>())
@@ -124,8 +128,14 @@ public class CameraMovementController : GamePresentationBehaviour
 
             GridInfo gridRect = SimWorld.GetSingleton<GridInfo>();
 
-            UpdateBounds(gridRect.TileMin, gridRect.TileMax);
+            if (!gridRect.Size.Equals(int2(0, 0))) // if grid size is (0,0), there is no grid!
+            {
+                min = gridRect.TileMin - float2(0.5f, 0.5f);
+                max = gridRect.TileMax + float2(0.5f, 0.5f);
+            }
         }
+        
+        UpdateBounds(min, max);
     }
 
     private void UpdateBounds(float2 min, float2 max)
