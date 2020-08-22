@@ -148,54 +148,54 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             return;
         }
 
-        // Searching for an Inventory addon on tile
-        DynamicBuffer<InventoryItemReference> groundInventory = default;
+        // Searching for a chest entity
+        DynamicBuffer<InventoryItemReference> chestInventory = default;
 
-        Entity groundInventoryEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference>(Accessor, tile);
-        if (groundInventoryEntity != Entity.Null)
+        Entity chestEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference, Interactable>(Accessor, tile);
+        if (chestEntity != Entity.Null)
         {
-            groundInventory = EntityManager.GetBuffer<InventoryItemReference>(groundInventoryEntity);
+            chestInventory = EntityManager.GetBuffer<InventoryItemReference>(chestEntity);
         }
 
         // Didn't found an inventory, let's spawn one
-        if (!groundInventory.IsCreated)
+        if (!chestInventory.IsCreated)
         {
-            InteractableInventoryPrefabReferenceSingletonComponent interactableInventoryPrefab = GetSingleton<InteractableInventoryPrefabReferenceSingletonComponent>();
-            groundInventoryEntity = EntityManager.Instantiate(interactableInventoryPrefab.Prefab);
-            EntityManager.SetComponentData(groundInventoryEntity, pawnTranslation);
+            InteractableInventoryPrefabReferenceSingletonComponent chestPrefab = GetSingleton<InteractableInventoryPrefabReferenceSingletonComponent>();
+            chestEntity = EntityManager.Instantiate(chestPrefab.Prefab);
+            EntityManager.SetComponentData(chestEntity, pawnTranslation);
 
-            groundInventory = Accessor.GetBuffer<InventoryItemReference>(groundInventoryEntity);
+            chestInventory = Accessor.GetBuffer<InventoryItemReference>(chestEntity);
         }
 
-        // Move item from player's inventory to ground inventory
-        if (!CommonReads.IsInventoryFull(Accessor, groundInventoryEntity))
+        // Move item from player's inventory to chest inventory
+        if (!CommonReads.IsInventoryFull(Accessor, chestEntity))
         {
             DynamicBuffer<InventoryItemReference> pawnInventory = EntityManager.GetBuffer<InventoryItemReference>(pawn);
 
             Entity itemToMove = pawnInventory[pawnInputDropItem.ItemIndex].ItemEntity;
-            if (CommonWrites.TryIncrementStackableItemInInventory(Accessor, groundInventoryEntity, itemToMove, groundInventory))
+            if (CommonWrites.TryIncrementStackableItemInInventory(Accessor, chestEntity, itemToMove, chestInventory))
             {
                 CommonWrites.DecrementStackableItemInInventory(Accessor, pawn, itemToMove);
             }
             else
             {
-                Entity entityToGiveToGroundInventory;
+                Entity entityToGiveToChest;
 
                 // We did not find any stackable in destination inventory, but we want to transfer only one if stackable
                 if (EntityManager.HasComponent<ItemStackableData>(itemToMove))
                 {
-                    entityToGiveToGroundInventory = EntityManager.Instantiate(itemToMove);
-                    EntityManager.SetComponentData(entityToGiveToGroundInventory, new ItemStackableData() { Value = 1 });
+                    entityToGiveToChest = EntityManager.Instantiate(itemToMove);
+                    EntityManager.SetComponentData(entityToGiveToChest, new ItemStackableData() { Value = 1 });
                     CommonWrites.DecrementStackableItemInInventory(Accessor, pawn, itemToMove);
                 }
                 else
                 {
-                    entityToGiveToGroundInventory = itemToMove;
+                    entityToGiveToChest = itemToMove;
                     pawnInventory.RemoveAt(pawnInputDropItem.ItemIndex);
                 }
                 
-                groundInventory = EntityManager.GetBuffer<InventoryItemReference>(groundInventoryEntity);
-                groundInventory.Add(new InventoryItemReference() { ItemEntity = entityToGiveToGroundInventory });
+                chestInventory = EntityManager.GetBuffer<InventoryItemReference>(chestEntity);
+                chestInventory.Add(new InventoryItemReference() { ItemEntity = entityToGiveToChest });
             }
         }
     }
@@ -212,29 +212,29 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         if (!EntityManager.HasComponent<InventoryItemReference>(pawn))
             return;
 
-        // Find ground inventory
-        Entity groundInventoryEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference>(Accessor, tile);
-        if (groundInventoryEntity == Entity.Null)
+        // Find chest inventory
+        Entity chestEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference, Interactable>(Accessor, tile);
+        if (chestEntity == Entity.Null)
         {
             return;
         }
 
         // Get item buffer
-        DynamicBuffer<InventoryItemReference> groundInventory = EntityManager.GetBuffer<InventoryItemReference>(groundInventoryEntity);
-        if (groundInventory.Length <= pawnInputEquipItem.ItemIndex)
+        DynamicBuffer<InventoryItemReference> chestInventory = EntityManager.GetBuffer<InventoryItemReference>(chestEntity);
+        if (chestInventory.Length <= pawnInputEquipItem.ItemIndex)
         {
             return;
         }
 
         // Get item to move
-        Entity item = groundInventory[pawnInputEquipItem.ItemIndex].ItemEntity;
+        Entity item = chestInventory[pawnInputEquipItem.ItemIndex].ItemEntity;
 
         if (!CommonReads.IsInventoryFull(Accessor, pawn))
         {
-            // Trying to increment stack on pawn and if succeed decrement original item on ground
+            // Trying to increment stack on pawn and if succeed decrement original item on chest
             if (CommonWrites.TryIncrementStackableItemInInventory(Accessor, pawn, item, EntityManager.GetBuffer<InventoryItemReference>(pawn)))
             {
-                CommonWrites.DecrementStackableItemInInventory(Accessor, groundInventoryEntity, item);
+                CommonWrites.DecrementStackableItemInInventory(Accessor, chestEntity, item);
             }
             else
             {
@@ -245,15 +245,15 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                 {
                     itemToGiveToPawn = EntityManager.Instantiate(item);
                     EntityManager.SetComponentData(itemToGiveToPawn, new ItemStackableData() { Value = 1 });
-                    CommonWrites.DecrementStackableItemInInventory(Accessor, groundInventoryEntity, item);
+                    CommonWrites.DecrementStackableItemInInventory(Accessor, chestEntity, item);
                 }
                 else
                 {
-                    groundInventory.RemoveAt(pawnInputEquipItem.ItemIndex);
+                    chestInventory.RemoveAt(pawnInputEquipItem.ItemIndex);
                     itemToGiveToPawn = item;
                 }
 
-                // Move item from ground inventory to player's inventory
+                // Move item from chest inventory to player's inventory
                 EntityManager.GetBuffer<InventoryItemReference>(pawn).Add(new InventoryItemReference() { ItemEntity = itemToGiveToPawn });
             }
         }

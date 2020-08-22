@@ -28,6 +28,19 @@ public partial class CommonReads
         return allTiles[index].Tile;
     }
 
+    public static Entity FindFirstTileActorWithComponent<T1, T2>(ISimWorldReadAccessor accessor, Entity tile)
+    {
+        foreach (TileActorReference actor in accessor.GetBufferReadOnly<TileActorReference>(tile))
+        {
+            if (accessor.HasComponent<T1>(actor) && accessor.HasComponent<T2>(actor))
+            {
+                return actor;
+            }
+        }
+
+        return Entity.Null;
+    }
+
     public static Entity FindFirstTileActorWithComponent<T>(ISimWorldReadAccessor accessor, Entity tile)
     {
         foreach (TileActorReference actor in accessor.GetBufferReadOnly<TileActorReference>(tile))

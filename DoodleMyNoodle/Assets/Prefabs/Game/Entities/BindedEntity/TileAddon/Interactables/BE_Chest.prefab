@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2001062058160152561}
   - component: {fileID: 2001062058160152558}
   m_Layer: 0
-  m_Name: BE_ItemContainer
+  m_Name: BE_Chest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -192,11 +192,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 30145307963041151, guid: d0421163de1d6aa4289ff31f953949e7,
-        type: 3}
-      propertyPath: m_Name
-      value: SE_ItemContainer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d0421163de1d6aa4289ff31f953949e7, type: 3}
