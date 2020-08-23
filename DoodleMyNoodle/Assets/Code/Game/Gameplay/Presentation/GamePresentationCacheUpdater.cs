@@ -14,6 +14,7 @@ public class GamePresentationCache
     public Entity LocalPawn;
     public fix3 LocalPawnPosition;
     public int2 LocalPawnTile;
+    public Entity LocalPawnTileEntity;
     public Vector3 LocalPawnPositionFloat;
     public Entity LocalController;
     public Team LocalPawnTeam;
@@ -53,6 +54,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
     {
         Cache.LocalController = Entity.Null;
         Cache.LocalPawn = Entity.Null;
+        Cache.LocalPawnTileEntity = Entity.Null;
     }
 
     protected override void OnUpdate()
@@ -77,6 +79,11 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
             Cache.LocalPawnPosition = Cache.SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn).Value;
             Cache.LocalPawnPositionFloat = Cache.LocalPawnPosition.ToUnityVec();
             Cache.LocalPawnTile = Helpers.GetTile(Cache.LocalPawnPosition);
+            Cache.LocalPawnTileEntity = CommonReads.GetTileEntity(Cache.SimWorld, Cache.LocalPawnTile);
+        }
+        else
+        {
+            Cache.LocalPawnTileEntity = Entity.Null;
         }
     }
 }

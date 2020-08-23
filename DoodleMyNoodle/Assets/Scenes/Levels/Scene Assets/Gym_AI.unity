@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -136,12 +136,12 @@ PrefabInstance:
     - target: {fileID: 2731522050242419033, guid: 3f87e263f4bf81a49bea82dc6b142e6e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.95
+      value: 6.93
       objectReference: {fileID: 0}
     - target: {fileID: 2731522050242419033, guid: 3f87e263f4bf81a49bea82dc6b142e6e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.05
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2731522050242419033, guid: 3f87e263f4bf81a49bea82dc6b142e6e,
         type: 3}
@@ -274,12 +274,12 @@ PrefabInstance:
     - target: {fileID: 3039350714159551396, guid: 7425eff6bd23f2c4ea2111a45a3037d4,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.23
+      value: -5.07
       objectReference: {fileID: 0}
     - target: {fileID: 3039350714159551396, guid: 7425eff6bd23f2c4ea2111a45a3037d4,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.95
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3039350714159551396, guid: 7425eff6bd23f2c4ea2111a45a3037d4,
         type: 3}
@@ -550,7 +550,7 @@ MonoBehaviour:
   overrideServerName: 0
   serverName: 
   overrideLevel: 1
-  level: {fileID: 11400000, guid: 855f239a70fa0fa45b87ada7e9937f76, type: 2}
+  level: {fileID: 11400000, guid: f85061023f8c69547983cdbe3d683216, type: 2}
 --- !u!4 &2091116007
 Transform:
   m_ObjectHideFlags: 0

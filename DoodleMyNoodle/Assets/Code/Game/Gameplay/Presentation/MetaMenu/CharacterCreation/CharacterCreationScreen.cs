@@ -16,15 +16,27 @@ public class CharacterCreationScreen : GamePresentationBehaviour
 
     private PlayerDoodleAsset _doodleAsset;
 
-    private string DoodleSearchFolder
+    private string PawnNamePref
     {
         get
         {
-            return PlayerPrefs.GetString("doodle-path", defaultValue: "");
+            return PlayerPrefs.GetString("pawn-name", defaultValue: "");
         }
         set
         {
-            PlayerPrefs.SetString("doodle-path", value);
+            PlayerPrefs.SetString("pawn-name", value);
+            PlayerPrefs.Save();
+        }
+    }
+    private string DoodlePathPref
+    {
+        get
+        {
+            return PlayerPrefs.GetString("doodle-path-2", defaultValue: "");
+        }
+        set
+        {
+            PlayerPrefs.SetString("doodle-path-2", value);
             PlayerPrefs.Save();
         }
     }
@@ -45,6 +57,11 @@ public class CharacterCreationScreen : GamePresentationBehaviour
 
         _importDoodleButton.onClick.AddListener(ImportDoodle);
         GameUI.Instance.ReadyButton.ButtonPressed += ApplyCharacterSettings;
+
+        // import previous doodle
+        ImportDoodle(DoodlePathPref);
+
+        _nameField.text = PawnNamePref;
     }
 
     protected override void OnDestroy()
@@ -67,18 +84,39 @@ public class CharacterCreationScreen : GamePresentationBehaviour
             new ExtensionFilter("Images", "png", "jpg")
         };
 
-        string[] selectedFiles = StandaloneFileBrowser.OpenFilePanel("Select File", DoodleSearchFolder, allowedExtensions, false);
+        string directory = string.Empty;
+        try
+        {
+            directory = Path.GetDirectoryName(DoodlePathPref);
+        }
+        catch { }
+
+        string[] selectedFiles = StandaloneFileBrowser.OpenFilePanel("Select File", directory, allowedExtensions, false);
         if (selectedFiles.Length != 1)
         {
             return;
         }
 
-        DoodleSearchFolder = Path.GetDirectoryName(selectedFiles[0]); // set search folder for next search
+        ImportDoodle(selectedFiles[0]);
+    }
 
-        byte[] bytes = File.ReadAllBytes(selectedFiles[0]);
+    private void ImportDoodle(string path)
+    {
+        if (File.Exists(path))
+        {
+            try
+            {
+                byte[] bytes = File.ReadAllBytes(path);
 
-        _doodleAsset.Load(bytes);
-        _doodlePreview.enabled = true;
+                _doodleAsset.Load(bytes);
+                _doodlePreview.enabled = true;
+                DoodlePathPref = path;
+            }
+            catch (Exception e)
+            {
+                Log.Info($"Cannot import doodle at path {path}: {e.Message}");
+            }
+        }
     }
 
     private void ApplyCharacterSettings()
@@ -94,6 +132,8 @@ public class CharacterCreationScreen : GamePresentationBehaviour
                 SimPlayerInputSetPawnDoodle setPawnDoodleInput = new SimPlayerInputSetPawnDoodle(_doodleAsset.Guid);
                 SimWorld.SubmitInput(setPawnDoodleInput);
             }
+
+            PawnNamePref = _nameField.text; // record pawn name for future use
 
             // Set name
             SimPlayerInputSetPawnName startNameInput = new SimPlayerInputSetPawnName(_nameField.text);
