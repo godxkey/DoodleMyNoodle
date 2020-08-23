@@ -263,8 +263,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
     {
         void LogDiscardReason(string str)
         {
-            Log.Info($"[{nameof(ExecutePawnControllerInputSystem)}::ExecuteUseItemInput] " +
-                $"Discarding input {inputUseItem} : {str}");
+            Log.Info($"Discarding input {inputUseItem} : {str}");
         }
 
         if (!EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
@@ -307,8 +306,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
     {
         void LogDiscardReason(string str)
         {
-            Log.Info($"[{nameof(ExecutePawnControllerInputSystem)}::ExecuteUseInteractableInput] " +
-                $"Discarding input {inputUseInteractable} : {str}");
+            Log.Info($"Discarding input {inputUseInteractable} : {str}");
         }
 
         FixTranslation pawnPosition = EntityManager.GetComponentData<FixTranslation>(pawn);

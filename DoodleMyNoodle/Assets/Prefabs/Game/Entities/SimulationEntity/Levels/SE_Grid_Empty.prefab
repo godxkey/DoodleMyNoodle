@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1098327287306860764}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.5, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1098327287422241425}
@@ -108,7 +108,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1098327287422241428}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.038674, y: 1.1402304, z: -1.4925376}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1098327287306860767}
@@ -127,7 +127,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e941756c87180549863140c41f042e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelGridSetting: {fileID: 11400000, guid: ba29afcd650921f4ebd2fca6d55a8931, type: 2}
+  _globalGridSettings: {fileID: 11400000, guid: bfd4ef707ae10c54fa97e99d02e73b71,
+    type: 2}
+  _grid: {fileID: 1098327287306860766}
 --- !u!114 &1098327287422241431
 MonoBehaviour:
   m_ObjectHideFlags: 0

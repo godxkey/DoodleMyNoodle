@@ -29,6 +29,37 @@ public static class Pathfinding
 {
     public const int MAX_PATH_COST = 20;
 
+    public static fix CalculateTotalCost(NativeSlice<int2> path)
+    {
+        return path.Length - 1; // first node is always the 'starting' point
+    }
+
+    public static int GetLastPathPointReachableWitingCost(NativeSlice<int2> path, fix maxCost)
+    {
+        if (maxCost <= 0)
+            return 0;
+
+        if(maxCost > CalculateTotalCost(path))
+        {
+            return path.Length - 1;
+        }
+
+        return (int)floor(maxCost);
+    }
+
+    //public static int GetLastPathPointReachableWitingCost(NativeSlice<int2> path, fix maxCost)
+    //{
+    //    if (maxCost <= 0)
+    //        return 0;
+
+    //    if (maxCost > CalculateTotalCost(path))
+    //    {
+    //        return path.Length - 1;
+    //    }
+
+    //    return (int)floor(maxCost);
+    //}
+
     public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, fix maxCost, NativeList<int2> result)
     {
         result.Clear();

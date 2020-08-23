@@ -1,6 +1,7 @@
 ﻿using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 
@@ -36,10 +37,19 @@ public class GameActionMove : GameAction
 
             NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);
             CommonReads.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_COST, _path);
-            int costToMove = _path.Length - 1;
+
+            // Get the last reachable point considering the users' AP
+            int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWitingCost(_path.AsArray().Slice(), instigatorAP);
+
+            // Remove unreachable points 
+            _path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
+
+            // find AP cost
+            int costToMove = (int)ceil(Pathfinding.CalculateTotalCost(_path.Slice()));
 
             if (costToMove > instigatorAP)
             {
+                Log.Error("Error in logic here! Fix me!");
                 return;
             }
 
@@ -47,7 +57,7 @@ public class GameActionMove : GameAction
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -costToMove);
 
             // set destination
-            accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = fix3(paramTile.Tile, 0) });
+            accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = fix3(_path[_path.Length - 1], 0) });
         }
     }
 }

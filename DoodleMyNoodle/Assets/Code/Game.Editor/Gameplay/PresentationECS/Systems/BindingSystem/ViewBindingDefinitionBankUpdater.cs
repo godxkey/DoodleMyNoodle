@@ -28,14 +28,14 @@ public class ViewBindingDefinitionBankUpdater : AssetPostprocessor
                {
                    if (bank == null)
                    {
-                       Log.Info("ViewBindingDefinitionBankUpdater: load bank...");
+                       //Log.Info("ViewBindingDefinitionBankUpdater: load bank...");
 
                        bank = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<ViewBindingDefinitionBank>(ASSET_PATH);
                    }
 
                    if (!bank.ViewBindingDefinitions.Contains(prefab))
                    {
-                       Log.Info("ViewBindingDefinitionBankUpdater: add to bank...");
+                       //Log.Info("ViewBindingDefinitionBankUpdater: add to bank...");
                        setDirty = true;
                        bank.ViewBindingDefinitions.Add(prefab);
 
@@ -45,7 +45,7 @@ public class ViewBindingDefinitionBankUpdater : AssetPostprocessor
 
         if (setDirty)
         {
-            Log.Info("ViewBindingDefinitionBankUpdater: save bank...");
+            //Log.Info("ViewBindingDefinitionBankUpdater: save bank...");
             EditorUtility.SetDirty(bank);
             AssetDatabase.SaveAssets();
         }

@@ -1,6 +1,7 @@
 ﻿using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngineX;
 using static fixMath;
 
 public class GameActionMeleeAttack : GameAction
@@ -36,6 +37,7 @@ public class GameActionMeleeAttack : GameAction
             // melee attack has a range of RANGE
             if (lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
             {
+                LogGameActionInfo(context, $"Melee attack at {paramTile.Tile} out of range. Ignoring.");
                 return;
             }
 

@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngineX;
 
 public abstract class GameAction
 {
+    public static LogChannel LogChannel = Log.CreateChannel("Game Actions", activeByDefault: true);
+
     public abstract class ParameterDescription
     {
     }
@@ -92,4 +95,10 @@ public abstract class GameAction
     public abstract void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters);
     public abstract bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context);
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context);
+
+    [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
+    protected void LogGameActionInfo(in UseContext context, string message)
+    {
+        Log.Info(LogChannel, $"{message} - context(item: {context.Entity}, instigator: {context.InstigatorPawn}, instigatorController: {context.InstigatorPawnController})");
+    }
 }

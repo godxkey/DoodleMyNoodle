@@ -28,9 +28,19 @@ public static class NativeCollectionExtensions
             nativeHashMap.Add(key, value);
         }
     }
-    //public static bool Contains<T>(this NativeArray<T> array, in T value)
-    //    where T : struct
-    //{
-    //    return array.IndexOf(value) != -1;
-    //}
+
+    public static NativeSlice<T> Slice<T>(this NativeList<T> list) where T : struct
+    {
+        return list.AsArray().Slice();
+    }
+
+    public static NativeSlice<T> Slice<T>(this NativeList<T> list, int start) where T : struct
+    {
+        return list.AsArray().Slice(start);
+    }
+
+    public static NativeSlice<T> Slice<T>(this NativeList<T> list, int start, int length) where T : struct
+    {
+        return list.AsArray().Slice(start, length);
+    }
 }

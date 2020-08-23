@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 128593071290780344}
   - component: {fileID: 1193899253929347359}
   m_Layer: 0
-  m_Name: BE_BasicCharacterVariant_GridBattleSoldier
+  m_Name: BE_BasicCharacter_GridBattleSoldier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2602559776137854806}
-  - {fileID: 4629573138943411063}
+  - {fileID: 9014147913314660502}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -61,75 +61,80 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
---- !u!1001 &580093890912741426
+--- !u!1001 &4518678669783685282
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 2731522050242419033}
     m_Modifications:
-    - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
         type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
         type: 3}
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4876621640926341173, guid: cc9eda4020c4d6d4e989d591e6dfae49,
+        type: 3}
+      propertyPath: m_Name
+      value: VE_BasicCharacter_GridBattleSoldier
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 950f116e90b5f1d4f9a86da78a6e1e45, type: 3}
---- !u!4 &4629573138943411063 stripped
+  m_SourcePrefab: {fileID: 100100000, guid: cc9eda4020c4d6d4e989d591e6dfae49, type: 3}
+--- !u!4 &9014147913314660502 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+  m_CorrespondingSourceObject: {fileID: 4876621640926341172, guid: cc9eda4020c4d6d4e989d591e6dfae49,
     type: 3}
-  m_PrefabInstance: {fileID: 580093890912741426}
+  m_PrefabInstance: {fileID: 4518678669783685282}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6107735858563188720
 PrefabInstance:
