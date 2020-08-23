@@ -1,13 +1,10 @@
-﻿using CCC.InspectorDisplay;
-using System.Collections.Generic;
-using Unity.Entities;
-using Unity.Mathematics;
+﻿using Unity.Entities;
 using UnityEngine;
 
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class AIAuth : MonoBehaviour, IConvertGameObjectToEntity
+public abstract class AIAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
