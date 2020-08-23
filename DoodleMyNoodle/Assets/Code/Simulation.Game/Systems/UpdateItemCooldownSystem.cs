@@ -10,13 +10,26 @@ public class UpdateItemCooldownSystem : SimComponentSystem
         var deltaTime = Time.DeltaTime;
 
         Entities
-            .ForEach((Entity item, ref ItemCooldownCounter cooldownCounter) =>
+            .ForEach((Entity item, ref ItemCooldownTimeCounter cooldownCounter) =>
             {
                 cooldownCounter.Value -= deltaTime;
                 if (cooldownCounter.Value <= 0)
                 {
-                    PostUpdateCommands.RemoveComponent<ItemCooldownCounter>(item);
+                    PostUpdateCommands.RemoveComponent<ItemCooldownTimeCounter>(item);
                 }
             });
+
+        if (HasSingleton<NewTurnEventData>())
+        {
+            Entities
+           .ForEach((Entity item, ref ItemCooldownTurnCounter cooldownCounter) =>
+           {
+               cooldownCounter.Value -= 1;
+               if (cooldownCounter.Value <= 0)
+               {
+                   PostUpdateCommands.RemoveComponent<ItemCooldownTurnCounter>(item);
+               }
+           });
+        }
     }
 }

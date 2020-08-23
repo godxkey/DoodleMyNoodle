@@ -19,7 +19,12 @@ public class GameActionMeleeAttack : GameAction
     public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
     {
         // Cooldown
-        if (accessor.HasComponent<ItemCooldownCounter>(context.Entity) && accessor.GetComponentData<ItemCooldownCounter>(context.Entity).Value > 0)
+        if (accessor.HasComponent<ItemCooldownTimeCounter>(context.Entity) && accessor.GetComponentData<ItemCooldownTimeCounter>(context.Entity).Value > 0)
+        {
+            return false;
+        }
+
+        if (accessor.HasComponent<ItemCooldownTurnCounter>(context.Entity) && accessor.GetComponentData<ItemCooldownTurnCounter>(context.Entity).Value > 0)
         {
             return false;
         }
@@ -41,7 +46,15 @@ public class GameActionMeleeAttack : GameAction
                 return;
             }
 
-            accessor.SetOrAddComponentData(context.Entity, new ItemCooldownCounter() { Value = accessor.GetComponentData<ItemCooldownData>(context.Entity).Value });
+            // Cooldown
+            if (accessor.TryGetComponentData(context.Entity, out ItemTimeCooldownData itemTimeCooldownData))
+            {
+                accessor.SetOrAddComponentData(context.Entity, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
+            }
+            else if (accessor.TryGetComponentData(context.Entity, out ItemTurnCooldownData itemTurnCooldownData))
+            {
+                accessor.SetOrAddComponentData(context.Entity, new ItemCooldownTurnCounter() { Value = itemTurnCooldownData.Value });
+            }
 
             // reduce target health
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);

@@ -20,14 +20,14 @@ public class TriggerInteractionOnOverlapSystem : SimComponentSystem
             EntityManager.HasComponent<InteractOnOverlapTag>(b) &&
             EntityManager.HasComponent<Interactable>(b))
         {
-            CommonWrites.Interact(Accessor, b);
+            CommonWrites.Interact(Accessor, b, a);
         }
     }
 }
 
 internal partial class CommonWrites
 {
-    public static void Interact(ISimWorldReadWriteAccessor accessor, Entity interactableEntity)
+    public static void Interact(ISimWorldReadWriteAccessor accessor, Entity interactableEntity, Entity Instigator)
     {
         if (accessor.HasComponent<NoInteractTimer>(interactableEntity))
         {
@@ -36,6 +36,6 @@ internal partial class CommonWrites
             accessor.SetComponentData(interactableEntity, new NoInteractTimer() { Duration = interactableTimer.Duration, EndTime = endTime, CanCountdown = true });
         }
 
-        accessor.SetOrAddComponentData(interactableEntity, new Interacted() { Value = true });
+        accessor.SetOrAddComponentData(interactableEntity, new Interacted() { Value = true, Instigator = Instigator });
     }
 }
