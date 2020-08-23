@@ -70,8 +70,6 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
             foreach (Tilemap tm in tileMaps)
             {
                 BoundsInt cellBounds = tm.cellBounds;
-                //Vector3 tmMin = grid.CellToWorld(cellBounds.min);
-                //Vector3 tmMax = grid.CellToWorld(cellBounds.max);
 
                 minCoord = min(int2(cellBounds.xMin, cellBounds.yMin), minCoord);
                 maxCoord = max(int2(cellBounds.xMax - 1, cellBounds.yMax - 1), maxCoord);

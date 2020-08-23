@@ -21,13 +21,13 @@ public class PawnSpriteColor : GamePresentationBehaviour
             if (SimWorld.TryGetComponentData(pawnController, out Team pawnTeam))
             {
                 Color spriteColor = new Color();
-                switch ((TeamAuth.DesignerFriendlyTeam)pawnTeam.Value)
+                switch ((DesignerFriendlyTeam)pawnTeam.Value)
                 {
-                    case TeamAuth.DesignerFriendlyTeam.Player:
+                    case DesignerFriendlyTeam.Player:
                         spriteColor = Color.white;
                         break;
 
-                    case TeamAuth.DesignerFriendlyTeam.Baddies:
+                    case DesignerFriendlyTeam.Baddies:
                         if (IsElite)
                         {
                             spriteColor = Color.magenta;
