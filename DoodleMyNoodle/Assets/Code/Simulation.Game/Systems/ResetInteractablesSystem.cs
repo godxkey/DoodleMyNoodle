@@ -38,7 +38,7 @@ public class ResetInteractablesSystem : SimComponentSystem
 
                     // can be interacted again, reset as not interacted
                     if (shouldResetInteractable) 
-                        Accessor.SetComponentData(interactable, new Interacted() { Value = false });
+                        Accessor.SetComponentData(interactable, new Interacted() { Value = false, Instigator = interactedData.Instigator });
                 }
             }
         });

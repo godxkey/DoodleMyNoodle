@@ -115,6 +115,11 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
         _lastInventoryEntity = Entity.Null;
     }
 
+    public bool IsOpen()
+    {
+        return _bundleDisplayContainer.activeSelf;
+    }
+
     private void Clear()
     {
         for (int i = 0; i < _currentItemSlots.Count; i++)

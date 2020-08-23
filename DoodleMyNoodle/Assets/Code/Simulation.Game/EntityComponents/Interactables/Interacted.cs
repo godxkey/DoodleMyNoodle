@@ -6,7 +6,7 @@ using Unity.Mathematics;
 public struct Interacted : IComponentData
 {
     public bool Value;
+    public Entity Instigator;
 
     public static implicit operator bool(Interacted interacted) => interacted.Value;
-    public static implicit operator Interacted(bool interacted) => new Interacted() { Value = interacted };
 }

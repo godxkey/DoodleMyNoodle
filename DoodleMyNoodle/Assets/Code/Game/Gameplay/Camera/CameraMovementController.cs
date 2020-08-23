@@ -121,12 +121,12 @@ public class CameraMovementController : GamePresentationBehaviour
             movement += Vector2.up;
         }
 
-        if (Input.GetKey(KeyCode.S) || (MouseMovementsEnabled && (Input.mousePosition.y > 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
+        if (Input.GetKey(KeyCode.S) || (MouseMovementsEnabled && (Input.mousePosition.y >= 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
         {
             movement -= Vector2.up;
         }
 
-        if (Input.GetKey(KeyCode.A) || (MouseMovementsEnabled && (Input.mousePosition.x > 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
+        if (Input.GetKey(KeyCode.A) || (MouseMovementsEnabled && (Input.mousePosition.x >= 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
         {
             movement += Vector2.left;
         }
@@ -140,6 +140,13 @@ public class CameraMovementController : GamePresentationBehaviour
         {
             movement.Normalize();
             CamPosition += movement * Speed * CamSize * Time.deltaTime;
+        }
+
+        if (Input.GetKey(KeyCode.Space) && SimWorldCache.LocalPawn != Entity.Null)
+        {
+            fix3 playerPosition = SimWorld.GetComponentData<FixTranslation>(SimWorldCache.LocalPawn).Value;
+            Vector3 cameraPostion = transform.position;
+            transform.position = new Vector3((float)playerPosition.x, (float)playerPosition.y, cameraPostion.z);
         }
     }
 

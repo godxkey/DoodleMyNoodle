@@ -197,9 +197,11 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
         }
     }
 
-        private void OnStartUsingNewItem(GameAction.UseContract NewItemContact)
+    private void OnStartUsingNewItem(GameAction.UseContract NewItemContact)
     {
         // clean up in case we try to use two items one after the other (cancel feature)
+        TileHighlightManager.Instance.InterruptTileSelectionProcess();
+
         _currentItemUseData = GameAction.UseParameters.Create(new GameAction.ParameterData[NewItemContact.ParameterTypes.Length]);
     }
 
