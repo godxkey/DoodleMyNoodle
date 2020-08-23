@@ -9,7 +9,7 @@ public class TurnTeamDisplay : GamePresentationBehaviour
     [System.Serializable]
     public struct TeamTurnText
     {
-        public TeamAuth.DesignerFriendlyTeam Team;
+        public DesignerFriendlyTeam Team;
         public string Text;
     }
 
@@ -26,10 +26,10 @@ public class TurnTeamDisplay : GamePresentationBehaviour
             currentTeam = turnCurrentTeam.Value;
         }
 
-        SetCurrentTeam((TeamAuth.DesignerFriendlyTeam)currentTeam);
+        SetCurrentTeam((DesignerFriendlyTeam)currentTeam);
     }
 
-    private void SetCurrentTeam(TeamAuth.DesignerFriendlyTeam team)
+    private void SetCurrentTeam(DesignerFriendlyTeam team)
     {
         for (int i = 0; i < TeamTurnTexts.Count; i++)
         {

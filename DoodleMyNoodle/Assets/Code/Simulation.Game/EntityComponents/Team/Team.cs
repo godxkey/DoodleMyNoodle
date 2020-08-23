@@ -2,6 +2,12 @@
 using Unity.Collections;
 using Unity.Entities;
 
+public enum DesignerFriendlyTeam
+{
+    Player = 0,
+    Baddies = 1
+}
+
 [Serializable]
 public struct Team : IComponentData, IEquatable<Team>
 {

@@ -12,7 +12,7 @@ public class GameOverWinnerDisplay : GamePresentationBehaviour
     [System.Serializable]
     public struct WinningTeamText
     {
-        public TeamAuth.DesignerFriendlyTeam Team;
+        public DesignerFriendlyTeam Team;
         public string Text;
     }
 
@@ -27,7 +27,7 @@ public class GameOverWinnerDisplay : GamePresentationBehaviour
         if (SimWorld.TryGetSingleton(out WinningTeam currentWinner))
         {
             DisplayContainer.SetActive(true);
-            SetCurrentWinningTeam((TeamAuth.DesignerFriendlyTeam)currentWinner.Value);
+            SetCurrentWinningTeam((DesignerFriendlyTeam)currentWinner.Value);
 
             this.DelayedCall(5, () =>
             {
@@ -36,7 +36,7 @@ public class GameOverWinnerDisplay : GamePresentationBehaviour
         }
     }
 
-    private void SetCurrentWinningTeam(TeamAuth.DesignerFriendlyTeam team)
+    private void SetCurrentWinningTeam(DesignerFriendlyTeam team)
     {
         for (int i = 0; i < WinTeamTexts.Count; i++)
         {

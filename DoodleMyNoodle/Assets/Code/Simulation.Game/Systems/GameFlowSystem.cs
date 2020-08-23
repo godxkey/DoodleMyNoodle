@@ -26,7 +26,7 @@ public class GameFlowSystem : SimComponentSystem
         // check if every player is ready
         Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn) =>
         {
-            if (team.Value == (int)TeamAuth.DesignerFriendlyTeam.Player)
+            if (team.Value == (int)DesignerFriendlyTeam.Player)
             {
                 atLeastOnePlayerExists = true;
 
@@ -52,8 +52,8 @@ public class GameFlowSystem : SimComponentSystem
         // Otherwise, entering a game with no enemy triggers GameOver instantly.
         if (!HasSingleton<CanTriggerGameOverTag>())
         {
-            if (CommonReads.GetEntitiesFromTeam(Accessor, (int)TeamAuth.DesignerFriendlyTeam.Baddies).Length > 0 &&
-                CommonReads.GetEntitiesFromTeam(Accessor, (int)TeamAuth.DesignerFriendlyTeam.Player).Length > 0)
+            if (CommonReads.GetEntitiesFromTeam(Accessor, (int)DesignerFriendlyTeam.Baddies).Length > 0 &&
+                CommonReads.GetEntitiesFromTeam(Accessor, (int)DesignerFriendlyTeam.Player).Length > 0)
             {
                 this.CreateSingleton<CanTriggerGameOverTag>();
             }
@@ -70,11 +70,11 @@ public class GameFlowSystem : SimComponentSystem
                 // if the team member controls a pawn with Health
                 if (EntityManager.Exists(pawn.Value) && EntityManager.HasComponent<Health>(pawn.Value))
                 {
-                    if (pawnControllerTeam.Value == (int)TeamAuth.DesignerFriendlyTeam.Baddies)
+                    if (pawnControllerTeam.Value == (int)DesignerFriendlyTeam.Baddies)
                     {
                         aiAlive++;
                     }
-                    else if (pawnControllerTeam.Value == (int)TeamAuth.DesignerFriendlyTeam.Player)
+                    else if (pawnControllerTeam.Value == (int)DesignerFriendlyTeam.Player)
                     {
                         playerAlive++;
                     }
@@ -86,7 +86,7 @@ public class GameFlowSystem : SimComponentSystem
                 // Player wins !
                 if (!HasSingleton<WinningTeam>())
                 {
-                    this.CreateSingleton(new WinningTeam { Value = (int)TeamAuth.DesignerFriendlyTeam.Player });
+                    this.CreateSingleton(new WinningTeam { Value = (int)DesignerFriendlyTeam.Player });
                 }
             }
             else if (playerAlive <= 0)
@@ -94,7 +94,7 @@ public class GameFlowSystem : SimComponentSystem
                 // AI wins !
                 if (!HasSingleton<WinningTeam>())
                 {
-                    this.CreateSingleton(new WinningTeam { Value = (int)TeamAuth.DesignerFriendlyTeam.Baddies });
+                    this.CreateSingleton(new WinningTeam { Value = (int)DesignerFriendlyTeam.Baddies });
                 }
             }
         }
