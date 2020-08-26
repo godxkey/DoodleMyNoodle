@@ -194,6 +194,58 @@ public static partial class fixMath
     public static int lengthmanhattan(int3 v) => math.abs(v.x) + math.abs(v.y) + math.abs(v.z);
     public static int lengthmanhattan(int4 v) => math.abs(v.x) + math.abs(v.y) + math.abs(v.z) + math.abs(v.w);
 
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static fix angle2d(fix2 v)
+    {
+        return atan2(v.y, v.x);
+    }
+
+    /// <summary>
+    /// Returns 2 raised to the specified power.
+    /// Provides at least 6 decimals of accuracy.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static fix pow2(fix x) => global::fix.Pow2(x);
+
+    /// <summary>
+    /// Returns the base-2 logarithm of a specified number.
+    /// Provides at least 9 decimals of accuracy.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The argument was non-positive
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static fix log2(fix x) => global::fix.Log2(x);
+
+    /// <summary>
+    /// Returns the natural logarithm of a specified number.
+    /// Provides at least 7 decimals of accuracy.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The argument was non-positive
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static fix ln(fix x) => global::fix.Ln(x);
+
+    /// <summary>
+    /// Returns a rough approximation of the Sine of x.
+    /// This is at least 3 times faster than Sin() on x86 and slightly faster than Math.Sin(),
+    /// however its accuracy is limited to 4-5 decimals, for small enough values of x.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static fix fsin(fix x) => global::fix.FastSin(x);
+
+    /// <summary>
+    /// Returns a rough approximation of the cosine of x.
+    /// See FastSin for more details.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static fix fcos(fix x) => global::fix.FastCos(x);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static fix atan2(fix y, fix x) => global::fix.Atan2(y, x);
+
     //public static fix sqrt(fix x) { return global::fix.Sqrt(x); }
     //public static fix2 sqrt(fix2 x) { return new fix2(sqrt(x.x), sqrt(x.y)); }
     //public static fix3 sqrt(fix3 x) { return new fix3(sqrt(x.x), sqrt(x.y), sqrt(x.z)); }

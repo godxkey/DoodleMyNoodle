@@ -48,25 +48,29 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
             if (!nextTile.Equals(currentTile))
             {
                 var nextTileEntity = CommonReads.GetTileEntity(Accessor, nextTile);
-                var tileFlags = EntityManager.GetComponentData<TileFlagComponent>(nextTileEntity);
 
-                if (tileFlags.IsTerrain)
+                if(nextTileEntity != Entity.Null)
                 {
-                    // collision!
+                    var tileFlags = EntityManager.GetComponentData<TileFlagComponent>(nextTileEntity);
 
-                    // kill velocity
-                    KillVelocityInDirection(ref velocity, dir: nextTile - currentTile);
-                    
-                    // cancel movement
-                    newTranslation.Value = translation.Value;
-
-                    // create event
-                    EntityManager.CreateEventEntity(new TileCollisionEventData()
+                    if (tileFlags.IsTerrain)
                     {
-                        Entity = entity,
-                        Tile = nextTile,
-                        TileEntity = nextTileEntity
-                    });
+                        // collision!
+
+                        // kill velocity
+                        KillVelocityInDirection(ref velocity, dir: nextTile - currentTile);
+
+                        // cancel movement
+                        newTranslation.Value = translation.Value;
+
+                        // create event
+                        EntityManager.CreateEventEntity(new TileCollisionEventData()
+                        {
+                            Entity = entity,
+                            Tile = nextTile,
+                            TileEntity = nextTileEntity
+                        });
+                    }
                 }
             }
         });
