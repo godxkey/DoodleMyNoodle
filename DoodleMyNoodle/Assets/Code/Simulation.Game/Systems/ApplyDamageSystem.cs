@@ -14,6 +14,7 @@ public struct DamageToApplyData : IBufferElementData
     public Entity Target;
 }
 
+[AlwaysUpdateSystem]
 public class ApplyDamageSystem : SimComponentSystem
 {
     public static DynamicBuffer<DamageToApplyData> GetDamageToApplySingletonBuffer(ISimWorldReadWriteAccessor accessor)
@@ -28,12 +29,20 @@ public class ApplyDamageSystem : SimComponentSystem
 
     protected override void OnUpdate()
     {
+        // Clear Damage Tag Added Last Frame
+        Entities
+        .ForEach((Entity entity, ref Damaged damagedTag) =>
+        {
+            PostUpdateCommands.RemoveComponent<Damaged>(entity);
+        });
+
         DynamicBuffer<DamageToApplyData> DamageToApplyBuffer = GetDamageToApplySingletonBuffer(Accessor);
 
         foreach (DamageToApplyData damageData in DamageToApplyBuffer)
         {
             int remainingDamage = damageData.Amount;
             Entity target = damageData.Target;
+            bool damageHasBeenApplied = false;
 
             // Invincible
             if (Accessor.HasComponent<Invincible>(target))
@@ -46,6 +55,7 @@ public class ApplyDamageSystem : SimComponentSystem
             {
                 CommonWrites.ModifyStatInt<Armor>(Accessor, target, -remainingDamage);
                 remainingDamage -= armor.Value;
+                damageHasBeenApplied = true;
             }
 
             // Health
@@ -53,6 +63,13 @@ public class ApplyDamageSystem : SimComponentSystem
             {
                 CommonWrites.ModifyStatInt<Health>(Accessor, target, -remainingDamage);
                 remainingDamage -= health.Value;
+                damageHasBeenApplied = true;
+            }
+
+            // Add Damage Tag for Feedbacks
+            if (damageHasBeenApplied)
+            {
+                Accessor.AddComponentData(target, new Damaged());
             }
         }
 

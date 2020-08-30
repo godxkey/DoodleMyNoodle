@@ -112,7 +112,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         int2 bruteTile = Helpers.GetTile(brutePos);
 
         var positions = GetComponentDataFromEntity<FixTranslation>(isReadOnly: true);
-        var attackableEntities = _attackableGroup.ToEntityArray(Allocator.Temp);
+        var attackableEntities = _attackableGroup.ToEntityArray(Allocator.TempJob);
 
         Entity closest = Entity.Null;
         fix closestDist = fix.MaxValue;
@@ -161,6 +161,8 @@ public class UpdateBruteAISystem : SimComponentSystem
                 bruteData.State = BruteAIState.PositionForAttack;
             }
         }
+
+        attackableEntities.Dispose();
     }
 
     private void UpdateMentalState_PositionForAttack(in Entity controller, in Team controllerTeam, ref BruteAIData bruteData, in Entity brutePawn)
