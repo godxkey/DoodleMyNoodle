@@ -1,7 +1,13 @@
+using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
+
+public struct DamageAppliedEventData : IComponentData
+{
+    public Entity EntityDamaged;
+}
 
 public struct DamageToApplySingletonTag : IComponentData
 {
@@ -17,6 +23,21 @@ public struct DamageToApplyData : IBufferElementData
 [AlwaysUpdateSystem]
 public class ApplyDamageSystem : SimComponentSystem
 {
+    EntityQuery _eventsEntityQuery;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        _eventsEntityQuery = EntityManager.CreateEntityQuery(typeof(DamageAppliedEventData));
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        _eventsEntityQuery.Dispose();
+    }
+
     public static DynamicBuffer<DamageToApplyData> GetDamageToApplySingletonBuffer(ISimWorldReadWriteAccessor accessor)
     {
         if (!accessor.HasSingleton<DamageToApplySingletonTag>())
@@ -29,14 +50,12 @@ public class ApplyDamageSystem : SimComponentSystem
 
     protected override void OnUpdate()
     {
-        // Clear Damage Tag Added Last Frame
-        Entities
-        .ForEach((Entity entity, ref Damaged damagedTag) =>
-        {
-            PostUpdateCommands.RemoveComponent<Damaged>(entity);
-        });
+        // Clear Damage Applied Events
+        EntityManager.DestroyEntity(_eventsEntityQuery);
 
         DynamicBuffer<DamageToApplyData> DamageToApplyBuffer = GetDamageToApplySingletonBuffer(Accessor);
+
+        List<Entity> damagedEntity = new List<Entity>();
 
         foreach (DamageToApplyData damageData in DamageToApplyBuffer)
         {
@@ -66,14 +85,20 @@ public class ApplyDamageSystem : SimComponentSystem
                 damageHasBeenApplied = true;
             }
 
-            // Add Damage Tag for Feedbacks
+            // Handle damaged entity for feedbacks
             if (damageHasBeenApplied)
             {
-                Accessor.AddComponentData(target, new Damaged());
+                damagedEntity.Add(target);
             }
         }
 
         DamageToApplyBuffer.Clear();
+
+        // We save entities damaged and do this here because we need to clear the buffer and it's a simulation changed
+        foreach (Entity entity in damagedEntity)
+        {
+            EntityManager.CreateEventEntity(new DamageAppliedEventData() { EntityDamaged = entity });
+        }
     }
 }
 
