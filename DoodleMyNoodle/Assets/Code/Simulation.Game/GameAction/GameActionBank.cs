@@ -73,6 +73,11 @@ public static class GameActionBank
         return GetAction(id.Value);
     }
 
+    public static GameAction GetAction<T>() where T : GameAction
+    {
+        return (T)GetAction(GetActionId<T>());
+    }
+
     public static GameAction GetAction(ushort id)
     {
         if (s_idToGameAction.TryGetValue(id, out GameAction result))

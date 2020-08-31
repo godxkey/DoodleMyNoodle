@@ -21,6 +21,7 @@ public enum BruteAIState
 }
 
 [UpdateAfter(typeof(RefillActionPointsSystem))] // TODO: use groups!
+[UpdateAfter(typeof(DestroyAIControllersSystem))] // TODO: use groups!
 public class UpdateBruteAISystem : SimComponentSystem
 {
     private readonly fix AGGRO_WALK_RANGE = 10;
@@ -160,14 +161,16 @@ public class UpdateBruteAISystem : SimComponentSystem
             {
                 bruteData.State = BruteAIState.PositionForAttack;
             }
+            Log.Method("new mental state: " + bruteData.State);
         }
     }
 
     private void UpdateMentalState_PositionForAttack(in Entity controller, in Team controllerTeam, ref BruteAIData bruteData, in Entity brutePawn)
     {
-        if (!EntityManager.Exists(bruteData.AttackTarget) || EntityManager.TryGetComponentData(bruteData.AttackTarget, out FixTranslation enemyPos))
+        if (!EntityManager.Exists(bruteData.AttackTarget) || !EntityManager.TryGetComponentData(bruteData.AttackTarget, out FixTranslation enemyPos))
         {
             bruteData.State = BruteAIState.Patrol;
+            Log.Method("new mental state: " + bruteData.State);
             return;
         }
 
@@ -176,15 +179,17 @@ public class UpdateBruteAISystem : SimComponentSystem
         if (lengthmanhattan(enemyTile - bruteTile) == 1)
         {
             bruteData.State = BruteAIState.Attack;
+            Log.Method("new mental state: " + bruteData.State);
             return;
         }
     }
 
     private void UpdateMentalState_Attacking(in Entity controller, in Team controllerTeam, ref BruteAIData bruteData, in Entity brutePawn)
     {
-        if (!EntityManager.Exists(bruteData.AttackTarget) || EntityManager.TryGetComponentData(bruteData.AttackTarget, out FixTranslation enemyPos))
+        if (!EntityManager.Exists(bruteData.AttackTarget) || !EntityManager.TryGetComponentData(bruteData.AttackTarget, out FixTranslation enemyPos))
         {
             bruteData.State = BruteAIState.Patrol;
+            Log.Method("new mental state: " + bruteData.State);
             return;
         }
 
@@ -193,6 +198,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         if (lengthmanhattan(enemyTile - bruteTile) != 1)
         {
             bruteData.State = BruteAIState.PositionForAttack;
+            Log.Method("new mental state: " + bruteData.State);
             return;
         }
     }
@@ -231,6 +237,7 @@ public class UpdateBruteAISystem : SimComponentSystem
 
     private bool Act_Patrol(in Entity controller, in Team team, in BruteAIData bruteData, in ControlledEntity pawn)
     {
+        Log.Method();
         return false;
     }
 
@@ -269,20 +276,24 @@ public class UpdateBruteAISystem : SimComponentSystem
 
         if (closestTile == null)
         {
+            Log.Method("cannot move");
             return false;
         }
 
         // verify pawn has enough ap to move at least once
         if (EntityManager.TryGetComponentData(pawn, out ActionPoints ap) && ap.Value < closestMinimalMoveCost)
         {
+            Log.Method("not enough ap: " + ap.Value);
             return false;
         }
 
+        Log.Method("use boots");
         return CommonWrites.TryInputUseItem<GameActionMove>(Accessor, controller, closestTile.Value);
     }
 
     private bool Act_Attacking(in Entity controller, in Team team, in BruteAIData bruteData, in ControlledEntity pawn)
     {
+        Log.Method();
         int2 attackTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(bruteData.AttackTarget));
 
         return CommonWrites.TryInputUseItem<GameActionMeleeAttack>(Accessor, controller, attackTile);
@@ -302,6 +313,11 @@ static internal partial class CommonWrites
         // get pawn's item
         Entity item = CommonReads.FindFirstItemWithGameAction<T>(accessor, pawn, out int itemIndex);
         if (item == Entity.Null)
+            return false;
+
+        // check item can be used
+        var gameAction = GameActionBank.GetAction<T>();
+        if (gameAction == null || !gameAction.CanBeUsedInContext(accessor, new GameAction.UseContext(entityController, pawn, item)))
             return false;
 
         // create game action's use data

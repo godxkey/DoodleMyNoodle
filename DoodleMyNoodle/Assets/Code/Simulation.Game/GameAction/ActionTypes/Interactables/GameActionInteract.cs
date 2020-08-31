@@ -10,9 +10,14 @@ public class GameActionInteract : GameAction
         return new UseContract();
     }
 
-    public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
+    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
     {
         return true;
+    }
+
+    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
+    {
+        return 0;
     }
 
     public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)

@@ -7,10 +7,14 @@ using static Unity.Mathematics.math;
 
 public class GameActionMove : GameAction
 {
-    public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
+    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
     {
-        return accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
-            && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);
+        return true;
+    }
+
+    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
+    {
+        return 1;
     }
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

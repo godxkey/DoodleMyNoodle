@@ -21,10 +21,14 @@ public class GameActionComboAttack : GameAction
         return new UseContract(param, param);
     }
 
-    public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
+    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
     {
-        return accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
-            && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);
+        return true;
+    }
+    
+    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
+    {
+        return AP_COST_PER_ATTACK;
     }
 
     public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
@@ -84,4 +88,5 @@ public class GameActionComboAttack : GameAction
     {
         CommonWrites.RequestDamageOnTarget(accessor, instigator, entity, DAMAGE);
     }
+
 }

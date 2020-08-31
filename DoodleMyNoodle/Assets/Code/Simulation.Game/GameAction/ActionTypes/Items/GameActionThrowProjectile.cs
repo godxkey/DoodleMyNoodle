@@ -21,10 +21,14 @@ public class GameActionThrowProjectile : GameAction
             });
     }
 
-    public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
+    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
     {
-        return accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
-            && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);
+        return true;
+    }
+
+    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
+    {
+        return AP_COST;
     }
 
     public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)

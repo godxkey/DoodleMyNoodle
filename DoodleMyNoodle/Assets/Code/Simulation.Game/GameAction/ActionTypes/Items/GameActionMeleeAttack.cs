@@ -16,21 +16,14 @@ public class GameActionMeleeAttack : GameAction
             });
     }
 
-    public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
+    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
     {
-        // Cooldown
-        if (accessor.HasComponent<ItemCooldownTimeCounter>(context.Entity) && accessor.GetComponentData<ItemCooldownTimeCounter>(context.Entity).Value > 0)
-        {
-            return false;
-        }
+        return true;
+    }
 
-        if (accessor.HasComponent<ItemCooldownTurnCounter>(context.Entity) && accessor.GetComponentData<ItemCooldownTurnCounter>(context.Entity).Value > 0)
-        {
-            return false;
-        }
-
-        return accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
-            && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);
+    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
+    {
+        return 0;
     }
 
     public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)

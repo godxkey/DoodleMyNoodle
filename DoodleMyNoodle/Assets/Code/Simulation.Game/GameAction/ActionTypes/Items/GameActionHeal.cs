@@ -13,10 +13,14 @@ public class GameActionHeal : GameAction
     const int AP_COST = 2;
     const int HEAL = 4;
 
-    public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
+    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason  debugReason)
     {
-        return accessor.HasComponent<ActionPoints>(context.InstigatorPawn)
-            && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);
+        return true;
+    }
+    
+    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
+    {
+        return AP_COST;
     }
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

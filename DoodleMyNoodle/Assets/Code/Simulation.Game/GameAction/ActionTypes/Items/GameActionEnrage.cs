@@ -16,10 +16,20 @@ public class GameActionEnrage : GameAction
             new GameActionParameterSelfTarget.Description() { });
     }
 
-    public override bool IsContextValid(ISimWorldReadAccessor accessor, in UseContext context)
+    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
     {
-        return accessor.HasComponent<Health>(context.InstigatorPawn)
-            && accessor.HasComponent<FixTranslation>(context.InstigatorPawn);
+        if (!accessor.HasComponent<Health>(context.InstigatorPawn))
+        {
+            debugReason?.Set("Pawn has no health");
+            return false;
+        }
+
+        return true;
+    }
+
+    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
+    {
+        return 0;
     }
 
     public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)

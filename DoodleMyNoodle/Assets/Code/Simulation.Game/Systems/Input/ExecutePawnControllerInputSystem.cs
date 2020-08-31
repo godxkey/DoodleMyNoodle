@@ -193,7 +193,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
                     entityToGiveToChest = itemToMove;
                     pawnInventory.RemoveAt(pawnInputDropItem.ItemIndex);
                 }
-                
+
                 chestInventory = EntityManager.GetBuffer<InventoryItemReference>(chestEntity);
                 chestInventory.Add(new InventoryItemReference() { ItemEntity = entityToGiveToChest });
             }
@@ -263,7 +263,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
     {
         void LogDiscardReason(string str)
         {
-            Log.Info($"Discarding input {inputUseItem} : {str}");
+            Log.Info($"Discarding {inputUseItem.PawnController}'s input : {str}");
         }
 
         if (!EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
@@ -295,9 +295,9 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             Entity = item
         };
 
-        if (!gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData))
+        if (!gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData, out string debugReason))
         {
-            LogDiscardReason($"Can't Trigger {gameAction}");
+            LogDiscardReason($"Can't Trigger {gameAction} because: {debugReason}");
             return;
         }
     }

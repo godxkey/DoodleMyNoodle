@@ -77,7 +77,7 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
 
                     if(_inventorySlots.Count > itemIndex)
                     {
-                        if (GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).IsContextValid(SimWorld, context))
+                        if (GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).CanBeUsedInContext(SimWorld, context))
                         {
                             int stacks = -1;
                             if (SimWorld.TryGetComponentData(item.ItemEntity, out ItemStackableData itemStackableData))
