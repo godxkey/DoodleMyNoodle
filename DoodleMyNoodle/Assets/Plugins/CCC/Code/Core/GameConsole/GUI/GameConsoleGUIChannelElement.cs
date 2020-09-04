@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngineX;
@@ -6,7 +7,7 @@ using UnityEngineX;
 public class GameConsoleGUIChannelElement : MonoBehaviour
 {
     [SerializeField] private Button _button;
-    [SerializeField] private Text _text;
+    [SerializeField] private TMP_Text _text;
     [SerializeField] private Graphic _activeGraphic;
     [SerializeField] private Color _inactiveColor;
     [SerializeField] private Color _activeColor;

@@ -1,0 +1,33 @@
+fileFormatVersion: 2
+guid: ce58171a62d4faa48b9212c04e1e119a
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Segoe UI
+  fontNames:
+  - Segoe UI
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: b086cab080d5ec64b9118e5f2d0f0efd, type: 3}
+  - {fileID: 12800000, guid: 0433da0888ca7794cb89daf8b6cb795d, type: 3}
+  - {fileID: 12800000, guid: 6dd85a18ea1a71f4780a5bbceca1b143, type: 3}
+  - {fileID: 12800000, guid: 5953cad819106504eb7b831e2c05ecdb, type: 3}
+  - {fileID: 12800000, guid: 25518919741153744b9de35fdb8ddd7c, type: 3}
+  - {fileID: 12800000, guid: 3d439769505d2654fa2b8e751f017d09, type: 3}
+  - {fileID: 12800000, guid: 481e9a793ee37d9499cef764c9c8a0b0, type: 3}
+  - {fileID: 12800000, guid: 402703c9e3998274f83c5036d51386e0, type: 3}
+  - {fileID: 12800000, guid: 4984768e9f3d7b8419d504a2f7e14eb8, type: 3}
+  - {fileID: 12800000, guid: 35c9280fea7180449aaebe06cafd1f8d, type: 3}
+  - {fileID: 12800000, guid: ddb8ab6fd5bed7740b532612fecb1f8e, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

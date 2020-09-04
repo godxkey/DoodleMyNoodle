@@ -37,6 +37,8 @@ public class UpdateTileActorReferenceSystem : SimJobComponentSystem
 
         _beginEventsGroup = EntityManager.CreateEntityQuery(typeof(TileActorOverlapBeginEventData));
         _endEventsGroup = EntityManager.CreateEntityQuery(typeof(TileActorOverlapEndEventData));
+
+        RequireSingletonForUpdate<GridInfo>();
     }
 
     protected override void OnDestroy()

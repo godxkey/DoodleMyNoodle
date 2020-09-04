@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using UnityEngineX;
 using System;
 using System.Text;
+using TMPro;
 
 internal class GameConsoleGUISuggestionList : MonoBehaviour
 {
     [SerializeField] private RectTransform _selectionHighlight = null;
     [SerializeField] private Transform _suggestionTextContainer = null;
-    [SerializeField] private Text _suggestionTextPrefab = null;
-    [SerializeField] private Text _inlineSuggestionText = null;
-    [SerializeField] private List<Text> _suggestionTexts;
+    [SerializeField] private TMP_Text _suggestionTextPrefab = null;
+    [SerializeField] private TMP_Text _inlineSuggestionText = null;
+    [SerializeField] private List<TMP_Text> _suggestionTexts;
     [SerializeField] private Color _descriptionColor;
     [SerializeField] private Color _parameterColor;
     [SerializeField] private Color _inlineParameterColor;
@@ -19,7 +20,6 @@ internal class GameConsoleGUISuggestionList : MonoBehaviour
     private GameConsoleDatabase _database;
     private List<(int score, GameConsoleInvokable command)> _suggestionsAndScores = new List<(int score, GameConsoleInvokable command)>();
     private int _selectionIndex = -1;
-    private VerticalLayoutGroup _layoutGroup;
 
     public GameConsoleInvokable HighlightedSuggestion
     {
@@ -32,11 +32,6 @@ internal class GameConsoleGUISuggestionList : MonoBehaviour
     }
 
     public event Action<GameConsoleInvokable> SuggestionPicked;
-
-    private void Awake()
-    {
-        _layoutGroup = _suggestionTextContainer.GetComponent<VerticalLayoutGroup>();
-    }
 
     public void Init(GameConsoleDatabase database)
     {
@@ -191,7 +186,7 @@ internal class GameConsoleGUISuggestionList : MonoBehaviour
     private StringBuilder _strBuilder = new StringBuilder();
     private string _text;
 
-    private void FormatSuggestion(Text text, GameConsoleInvokable command)
+    private void FormatSuggestion(TMP_Text text, GameConsoleInvokable command)
     {
         _strBuilder.Clear();
 
@@ -310,12 +305,12 @@ internal class GameConsoleGUISuggestionList : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(description))
         {
-            stringBuilder.Append("<i>");
+            //stringBuilder.Append("<i>");
             stringBuilder.BeginHTMLColor(_descriptionColor);
             stringBuilder.Append("// ");
             stringBuilder.Append(description);
             stringBuilder.EndHTMLColor();
-            stringBuilder.Append("</i>");
+            //stringBuilder.Append("</i>");
         }
     }
 }

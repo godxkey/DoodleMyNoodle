@@ -101,8 +101,16 @@ public abstract class GameAction
 
     private static Pool<DebugReason> s_debugReasonPool = new Pool<DebugReason>();
 
-    public bool TryUse(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters) 
-        => TryUse(accessor, context, parameters, out _);
+    public bool TryUse(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
+    {
+        if (!CanBeUsedInContext(accessor, context))
+        {
+            return false;
+        }
+
+        Use(accessor, context, parameters);
+        return true;
+    }
 
     public bool TryUse(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, out string debugReason)
     {
@@ -123,9 +131,9 @@ public abstract class GameAction
     public bool CanBeUsedInContext(ISimWorldReadAccessor accessor, in UseContext context, out string debugReason)
     {
         DebugReason reason = s_debugReasonPool.Take();
-        
+
         bool result = CanBeUsedInContextInternal(accessor, context, reason);
-        
+
         debugReason = reason.Get();
 
         s_debugReasonPool.Release(reason);

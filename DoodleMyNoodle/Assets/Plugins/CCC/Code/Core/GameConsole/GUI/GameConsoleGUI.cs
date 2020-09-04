@@ -6,6 +6,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using System.Linq;
 using UnityEngineX;
+using TMPro;
 
 namespace GameConsoleInterals
 {
@@ -15,8 +16,8 @@ namespace GameConsoleInterals
         {
             public Line(string text, Color color)
             {
-                this.Text = text;
-                this.Color = color;
+                Text = text;
+                Color = color;
             }
             public Color Color;
             public string Text;
@@ -24,15 +25,20 @@ namespace GameConsoleInterals
 
         [Header("Links")]
         [SerializeField] private RectTransform _panel = null;
-        [SerializeField] private InputField _inputField = null;
-        [SerializeField] private Text _buildIdText = null;
-        [SerializeField] private Text[] _textComponents = null;
+        [SerializeField] private GameConsoleGUIInputField _inputField = null;
+        [SerializeField] private TMP_Text _buildIdText = null;
         [SerializeField] private GameConsoleGUISuggestionList _suggestionList = null;
+        [SerializeField] private GameConsoleGUILines _lines = null;
+        //[SerializeField] private GameObject _smallBackground = null;
+        //[SerializeField] private GameObject _fullBackground = null;
+        //[SerializeField] private GameObject _channels = null;
+        //[SerializeField] private GameObject _channelsToggle = null;
+        //[SerializeField] private GameObject _linesDetails = null;
 
         [Header("Settings")]
         [SerializeField] private KeyCode[] _toggleConsoleKeys = new KeyCode[] { KeyCode.F1 };
         [SerializeField] private KeyCode[] _submitCommandKeys = new KeyCode[] { KeyCode.Return };
-        [SerializeField] private int _linePoolSize = 1024;
+
 
         [Header("Scrolling")]
         [SerializeField] private float _kbScrollSpeedMin = 50;
@@ -40,33 +46,17 @@ namespace GameConsoleInterals
         [SerializeField] private float _mouseScrollSpeedMin = 1;
         [SerializeField] private float _mouseScrollSpeedMax = 2;
 
-        [Header("Lines")]
-        [SerializeField] private Color _normalLineColor = Color.white;
-        [SerializeField] private Color _commandLineColor = Color.cyan;
-        [SerializeField] private Color _warningLineColor = Color.yellow;
-        [SerializeField] private Color _errorLineColor = Color.red;
-
-        private LineList _lines;
         private int _wantedCaretPosition = -1;
         private float _accumulatedScroll = 0;
         private float _kbScrollSpeed = 0;
         private float _mouseScrollSpeed = 0;
         private DirtyValue<bool> _tryDisplaySuggestions;
         private DirtyValue<string> _inputText;
+        //private bool _miniFormat;
 
         void Awake()
         {
-            _lines = new LineList(_linePoolSize);
             _suggestionList.SuggestionPicked += OnSuggestionPicked;
-        }
-
-        private void OnSuggestionPicked(GameConsoleInvokable command)
-        {
-            if (!_inputField.text.Contains(" "))
-            {
-                _inputField.text = command.DisplayName + " ";
-                _inputField.caretPosition = _inputField.text.Length;
-            }
         }
 
         void Start()
@@ -90,14 +80,18 @@ namespace GameConsoleInterals
 
         }
 
+        private void OnSuggestionPicked(GameConsoleInvokable command)
+        {
+            if (!_inputField.text.Contains(" "))
+            {
+                _inputField.text = command.DisplayName + " ";
+                _inputField.caretPosition = _inputField.text.Length;
+            }
+        }
+
         public void OutputString(string s, GameConsole.LineColor lineColor)
         {
-            Color color = LineColorToUnityColor(lineColor);
-            string[] linesToAdd = s.Split('\n');
-            for (int i = 0; i < linesToAdd.Length; i++)
-            {
-                _lines.AddLine(new Line(linesToAdd[i], color));
-            }
+            _lines.AddLine(s, lineColor);
         }
 
         public bool IsOpen()
@@ -120,11 +114,39 @@ namespace GameConsoleInterals
             }
         }
 
+        //public void SetMiniFormat(bool miniFormat)
+        //{
+        //    _miniFormat = miniFormat;
+        //    _channels.SetActive(!miniFormat);
+        //    _channelsToggle.SetActive(!miniFormat);
+        //    _buildIdText.gameObject.SetActive(!miniFormat);
+        //    _lines.gameObject.SetActive(!miniFormat);
+        //    _fullBackground.SetActive(!miniFormat);
+        //    _smallBackground.SetActive(miniFormat);
+        //    _inputField.text = "";
+        //}
+
         public void ConsoleUpdate()
         {
-            if (_toggleConsoleKeys.Any(k => Input.GetKeyDown(k)))
+            if (IsAnyToggleKeyPressed())
             {
                 SetOpen(!IsOpen());
+                //if (IsOpen())
+                //{
+                //    if (_miniFormat && _inputField.text.Length == 0)
+                //    {
+                //        SetMiniFormat(false);
+                //    }
+                //    else
+                //    {
+                //        SetOpen(false);
+                //    }
+                //}
+                //else
+                //{
+                //    SetOpen(true);
+                //    SetMiniFormat(true);
+                //}
             }
 
             if (!IsOpen())
@@ -134,14 +156,14 @@ namespace GameConsoleInterals
 
             // This is to prevent clicks outside input field from removing focus
             _inputField.ActivateInputField();
-            
+
             _inputText.Set(_inputField.text);
 
             if (string.IsNullOrEmpty(_inputField.text))
             {
                 _tryDisplaySuggestions.Set(false);
             }
-            else if(_inputText.IsDirty && !string.IsNullOrEmpty(_inputText.Get()))
+            else if (_inputText.IsDirty && !string.IsNullOrEmpty(_inputText.Get()))
             {
                 _tryDisplaySuggestions.Set(true);
             }
@@ -176,7 +198,6 @@ namespace GameConsoleInterals
             }
 
             HandleScrollInput();
-            UpdateTexts();
         }
 
         private void UpdateSuggestionList()
@@ -218,45 +239,21 @@ namespace GameConsoleInterals
             else if (Input.GetKey(KeyCode.End))
             {
                 _accumulatedScroll = 0;
-                _lines.SetWindowPosition(_lines.Count - 1);
+                _lines.Position = _lines.LineCount - 1;
             }
 
-            _accumulatedScroll -= Input.mouseScrollDelta.y * _mouseScrollSpeed;
-
+            if (_panel.GetScreenRect().Contains(Input.mousePosition))
+                _accumulatedScroll -= Input.mouseScrollDelta.y * _mouseScrollSpeed;
 
             if (_accumulatedScroll < -1)
             {
-                _lines.SetWindowPosition(_lines.WindowPosition + Mathf.CeilToInt(_accumulatedScroll));
+                _lines.Position += Mathf.CeilToInt(_accumulatedScroll);
                 _accumulatedScroll -= Mathf.CeilToInt(_accumulatedScroll);
             }
             else if (_accumulatedScroll > 1)
             {
-                _lines.SetWindowPosition(_lines.WindowPosition + Mathf.FloorToInt(_accumulatedScroll));
+                _lines.Position += Mathf.FloorToInt(_accumulatedScroll);
                 _accumulatedScroll -= Mathf.Floor(_accumulatedScroll);
-            }
-        }
-
-        void UpdateTexts()
-        {
-            int end = (_lines.WindowPosition + 1);
-            int firstIndex = end - _textComponents.Length;
-
-            int textComponentIndex = 0;
-
-            // Draw lines
-            for (int i = firstIndex; i < end; i++)
-            {
-                if (i < 0)
-                {
-                    _textComponents[textComponentIndex].text = "";
-                }
-                else
-                {
-                    _textComponents[textComponentIndex].color = _lines[i].Color;
-                    _textComponents[textComponentIndex].text = _lines[i].Text;
-                }
-
-                textComponentIndex++;
             }
         }
 
@@ -280,23 +277,11 @@ namespace GameConsoleInterals
 
             _inputField.text = "";
             GameConsole.EnqueueCommand(value);
-        }
 
-        Color LineColorToUnityColor(GameConsole.LineColor lineColor)
-        {
-            switch (lineColor)
-            {
-                case GameConsole.LineColor.Normal:
-                    return _normalLineColor;
-                case GameConsole.LineColor.Command:
-                    return _commandLineColor;
-                case GameConsole.LineColor.Warning:
-                    return _warningLineColor;
-                case GameConsole.LineColor.Error:
-                    return _errorLineColor;
-            }
-
-            return Color.grey;
+            //if (_miniFormat)
+            //{
+            //    SetOpen(false);
+            //}
         }
 
         public void OutputLog(int channelId, string condition, string stackTrace, LogType logType)
@@ -321,79 +306,16 @@ namespace GameConsoleInterals
                     OutputString($"{condition}", lineColor);
                     break;
             }
-
         }
 
-        class LineList
+        private bool IsAnyToggleKeyPressed()
         {
-            int _begin;
-            Line[] _lines;
-
-            public int WindowPosition { get; private set; } = -1;
-            public int Count { get; private set; }
-
-            public LineList(int capacity)
+            for (int i = 0; i < _toggleConsoleKeys.Length; i++)
             {
-                _lines = new Line[capacity];
+                if (Input.GetKeyDown(_toggleConsoleKeys[i]))
+                    return true;
             }
-
-            public void SetWindowPosition(int position)
-            {
-                WindowPosition = Mathf.Clamp(position, 0, Count - 1);
-            }
-
-            public void AddLine(Line line)
-            {
-                if (Count == _lines.Length)
-                {
-                    SetLine(0, line);
-                    _begin++;
-
-                    if (WindowPosition != Count - 1)
-                    {
-                        WindowPosition--;
-                    }
-                }
-                else
-                {
-                    SetLine(Count, line);
-
-                    if (WindowPosition == Count - 1) // if window position is at max, make it follow the expansion
-                    {
-                        WindowPosition++;
-                    }
-
-                    Count++;
-                }
-            }
-
-            public Line this[int key]
-            {
-                get
-                {
-                    if (key >= Count || key < 0)
-                        throw new InvalidOperationException();
-
-                    return GetLine(key);
-                }
-                set
-                {
-                    if (key >= Count || key < 0)
-                        throw new InvalidOperationException();
-
-                    SetLine(key, value);
-                }
-            }
-
-            Line GetLine(int key)
-            {
-                return _lines[(_begin + key) % _lines.Length];
-            }
-
-            void SetLine(int key, Line value)
-            {
-                _lines[(_begin + key) % _lines.Length] = value;
-            }
+            return false;
         }
     }
 }
