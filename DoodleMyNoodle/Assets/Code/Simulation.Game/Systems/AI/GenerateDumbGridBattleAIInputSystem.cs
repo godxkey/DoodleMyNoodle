@@ -26,7 +26,7 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
             EntityManager.RemoveComponent<ReadyForNextTurnDelayed>(GetEntityQuery(typeof(ReadyForNextTurnDelayed)));
         }
 
-        int currentTeam = CommonReads.GetCurrentTurnTeam(Accessor);
+        int currentTeam = CommonReads.GetTurnTeam(Accessor);
 
         Entities
             .WithAll<DumbGridBattleAITag>()

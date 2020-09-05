@@ -18,7 +18,7 @@ public class GameFlowSystem : SimComponentSystem
 
     private void StartGameIfNeeded()
     {
-        int teamCurrentlyPlaying = CommonReads.GetCurrentTurnTeam(Accessor);
+        int teamCurrentlyPlaying = CommonReads.GetTurnTeam(Accessor);
 
         bool everyoneIsReady = true;
         bool atLeastOnePlayerExists = false;

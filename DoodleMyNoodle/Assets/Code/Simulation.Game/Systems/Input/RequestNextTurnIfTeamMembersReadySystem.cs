@@ -12,12 +12,12 @@ public class RequestNextTurnIfTeamMembersReadySystem : SimComponentSystem
     {
         base.OnCreate();
 
-        RequireSingletonForUpdate<TurnCurrentTeam>();
+        RequireSingletonForUpdate<TurnCurrentTeamSingletonComponent>();
     }
 
     protected override void OnUpdate()
     {
-        int teamCurrentlyPlaying = GetSingleton<TurnCurrentTeam>().Value;
+        int teamCurrentlyPlaying = GetSingleton<TurnCurrentTeamSingletonComponent>().Value;
         bool everyoneIsReady = true;
 
         Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn) =>

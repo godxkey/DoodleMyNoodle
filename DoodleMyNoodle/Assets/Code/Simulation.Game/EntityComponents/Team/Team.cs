@@ -37,6 +37,9 @@ public struct Team : IComponentData, IEquatable<Team>
     {
         return !(left == right);
     }
+
+    public static implicit operator int(Team val) => val.Value;
+    public static implicit operator Team(int val) => new Team() { Value = val };
 }
 
 public partial class CommonReads

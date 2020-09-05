@@ -30,7 +30,7 @@ public class CreatePathToDestinationSystem : SimComponentSystem
             int2 from = Helpers.GetTile(pos);
             int2 to = Helpers.GetTile(destination.Value);
 
-            bool pathFound = CommonReads.FindNavigablePath(Accessor, from, to, Pathfinding.MAX_PATH_COST, _pathArray);
+            bool pathFound = CommonReads.FindNavigablePath(Accessor, from, to, Pathfinding.MAX_PATH_LENGTH, _pathArray);
 
             if (pathFound)
             {

@@ -19,6 +19,8 @@ namespace SimulationControl
     {
         [ConsoleVar("Sim.TickSpeed", "The speed at which sim ticks are executed. 1 = default. 2 = twice as fast")]
         static float s_tickSpeed = 1;
+        [ConsoleVar("Sim.MaxTickPerFrame", "The maximum amount of generated sim ticks per frame. Does not affect clients (only server or local).")]
+        static int s_maxTicksPerFrame = 1;
 
         private float _tickTimeCounter;
         private Queue<SimInputSubmission> _inputSubmissionQueue = new Queue<SimInputSubmission>();
@@ -95,6 +97,8 @@ namespace SimulationControl
             // this counter makes sure we construct ticks at the desired rate
             _tickTimeCounter += Time.DeltaTime * s_tickSpeed;
 
+            _tickTimeCounter = Mathf.Min(_tickTimeCounter, (s_maxTicksPerFrame + 0.999f) * SimulationConstants.TIME_STEP_F);
+
             while (_tickTimeCounter > SimulationConstants.TIME_STEP_F)
             {
                 if (_tickSystem.CanTick)
@@ -128,7 +132,7 @@ namespace SimulationControl
                     // give tick to tick system
                     _tickSystem.AvailableTicks.Add(tickData);
 
-                    Log.Info(SimulationIO.LogChannel, $"Construct tick '{tickData.ExpectedNewTickId}' with {tickData.InputSubmissions.Count} inputs. " +
+                    Log.Info(SimulationIO.LogChannel, $"[{UnityEngine.Time.frameCount}] Construct tick '{tickData.ExpectedNewTickId}' with {tickData.InputSubmissions.Count} inputs. " +
                         $"{(_inputSubmissionQueue.Count > 0 ? $"{_inputSubmissionQueue.Count} input(s) were buffered onto the next tick because of size limit." : "")}");
                 }
 

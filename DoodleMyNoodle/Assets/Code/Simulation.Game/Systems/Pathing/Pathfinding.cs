@@ -11,35 +11,41 @@ using static Unity.Mathematics.math;
 
 public static partial class CommonReads
 {
-    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, in int2 from, in int2 to, fix maxCost, Allocator allocator,
+    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, in int2 from, in int2 to, fix maxLength, Allocator allocator,
         out NativeList<int2> resultList)
     {
         resultList = new NativeList<int2>(allocator);
-        return Pathfinding.FindNavigablePath(accessor, from, to, maxCost, resultList);
+        return Pathfinding.FindNavigablePath(accessor, from, to, maxLength, resultList);
     }
 
-    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, fix maxCost,
+    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, fix maxLength,
         NativeList<int2> outResult)
     {
-        return Pathfinding.FindNavigablePath(accessor, start, goal, maxCost, outResult);
+        return Pathfinding.FindNavigablePath(accessor, start, goal, maxLength, outResult);
     }
 }
 
 public static class Pathfinding
 {
-    public const int MAX_PATH_COST = 20;
+    public const int MAX_PATH_LENGTH = 20;
 
     public static fix CalculateTotalCost(NativeSlice<int2> path)
+    {
+        // for now, length = cost
+        return CalculateTotalLength(path);
+    }
+
+    public static fix CalculateTotalLength(NativeSlice<int2> path)
     {
         return path.Length - 1; // first node is always the 'starting' point
     }
 
-    public static int GetLastPathPointReachableWitingCost(NativeSlice<int2> path, fix maxCost)
+    public static int GetLastPathPointReachableWithinCost(NativeSlice<int2> path, fix maxCost)
     {
         if (maxCost <= 0)
             return 0;
 
-        if(maxCost > CalculateTotalCost(path))
+        if (maxCost > CalculateTotalCost(path))
         {
             return path.Length - 1;
         }
@@ -47,38 +53,28 @@ public static class Pathfinding
         return (int)floor(maxCost);
     }
 
-    //public static int GetLastPathPointReachableWitingCost(NativeSlice<int2> path, fix maxCost)
-    //{
-    //    if (maxCost <= 0)
-    //        return 0;
-
-    //    if (maxCost > CalculateTotalCost(path))
-    //    {
-    //        return path.Length - 1;
-    //    }
-
-    //    return (int)floor(maxCost);
-    //}
-
-    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, fix maxCost, NativeList<int2> result)
+    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, fix maxLength, NativeList<int2> result)
     {
+        Profiler.BeginSample("Pathfinding");
         result.Clear();
 
-        if (maxCost > MAX_PATH_COST)
+        if (maxLength > MAX_PATH_LENGTH)
         {
-            Debug.LogWarning($"Path Finding Max Cost cannot exceed {MAX_PATH_COST}");
-            maxCost = MAX_PATH_COST;
+            Debug.LogWarning($"Path Finding Max Cost cannot exceed {MAX_PATH_LENGTH}");
+            maxLength = MAX_PATH_LENGTH;
         }
 
         if (start.Equals(goal))
         {
             result.Add(goal);
+            Profiler.EndSample();
             return true;
         }
 
         // Destination cannot be reached
         if (!IsTileWalkable(goal, accessor))
         {
+            Profiler.EndSample();
             return false;
         }
 
@@ -152,7 +148,7 @@ public static class Pathfinding
                 // d(current,neighbor) is the weight of the edge from current to neighbor
                 // tentative_gScore is the distance from start to the neighbor through current
                 fix tentative_gScore = gScore[current] + d(current, neighbors[i]);
-                if (tentative_gScore <= maxCost && (!gScore.TryGetValue(neighbors[i], out fix s) || tentative_gScore < s))
+                if (tentative_gScore <= maxLength && (!gScore.TryGetValue(neighbors[i], out fix s) || tentative_gScore < s))
                 {
                     // This path to neighbor is better than any previous one. Record it!
 
@@ -175,6 +171,7 @@ public static class Pathfinding
         gScore.Dispose();
         fScore.Dispose();
 
+        Profiler.EndSample();
         return pathFound;
     }
 
@@ -220,7 +217,7 @@ public static class Pathfinding
         for (int i = 0; i < s_directionVectors.Length; i++)
         {
             int2 neighborPos = tile + s_directionVectors[i];
-            
+
             if (IsTileWalkable(neighborPos, accessor))
             {
                 neighbors.Add(neighborPos);

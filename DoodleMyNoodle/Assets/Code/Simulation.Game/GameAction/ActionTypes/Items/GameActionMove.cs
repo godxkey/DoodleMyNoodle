@@ -40,10 +40,10 @@ public class GameActionMove : GameAction
             int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value).xy;
 
             NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);
-            CommonReads.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_COST, _path);
+            CommonReads.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path);
 
             // Get the last reachable point considering the users' AP
-            int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWitingCost(_path.AsArray().Slice(), instigatorAP);
+            int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(_path.AsArray().Slice(), instigatorAP);
 
             // Remove unreachable points 
             _path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);

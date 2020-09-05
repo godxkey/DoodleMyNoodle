@@ -21,7 +21,7 @@ public class TurnTeamDisplay : GamePresentationBehaviour
     {
         int currentTeam = -1;
 
-        if (SimWorld.TryGetSingleton(out TurnCurrentTeam turnCurrentTeam))
+        if (SimWorld.TryGetSingleton(out TurnCurrentTeamSingletonComponent turnCurrentTeam))
         {
             currentTeam = turnCurrentTeam.Value;
         }

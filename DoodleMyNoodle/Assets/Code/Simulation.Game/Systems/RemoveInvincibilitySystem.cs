@@ -14,7 +14,7 @@ public class RemoveInvincibilitySystem : SimComponentSystem
     {
         if (HasSingleton<NewTurnEventData>())
         {
-            int currentTeam = CommonReads.GetCurrentTurnTeam(Accessor);
+            int currentTeam = CommonReads.GetTurnTeam(Accessor);
 
             Entities.ForEach((Entity entity, ref Invincible invincible) =>
             {

@@ -24,8 +24,8 @@ public class GameActionParameterTile
 
         public Description(int rangeFromInstigator)
         {
-            if (rangeFromInstigator > Pathfinding.MAX_PATH_COST)
-                rangeFromInstigator = Pathfinding.MAX_PATH_COST;
+            if (rangeFromInstigator > Pathfinding.MAX_PATH_LENGTH)
+                rangeFromInstigator = Pathfinding.MAX_PATH_LENGTH;
 
             RangeFromInstigator = rangeFromInstigator;
         }

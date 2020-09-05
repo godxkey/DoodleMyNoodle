@@ -18,12 +18,10 @@ public class TurnSystemSetting : MonoBehaviour, IConvertGameObjectToEntity
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new TurnDuration { DurationAI = AITurnDuration, DurationPlayer = PlayerTurnDuration });
-
-        dstManager.AddComponentData(entity, new TurnCurrentTeam { Value = -1 });
-
-        dstManager.AddComponentData(entity, new TurnTeamCount { Value = (int)Enum.GetValues(typeof(Team)).Length });
-
-        dstManager.AddComponentData(entity, new TurnTimer { Value = PlayerTurnDuration });
+        dstManager.AddComponentData(entity, new TurnDurationSingletonComponent { DurationAI = AITurnDuration, DurationPlayer = PlayerTurnDuration });
+        dstManager.AddComponentData(entity, new TurnCurrentTeamSingletonComponent { Value = -1 });
+        dstManager.AddComponentData(entity, new TurnTeamCountSingletonComponent { Value = Enum.GetValues(typeof(Team)).Length });
+        dstManager.AddComponentData(entity, new TurnTimerSingletonComponent { Value = PlayerTurnDuration });
+        dstManager.AddComponentData(entity, new TurnCountSingletonComponent { Value = 0 });
     }
 }

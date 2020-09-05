@@ -69,20 +69,33 @@ public static class FixRandomExtensions
     /// <summary>
     /// Shuffle your list with simulation random
     /// </summary>
-    public static List<T> Shuffle<T>(this ref FixRandom random, List<T> list)
+    public static void Shuffle<T>(this ref FixRandom random, List<T> collection)
     {
         T temp;
-        for (int i = list.Count - 1; i >= 1; i--)
+        for (int i = collection.Count - 1; i >= 1; i--)
         {
             int chosen = random.NextInt(0, i + 1);
             if (chosen == i)
                 continue;
 
-            temp = list[chosen];
-            list[chosen] = list[i];
-            list[i] = temp;
+            temp = collection[chosen];
+            collection[chosen] = collection[i];
+            collection[i] = temp;
         }
+    }
 
-        return list;
+    public static void Shuffle<T>(this ref FixRandom random, T[] collection)
+    {
+        T temp;
+        for (int i = collection.Length - 1; i >= 1; i--)
+        {
+            int chosen = random.NextInt(0, i + 1);
+            if (chosen == i)
+                continue;
+
+            temp = collection[chosen];
+            collection[chosen] = collection[i];
+            collection[i] = temp;
+        }
     }
 }

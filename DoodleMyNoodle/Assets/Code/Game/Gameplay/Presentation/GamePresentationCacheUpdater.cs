@@ -61,7 +61,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
     {
         UpdateCurrentPlayerPawn();
 
-        Cache.CurrentTeam = new Team() { Value = Cache.SimWorld.GetSingleton<TurnCurrentTeam>().Value };
+        Cache.CurrentTeam = new Team() { Value = Cache.SimWorld.GetSingleton<TurnCurrentTeamSingletonComponent>().Value };
     }
 
     private void UpdateCurrentPlayerPawn()

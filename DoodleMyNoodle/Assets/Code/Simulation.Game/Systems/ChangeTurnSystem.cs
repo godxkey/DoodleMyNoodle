@@ -1,13 +1,46 @@
 ﻿using Unity.Entities;
 
-public struct NewTurnEventData : IComponentData
-{
-}
+public struct NewTurnEventData : IComponentData { }
 
 public struct RequestChangeTurnData : IComponentData
 {
     public int TeamToPlay;
 }
+
+public struct TurnCountSingletonComponent : IComponentData
+{
+    public int Value;
+}
+
+public struct TurnTeamCountSingletonComponent : IComponentData
+{
+    public int Value;
+}
+
+public struct TurnTimerSingletonComponent : IComponentData
+{
+    public fix Value;
+}
+
+public struct TurnCurrentTeamSingletonComponent : IComponentData
+{
+    public int Value;
+}
+
+public struct TurnDurationSingletonComponent : IComponentData
+{
+    public fix DurationAI;
+    public fix DurationPlayer;
+}
+
+public struct ReadyForNextTurn : IComponentData
+{
+    public bool Value;
+
+    public static implicit operator bool(ReadyForNextTurn val) => val.Value;
+    public static implicit operator ReadyForNextTurn(bool val) => new ReadyForNextTurn() { Value = val };
+}
+
 
 public class ChangeTurnSystem : SimComponentSystem
 {
@@ -19,9 +52,9 @@ public class ChangeTurnSystem : SimComponentSystem
 
         _eventsEntityQuery = EntityManager.CreateEntityQuery(typeof(NewTurnEventData));
 
-        RequireSingletonForUpdate<TurnTimer>();
+        RequireSingletonForUpdate<TurnTimerSingletonComponent>();
     }
-    
+
     protected override void OnDestroy()
     {
         base.OnDestroy();
@@ -46,21 +79,22 @@ public class ChangeTurnSystem : SimComponentSystem
             this.DestroySingleton<RequestChangeTurnData>();
 
             // wrap team if necessary
-            if (requestData.TeamToPlay >= GetSingleton<TurnTeamCount>().Value)
+            if (requestData.TeamToPlay >= GetSingleton<TurnTeamCountSingletonComponent>().Value)
             {
                 requestData.TeamToPlay = 0;
             }
 
             // set new turn
-            SetSingleton(new TurnCurrentTeam { Value = requestData.TeamToPlay });
+            SetSingleton(new TurnCurrentTeamSingletonComponent { Value = requestData.TeamToPlay });
+            SetSingleton(new TurnCountSingletonComponent { Value = GetSingleton<TurnCountSingletonComponent>().Value + 1 });
 
             switch ((DesignerFriendlyTeam)requestData.TeamToPlay)
             {
                 case DesignerFriendlyTeam.Player:
-                    SetSingleton(new TurnTimer { Value = GetSingleton<TurnDuration>().DurationPlayer });
+                    SetSingleton(new TurnTimerSingletonComponent { Value = GetSingleton<TurnDurationSingletonComponent>().DurationPlayer });
                     break;
                 case DesignerFriendlyTeam.Baddies:
-                    SetSingleton(new TurnTimer { Value = GetSingleton<TurnDuration>().DurationAI });
+                    SetSingleton(new TurnTimerSingletonComponent { Value = GetSingleton<TurnDurationSingletonComponent>().DurationAI });
                     break;
                 default:
                     break;
@@ -79,14 +113,13 @@ public class ChangeTurnSystem : SimComponentSystem
 
     private void UpdateTurnTimer()
     {
-        if(this.TryGetSingleton(out TurnCurrentTeam currentTeam))
+        if (this.TryGetSingleton(out TurnCurrentTeamSingletonComponent currentTeam))
         {
             if (currentTeam.Value == -1) // no team, no change turn
                 return;
         }
 
-
-        TurnTimer turnTimer = this.GetOrCreateSingleton<TurnTimer>();
+        TurnTimerSingletonComponent turnTimer = this.GetOrCreateSingleton<TurnTimerSingletonComponent>();
 
         fix newTimerValue = turnTimer.Value - Time.DeltaTime;
         if (newTimerValue <= 0)
@@ -95,23 +128,30 @@ public class ChangeTurnSystem : SimComponentSystem
         }
         else
         {
-            SetSingleton(new TurnTimer { Value = newTimerValue });
+            SetSingleton(new TurnTimerSingletonComponent { Value = newTimerValue });
         }
     }
 }
 
 public static partial class CommonReads
 {
-    public static int GetCurrentTurnTeam(ISimWorldReadAccessor accessor)
+    public static int GetTurn(ISimWorldReadAccessor accessor)
     {
-        if (accessor.TryGetSingleton(out TurnCurrentTeam v))
+        if (accessor.TryGetSingleton(out TurnCountSingletonComponent v))
+            return v.Value;
+        return -1;
+    }
+
+    public static Team GetTurnTeam(ISimWorldReadAccessor accessor)
+    {
+        if (accessor.TryGetSingleton(out TurnCurrentTeamSingletonComponent v))
             return v.Value;
         return -1;
     }
 
     public static bool CanTeamPlay(ISimWorldReadAccessor accessor, Team team)
     {
-        return GetCurrentTurnTeam(accessor) == team.Value;
+        return GetTurnTeam(accessor) == team.Value;
     }
 }
 
@@ -119,7 +159,7 @@ internal static partial class CommonWrites
 {
     public static void RequestNextTurn(ISimWorldReadWriteAccessor accessor)
     {
-        TurnCurrentTeam turnCurrentTeam = accessor.GetSingleton<TurnCurrentTeam>();
+        TurnCurrentTeamSingletonComponent turnCurrentTeam = accessor.GetSingleton<TurnCurrentTeamSingletonComponent>();
 
         int newCurrentTeam = turnCurrentTeam.Value + 1;
 

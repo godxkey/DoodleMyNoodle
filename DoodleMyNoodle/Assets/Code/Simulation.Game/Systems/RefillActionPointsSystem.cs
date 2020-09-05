@@ -16,7 +16,7 @@ public class RefillActionPointsSystem : SimComponentSystem
     {
         if (HasSingleton<NewTurnEventData>())
         {
-            int currentTeam = CommonReads.GetCurrentTurnTeam(Accessor);
+            int currentTeam = CommonReads.GetTurnTeam(Accessor);
             int actionPointsToAdd = GetSingleton<ActionRefillAmount>().Value;
 
             Entities

@@ -12,7 +12,7 @@ public class ConvertEntitySystem : SimComponentSystem
     {
         if (HasSingleton<NewTurnEventData>())
         {
-            int currentPlayingTeam = CommonReads.GetCurrentTurnTeam(Accessor);
+            int currentPlayingTeam = CommonReads.GetTurnTeam(Accessor);
 
             Entities
                 .ForEach((Entity entity, ref Converted converted, ref Team team) =>
