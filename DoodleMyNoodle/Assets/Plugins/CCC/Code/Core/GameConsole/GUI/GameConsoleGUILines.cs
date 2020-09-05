@@ -212,7 +212,7 @@ public class GameConsoleGUILines : MonoBehaviour
         if (lineBreakI != -1)
         {
             lineData.ForceDisplayDetails = true;
-            lineData.DisplayText = text.Substring(0, lineBreakI) + " ...";
+            lineData.DisplayText = text.Substring(0, lineBreakI);
         }
 
         bool follow = FollowNewLines && (Position + _lines.Count >= (_linesData.Count - 1));
