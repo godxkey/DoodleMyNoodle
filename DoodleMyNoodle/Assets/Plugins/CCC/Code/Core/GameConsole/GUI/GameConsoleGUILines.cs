@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -22,6 +24,14 @@ public class GameConsoleGUILines : MonoBehaviour
         }
     }
 
+    [Serializable]
+    public class DetailTextDecoration
+    {
+        public string LineToken;
+        public string CustomTagBegin;
+        public string CustomTagEnd;
+    }
+
     [SerializeField] private RectTransform _lineContainer = null;
     [SerializeField] private RectTransform _lineDetailContainer = null;
     [SerializeField] private TMP_Text _lineDetailText = null;
@@ -31,7 +41,11 @@ public class GameConsoleGUILines : MonoBehaviour
     [SerializeField] private Color _commandLineColor = Color.cyan;
     [SerializeField] private Color _warningLineColor = Color.yellow;
     [SerializeField] private Color _errorLineColor = Color.red;
+    [SerializeField] private List<DetailTextDecoration> _detailsTextDecorations = new List<DetailTextDecoration>();
 
+    private List<string> _tagBegins = new List<string>();
+    private List<string> _tagEnds = new List<string>();
+    private StringBuilder _stringBuilder = new StringBuilder();
     private List<TMP_Text> _lines = new List<TMP_Text>();
     private MultiStack<LineData> _linesData = new MultiStack<LineData>(1024);
     private DirtyValue<int> _position;
@@ -103,12 +117,17 @@ public class GameConsoleGUILines : MonoBehaviour
             PopulateMovedLines();
         }
 
+        UpdateLineDetails();
+    }
+
+    private void UpdateLineDetails()
+    {
         if (_showLineDetails.ClearDirty())
         {
             int lineIndex = _showLineDetails.Get();
             int dataIndex = _showLineDetails.Get() + Position;
 
-            if (lineIndex == -1 || dataIndex < 0 || dataIndex >= _linesData.Count || 
+            if (lineIndex == -1 || dataIndex < 0 || dataIndex >= _linesData.Count ||
                 (!_linesData[dataIndex].ForceDisplayDetails && !_lines[lineIndex].isTextTruncated))
             {
                 _lineDetailContainer.gameObject.SetActive(false);
@@ -116,15 +135,60 @@ public class GameConsoleGUILines : MonoBehaviour
             else
             {
                 _lineDetailContainer.gameObject.SetActive(true);
-                var pos = _lineDetailContainer.position;
-                pos.y = _lines[lineIndex].rectTransform.position.y;
-                _lineDetailContainer.position = pos;
 
+                // set text and color
                 var lineData = _linesData[dataIndex];
-                _lineDetailText.text = lineData.FullText;
+                _lineDetailText.text = DecorateDetailText(lineData.FullText);
                 _lineDetailText.color = LineColorToUnityColor(lineData.Color);
             }
         }
+    }
+
+    private string DecorateDetailText(string fullText)
+    {
+        _stringBuilder.Clear();
+
+
+        bool addNewLine = false;
+        foreach (string line in fullText.Split(s_lineBreaksCharacters))
+        {
+            if (addNewLine)
+            {
+                _stringBuilder.Append('\n');
+            }
+            else
+            {
+                addNewLine = true;
+            }
+
+            _tagBegins.Clear();
+            _tagEnds.Clear();
+            foreach (DetailTextDecoration decoration in _detailsTextDecorations)
+            {
+                if (line.Contains(decoration.LineToken))
+                {
+                    _tagBegins.Add(decoration.CustomTagBegin);
+                    _tagEnds.Add(decoration.CustomTagEnd);
+                }
+            }
+
+            // tags begin
+            for (int i = 0; i < _tagBegins.Count; i++)
+            {
+                _stringBuilder.Append(_tagBegins[i]);
+            }
+
+            // append line
+            _stringBuilder.Append(line);
+
+            // tags end (reverse loop)
+            for (int i = _tagEnds.Count - 1; i >= 0; i--)
+            {
+                _stringBuilder.Append(_tagEnds[i]);
+            }
+        }
+
+        return _stringBuilder.ToString();
     }
 
     public void ClearLines()
