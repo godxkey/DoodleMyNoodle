@@ -19,9 +19,6 @@ public class GizmoGridRect : MonoBehaviour
 
         Rect visualRect = new Rect(new Vector2(gridRect.TileMin.x, gridRect.TileMin.y), new Vector2(gridRect.Width, gridRect.Height));
 
-        // offset 0.5f pos
-        visualRect.position -= Vector2.one * 0.5f;
-
         Vector2 bottomLeft = visualRect.min;
         Vector2 bottomRight = new Vector2(visualRect.max.x, visualRect.min.y);
         Vector2 TopLeft = new Vector2(visualRect.min.x, visualRect.max.y);

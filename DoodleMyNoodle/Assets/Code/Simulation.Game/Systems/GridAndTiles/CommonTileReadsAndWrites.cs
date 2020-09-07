@@ -4,6 +4,7 @@ using static fixMath;
 using Unity.Collections;
 using Unity.Entities;
 using System;
+using UnityEngine;
 
 public partial class CommonReads
 {
@@ -134,9 +135,12 @@ public partial class CommonReads
 
 public partial class Helpers
 {
-    public static int2 GetTile(in FixTranslation translation) => roundToInt(translation.Value).xy;
-    public static int2 GetTile(in fix3 worldPosition) => roundToInt(worldPosition).xy;
-    public static fix3 GetTileCenter(in FixTranslation translation) => fix3(roundToInt(translation.Value).xy, 0);
-    public static fix3 GetTileCenter(in fix3 worldPosition) => fix3(roundToInt(worldPosition).xy, 0);
-    public static fix3 GetTileCenter(in int2 tile) => fix3(tile, 0);
+    public static int2 GetTile(in FixTranslation translation) => floorToInt(translation.Value).xy;
+    public static int2 GetTile(in fix3 worldPosition) => floorToInt(worldPosition).xy;
+    public static int2 GetTile(in Vector3 worldPosition) => int2(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y));
+    public static int2 GetTile(in Vector2 worldPosition) => int2(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y));
+    
+    public static fix3 GetTileCenter(in FixTranslation translation) => GetTileCenter(GetTile(translation));
+    public static fix3 GetTileCenter(in fix3 worldPosition) => GetTileCenter(GetTile(worldPosition));
+    public static fix3 GetTileCenter(in int2 tile) => fix3(tile.x + fix.Half, tile.y + fix.Half, 0);
 }

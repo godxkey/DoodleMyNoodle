@@ -2,20 +2,22 @@ using System;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
+using static Unity.MathematicsX.mathX;
 
-public struct BruteAIData : IComponentData
+public struct ArcherAIData : IComponentData
 {
-    public BruteAIState State;
+    public ArcherAIState State;
     public Entity AttackTarget;
     public fix NoActionUntilTime;
     public int LastPatrolTurn;
 }
 
-public enum BruteAIState
+public enum ArcherAIState
 {
     Patrol,
     PositionForAttack,
@@ -24,7 +26,7 @@ public enum BruteAIState
 
 [UpdateAfter(typeof(RefillActionPointsSystem))] // TODO: use groups!
 [UpdateAfter(typeof(DestroyAIControllersSystem))] // TODO: use groups!
-public class UpdateBruteAISystem : SimComponentSystem
+public class UpdateArcherAISystem : SimComponentSystem
 {
     private readonly fix AGGRO_WALK_RANGE = 10;
 
@@ -52,8 +54,8 @@ public class UpdateBruteAISystem : SimComponentSystem
 
     protected override void OnUpdate()
     {
-        Profiler.BeginSample("Update Brute Mental State");
-        Entities.ForEach((Entity controller, ref Team controllerTeam, ref BruteAIData agentData, ref ControlledEntity pawn) =>
+        Profiler.BeginSample("Update Archer Mental State");
+        Entities.ForEach((Entity controller, ref Team controllerTeam, ref ArcherAIData agentData, ref ControlledEntity pawn) =>
         {
             UpdateMentalState(controller, controllerTeam, ref agentData, pawn);
         });
@@ -62,9 +64,9 @@ public class UpdateBruteAISystem : SimComponentSystem
         int currentTeam = CommonReads.GetTurnTeam(Accessor);
         fix time = Time.ElapsedTime;
 
-        Profiler.BeginSample("Try Act Brute");
+        Profiler.BeginSample("Try Act Archer");
         Entities
-            .ForEach((Entity controller, ref Team team, ref BruteAIData agentData, ref ControlledEntity pawn, ref ReadyForNextTurn readyForNextTurn) =>
+            .ForEach((Entity controller, ref Team team, ref ArcherAIData agentData, ref ControlledEntity pawn, ref ReadyForNextTurn readyForNextTurn) =>
             {
                 // Can the corresponding team play ?
                 if (team.Value != currentTeam)
@@ -96,27 +98,27 @@ public class UpdateBruteAISystem : SimComponentSystem
         Profiler.EndSample();
     }
 
-    private void UpdateMentalState(in Entity controller, in Team controllerTeam, ref BruteAIData agentData, in Entity agentPawn)
+    private void UpdateMentalState(in Entity controller, in Team controllerTeam, ref ArcherAIData agentData, in Entity agentPawn)
     {
         switch (agentData.State)
         {
-            case BruteAIState.Patrol:
+            case ArcherAIState.Patrol:
                 UpdateMentalState_Patrol(controller, controllerTeam, ref agentData, agentPawn);
                 break;
-            case BruteAIState.PositionForAttack:
+            case ArcherAIState.PositionForAttack:
                 UpdateMentalState_PositionForAttack(controller, controllerTeam, ref agentData, agentPawn);
                 break;
-            case BruteAIState.Attack:
+            case ArcherAIState.Attack:
                 UpdateMentalState_Attacking(controller, controllerTeam, ref agentData, agentPawn);
                 break;
         }
     }
 
-    private void UpdateMentalState_Patrol(in Entity controller, in Team controllerTeam, ref BruteAIData agentData, in Entity agentPawn)
+    private void UpdateMentalState_Patrol(in Entity controller, in Team controllerTeam, ref ArcherAIData agentData, in Entity agentPawn)
     {
         // TDLR: Search for enemy within range (no line of sight required)
         fix3 pawnPos = EntityManager.GetComponentData<FixTranslation>(agentPawn);
-        int2 agentTile = Helpers.GetTile(pawnPos);
+        int2 pawnTile = Helpers.GetTile(pawnPos);
 
         var positions = GetComponentDataFromEntity<FixTranslation>(isReadOnly: true);
         var attackableEntities = _attackableGroup.ToEntityArray(Allocator.TempJob);
@@ -141,9 +143,9 @@ public class UpdateBruteAISystem : SimComponentSystem
 
             int2 enemyTile = Helpers.GetTile(positions[enemy].Value);
             // try find path to enemy
-            if (!Pathfinding.FindNavigablePath(Accessor, agentTile, enemyTile, maxLength: AGGRO_WALK_RANGE, _path))
+            if (!Pathfinding.FindNavigablePath(Accessor, pawnTile, enemyTile, maxLength: AGGRO_WALK_RANGE, _path))
                 continue;
-
+            //CHANGE THIS
             // If distance is closer, record enemy
             fix dist = Pathfinding.CalculateTotalCost(_path.Slice());
             if (dist <= AGGRO_WALK_RANGE && dist < closestDist)
@@ -159,41 +161,70 @@ public class UpdateBruteAISystem : SimComponentSystem
         {
             agentData.AttackTarget = closest;
 
-            if (lengthmanhattan(closestTile - agentTile) == 1)
+            if (lengthmanhattan(closestTile - pawnTile) == 1)
             {
-                agentData.State = BruteAIState.Attack;
+                agentData.State = ArcherAIState.Attack;
             }
             else
             {
-                agentData.State = BruteAIState.PositionForAttack;
+                agentData.State = ArcherAIState.PositionForAttack;
             }
         }
 
         attackableEntities.Dispose();
     }
 
-    private void UpdateMentalState_PositionForAttack(in Entity controller, in Team controllerTeam, ref BruteAIData agentData, in Entity agentPawn)
+    private void UpdateMentalState_PositionForAttack(in Entity controller, in Team controllerTeam, ref ArcherAIData agentData, in Entity agentPawn)
     {
         if (!EntityManager.Exists(agentData.AttackTarget) || !EntityManager.TryGetComponentData(agentData.AttackTarget, out FixTranslation enemyPos))
         {
-            agentData.State = BruteAIState.Patrol;
+            agentData.State = ArcherAIState.Patrol;
             return;
         }
 
         int2 enemyTile = Helpers.GetTile(enemyPos);
         int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn));
-        if (lengthmanhattan(enemyTile - agentTile) == 1)
+
+        if(HasLineOfShoot(agentTile, enemyTile))
         {
-            agentData.State = BruteAIState.Attack;
+            agentData.State = ArcherAIState.Attack;
             return;
         }
     }
 
-    private void UpdateMentalState_Attacking(in Entity controller, in Team controllerTeam, ref BruteAIData agentData, in Entity agentPawn)
+    private bool HasLineOfShoot(int2 source, int2 destination)
+    {
+        if (source.Equals(destination)) // cannot shoot if tile is identical
+            return false;
+
+        int2 v = source - destination;
+        if (v.x != 0 && v.y != 0 && v.x != v.y) // line is not horizontal, vertical or diagonal
+            return false;
+
+        // Verify each tile along the way is not terrain
+        int2 step = sign(v);
+        int2 t = source;
+        while (!t.Equals(destination))
+        {
+            t += step;
+
+            Entity tileEntity = CommonReads.GetTileEntity(Accessor, t);
+            if (tileEntity == Entity.Null)
+                return false;
+
+            var tileFlags = EntityManager.GetComponentData<TileFlagComponent>(tileEntity);
+            if (tileFlags.IsTerrain)
+                return false;
+        }
+
+        return true;
+    }
+
+    private void UpdateMentalState_Attacking(in Entity controller, in Team controllerTeam, ref ArcherAIData agentData, in Entity agentPawn)
     {
         if (!EntityManager.Exists(agentData.AttackTarget) || !EntityManager.TryGetComponentData(agentData.AttackTarget, out FixTranslation enemyPos))
         {
-            agentData.State = BruteAIState.Patrol;
+            agentData.State = ArcherAIState.Patrol;
             return;
         }
 
@@ -201,12 +232,12 @@ public class UpdateBruteAISystem : SimComponentSystem
         int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn));
         if (lengthmanhattan(enemyTile - agentTile) != 1)
         {
-            agentData.State = BruteAIState.PositionForAttack;
+            agentData.State = ArcherAIState.PositionForAttack;
             return;
         }
     }
 
-    private bool IsReadyToAct(in fix time, in Entity controller, in Team team, in BruteAIData agentData, in ControlledEntity pawn)
+    private bool IsReadyToAct(in fix time, in Entity controller, in Team team, in ArcherAIData agentData, in ControlledEntity pawn)
     {
         if (time < agentData.NoActionUntilTime)
         {
@@ -221,24 +252,24 @@ public class UpdateBruteAISystem : SimComponentSystem
         return true;
     }
 
-    private bool Act(in Entity controller, in Team team, ref BruteAIData agentData, in ControlledEntity pawn)
+    private bool Act(in Entity controller, in Team team, ref ArcherAIData agentData, in ControlledEntity pawn)
     {
         switch (agentData.State)
         {
-            case BruteAIState.Patrol:
+            case ArcherAIState.Patrol:
                 return Act_Patrol(controller, team, ref agentData, pawn);
 
-            case BruteAIState.PositionForAttack:
+            case ArcherAIState.PositionForAttack:
                 return Act_PositionForAttack(controller, team, ref agentData, pawn);
 
-            case BruteAIState.Attack:
+            case ArcherAIState.Attack:
                 return Act_Attacking(controller, team, ref agentData, pawn);
         }
 
         return false;
     }
 
-    private bool Act_Patrol(in Entity controller, in Team team, ref BruteAIData agentData, in ControlledEntity pawn)
+    private bool Act_Patrol(in Entity controller, in Team team, ref ArcherAIData agentData, in ControlledEntity pawn)
     {
         int turnCount = CommonReads.GetTurn(Accessor);
 
@@ -281,7 +312,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         return false;
     }
 
-    private bool Act_PositionForAttack(in Entity controller, in Team team, ref BruteAIData agentData, in ControlledEntity pawn)
+    private bool Act_PositionForAttack(in Entity controller, in Team team, ref ArcherAIData agentData, in ControlledEntity pawn)
     {
         int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(pawn));
         int2 enemyTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
@@ -328,7 +359,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         return CommonWrites.TryInputUseItem<GameActionMove>(Accessor, controller, closestTile.Value);
     }
 
-    private bool Act_Attacking(in Entity controller, in Team team, ref BruteAIData agentData, in ControlledEntity pawn)
+    private bool Act_Attacking(in Entity controller, in Team team, ref ArcherAIData agentData, in ControlledEntity pawn)
     {
         int2 attackTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
 

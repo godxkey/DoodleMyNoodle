@@ -199,6 +199,6 @@ public abstract class GameAction
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
     protected void LogGameActionInfo(in UseContext context, string message)
     {
-        Log.Info(LogChannel, $"{message} - context(item: {context.Entity}, instigator: {context.InstigatorPawn}, instigatorController: {context.InstigatorPawnController})");
+        Log.Info(LogChannel, $"{message} - {GetType().Name} - context(item: {context.Entity}, instigator: {context.InstigatorPawn}, instigatorController: {context.InstigatorPawnController})");
     }
 }

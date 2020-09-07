@@ -102,7 +102,7 @@ internal partial class CommonWrites
 {
     public static void RequestTeleport(ISimWorldReadWriteAccessor accessor, Entity entity, int2 destination)
     {
-        RequestTeleport(accessor, entity, fix3(destination, 0));
+        RequestTeleport(accessor, entity, Helpers.GetTileCenter(destination));
     }
 
     public static void RequestTeleport(ISimWorldReadWriteAccessor accessor, Entity entity, fix3 destination)

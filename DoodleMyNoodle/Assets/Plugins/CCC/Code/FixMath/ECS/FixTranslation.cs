@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using Unity.Entities;
 
 [Serializable]
+[DebuggerDisplay("{Value}")]
 public struct FixTranslation : IComponentData
 {
     public fix3 Value;

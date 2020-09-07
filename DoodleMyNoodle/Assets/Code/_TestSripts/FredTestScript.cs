@@ -3,82 +3,87 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngineX;
 
+[ExecuteAlways]
 public class FredTestScript : MonoBehaviour
 {
-    [Serializable]
-    public struct Value : IElementIndexHint
-    {
-        public string Val;
-        public int IndexHint { get; set; }
+    public fix2 start;
+    public fix2 end;
+    public fix bevel;
+    public int operations;
+    private NativeList<int2> crossedTilesList;
+    public int repeat;
 
-        public override string ToString()
+    public int2[] _crossedTiles = null;
+    private JobHandle _jobHandle;
+
+    private void OnEnable()
+    {
+        crossedTilesList = new NativeList<int2>(Allocator.Persistent);
+    }
+
+    private void OnDisable()
+    {
+        crossedTilesList.Dispose();
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (_crossedTiles == null)
+            return;
+
+        Gizmos.DrawLine((Vector3)(fix3)start, (Vector3)(fix3)end);
+
+        operations = 0;
+
+        StopwatchLogger stopwatchLogger = new StopwatchLogger(StopwatchLogger.PrintType.Milliseconds);
+
+        MyJob myJob = new MyJob()
         {
-            return Val.ToString();
+            bevel = bevel,
+            crossedTilesList = crossedTilesList,
+            end = end,
+            repeat = repeat,
+            start = start
+        };
+
+        _jobHandle = myJob.Schedule(_jobHandle);
+        _jobHandle.Complete();
+
+        stopwatchLogger.Print();
+
+        _crossedTiles = crossedTilesList.ToArray();
+
+        for (int i = 0; i < _crossedTiles.Length; i++)
+        {
+            fix3 tileCenter = Helpers.GetTileCenter(_crossedTiles[i]);
+            Gizmos.DrawWireCube((Vector3)tileCenter, Vector3.one);
         }
     }
 
-    public List<Value> Values;
-
-    private void Update()
+    [BurstCompile]
+    public struct MyJob : IJob
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        public fix bevel;
+        public int repeat;
+        public NativeList<int2> crossedTilesList;
+        public fix2 start;
+        public fix2 end;
+
+        public void Execute()
         {
-            NoInterruptList<Value> list = new NoInterruptList<Value>(Values);
-
-            foreach (var item in list)
+            for (int i = 0; i < repeat; i++)
             {
-                Log.Info(item);
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            NoInterruptList<Value> list = new NoInterruptList<Value>(Values);
-
-            int i = 0;
-            foreach (var item in list)
-            {
-                if (i % 4 == 0)
-                {
-                    Log.Info("remove " + item + " " + list.Remove(item));
-                }
-                else
-                {
-                    Log.Info(item);
-                }
-
-                i++;
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            NoInterruptList<Value> list = new NoInterruptList<Value>(Values);
-
-            int i = 0;
-            foreach (var x in list)
-            {
-                Log.Info("parent " + x);
-
-                foreach (var item in list)
-                {
-                    if (i % 4 == 0)
-                    {
-                        Log.Info("remove " + item + " " + list.Remove(item));
-                    }
-                    else
-                    {
-                        Log.Info(item);
-                    }
-
-                    i++;
-                }
+                crossedTilesList.Clear();
+                TilePhysics.FindCrossedTiles(start, end, bevel, crossedTilesList);
             }
         }
     }

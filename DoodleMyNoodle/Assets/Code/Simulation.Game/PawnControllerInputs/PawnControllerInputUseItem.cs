@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Entities;
-using UnityEngine;
 
 public class PawnControllerInputUseItem : PawnControllerInputBase
 {
@@ -20,5 +17,4 @@ public class PawnControllerInputUseItem : PawnControllerInputBase
     {
         return $"PawnControllerInputUseItem(pawnControlled: {PawnController}, itemIndex: {ItemIndex}, gameActionData: {GameActionData})";
     }
-
 }

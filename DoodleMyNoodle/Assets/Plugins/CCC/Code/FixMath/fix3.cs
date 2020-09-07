@@ -705,4 +705,6 @@ public struct fix3 : IEquatable<fix3>
 
     public static explicit operator fix2(in fix3 v) => new fix2(v.x, v.y);
     public static implicit operator fix3(in int3 v) => new fix3(v.x, v.y, v.z);
+    
+    public static explicit operator UnityEngine.Vector3(in fix3 v) => new UnityEngine.Vector3((float)v.x, (float)v.y, (float)v.z);
 }

@@ -12,7 +12,7 @@ public class SimPlayerInputUseInteractable : SimPlayerInput
 
     public SimPlayerInputUseInteractable(Vector3 position)
     {
-        InteractablePosition = new int2() { x = Mathf.RoundToInt(position.x), y = Mathf.RoundToInt(position.y) };
+        InteractablePosition = Helpers.GetTile(position);
     }
 
     public override string ToString()

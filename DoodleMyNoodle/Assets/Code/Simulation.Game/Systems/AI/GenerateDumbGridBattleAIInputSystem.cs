@@ -161,7 +161,7 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
             Entity moveItem = CommonReads.FindFirstItemWithGameAction<GameActionMove>(Accessor, pawn, out int moveItemIndex);
             if (moveItem != Entity.Null)
             {
-                int2 destinationTile = roundToInt(pawnPos.Value).xy + tileMoveDelta;
+                int2 destinationTile = Helpers.GetTile(pawnPos) + tileMoveDelta;
 
                 // create game action's use data
                 var useData = GameAction.UseParameters.Create(

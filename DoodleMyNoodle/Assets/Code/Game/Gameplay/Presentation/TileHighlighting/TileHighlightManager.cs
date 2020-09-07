@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using static Unity.Mathematics.math;
 using UnityEngine;
-using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
 using Unity.Collections;
@@ -36,7 +34,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
     {
         if (_currentTileSelectionCallback != null)
         {
-            int2 tile = int2(Mathf.RoundToInt(tileHighlightClicked.x), Mathf.RoundToInt(tileHighlightClicked.y));
+            int2 tile = Helpers.GetTile(tileHighlightClicked);
 
             GameActionParameterTile.Data TileSelectionData = new GameActionParameterTile.Data(0, tile);
 
@@ -90,7 +88,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
         {
             // Activate Highlight
             _highlights[i].SetActive(true);
-            _highlights[i].transform.position = new Vector3(tiles[i].x, tiles[i].y, 0);
+            _highlights[i].transform.position = (Vector3)Helpers.GetTileCenter(tiles[i]);
         }
 
     }
@@ -99,127 +97,5 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
     {
         _currentTileSelectionCallback = null;
         HideAll();
-    }
-
-    private struct TileFinder
-    {
-        public struct Context
-        {
-            public int2 PawnTile;
-            public Entity PawnEntity;
-        }
-
-        private ISimWorldReadAccessor _accessor;
-
-        public TileFinder(ISimWorldReadAccessor accessor)
-        {
-            _accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
-        }
-
-        public void Find(GameActionParameterTile.Description description, Context context, NativeList<int2> result)
-        {
-            int2 tileMin = context.PawnTile - int2(description.RangeFromInstigator);
-            int2 tileMax = context.PawnTile + int2(description.RangeFromInstigator);
-
-            for (int x = tileMin.x; x <= tileMax.x; x++)
-            {
-                for (int y = tileMin.y; y <= tileMax.y; y++)
-                {
-                    TestTile(int2(x, y), description, context, result);
-                }
-            }
-        }
-
-        private void TestTile(int2 tilePosition, GameActionParameterTile.Description description, in Context parameters, NativeList<int2> result)
-        {
-            if (IsTileOk(tilePosition, description, parameters))
-            {
-                result.Add(tilePosition);
-            }
-        }
-
-        private bool IsTileOk(int2 tilePosition, GameActionParameterTile.Description description, in Context parameters)
-        {
-            if (!description.IncludeSelf && parameters.PawnTile.Equals(tilePosition))
-            {
-                return false;
-            }
-
-            // tile entity valid
-            Entity tileEntity = CommonReads.GetTileEntity(_accessor, tilePosition);
-            if (tileEntity == Entity.Null)
-            {
-                return false; // invalid entity
-            }
-
-            // tile filters
-            var tileFlags = _accessor.GetComponentData<TileFlagComponent>(tileEntity);
-            if ((tileFlags & description.TileFilter) == 0)
-            {
-                return false; // tile is filtered out
-            }
-
-            // tile requires an attackable target
-            if (description.RequiresAttackableEntity)
-            {
-                bool hasAtLeastOneAttackableActor = false;
-                foreach (TileActorReference tileActor in _accessor.GetBufferReadOnly<TileActorReference>(tileEntity))
-                {
-                    if (_accessor.Exists(tileActor))
-                    {
-                        if (_accessor.HasComponent<Health>(tileActor) || _accessor.HasComponent<Armor>(tileActor))
-                        {
-                            hasAtLeastOneAttackableActor = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!hasAtLeastOneAttackableActor)
-                {
-                    return false;
-                }
-            }
-
-            // Custom tile actor predicate
-            if (description.CustomTileActorPredicate != null)
-            {
-                bool hasAtLeastOneMatch = false;
-                foreach (TileActorReference tileActor in _accessor.GetBufferReadOnly<TileActorReference>(tileEntity))
-                {
-                    if (_accessor.Exists(tileActor) && description.CustomTileActorPredicate(tileActor, _accessor))
-                    {
-                        hasAtLeastOneMatch = true;
-                        break;
-                    }
-                }
-
-                if (!hasAtLeastOneMatch)
-                {
-                    return false;
-                }
-            }
-
-            // Custom tile predicate
-            if (description.CustomTilePredicate != null)
-            {
-                if(!description.CustomTilePredicate(tilePosition, tileEntity, _accessor))
-                {
-                    return false;
-                }
-            }
-
-            // tile reachable
-            if (description.MustBeReachable)
-            {
-                NativeList<int2> _highlightNavigablePath = new NativeList<int2>(Allocator.Temp);
-                if (!CommonReads.FindNavigablePath(_accessor, parameters.PawnTile, tilePosition, description.RangeFromInstigator, _highlightNavigablePath))
-                {
-                    return false; // tile is non-reachable
-                }
-            }
-
-            return true;
-        }
     }
 }

@@ -35,7 +35,7 @@ public class GameActionComboAttack : GameAction
     {
         // TODO Find a better way to go through all Parameters (foreach)
 
-        int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value).xy;
+        int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
         NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
 
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data firstTile))

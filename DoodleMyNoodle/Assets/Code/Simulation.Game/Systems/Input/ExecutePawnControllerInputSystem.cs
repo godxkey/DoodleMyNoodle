@@ -310,9 +310,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         }
 
         FixTranslation pawnPosition = EntityManager.GetComponentData<FixTranslation>(pawn);
-        fix3 interactablePosition = new fix3(inputUseInteractable.InteractablePosition.x,
-                                             inputUseInteractable.InteractablePosition.y,
-                                             0);
+        fix3 interactablePosition = Helpers.GetTileCenter(inputUseInteractable.InteractablePosition);
 
         Entity tile = CommonReads.GetTileEntity(Accessor, inputUseInteractable.InteractablePosition);
         if (tile == Entity.Null)
@@ -383,5 +381,36 @@ internal partial class CommonWrites
         ExecutePawnControllerInputSystem system = accessor.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
 
         system.Inputs.Add(input);
+    }
+
+    public static bool TryInputUseItem<T>(ISimWorldReadWriteAccessor accessor, Entity entityController, int2 tile) where T : GameAction
+    {
+        if (!accessor.TryGetComponentData(entityController, out ControlledEntity pawn))
+            return false;
+
+        if (pawn == Entity.Null)
+            return false;
+
+        // get pawn's item
+        Entity item = CommonReads.FindFirstItemWithGameAction<T>(accessor, pawn, out int itemIndex);
+        if (item == Entity.Null)
+            return false;
+
+        // check item can be used
+        var gameAction = GameActionBank.GetAction<T>();
+        if (gameAction == null || !gameAction.CanBeUsedInContext(accessor, new GameAction.UseContext(entityController, pawn, item)))
+            return false;
+
+        // create game action's use data
+        var useData = GameAction.UseParameters.Create(
+            new GameActionParameterTile.Data(0, tile));
+
+        // create input
+        var input = new PawnControllerInputUseItem(entityController, itemIndex, useData);
+
+        // queue input
+        CommonWrites.QueuePawnControllerInput(accessor, input);
+
+        return true;
     }
 }

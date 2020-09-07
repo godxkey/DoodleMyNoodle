@@ -38,7 +38,7 @@ public class CreateLevelGridSystem : SimComponentSystem
             }
 
             tileActors[i] = EntityManager.Instantiate(startingTileActors[i].Prefab);
-            EntityManager.SetComponentData(tileActors[i], new FixTranslation() { Value = fix3(startingTileActors[i].Position, 0) });
+            EntityManager.SetComponentData(tileActors[i], new FixTranslation() { Value = Helpers.GetTileCenter(startingTileActors[i].Position) });
         }
 
         // Creating singleton with a buffer of all tile entities (container of tiles)

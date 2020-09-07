@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7905076531735690256}
   - component: {fileID: 7905076531735690257}
   m_Layer: 0
-  m_Name: BE_Grid_Prototype3
+  m_Name: BE_Grid_Lvl_Prototype3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
