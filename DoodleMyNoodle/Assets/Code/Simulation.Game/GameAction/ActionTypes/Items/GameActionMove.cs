@@ -40,12 +40,16 @@ public class GameActionMove : GameAction
             int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
 
             NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);
-            Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path);
+            if(!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path))
+            {
+                LogGameActionInfo(context, $"Discarding: cannot find navigable path from { instigatorTile} to { paramTile.Tile}.");
+                return;
+            }
 
-            // Get the last reachable point considering the users' AP
+            // Get the last reachable point considering the user's AP
             int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(_path.AsArray().Slice(), instigatorAP);
 
-            // Remove unreachable points 
+            // Remove unreachable points
             _path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
 
             // find AP cost
