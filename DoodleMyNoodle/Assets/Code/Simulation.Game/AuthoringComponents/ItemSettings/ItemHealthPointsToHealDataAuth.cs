@@ -1,4 +1,4 @@
-using Unity.Entities;
+﻿using Unity.Entities;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -19,6 +19,13 @@ public class ItemHealthPointsToHealDataAuth : MonoBehaviour, IConvertGameObjectT
 
     public string GetDescription(ItemHealthPointsToHealData inputData)
     {
-        return $"Healing : {inputData.Value} ({HealthToHeal})";
+        if (inputData.Value == HealthToHeal)
+        {
+            return $"Healing : {inputData.Value}";
+        }
+        else
+        {
+            return $"Healing : {inputData.Value} ({HealthToHeal})";
+        }
     }
 }

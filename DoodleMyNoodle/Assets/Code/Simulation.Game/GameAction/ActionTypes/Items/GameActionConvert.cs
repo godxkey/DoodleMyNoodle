@@ -6,15 +6,10 @@ using Unity.Collections;
 
 public class GameActionConvert : GameAction
 {
-    // TODO: add settings on the item itself
-    const int AP_COST = 6;
-    const int RANGE = 5;
-    const int DURATION = 2;
-
     public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description(RANGE)
+            new GameActionParameterTile.Description(_.GetComponentData<ItemRangeData>(context.Entity).Value)
             {
                 IncludeSelf = false,
                 CustomTileActorPredicate = (tileActor, accessor) =>
@@ -37,21 +32,13 @@ public class GameActionConvert : GameAction
 
     protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return AP_COST;
+        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
-    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            if (accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value < AP_COST)
-            {
-                return;
-            }
-
-            // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST);
-
             // find target
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
             CommonReads.FindTileActorsWithComponents<ControllableTag>(accessor, paramTile.Tile, victims);
@@ -69,10 +56,14 @@ public class GameActionConvert : GameAction
                     }
                     else
                     {
-                        accessor.AddComponentData(pawnController, new Converted() { RemainingTurns = DURATION });
+                        accessor.AddComponentData(pawnController, new Converted() { RemainingTurns = accessor.GetComponentData<ItemEffectDurationData>(context.Entity).Value });
                     }
+
+                    return true;
                 }
             }
         }
+
+        return false;
     }
 }

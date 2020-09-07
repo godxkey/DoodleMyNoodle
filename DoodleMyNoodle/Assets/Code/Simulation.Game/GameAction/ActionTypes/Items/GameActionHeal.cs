@@ -9,10 +9,6 @@ using Unity.Collections;
 
 public class GameActionHeal : GameAction
 {
-    const int RANGE = 3;
-    const int AP_COST = 2;
-    const int HEAL = 4;
-
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason  debugReason)
     {
         return true;
@@ -20,7 +16,7 @@ public class GameActionHeal : GameAction
     
     protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return AP_COST;
+        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
@@ -28,7 +24,7 @@ public class GameActionHeal : GameAction
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description(RANGE)
+            new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
             {
                 RequiresAttackableEntity = true,
             }
@@ -37,25 +33,21 @@ public class GameActionHeal : GameAction
         return useContract;
     }
 
-    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            if (accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value < AP_COST)
-            {
-                return;
-            }
-
-            // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST);
-
             // reduce target health
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
             CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
             foreach (var entity in victims)
             {
-                CommonWrites.ModifyStatInt<Health>(accessor, entity, HEAL);
+                CommonWrites.ModifyStatInt<Health>(accessor, entity, accessor.GetComponentData<ItemHealthPointsToHealData>(context.Entity).Value);
             }
+
+            return true;
         }
+
+        return false;
     }
 }

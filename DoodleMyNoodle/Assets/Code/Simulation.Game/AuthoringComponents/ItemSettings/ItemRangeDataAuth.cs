@@ -19,6 +19,13 @@ public class ItemRangeDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IIte
 
     public string GetDescription(ItemRangeData inputData)
     {
-        return $"Range : {inputData.Value} ({Range})";
+        if (inputData.Value == Range)
+        {
+            return $"Range : {inputData.Value}";
+        }
+        else
+        {
+            return $"Range : {inputData.Value} ({Range})";
+        }
     }
 }

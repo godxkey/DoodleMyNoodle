@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7484598955039597738}
   - component: {fileID: 9033580274841478421}
   - component: {fileID: 8192711906296489722}
+  - component: {fileID: -251396275792484950}
   m_Layer: 0
   m_Name: SE_Item_MeleeAttack
   m_TagString: Untagged
@@ -115,3 +116,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Range: 1
+--- !u!114 &-251396275792484950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ActionPointCost: 2

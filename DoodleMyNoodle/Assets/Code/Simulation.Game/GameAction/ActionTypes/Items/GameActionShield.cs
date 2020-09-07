@@ -5,10 +5,6 @@ using static fixMath;
 
 public class GameActionShield : GameAction
 {
-    // TODO: add settings on the item itself
-    const int DURATION = 1;
-    const int AP_COST = 2;
-
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(new GameActionParameterSelfTarget.Description() {});
@@ -27,23 +23,19 @@ public class GameActionShield : GameAction
 
     protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return AP_COST;
+        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
-    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
     {
         if (useData.TryGetParameter(0, out GameActionParameterSelfTarget.Data self))
         {
-            if (accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value < AP_COST)
-            {
-                return;
-            }
+            accessor.AddComponentData(context.InstigatorPawn, new Invincible() { Duration = accessor.GetComponentData<ItemEffectDurationData>(context.Entity).Value });
 
-            // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST);
-
-            accessor.AddComponentData(context.InstigatorPawn, new Invincible() { Duration = DURATION });
+            return true;
         }
+
+        return false;
     }
 }
 

@@ -5,14 +5,9 @@ using Unity.Collections;
 
 public class GameActionComboAttack : GameAction
 {
-    // TODO: add settings on the item itself
-    const int DAMAGE = 1;
-    const int AP_COST_PER_ATTACK = 1;
-    const int RANGE = 1;
-
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        var param = new GameActionParameterTile.Description(RANGE)
+        var param = new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
         {
             IncludeSelf = false,
             RequiresAttackableEntity = true
@@ -28,31 +23,21 @@ public class GameActionComboAttack : GameAction
     
     protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return AP_COST_PER_ATTACK;
+        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
-    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
     {
-        // TODO Find a better way to go through all Parameters (foreach)
-
         int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
         NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
 
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data firstTile))
         {
-            // melee attack has a range of RANGE
-            if (lengthmanhattan(firstTile.Tile - instigatorTile) > RANGE)
+            // melee attack has a range
+            if (lengthmanhattan(firstTile.Tile - instigatorTile) > accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
             {
-                return;
+                return false;
             }
-
-            if (accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value < AP_COST_PER_ATTACK)
-            {
-                return;
-            }
-
-            // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST_PER_ATTACK);
 
             // find victims
             CommonReads.FindTileActorsWithComponents<Health>(accessor, firstTile.Tile, victims);
@@ -61,18 +46,10 @@ public class GameActionComboAttack : GameAction
         if (parameters.TryGetParameter(1, out GameActionParameterTile.Data secondTile))
         {
             // melee attack has a range of RANGE
-            if (lengthmanhattan(secondTile.Tile - instigatorTile) > RANGE)
+            if (lengthmanhattan(secondTile.Tile - instigatorTile) > accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
             {
-                return;
+                return false;
             }
-
-            if (accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value < AP_COST_PER_ATTACK)
-            {
-                return;
-            }
-
-            // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST_PER_ATTACK);
 
             // find victims
             CommonReads.FindTileActorsWithComponents<Health>(accessor, secondTile.Tile, victims);
@@ -80,13 +57,22 @@ public class GameActionComboAttack : GameAction
 
         foreach (Entity entity in victims)
         {
-            AttackEntityOnTile(accessor, context.InstigatorPawn, entity);
+            AttackEntityOnTile(accessor, context, entity);
+        }
+
+        if (victims.Length > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
-    private void AttackEntityOnTile(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity entity)
+    private void AttackEntityOnTile(ISimWorldReadWriteAccessor accessor, UseContext context, Entity entity)
     {
-        CommonWrites.RequestDamageOnTarget(accessor, instigator, entity, DAMAGE);
+        CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, accessor.GetComponentData<ItemDamageData>(context.Entity).Value);
     }
 
 }

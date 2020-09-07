@@ -108,8 +108,15 @@ public abstract class GameAction
             return false;
         }
 
-        Use(accessor, context, parameters);
-        return true;
+        if (Use(accessor, context, parameters))
+        {
+            OnActionUsed(accessor, context);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public bool TryUse(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, out string debugReason)
@@ -119,8 +126,15 @@ public abstract class GameAction
             return false;
         }
 
-        Use(accessor, context, parameters);
-        return true;
+        if (Use(accessor, context, parameters))
+        {
+            OnActionUsed(accessor, context);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public bool CanBeUsedInContext(ISimWorldReadAccessor accessor, in UseContext context)
@@ -191,9 +205,40 @@ public abstract class GameAction
         return false;
     }
 
+    public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context)
+    {
+        // reduce instigator AP
+        if (accessor.TryGetComponentData(context.Entity, out ItemActionPointCostData itemActionPointCost)) 
+        {
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -itemActionPointCost.Value);
+        }
+
+        // increase instigator AP
+        if (accessor.TryGetComponentData(context.Entity, out ItemActionPointGainData itemActionPointGain))
+        {
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, itemActionPointGain.Value);
+        }
+
+        // reduce instigator Health
+        if (accessor.TryGetComponentData(context.Entity, out ItemHealthPointCostData itemHealthPointCost))
+        {
+            CommonWrites.ModifyStatInt<Health>(accessor, context.InstigatorPawn, -itemHealthPointCost.Value);
+        }
+
+        // Cooldown
+        if (accessor.TryGetComponentData(context.Entity, out ItemTimeCooldownData itemTimeCooldownData))
+        {
+            accessor.SetOrAddComponentData(context.Entity, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
+        }
+        else if (accessor.TryGetComponentData(context.Entity, out ItemTurnCooldownData itemTurnCooldownData))
+        {
+            accessor.SetOrAddComponentData(context.Entity, new ItemCooldownTurnCounter() { Value = itemTurnCooldownData.Value });
+        }
+    }
+
     protected abstract int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context);
     protected abstract bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason);
-    public abstract void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters);
+    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters);
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context);
 
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]

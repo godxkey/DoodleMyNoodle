@@ -20,8 +20,10 @@ public class GameActionInteract : GameAction
         return 0;
     }
 
-    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
     {
         CommonWrites.Interact(accessor, context.Entity, context.InstigatorPawn);
+
+        return true;
     }
 }

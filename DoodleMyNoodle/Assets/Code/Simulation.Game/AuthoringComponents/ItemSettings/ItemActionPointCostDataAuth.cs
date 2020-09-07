@@ -19,6 +19,13 @@ public class ItemActionPointCostDataAuth : MonoBehaviour, IConvertGameObjectToEn
 
     public string GetDescription(ItemActionPointCostData inputData)
     {
-        return $"Stamina Cost : {inputData.Value} ({ActionPointCost})";
+        if (inputData.Value == ActionPointCost)
+        {
+            return $"Stamina Cost : {inputData.Value}";
+        }
+        else
+        {
+            return $"Stamina Cost : {inputData.Value} ({ActionPointCost})";
+        }
     }
 }
