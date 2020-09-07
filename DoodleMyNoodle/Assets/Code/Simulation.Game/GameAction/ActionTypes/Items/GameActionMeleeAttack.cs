@@ -30,7 +30,7 @@ public class GameActionMeleeAttack : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value).xy;
+            int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
 
             // melee attack has a range of RANGE
             if (lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<ItemRangeData>(context.Entity).Value)

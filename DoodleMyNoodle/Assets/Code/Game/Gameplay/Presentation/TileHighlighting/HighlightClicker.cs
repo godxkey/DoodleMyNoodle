@@ -8,13 +8,21 @@ public class HighlightClicker : GamePresentationBehaviour
 {
     public Action<Vector2> OnClicked;
 
+    private Transform _tr;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _tr = transform;
+    }
+
     protected override void OnGamePresentationUpdate()
     {
         if(gameObject.activeSelf && IsMouseInsideHighlight(GetMousePositionOnTile()))
         {
             if (Input.GetMouseButtonDown(0))
             {
-                OnClicked.Invoke(new Vector2(transform.position.x, transform.position.y));
+                OnClicked.Invoke(_tr.position);
             }
         }
     }
@@ -23,9 +31,8 @@ public class HighlightClicker : GamePresentationBehaviour
     {
         Ray ray = CameraService.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
 
-        float enter = 0.0f;
-        Plane FloorPlane = new Plane(CommonReads.GetFloorPlaneNormal(SimWorld).ToUnityVec(),0);
-        if (FloorPlane.Raycast(ray, out enter))
+        Plane floorPlane = new Plane(CommonReads.GetFloorPlaneNormal(SimWorld).ToUnityVec(), 0);
+        if (floorPlane.Raycast(ray, out float enter))
         {
             Vector3 hitPoint = ray.GetPoint(enter);
             return hitPoint;
@@ -36,9 +43,10 @@ public class HighlightClicker : GamePresentationBehaviour
 
     private bool IsMouseInsideHighlight(Vector3 mousePos)
     {
-        return mousePos.x <= transform.position.x + 0.5f
-            && mousePos.x >= transform.position.x - 0.5f
-            && mousePos.y <= transform.position.y + 0.5f
-            && mousePos.y >= transform.position.y - 0.5f;
+        Vector3 pos = _tr.position;
+        return mousePos.x <= pos.x + 0.5f
+            && mousePos.x >= pos.x - 0.5f
+            && mousePos.y <= pos.y + 0.5f
+            && mousePos.y >= pos.y - 0.5f;
     }
 }

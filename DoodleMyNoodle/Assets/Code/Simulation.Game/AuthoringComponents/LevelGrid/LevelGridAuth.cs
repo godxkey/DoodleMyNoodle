@@ -98,10 +98,10 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
             return;
         }
 
-        if (_grid.CellToWorld(Vector3Int.zero) != new Vector3(-0.5f, -0.5f, 0))
+        if (_grid.CellToWorld(Vector3Int.zero) != Vector3.zero)
         {
-            Log.Error($"({gameObject.name}) Grid position should be (-0.5f, -0.5f, 0). Fixing!", gameObject);
-            _grid.transform.position = new Vector3(-0.5f, -0.5f, 0);
+            Log.Error($"({gameObject.name}) Grid position should be (0, 0, 0). Fixing!", gameObject);
+            _grid.transform.position = Vector3.zero;
         }
     }
 }

@@ -23,6 +23,7 @@ public partial struct fix : IEquatable<fix>, IComparable<fix>, IFormattable
     public static fix MinValue => new fix(MIN_VALUE);
     public static fix One => new fix(ONE);
     public static fix Zero => new fix();
+    public static fix Half => new fix(HALF);
     /// <summary>
     /// The value of Pi
     /// </summary>
@@ -41,6 +42,7 @@ public partial struct fix : IEquatable<fix>, IComparable<fix>, IFormattable
     const int NUM_BITS = 64;
     const int FRACTIONAL_PLACES = 32;
     const long ONE = 1L << FRACTIONAL_PLACES;
+    const long HALF = 2147483648;
     const long PI_TIMES_2 = 0x6487ED511;
     const long PI = 0x3243F6A88;
     const long PI_OVER_2 = 0x1921FB544;
@@ -93,10 +95,26 @@ public partial struct fix : IEquatable<fix>, IComparable<fix>, IFormattable
     /// <summary>
     /// Returns the largest integer less than or equal to the specified number.
     /// </summary>
+    public static int FloorToInt(fix value)
+    {
+        return (int)Floor(value);
+    }
+
+    /// <summary>
+    /// Returns the largest integer less than or equal to the specified number.
+    /// </summary>
     public static fix Floor(fix value)
     {
         // Just zero out the fractional part
         return new fix((long)((ulong)value.RawValue & 0xFFFFFFFF00000000));
+    }
+
+    /// <summary>
+    /// Returns the smallest integral value that is greater than or equal to the specified number.
+    /// </summary>
+    public static int CeilingToInt(fix value)
+    {
+        return (int)Ceiling(value);
     }
 
     /// <summary>

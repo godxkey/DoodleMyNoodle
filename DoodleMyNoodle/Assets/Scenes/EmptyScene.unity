@@ -718,10 +718,13 @@ MonoBehaviour:
   _lineContainer: {fileID: 290055015}
   _lineDetailContainer: {fileID: 0}
   _lineDetailText: {fileID: 0}
+  _scrollBar: {fileID: 0}
+  _clearButton: {fileID: 0}
   _normalLineColor: {r: 1, g: 1, b: 1, a: 1}
   _commandLineColor: {r: 0, g: 1, b: 1, a: 1}
   _warningLineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _errorLineColor: {r: 1, g: 0, b: 0, a: 1}
+  _detailsTextDecorations: []
 --- !u!1 &936629228
 GameObject:
   m_ObjectHideFlags: 0
@@ -1502,17 +1505,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f70db2b9427c1246af5a0fe20015c11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Values:
-  - Val: a
-  - Val: b
-  - Val: c
-  - Val: d
-  - Val: e
-  - Val: f
-  - Val: g
-  - Val: h
-  - Val: i
-  - Val: j
+  start:
+    x:
+      RawValue: 1632087552
+    y:
+      RawValue: 2147483648
+  end:
+    x:
+      RawValue: 27874336768
+    y:
+      RawValue: 16449724416
+  bevel:
+    RawValue: 0
+  operations: 0
+  repeat: 1
+  _crossedTiles:
+  - x: 0
+    y: 0
+  - x: 1
+    y: 0
+  - x: 1
+    y: 1
+  - x: 2
+    y: 1
+  - x: 3
+    y: 1
+  - x: 3
+    y: 2
+  - x: 4
+    y: 2
+  - x: 4
+    y: 3
+  - x: 5
+    y: 3
+  - x: 6
+    y: 3
 --- !u!1 &1822510314
 GameObject:
   m_ObjectHideFlags: 0

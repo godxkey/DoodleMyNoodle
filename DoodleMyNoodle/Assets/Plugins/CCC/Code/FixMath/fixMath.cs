@@ -185,7 +185,16 @@ public static partial class fixMath
     public static int2 roundToInt(in fix2 v) => int2(global::fix.RoundToInt(v.x), global::fix.RoundToInt(v.y));
     public static int3 roundToInt(in fix3 v) => int3(global::fix.RoundToInt(v.x), global::fix.RoundToInt(v.y), global::fix.RoundToInt(v.z));
     public static int4 roundToInt(in fix4 v) => int4(global::fix.RoundToInt(v.x), global::fix.RoundToInt(v.y), global::fix.RoundToInt(v.z), global::fix.RoundToInt(v.w));
-
+    
+    public static int  floorToInt(in fix v)  =>      global::fix.FloorToInt(v);
+    public static int2 floorToInt(in fix2 v) => int2(global::fix.FloorToInt(v.x), global::fix.FloorToInt(v.y));
+    public static int3 floorToInt(in fix3 v) => int3(global::fix.FloorToInt(v.x), global::fix.FloorToInt(v.y), global::fix.FloorToInt(v.z));
+    public static int4 floorToInt(in fix4 v) => int4(global::fix.FloorToInt(v.x), global::fix.FloorToInt(v.y), global::fix.FloorToInt(v.z), global::fix.FloorToInt(v.w));
+    
+    public static int  ceilToInt(in fix v)  =>      global::fix.CeilingToInt(v);
+    public static int2 ceilToInt(in fix2 v) => int2(global::fix.CeilingToInt(v.x), global::fix.CeilingToInt(v.y));
+    public static int3 ceilToInt(in fix3 v) => int3(global::fix.CeilingToInt(v.x), global::fix.CeilingToInt(v.y), global::fix.CeilingToInt(v.z));
+    public static int4 ceilToInt(in fix4 v) => int4(global::fix.CeilingToInt(v.x), global::fix.CeilingToInt(v.y), global::fix.CeilingToInt(v.z), global::fix.CeilingToInt(v.w));
 
     public static fix lengthmanhattan(fix2 v) => abs(v.x) +abs(v.y);
     public static fix lengthmanhattan(fix3 v) => abs(v.x) + abs(v.y) + abs(v.z);

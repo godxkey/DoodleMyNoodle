@@ -7,23 +7,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using static fixMath;
 using static Unity.Mathematics.math;
-
-
-public static partial class CommonReads
-{
-    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, in int2 from, in int2 to, fix maxLength, Allocator allocator,
-        out NativeList<int2> resultList)
-    {
-        resultList = new NativeList<int2>(allocator);
-        return Pathfinding.FindNavigablePath(accessor, from, to, maxLength, resultList);
-    }
-
-    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, fix maxLength,
-        NativeList<int2> outResult)
-    {
-        return Pathfinding.FindNavigablePath(accessor, start, goal, maxLength, outResult);
-    }
-}
+using static Unity.MathematicsX.mathX;
 
 public static class Pathfinding
 {
@@ -53,6 +37,13 @@ public static class Pathfinding
         return (int)floor(maxCost);
     }
 
+    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, in int2 from, in int2 to, fix maxLength, Allocator allocator,
+        out NativeList<int2> resultList)
+    {
+        resultList = new NativeList<int2>(allocator);
+        return FindNavigablePath(accessor, from, to, maxLength, resultList);
+    }
+
     public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, fix maxLength, NativeList<int2> result)
     {
         Profiler.BeginSample("Pathfinding");
@@ -72,7 +63,7 @@ public static class Pathfinding
         }
 
         // Destination cannot be reached
-        if (!IsTileWalkable(goal, accessor))
+        if (lengthmanhattan(start - goal) > maxLength || !IsTileWalkable(goal, accessor))
         {
             Profiler.EndSample();
             return false;

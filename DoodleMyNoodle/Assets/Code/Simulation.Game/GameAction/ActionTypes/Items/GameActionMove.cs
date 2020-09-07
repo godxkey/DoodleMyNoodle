@@ -37,10 +37,10 @@ public class GameActionMove : GameAction
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             int instigatorAP = accessor.GetComponentData<ActionPoints>(context.InstigatorPawn);
-            int2 instigatorTile = roundToInt(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value).xy;
+            int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
 
             NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);
-            CommonReads.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path);
+            Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path);
 
             // Get the last reachable point considering the users' AP
             int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(_path.AsArray().Slice(), instigatorAP);
@@ -61,7 +61,7 @@ public class GameActionMove : GameAction
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -costToMove);
 
             // set destination
-            accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = fix3(_path[_path.Length - 1], 0) });
+            accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(_path[_path.Length - 1]) });
         }
     }
 }
