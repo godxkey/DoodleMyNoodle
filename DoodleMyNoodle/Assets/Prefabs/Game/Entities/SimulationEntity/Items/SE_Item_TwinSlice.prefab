@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPointCost: 2
+  ActionPointCost: 3
 --- !u!114 &1725349915119862877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b3569fbe963ceb4fb9da4315e9207de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 1
+  Damage: 2
 --- !u!114 &654114501825988275
 MonoBehaviour:
   m_ObjectHideFlags: 0

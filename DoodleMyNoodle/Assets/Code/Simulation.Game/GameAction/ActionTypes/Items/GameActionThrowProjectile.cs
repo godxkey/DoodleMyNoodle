@@ -32,9 +32,9 @@ public class GameActionThrowProjectile : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             // get settings
-            if (!accessor.TryGetComponentData(context.Entity, out GameActionThrowProjectileSettings settings))
+            if (!accessor.TryGetComponentData(context.Entity, out ItemThrowProjectileSettings settings))
             {
-                Debug.LogWarning($"Item {context.Entity} has no {nameof(GameActionThrowProjectileSettings)} component");
+                Debug.LogWarning($"Item {context.Entity} has no {nameof(ItemThrowProjectileSettings)} component");
                 return false;
             }
 

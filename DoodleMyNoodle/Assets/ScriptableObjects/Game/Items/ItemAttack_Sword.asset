@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: {fileID: -8620854387768135619, guid: 8fe72c48eacd0c642818eff638603c62, type: 3}
   ItemPrefab: {fileID: 5742253346417087641, guid: 8fe72c48eacd0c642818eff638603c62,
     type: 3}
-  Icon: {fileID: 21300000, guid: f60bb367ece611d429d90e53a56b4f4b, type: 3}
+  Icon: {fileID: 21300000, guid: d2ce51beb1c830f4eaa297a9c227d6b4, type: 3}
   Name: Sword
   Rarity: 0
-  EffectDescription: Attack a character nearby
+  EffectDescription: Attack an adjacent character
