@@ -78,7 +78,7 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 2385346486794747607, guid: 4899e73436da28d43ba3448231f4f76d,
     type: 3}
   ThrowSpeed:
-    RawValue: 17179869184
+    RawValue: 30064771072
 --- !u!114 &5718374214135844852
 MonoBehaviour:
   m_ObjectHideFlags: 0
