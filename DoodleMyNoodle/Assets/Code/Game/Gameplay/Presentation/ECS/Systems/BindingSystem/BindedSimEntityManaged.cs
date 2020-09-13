@@ -3,6 +3,9 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 using System.Collections.ObjectModel;
+using Unity.Collections;
+using Unity.Mathematics;
+using static fixMath;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -37,12 +40,12 @@ public class BindedSimEntityManaged : MonoBehaviour, IIndexedInList, ISystemStat
 
     int IIndexedInList.Index { get; set; }
 
-    
+
     public static ReadOnlyDictionary<Entity, GameObject> InstancesMap
     {
         get
         {
-            if(s_instancesMapRO == null)
+            if (s_instancesMapRO == null)
             {
                 s_instancesMapRO = new ReadOnlyDictionary<Entity, GameObject>(s_instancesMap);
             }
@@ -56,6 +59,60 @@ public class BindedSimEntityManaged : MonoBehaviour, IIndexedInList, ISystemStat
     private static Dictionary<Entity, GameObject> s_instancesMap = new Dictionary<Entity, GameObject>();
     private static ReadOnlyDictionary<Entity, GameObject> s_instancesMapRO = new ReadOnlyDictionary<Entity, GameObject>(s_instancesMap);
     private static List<BindedSimEntityManaged> s_instances = new List<BindedSimEntityManaged>();
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        GamePresentationCache cache = GamePresentationCache.Instance;
+        if (SimEntity == Entity.Null || !cache.Ready)
+        {
+            return;
+        }
+
+        var simWorld = cache.SimWorld;
+
+
+        if (simWorld.HasComponent<ControllableTag>(SimEntity))
+        {
+            Entity pawnController = CommonReads.GetPawnController(simWorld, SimEntity);
+            if (pawnController != Entity.Null)
+            {
+                if (simWorld.TryGetComponentData(pawnController, out ArcherAIData archerAIData))
+                {
+                    DrawArcherAIGizmos(cache, simWorld, SimEntity, pawnController);
+                }
+            }
+        }
+    }
+
+    private static void DrawArcherAIGizmos(GamePresentationCache cache, ISimWorldReadAccessor simWorld, Entity pawn, Entity ai)
+    {
+        var attackableGroup = simWorld.CreateEntityQuery(
+            ComponentType.ReadOnly<Health>(),
+            ComponentType.ReadOnly<ControllableTag>(),
+            ComponentType.ReadOnly<FixTranslation>());
+
+        NativeList<Entity> x = new NativeList<Entity>(Allocator.Temp);
+
+        CommonReads.PawnSenses.FindAllPawnsInSight(simWorld, attackableGroup, pawn, ai, x, withGizmos: true);
+
+        attackableGroup.Dispose();
+
+
+        Gizmos.color = Color.white;
+        foreach (int2 tile in UpdateArcherAISystem._shootingPositions)
+        {
+            Gizmos.DrawWireCube((Vector3)Helpers.GetTileCenter(tile), Vector3.one);
+        }
+
+
+        Gizmos.color = Color.green;
+        foreach (int2 tile in UpdateArcherAISystem._path)
+        {
+            Gizmos.DrawWireCube((Vector3)Helpers.GetTileCenter(tile), Vector3.one * 0.9f);
+        }
+    }
+#endif
 }
 
 #if UNITY_EDITOR

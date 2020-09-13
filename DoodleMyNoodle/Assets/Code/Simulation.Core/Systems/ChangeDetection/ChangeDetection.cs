@@ -151,7 +151,7 @@ public static class ChangeDetection
         public static ChunkTrace RemoveChunk(List<ChunkTrace> chunks, ref int iterator, int i)
         {
             ChunkTrace chunkTrace = chunks[i];
-            
+
             chunks.RemoveAt(i);
 
             if (i < iterator)
@@ -223,7 +223,7 @@ public static class ChangeDetection
                 {
                     for (int c = 0; c < oldChunk.ComponentTraces.Count; c++)
                     {
-                        if(oldChunk.ComponentTraces[c].Version != newChunk.ComponentTraces[c].Version)
+                        if (oldChunk.ComponentTraces[c].Version != newChunk.ComponentTraces[c].Version)
                         {
                             LogModifiedComponent(oldChunk, oldChunk.ComponentTraces[c].ComponentType);
                         }
@@ -266,7 +266,7 @@ public static class ChangeDetection
 
             StringBuilderPool.Release(stringBuilder);
         }
-        
+
         public static void LogDestroyedEntities(ChunkTrace chunk)
         {
             StringBuilder stringBuilder = StringBuilderPool.Take();

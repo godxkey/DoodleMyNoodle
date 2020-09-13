@@ -17,26 +17,21 @@ public class MessageDisplaySystem : GamePresentationSystem<MessageDisplaySystem>
     protected override void OnGamePresentationUpdate()
     {
         bool active = false;
-        
+
         if (SimWorldCache.LocalPawn != Entity.Null)
         {
-            Entity tileEntity = SimWorldCache.LocalPawnTileEntity;
+            Entity messageEntity = CommonReads.FindFirstTileActorWithComponent<Message>(SimWorld, SimWorldCache.LocalPawnTile);
 
-            if (tileEntity != Entity.Null)
+            if (messageEntity != Entity.Null)
             {
-                Entity messageEntity = CommonReads.FindFirstTileActorWithComponent<Message>(SimWorld, tileEntity);
+                Message message = SimWorld.GetComponentData<Message>(messageEntity);
 
-                if (messageEntity != Entity.Null)
-                {
-                    Message message = SimWorld.GetComponentData<Message>(messageEntity);
+                _messageText.text = message.ToString();
 
-                    _messageText.text = message.ToString();
+                int2 tilePos = SimWorldCache.LocalPawnTile;
 
-                    int2 tilePos = SimWorldCache.LocalPawnTile;
-
-                    _messageBubble.transform.position = new Vector3(tilePos.x + _displacement.x, tilePos.y + _displacement.y, _displacement.z);
-                    active = true;
-                }
+                _messageBubble.transform.position = new Vector3(tilePos.x + _displacement.x, tilePos.y + _displacement.y, _displacement.z);
+                active = true;
             }
         }
 

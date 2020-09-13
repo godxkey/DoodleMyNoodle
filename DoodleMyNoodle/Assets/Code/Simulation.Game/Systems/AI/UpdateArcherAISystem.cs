@@ -13,6 +13,7 @@ public struct ArcherAIData : IComponentData
 {
     public ArcherAIState State;
     public Entity AttackTarget;
+    public int2 ShootTile;
     public fix NoActionUntilTime;
     public int LastPatrolTurn;
 }
@@ -26,28 +27,42 @@ public enum ArcherAIState
 
 [UpdateAfter(typeof(RefillActionPointsSystem))] // TODO: use groups!
 [UpdateAfter(typeof(DestroyAIControllersSystem))] // TODO: use groups!
+[UpdateAfter(typeof(UpdateTileActorReferenceSystem))] // TODO: use groups!
+[UpdateBefore(typeof(ExecutePawnControllerInputSystem))]
 public class UpdateArcherAISystem : SimComponentSystem
 {
-    private readonly fix AGGRO_WALK_RANGE = 10;
+    public static fix DETECT_RANGE => 10;
+    public static fix2 PAWN_EYES_OFFSET => fix2(0, fix(0.15));
 
     private EntityQuery _attackableGroup;
-    private NativeList<int2> _path;
+    public static NativeList<int2> _path;
+    public static NativeList<int2> _shootingPositions;
+    public static NativeList<Entity> _shootingTargets;
+    private NativeList<Entity> _enemies;
 
     protected override void OnCreate()
     {
         base.OnCreate();
+
+        _enemies = new NativeList<Entity>(Allocator.Persistent);
+        _shootingPositions = new NativeList<int2>(Allocator.Persistent);
+        _shootingTargets = new NativeList<Entity>(Allocator.Persistent);
 
         _path = new NativeList<int2>(Allocator.Persistent);
         _attackableGroup = EntityManager.CreateEntityQuery(
             ComponentType.ReadOnly<Health>(),
             ComponentType.ReadOnly<ControllableTag>(),
             ComponentType.ReadOnly<FixTranslation>());
+
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
 
+        _enemies.Dispose();
+        _shootingPositions.Dispose();
+        _shootingTargets.Dispose();
         _path.Dispose();
         _attackableGroup.Dispose();
     }
@@ -100,68 +115,14 @@ public class UpdateArcherAISystem : SimComponentSystem
 
     private void UpdateMentalState(in Entity controller, in Team controllerTeam, ref ArcherAIData agentData, in Entity agentPawn)
     {
-        switch (agentData.State)
+        (Entity attackTarget, int2 shootPos) = FindTargetAndShootPos(controllerTeam, agentPawn);
+
+        if (attackTarget != Entity.Null)
         {
-            case ArcherAIState.Patrol:
-                UpdateMentalState_Patrol(controller, controllerTeam, ref agentData, agentPawn);
-                break;
-            case ArcherAIState.PositionForAttack:
-                UpdateMentalState_PositionForAttack(controller, controllerTeam, ref agentData, agentPawn);
-                break;
-            case ArcherAIState.Attack:
-                UpdateMentalState_Attacking(controller, controllerTeam, ref agentData, agentPawn);
-                break;
-        }
-    }
+            agentData.AttackTarget = attackTarget;
+            agentData.ShootTile = shootPos;
 
-    private void UpdateMentalState_Patrol(in Entity controller, in Team controllerTeam, ref ArcherAIData agentData, in Entity agentPawn)
-    {
-        // TDLR: Search for enemy within range (no line of sight required)
-        fix3 pawnPos = EntityManager.GetComponentData<FixTranslation>(agentPawn);
-        int2 pawnTile = Helpers.GetTile(pawnPos);
-
-        var positions = GetComponentDataFromEntity<FixTranslation>(isReadOnly: true);
-        var attackableEntities = _attackableGroup.ToEntityArray(Allocator.TempJob);
-
-        Entity closest = Entity.Null;
-        fix closestDist = fix.MaxValue;
-        int2 closestTile = default;
-
-        foreach (var enemy in attackableEntities)
-        {
-            // Find enemy controller in other teams
-            Entity enemyController = CommonReads.GetPawnController(Accessor, enemy);
-
-            if (enemyController == Entity.Null)
-                continue;
-
-            if (!EntityManager.TryGetComponentData(enemyController, out Team enemyTeam))
-                continue;
-
-            if (enemyTeam == controllerTeam)
-                continue;
-
-            int2 enemyTile = Helpers.GetTile(positions[enemy].Value);
-            // try find path to enemy
-            if (!Pathfinding.FindNavigablePath(Accessor, pawnTile, enemyTile, maxLength: AGGRO_WALK_RANGE, _path))
-                continue;
-            //CHANGE THIS
-            // If distance is closer, record enemy
-            fix dist = Pathfinding.CalculateTotalCost(_path.Slice());
-            if (dist <= AGGRO_WALK_RANGE && dist < closestDist)
-            {
-                closest = enemy;
-                closestDist = dist;
-                closestTile = enemyTile;
-            }
-        }
-
-        // Change state!
-        if (closest != Entity.Null)
-        {
-            agentData.AttackTarget = closest;
-
-            if (lengthmanhattan(closestTile - pawnTile) == 1)
+            if (Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn)).Equals(shootPos))
             {
                 agentData.State = ArcherAIState.Attack;
             }
@@ -170,71 +131,118 @@ public class UpdateArcherAISystem : SimComponentSystem
                 agentData.State = ArcherAIState.PositionForAttack;
             }
         }
-
-        attackableEntities.Dispose();
-    }
-
-    private void UpdateMentalState_PositionForAttack(in Entity controller, in Team controllerTeam, ref ArcherAIData agentData, in Entity agentPawn)
-    {
-        if (!EntityManager.Exists(agentData.AttackTarget) || !EntityManager.TryGetComponentData(agentData.AttackTarget, out FixTranslation enemyPos))
+        else
         {
             agentData.State = ArcherAIState.Patrol;
-            return;
-        }
-
-        int2 enemyTile = Helpers.GetTile(enemyPos);
-        int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn));
-
-        if(HasLineOfShoot(agentTile, enemyTile))
-        {
-            agentData.State = ArcherAIState.Attack;
-            return;
         }
     }
 
-    private bool HasLineOfShoot(int2 source, int2 destination)
+    private (Entity attackTarget, int2 shootPos) FindTargetAndShootPos(in Team controllerTeam, in Entity agentPawn)
     {
-        if (source.Equals(destination)) // cannot shoot if tile is identical
-            return false;
+        _enemies.Clear();
+        CommonReads.PawnSenses.FindAllPawnsInSight(Accessor, _attackableGroup, agentPawn, excludeTeam: controllerTeam, _enemies);
 
-        int2 v = source - destination;
-        if (v.x != 0 && v.y != 0 && v.x != v.y) // line is not horizontal, vertical or diagonal
-            return false;
-
-        // Verify each tile along the way is not terrain
-        int2 step = sign(v);
-        int2 t = source;
-        while (!t.Equals(destination))
+        if (_enemies.Length == 0)
         {
-            t += step;
-
-            Entity tileEntity = CommonReads.GetTileEntity(Accessor, t);
-            if (tileEntity == Entity.Null)
-                return false;
-
-            var tileFlags = EntityManager.GetComponentData<TileFlagComponent>(tileEntity);
-            if (tileFlags.IsTerrain)
-                return false;
+            return (Entity.Null, default);
         }
 
-        return true;
-    }
-
-    private void UpdateMentalState_Attacking(in Entity controller, in Team controllerTeam, ref ArcherAIData agentData, in Entity agentPawn)
-    {
-        if (!EntityManager.Exists(agentData.AttackTarget) || !EntityManager.TryGetComponentData(agentData.AttackTarget, out FixTranslation enemyPos))
+        int2[] shootingDirections = new int2[]
         {
-            agentData.State = ArcherAIState.Patrol;
-            return;
+            int2(-1, 0),
+            int2(0, -1),
+            int2(1, 0),
+            int2(0, 1),
+            int2(1, 1),
+            int2(-1, 1),
+            int2(1, -1),
+            int2(-1, -1),
+        };
+        int d = floorToInt(CommonReads.PawnSenses.SIGHT_RANGE);
+        int diagonalD = floorToInt(sin(fix.Pi / fix(4)) * CommonReads.PawnSenses.SIGHT_RANGE);
+        int[] shootingDistances = new int[]
+        {
+            d,
+            d,
+            d,
+            d,
+            diagonalD,
+            diagonalD,
+            diagonalD,
+            diagonalD,
+        };
+
+        _shootingPositions.Clear();
+        _shootingTargets.Clear();
+        TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);
+
+        BufferFromEntity<TileActorReference> tileActorBuffers = GetBufferFromEntity<TileActorReference>(isReadOnly: true);
+        ComponentDataFromEntity<FixTranslation> positions = GetComponentDataFromEntity<FixTranslation>();
+
+        foreach (Entity enemy in _enemies)
+        {
+            int2 enemyTile = Helpers.GetTile(positions[enemy]);
+
+            // search all shooting positions in direction
+            for (int i = 0; i < shootingDirections.Length; i++)
+            {
+                // Search specific direction
+                for (int dist = 1; dist < shootingDistances[i]; dist++)
+                {
+                    int2 potentialTile = enemyTile + (shootingDirections[i] * dist);
+
+                    // Stop if tile is terrain or invalid
+                    var tileEntity = tileWorld.GetEntity(potentialTile);
+                    var flags = tileWorld.GetFlags(tileEntity);
+                    if (flags.IsOutOfGrid || flags.IsTerrain)
+                    {
+                        break;
+                    }
+
+                    // Add potential shooting pos if we can stand on it
+                    if (tileWorld.CanStandOn(potentialTile))
+                    {
+                        _shootingPositions.Add(potentialTile);
+                        _shootingTargets.Add(enemy);
+                    }
+
+                    // stop is actor blocking the way
+                    bool anyActorBlockingTheWay = false;
+                    var tileActors = tileActorBuffers[tileEntity];
+                    foreach (var actor in tileActors)
+                    {
+                        if (actor != agentPawn && EntityManager.HasComponent<Health>(actor))
+                        {
+                            anyActorBlockingTheWay = true;
+                            break;
+                        }
+                    }
+                    if (anyActorBlockingTheWay)
+                    {
+                        break;
+                    }
+                }
+            }
         }
 
-        int2 enemyTile = Helpers.GetTile(enemyPos);
-        int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn));
-        if (lengthmanhattan(enemyTile - agentTile) != 1)
+        if (_shootingPositions.Length == 0)
         {
-            agentData.State = ArcherAIState.PositionForAttack;
-            return;
+            return (Entity.Null, default);
         }
+
+        fix3 pawnPos = EntityManager.GetComponentData<FixTranslation>(agentPawn);
+        int2 pawnTile = Helpers.GetTile(pawnPos);
+        Pathfinding.FindCheapestNavigablePathFromMany(Accessor, pawnTile, _shootingPositions.Slice(), Pathfinding.MAX_PATH_LENGTH, _path);
+
+        if (_path.Length == 0)
+        {
+            return (Entity.Null, default);
+        }
+
+        int2 attackPos = _path[_path.Length - 1];
+        Entity attackTarget = _shootingTargets[_shootingPositions.IndexOf(attackPos)];
+
+        return (attackTarget, attackPos);
     }
 
     private bool IsReadyToAct(in fix time, in Entity controller, in Team team, in ArcherAIData agentData, in ControlledEntity pawn)
@@ -315,54 +323,29 @@ public class UpdateArcherAISystem : SimComponentSystem
     private bool Act_PositionForAttack(in Entity controller, in Team team, ref ArcherAIData agentData, in ControlledEntity pawn)
     {
         int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(pawn));
-        int2 enemyTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
+        fix minimalMoveCost = default;
 
-        int2[] potentialDestinations = new int2[]
+        if (Pathfinding.FindNavigablePath(Accessor, agentTile, agentData.ShootTile, Pathfinding.MAX_PATH_LENGTH, _path))
         {
-            enemyTile + int2(0,1),
-            enemyTile + int2(0,-1),
-            enemyTile + int2(1,0),
-            enemyTile + int2(-1,0),
-        };
-
-        int2? closestTile = null;
-        fix closestCost = fix.MaxValue;
-        fix closestMinimalMoveCost = default;
-
-        foreach (var tile in potentialDestinations)
-        {
-            if (Pathfinding.FindNavigablePath(Accessor, agentTile, tile, Pathfinding.MAX_PATH_LENGTH, _path))
-            {
-                fix cost = Pathfinding.CalculateTotalCost(_path.Slice());
-                if (cost < closestCost)
-                {
-                    closestTile = tile;
-                    closestCost = cost;
-
-                    // find cost to move 1 step
-                    closestMinimalMoveCost = Pathfinding.CalculateTotalCost(_path.Slice(0, min(2, _path.Length)));
-                }
-            }
-        }
-
-        if (closestTile == null)
-        {
-            return false;
+            minimalMoveCost = Pathfinding.CalculateTotalCost(_path.Slice(0, min(2, _path.Length)));
         }
 
         // verify pawn has enough ap to move at least once
-        if (EntityManager.TryGetComponentData(pawn, out ActionPoints ap) && ap.Value < closestMinimalMoveCost)
+        if (EntityManager.TryGetComponentData(pawn, out ActionPoints ap) && ap.Value < minimalMoveCost)
         {
             return false;
         }
 
-        return CommonWrites.TryInputUseItem<GameActionMove>(Accessor, controller, closestTile.Value);
+        return CommonWrites.TryInputUseItem<GameActionMove>(Accessor, controller, agentData.ShootTile);
     }
 
     private bool Act_Attacking(in Entity controller, in Team team, ref ArcherAIData agentData, in ControlledEntity pawn)
     {
-        int2 attackTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
+        int2 enemyTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
+        int2 shootingTile = agentData.ShootTile;
 
-        return CommonWrites.TryInputUseItem<GameActionMeleeAttack>(Accessor, controller, attackTile);
+        int2 dir = sign(enemyTile - shootingTile);
+
+        return CommonWrites.TryInputUseItem<GameActionThrowProjectile>(Accessor, controller, shootingTile + dir);
     }
 }

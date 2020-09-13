@@ -29,26 +29,57 @@ public partial class CommonReads
         return allTiles[index].Tile;
     }
 
-    public static Entity FindFirstTileActorWithComponent<T1, T2>(ISimWorldReadAccessor accessor, Entity tile)
+    public static Entity GetTileEntity(int2 gridPosition, in GridInfo gridRect, DynamicBuffer<GridTileReference> tileReferences)
     {
-        foreach (TileActorReference actor in accessor.GetBufferReadOnly<TileActorReference>(tile))
+        if (!gridRect.Contains(gridPosition))
         {
-            if (accessor.HasComponent<T1>(actor) && accessor.HasComponent<T2>(actor))
+            return Entity.Null;
+        }
+
+        int2 offset = gridPosition - gridRect.TileMin;
+        int index = offset.x + (offset.y * gridRect.Width);
+
+        return tileReferences[index].Tile;
+    }
+
+    public static Entity FindFirstTileActorWithComponent<T1, T2>(ISimWorldReadAccessor accessor, int2 tile)
+    {
+        return FindFirstTileActorWithComponent<T1, T2>(accessor, GetTileWorld(accessor), tile);
+    }
+
+    public static Entity FindFirstTileActorWithComponent<T>(ISimWorldReadAccessor accessor, int2 tile)
+    {
+        return FindFirstTileActorWithComponent<T>(accessor, GetTileWorld(accessor), tile);
+    }
+
+    public static Entity FindFirstTileActorWithComponent<T1, T2>(ISimWorldReadAccessor accessor, in TileWorld tileWorld, int2 tile)
+    {
+        Entity entity = tileWorld.GetEntity(tile);
+        if (entity != Entity.Null)
+        {
+            foreach (var actor in accessor.GetBufferReadOnly<TileActorReference>(entity))
             {
-                return actor;
+                if (accessor.HasComponent<T1>(actor) && accessor.HasComponent<T2>(actor))
+                {
+                    return actor;
+                }
             }
         }
 
         return Entity.Null;
     }
 
-    public static Entity FindFirstTileActorWithComponent<T>(ISimWorldReadAccessor accessor, Entity tile)
+    public static Entity FindFirstTileActorWithComponent<T>(ISimWorldReadAccessor accessor, in TileWorld tileWorld, int2 tile)
     {
-        foreach (TileActorReference actor in accessor.GetBufferReadOnly<TileActorReference>(tile))
+        Entity entity = tileWorld.GetEntity(tile);
+        if (entity != Entity.Null)
         {
-            if (accessor.HasComponent<T>(actor))
+            foreach (var actor in accessor.GetBufferReadOnly<TileActorReference>(entity))
             {
-                return actor;
+                if (accessor.HasComponent<T>(actor))
+                {
+                    return actor;
+                }
             }
         }
 
@@ -79,19 +110,6 @@ public partial class CommonReads
             {
                 result.Add(actor);
             }
-        }
-    }
-
-    public static Entity FindFirstTileActorWithComponent<T>(ISimWorldReadAccessor accessor, int2 tile)
-    {
-        var tileEntity = GetTileEntity(accessor, tile);
-        if (tileEntity != Entity.Null)
-        {
-            return FindFirstTileActorWithComponent<T>(accessor, tileEntity);
-        }
-        else
-        {
-            return Entity.Null;
         }
     }
 

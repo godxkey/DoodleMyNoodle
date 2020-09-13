@@ -2,6 +2,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
+using static Unity.Mathematics.math;
 
 public class GameActionShield : GameAction
 {
@@ -11,7 +12,7 @@ public class GameActionShield : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return new UseContract(new GameActionParameterSelfTarget.Description() {});
+        return new UseContract(new GameActionParameterSelfTarget.Description() { });
     }
 
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
@@ -34,15 +35,19 @@ public class GameActionShield : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterSelfTarget.Data self))
         {
-            if (accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value < AP_COST)
-            {
-                return;
-            }
-
             // reduce instigator AP
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST);
 
-            accessor.AddComponentData(context.InstigatorPawn, new Invincible() { Duration = DURATION });
+            if (accessor.TryGetComponentData(context.InstigatorPawn, out Invincible invincible))
+            {
+                // refresh duration if already invicible
+                accessor.SetComponentData(context.InstigatorPawn, new Invincible() { Duration = max(DURATION, invincible.Duration) });
+            }
+            else
+            {
+                // add invicible
+                accessor.AddComponentData(context.InstigatorPawn, new Invincible() { Duration = DURATION });
+            }
         }
     }
 }

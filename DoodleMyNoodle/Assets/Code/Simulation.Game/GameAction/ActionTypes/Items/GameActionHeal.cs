@@ -54,7 +54,7 @@ public class GameActionHeal : GameAction
             CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
             foreach (var entity in victims)
             {
-                CommonWrites.ModifyStatInt<Health>(accessor, entity, HEAL);
+                CommonWrites.RequestHealOnTarget(accessor, context.Entity, entity, HEAL);
             }
         }
     }

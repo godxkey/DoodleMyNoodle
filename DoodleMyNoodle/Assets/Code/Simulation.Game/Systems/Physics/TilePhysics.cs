@@ -1,9 +1,15 @@
 using System.Runtime.CompilerServices;
 using Unity.Collections;
+using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 using static Unity.MathematicsX.mathX;
+
+public interface ITilePredicate
+{
+    bool Evaluate(int2 tile);
+}
 
 public static class TilePhysics
 {
@@ -22,7 +28,69 @@ public static class TilePhysics
         public fix SolveX(fix y) => (y - _b) / _a;
     }
 
-    public static void FindCrossedTiles(fix2 start, fix2 end, fix bevel, NativeList<int2> crossedTiles)
+    private struct TerrainTilePredicate : ITilePredicate
+    {
+        public DynamicBuffer<GridTileReference> TileEntities;
+        public GridInfo GridInfo;
+        public ISimWorldReadAccessor Accessor;
+        
+        public bool Evaluate(int2 tile)
+        {
+            Entity tileEntity = CommonReads.GetTileEntity(tile, GridInfo, TileEntities);
+            if(tileEntity != Entity.Null)
+            {
+                return Accessor.GetComponentData<TileFlagComponent>(tileEntity).IsTerrain;
+            }
+            return false;
+        }
+    }
+
+    public static fix DefaultBevel => fix(0.1);
+
+    public static bool RaycastTerrain(ISimWorldReadAccessor accessor, fix2 start, fix2 end)
+    {
+        return RaycastTerrain(accessor, start, end, DefaultBevel, out _);
+    }
+
+    public static bool RaycastTerrain(ISimWorldReadAccessor accessor, fix2 start, fix2 end, fix bevel)
+    {
+        return RaycastTerrain(accessor, start, end, bevel, out _);
+    }
+
+    public static bool RaycastTerrain(ISimWorldReadAccessor accessor, fix2 start, fix2 end, fix bevel, out int2 result)
+    {
+        TerrainTilePredicate terrainTilePredicate = new TerrainTilePredicate()
+        {
+            Accessor = accessor,
+            GridInfo = accessor.GetSingleton<GridInfo>(),
+            TileEntities = accessor.GetBufferReadOnly<GridTileReference>(accessor.GetSingletonEntity<GridInfo>())
+        };
+
+        return Raycast(start, end, bevel, terrainTilePredicate, out result);
+    }
+
+    public static bool Raycast<T>(fix2 start, fix2 end, fix bevel, T predicate, out int2 result) where T : struct, ITilePredicate
+    {
+        // fbessette: this could be optimized by not performing a 'Raycast All'
+
+        NativeList<int2> tiles = new NativeList<int2>(Allocator.Temp);
+
+        RaycastAll(start, end, bevel, tiles);
+
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            if (predicate.Evaluate(tiles[i]))
+            {
+                result = tiles[i];
+                return true;
+            }
+        }
+        
+        result = default;
+        return false;
+    }
+
+    public static void RaycastAll(fix2 start, fix2 end, fix bevel, NativeList<int2> crossedTiles)
     {
         int2 tileStart = int2((int)start.x, (int)start.y);
         int2 tileEnd = int2((int)end.x, (int)end.y);

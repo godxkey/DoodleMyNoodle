@@ -5,6 +5,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Profiling;
+using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 using static Unity.MathematicsX.mathX;
@@ -37,11 +38,162 @@ public static class Pathfinding
         return (int)floor(maxCost);
     }
 
-    public static bool FindNavigablePath(ISimWorldReadAccessor accessor, in int2 from, in int2 to, fix maxLength, Allocator allocator,
-        out NativeList<int2> resultList)
+    public static bool FindCheapestNavigablePathFromMany(ISimWorldReadAccessor accessor, int2 start, NativeSlice<int2> goals, fix maxLength, NativeList<int2> result)
     {
-        resultList = new NativeList<int2>(allocator);
-        return FindNavigablePath(accessor, from, to, maxLength, resultList);
+        Profiler.BeginSample("Pathfinding");
+        result.Clear();
+
+        if(goals.Length == 0)
+        {
+            Log.Error($"'goals' argument is empty.");
+            return false;
+        }
+
+        if (maxLength > MAX_PATH_LENGTH)
+        {
+            Debug.LogWarning($"Path Finding Max Cost cannot exceed {MAX_PATH_LENGTH}");
+            maxLength = MAX_PATH_LENGTH;
+        }
+
+        for (int i = 0; i < goals.Length; i++)
+        {
+            if (goals[i].Equals(start))
+            {
+                result.Add(goals[i]);
+                Profiler.EndSample();
+                return true;
+            }
+        }
+
+        TileWorld tileWorld = CommonReads.GetTileWorld(accessor);
+
+        goals = sanitize_goals(goals);
+
+        // Destination cannot be reached
+        if (goals.Length == 0)
+        {
+            Profiler.EndSample();
+            return false;
+        }
+
+        NativeList<int2> resultInvertedPath = new NativeList<int2>(Allocator.Temp);
+        NativeList<int2> neighbors = new NativeList<int2>(Allocator.Temp);
+
+        // The set of discovered nodes that may need to be (re-)expanded.
+        // Initially, only the start node is known.
+        // This is usually implemented as a min-heap or priority queue rather than a hash-set.
+        NativeList<int2> openSet = new NativeList<int2>(Allocator.Temp)
+        {
+            start
+        };
+
+        // List of nodes already discovered and explored. 
+        // Starts off empty
+        // Once a node has been 'current' it then goes here
+        NativeList<int2> closeSet = new NativeList<int2>(Allocator.Temp);
+
+        // For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start
+        // to n currently known.
+        NativeHashMap<int2, int2> cameFrom = new NativeHashMap<int2, int2>(100, Allocator.Temp);
+
+        // For node n, gScore[n] is the cost of the cheapest path from start to n currently known.
+        NativeHashMap<int2, fix> gScore = new NativeHashMap<int2, fix>(100, Allocator.Temp);
+        // default value is Infinity
+        gScore[start] = 0;
+
+
+        int2 node_in_openSet_having_the_lowest_gScore_value()
+        {
+            int2 lowest = default;
+            fix lowestValue = fix.MaxValue;
+            for (int i = 0; i < openSet.Length; i++)
+            {
+                if (gScore.TryGetValue(openSet[i], out fix value) && value < lowestValue)
+                {
+                    lowest = openSet[i];
+                    lowestValue = value;
+                }
+            }
+            return lowest;
+        }
+
+        bool pathFound = false;
+        while (openSet.Length != 0)
+        {
+            // This operation could occur in O(1) time if openSet was a min-heap or a priority queue
+            int2 current = node_in_openSet_having_the_lowest_gScore_value();
+
+            for (int i = 0; i < goals.Length; i++)
+            {
+                if (current.Equals(goals[i]))
+                {
+                    reconstruct_path(cameFrom, current, resultInvertedPath);
+                    pathFound = true;
+                    break;
+                }
+            }
+
+            if (pathFound)
+            {
+                break;
+            }
+
+            // Current node goes into the closed set
+            closeSet.Add(current);
+
+            openSet.RemoveAtSwapBack(openSet.IndexOf(current));
+
+            get_neighbors(current, neighbors, tileWorld);
+            for (int i = 0; i < neighbors.Length; i++)
+            {
+                // d(current,neighbor) is the weight of the edge from current to neighbor
+                // neighbor_gScore is the distance from start to the neighbor through current
+                fix neighbor_gScore = gScore[current] + d(current, neighbors[i]);
+                if (neighbor_gScore <= maxLength && (!gScore.TryGetValue(neighbors[i], out fix s) || neighbor_gScore < s))
+                {
+                    // This path to neighbor is better than any previous one. Record it!
+
+                    cameFrom.SetOrAdd(neighbors[i], current);
+                    gScore.SetOrAdd(neighbors[i], neighbor_gScore);
+                    if (!closeSet.Contains(neighbors[i]))
+                        openSet.Add(neighbors[i]);
+                }
+            }
+        }
+
+        construct_result(resultInvertedPath, result);
+
+        resultInvertedPath.Dispose();
+        neighbors.Dispose();
+        openSet.Dispose();
+        closeSet.Dispose();
+        cameFrom.Dispose();
+        gScore.Dispose();
+
+        Profiler.EndSample();
+        return pathFound;
+
+
+        // local functions
+        NativeSlice<int2> sanitize_goals(NativeSlice<int2> currentGoals)
+        {
+            NativeList<int2> newGoals = default;
+            for (int i = currentGoals.Length - 1; i >= 0; i--)
+            {
+                if (lengthmanhattan(start - currentGoals[i]) > maxLength || !tileWorld.CanStandOn(currentGoals[i]))
+                {
+                    if (!newGoals.IsCreated)
+                    {
+                        newGoals = new NativeList<int2>(currentGoals.Length, Allocator.Temp);
+                        currentGoals.CopyTo(newGoals);
+                    }
+
+                    newGoals.RemoveAtSwapBack(i);
+                }
+            }
+
+            return newGoals.IsCreated ? newGoals.Slice() : currentGoals;
+        }
     }
 
     public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, fix maxLength, NativeList<int2> result)
@@ -62,8 +214,10 @@ public static class Pathfinding
             return true;
         }
 
+        TileWorld tileWorld = CommonReads.GetTileWorld(accessor);
+
         // Destination cannot be reached
-        if (lengthmanhattan(start - goal) > maxLength || !IsTileWalkable(goal, accessor))
+        if (lengthmanhattan(start - goal) > maxLength || !tileWorld.CanStandOn(goal))
         {
             Profiler.EndSample();
             return false;
@@ -133,19 +287,19 @@ public static class Pathfinding
 
             openSet.RemoveAtSwapBack(openSet.IndexOf(current));
 
-            get_neighbors(current, neighbors, accessor);
+            get_neighbors(current, neighbors, tileWorld);
             for (int i = 0; i < neighbors.Length; i++)
             {
                 // d(current,neighbor) is the weight of the edge from current to neighbor
-                // tentative_gScore is the distance from start to the neighbor through current
-                fix tentative_gScore = gScore[current] + d(current, neighbors[i]);
-                if (tentative_gScore <= maxLength && (!gScore.TryGetValue(neighbors[i], out fix s) || tentative_gScore < s))
+                // neighbor_gScore is the distance from start to the neighbor through current
+                fix neighbor_gScore = gScore[current] + d(current, neighbors[i]);
+                if (neighbor_gScore <= maxLength && (!gScore.TryGetValue(neighbors[i], out fix s) || neighbor_gScore < s))
                 {
                     // This path to neighbor is better than any previous one. Record it!
 
                     cameFrom.SetOrAdd(neighbors[i], current);
-                    gScore.SetOrAdd(neighbors[i], tentative_gScore);
-                    fScore.SetOrAdd(neighbors[i], tentative_gScore + h(neighbors[i], goal));
+                    gScore.SetOrAdd(neighbors[i], neighbor_gScore);
+                    fScore.SetOrAdd(neighbors[i], neighbor_gScore + h(neighbors[i], goal));
                     if (!closeSet.Contains(neighbors[i]))
                         openSet.Add(neighbors[i]);
                 }
@@ -165,7 +319,6 @@ public static class Pathfinding
         Profiler.EndSample();
         return pathFound;
     }
-
 
     private static void construct_result(NativeList<int2> invertedPath, NativeList<int2> result)
     {
@@ -202,14 +355,14 @@ public static class Pathfinding
         int2(0, -1) // down
     };
 
-    private static void get_neighbors(in int2 tile, NativeList<int2> neighbors, ISimWorldReadAccessor accessor)
+    private static void get_neighbors(in int2 tile, NativeList<int2> neighbors, in TileWorld tileWorld)
     {
         neighbors.Clear();
         for (int i = 0; i < s_directionVectors.Length; i++)
         {
             int2 neighborPos = tile + s_directionVectors[i];
 
-            if (IsTileWalkable(neighborPos, accessor))
+            if (tileWorld.CanStandOn(neighborPos))
             {
                 neighbors.Add(neighborPos);
             }
@@ -222,41 +375,5 @@ public static class Pathfinding
         int2 delta = abs(goal - tile);
         //delta *= delta; // making tiles in diagonal more appealing than tiles in a straight line far away
         return delta.x + delta.y;
-    }
-
-    private static TileFlagComponent GetTileFlags(in int2 tilePos, ISimWorldReadAccessor accessor)
-    {
-        return accessor.GetComponentData<TileFlagComponent>(CommonReads.GetTileEntity(accessor, tilePos));
-    }
-
-    private static bool IsTileWalkable(in int2 tilePos, ISimWorldReadAccessor accessor)
-    {
-        if (!TryGetTileEntity(tilePos, accessor, out Entity tileEntity))
-            return false;
-
-        TileFlagComponent flags = accessor.GetComponentData<TileFlagComponent>(tileEntity);
-
-        // CANNOT walk into terrain
-        if (flags.IsTerrain)
-            return false;
-
-        // CAN walk into ladders
-        if (flags.IsLadder)
-            return true;
-
-        // CAN walk above terrain tiles
-        if (TryGetTileEntity(tilePos + int2(0, -1), accessor, out Entity underTileEntity) &&
-            accessor.GetComponentData<TileFlagComponent>(underTileEntity).IsTerrain)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    private static bool TryGetTileEntity(in int2 tilePos, ISimWorldReadAccessor accessor, out Entity tileEntity)
-    {
-        tileEntity = CommonReads.GetTileEntity(accessor, tilePos);
-        return tileEntity != Entity.Null;
     }
 }

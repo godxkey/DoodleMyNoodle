@@ -84,9 +84,9 @@ public class GameActionComboAttack : GameAction
         }
     }
 
-    private void AttackEntityOnTile(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity entity)
+    private void AttackEntityOnTile(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, Entity victimPawn)
     {
-        CommonWrites.RequestDamageOnTarget(accessor, instigator, entity, DAMAGE);
+        CommonWrites.RequestDamageOnTarget(accessor, instigatorPawn, victimPawn, DAMAGE);
     }
 
 }
