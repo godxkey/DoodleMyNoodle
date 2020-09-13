@@ -19,6 +19,13 @@ public class ItemDamageDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IIt
 
     public string GetDescription(ItemDamageData inputData)
     {
-        return $"Damage : {inputData.Value} ({Damage})";
+        if (inputData.Value == Damage)
+        {
+            return $"Damage : {inputData.Value}";
+        }
+        else
+        {
+            return $"Damage : {inputData.Value} ({Damage})";
+        }
     }
 }

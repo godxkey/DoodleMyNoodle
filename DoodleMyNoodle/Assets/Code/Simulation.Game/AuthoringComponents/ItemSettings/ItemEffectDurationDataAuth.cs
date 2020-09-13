@@ -19,6 +19,13 @@ public class ItemEffectDurationDataAuth : MonoBehaviour, IConvertGameObjectToEnt
 
     public string GetDescription(ItemEffectDurationData inputData)
     {
-        return $"Duration : {inputData} ({Duration})";
+        if (inputData.Value == Duration)
+        {
+            return $"Duration : {inputData.Value}";
+        }
+        else
+        {
+            return $"Duration : {inputData.Value} ({Duration})";
+        }
     }
 }

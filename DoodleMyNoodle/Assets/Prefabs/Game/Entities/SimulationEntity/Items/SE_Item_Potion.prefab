@@ -13,6 +13,9 @@ GameObject:
   - component: {fileID: 4575763512178357569}
   - component: {fileID: 971858758830137585}
   - component: {fileID: -1597001947768941499}
+  - component: {fileID: 2874944427970011374}
+  - component: {fileID: 828127102503938389}
+  - component: {fileID: 2735323476376303165}
   m_Layer: 0
   m_Name: SE_Item_Potion
   m_TagString: Untagged
@@ -84,3 +87,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9e0141aaa0bc44e941ec8d8c9e5b78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2874944427970011374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5790d3381c1f3ab41aa2e9b5a12d6fd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthToHeal: 2
+--- !u!114 &828127102503938389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ActionPointCost: 0
+--- !u!114 &2735323476376303165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d332b6584ba4d9c42811950a96e69cd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Range: 2

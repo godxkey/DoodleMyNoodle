@@ -30,11 +30,25 @@ public class ItemCooldownDataAuth : MonoBehaviour, IConvertGameObjectToEntity, I
     {
         if (UseTime)
         {
-            return $"Cooldown (time) : {inputData.Value} ({TimeCooldown})";
+            if (inputData.Value == TimeCooldown)
+            {
+                return $"Cooldown (time) : {inputData.Value}";
+            }
+            else
+            {
+                return $"Cooldown (time) : {inputData.Value} ({TimeCooldown})";
+            }
         }
         else
         {
-            return $"Cooldown (turn) : {inputData.Value} ({TurnCooldown})";
+            if (inputData.Value == TurnCooldown)
+            {
+                return $"Cooldown (turn) : {inputData.Value}";
+            }
+            else
+            {
+                return $"Cooldown (turn) : {inputData.Value} ({TurnCooldown})";
+            }
         }
     }
 }

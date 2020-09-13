@@ -17,5 +17,5 @@ MonoBehaviour:
     type: 3}
   Icon: {fileID: 21300000, guid: 39cb0a8145a6cb242b665cc5ca767b33, type: 3}
   Name: Shield
-  Rarity: 3
+  Rarity: 2
   EffectDescription: You are invincible for the turn

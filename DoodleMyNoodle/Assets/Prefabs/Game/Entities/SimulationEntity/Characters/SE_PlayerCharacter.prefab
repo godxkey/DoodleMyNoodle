@@ -77,6 +77,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e262d8f98129648ae67986145f644f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _type: 2
 --- !u!114 &7591131864914787085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f84166a4094a674e86797424865573c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxValue: 6
+  MaxValue: 8
   StartGameAtMaxValue: 1
   StartValue: 4
 --- !u!114 &947375423039552990
@@ -149,6 +150,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Size: 6
-  IsRandom: 0
   InitialItems:
   - {fileID: 5742253346417087641, guid: d170c0eb81b945e458f35303555d6027, type: 3}

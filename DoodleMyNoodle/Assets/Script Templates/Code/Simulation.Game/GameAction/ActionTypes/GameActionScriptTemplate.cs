@@ -17,38 +17,39 @@ using Unity.Collections;
 
 public class #SCRIPTNAME# : {nameof(GameAction)}
 {{
-    // TODO: add settings on the item itself
-    const int AP_COST = 1;
-    const int RANGE = 1;
-
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {{
         return new UseContract(
-            new GameActionParameterTile.Description()
-            {{
-                Filter = TileFilterFlags.Occupied | TileFilterFlags.NotEmpty,
-                RangeFromInstigator = RANGE
-            }});
+                   new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
+                   {{
+                       TileFilter = TileFlags.All,
+                       IncludeSelf = false,
+                       MustBeReachable = false,
+                       RequiresAttackableEntity = false,
+
+                       CustomTileActorPredicate = (tileActor, accessor) => !accessor.HasComponent<StaticTag>(tileActor),
+                       CustomTilePredicate = (tilePosition, tileEntity, accessor) => !accessor.HasComponent<StaticTag>(tileEntity)
+                   }});
     }}
 
-    public override bool IsInstigatorValid(ISimWorldReadAccessor accessor, in UseContext context)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
     {{
-        return accessor.HasComponent<ActionPoints>(instigatorPawn)
-            && accessor.HasComponent<FixTranslation>(instigatorPawn);
-    }}
-
-    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseData useData)
-    {{
-        if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {{
-            if (accessor.GetComponentData<ActionPoints>(instigatorPawn).Value < AP_COST)
-            {{
-                return;
-            }}
-
-            // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, instigatorPawn, -AP_COST);
+            return true;   
         }}
+
+        return false;
+    }}
+
+    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
+    {{
+        throw new System.NotImplementedException();
+    }}
+
+    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
+    {{
+        throw new System.NotImplementedException();
     }}
 }}";
     }

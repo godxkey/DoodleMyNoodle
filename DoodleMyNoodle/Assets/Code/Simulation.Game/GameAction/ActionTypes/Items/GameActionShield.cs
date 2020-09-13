@@ -1,53 +1,73 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using static fixMath;
 using static Unity.Mathematics.math;
+using static fixMath;
 
 public class GameActionShield : GameAction
 {
-    // TODO: add settings on the item itself
-    const int DURATION = 1;
-    const int AP_COST = 2;
-
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return new UseContract(new GameActionParameterSelfTarget.Description() { });
+        if (accessor.GetComponentData<ItemRangeData>(context.Entity).Value > 0)
+        {
+            return new UseContract(
+                new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
+                {
+                    IncludeSelf = false,
+                    RequiresAttackableEntity = true,
+                });
+        }
+        else
+        {
+            return new UseContract(new GameActionParameterSelfTarget.Description() { });
+        }
     }
 
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
     {
-        if (!accessor.HasComponent<Health>(context.InstigatorPawn))
-        {
-            debugReason?.Set("pawn has no health");
-            return false;
-        }
-
         return true;
     }
 
     protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return AP_COST;
+        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
-    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
     {
         if (useData.TryGetParameter(0, out GameActionParameterSelfTarget.Data self))
         {
-            // reduce instigator AP
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -AP_COST);
+            ShieldTarget(accessor, context.Entity, context.InstigatorPawn);
+            return true;
+        }
 
-            if (accessor.TryGetComponentData(context.InstigatorPawn, out Invincible invincible))
+        if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        {
+            // reduce target health
+            NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
+            CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
+            foreach (var victim in victims)
             {
-                // refresh duration if already invicible
-                accessor.SetComponentData(context.InstigatorPawn, new Invincible() { Duration = max(DURATION, invincible.Duration) });
+                ShieldTarget(accessor, context.Entity, victim);
             }
-            else
-            {
-                // add invicible
-                accessor.AddComponentData(context.InstigatorPawn, new Invincible() { Duration = DURATION });
-            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void ShieldTarget(ISimWorldReadWriteAccessor accessor, Entity itemEntity, Entity pawn)
+    {
+        int duration = accessor.GetComponentData<ItemEffectDurationData>(itemEntity).Value;
+
+        if (accessor.TryGetComponentData(pawn, out Invincible invincible))
+        {
+            accessor.AddComponentData(pawn, new Invincible() { Duration = max(duration, invincible.Duration) });
+        }
+        else
+        {
+            accessor.AddComponentData(pawn, new Invincible() { Duration = duration });
         }
     }
 }

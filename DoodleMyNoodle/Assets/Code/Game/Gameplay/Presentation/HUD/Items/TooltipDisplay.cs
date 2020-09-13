@@ -27,8 +27,11 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
     [SerializeField] private float _screenEdgeToolTipLimit = 200.0f;
     [SerializeField] private float _displayDelay = 2.0f;
 
-    [SerializeField] private float _displacementX = 0;
-    [SerializeField] private float _displacementY = 0;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] private float _displacementRatioX = 0;
+
+    [Range(0.0f, 1.0f)]
+    [SerializeField] private float _displacementRatioY = 0;
 
     private bool _tooltipShouldBeDisplayed = false;
 
@@ -142,7 +145,7 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
             TryAddTooltipItemDescription<ItemTimeCooldownData>(item, itemPrefab);
             TryAddTooltipItemDescription<ItemEffectDurationData>(item, itemPrefab);
 
-            CreateTooltipItemDescription(description, Color.white);
+            CreateTooltipItemDescription(description, Color.white, true);
         }
     }
 
@@ -156,10 +159,10 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         }
     }
 
-    private void CreateTooltipItemDescription(string description, Color color)
+    private void CreateTooltipItemDescription(string description, Color color, bool addBG = false)
     {
         TooltipItemDescription newItemDescription = Instantiate(_itemDescriptionPrefab, _itemDescriptionContainer).GetComponent<TooltipItemDescription>();
-        newItemDescription.UpdateDescription(description, color);
+        newItemDescription.UpdateDescription(description, color, addBG);
     }
 
     private void UpdateTooltipColors(ItemVisualInfo.ItemRarity rarity)
@@ -194,9 +197,12 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         bool exitTop = Input.mousePosition.y >= (Screen.height - _screenEdgeToolTipLimit);
         bool exitRight = Input.mousePosition.x >= (Screen.width - _screenEdgeToolTipLimit);
 
-        float displacementX = exitRight ? -1 * _displacementX : _displacementX;
-        float displacementY = exitTop ? -1 * _displacementY : _displacementY;
+        float displacementRatioX = exitRight ? -1 * _displacementRatioX : _displacementRatioX;
+        float displacementRatioY = exitTop ? -1 * _displacementRatioY : _displacementRatioY;
 
-        transform.position = Input.mousePosition + new Vector3(displacementX, displacementY, 0);
+        displacementRatioX *= Screen.width;
+        displacementRatioY *= Screen.height;
+
+        transform.position = Input.mousePosition + new Vector3(displacementRatioX, displacementRatioY, 0);
     }
 }

@@ -23,10 +23,10 @@ public class GameActionMeleeAttack : GameAction
 
     protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return 0;
+        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
-    public override void Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
@@ -36,17 +36,7 @@ public class GameActionMeleeAttack : GameAction
             if (lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
             {
                 LogGameActionInfo(context, $"Melee attack at {paramTile.Tile} out of range. Ignoring.");
-                return;
-            }
-
-            // Cooldown
-            if (accessor.TryGetComponentData(context.Entity, out ItemTimeCooldownData itemTimeCooldownData))
-            {
-                accessor.SetOrAddComponentData(context.Entity, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
-            }
-            else if (accessor.TryGetComponentData(context.Entity, out ItemTurnCooldownData itemTurnCooldownData))
-            {
-                accessor.SetOrAddComponentData(context.Entity, new ItemCooldownTurnCounter() { Value = itemTurnCooldownData.Value });
+                return false;
             }
 
             // reduce target health
@@ -56,6 +46,10 @@ public class GameActionMeleeAttack : GameAction
             {
                 CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, accessor.GetComponentData<ItemDamageData>(context.Entity).Value);
             }
+
+            return true;
         }
+
+        return false;
     }
 }

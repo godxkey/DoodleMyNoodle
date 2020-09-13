@@ -12,6 +12,10 @@ GameObject:
   - component: {fileID: 5742253346417087590}
   - component: {fileID: 4575763512178357569}
   - component: {fileID: 971858758830137585}
+  - component: {fileID: -2521835402880927039}
+  - component: {fileID: 2531664542941852176}
+  - component: {fileID: 1725349915119862877}
+  - component: {fileID: 654114501825988275}
   m_Layer: 0
   m_Name: SE_Item_TwinSlice
   m_TagString: Untagged
@@ -71,3 +75,57 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Guid: 3fa80de446fd0ed409cdb9374b921d40
+--- !u!114 &-2521835402880927039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d332b6584ba4d9c42811950a96e69cd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Range: 1
+--- !u!114 &2531664542941852176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ActionPointCost: 3
+--- !u!114 &1725349915119862877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b3569fbe963ceb4fb9da4315e9207de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damage: 2
+--- !u!114 &654114501825988275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536a42c96d4c58b408130b109e0975d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseTime: 0
+  TimeCooldown: 1
+  TurnCooldown: 1

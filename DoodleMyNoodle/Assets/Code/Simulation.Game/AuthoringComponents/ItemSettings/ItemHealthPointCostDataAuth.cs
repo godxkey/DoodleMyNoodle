@@ -19,6 +19,13 @@ public class ItemHealthPointCostDataAuth : MonoBehaviour, IConvertGameObjectToEn
 
     public string GetDescription(ItemHealthPointCostData inputData)
     {
-        return $"HP Cost : {inputData.Value} ({HealthCost})";
+        if (inputData.Value == HealthCost)
+        {
+            return $"HP Cost : {inputData.Value}";
+        }
+        else
+        {
+            return $"HP Cost : {inputData.Value} ({HealthCost})";
+        }
     }
 }
