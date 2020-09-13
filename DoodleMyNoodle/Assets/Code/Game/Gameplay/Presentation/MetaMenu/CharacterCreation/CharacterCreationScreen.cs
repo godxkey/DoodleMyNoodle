@@ -10,6 +10,7 @@ public class CharacterCreationScreen : GamePresentationBehaviour
 {
     [SerializeField] private GameObject _screenContainer;
     [SerializeField] private Button _importDoodleButton;
+    [SerializeField] private Button _readyButton;
     [SerializeField] private RawImage _doodlePreview;
     [SerializeField] private TMP_InputField _nameField;
     [SerializeField] private CharacterCreationStartingInventorySelection _characterStartKit;
@@ -56,7 +57,7 @@ public class CharacterCreationScreen : GamePresentationBehaviour
         _doodlePreview.texture = _doodleAsset.Texture;
 
         _importDoodleButton.onClick.AddListener(ImportDoodle);
-        GameUI.Instance.ReadyButton.ButtonPressed += ApplyCharacterSettings;
+        _readyButton.onClick.AddListener(ApplyCharacterSettings);
 
         // import previous doodle
         ImportDoodle(DoodlePathPref);
@@ -66,8 +67,7 @@ public class CharacterCreationScreen : GamePresentationBehaviour
 
     protected override void OnDestroy()
     {
-        if (GameUI.Instance?.ReadyButton)
-            GameUI.Instance.ReadyButton.ButtonPressed -= ApplyCharacterSettings;
+        _readyButton.onClick.RemoveListener(ApplyCharacterSettings);
 
         base.OnDestroy();
     }
@@ -121,27 +121,24 @@ public class CharacterCreationScreen : GamePresentationBehaviour
 
     private void ApplyCharacterSettings()
     {
-        if ((GameUI.Instance.ReadyButton.GetState() == ReadyButton.TurnState.Ready) && gameObject.activeSelf)
+        if (_doodlePreview.enabled)
         {
-            if (_doodlePreview.enabled)
-            {
-                // Publish player asset (will sync across network)
-                PlayerAssetManager.Instance.PublishAssetChanges(_doodleAsset.Guid);
+            // Publish player asset (will sync across network)
+            PlayerAssetManager.Instance.PublishAssetChanges(_doodleAsset.Guid);
 
-                // Set doodle
-                SimPlayerInputSetPawnDoodle setPawnDoodleInput = new SimPlayerInputSetPawnDoodle(_doodleAsset.Guid);
-                SimWorld.SubmitInput(setPawnDoodleInput);
-            }
-
-            PawnNamePref = _nameField.text; // record pawn name for future use
-
-            // Set name
-            SimPlayerInputSetPawnName startNameInput = new SimPlayerInputSetPawnName(_nameField.text);
-            SimWorld.SubmitInput(startNameInput);
-
-            // Set starting kit
-            SimPlayerInputSelectStartingInventory startInventoryInput = new SimPlayerInputSelectStartingInventory(_characterStartKit.CurrentlySelectedKit);
-            SimWorld.SubmitInput(startInventoryInput);
+            // Set doodle
+            SimPlayerInputSetPawnDoodle setPawnDoodleInput = new SimPlayerInputSetPawnDoodle(_doodleAsset.Guid);
+            SimWorld.SubmitInput(setPawnDoodleInput);
         }
+
+        PawnNamePref = _nameField.text; // record pawn name for future use
+
+        // Set name
+        SimPlayerInputSetPawnName startNameInput = new SimPlayerInputSetPawnName(_nameField.text);
+        SimWorld.SubmitInput(startNameInput);
+
+        // Set starting kit
+        SimPlayerInputSelectStartingInventory startInventoryInput = new SimPlayerInputSelectStartingInventory(_characterStartKit.CurrentlySelectedKit);
+        SimWorld.SubmitInput(startInventoryInput);
     }
 }
