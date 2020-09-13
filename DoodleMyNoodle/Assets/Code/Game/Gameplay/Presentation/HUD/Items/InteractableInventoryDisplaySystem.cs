@@ -23,7 +23,14 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
 
     public override bool SystemReady => true;
 
-    protected override void OnGamePresentationUpdate() 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        _bundleDisplayContainer.SetActive(false);
+    }
+
+    protected override void OnGamePresentationUpdate()
     {
         if (_lastInventoryEntity != Entity.Null)
         {

@@ -278,9 +278,9 @@ public class LaunchProfileElement : VisualElement
         }
         else if (EditorLaunchData.launchOverrideScreen)
         {
-            finalArguments.Append($"-screen-fullscreen {(EditorLaunchData.launchFullscreen ? 1 : 0)}");
-            finalArguments.Append($"-screen-height {EditorLaunchData.launchScreenHeight}");
-            finalArguments.Append($"-screen-width {EditorLaunchData.launchScreenWidth}");
+            finalArguments.Append($"-screen-fullscreen {(EditorLaunchData.launchFullscreen ? 1 : 0)} ");
+            finalArguments.Append($"-screen-height {EditorLaunchData.launchScreenHeight} ");
+            finalArguments.Append($"-screen-width {EditorLaunchData.launchScreenWidth} ");
         }
 
         finalArguments.Append(EditorLaunchData.extraArguments);

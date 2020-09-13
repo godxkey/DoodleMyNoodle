@@ -61,7 +61,16 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
 
     protected override void OnUpdate()
     {
-        Cache.TileWorld = CommonReads.GetTileWorld(Cache.SimWorld);
+        CreateTileWorldSystem createTileWorldSystem = Cache.SimWorld.GetExistingSystem<CreateTileWorldSystem>();
+        if (createTileWorldSystem.HasSingleton<GridInfo>())
+        {
+            Cache.TileWorld = createTileWorldSystem.GetTileWorld();
+        }
+        else
+        {
+            Cache.TileWorld = default;
+        }
+            
         Cache.CurrentTeam = new Team() { Value = Cache.SimWorld.GetSingleton<TurnCurrentTeamSingletonComponent>().Value };
         
         UpdateCurrentPlayerPawn(Cache.TileWorld);

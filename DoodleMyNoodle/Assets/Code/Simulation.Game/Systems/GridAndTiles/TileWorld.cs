@@ -3,6 +3,8 @@ using static Unity.Mathematics.math;
 using Unity.Entities;
 using Unity.Collections;
 using System;
+using UnityEngineX;
+using System.Linq;
 
 public struct TileWorld
 {
@@ -93,5 +95,72 @@ public struct TileWorld
         }
 
         return false;
+    }
+}
+
+[UpdateAfter(typeof(CreateLevelGridSystem))]
+[UpdateInGroup(typeof(InitializationSystemGroup))]
+public class CreateTileWorldSystem : SimComponentSystem
+{
+    private DirtyValue<uint> _gridInfoVersion;
+
+    public GridInfo GridInfo;
+    private NativeArray<GridTileReference> _tileReferencesBuffer;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        RequireSingletonForUpdate<GridInfo>();
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        if (_tileReferencesBuffer.IsCreated)
+        {
+            _tileReferencesBuffer.Dispose();
+        }
+    }
+
+    public TileWorld GetTileWorld()
+    {
+        return new TileWorld(
+            GetSingleton<GridInfo>(),
+            _tileReferencesBuffer,
+            GetComponentDataFromEntity<TileFlagComponent>());
+    }
+
+    protected override void OnUpdate()
+    {
+        var singleton = GetSingletonEntity<GridInfo>();
+        
+        _gridInfoVersion.Set(EntityManager.GetChunk(singleton).GetComponentVersion(typeof(GridInfo)));
+
+        if (_gridInfoVersion.ClearDirty())
+        {
+            GridInfo = EntityManager.GetComponentData<GridInfo>(singleton);
+
+            if (_tileReferencesBuffer.IsCreated)
+            {
+                _tileReferencesBuffer.Dispose();
+            }
+
+            _tileReferencesBuffer = EntityManager.GetBufferReadOnly<GridTileReference>(GetSingletonEntity<GridInfo>()).ToNativeArray(Allocator.Persistent);
+        }
+    }
+}
+
+public partial class CommonReads
+{
+    public static TileWorld GetTileWorld(ISimWorldReadAccessor accessor)
+    {
+        return accessor.GetExistingSystem<CreateTileWorldSystem>().GetTileWorld();
+    }
+
+    public static bool IsTileValid(ISimWorldReadAccessor accessor, int2 tile)
+    {
+        return accessor.GetExistingSystem<CreateTileWorldSystem>().GridInfo.Contains(tile);
     }
 }
