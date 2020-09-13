@@ -34,6 +34,10 @@ public class GameOverWinnerDisplay : GamePresentationBehaviour
                 GameStateManager.TransitionToState(QuickStartAssets.instance.rootMenu);
             });
         }
+        else
+        {
+            DisplayContainer.SetActive(false);
+        }
     }
 
     private void SetCurrentWinningTeam(DesignerFriendlyTeam team)
