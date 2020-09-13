@@ -477,6 +477,8 @@ public struct fix2 : IEquatable<fix2>
     public static readonly fix2 Up = new fix2(0, 1);
     public static readonly fix2 Down = new fix2(0, -1);
 
+    public static explicit operator int2(in fix2 v) => new int2((int)v.x, (int)v.y);
+    public static explicit operator fix2(in int2 v) => new fix2(v.x, v.y);
     public static explicit operator fix2(in Vector2 v) => new fix2((fix)v.x, (fix)v.y);
     public static explicit operator fix2(in float2 v) => new fix2((fix)v.x, (fix)v.y);
     public static explicit operator Vector2(in fix2 v) => new Vector2((float)v.x, (float)v.y);

@@ -70,9 +70,9 @@ public class GameActionComboAttack : GameAction
         }
     }
 
-    private void AttackEntityOnTile(ISimWorldReadWriteAccessor accessor, UseContext context, Entity entity)
+    private void AttackEntityOnTile(ISimWorldReadWriteAccessor accessor, UseContext context, Entity victim)
     {
-        CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, accessor.GetComponentData<ItemDamageData>(context.Entity).Value);
+        CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, victim, accessor.GetComponentData<ItemDamageData>(context.Entity).Value);
     }
 
 }

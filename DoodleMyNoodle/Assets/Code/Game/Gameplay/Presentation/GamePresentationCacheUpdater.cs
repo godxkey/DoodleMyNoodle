@@ -19,6 +19,7 @@ public class GamePresentationCache
     public Entity LocalController;
     public Team LocalPawnTeam;
     public Team CurrentTeam;
+    public TileWorld TileWorld;
     public ExternalSimWorldAccessor SimWorld;
 }
 
@@ -55,16 +56,18 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
         Cache.LocalController = Entity.Null;
         Cache.LocalPawn = Entity.Null;
         Cache.LocalPawnTileEntity = Entity.Null;
+        Cache.TileWorld = default;
     }
 
     protected override void OnUpdate()
     {
-        UpdateCurrentPlayerPawn();
-
+        Cache.TileWorld = CommonReads.GetTileWorld(Cache.SimWorld);
         Cache.CurrentTeam = new Team() { Value = Cache.SimWorld.GetSingleton<TurnCurrentTeamSingletonComponent>().Value };
+        
+        UpdateCurrentPlayerPawn(Cache.TileWorld);
     }
 
-    private void UpdateCurrentPlayerPawn()
+    private void UpdateCurrentPlayerPawn(in TileWorld tileWorld)
     {
         Cache.LocalPawn = PlayerHelpers.GetLocalSimPawnEntity(Cache.SimWorld);
         Cache.LocalController = CommonReads.GetPawnController(Cache.SimWorld, Cache.LocalPawn);
@@ -79,7 +82,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
             Cache.LocalPawnPosition = Cache.SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn).Value;
             Cache.LocalPawnPositionFloat = Cache.LocalPawnPosition.ToUnityVec();
             Cache.LocalPawnTile = Helpers.GetTile(Cache.LocalPawnPosition);
-            Cache.LocalPawnTileEntity = CommonReads.GetTileEntity(Cache.SimWorld, Cache.LocalPawnTile);
+            Cache.LocalPawnTileEntity = tileWorld.GetEntity(Cache.LocalPawnTile);
         }
         else
         {

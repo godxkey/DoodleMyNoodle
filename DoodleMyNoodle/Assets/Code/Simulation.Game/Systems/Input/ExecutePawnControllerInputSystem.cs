@@ -135,8 +135,9 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
     private void ExecuteDropItemInput(PawnControllerInputDropItem pawnInputDropItem, Entity pawn)
     {
         FixTranslation pawnTranslation = EntityManager.GetComponentData<FixTranslation>(pawn);
-        Entity tile = CommonReads.GetTileEntity(Accessor, Helpers.GetTile(pawnTranslation));
-        if (tile == Entity.Null)
+        int2 pawnTile = Helpers.GetTile(pawnTranslation);
+        var tileWorld = CommonReads.GetTileWorld(Accessor);
+        if (!tileWorld.IsValid(pawnTile))
         {
             return;
         }
@@ -151,7 +152,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
         // Searching for a chest entity
         DynamicBuffer<InventoryItemReference> chestInventory = default;
 
-        Entity chestEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference, Interactable>(Accessor, tile);
+        Entity chestEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference, Interactable>(Accessor, tileWorld, pawnTile);
         if (chestEntity != Entity.Null)
         {
             chestInventory = EntityManager.GetBuffer<InventoryItemReference>(chestEntity);
@@ -202,8 +203,9 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
 
     private void ExecuteEquipItemInput(PawnControllerInputEquipItem pawnInputEquipItem, Entity pawn)
     {
-        Entity tile = CommonReads.GetTileEntity(Accessor, pawnInputEquipItem.ItemEntityPosition);
-        if (tile == Entity.Null)
+        int2 itemEntityTile = pawnInputEquipItem.ItemEntityPosition;
+        var tileWorld = CommonReads.GetTileWorld(Accessor);
+        if (!tileWorld.IsValid(itemEntityTile))
         {
             return;
         }
@@ -213,7 +215,7 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             return;
 
         // Find chest inventory
-        Entity chestEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference, Interactable>(Accessor, tile);
+        Entity chestEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference, Interactable>(Accessor, itemEntityTile);
         if (chestEntity == Entity.Null)
         {
             return;
@@ -309,22 +311,15 @@ public class ExecutePawnControllerInputSystem : SimComponentSystem
             Log.Info($"Discarding input {inputUseInteractable} : {str}");
         }
 
-        FixTranslation pawnPosition = EntityManager.GetComponentData<FixTranslation>(pawn);
-        fix3 interactablePosition = Helpers.GetTileCenter(inputUseInteractable.InteractablePosition);
-
-        Entity tile = CommonReads.GetTileEntity(Accessor, inputUseInteractable.InteractablePosition);
-        if (tile == Entity.Null)
-        {
-            return;
-        }
-
-        Entity interactableEntity = CommonReads.FindFirstTileActorWithComponent<Interactable>(Accessor, tile);
+        Entity interactableEntity = CommonReads.FindFirstTileActorWithComponent<Interactable>(Accessor, inputUseInteractable.InteractablePosition);
         if (interactableEntity == Entity.Null)
         {
             return;
         }
 
         fix interactableDistance = Accessor.GetComponentData<Interactable>(interactableEntity).Range;
+        FixTranslation pawnPosition = EntityManager.GetComponentData<FixTranslation>(pawn);
+        fix3 interactablePosition = Helpers.GetTileCenter(inputUseInteractable.InteractablePosition);
 
         fix distanceBetween = fix3.Distance(pawnPosition.Value, interactablePosition);
         fix maxDistanceToInteract = interactableDistance + (fix)0.1;

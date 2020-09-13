@@ -83,7 +83,7 @@ public class FredTestScript : MonoBehaviour
             for (int i = 0; i < repeat; i++)
             {
                 crossedTilesList.Clear();
-                TilePhysics.FindCrossedTiles(start, end, bevel, crossedTilesList);
+                TilePhysics.RaycastAll(start, end, bevel, crossedTilesList);
             }
         }
     }

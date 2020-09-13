@@ -9,8 +9,14 @@ using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using UnityEngineX;
 
+[UpdateInGroup(typeof(InitializationSystemGroup))]
 public class CreateLevelGridSystem : SimComponentSystem
 {
+    public int GridVersion { get; private set; }
+
+    private NativeArray<GridTileReference> _tileReferencesBuffer;
+    public GridInfo GridInfo;
+
     protected override void OnCreate()
     {
         base.OnCreate();
@@ -19,19 +25,38 @@ public class CreateLevelGridSystem : SimComponentSystem
         RequireSingletonForUpdate<StartingTileActors>();
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        if (_tileReferencesBuffer.IsCreated)
+        {
+            _tileReferencesBuffer.Dispose();
+        }
+    }
+
+    public TileWorld GetTileWorld()
+    {
+        return new TileWorld(
+            GridInfo,
+            _tileReferencesBuffer,
+            GetComponentDataFromEntity<TileFlagComponent>());
+    }
+
     protected override void OnUpdate()
     {
+        GridVersion++;
+
+        GridInfo = GetSingleton<GridInfo>();
+
         Entity gridInfoEntity = GetSingletonEntity<GridInfo>();
-
-        GridInfo gridRect = GetSingleton<GridInfo>();
-
         NativeArray<StartingTileActors> startingTileActors = EntityManager.GetBufferReadOnly<StartingTileActors>(gridInfoEntity).ToNativeArray(Allocator.Temp);
 
         // Spawn Actors
         NativeArray<Entity> tileActors = new NativeArray<Entity>(startingTileActors.Length, Allocator.Temp);
         for (int i = 0; i < startingTileActors.Length; i++)
         {
-            if (!gridRect.Contains(startingTileActors[i].Position))
+            if (!GridInfo.Contains(startingTileActors[i].Position))
             {
                 Log.Warning($"Tile actor at position {startingTileActors[i].Position} is outside of the grid. It will not be spawned.");
                 continue;
@@ -47,9 +72,9 @@ public class CreateLevelGridSystem : SimComponentSystem
 
         NativeList<GridTileReference> tiles = new NativeList<GridTileReference>(Allocator.Temp);
 
-        for (int y = gridRect.TileMin.y; y <= gridRect.TileMax.y; y++)
+        for (int y = GridInfo.TileMin.y; y <= GridInfo.TileMax.y; y++)
         {
-            for (int x = gridRect.TileMin.x; x <= gridRect.TileMax.x; x++)
+            for (int x = GridInfo.TileMin.x; x <= GridInfo.TileMax.x; x++)
             {
                 int2 pos = int2(x, y);
                 GridTileReference gridTileReference = CreateTileEntity(pos, FindTileFlags(startingTileActors, pos));
@@ -59,6 +84,13 @@ public class CreateLevelGridSystem : SimComponentSystem
 
         EntityManager.RemoveComponent<StartingTileActors>(gridInfoEntity);
         EntityManager.AddBuffer<GridTileReference>(gridInfoEntity).AddRange(tiles);
+
+        if (_tileReferencesBuffer.IsCreated)
+        {
+            _tileReferencesBuffer.Dispose();
+        }
+
+        _tileReferencesBuffer = EntityManager.GetBufferReadOnly<GridTileReference>(GetSingletonEntity<GridInfo>()).ToNativeArray(Allocator.Persistent);
     }
 
     private Entity CreateTileEntity(int2 tilePosition, TileFlags tileFlags)
@@ -96,5 +128,18 @@ public class CreateLevelGridSystem : SimComponentSystem
             }
         }
         return TileFlags.Empty;
+    }
+}
+
+public partial class CommonReads
+{
+    public static TileWorld GetTileWorld(ISimWorldReadAccessor accessor)
+    {
+        return accessor.GetExistingSystem<CreateLevelGridSystem>().GetTileWorld();
+    }
+
+    public static bool IsTileValid(ISimWorldReadAccessor accessor, int2 tile)
+    {
+        return accessor.GetExistingSystem<CreateLevelGridSystem>().GridInfo.Contains(tile);
     }
 }

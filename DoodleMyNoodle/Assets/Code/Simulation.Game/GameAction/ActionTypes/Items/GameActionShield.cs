@@ -1,13 +1,14 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using static Unity.Mathematics.math;
 using static fixMath;
 
 public class GameActionShield : GameAction
 {
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if(accessor.GetComponentData<ItemRangeData>(context.Entity).Value > 0) 
+        if (accessor.GetComponentData<ItemRangeData>(context.Entity).Value > 0)
         {
             return new UseContract(
                 new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
@@ -36,8 +37,7 @@ public class GameActionShield : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterSelfTarget.Data self))
         {
-            accessor.AddComponentData(context.InstigatorPawn, new Invincible() { Duration = accessor.GetComponentData<ItemEffectDurationData>(context.Entity).Value });
-
+            ShieldTarget(accessor, context.Entity, context.InstigatorPawn);
             return true;
         }
 
@@ -46,15 +46,29 @@ public class GameActionShield : GameAction
             // reduce target health
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
             CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
-            foreach (var entity in victims)
+            foreach (var victim in victims)
             {
-                accessor.AddComponentData(entity, new Invincible() { Duration = accessor.GetComponentData<ItemEffectDurationData>(context.Entity).Value });
+                ShieldTarget(accessor, context.Entity, victim);
             }
 
             return true;
         }
 
         return false;
+    }
+
+    private void ShieldTarget(ISimWorldReadWriteAccessor accessor, Entity itemEntity, Entity pawn)
+    {
+        int duration = accessor.GetComponentData<ItemEffectDurationData>(itemEntity).Value;
+
+        if (accessor.TryGetComponentData(pawn, out Invincible invincible))
+        {
+            accessor.AddComponentData(pawn, new Invincible() { Duration = max(duration, invincible.Duration) });
+        }
+        else
+        {
+            accessor.AddComponentData(pawn, new Invincible() { Duration = duration });
+        }
     }
 }
 

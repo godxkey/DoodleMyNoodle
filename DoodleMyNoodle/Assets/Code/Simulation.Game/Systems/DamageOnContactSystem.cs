@@ -33,17 +33,17 @@ public class DamageOnContactSystem : SimComponentSystem
         _toDestroy.Clear();
     }
 
-    private void ProcessEntityPair(Entity instigator, Entity target, NativeList<Entity> toDestroy)
+    private void ProcessEntityPair(Entity instigatorPawn, Entity targetPawn, NativeList<Entity> toDestroy)
     {
-        if (EntityManager.TryGetComponentData(instigator, out DamageOnContact damageOnContact))
+        if (EntityManager.TryGetComponentData(instigatorPawn, out DamageOnContact damageOnContact))
         {
-            if (EntityManager.HasComponent<Health>(target))
+            if (EntityManager.HasComponent<Health>(targetPawn))
             {
-                CommonWrites.RequestDamageOnTarget(Accessor, instigator, target, damageOnContact.Value);
+                CommonWrites.RequestDamageOnTarget(Accessor, instigatorPawn, targetPawn, damageOnContact.Value);
                 
                 if (damageOnContact.DestroySelf)
                 {
-                    toDestroy.AddUnique(instigator);
+                    toDestroy.AddUnique(instigatorPawn);
                 }
             }
 

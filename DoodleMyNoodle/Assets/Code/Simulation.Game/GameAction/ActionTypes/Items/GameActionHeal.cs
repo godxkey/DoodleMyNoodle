@@ -37,12 +37,13 @@ public class GameActionHeal : GameAction
     {
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            // reduce target health
-            NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
-            foreach (var entity in victims)
+            int healValue = accessor.GetComponentData<ItemHealthPointsToHealData>(context.Entity).Value;
+            
+            NativeList<Entity> targets = new NativeList<Entity>(Allocator.Temp);
+            CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, targets);
+            foreach (var target in targets)
             {
-                CommonWrites.ModifyStatInt<Health>(accessor, entity, accessor.GetComponentData<ItemHealthPointsToHealData>(context.Entity).Value);
+                CommonWrites.RequestHealOnTarget(accessor, context.InstigatorPawn, target, healValue);
             }
 
             return true;
