@@ -3,7 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 
-public abstract class SimComponentSystem : ComponentSystem
+public interface ISimSystem
+{
+
+}
+
+public abstract class SimComponentSystemGroup : ComponentSystemGroup, ISimSystem
+{
+
+}
+
+public abstract class SimComponentSystem : ComponentSystem, ISimSystem
 {
     /// <summary>
     /// The current Time data for this system's world.
@@ -21,7 +31,7 @@ public abstract class SimComponentSystem : ComponentSystem
     }
 }
 
-public abstract class SimJobComponentSystem : JobComponentSystem
+public abstract class SimJobComponentSystem : JobComponentSystem, ISimSystem
 {
     /// <summary>
     /// The current Time data for this system's world.

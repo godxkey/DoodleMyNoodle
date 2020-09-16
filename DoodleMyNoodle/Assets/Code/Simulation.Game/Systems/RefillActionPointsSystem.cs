@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
+[UpdateInGroup(typeof(PreAISystemGroup))]
 public class RefillActionPointsSystem : SimComponentSystem
 {
     protected override void OnCreate()

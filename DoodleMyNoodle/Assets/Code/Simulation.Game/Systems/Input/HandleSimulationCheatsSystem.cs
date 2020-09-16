@@ -22,6 +22,7 @@ public class SimInputCheatDamagePlayer : SimCheatInput
     public int Damage;
 }
 
+[UpdateInGroup(typeof(InputSystemGroup))]
 public class HandleSimulationCheatsSystem : SimComponentSystem
 {
     protected override void OnUpdate()

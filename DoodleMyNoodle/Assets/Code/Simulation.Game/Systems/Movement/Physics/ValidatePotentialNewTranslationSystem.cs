@@ -10,9 +10,7 @@ public struct TileCollisionEventData : IComponentData
     public Entity TileEntity;
 }
 
-//public class MovementSystemGroup : ComponentSystemGroup { }
-
-//[UpdateInGroup(typeof(MovementSystemGroup))]
+[UpdateInGroup(typeof(MovementSystemGroup))]
 [UpdateAfter(typeof(ApplyVelocitySystem))]
 public class ValidatePotentialNewTranslationSystem : SimComponentSystem
 {
@@ -49,7 +47,7 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
             {
                 var nextTileEntity = CommonReads.GetTileEntity(Accessor, nextTile);
 
-                if(nextTileEntity != Entity.Null)
+                if (nextTileEntity != Entity.Null)
                 {
                     var tileFlags = EntityManager.GetComponentData<TileFlagComponent>(nextTileEntity);
 

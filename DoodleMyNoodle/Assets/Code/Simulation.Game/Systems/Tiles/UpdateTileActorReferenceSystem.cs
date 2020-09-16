@@ -27,6 +27,7 @@ public struct TileActorOverlapEndEventData : IComponentData
 }
 
 [UpdateAfter(typeof(ApplyPotentialNewTranslationSystem))]
+[UpdateInGroup(typeof(MovementSystemGroup))]
 public class UpdateTileActorReferenceSystem : SimJobComponentSystem
 {
     EntityQuery _beginEventsGroup;

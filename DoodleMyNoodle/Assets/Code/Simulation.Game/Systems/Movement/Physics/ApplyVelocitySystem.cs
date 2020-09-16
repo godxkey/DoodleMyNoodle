@@ -1,10 +1,6 @@
 ﻿using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
-using Unity.Transforms;
-using Unity.Mathematics;
-using UnityEngineX;
-using static fixMath;
 
 public struct PotentialNewTranslation : IComponentData
 {
@@ -14,6 +10,7 @@ public struct PotentialNewTranslation : IComponentData
     public static implicit operator PotentialNewTranslation(fix3 val) => new PotentialNewTranslation() { Value = val };
 }
 
+[UpdateInGroup(typeof(MovementSystemGroup))]
 public class ApplyVelocitySystem : SimComponentSystem
 {
     protected override void OnUpdate()
@@ -24,18 +21,5 @@ public class ApplyVelocitySystem : SimComponentSystem
         {
             newTranslation.Value = pos.Value + (vel.Value * deltaTime);
         });
-    }
-}
-
-[UpdateAfter(typeof(ValidatePotentialNewTranslationSystem))]
-public class ApplyPotentialNewTranslationSystem : SimComponentSystem
-{
-    protected override void OnUpdate()
-    {
-        Entities//            .WithChangeFilter<PotentialNewTranslation>() UNDO
-            .ForEach((ref FixTranslation pos, ref PotentialNewTranslation newTranslation) =>
-            {
-                pos.Value = newTranslation.Value;
-            });
     }
 }

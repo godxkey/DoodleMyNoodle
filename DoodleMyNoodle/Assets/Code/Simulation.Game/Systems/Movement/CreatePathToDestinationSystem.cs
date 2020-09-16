@@ -4,6 +4,7 @@ using static fixMath;
 using Unity.Collections;
 using UnityEditor;
 
+[UpdateInGroup(typeof(MovementSystemGroup))]
 public class CreatePathToDestinationSystem : SimComponentSystem
 {
     NativeList<int2> _pathArray;

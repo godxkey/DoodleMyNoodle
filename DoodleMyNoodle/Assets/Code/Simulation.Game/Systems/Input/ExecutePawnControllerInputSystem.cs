@@ -45,6 +45,7 @@ public class ClearPawnControllerInputSystem : SimComponentSystem
 /// <summary>
 /// This system executes the queued inputs
 /// </summary>
+[UpdateInGroup(typeof(InputSystemGroup))]
 public class ExecutePawnControllerInputSystem : SimComponentSystem
 {
     public readonly List<PawnControllerInputBase> Inputs = new List<PawnControllerInputBase>();

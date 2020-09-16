@@ -5,6 +5,7 @@ using Unity.Mathematics;
 
 [UpdateBefore(typeof(ApplyVelocitySystem))]
 [UpdateAfter(typeof(CreatePathToDestinationSystem))]
+[UpdateInGroup(typeof(MovementSystemGroup))]
 public class DirectAlongPathSystem : SimComponentSystem
 {
     protected override void OnUpdate()
@@ -82,23 +83,5 @@ public class DirectAlongPathSystem : SimComponentSystem
             fix3 newDestination = Helpers.GetTileCenter(entityPos);
             EntityManager.SetOrAddComponentData(entity, new Destination() { Value = newDestination });
         }
-    }
-}
-
-[UpdateAfter(typeof(ApplyPotentialNewTranslationSystem))]
-public class ResetDestinationOnCollideSystem : SimComponentSystem
-{
-    protected override void OnUpdate()
-    {
-        // if entities collide when moving along path, reset their destination
-        Entities.ForEach((ref TileCollisionEventData collisionEvent) =>
-        {
-            if (EntityManager.HasComponent<PathPosition>(collisionEvent.Entity))
-            {
-                fix3 entityPos = EntityManager.GetComponentData<FixTranslation>(collisionEvent.Entity).Value;
-                fix3 newDestination = Helpers.GetTileCenter(entityPos);
-                EntityManager.SetOrAddComponentData(collisionEvent.Entity, new Destination() { Value = newDestination });
-            }
-        });
     }
 }

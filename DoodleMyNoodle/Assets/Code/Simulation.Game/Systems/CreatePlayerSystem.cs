@@ -1,5 +1,6 @@
 ﻿using Unity.Entities;
 using Unity.Collections;
+using UnityEngineX;
 
 [NetSerializable]
 public class SimInputPlayerCreate : SimMasterInput
@@ -34,7 +35,7 @@ public class CreatePlayerSystem : SimComponentSystem
 
                 // set name
                 EntityManager.SetComponentData(newPlayerEntity, new Name() { Value = playerName });
-                
+
                 // assign controllable entity if possible
                 Entity uncontrolledEntity = FindUncontrolledPawn();
                 if (uncontrolledEntity != Entity.Null)

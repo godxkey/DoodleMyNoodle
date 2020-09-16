@@ -13,6 +13,7 @@ public abstract class SimPlayerInput : SimInput
 }
 
 [UpdateBefore(typeof(ExecutePawnControllerInputSystem))]
+[UpdateInGroup(typeof(InputSystemGroup))]
 public class ExecutePlayerInputSystem : SimComponentSystem
 {
     protected override void OnUpdate()

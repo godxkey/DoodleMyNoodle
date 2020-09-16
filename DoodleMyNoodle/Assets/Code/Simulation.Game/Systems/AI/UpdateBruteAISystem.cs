@@ -22,8 +22,7 @@ public enum BruteAIState
     Attack
 }
 
-[UpdateAfter(typeof(RefillActionPointsSystem))] // TODO: use groups!
-[UpdateAfter(typeof(DestroyAIControllersSystem))] // TODO: use groups!
+[UpdateInGroup(typeof(AISystemGroup))]
 public class UpdateBruteAISystem : SimComponentSystem
 {
     private readonly fix AGGRO_WALK_RANGE = 10;

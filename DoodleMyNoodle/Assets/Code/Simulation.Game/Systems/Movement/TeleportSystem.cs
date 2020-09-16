@@ -21,6 +21,7 @@ public struct TeleportEventData : IComponentData
 
 [UpdateAfter(typeof(ApplyVelocitySystem))]
 [UpdateBefore(typeof(ValidatePotentialNewTranslationSystem))]
+[UpdateInGroup(typeof(MovementSystemGroup))]
 public class TeleportSystem : SimComponentSystem
 {
     private EntityQuery _singletonQuery;

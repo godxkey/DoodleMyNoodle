@@ -1,6 +1,7 @@
 ﻿using Unity.Entities;
 
-public class DestroyAIControllersSystem : SimComponentSystem
+[UpdateInGroup(typeof(PreAISystemGroup))]
+public class DestroyDanglingAIControllersSystem : SimComponentSystem
 {
     protected override void OnUpdate()
     {

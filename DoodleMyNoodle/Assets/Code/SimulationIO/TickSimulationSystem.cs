@@ -95,8 +95,7 @@ namespace SimulationControl
             _simPostPresGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemBegin>());
 
 
-            var simSystemTypes = TypeUtility.GetTypesDerivedFrom(typeof(SimComponentSystem))
-                         .Concat(TypeUtility.GetTypesDerivedFrom(typeof(SimJobComponentSystem)));
+            var simSystemTypes = TypeUtility.GetTypesDerivedFrom(typeof(ISimSystem)).Where(t => !t.IsAbstract);
 
             AddSystemsToRootLevelSystemGroups(_simulationWorld, simSystemTypes);
 
@@ -160,7 +159,7 @@ namespace SimulationControl
                 ManualUpdate(_simSimGroup);
                 ManualUpdate(_simPresGroup);
                 ManualUpdate(_simPostPresGroup);
-                
+
                 Log.Info(SimulationIO.LogChannel, $"End sim tick '{tick.ExpectedNewTickId}'");
 
                 ManualUpdate(_viewGroup);

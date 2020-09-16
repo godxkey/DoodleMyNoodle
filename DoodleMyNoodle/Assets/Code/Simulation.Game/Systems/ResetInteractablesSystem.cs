@@ -3,7 +3,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-[UpdateBefore(typeof(ExecutePawnControllerInputSystem))]
+[UpdateBefore(typeof(InputSystemGroup))]
 public class ResetInteractablesSystem : SimComponentSystem
 {
     protected override void OnUpdate()

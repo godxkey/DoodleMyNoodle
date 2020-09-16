@@ -1,11 +1,6 @@
-using Unity.Mathematics;
-using static Unity.Mathematics.math;
-using static fixMath;
-using System;
-using UnityEngine;
-using UnityEngineX;
 using Unity.Entities;
 
+[UpdateInGroup(typeof(InputSystemGroup))]
 public class RequestNextTurnIfTeamMembersReadySystem : SimComponentSystem
 {
     protected override void OnCreate()

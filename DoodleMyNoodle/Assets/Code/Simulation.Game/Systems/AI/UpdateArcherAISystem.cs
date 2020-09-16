@@ -25,10 +25,7 @@ public enum ArcherAIState
     Attack
 }
 
-[UpdateAfter(typeof(RefillActionPointsSystem))] // TODO: use groups!
-[UpdateAfter(typeof(DestroyAIControllersSystem))] // TODO: use groups!
-[UpdateAfter(typeof(UpdateTileActorReferenceSystem))] // TODO: use groups!
-[UpdateBefore(typeof(ExecutePawnControllerInputSystem))]
+[UpdateInGroup(typeof(AISystemGroup))]
 public class UpdateArcherAISystem : SimComponentSystem
 {
     public static fix DETECT_RANGE => 10;

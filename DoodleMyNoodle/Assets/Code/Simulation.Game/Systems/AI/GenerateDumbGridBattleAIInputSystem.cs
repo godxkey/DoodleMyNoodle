@@ -15,7 +15,7 @@ public struct ReadyForNextTurnDelayed : IComponentData
 /// <summary>
 /// This system generate human-like inputs for AIs with the DumbGridBattleAI tag
 /// </summary>
-[UpdateBefore(typeof(ExecutePawnControllerInputSystem))]
+[UpdateInGroup(typeof(AISystemGroup))]
 public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
 {
     protected override void OnUpdate()
