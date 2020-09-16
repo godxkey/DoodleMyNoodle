@@ -130,6 +130,21 @@ public class LaunchWindow : EditorWindow
         }
 
         {
+            var element = root.Q<Toggle>(name: "fromScratch");
+            var childrenContainer = root.Q<VisualElement>(name: "startingPointContainer");
+
+            element.value = EditorLaunchData.playFromScratch;
+            childrenContainer.EnableInClassList("hidden", element.value);
+
+            element.RegisterValueChangedCallback(
+                (ChangeEvent<bool> changeEvent) =>
+                {
+                    EditorLaunchData.playFromScratch = changeEvent.newValue;
+                    childrenContainer.EnableInClassList("hidden", changeEvent.newValue);
+                });
+        }
+
+        {
             var element = root.Q<TextField>(name: "level");
             element.value = EditorLaunchData.level;
             element.RegisterValueChangedCallback(

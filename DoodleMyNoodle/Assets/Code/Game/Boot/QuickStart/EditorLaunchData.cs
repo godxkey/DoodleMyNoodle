@@ -30,6 +30,12 @@ public class EditorLaunchData
         set => EditorPrefs.SetInt("EditorLaunch-profile", value);
     }
 
+    public static bool playFromScratch
+    {
+        get => EditorPrefs.GetBool("EditorLaunch-fromScratch", true);
+        set => EditorPrefs.SetBool("EditorLaunch-fromScratch", value);
+    }
+
     public static string level
     {
         get => EditorPrefs.GetString("EditorLaunch-level");

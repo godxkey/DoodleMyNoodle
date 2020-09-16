@@ -247,31 +247,36 @@ public class LaunchProfileElement : VisualElement
     {
         StringBuilder finalArguments = new StringBuilder();
 
-        QuickStartSettings.PlayMode playmode = GetPlayMode();
-        finalArguments.Append("-playmode ");
-        finalArguments.Append((int)playmode);
-        finalArguments.Append(' ');
-
-        string level = EditorLaunchData.level;
-        if (string.IsNullOrEmpty(level) == false)
+        bool headless = false;
+        if (!EditorLaunchData.playFromScratch)
         {
-            finalArguments.Append("-level ");
-            finalArguments.Append(level);
-            finalArguments.Append(' ');
-        }
+            QuickStartSettings.PlayMode playmode = GetPlayMode();
+            headless = EditorLaunchData.serverIsHeadless && (playmode == QuickStartSettings.PlayMode.OnlineServer);
 
-        string serverName = EditorLaunchData.serverName;
-        if (string.IsNullOrEmpty(serverName) == false)
-        {
-            finalArguments.Append("-servername ");
-            finalArguments.Append('\"' + serverName + '\"'); // we need to wrap the string with quotes "" to allow for spaces
+            finalArguments.Append("-playmode ");
+            finalArguments.Append((int)playmode);
             finalArguments.Append(' ');
+
+            string level = EditorLaunchData.level;
+            if (string.IsNullOrEmpty(level) == false)
+            {
+                finalArguments.Append("-level ");
+                finalArguments.Append(level);
+                finalArguments.Append(' ');
+            }
+
+            string serverName = EditorLaunchData.serverName;
+            if (string.IsNullOrEmpty(serverName) == false)
+            {
+                finalArguments.Append("-servername ");
+                finalArguments.Append('\"' + serverName + '\"'); // we need to wrap the string with quotes "" to allow for spaces
+                finalArguments.Append(' ');
+            }
         }
 
         finalArguments.Append("-profileId " + PlayerProfile.localId);
         finalArguments.Append(' ');
 
-        bool headless = EditorLaunchData.serverIsHeadless && (playmode == QuickStartSettings.PlayMode.OnlineServer);
         if (headless)
         {
             finalArguments.Append("-batchmode -nographics ");

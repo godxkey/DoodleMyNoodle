@@ -28,9 +28,12 @@ xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
 
     <engine:VisualElement class="category">
       <engine:Label text="Launch" class="title"/>
-      <engine:TextField label="Level" name="level"/>
-      <engine:TextField label="Server Name" name="serverName"/>
-      <engine:Toggle label="Play Online" name="online"/>
+      <engine:Toggle label="From Scratch" name="fromScratch"/>
+      <engine:VisualElement name="startingPointContainer">
+        <engine:TextField label="Level" name="level"/>
+        <engine:TextField label="Server Name" name="serverName"/>
+        <engine:Toggle label="Play Online" name="online"/>
+      </engine:VisualElement>
       <engine:Foldout name="advFoldout">
         <engine:Toggle label="Server is headless" name="headless"/>
         <engine:TextField label="Extra arguments" name="extraArgs"/>

@@ -47,7 +47,7 @@ public class QuickStartEditorComponent : MonoBehaviour
     {
         if (QuickStart.HasEverQuickStarted == false)
         {
-            if (startFromScratch)
+            if (startFromScratch || EditorLaunchData.playFromScratch)
             {
                 QuickStart.StartFromScratch(EditorLaunchData.profileLocalId);
             }
