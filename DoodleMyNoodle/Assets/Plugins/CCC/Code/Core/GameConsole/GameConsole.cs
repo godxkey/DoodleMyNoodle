@@ -6,6 +6,10 @@ using UnityEngineX;
 using System.Collections.Concurrent;
 using System.Reflection;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class GameConsole
 {
     public enum LineColor
@@ -21,6 +25,44 @@ public class GameConsole
     static int s_historyIndex = 0;
     static ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)> s_queuedLogs = new ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)>();
     private static bool s_init;
+
+#if UNITY_EDITOR
+    public static string[] EditorPlayCommands
+    {
+        get
+        {
+            string[] args = new string[EditorPlayCommandsCount];
+            for (int i = 0; i < args.Length; i++)
+            {
+                args[i] = EditorPrefs.GetString($"GameConsole-EditorPlayCommands[{i}]", defaultValue: "");
+            }
+
+            return args;
+        }
+        set
+        {
+            EditorPlayCommandsCount = value.Length;
+            for (int i = 0; i < value.Length; i++)
+            {
+                EditorPrefs.SetString($"GameConsole-EditorPlayCommands[{i}]", value[i]);
+            }
+        }
+    }
+
+    private static int EditorPlayCommandsCount
+    {
+        get => EditorPrefs.GetInt("GameConsole-EditorPlayCommandsCount", 0);
+        set
+        {
+            int previousValue = EditorPlayCommandsCount;
+            EditorPrefs.SetInt("GameConsole-EditorPlayCommandsCount", value);
+            for (int i = value; i < previousValue; i++)
+            {
+                EditorPrefs.DeleteKey($"GameConsole-EditorPlayCommands[{i}]");
+            }
+        }
+    }
+#endif
 
     internal static void SetUI(IGameConsoleUI consoleUI)
     {
@@ -40,6 +82,7 @@ public class GameConsole
         InitIfNeeded();
     }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)] // initializes in build & playmode
     public static void InitIfNeeded()
     {
         if (s_init)
@@ -47,8 +90,56 @@ public class GameConsole
         s_init = true;
 
         PopulateAllInvokables();
+        ExecuteCommandLineStyleInvokables(CommandLine.Arguments.ToArray());
+#if UNITY_EDITOR
+        ExecuteCommandLineStyleInvokables(EditorPlayCommands);
+#endif
 
         Write("Console ready", LineColor.Normal);
+    }
+
+    public static void ExecuteCommandLineStyleInvokables(string[] args)
+    {
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i].StartsWith("+"))
+            {
+                string invokableName = args[i].Substring(1, args[i].Length - 1);
+
+                if (s_database.InvokablesMap.TryGetValue(invokableName.ToLower(), out GameConsoleInvokable invokable))
+                {
+                    int minParam = invokable.MandatoryParameterCount;
+                    int maxParam = invokable.InvokeParameters.Length;
+
+                    int paramStart = i + 1;
+                    int paramEnd = paramStart;
+                    while (paramEnd < args.Length)
+                    {
+                        if (args[paramEnd].StartsWith("-") || args[paramEnd].StartsWith("+"))
+                        {
+                            break;
+                        }
+                        paramEnd++;
+                    }
+                    int paramCount = paramEnd - paramStart;
+                    if (paramCount < minParam || paramCount > maxParam)
+                    {
+                        Log.Warning($"Could not execute launch command line {invokable.DisplayName} with {paramCount} parameter(s). " +
+                            $"It requires between {minParam} and {maxParam} parameters (inclusive).");
+                        continue;
+                    }
+
+                    string concat = invokableName;
+
+                    for (int p = paramStart; p < paramEnd; p++)
+                    {
+                        concat += " " + args[p];
+                    }
+
+                    EnqueueCommandNoHistory(concat);
+                }
+            }
+        }
     }
 
     private static void PopulateAllInvokables()
@@ -340,9 +431,7 @@ public class GameConsole
     {
         InitIfNeeded();
 
-        command = command.ToLower();
-
-        if (s_database.InvokablesMap.TryGetValue(command, out GameConsoleInvokable c))
+        if (s_database.InvokablesMap.TryGetValue(command.ToLower(), out GameConsoleInvokable c))
         {
             c.Enabled = enabled;
         }
