@@ -41,12 +41,12 @@ namespace SimulationControl
     {
         public List<SimTickData> AvailableTicks = new List<SimTickData>();
         public bool IsTicking { get; private set; }
-        public bool CanTick => _playSimulation.Evaluate()
+        public bool CanTick => _playSimulation
             && _simulationLoadSceneSystem.OngoingSceneLoads.Count == 0;
 
         public event Action<SimTickData> SimulationTicked;
 
-        private Blocker _playSimulation = new Blocker();
+        private DisablableValue _playSimulation = new DisablableValue();
 
         private SimulationWorld _simulationWorld;
         private SimulationWorldSystem _simulationWorldSystem;
@@ -184,12 +184,12 @@ namespace SimulationControl
 
         public void PauseSimulation(string key)
         {
-            _playSimulation.BlockUnique(key);
+            _playSimulation.AddUniqueDisable(key);
         }
 
         public void UnpauseSimulation(string key)
         {
-            _playSimulation.Unblock(key);
+            _playSimulation.RemoveDisable(key);
         }
 
         //public bool IsLocallySubmittedInputInQueue(InputSubmissionId inputSubmissionId)
