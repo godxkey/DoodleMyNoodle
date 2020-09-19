@@ -2,17 +2,26 @@ using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
 using UnityEngine;
+using Unity.Mathematics;
 
-public class GameActionDropObject : GameAction
+public class GameActionDropBombToDetonate : GameAction
 {
     fix DROPPING_SPEED = (fix)5f;
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
+        if (accessor.TryGetComponentData(context.Entity, out ItemSpawnedObjectReference itemSpawnedObjectReference))
+        {
+            if (itemSpawnedObjectReference.Entity != Entity.Null)
+            {
+                return new UseContract(new GameActionParameterSelfTarget.Description() { });
+            }
+        }
+
         return new UseContract(
-                   new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
-                   {
-                   });
+           new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
+           {
+           });
     }
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
@@ -36,7 +45,28 @@ public class GameActionDropObject : GameAction
             accessor.SetOrAddComponentData(objectInstance, new FixTranslation() { Value = spawnPos });
             accessor.SetOrAddComponentData(objectInstance, new PotentialNewTranslation() { Value = spawnPos });
 
+            accessor.SetOrAddComponentData(context.Entity, new ItemSpawnedObjectReference() { Entity = objectInstance });
+
             return true;
+        }
+        else
+        {
+            if (accessor.TryGetComponentData(context.Entity, out ItemSpawnedObjectReference itemSpawnedObjectReference))
+            {
+                Entity bomb = itemSpawnedObjectReference.Entity;
+
+                if (bomb != Entity.Null)
+                {
+                    int2 tilePos = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(bomb));
+                    CommonWrites.RequestExplosionOnTiles(accessor, bomb, tilePos, 1, accessor.GetComponentData<ItemDamageData>(context.Entity).Value);
+
+                    accessor.DestroyEntity(bomb);
+
+                    accessor.SetOrAddComponentData(context.Entity, new ItemSpawnedObjectReference() { Entity = Entity.Null });
+
+                    return true;
+                }
+            }
         }
 
         return false;

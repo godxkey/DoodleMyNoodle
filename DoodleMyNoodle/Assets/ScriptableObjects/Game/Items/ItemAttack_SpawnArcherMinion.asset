@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a710da78879440489da5afe5fba6d82, type: 3}
+  m_Name: ItemAttack_SpawnArcherMinion
+  m_EditorClassIdentifier: 
+  ID: {fileID: 2677628293349642642, guid: c5b53218d66306c46b57cb414bbd1b56, type: 3}
+  ItemPrefab: {fileID: 2784291058542494111, guid: c5b53218d66306c46b57cb414bbd1b56,
+    type: 3}
+  Icon: {fileID: 21300000, guid: 75c2d6bc34f935741bf573094c162cce, type: 3}
+  Name: Archer Minion
+  Rarity: 4
+  EffectDescription: Spawn an Archer minion to fight by your side
