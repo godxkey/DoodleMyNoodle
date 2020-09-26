@@ -9,6 +9,11 @@ public class GameActionMove : GameAction
 {
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
     {
+        if (accessor.HasComponent<PathPosition>(context.InstigatorPawn))
+        {
+            return false;
+        }
+        
         return true;
     }
 

@@ -4,8 +4,6 @@ using Unity.Collections;
 
 public class GameActionTileExplosion : GameAction
 {
-    const int EXPLOSIVE_SIZE = 1;
-
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
@@ -17,7 +15,14 @@ public class GameActionTileExplosion : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             int damage = accessor.GetComponentData<ItemDamageData>(context.Entity).Value;
-            CommonWrites.RequestExplosionOnTiles(accessor, context.InstigatorPawn, paramTile.Tile, EXPLOSIVE_SIZE, damage);
+
+            int explosionRange = 1;
+            if (accessor.HasComponent<ItemExplosionRange>(context.Entity))
+            {
+                explosionRange = accessor.GetComponentData<ItemExplosionRange>(context.Entity).Value;
+            }
+
+            CommonWrites.RequestExplosionOnTiles(accessor, context.InstigatorPawn, paramTile.Tile, explosionRange, damage);
 
             return true;   
         }

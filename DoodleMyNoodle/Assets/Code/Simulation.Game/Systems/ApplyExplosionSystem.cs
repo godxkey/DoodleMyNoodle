@@ -89,14 +89,24 @@ internal static partial class CommonWrites
 {
     public static void RequestExplosionOnTiles(ISimWorldReadWriteAccessor accessor, Entity instigator, int2 tilePos, int range, int damage)
     {
-        DynamicBuffer<ExplosionToApplyData> explosionDataBuffer = ApplyExplosionSystem.GetExplosionToApplySingletonBuffer(accessor);
-
-        explosionDataBuffer.Add(new ExplosionToApplyData() { Instigator = instigator, Damage = damage, TilePos = tilePos });
-
-        // explode other tiles in range
-        if (range > 0)
+        if (range > 1)
         {
+            int2 tileMin = tilePos - int2(range - 1);
+            int2 tileMax = tilePos + int2(range - 1);
 
+            for (int x = tileMin.x; x <= tileMax.x; x++)
+            {
+                for (int y = tileMin.y; y <= tileMax.y; y++)
+                {
+                    RequestExplosionOnTiles(accessor, instigator, int2(x, y), 1, damage);
+                }
+            }
+        }
+        else
+        {
+            DynamicBuffer<ExplosionToApplyData> explosionDataBuffer = ApplyExplosionSystem.GetExplosionToApplySingletonBuffer(accessor);
+
+            explosionDataBuffer.Add(new ExplosionToApplyData() { Instigator = instigator, Damage = damage, TilePos = tilePos });
         }
     }
 }
