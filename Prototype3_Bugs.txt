@@ -1,0 +1,13 @@
+crash quand on import la photo (concept de bibliotheque photo)
+disconnect cause des problemes de connection
+beaucoup d'erreur cause des problemes de FPS
+position des interactables peut causer des problemes parce qu'on est trop loin et on peut pas interagir
+si la souris sort de l'ecran ca ne deplace pu ta camera
+tu peux pas te deplacer pendant que tu te deplace deja ?
+potion peuvent etre consommer a l'infini
+twin blade doesn't work
+je peux utiliser mes bottes et avoir un highlight meme si ta pu d'AP
+faire explosion plus gros de range
+
+
+
