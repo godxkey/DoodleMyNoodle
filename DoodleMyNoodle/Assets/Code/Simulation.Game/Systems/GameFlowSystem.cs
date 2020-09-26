@@ -18,19 +18,22 @@ public class GameFlowSystem : SimComponentSystem
 
     private void StartGameIfNeeded()
     {
+        if (HasSingleton<GameStartedTag>())
+            return;
+
         int teamCurrentlyPlaying = CommonReads.GetTurnTeam(Accessor);
 
         bool everyoneIsReady = true;
         bool atLeastOnePlayerExists = false;
 
         // check if every player is ready
-        Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn) =>
+        Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn, ref ControlledEntity pawn) =>
         {
-            if (team.Value == (int)DesignerFriendlyTeam.Player)
+            if (team == (int)DesignerFriendlyTeam.Player)
             {
                 atLeastOnePlayerExists = true;
 
-                if (!readyForNextTurn.Value)
+                if (!readyForNextTurn && EntityManager.Exists(pawn))
                 {
                     everyoneIsReady = false; // if a team member is NOT ready
                 }
@@ -38,7 +41,7 @@ public class GameFlowSystem : SimComponentSystem
         });
 
         // if a team member is NOT ready
-        if (teamCurrentlyPlaying == -1 && atLeastOnePlayerExists && !HasSingleton<GameStartedTag>() && everyoneIsReady)
+        if (teamCurrentlyPlaying == -1 && atLeastOnePlayerExists && everyoneIsReady)
         {
             this.SetOrCreateSingleton(new GameStartedTag());
 
