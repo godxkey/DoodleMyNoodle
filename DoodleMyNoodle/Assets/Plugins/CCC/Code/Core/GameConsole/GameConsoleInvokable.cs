@@ -149,8 +149,9 @@ internal abstract class GameConsoleFieldOrProperty : GameConsoleInvokable
             new Parameter(null, memberType, optional: true, hasDefaultValue: false, null)
         };
 
-        Construct(attribute.EnabledByDefault, displayName, attribute.Description, invokeParameters);
+        _saveMode = attribute.Save;
 
+        Construct(attribute.EnabledByDefault, displayName, attribute.Description, invokeParameters);
     }
 
     public override void Init()

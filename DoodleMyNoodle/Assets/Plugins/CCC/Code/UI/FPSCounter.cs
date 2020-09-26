@@ -1,36 +1,69 @@
 using UnityEngine;
 using System.Collections;
 using TMPro;
+using UnityEngine.Assertions;
 
 public class FPSCounter : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI textDisplay;
-    [SerializeField] int frameSampleSize = 1;
+    [SerializeField] TextMeshProUGUI _textDisplay;
+    [SerializeField] float _sampleDuration = 1;
+    [SerializeField] int _decimalCount = 2;
 
-    private float cummulatedFPS = 0;
-    private int frameCounter = 0;
+    private float _cummulatedFPS = 0;
+    private int _frameCounter = 0;
+    private string _format;
+    private float _nextSampleTime = 0;
+
+    private static FPSCounter s_instance;
+
+    private void Awake()
+    {
+        _format = "0.";
+        for (int i = 0; i < _decimalCount; i++)
+        {
+            _format += "0";
+        }
+
+        Assert.IsNull(s_instance);
+        s_instance = this;
+
+        gameObject.SetActive(s_visibility);
+    }
+
+    private void OnDestroy()
+    {
+        s_instance = null;
+    }
 
     void Update()
     {
-        frameCounter++;
+        _frameCounter++;
+        _cummulatedFPS += FPSHelper.CurrentFPS;
 
-        if (frameCounter >= frameSampleSize)
+        if (Time.time > _nextSampleTime)
         {
-            PushToDisplay();
-            frameCounter = 0;
-            cummulatedFPS = 0;
+            UpdateDisplay();
+            _nextSampleTime = Time.time + _sampleDuration;
+            _frameCounter = 0;
+            _cummulatedFPS = 0;
         }
-
-        cummulatedFPS += FPSHelper.CurrentFPS;
     }
 
-    void OnValidate()
+    private void UpdateDisplay()
     {
-        frameSampleSize = Mathf.Max(1, frameSampleSize);
+        _textDisplay.text = (_cummulatedFPS / _frameCounter).ToString(_format);
     }
 
-    private void PushToDisplay()
+    private static bool s_visibility;
+
+    [ConsoleVar("FPSCount", "The visibility of the FPS counter module.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
+    public static bool Visibility
     {
-        textDisplay.text = (cummulatedFPS / frameCounter).ToString();
+        get => s_visibility;
+        set
+        {
+            s_visibility = value;
+            s_instance?.gameObject.SetActive(value);
+        }
     }
 }
