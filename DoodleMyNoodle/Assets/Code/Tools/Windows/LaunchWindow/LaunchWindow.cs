@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -94,6 +95,7 @@ public class LaunchWindow : EditorWindow
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Developement Build
         ////////////////////////////////////////////////////////////////////////////////////////
+
         {
             var element = root.Q<Toggle>(name: "developmentBuild");
             element.value = EditorLaunchData.developmentBuild;
@@ -145,9 +147,41 @@ public class LaunchWindow : EditorWindow
         }
 
         {
-            var element = root.Q<TextField>(name: "level");
-            element.value = EditorLaunchData.level;
-            element.RegisterValueChangedCallback(
+            var container = root.Q<VisualElement>(name: "startingPointContainer");
+            var levelBank = AssetDatabaseX.LoadAssetsOfType<LevelBank>().FirstOrDefault();
+
+            List<string> levels = new List<string>();
+            levels.Add(""); // the 'none' option
+            
+            if (levelBank != null)
+            {
+                foreach (var item in levelBank.Levels)
+                {
+                    levels.Add(item.name);
+                }
+
+                levels.Sort();
+            }
+
+            string levelToDisplayName(string level)
+            {
+                if (string.IsNullOrEmpty(level))
+                    return "-None-";
+                return level;
+            }
+
+            PopupField<string> levelMenu = new PopupField<string>("Level", levels, 0,
+                formatSelectedValueCallback: levelToDisplayName,
+                formatListItemCallback: levelToDisplayName);
+
+            container.Insert(0, levelMenu);
+
+            if (levels.Contains(EditorLaunchData.level))
+            {
+                levelMenu.value = EditorLaunchData.level;
+            }
+
+            levelMenu.RegisterValueChangedCallback(
                 (ChangeEvent<string> changeEvent) =>
                 {
                     EditorLaunchData.level = changeEvent.newValue;
@@ -360,7 +394,7 @@ public class LaunchWindow : EditorWindow
             developmentBuild = EditorLaunchData.developmentBuild,
             allowDebugging = EditorLaunchData.allowDebugging
         };
-        
+
         var scriptSymbolsProfile = ScriptDefineSymbolManager.GetProfile(EditorLaunchData.symbolsProfile);
         string[] scriptingSymbols = scriptSymbolsProfile != null ? scriptSymbolsProfile.DefinedSymbols.ToArray() : new string[] { };
 
