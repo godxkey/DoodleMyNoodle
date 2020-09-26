@@ -16,7 +16,7 @@ public class TriggerInteractionOnOverlapSystem : SimComponentSystem
 
     private void OnEntityOverlap(Entity a, Entity b)
     {
-        if (EntityManager.HasComponent<ControllableTag>(a) &&
+        if (EntityManager.HasComponent<Controllable>(a) &&
             EntityManager.HasComponent<InteractOnOverlapTag>(b) &&
             EntityManager.HasComponent<Interactable>(b))
         {

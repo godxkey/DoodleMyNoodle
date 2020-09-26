@@ -131,7 +131,7 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
 
         foreach (var tileActor in EntityManager.GetBufferReadOnly<TileActorReference>(tileEntity))
         {
-            if(EntityManager.HasComponent<Health>(tileActor) && EntityManager.HasComponent<ControllableTag>(tileActor))
+            if(EntityManager.HasComponent<Health>(tileActor) && EntityManager.HasComponent<Controllable>(tileActor))
             {
                 attackableEntities.Add(tileActor);
             }

@@ -32,10 +32,27 @@ public class UpdateArcherAISystem : SimComponentSystem
     public static fix2 PAWN_EYES_OFFSET => fix2(0, fix(0.15));
 
     private EntityQuery _attackableGroup;
+
+    // used in debug display, todo: make this better!
     public static NativeList<int2> _path;
     public static NativeList<int2> _shootingPositions;
     public static NativeList<Entity> _shootingTargets;
+    
     private NativeList<Entity> _enemies;
+    private BufferFromEntity<TileActorReference> _tileActorBuffers;
+    private ComponentDataFromEntity<FixTranslation> _positions;
+    private TileWorld _tileWorld;
+    private readonly int2[] _shootingDirections = new int2[]
+    {
+        int2(-1, 0),
+        int2(0, -1),
+        int2(1, 0),
+        int2(0, 1),
+        int2(1, 1),
+        int2(-1, 1),
+        int2(1, -1),
+        int2(-1, -1),
+    };
 
     protected override void OnCreate()
     {
@@ -44,13 +61,13 @@ public class UpdateArcherAISystem : SimComponentSystem
         _enemies = new NativeList<Entity>(Allocator.Persistent);
         _shootingPositions = new NativeList<int2>(Allocator.Persistent);
         _shootingTargets = new NativeList<Entity>(Allocator.Persistent);
-
         _path = new NativeList<int2>(Allocator.Persistent);
         _attackableGroup = EntityManager.CreateEntityQuery(
             ComponentType.ReadOnly<Health>(),
-            ComponentType.ReadOnly<ControllableTag>(),
+            ComponentType.ReadOnly<Controllable>(),
             ComponentType.ReadOnly<FixTranslation>());
 
+        RequireSingletonForUpdate<GridInfo>();
     }
 
     protected override void OnDestroy()
@@ -67,10 +84,16 @@ public class UpdateArcherAISystem : SimComponentSystem
     protected override void OnUpdate()
     {
         Profiler.BeginSample("Update Archer Mental State");
+
+        _tileActorBuffers = GetBufferFromEntity<TileActorReference>(isReadOnly: true);
+        _positions = GetComponentDataFromEntity<FixTranslation>(isReadOnly: true);
+        _tileWorld = CommonReads.GetTileWorld(Accessor);
+
         Entities.ForEach((Entity controller, ref Team controllerTeam, ref ArcherAIData agentData, ref ControlledEntity pawn) =>
         {
             UpdateMentalState(controller, controllerTeam, ref agentData, pawn);
         });
+
         Profiler.EndSample();
 
         int currentTeam = CommonReads.GetTurnTeam(Accessor);
@@ -112,14 +135,14 @@ public class UpdateArcherAISystem : SimComponentSystem
 
     private void UpdateMentalState(in Entity controller, in Team controllerTeam, ref ArcherAIData agentData, in Entity agentPawn)
     {
-        (Entity attackTarget, int2 shootPos) = FindTargetAndShootPos(controllerTeam, agentPawn);
+        (Entity attackTarget, int2 shootTile) = FindTargetAndShootPos(controllerTeam, agentPawn);
 
         if (attackTarget != Entity.Null)
         {
             agentData.AttackTarget = attackTarget;
-            agentData.ShootTile = shootPos;
+            agentData.ShootTile = shootTile;
 
-            if (Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn)).Equals(shootPos))
+            if (Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn)).Equals(shootTile))
             {
                 agentData.State = ArcherAIState.Attack;
             }
@@ -134,7 +157,7 @@ public class UpdateArcherAISystem : SimComponentSystem
         }
     }
 
-    private (Entity attackTarget, int2 shootPos) FindTargetAndShootPos(in Team controllerTeam, in Entity agentPawn)
+    private (Entity attackTarget, int2 shootTile) FindTargetAndShootPos(in Team controllerTeam, in Entity agentPawn)
     {
         _enemies.Clear();
         CommonReads.PawnSenses.FindAllPawnsInSight(Accessor, _attackableGroup, agentPawn, excludeTeam: controllerTeam, _enemies);
@@ -143,18 +166,6 @@ public class UpdateArcherAISystem : SimComponentSystem
         {
             return (Entity.Null, default);
         }
-
-        int2[] shootingDirections = new int2[]
-        {
-            int2(-1, 0),
-            int2(0, -1),
-            int2(1, 0),
-            int2(0, 1),
-            int2(1, 1),
-            int2(-1, 1),
-            int2(1, -1),
-            int2(-1, -1),
-        };
         int d = floorToInt(CommonReads.PawnSenses.SIGHT_RANGE);
         int diagonalD = floorToInt(sin(fix.Pi / fix(4)) * CommonReads.PawnSenses.SIGHT_RANGE);
         int[] shootingDistances = new int[]
@@ -171,33 +182,29 @@ public class UpdateArcherAISystem : SimComponentSystem
 
         _shootingPositions.Clear();
         _shootingTargets.Clear();
-        TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);
-
-        BufferFromEntity<TileActorReference> tileActorBuffers = GetBufferFromEntity<TileActorReference>(isReadOnly: true);
-        ComponentDataFromEntity<FixTranslation> positions = GetComponentDataFromEntity<FixTranslation>();
 
         foreach (Entity enemy in _enemies)
         {
-            int2 enemyTile = Helpers.GetTile(positions[enemy]);
+            int2 enemyTile = Helpers.GetTile(_positions[enemy]);
 
             // search all shooting positions in direction
-            for (int i = 0; i < shootingDirections.Length; i++)
+            for (int i = 0; i < _shootingDirections.Length; i++)
             {
                 // Search specific direction
                 for (int dist = 1; dist < shootingDistances[i]; dist++)
                 {
-                    int2 potentialTile = enemyTile + (shootingDirections[i] * dist);
+                    int2 potentialTile = enemyTile + (_shootingDirections[i] * dist);
 
                     // Stop if tile is terrain or invalid
-                    var tileEntity = tileWorld.GetEntity(potentialTile);
-                    var flags = tileWorld.GetFlags(tileEntity);
+                    var tileEntity = _tileWorld.GetEntity(potentialTile);
+                    var flags = _tileWorld.GetFlags(tileEntity);
                     if (flags.IsOutOfGrid || flags.IsTerrain)
                     {
                         break;
                     }
 
                     // Add potential shooting pos if we can stand on it
-                    if (tileWorld.CanStandOn(potentialTile))
+                    if (_tileWorld.CanStandOn(potentialTile))
                     {
                         _shootingPositions.Add(potentialTile);
                         _shootingTargets.Add(enemy);
@@ -205,7 +212,7 @@ public class UpdateArcherAISystem : SimComponentSystem
 
                     // stop is actor blocking the way
                     bool anyActorBlockingTheWay = false;
-                    var tileActors = tileActorBuffers[tileEntity];
+                    var tileActors = _tileActorBuffers[tileEntity];
                     foreach (var actor in tileActors)
                     {
                         if (actor != agentPawn && EntityManager.HasComponent<Health>(actor))

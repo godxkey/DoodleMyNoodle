@@ -44,7 +44,7 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
         int currentPlayerIndex = 0;
 
         SimWorld.Entities
-            .WithAll<ControllableTag>()
+            .WithAll<Controllable>()
             .ForEach((Entity pawn) =>
             {
                 Entity pawnController = CommonReads.GetPawnController(SimWorld, pawn);

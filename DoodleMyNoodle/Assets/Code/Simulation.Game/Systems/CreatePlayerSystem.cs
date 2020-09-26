@@ -41,6 +41,7 @@ public class CreatePlayerSystem : SimComponentSystem
                 if (uncontrolledEntity != Entity.Null)
                 {
                     EntityManager.SetComponentData(newPlayerEntity, new ControlledEntity() { Value = uncontrolledEntity });
+                    EntityManager.SetComponentData(uncontrolledEntity, new Controllable() { CurrentController = newPlayerEntity });
                 }
 
                 // set team
@@ -76,7 +77,7 @@ public class CreatePlayerSystem : SimComponentSystem
 
         Entities
             .WithNone<InstantiateAndUseDefaultControllerTag>() // entities with this tag will have their DefaultController spawned
-            .WithAll<ControllableTag>()
+            .WithAll<Controllable>()
             .ForEach((Entity controllableEntity) =>
         {
             if (!CommonReads.IsPawnControlled(Accessor, controllableEntity))
@@ -94,17 +95,7 @@ public partial class CommonReads
 {
     public static Entity GetPawnController(ISimWorldReadAccessor accessor, Entity pawn)
     {
-        Entity result = Entity.Null;
-        accessor.Entities.ForEach((Entity controller, ref ControlledEntity x) =>
-        {
-            if (pawn == x.Value)
-            {
-                result = controller;
-                return;
-            }
-        });
-
-        return result;
+        return accessor.GetComponentData<Controllable>(pawn).CurrentController;
     }
 
     public static bool IsPawnControlled(ISimWorldReadAccessor accessor, Entity pawn)

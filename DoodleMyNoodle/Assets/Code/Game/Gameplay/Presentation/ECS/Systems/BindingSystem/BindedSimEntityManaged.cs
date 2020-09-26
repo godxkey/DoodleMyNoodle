@@ -72,7 +72,7 @@ public class BindedSimEntityManaged : MonoBehaviour, IIndexedInList, ISystemStat
         var simWorld = cache.SimWorld;
 
 
-        if (simWorld.HasComponent<ControllableTag>(SimEntity))
+        if (simWorld.HasComponent<Controllable>(SimEntity))
         {
             Entity pawnController = CommonReads.GetPawnController(simWorld, SimEntity);
             if (pawnController != Entity.Null)
@@ -89,7 +89,7 @@ public class BindedSimEntityManaged : MonoBehaviour, IIndexedInList, ISystemStat
     {
         var attackableGroup = simWorld.CreateEntityQuery(
             ComponentType.ReadOnly<Health>(),
-            ComponentType.ReadOnly<ControllableTag>(),
+            ComponentType.ReadOnly<Controllable>(),
             ComponentType.ReadOnly<FixTranslation>());
 
         NativeList<Entity> x = new NativeList<Entity>(Allocator.Temp);

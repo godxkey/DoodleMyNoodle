@@ -87,15 +87,15 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
         //      Player & Pawn
         ////////////////////////////////////////////////////////////////////////////////////////
         Cache.LocalPawn = PlayerHelpers.GetLocalSimPawnEntity(Cache.SimWorld);
-        Cache.LocalController = CommonReads.GetPawnController(Cache.SimWorld, Cache.LocalPawn);
-
-        if (Cache.SimWorld.TryGetComponentData(Cache.LocalController, out Team pawnTeam))
-        {
-            Cache.LocalPawnTeam = pawnTeam;
-        }
 
         if (Cache.LocalPawn != Entity.Null)
         {
+            Cache.LocalController = CommonReads.GetPawnController(Cache.SimWorld, Cache.LocalPawn);
+            if (Cache.LocalController != Entity.Null && Cache.SimWorld.TryGetComponentData(Cache.LocalController, out Team pawnTeam))
+            {
+                Cache.LocalPawnTeam = pawnTeam;
+            }
+
             Cache.LocalPawnPosition = Cache.SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn).Value;
             Cache.LocalPawnPositionFloat = Cache.LocalPawnPosition.ToUnityVec();
             Cache.LocalPawnTile = Helpers.GetTile(Cache.LocalPawnPosition);
@@ -103,6 +103,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
         }
         else
         {
+            Cache.LocalController = Entity.Null;
             Cache.LocalPawnTileEntity = Entity.Null;
         }
 

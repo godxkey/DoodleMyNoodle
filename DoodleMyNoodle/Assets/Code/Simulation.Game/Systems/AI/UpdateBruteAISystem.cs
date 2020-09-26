@@ -29,6 +29,8 @@ public class UpdateBruteAISystem : SimComponentSystem
 
     private EntityQuery _attackableGroup;
     private NativeList<int2> _path;
+    private ComponentDataFromEntity<FixTranslation> _positions;
+    private NativeArray<Entity> _attackableEntities;
 
     protected override void OnCreate()
     {
@@ -37,7 +39,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         _path = new NativeList<int2>(Allocator.Persistent);
         _attackableGroup = EntityManager.CreateEntityQuery(
             ComponentType.ReadOnly<Health>(),
-            ComponentType.ReadOnly<ControllableTag>(),
+            ComponentType.ReadOnly<Controllable>(),
             ComponentType.ReadOnly<FixTranslation>());
     }
 
@@ -52,6 +54,9 @@ public class UpdateBruteAISystem : SimComponentSystem
     protected override void OnUpdate()
     {
         Profiler.BeginSample("Update Brute Mental State");
+        _positions = GetComponentDataFromEntity<FixTranslation>(isReadOnly: true);
+        _attackableEntities = _attackableGroup.ToEntityArray(Allocator.TempJob);
+
         Entities.ForEach((Entity controller, ref Team controllerTeam, ref BruteAIData agentData, ref ControlledEntity pawn) =>
         {
             UpdateMentalState(controller, controllerTeam, ref agentData, pawn);
@@ -93,6 +98,9 @@ public class UpdateBruteAISystem : SimComponentSystem
                 }
             });
         Profiler.EndSample();
+
+
+        _attackableEntities.Dispose();
     }
 
     private void UpdateMentalState(in Entity controller, in Team controllerTeam, ref BruteAIData agentData, in Entity agentPawn)
@@ -117,14 +125,11 @@ public class UpdateBruteAISystem : SimComponentSystem
         fix3 pawnPos = EntityManager.GetComponentData<FixTranslation>(agentPawn);
         int2 agentTile = Helpers.GetTile(pawnPos);
 
-        var positions = GetComponentDataFromEntity<FixTranslation>(isReadOnly: true);
-        var attackableEntities = _attackableGroup.ToEntityArray(Allocator.TempJob);
-
         Entity closest = Entity.Null;
         fix closestDist = fix.MaxValue;
         int2 closestTile = default;
 
-        foreach (var enemy in attackableEntities)
+        foreach (var enemy in _attackableEntities)
         {
             // Find enemy controller in other teams
             Entity enemyController = CommonReads.GetPawnController(Accessor, enemy);
@@ -133,15 +138,19 @@ public class UpdateBruteAISystem : SimComponentSystem
                 continue;
 
             if (!EntityManager.TryGetComponentData(enemyController, out Team enemyTeam))
+            {
                 continue;
+            }
 
             if (enemyTeam == controllerTeam)
                 continue;
 
-            int2 enemyTile = Helpers.GetTile(positions[enemy].Value);
+            int2 enemyTile = Helpers.GetTile(_positions[enemy].Value);
             // try find path to enemy
             if (!Pathfinding.FindNavigablePath(Accessor, agentTile, enemyTile, maxLength: AGGRO_WALK_RANGE, _path))
+            {
                 continue;
+            }
 
             // If distance is closer, record enemy
             fix dist = Pathfinding.CalculateTotalCost(_path.Slice());
@@ -167,8 +176,6 @@ public class UpdateBruteAISystem : SimComponentSystem
                 agentData.State = BruteAIState.PositionForAttack;
             }
         }
-
-        attackableEntities.Dispose();
     }
 
     private void UpdateMentalState_PositionForAttack(in Entity controller, in Team controllerTeam, ref BruteAIData agentData, in Entity agentPawn)

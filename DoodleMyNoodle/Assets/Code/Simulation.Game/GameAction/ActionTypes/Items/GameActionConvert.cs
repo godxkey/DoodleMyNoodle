@@ -14,7 +14,7 @@ public class GameActionConvert : GameAction
                 IncludeSelf = false,
                 CustomTileActorPredicate = (tileActor, accessor) =>
                 {
-                    if (accessor.HasComponent<ControllableTag>(tileActor))
+                    if (accessor.HasComponent<Controllable>(tileActor))
                     {
                         var pawnController = CommonReads.GetPawnController(accessor, tileActor);
                         
@@ -41,7 +41,7 @@ public class GameActionConvert : GameAction
         {
             // find target
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindTileActorsWithComponents<ControllableTag>(accessor, paramTile.Tile, victims);
+            CommonReads.FindTileActorsWithComponents<Controllable>(accessor, paramTile.Tile, victims);
             foreach (Entity entity in victims)
             {
                 Entity pawnController = CommonReads.GetPawnController(accessor, entity);

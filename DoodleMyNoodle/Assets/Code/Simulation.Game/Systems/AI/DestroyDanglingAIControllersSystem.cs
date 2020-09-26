@@ -10,7 +10,7 @@ public class DestroyDanglingAIControllersSystem : SimComponentSystem
             .WithAll<AITag>()
             .ForEach((Entity controller, ref ControlledEntity pawn) =>
             {
-                if(!EntityManager.Exists(pawn) || !EntityManager.HasComponent<ControllableTag>(pawn))
+                if(!EntityManager.Exists(pawn) || !EntityManager.HasComponent<Controllable>(pawn))
                 {
                     PostUpdateCommands.DestroyEntity(controller);
                 }

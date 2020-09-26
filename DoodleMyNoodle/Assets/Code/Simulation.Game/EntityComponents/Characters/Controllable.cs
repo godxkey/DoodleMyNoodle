@@ -7,9 +7,9 @@ using Unity.Mathematics;
 /// Indicates that an entity is controllable (like a pawn)
 /// </summary>
 [Serializable]
-public struct ControllableTag : IComponentData
+public struct Controllable : IComponentData
 {
-
+    public Entity CurrentController;
 }
 
 /// <summary>

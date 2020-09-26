@@ -45,7 +45,7 @@ public static class PlayerHelpers
         {
             // entity still exists and is controllable
             if (simulationWorld.Exists(controlledEntity.Value) &&
-                simulationWorld.HasComponent<ControllableTag>(controlledEntity.Value))
+                simulationWorld.HasComponent<Controllable>(controlledEntity.Value))
             {
                 return controlledEntity.Value;
             }

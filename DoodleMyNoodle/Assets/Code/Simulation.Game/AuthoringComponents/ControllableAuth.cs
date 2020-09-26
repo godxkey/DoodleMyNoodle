@@ -18,7 +18,7 @@ public class ControllableAuth : MonoBehaviour, IConvertGameObjectToEntity, IDecl
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponent<ControllableTag>(entity);
+        dstManager.AddComponent<Controllable>(entity);
 
         if (DefaultAIPrefab)
         {
