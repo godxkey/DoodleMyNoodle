@@ -48,5 +48,17 @@ public class DamageOnContactSystem : SimComponentSystem
             }
 
         }
+
+        if (EntityManager.TryGetComponentData(instigatorPawn, out ExplodeOnContact explodeOnContact))
+        {
+            if (EntityManager.HasComponent<Health>(targetPawn))
+            {
+                int2 tilePos = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(instigatorPawn));
+
+                CommonWrites.RequestExplosionOnTiles(Accessor, instigatorPawn, tilePos, explodeOnContact.Range, explodeOnContact.Damage);
+
+                toDestroy.AddUnique(instigatorPawn);
+            }
+        }
     }
 }

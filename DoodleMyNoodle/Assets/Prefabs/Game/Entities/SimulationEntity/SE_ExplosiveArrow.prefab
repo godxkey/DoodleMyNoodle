@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 462959840056812340}
   - component: {fileID: 8731543070222459677}
   - component: {fileID: 8841453195666950856}
-  - component: {fileID: 3843129983416747434}
-  - component: {fileID: 7101235163328216896}
+  - component: {fileID: -2043317004687052802}
+  - component: {fileID: 4494165586276411911}
   m_Layer: 0
-  m_Name: SE_Rock
+  m_Name: SE_ExplosiveArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,8 +59,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Guid: cdb5765c8d4f95f489e8a5505300a065
---- !u!114 &3843129983416747434
+  Guid: 1f293d3772835fd4b9ed879f0b33710d
+--- !u!114 &-2043317004687052802
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -72,7 +72,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 781bb1a61d29781459cc5e4241645975, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7101235163328216896
+--- !u!114 &4494165586276411911
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -81,8 +81,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 2385346486794747607}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9644d3b337aa5204694190807d6722c3, type: 3}
+  m_Script: {fileID: 11500000, guid: 41c2fdda344e55940943901dd39a18ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: 4
-  DestroySelf: 1
+  Range: 1
+  Damage: 4
