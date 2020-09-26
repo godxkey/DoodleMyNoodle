@@ -116,6 +116,13 @@ public class CameraMovementController : GamePresentationBehaviour
     {
         Vector2 movement = Vector2.zero;
 
+        bool useMouseMovements = 
+               Input.mousePosition.x <= Screen.width 
+            && Input.mousePosition.x >= 0 
+            && Input.mousePosition.y <= Screen.height 
+            && Input.mousePosition.y >= 0 
+            && MouseMovementsEnabled;
+
         if (Input.GetKey(KeyCode.W) || (MouseMovementsEnabled && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
         {
             movement += Vector2.up;

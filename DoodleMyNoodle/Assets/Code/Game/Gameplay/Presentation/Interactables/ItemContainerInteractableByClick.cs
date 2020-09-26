@@ -38,11 +38,11 @@ public class ItemContainerInteractableByClick : ObjectInteractableByClick
                 fix3 itemContainerPosition = SimWorld.GetComponentData<FixTranslation>(SimEntity);
                 fix3 localPawnPosition = SimWorld.GetComponentData<FixTranslation>(SimWorldCache.LocalPawn);
 
-                fix interactionRange = SimWorld.GetComponentData<Interactable>(SimEntity).Range + (fix)0.1f;
+                fix interactionTileRange = SimWorld.GetComponentData<Interactable>(SimEntity).Range;
 
-                fix distanceBetween = fix3.Distance(itemContainerPosition, localPawnPosition);
+                int tilesBetween = fix.RoundToInt(fix.Abs((itemContainerPosition.x - localPawnPosition.x) + (itemContainerPosition.y - localPawnPosition.y)));
 
-                if ((distanceBetween > interactionRange) && InteractableInventoryDisplaySystem.Instance.IsOpen())
+                if ((tilesBetween > interactionTileRange) && InteractableInventoryDisplaySystem.Instance.IsOpen())
                 {
                     _inventoryDisplayed = false;
                     InteractableInventoryDisplaySystem.Instance.CloseDisplay();

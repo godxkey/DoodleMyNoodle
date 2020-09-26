@@ -58,7 +58,14 @@ public class GameActionDropBombToDetonate : GameAction
                 if (bomb != Entity.Null)
                 {
                     int2 tilePos = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(bomb));
-                    CommonWrites.RequestExplosionOnTiles(accessor, bomb, tilePos, 1, accessor.GetComponentData<ItemDamageData>(context.Entity).Value);
+
+                    int explosionRange = 1;
+                    if (accessor.HasComponent<ItemExplosionRange>(context.Entity))
+                    {
+                        explosionRange = accessor.GetComponentData<ItemExplosionRange>(context.Entity).Value;
+                    }
+
+                    CommonWrites.RequestExplosionOnTiles(accessor, bomb, tilePos, explosionRange, accessor.GetComponentData<ItemDamageData>(context.Entity).Value);
 
                     accessor.DestroyEntity(bomb);
 

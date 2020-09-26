@@ -30,6 +30,8 @@ public class PlayerActionBarSlot : ItemSlot
     public Action<int> OnItemPrimaryActionUsed;
     public Action<int> OnItemSecondaryActionUsed;
 
+    private bool _actionBarSlotUnavailable = false;
+
     public void UpdateCurrentInventorySlot(
         ItemVisualInfo item, 
         int itemIndex, 
@@ -38,6 +40,8 @@ public class PlayerActionBarSlot : ItemSlot
         Action<int> onItemSecondaryActionUsed,
         int stacks = -1)
     {
+        _actionBarSlotUnavailable = false;
+
         _currentItemIndex = itemIndex;
         _info = slotInfo;
         OnItemPrimaryActionUsed = onItemPrimaryActionUsed;
@@ -71,6 +75,8 @@ public class PlayerActionBarSlot : ItemSlot
 
         UnavailableTimerText.gameObject.SetActive(false);
         UnavailableSpriteObject.SetActive(true);
+
+        _actionBarSlotUnavailable = true;
     }
 
     private string GetPrettyName(KeyCode keyCode)
@@ -104,6 +110,11 @@ public class PlayerActionBarSlot : ItemSlot
 
     public override void PrimaryUseItemSlot()
     {
+        if (_actionBarSlotUnavailable)
+        {
+            return;
+        }
+
         base.PrimaryUseItemSlot();
 
         OnItemPrimaryActionUsed?.Invoke(_currentItemIndex);
@@ -111,6 +122,11 @@ public class PlayerActionBarSlot : ItemSlot
 
     public override void SecondaryUseItemSlot()
     {
+        if (_actionBarSlotUnavailable)
+        {
+            return;
+        }
+
         base.SecondaryUseItemSlot();
 
         OnItemSecondaryActionUsed?.Invoke(_currentItemIndex);
