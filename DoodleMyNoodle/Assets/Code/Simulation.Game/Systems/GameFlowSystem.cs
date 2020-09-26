@@ -27,9 +27,9 @@ public class GameFlowSystem : SimComponentSystem
         bool atLeastOnePlayerExists = false;
 
         // check if every player is ready
-        Entities.ForEach((ref Team team, ref ReadyForNextTurn readyForNextTurn, ref ControlledEntity pawn) =>
+        Entities.ForEach((ref Team team, ref Active active, ref ReadyForNextTurn readyForNextTurn, ref ControlledEntity pawn) =>
         {
-            if (team == (int)DesignerFriendlyTeam.Player)
+            if (active && team == (int)DesignerFriendlyTeam.Player)
             {
                 atLeastOnePlayerExists = true;
 
