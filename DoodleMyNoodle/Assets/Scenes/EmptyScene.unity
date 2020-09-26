@@ -1505,41 +1505,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f70db2b9427c1246af5a0fe20015c11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  start:
-    x:
-      RawValue: 1632087552
-    y:
-      RawValue: 2147483648
-  end:
-    x:
-      RawValue: 27874336768
-    y:
-      RawValue: 16449724416
-  bevel:
-    RawValue: 0
-  operations: 0
-  repeat: 1
-  _crossedTiles:
-  - x: 0
-    y: 0
-  - x: 1
-    y: 0
-  - x: 1
-    y: 1
-  - x: 2
-    y: 1
-  - x: 3
-    y: 1
-  - x: 3
-    y: 2
-  - x: 4
-    y: 2
-  - x: 4
-    y: 3
-  - x: 5
-    y: 3
-  - x: 6
-    y: 3
 --- !u!1 &1822510314
 GameObject:
   m_ObjectHideFlags: 0
