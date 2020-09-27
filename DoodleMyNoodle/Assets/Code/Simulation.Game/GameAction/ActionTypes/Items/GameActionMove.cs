@@ -19,15 +19,19 @@ public class GameActionMove : GameAction
 
     protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
+        return 1;
     }
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
+        int highestRangePossible = 
+            accessor.GetComponentData<ItemRangeData>(context.Entity).Value * 
+            accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value;
+            
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
+            new GameActionParameterTile.Description(highestRangePossible)
             {
                 IncludeSelf = false,
                 MustBeReachable = true
@@ -52,13 +56,15 @@ public class GameActionMove : GameAction
             }
 
             // Get the last reachable point considering the user's AP
-            int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(_path.AsArray().Slice(), moveRange);
+            //int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(_path.AsArray().Slice(), moveRange);
 
             // Remove unreachable points
-            _path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
+            //_path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
 
             // find AP cost
-            //int costToMove = (int)ceil(Pathfinding.CalculateTotalCost(_path.Slice()));
+            int costToMove = ((int)ceil(Pathfinding.CalculateTotalCost(_path.Slice()) / moveRange));
+
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -costToMove);
 
             // set destination
             accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(_path[_path.Length - 1]) });
