@@ -69,6 +69,8 @@ public class GameActionMove : GameAction
             // set destination
             accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(_path[_path.Length - 1]) });
 
+            CommonWrites.SetEntityAnimation(accessor, context.InstigatorPawn, CommonReads.AnimationTypes.Walking);
+
             return true;
         }
 

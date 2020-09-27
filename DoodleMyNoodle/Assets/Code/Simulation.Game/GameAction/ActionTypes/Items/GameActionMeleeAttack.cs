@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngineX;
 using static fixMath;
+using System.Collections.Generic;
 
 public class GameActionMeleeAttack : GameAction
 {
@@ -46,6 +47,9 @@ public class GameActionMeleeAttack : GameAction
             {
                 CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, accessor.GetComponentData<ItemDamageData>(context.Entity).Value);
             }
+
+            int2 attackDirection = paramTile.Tile - instigatorTile;
+            CommonWrites.SetEntityAnimation(accessor, context.InstigatorPawn, CommonReads.AnimationTypes.Attack, new KeyValuePair<string, object>("Direction", attackDirection));
 
             return true;
         }
