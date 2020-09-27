@@ -31,9 +31,7 @@ public class DamageEventDisplaySystem : GamePresentationBehaviour
                     return;
                 }
 
-                HighlightService.Params highlightParams = HighlightService.Params.Default;
-                highlightParams.Color = Color.red;
-                HighlightService.HighlightSprite(entityRenderer, highlightParams);
+                entityRenderer.DOFade(0, 0.25f).SetLoops(6, LoopType.Yoyo).OnComplete(()=> { entityRenderer.SetAlpha(1); });
             }
         });
     }

@@ -13,7 +13,7 @@ public class FloatingNumberDisplaySystem : GamePresentationBehaviour
             // TODO : Do a pool system
             fix3 damagedEntityPosition = SimWorld.GetComponentData<FixTranslation>(damageData.EntityDamaged).Value;
             GameObject newFloatingNumber = Instantiate(FloatingNumberPrefab, damagedEntityPosition.ToUnityVec(), Quaternion.identity);
-            newFloatingNumber.GetComponent<FloatingNumberDisplay>()?.Display(damageData.DamageApplied.ToString());
+            newFloatingNumber.GetComponent<FloatingNumberDisplay>()?.Display(damageData.DamageApplied.ToString(), Color.red);
         });
 
         SimWorldCache.SimWorld.Entities.ForEach((ref HealingAppliedEventData healingData) =>
@@ -21,7 +21,7 @@ public class FloatingNumberDisplaySystem : GamePresentationBehaviour
             // TODO : Do a pool system
             fix3 damagedEntityPosition = SimWorld.GetComponentData<FixTranslation>(healingData.EntityHealed).Value;
             GameObject newFloatingNumber = Instantiate(FloatingNumberPrefab, damagedEntityPosition.ToUnityVec(), Quaternion.identity);
-            newFloatingNumber.GetComponent<FloatingNumberDisplay>()?.Display(healingData.HealApplied.ToString());
+            newFloatingNumber.GetComponent<FloatingNumberDisplay>()?.Display(healingData.HealApplied.ToString(), Color.green);
         });
         
     }

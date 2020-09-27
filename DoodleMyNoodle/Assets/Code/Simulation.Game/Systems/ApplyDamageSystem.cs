@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -47,6 +48,7 @@ public class ApplyDamageSystem : SimComponentSystem
     protected override void OnDestroy()
     {
         base.OnDestroy();
+
         _damageEventsEntityQuery.Dispose();
         _healingEventsEntityQuery.Dispose();
     }
@@ -65,6 +67,7 @@ public class ApplyDamageSystem : SimComponentSystem
     {
         // Clear Damage Applied Events
         EntityManager.DestroyEntity(_damageEventsEntityQuery);
+        EntityManager.DestroyEntity(_healingEventsEntityQuery);
 
         DynamicBuffer<DamageToApplyData> DamageToApplyBuffer = GetDamageToApplySingletonBuffer(Accessor);
 
@@ -79,7 +82,7 @@ public class ApplyDamageSystem : SimComponentSystem
             }
             else if (damageData.Amount < 0)
             {
-                ProcessHeal(damageData.InstigatorPawn, damageData.TargetPawn, -damageData.Amount, _healedEntities);
+                ProcessHeal(damageData.InstigatorPawn, damageData.TargetPawn, Math.Abs(damageData.Amount), _healedEntities);
             }
         }
 
@@ -89,6 +92,11 @@ public class ApplyDamageSystem : SimComponentSystem
         foreach (DamageAppliedEventData damageAppliedEventData in _damagedEventData)
         {
             EntityManager.CreateEventEntity(damageAppliedEventData);
+        }
+
+        foreach (HealingAppliedEventData healAppliedEventData in _healedEntities)
+        {
+            EntityManager.CreateEventEntity(healAppliedEventData);
         }
     }
 

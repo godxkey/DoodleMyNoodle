@@ -11,9 +11,10 @@ public class FloatingNumberDisplay : MonoBehaviour
     public float AnimDuration = 2;
     public float DisplacementAnimOffset = 2;
 
-    public void Display(string text)
+    public void Display(string text, Color color)
     {
         _number.text = text;
+        _number.color = color;
 
         Sequence animation = DOTween.Sequence();
         animation.Append(_number.DOFade(0, AnimDuration));

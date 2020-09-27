@@ -19,12 +19,14 @@ public class HealthDisplayManagementSystem : GamePresentationBehaviour
         {
             Entity pawnController = CommonReads.GetPawnController(SimWorldCache.SimWorld, pawn);
 
+            // shell is empty, no healthbar
             if (pawnController == Entity.Null)
             {
                 return;
             }
 
-            if (!SimWorldCache.SimWorld.HasComponent<AITag>(pawnController))
+            // Remove healthbar for self
+            if (pawnController == SimWorldCache.LocalController)
             {
                 return;
             }
