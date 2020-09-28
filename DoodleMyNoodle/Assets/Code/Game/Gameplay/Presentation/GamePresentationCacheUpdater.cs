@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using SimulationControl;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -35,7 +36,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
     {
         base.OnCreate();
 
-        SimWorldAccessor.OnEntityClearedAndReplaced += ResetCache;
+        SimWorldAccessor.WorldReplaced += ResetCache;
 
         ResetCache();
         Cache.Ready = true;
@@ -46,7 +47,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
     {
         base.OnDestroy();
 
-        SimWorldAccessor.OnEntityClearedAndReplaced -= ResetCache;
+        SimWorldAccessor.WorldReplaced -= ResetCache;
 
         ResetCache();
         Cache.Ready = false;
@@ -80,7 +81,14 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Current Team
         ////////////////////////////////////////////////////////////////////////////////////////
-        Cache.CurrentTeam = new Team() { Value = Cache.SimWorld.GetSingleton<TurnCurrentTeamSingletonComponent>().Value };
+        if(Cache.SimWorld.TryGetSingleton(out TurnCurrentTeamSingletonComponent curTeam))
+        {
+            Cache.CurrentTeam = curTeam.Value;
+        }
+        else
+        {
+            Cache.CurrentTeam = -1;
+        }
 
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +107,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
             Cache.LocalPawnPosition = Cache.SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn).Value;
             Cache.LocalPawnPositionFloat = Cache.LocalPawnPosition.ToUnityVec();
             Cache.LocalPawnTile = Helpers.GetTile(Cache.LocalPawnPosition);
-            Cache.LocalPawnTileEntity = Cache.TileWorld.GetEntity(Cache.LocalPawnTile);
+            Cache.LocalPawnTileEntity = Cache.TileWorld.IsCreated ? Cache.TileWorld.GetEntity(Cache.LocalPawnTile) : Entity.Null;
         }
         else
         {
@@ -115,7 +123,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
             Cache.TileUnderCursor = Helpers.GetTile(mouseWorldPos);
 
             Cache.TileActorsUnderCursor.Clear();
-            Entity tileEntity = Cache.TileWorld.GetEntity(Cache.TileUnderCursor);
+            Entity tileEntity = Cache.TileWorld.IsCreated ? Cache.TileWorld.GetEntity(Cache.TileUnderCursor) : Entity.Null;
             if (tileEntity != Entity.Null)
             {
                 foreach (var tileActor in Cache.SimWorld.GetBufferReadOnly<TileActorReference>(tileEntity))

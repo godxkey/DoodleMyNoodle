@@ -1,7 +1,7 @@
 ﻿using System;
 using UdpKit;
 
-namespace Internals.PhotonNetwokInterface
+namespace Internals.PhotonNetworkInterface
 {
     public class PhotonNetworkInterfaceSession : INetworkInterfaceSession
     {

@@ -71,8 +71,8 @@ namespace SimulationControl
 
         private bool ValidateInput(SimInput input, INetworkInterfaceConnection instigatorConnection)
         {
-            // we don't accept any input while sim is paused
-            if (!_tickSystem.CanTick)
+            // we don't accept client input while sim is paused
+            if (!_tickSystem.CanTick && !(input is SimMasterInput))
                 return false;
 
             if (input is SimMasterInput && instigatorConnection != null)

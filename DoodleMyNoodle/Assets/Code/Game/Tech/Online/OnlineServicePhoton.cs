@@ -1,4 +1,4 @@
-﻿using Internals.PhotonNetwokInterface;
+﻿using Internals.PhotonNetworkInterface;
 using System;
 
 namespace Internals.OnlineServiceImpl
@@ -14,7 +14,7 @@ namespace Internals.OnlineServiceImpl
 
         protected override NetworkInterface CreateNetworkInterface()
         {
-            return new PhotonNetworkInterface();
+            return new PhotonNetworkInterface.PhotonNetworkInterface();
         }
     }
 }

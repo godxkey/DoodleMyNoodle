@@ -2,6 +2,7 @@
 using System.Collections;
 using Unity.Entities;
 
+// Unused now ...
 public class SimulationSyncFromDiskClientOperation : CoroutineOperation
 {
     public bool IsServerReadyToSendSimTicksForSimulationWeAreSyncingTo { get; private set; }

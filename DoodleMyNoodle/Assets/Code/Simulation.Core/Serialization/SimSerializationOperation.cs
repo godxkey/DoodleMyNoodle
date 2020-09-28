@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Unity.Entities;
 using Unity.Entities.Serialization;
 using UnityEngineX;
+using UnityX.EntitiesX.SerializationX;
 
 namespace Sim.Operations
 {
@@ -59,33 +60,19 @@ namespace Sim.Operations
             _simulationWorld = simulationWorld;
         }
 
-        byte[] GetByteArrayFromBinaryWriter(MemoryBinaryWriter binaryWriter)
-        {
-            byte[] arr = new byte[binaryWriter.Length];
-
-            unsafe
-            {
-                Marshal.Copy((IntPtr)binaryWriter.Data, arr, 0, binaryWriter.Length);
-            }
-
-            return arr;
-        }
-
         protected override IEnumerator ExecuteRoutine()
         {
             Log.Info("Start Sim Serialization Process...");
 
             using (var binaryWriter = new MemoryBinaryWriter())
             {
-                SerializeUtility.SerializeWorld(_simulationWorld.EntityManager, binaryWriter, out object[] referencedObjects);
+                SerializationData = SerializeUtilityX.SerializeWorld(_simulationWorld.EntityManager,  out object[] referencedObjects);
 
                 foreach (var obj in referencedObjects)
                 {
                     Log.Warning($"The ECS simulation references {obj}, which is a managed object. " +
                         $"This is not allowed for now due to serialization");
                 }
-
-                SerializationData = GetByteArrayFromBinaryWriter(binaryWriter);
             }
 
             Log.Info("Sim Serialization Complete!");

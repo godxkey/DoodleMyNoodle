@@ -27,13 +27,19 @@ internal class UpdaterService : MonoCoreService<UpdaterService>
     {
         Updater.Internal_RaiseGUI();
     }
+
+    private void LateUpdate()
+    {
+        Updater.Internal_RaiseLateUpdate();
+    }
 }
 
 public enum UpdateType
 {
     GUI,
     Update,
-    FixedUpdate
+    FixedUpdate,
+    LateUpdate
 }
 
 public static class Updater
@@ -51,6 +57,7 @@ public static class Updater
 
     public static event Action GUI;
     public static event Action Update;
+    public static event Action LateUpdate;
     public static event Action FixedUpdate;
 
 
@@ -99,6 +106,10 @@ public static class Updater
                 case UpdateType.FixedUpdate:
                     FixedUpdate += action;
                     break;
+
+                case UpdateType.LateUpdate:
+                    LateUpdate += action;
+                    break;
             }
         }
 
@@ -127,5 +138,10 @@ public static class Updater
     internal static void Internal_RaiseFixedUpdate()
     {
         FixedUpdate?.Invoke();
+    }
+
+    internal static void Internal_RaiseLateUpdate()
+    {
+        LateUpdate?.Invoke();
     }
 }

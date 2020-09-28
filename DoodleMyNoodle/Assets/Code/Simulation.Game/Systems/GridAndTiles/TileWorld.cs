@@ -13,6 +13,8 @@ public struct TileWorld
     private ComponentDataFromEntity<TileFlagComponent> _tileFlags;
     //private BufferFromEntity<TileActorReference> _tileActorBuffers;
 
+    public bool IsCreated => _tileReferences.IsCreated;
+
     public TileWorld(GridInfo gridInfo, NativeArray<GridTileReference> tileReferences, ComponentDataFromEntity<TileFlagComponent> tileFlags)
     {
         _gridInfo = gridInfo;

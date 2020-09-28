@@ -16,6 +16,7 @@ public class CreatePlayerSystem : SimComponentSystem
         {
             if (input is SimInputPlayerCreate createPlayerInput)
             {
+
                 var newPlayerEntity = EntityManager.CreateEntity(
                     typeof(PlayerTag),
                     typeof(PersistentId),
@@ -80,8 +81,10 @@ public class CreatePlayerSystem : SimComponentSystem
             .WithAll<Controllable>()
             .ForEach((Entity controllableEntity) =>
         {
+            Log.Info($"potential uncontrolled pawn ({controllableEntity}) ?");
             if (!CommonReads.IsPawnControlled(Accessor, controllableEntity))
             {
+                Log.Info($"Found uncontrolled pawn ({controllableEntity})!");
                 uncontrolledEntity = controllableEntity;
                 return;
             }

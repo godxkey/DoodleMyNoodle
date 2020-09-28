@@ -94,7 +94,7 @@ public class LaunchProfileElement : VisualElement
             _content_profileName.value = PlayerProfile.playerName;
 
         _content_tag_editor.style.visibility = Visible(IsMarkedAsEditor);
-        _content_tag_server.style.visibility = Visible(IsMarkedAsServer && EditorLaunchData.playOnline);
+        _content_tag_server.style.visibility = Visible(IsMarkedAsServer && EditorLaunchData.playOnline && !EditorLaunchData.playFromScratch);
         _content_play.style.visibility = Visible(!MyEditorIsRunning && !MyStandaloneIsRunning);
         _content_stop.style.visibility = Visible(MyEditorIsRunning || MyStandaloneIsRunning);
 

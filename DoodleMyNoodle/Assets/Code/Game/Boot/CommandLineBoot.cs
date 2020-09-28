@@ -15,10 +15,10 @@ public class CommandLineBoot : MonoBehaviour
 
         QuickStartSettings quickStartSettings = new QuickStartSettings();
 
-        int playModeValue;
-        if (CommandLine.TryGetInt("-playmode", out playModeValue))
+        CommandLine.TryGetInt("-profileId", out quickStartSettings.localProfileId);
+
+        if (CommandLine.TryGetInt("-playmode", out int playModeValue))
         {
-            CommandLine.TryGetInt("-profileId", out quickStartSettings.localProfileId);
             CommandLine.TryGetString("-servername", out quickStartSettings.serverName);
             CommandLine.TryGetString("-level", out quickStartSettings.level);
             quickStartSettings.playMode = (QuickStartSettings.PlayMode)playModeValue;
@@ -28,7 +28,7 @@ public class CommandLineBoot : MonoBehaviour
         }
         else
         {
-            QuickStart.StartFromScratch();
+            QuickStart.StartFromScratch(quickStartSettings.localProfileId);
         }
     }
 }

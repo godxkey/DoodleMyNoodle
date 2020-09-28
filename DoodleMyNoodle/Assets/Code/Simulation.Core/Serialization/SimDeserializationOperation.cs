@@ -3,6 +3,7 @@ using System.Collections;
 using Unity.Entities;
 using Unity.Entities.Serialization;
 using UnityEngineX;
+using UnityX.EntitiesX.SerializationX;
 
 namespace Sim.Operations
 {
@@ -19,50 +20,35 @@ namespace Sim.Operations
             _simulationWorld = simulationWorld;
         }
 
-        World GetEntityWorldFromByteArray(byte[] bytes)
-        {
-            World tempWorld = new World("Deserialization temp world");
-            unsafe
-            {
-                fixed (byte* dataPtr = bytes)
-                {
-                    using (MemoryBinaryReader reader = new MemoryBinaryReader(dataPtr))
-                    {
-                        SerializeUtility.DeserializeWorld(tempWorld.EntityManager.BeginExclusiveEntityTransaction(), reader);
-                        tempWorld.EntityManager.EndExclusiveEntityTransaction();
-                    }
-                }
-            }
-
-            return tempWorld;
-        }
-
         protected override IEnumerator ExecuteRoutine()
         {
             Log.Info("Start Sim Deserialization Process...");
 
-            // force the 'ChangeDetectionSystem' to end the current sample, making our entity changes undetectable.
-            var changeDetectionSystemEnd = _simulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
-            if (changeDetectionSystemEnd != null)
-            {
-                changeDetectionSystemEnd.ForceEndSample();
-            }
+            //// force the 'ChangeDetectionSystem' to end the current sample, making our entity changes undetectable.
+            //var changeDetectionSystemEnd = _simulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
+            //if (changeDetectionSystemEnd != null)
+            //{
+            //    changeDetectionSystemEnd.ForceEndSample();
+            //}
 
-            World tempWorld = GetEntityWorldFromByteArray(_serializedData);
-            _simulationWorld.EntityManager.CopyAndReplaceEntitiesFrom(tempWorld.EntityManager);
-            tempWorld.Dispose();
+            //World tempWorld = new World("tempWorld");
+            //GetEntityWorldFromByteArray(_serializedData, tempWorld);
+            //_simulationWorld.EntityManager.CopyAndReplaceEntitiesFrom(tempWorld.EntityManager);
+            //tempWorld.Dispose();
 
-            if (_simulationWorld is SimulationWorld simWorld)
-            {
-                simWorld.OnEndDeserialization();
-            }
+            //if (_simulationWorld is SimulationWorld simWorld)
+            //{
+            //    simWorld.OnEndDeserialization();
+            //}
 
-            // force the 'ChangeDetectionSystem' to resample, making our entity changes undetectable.
-            var changeDetectionSystemBegin = _simulationWorld.GetExistingSystem<ChangeDetectionSystemBegin>();
-            if (changeDetectionSystemBegin != null)
-            {
-                changeDetectionSystemBegin.ResetSample();
-            }
+            //// force the 'ChangeDetectionSystem' to resample, making our entity changes undetectable.
+            //var changeDetectionSystemBegin = _simulationWorld.GetExistingSystem<ChangeDetectionSystemBegin>();
+            //if (changeDetectionSystemBegin != null)
+            //{
+            //    changeDetectionSystemBegin.ResetSample();
+            //}
+
+            SerializeUtilityX.DeserializeWorld(_serializedData, _simulationWorld.EntityManager);
 
             Log.Info("Sim Deserialization Complete!");
             TerminateWithSuccess();

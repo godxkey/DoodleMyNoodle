@@ -119,8 +119,10 @@ namespace SimulationControl
                 return;
             }
 
-            s_commandInstance._ongoingCmdOperation = new LoadSimulationFromMemoryOperation(s_commandInstance._simulationWorldSystem.SimulationWorld);
-            Cmd_PostSimLoad_Internal(locationTxt: "memory");
+            SimulationWorld newWorld = s_commandInstance._simulationWorldSystem.CreateNewReplacementWorld();
+
+            s_commandInstance._ongoingCmdOperation = new LoadSimulationFromMemoryOperation(newWorld);
+            Cmd_PostSimLoad_Internal(locationTxt: "memory", newWorld);
         }
 
         [ConsoleCommand("Sim.LoadFromFile", "Load the simulation from a text file (multiplayer unsafe!)", EnabledByDefault = false)]
@@ -137,14 +139,16 @@ namespace SimulationControl
                 fileName += ".txt";
             }
 
+            SimulationWorld newWorld = s_commandInstance._simulationWorldSystem.CreateNewReplacementWorld();
+
             s_commandInstance._ongoingCmdOperation = new LoadSimulationFromDiskOperation(
                 $"{Application.persistentDataPath}/{fileName}",
-                s_commandInstance._simulationWorldSystem.SimulationWorld);
+                newWorld);
 
-            Cmd_PostSimLoad_Internal(locationTxt: $"file {fileName}");
+            Cmd_PostSimLoad_Internal(locationTxt: $"file {fileName}", newWorld);
         }
 
-        private static void Cmd_PostSimLoad_Internal(string locationTxt)
+        private static void Cmd_PostSimLoad_Internal(string locationTxt, SimulationWorld newWorld)
         {
             s_commandInstance._tickSystem.PauseSimulation("load_cmd");
 
@@ -153,6 +157,8 @@ namespace SimulationControl
             s_commandInstance._ongoingCmdOperation.OnSucceedCallback = (op) =>
             {
                 DebugScreenMessage.DisplayMessage($"Loaded sim from {locationTxt}. {op.Message}");
+
+                s_commandInstance._simulationWorldSystem.RequestReplaceSimWorld(newWorld);
             };
 
             s_commandInstance._ongoingCmdOperation.OnFailCallback = (op) =>

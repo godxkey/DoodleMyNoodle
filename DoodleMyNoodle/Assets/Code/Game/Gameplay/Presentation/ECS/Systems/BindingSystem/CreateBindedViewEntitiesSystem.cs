@@ -17,40 +17,34 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
     private EntityQuery _allSimEntitiesQ;
     private PostSimulationBindingCommandBufferSystem _ecbSystem;
 
-    private DirtyValue<uint> _simWorldEntityClearAndReplaceCount;
+    private DirtyValue<uint> _simWorldReplaceVersion;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        _newSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<NewlyCreatedTag>(), ComponentType.ReadOnly<SimAssetId>());
-        _allSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<SimAssetId>());
         _ecbSystem = World.GetOrCreateSystem<PostSimulationBindingCommandBufferSystem>();
-
         RequireSingletonForUpdate<Settings_ViewBindingSystem_Binding>();
-    }
-
-    protected override void OnDestroy()
-    {
-        _newSimEntitiesQ.Dispose();
-        _allSimEntitiesQ.Dispose();
-        base.OnDestroy();
     }
 
     protected override JobHandle OnUpdate(JobHandle jobHandle)
     {
-        // fbessette: we use the 'EntityClearAndReplaceCount' to mesure when we should replace all view entities.
+        // fbessette: we use the 'ReplaceVersion' to mesure when we should replace all view entities.
         //            This doesn't feel like the best way to do it... Feel free to refactor
-        _simWorldEntityClearAndReplaceCount.Set(SimWorldAccessor.EntityClearAndReplaceCount);
+        _simWorldReplaceVersion.Set(SimWorldAccessor.ReplaceVersion);
 
-        EntityQuery simEntitiesInNeedOfViewBindingQ;
-        if (_simWorldEntityClearAndReplaceCount.ClearDirty())
+        EntityQuery simEntitiesInNeedOfViewBinding;
+        if (_simWorldReplaceVersion.ClearDirty())
         {
-            simEntitiesInNeedOfViewBindingQ = _allSimEntitiesQ;
+            // NB: No need to dispose of these queries because the world gets disposed ...
+            _newSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<NewlyCreatedTag>(), ComponentType.ReadOnly<SimAssetId>());
+            _allSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<SimAssetId>());
+
+            simEntitiesInNeedOfViewBinding = _allSimEntitiesQ;
         }
         else
         {
-            simEntitiesInNeedOfViewBindingQ = _newSimEntitiesQ;
+            simEntitiesInNeedOfViewBinding = _newSimEntitiesQ;
         }
 
         jobHandle = new CreateBindedEntitiesForSimEntities()
@@ -60,7 +54,7 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
 
             Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent(),
             Bindings = EntityManager.GetBuffer<Settings_ViewBindingSystem_Binding>(GetSingletonEntity<Settings_ViewBindingSystem_Binding>())
-        }.Schedule(simEntitiesInNeedOfViewBindingQ, jobHandle);
+        }.Schedule(simEntitiesInNeedOfViewBinding, jobHandle);
 
         _ecbSystem.AddJobHandleForProducer(jobHandle);
 
@@ -72,7 +66,7 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
     [BurstCompile]
     private struct CreateBindedEntitiesForSimEntities : IJobChunk
     {
-        [ReadOnly] 
+        [ReadOnly]
         public DynamicBuffer<Settings_ViewBindingSystem_Binding> Bindings;
 
         // Entity command buffer used to create new presentation entities
@@ -171,10 +165,14 @@ public class CreateBindedViewGameObjectsSystem : ViewComponentSystem
                 {
                     BindedSimEntityManaged goComponent = EntityManager.GetComponentObject<BindedSimEntityManaged>(entity);
 
+                    // destroy binded gameobject
                     if (goComponent)
                     {
+                        goComponent.Unregister();
                         Object.Destroy(goComponent.gameObject);
                     }
+
+                    EntityManager.RemoveComponent<BindedSimEntityManaged>(entity);
                 }
 
                 EntityManager.RemoveComponent<BindedGameObjectInstantiatedTag>(entity);
@@ -194,7 +192,7 @@ public class CreateBindedViewGameObjectsSystem : ViewComponentSystem
                 GameObject gameObject = Object.Instantiate(settings.PresentationGameObjects[goIndex]);
 
                 var bindedSimEntityManaged = gameObject.GetOrAddComponent<BindedSimEntityManaged>();
-                bindedSimEntityManaged.Init(bindedSimEntity.SimEntity);
+                bindedSimEntityManaged.Register(bindedSimEntity.SimEntity);
 
                 EntityManager.AddComponentObject(entity, bindedSimEntityManaged);
                 EntityManager.AddComponentObject(entity, gameObject.transform);

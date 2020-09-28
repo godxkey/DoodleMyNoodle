@@ -2,7 +2,7 @@
 using Bolt;
 using UdpKit;
 
-namespace Internals.PhotonNetwokInterface
+namespace Internals.PhotonNetworkInterface
 {
     public class PhotonNetworkCallbackListener : Bolt.GlobalEventListener
     {

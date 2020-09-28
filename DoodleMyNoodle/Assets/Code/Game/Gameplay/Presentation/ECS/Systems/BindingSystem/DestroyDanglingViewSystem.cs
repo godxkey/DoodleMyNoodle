@@ -2,12 +2,13 @@
 using Unity.Entities;
 using Unity.Jobs;
 using UnityEngine;
+using UnityEngineX;
 
 [AlwaysUpdateSystem]
 public class DestroyDanglingViewSystem : ViewJobComponentSystem
 {
     private PostSimulationBindingCommandBufferSystem _ecbSystem;
-    private DirtyValue<uint> _simWorldEntityClearAndReplaceCount;
+    private DirtyValue<uint> _simWorldReplaceVersion;
 
     protected override void OnCreate()
     {
@@ -20,8 +21,8 @@ public class DestroyDanglingViewSystem : ViewJobComponentSystem
         EntityCommandBuffer.Concurrent Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent();
 
         // If sim world was cleared and replaced
-        _simWorldEntityClearAndReplaceCount.Set(SimWorldAccessor.EntityClearAndReplaceCount);
-        if (_simWorldEntityClearAndReplaceCount.ClearDirty())
+        _simWorldReplaceVersion.Set(SimWorldAccessor.ReplaceVersion);
+        if (_simWorldReplaceVersion.ClearDirty())
         {
             ////////////////////////////////////////////////////////////////////////////////////////
             //      Destroy all binded view entities

@@ -53,7 +53,7 @@ public class SaveService : MonoCoreService<SaveService>
 
         object obj = null;
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Open(path, FileMode.Open);
+        FileStream file = File.Open(path, FileMode.Open, FileAccess.Read);
         try
         {
             obj = bf.Deserialize(file);

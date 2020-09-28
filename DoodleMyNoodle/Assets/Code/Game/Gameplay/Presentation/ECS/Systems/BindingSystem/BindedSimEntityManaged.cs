@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using Unity.Collections;
 using Unity.Mathematics;
 using static fixMath;
+using UnityEngine.UI;
+using Unity.Assertions;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -13,17 +15,12 @@ using UnityEditor;
 
 public class BindedSimEntityManaged : MonoBehaviour, IIndexedInList, ISystemStateComponentData
 {
+    private bool _registered;
+
     public Entity SimEntity { get; private set; }
 
     // cached components
     public Transform Transform;
-
-    public void Init(Entity simEntity)
-    {
-        SimEntity = simEntity;
-
-        s_instancesMap.Add(simEntity, gameObject);
-    }
 
     private void Awake()
     {
@@ -32,14 +29,36 @@ public class BindedSimEntityManaged : MonoBehaviour, IIndexedInList, ISystemStat
         Transform = transform;
     }
 
-    private void OnDestroy()
+    public void Register(Entity simEntity)
     {
+        Assert.IsFalse(_registered);
+        
+        _registered = true;
+        
+        SimEntity = simEntity;
+
+        s_instancesMap.Add(simEntity, gameObject);
+    }
+
+    public void Unregister()
+    {
+        Assert.IsTrue(_registered);
+
+        _registered = false;
+        
         s_instances.RemoveIndexed(this);
         s_instancesMap.Remove(SimEntity);
     }
 
-    int IIndexedInList.Index { get; set; }
+    private void OnDestroy()
+    {
+        if (_registered)
+        {
+            Unregister();
+        }
+    }
 
+    int IIndexedInList.Index { get; set; }
 
     public static ReadOnlyDictionary<Entity, GameObject> InstancesMap
     {

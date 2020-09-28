@@ -15,26 +15,6 @@ public class SimulationWorld : World, IOwnedWorld
         _tickSingletonQuery = EntityManager.CreateEntityQuery(ComponentType.ReadWrite<SimulationOngoingTickId>());
     }
 
-
-    internal void OnEndDeserialization()
-    {
-        try
-        {
-            OnEntitiesClearedAndReplaced?.Invoke();
-        }
-        catch (Exception e)
-        {
-            Log.Exception(e);
-        }
-        EntityClearAndReplaceCount++;
-    }
-
-    // TODO fbessette: move this out of here. The simulation shouldn't know
-    public event Action OnEntitiesClearedAndReplaced;
-    public uint EntityClearAndReplaceCount { get; private set; } = 0;
-
-
-
     internal uint SeedToPickIfInitializing;
     public uint ExpectedNewTickId { get; internal set; }
     public SimInput[] TickInputs { get; internal set; }

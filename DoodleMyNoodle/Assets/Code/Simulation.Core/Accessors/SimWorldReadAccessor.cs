@@ -9,6 +9,8 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     public EntityManager EntityManager;
     internal SimPreInitializationSystemGroup SomeSimSystem;
 
+    public bool IsWorldCreated => SimWorld != null && SimWorld.IsCreated;
+
     public string Name
         => SimWorld.Name;
 
@@ -28,13 +30,13 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
 
     public ref FixTimeData Time => ref SimWorld.FixTime;
 
-    public uint EntityClearAndReplaceCount
-        => SimWorld.EntityClearAndReplaceCount;
+    public uint ReplaceVersion
+        => SimWorld.Owner.ReplaceVersion;
 
-    public event Action OnEntityClearedAndReplaced
+    public event Action WorldReplaced
     {
-        add => SimWorld.OnEntitiesClearedAndReplaced += value; 
-        remove => SimWorld.OnEntitiesClearedAndReplaced -= value;
+        add => SimWorld.Owner.WorldReplaced += value;
+        remove => SimWorld.Owner.WorldReplaced -= value;
     }
 
     // fbessette: 

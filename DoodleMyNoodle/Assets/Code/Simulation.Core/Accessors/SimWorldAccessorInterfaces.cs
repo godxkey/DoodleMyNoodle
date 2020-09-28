@@ -746,8 +746,8 @@ public interface ISimWorldReadAccessor
     ulong SequenceNumber { get; }
     ref FixTimeData Time { get; }
 
-    uint EntityClearAndReplaceCount { get; }
-    event Action OnEntityClearedAndReplaced;
+    uint ReplaceVersion { get; }
+    event Action WorldReplaced;
     SimInput[] TickInputs { get; }
 
     // fbessette: 

@@ -23,7 +23,7 @@ public static class QuickStart
         });
     }
 
-    public static void StartFromScratch(int playerProfileLocalId = 0)
+    public static void StartFromScratch(int playerProfileLocalId)
     {
         HasEverQuickStarted = true;
         CoreServiceManager.AddInitializationCallback(() =>

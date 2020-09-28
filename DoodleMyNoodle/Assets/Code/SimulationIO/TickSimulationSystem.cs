@@ -42,13 +42,13 @@ namespace SimulationControl
         public List<SimTickData> AvailableTicks = new List<SimTickData>();
         public bool IsTicking { get; private set; }
         public bool CanTick => _playSimulation
-            && _simulationLoadSceneSystem.OngoingSceneLoads.Count == 0;
+            && _simulationLoadSceneSystem.OngoingSceneLoads.Count == 0
+            && _inPlayerLoop;
 
         public event Action<SimTickData> SimulationTicked;
 
         private DisablableValue _playSimulation = new DisablableValue();
 
-        private SimulationWorld _simulationWorld;
         private SimulationWorldSystem _simulationWorldSystem;
         private LoadSimulationSceneSystem _simulationLoadSceneSystem;
 
@@ -58,8 +58,22 @@ namespace SimulationControl
         private SimPresentationSystemGroup _simPresGroup;
         private SimPostPresentationSystemGroup _simPostPresGroup;
         private ViewSystemGroup _viewGroup;
+        private bool _inPlayerLoop;
 
-        bool _updatePlayerLoop;
+        private static IEnumerable<Type> s_simSystemTypes;
+        public static IEnumerable<Type> AllSimSystemTypes
+        {
+            get
+            {
+                if (s_simSystemTypes is null)
+                {
+                    s_simSystemTypes = TypeUtility.GetTypesDerivedFrom(typeof(ISimSystem)).Where(t => !t.IsAbstract);
+                }
+                return s_simSystemTypes;
+            }
+        }
+
+        private bool _addToPlayerLoop;
 
         protected override void OnCreate()
         {
@@ -67,47 +81,8 @@ namespace SimulationControl
 
             _simulationWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
             _simulationLoadSceneSystem = World.GetOrCreateSystem<LoadSimulationSceneSystem>();
-            _simulationWorld = _simulationWorldSystem.SimulationWorld;
-
-            _simPreInitGroup = _simulationWorld.CreateSystem<SimPreInitializationSystemGroup>();
-            _simInitGroup = _simulationWorld.CreateSystem<SimInitializationSystemGroup>();
-            _simSimGroup = _simulationWorld.CreateSystem<SimSimulationSystemGroup>();
-            _simPresGroup = _simulationWorld.CreateSystem<SimPresentationSystemGroup>();
-            _simPostPresGroup = _simulationWorld.CreateSystem<SimPostPresentationSystemGroup>();
-
-            // pre init group (not visible in EntityDebugger for some reason ...)
-            _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemEnd>());
-            _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<UpdateSimulationTimeSystem>());
-            _simPreInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<InitializeRandomSeedSystem>());
-
-            // init group
-            _simInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<BeginInitializationEntityCommandBufferSystem>());
-            _simInitGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<EndInitializationEntityCommandBufferSystem>());
-
-            // sim group
-            _simSimGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<BeginSimulationEntityCommandBufferSystem>());
-            _simSimGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<EndSimulationEntityCommandBufferSystem>());
-
-            // pres group
-            _simPresGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<BeginPresentationEntityCommandBufferSystem>());
-
-            // post pres
-            _simPostPresGroup.AddSystemToUpdateList(_simulationWorld.CreateSystem<ChangeDetectionSystemBegin>());
-
-
-            var simSystemTypes = TypeUtility.GetTypesDerivedFrom(typeof(ISimSystem)).Where(t => !t.IsAbstract);
-
-            AddSystemsToRootLevelSystemGroups(_simulationWorld, simSystemTypes);
-
-            //_simPreInitGroup.SortSystemUpdateList();
-            //_simInitGroup.SortSystemUpdateList();
-            //_simSimGroup.SortSystemUpdateList();
-            //_simPresGroup.SortSystemUpdateList();
 
             _viewGroup = World.GetOrCreateSystem<ViewSystemGroup>(); // system add & sort is done inside
-
-            _updatePlayerLoop = true;
-
 
 #if DEBUG
             s_commandInstance = this;
@@ -124,15 +99,56 @@ namespace SimulationControl
             base.OnDestroy();
         }
 
+        public void RemoveFromPlayerLoop(World simWorld)
+        {
+            ScriptBehaviourUpdateOrderEx.RemoveWorldSystemGroupsIntoPlayerLoop(simWorld, PlayerLoop.GetCurrentPlayerLoop());
+            _inPlayerLoop = false;
+            _addToPlayerLoop = false;
+        }
+
+        public void CreateSimSystemsAndAddToPlayerLoop(World simWorld)
+        {
+            _simPreInitGroup = simWorld.CreateSystem<SimPreInitializationSystemGroup>();
+            _simInitGroup = simWorld.CreateSystem<SimInitializationSystemGroup>();
+            _simSimGroup = simWorld.CreateSystem<SimSimulationSystemGroup>();
+            _simPresGroup = simWorld.CreateSystem<SimPresentationSystemGroup>();
+            _simPostPresGroup = simWorld.CreateSystem<SimPostPresentationSystemGroup>();
+
+            // pre init group (not visible in EntityDebugger for some reason ...)
+            _simPreInitGroup.AddSystemToUpdateList(simWorld.CreateSystem<ChangeDetectionSystemEnd>());
+            _simPreInitGroup.AddSystemToUpdateList(simWorld.CreateSystem<UpdateSimulationTimeSystem>());
+            _simPreInitGroup.AddSystemToUpdateList(simWorld.CreateSystem<InitializeRandomSeedSystem>());
+
+            // init group
+            _simInitGroup.AddSystemToUpdateList(simWorld.CreateSystem<BeginInitializationEntityCommandBufferSystem>());
+            _simInitGroup.AddSystemToUpdateList(simWorld.CreateSystem<EndInitializationEntityCommandBufferSystem>());
+
+            // sim group
+            _simSimGroup.AddSystemToUpdateList(simWorld.CreateSystem<BeginSimulationEntityCommandBufferSystem>());
+            _simSimGroup.AddSystemToUpdateList(simWorld.CreateSystem<EndSimulationEntityCommandBufferSystem>());
+
+            // pres group
+            _simPresGroup.AddSystemToUpdateList(simWorld.CreateSystem<BeginPresentationEntityCommandBufferSystem>());
+
+            // post pres
+            _simPostPresGroup.AddSystemToUpdateList(simWorld.CreateSystem<ChangeDetectionSystemBegin>());
+
+            AddSystemsToRootLevelSystemGroups(simWorld, AllSimSystemTypes);
+
+            _addToPlayerLoop = true;
+        }
+
         protected override void OnUpdate()
         {
-            if (_updatePlayerLoop)
+            if (_addToPlayerLoop)
             {
                 // !! IMPORTANT !!
                 // Even if we update the simulation manually, we have to add our ComponentSystemGroups to the player loop if we want them to
                 // show up in the EntityDebugger window.
-                ScriptBehaviourUpdateOrderEx.AddWorldSystemGroupsIntoPlayerLoop(_simulationWorld, PlayerLoop.GetCurrentPlayerLoop());
-                _updatePlayerLoop = false;
+                // TODO: remove old world from player loop
+                ScriptBehaviourUpdateOrderEx.AddWorldSystemGroupsIntoPlayerLoop(_simulationWorldSystem.SimulationWorld, PlayerLoop.GetCurrentPlayerLoop());
+                _inPlayerLoop = true;
+                _addToPlayerLoop = false;
             }
 
 
@@ -143,7 +159,6 @@ namespace SimulationControl
                 if (!CanTick)
                     break;
 
-
                 IsTicking = true;
 
                 SimTickData tick = AvailableTicks.First();
@@ -151,8 +166,8 @@ namespace SimulationControl
 
                 Log.Info(SimulationIO.LogChannel, $"Begin sim tick '{tick.ExpectedNewTickId}' with {tick.InputSubmissions.Count} inputs.");
 
-                _simulationWorld.TickInputs = tick.ToSimInputArray();
-                _simulationWorld.ExpectedNewTickId = tick.ExpectedNewTickId;
+                _simulationWorldSystem.SimulationWorld.TickInputs = tick.ToSimInputArray();
+                _simulationWorldSystem.SimulationWorld.ExpectedNewTickId = tick.ExpectedNewTickId;
 
                 ManualUpdate(_simPreInitGroup);
                 ManualUpdate(_simInitGroup);
@@ -169,7 +184,7 @@ namespace SimulationControl
 
                 SimulationTicked?.Invoke(tick);
 
-                _simulationWorld.TickInputs = null;
+                _simulationWorldSystem.SimulationWorld.TickInputs = null;
 
                 IsTicking = false;
             }
@@ -305,6 +320,7 @@ namespace SimulationControl
 #if DEBUG
         private bool _isPausedByCmd = false;
         private static TickSimulationSystem s_commandInstance;
+
         [ConsoleCommand("Sim.Pause", "Pause the simulation playback", EnabledByDefault = false)]
         private static void Cmd_SimPause()
         {
@@ -320,6 +336,7 @@ namespace SimulationControl
             }
         }
 #endif
+
 #if !UNITY_DOTSPLAYER
         static class ScriptBehaviourUpdateOrderEx
         {
@@ -335,21 +352,22 @@ namespace SimulationControl
                 if (world != null)
                 {
                     // Insert the root-level systems into the appropriate PlayerLoopSystem subsystems:
-                    for (var i = 0; i < playerLoop.subSystemList.Length; ++i)
+                    PlayerLoopSystem[] roots = playerLoop.subSystemList;
+                    for (var i = 0; i < roots.Length; ++i)
                     {
-                        if (playerLoop.subSystemList[i].type == typeof(Update))
+                        if (roots[i].type == typeof(Update))
                         {
-                            playerLoop.subSystemList[i].subSystemList = AddSystem<SimSimulationSystemGroup>(world, playerLoop.subSystemList[i].subSystemList);
+                            roots[i].subSystemList = AddSystem<SimSimulationSystemGroup>(world, roots[i].subSystemList);
                         }
-                        else if (playerLoop.subSystemList[i].type == typeof(PreLateUpdate))
+                        else if (roots[i].type == typeof(PreLateUpdate))
                         {
-                            playerLoop.subSystemList[i].subSystemList = AddSystem<SimPresentationSystemGroup>(world, playerLoop.subSystemList[i].subSystemList);
-                            playerLoop.subSystemList[i].subSystemList = AddSystem<SimPostPresentationSystemGroup>(world, playerLoop.subSystemList[i].subSystemList);
+                            roots[i].subSystemList = AddSystem<SimPresentationSystemGroup>(world, roots[i].subSystemList);
+                            roots[i].subSystemList = AddSystem<SimPostPresentationSystemGroup>(world, roots[i].subSystemList);
                         }
-                        else if (playerLoop.subSystemList[i].type == typeof(Initialization))
+                        else if (roots[i].type == typeof(Initialization))
                         {
-                            playerLoop.subSystemList[i].subSystemList = AddSystem<SimPreInitializationSystemGroup>(world, playerLoop.subSystemList[i].subSystemList);
-                            playerLoop.subSystemList[i].subSystemList = AddSystem<SimInitializationSystemGroup>(world, playerLoop.subSystemList[i].subSystemList);
+                            roots[i].subSystemList = AddSystem<SimPreInitializationSystemGroup>(world, roots[i].subSystemList);
+                            roots[i].subSystemList = AddSystem<SimInitializationSystemGroup>(world, roots[i].subSystemList);
                         }
                     }
                 }
@@ -362,6 +380,7 @@ namespace SimulationControl
             {
                 return InsertSystem<T>(world, oldArray, oldArray.Length);
             }
+
             static PlayerLoopSystem[] InsertSystem<T>(World world, PlayerLoopSystem[] oldArray, int insertIndex)
                 where T : ComponentSystemBase
             {
@@ -381,11 +400,70 @@ namespace SimulationControl
 
                     newArray[n] = oldArray[o];
                     ++o;
-
                 }
+
                 ScriptBehaviourUpdateOrder.InsertManagerIntoSubsystemList<T>(newArray, insertIndex, world.GetOrCreateSystem<T>());
 
                 return newArray;
+            }
+
+            // NEW
+            public static void RemoveWorldSystemGroupsIntoPlayerLoop(World world, PlayerLoopSystem? existingPlayerLoop = null)
+            {
+                PlayerLoopSystem playerLoop = existingPlayerLoop ?? PlayerLoop.GetDefaultPlayerLoop();
+
+                if (world != null)
+                {
+                    PlayerLoopSystem[] roots = playerLoop.subSystemList;
+                    for (var i = 0; i < roots.Length; ++i)
+                    {
+                        if (roots[i].type == typeof(Update))
+                        {
+                            roots[i].subSystemList = RemoveSystem<SimSimulationSystemGroup>(world, roots[i].subSystemList);
+                        }
+                        else if (roots[i].type == typeof(PreLateUpdate))
+                        {
+                            roots[i].subSystemList = RemoveSystem<SimPresentationSystemGroup>(world, roots[i].subSystemList);
+                            roots[i].subSystemList = RemoveSystem<SimPostPresentationSystemGroup>(world, roots[i].subSystemList);
+                        }
+                        else if (roots[i].type == typeof(Initialization))
+                        {
+                            roots[i].subSystemList = RemoveSystem<SimPreInitializationSystemGroup>(world, roots[i].subSystemList);
+                            roots[i].subSystemList = RemoveSystem<SimInitializationSystemGroup>(world, roots[i].subSystemList);
+                        }
+                    }
+                }
+
+                PlayerLoop.SetPlayerLoop(playerLoop);
+            }
+            // NEW
+            static PlayerLoopSystem[] RemoveSystem<T>(World world, PlayerLoopSystem[] oldArray)
+                where T : ComponentSystemBase
+            {
+                T system = world.GetExistingSystem<T>();
+                if (system == null)
+                    return oldArray;
+
+                int removeIndex = -1;
+                for (int i = 0; i < oldArray.Length; i++)
+                {
+                    var target = oldArray[i].updateDelegate?.Target;
+                    if (target is ScriptBehaviourUpdateOrder.DummyDelegateWrapper dummyDelegateWrapper
+                        && dummyDelegateWrapper.System == system)
+                    {
+                        removeIndex = i;
+                        break;
+                    }
+                }
+
+                if (removeIndex != -1)
+                {
+                    List<PlayerLoopSystem> newList = new List<PlayerLoopSystem>(oldArray);
+                    newList.RemoveAt(removeIndex);
+                    return newList.ToArray();
+                }
+
+                return oldArray;
             }
         }
 #endif

@@ -711,11 +711,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4710473765759099402, guid: 3e45c6ae99f0a01488c0713e9a526166,
-        type: 3}
-      propertyPath: m_Name
-      value: _Lights (Preview)_
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e45c6ae99f0a01488c0713e9a526166, type: 3}
 --- !u!1001 &216956157
@@ -1608,11 +1603,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7905076531735690258, guid: b42c20577c7fc7243959afcb5df2d9e4,
-        type: 3}
-      propertyPath: m_Name
-      value: BE_Grid_Prototype3
-      objectReference: {fileID: 0}
     - target: {fileID: 7905076531735690271, guid: b42c20577c7fc7243959afcb5df2d9e4,
         type: 3}
       propertyPath: m_LocalPosition.x
