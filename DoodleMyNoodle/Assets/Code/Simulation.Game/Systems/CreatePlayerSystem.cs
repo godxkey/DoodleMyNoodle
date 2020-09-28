@@ -81,10 +81,10 @@ public class CreatePlayerSystem : SimComponentSystem
             .WithAll<Controllable>()
             .ForEach((Entity controllableEntity) =>
         {
-            Log.Info($"potential uncontrolled pawn ({controllableEntity}) ?");
+            //Log.Info($"potential uncontrolled pawn ({controllableEntity}) ?");
             if (!CommonReads.IsPawnControlled(Accessor, controllableEntity))
             {
-                Log.Info($"Found uncontrolled pawn ({controllableEntity})!");
+                //Log.Info($"Found uncontrolled pawn ({controllableEntity})!");
                 uncontrolledEntity = controllableEntity;
                 return;
             }
