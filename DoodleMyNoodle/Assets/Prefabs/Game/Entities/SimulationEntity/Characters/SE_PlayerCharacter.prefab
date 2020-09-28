@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 896643173390631396}
   - component: {fileID: 6657921186239294675}
   - component: {fileID: 947375423039552990}
+  - component: {fileID: 5836473084365462713}
   m_Layer: 0
   m_Name: SE_PlayerCharacter
   m_TagString: Untagged
@@ -134,7 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f84166a4094a674e86797424865573c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxValue: 8
+  MaxValue: 5
   StartGameAtMaxValue: 1
   StartValue: 4
 --- !u!114 &947375423039552990
@@ -153,3 +154,16 @@ MonoBehaviour:
   InitialItems:
   - {fileID: 5742253346417087641, guid: d170c0eb81b945e458f35303555d6027, type: 3}
   - {fileID: 5742253346417087641, guid: 85996829317b3aa448e8ac3761770021, type: 3}
+--- !u!114 &5836473084365462713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951368162375339519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b8c4faec082ffb4aa6805710d590824, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StateID: 0

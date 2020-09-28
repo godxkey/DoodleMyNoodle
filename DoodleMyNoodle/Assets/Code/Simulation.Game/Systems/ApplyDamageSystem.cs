@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -7,6 +8,13 @@ using static Unity.Mathematics.math;
 public struct DamageAppliedEventData : IComponentData
 {
     public Entity EntityDamaged;
+    public int DamageApplied;
+}
+
+public struct HealingAppliedEventData : IComponentData
+{
+    public Entity EntityHealed;
+    public int HealApplied;
 }
 
 public struct DamageToApplySingletonTag : IComponentData
@@ -23,22 +31,26 @@ public struct DamageToApplyData : IBufferElementData
 [AlwaysUpdateSystem]
 public class ApplyDamageSystem : SimComponentSystem
 {
-    private EntityQuery _eventsEntityQuery;
+    private EntityQuery _damageEventsEntityQuery;
+    private EntityQuery _healingEventsEntityQuery;
 
-    private List<Entity> _damagedEntities = new List<Entity>();
-    private List<Entity> _healedEntities = new List<Entity>();
+    private List<DamageAppliedEventData> _damagedEventData = new List<DamageAppliedEventData>();
+    private List<HealingAppliedEventData> _healedEntities = new List<HealingAppliedEventData>();
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        _eventsEntityQuery = EntityManager.CreateEntityQuery(typeof(DamageAppliedEventData));
+        _damageEventsEntityQuery = EntityManager.CreateEntityQuery(typeof(DamageAppliedEventData));
+        _healingEventsEntityQuery = EntityManager.CreateEntityQuery(typeof(HealingAppliedEventData));
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        _eventsEntityQuery.Dispose();
+
+        _damageEventsEntityQuery.Dispose();
+        _healingEventsEntityQuery.Dispose();
     }
 
     public static DynamicBuffer<DamageToApplyData> GetDamageToApplySingletonBuffer(ISimWorldReadWriteAccessor accessor)
@@ -54,35 +66,41 @@ public class ApplyDamageSystem : SimComponentSystem
     protected override void OnUpdate()
     {
         // Clear Damage Applied Events
-        EntityManager.DestroyEntity(_eventsEntityQuery);
+        EntityManager.DestroyEntity(_damageEventsEntityQuery);
+        EntityManager.DestroyEntity(_healingEventsEntityQuery);
 
         DynamicBuffer<DamageToApplyData> DamageToApplyBuffer = GetDamageToApplySingletonBuffer(Accessor);
 
-        _damagedEntities.Clear();
+        _damagedEventData.Clear();
         _healedEntities.Clear();
 
         foreach (DamageToApplyData damageData in DamageToApplyBuffer)
         {
             if (damageData.Amount > 0)
             {
-                ProcessDamage(damageData.InstigatorPawn, damageData.TargetPawn, damageData.Amount, _damagedEntities);
+                ProcessDamage(damageData.InstigatorPawn, damageData.TargetPawn, damageData.Amount, _damagedEventData);
             }
             else if (damageData.Amount < 0)
             {
-                ProcessHeal(damageData.InstigatorPawn, damageData.TargetPawn, -damageData.Amount, _healedEntities);
+                ProcessHeal(damageData.InstigatorPawn, damageData.TargetPawn, Math.Abs(damageData.Amount), _healedEntities);
             }
         }
 
         DamageToApplyBuffer.Clear();
 
         // We save entities damaged and do this here because we need to clear the buffer and it's a simulation changed
-        foreach (Entity entity in _damagedEntities)
+        foreach (DamageAppliedEventData damageAppliedEventData in _damagedEventData)
         {
-            EntityManager.CreateEventEntity(new DamageAppliedEventData() { EntityDamaged = entity });
+            EntityManager.CreateEventEntity(damageAppliedEventData);
+        }
+
+        foreach (HealingAppliedEventData healAppliedEventData in _healedEntities)
+        {
+            EntityManager.CreateEventEntity(healAppliedEventData);
         }
     }
 
-    private void ProcessDamage(Entity instigator, Entity target, int amount, List<Entity> damagedEntities)
+    private void ProcessDamage(Entity instigator, Entity target, int amount, List<DamageAppliedEventData> damagedEntities)
     {
         int remainingDamage = amount;
         bool damageHasBeenApplied = false;
@@ -112,16 +130,16 @@ public class ApplyDamageSystem : SimComponentSystem
         // Handle damaged entity for feedbacks
         if (damageHasBeenApplied)
         {
-            damagedEntities.Add(target);
+            damagedEntities.Add(new DamageAppliedEventData() { EntityDamaged = target, DamageApplied = amount } );
         }
     }
 
-    private void ProcessHeal(Entity instigator, Entity target, int amount, List<Entity> healedEntities)
+    private void ProcessHeal(Entity instigator, Entity target, int amount, List<HealingAppliedEventData> healedEntities)
     {
         if (EntityManager.HasComponent<Health>(target))
         {
             CommonWrites.ModifyStatInt<Health>(Accessor, target, amount);
-            healedEntities.Add(target);
+            healedEntities.Add(new HealingAppliedEventData() { EntityHealed = target, HealApplied = amount });
         }
     }
 }
