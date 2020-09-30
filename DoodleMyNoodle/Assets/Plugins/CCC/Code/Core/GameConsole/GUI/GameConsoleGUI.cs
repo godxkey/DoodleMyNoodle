@@ -29,6 +29,7 @@ namespace GameConsoleInterals
         [SerializeField] private TMP_Text _buildIdText = null;
         [SerializeField] private GameConsoleGUISuggestionList _suggestionList = null;
         [SerializeField] private GameConsoleGUILines _lines = null;
+        [SerializeField] private CanvasScaler _canvasScaler;
         //[SerializeField] private GameObject _smallBackground = null;
         //[SerializeField] private GameObject _fullBackground = null;
         //[SerializeField] private GameObject _channels = null;
@@ -153,6 +154,8 @@ namespace GameConsoleInterals
             {
                 return;
             }
+
+            _canvasScaler.scaleFactor = s_consoleScale * 1.36f; // 1.36 being the 'default' scale
 
             // This is to prevent clicks outside input field from removing focus
             _inputField.ActivateInputField();
@@ -317,5 +320,20 @@ namespace GameConsoleInterals
             }
             return false;
         }
+
+
+        #region Console Scale
+        private static float s_consoleScale = 1;
+
+        [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
+        public static float ConsoleScale
+        {
+            get => s_consoleScale;
+            set
+            {
+                s_consoleScale = Mathf.Clamp(value, 0.25f, 100f);
+            }
+        }
+        #endregion
     }
 }

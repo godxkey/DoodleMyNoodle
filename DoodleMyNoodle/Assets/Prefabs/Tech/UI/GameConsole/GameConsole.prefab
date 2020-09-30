@@ -1651,9 +1651,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 2
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
+  m_ScaleFactor: 1.36
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 1
@@ -1695,6 +1695,7 @@ MonoBehaviour:
   _buildIdText: {fileID: 8187067547739769820}
   _suggestionList: {fileID: 2024063941429584961}
   _lines: {fileID: 682115389228825533}
+  _canvasScaler: {fileID: 3672597210934478894}
   _toggleConsoleKeys: 0b0100001a0100007e000000
   _submitCommandKeys: 0d0000000f010000
   _kbScrollSpeedMin: 30
