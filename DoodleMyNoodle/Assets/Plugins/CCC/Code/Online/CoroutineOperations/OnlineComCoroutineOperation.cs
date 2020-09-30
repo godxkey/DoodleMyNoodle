@@ -8,6 +8,8 @@ namespace CCC.Online.DataTransfer
         readonly protected SessionInterface _sessionInterface;
         readonly protected INetworkInterfaceConnection _connection;
 
+        public INetworkInterfaceConnection Connection => _connection;
+
         private bool _preExecutedCalled = false;
 
         protected OnlineComCoroutineOperation(SessionInterface sessionInterface, INetworkInterfaceConnection destination)

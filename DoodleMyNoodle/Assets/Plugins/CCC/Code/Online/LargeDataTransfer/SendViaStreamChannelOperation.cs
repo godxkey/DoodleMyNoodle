@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngineX;
 
 namespace CCC.Online.DataTransfer
 {
@@ -100,6 +101,7 @@ namespace CCC.Online.DataTransfer
                 CurrentState = TransferState.SendingData;
                 var streamChannel = _sessionInterface.NetworkInterface.GetStreamChannel(StreamChannelType.LargeDataTransfer);
 
+                _sessionInterface.NetworkInterface.StreamDataAborted += OnStreamAborted;
                 _connection.StreamBytes(streamChannel, _data);
 
                 // listen for progress update
@@ -122,9 +124,18 @@ namespace CCC.Online.DataTransfer
             TerminateWithSuccess();
         }
 
+        private void OnStreamAborted(INetworkInterfaceConnection connection, IStreamChannel channel, ulong streamID)
+        {
+            if (connection == Connection && channel.Type == StreamChannelType.LargeDataTransfer)
+            {
+                _sessionInterface.NetworkInterface.StreamDataAborted -= OnStreamAborted;
+                TerminateWithNormalFailure("Stream aborted");
+            }
+        }
+
         private void OnProgressUpdate(NetMessageViaStreamUpdate message, INetworkInterfaceConnection connection)
         {
-            if(connection == _connection)
+            if (connection == _connection)
             {
                 Progress = message.Progress;
             }
@@ -134,6 +145,7 @@ namespace CCC.Online.DataTransfer
         {
             base.OnTerminate();
 
+            _sessionInterface.NetworkInterface.StreamDataAborted -= OnStreamAborted;
             _sessionInterface.UnregisterNetMessageReceiver<NetMessageViaStreamUpdate>(OnProgressUpdate);
             CurrentState = TransferState.Terminated;
 

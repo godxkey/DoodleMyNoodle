@@ -8,6 +8,7 @@ namespace CCC.Operations
 {
     public abstract class CoroutineOperation
     {
+        public bool HasStarted { get; private set; }
         public bool IsRunning { get; private set; }
         public bool HasSucceeded { get; private set; }
         public bool HasFailed => _hasRun && !IsRunning && !HasSucceeded;
@@ -48,6 +49,7 @@ namespace CCC.Operations
             }
 
             IsRunning = true;
+            HasStarted = true;
             _hasRun = true;
 
             // Start operation routine
