@@ -8,16 +8,37 @@ using UnityEngineX;
 
 public class Links : MonoBehaviour
 {
-    [MenuItem("Links/Documentation/Project Dependencies")]
+    [MenuItem("Links/Documentation/Project Dependencies", priority = 1)]
     static void OpenProjectDependenciesDocumentation()
     {
-        Process.Start("https://github.com/CCC-Development/DoodleMyNoodle/tree/master/Documentation/ProjectDependencies/ProjectDependencies.md");
+        OpenWebPath("https://github.com/CCC-Development/DoodleMyNoodle/tree/master/Documentation/ProjectDependencies/ProjectDependencies.md");
     }
 
-    [MenuItem("Links/Presistent Data Path #&p")]
+    [MenuItem("Links/Git Hub", priority = 2)]
+    static void OpenGitHubPage()
+    {
+        OpenWebPath("https://github.com/CCC-Development/DoodleMyNoodle");
+    }
+
+    [MenuItem("Links/Player Logs", priority = 3)]
     public static void OpenPersistentDataPath()
     {
-        string path = Application.persistentDataPath;
+        OpenDirectory(Application.persistentDataPath);
+    }
+
+    [MenuItem("Links/Editor Logs", priority = 4)]
+    public static void OpenEditorLogs()
+    {
+        OpenDirectory(Path.GetDirectoryName(Application.consoleLogPath));
+    }
+
+    private static void OpenWebPath(string path)
+    {
+        Process.Start(path);
+    }
+
+    private static void OpenDirectory(string path)
+    {
         path = path.Replace('/', '\\');
         if (Directory.Exists(path))
         {
