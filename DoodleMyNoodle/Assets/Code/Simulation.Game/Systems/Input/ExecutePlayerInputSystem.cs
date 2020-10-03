@@ -61,6 +61,7 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                 if(pawn != Entity.Null)
                 {
                     EntityManager.SetOrAddComponentData<DoodleId>(pawn, new DoodleId() { Guid = setPawnDoodleInput.DoodleId });
+                    EntityManager.SetOrAddComponentData<DoodleStartDirection>(pawn, new DoodleStartDirection() { IsLookingRight = setPawnDoodleInput.DoodleDirectionIsLookingRight });
                 }
                 break;
             }

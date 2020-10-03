@@ -270,3 +270,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ValueBar: {fileID: 3322073170542532432}
+  BarDisplay: {fileID: 8106526461908045610}

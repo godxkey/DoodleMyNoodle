@@ -6,11 +6,13 @@ using UnityEngineX;
 public class SimPlayerInputSetPawnDoodle : SimPlayerInput
 {
     public Guid DoodleId;
+    public bool DoodleDirectionIsLookingRight;
 
     public SimPlayerInputSetPawnDoodle() { } // needed for net serializer
 
-    public SimPlayerInputSetPawnDoodle(Guid doodleId)
+    public SimPlayerInputSetPawnDoodle(Guid doodleId, bool IsLookingRight)
     {
         DoodleId = doodleId;
+        DoodleDirectionIsLookingRight = IsLookingRight;
     }
 }
