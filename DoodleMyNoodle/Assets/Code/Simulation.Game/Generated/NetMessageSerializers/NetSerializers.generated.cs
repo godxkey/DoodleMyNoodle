@@ -712,6 +712,7 @@ public static class StaticNetSerializer_SimPlayerInputSetPawnDoodle
     {
         int result = 0;
         result += StaticNetSerializer_System_Guid.GetNetBitSize(ref obj.DoodleId);
+        result += StaticNetSerializer_System_Boolean.GetNetBitSize(ref obj.DoodleDirectionIsLookingRight);
         result += StaticNetSerializer_PersistentId.GetNetBitSize(ref obj.SimPlayerId);
         result += StaticNetSerializer_SimPlayerInput.GetNetBitSize(obj);
         return result;
@@ -730,6 +731,7 @@ public static class StaticNetSerializer_SimPlayerInputSetPawnDoodle
     public static void NetSerialize(SimPlayerInputSetPawnDoodle obj, BitStreamWriter writer)
     {
         StaticNetSerializer_System_Guid.NetSerialize(ref obj.DoodleId, writer);
+        StaticNetSerializer_System_Boolean.NetSerialize(ref obj.DoodleDirectionIsLookingRight, writer);
         StaticNetSerializer_PersistentId.NetSerialize(ref obj.SimPlayerId, writer);
         StaticNetSerializer_SimPlayerInput.NetSerialize(obj, writer);
     }
@@ -747,6 +749,7 @@ public static class StaticNetSerializer_SimPlayerInputSetPawnDoodle
     public static void NetDeserialize(SimPlayerInputSetPawnDoodle obj, BitStreamReader reader)
     {
         StaticNetSerializer_System_Guid.NetDeserialize(ref obj.DoodleId, reader);
+        StaticNetSerializer_System_Boolean.NetDeserialize(ref obj.DoodleDirectionIsLookingRight, reader);
         StaticNetSerializer_PersistentId.NetDeserialize(ref obj.SimPlayerId, reader);
         StaticNetSerializer_SimPlayerInput.NetDeserialize(obj, reader);
     }
