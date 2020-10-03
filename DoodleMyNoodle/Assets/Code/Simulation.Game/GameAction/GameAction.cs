@@ -228,7 +228,7 @@ public abstract class GameAction
         // reduce instigator Health
         if (accessor.TryGetComponentData(context.Entity, out ItemHealthPointCostData itemHealthPointCost))
         {
-            CommonWrites.ModifyStatInt<Health>(accessor, context.InstigatorPawn, -itemHealthPointCost.Value);
+            CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, itemHealthPointCost.Value);
         }
 
         // Cooldown

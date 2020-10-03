@@ -1,3 +1,4 @@
+using CCC.InspectorDisplay;
 using Unity.Entities;
 using UnityEngine;
 
@@ -6,7 +7,9 @@ using UnityEngine;
 public class ItemCooldownDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemTimeCooldownData>
 {
     public bool UseTime = true;
+    [ShowIf("UseTime")]
     public int TimeCooldown = 1;
+    [HideIf("UseTime")]
     public int TurnCooldown = 1;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

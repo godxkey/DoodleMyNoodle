@@ -18,8 +18,8 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     private Color _startBackgroundColor;
     private ItemVisualInfo _currentItem;
-    public Action OnItemLeftClicked; // index of item in list, not used here
-    public Action OnItemRightClicked; // index of item in list, not used here
+    private Action _onItemLeftClicked; // index of item in list, not used here
+    private Action _onItemRightClicked; // index of item in list, not used here
 
     private bool _mouseInside = false;
 
@@ -43,8 +43,8 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
     public virtual void UpdateCurrentItemSlot(ItemVisualInfo item, Action onItemLeftClicked, Action onItemRightClicked, Entity owner, int stacks = -1)
     {
         _currentItem = item;
-        OnItemLeftClicked = onItemLeftClicked;
-        OnItemRightClicked = onItemRightClicked;
+        _onItemLeftClicked = onItemLeftClicked;
+        _onItemRightClicked = onItemRightClicked;
         _itemsOwner = owner;
 
         if (stacks <= 0)
@@ -86,7 +86,6 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
         Background.color = _startBackgroundColor;
         TooltipDisplay.Instance.DeactivateToolTipDisplay();
-        ItemContextMenuDisplaySystem.Instance.DeactivateContextMenuDisplay();
     }
 
     public void ItemSlotClicked()
@@ -96,12 +95,12 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     public virtual void PrimaryUseItemSlot()
     {
-        OnItemLeftClicked?.Invoke();
+        _onItemLeftClicked?.Invoke();
     }
 
     public virtual void SecondaryUseItemSlot()
     {
-        OnItemRightClicked?.Invoke();
+        _onItemRightClicked?.Invoke();
     }
 
     public ItemVisualInfo GetItemInfoInSlot()

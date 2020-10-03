@@ -11,13 +11,13 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
     [SerializeField] private GameObject _itemSlotPrefab;
     [SerializeField] private Transform _itemSlotContainer;
 
-    [SerializeField] private GameObject _takeButtonPrefab;
-    [SerializeField] private Transform _takeButtonContainer;
+    //[SerializeField] private GameObject _takeButtonPrefab;
+    //[SerializeField] private Transform _takeButtonContainer;
 
     [SerializeField] private GameObject _bundleDisplayContainer;
 
     private List<ItemSlot> _currentItemSlots = new List<ItemSlot>();
-    private List<Button> _currentTakeButtons = new List<Button>();
+    //private List<Button> _currentTakeButtons = new List<Button>();
 
     private Entity _lastInventoryEntity = Entity.Null;
 
@@ -28,6 +28,8 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
         base.Awake();
 
         _bundleDisplayContainer.SetActive(false);
+
+        _itemSlotContainer.GetComponentsInChildren(_currentItemSlots);
     }
 
     protected override void OnGamePresentationUpdate()
@@ -62,33 +64,41 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                         ItemSlot itemSlot = newItemSlot.GetComponent<ItemSlot>();
                         _currentItemSlots.Add(itemSlot);
 
-                        // - Instantiate take button
-                        GameObject newTakeButton = Instantiate(_takeButtonPrefab, _takeButtonContainer);
-                        Button button = newTakeButton.GetComponent<Button>();
-                        _currentTakeButtons.Add(button);
+                        //// - Instantiate take button
+                        //GameObject newTakeButton = Instantiate(_takeButtonPrefab, _takeButtonContainer);
+                        //Button button = newTakeButton.GetComponent<Button>();
+                        //_currentTakeButtons.Add(button);
 
-                        // - Add onClick listener on button
-                        int itemIndex = i;
-                        button.onClick.AddListener(() =>
-                        {
-                            // when clicking on Take Item, we send a sim input
-                            SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, bundleTilePosition);
-                            SimWorld.SubmitInput(simInputEquipItem);
-                        });
+                        //// - Add onClick listener on button
+                        //int itemIndex = i;
+                        //button.onClick.AddListener(() =>
+                        //{
+                        //    // when clicking on Take Item, we send a sim input
+                        //    SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, bundleTilePosition);
+                        //    SimWorld.SubmitInput(simInputEquipItem);
+                        //});
                     }
 
                     // Update Item Slot Stacks
                     if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
                     {
+                        int itemIndex = i;
                         ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
+
+                        Action onClick = () =>
+                        {
+                            // when clicking on Take Item, we send a sim input
+                            SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, bundleTilePosition);
+                            SimWorld.SubmitInput(simInputEquipItem);
+                        };
 
                         if (SimWorld.TryGetComponentData(item.ItemEntity, out ItemStackableData itemStackableData))
                         {
-                            _currentItemSlots[i].UpdateCurrentItemSlot(itemInfo, null, null, _lastInventoryEntity, itemStackableData.Value);
+                            _currentItemSlots[i].UpdateCurrentItemSlot(itemInfo, onClick, null, _lastInventoryEntity, itemStackableData.Value);
                         }
                         else
                         {
-                            _currentItemSlots[i].UpdateCurrentItemSlot(itemInfo, null, null, _lastInventoryEntity);
+                            _currentItemSlots[i].UpdateCurrentItemSlot(itemInfo, onClick, null, _lastInventoryEntity);
                         }
                     }
                 }
@@ -98,8 +108,8 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                     Destroy(_currentItemSlots[r].gameObject);
                     _currentItemSlots.RemoveAt(r);
 
-                    Destroy(_currentTakeButtons[r].gameObject);
-                    _currentTakeButtons.RemoveAt(r);
+                    //Destroy(_currentTakeButtons[r].gameObject);
+                    //_currentTakeButtons.RemoveAt(r);
                 }
             }
             else
@@ -134,12 +144,12 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
             Destroy(_currentItemSlots[i].gameObject);
         }
 
-        for (int i = 0; i < _currentTakeButtons.Count; i++)
-        {
-            Destroy(_currentTakeButtons[i].gameObject);
-        }
+        //for (int i = 0; i < _currentTakeButtons.Count; i++)
+        //{
+        //    Destroy(_currentTakeButtons[i].gameObject);
+        //}
 
         _currentItemSlots.Clear();
-        _currentTakeButtons.Clear();
+        //_currentTakeButtons.Clear();
     }
 }

@@ -16,6 +16,6 @@ MonoBehaviour:
   ItemPrefab: {fileID: 2784291058542494111, guid: 7b860ab90f956904984f188e0110cc2c,
     type: 3}
   Icon: {fileID: 21300000, guid: fb0330350953e6b498e483d0e0671dc5, type: 3}
-  Name: Fireball
+  Name: Fire Invocation
   Rarity: 4
   EffectDescription: Explode a location

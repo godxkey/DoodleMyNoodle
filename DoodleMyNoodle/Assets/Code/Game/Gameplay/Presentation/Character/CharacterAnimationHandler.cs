@@ -47,10 +47,10 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                         float idleStartY = _spriteStartPos.y;
                         float idleEndY = idleStartY + IdleHeight;
 
-                        _currentSequence.AppendInterval(UnityEngine.Random.value); // so not everything floats at the same time lol)
                         _currentSequence.Append(SpriteTransform.DOLocalMoveY(idleEndY, (float)animationData.TotalDuration / 2).SetEase(Ease.InOutQuad));
                         _currentSequence.Append(SpriteTransform.DOLocalMoveY(idleStartY, (float)animationData.TotalDuration / 2).SetEase(Ease.InOutQuad));
                         _currentSequence.SetLoops(-1);
+                        _currentSequence.Goto(UnityEngine.Random.value * _currentSequence.Duration(includeLoops: false), andPlay: true);
 
                         break;
 
