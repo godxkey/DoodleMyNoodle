@@ -14,6 +14,7 @@ public class CharacterCreationScreen : GamePresentationBehaviour
     [SerializeField] private RawImage _doodlePreview;
     [SerializeField] private TMP_InputField _nameField;
     [SerializeField] private CharacterCreationStartingInventorySelection _characterStartKit;
+    [SerializeField] private Toggle _characterIsLookingRightToggle;
 
     private PlayerDoodleAsset _doodleAsset;
 
@@ -127,7 +128,7 @@ public class CharacterCreationScreen : GamePresentationBehaviour
             PlayerAssetManager.Instance.PublishAssetChanges(_doodleAsset.Guid);
 
             // Set doodle
-            SimPlayerInputSetPawnDoodle setPawnDoodleInput = new SimPlayerInputSetPawnDoodle(_doodleAsset.Guid);
+            SimPlayerInputSetPawnDoodle setPawnDoodleInput = new SimPlayerInputSetPawnDoodle(_doodleAsset.Guid, _characterIsLookingRightToggle.isOn);
             SimWorld.SubmitInput(setPawnDoodleInput);
         }
 
