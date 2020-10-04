@@ -79,19 +79,22 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
             Destroy(itemDescription.gameObject);
         }
 
-        Entity itemEntity = GetToolTipItemEntity(itemInfo.ID.GetSimAssetId(), itemOwner);
-        if(itemEntity != Entity.Null)
+        if (itemInfo.ID != null)
         {
-            _itemName.text = itemInfo.Name; // update title Text
-            UpdateToolTipDescription(itemInfo.EffectDescription, itemEntity, itemInfo.ItemPrefab);
-            UpdateTooltipColors(itemInfo.Rarity);
-            _tooltipShouldBeDisplayed = true;
+            Entity itemEntity = GetToolTipItemEntity(itemInfo.ID.GetSimAssetId(), itemOwner);
+            if (itemEntity != Entity.Null)
+            {
+                _itemName.text = itemInfo.Name; // update title Text
+                UpdateToolTipDescription(itemInfo.EffectDescription, itemEntity, itemInfo.ItemPrefab);
+                UpdateTooltipColors(itemInfo.Rarity);
+                _tooltipShouldBeDisplayed = true;
+            }
         }
     }
 
     public void DeactivateToolTipDisplay()
     {
-        if(_currentDelayedTooltipActivationCoroutine != null)
+        if (_currentDelayedTooltipActivationCoroutine != null)
         {
             StopCoroutine(_currentDelayedTooltipActivationCoroutine);
             _currentDelayedTooltipActivationCoroutine = null;
@@ -134,7 +137,7 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
 
     private void UpdateToolTipDescription(string description, Entity item, GameObject itemPrefab)
     {
-        if(item != Entity.Null)
+        if (item != Entity.Null)
         {
             // Order of appearance
             TryAddTooltipItemDescription<ItemDamageData>(item, itemPrefab);
@@ -149,7 +152,7 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         }
     }
 
-    private void TryAddTooltipItemDescription<TItem>(Entity itemEntity, GameObject itemPrefab) 
+    private void TryAddTooltipItemDescription<TItem>(Entity itemEntity, GameObject itemPrefab)
         where TItem : struct, IComponentData, IStatInt
     {
         IItemSettingDescription<TItem> itemAuth = itemPrefab.GetComponent<IItemSettingDescription<TItem>>();

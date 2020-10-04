@@ -24,11 +24,15 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
     private bool _mouseInside = false;
 
     private Entity _itemsOwner;
+    private bool _init;
 
-    private void Start()
+    private void InitIfNeeded()
     {
-        _startBackgroundColor = Background.color;
+        if (_init)
+            return;
+        _init = true;
 
+        _startBackgroundColor = Background.color;
         _itemSlotButton.onClick.AddListener(ItemSlotClicked);
     }
 
@@ -42,6 +46,8 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     public virtual void UpdateCurrentItemSlot(ItemVisualInfo item, Action onItemLeftClicked, Action onItemRightClicked, Entity owner, int stacks = -1)
     {
+        InitIfNeeded();
+
         _currentItem = item;
         _onItemLeftClicked = onItemLeftClicked;
         _onItemRightClicked = onItemRightClicked;

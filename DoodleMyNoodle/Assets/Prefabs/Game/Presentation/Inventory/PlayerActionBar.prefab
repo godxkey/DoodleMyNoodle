@@ -306,7 +306,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 60, y: 60}
+  m_CellSize: {x: 80, y: 80}
   m_Spacing: {x: 2, y: 2}
   m_Constraint: 1
   m_ConstraintCount: 2
@@ -634,6 +634,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9156637949601797488, guid: ab43f7e70c7b4084f97231bf6a9e63ce,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -2.9199219
+      objectReference: {fileID: 0}
+    - target: {fileID: 9156637949601797488, guid: ab43f7e70c7b4084f97231bf6a9e63ce,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.6399994
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab43f7e70c7b4084f97231bf6a9e63ce, type: 3}
@@ -994,6 +1004,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9156637949601797488, guid: ab43f7e70c7b4084f97231bf6a9e63ce,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -2.9199219
+      objectReference: {fileID: 0}
+    - target: {fileID: 9156637949601797488, guid: ab43f7e70c7b4084f97231bf6a9e63ce,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.6399994
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab43f7e70c7b4084f97231bf6a9e63ce, type: 3}

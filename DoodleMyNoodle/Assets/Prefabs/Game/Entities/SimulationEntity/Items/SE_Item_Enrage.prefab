@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a669d1574ca795458cd4e989e5d0dab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPointGain: -999
+  ActionPointGain: 999
 --- !u!114 &-5710973759074203198
 MonoBehaviour:
   m_ObjectHideFlags: 0
