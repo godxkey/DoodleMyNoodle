@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -448175739285880440}
   - component: {fileID: -4447897880707759495}
   - component: {fileID: 8201080054300536663}
+  - component: {fileID: 4927862035509104135}
   m_Layer: 0
   m_Name: SE_Item_CreateArcherMinion
   m_TagString: Untagged
@@ -130,3 +131,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Range: 1
+--- !u!114 &4927862035509104135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f9e0141aaa0bc44e941ec8d8c9e5b78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
