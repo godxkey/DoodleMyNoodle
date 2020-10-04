@@ -77,22 +77,20 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
 
                     if(_inventorySlots.Count > itemIndex)
                     {
-                        if (GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).CanBeUsedInContext(SimWorld, context))
+                        int stacks = -1;
+                        if (SimWorld.TryGetComponentData(item.ItemEntity, out ItemStackableData itemStackableData))
                         {
-                            int stacks = -1;
-                            if (SimWorld.TryGetComponentData(item.ItemEntity, out ItemStackableData itemStackableData))
-                            {
-                                stacks = itemStackableData.Value;
-                            }
-
-                            _inventorySlots[itemIndex].UpdateCurrentInventorySlot(itemInfo,
-                                                                                  itemIndex,
-                                                                                  InventorySlotShortcuts[itemIndex],
-                                                                                  onItemPrimaryActionUsedCallback,
-                                                                                  onItemSecondaryActionUsedCallback, 
-                                                                                  stacks);
+                            stacks = itemStackableData.Value;
                         }
-                        else
+
+                        _inventorySlots[itemIndex].UpdateCurrentInventorySlot(itemInfo,
+                                                                              itemIndex,
+                                                                              InventorySlotShortcuts[itemIndex],
+                                                                              onItemPrimaryActionUsedCallback,
+                                                                              onItemSecondaryActionUsedCallback,
+                                                                              stacks);
+
+                        if (!GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).CanBeUsedInContext(SimWorld, context))
                         {
                             _inventorySlots[itemIndex].UpdateDisplayAsUnavailable(item.ItemEntity);
                         }

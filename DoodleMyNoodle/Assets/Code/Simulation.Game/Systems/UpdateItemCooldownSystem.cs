@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
+[UpdateInGroup(typeof(PreAISystemGroup))]
 public class UpdateItemCooldownSystem : SimComponentSystem
 {
     protected override void OnUpdate()
@@ -22,12 +23,32 @@ public class UpdateItemCooldownSystem : SimComponentSystem
         if (HasSingleton<NewTurnEventData>())
         {
             Entities
-           .ForEach((Entity item, ref ItemCooldownTurnCounter cooldownCounter) =>
+           .ForEach((Entity pawnController, ref ControlledEntity controlledEntity) =>
            {
-               cooldownCounter.Value -= 1;
-               if (cooldownCounter.Value <= 0)
+               if (EntityManager.TryGetComponentData(pawnController, out Team currentTeam))
                {
-                   PostUpdateCommands.RemoveComponent<ItemCooldownTurnCounter>(item);
+                   if (currentTeam.Value == CommonReads.GetTurnTeam(Accessor))
+                   {
+                       Entity pawn = controlledEntity.Value;
+                       if (pawn != Entity.Null)
+                       {
+                           foreach (InventoryItemReference item in EntityManager.GetBufferReadOnly<InventoryItemReference>(pawn))
+                           {
+                               if (EntityManager.TryGetComponentData(item.ItemEntity, out ItemCooldownTurnCounter itemTurnCounter))
+                               {
+                                   itemTurnCounter.Value -= 1;
+                                   if (itemTurnCounter.Value <= 0)
+                                   {
+                                       PostUpdateCommands.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
+                                   }
+                                   else
+                                   {
+                                       EntityManager.SetComponentData(item.ItemEntity, new ItemCooldownTurnCounter() { Value = itemTurnCounter.Value });
+                                   }
+                               }
+                           }
+                       }
+                   }
                }
            });
         }
