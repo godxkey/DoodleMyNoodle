@@ -16,6 +16,6 @@ MonoBehaviour:
   ItemPrefab: {fileID: 2784291058542494111, guid: b85d6eb65d359cd47827a1c91a763820,
     type: 3}
   Icon: {fileID: 21300000, guid: f58e2d1233a04f64d9ae59922a02b486, type: 3}
-  Name: Bow
+  Name: Explosive Bow
   Rarity: 4
   EffectDescription: Shoot an explosive arrow
