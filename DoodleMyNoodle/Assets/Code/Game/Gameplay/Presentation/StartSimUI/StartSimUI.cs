@@ -9,15 +9,24 @@ using UnityEngine.UI;
 public class StartSimUI : GameMonoBehaviour
 {
     public SceneInfo SimManagersScene;
-    public TMP_InputField levelToLoadField;
+    public TMP_Dropdown levelToLoadField;
     public Button startSimButton;
+
+    public LevelBank LevelBank;
 
     public override void OnGameStart()
     {
         base.OnGameStart();
 
         startSimButton.onClick.AddListener(OnStartClick);
-        levelToLoadField.text = PlayerPrefs.GetString("startLevel", "");
+
+        levelToLoadField.ClearOptions();
+        List<string> levelOptions = new List<string>();
+        foreach (Level level in LevelBank.Levels)
+        {
+            levelOptions.Add(level.name);
+        }
+        levelToLoadField.AddOptions(levelOptions);
     }
 
     public override void OnGameUpdate()
@@ -32,8 +41,9 @@ public class StartSimUI : GameMonoBehaviour
 
     void OnStartClick()
     {
-        PlayerPrefs.SetString("startLevel", levelToLoadField.text);
+        string levelName = levelToLoadField.options[levelToLoadField.value].text;
+        PlayerPrefs.SetString("startLevel", levelName);
         PlayerPrefs.Save();
-        LevelManager.Instance.StartLevel(levelToLoadField.text);
+        LevelManager.Instance.StartLevel(levelName);
     }
 }

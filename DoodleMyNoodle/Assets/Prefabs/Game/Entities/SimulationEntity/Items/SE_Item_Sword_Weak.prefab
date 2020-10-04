@@ -128,4 +128,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPointCost: 6
+  ActionPointCost: 2

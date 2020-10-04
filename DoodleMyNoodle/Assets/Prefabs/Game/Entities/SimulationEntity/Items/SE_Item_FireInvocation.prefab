@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -8001016936392042338}
   - component: {fileID: -1627743658129135454}
   - component: {fileID: 7812675529334335826}
+  - component: {fileID: 3952309816212110363}
   m_Layer: 0
   m_Name: SE_Item_FireInvocation
   m_TagString: Untagged
@@ -87,7 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPointCost: 4
+  ActionPointCost: 1
 --- !u!114 &-8001016936392042338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,7 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b3569fbe963ceb4fb9da4315e9207de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 4
+  Damage: 2
 --- !u!114 &-1627743658129135454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,3 +128,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ExplosionRange: 1
+--- !u!114 &3952309816212110363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536a42c96d4c58b408130b109e0975d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseTime: 0
+  TimeCooldown: 1
+  TurnCooldown: 6

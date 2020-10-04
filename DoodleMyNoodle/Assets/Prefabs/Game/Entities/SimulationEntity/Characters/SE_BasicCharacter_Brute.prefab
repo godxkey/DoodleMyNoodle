@@ -12,6 +12,12 @@ PrefabInstance:
       propertyPath: Guid
       value: 9f5cb403c19b4734ba5a886aa4f86fbd
       objectReference: {fileID: 0}
+    - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: InitialItems.Array.data[1]
+      value: 
+      objectReference: {fileID: 5742253346417087641, guid: 6df7fa31593d7484da1a2cb255fadbac,
+        type: 3}
     - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: m_LocalPosition.x
