@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPointCost: 5
+  ActionPointCost: 3
 --- !u!114 &5648458186103839835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 773b01e80bd28d94d9f4272e372a8b3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Duration: 2
+  Duration: 3
 --- !u!114 &641842289575799488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,4 +128,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UseTime: 0
   TimeCooldown: 1
-  TurnCooldown: 2
+  TurnCooldown: 8

@@ -87,7 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPointCost: 1
+  ActionPointCost: 2
 --- !u!114 &-448175739285880440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,7 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UseTime: 0
   TimeCooldown: 0
-  TurnCooldown: 0
+  TurnCooldown: 4
 --- !u!114 &-4447897880707759495
 MonoBehaviour:
   m_ObjectHideFlags: 0

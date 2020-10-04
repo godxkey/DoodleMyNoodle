@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 4120848953196771097}
   - component: {fileID: 5718374214135844852}
   - component: {fileID: 1206813890925547763}
-  - component: {fileID: -8001016936392042338}
   - component: {fileID: -448175739285880440}
   m_Layer: 0
   m_Name: SE_Item_ExplosiveArrow
@@ -103,20 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPointCost: 3
---- !u!114 &-8001016936392042338
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b3569fbe963ceb4fb9da4315e9207de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Damage: 2
+  ActionPointCost: 2
 --- !u!114 &-448175739285880440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,4 +117,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UseTime: 0
   TimeCooldown: 1
-  TurnCooldown: 1
+  TurnCooldown: 3
