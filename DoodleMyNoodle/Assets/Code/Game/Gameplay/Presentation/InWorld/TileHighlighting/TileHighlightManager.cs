@@ -70,8 +70,8 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
 
         TileFinder.Context context = new TileFinder.Context()
         {
-            PawnTile = SimWorldCache.LocalPawnTile,
-            PawnEntity = SimWorldCache.LocalPawn,
+            PawnTile = Cache.LocalPawnTile,
+            PawnEntity = Cache.LocalPawn,
         };
 
         NativeList<int2> tiles = new NativeList<int2>(Allocator.Temp);

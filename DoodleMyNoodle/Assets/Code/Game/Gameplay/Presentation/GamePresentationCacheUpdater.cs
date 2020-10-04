@@ -12,6 +12,11 @@ public class GamePresentationCache
 
     public bool Ready;
 
+    public bool PointerInWorld;
+    public Vector2 PointerWorldPosition;
+    public int2 PointedTile;
+    public List<Entity> PointedTileActors = new List<Entity>();
+
     public Entity LocalPawn;
     public fix3 LocalPawnPosition;
     public int2 LocalPawnTile;
@@ -21,8 +26,6 @@ public class GamePresentationCache
     public Team LocalPawnTeam;
     public Team CurrentTeam;
     public TileWorld TileWorld;
-    public int2 TileUnderCursor;
-    public List<Entity> TileActorsUnderCursor = new List<Entity>();
     public ExternalSimWorldAccessor SimWorld;
 }
 
@@ -60,7 +63,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
         Cache.LocalPawn = Entity.Null;
         Cache.LocalPawnTileEntity = Entity.Null;
         Cache.TileWorld = default;
-        Cache.TileActorsUnderCursor.Clear();
+        Cache.PointedTileActors.Clear();
     }
 
     protected override void OnUpdate()
@@ -81,7 +84,7 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Current Team
         ////////////////////////////////////////////////////////////////////////////////////////
-        if(Cache.SimWorld.TryGetSingleton(out TurnCurrentTeamSingletonComponent curTeam))
+        if (Cache.SimWorld.TryGetSingleton(out TurnCurrentTeamSingletonComponent curTeam))
         {
             Cache.CurrentTeam = curTeam.Value;
         }
@@ -116,19 +119,20 @@ public class GamePresentationCacheUpdater : ViewComponentSystem
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
-        //      Tile Actors Under Cursor
+        //      Pointer
         ////////////////////////////////////////////////////////////////////////////////////////
         {
-            Vector3 mouseWorldPos = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
-            Cache.TileUnderCursor = Helpers.GetTile(mouseWorldPos);
+            Cache.PointerWorldPosition = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
+            Cache.PointerInWorld = WorldUIEventSystem.Instance.MouseInWorld;
+            Cache.PointedTile = Helpers.GetTile(Cache.PointerWorldPosition);
 
-            Cache.TileActorsUnderCursor.Clear();
-            Entity tileEntity = Cache.TileWorld.IsCreated ? Cache.TileWorld.GetEntity(Cache.TileUnderCursor) : Entity.Null;
+            Cache.PointedTileActors.Clear();
+            Entity tileEntity = Cache.TileWorld.IsCreated ? Cache.TileWorld.GetEntity(Cache.PointedTile) : Entity.Null;
             if (tileEntity != Entity.Null)
             {
                 foreach (var tileActor in Cache.SimWorld.GetBufferReadOnly<TileActorReference>(tileEntity))
                 {
-                    Cache.TileActorsUnderCursor.Add(tileActor);
+                    Cache.PointedTileActors.Add(tileActor);
                 }
             }
         }

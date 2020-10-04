@@ -85,20 +85,20 @@ public class GameConsoleGUILines : MonoBehaviour
         foreach (var item in _lines)
         {
             EventTrigger eventTrigger = item.GetComponent<EventTrigger>();
-            eventTrigger.AddListener((ev) =>
+            eventTrigger.AddListener(EventTriggerType.PointerEnter, (ev) =>
             {
                 OnPointerEnter(item);
-            }, EventTriggerType.PointerEnter);
+            });
 
-            eventTrigger.AddListener((ev) =>
+            eventTrigger.AddListener(EventTriggerType.PointerExit, (ev) =>
             {
                 OnPointerExit(item);
-            }, EventTriggerType.PointerExit);
+            });
 
-            eventTrigger.AddListener((ev) =>
+            eventTrigger.AddListener(EventTriggerType.PointerClick, (ev) =>
             {
                 OnPointerClick(item);
-            }, EventTriggerType.PointerClick);
+            });
         }
     }
 
@@ -483,7 +483,7 @@ public class MultiStack<T>
 
 public static class EventTriggerExtension
 {
-    public static void AddListener(this EventTrigger eventTrigger, UnityAction<BaseEventData> callback, EventTriggerType eventTriggerType)
+    public static void AddListener(this EventTrigger eventTrigger, EventTriggerType eventTriggerType, UnityAction<BaseEventData> callback)
     {
         EventTrigger.Entry entry = null;
         foreach (var item in eventTrigger.triggers)
@@ -504,7 +504,7 @@ public static class EventTriggerExtension
         entry.callback.AddListener(callback);
     }
 
-    public static void RemoveListener(this EventTrigger eventTrigger, UnityAction<BaseEventData> callback, EventTriggerType eventTriggerType)
+    public static void RemoveListener(this EventTrigger eventTrigger, EventTriggerType eventTriggerType, UnityAction<BaseEventData> callback)
     {
         EventTrigger.Entry entry = null;
         foreach (var item in eventTrigger.triggers)
