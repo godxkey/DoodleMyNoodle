@@ -37,7 +37,7 @@ public class UpdateArcherAISystem : SimComponentSystem
     public static NativeList<int2> _path;
     public static NativeList<int2> _shootingPositions;
     public static NativeList<Entity> _shootingTargets;
-    
+
     private NativeList<Entity> _enemies;
     private BufferFromEntity<TileActorReference> _tileActorBuffers;
     private ComponentDataFromEntity<FixTranslation> _positions;
@@ -133,16 +133,16 @@ public class UpdateArcherAISystem : SimComponentSystem
         Profiler.EndSample();
     }
 
-    private void UpdateMentalState(in Entity controller, in Team controllerTeam, ref ArcherAIData agentData, in Entity agentPawn)
+    private void UpdateMentalState(Entity controller, Team controllerTeam, ref ArcherAIData agentData, Entity agentPawn)
     {
-        (Entity attackTarget, int2 shootTile) = FindTargetAndShootPos(controllerTeam, agentPawn);
+        (Entity newAttackTarget, int2 newShootTile) = FindTargetAndShootPos(controllerTeam, agentPawn, agentData.AttackTarget);
 
-        if (attackTarget != Entity.Null)
+        if (newAttackTarget != Entity.Null)
         {
-            agentData.AttackTarget = attackTarget;
-            agentData.ShootTile = shootTile;
+            agentData.AttackTarget = newAttackTarget;
+            agentData.ShootTile = newShootTile;
 
-            if (Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn)).Equals(shootTile))
+            if (Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn)).Equals(newShootTile))
             {
                 agentData.State = ArcherAIState.Attack;
             }
@@ -157,15 +157,22 @@ public class UpdateArcherAISystem : SimComponentSystem
         }
     }
 
-    private (Entity attackTarget, int2 shootTile) FindTargetAndShootPos(in Team controllerTeam, in Entity agentPawn)
+    private (Entity attackTarget, int2 shootTile) FindTargetAndShootPos(Team controllerTeam, Entity agentPawn, Entity previousAttackTarget)
     {
         _enemies.Clear();
         CommonReads.PawnSenses.FindAllPawnsInSight(Accessor, _attackableGroup, agentPawn, excludeTeam: controllerTeam, _enemies);
+
+        // If the archer has spotted an enemy once, it can track it through walls (compensates for lack of memory)
+        if (EntityManager.Exists(previousAttackTarget) && EntityManager.HasComponent<FixTranslation>(previousAttackTarget))
+        {
+            _enemies.AddUnique(previousAttackTarget);
+        }
 
         if (_enemies.Length == 0)
         {
             return (Entity.Null, default);
         }
+
         int d = floorToInt(CommonReads.PawnSenses.SIGHT_RANGE);
         int diagonalD = floorToInt(sin(fix.Pi / fix(4)) * CommonReads.PawnSenses.SIGHT_RANGE);
         int[] shootingDistances = new int[]
@@ -249,7 +256,7 @@ public class UpdateArcherAISystem : SimComponentSystem
         return (attackTarget, attackPos);
     }
 
-    private bool IsReadyToAct(in fix time, in Entity controller, in Team team, in ArcherAIData agentData, in ControlledEntity pawn)
+    private bool IsReadyToAct(fix time, Entity controller, Team team, ArcherAIData agentData, ControlledEntity pawn)
     {
         if (time < agentData.NoActionUntilTime)
         {
@@ -264,7 +271,7 @@ public class UpdateArcherAISystem : SimComponentSystem
         return true;
     }
 
-    private bool Act(in Entity controller, in Team team, ref ArcherAIData agentData, in ControlledEntity pawn)
+    private bool Act(Entity controller, Team team, ref ArcherAIData agentData, ControlledEntity pawn)
     {
         switch (agentData.State)
         {
@@ -281,7 +288,7 @@ public class UpdateArcherAISystem : SimComponentSystem
         return false;
     }
 
-    private bool Act_Patrol(in Entity controller, in Team team, ref ArcherAIData agentData, in ControlledEntity pawn)
+    private bool Act_Patrol(Entity controller, Team team, ref ArcherAIData agentData, ControlledEntity pawn)
     {
         int turnCount = CommonReads.GetTurn(Accessor);
 
@@ -324,7 +331,7 @@ public class UpdateArcherAISystem : SimComponentSystem
         return false;
     }
 
-    private bool Act_PositionForAttack(in Entity controller, in Team team, ref ArcherAIData agentData, in ControlledEntity pawn)
+    private bool Act_PositionForAttack(Entity controller, Team team, ref ArcherAIData agentData, ControlledEntity pawn)
     {
         int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(pawn));
         fix minimalMoveCost = default;
@@ -343,7 +350,7 @@ public class UpdateArcherAISystem : SimComponentSystem
         return CommonWrites.TryInputUseItem<GameActionMove>(Accessor, controller, agentData.ShootTile);
     }
 
-    private bool Act_Attacking(in Entity controller, in Team team, ref ArcherAIData agentData, in ControlledEntity pawn)
+    private bool Act_Attacking(Entity controller, Team team, ref ArcherAIData agentData, ControlledEntity pawn)
     {
         int2 enemyTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
         int2 shootingTile = agentData.ShootTile;
