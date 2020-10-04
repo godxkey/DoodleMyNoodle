@@ -64,6 +64,12 @@ public class ReadyButton : GamePresentationBehaviour
         }
 
         UpdateView();
+
+        // Shortcut
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            OnReadyClicked();
+        }
     }
 
     private void UpdateState()

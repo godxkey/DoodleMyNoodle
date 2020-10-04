@@ -89,7 +89,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UseTime: 0
   TimeCooldown: 1
-  TurnCooldown: 1
+  TurnCooldown: 0
 --- !u!114 &9033580274841478421
 MonoBehaviour:
   m_ObjectHideFlags: 0

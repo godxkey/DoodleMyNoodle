@@ -59,18 +59,24 @@ public class PlayerActionBarSlot : ItemSlot
     {
         if (SimWorld.TryGetComponentData(itemEntity, out ItemCooldownTimeCounter timerCounter))
         {
-            UnavailableSpriteObject.SetActive(true);
-            UnavailableTimerText.gameObject.SetActive(true);
-            UnavailableTimerText.text = fix.RoundToInt(timerCounter.Value).ToString();
-            return;
+            if (timerCounter.Value != 0)
+            {
+                UnavailableSpriteObject.SetActive(true);
+                UnavailableTimerText.gameObject.SetActive(true);
+                UnavailableTimerText.text = fix.RoundToInt(timerCounter.Value).ToString();
+                return;
+            }
         }
 
         if (SimWorld.TryGetComponentData(itemEntity, out ItemCooldownTurnCounter turnCounter))
         {
-            UnavailableSpriteObject.SetActive(true);
-            UnavailableTimerText.gameObject.SetActive(true);
-            UnavailableTimerText.text = fix.RoundToInt(turnCounter.Value).ToString();
-            return;
+            if (turnCounter.Value != 0)
+            {
+                UnavailableSpriteObject.SetActive(true);
+                UnavailableTimerText.gameObject.SetActive(true);
+                UnavailableTimerText.text = fix.RoundToInt(turnCounter.Value).ToString();
+                return;
+            }
         }
 
         UnavailableTimerText.gameObject.SetActive(false);

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8192711906296489722}
   - component: {fileID: -251396275792484950}
   m_Layer: 0
-  m_Name: SE_Item_MeleeAttack
+  m_Name: SE_Item_Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,4 +128,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPointCost: 2
+  ActionPointCost: 1
