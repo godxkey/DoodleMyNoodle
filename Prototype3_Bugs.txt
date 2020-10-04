@@ -1,6 +1,50 @@
-crash quand on import la photo (concept de bibliotheque photo)
-disconnect during transfert cause des problemes de connection par apres (work around restart)
-beaucoup d'erreur cause des problemes de FPS (allez-retour entre une partie et menu principale cause le problème)
-F3 cause des bugs visuels de shader
+tooltip remains open
 
-twin blade AP doesn't work as intended
+NullReferenceException: Object reference not set to an instance of an object
+  at Unity.Entities.ChunkDataUtility.GetComponentDataWithTypeRO (Unity.Entities.Chunk* chunk, System.Int32 index, System.Int32 typeIndex) [0x00001] in C:\Users\Alexandre Blanchet\Documents\DMN\DoodleMyNoodle\Packages\com.unity.entities-ccc-modified\Unity.Entities\ChunkDataUtility.cs:155 
+  at Unity.Entities.EntityComponentStore.GetComponentDataWithTypeRO (Unity.Entities.Entity entity, System.Int32 typeIndex) [0x00037] in C:\Users\Alexandre Blanchet\Documents\DMN\DoodleMyNoodle\Packages\com.unity.entities-ccc-modified\Unity.Entities\EntityComponentStore.cs:719 
+  at Unity.Entities.EntityDataAccess.GetBufferReadOnly[T] (Unity.Entities.Entity entity) [0x0001e] in C:\Users\Alexandre Blanchet\Documents\DMN\DoodleMyNoodle\Packages\com.unity.entities-ccc-modified\Unity.Entities\EntityDataAccess.cs:896 
+  at Unity.Entities.EntityManager.GetBufferReadOnly[T] (Unity.Entities.Entity entity) [0x0000e] in C:\Users\Alexandre Blanchet\Documents\DMN\DoodleMyNoodle\Packages\com.unity.entities-ccc-modified\Unity.Entities\EntityManagerAccessComponentData.cs:315 
+  at UpdateItemCooldownSystem
+
+explosive arrow explose sur les murs
+
+rebalance les coffres dans la map
+
+tour un peu plus long
+
+espace pour next turn, conflit avec entré du nom (check EventSystem.current.currentSelectedGameObject)
+
+UI.Selectable null reference (highlight + wasd)
+NullReferenceException: Object reference not set to an instance of an object
+Unity.Entities.ChunkDataUtility.GetComponentDataWithTypeRO (Unity.Entities.Chunk* chunk, System.Int32 index, System.Int32 typeIndex) (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ChunkDataUtility.cs:155)
+Unity.Entities.EntityComponentStore.GetComponentDataWithTypeRO (Unity.Entities.Entity entity, System.Int32 typeIndex) (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/EntityComponentStore.cs:719)
+Unity.Entities.EntityDataAccess.GetBufferReadOnly[T] (Unity.Entities.Entity entity) (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/EntityDataAccess.cs:896)
+Unity.Entities.EntityManager.GetBufferReadOnly[T] (Unity.Entities.Entity entity) (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/EntityManagerAccessComponentData.cs:315)
+UpdateItemCooldownSystem+<>c__DisplayClass0_0.<OnUpdate>b__1 (Unity.Entities.Entity pawnController, ControlledEntity& controlledEntity) (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Assets/Code/Simulation.Game/Systems/UpdateItemCooldownSystem.cs:35)
+Unity.Entities.EntityQueryBuilder.ForEach[T0] (Unity.Entities.EntityQueryBuilder+F_ED`1[T0] action) (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/EntityQueryBuilder_ForEach.gen.cs:90)
+UpdateItemCooldownSystem.OnUpdate () (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Assets/Code/Simulation.Game/Systems/UpdateItemCooldownSystem.cs:25)
+Unity.Entities.ComponentSystem.Update () (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystem.cs:109)
+Unity.Entities.ComponentSystemGroup.UpdateAllSystems () (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystemGroup.cs:240)
+UnityEngine.Debug:LogException(Exception)
+Unity.Debug:LogException(Exception) (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/Stubs/Unity/Debug.cs:19)
+Unity.Entities.ComponentSystemGroup:UpdateAllSystems() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystemGroup.cs:244)
+Unity.Entities.ComponentSystemGroup:OnUpdate() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystemGroup.cs:219)
+Unity.Entities.ComponentSystem:Update() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystem.cs:109)
+Unity.Entities.ComponentSystemGroup:UpdateAllSystems() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystemGroup.cs:240)
+Unity.Entities.ComponentSystemGroup:OnUpdate() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystemGroup.cs:219)
+SimSimulationSystemGroup:OnUpdate() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Assets/Code/Simulation.Core/Systems/SystemGroups/SimulationSystemGroups.cs:55)
+Unity.Entities.ComponentSystem:Update() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystem.cs:109)
+SimulationControl.TickSimulationSystem:ManualUpdate(IManualSystemGroupUpdate) (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Assets/Code/SimulationIO/TickSimulationSystem.cs:196)
+SimulationControl.TickSimulationSystem:OnUpdate() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Assets/Code/SimulationIO/TickSimulationSystem.cs:174)
+Unity.Entities.ComponentSystem:Update() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystem.cs:109)
+Unity.Entities.ComponentSystemGroup:UpdateAllSystems() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystemGroup.cs:240)
+Unity.Entities.ComponentSystemGroup:OnUpdate() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystemGroup.cs:219)
+Unity.Entities.ComponentSystem:Update() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystem.cs:109)
+Unity.Entities.ComponentSystemGroup:UpdateAllSystems() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystemGroup.cs:240)
+Unity.Entities.ComponentSystemGroup:OnUpdate() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystemGroup.cs:219)
+Unity.Entities.ComponentSystem:Update() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ComponentSystem.cs:109)
+Unity.Entities.DummyDelegateWrapper:TriggerUpdate() (at D:/Projects/DoodleMyNoodle/DoodleMyNoodle/Packages/com.unity.entities-ccc-modified/Unity.Entities/ScriptBehaviourUpdateOrder.cs:196)
+
+
+
