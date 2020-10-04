@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -243,7 +243,7 @@ MonoBehaviour:
   playMode: 0
   overrideServerName: 0
   serverName: 
-  overrideLevel: 1
+  overrideLevel: 0
   level: {fileID: 11400000, guid: 855f239a70fa0fa45b87ada7e9937f76, type: 2}
 --- !u!4 &433594086
 Transform:
@@ -342,6 +342,66 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4272559291225820148, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4974515823918524198, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4974515823918524198, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4974515823918524198, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4974515823918524198, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4974515823918524198, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4974515823918524198, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6333948663217796891, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6333948663217796891, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6333948663217796891, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6333948663217796891, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6333948663217796891, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6333948663217796891, guid: ae7f3c8ec90c6454c9785cd8d62126ee,
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -1050,31 +1110,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6514011637595202023, guid: 5bccb7693d5d55f46ba12341779a07dc,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6514011637595202023, guid: 5bccb7693d5d55f46ba12341779a07dc,
-        type: 3}
-      propertyPath: m_textInfo.spaceCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6514011637595202023, guid: 5bccb7693d5d55f46ba12341779a07dc,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6514011637595202023, guid: 5bccb7693d5d55f46ba12341779a07dc,
-        type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6514011637595202023, guid: 5bccb7693d5d55f46ba12341779a07dc,
-        type: 3}
-      propertyPath: m_textInfo.pageCount
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5bccb7693d5d55f46ba12341779a07dc, type: 3}

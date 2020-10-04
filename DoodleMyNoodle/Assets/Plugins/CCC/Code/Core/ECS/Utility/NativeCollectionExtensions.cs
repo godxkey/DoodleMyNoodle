@@ -5,7 +5,7 @@ using Unity.Collections;
 
 public static class NativeCollectionExtensions
 {
-    public static bool AddUnique<T>(this NativeList<T> list, in T item) where T : struct, IEquatable<T>
+    public static bool AddUnique<T>(this NativeList<T> list, T item) where T : struct, IEquatable<T>
     {
         if (!list.Contains(item))
         {
@@ -15,7 +15,7 @@ public static class NativeCollectionExtensions
         return false;
     }
 
-    public static void SetOrAdd<TKey, TValue>(this NativeHashMap<TKey, TValue> nativeHashMap, in TKey key, in TValue value)
+    public static void SetOrAdd<TKey, TValue>(this NativeHashMap<TKey, TValue> nativeHashMap, TKey key, TValue value)
         where TKey : struct, IEquatable<TKey>
         where TValue : struct
     {
