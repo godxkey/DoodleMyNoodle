@@ -27,11 +27,11 @@ public class MessageDisplaySystem : GamePresentationSystem<MessageDisplaySystem>
     private void UpdateData()
     {
         _displayedMessage.Set(null);
-        if (SimWorldCache.LocalPawn != Entity.Null)
+        if (Cache.PointerInWorld &&  Cache.LocalPawn != Entity.Null)
         {
-            if (distance(SimWorldCache.LocalPawnTile, SimWorldCache.TileUnderCursor) <= _readRange)
+            if (distance(Cache.LocalPawnTile, Cache.PointedTile) <= _readRange)
             {
-                foreach (var tileActor in SimWorldCache.TileActorsUnderCursor)
+                foreach (var tileActor in Cache.PointedTileActors)
                 {
                     if (SimWorld.TryGetComponentData(tileActor, out Message message))
                     {

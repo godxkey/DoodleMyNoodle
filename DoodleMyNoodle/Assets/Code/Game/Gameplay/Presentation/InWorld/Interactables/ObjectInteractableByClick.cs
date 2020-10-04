@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
 
-public class ObjectInteractableByClick : InteractableEntityView
+public class ObjectInteractableByClick : InteractableEntityView, IWorldUIPointerEnterHandler, IWorldUIPointerExitHandler, IWorldUIPointerClickHandler
 {
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
@@ -12,7 +12,7 @@ public class ObjectInteractableByClick : InteractableEntityView
 
     protected override void OnGamePresentationUpdate() { }
 
-    private void OnMouseOver()
+    public void OnPointerEnter()
     {
         if (CanTrigger())
         {
@@ -20,12 +20,12 @@ public class ObjectInteractableByClick : InteractableEntityView
         }
     }
 
-    private void OnMouseExit()
+    public void OnPointerExit()
     {
         SetHighlighted(false);
     }
 
-    private void OnMouseDown()
+    public void OnPointerClick()
     {
         if (CanTrigger())
         {
