@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 453c4b2c151f39243b7228f0ce379c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Size: 6
+  Capacity: 999
   InitialItems:
   - {fileID: 5742253346417087641, guid: d170c0eb81b945e458f35303555d6027, type: 3}
   - {fileID: 5742253346417087641, guid: 85996829317b3aa448e8ac3761770021, type: 3}

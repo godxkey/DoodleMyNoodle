@@ -17,24 +17,36 @@ public struct MinimumInt<T> : IComponentData
     where T : IComponentData, IStatInt
 {
     public int Value;
+
+    public static implicit operator int(MinimumInt<T> val) => val.Value;
+    public static implicit operator MinimumInt<T>(int val) => new MinimumInt<T>() { Value = val };
 }
 
 public struct MaximumInt<T> : IComponentData
     where T : IComponentData, IStatInt
 {
     public int Value;
+
+    public static implicit operator int(MaximumInt<T> val) => val.Value;
+    public static implicit operator MaximumInt<T>(int val) => new MaximumInt<T>() { Value = val };
 }
 
 public struct MinimumFix<T> : IComponentData
     where T : IComponentData, IStatFix
 {
     public fix Value;
+
+    public static implicit operator fix(MinimumFix<T> val) => val.Value;
+    public static implicit operator MinimumFix<T>(fix val) => new MinimumFix<T>() { Value = val };
 }
 
 public struct MaximumFix<T> : IComponentData
     where T : IComponentData, IStatFix
 {
     public fix Value;
+
+    public static implicit operator fix(MaximumFix<T> val) => val.Value;
+    public static implicit operator MaximumFix<T>(fix val) => new MaximumFix<T>() { Value = val };
 }
 
 internal static partial class CommonWrites

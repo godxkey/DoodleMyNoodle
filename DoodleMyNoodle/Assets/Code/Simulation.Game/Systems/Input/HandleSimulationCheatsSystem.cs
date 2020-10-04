@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
@@ -20,6 +21,12 @@ public class SimInputCheatDamagePlayer : SimCheatInput
 {
     public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
     public int Damage;
+}
+
+[NetSerializable]
+public class SimInputCheatAddAllItems : SimCheatInput
+{
+    public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
 }
 
 [UpdateInGroup(typeof(InputSystemGroup))]
@@ -89,6 +96,37 @@ public class HandleSimulationCheatsSystem : SimComponentSystem
                     else
                     {
                         CommonWrites.RequestHealOnTarget(Accessor, pawn, pawn, -damagePlayer.Damage);
+                    }
+                }
+                break;
+            }
+
+            case SimInputCheatAddAllItems addAllItems:
+            {
+                Entity player = CommonReads.FindPlayerEntity(Accessor, addAllItems.PlayerId);
+
+                if (EntityManager.Exists(player) &&
+                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
+                {
+                    var allItems = EntityManager.GetBuffer<CheatsAllItemElement>(GetSingletonEntity<CheatsAllItemElement>()).ToNativeArray(Allocator.Temp);
+                    NativeArray<Entity> itemInstances = new NativeArray<Entity>(allItems.Length, Allocator.Temp);
+
+                    // Spawn items
+                    for (int i = 0; i < allItems.Length; i++)
+                    {
+                        itemInstances[i] = EntityManager.Instantiate(allItems[i].ItemPrefab);
+                    }
+
+                    // Add item references into inventory
+                    DynamicBuffer<InventoryItemReference> inventory = EntityManager.GetBuffer<InventoryItemReference>(pawn);
+
+                    foreach (Entity itemInstance in itemInstances)
+                    {
+                        if (!CommonReads.IsInventoryFull(Accessor, pawn) ||
+                            !CommonWrites.TryIncrementStackableItemInInventory(Accessor, pawn, itemInstance, inventory))
+                        {
+                            inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
+                        }
                     }
                 }
                 break;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ActionPointDisplay : MonoBehaviour
+public class ActionPointDisplayElement : MonoBehaviour
 {
     public Image ActionPointImageComponent;
 

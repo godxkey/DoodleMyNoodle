@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using Unity.Entities;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 [System.Serializable]
-public struct PlayerActionBarSlotInfo 
+public struct PlayerActionBarSlotInfo
 {
-    public static PlayerActionBarSlotInfo Invalid => new PlayerActionBarSlotInfo();
+    public static PlayerActionBarSlotInfo Default => new PlayerActionBarSlotInfo() { InputShortcut = KeyCode.None };
 
     public KeyCode InputShortcut;
     // other possible info that changes the display : class / ultimate / consumables
@@ -33,9 +28,9 @@ public class PlayerActionBarSlot : ItemSlot
     private bool _actionBarSlotUnavailable = false;
 
     public void UpdateCurrentInventorySlot(
-        ItemVisualInfo item, 
-        int itemIndex, 
-        PlayerActionBarSlotInfo slotInfo, 
+        ItemVisualInfo item,
+        int itemIndex,
+        PlayerActionBarSlotInfo slotInfo,
         Action<int> onItemPrimaryActionUsed,
         Action<int> onItemSecondaryActionUsed,
         int stacks = -1)
@@ -109,6 +104,8 @@ public class PlayerActionBarSlot : ItemSlot
                 return "8";
             case KeyCode.Alpha9:
                 return "9";
+            case KeyCode.None:
+                return string.Empty;
             default:
                 return keyCode.ToString();
         }

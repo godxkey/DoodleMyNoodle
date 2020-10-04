@@ -5,6 +5,7 @@ using UnityEngineX;
 
 public class ItemVisualInfoBank : GameSystem<ItemVisualInfoBank>
 {
+    [SerializeField] private ItemVisualInfo _fallbackVisualInfo;
     public List<ItemVisualInfo> ItemsVisualInfo = new List<ItemVisualInfo>();
 
     private Dictionary<SimAssetId, ItemVisualInfo> _idToItemInfo = new Dictionary<SimAssetId, ItemVisualInfo>();
@@ -28,9 +29,7 @@ public class ItemVisualInfoBank : GameSystem<ItemVisualInfoBank>
             return result;
         }
 
-        Log.Error($"Failed to find item info from the ID {itemID}");
-
-        return null;
+        return _fallbackVisualInfo;
     }
 
     public SimAssetId GetIDFromItemInfo(ItemVisualInfo itemInfo)

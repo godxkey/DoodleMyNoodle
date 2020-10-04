@@ -15,9 +15,10 @@ public class ItemVisualInfo : ScriptableObject
     }
 
     public SimAssetIdAuth ID;
-    public GameObject ItemPrefab;
     public Sprite Icon;
     public string Name;
     public ItemRarity Rarity;
     public string EffectDescription;
+    
+    public GameObject ItemPrefab => ID.gameObject;
 }

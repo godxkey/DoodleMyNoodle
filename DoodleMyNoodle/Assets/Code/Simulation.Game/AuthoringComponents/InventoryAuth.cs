@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngineX;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
 public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
-    public int Size = 6;
+    [FormerlySerializedAs("Size")]
+    public int Capacity = 6;
 
     public List<GameObject> InitialItems = new List<GameObject>();
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new InventorySize() { Value = Size });
+        dstManager.AddComponentData(entity, new InventoryCapacity() { Value = Capacity });
 
         dstManager.AddBuffer<InventoryItemReference>(entity);
 
@@ -23,7 +25,7 @@ public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
 
         foreach (GameObject itemGO in InitialItems)
         {
-            if (startingInventory.Length >= Size)
+            if (startingInventory.Length >= Capacity)
                 break;
 
             if (!itemGO)
@@ -127,7 +129,7 @@ public partial class CommonReads
     public static bool IsInventoryFull(ISimWorldReadAccessor accessor, Entity destinationEntity)
     {
         DynamicBuffer<InventoryItemReference> inventory = accessor.GetBufferReadOnly<InventoryItemReference>(destinationEntity);
-        InventorySize inventorySize = accessor.GetComponentData<InventorySize>(destinationEntity);
+        InventoryCapacity inventorySize = accessor.GetComponentData<InventoryCapacity>(destinationEntity);
 
         return inventory.Length >= inventorySize.Value;
     }

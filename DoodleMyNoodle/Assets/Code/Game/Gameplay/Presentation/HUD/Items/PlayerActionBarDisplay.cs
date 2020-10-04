@@ -5,17 +5,18 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class PlayerActionBarDisplay : GamePresentationBehaviour
 {
-    public Image Background;
-    public Image BlockedDisplay;
-
-    public List<PlayerActionBarSlotInfo> InventorySlotShortcuts = new List<PlayerActionBarSlotInfo>();
-
-    public GameObject SlotsContainer;
-    public GameObject InventorySlotPrefab;
+    [SerializeField] private GridLayoutGroup _gridLayoutGroup;
+    [SerializeField] private int _maxCollumns = 10;
+    [SerializeField] private Image _background;
+    [SerializeField] private Image _blockedDisplay;
+    [SerializeField] private List<PlayerActionBarSlotInfo> _inventorySlotShortcuts = new List<PlayerActionBarSlotInfo>();
+    [SerializeField] private Transform _slotsContainer;
+    [SerializeField] private PlayerActionBarSlot _inventorySlotPrefab;
 
     private List<PlayerActionBarSlot> _inventorySlots = new List<PlayerActionBarSlot>();
 
@@ -23,16 +24,12 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
     {
         base.OnGameAwake();
 
-        for (int i = 0; i < InventorySlotShortcuts.Count; i++)
-        {
-            PlayerActionBarSlot inventorySlot = Instantiate(InventorySlotPrefab, SlotsContainer.transform).GetComponent<PlayerActionBarSlot>();
-            _inventorySlots.Add(inventorySlot);
-        }
+        _slotsContainer.GetComponentsInChildren(_inventorySlots);
     }
 
     protected override void OnGamePresentationUpdate()
     {
-        if(SimWorldCache.LocalPawn != Entity.Null && SimWorldCache.LocalController != Entity.Null)
+        if (SimWorldCache.LocalPawn != Entity.Null && SimWorldCache.LocalController != Entity.Null)
         {
             UpdateInventorySlots();
         }
@@ -46,15 +43,13 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
         if (!CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(SimWorldCache.LocalController)))
         {
             TileHighlightManager.Instance.InterruptTileSelectionProcess();
-            Background.color = Color.white;
-            BlockedDisplay.gameObject.SetActive(true);
+            _blockedDisplay.gameObject.SetActive(true);
         }
         else
         {
             onItemPrimaryActionUsedCallback = OnIntentionToUsePrimaryActionOnItem;
             onItemSecondaryActionUsedCallback = OnIntentionToUseSecondaryActionOnItem;
-            Background.color = Color.green;
-            BlockedDisplay.gameObject.SetActive(false);
+            _blockedDisplay.gameObject.SetActive(false);
 
             VerifyButtonInputForSlots();
         }
@@ -62,76 +57,69 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
         int itemIndex = 0;
         if (SimWorld.TryGetBufferReadOnly(SimWorldCache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
+            // Ajust Slot amount accordiwdng to inventory max size
+            InventoryCapacity inventoryCapacity = SimWorld.GetComponentData<InventoryCapacity>(SimWorldCache.LocalPawn);
+
+            _gridLayoutGroup.constraintCount = Mathf.Min(_maxCollumns, inventoryCapacity);
+
+            UIUtility.ResizeGameObjectList(_inventorySlots, Mathf.Min(inventoryCapacity, Mathf.Max(_maxCollumns, inventory.Length)), _inventorySlotPrefab, _slotsContainer);
+
             foreach (InventoryItemReference item in inventory)
             {
                 if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
                 {
                     ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
 
-                    GameAction.UseContext context = new GameAction.UseContext() 
-                    { 
+                    GameAction.UseContext context = new GameAction.UseContext()
+                    {
                         InstigatorPawn = SimWorldCache.LocalPawn,
                         InstigatorPawnController = SimWorldCache.LocalController,
                         Entity = item.ItemEntity
                     };
 
-                    if(_inventorySlots.Count > itemIndex)
+                    int stacks = -1;
+                    if (SimWorld.TryGetComponentData(item.ItemEntity, out ItemStackableData itemStackableData))
                     {
-                        int stacks = -1;
-                        if (SimWorld.TryGetComponentData(item.ItemEntity, out ItemStackableData itemStackableData))
-                        {
-                            stacks = itemStackableData.Value;
-                        }
-
-                        _inventorySlots[itemIndex].UpdateCurrentInventorySlot(itemInfo,
-                                                                              itemIndex,
-                                                                              InventorySlotShortcuts[itemIndex],
-                                                                              onItemPrimaryActionUsedCallback,
-                                                                              onItemSecondaryActionUsedCallback,
-                                                                              stacks);
-
-                        if (!GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).CanBeUsedInContext(SimWorld, context))
-                        {
-                            _inventorySlots[itemIndex].UpdateDisplayAsUnavailable(item.ItemEntity);
-                        }
-
-                        itemIndex++;
+                        stacks = itemStackableData.Value;
                     }
+
+                    _inventorySlots[itemIndex].UpdateCurrentInventorySlot(itemInfo,
+                                                                          itemIndex,
+                                                                          GetSlotShotcut(itemIndex),
+                                                                          onItemPrimaryActionUsedCallback,
+                                                                          onItemSecondaryActionUsedCallback,
+                                                                          stacks);
+
+                    if (!GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).CanBeUsedInContext(SimWorld, context))
+                    {
+                        _inventorySlots[itemIndex].UpdateDisplayAsUnavailable(item.ItemEntity);
+                    }
+
+                    itemIndex++;
                 }
             }
 
-            // Clear the rest of the inventory slots
+            // Empty remaining inventory slots
             for (int i = _inventorySlots.Count - 1; i >= itemIndex; i--)
             {
-                _inventorySlots[i].UpdateCurrentInventorySlot(null, i, InventorySlotShortcuts[i], null, null);
-            }
-
-            // Ajust Slot amount according to inventory max size
-            InventorySize inventorySize = SimWorld.GetComponentData<InventorySize>(SimWorldCache.LocalPawn);
-
-            while (_inventorySlots.Count < inventorySize.Value)
-            {
-                PlayerActionBarSlot inventorySlot = Instantiate(InventorySlotPrefab, SlotsContainer.transform).GetComponent<PlayerActionBarSlot>();
-                _inventorySlots.Add(inventorySlot);
-            }
-
-            while (_inventorySlots.Count > inventorySize.Value)
-            {
-                PlayerActionBarSlot inventorySlot = _inventorySlots[_inventorySlots.Count - 1];
-                _inventorySlots.Remove(inventorySlot);
-                Destroy(inventorySlot.gameObject);
+                _inventorySlots[i].UpdateCurrentInventorySlot(null, i, GetSlotShotcut(i), null, null);
             }
         }
+    }
+
+    private PlayerActionBarSlotInfo GetSlotShotcut(int itemIndex)
+    {
+        return itemIndex < _inventorySlotShortcuts.Count ? _inventorySlotShortcuts[itemIndex] : PlayerActionBarSlotInfo.Default;
     }
 
     private void VerifyButtonInputForSlots()
     {
         // We permit one input per frame
-        for (int i = 0; i < InventorySlotShortcuts.Count; i++)
+        for (int i = 0; i < _inventorySlotShortcuts.Count; i++)
         {
-            if (Input.GetKeyDown(InventorySlotShortcuts[i].InputShortcut))
+            if (Input.GetKeyDown(_inventorySlotShortcuts[i].InputShortcut))
             {
-                if(_inventorySlots.Count > i)
+                if (_inventorySlots.Count > i)
                 {
                     _inventorySlots[i].PrimaryUseItemSlot();
                 }
@@ -144,7 +132,7 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
     {
         if (SimWorld.TryGetBufferReadOnly(SimWorldCache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
-            if(inventory.Length > ItemIndex && ItemIndex > -1)
+            if (inventory.Length > ItemIndex && ItemIndex > -1)
             {
                 InventoryItemReference item = inventory[ItemIndex];
                 if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
@@ -165,11 +153,11 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
 
                     OnStartUsingNewItem(itemUseContract);
 
-                    QueryUseDataFromPlayer(itemUseContract,()=> 
-                    {
-                        SimPlayerInputUseItem simInput = new SimPlayerInputUseItem(ItemIndex, _currentItemUseData);
-                        SimWorld.SubmitInput(simInput);
-                    });
+                    QueryUseDataFromPlayer(itemUseContract, () =>
+                     {
+                         SimPlayerInputUseItem simInput = new SimPlayerInputUseItem(ItemIndex, _currentItemUseData);
+                         SimWorld.SubmitInput(simInput);
+                     });
 
                 }
             }
@@ -183,7 +171,7 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
             if (inventory.Length > ItemIndex && ItemIndex > -1)
             {
                 int currentItemIndex = ItemIndex;
-                ItemContextMenuDisplaySystem.Instance.ActivateContextMenuDisplay((int actionIndex) => 
+                ItemContextMenuDisplaySystem.Instance.ActivateContextMenuDisplay((int actionIndex) =>
                 {
                     if (actionIndex == 0)
                     {
@@ -206,13 +194,13 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
     private GameAction.UseParameters _currentItemUseData;
     private void QueryUseDataFromPlayer(GameAction.UseContract itemUseContact, Action onComplete, byte DataToExtract = 0)
     {
-        if (DataToExtract >= itemUseContact.ParameterTypes.Length) 
+        if (DataToExtract >= itemUseContact.ParameterTypes.Length)
         {
             onComplete?.Invoke();
             return;
         }
 
-        IdentifyAndGatherDataForParameterDescription(itemUseContact.ParameterTypes[DataToExtract], DataToExtract, ()=>
+        IdentifyAndGatherDataForParameterDescription(itemUseContact.ParameterTypes[DataToExtract], DataToExtract, () =>
         {
             if (DataToExtract >= itemUseContact.ParameterTypes.Length)
             {
@@ -221,10 +209,10 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
             }
 
             // Little Delay between choices
-            this.DelayedCall(0.1f, ()=> { QueryUseDataFromPlayer(itemUseContact, onComplete, (byte)(DataToExtract + 1)); });
+            this.DelayedCall(0.1f, () => { QueryUseDataFromPlayer(itemUseContact, onComplete, (byte)(DataToExtract + 1)); });
         });
     }
-    
+
     private void IdentifyAndGatherDataForParameterDescription(GameAction.ParameterDescription parameterDescription, byte index, Action OnComplete)
     {
         // SELECT A SINGLE TILE

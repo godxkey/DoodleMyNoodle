@@ -68,7 +68,7 @@ public class ReadyButton : GamePresentationBehaviour
         // Shortcut
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            OnReadyClicked();
+            _button.onClick.Invoke();
         }
     }
 

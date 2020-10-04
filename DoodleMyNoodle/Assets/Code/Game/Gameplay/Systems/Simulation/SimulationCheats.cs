@@ -74,4 +74,21 @@ public static class SimulationCheats
             Damage = -amount
         });
     }
+
+    [ConsoleCommand(Description = "Give your pawn all the game items")]
+    public static void CheatGiveAllItems()
+    {
+        var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
+
+        if (localPlayerInfo == null)
+        {
+            Log.Warning("No local player found");
+            return;
+        }
+
+        GameMonoBehaviourHelpers.SubmitInput(new SimInputCheatAddAllItems()
+        {
+            PlayerId = localPlayerInfo.SimPlayerId,
+        });
+    }
 }
