@@ -9,12 +9,14 @@ public struct DamageAppliedEventData : IComponentData
 {
     public Entity EntityDamaged;
     public int DamageApplied;
+    public fix3 Position;
 }
 
 public struct HealingAppliedEventData : IComponentData
 {
     public Entity EntityHealed;
     public int HealApplied;
+    public fix3 Position;
 }
 
 public struct DamageToApplySingletonTag : IComponentData
@@ -130,7 +132,12 @@ public class ApplyDamageSystem : SimComponentSystem
         // Handle damaged entity for feedbacks
         if (damageHasBeenApplied)
         {
-            damagedEntities.Add(new DamageAppliedEventData() { EntityDamaged = target, DamageApplied = amount } );
+            damagedEntities.Add(new DamageAppliedEventData()
+            {
+                EntityDamaged = target,
+                DamageApplied = amount,
+                Position = EntityManager.GetComponentData<FixTranslation>(target)
+            });
         }
     }
 
@@ -139,7 +146,12 @@ public class ApplyDamageSystem : SimComponentSystem
         if (EntityManager.HasComponent<Health>(target))
         {
             CommonWrites.ModifyStatInt<Health>(Accessor, target, amount);
-            healedEntities.Add(new HealingAppliedEventData() { EntityHealed = target, HealApplied = amount });
+            healedEntities.Add(new HealingAppliedEventData()
+            {
+                EntityHealed = target,
+                HealApplied = amount,
+                Position = EntityManager.GetComponentData<FixTranslation>(target)
+            });
         }
     }
 }

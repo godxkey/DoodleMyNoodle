@@ -27,8 +27,8 @@ public class PlayerActionBarSlot : ItemSlot
     private PlayerActionBarSlotInfo _info;
     private int _currentItemIndex;
 
-    public Action<int> OnItemPrimaryActionUsed;
-    public Action<int> OnItemSecondaryActionUsed;
+    private Action<int> _onItemPrimaryActionUsed;
+    private Action<int> _onItemSecondaryActionUsed;
 
     private bool _actionBarSlotUnavailable = false;
 
@@ -44,8 +44,8 @@ public class PlayerActionBarSlot : ItemSlot
 
         _currentItemIndex = itemIndex;
         _info = slotInfo;
-        OnItemPrimaryActionUsed = onItemPrimaryActionUsed;
-        OnItemSecondaryActionUsed = onItemSecondaryActionUsed;
+        _onItemPrimaryActionUsed = onItemPrimaryActionUsed;
+        _onItemSecondaryActionUsed = onItemSecondaryActionUsed;
 
         UnavailableTimerText.gameObject.SetActive(false);
         UnavailableSpriteObject.SetActive(false);
@@ -117,7 +117,7 @@ public class PlayerActionBarSlot : ItemSlot
 
         base.PrimaryUseItemSlot();
 
-        OnItemPrimaryActionUsed?.Invoke(_currentItemIndex);
+        _onItemPrimaryActionUsed?.Invoke(_currentItemIndex);
     }
 
     public override void SecondaryUseItemSlot()
@@ -129,6 +129,6 @@ public class PlayerActionBarSlot : ItemSlot
 
         base.SecondaryUseItemSlot();
 
-        OnItemSecondaryActionUsed?.Invoke(_currentItemIndex);
+        _onItemSecondaryActionUsed?.Invoke(_currentItemIndex);
     }
 }

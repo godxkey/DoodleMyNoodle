@@ -11,8 +11,7 @@ public class DamageEventDisplaySystem : GamePresentationBehaviour
     {
         SimWorldCache.SimWorld.Entities.ForEach((ref DamageAppliedEventData damageApplyData) =>
         {
-            GameObject presentationEntity = BindedSimEntityManaged.InstancesMap[damageApplyData.EntityDamaged];
-            if (presentationEntity != null)
+            if (BindedSimEntityManaged.InstancesMap.TryGetValue(damageApplyData.EntityDamaged, out GameObject presentationEntity) && presentationEntity)
             {
                 DoodleDisplay playerCharacterDoodleDisplay = presentationEntity.GetComponent<DoodleDisplay>();
                 SpriteRenderer entityRenderer = null;
@@ -31,7 +30,12 @@ public class DamageEventDisplaySystem : GamePresentationBehaviour
                     return;
                 }
 
-                entityRenderer.DOFade(0, 0.25f).SetLoops(6, LoopType.Yoyo).OnComplete(()=> { entityRenderer.SetAlpha(1); });
+                Sequence sq = DOTween.Sequence();
+                sq.AppendCallback(() => { if (entityRenderer) entityRenderer.SetAlpha(0); });
+                sq.AppendInterval(0.1f);
+                sq.AppendCallback(() => { if (entityRenderer) entityRenderer.SetAlpha(1); });
+                sq.AppendInterval(0.1f);
+                sq.SetLoops(6);
             }
         });
     }

@@ -14,6 +14,7 @@ public abstract class AIAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponent<Team>(entity);
         dstManager.AddComponent<AITag>(entity);
         dstManager.AddComponent<ControlledEntity>(entity);
+        dstManager.AddComponentData<Active>(entity, true);
         dstManager.AddComponentData(entity, new ReadyForNextTurn() { Value = false });
     }
 }

@@ -15,6 +15,9 @@ public class HealthDisplayManagementSystem : GamePresentationBehaviour
     protected override void OnGamePresentationUpdate()
     {
         int healthBarAmount = 0;
+        
+        Team localPlayerTeam = SimWorldCache.LocalPawnTeam;
+
         SimWorldCache.SimWorld.Entities.ForEach((Entity pawn, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
         {
             Entity pawnController = CommonReads.GetPawnController(SimWorldCache.SimWorld, pawn);
@@ -33,10 +36,9 @@ public class HealthDisplayManagementSystem : GamePresentationBehaviour
 
             fix healthRatio = (fix)entityHealth.Value / (fix)entityMaximumHealth.Value;
 
-            Team LocalPlayerTeam = SimWorldCache.SimWorld.GetComponentData<Team>(SimWorldCache.LocalController);
             Team CurrentPawnTeam = SimWorldCache.SimWorld.GetComponentData<Team>(pawnController);
 
-            SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, healthRatio, LocalPlayerTeam.Value == CurrentPawnTeam.Value);
+            SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, healthRatio, localPlayerTeam.Value == CurrentPawnTeam.Value);
 
             healthBarAmount++;
         });

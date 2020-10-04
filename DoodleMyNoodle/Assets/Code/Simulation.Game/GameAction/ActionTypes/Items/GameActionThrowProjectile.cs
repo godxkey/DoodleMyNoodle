@@ -49,7 +49,12 @@ public class GameActionThrowProjectile : GameAction
             accessor.SetOrAddComponentData(projectileInstance, new Velocity() { Value = settings.ThrowSpeed * v });
             accessor.SetOrAddComponentData(projectileInstance, new FixTranslation() { Value = Helpers.GetTileCenter(paramTile.Tile) });
             accessor.SetOrAddComponentData(projectileInstance, new PotentialNewTranslation() { Value = Helpers.GetTileCenter(paramTile.Tile) });
-            accessor.SetOrAddComponentData(projectileInstance, new DamageOnContact() { Value = accessor.GetComponentData<ItemDamageData>(context.Entity).Value, DestroySelf = true });
+
+            // add 'DamageOnContact' if ItemDamageData found
+            if (accessor.HasComponent<ItemDamageData>(context.Entity))
+            {
+                accessor.SetOrAddComponentData(projectileInstance, new DamageOnContact() { Value = accessor.GetComponentData<ItemDamageData>(context.Entity).Value, DestroySelf = true });
+            }
 
             return true;
         }

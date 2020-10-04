@@ -32,6 +32,12 @@ public class Links : MonoBehaviour
         OpenDirectory(Path.GetDirectoryName(Application.consoleLogPath));
     }
 
+    [MenuItem("Links/Share Documents", priority = 5)]
+    public static void OpenGoogleDriveDocuments()
+    {
+        OpenWebPath("https://drive.google.com/drive/folders/1N6vzdyZMeHAaaaZ2lW3qmKfINyaUKduj");
+    }
+
     private static void OpenWebPath(string path)
     {
         Process.Start(path);

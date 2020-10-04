@@ -2,7 +2,6 @@ using DG.Tweening;
 using System;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.Universal;
 
 public class HighlightElement : MonoBehaviour
 {
@@ -16,9 +15,11 @@ public class HighlightElement : MonoBehaviour
     public Action<HighlightElement> OnDestroyAction;
     public Action<HighlightElement> OnCompleteAction;
 
-    public void SetSprite(Sprite sprite)
+    public void SetSprite(Sprite sprite, bool flipX, bool flipY)
     {
         _spriteRenderer.sprite = sprite;
+        _spriteRenderer.flipX = flipX;
+        _spriteRenderer.flipY = flipY;
     }
 
     public void SetColor(Color color)

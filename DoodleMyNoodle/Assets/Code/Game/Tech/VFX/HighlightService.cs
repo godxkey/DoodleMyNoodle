@@ -106,7 +106,7 @@ public class HighlightService : MonoCoreService<HighlightService>
         tr.localRotation = Quaternion.identity;
         tr.localScale = Vector3.one;
 
-        newHighlight.SetSprite(spriteRenderer.sprite);
+        newHighlight.SetSprite(spriteRenderer.sprite, spriteRenderer.flipX, spriteRenderer.flipY);
         newHighlight.SetColor(param.Color);
         newHighlight.OnDestroyAction = OnHighlightDestroyed;
         newHighlight.OnCompleteAction = PutInPool;
