@@ -194,6 +194,55 @@ public static class StaticNetSerializer_GameActionParameterTile_Data
         StaticNetSerializer_GameAction_ParameterData.NetDeserialize(obj, reader);
     }
 }
+public static class StaticNetSerializer_SimInputCheatAddAllItems
+{
+    public static int GetNetBitSize_Class(SimInputCheatAddAllItems obj)
+    {
+        if (obj == null)
+            return 1;
+        return 1 + GetNetBitSize(obj);
+    }
+
+    public static int GetNetBitSize(SimInputCheatAddAllItems obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_PersistentId.GetNetBitSize(ref obj.PlayerId);
+        result += StaticNetSerializer_SimCheatInput.GetNetBitSize(obj);
+        return result;
+    }
+
+    public static void NetSerialize_Class(SimInputCheatAddAllItems obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        NetSerialize(obj, writer);
+    }
+    public static void NetSerialize(SimInputCheatAddAllItems obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_PersistentId.NetSerialize(ref obj.PlayerId, writer);
+        StaticNetSerializer_SimCheatInput.NetSerialize(obj, writer);
+    }
+
+    public static SimInputCheatAddAllItems NetDeserialize_Class(BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            return null;
+        }
+        SimInputCheatAddAllItems obj = new SimInputCheatAddAllItems();
+        NetDeserialize(obj, reader);
+        return obj;
+    }
+    public static void NetDeserialize(SimInputCheatAddAllItems obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_PersistentId.NetDeserialize(ref obj.PlayerId, reader);
+        StaticNetSerializer_SimCheatInput.NetDeserialize(obj, reader);
+    }
+}
 public static class StaticNetSerializer_SimInputCheatDamagePlayer
 {
     public static int GetNetBitSize_Class(SimInputCheatDamagePlayer obj)
