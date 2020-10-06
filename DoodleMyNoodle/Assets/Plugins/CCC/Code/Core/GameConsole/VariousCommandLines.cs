@@ -85,7 +85,7 @@ internal static class VariousCommandLines
     [ConsoleCommand(Description = "Open the log file location")]
     static void OpenLog()
     {
-        string path = Application.persistentDataPath;
+        string path = Path.GetDirectoryName(Application.consoleLogPath);
         path = path.Replace('/', '\\');
         if (Directory.Exists(path))
         {

@@ -1,3 +1,4 @@
+using CCC.InspectorDisplay;
 using CCC.IO;
 using System;
 using System.Collections.Concurrent;
@@ -11,11 +12,36 @@ using UnityEngineX;
 
 public class ConfigurableLogger : IDisposable
 {
+    [Serializable]
+    public class RuleSet
+    {
+        public bool OutputLogType;
+        public bool OutputTime;
+        public bool OutputFrameCount;
+        public bool OutputLogChannel;
+        public bool OutputStackTrace;
+        public int StackTraceLineCount;
+
+        public static RuleSet Default => new RuleSet()
+        {
+            OutputLogType = true,
+            OutputTime = true,
+            OutputFrameCount = true,
+            OutputLogChannel = true,
+            OutputStackTrace = true,
+            StackTraceLineCount = 9999
+        };
+    }
+
     private FileWriter _fileWriter;
     private ConcurrentQueue<string> _pendingLogs = new ConcurrentQueue<string>();
     private ConcurrentBag<StringBuilder> _stringBuilders = new ConcurrentBag<StringBuilder>();
     private static string s_nowString;
     private static double s_nextNowTime = -1;
+
+    public bool IndentStackTrace { get; set; } = true;
+    public RuleSet FallbackRuleSet { get; set; } = RuleSet.Default;
+    public Dictionary<LogType, RuleSet> Rules { get; } = new Dictionary<LogType, RuleSet>();
 
     public ConfigurableLogger(string name)
     {
@@ -51,44 +77,101 @@ public class ConfigurableLogger : IDisposable
             str = new StringBuilder();
         }
 
-        str.Append("[");
-        switch (logType)
+
+        if (!Rules.TryGetValue(logType, out RuleSet ruleSet))
         {
-            case LogType.Error:
-                str.Append("ERR");
-                break;
-            case LogType.Assert:
-                str.Append("ASSERT");
-                break;
-            case LogType.Warning:
-                str.Append("WARN");
-                break;
-            case LogType.Log:
-                str.Append("INFO");
-                break;
-            case LogType.Exception:
-                str.Append("EXCEPTION");
-                break;
+            ruleSet = FallbackRuleSet;
         }
-        str.Append("] ");
 
-        str.Append("[");
-        str.Append(GetNowString());
-        str.Append("] ");
-
-        str.Append("[F");
-        str.Append(Time.frameCount);
-        str.Append("] ");
-
-        if (channelId != -1)
+        if (ruleSet.OutputLogType)
         {
             str.Append("[");
-            str.Append(Log.GetChannel(channelId).Name);
+            switch (logType)
+            {
+                case LogType.Error:
+                    str.Append("ERR");
+                    break;
+                case LogType.Assert:
+                    str.Append("ASSERT");
+                    break;
+                case LogType.Warning:
+                    str.Append("WARN");
+                    break;
+                case LogType.Log:
+                    str.Append("INFO");
+                    break;
+                case LogType.Exception:
+                    str.Append("EXCEPTION");
+                    break;
+            }
             str.Append("] ");
+        }
+
+        if (ruleSet.OutputTime)
+        {
+            str.Append("[");
+            str.Append(GetNowString());
+            str.Append("] ");
+        }
+
+        if (ruleSet.OutputFrameCount)
+        {
+            str.Append("[F");
+            str.Append(Time.frameCount);
+            str.Append("] ");
+        }
+
+        if (ruleSet.OutputLogChannel)
+        {
+            if (channelId != -1)
+            {
+                str.Append("[");
+                str.Append(Log.GetChannel(channelId).Name);
+                str.Append("] ");
+            }
         }
 
         str.Append(' ');
         str.AppendLine(condition);
+
+        if (ruleSet.OutputStackTrace)
+        {
+            int indexOfLastLine = 0;
+            int lineCount = 0;
+            for (int i = 0; i < stackTrace.Length; i++)
+            {
+                if (stackTrace[i] == '\n' || stackTrace[i] == '\r')
+                {
+                    indexOfLastLine = i;
+                    lineCount++;
+
+                    if (lineCount >= ruleSet.StackTraceLineCount)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            string shortenedStackTrace = stackTrace.Remove(indexOfLastLine, stackTrace.Length - indexOfLastLine);
+
+            if (!string.IsNullOrEmpty(shortenedStackTrace))
+            {
+                if (IndentStackTrace)
+                {
+                    string[] stackTracePieces = shortenedStackTrace.Split('\n', '\r');
+                    foreach (var item in stackTracePieces)
+                    {
+                        str.Append("    ");
+                        str.AppendLine(item);
+                    }
+                }
+                else
+                {
+                    str.AppendLine(shortenedStackTrace);
+                }
+            }
+
+        }
 
         _pendingLogs.Enqueue(str.ToString());
 

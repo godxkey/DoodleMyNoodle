@@ -22,29 +22,26 @@ public class UpdateItemCooldownSystem : SimComponentSystem
 
         if (HasSingleton<NewTurnEventData>())
         {
+            Team currentTeam = CommonReads.GetTurnTeam(Accessor);
             Entities
-           .ForEach((Entity pawnController, ref ControlledEntity controlledEntity) =>
+           .ForEach((Entity pawnController, ref ControlledEntity pawn) =>
            {
-               if (EntityManager.TryGetComponentData(pawnController, out Team currentTeam))
+               if (EntityManager.TryGetComponentData(pawnController, out Team team) && team == currentTeam)
                {
-                   if (currentTeam.Value == CommonReads.GetTurnTeam(Accessor))
+                   if (EntityManager.Exists(pawn) && EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
                    {
-                       Entity pawn = controlledEntity.Value;
-                       if (pawn != Entity.Null)
+                       foreach (InventoryItemReference item in inventory)
                        {
-                           foreach (InventoryItemReference item in EntityManager.GetBufferReadOnly<InventoryItemReference>(pawn))
+                           if (EntityManager.TryGetComponentData(item.ItemEntity, out ItemCooldownTurnCounter itemTurnCounter))
                            {
-                               if (EntityManager.TryGetComponentData(item.ItemEntity, out ItemCooldownTurnCounter itemTurnCounter))
+                               itemTurnCounter.Value -= 1;
+                               if (itemTurnCounter.Value <= 0)
                                {
-                                   itemTurnCounter.Value -= 1;
-                                   if (itemTurnCounter.Value <= 0)
-                                   {
-                                       PostUpdateCommands.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
-                                   }
-                                   else
-                                   {
-                                       EntityManager.SetComponentData(item.ItemEntity, new ItemCooldownTurnCounter() { Value = itemTurnCounter.Value });
-                                   }
+                                   PostUpdateCommands.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
+                               }
+                               else
+                               {
+                                   EntityManager.SetComponentData(item.ItemEntity, new ItemCooldownTurnCounter() { Value = itemTurnCounter.Value });
                                }
                            }
                        }
