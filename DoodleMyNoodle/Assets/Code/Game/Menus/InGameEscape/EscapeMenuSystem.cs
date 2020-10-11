@@ -4,8 +4,6 @@ using UnityEngineX;
 
 public class EscapeMenuSystem : GameSystem<EscapeMenuSystem>
 {
-    public override bool SystemReady => true;
-
     [SerializeField] SceneInfo _escapeMenuScene;
 
     MenuInGameEscape _menuInGameEscape;

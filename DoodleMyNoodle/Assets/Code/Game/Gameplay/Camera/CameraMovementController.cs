@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class CameraMovementController : GamePresentationBehaviour
+public class CameraMovementController : GamePresentationSystem<CameraMovementController>
 {
     [Header("Mouse Movement Edge Trigger")]
     public float ScreenEdgeBorderThickness = 5.0f;
@@ -95,9 +95,9 @@ public class CameraMovementController : GamePresentationBehaviour
         SimWorld.Entities.ForEach((ref TeleportEventData teleportEvent) =>
         {
             // center camera on pawn after teleport
-            if (teleportEvent.Entity == SimWorldCache.LocalPawn)
+            if (teleportEvent.Entity == Cache.LocalPawn)
             {
-                CamPosition = SimWorldCache.LocalPawnPositionFloat;
+                CamPosition = Cache.LocalPawnPositionFloat;
             }
         });
     }
@@ -105,10 +105,10 @@ public class CameraMovementController : GamePresentationBehaviour
     private void CenterOnPawnIfChange()
     {
         // center camera on pawn if pawn change (or on game start)
-        _localPawn.Set(SimWorldCache.LocalPawn);
+        _localPawn.Set(Cache.LocalPawn);
         if (_localPawn.ClearDirty() && _localPawn.Get() != Entity.Null)
         {
-            CamPosition = SimWorldCache.LocalPawnPositionFloat;
+            CamPosition = Cache.LocalPawnPositionFloat;
         }
     }
 
@@ -149,9 +149,9 @@ public class CameraMovementController : GamePresentationBehaviour
             CamPosition += movement * Speed * CamSize * Time.deltaTime;
         }
 
-        if (Input.GetKey(KeyCode.LeftShift) && SimWorldCache.LocalPawn != Entity.Null)
+        if (Input.GetKey(KeyCode.LeftShift) && Cache.LocalPawn != Entity.Null)
         {
-            fix3 playerPosition = SimWorld.GetComponentData<FixTranslation>(SimWorldCache.LocalPawn).Value;
+            fix3 playerPosition = SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn).Value;
             Vector3 cameraPostion = transform.position;
             transform.position = new Vector3((float)playerPosition.x, (float)playerPosition.y, cameraPostion.z);
         }

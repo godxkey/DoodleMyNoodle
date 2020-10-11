@@ -7,10 +7,11 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Unity.Collections;
 
-public class LobbyOverviewDisplay : GamePresentationBehaviour
+public class LobbyOverviewDisplay : GamePresentationSystem<LobbyOverviewDisplay>
 {
-    [SerializeField] private GameObject _playerInfoPrefab;
+    [SerializeField] private LobbyPlayerInfoDisplay _playerInfoPrefab;
     [SerializeField] private Transform _playerInfoContainer;
+    [SerializeField] private RectTransform _container;
 
     [SerializeField] private TextMeshProUGUI _serverName;
 
@@ -19,9 +20,26 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
     [SerializeField] private float _animationDuration = 2;
 
     private List<LobbyPlayerInfoDisplay> _playerInfos = new List<LobbyPlayerInfoDisplay>();
+    private List<(Entity player, Entity pawn)> _data = new List<(Entity player, Entity pawn)>();
 
     private bool _isVisible = false;
-    private bool _doingAnimation = false;
+    private Tweener _tween;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        _playerInfoContainer.GetComponentsInChildren(_playerInfos);
+        _container.gameObject.SetActive(false);
+        SetVisible(false);
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        _tween?.Kill();
+    }
 
     protected override void OnGamePresentationUpdate()
     {
@@ -29,7 +47,7 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
 
         if (shouldBeVisible != _isVisible)
         {
-            ToggleVisibility();
+            SetVisible(shouldBeVisible);
         }
 
         if (OnlineService.OnlineInterface?.SessionInterface != null)
@@ -41,65 +59,53 @@ public class LobbyOverviewDisplay : GamePresentationBehaviour
             _serverName.text = "Local Game";
         }
 
-        int currentPlayerIndex = 0;
+        _data.Clear();
 
         SimWorld.Entities
-            .WithAll<Controllable>()
-            .ForEach((Entity pawn) =>
+            .WithAll<PlayerTag>()
+            .ForEach((Entity pawnController, ref ControlledEntity pawn) =>
             {
-                Entity pawnController = CommonReads.GetPawnController(SimWorld, pawn);
-
-                if (pawnController != Entity.Null && !SimWorld.HasComponent<AITag>(pawnController))
+                if (SimWorld.Exists(pawn))
                 {
-                    while (_playerInfos.Count <= currentPlayerIndex)
-                    {
-                        _playerInfos.Add(Instantiate(_playerInfoPrefab, _playerInfoContainer).GetComponent<LobbyPlayerInfoDisplay>());
-                    }
-
-                    NativeString64 playerName = "N/A";
-                    NativeString64 characterName = "N/A";
-
-                    if (SimWorld.TryGetComponentData(pawnController, out Name playerNameComponent))
-                    {
-                        playerName = playerNameComponent.Value;
-                    }
-
-                    if (SimWorld.TryGetComponentData(pawn, out Name characterNameComponent))
-                    {
-                        characterName = characterNameComponent.Value;
-                    }
-
-                    _playerInfos[currentPlayerIndex].UpdatePlayerInfoDisplay(playerName, characterName);
-
-                    currentPlayerIndex++;
+                    _data.Add((pawnController, pawn));
                 }
             });
+
+        UIUtility.UpdateGameObjectList(_playerInfos, _data, _playerInfoPrefab, _playerInfoContainer, onUpdate: UpdatePlayerInfo);
     }
 
-    private void ToggleVisibility()
+    private void UpdatePlayerInfo(LobbyPlayerInfoDisplay display, (Entity player, Entity pawn) data)
     {
-        if (_doingAnimation)
+        NativeString64 playerName = "N/A";
+        NativeString64 characterName = "N/A";
+
+        if (SimWorld.TryGetComponentData(data.player, out Name playerNameComponent))
         {
-            return;
+            playerName = playerNameComponent.Value;
         }
 
-        _doingAnimation = true;
-
-        if (_isVisible)
+        if (SimWorld.TryGetComponentData(data.pawn, out Name characterNameComponent))
         {
-            GetComponent<RectTransform>().DOAnchorPos(_startPosition, _animationDuration).OnComplete(()=> 
-            { 
-                _isVisible = false;
-                _doingAnimation = false;
-            });
+            characterName = characterNameComponent.Value;
+        }
+
+        display.UpdatePlayerInfoDisplay(playerName, characterName);
+    }
+
+    private void SetVisible(bool visible)
+    {
+        _tween?.Kill();
+
+        if (visible)
+        {
+            _container.gameObject.SetActive(true);
+            _tween = _container.DOAnchorPos(_endPosition, _animationDuration);
         }
         else
         {
-            GetComponent<RectTransform>().DOAnchorPos(_endPosition, _animationDuration).OnComplete(() => 
-            { 
-                _isVisible = true;
-                _doingAnimation = false;
-            });
+            _tween = _container.DOAnchorPos(_startPosition, _animationDuration).OnComplete(() => _container.gameObject.SetActive(false));
         }
+
+        _isVisible = visible;
     }
 }

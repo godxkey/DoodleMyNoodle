@@ -77,9 +77,10 @@ PrefabInstance:
     - target: {fileID: 4698121202604777439, guid: 05ec5c44177360f4d9a393b8cb04a98f,
         type: 3}
       propertyPath: m_Name
-      value: _Lights (Preview)_
+      value: Lights (Preview)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7427119888160254079, guid: 05ec5c44177360f4d9a393b8cb04a98f, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 05ec5c44177360f4d9a393b8cb04a98f, type: 3}
 --- !u!1 &4710473765759099402 stripped
 GameObject:

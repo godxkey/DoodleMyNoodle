@@ -8,8 +8,6 @@ using UnityEngineX;
 
 public class SimulationController : GameSystem<SimulationController>
 {
-    public override bool SystemReady => true;
-
     public override void OnGameAwake()
     {
         base.OnGameAwake();

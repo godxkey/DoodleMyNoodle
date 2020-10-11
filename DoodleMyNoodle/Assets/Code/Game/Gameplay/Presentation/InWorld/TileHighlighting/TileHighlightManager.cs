@@ -9,13 +9,12 @@ using UnityEngine.Serialization;
 
 public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
 {
+
     [FormerlySerializedAs("HighlightPrefab")]
     [SerializeField] private GameObject _highlightPrefab;
 
     private List<GameObject> _highlights = new List<GameObject>();
     private Action<GameActionParameterTile.Data> _currentTileSelectionCallback;
-
-    public override bool SystemReady => true;
 
     protected override void OnGamePresentationUpdate() { }
 

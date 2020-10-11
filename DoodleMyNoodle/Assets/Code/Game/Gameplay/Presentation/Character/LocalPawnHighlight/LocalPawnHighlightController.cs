@@ -1,7 +1,7 @@
 using UnityEngine;
 using Unity.Entities;
 
-public class LocalPawnHighlightController : GamePresentationBehaviour
+public class LocalPawnHighlightController : GamePresentationSystem<LocalPawnHighlightController>
 {
     [SerializeField] private Color _newTurnHighlightColor = Color.white;
 
@@ -10,11 +10,11 @@ public class LocalPawnHighlightController : GamePresentationBehaviour
         base.OnPostSimulationTick();
 
         // On player's new turn
-        if (SimWorld.HasSingleton<NewTurnEventData>() && SimWorldCache.CurrentTeam == SimWorldCache.LocalPawnTeam) 
+        if (SimWorld.HasSingleton<NewTurnEventData>() && Cache.CurrentTeam == Cache.LocalPawnTeam) 
         {
             // Find local pawn's doodle
-            if (SimWorldCache.LocalPawn != Entity.Null &&
-                BindedSimEntityManaged.InstancesMap.TryGetValue(SimWorldCache.LocalPawn, out GameObject localPawnViewGO))
+            if (Cache.LocalPawn != Entity.Null &&
+                BindedSimEntityManaged.InstancesMap.TryGetValue(Cache.LocalPawn, out GameObject localPawnViewGO))
             {
                 if (localPawnViewGO.TryGetComponent(out DoodleDisplay doodleDisplay))
                 {

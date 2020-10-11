@@ -27,22 +27,21 @@ public abstract class GamePresentationSystem<T> : GameSystem<T>, IPostSimulation
     }
 
     public virtual void OnPostSimulationTick() { }
-
-    protected abstract void OnGamePresentationUpdate();
+    protected virtual void OnGamePresentationUpdate() { }
 }
 
 
 public abstract class GamePresentationBehaviour : GameMonoBehaviour, IPostSimulationTick
 {
-    public GamePresentationCache SimWorldCache => GamePresentationCache.Instance;
-    public ExternalSimWorldAccessor SimWorld => SimWorldCache.SimWorld;
+    public GamePresentationCache Cache => GamePresentationCache.Instance;
+    public ExternalSimWorldAccessor SimWorld => Cache.SimWorld;
     public Unity.Entities.World PresWorld => GameMonoBehaviourHelpers.PresentationWorld;
 
     public override void OnGameLateUpdate()
     {
         base.OnGameLateUpdate();
 
-        if (SimWorldCache.Ready)
+        if (Cache.Ready)
         {
             OnGamePresentationUpdate();
         }

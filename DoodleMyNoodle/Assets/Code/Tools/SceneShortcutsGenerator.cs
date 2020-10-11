@@ -23,7 +23,7 @@ public static class SceneShortcutsGenerator
         "Scene Assets/"
     };
 
-    [MenuItem("Tools/CodeGen/Generate Scene Shortcuts", priority = 10)]
+    [MenuItem("Scene Shortcuts/- Regenerate Menu -", priority = 1000000)]
     public static void Generate()
     {
         GenerateFileFrom(GetSceneAssets());

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngineX;
 
-public class CharacterCreationScreen : GamePresentationBehaviour
+public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationScreen>
 {
     [SerializeField] private GameObject _screenContainer;
     [SerializeField] private Button _importDoodleButton;

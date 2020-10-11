@@ -1,15 +1,12 @@
-using System;
 using UnityEngine;
 using UnityEngineX;
 using DG.Tweening;
-using Unity.Entities;
-using Bolt.Utils;
 
-public class DamageEventDisplaySystem : GamePresentationBehaviour
+public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDisplaySystem>
 {
     public override void OnPostSimulationTick()
     {
-        SimWorldCache.SimWorld.Entities.ForEach((ref DamageAppliedEventData damageApplyData) =>
+        Cache.SimWorld.Entities.ForEach((ref DamageAppliedEventData damageApplyData) =>
         {
             if (BindedSimEntityManaged.InstancesMap.TryGetValue(damageApplyData.EntityDamaged, out GameObject presentationEntity) && presentationEntity)
             {

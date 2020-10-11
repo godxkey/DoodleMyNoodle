@@ -8,8 +8,6 @@ public abstract class PlayerRepertoireMaster : PlayerRepertoireSystem
 
     ushort _playerIdCounter = PlayerId.FirstValid.Value;
 
-    public override bool SystemReady => true;
-
     public void AssignSimPlayerToPlayer(in PlayerId playerId, in PersistentId simPlayerId)
     {
         PlayerInfo playerInfo = GetPlayerInfo(playerId);

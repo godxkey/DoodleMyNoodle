@@ -15,25 +15,25 @@ public class TransformAnimationWave : MonoBehaviour
     }
     [Header("Translation")]
     [SerializeField] bool _horizontalMovement;
-    [ShowIf("_horizontalMovement", HideShowBaseAttribute.Type.Field)]
+    [ShowIf("_horizontalMovement")]
     [SerializeField] MovementData _horizontalData;
 
     [SerializeField] bool _verticalMovement;
-    [ShowIf("_verticalMovement", HideShowBaseAttribute.Type.Field)]
+    [ShowIf("_verticalMovement")]
     [SerializeField] MovementData _verticalData;
 
 
     [Header("Rotation")]
     [SerializeField] bool _xRotation;
-    [ShowIf("_xRotation", HideShowBaseAttribute.Type.Field)]
+    [ShowIf("_xRotation")]
     [SerializeField] MovementData _xRotData;
 
     [SerializeField] bool _yRotation;
-    [ShowIf("_yRotation", HideShowBaseAttribute.Type.Field)]
+    [ShowIf("_yRotation")]
     [SerializeField] MovementData _yRotData;
 
     [SerializeField] bool _zRotation;
-    [ShowIf("_zRotation", HideShowBaseAttribute.Type.Field)]
+    [ShowIf("_zRotation")]
     [SerializeField] MovementData _zRotData;
 
     Vector3 anchorPos;

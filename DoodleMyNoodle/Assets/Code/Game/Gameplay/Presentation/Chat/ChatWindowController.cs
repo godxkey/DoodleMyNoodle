@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChatWindowController : GameMonoBehaviour
+public class ChatWindowController : GameSystem
 {
-    public float inactivityCloseDelay = 5f;
-    [SerializeField] ChatWindow _chatWindowPrefab;
+    [SerializeField] private float _inactivityCloseDelay = 10f;
+    [SerializeField] private ChatWindow _chatWindowPrefab;
 
-    protected ChatWindow _chatWindow;
-    float _inactivityTimer = 0;
+    private ChatWindow _chatWindow;
+    private float _inactivityTimer = 0;
 
     public override void OnGameStart()
     {
@@ -84,6 +84,6 @@ public class ChatWindowController : GameMonoBehaviour
 
     void ResetInactivityTimer()
     {
-        _inactivityTimer = inactivityCloseDelay;
+        _inactivityTimer = _inactivityCloseDelay;
     }
 }

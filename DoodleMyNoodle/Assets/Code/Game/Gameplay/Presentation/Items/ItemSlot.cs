@@ -82,7 +82,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         if (_currentItem != null)
         {
             Background.color = Color.white;
-            TooltipDisplay.Instance.ActivateToolTipDisplay(_currentItem, _itemsOwner);
+            TooltipDisplay.Instance.ActivateTooltipDisplay(_currentItem, _itemsOwner);
         }
     }
 

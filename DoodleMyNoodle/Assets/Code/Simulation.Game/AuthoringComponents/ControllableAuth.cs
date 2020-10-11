@@ -11,7 +11,7 @@ public class ControllableAuth : MonoBehaviour, IConvertGameObjectToEntity, IDecl
 {
     public GameObject DefaultAIPrefab;
 
-    [ShowIf(nameof(DefaultControllerPrefabIsValid), HideShowBaseAttribute.Type.Property)]
+    [ShowIf(nameof(DefaultControllerPrefabIsValid))]
     public bool InstantiateAIOnSpawn = true;
 
     private bool DefaultControllerPrefabIsValid => DefaultAIPrefab != null;

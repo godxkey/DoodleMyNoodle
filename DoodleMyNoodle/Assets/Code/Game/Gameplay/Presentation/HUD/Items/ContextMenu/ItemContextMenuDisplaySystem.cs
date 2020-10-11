@@ -1,84 +1,79 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using UnityEngineX;
 
-public class ItemContextMenuDisplaySystem : GamePresentationSystem<ItemContextMenuDisplaySystem>, IPointerEnterHandler , IPointerExitHandler
+public class ItemContextMenuDisplaySystem : GamePresentationSystem<ItemContextMenuDisplaySystem>
 {
-    public override bool SystemReady { get => true; }
-
-    [SerializeField] private GameObject _contextMenuDisplay;
-
-    [SerializeField] private Transform _contextMenuActionsContainer;
-    [SerializeField] private GameObject _contextMenuActionPrefab;
+    [SerializeField] private RectTransform _contextMenuDisplay;
+    [SerializeField] private Transform _actionContainer;
+    [SerializeField] private ContextMenuActionDisplay _actionPrefab;
+    [SerializeField] private EventTrigger _backgroundTrigger;
 
     [SerializeField] private float _displacementX = 0;
     [SerializeField] private float _displacementY = 0;
 
-    private bool _IsMouseOutsideContextMenu = false;
+    private List<ContextMenuActionDisplay> _actionElements = new List<ContextMenuActionDisplay>();
+    private Action<int?> _callback;
 
     protected override void Awake()
     {
         base.Awake();
 
-        _contextMenuDisplay.SetActive(false);
+        _contextMenuDisplay.gameObject.SetActive(false);
+        _backgroundTrigger.gameObject.SetActive(false);
+        _backgroundTrigger.AddListener(EventTriggerType.PointerDown, OnBackgroundClicked);
+        _actionContainer.GetComponentsInChildren(_actionElements);
     }
 
-    protected override void OnGamePresentationUpdate() 
+    private void OnBackgroundClicked(BaseEventData pointerEventData)
     {
-        if (_IsMouseOutsideContextMenu && _contextMenuDisplay.activeSelf &&(Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1)))
-        {
-            DeactivateContextMenuDisplay();
-        }
+        SetContextMenuActive(false);
     }
 
-    public void ActivateContextMenuDisplay(Action<int> actionSelected, params string[] actionsName)
+    public void ActivateContextMenuDisplay(Action<int?> actionSelected, params string[] actionsName)
     {
-        Clear();
+        _callback = actionSelected;
 
-        _IsMouseOutsideContextMenu = false;
+        // set position
+        _contextMenuDisplay.position = Input.mousePosition + new Vector3(_displacementX, _displacementY, 0);
 
-        transform.position = Input.mousePosition + new Vector3(_displacementX, _displacementY, 0);
+        UIUtility.ResizeGameObjectList(_actionElements, actionsName.Length, _actionPrefab, _actionContainer);
 
         for (int i = 0; i < actionsName.Length; i++)
         {
-            string name = actionsName[i];
-            ContextMenuActionDisplay contextMenuActionDisplay = Instantiate(_contextMenuActionPrefab, _contextMenuActionsContainer).GetComponent<ContextMenuActionDisplay>();
             int choiceIndex = i;
-            contextMenuActionDisplay.Init(name, () =>
+            _actionElements[i].Init(actionsName[i], () =>
             {
-                actionSelected(choiceIndex);
-                DeactivateContextMenuDisplay(true);
+                Callback(choiceIndex);
+                SetContextMenuActive(false);
             });
         }
 
-        _contextMenuDisplay.SetActive(true);
+        SetContextMenuActive(true);
     }
 
-    public void DeactivateContextMenuDisplay(bool force = false)
+    public void DeactivateContextMenuDisplay()
     {
-        if (force || _IsMouseOutsideContextMenu)
+        SetContextMenuActive(false);
+    }
+
+    private void SetContextMenuActive(bool active)
+    {
+        _contextMenuDisplay.gameObject.SetActive(active);
+        _backgroundTrigger.gameObject.SetActive(active);
+
+        if (!active) // context menu closed, fire 'null' choice
         {
-            _contextMenuDisplay.SetActive(false);
+            Callback(null);
         }
     }
 
-    private void Clear()
+    private void Callback(int? result)
     {
-        ContextMenuActionDisplay[] actions = _contextMenuActionsContainer.GetComponentsInChildren<ContextMenuActionDisplay>();
-        for (int i = 0; i < actions.Length; i++)
-        {
-            Destroy(actions[i].gameObject);
-        }
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        _IsMouseOutsideContextMenu = false;
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        _IsMouseOutsideContextMenu = true;
+        _callback?.Invoke(result);
+        _callback = null;
     }
 }

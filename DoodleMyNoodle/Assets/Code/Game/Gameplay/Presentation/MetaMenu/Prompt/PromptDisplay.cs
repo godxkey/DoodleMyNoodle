@@ -9,8 +9,6 @@ public class PromptDisplay : GameSystem<PromptDisplay>
     [SerializeField] private PromptAnswerDisplay _answerButtonPrefab;
     [SerializeField] private Transform _answersContainer;
 
-    public override bool SystemReady => true;
-
     protected override void Awake()
     {
         base.Awake();

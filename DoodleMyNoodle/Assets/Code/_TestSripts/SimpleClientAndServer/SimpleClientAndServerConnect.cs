@@ -9,7 +9,7 @@ public class SimpleClientAndServerConnect : MonoBehaviour
 {
     public bool UseMachineNameAsRoom = true;
 
-    [HideIf(nameof(UseMachineNameAsRoom), HideShowBaseAttribute.Type.Field)]
+    [HideIf(nameof(UseMachineNameAsRoom))]
     public string RoomName;
 
     public Button ConnectClientButton;

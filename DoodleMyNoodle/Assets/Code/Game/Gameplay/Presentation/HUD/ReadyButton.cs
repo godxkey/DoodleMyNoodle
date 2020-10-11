@@ -74,12 +74,12 @@ public class ReadyButton : GamePresentationBehaviour
 
     private void UpdateState()
     {
-        if (SimWorldCache.LocalPawn == Entity.Null)
+        if (Cache.LocalPawn == Entity.Null)
         {
             // If we don't have a pawn
             _viewState.Set(TurnState.NotMyTurn);
         }
-        else if (SimWorldCache.CurrentTeam != SimWorldCache.LocalPawnTeam && SimWorldCache.CurrentTeam.Value != -1)
+        else if (Cache.CurrentTeam != Cache.LocalPawnTeam && Cache.CurrentTeam.Value != -1)
         {
             // if it's not our turn to play
             _viewState.Set(SimWorld.HasSingleton<GameStartedTag>() ? TurnState.NotMyTurn : TurnState.NotReady);
@@ -87,7 +87,7 @@ public class ReadyButton : GamePresentationBehaviour
         else
         {
             // if it's our turn to play
-            if (SimWorld.TryGetComponentData(SimWorldCache.LocalController, out ReadyForNextTurn ready) && ready.Value)
+            if (SimWorld.TryGetComponentData(Cache.LocalController, out ReadyForNextTurn ready) && ready.Value)
             {
                 _viewState.Set(TurnState.Ready);
             }

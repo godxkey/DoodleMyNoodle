@@ -7,7 +7,7 @@ public abstract class GameStateDefinition : ScriptableObject
     [SerializeField] SceneInfo _sceneToLoadOnEnter;
     public SceneInfo SceneToLoadOnEnter => _sceneToLoadOnEnter;
 
-    [HideIf("SceneToLoadOnEnterIsNull", HideShowBaseAttribute.Type.Method)]
+    [HideIf("SceneToLoadOnEnterIsNull")]
     [SerializeField] SceneLoadSettings _sceneLoadSettings;
     public SceneLoadSettings SceneLoadSettings => _sceneLoadSettings;
 

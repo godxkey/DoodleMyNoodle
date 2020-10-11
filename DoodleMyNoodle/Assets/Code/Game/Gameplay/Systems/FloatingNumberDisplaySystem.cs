@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngineX;
 
-public class FloatingNumberDisplaySystem : GamePresentationBehaviour
+public class FloatingNumberDisplaySystem : GamePresentationSystem<FloatingNumberDisplaySystem>
 {
     public GameObject FloatingNumberPrefab;
 
     public override void OnPostSimulationTick()
     {
-        SimWorldCache.SimWorld.Entities.ForEach((ref DamageAppliedEventData damageData) =>
+        Cache.SimWorld.Entities.ForEach((ref DamageAppliedEventData damageData) =>
         {
             // TODO : Do a pool system
             Vector3 damagedEntityPosition = damageData.Position.ToUnityVec();
@@ -16,7 +16,7 @@ public class FloatingNumberDisplaySystem : GamePresentationBehaviour
             newFloatingNumber.GetComponent<FloatingNumberDisplay>()?.Display(damageData.DamageApplied.ToString(), Color.red);
         });
 
-        SimWorldCache.SimWorld.Entities.ForEach((ref HealingAppliedEventData healingData) =>
+        Cache.SimWorld.Entities.ForEach((ref HealingAppliedEventData healingData) =>
         {
             // TODO : Do a pool system
             Vector3 damagedEntityPosition = healingData.Position.ToUnityVec();

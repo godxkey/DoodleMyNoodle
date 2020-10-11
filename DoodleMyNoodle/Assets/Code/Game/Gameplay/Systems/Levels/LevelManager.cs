@@ -15,12 +15,10 @@ public struct SyncedValueCurrentLevel
 public class LevelManager : GameSystem<LevelManager>
 {
     public SceneInfo SimManagersScene;
-    public SceneInfo SimBasePresentationScene;
     public LevelBank LevelBank;
 
     private const string LEVEL_NOT_STARTED = "level-not-started";
 
-    public override bool SystemReady => true;
     public bool IsLevelStarted { get; private set; }
 
     public override void OnGameStart()
@@ -125,8 +123,10 @@ public class LevelManager : GameSystem<LevelManager>
             }
         }
 
+        // instantiate presentation
+        Game.InstantiateGameplayPresentationSystems();
+        
         // load presentation scenes
-        SceneService.LoadAsync(SimBasePresentationScene.SceneName);
         foreach (SceneInfo scene in level.PresentationScenes)
         {
             SceneService.LoadAsync(scene.SceneName);

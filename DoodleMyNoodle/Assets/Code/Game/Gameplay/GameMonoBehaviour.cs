@@ -31,6 +31,7 @@ public class GameMonoBehaviour : MonoBehaviour, IElementIndexHint
         s_registeredBehaviours.Remove(this);
     }
 
+    // callbacks
     public virtual void OnGameUpdate() { }
     public virtual void OnGameFixedUpdate() { }
     public virtual void OnGameLateUpdate() { }

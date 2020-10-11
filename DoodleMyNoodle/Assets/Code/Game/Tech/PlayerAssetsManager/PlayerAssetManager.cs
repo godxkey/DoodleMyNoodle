@@ -31,8 +31,6 @@ public struct NetMessagePlayerAssets
 
 public abstract class PlayerAssetManager : GameSystem<PlayerAssetManager>
 {
-    public override bool SystemReady => true;
-
     public event Action<PlayerAsset> AssetCreated;
 
     protected Dictionary<Guid, PlayerAsset> _assetMap = new Dictionary<Guid, PlayerAsset>();

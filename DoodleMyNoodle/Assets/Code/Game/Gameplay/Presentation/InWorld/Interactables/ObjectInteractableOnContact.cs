@@ -8,9 +8,9 @@ public class ObjectInteractableOnContact : InteractableEntityView
 {
     protected override void OnGamePresentationUpdate() 
     {
-        if(SimWorldCache.LocalPawn != Entity.Null)
+        if(Cache.LocalPawn != Entity.Null)
         {
-            int2 localPlayerTile = SimWorldCache.LocalPawnTile;
+            int2 localPlayerTile = Cache.LocalPawnTile;
             int2 currentInteractableTile = Helpers.GetTile(SimWorld.GetComponentData<FixTranslation>(SimEntity));
 
             if ((localPlayerTile.x == currentInteractableTile.x) && (localPlayerTile.y == currentInteractableTile.y) && CanTrigger())

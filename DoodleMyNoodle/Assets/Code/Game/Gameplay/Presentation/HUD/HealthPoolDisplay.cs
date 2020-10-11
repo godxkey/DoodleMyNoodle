@@ -12,13 +12,13 @@ public class HealthPoolDisplay : GamePresentationBehaviour
 
     protected override void OnGamePresentationUpdate()
     {
-        if(SimWorldCache.LocalPawn != Entity.Null)
+        if(Cache.LocalPawn != Entity.Null)
         {
             _poolContainer.gameObject.SetActive(true);
 
-            Health hp = SimWorld.GetComponentData<Health>(SimWorldCache.LocalPawn);
-            MaximumInt<Health> maxHP = SimWorld.GetComponentData<MaximumInt<Health>>(SimWorldCache.LocalPawn);
-            Armor armor = SimWorld.GetComponentData<Armor>(SimWorldCache.LocalPawn);
+            Health hp = SimWorld.GetComponentData<Health>(Cache.LocalPawn);
+            MaximumInt<Health> maxHP = SimWorld.GetComponentData<MaximumInt<Health>>(Cache.LocalPawn);
+            Armor armor = SimWorld.GetComponentData<Armor>(Cache.LocalPawn);
 
             int totalHealth = maxHP.Value + armor.Value;
 

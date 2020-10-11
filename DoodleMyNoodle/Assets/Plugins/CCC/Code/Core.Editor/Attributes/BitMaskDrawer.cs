@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
+using UnityEngineX;
+
 namespace CCC.InspectorDisplay
 {
     [CustomPropertyDrawer(typeof(BitMaskAttribute))]

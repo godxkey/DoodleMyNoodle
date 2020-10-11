@@ -4,18 +4,27 @@ using Unity.Entities;
 public struct InventoryItemReference : IBufferElementData
 {
     public Entity ItemEntity;
+
+    public static implicit operator Entity(InventoryItemReference val) => val.ItemEntity;
+    public static implicit operator InventoryItemReference(Entity val) => new InventoryItemReference() { ItemEntity = val };
 }
 
 // used for item bundle added dynamicly while in game
 public struct InventoryItemPrefabReference : IBufferElementData
 {
     public Entity ItemEntityPrefab;
+
+    public static implicit operator Entity(InventoryItemPrefabReference val) => val.ItemEntityPrefab;
+    public static implicit operator InventoryItemPrefabReference(Entity val) => new InventoryItemPrefabReference() { ItemEntityPrefab = val };
 }
 
 // Used for default base inventory when creating it
 public struct StartingInventoryItem : IBufferElementData
 {
     public Entity ItemEntityPrefab;
+
+    public static implicit operator Entity(StartingInventoryItem val) => val.ItemEntityPrefab;
+    public static implicit operator StartingInventoryItem(Entity val) => new StartingInventoryItem() { ItemEntityPrefab = val };
 }
 
 public partial class CommonReads

@@ -10,7 +10,7 @@ public class ActionsPointsAuth : MonoBehaviour, IConvertGameObjectToEntity
     public int MaxValue = 4;
     public bool StartGameAtMaxValue = true;
 
-    [HideIf(nameof(StartGameAtMaxValue), HideShowBaseAttribute.Type.Field)]
+    [HideIf(nameof(StartGameAtMaxValue))]
     public int StartValue = 4;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

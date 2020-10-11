@@ -8,148 +8,110 @@ using UnityEngineX;
 
 public class InteractableInventoryDisplaySystem : GamePresentationSystem<InteractableInventoryDisplaySystem>
 {
-    [SerializeField] private GameObject _itemSlotPrefab;
+    [SerializeField] private ItemSlot _itemSlotPrefab;
     [SerializeField] private Transform _itemSlotContainer;
-
-    //[SerializeField] private GameObject _takeButtonPrefab;
-    //[SerializeField] private Transform _takeButtonContainer;
-
-    [SerializeField] private GameObject _bundleDisplayContainer;
+    [SerializeField] private GameObject _displayContainer;
+    [SerializeField] private Button _closeButton;
 
     private List<ItemSlot> _currentItemSlots = new List<ItemSlot>();
-    //private List<Button> _currentTakeButtons = new List<Button>();
+    private List<Entity> _itemData = new List<Entity>();
 
     private Entity _lastInventoryEntity = Entity.Null;
-
-    public override bool SystemReady => true;
+    private int2 _lastInventoryTile;
 
     protected override void Awake()
     {
         base.Awake();
 
-        _bundleDisplayContainer.SetActive(false);
-
+        CloseDisplay();
         _itemSlotContainer.GetComponentsInChildren(_currentItemSlots);
+        _closeButton.onClick.AddListener(CloseDisplay);
     }
 
     protected override void OnGamePresentationUpdate()
     {
+        UpdateData();
+        UpdateView();
+    }
+
+    private void UpdateData()
+    {
+        _itemData.Clear();
         if (_lastInventoryEntity != Entity.Null)
         {
-            if (SimWorld.Exists(_lastInventoryEntity)
-                && SimWorld.TryGetBufferReadOnly(_lastInventoryEntity, out DynamicBuffer<InventoryItemReference> items))
+            if (SimWorld.Exists(_lastInventoryEntity) &&
+                SimWorld.TryGetBufferReadOnly(_lastInventoryEntity, out DynamicBuffer<InventoryItemReference> items))
             {
-                if (items.Length < 1)
+                _lastInventoryTile = Helpers.GetTile(SimWorld.GetComponentData<FixTranslation>(_lastInventoryEntity));
+
+                foreach (var item in items)
                 {
-                    CloseDisplay();
-                    return;
+                    _itemData.Add(item);
                 }
+            }
+        }
+    }
 
-                // Showing Bundle Display
-                _bundleDisplayContainer.SetActive(true);
+    private void UpdateView()
+    {
+        if (_itemData.Count > 0)
+        {
+            _displayContainer.SetActive(true);
 
-                // Get position of the entity
-                fix3 bundleEntityPosition = SimWorld.GetComponentData<FixTranslation>(_lastInventoryEntity).Value;
-                int2 bundleTilePosition = Helpers.GetTile(SimWorld.GetComponentData<FixTranslation>(_lastInventoryEntity));
+            UIUtility.ResizeGameObjectList(_currentItemSlots, _itemData.Count, _itemSlotPrefab, _itemSlotContainer);
 
-                int i = 0;
-                for (; i < items.Length; i++)
+            for (int i = 0; i < _itemData.Count; i++)
+            {
+                Entity item = _itemData[i];
+                ItemSlot slot = _currentItemSlots[i];
+
+                if (SimWorld.TryGetComponentData(item, out SimAssetId itemIDComponent))
                 {
-                    InventoryItemReference item = items[i];
+                    int itemIndex = i;
+                    ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
 
-                    if (i >= _currentItemSlots.Count)
+                    Action onClick = () =>
                     {
-                        // - Instantiate item slot
-                        GameObject newItemSlot = Instantiate(_itemSlotPrefab, _itemSlotContainer);
-                        ItemSlot itemSlot = newItemSlot.GetComponent<ItemSlot>();
-                        _currentItemSlots.Add(itemSlot);
-
-                        //// - Instantiate take button
-                        //GameObject newTakeButton = Instantiate(_takeButtonPrefab, _takeButtonContainer);
-                        //Button button = newTakeButton.GetComponent<Button>();
-                        //_currentTakeButtons.Add(button);
-
-                        //// - Add onClick listener on button
-                        //int itemIndex = i;
-                        //button.onClick.AddListener(() =>
-                        //{
-                        //    // when clicking on Take Item, we send a sim input
-                        //    SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, bundleTilePosition);
-                        //    SimWorld.SubmitInput(simInputEquipItem);
-                        //});
-                    }
+                        // when clicking on Take Item, we send a sim input
+                        SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, _lastInventoryTile);
+                        SimWorld.SubmitInput(simInputEquipItem);
+                    };
 
                     // Update Item Slot Stacks
-                    if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
+                    if (SimWorld.TryGetComponentData(item, out ItemStackableData itemStackableData))
                     {
-                        int itemIndex = i;
-                        ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
-
-                        Action onClick = () =>
-                        {
-                            // when clicking on Take Item, we send a sim input
-                            SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, bundleTilePosition);
-                            SimWorld.SubmitInput(simInputEquipItem);
-                        };
-
-                        if (SimWorld.TryGetComponentData(item.ItemEntity, out ItemStackableData itemStackableData))
-                        {
-                            _currentItemSlots[i].UpdateCurrentItemSlot(itemInfo, onClick, null, _lastInventoryEntity, itemStackableData.Value);
-                        }
-                        else
-                        {
-                            _currentItemSlots[i].UpdateCurrentItemSlot(itemInfo, onClick, null, _lastInventoryEntity);
-                        }
+                        _currentItemSlots[i].UpdateCurrentItemSlot(itemInfo, onClick, null, _lastInventoryEntity, itemStackableData.Value);
+                    }
+                    else
+                    {
+                        _currentItemSlots[i].UpdateCurrentItemSlot(itemInfo, onClick, null, _lastInventoryEntity);
                     }
                 }
-
-                for (int r = _currentItemSlots.Count - 1; r >= i; r--)
+                else
                 {
-                    Destroy(_currentItemSlots[r].gameObject);
-                    _currentItemSlots.RemoveAt(r);
-
-                    //Destroy(_currentTakeButtons[r].gameObject);
-                    //_currentTakeButtons.RemoveAt(r);
+                    _currentItemSlots[i].UpdateCurrentItemSlot(null, null, null, Entity.Null);
                 }
             }
-            else
-            {
-                CloseDisplay();
-            }
+        }
+        else
+        {
+            CloseDisplay();
         }
     }
 
     public void SetupDisplayForInventory(Entity inventoryEntity)
     {
-        Clear();
-
         _lastInventoryEntity = inventoryEntity;
     }
 
     public void CloseDisplay()
     {
-        _bundleDisplayContainer.SetActive(false);
+        _displayContainer.SetActive(false);
         _lastInventoryEntity = Entity.Null;
     }
 
     public bool IsOpen()
     {
-        return _bundleDisplayContainer.activeSelf;
-    }
-
-    private void Clear()
-    {
-        for (int i = 0; i < _currentItemSlots.Count; i++)
-        {
-            Destroy(_currentItemSlots[i].gameObject);
-        }
-
-        //for (int i = 0; i < _currentTakeButtons.Count; i++)
-        //{
-        //    Destroy(_currentTakeButtons[i].gameObject);
-        //}
-
-        _currentItemSlots.Clear();
-        //_currentTakeButtons.Clear();
+        return _displayContainer.activeSelf;
     }
 }

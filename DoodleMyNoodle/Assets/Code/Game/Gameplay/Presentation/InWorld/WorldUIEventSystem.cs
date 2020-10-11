@@ -35,8 +35,6 @@ public class WorldUIEventSystem : GamePresentationSystem<WorldUIEventSystem>
     private List<IWorldUIEventHandler> _mouseExitEventTargetBuffer = new List<IWorldUIEventHandler>();
     private Collider2D[] _overlapResults = new Collider2D[64];
 
-    public override bool SystemReady => true;
-
     public bool MouseInWorld => _mouseInWorld;
 
     protected override void Awake()

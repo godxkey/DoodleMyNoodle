@@ -10,8 +10,6 @@ public class ItemVisualInfoBank : GameSystem<ItemVisualInfoBank>
 
     private Dictionary<SimAssetId, ItemVisualInfo> _idToItemInfo = new Dictionary<SimAssetId, ItemVisualInfo>();
 
-    public override bool SystemReady => true;
-
     public override void OnGameAwake()
     {
         base.OnGameAwake();

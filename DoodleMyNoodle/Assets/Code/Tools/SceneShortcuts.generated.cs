@@ -19,46 +19,34 @@ public static class SceneShortcuts
     [MenuItem("Scene Shortcuts/Game_Core", priority = 3003)]
     public static void Assets_Scenes_Game_Scene_Assets_Game_Core() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Core.unity");
 
-    [MenuItem("Scene Shortcuts/Game_Core_Client", priority = 3004)]
-    public static void Assets_Scenes_Game_Scene_Assets_Game_Core_Client() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Core_Client.unity");
+    [MenuItem("Scene Shortcuts/Game_SimulationInitData", priority = 3004)]
+    public static void Assets_Scenes_Game_Scene_Assets_Game_SimulationInitData() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_SimulationInitData.unity");
 
-    [MenuItem("Scene Shortcuts/Game_Core_Local", priority = 3005)]
-    public static void Assets_Scenes_Game_Scene_Assets_Game_Core_Local() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Core_Local.unity");
-
-    [MenuItem("Scene Shortcuts/Game_Core_Server", priority = 3006)]
-    public static void Assets_Scenes_Game_Scene_Assets_Game_Core_Server() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Core_Server.unity");
-
-    [MenuItem("Scene Shortcuts/Game_Presentation", priority = 3007)]
-    public static void Assets_Scenes_Game_Scene_Assets_Game_Presentation() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Presentation.unity");
-
-    [MenuItem("Scene Shortcuts/Game_SimulationManagers", priority = 3008)]
-    public static void Assets_Scenes_Game_Scene_Assets_Game_SimulationManagers() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_SimulationManagers.unity");
-
-    [MenuItem("Scene Shortcuts/Gym_AI", priority = 4009)]
+    [MenuItem("Scene Shortcuts/Gym_AI", priority = 4005)]
     public static void Assets_Scenes_Levels_Scene_Assets_Gym_AI() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_AI.unity");
 
-    [MenuItem("Scene Shortcuts/Gym_Physics", priority = 4010)]
+    [MenuItem("Scene Shortcuts/Gym_Physics", priority = 4006)]
     public static void Assets_Scenes_Levels_Scene_Assets_Gym_Physics() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_Physics.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_Prototype3", priority = 4011)]
+    [MenuItem("Scene Shortcuts/Lvl_Prototype3", priority = 4007)]
     public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype3() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype3.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_SideScrollerExemple", priority = 4012)]
+    [MenuItem("Scene Shortcuts/Lvl_SideScrollerExemple", priority = 4008)]
     public static void Assets_Scenes_Levels_Scene_Assets_Lvl_SideScrollerExemple() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_SideScrollerExemple.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_InGameEscape", priority = 5013)]
+    [MenuItem("Scene Shortcuts/Menu_InGameEscape", priority = 5009)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_InGameEscape() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_InGameEscape.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineClientSessionChoice", priority = 5014)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineClientSessionChoice", priority = 5010)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineClientSessionChoice() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineClientSessionChoice.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineRoleChoice", priority = 5015)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineRoleChoice", priority = 5011)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineRoleChoice() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineRoleChoice.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineServerSessionCreation", priority = 5016)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineServerSessionCreation", priority = 5012)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineServerSessionCreation() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineServerSessionCreation.unity");
 
-    [MenuItem("Scene Shortcuts/Misc_LoadingScreen", priority = 6017)]
+    [MenuItem("Scene Shortcuts/Misc_LoadingScreen", priority = 6013)]
     public static void Assets_Scenes_Misc_Scene_Assets_Misc_LoadingScreen() => LoadScene("Assets/Scenes/Misc/Scene Assets/Misc_LoadingScreen.unity");
 
 

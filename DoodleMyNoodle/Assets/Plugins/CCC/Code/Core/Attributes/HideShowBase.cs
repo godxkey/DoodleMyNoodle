@@ -6,14 +6,11 @@ namespace CCC.InspectorDisplay
 {
     public abstract class HideShowBaseAttribute : PropertyAttribute
     {
-        public readonly string name;
-        public readonly Type type;
-        public enum Type { Field, Property, Method }
+        public readonly string ConditionalMemberName;
 
-        public HideShowBaseAttribute(string name, Type type)
+        public HideShowBaseAttribute(string conditionalMemberName)
         {
-            this.name = name;
-            this.type = type;
+            this.ConditionalMemberName = conditionalMemberName;
         }
     }
 }

@@ -4,8 +4,6 @@ using UnityEngineX;
 
 public class GameLightingSystem : GamePresentationSystem<GameLightingSystem>
 {
-    public override bool SystemReady => true;
-
     private bool _activate = true;
 
     protected override void Awake()

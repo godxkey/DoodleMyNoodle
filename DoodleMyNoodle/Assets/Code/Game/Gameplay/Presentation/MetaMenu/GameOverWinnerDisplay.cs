@@ -7,7 +7,7 @@ using UnityEngineX;
 using TMPro;
 using System.Collections.Generic;
 
-public class GameOverWinnerDisplay : GamePresentationBehaviour
+public class GameOverWinnerDisplay : GamePresentationSystem<GameOverWinnerDisplay>
 {
     [System.Serializable]
     public struct WinningTeamText

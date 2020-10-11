@@ -29,7 +29,7 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
 
     protected override void OnGamePresentationUpdate()
     {
-        if (SimWorldCache.LocalPawn != Entity.Null && SimWorldCache.LocalController != Entity.Null)
+        if (Cache.LocalPawn != Entity.Null && Cache.LocalController != Entity.Null)
         {
             UpdateInventorySlots();
         }
@@ -40,7 +40,7 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
         Action<int> onItemPrimaryActionUsedCallback = null;
         Action<int> onItemSecondaryActionUsedCallback = null;
 
-        if (!CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(SimWorldCache.LocalController)))
+        if (!CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(Cache.LocalController)))
         {
             TileHighlightManager.Instance.InterruptTileSelectionProcess();
             _blockedDisplay.gameObject.SetActive(true);
@@ -55,10 +55,10 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
         }
 
         int itemIndex = 0;
-        if (SimWorld.TryGetBufferReadOnly(SimWorldCache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if (SimWorld.TryGetBufferReadOnly(Cache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             // Ajust Slot amount accordiwdng to inventory max size
-            InventoryCapacity inventoryCapacity = SimWorld.GetComponentData<InventoryCapacity>(SimWorldCache.LocalPawn);
+            InventoryCapacity inventoryCapacity = SimWorld.GetComponentData<InventoryCapacity>(Cache.LocalPawn);
 
             _gridLayoutGroup.constraintCount = Mathf.Min(_maxCollumns, inventoryCapacity);
 
@@ -72,8 +72,8 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
 
                     GameAction.UseContext context = new GameAction.UseContext()
                     {
-                        InstigatorPawn = SimWorldCache.LocalPawn,
-                        InstigatorPawnController = SimWorldCache.LocalController,
+                        InstigatorPawn = Cache.LocalPawn,
+                        InstigatorPawnController = Cache.LocalController,
                         Entity = item.ItemEntity
                     };
 
@@ -130,7 +130,7 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
 
     private void OnIntentionToUsePrimaryActionOnItem(int ItemIndex)
     {
-        if (SimWorld.TryGetBufferReadOnly(SimWorldCache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if (SimWorld.TryGetBufferReadOnly(Cache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             if (inventory.Length > ItemIndex && ItemIndex > -1)
             {
@@ -144,8 +144,8 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
 
                     GameAction.UseContext useContext = new GameAction.UseContext()
                     {
-                        InstigatorPawn = SimWorldCache.LocalPawn,
-                        InstigatorPawnController = SimWorldCache.LocalController,
+                        InstigatorPawn = Cache.LocalPawn,
+                        InstigatorPawnController = Cache.LocalController,
                         Entity = itemEntity
                     };
 
@@ -166,12 +166,12 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
 
     private void OnIntentionToUseSecondaryActionOnItem(int ItemIndex)
     {
-        if (SimWorld.TryGetBufferReadOnly(SimWorldCache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
+        if (SimWorld.TryGetBufferReadOnly(Cache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             if (inventory.Length > ItemIndex && ItemIndex > -1)
             {
                 int currentItemIndex = ItemIndex;
-                ItemContextMenuDisplaySystem.Instance.ActivateContextMenuDisplay((int actionIndex) =>
+                ItemContextMenuDisplaySystem.Instance.ActivateContextMenuDisplay((int? actionIndex) =>
                 {
                     if (actionIndex == 0)
                     {

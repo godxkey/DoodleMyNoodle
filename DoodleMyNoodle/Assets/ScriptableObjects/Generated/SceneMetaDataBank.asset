@@ -45,47 +45,31 @@ MonoBehaviour:
     Path: Assets/Scenes/Menu/Scene Assets/Menu_InGameEscape.unity
     BuildIndex: 7
     AssetGuid: 526cbea577512dc42a4c0e329783b3b0
-  - Name: Game_Core_Client
-    Path: Assets/Scenes/Game/Scene Assets/Game_Core_Client.unity
+  - Name: Game_SimulationInitData
+    Path: Assets/Scenes/Game/Scene Assets/Game_SimulationInitData.unity
     BuildIndex: 8
-    AssetGuid: 89c09be2ea7a787418bc64f4cdb83b20
-  - Name: Game_Core_Server
-    Path: Assets/Scenes/Game/Scene Assets/Game_Core_Server.unity
-    BuildIndex: 9
-    AssetGuid: fa9ca71823e5fc44c8096a44b275a0a9
-  - Name: Game_Core_Local
-    Path: Assets/Scenes/Game/Scene Assets/Game_Core_Local.unity
-    BuildIndex: 10
-    AssetGuid: 6832c9c496e32854086ae3c970b86b4f
-  - Name: Game_SimulationManagers
-    Path: Assets/Scenes/Game/Scene Assets/Game_SimulationManagers.unity
-    BuildIndex: 11
     AssetGuid: 47ac98eafdf2257458009be782cc980c
-  - Name: Game_Presentation
-    Path: Assets/Scenes/Game/Scene Assets/Game_Presentation.unity
-    BuildIndex: 12
-    AssetGuid: 02fa011c09404914098c6019b2610a09
   - Name: SimpleClientAndServer
     Path: Assets/Scenes/Tests/SimpleClientAndServer.unity
-    BuildIndex: 13
+    BuildIndex: 9
     AssetGuid: e76ee58ade737004383d3e6eeae3f771
   - Name: EmptyScene
     Path: Assets/Scenes/EmptyScene.unity
-    BuildIndex: 14
+    BuildIndex: 10
     AssetGuid: 15380d7d3d5178b40abcc7edd37c1d78
   - Name: Lvl_SideScrollerExemple
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_SideScrollerExemple.unity
-    BuildIndex: 15
+    BuildIndex: 11
     AssetGuid: 338675daabe37b244b3e80a4f0d73201
   - Name: Lvl_Prototype3
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype3.unity
-    BuildIndex: 16
+    BuildIndex: 12
     AssetGuid: 01ea5267214d63a479a17157f03d0d1d
   - Name: Gym_Physics
     Path: Assets/Scenes/Levels/Scene Assets/Gym_Physics.unity
-    BuildIndex: 17
+    BuildIndex: 13
     AssetGuid: 22c6279033e4e434d8fd305a9fb702f8
   - Name: Gym_AI
     Path: Assets/Scenes/Levels/Scene Assets/Gym_AI.unity
-    BuildIndex: 18
+    BuildIndex: 14
     AssetGuid: 693976433442b15479d8332069d5cafd

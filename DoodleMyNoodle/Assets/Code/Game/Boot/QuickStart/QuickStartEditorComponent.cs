@@ -12,19 +12,19 @@ public class QuickStartEditorComponent : MonoBehaviour
 
     [HideIf("startFromScratch")]
     public bool overridePlayMode;
-    [ShowIf("CanShowPlayMode", HideShowBaseAttribute.Type.Property)]
+    [ShowIf("CanShowPlayMode")]
     public QuickStartSettings.PlayMode playMode;
     bool CanShowPlayMode => !startFromScratch && overridePlayMode;
 
     [HideIf("startFromScratch")]
     public bool overrideServerName;
-    [ShowIf("CanShowServerName", HideShowBaseAttribute.Type.Property)]
+    [ShowIf("CanShowServerName")]
     public string serverName;
     bool CanShowServerName => !startFromScratch && overrideServerName;
 
     [HideIf("startFromScratch")]
     public bool overrideLevel;
-    [ShowIf("CanShowLevel", HideShowBaseAttribute.Type.Property)]
+    [ShowIf("CanShowLevel")]
     public Level level;
     bool CanShowLevel => !startFromScratch && overrideLevel;
 

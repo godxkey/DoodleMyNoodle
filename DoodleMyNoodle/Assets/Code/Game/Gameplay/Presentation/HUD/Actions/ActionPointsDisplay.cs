@@ -16,9 +16,9 @@ public class ActionPointsDisplay : GamePresentationBehaviour
 
     protected override void OnGamePresentationUpdate()
     {
-        if (SimWorld.TryGetComponentData(SimWorldCache.LocalPawn, out ActionPoints actions))
+        if (SimWorld.TryGetComponentData(Cache.LocalPawn, out ActionPoints actions))
         {
-            if (SimWorld.TryGetComponentData(SimWorldCache.LocalPawn, out MaximumInt<ActionPoints> maximumActions))
+            if (SimWorld.TryGetComponentData(Cache.LocalPawn, out MaximumInt<ActionPoints> maximumActions))
             {
                 UIUtility.ResizeGameObjectList(_actionPointElements, maximumActions, _actionPointPrefab, transform);
             }

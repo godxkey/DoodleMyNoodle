@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _loggerSettings:
-  - Name: slim
+  - Name: EasyToRead
     FallbackRuleSet:
       OutputLogType: 1
       OutputTime: 1
@@ -69,3 +69,12 @@ MonoBehaviour:
         OutputLogChannel: 1
         OutputStackTrace: 1
         StackTraceLineCount: 5
+  - Name: Full
+    FallbackRuleSet:
+      OutputLogType: 1
+      OutputTime: 1
+      OutputFrameCount: 1
+      OutputLogChannel: 1
+      OutputStackTrace: 1
+      StackTraceLineCount: 999
+    Rules: []

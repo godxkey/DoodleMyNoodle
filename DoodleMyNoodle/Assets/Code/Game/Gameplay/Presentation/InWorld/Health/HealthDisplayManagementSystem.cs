@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using static fixMath;
 
-public class HealthDisplayManagementSystem : GamePresentationBehaviour
+public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDisplayManagementSystem>
 {
     public GameObject HealthBarPrefab;
 
@@ -16,11 +16,11 @@ public class HealthDisplayManagementSystem : GamePresentationBehaviour
     {
         int healthBarAmount = 0;
         
-        Team localPlayerTeam = SimWorldCache.LocalPawnTeam;
+        Team localPlayerTeam = Cache.LocalPawnTeam;
 
-        SimWorldCache.SimWorld.Entities.ForEach((Entity pawn, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
+        Cache.SimWorld.Entities.ForEach((Entity pawn, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
         {
-            Entity pawnController = CommonReads.GetPawnController(SimWorldCache.SimWorld, pawn);
+            Entity pawnController = CommonReads.GetPawnController(Cache.SimWorld, pawn);
 
             // shell is empty, no healthbar
             if (pawnController == Entity.Null)
@@ -29,14 +29,14 @@ public class HealthDisplayManagementSystem : GamePresentationBehaviour
             }
 
             // Remove healthbar for self
-            if (pawnController == SimWorldCache.LocalController)
+            if (pawnController == Cache.LocalController)
             {
                 return;
             }
 
             fix healthRatio = (fix)entityHealth.Value / (fix)entityMaximumHealth.Value;
 
-            Team CurrentPawnTeam = SimWorldCache.SimWorld.GetComponentData<Team>(pawnController);
+            Team CurrentPawnTeam = Cache.SimWorld.GetComponentData<Team>(pawnController);
 
             SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, healthRatio, localPlayerTeam.Value == CurrentPawnTeam.Value);
 

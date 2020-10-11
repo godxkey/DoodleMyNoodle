@@ -16,8 +16,6 @@ public class MessageDisplaySystem : GamePresentationSystem<MessageDisplaySystem>
     private DirtyValue<Message?> _displayedMessage;
     private DirtyValue<Vector3> _messagePosition;
 
-    public override bool SystemReady => true;
-
     protected override void OnGamePresentationUpdate()
     {
         UpdateData();

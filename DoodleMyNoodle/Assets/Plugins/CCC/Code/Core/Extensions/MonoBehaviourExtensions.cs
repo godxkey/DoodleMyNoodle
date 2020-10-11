@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX;
 
 public static class MonoBehaviourExtensions
 {
@@ -19,5 +20,10 @@ public static class MonoBehaviourExtensions
         else yield return new WaitForSeconds(delay);
 
         action.Invoke();
+    }
+
+    public static bool HasComponent<T>(this Component component) where T : Component
+    {
+        return component.TryGetComponent<T>(out _);
     }
 }

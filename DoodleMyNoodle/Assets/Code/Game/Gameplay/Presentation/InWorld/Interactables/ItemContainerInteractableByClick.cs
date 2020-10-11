@@ -10,12 +10,12 @@ public class ItemContainerInteractableByClick : ObjectInteractableByClick
 
     protected override void OnInteractionTriggeredByInput()
     {
-        if (SimWorldCache.LocalPawn == Entity.Null || SimEntity == Entity.Null)
+        if (Cache.LocalPawn == Entity.Null || SimEntity == Entity.Null)
             return;
 
         if (SimWorld.TryGetComponentData(SimEntity, out Interacted interacted))
         {
-            if (SimWorldCache.LocalPawn == interacted.Instigator)
+            if (Cache.LocalPawn == interacted.Instigator)
             {
                 _inventoryDisplayed = true;
                 InteractableInventoryDisplaySystem.Instance.SetupDisplayForInventory(SimEntity);
@@ -25,7 +25,7 @@ public class ItemContainerInteractableByClick : ObjectInteractableByClick
 
     protected override void OnGamePresentationUpdate() 
     {
-        if (SimWorldCache.LocalPawn == Entity.Null || SimEntity == Entity.Null || !InteractableInventoryDisplaySystem.Instance.IsOpen())
+        if (Cache.LocalPawn == Entity.Null || SimEntity == Entity.Null || !InteractableInventoryDisplaySystem.Instance.IsOpen())
         {
             _inventoryDisplayed = false;
             return;
@@ -33,10 +33,10 @@ public class ItemContainerInteractableByClick : ObjectInteractableByClick
 
         if (SimWorld.TryGetComponentData(SimEntity, out Interacted interacted))
         {
-            if (_inventoryDisplayed && SimWorldCache.LocalPawn == interacted.Instigator)
+            if (_inventoryDisplayed && Cache.LocalPawn == interacted.Instigator)
             {
                 fix3 itemContainerPosition = SimWorld.GetComponentData<FixTranslation>(SimEntity);
-                fix3 localPawnPosition = SimWorld.GetComponentData<FixTranslation>(SimWorldCache.LocalPawn);
+                fix3 localPawnPosition = SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn);
 
                 fix interactionTileRange = SimWorld.GetComponentData<Interactable>(SimEntity).Range;
 

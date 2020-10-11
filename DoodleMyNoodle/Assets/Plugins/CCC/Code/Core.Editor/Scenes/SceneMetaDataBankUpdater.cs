@@ -27,11 +27,8 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
 
     static void UpdateMetaData(LogMode logMode)
     {
-        Log.Info("UpdateMetaData()");
-        Log.Info($"UpdateMetaData: LoadOrCreateScriptableObjectAsset<SceneMetaDataBank>({ASSET_PATH})");
         SceneMetaDataBank dataAsset = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<SceneMetaDataBank>(ASSET_PATH);
 
-        Log.Info($"UpdateMetaData: dataAsset == {dataAsset}");
         if (dataAsset == null)
         {
             Debug.LogWarning($"Could not update SceneMetaDataBank. None found at [{ASSET_PATH}]");
@@ -39,11 +36,9 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
         }
 
         List<SceneMetaDataBank.SceneMetaData> oldData = dataAsset.SceneMetaDatasInternal;
-        Log.Info($"UpdateMetaData: oldData == {(oldData == null ? "null" : oldData.Count.ToString())}");
         List<SceneMetaDataBank.SceneMetaData> newData = new List<SceneMetaDataBank.SceneMetaData>();
 
         int buildIndex = 0;
-        Log.Info($"UpdateMetaData: foreach...");
         foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
         {
             SceneMetaDataBank.SceneMetaData metaData = new SceneMetaDataBank.SceneMetaData();
@@ -58,11 +53,8 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
         }
 
         dataAsset.SceneMetaDatasInternal = newData;
-        Log.Info($"UpdateMetaData: newData == {newData.Count}");
-
 
         // fbessette this diff algo could be optimized
-        Log.Info($"UpdateMetaData: Logs");
         if (logMode == LogMode.Full || logMode == LogMode.ChangesOnly)
         {
             if (oldData != null)
@@ -101,7 +93,6 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
             DebugEditor.LogAssetIntegrity("Scene meta-data bank updated");
         }
 
-        Log.Info($"UpdateMetaData: SetDirty(dataAsset)");
         EditorUtility.SetDirty(dataAsset);
         AssetDatabase.SaveAssets();
     }
@@ -148,8 +139,6 @@ public class SceneMetaDataBankUpdater : AssetPostprocessor
 
         if (importedAssets.Contains("ProjectSettings/EditorBuildSettings.asset"))
         {
-            Log.Info(stringBuilder.ToString());
-            Log.Info("UpdateMetaData(LogMode.ChangesOnly)!");
             UpdateMetaData(LogMode.ChangesOnly);
         }
     }

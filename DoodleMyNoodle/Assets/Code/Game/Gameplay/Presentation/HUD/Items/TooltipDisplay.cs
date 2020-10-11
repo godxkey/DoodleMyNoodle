@@ -5,18 +5,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.Entities;
+using System;
 
 public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
 {
-    public override bool SystemReady { get => true; }
-
     // TOOLTIP
-    [SerializeField] private GameObject _toolTipDisplay;
+    [SerializeField] private GameObject _tooltipDisplay;
     [SerializeField] private Image _tooltipContour;
     [SerializeField] private TextMeshProUGUI _itemName;
 
     [SerializeField] private Transform _itemDescriptionContainer;
-    [SerializeField] private GameObject _itemDescriptionPrefab;
+    [SerializeField] private TooltipItemDescription _itemDescriptionPrefab;
 
     [SerializeField] private Color _common = Color.white;
     [SerializeField] private Color _uncommon = Color.green;
@@ -33,7 +32,23 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
     [Range(0.0f, 1.0f)]
     [SerializeField] private float _displacementRatioY = 0;
 
-    private bool _tooltipShouldBeDisplayed = false;
+    struct DescriptionData
+    {
+        public string Desc;
+        public Color Color;
+        public bool AddBG;
+
+        public DescriptionData(string desc, Color color, bool addBG)
+        {
+            Desc = desc ?? string.Empty;
+            Color = color;
+            AddBG = addBG;
+        }
+    }
+
+    private bool _shouldBeDisplayed = false;
+    private List<TooltipItemDescription> _descriptionElements = new List<TooltipItemDescription>();
+    private List<DescriptionData> _descriptionData = new List<DescriptionData>();
 
     private Coroutine _currentDelayedTooltipActivationCoroutine = null;
 
@@ -41,20 +56,21 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
     {
         base.Awake();
 
-        _toolTipDisplay.SetActive(false);
+        _tooltipDisplay.SetActive(false);
+        _itemDescriptionContainer.GetComponentsInChildren(_descriptionElements);
     }
 
     protected override void OnGamePresentationUpdate()
     {
-        _toolTipDisplay.SetActive(_tooltipShouldBeDisplayed);
+        _tooltipDisplay.SetActive(_shouldBeDisplayed);
 
-        if (_toolTipDisplay.activeSelf)
+        if (_tooltipDisplay.activeSelf)
         {
-            UpdateToolTipPosition();
+            UpdateTooltipPosition();
         }
     }
 
-    public void ActivateToolTipDisplay(ItemVisualInfo itemInfo, Entity itemOwner)
+    public void ActivateTooltipDisplay(ItemVisualInfo itemInfo, Entity itemOwner)
     {
         if (!Input.GetKey(KeyCode.LeftAlt))
         {
@@ -62,7 +78,7 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
             {
                 _currentDelayedTooltipActivationCoroutine = this.DelayedCall(_displayDelay, () =>
                 {
-                    ActivateToolTipDisplay(itemInfo, itemOwner);
+                    ActivateTooltipDisplay(itemInfo, itemOwner);
                 });
 
                 return;
@@ -74,20 +90,15 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
             }
         }
 
-        foreach (TooltipItemDescription itemDescription in _itemDescriptionContainer.GetComponentsInChildren<TooltipItemDescription>())
-        {
-            Destroy(itemDescription.gameObject);
-        }
-
         if (itemInfo.ID != null)
         {
-            Entity itemEntity = GetToolTipItemEntity(itemInfo.ID.GetSimAssetId(), itemOwner);
+            Entity itemEntity = FindItemFromAssetId(itemInfo.ID.GetSimAssetId(), itemOwner);
             if (itemEntity != Entity.Null)
             {
                 _itemName.text = itemInfo.Name; // update title Text
-                UpdateToolTipDescription(itemInfo.EffectDescription, itemEntity, itemInfo.ItemPrefab);
+                UpdateTooltipDescription(itemInfo.EffectDescription, itemEntity, itemInfo.ItemPrefab);
                 UpdateTooltipColors(itemInfo.Rarity);
-                _tooltipShouldBeDisplayed = true;
+                _shouldBeDisplayed = true;
             }
         }
     }
@@ -100,10 +111,10 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
             _currentDelayedTooltipActivationCoroutine = null;
         }
 
-        _tooltipShouldBeDisplayed = false;
+        _shouldBeDisplayed = false;
     }
 
-    private Entity GetToolTipItemEntity(SimAssetId ID, Entity itemOwner)
+    private Entity FindItemFromAssetId(SimAssetId ID, Entity itemOwner)
     {
         if (SimWorld.TryGetBufferReadOnly(itemOwner, out DynamicBuffer<InventoryItemReference> inventory))
         {
@@ -135,42 +146,42 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         return Entity.Null;
     }
 
-    private void UpdateToolTipDescription(string description, Entity item, GameObject itemPrefab)
+    private void UpdateTooltipDescription(string description, Entity item, GameObject itemPrefab)
     {
+        _descriptionData.Clear();
         if (item != Entity.Null)
         {
             // Order of appearance
-            TryAddTooltipItemDescription<ItemDamageData>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemHealthPointsToHealData>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemRangeData>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemActionPointCostData>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemHealthPointCostData>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemTimeCooldownData>(item, itemPrefab);
-            TryAddTooltipItemDescription<ItemEffectDurationData>(item, itemPrefab);
+            TryAddTooltipItemDescription<ItemDamageData>();
+            TryAddTooltipItemDescription<ItemHealthPointsToHealData>();
+            TryAddTooltipItemDescription<ItemRangeData>();
+            TryAddTooltipItemDescription<ItemActionPointCostData>();
+            TryAddTooltipItemDescription<ItemHealthPointCostData>();
+            TryAddTooltipItemDescription<ItemTimeCooldownData>();
+            TryAddTooltipItemDescription<ItemEffectDurationData>();
 
-            CreateTooltipItemDescription(description, Color.white, true);
+            _descriptionData.Add(new DescriptionData(description, Color.white, true));
         }
-    }
 
-    private void TryAddTooltipItemDescription<TItem>(Entity itemEntity, GameObject itemPrefab)
-        where TItem : struct, IComponentData, IStatInt
-    {
-        IItemSettingDescription<TItem> itemAuth = itemPrefab.GetComponent<IItemSettingDescription<TItem>>();
-        if (SimWorld.TryGetComponentData(itemEntity, out TItem item) && (itemAuth != null))
+        UIUtility.UpdateGameObjectList(_descriptionElements, _descriptionData, _itemDescriptionPrefab, _itemDescriptionContainer,
+            onUpdate: (element, data) => element.UpdateDescription(data.Desc, data.Color, data.AddBG));
+
+
+        // local functions
+        void TryAddTooltipItemDescription<TItemStat>()
+            where TItemStat : struct, IComponentData, IStatInt
         {
-            CreateTooltipItemDescription(itemAuth.GetDescription(item), itemAuth.GetColor());
+            IItemSettingDescription<TItemStat> itemStatAuth = itemPrefab.GetComponent<IItemSettingDescription<TItemStat>>();
+            if (SimWorld.TryGetComponentData(item, out TItemStat stat) && (itemStatAuth != null))
+            {
+                _descriptionData.Add(new DescriptionData(itemStatAuth.GetDescription(stat), itemStatAuth.GetColor(), false));
+            }
         }
-    }
-
-    private void CreateTooltipItemDescription(string description, Color color, bool addBG = false)
-    {
-        TooltipItemDescription newItemDescription = Instantiate(_itemDescriptionPrefab, _itemDescriptionContainer).GetComponent<TooltipItemDescription>();
-        newItemDescription.UpdateDescription(description, color, addBG);
     }
 
     private void UpdateTooltipColors(ItemVisualInfo.ItemRarity rarity)
     {
-        Color currentColor = Color.white;
+        Color currentColor;
         switch (rarity)
         {
             default:
@@ -195,7 +206,7 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         _tooltipContour.color = currentColor;
     }
 
-    private void UpdateToolTipPosition()
+    private void UpdateTooltipPosition()
     {
         bool exitTop = Input.mousePosition.y >= (Screen.height - _screenEdgeToolTipLimit);
         bool exitRight = Input.mousePosition.x >= (Screen.width - _screenEdgeToolTipLimit);
@@ -206,6 +217,6 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         displacementRatioX *= Screen.width;
         displacementRatioY *= Screen.height;
 
-        transform.position = Input.mousePosition + new Vector3(displacementRatioX, displacementRatioY, 0);
+        _tooltipDisplay.transform.position = Input.mousePosition + new Vector3(displacementRatioX, displacementRatioY, 0);
     }
 }

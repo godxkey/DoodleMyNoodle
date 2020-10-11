@@ -3,6 +3,6 @@ namespace CCC.InspectorDisplay
 {
     public class ShowIfAttribute : HideShowBaseAttribute
     {
-        public ShowIfAttribute(string name, Type type = Type.Field) : base(name, type) { }
+        public ShowIfAttribute(string conditionalMemberName) : base(conditionalMemberName) { }
     }
 }

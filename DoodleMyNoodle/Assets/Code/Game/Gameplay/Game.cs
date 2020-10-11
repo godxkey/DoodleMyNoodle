@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngineX;
@@ -16,19 +15,17 @@ public class Game : MonoBehaviour
     public static bool Ready => s_instance && s_instance._ready;
     public static bool Started => s_instance && s_instance._started;
 
-    [SerializeField] SceneInfo _localSpecificScene;
-    [SerializeField] SceneInfo _serverSpecificScene;
-    [SerializeField] SceneInfo _clientSpecificScene;
+    [SerializeField] GameSystemBank _systemBank;
+    [SerializeField] RectTransform _sharedCanvas;
 
     static Game s_instance;
 
     bool _ready;
     bool _started;
-    bool _playModeSpecificSceneRequested = false;
-    bool _playModeSpecificSceneLoaded = false;
+    bool _systemsCreated = false;
 
-    ISceneLoadPromise _sceneLoadPromise;
     List<GameMonoBehaviour> _lateStarters = new List<GameMonoBehaviour>();
+
 
     void Awake()
     {
@@ -41,42 +38,45 @@ public class Game : MonoBehaviour
         PlayingAsClient = false;
         PlayingAsServer = false;
         s_instance = null;
-
-        if (_sceneLoadPromise != null)
-            _sceneLoadPromise.OnComplete -= OnPlayModeSpecificSceneLoaded;
     }
 
     void Update()
     {
-        if (!_playModeSpecificSceneRequested)
+        if (!_systemsCreated)
         {
-            SceneInfo sceneToLoad = null;
             switch (GameStateManager.currentGameState)
             {
                 case GameStateInGameClient clientState:
-                    sceneToLoad = _clientSpecificScene;
                     PlayingAsClient = true;
                     break;
                 case GameStateInGameServer serverState:
-                    sceneToLoad = _serverSpecificScene;
                     PlayingAsServer = true;
                     break;
                 case GameStateInGameLocal localState:
-                    sceneToLoad = _localSpecificScene;
                     PlayingAsLocal = true;
                     break;
             }
 
-            if(sceneToLoad != null)
+            if (PlayingAsServer || PlayingAsLocal || PlayingAsClient)
             {
-                _sceneLoadPromise = SceneService.LoadAsync(sceneToLoad.SceneName, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D);
-                _sceneLoadPromise.OnComplete += OnPlayModeSpecificSceneLoaded;
-                _playModeSpecificSceneRequested = true;
+                _systemsCreated = true;
+            
+                _gameContentScene = SceneManager.CreateScene("Game Content (dynamic)");
+                _gameSystemScene = SceneManager.CreateScene("Game Systems (dynamic)");
+
+                if (PlayingAsLocal)
+                    InstantiateCoreSystems(GameSystemOnlineFlags.Local);
+            
+                if (PlayingAsServer)
+                    InstantiateCoreSystems(GameSystemOnlineFlags.Server);
+            
+                if (PlayingAsClient)
+                    InstantiateCoreSystems(GameSystemOnlineFlags.Client);
             }
         }
 
 
-        if (_playModeSpecificSceneLoaded && !_ready)
+        if (_systemsCreated && !_ready)
         {
             switch (GameStateManager.currentGameState)
             {
@@ -104,16 +104,16 @@ public class Game : MonoBehaviour
 
         if (_ready && !_started)
         {
-            for (int i = 0; i < GameSystem.unreadySystems.Count; i++)
+            for (int i = 0; i < GameSystem.s_unreadySystems.Count; i++)
             {
-                if (GameSystem.unreadySystems[i].SystemReady)
+                if (GameSystem.s_unreadySystems[i].SystemReady)
                 {
-                    GameSystem.unreadySystems.RemoveAt(i);
+                    GameSystem.s_unreadySystems.RemoveAt(i);
                     i--;
                 }
             }
 
-            if (GameSystem.unreadySystems.Count == 0)
+            if (GameSystem.s_unreadySystems.Count == 0)
             {
                 _started = true;
 
@@ -144,7 +144,6 @@ public class Game : MonoBehaviour
                     Log.Exception(e);
                 }
 #endif
-
             }
         }
     }
@@ -197,13 +196,10 @@ public class Game : MonoBehaviour
         }
     }
 
-    void OnPlayModeSpecificSceneLoaded(ISceneLoadPromise sceneLoadPromise)
-    {
-        _playModeSpecificSceneLoaded = true;
-        _sceneLoadPromise = null;
-    }
-
     int _lateStarterIterator;
+    private List<GameSystem> _systems;
+    private Scene _gameContentScene;
+    private Scene _gameSystemScene;
 
     public static void AddLateStarter(GameMonoBehaviour gameMonoBehaviour)
     {
@@ -216,14 +212,14 @@ public class Game : MonoBehaviour
     private void ExecuteLateStarter()
     {
         _lateStarterIterator = 0;
-        
+
         for (; _lateStarterIterator < _lateStarters.Count; _lateStarterIterator++)
         {
             _lateStarters[_lateStarterIterator].OnGameStart();
         }
-        
+
         _lateStarterIterator = -1;
-        
+
         _lateStarters.Clear();
     }
 
@@ -235,13 +231,51 @@ public class Game : MonoBehaviour
         }
 
         int index = s_instance._lateStarters.IndexOf(gameMonoBehaviour);
-        if(index != -1)
+        if (index != -1)
         {
-            if(s_instance._lateStarterIterator >= index)
+            if (s_instance._lateStarterIterator >= index)
             {
                 s_instance._lateStarterIterator--;
             }
             s_instance._lateStarters.RemoveAt(index);
         }
+    }
+
+    private void InstantiateCoreSystems(GameSystemOnlineFlags onlineFlags)
+    {
+        InstantiateSystems((sys) => sys.SystemSettings.Type == GameSystemType.Core && (sys.SystemSettings.OnlineFlags & onlineFlags) != 0);
+    }
+
+    private void InstantiateSystems(Predicate<GameSystem> predicate)
+    {
+        SceneManager.SetActiveScene(_gameSystemScene);
+        foreach (var item in _systemBank.Prefabs)
+        {
+            if (!item)
+                continue;
+
+            if (predicate(item))
+            {
+                // Instantiate UI system
+                if (item.HasComponent<RectTransform>() && !item.HasComponent<Canvas>())
+                {
+                    Instantiate(item, _sharedCanvas);
+                }
+                // Instantiate normal system
+                else
+                {
+                    Instantiate(item);
+                }
+            }
+        }
+        SceneManager.SetActiveScene(_gameContentScene);
+    }
+
+    public static void InstantiateGameplayPresentationSystems()
+    {
+        if (s_instance == null)
+            return;
+
+        s_instance.InstantiateSystems((sys) => sys.SystemSettings.Type == GameSystemType.GameplayPresentation);
     }
 }
