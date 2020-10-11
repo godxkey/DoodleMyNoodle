@@ -25,7 +25,7 @@
 
             // Render State
             Blend One One, One One
-            Cull Back
+            Cull Off
             ZTest LEqual
             ZWrite Off
             // ColorMask: <None>
