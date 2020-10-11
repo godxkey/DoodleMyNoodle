@@ -1,9 +1,1 @@
-tooltip remains open
-
-explosive arrow explose sur les murs
-
 rebalance les coffres dans la map
-
-tour un peu plus long
-
-espace pour next turn, conflit avec entré du nom (check EventSystem.current.currentSelectedGameObject)
