@@ -7,13 +7,8 @@ NullReferenceException: Object reference not set to an instance of an object
   at Unity.Entities.EntityManager.GetBufferReadOnly[T] (Unity.Entities.Entity entity) [0x0000e] in C:\Users\Alexandre Blanchet\Documents\DMN\DoodleMyNoodle\Packages\com.unity.entities-ccc-modified\Unity.Entities\EntityManagerAccessComponentData.cs:315 
   at UpdateItemCooldownSystem
 
-explosive arrow explose sur les murs
-
 rebalance les coffres dans la map
 
-tour un peu plus long
-
-espace pour next turn, conflit avec entré du nom (check EventSystem.current.currentSelectedGameObject)
 
 UI.Selectable null reference (highlight + wasd)
 NullReferenceException: Object reference not set to an instance of an object

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.Entities;
 using System;
+using UnityEngine.EventSystems;
 
 public class ReadyButton : GamePresentationBehaviour
 {
@@ -66,7 +67,7 @@ public class ReadyButton : GamePresentationBehaviour
         UpdateView();
 
         // Shortcut
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && EventSystem.current.currentSelectedGameObject == null)
         {
             _button.onClick.Invoke();
         }

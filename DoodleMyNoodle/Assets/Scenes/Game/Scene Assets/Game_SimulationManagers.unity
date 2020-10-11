@@ -319,7 +319,7 @@ MonoBehaviour:
   AITurnDuration:
     RawValue: 85899345920
   PlayerTurnDuration:
-    RawValue: 85899345920
+    RawValue: 193273528320
 --- !u!114 &1308979965
 MonoBehaviour:
   m_ObjectHideFlags: 0
