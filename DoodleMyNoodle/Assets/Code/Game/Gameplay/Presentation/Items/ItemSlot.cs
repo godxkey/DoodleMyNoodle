@@ -25,6 +25,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     private Entity _itemsOwner;
     private bool _init;
+    private bool _tooltipOn;
 
     private void InitIfNeeded()
     {
@@ -71,27 +72,67 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         else
         {
             ItemIcon.color = ItemIcon.color.ChangedAlpha(0);
-            Background.color = _startBackgroundColor;
         }
+
+        if (_mouseInside)
+        {
+            // force refresh tooltip content
+            SetTooltip(true, force: true);
+        }
+
+        UpdateBackgroundColor();
     }
 
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
         _mouseInside = true;
-
-        if (_currentItem != null)
-        {
-            Background.color = Color.white;
-            TooltipDisplay.Instance.ActivateTooltipDisplay(_currentItem, _itemsOwner);
-        }
+        UpdateBackgroundColor();
+        SetTooltip(true);
     }
 
     public virtual void OnPointerExit(PointerEventData eventData)
     {
         _mouseInside = false;
 
-        Background.color = _startBackgroundColor;
-        TooltipDisplay.Instance.DeactivateToolTipDisplay();
+        SetTooltip(false);
+    }
+
+    void OnDisable()
+    {
+        _mouseInside = false;
+        SetTooltip(false);
+    }
+
+    private void UpdateBackgroundColor()
+    {
+        if (_currentItem && _mouseInside)
+        {
+            Background.color = Color.white;
+        }
+        else
+        {
+            Background.color = _startBackgroundColor;
+        }
+    }
+
+    private void SetTooltip(bool active, bool force = false)
+    {
+        if (_tooltipOn == active && !force)
+            return;
+
+        _tooltipOn = active;
+
+        if (active)
+        {
+            if (_currentItem)
+            {
+                TooltipDisplay.Instance.ActivateTooltipDisplay(_currentItem, _itemsOwner);
+            }
+        }
+        else
+        {
+            TooltipDisplay.Instance.DeactivateToolTipDisplay();
+        }
     }
 
     public void ItemSlotClicked()

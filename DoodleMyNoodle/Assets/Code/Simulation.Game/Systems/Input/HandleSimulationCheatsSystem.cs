@@ -29,6 +29,17 @@ public class SimInputCheatAddAllItems : SimCheatInput
     public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
 }
 
+[NetSerializable]
+public class SimInputCheatNextTurn : SimCheatInput
+{
+}
+
+[NetSerializable]
+public class SimInputCheatInfiniteAP : SimCheatInput
+{
+    public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
+}
+
 [UpdateInGroup(typeof(InputSystemGroup))]
 public class HandleSimulationCheatsSystem : SimComponentSystem
 {
@@ -128,6 +139,27 @@ public class HandleSimulationCheatsSystem : SimComponentSystem
                             inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
                         }
                     }
+                }
+                break;
+            }
+
+            case SimInputCheatNextTurn nextTurn:
+            {
+                CommonWrites.RequestNextTurn(Accessor);
+                break;
+            }
+
+            case SimInputCheatInfiniteAP infiniteAP:
+            {
+                CommonWrites.RequestNextTurn(Accessor);
+
+                Entity player = CommonReads.FindPlayerEntity(Accessor, infiniteAP.PlayerId);
+
+                if (EntityManager.Exists(player) &&
+                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
+                {
+                    EntityManager.SetComponentData(pawn, new MaximumInt<ActionPoints>() { Value = 999999 });
+                    EntityManager.SetComponentData(pawn, new ActionPoints() { Value = 999999 });
                 }
                 break;
             }

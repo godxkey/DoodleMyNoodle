@@ -91,4 +91,27 @@ public static class SimulationCheats
             PlayerId = localPlayerInfo.SimPlayerId,
         });
     }
+
+    [ConsoleCommand(Description = "Next Turn")]
+    public static void CheatNextTurn()
+    {
+        GameMonoBehaviourHelpers.SubmitInput(new SimInputCheatNextTurn());
+    }
+
+    [ConsoleCommand(Description = "Give your pawn infinit action points")]
+    public static void CheatInfinitAP()
+    {
+        var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
+
+        if (localPlayerInfo == null)
+        {
+            Log.Warning("No local player found");
+            return;
+        }
+
+        GameMonoBehaviourHelpers.SubmitInput(new SimInputCheatInfiniteAP()
+        {
+            PlayerId = localPlayerInfo.SimPlayerId,
+        });
+    }
 }

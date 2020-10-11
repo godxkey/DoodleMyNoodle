@@ -16,7 +16,6 @@ public class Game : MonoBehaviour
     public static bool Started => s_instance && s_instance._started;
 
     [SerializeField] GameSystemBank _systemBank;
-    [SerializeField] RectTransform _sharedCanvas;
 
     static Game s_instance;
 
@@ -249,23 +248,14 @@ public class Game : MonoBehaviour
     private void InstantiateSystems(Predicate<GameSystem> predicate)
     {
         SceneManager.SetActiveScene(_gameSystemScene);
-        foreach (var item in _systemBank.Prefabs)
+        foreach (GameSystem systemPrefab in _systemBank.Prefabs)
         {
-            if (!item)
+            if (!systemPrefab)
                 continue;
 
-            if (predicate(item))
+            if (predicate(systemPrefab))
             {
-                // Instantiate UI system
-                if (item.HasComponent<RectTransform>() && !item.HasComponent<Canvas>())
-                {
-                    Instantiate(item, _sharedCanvas);
-                }
-                // Instantiate normal system
-                else
-                {
-                    Instantiate(item);
-                }
+                Instantiate(systemPrefab);
             }
         }
         SceneManager.SetActiveScene(_gameContentScene);

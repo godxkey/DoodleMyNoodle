@@ -187,8 +187,8 @@ MonoBehaviour:
     type: 3}
   _common: {r: 1, g: 1, b: 1, a: 1}
   _uncommon: {r: 0, g: 1, b: 0, a: 1}
-  _rare: {r: 0, g: 0, b: 1, a: 1}
-  _mythic: {r: 1, g: 0, b: 1, a: 1}
+  _rare: {r: 0.3820755, g: 0.52730846, b: 1, a: 1}
+  _mythic: {r: 1, g: 0.3726415, b: 1, a: 1}
   _legendary: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _screenEdgeToolTipLimit: 200
   _displayDelay: 0.5

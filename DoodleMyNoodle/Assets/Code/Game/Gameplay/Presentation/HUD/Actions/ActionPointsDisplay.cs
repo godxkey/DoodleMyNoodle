@@ -4,6 +4,7 @@ using UnityEngine;
 public class ActionPointsDisplay : GamePresentationBehaviour
 {
     [SerializeField] private ActionPointDisplayElement _actionPointPrefab;
+    [SerializeField] private int _maxDisplayedAP = 20;
 
     private List<ActionPointDisplayElement> _actionPointElements = new List<ActionPointDisplayElement>();
 
@@ -20,7 +21,7 @@ public class ActionPointsDisplay : GamePresentationBehaviour
         {
             if (SimWorld.TryGetComponentData(Cache.LocalPawn, out MaximumInt<ActionPoints> maximumActions))
             {
-                UIUtility.ResizeGameObjectList(_actionPointElements, maximumActions, _actionPointPrefab, transform);
+                UIUtility.ResizeGameObjectList(_actionPointElements, Mathf.Min(_maxDisplayedAP, maximumActions), _actionPointPrefab, transform);
             }
 
             // Reset all & Set filled or available ones

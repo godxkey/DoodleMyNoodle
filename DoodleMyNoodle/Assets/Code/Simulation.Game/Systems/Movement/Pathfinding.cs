@@ -185,7 +185,9 @@ public static class Pathfinding
                     if (!newGoals.IsCreated)
                     {
                         newGoals = new NativeList<int2>(currentGoals.Length, Allocator.Temp);
-                        currentGoals.CopyTo(newGoals);
+
+                        foreach (var item in currentGoals) // NativeSlice doesn't have the required CopyTo method ...
+                            newGoals.Add(item);
                     }
 
                     newGoals.RemoveAtSwapBack(i);
