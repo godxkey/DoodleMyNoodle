@@ -111,11 +111,38 @@ public class UpdateBruteAISystem : SimComponentSystem
                 UpdateMentalState_Patrol(controller, controllerTeam, ref agentData, agentPawn);
                 break;
             case BruteAIState.PositionForAttack:
-                UpdateMentalState_PositionForAttack(controller, controllerTeam, ref agentData, agentPawn);
-                break;
             case BruteAIState.Attack:
-                UpdateMentalState_Attacking(controller, controllerTeam, ref agentData, agentPawn);
+            {
+                // if target does not exit anymore, back to patrol
+                if (!EntityManager.Exists(agentData.AttackTarget) ||
+                    !EntityManager.TryGetComponentData(agentData.AttackTarget, out FixTranslation enemyPos))
+                {
+                    agentData.State = BruteAIState.Patrol;
+                    return;
+                }
+
+                // if target's controller is not our enemy anymore, back to patrol
+                var targetController = EntityManager.GetComponentData<Controllable>(agentData.AttackTarget).CurrentController;
+                if (!EntityManager.Exists(targetController) ||
+                    !EntityManager.TryGetComponentData(targetController, out Team team) ||
+                    team == controllerTeam)
+                {
+                    agentData.State = BruteAIState.Patrol;
+                    return;
+                }
+
+                int2 enemyTile = Helpers.GetTile(enemyPos);
+                int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn));
+                if (lengthmanhattan(enemyTile - agentTile) == 1)
+                {
+                    agentData.State = BruteAIState.Attack;
+                }
+                else
+                {
+                    agentData.State = BruteAIState.PositionForAttack;
+                }
                 break;
+            }
         }
     }
 
@@ -175,40 +202,6 @@ public class UpdateBruteAISystem : SimComponentSystem
             {
                 agentData.State = BruteAIState.PositionForAttack;
             }
-        }
-    }
-
-    private void UpdateMentalState_PositionForAttack(in Entity controller, in Team controllerTeam, ref BruteAIData agentData, in Entity agentPawn)
-    {
-        if (!EntityManager.Exists(agentData.AttackTarget) || !EntityManager.TryGetComponentData(agentData.AttackTarget, out FixTranslation enemyPos))
-        {
-            agentData.State = BruteAIState.Patrol;
-            return;
-        }
-
-        int2 enemyTile = Helpers.GetTile(enemyPos);
-        int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn));
-        if (lengthmanhattan(enemyTile - agentTile) == 1)
-        {
-            agentData.State = BruteAIState.Attack;
-            return;
-        }
-    }
-
-    private void UpdateMentalState_Attacking(in Entity controller, in Team controllerTeam, ref BruteAIData agentData, in Entity agentPawn)
-    {
-        if (!EntityManager.Exists(agentData.AttackTarget) || !EntityManager.TryGetComponentData(agentData.AttackTarget, out FixTranslation enemyPos))
-        {
-            agentData.State = BruteAIState.Patrol;
-            return;
-        }
-
-        int2 enemyTile = Helpers.GetTile(enemyPos);
-        int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn));
-        if (lengthmanhattan(enemyTile - agentTile) != 1)
-        {
-            agentData.State = BruteAIState.PositionForAttack;
-            return;
         }
     }
 

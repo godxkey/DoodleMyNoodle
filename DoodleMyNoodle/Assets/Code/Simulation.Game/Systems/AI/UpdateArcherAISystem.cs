@@ -165,7 +165,11 @@ public class UpdateArcherAISystem : SimComponentSystem
         // If the archer has spotted an enemy once, it can track it through walls (compensates for lack of memory)
         if (EntityManager.Exists(previousAttackTarget) && EntityManager.HasComponent<FixTranslation>(previousAttackTarget))
         {
-            _enemies.AddUnique(previousAttackTarget);
+            Entity targetController = EntityManager.GetComponentData<Controllable>(previousAttackTarget).CurrentController;
+            if (EntityManager.Exists(targetController) && EntityManager.TryGetComponentData(targetController, out Team team) && team != controllerTeam)
+            {
+                _enemies.AddUnique(previousAttackTarget);
+            }
         }
 
         if (_enemies.Length == 0)

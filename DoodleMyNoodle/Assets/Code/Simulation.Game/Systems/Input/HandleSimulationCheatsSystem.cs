@@ -151,8 +151,6 @@ public class HandleSimulationCheatsSystem : SimComponentSystem
 
             case SimInputCheatInfiniteAP infiniteAP:
             {
-                CommonWrites.RequestNextTurn(Accessor);
-
                 Entity player = CommonReads.FindPlayerEntity(Accessor, infiniteAP.PlayerId);
 
                 if (EntityManager.Exists(player) &&
