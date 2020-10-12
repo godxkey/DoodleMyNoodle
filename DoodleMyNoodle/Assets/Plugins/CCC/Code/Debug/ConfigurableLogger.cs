@@ -1,6 +1,7 @@
 using CCC.InspectorDisplay;
 using CCC.IO;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -47,7 +48,7 @@ public class ConfigurableLogger : IDisposable
     {
         if (Log.Enabled)
         {
-            string unityLogPath = Application.consoleLogPath;//
+            string unityLogPath = Application.consoleLogPath;
 
             string path =
                 $"{Path.GetDirectoryName(unityLogPath)}" +
@@ -58,6 +59,8 @@ public class ConfigurableLogger : IDisposable
 
             _fileWriter = new FileWriter(_pendingLogs, path);
             Log.Internals.LogMessageReceivedThreaded += OnLogReceived;
+
+            StartUpdateIfNeeded();
         }
     }
 
@@ -76,7 +79,6 @@ public class ConfigurableLogger : IDisposable
         {
             str = new StringBuilder();
         }
-
 
         if (!Rules.TryGetValue(logType, out RuleSet ruleSet))
         {
@@ -117,7 +119,7 @@ public class ConfigurableLogger : IDisposable
         if (ruleSet.OutputFrameCount)
         {
             str.Append("[F");
-            str.Append(Time.frameCount);
+            str.Append(GetFrameCount());
             str.Append("] ");
         }
 
@@ -193,14 +195,61 @@ public class ConfigurableLogger : IDisposable
         return s_nowString;
     }
 
+    #region Time management
+    private static double s_time;
+    private static readonly object s_timeLock = new object();
+    private static int s_frameCount;
+    private static readonly object s_frameCountLock = new object();
+    private static readonly WaitForEndOfFrame s_waitEndOfFrame = new WaitForEndOfFrame();
+    private static bool s_updating = false;
+
+    private static void StartUpdateIfNeeded()
+    {
+        if (!s_updating)
+        {
+            s_updating = true;
+            CoroutineLauncherService.Instance.StartCoroutine(Update());
+        }
+    }
+
+    private static IEnumerator Update()
+    {
+        while (true)
+        {
+            lock (s_timeLock)
+            {
+#if UNITY_EDITOR
+                s_time = UnityEditor.EditorApplication.timeSinceStartup;
+#else
+                s_time = Time.unscaledTime;
+#endif
+            }
+
+            lock (s_frameCountLock)
+            {
+                s_frameCount = Time.frameCount;
+            }
+
+            yield return s_waitEndOfFrame;
+        }
+    }
+
     private static double GetAppTime()
     {
-#if UNITY_EDITOR
-        return UnityEditor.EditorApplication.timeSinceStartup;
-#else
-        return Time.unscaledTime;
-#endif
+        lock (s_timeLock)
+        {
+            return s_time;
+        }
     }
+
+    private static int GetFrameCount()
+    {
+        lock (s_frameCountLock)
+        {
+            return s_frameCount;
+        }
+    }
+    #endregion
 
     private class FileWriter : IDisposable
     {
