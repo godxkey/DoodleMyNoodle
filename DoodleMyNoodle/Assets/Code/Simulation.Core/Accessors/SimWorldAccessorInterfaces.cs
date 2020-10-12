@@ -734,6 +734,8 @@ public interface ISimWorldWriteAccessor
 #endif
 
     T GetOrCreateSystem<T>() where T : ComponentSystemBase;
+
+    FixRandom Random();
 }
 
 public interface ISimWorldReadAccessor

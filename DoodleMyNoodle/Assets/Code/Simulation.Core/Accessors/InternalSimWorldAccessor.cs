@@ -146,4 +146,5 @@ public class InternalSimWorldAccessor : SimWorldReadAccessor, ISimWorldReadWrite
     void ISimWorldWriteAccessor.SwapComponents(ArchetypeChunk leftChunk, int leftIndex, ArchetypeChunk rightChunk, int rightIndex)
         => EntityManager.SwapComponents(leftChunk, leftIndex, rightChunk, rightIndex);
 
+    FixRandom ISimWorldWriteAccessor.Random() => SimWorld.Random();
 }

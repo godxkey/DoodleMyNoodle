@@ -13,7 +13,7 @@ public class GameActionMove : GameAction
         {
             return false;
         }
-        
+
         return true;
     }
 
@@ -24,10 +24,10 @@ public class GameActionMove : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        int highestRangePossible = 
-            accessor.GetComponentData<ItemRangeData>(context.Entity).Value * 
+        int highestRangePossible =
+            accessor.GetComponentData<ItemRangeData>(context.Entity).Value *
             accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value;
-            
+
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
@@ -49,7 +49,7 @@ public class GameActionMove : GameAction
             int moveRange = accessor.GetComponentData<ItemRangeData>(context.Entity).Value;
 
             NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);
-            if(!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path))
+            if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path))
             {
                 LogGameActionInfo(context, $"Discarding: cannot find navigable path from { instigatorTile} to { paramTile.Tile}.");
                 return false;
@@ -67,7 +67,10 @@ public class GameActionMove : GameAction
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -costToMove);
 
             // set destination
-            accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(_path[_path.Length - 1]) });
+            var random = accessor.Random();
+            fix3 dest = Helpers.GetTileCenter(_path[_path.Length - 1]);
+            dest += fix3(random.NextFix(fix(-0.2), fix(0.2)), 0, 0);
+            accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = dest });
 
             CommonWrites.SetEntityAnimation(accessor, context.InstigatorPawn, CommonReads.AnimationTypes.Walking);
 

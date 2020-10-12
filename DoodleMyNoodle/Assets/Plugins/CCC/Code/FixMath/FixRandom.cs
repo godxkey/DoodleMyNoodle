@@ -361,22 +361,22 @@ public struct FixRandom
 
 
     /// <summary> Returns a value between 0 and 1</summary>
-    public fix NextFix64Ratio() => new fix(NextInt()) / new fix(int.MaxValue);
+    public fix NextFixRatio() => new fix(NextInt()) / new fix(int.MaxValue);
 
     /// <summary> Returns a value between 0 and max</summary>
-    public fix NextFix64() => NextFix64Ratio() * fix.MaxValue;
+    public fix NextFix() => NextFixRatio() * fix.MaxValue;
 
     /// <summary> Returns a value between 0 and max</summary>
-    public fix NextFix64(in fix max) => NextFix64Ratio() * max;
+    public fix NextFix(in fix max) => NextFixRatio() * max;
 
     /// <summary> Returns a value between min and max</summary>
-    public fix NextFix64(in fix min, in fix max) => (NextFix64Ratio() * (max - min)) + min;
+    public fix NextFix(in fix min, in fix max) => (NextFixRatio() * (max - min)) + min;
 
     /// <summary> Returns a value between 0 and max (exclusive)</summary>
-    public int NextInt(int max) => (int)NextFix64(new fix(max));
+    public int NextInt(int max) => (int)NextFix(new fix(max));
 
     /// <summary> Returns a value between min and max (exclusive)</summary>
-    public int NextInt(int min, int max) => (int)NextFix64(new fix(min), new fix(max));
+    public int NextInt(int min, int max) => (int)NextFix(new fix(min), new fix(max));
 
     ///// <summary> Returns a value between 0 and max (exclusive)</summary>
     //public uint NextUInt(uint max) => (uint)NextFix64(new Fix64(max));

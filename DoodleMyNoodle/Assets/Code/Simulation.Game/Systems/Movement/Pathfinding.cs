@@ -43,7 +43,7 @@ public static class Pathfinding
         Profiler.BeginSample("Pathfinding");
         result.Clear();
 
-        if(goals.Length == 0)
+        if (goals.Length == 0)
         {
             Log.Error($"'goals' argument is empty.");
             return false;
@@ -67,7 +67,9 @@ public static class Pathfinding
 
         TileWorld tileWorld = CommonReads.GetTileWorld(accessor);
 
-        goals = sanitize_goals(goals);
+
+        NativeList<int2> why = default;
+        goals = sanitize_goals(goals, ref why);
 
         // Destination cannot be reached
         if (goals.Length == 0)
@@ -118,6 +120,7 @@ public static class Pathfinding
         }
 
         bool pathFound = false;
+
         while (openSet.Length != 0)
         {
             // This operation could occur in O(1) time if openSet was a min-heap or a priority queue
@@ -175,26 +178,27 @@ public static class Pathfinding
 
 
         // local functions
-        NativeSlice<int2> sanitize_goals(NativeSlice<int2> currentGoals)
+        NativeSlice<int2> sanitize_goals(NativeSlice<int2> currentGoals, ref NativeList<int2> test)
         {
-            NativeList<int2> newGoals = default;
+            NativeArray<int2> newGoals = default;
+            int newGoalsCount = currentGoals.Length;
             for (int i = currentGoals.Length - 1; i >= 0; i--)
             {
                 if (lengthmanhattan(start - currentGoals[i]) > maxLength || !tileWorld.CanStandOn(currentGoals[i]))
                 {
                     if (!newGoals.IsCreated)
                     {
-                        newGoals = new NativeList<int2>(currentGoals.Length, Allocator.Temp);
-
-                        foreach (var item in currentGoals) // NativeSlice doesn't have the required CopyTo method ...
-                            newGoals.Add(item);
+                        newGoals = new NativeArray<int2>(currentGoals.Length, Allocator.Temp);
+                        currentGoals.CopyTo(newGoals);
                     }
 
-                    newGoals.RemoveAtSwapBack(i);
+                    // remove swap back
+                    newGoals[i] = newGoals[newGoalsCount - 1];
+                    newGoalsCount--;
                 }
             }
 
-            return newGoals.IsCreated ? newGoals.Slice() : currentGoals;
+            return newGoals.IsCreated ? newGoals.Slice(0, newGoalsCount) : currentGoals;
         }
     }
 

@@ -43,7 +43,7 @@ public class GameActionThrowProjectile : GameAction
 
             // set projectile data
             fix3 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
-            fix3 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value;
+            fix3 instigatorPos = Helpers.GetTileCenter(Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn)));
             fix3 v = normalize(spawnPos - instigatorPos);
 
             accessor.SetOrAddComponentData(projectileInstance, new Velocity() { Value = settings.ThrowSpeed * v });
