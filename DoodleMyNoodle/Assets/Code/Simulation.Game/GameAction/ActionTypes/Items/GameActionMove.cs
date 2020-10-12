@@ -46,7 +46,7 @@ public class GameActionMove : GameAction
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
-            int moveRange = accessor.GetComponentData<ItemRangeData>(context.Entity).Value;
+            int movePerAP = accessor.GetComponentData<ItemRangeData>(context.Entity).Value;
 
             NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);
             if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path))
@@ -55,14 +55,16 @@ public class GameActionMove : GameAction
                 return false;
             }
 
+            int userAP = accessor.GetComponentData<ActionPoints>(context.InstigatorPawn);
+
             // Get the last reachable point considering the user's AP
-            //int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(_path.AsArray().Slice(), moveRange);
+            int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(_path.AsArray().Slice(), userAP * movePerAP);
 
             // Remove unreachable points
-            //_path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
+            _path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
 
             // find AP cost
-            int costToMove = ((int)ceil(Pathfinding.CalculateTotalCost(_path.Slice()) / moveRange));
+            int costToMove = ceilToInt(Pathfinding.CalculateTotalCost(_path.Slice()) / movePerAP);
 
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -costToMove);
 
