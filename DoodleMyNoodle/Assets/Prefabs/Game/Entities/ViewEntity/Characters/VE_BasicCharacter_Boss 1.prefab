@@ -132,7 +132,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Jumeau Brutus
+  m_text: Jumeau Butor
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -234,7 +234,7 @@ PrefabInstance:
     - target: {fileID: 5202612425808145220, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
       propertyPath: m_Name
-      value: VE_BasicCharacter_Boss
+      value: VE_BasicCharacter_Boss 1
       objectReference: {fileID: 0}
     - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
