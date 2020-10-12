@@ -73,6 +73,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UseTime: 0
   TimeDelay: 1
-  TurnDelay: 1
+  TurnDelay: 2
   Range: 3
   Damage: 4
