@@ -1,0 +1,35 @@
+Dossier à tackle:
+
+Proto 4:
+F (1) fix les dessins qui ne se partage pas (bolt bug)
+F (4) 2D physics
+F (3) remove BE (SE points to VE)
+F (4) upgrade unity to 2020.1, upgrade entities to 0.14
+AF(3) art direction (environement)
+A (4) paper-mario skills and worms throw items
+    - needs 2d physics
+    - needs mini-game design
+    - ajouter de la nuance dans nos game actions (miss, crit, etc.)
+    - mini-game dans la présentation
+    - mini-game paramétrable
+    - comment les AI fonctionne avec ça?
+A (2) définir des guidelines de level design afin d'encourager le teamplay
+    - être témoin du jeu de tes amis
+    - ne pas être dans sa bulle
+A (3) improve tilemap authoring
+
+
+Pour plus tard:
+- (2) Sim checksum
+- (2) editor tool to clone SE + VE in one click
+- (4) art direction (characters, vfx, animations)
+- (5) ai design (goap? flexible? how to do that!)
+- (3) investiguer des variante au système de tour
+    - pas de tour ? les joueurs peuvent jouer anytime, mais doivent "faire jouer les AI" afin de regagner leur AP
+    - AP ?
+    - tout le monde tour par tour (e.g. divinity, worms)
+    - un mix?
+- (3) pouvoir dessiner ingame
+- (5) système de vision
+- (4) plus de tuile dans le gameplay!
+    - besoin de physique 2D
