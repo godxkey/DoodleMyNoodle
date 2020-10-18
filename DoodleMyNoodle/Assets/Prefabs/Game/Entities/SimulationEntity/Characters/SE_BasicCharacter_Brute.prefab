@@ -12,6 +12,17 @@ PrefabInstance:
       propertyPath: Guid
       value: 9f5cb403c19b4734ba5a886aa4f86fbd
       objectReference: {fileID: 0}
+    - target: {fileID: -7961090127367493644, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: _guid
+      value: 9f5cb403c19b4734ba5a886aa4f86fbd
+      objectReference: {fileID: 0}
+    - target: {fileID: -7961090127367493644, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 4876621640926341173, guid: 097b9b05f1c47604b84c82016f617fdd,
+        type: 3}
     - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: InitialItems.Array.data[1]

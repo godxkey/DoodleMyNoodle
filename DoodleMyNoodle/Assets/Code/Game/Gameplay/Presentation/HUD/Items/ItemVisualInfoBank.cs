@@ -16,7 +16,11 @@ public class ItemVisualInfoBank : GameSystem<ItemVisualInfoBank>
 
         foreach (ItemVisualInfo ItemInfo in ItemsVisualInfo)
         {
-            _idToItemInfo.Add(ItemInfo.ID.GetSimAssetId(), ItemInfo);
+            var assetId = ItemInfo.ID.GetSimAssetId();
+            if (assetId != SimAssetId.Invalid)
+            {
+                _idToItemInfo.Add(assetId, ItemInfo);
+            }
         }
     }
 

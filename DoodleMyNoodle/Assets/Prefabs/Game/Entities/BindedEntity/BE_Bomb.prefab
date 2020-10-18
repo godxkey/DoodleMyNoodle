@@ -130,6 +130,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: efda0ca0617b13a45989fb4ada0b7df3, type: 3}
+--- !u!1 &6947447212147015257 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7824342658589397423, guid: efda0ca0617b13a45989fb4ada0b7df3,
+    type: 3}
+  m_PrefabInstance: {fileID: 936727142327447542}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2299582252535144045 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1375336766265012635, guid: efda0ca0617b13a45989fb4ada0b7df3,
@@ -203,6 +209,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_Bomb
       objectReference: {fileID: 0}
+    - target: {fileID: 8841453195666950856, guid: 9397ebc153b7b35489b100f7f8e04591,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 6947447212147015257}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9397ebc153b7b35489b100f7f8e04591, type: 3}
 --- !u!4 &5368054600992968169 stripped

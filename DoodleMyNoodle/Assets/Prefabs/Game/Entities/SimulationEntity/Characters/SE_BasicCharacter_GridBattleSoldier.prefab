@@ -12,6 +12,17 @@ PrefabInstance:
       propertyPath: Guid
       value: fe36a28ed936c19459a39e66b5d9eecb
       objectReference: {fileID: 0}
+    - target: {fileID: -7961090127367493644, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: _guid
+      value: fe36a28ed936c19459a39e66b5d9eecb
+      objectReference: {fileID: 0}
+    - target: {fileID: -7961090127367493644, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 4876621640926341173, guid: cc9eda4020c4d6d4e989d591e6dfae49,
+        type: 3}
     - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: m_LocalPosition.x

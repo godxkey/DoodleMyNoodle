@@ -91,8 +91,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1098327287422241425}
+  - component: {fileID: 7932833602488006002}
   - component: {fileID: 1098327287422241430}
-  - component: {fileID: 1098327287422241431}
   m_Layer: 0
   m_Name: SE_Grid_Empty
   m_TagString: Untagged
@@ -115,6 +115,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7932833602488006002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098327287422241428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 0
+  _guid: 2876b5a409e073241b06d1a497b8083b
+  _bindedViewPrefab: {fileID: 0}
+  _viewTechType: 0
+  _showGhost: 1
 --- !u!114 &1098327287422241430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,16 +147,3 @@ MonoBehaviour:
   _globalGridSettings: {fileID: 11400000, guid: bfd4ef707ae10c54fa97e99d02e73b71,
     type: 2}
   _grid: {fileID: 1098327287306860766}
---- !u!114 &1098327287422241431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1098327287422241428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c7c9632c60a43a4bac0f75b9b5fb91a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionMode: 0

@@ -130,6 +130,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cb2532ec43b3d754e80cf9e4dbe9df91, type: 3}
+--- !u!1 &9182933356030966798 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4876621640926341173, guid: cb2532ec43b3d754e80cf9e4dbe9df91,
+    type: 3}
+  m_PrefabInstance: {fileID: 4385776719016629307}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9182933356030966799 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4876621640926341172, guid: cb2532ec43b3d754e80cf9e4dbe9df91,
@@ -148,6 +154,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_BasicCharacter_Archer_Ally
       objectReference: {fileID: 0}
+    - target: {fileID: 8313493033907681224, guid: 507665529e2c0014ea6c118272f141ab,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 9182933356030966798}
     - target: {fileID: 8745217971803186365, guid: 507665529e2c0014ea6c118272f141ab,
         type: 3}
       propertyPath: m_LocalPosition.x

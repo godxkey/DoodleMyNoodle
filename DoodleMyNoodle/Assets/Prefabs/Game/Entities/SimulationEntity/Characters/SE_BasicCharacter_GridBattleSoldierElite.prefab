@@ -20,7 +20,7 @@ PrefabInstance:
     - target: {fileID: 3453511231869190616, guid: fe36a28ed936c19459a39e66b5d9eecb,
         type: 3}
       propertyPath: m_Name
-      value: SE_BasicCharacterVariant_GridBattleSoldier
+      value: SE_BasicCharacter_GridBattleSoldierElite
       objectReference: {fileID: 0}
     - target: {fileID: 3980668864915185908, guid: fe36a28ed936c19459a39e66b5d9eecb,
         type: 3}
@@ -87,5 +87,16 @@ PrefabInstance:
       propertyPath: Guid
       value: 2b3256c36674f2b4f98a219ad8c081d1
       objectReference: {fileID: 0}
+    - target: {fileID: 8853825644984347603, guid: fe36a28ed936c19459a39e66b5d9eecb,
+        type: 3}
+      propertyPath: _guid
+      value: 2b3256c36674f2b4f98a219ad8c081d1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8853825644984347603, guid: fe36a28ed936c19459a39e66b5d9eecb,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 9068793075289943063, guid: 2aa6236a09629904ea3d773877e7d421,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe36a28ed936c19459a39e66b5d9eecb, type: 3}

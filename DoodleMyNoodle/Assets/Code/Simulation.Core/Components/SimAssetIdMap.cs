@@ -17,20 +17,20 @@ public class SimAssetIdMap : ScriptableObject
 
             for (int i = 0; i < map._guids.Count; i++)
             {
-                _map.Add(map._guids[i], i);
+                _map.Add(map._guids[i], i + 1);
             }
         }
 
-        public int EditIdToRuntimeId(string guid)
+        public SimAssetId EditIdToRuntimeId(string guid)
         {
             if (_map.TryGetValue(guid, out int runtimeValue))
             {
-                return runtimeValue;
+                return new SimAssetId(runtimeValue);
             }
 
             Debug.LogError($"[SimAssetIdMap.LookUp] Could not find runtime id for guid {guid}. " +
                 $"Stop playing and try forcing an update with \"Tools > Data Management > Force Update SimAssetIds\"");
-            return -1;
+            return SimAssetId.Invalid;
         }
     }
 

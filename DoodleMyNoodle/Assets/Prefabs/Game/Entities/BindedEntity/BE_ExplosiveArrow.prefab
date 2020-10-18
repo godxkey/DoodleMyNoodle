@@ -128,6 +128,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_ExplosiveArrow
       objectReference: {fileID: 0}
+    - target: {fileID: 8841453195666950856, guid: 1f293d3772835fd4b9ed879f0b33710d,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 2092700478541875031}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f293d3772835fd4b9ed879f0b33710d, type: 3}
 --- !u!4 &2837853365699365880 stripped
@@ -205,6 +210,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d66026df755a3945a908b6f05d3b4fb, type: 3}
+--- !u!1 &2092700478541875031 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7824342658589397423, guid: 8d66026df755a3945a908b6f05d3b4fb,
+    type: 3}
+  m_PrefabInstance: {fileID: 8187374584009283320}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7100285790544848739 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1375336766265012635, guid: 8d66026df755a3945a908b6f05d3b4fb,

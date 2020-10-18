@@ -61,7 +61,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Guid: b85d6eb65d359cd47827a1c91a763820
+  ConversionMode: 0
+  _guid: b85d6eb65d359cd47827a1c91a763820
+  _bindedViewPrefab: {fileID: 0}
+  _viewTechType: 0
+  _showGhost: 1
+  _hasTransform: 0
 --- !u!114 &4120848953196771097
 MonoBehaviour:
   m_ObjectHideFlags: 0

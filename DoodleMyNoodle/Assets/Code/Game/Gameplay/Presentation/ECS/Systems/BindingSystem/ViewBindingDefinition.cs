@@ -27,12 +27,12 @@ public class ViewBindingDefinition : MonoBehaviour
             return SimAssetId.Invalid;
         }
 
-        SimAssetIdAuth assetIdAuth = simGO.GetComponent<SimAssetIdAuth>();
+        SimAsset assetIdAuth = simGO.GetComponent<SimAsset>();
 
         if (!assetIdAuth)
         {
             Log.Error($"[{nameof(ViewBindingDefinition)}] ({gameObject.name}) The Sim GameObject {simGO.name} doesn't " +
-                $"have any {nameof(SimAssetIdAuth)} component attached to it. The binding will not work.");
+                $"have any {nameof(SimAsset)} component attached to it. The binding will not work.");
             return SimAssetId.Invalid;
         }
 

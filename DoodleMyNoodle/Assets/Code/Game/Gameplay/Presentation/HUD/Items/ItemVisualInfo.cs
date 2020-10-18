@@ -14,7 +14,7 @@ public class ItemVisualInfo : ScriptableObject
         Legendary
     }
 
-    public SimAssetIdAuth ID;
+    public SimAsset ID;
     public Sprite Icon;
     public string Name;
     public ItemRarity Rarity;

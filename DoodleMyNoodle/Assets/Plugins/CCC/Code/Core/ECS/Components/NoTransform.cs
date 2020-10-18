@@ -9,6 +9,11 @@ public class NoTransform : MonoBehaviour, IConvertGameObjectToEntity
 {
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
+        RemoveTransformComponents(entity, dstManager, conversionSystem);
+    }
+
+    public static void RemoveTransformComponents(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    {
         dstManager.RemoveComponent<Rotation>(entity);
         dstManager.RemoveComponent<Translation>(entity);
         dstManager.RemoveComponent<LocalToWorld>(entity);

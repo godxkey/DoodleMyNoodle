@@ -128,6 +128,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_Fireball
       objectReference: {fileID: 0}
+    - target: {fileID: 8841453195666950856, guid: 4200713b198953f40bfd823c79395b91,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 213777159824767429}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4200713b198953f40bfd823c79395b91, type: 3}
 --- !u!4 &1565670879914175263 stripped
@@ -205,6 +210,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 61bcf995fa4889442bb7b7024a73e80c, type: 3}
+--- !u!1 &213777159824767429 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7824342658589397423, guid: 61bcf995fa4889442bb7b7024a73e80c,
+    type: 3}
+  m_PrefabInstance: {fileID: 7954160688800884842}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9040121383293082097 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1375336766265012635, guid: 61bcf995fa4889442bb7b7024a73e80c,

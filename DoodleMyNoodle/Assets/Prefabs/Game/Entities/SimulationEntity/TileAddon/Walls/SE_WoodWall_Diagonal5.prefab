@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 30145307963041148}
   - component: {fileID: 30145307963041147}
-  - component: {fileID: 30145307963041146}
   - component: {fileID: -3163657607557260535}
   m_Layer: 0
   m_Name: SE_WoodWall_Diagonal5
@@ -45,45 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Guid: 248ce49109cc6154bbf607e271c0fe65
---- !u!114 &30145307963041146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30145307963041151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dce6e510c1c416f449379284ac9a2922, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    LocalPosition:
-      x:
-        RawValue: 0
-      y:
-        RawValue: 0
-      z:
-        RawValue: 0
-    LocalRotation:
-      x:
-        RawValue: 0
-      y:
-        RawValue: 0
-      z:
-        RawValue: 0
-      w:
-        RawValue: 4294967296
-    LocalScale:
-      x:
-        RawValue: 4294967296
-      y:
-        RawValue: 4294967296
-      z:
-        RawValue: 4294967296
-    Parent: {fileID: 0}
-    SiblingIndex: 0
+  ConversionMode: 0
+  _guid: 248ce49109cc6154bbf607e271c0fe65
+  _bindedViewPrefab: {fileID: 6426749434754870349, guid: 31981da51a0d9544a99c5b7a93d77cf0,
+    type: 3}
+  _viewTechType: 0
+  _showGhost: 1
+  _hasTransform: 1
 --- !u!114 &-3163657607557260535
 MonoBehaviour:
   m_ObjectHideFlags: 0

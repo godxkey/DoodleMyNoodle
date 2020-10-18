@@ -50,15 +50,25 @@ public class FixTransformAuth : MonoBehaviour, IConvertGameObjectToEntity
             SetDataFromUnityTransform();
         }
 
-        dstManager.AddComponentData(entity, new FixTranslation() { Value = LocalPosition });
-        dstManager.AddComponentData(entity, new FixRotation() { Value = LocalRotation });
-        dstManager.AddComponent<RemoveTransformInConversionTag>(entity);
+        AddFixTransformComponents(entity, dstManager, conversionSystem, LocalPosition, LocalRotation, LocalScale);
 
+        dstManager.AddComponent<RemoveTransformInConversionTag>(entity);
         dstManager.RemoveComponent<Translation>(entity);
         dstManager.RemoveComponent<Rotation>(entity);
         // we don't do anything for the scale at the moment
     }
 
+    public static void AddFixTransformComponents(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem, Vector3 localPos, Quaternion localRotation, Vector3 localScale)
+    {
+        AddFixTransformComponents(entity, dstManager, conversionSystem, ToFix(localPos), ToFix(localRotation), ToFix(localScale));
+    }
+
+    public static void AddFixTransformComponents(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem, fix3 localPos, fixQuaternion localRotation, fix3 localScale)
+    {
+        dstManager.AddComponentData(entity, new FixTranslation() { Value = localPos });
+        dstManager.AddComponentData(entity, new FixRotation() { Value = localRotation });
+        // we don't do anything for the scale at the moment
+    }
 
     private static fixQuaternion ToFix(in Quaternion fixQuat)
     {

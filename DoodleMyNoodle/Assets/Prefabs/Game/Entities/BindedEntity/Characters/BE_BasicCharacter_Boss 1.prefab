@@ -130,6 +130,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b2ec54ae894ebf244952292e930786ba, type: 3}
+--- !u!1 &4996345956782516896 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4876621640926341173, guid: b2ec54ae894ebf244952292e930786ba,
+    type: 3}
+  m_PrefabInstance: {fileID: 503184515177284245}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4996345956782516897 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4876621640926341172, guid: b2ec54ae894ebf244952292e930786ba,
@@ -148,6 +154,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_BasicCharacter_Boss 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8313493033907681224, guid: 11a9daf6dc0d6e94ea1d6b81c951a911,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 4996345956782516896}
     - target: {fileID: 8745217971803186365, guid: 11a9daf6dc0d6e94ea1d6b81c951a911,
         type: 3}
       propertyPath: m_LocalPosition.x

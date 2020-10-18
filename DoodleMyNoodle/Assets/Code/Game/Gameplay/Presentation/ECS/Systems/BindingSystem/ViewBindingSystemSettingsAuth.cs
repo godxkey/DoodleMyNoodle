@@ -8,15 +8,28 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
 {
     public ViewBindingDefinitionBank Bank;
 
-    private List<ViewBindingDefinition> Definitions => Bank.ViewBindingDefinitions;
-
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
-        foreach (ViewBindingDefinition item in Definitions)
+        foreach (ViewBindingDefinition item in Bank.ViewBindingDefinitions)
         {
             if (item && item.ViewTechType == ViewBindingDefinition.ETechType.Entity)
             {
-                referencedPrefabs.Add(item.GetViewGameObject());
+                var viewGO = item.GetViewGameObject();
+                if (viewGO)
+                {
+                    referencedPrefabs.Add(viewGO);
+                }
+            }
+        }
+
+        foreach (SimAsset item in Bank.SimAssets)
+        {
+            if (item && item.ViewTechType == SimAsset.TechType.Entity)
+            {
+                if (item.BindedViewPrefab)
+                {
+                    referencedPrefabs.Add(item.BindedViewPrefab);
+                }
             }
         }
     }
@@ -27,43 +40,71 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
         dstManager.AddComponentObject(entity, bindingGOs);
 
         var bindingSettings = dstManager.AddBuffer<Settings_ViewBindingSystem_Binding>(entity);
-        bindingSettings.Capacity = Definitions.Count;
+        bindingSettings.Capacity = Bank.ViewBindingDefinitions.Count + Bank.SimAssets.Count;
 
-        foreach (ViewBindingDefinition item in Definitions)
+        HashSet<SimAssetId> doneSimAssets = new HashSet<SimAssetId>();
+
+        foreach (SimAsset item in Bank.SimAssets)
         {
             if (item)
             {
-                GameObject viewGameObject = item.GetViewGameObject();
+                GameObject viewGameObject = item.BindedViewPrefab;
 
                 if (viewGameObject == null)
-                {
-                    Debug.LogWarning($"The view binding definition {item.gameObject.name} doesn't have a valid 'view' gameobject. It will be ignored");
                     continue;
-                }
 
-                if (item.ViewTechType == ViewBindingDefinition.ETechType.Entity)
+                add(item.gameObject.name, item.GetSimAssetId(), viewGameObject, item.ViewTechType == SimAsset.TechType.Entity);
+            }
+        }
+
+        foreach (ViewBindingDefinition item in Bank.ViewBindingDefinitions)
+        {
+            if (item)
+            {
+                add(item.gameObject.name, item.GetSimAssetId(), item.GetViewGameObject(), item.ViewTechType == ViewBindingDefinition.ETechType.Entity);
+            }
+        }
+
+        void add(string debugName, SimAssetId assetId, GameObject viewGameObject, bool useEntityTech)
+        {
+            if (viewGameObject == null)
+            {
+                Debug.LogWarning($"The view binding definition {debugName} doesn't have a valid 'view' gameobject. It will be ignored");
+                return;
+            }
+
+            if (assetId == SimAssetId.Invalid)
+            {
+                Debug.LogWarning($"The view binding definition {debugName} has an invalid SimAssetId. It will be ignored");
+                return;
+            }
+
+            if (doneSimAssets.Contains(assetId))
+                return;
+
+            doneSimAssets.Add(assetId);
+
+            if (useEntityTech)
+            {
+                bindingSettings.Add(new Settings_ViewBindingSystem_Binding()
                 {
-                    bindingSettings.Add(new Settings_ViewBindingSystem_Binding()
-                    {
-                        SimAssetId = item.GetSimAssetId(),
-                        PresentationEntity = conversionSystem.GetPrimaryEntity(viewGameObject),
-                        UseGameObjectInsteadOfEntity = false,
-                        PresentationGameObjectPrefabIndex = -1,
-                    });
-                }
-                else
+                    SimAssetId = assetId,
+                    PresentationEntity = conversionSystem.GetPrimaryEntity(viewGameObject),
+                    UseGameObjectInsteadOfEntity = false,
+                    PresentationGameObjectPrefabIndex = -1,
+                });
+            }
+            else
+            {
+                bindingSettings.Add(new Settings_ViewBindingSystem_Binding()
                 {
-                    bindingSettings.Add(new Settings_ViewBindingSystem_Binding()
-                    {
-                        SimAssetId = item.GetSimAssetId(),
-                        PresentationEntity = Entity.Null,
-                        UseGameObjectInsteadOfEntity = true,
-                        PresentationGameObjectPrefabIndex = bindingGOs.PresentationGameObjects.Count
-                    });
+                    SimAssetId = assetId,
+                    PresentationEntity = Entity.Null,
+                    UseGameObjectInsteadOfEntity = true,
+                    PresentationGameObjectPrefabIndex = bindingGOs.PresentationGameObjects.Count
+                });
 
-                    bindingGOs.PresentationGameObjects.Add(viewGameObject);
-                }
-
+                bindingGOs.PresentationGameObjects.Add(viewGameObject);
             }
         }
     }

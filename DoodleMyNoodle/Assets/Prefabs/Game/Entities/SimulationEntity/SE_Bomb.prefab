@@ -58,7 +58,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Guid: 9397ebc153b7b35489b100f7f8e04591
+  ConversionMode: 0
+  _guid: 9397ebc153b7b35489b100f7f8e04591
+  _bindedViewPrefab: {fileID: 7824342658589397423, guid: efda0ca0617b13a45989fb4ada0b7df3,
+    type: 3}
+  _viewTechType: 0
 --- !u!114 &-7922237018744834594
 MonoBehaviour:
   m_ObjectHideFlags: 0

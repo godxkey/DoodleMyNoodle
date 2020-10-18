@@ -128,6 +128,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_Rock
       objectReference: {fileID: 0}
+    - target: {fileID: 8841453195666950856, guid: cdb5765c8d4f95f489e8a5505300a065,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 331802386783911192}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cdb5765c8d4f95f489e8a5505300a065, type: 3}
 --- !u!4 &6095179200873726435 stripped
@@ -205,6 +210,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5021633163d75d34fa2d7af03170049d, type: 3}
+--- !u!1 &331802386783911192 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7824342658589397423, guid: 5021633163d75d34fa2d7af03170049d,
+    type: 3}
+  m_PrefabInstance: {fileID: 7498329217764535479}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8870199223808367916 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1375336766265012635, guid: 5021633163d75d34fa2d7af03170049d,

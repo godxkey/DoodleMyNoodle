@@ -128,6 +128,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_C4Bomb
       objectReference: {fileID: 0}
+    - target: {fileID: 8841453195666950856, guid: b10aea4c768093045875e79bb85ea81c,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 1494922973109391599}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b10aea4c768093045875e79bb85ea81c, type: 3}
 --- !u!4 &6424601229193572107 stripped
@@ -205,6 +210,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52fcb01321c265a4592f3b216d999b91, type: 3}
+--- !u!1 &1494922973109391599 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7824342658589397423, guid: 52fcb01321c265a4592f3b216d999b91,
+    type: 3}
+  m_PrefabInstance: {fileID: 8658925336000037184}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7727195336450191579 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1375336766265012635, guid: 52fcb01321c265a4592f3b216d999b91,

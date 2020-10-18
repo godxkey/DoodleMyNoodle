@@ -17,7 +17,7 @@ public class ViewBindingDefinitionEditor : Editor
         {
             EditorGUILayout.HelpBox("No sim gameobject found in children", MessageType.Error);
         }
-        else if (!viewBindingDefinition.GetSimGameObject().GetComponent<SimAssetIdAuth>())
+        else if (!viewBindingDefinition.GetSimGameObject().GetComponent<SimAsset>())
         {
             EditorGUILayout.HelpBox("The sim gameobject needs a SimAssetId component", MessageType.Error);
         }

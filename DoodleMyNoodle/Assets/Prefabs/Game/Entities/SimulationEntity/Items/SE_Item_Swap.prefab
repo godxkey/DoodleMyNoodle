@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5742253346417087588}
   - component: {fileID: 5742253346417087590}
-  - component: {fileID: 4575763512178357569}
   - component: {fileID: 971858758830137585}
   - component: {fileID: 5989531904968678870}
   - component: {fileID: 7916927272796670766}
@@ -49,18 +48,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionSwap
---- !u!114 &4575763512178357569
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26aba5da1c5515f408da7a1a8327d6f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &971858758830137585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,7 +60,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Guid: aa0538731df87df429b0362fd7f15397
+  ConversionMode: 0
+  _guid: aa0538731df87df429b0362fd7f15397
+  _bindedViewPrefab: {fileID: 0}
+  _viewTechType: 0
+  _showGhost: 1
+  _hasTransform: 0
 --- !u!114 &5989531904968678870
 MonoBehaviour:
   m_ObjectHideFlags: 0

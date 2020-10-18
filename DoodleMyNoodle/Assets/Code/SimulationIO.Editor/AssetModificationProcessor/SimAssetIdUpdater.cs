@@ -19,7 +19,7 @@ public class SimAssetIdUpdater : AssetPostprocessor
         bool thereWasAChange = false;
         importedAssets.Where((assetPath) => assetPath.EndsWith(".prefab"))
                .Select((assetPath) => AssetDatabase.LoadAssetAtPath<GameObject>(assetPath))
-               .Where((gameObject) => gameObject.GetComponent<SimAssetIdAuth>() != null)
+               .Where((gameObject) => gameObject.GetComponent<SimAsset>() != null)
                .ToList()
                .ForEach((prefab) => thereWasAChange |= ValidateSimAssetIdForPrefab(prefab));
 
@@ -34,7 +34,7 @@ public class SimAssetIdUpdater : AssetPostprocessor
     [MenuItem("Tools/Data Management/Force Update SimAssetIds", priority = 999)]
     public static void UpdateSimAssetIds()
     {
-        AssetDatabaseX.LoadPrefabAssetsWithComponentOnRoot<SimAssetIdAuth>(out List<KeyValuePair<string, GameObject>> loadResult);
+        AssetDatabaseX.LoadPrefabAssetsWithComponentOnRoot<SimAsset>(out List<KeyValuePair<string, GameObject>> loadResult);
         foreach (KeyValuePair<string, GameObject> item in loadResult)
         {
             ValidateSimAssetIdForPrefab(item.Value.gameObject);
@@ -49,12 +49,12 @@ public class SimAssetIdUpdater : AssetPostprocessor
         Log.Info($"SimAssetIdUpdater: ValidateSimAssetIdForPrefab({prefab.name})");
         if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(prefab, out string guid, out long localId))
         {
-            SimAssetIdAuth assetIdAuth = prefab.GetComponent<SimAssetIdAuth>();
+            SimAsset assetIdAuth = prefab.GetComponent<SimAsset>();
 
             if (assetIdAuth.Guid != guid)
             {
                 Log.Info($"SimAssetIdUpdater: ValidateSimAssetIdForPrefab -> there was a change");
-                assetIdAuth.Guid = guid;
+                assetIdAuth.Editor_SetGuid(guid);
                 DebugEditor.LogAssetIntegrity($"updated {prefab.name}'s assetId to: {guid}");
 
 
@@ -74,7 +74,7 @@ public class SimAssetIdUpdater : AssetPostprocessor
 
         map.EditorGuids.Clear();
 
-        AssetDatabaseX.LoadPrefabAssetsWithComponentOnRoot<SimAssetIdAuth>(out List<KeyValuePair<string, GameObject>> loadResult);
+        AssetDatabaseX.LoadPrefabAssetsWithComponentOnRoot<SimAsset>(out List<KeyValuePair<string, GameObject>> loadResult);
         foreach (KeyValuePair<string, GameObject> item in loadResult)
         {
             if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(item.Value, out string guid, out long localId))

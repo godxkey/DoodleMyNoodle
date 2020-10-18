@@ -128,6 +128,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_Arrow
       objectReference: {fileID: 0}
+    - target: {fileID: 8841453195666950856, guid: 4899e73436da28d43ba3448231f4f76d,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 2112675344503621922}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4899e73436da28d43ba3448231f4f76d, type: 3}
 --- !u!4 &2145718959949567556 stripped
@@ -205,6 +210,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9ff669ed57d5a54e9773d694d2607a0, type: 3}
+--- !u!1 &2112675344503621922 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7824342658589397423, guid: a9ff669ed57d5a54e9773d694d2607a0,
+    type: 3}
+  m_PrefabInstance: {fileID: 8197709352723110029}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7120807534423173398 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1375336766265012635, guid: a9ff669ed57d5a54e9773d694d2607a0,

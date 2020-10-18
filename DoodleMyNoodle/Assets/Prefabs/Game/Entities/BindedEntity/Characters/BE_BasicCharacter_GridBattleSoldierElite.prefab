@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5278598673461480541}
   - component: {fileID: 6347848117257768954}
   m_Layer: 0
-  m_Name: BE_BasicCharacterVariant_GridBattleSoldierElite
+  m_Name: BE_BasicCharacter_GridBattleSoldierElite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,6 +123,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6608204137962405927, guid: 2b3256c36674f2b4f98a219ad8c081d1,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 665979014713085780}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b3256c36674f2b4f98a219ad8c081d1, type: 3}
 --- !u!4 &866286741361318169 stripped
@@ -195,6 +200,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2aa6236a09629904ea3d773877e7d421, type: 3}
+--- !u!1 &665979014713085780 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9068793075289943063, guid: 2aa6236a09629904ea3d773877e7d421,
+    type: 3}
+  m_PrefabInstance: {fileID: 8423098143339144003}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &665979014713085781 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9068793075289943062, guid: 2aa6236a09629904ea3d773877e7d421,

@@ -130,6 +130,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 760850fc20fbfd6458cd9d564d3f6f73, type: 3}
+--- !u!1 &8483607911288722540 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4876621640926341173, guid: 760850fc20fbfd6458cd9d564d3f6f73,
+    type: 3}
+  m_PrefabInstance: {fileID: 3897559787443551321}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8483607911288722541 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4876621640926341172, guid: 760850fc20fbfd6458cd9d564d3f6f73,
@@ -148,6 +154,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_BasicCharacter_Brute_Ally
       objectReference: {fileID: 0}
+    - target: {fileID: 8313493033907681224, guid: e493693d6bc1d7141996b2e998c53144,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 8483607911288722540}
     - target: {fileID: 8745217971803186365, guid: e493693d6bc1d7141996b2e998c53144,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -130,6 +130,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f8f6ef3819d6764fb70ede704ab667b, type: 3}
+--- !u!1 &7570755523608774053 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6426749434754870349, guid: 8f8f6ef3819d6764fb70ede704ab667b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3468014185404082664}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7570755523608774052 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6426749434754870348, guid: 8f8f6ef3819d6764fb70ede704ab667b,
@@ -143,6 +149,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2001062058160152560}
     m_Modifications:
+    - target: {fileID: 30145307963041147, guid: ee6cc0fda5ef6764a8b29d1090e15e0d,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 7570755523608774053}
     - target: {fileID: 30145307963041148, guid: ee6cc0fda5ef6764a8b29d1090e15e0d,
         type: 3}
       propertyPath: m_LocalPosition.x
