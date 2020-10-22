@@ -115,7 +115,7 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
         {
             _viewGhost = Instantiate(_bindedViewPrefab);
             _viewGhost.name = _bindedViewPrefab.name;
-            SetHideFlagsOnChildren(_viewGhost, HideFlags.DontSave | HideFlags.HideInHierarchy | HideFlags.HideInInspector);
+            _viewGhost.hideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy | HideFlags.HideInInspector;
 
             _viewGhostTr = _viewGhost.transform;
             _viewGhost.AddComponent<ViewEditorGhost>().BindedSimGameObject = gameObject;
@@ -131,15 +131,6 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
         {
             _viewGhostTr.position = _tr.position;
             // rotation and scale are not yet handled by the game sim
-        }
-    }
-
-    private void SetHideFlagsOnChildren(GameObject go, HideFlags hideFlags)
-    {
-        go.hideFlags = hideFlags;
-        foreach (Transform child in go.transform)
-        {
-            SetHideFlagsOnChildren(child.gameObject, hideFlags);
         }
     }
 #endif

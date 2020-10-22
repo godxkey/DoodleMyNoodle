@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8821241209944219005}
-  - component: {fileID: 294870752159730247}
   - component: {fileID: 2677628293349642642}
+  - component: {fileID: 294870752159730247}
   - component: {fileID: 1206813890925547763}
   - component: {fileID: -448175739285880440}
   - component: {fileID: -4447897880707759495}
@@ -37,19 +37,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &294870752159730247
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 800b27a6aa6c95b41835b5a1d0ae75ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Value: GameActionSpawnMinion
 --- !u!114 &2677628293349642642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,6 +55,19 @@ MonoBehaviour:
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
+--- !u!114 &294870752159730247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 800b27a6aa6c95b41835b5a1d0ae75ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: GameActionSpawnMinion
 --- !u!114 &1206813890925547763
 MonoBehaviour:
   m_ObjectHideFlags: 0
