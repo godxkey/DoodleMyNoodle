@@ -30,7 +30,7 @@ namespace Borodar.RainbowFolders.Editor
             private static ProjectWindowItemCallback _drawCollabOverlay;
         #endif
 
-        private static ProjectWindowItemCallback _drawVcsOverlay;
+        private static InternalOnProjectWindowItemDelegate _drawVcsOverlay;
         private static bool _multiSelection;
 
         private static GUIStyle _itemBgStyle;
@@ -145,6 +145,8 @@ namespace Borodar.RainbowFolders.Editor
         // Helpers
         //---------------------------------------------------------------------
 
+        private delegate void InternalOnProjectWindowItemDelegate(string guid, Rect drawRect, Action repaintAction);
+
         private static void InitVcsDelegates(Assembly assembly)
         {
             try
@@ -153,12 +155,11 @@ namespace Borodar.RainbowFolders.Editor
 
                 var vcsHookType = assembly.GetType("UnityEditorInternal.VersionControl.ProjectHooks");
                 var vcsHook = vcsHookType.GetMethod("OnProjectWindowItem", BindingFlags.Static | BindingFlags.Public);
-                _drawVcsOverlay = (ProjectWindowItemCallback) Delegate.CreateDelegate(typeof(ProjectWindowItemCallback), vcsHook);
+                _drawVcsOverlay = (InternalOnProjectWindowItemDelegate)Delegate.CreateDelegate(typeof(InternalOnProjectWindowItemDelegate), vcsHook);
             }
             catch (SystemException ex)
             {
                 if (!(ex is NullReferenceException) && !(ex is ArgumentNullException)) throw;
-                _isVcsEnabled = () => false;
 
                 #if RAINBOW_FOLDERS_DEVEL
                     Debug.LogException(ex);
@@ -257,7 +258,7 @@ namespace Borodar.RainbowFolders.Editor
                 GUI.Box(rect, string.Empty, ItemBgStyle);
                 GUI.DrawTexture(iconRect, background);
                 GUI.DrawTexture(iconRect, texture);
-                _drawVcsOverlay(guid, rect);
+                _drawVcsOverlay(guid, rect, null);
             }
             else
             {

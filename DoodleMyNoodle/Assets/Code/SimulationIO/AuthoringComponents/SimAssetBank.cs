@@ -25,10 +25,14 @@ public class SimAssetBank : ScriptableObject
             for (int i = 0; i < count; i++)
             {
                 var asset = bank._simAssets[i];
-                var assetId = new SimAssetId(i + 1);
 
-                _editIdToRuntimeId.Add(asset.Guid, assetId);
-                _idToPrefab.Add(assetId, asset);
+                if (asset != null)
+                {
+                    var assetId = new SimAssetId(i + 1);
+
+                    _editIdToRuntimeId.Add(asset.Guid, assetId);
+                    _idToPrefab.Add(assetId, asset);
+                }
             }
         }
 
@@ -59,7 +63,7 @@ public class SimAssetBank : ScriptableObject
 
     public LookUp GetLookUp()
     {
-        if(_lookUp == null)
+        if (_lookUp == null)
         {
             _lookUp = new LookUp(this);
         }
