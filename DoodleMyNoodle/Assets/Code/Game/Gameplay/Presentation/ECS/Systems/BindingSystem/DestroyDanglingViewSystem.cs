@@ -18,7 +18,7 @@ public class DestroyDanglingViewSystem : ViewJobComponentSystem
 
     protected override JobHandle OnUpdate(JobHandle jobHandle)
     {
-        EntityCommandBuffer.Concurrent Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent();
+        EntityCommandBuffer.ParallelWriter Ecb = _ecbSystem.CreateCommandBuffer().AsParallelWriter();
 
         // If sim world was cleared and replaced
         _simWorldReplaceVersion.Set(SimWorldAccessor.ReplaceVersion);
@@ -43,7 +43,7 @@ public class DestroyDanglingViewSystem : ViewJobComponentSystem
             jobHandle = Entities.WithReadOnly(simEntities)
                 .ForEach((Entity viewEntity, int entityInQueryIndex, in BindedSimEntity linkedSimEntity) =>
             {
-                if (!simEntities.Exists(linkedSimEntity.SimEntity))
+                if (!simEntities.HasComponent(linkedSimEntity.SimEntity))
                 {
                     Ecb.DestroyEntity(entityInQueryIndex, viewEntity);
                 }

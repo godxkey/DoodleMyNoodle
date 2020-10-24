@@ -49,10 +49,10 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
 
         jobHandle = new CreateBindedEntitiesForSimEntities()
         {
-            SimEntityAccessor = SimWorldAccessor.EntityManager.GetArchetypeChunkEntityType(),
-            SimAssetIdAccessor = SimWorldAccessor.EntityManager.GetArchetypeChunkComponentType<SimAssetId>(true),
+            SimEntityAccessor = SimWorldAccessor.EntityManager.GetEntityTypeHandle(),
+            SimAssetIdAccessor = SimWorldAccessor.EntityManager.GetComponentTypeHandle<SimAssetId>(true),
 
-            Ecb = _ecbSystem.CreateCommandBuffer().ToConcurrent(),
+            Ecb = _ecbSystem.CreateCommandBuffer().AsParallelWriter(),
             Bindings = EntityManager.GetBuffer<Settings_ViewBindingSystem_Binding>(GetSingletonEntity<Settings_ViewBindingSystem_Binding>())
         }.Schedule(simEntitiesInNeedOfViewBinding, jobHandle);
 
@@ -70,12 +70,12 @@ public class CreateBindedViewEntitiesSystem : ViewJobComponentSystem
         public DynamicBuffer<Settings_ViewBindingSystem_Binding> Bindings;
 
         // Entity command buffer used to create new presentation entities
-        public EntityCommandBuffer.Concurrent Ecb;
+        public EntityCommandBuffer.ParallelWriter Ecb;
 
         [ReadOnly]
-        public ArchetypeChunkComponentType<SimAssetId> SimAssetIdAccessor;
+        public ComponentTypeHandle<SimAssetId> SimAssetIdAccessor;
         [ReadOnly]
-        public ArchetypeChunkEntityType SimEntityAccessor;
+        public EntityTypeHandle SimEntityAccessor;
 
 
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
