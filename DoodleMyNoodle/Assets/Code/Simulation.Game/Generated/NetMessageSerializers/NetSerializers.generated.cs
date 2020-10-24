@@ -95,14 +95,14 @@ public static class StaticNetSerializer_GameAction_UseParameters
 }
 public static class StaticNetSerializer_GameActionParameterSelfTarget_Data
 {
-    public static int GetNetBitSize_Class(GameActionParameterSelfTarget.Data obj)
+    public static int GetNetBitSize_Class(GameActionParameter.Data obj)
     {
         if (obj == null)
             return 1;
         return 1 + GetNetBitSize(obj);
     }
 
-    public static int GetNetBitSize(GameActionParameterSelfTarget.Data obj)
+    public static int GetNetBitSize(GameActionParameter.Data obj)
     {
         int result = 0;
         result += StaticNetSerializer_System_Byte.GetNetBitSize(ref obj.ParamIndex);
@@ -110,7 +110,7 @@ public static class StaticNetSerializer_GameActionParameterSelfTarget_Data
         return result;
     }
 
-    public static void NetSerialize_Class(GameActionParameterSelfTarget.Data obj, BitStreamWriter writer)
+    public static void NetSerialize_Class(GameActionParameter.Data obj, BitStreamWriter writer)
     {
         if (obj == null)
         {
@@ -120,23 +120,23 @@ public static class StaticNetSerializer_GameActionParameterSelfTarget_Data
         writer.WriteBit(true);
         NetSerialize(obj, writer);
     }
-    public static void NetSerialize(GameActionParameterSelfTarget.Data obj, BitStreamWriter writer)
+    public static void NetSerialize(GameActionParameter.Data obj, BitStreamWriter writer)
     {
         StaticNetSerializer_System_Byte.NetSerialize(ref obj.ParamIndex, writer);
         StaticNetSerializer_GameAction_ParameterData.NetSerialize(obj, writer);
     }
 
-    public static GameActionParameterSelfTarget.Data NetDeserialize_Class(BitStreamReader reader)
+    public static GameActionParameter.Data NetDeserialize_Class(BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
             return null;
         }
-        GameActionParameterSelfTarget.Data obj = new GameActionParameterSelfTarget.Data();
+        GameActionParameter.Data obj = new GameActionParameter.Data();
         NetDeserialize(obj, reader);
         return obj;
     }
-    public static void NetDeserialize(GameActionParameterSelfTarget.Data obj, BitStreamReader reader)
+    public static void NetDeserialize(GameActionParameter.Data obj, BitStreamReader reader)
     {
         StaticNetSerializer_System_Byte.NetDeserialize(ref obj.ParamIndex, reader);
         StaticNetSerializer_GameAction_ParameterData.NetDeserialize(obj, reader);

@@ -14,7 +14,7 @@ public class GameActionDropBombToDetonate : GameAction
         {
             if (itemSpawnedObjectReference.Entity != Entity.Null)
             {
-                return new UseContract(new GameActionParameterSelfTarget.Description() { });
+                return new UseContract(new GameActionParameter.Description() { });
             }
         }
 

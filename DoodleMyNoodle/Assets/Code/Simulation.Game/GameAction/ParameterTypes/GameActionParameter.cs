@@ -1,5 +1,5 @@
 
-public class GameActionParameterSelfTarget
+public class GameActionParameter
 {
     public class Description : GameAction.ParameterDescription { }
 

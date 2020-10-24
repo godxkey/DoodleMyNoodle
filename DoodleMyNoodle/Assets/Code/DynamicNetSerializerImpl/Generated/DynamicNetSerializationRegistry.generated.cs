@@ -48,7 +48,7 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(GameAction.UseParameters)
         ,
-        typeof(GameActionParameterSelfTarget.Data)
+        typeof(GameActionParameter.Data)
         ,
         typeof(GameActionParameterTile.Data)
         ,
@@ -269,9 +269,9 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_GameAction_UseParameters.GetNetBitSize(castedObj);
         }
         ,
-        [typeof(GameActionParameterSelfTarget.Data)] = (obj) =>
+        [typeof(GameActionParameter.Data)] = (obj) =>
         {
-            GameActionParameterSelfTarget.Data castedObj = (GameActionParameterSelfTarget.Data)obj;
+            GameActionParameter.Data castedObj = (GameActionParameter.Data)obj;
             return StaticNetSerializer_GameActionParameterSelfTarget_Data.GetNetBitSize(castedObj);
         }
         ,
@@ -698,9 +698,9 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_GameAction_UseParameters.NetSerialize(castedObj, writer);
         }
         ,
-        [typeof(GameActionParameterSelfTarget.Data)] = (obj, writer) =>
+        [typeof(GameActionParameter.Data)] = (obj, writer) =>
         {
-            GameActionParameterSelfTarget.Data castedObj = (GameActionParameterSelfTarget.Data)obj;
+            GameActionParameter.Data castedObj = (GameActionParameter.Data)obj;
             StaticNetSerializer_GameActionParameterSelfTarget_Data.NetSerialize(castedObj, writer);
         }
         ,
@@ -1148,7 +1148,7 @@ public static class DynamicNetSerializationRegistry
         ,
         [19] = (reader) =>
         {
-            GameActionParameterSelfTarget.Data obj = new GameActionParameterSelfTarget.Data();
+            GameActionParameter.Data obj = new GameActionParameter.Data();
             StaticNetSerializer_GameActionParameterSelfTarget_Data.NetDeserialize(obj, reader);
             return obj;
         }

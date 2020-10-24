@@ -19,7 +19,7 @@ public class GameActionShield : GameAction
         }
         else
         {
-            return new UseContract(new GameActionParameterSelfTarget.Description() { });
+            return new UseContract(new GameActionParameter.Description() { });
         }
     }
 
@@ -35,7 +35,7 @@ public class GameActionShield : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
     {
-        if (useData.TryGetParameter(0, out GameActionParameterSelfTarget.Data self))
+        if (useData.TryGetParameter(0, out GameActionParameter.Data self))
         {
             ShieldTarget(accessor, context.Entity, context.InstigatorPawn);
             return true;
