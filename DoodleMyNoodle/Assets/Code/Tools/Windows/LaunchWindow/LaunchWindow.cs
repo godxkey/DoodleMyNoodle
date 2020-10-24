@@ -166,7 +166,7 @@ public class LaunchWindow : EditorWindow
             string levelToDisplayName(string level)
             {
                 if (string.IsNullOrEmpty(level))
-                    return "-None-";
+                    return "- None -";
                 return level;
             }
 

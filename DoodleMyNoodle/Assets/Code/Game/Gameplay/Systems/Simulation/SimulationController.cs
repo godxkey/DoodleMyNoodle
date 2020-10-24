@@ -8,6 +8,11 @@ using UnityEngineX;
 
 public class SimulationController : GameSystem<SimulationController>
 {
+    [SerializeField] private ViewBindingDefinitionBank _simAssetBank;
+
+    public ViewBindingDefinitionBank SimAssetBank => _simAssetBank;
+
+
     public override void OnGameAwake()
     {
         base.OnGameAwake();

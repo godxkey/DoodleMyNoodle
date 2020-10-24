@@ -126,7 +126,7 @@ public class DoodleDisplay : BindedPresentationEntityComponent
         {
             playerDoodleAsset = PlayerAssetManager.Instance.CreateAsset<PlayerDoodleAsset>();
 
-            GameMonoBehaviourHelpers.SubmitInput(new SimPlayerInputSetPawnDoodle(playerDoodleAsset.Guid, true));
+            PresentationHelpers.SubmitInput(new SimPlayerInputSetPawnDoodle(playerDoodleAsset.Guid, true));
         }
 
         // Load image into doodle texture

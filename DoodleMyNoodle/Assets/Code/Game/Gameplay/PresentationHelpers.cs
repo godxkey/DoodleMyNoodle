@@ -1,10 +1,8 @@
 ﻿using SimulationControl;
 using Unity.Entities;
+using UnityEngine;
 
-/// <summary>
-/// Those helper methods are meant to be used EXCLUSIVELY from outside of the ECS world
-/// </summary>
-public static class GameMonoBehaviourHelpers
+public static class PresentationHelpers
 {
     public static World PresentationWorld => World.DefaultGameObjectInjectionWorld;
     public static ExternalSimWorldAccessor GetSimulationWorld() => GetPresentationWorldSystem<SimulationWorldSystem>()?.SimWorldAccessor;
@@ -26,5 +24,19 @@ public static class GameMonoBehaviourHelpers
     public static T GetPresentationWorldSystem<T>() where T : ComponentSystem
     {
         return PresentationWorld?.GetExistingSystem<T>();
+    }
+
+    public static GameObject FindSimAssetPrefab(SimAssetId simAssetId)
+    {
+        return SimAssetBankInstance.GetLookup().IdToPrefab(simAssetId).gameObject;
+    }
+
+    public static GameObject FindBindedView(Entity simEntity)
+    {
+        if (BindedSimEntityManaged.InstancesMap.TryGetValue(simEntity, out GameObject result))
+        {
+            return result;
+        }
+        return null;
     }
 }

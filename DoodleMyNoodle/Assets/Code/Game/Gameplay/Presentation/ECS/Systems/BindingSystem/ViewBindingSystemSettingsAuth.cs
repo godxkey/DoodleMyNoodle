@@ -7,6 +7,7 @@ using UnityEngine;
 public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     public ViewBindingDefinitionBank Bank;
+    public SimAssetBank SimAssetBank;
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
@@ -22,7 +23,7 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
             }
         }
 
-        foreach (SimAsset item in Bank.SimAssets)
+        foreach (SimAsset item in SimAssetBank.GetLookUp().SimAssets)
         {
             if (item && item.ViewTechType == SimAsset.TechType.Entity)
             {
@@ -36,15 +37,17 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
+        SimAssetBank.LookUp simAssetBank = SimAssetBank.GetLookUp();
+
         var bindingGOs = new Settings_ViewBindingSystem_BindingGameObjectList();
         dstManager.AddComponentObject(entity, bindingGOs);
 
         var bindingSettings = dstManager.AddBuffer<Settings_ViewBindingSystem_Binding>(entity);
-        bindingSettings.Capacity = Bank.ViewBindingDefinitions.Count + Bank.SimAssets.Count;
+        bindingSettings.Capacity = Bank.ViewBindingDefinitions.Count + simAssetBank.SimAssets.Count;
 
         HashSet<SimAssetId> doneSimAssets = new HashSet<SimAssetId>();
 
-        foreach (SimAsset item in Bank.SimAssets)
+        foreach (SimAsset item in simAssetBank.SimAssets)
         {
             if (item)
             {

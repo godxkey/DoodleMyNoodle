@@ -40,27 +40,6 @@ public class ViewBindingDefinitionBankUpdater : AssetPostprocessor
                    }
                });
 
-        importedAssets.Where((assetPath) => assetPath.EndsWith(".prefab"))
-               .Select((assetPath) => AssetDatabase.LoadAssetAtPath<GameObject>(assetPath))
-               .Where((gameObject) => gameObject.HasComponent<SimAsset>())
-               .Select((gameObject) => gameObject.GetComponent<SimAsset>())
-               .ToList()
-               .ForEach((prefab) =>
-               {
-                   if (bank == null)
-                   {
-                       bank = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<ViewBindingDefinitionBank>(ASSET_PATH);
-                   }
-
-                   if (!bank.SimAssets.Contains(prefab))
-                   {
-                       setDirty = true;
-                       bank.SimAssets.Add(prefab);
-
-                       DebugEditor.LogAssetIntegrity($"Added {prefab.gameObject.name} to ViewBindingDefinitionBank.");
-                   }
-               });
-
         if (setDirty)
         {
             //Log.Info("ViewBindingDefinitionBankUpdater: save bank...");
@@ -69,24 +48,18 @@ public class ViewBindingDefinitionBankUpdater : AssetPostprocessor
         }
     }
 
-    [MenuItem("Tools/Data Management/Force Update ViewBindingBank", priority = 999)]
+    [MenuItem("Tools/Data Management/Force Update BE Bank", priority = 999)]
     public static void UpdateViewBindingBank()
     {
         ViewBindingDefinitionBank bank = AssetDatabaseX.LoadOrCreateScriptableObjectAsset<ViewBindingDefinitionBank>(ASSET_PATH);
 
         bank.ViewBindingDefinitions.Clear();
-        bank.SimAssets.Clear();
 
         AssetDatabaseX.LoadPrefabAssetsWithComponentOnRoot<ViewBindingDefinition>(out List<KeyValuePair<string, GameObject>> viewBindingDefinitions);
-        AssetDatabaseX.LoadPrefabAssetsWithComponentOnRoot<SimAsset>(out List<KeyValuePair<string, GameObject>> simAssets);
 
         foreach (KeyValuePair<string, GameObject> item in viewBindingDefinitions)
         {
             bank.ViewBindingDefinitions.Add(item.Value.GetComponent<ViewBindingDefinition>());
-        }
-        foreach (KeyValuePair<string, GameObject> item in simAssets)
-        {
-            bank.SimAssets.Add(item.Value.GetComponent<SimAsset>());
         }
 
         DebugEditor.LogAssetIntegrity($"ViewBindingDefinitionBank updated.");

@@ -201,7 +201,7 @@ GameObject:
   - component: {fileID: 2063125902}
   - component: {fileID: 2063125901}
   m_Layer: 0
-  m_Name: SimAssetIdMap
+  m_Name: SimAssetBankInstance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -216,10 +216,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2063125900}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ffc91ddea46cb974e801f7eda6353103, type: 3}
+  m_Script: {fileID: 11500000, guid: a9af8ae73567bcc4b88f47b54ee9cec0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _simAssetIdMap: {fileID: 11400000, guid: a7c74d52f9b83904dafed838ec33eef6, type: 2}
+  _bank: {fileID: 11400000, guid: 7bbf34fcb70038b4a981f3ac7ef09d05, type: 2}
 --- !u!4 &2063125902
 Transform:
   m_ObjectHideFlags: 0
@@ -350,6 +350,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FPSCounter - Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 3945583886560987688, guid: 6a62afb2024c63a4aafb292359dd5e4e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -2.4000244
+      objectReference: {fileID: 0}
+    - target: {fileID: 3945583886560987688, guid: 6a62afb2024c63a4aafb292359dd5e4e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.789978
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a62afb2024c63a4aafb292359dd5e4e, type: 3}

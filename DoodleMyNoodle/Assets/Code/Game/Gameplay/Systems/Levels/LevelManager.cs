@@ -25,7 +25,7 @@ public class LevelManager : GameSystem<LevelManager>
     {
         base.OnGameStart();
 
-        GameMonoBehaviourHelpers.PresentationWorld.GetExistingSystem<TickSimulationSystem>().PauseSimulation(LEVEL_NOT_STARTED);
+        PresentationHelpers.PresentationWorld.GetExistingSystem<TickSimulationSystem>().PauseSimulation(LEVEL_NOT_STARTED);
 
         SyncedValues.RegisterValueListener<SyncedValueCurrentLevel>(OnLevelSet, callImmediatelyIfValueExits: true);
 
@@ -57,7 +57,7 @@ public class LevelManager : GameSystem<LevelManager>
             SyncedValues.Destroy<SyncedValueCurrentLevel>();
         }
 
-        GameMonoBehaviourHelpers.PresentationWorld?.GetExistingSystem<TickSimulationSystem>()?.PauseSimulation(LEVEL_NOT_STARTED);
+        PresentationHelpers.PresentationWorld?.GetExistingSystem<TickSimulationSystem>()?.PauseSimulation(LEVEL_NOT_STARTED);
         SyncedValues.UnregisterValueListener<SyncedValueCurrentLevel>(OnLevelSet);
 
         base.OnDestroy();
@@ -111,15 +111,15 @@ public class LevelManager : GameSystem<LevelManager>
             return;
         }
         IsLevelStarted = true;
-        GameMonoBehaviourHelpers.PresentationWorld.GetExistingSystem<TickSimulationSystem>().UnpauseSimulation(LEVEL_NOT_STARTED);
+        PresentationHelpers.PresentationWorld.GetExistingSystem<TickSimulationSystem>().UnpauseSimulation(LEVEL_NOT_STARTED);
 
         if (Game.PlayingAsMaster)
         {
             // load simulation scenes
-            GameMonoBehaviourHelpers.SubmitInput(new SimCommandLoadScene() { SceneName = SimManagersScene.SceneName });
+            PresentationHelpers.SubmitInput(new SimCommandLoadScene() { SceneName = SimManagersScene.SceneName });
             foreach (SceneInfo scene in level.SimulationScenes)
             {
-                GameMonoBehaviourHelpers.SubmitInput(new SimCommandLoadScene() { SceneName = scene.SceneName });
+                PresentationHelpers.SubmitInput(new SimCommandLoadScene() { SceneName = scene.SceneName });
             }
         }
 
