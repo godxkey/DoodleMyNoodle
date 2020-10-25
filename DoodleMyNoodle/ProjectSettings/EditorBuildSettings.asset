@@ -50,4 +50,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/Scene Assets/Gym_AI.unity
     guid: 693976433442b15479d8332069d5cafd
+  - enabled: 1
+    path: Assets/Scenes/Game/Scene Assets/Game Content (dynamic).unity
+    guid: 94acef77378b4c042a4527493796457e
+  - enabled: 1
+    path: Assets/Scenes/Game/Scene Assets/Game Systems (dynamic).unity
+    guid: b9dc8cc8b12a9e74faa0ead59f7273b6
   m_configObjects: {}
