@@ -8,30 +8,30 @@ namespace CCC.Editor
 {
     [CustomEntityPropertyDrawer]
     public class NativeStringEntityPropertyDrawer : IMGUIAdapter,
-        IVisit<NativeString32>,
-        IVisit<NativeString64>,
-        IVisit<NativeString128>,
-        IVisit<NativeString512>
+        IVisit<FixedString32>,
+        IVisit<FixedString64>,
+        IVisit<FixedString128>,
+        IVisit<FixedString512>
     {
-        const int NATIVE_STRING_32_MAX_CHAR_LENGTH = NativeString32.MaxLength / sizeof(char);
-        const int NATIVE_STRING_64_MAX_CHAR_LENGTH = NativeString64.MaxLength / sizeof(char);
-        const int NATIVE_STRING_128_MAX_CHAR_LENGTH = NativeString128.MaxLength / sizeof(char);
-        const int NATIVE_STRING_512_MAX_CHAR_LENGTH = NativeString512.MaxLength / sizeof(char);
+        static int NATIVE_STRING_32_MAX_CHAR_LENGTH => FixedString32.UTF8MaxLengthInBytes / sizeof(char);
+        static int NATIVE_STRING_64_MAX_CHAR_LENGTH => FixedString64.UTF8MaxLengthInBytes / sizeof(char);
+        static int NATIVE_STRING_128_MAX_CHAR_LENGTH => FixedString128.UTF8MaxLengthInBytes / sizeof(char);
+        static int NATIVE_STRING_512_MAX_CHAR_LENGTH => FixedString512.UTF8MaxLengthInBytes / sizeof(char);
 
 
-        VisitStatus IVisit<NativeString32>.Visit<TContainer>(Property<TContainer, NativeString32> property, ref TContainer container, ref NativeString32 value)
+        VisitStatus IVisit<FixedString32>.Visit<TContainer>(Property<TContainer, FixedString32> property, ref TContainer container, ref FixedString32 value)
         {
             return VisitString(property, ref value, NATIVE_STRING_32_MAX_CHAR_LENGTH);
         }
-        VisitStatus IVisit<NativeString64>.Visit<TContainer>(Property<TContainer, NativeString64> property, ref TContainer container, ref NativeString64 value)
+        VisitStatus IVisit<FixedString64>.Visit<TContainer>(Property<TContainer, FixedString64> property, ref TContainer container, ref FixedString64 value)
         {
             return VisitString(property, ref value, NATIVE_STRING_64_MAX_CHAR_LENGTH);
         }
-        VisitStatus IVisit<NativeString128>.Visit<TContainer>(Property<TContainer, NativeString128> property, ref TContainer container, ref NativeString128 value)
+        VisitStatus IVisit<FixedString128>.Visit<TContainer>(Property<TContainer, FixedString128> property, ref TContainer container, ref FixedString128 value)
         {
             return VisitString(property, ref value, NATIVE_STRING_128_MAX_CHAR_LENGTH);
         }
-        VisitStatus IVisit<NativeString512>.Visit<TContainer>(Property<TContainer, NativeString512> property, ref TContainer container, ref NativeString512 value)
+        VisitStatus IVisit<FixedString512>.Visit<TContainer>(Property<TContainer, FixedString512> property, ref TContainer container, ref FixedString512 value)
         {
             return VisitString(property, ref value, NATIVE_STRING_512_MAX_CHAR_LENGTH);
         }

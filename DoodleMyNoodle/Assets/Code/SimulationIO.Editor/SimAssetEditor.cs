@@ -45,10 +45,10 @@ public class SimAssetEditor : Editor
             }
 
             EditorGUILayout.PropertyField(_bindedViewProp, EditorGUIUtilityX.TempContent("View Prefab"));
-            if (_bindedViewProp.objectReferenceValue != null)
-            {
-                EditorGUILayout.PropertyField(_viewTechTypeProp);
-            }
+            //if (_bindedViewProp.objectReferenceValue != null)
+            //{
+            //    EditorGUILayout.PropertyField(_viewTechTypeProp);
+            //}
 
             GUI.enabled = wasGUI;
 

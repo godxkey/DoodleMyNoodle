@@ -9,7 +9,7 @@ public class LobbyPlayerInfoDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _playerName;
     [SerializeField] private TextMeshProUGUI _characterName;
 
-    public void UpdatePlayerInfoDisplay(NativeString64 playerName, NativeString64 characterName)
+    public void UpdatePlayerInfoDisplay(FixedString64 playerName, FixedString64 characterName)
     {
         _playerName.text = playerName.ToString();
         _characterName.text = characterName.ToString();

@@ -101,7 +101,7 @@ namespace SimulationControl
 
         public void RemoveFromPlayerLoop(World simWorld)
         {
-            ScriptBehaviourUpdateOrderEx.RemoveWorldSystemGroupsIntoPlayerLoop(simWorld, PlayerLoop.GetCurrentPlayerLoop());
+            ScriptBehaviourUpdateOrder.RemoveWorldFromCurrentPlayerLoop(simWorld);
             _inPlayerLoop = false;
             _addToPlayerLoop = false;
         }
@@ -146,7 +146,7 @@ namespace SimulationControl
                 // Even if we update the simulation manually, we have to add our ComponentSystemGroups to the player loop if we want them to
                 // show up in the EntityDebugger window.
                 // TODO: remove old world from player loop
-                ScriptBehaviourUpdateOrderEx.AddWorldSystemGroupsIntoPlayerLoop(_simulationWorldSystem.SimulationWorld, PlayerLoop.GetCurrentPlayerLoop());
+                ScriptBehaviourUpdateOrderEx.AddWorldToCurrentPlayerLoop(_simulationWorldSystem.SimulationWorld);
                 _inPlayerLoop = true;
                 _addToPlayerLoop = false;
             }
@@ -290,9 +290,9 @@ namespace SimulationControl
             }
 
             // Update player loop
-            initializationSystemGroup.SortSystemUpdateList();
-            simulationSystemGroup.SortSystemUpdateList();
-            presentationSystemGroup.SortSystemUpdateList();
+            initializationSystemGroup.SortSystems();
+            simulationSystemGroup.SortSystems();
+            presentationSystemGroup.SortSystems();
         }
 
         static ComponentSystemBase GetOrCreateSystemAndLogException(World world, Type type)
@@ -337,133 +337,32 @@ namespace SimulationControl
         }
 #endif
 
-#if !UNITY_DOTSPLAYER
+#if !UNITY_DOTSRUNTIME
         static class ScriptBehaviourUpdateOrderEx
         {
-            /// <summary>
-            /// Update the player loop with a world's root-level systems
-            /// </summary>
-            /// <param name="world">World with root-level systems that need insertion into the player loop</param>
-            /// <param name="existingPlayerLoop">Optional parameter to preserve existing player loops (e.g. ScriptBehaviourUpdateOrder.CurrentPlayerLoop)</param>
-            public static void AddWorldSystemGroupsIntoPlayerLoop(World world, PlayerLoopSystem? existingPlayerLoop = null)
+            public static void AddWorldToCurrentPlayerLoop(World world)
             {
-                PlayerLoopSystem playerLoop = existingPlayerLoop ?? PlayerLoop.GetDefaultPlayerLoop();
-
-                if (world != null)
-                {
-                    // Insert the root-level systems into the appropriate PlayerLoopSystem subsystems:
-                    PlayerLoopSystem[] roots = playerLoop.subSystemList;
-                    for (var i = 0; i < roots.Length; ++i)
-                    {
-                        if (roots[i].type == typeof(Update))
-                        {
-                            roots[i].subSystemList = AddSystem<SimSimulationSystemGroup>(world, roots[i].subSystemList);
-                        }
-                        else if (roots[i].type == typeof(PreLateUpdate))
-                        {
-                            roots[i].subSystemList = AddSystem<SimPresentationSystemGroup>(world, roots[i].subSystemList);
-                            roots[i].subSystemList = AddSystem<SimPostPresentationSystemGroup>(world, roots[i].subSystemList);
-                        }
-                        else if (roots[i].type == typeof(Initialization))
-                        {
-                            roots[i].subSystemList = AddSystem<SimPreInitializationSystemGroup>(world, roots[i].subSystemList);
-                            roots[i].subSystemList = AddSystem<SimInitializationSystemGroup>(world, roots[i].subSystemList);
-                        }
-                    }
-                }
-
+                var playerLoop = PlayerLoop.GetCurrentPlayerLoop();
+                AddWorldToPlayerLoop(world, ref playerLoop);
                 PlayerLoop.SetPlayerLoop(playerLoop);
             }
 
-            static PlayerLoopSystem[] AddSystem<T>(World world, PlayerLoopSystem[] oldArray)
-                where T : ComponentSystemBase
+            public static void AddWorldToPlayerLoop(World world, ref PlayerLoopSystem playerLoop)
             {
-                return InsertSystem<T>(world, oldArray, oldArray.Length);
-            }
+                if (world == null)
+                    return;
 
-            static PlayerLoopSystem[] InsertSystem<T>(World world, PlayerLoopSystem[] oldArray, int insertIndex)
-                where T : ComponentSystemBase
-            {
-                T system = world.GetExistingSystem<T>();
-                if (system == null)
-                    return oldArray;
+                var initGroup = world.GetExistingSystem<SimInitializationSystemGroup>();
+                if (initGroup != null)
+                    ScriptBehaviourUpdateOrder.AppendSystemToPlayerLoopList(initGroup, ref playerLoop, typeof(Initialization));
 
-                var newArray = new PlayerLoopSystem[oldArray.Length + 1];
+                var simGroup = world.GetExistingSystem<SimSimulationSystemGroup>();
+                if (simGroup != null)
+                    ScriptBehaviourUpdateOrder.AppendSystemToPlayerLoopList(simGroup, ref playerLoop, typeof(Update));
 
-                int o = 0;
-                for (int n = 0; n < newArray.Length; ++n)
-                {
-                    if (n == insertIndex)
-                    {
-                        continue;
-                    }
-
-                    newArray[n] = oldArray[o];
-                    ++o;
-                }
-
-                ScriptBehaviourUpdateOrder.InsertManagerIntoSubsystemList<T>(newArray, insertIndex, world.GetOrCreateSystem<T>());
-
-                return newArray;
-            }
-
-            // NEW
-            public static void RemoveWorldSystemGroupsIntoPlayerLoop(World world, PlayerLoopSystem? existingPlayerLoop = null)
-            {
-                PlayerLoopSystem playerLoop = existingPlayerLoop ?? PlayerLoop.GetDefaultPlayerLoop();
-
-                if (world != null)
-                {
-                    PlayerLoopSystem[] roots = playerLoop.subSystemList;
-                    for (var i = 0; i < roots.Length; ++i)
-                    {
-                        if (roots[i].type == typeof(Update))
-                        {
-                            roots[i].subSystemList = RemoveSystem<SimSimulationSystemGroup>(world, roots[i].subSystemList);
-                        }
-                        else if (roots[i].type == typeof(PreLateUpdate))
-                        {
-                            roots[i].subSystemList = RemoveSystem<SimPresentationSystemGroup>(world, roots[i].subSystemList);
-                            roots[i].subSystemList = RemoveSystem<SimPostPresentationSystemGroup>(world, roots[i].subSystemList);
-                        }
-                        else if (roots[i].type == typeof(Initialization))
-                        {
-                            roots[i].subSystemList = RemoveSystem<SimPreInitializationSystemGroup>(world, roots[i].subSystemList);
-                            roots[i].subSystemList = RemoveSystem<SimInitializationSystemGroup>(world, roots[i].subSystemList);
-                        }
-                    }
-                }
-
-                PlayerLoop.SetPlayerLoop(playerLoop);
-            }
-            // NEW
-            static PlayerLoopSystem[] RemoveSystem<T>(World world, PlayerLoopSystem[] oldArray)
-                where T : ComponentSystemBase
-            {
-                T system = world.GetExistingSystem<T>();
-                if (system == null)
-                    return oldArray;
-
-                int removeIndex = -1;
-                for (int i = 0; i < oldArray.Length; i++)
-                {
-                    var target = oldArray[i].updateDelegate?.Target;
-                    if (target is ScriptBehaviourUpdateOrder.DummyDelegateWrapper dummyDelegateWrapper
-                        && dummyDelegateWrapper.System == system)
-                    {
-                        removeIndex = i;
-                        break;
-                    }
-                }
-
-                if (removeIndex != -1)
-                {
-                    List<PlayerLoopSystem> newList = new List<PlayerLoopSystem>(oldArray);
-                    newList.RemoveAt(removeIndex);
-                    return newList.ToArray();
-                }
-
-                return oldArray;
+                var presGroup = world.GetExistingSystem<SimPresentationSystemGroup>();
+                if (presGroup != null)
+                    ScriptBehaviourUpdateOrder.AppendSystemToPlayerLoopList(presGroup, ref playerLoop, typeof(PreLateUpdate));
             }
         }
 #endif

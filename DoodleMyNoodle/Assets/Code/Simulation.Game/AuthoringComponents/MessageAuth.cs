@@ -12,7 +12,7 @@ public class MessageAuth : MonoBehaviour, IConvertGameObjectToEntity
     {
         dstManager.AddComponentData(entity, new Message()
         {
-            Value = new NativeString64(this.Value)
+            Value = new FixedString64(this.Value)
         });
     }
 }

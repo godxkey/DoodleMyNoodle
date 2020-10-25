@@ -125,12 +125,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f61236cc53bcd5458da6a885b727d51, type: 3}
---- !u!1 &7671082280139792935 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7775491354563716868, guid: 8f61236cc53bcd5458da6a885b727d51,
-    type: 3}
-  m_PrefabInstance: {fileID: 116302491701904675}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7671082280139792934 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7775491354563716869, guid: 8f61236cc53bcd5458da6a885b727d51,
@@ -144,6 +138,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7905076531735690271}
     m_Modifications:
+    - target: {fileID: 5217987042345694196, guid: 1d64006f79ecef74aba7cd8a177195b9,
+        type: 3}
+      propertyPath: m_Name
+      value: SE_Grid_Lvl_Prototype3
+      objectReference: {fileID: 0}
     - target: {fileID: 5217987042345694197, guid: 1d64006f79ecef74aba7cd8a177195b9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -199,11 +198,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6381771211143514163, guid: 1d64006f79ecef74aba7cd8a177195b9,
-        type: 3}
-      propertyPath: _bindedViewPrefab
-      value: 
-      objectReference: {fileID: 7671082280139792935}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d64006f79ecef74aba7cd8a177195b9, type: 3}
 --- !u!4 &2195613604895163628 stripped

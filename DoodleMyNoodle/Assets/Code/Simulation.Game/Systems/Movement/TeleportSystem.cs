@@ -1,11 +1,7 @@
-using Boo.Lang;
-using System;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngineX;
-using static fixMath;
-using static Unity.Mathematics.math;
 
 public struct TeleportRequestSingletonBufferElement : IBufferElementData
 {

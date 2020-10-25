@@ -8,7 +8,7 @@ public class DebugPanelSimPlayers : DebugPanel
 {
     public override string Title => "Sim Players";
 
-    public override bool CanBeDisplayed => GameMonoBehaviourHelpers.GetSimulationWorld() != null;
+    public override bool CanBeDisplayed => PresentationHelpers.GetSimulationWorld() != null;
 
     List<Entity> _cachedPlayers = new List<Entity>();
 
@@ -16,7 +16,7 @@ public class DebugPanelSimPlayers : DebugPanel
     {
         _cachedPlayers.Clear();
 
-        GameMonoBehaviourHelpers.GetSimulationWorld().Entities
+        PresentationHelpers.GetSimulationWorld().Entities
             .WithAll<PlayerTag, Name, PersistentId>()
             .ForEach((Entity playerEntity) =>
         {
@@ -28,7 +28,7 @@ public class DebugPanelSimPlayers : DebugPanel
     {
         UpdateCachedPlayers();
         var simPlayers = _cachedPlayers;
-        var simWorldAccessor = GameMonoBehaviourHelpers.GetSimulationWorld();
+        var simWorldAccessor = PresentationHelpers.GetSimulationWorld();
 
         GUILayout.BeginHorizontal();
 
@@ -59,7 +59,7 @@ public class DebugPanelSimPlayers : DebugPanel
         for (int i = 0; i < simPlayers.Count; i++)
         {
             ApplyPlayerTextColor(simPlayers[i]);
-            GUILayout.Label(PlayerHelpers.GetPlayerFromSimPlayer(simPlayers[i], GameMonoBehaviourHelpers.GetSimulationWorld()) == null ? "false" : "true");
+            GUILayout.Label(PlayerHelpers.GetPlayerFromSimPlayer(simPlayers[i], PresentationHelpers.GetSimulationWorld()) == null ? "false" : "true");
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -69,7 +69,7 @@ public class DebugPanelSimPlayers : DebugPanel
 
     static void ApplyPlayerTextColor(Entity simPlayer)
     {
-        PlayerInfo p = PlayerHelpers.GetPlayerFromSimPlayer(simPlayer, GameMonoBehaviourHelpers.GetSimulationWorld());
+        PlayerInfo p = PlayerHelpers.GetPlayerFromSimPlayer(simPlayer, PresentationHelpers.GetSimulationWorld());
         GUI.color = p == null ? Color.red : Color.white;
     }
     static void ResetTextColor()

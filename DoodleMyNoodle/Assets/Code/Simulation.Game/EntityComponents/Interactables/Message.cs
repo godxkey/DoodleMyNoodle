@@ -5,7 +5,7 @@ using Unity.Entities;
 [Serializable]
 public struct Message : IComponentData
 {
-    public NativeString64 Value;
+    public FixedString64 Value;
 
     public override string ToString()
     {

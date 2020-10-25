@@ -38,18 +38,26 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
     public GameObject BindedViewPrefab => _bindedViewPrefab;
     public TechType ViewTechType => _viewTechType;
 
+    [NonSerialized] private SimAssetId _runtimeId;
+    [NonSerialized] private bool _runtimeIdAssigned = false;
+
     public SimAssetId GetSimAssetId()
     {
-        if (SimAssetIdMapInstance.Get() != null)
+        if (!_runtimeIdAssigned)
         {
-            return SimAssetIdMapInstance.Get().EditIdToRuntimeId(Guid);
-        }
-        else
-        {
-            Debug.LogError("SimAssetIdMapInstance is null. The converted SimAssetId will be invalid.");
+            var lookup = SimAssetBankInstance.GetLookup();
+            if (lookup != null)
+            {
+                _runtimeId = lookup.EditIdToRuntimeId(Guid);
+                _runtimeIdAssigned = true; 
+            }
+            else
+            {
+                Debug.LogError($"{nameof(SimAssetBankInstance)} is null. The converted SimAssetId will be invalid.");
+            }
         }
 
-        return SimAssetId.Invalid;
+        return _runtimeId;
     }
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

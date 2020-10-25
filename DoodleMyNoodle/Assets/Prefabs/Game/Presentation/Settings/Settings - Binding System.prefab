@@ -72,6 +72,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Bank: {fileID: 11400000, guid: 4e0856e6f90e9f7479d77b062087b3e3, type: 2}
+  SimAssetBank: {fileID: 11400000, guid: 7bbf34fcb70038b4a981f3ac7ef09d05, type: 2}
 --- !u!114 &5481421298218862930
 MonoBehaviour:
   m_ObjectHideFlags: 0

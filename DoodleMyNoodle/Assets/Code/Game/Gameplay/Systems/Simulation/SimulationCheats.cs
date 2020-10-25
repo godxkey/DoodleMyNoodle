@@ -16,7 +16,7 @@ public static class SimulationCheats
             return;
         }
 
-        GameMonoBehaviourHelpers.SubmitInput(new SimInputCheatKillPlayerPawn()
+        PresentationHelpers.SubmitInput(new SimInputCheatKillPlayerPawn()
         {
             PlayerId = localPlayerInfo.SimPlayerId
         });
@@ -33,7 +33,7 @@ public static class SimulationCheats
             return;
         }
 
-        GameMonoBehaviourHelpers.SubmitInput(new SimInputCheatToggleInvincible()
+        PresentationHelpers.SubmitInput(new SimInputCheatToggleInvincible()
         {
             PlayerId = localPlayerInfo.SimPlayerId
         });
@@ -50,7 +50,7 @@ public static class SimulationCheats
             return;
         }
 
-        GameMonoBehaviourHelpers.SubmitInput(new SimInputCheatDamagePlayer()
+        PresentationHelpers.SubmitInput(new SimInputCheatDamagePlayer()
         {
             PlayerId = localPlayerInfo.SimPlayerId,
             Damage = amount
@@ -68,7 +68,7 @@ public static class SimulationCheats
             return;
         }
 
-        GameMonoBehaviourHelpers.SubmitInput(new SimInputCheatDamagePlayer()
+        PresentationHelpers.SubmitInput(new SimInputCheatDamagePlayer()
         {
             PlayerId = localPlayerInfo.SimPlayerId,
             Damage = -amount
@@ -86,7 +86,7 @@ public static class SimulationCheats
             return;
         }
 
-        GameMonoBehaviourHelpers.SubmitInput(new SimInputCheatAddAllItems()
+        PresentationHelpers.SubmitInput(new SimInputCheatAddAllItems()
         {
             PlayerId = localPlayerInfo.SimPlayerId,
         });
@@ -95,7 +95,7 @@ public static class SimulationCheats
     [ConsoleCommand(Description = "Next Turn")]
     public static void CheatNextTurn()
     {
-        GameMonoBehaviourHelpers.SubmitInput(new SimInputCheatNextTurn());
+        PresentationHelpers.SubmitInput(new SimInputCheatNextTurn());
     }
 
     [ConsoleCommand(Description = "Give your pawn infinit action points")]
@@ -109,7 +109,7 @@ public static class SimulationCheats
             return;
         }
 
-        GameMonoBehaviourHelpers.SubmitInput(new SimInputCheatInfiniteAP()
+        PresentationHelpers.SubmitInput(new SimInputCheatInfiniteAP()
         {
             PlayerId = localPlayerInfo.SimPlayerId,
         });

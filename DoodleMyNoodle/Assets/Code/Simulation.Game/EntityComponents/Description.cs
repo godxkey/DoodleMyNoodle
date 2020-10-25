@@ -6,5 +6,5 @@ using Unity.Entities;
 public struct Description : IComponentData
 {
     // MAXIMUM 62 CHARACTERS !!!
-    public NativeString128 Value;
+    public FixedString128 Value;
 }

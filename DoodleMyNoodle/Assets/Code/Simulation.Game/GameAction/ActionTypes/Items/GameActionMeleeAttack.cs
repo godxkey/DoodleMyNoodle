@@ -5,6 +5,7 @@ using UnityEngineX;
 using static fixMath;
 using System.Collections.Generic;
 
+
 public class GameActionMeleeAttack : GameAction
 {
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

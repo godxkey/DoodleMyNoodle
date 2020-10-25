@@ -8,7 +8,7 @@ public class DebugPanelClientSimController : DebugPanel
 {
     public override string Title => "Sim Controller (Client)";
     public override bool CanBeDisplayed =>
-        GameMonoBehaviourHelpers.PresentationWorld?.GetExistingSystem<ReceiveSimulationTickSystem>() != null;
+        PresentationHelpers.PresentationWorld?.GetExistingSystem<ReceiveSimulationTickSystem>() != null;
 
     float[] _simTickQueueLengths = new float[60];
     int _simTickQueueLengthsIterator = 0;
@@ -24,7 +24,7 @@ public class DebugPanelClientSimController : DebugPanel
 
     public override void OnGUI()
     {
-        var receiveTickSystem = GameMonoBehaviourHelpers.PresentationWorld.GetExistingSystem<ReceiveSimulationTickSystem>();
+        var receiveTickSystem = PresentationHelpers.PresentationWorld.GetExistingSystem<ReceiveSimulationTickSystem>();
 
         _simTickQueueLengths[_simTickQueueLengthsIterator] = receiveTickSystem.SimTicksInQueue;
         _simTickDropperSpeeds[_simTickQueueLengthsIterator] = receiveTickSystem.CurrentSimPlayingSpeed;

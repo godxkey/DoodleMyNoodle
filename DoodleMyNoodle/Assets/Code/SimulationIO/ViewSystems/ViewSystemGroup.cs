@@ -65,20 +65,6 @@ public class ViewSystemGroup : ManualCreationComponentSystemGroup, IManualSystem
         DestroyAllManuallyCreatedSystems();
     }
 
-    public override void SortSystemUpdateList()
-    {
-        base.SortSystemUpdateList();
-
-        //int i = m_systemsToUpdate.IndexOf(World.GetExistingSystem<BeginViewSystem>());
-        //if (i != -1)
-        //    m_systemsToUpdate.MoveFirst(i);
-
-        //int i = m_systemsToUpdate.IndexOf(World.GetExistingSystem<EndViewSystem>());
-        //if (i != -1)
-        //    m_systemsToUpdate.MoveLast(i);
-
-    }
-
     protected override void OnUpdate()
     {
         if (CanUpdate)

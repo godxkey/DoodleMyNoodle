@@ -142,12 +142,12 @@ public class BindedSimEntityManagedEditor : Editor
     {
         base.OnInspectorGUI();
 
-        if (GameMonoBehaviourHelpers.GetSimulationWorld() != null)
+        if (PresentationHelpers.GetSimulationWorld() != null)
         {
             Entity simEntity = ((BindedSimEntityManaged)target).SimEntity;
-            if (GameMonoBehaviourHelpers.GetSimulationWorld().Exists(simEntity))
+            if (PresentationHelpers.GetSimulationWorld().Exists(simEntity))
             {
-                string entityName = GameMonoBehaviourHelpers.GetSimulationWorld().GetName(simEntity);
+                string entityName = PresentationHelpers.GetSimulationWorld().GetName(simEntity);
                 EditorGUILayout.LabelField($"Binded to: {entityName} - {simEntity}", EditorStyles.boldLabel);
             }
             else
