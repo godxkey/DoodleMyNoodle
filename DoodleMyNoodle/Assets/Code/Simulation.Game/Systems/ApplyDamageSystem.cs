@@ -5,25 +5,25 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public struct DamageAppliedEventData : IComponentData
+public struct DamageEventData : IComponentData
 {
     public Entity EntityDamaged;
     public int DamageApplied;
     public fix3 Position;
 }
 
-public struct HealingAppliedEventData : IComponentData
+public struct HealEventData : IComponentData
 {
     public Entity EntityHealed;
     public int HealApplied;
     public fix3 Position;
 }
 
-public struct DamageToApplySingletonTag : IComponentData
+public struct DamageRequestSingletonTag : IComponentData
 {
 }
 
-public struct DamageToApplyData : IBufferElementData
+public struct DamageRequestData : IBufferElementData
 {
     public Entity InstigatorPawn;
     public int Amount;
@@ -31,90 +31,87 @@ public struct DamageToApplyData : IBufferElementData
 }
 
 [AlwaysUpdateSystem]
-public class ApplyDamageSystem : SimComponentSystem
+public class ApplyDamageSystem : SimSystemBase
 {
-    private EntityQuery _damageEventsEntityQuery;
-    private EntityQuery _healingEventsEntityQuery;
+    private EntityQuery _damageEvents;
+    private EntityQuery _healingEvents;
 
-    private List<DamageAppliedEventData> _damagedEventData = new List<DamageAppliedEventData>();
-    private List<HealingAppliedEventData> _healedEntities = new List<HealingAppliedEventData>();
+    private List<DamageEventData> _newDamageEvents = new List<DamageEventData>();
+    private List<HealEventData> _newHealEvents = new List<HealEventData>();
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        _damageEventsEntityQuery = EntityManager.CreateEntityQuery(typeof(DamageAppliedEventData));
-        _healingEventsEntityQuery = EntityManager.CreateEntityQuery(typeof(HealingAppliedEventData));
+        _damageEvents = GetEntityQuery(typeof(DamageEventData));
+        _healingEvents = GetEntityQuery(typeof(HealEventData));
     }
 
-    protected override void OnDestroy()
+    public void RequestDamage(DamageRequestData damageRequestData)
     {
-        base.OnDestroy();
-
-        _damageEventsEntityQuery.Dispose();
-        _healingEventsEntityQuery.Dispose();
+        GetDamageRequestBuffer().Add(damageRequestData);
     }
 
-    public static DynamicBuffer<DamageToApplyData> GetDamageToApplySingletonBuffer(ISimWorldReadWriteAccessor accessor)
+    private DynamicBuffer<DamageRequestData> GetDamageRequestBuffer()
     {
-        if (!accessor.HasSingleton<DamageToApplySingletonTag>())
+        if (!HasSingleton<DamageRequestSingletonTag>())
         {
-            accessor.CreateEntity(typeof(DamageToApplySingletonTag), typeof(DamageToApplyData));
+            EntityManager.CreateEntity(typeof(DamageRequestSingletonTag), typeof(DamageRequestData));
         }
 
-        return accessor.GetBuffer<DamageToApplyData>(accessor.GetSingletonEntity<DamageToApplySingletonTag>());
+        return GetBuffer<DamageRequestData>(GetSingletonEntity<DamageRequestSingletonTag>());
     }
 
     protected override void OnUpdate()
     {
         // Clear Damage Applied Events
-        EntityManager.DestroyEntity(_damageEventsEntityQuery);
-        EntityManager.DestroyEntity(_healingEventsEntityQuery);
+        EntityManager.DestroyEntity(_damageEvents);
+        EntityManager.DestroyEntity(_healingEvents);
 
-        DynamicBuffer<DamageToApplyData> DamageToApplyBuffer = GetDamageToApplySingletonBuffer(Accessor);
+        DynamicBuffer<DamageRequestData> damageRequests = GetDamageRequestBuffer();
 
-        _damagedEventData.Clear();
-        _healedEntities.Clear();
-
-        foreach (DamageToApplyData damageData in DamageToApplyBuffer)
+        foreach (DamageRequestData damageData in damageRequests)
         {
             if (damageData.Amount > 0)
             {
-                ProcessDamage(damageData.InstigatorPawn, damageData.TargetPawn, damageData.Amount, _damagedEventData);
+                ProcessDamage(damageData.InstigatorPawn, damageData.TargetPawn, damageData.Amount, _newDamageEvents);
             }
             else if (damageData.Amount < 0)
             {
-                ProcessHeal(damageData.InstigatorPawn, damageData.TargetPawn, Math.Abs(damageData.Amount), _healedEntities);
+                ProcessHeal(damageData.InstigatorPawn, damageData.TargetPawn, abs(damageData.Amount), _newHealEvents);
             }
         }
 
-        DamageToApplyBuffer.Clear();
+        damageRequests.Clear();
 
         // We save entities damaged and do this here because we need to clear the buffer and it's a simulation changed
-        foreach (DamageAppliedEventData damageAppliedEventData in _damagedEventData)
+        foreach (DamageEventData damageAppliedEventData in _newDamageEvents)
         {
             EntityManager.CreateEventEntity(damageAppliedEventData);
         }
 
-        foreach (HealingAppliedEventData healAppliedEventData in _healedEntities)
+        foreach (HealEventData healAppliedEventData in _newHealEvents)
         {
             EntityManager.CreateEventEntity(healAppliedEventData);
         }
+
+        _newDamageEvents.Clear();
+        _newHealEvents.Clear();
     }
 
-    private void ProcessDamage(Entity instigator, Entity target, int amount, List<DamageAppliedEventData> damagedEntities)
+    private void ProcessDamage(Entity instigator, Entity target, int amount, List<DamageEventData> outDamageEvents)
     {
         int remainingDamage = amount;
         bool damageHasBeenApplied = false;
 
         // Invincible
-        if (EntityManager.HasComponent<Invincible>(target))
+        if (HasComponent<Invincible>(target))
         {
             remainingDamage = 0;
         }
 
         // Armor
-        if (remainingDamage > 0 && EntityManager.TryGetComponentData(target, out Armor armor))
+        if (remainingDamage > 0 && TryGetComponent(target, out Armor armor))
         {
             CommonWrites.ModifyStatInt<Armor>(Accessor, target, -remainingDamage);
             remainingDamage -= armor.Value;
@@ -122,7 +119,7 @@ public class ApplyDamageSystem : SimComponentSystem
         }
 
         // Health
-        if (remainingDamage > 0 && EntityManager.TryGetComponentData(target, out Health health))
+        if (remainingDamage > 0 && TryGetComponent(target, out Health health))
         {
             CommonWrites.ModifyStatInt<Health>(Accessor, target, -remainingDamage);
             remainingDamage -= health.Value;
@@ -132,25 +129,26 @@ public class ApplyDamageSystem : SimComponentSystem
         // Handle damaged entity for feedbacks
         if (damageHasBeenApplied)
         {
-            damagedEntities.Add(new DamageAppliedEventData()
+            outDamageEvents.Add(new DamageEventData()
             {
                 EntityDamaged = target,
                 DamageApplied = amount,
-                Position = EntityManager.GetComponentData<FixTranslation>(target)
+                Position = GetComponent<FixTranslation>(target)
             });
         }
     }
 
-    private void ProcessHeal(Entity instigator, Entity target, int amount, List<HealingAppliedEventData> healedEntities)
+    private void ProcessHeal(Entity instigator, Entity target, int amount, List<HealEventData> outHealEvents)
     {
-        if (EntityManager.HasComponent<Health>(target))
+        if (HasComponent<Health>(target))
         {
             CommonWrites.ModifyStatInt<Health>(Accessor, target, amount);
-            healedEntities.Add(new HealingAppliedEventData()
+
+            outHealEvents.Add(new HealEventData()
             {
                 EntityHealed = target,
                 HealApplied = amount,
-                Position = EntityManager.GetComponentData<FixTranslation>(target)
+                Position = GetComponent<FixTranslation>(target)
             });
         }
     }
@@ -160,9 +158,8 @@ internal static partial class CommonWrites
 {
     public static void RequestDamageOnTarget(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, Entity targetPawn, int amount)
     {
-        DynamicBuffer<DamageToApplyData> damageDataBuffer = ApplyDamageSystem.GetDamageToApplySingletonBuffer(accessor);
-
-        damageDataBuffer.Add(new DamageToApplyData() { Amount = amount, InstigatorPawn = instigatorPawn, TargetPawn = targetPawn });
+        var request = new DamageRequestData() { Amount = amount, InstigatorPawn = instigatorPawn, TargetPawn = targetPawn };
+        accessor.GetExistingSystem<ApplyDamageSystem>().RequestDamage(request);
     }
 
     public static void RequestHealOnTarget(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, Entity targetPawn, int amount)

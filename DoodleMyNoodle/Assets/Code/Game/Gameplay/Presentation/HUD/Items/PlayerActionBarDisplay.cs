@@ -7,6 +7,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using static Unity.Mathematics.math;
 
 public class PlayerActionBarDisplay : GamePresentationBehaviour
 {
@@ -18,13 +19,13 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
     [SerializeField] private Transform _slotsContainer;
     [SerializeField] private PlayerActionBarSlot _inventorySlotPrefab;
 
-    private List<PlayerActionBarSlot> _inventorySlots = new List<PlayerActionBarSlot>();
+    private List<PlayerActionBarSlot> _slotVisuals = new List<PlayerActionBarSlot>();
 
     public override void OnGameAwake()
     {
         base.OnGameAwake();
 
-        _slotsContainer.GetComponentsInChildren(_inventorySlots);
+        _slotsContainer.GetComponentsInChildren(_slotVisuals);
     }
 
     protected override void OnGamePresentationUpdate()
@@ -54,55 +55,61 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
             VerifyButtonInputForSlots();
         }
 
-        int itemIndex = 0;
         if (SimWorld.TryGetBufferReadOnly(Cache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             // Ajust Slot amount accordiwdng to inventory max size
             InventoryCapacity inventoryCapacity = SimWorld.GetComponentData<InventoryCapacity>(Cache.LocalPawn);
 
-            _gridLayoutGroup.constraintCount = Mathf.Min(_maxCollumns, inventoryCapacity);
+            _gridLayoutGroup.constraintCount = min(_maxCollumns, inventoryCapacity);
 
-            UIUtility.ResizeGameObjectList(_inventorySlots, Mathf.Min(inventoryCapacity, Mathf.Max(_maxCollumns, inventory.Length)), _inventorySlotPrefab, _slotsContainer);
+            UIUtility.ResizeGameObjectList(_slotVisuals, max(min(_maxCollumns, inventoryCapacity), inventory.Length), _inventorySlotPrefab, _slotsContainer);
 
-            foreach (InventoryItemReference item in inventory)
+            for (int i = 0; i < _slotVisuals.Count; i++)
             {
-                if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
+                if (i < inventory.Length)
                 {
-                    ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
-
-                    GameAction.UseContext context = new GameAction.UseContext()
-                    {
-                        InstigatorPawn = Cache.LocalPawn,
-                        InstigatorPawnController = Cache.LocalController,
-                        Entity = item.ItemEntity
-                    };
+                    Entity item = inventory[i];
 
                     int stacks = -1;
-                    if (SimWorld.TryGetComponentData(item.ItemEntity, out ItemStackableData itemStackableData))
+                    if (SimWorld.TryGetComponentData(item, out ItemStackableData itemStackableData))
                     {
                         stacks = itemStackableData.Value;
                     }
 
-                    _inventorySlots[itemIndex].UpdateCurrentInventorySlot(itemInfo,
-                                                                          itemIndex,
-                                                                          GetSlotShotcut(itemIndex),
-                                                                          onItemPrimaryActionUsedCallback,
-                                                                          onItemSecondaryActionUsedCallback,
-                                                                          stacks);
+                    SimWorld.TryGetComponentData(inventory[i], out SimAssetId itemAssetId);
+                    ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemAssetId);
 
-                    if (!GameActionBank.GetAction(SimWorld.GetComponentData<GameActionId>(item.ItemEntity)).CanBeUsedInContext(SimWorld, context))
+                    _slotVisuals[i].UpdateCurrentInventorySlot(itemInfo,
+                                                               i,
+                                                               GetSlotShotcut(i),
+                                                               onItemPrimaryActionUsedCallback,
+                                                               onItemSecondaryActionUsedCallback,
+                                                               stacks);
+
+                    bool canBeUsed = false;
+                    if (SimWorld.TryGetComponentData(item, out GameActionId itemActionId))
                     {
-                        _inventorySlots[itemIndex].UpdateDisplayAsUnavailable(item.ItemEntity);
+                        GameAction.UseContext useContext = new GameAction.UseContext()
+                        {
+                            InstigatorPawn = Cache.LocalPawn,
+                            InstigatorPawnController = Cache.LocalController,
+                            Entity = item
+                        };
+
+                        var itemAction = GameActionBank.GetAction(itemActionId);
+                        canBeUsed = itemAction != null && itemAction.CanBeUsedInContext(SimWorld, useContext);
                     }
 
-                    itemIndex++;
-                }
-            }
 
-            // Empty remaining inventory slots
-            for (int i = _inventorySlots.Count - 1; i >= itemIndex; i--)
-            {
-                _inventorySlots[i].UpdateCurrentInventorySlot(null, i, GetSlotShotcut(i), null, null);
+                    if (!canBeUsed)
+                    {
+                        _slotVisuals[i].UpdateDisplayAsUnavailable(item);
+                    }
+                }
+                else
+                {
+                    _slotVisuals[i].UpdateCurrentInventorySlot(null, i, GetSlotShotcut(i), null, null);
+                }
             }
         }
     }
@@ -119,9 +126,9 @@ public class PlayerActionBarDisplay : GamePresentationBehaviour
         {
             if (Input.GetKeyDown(_inventorySlotShortcuts[i].InputShortcut))
             {
-                if (_inventorySlots.Count > i)
+                if (_slotVisuals.Count > i)
                 {
-                    _inventorySlots[i].PrimaryUseItemSlot();
+                    _slotVisuals[i].PrimaryUseItemSlot();
                 }
                 return;
             }

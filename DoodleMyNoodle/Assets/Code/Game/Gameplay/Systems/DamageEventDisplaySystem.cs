@@ -6,7 +6,7 @@ public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDispla
 {
     public override void OnPostSimulationTick()
     {
-        Cache.SimWorld.Entities.ForEach((ref DamageAppliedEventData damageApplyData) =>
+        Cache.SimWorld.Entities.ForEach((ref DamageEventData damageApplyData) =>
         {
             if (BindedSimEntityManaged.InstancesMap.TryGetValue(damageApplyData.EntityDamaged, out GameObject presentationEntity) && presentationEntity)
             {
