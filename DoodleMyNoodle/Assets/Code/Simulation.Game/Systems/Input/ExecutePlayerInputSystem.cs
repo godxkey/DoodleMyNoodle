@@ -14,7 +14,7 @@ public abstract class SimPlayerInput : SimInput
 
 [UpdateBefore(typeof(ExecutePawnControllerInputSystem))]
 [UpdateInGroup(typeof(InputSystemGroup))]
-public class ExecutePlayerInputSystem : SimComponentSystem
+public class ExecutePlayerInputSystem : SimSystemBase
 {
     protected override void OnUpdate()
     {
@@ -35,10 +35,6 @@ public class ExecutePlayerInputSystem : SimComponentSystem
         ExecutePawnControllerInputSystem pawnControllerInputSystem = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
         switch (input)
         {
-            case SimPlayerInputSetStartingInventory setStartingInventoryInput:
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputSetStartingInventory(playerEntity, setStartingInventoryInput.KitNumber));
-                break;
-
             case SimPlayerInputSetPawnName setNameInput:
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputSetPawnName(playerEntity, setNameInput.Name));
                 break;
@@ -60,8 +56,8 @@ public class ExecutePlayerInputSystem : SimComponentSystem
                 Entity pawn = GetPlayerPawn(playerEntity);
                 if(pawn != Entity.Null)
                 {
-                    EntityManager.SetOrAddComponentData<DoodleId>(pawn, new DoodleId() { Guid = setPawnDoodleInput.DoodleId });
-                    EntityManager.SetOrAddComponentData<DoodleStartDirection>(pawn, new DoodleStartDirection() { IsLookingRight = setPawnDoodleInput.DoodleDirectionIsLookingRight });
+                    EntityManager.SetOrAddComponentData(pawn, new DoodleId() { Guid = setPawnDoodleInput.DoodleId });
+                    EntityManager.SetOrAddComponentData(pawn, new DoodleStartDirection() { IsLookingRight = setPawnDoodleInput.DoodleDirectionIsLookingRight });
                 }
                 break;
             }

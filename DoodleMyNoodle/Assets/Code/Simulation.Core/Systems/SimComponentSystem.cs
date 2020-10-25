@@ -26,7 +26,7 @@ public abstract class SimComponentSystem : ComponentSystem, ISimSystem
     protected override void OnCreate()
     {
         base.OnCreate();
-        World = ((SimulationWorld)base.World);
+        World = (SimulationWorld)base.World;
         Accessor = World.GetInternalAccessor();
     }
 }
@@ -44,25 +44,25 @@ public abstract class SimJobComponentSystem : JobComponentSystem, ISimSystem
     protected override void OnCreate()
     {
         base.OnCreate();
-        World = ((SimulationWorld)base.World);
+        World = (SimulationWorld)base.World;
         Accessor = World.GetInternalAccessor();
     }
 }
 
-//public abstract class SimSystemBase : CCCSystemBase
-//{
-//    /// <summary>
-//    /// The current Time data for this system's world.
-//    /// </summary>
-//    public new ref readonly FixTimeData Time => ref World.FixTime;
+public abstract class SimSystemBase : CCCSystemBase, ISimSystem
+{
+    /// <summary>
+    /// The current Time data for this system's world.
+    /// </summary>
+    public new ref readonly FixTimeData Time => ref World.FixTime;
 
-//    public new SimulationWorld World { get; private set; }
-//    public ISimWorldReadWriteAccessor Accessor { get; private set; }
+    public new SimulationWorld World { get; private set; }
+    public ISimWorldReadWriteAccessor Accessor { get; private set; }
 
-//    protected override void OnCreate()
-//    {
-//        base.OnCreate();
-//        World = ((SimulationWorld)base.World);
-//        Accessor = World.GetInternalAccessor();
-//    }
-//}
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        World = (SimulationWorld)base.World;
+        Accessor = World.GetInternalAccessor();
+    }
+}
