@@ -9,6 +9,8 @@ using UnityEngineX;
 public class SimulationController : GameSystem<SimulationController>
 {
     [SerializeField] private ViewBindingDefinitionBank _simAssetBank;
+    
+    private TickSimulationSystem _tickSystem;
 
     public ViewBindingDefinitionBank SimAssetBank => _simAssetBank;
 
@@ -18,14 +20,20 @@ public class SimulationController : GameSystem<SimulationController>
         base.OnGameAwake();
 
         Time.fixedDeltaTime = (float)SimulationConstants.TIME_STEP;
-        
+
         World.DefaultGameObjectInjectionWorld
             .GetOrCreateSystem<SimulationControlSystemGroup>()
             .Initialize(OnlineService.OnlineInterface?.SessionInterface, ValidateSimInput);
 
-        World.DefaultGameObjectInjectionWorld
-        .GetExistingSystem<TickSimulationSystem>()
-        .SimulationTicked += OnSimulationTicked;
+        _tickSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<TickSimulationSystem>();
+        _tickSystem.PauseSimulation("game-not-ready");
+        _tickSystem.SimulationTicked += OnSimulationTicked;
+    }
+
+    public override void OnGameStart()
+    {
+        base.OnGameStart();
+        _tickSystem.UnpauseSimulation("game-not-ready");
     }
 
     private void OnSimulationTicked(SimTickData tickData)
@@ -78,7 +86,7 @@ public class SimulationController : GameSystem<SimulationController>
     {
         base.OnDestroy();
 
-        if(World.DefaultGameObjectInjectionWorld?.GetExistingSystem<TickSimulationSystem>() != null)
+        if (World.DefaultGameObjectInjectionWorld?.GetExistingSystem<TickSimulationSystem>() != null)
         {
             World.DefaultGameObjectInjectionWorld.GetExistingSystem<TickSimulationSystem>().SimulationTicked -= OnSimulationTicked;
         }

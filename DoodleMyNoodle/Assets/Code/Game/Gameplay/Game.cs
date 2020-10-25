@@ -1,6 +1,9 @@
 ﻿
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngineX;
@@ -21,14 +24,23 @@ public class Game : MonoBehaviour
 
     bool _ready;
     bool _started;
-    bool _systemsCreated = false;
+
+    int _lateStarterIterator;
+    Scene _gameContentScene;
+    Scene _gameSystemScene;
 
     List<GameMonoBehaviour> _lateStarters = new List<GameMonoBehaviour>();
-
+    bool _fireOnGameAwake;
+    bool _fireOnGameStart;
 
     void Awake()
     {
         s_instance = this;
+    }
+
+    private void Start()
+    {
+        StartCoroutine(Init());
     }
 
     void OnDestroy()
@@ -39,69 +51,102 @@ public class Game : MonoBehaviour
         s_instance = null;
     }
 
-    void Update()
+    private IEnumerator Init()
     {
-        if (!_systemsCreated)
+        bool roleSelected = false;
+        while (!roleSelected)
         {
             switch (GameStateManager.currentGameState)
             {
-                case GameStateInGameClient clientState:
+                case GameStateInGameClient _:
+                    Log.Info("Starting game as client");
                     PlayingAsClient = true;
+                    roleSelected = true;
                     break;
-                case GameStateInGameServer serverState:
+
+                case GameStateInGameServer _:
+                    Log.Info("Starting game as server");
                     PlayingAsServer = true;
+                    roleSelected = true;
                     break;
-                case GameStateInGameLocal localState:
+
+                case GameStateInGameLocal _:
+                    Log.Info("Starting game in local play");
                     PlayingAsLocal = true;
+                    roleSelected = true;
                     break;
-            }
 
-            if (PlayingAsServer || PlayingAsLocal || PlayingAsClient)
-            {
-                _systemsCreated = true;
-            
-                _gameContentScene = SceneManager.CreateScene("Game Content (dynamic)");
-                _gameSystemScene = SceneManager.CreateScene("Game Systems (dynamic)");
-
-                if (PlayingAsLocal)
-                    InstantiateCoreSystems(GameSystemOnlineFlags.Local);
-            
-                if (PlayingAsServer)
-                    InstantiateCoreSystems(GameSystemOnlineFlags.Server);
-            
-                if (PlayingAsClient)
-                    InstantiateCoreSystems(GameSystemOnlineFlags.Client);
-            }
-        }
-
-
-        if (_systemsCreated && !_ready)
-        {
-            switch (GameStateManager.currentGameState)
-            {
-                case GameStateInGameClient clientState:
-                    _ready = clientState.SessionInterface != null;
-                    break;
-                case GameStateInGameServer serverState:
-                    _ready = serverState.SessionInterface != null;
-                    break;
-                case GameStateInGameLocal localState:
-                    _ready = true;
-                    break;
-            }
-
-            if (_ready)
-            {
-                // invoke 'OnReady' callbacks
-
-                foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
+                default:
                 {
-                    b.OnGameAwake();
+                    yield return null;
+                    break;
                 }
             }
         }
 
-        if (_ready && !_started)
+
+        // Load scenes
+        Log.Info("Loading dynamic game scenes...");
+        var contentSceneLoad = SceneManager.LoadSceneAsync("Game Content (dynamic)", LoadSceneMode.Additive);
+        var systemSceneLoad = SceneManager.LoadSceneAsync("Game Systems (dynamic)", LoadSceneMode.Additive);
+        
+        while (!contentSceneLoad.isDone || !systemSceneLoad.isDone)
+        {
+            yield return null;
+        }
+
+        _gameContentScene = SceneManager.GetSceneByName("Game Content (dynamic)");
+        _gameSystemScene = SceneManager.GetSceneByName("Game Systems (dynamic)");
+
+
+        // Instantiate game systems
+        Log.Info("Instantiating game systems...");
+        if (PlayingAsLocal)
+            InstantiateCoreSystems(GameSystemOnlineFlags.Local);
+
+        if (PlayingAsServer)
+            InstantiateCoreSystems(GameSystemOnlineFlags.Server);
+
+        if (PlayingAsClient)
+            InstantiateCoreSystems(GameSystemOnlineFlags.Client);
+
+
+        // wait for correct session configuration
+        while (true)
+        {
+            bool ready = false;
+            switch (GameStateManager.currentGameState)
+            {
+                case GameStateInGameClient clientState:
+                    ready = clientState.SessionInterface != null;
+                    break;
+
+                case GameStateInGameServer serverState:
+                    ready = serverState.SessionInterface != null;
+                    break;
+
+                case GameStateInGameLocal _:
+                    ready = true;
+                    break;
+            }
+
+            if (ready)
+            {
+                break;
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+
+        Log.Info("Waiting for game systems to be ready...");
+
+        // Fire awake!
+        _fireOnGameAwake = true;
+
+        // Wait for all SystemReady
+        while (true)
         {
             for (int i = 0; i < GameSystem.s_unreadySystems.Count; i++)
             {
@@ -114,15 +159,41 @@ public class Game : MonoBehaviour
 
             if (GameSystem.s_unreadySystems.Count == 0)
             {
-                _started = true;
-
-                foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
-                {
-                    b.OnGameStart();
-                }
+                break;
+            }
+            else
+            {
+                yield return null;
             }
         }
 
+        Log.Info("Game starting!");
+        _fireOnGameStart = true;
+    }
+
+    void Update()
+    {
+        if (_fireOnGameAwake)
+        {
+            _fireOnGameAwake = false;
+            _ready = true;
+
+            foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
+            {
+                b.OnGameAwake();
+            }
+        }
+
+        if (_fireOnGameStart)
+        {
+            _fireOnGameStart = false;
+            _started = true;
+
+            foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
+            {
+                b.OnGameStart();
+            }
+        }
 
         if (_started)
         {
@@ -194,11 +265,6 @@ public class Game : MonoBehaviour
             }
         }
     }
-
-    int _lateStarterIterator;
-    private List<GameSystem> _systems;
-    private Scene _gameContentScene;
-    private Scene _gameSystemScene;
 
     public static void AddLateStarter(GameMonoBehaviour gameMonoBehaviour)
     {

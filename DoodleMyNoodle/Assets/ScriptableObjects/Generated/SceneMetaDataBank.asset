@@ -73,3 +73,11 @@ MonoBehaviour:
     Path: Assets/Scenes/Levels/Scene Assets/Gym_AI.unity
     BuildIndex: 14
     AssetGuid: 693976433442b15479d8332069d5cafd
+  - Name: Game Content (dynamic)
+    Path: Assets/Scenes/Game/Scene Assets/Game Content (dynamic).unity
+    BuildIndex: 15
+    AssetGuid: 94acef77378b4c042a4527493796457e
+  - Name: Game Systems (dynamic)
+    Path: Assets/Scenes/Game/Scene Assets/Game Systems (dynamic).unity
+    BuildIndex: 16
+    AssetGuid: b9dc8cc8b12a9e74faa0ead59f7273b6

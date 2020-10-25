@@ -16,37 +16,43 @@ public static class SceneShortcuts
     [MenuItem("Scene Shortcuts/EmptyScene", priority = 2002)]
     public static void Assets_Scenes_EmptyScene() => LoadScene("Assets/Scenes/EmptyScene.unity");
 
-    [MenuItem("Scene Shortcuts/Game_Core", priority = 3003)]
+    [MenuItem("Scene Shortcuts/Game Content (dynamic)", priority = 3003)]
+    public static void Assets_Scenes_Game_Scene_Assets_Game_Content__dynamic_() => LoadScene("Assets/Scenes/Game/Scene Assets/Game Content (dynamic).unity");
+
+    [MenuItem("Scene Shortcuts/Game Systems (dynamic)", priority = 3004)]
+    public static void Assets_Scenes_Game_Scene_Assets_Game_Systems__dynamic_() => LoadScene("Assets/Scenes/Game/Scene Assets/Game Systems (dynamic).unity");
+
+    [MenuItem("Scene Shortcuts/Game_Core", priority = 3005)]
     public static void Assets_Scenes_Game_Scene_Assets_Game_Core() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_Core.unity");
 
-    [MenuItem("Scene Shortcuts/Game_SimulationInitData", priority = 3004)]
+    [MenuItem("Scene Shortcuts/Game_SimulationInitData", priority = 3006)]
     public static void Assets_Scenes_Game_Scene_Assets_Game_SimulationInitData() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_SimulationInitData.unity");
 
-    [MenuItem("Scene Shortcuts/Gym_AI", priority = 4005)]
+    [MenuItem("Scene Shortcuts/Gym_AI", priority = 4007)]
     public static void Assets_Scenes_Levels_Scene_Assets_Gym_AI() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_AI.unity");
 
-    [MenuItem("Scene Shortcuts/Gym_Physics", priority = 4006)]
+    [MenuItem("Scene Shortcuts/Gym_Physics", priority = 4008)]
     public static void Assets_Scenes_Levels_Scene_Assets_Gym_Physics() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_Physics.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_Prototype3", priority = 4007)]
+    [MenuItem("Scene Shortcuts/Lvl_Prototype3", priority = 4009)]
     public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype3() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype3.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_SideScrollerExemple", priority = 4008)]
+    [MenuItem("Scene Shortcuts/Lvl_SideScrollerExemple", priority = 4010)]
     public static void Assets_Scenes_Levels_Scene_Assets_Lvl_SideScrollerExemple() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_SideScrollerExemple.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_InGameEscape", priority = 5009)]
+    [MenuItem("Scene Shortcuts/Menu_InGameEscape", priority = 5011)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_InGameEscape() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_InGameEscape.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineClientSessionChoice", priority = 5010)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineClientSessionChoice", priority = 5012)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineClientSessionChoice() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineClientSessionChoice.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineRoleChoice", priority = 5011)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineRoleChoice", priority = 5013)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineRoleChoice() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineRoleChoice.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineServerSessionCreation", priority = 5012)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineServerSessionCreation", priority = 5014)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineServerSessionCreation() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineServerSessionCreation.unity");
 
-    [MenuItem("Scene Shortcuts/Misc_LoadingScreen", priority = 6013)]
+    [MenuItem("Scene Shortcuts/Misc_LoadingScreen", priority = 6015)]
     public static void Assets_Scenes_Misc_Scene_Assets_Misc_LoadingScreen() => LoadScene("Assets/Scenes/Misc/Scene Assets/Misc_LoadingScreen.unity");
 
 

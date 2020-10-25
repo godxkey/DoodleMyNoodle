@@ -85,7 +85,7 @@ public static class SceneShortcuts
                 string sceneName = Path.GetFileNameWithoutExtension(scene.Path);
                 string scenePathNoExt = PathX.RemoveExtension(scene.Path);
                 string folder = scenePathNoExt.RemoveFirst(sceneName);
-                string methodName = scenePathNoExt.Replace(' ', '_').Replace('/', '_');
+                string methodName = scenePathNoExt.Replace(' ', '_').Replace('/', '_').Replace('(', '_').Replace(')', '_');
 
                 if (lastFolder != folder)
                     prio += 1000;
