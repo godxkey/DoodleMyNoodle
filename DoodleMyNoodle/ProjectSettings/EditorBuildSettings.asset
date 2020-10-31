@@ -33,7 +33,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Game/Scene Assets/Game_SimulationInitData.unity
     guid: 47ac98eafdf2257458009be782cc980c
   - enabled: 0
-    path: Assets/Scenes/Tests/SimpleClientAndServer.unity
+    path: Assets/Scenes/Tests/Scene Assets/SimpleClientAndServer.unity
     guid: e76ee58ade737004383d3e6eeae3f771
   - enabled: 0
     path: Assets/Scenes/EmptyScene.unity
@@ -56,4 +56,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game/Scene Assets/Game Systems (dynamic).unity
     guid: b9dc8cc8b12a9e74faa0ead59f7273b6
+  - enabled: 1
+    path: Assets/Scenes/Tests/Scene Assets/Gym_MiniGames.unity
+    guid: c962cccd513726f4897da359bfdbb6ce
   m_configObjects: {}

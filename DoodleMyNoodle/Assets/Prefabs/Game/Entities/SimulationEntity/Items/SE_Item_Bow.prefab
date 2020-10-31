@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8821241209944219005}
   - component: {fileID: 2677628293349642642}
   - component: {fileID: 294870752159730247}
+  - component: {fileID: 6504929175459107924}
   - component: {fileID: 4120848953196771097}
   - component: {fileID: 1206813890925547763}
   - component: {fileID: -8001016936392042338}
@@ -67,6 +68,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionThrowProjectile
+--- !u!114 &6504929175459107924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemVisualInfo: {fileID: 11400000, guid: 3702125b2dd755e42afcf2dffd5580d9, type: 2}
+  HasMiniGame: 0
+  MiniGame: {fileID: 0}
 --- !u!114 &4120848953196771097
 MonoBehaviour:
   m_ObjectHideFlags: 0

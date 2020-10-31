@@ -4,23 +4,21 @@ using UnityEngine;
 
 public class UIStateMachine : GamePresentationSystem<UIStateMachine>
 {
-    private UIState _currentState;
+    private UIState _currentState = null;
     public UIState CurrentSate => _currentState;
 
     private Dictionary<UIState.StateTypes, UIState> _stateInstances = new Dictionary<UIState.StateTypes, UIState>(); 
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        _currentState = GetStateInstance(UIState.StateTypes.Gameplay);
-        _currentState.OnEnter();
-    }
 
     protected override void OnGamePresentationUpdate() 
     {
         if (Cache.LocalController != Entity.Null)
         {
+            if (_currentState == null)
+            {
+                _currentState = GetStateInstance(UIState.StateTypes.Gameplay);
+                _currentState.OnEnter();
+            }
+
             _currentState.OnUpdate();
         }
     }
