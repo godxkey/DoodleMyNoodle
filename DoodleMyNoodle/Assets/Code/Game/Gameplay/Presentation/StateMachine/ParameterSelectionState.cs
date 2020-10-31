@@ -13,6 +13,8 @@ public class ParameterSelectionState : UIState
         // Are we using a new item ?
         if (_itemEntity != GetData<Entity>(0))
         {
+            // Init process of parameter selection
+
             _itemEntity = GetData<Entity>(0);
             _itemIndex = GetData<int>(1);
 
@@ -31,10 +33,17 @@ public class ParameterSelectionState : UIState
             _itemUseParameters = GameAction.UseParameters.Create(new GameAction.ParameterData[_itemUseContract.ParameterTypes.Length]);
             _parameterIndex = 0;
         }
-        else
+        else // same item as we were the last time in this state, we're coming from a child state
         {
-            // same item, let's get the info child state sent us
-            _itemUseParameters.ParameterDatas[_parameterIndex] = GetData<GameActionParameterTile.Data>(1);
+            // no data found, cancel and go back to gameplay
+            if (Data[1] == null)
+            {
+                UIStateMachine.Instance.TransitionTo(StateTypes.Gameplay);
+                return;
+            }
+
+            // let's get the info child state sent us
+            _itemUseParameters.ParameterDatas[_parameterIndex] = GetData<GameAction.ParameterData>(1);
             _parameterIndex++;
         }
 
@@ -44,6 +53,7 @@ public class ParameterSelectionState : UIState
         }
         else
         {
+            // process completed, we have all info let's use the item
             SimPlayerInputUseItem simInput = new SimPlayerInputUseItem(_itemIndex, _itemUseParameters);
             SimWorld.SubmitInput(simInput);
 
@@ -53,7 +63,14 @@ public class ParameterSelectionState : UIState
 
     public override void OnUpdate() { }
 
-    public override void OnExit(StateTypes newState) { }
+    public override void OnExit(StateTypes newState) 
+    {
+        // we're completly exiting the parameter selection process, so there's no item currently used anymore
+        if (newState == StateTypes.Gameplay || newState == StateTypes.BlockedGameplay)
+        {
+            _itemEntity = Entity.Null;
+        }
+    }
 
     public override StateTypes GetStateType()
     {
@@ -77,7 +94,17 @@ public class ParameterSelectionState : UIState
             }
         }
 
-        // other types of targeting here (entity, mini games, etc.)
+        // TODO Entity selection...
+
+        // MINI GAME
+        if (parameterDescription is GameActionParameterMiniGame.Description MiniGameDescription)
+        {
+            if (MiniGameDescription != null)
+            {
+                UIStateMachine.Instance.TransitionTo(UIState.StateTypes.MiniGame, _itemEntity, MiniGameDescription);
+                return;
+            }
+        }
 
         // Default Case
         _itemUseParameters.ParameterDatas[index] = new GameActionParameter.Data(index);
