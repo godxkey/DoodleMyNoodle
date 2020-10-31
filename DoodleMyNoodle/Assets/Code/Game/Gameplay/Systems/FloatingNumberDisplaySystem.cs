@@ -7,7 +7,7 @@ public class FloatingNumberDisplaySystem : GamePresentationSystem<FloatingNumber
 
     public override void OnPostSimulationTick()
     {
-        Cache.SimWorld.Entities.ForEach((ref DamageAppliedEventData damageData) =>
+        Cache.SimWorld.Entities.ForEach((ref DamageEventData damageData) =>
         {
             // TODO : Do a pool system
             Vector3 damagedEntityPosition = damageData.Position.ToUnityVec();
@@ -16,7 +16,7 @@ public class FloatingNumberDisplaySystem : GamePresentationSystem<FloatingNumber
             newFloatingNumber.GetComponent<FloatingNumberDisplay>()?.Display(damageData.DamageApplied.ToString(), Color.red);
         });
 
-        Cache.SimWorld.Entities.ForEach((ref HealingAppliedEventData healingData) =>
+        Cache.SimWorld.Entities.ForEach((ref HealEventData healingData) =>
         {
             // TODO : Do a pool system
             Vector3 damagedEntityPosition = healingData.Position.ToUnityVec();

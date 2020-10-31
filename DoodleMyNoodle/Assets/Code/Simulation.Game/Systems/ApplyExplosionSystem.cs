@@ -5,90 +5,46 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public struct ExplosionOnTileEventData : IComponentData
+public struct ExplosionEventData : IComponentData
 {
     public int2 ExplodedTile;
 }
 
-public struct ExplosionToApplySingletonTag : IComponentData
+public struct ExplosionRequestsSingletonTag : IComponentData
 {
 }
 
-public struct ExplosionToApplyData : IBufferElementData
+public struct ExplosionRequestData : IBufferElementData
 {
     public Entity Instigator;
     public int2 TilePos;
     public int Damage;
 }
 
-public class ApplyExplosionSystem : SimComponentSystem
+public class ApplyExplosionSystem : SimSystemBase
 {
-    EntityQuery _eventsEntityQuery;
+    EntityQuery _explosionEvents;
+
+    private List<int2> _newExplodeLocations = new List<int2>();
+    private NativeList<Entity> _entitiesToDamage;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        _eventsEntityQuery = EntityManager.CreateEntityQuery(typeof(ExplosionOnTileEventData));
+        _explosionEvents = GetEntityQuery(typeof(ExplosionEventData));
+        _entitiesToDamage = new NativeList<Entity>(Allocator.Persistent);
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        _eventsEntityQuery.Dispose();
+        _entitiesToDamage.Dispose();
     }
 
-    public static DynamicBuffer<ExplosionToApplyData> GetExplosionToApplySingletonBuffer(ISimWorldReadWriteAccessor accessor)
+    public void RequestExplosion(Entity instigator, int2 tilePos, int range, int damage)
     {
-        if (!accessor.HasSingleton<ExplosionToApplySingletonTag>())
-        {
-            accessor.CreateEntity(typeof(ExplosionToApplySingletonTag), typeof(ExplosionToApplyData));
-        }
-
-        return accessor.GetBuffer<ExplosionToApplyData>(accessor.GetSingletonEntity<ExplosionToApplySingletonTag>());
-    }
-
-    protected override void OnUpdate()
-    {
-        // Clear Damage Applied Events
-        EntityManager.DestroyEntity(_eventsEntityQuery);
-
-        DynamicBuffer<ExplosionToApplyData> ExplosionToApplyBuffer = GetExplosionToApplySingletonBuffer(Accessor);
-
-        List<int2> ExplodedLocations = new List<int2>();
-
-        foreach (ExplosionToApplyData explosionData in ExplosionToApplyBuffer)
-        {
-            NativeList<Entity> entityToDamage = new NativeList<Entity>(Allocator.Temp);
-            Entity currentTile = CommonReads.GetTileEntity(Accessor, explosionData.TilePos);
-
-            if (currentTile != Entity.Null)
-            {
-                CommonReads.FindTileActorsWithComponent<Health>(Accessor, currentTile, entityToDamage);
-
-                foreach (Entity entity in entityToDamage)
-                {
-                    CommonWrites.RequestDamageOnTarget(Accessor, explosionData.Instigator, entity, explosionData.Damage);
-                }
-
-                ExplodedLocations.Add(explosionData.TilePos);
-            }
-
-        }
-
-        ExplosionToApplyBuffer.Clear();
-
-        foreach (int2 pos in ExplodedLocations)
-        {
-            EntityManager.CreateEventEntity(new ExplosionOnTileEventData() { ExplodedTile = pos });
-        }
-    }
-}
-
-internal static partial class CommonWrites
-{
-    public static void RequestExplosionOnTiles(ISimWorldReadWriteAccessor accessor, Entity instigator, int2 tilePos, int range, int damage)
-    {
+        var buffer = GetExplosionRequestBuffer();
         if (range > 1)
         {
             int2 tileMin = tilePos - int2(range - 1);
@@ -98,15 +54,71 @@ internal static partial class CommonWrites
             {
                 for (int y = tileMin.y; y <= tileMax.y; y++)
                 {
-                    RequestExplosionOnTiles(accessor, instigator, int2(x, y), 1, damage);
+                    buffer.Add(new ExplosionRequestData() { Instigator = instigator, Damage = damage, TilePos = int2(x, y) });
                 }
             }
         }
         else
         {
-            DynamicBuffer<ExplosionToApplyData> explosionDataBuffer = ApplyExplosionSystem.GetExplosionToApplySingletonBuffer(accessor);
-
-            explosionDataBuffer.Add(new ExplosionToApplyData() { Instigator = instigator, Damage = damage, TilePos = tilePos });
+            buffer.Add(new ExplosionRequestData() { Instigator = instigator, Damage = damage, TilePos = tilePos });
         }
+    }
+
+    public void RequestExplosion(ExplosionRequestData damageRequestData)
+    {
+        GetExplosionRequestBuffer().Add(damageRequestData);
+    }
+
+    private DynamicBuffer<ExplosionRequestData> GetExplosionRequestBuffer()
+    {
+        if (!HasSingleton<ExplosionRequestsSingletonTag>())
+        {
+            EntityManager.CreateEntity(typeof(ExplosionRequestsSingletonTag), typeof(ExplosionRequestData));
+        }
+
+        return GetBuffer<ExplosionRequestData>(GetSingletonEntity<ExplosionRequestsSingletonTag>());
+    }
+
+    protected override void OnUpdate()
+    {
+        // Clear Damage Applied Events
+        EntityManager.DestroyEntity(_explosionEvents);
+
+        DynamicBuffer<ExplosionRequestData> explosionRequests = GetExplosionRequestBuffer();
+
+        foreach (ExplosionRequestData request in explosionRequests)
+        {
+            Entity tile = CommonReads.GetTileEntity(Accessor, request.TilePos);
+
+            if (tile != Entity.Null)
+            {
+                _entitiesToDamage.Clear();
+                CommonReads.FindTileActorsWithComponent<Health>(Accessor, tile, _entitiesToDamage);
+
+                foreach (Entity entity in _entitiesToDamage)
+                {
+                    CommonWrites.RequestDamageOnTarget(Accessor, request.Instigator, entity, request.Damage);
+                }
+
+                _newExplodeLocations.Add(request.TilePos);
+            }
+
+        }
+
+        explosionRequests.Clear();
+
+        foreach (int2 pos in _newExplodeLocations)
+        {
+            EntityManager.CreateEventEntity(new ExplosionEventData() { ExplodedTile = pos });
+        }
+        _newExplodeLocations.Clear();
+    }
+}
+
+internal static partial class CommonWrites
+{
+    public static void RequestExplosionOnTiles(ISimWorldReadWriteAccessor accessor, Entity instigator, int2 tilePos, int range, int damage)
+    {
+        accessor.GetExistingSystem<ApplyExplosionSystem>().RequestExplosion(instigator, tilePos, range, damage);
     }
 }

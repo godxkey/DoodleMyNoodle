@@ -8,7 +8,7 @@ public class ExplosionEventDisplaySystem : GamePresentationSystem<ExplosionEvent
 
     public override void OnPostSimulationTick()
     {
-        Cache.SimWorld.Entities.ForEach((ref ExplosionOnTileEventData explosionData) =>
+        Cache.SimWorld.Entities.ForEach((ref ExplosionEventData explosionData) =>
         {
             // TODO : Do a pool system for explosion
             Vector3 tileCenter = (Vector3)Helpers.GetTileCenter(explosionData.ExplodedTile);

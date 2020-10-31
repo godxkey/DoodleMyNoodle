@@ -4,14 +4,17 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class AnimationStateMachineSystem : SimComponentSystem
+public class AnimationStateMachineSystem : SimSystemBase
 {
     protected override void OnUpdate()
     {
-        Entities.ForEach((Entity entity, ref AnimationState animationState) =>
+        Entities
+            .WithoutBurst()
+            .WithStructuralChanges()
+            .ForEach((Entity entity, ref AnimationState animationState) =>
         {
             // is an animation playing right ? aka do we have an animation data
-            if (EntityManager.TryGetComponentData(entity, out AnimationData animationData))
+            if (TryGetComponent(entity, out AnimationData animationData))
             {
                 CommonReads.AnimationTypes currentPlayerAnimation = (CommonReads.AnimationTypes)animationState.StateID;
 
@@ -26,13 +29,11 @@ public class AnimationStateMachineSystem : SimComponentSystem
                             {
                                 CommonWrites.SetEntityAnimation(Accessor, entity, CommonReads.AnimationTypes.Idle);
                             }
-                            
                             break;
+                            
                         // Example of a one time anim that ends after it's done
                         case CommonReads.AnimationTypes.Attack:
                             CommonWrites.SetEntityAnimation(Accessor, entity, CommonReads.AnimationTypes.Idle);
-                            break;
-                        default:
                             break;
                     }
                 }
@@ -45,7 +46,7 @@ public class AnimationStateMachineSystem : SimComponentSystem
                     CommonWrites.SetEntityAnimation(Accessor, entity, CommonReads.AnimationTypes.Idle);
                 }
             }
-        });
+        }).Run();
     }
 }
 

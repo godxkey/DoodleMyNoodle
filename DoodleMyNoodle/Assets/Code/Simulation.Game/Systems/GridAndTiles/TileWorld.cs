@@ -102,12 +102,12 @@ public struct TileWorld
 
 [UpdateAfter(typeof(CreateLevelGridSystem))]
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public class CreateTileWorldSystem : SimComponentSystem
+public class CreateTileWorldSystem : SimSystemBase
 {
     private DirtyValue<uint> _gridInfoVersion;
+    private NativeArray<GridTileReference> _tileReferencesBuffer;
 
     public GridInfo GridInfo;
-    private NativeArray<GridTileReference> _tileReferencesBuffer;
 
     protected override void OnCreate()
     {
