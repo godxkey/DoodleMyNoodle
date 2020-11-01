@@ -38,8 +38,7 @@ public class GameActionParameterTile
 
         public Data() { }
 
-        public Data(byte parameterIndex, int2 tile)
-            : base(parameterIndex)
+        public Data(int2 tile)
         {
             Tile = tile;
         }

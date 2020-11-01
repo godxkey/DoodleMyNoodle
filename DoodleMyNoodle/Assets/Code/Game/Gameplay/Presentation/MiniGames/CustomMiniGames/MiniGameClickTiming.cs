@@ -11,7 +11,7 @@ public class MiniGameClickTiming : MiniGameBaseController
 
     protected override GameActionParameterMiniGame.Data GetResult()
     {
-        return new GameActionParameterMiniGame.Data(0, (MiniGameDescriptionBase.SuccessRate)_currentNumber);
+        return new GameActionParameterMiniGame.Data((MiniGameDescriptionBase.SuccessRate)_currentNumber);
     }
 
     protected override string GetTextResult()

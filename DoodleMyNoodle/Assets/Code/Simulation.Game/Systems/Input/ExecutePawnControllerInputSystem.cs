@@ -373,7 +373,7 @@ internal partial class CommonWrites
 
         // create game action's use data
         var useData = GameAction.UseParameters.Create(
-            new GameActionParameterTile.Data(0, tile));
+            new GameActionParameterTile.Data(tile));
 
         // create input
         var input = new PawnControllerInputUseItem(entityController, itemIndex, useData);

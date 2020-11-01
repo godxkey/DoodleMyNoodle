@@ -35,7 +35,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
         {
             int2 tile = Helpers.GetTile(tileHighlightClicked);
 
-            GameActionParameterTile.Data TileSelectionData = new GameActionParameterTile.Data(0, tile);
+            GameActionParameterTile.Data TileSelectionData = new GameActionParameterTile.Data(tile);
 
             _currentTileSelectionCallback?.Invoke(TileSelectionData);
             _currentTileSelectionCallback = null;

@@ -5,11 +5,13 @@ public class GameActionParameterMiniGame
     public class Description : GameAction.ParameterDescription
     {
         public int2 MiniGameLocation;
-        public bool NeedDirectionnalForce;
-        public bool NeedSuccessRate;
-        public bool NeedPosition;
 
         public Description() { }
+
+        public Description(int2 MiniGameLocation) 
+        {
+            this.MiniGameLocation = MiniGameLocation;
+        }
     }
 
     [NetSerializable]
@@ -23,49 +25,42 @@ public class GameActionParameterMiniGame
 
         public Data() { }
 
-        public Data(byte parameterIndex, fix3 DirectionnalForce, MiniGameDescriptionBase.SuccessRate SuccessRate, int2 Position)
-            : base(parameterIndex)
+        public Data(fix3 DirectionnalForce, MiniGameDescriptionBase.SuccessRate SuccessRate, int2 Position)
         {
             this.DirectionnalForce = DirectionnalForce;
             this.SuccessRate = SuccessRate;
             this.Position = Position;
         }
 
-        public Data(byte parameterIndex, MiniGameDescriptionBase.SuccessRate SuccessRate, int2 Position)
-            : base(parameterIndex)
+        public Data(MiniGameDescriptionBase.SuccessRate SuccessRate, int2 Position)
         {
             this.SuccessRate = SuccessRate;
             this.Position = Position;
         }
 
-        public Data(byte parameterIndex, fix3 DirectionnalForce, MiniGameDescriptionBase.SuccessRate SuccessRate)
-            : base(parameterIndex)
+        public Data(fix3 DirectionnalForce, MiniGameDescriptionBase.SuccessRate SuccessRate)
         {
             this.DirectionnalForce = DirectionnalForce;
             this.SuccessRate = SuccessRate;
         }
 
-        public Data(byte parameterIndex, fix3 DirectionnalForce, int2 Position)
-            : base(parameterIndex)
+        public Data(fix3 DirectionnalForce, int2 Position)
         {
             this.DirectionnalForce = DirectionnalForce;
             this.Position = Position;
         }
 
-        public Data(byte parameterIndex, fix3 DirectionnalForce)
-            : base(parameterIndex)
+        public Data(fix3 DirectionnalForce)
         {
             this.DirectionnalForce = DirectionnalForce;
         }
 
-        public Data(byte parameterIndex, MiniGameDescriptionBase.SuccessRate SuccessRate)
-            : base(parameterIndex)
+        public Data(MiniGameDescriptionBase.SuccessRate SuccessRate)
         {
             this.SuccessRate = SuccessRate;
         }
 
-        public Data(byte parameterIndex, int2 Position)
-            : base(parameterIndex)
+        public Data(int2 Position)
         {
             this.Position = Position;
         }

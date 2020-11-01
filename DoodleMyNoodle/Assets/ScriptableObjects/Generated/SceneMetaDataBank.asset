@@ -82,6 +82,6 @@ MonoBehaviour:
     BuildIndex: 16
     AssetGuid: b9dc8cc8b12a9e74faa0ead59f7273b6
   - Name: Gym_MiniGames
-    Path: Assets/Scenes/Tests/Scene Assets/Gym_MiniGames.unity
+    Path: Assets/Scenes/Levels/Scene Assets/Gym_MiniGames.unity
     BuildIndex: 17
     AssetGuid: c962cccd513726f4897da359bfdbb6ce

@@ -107,7 +107,7 @@ public class ParameterSelectionState : UIState
         }
 
         // Default Case
-        _itemUseParameters.ParameterDatas[index] = new GameActionParameter.Data(index);
+        _itemUseParameters.ParameterDatas[index] = new GameActionParameter.Data();
     }
 }
 

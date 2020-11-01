@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d70b3f76c315d6d4d8de485707cf08f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DebugMode: 1
+  DebugMode: 0
   DebugDisplay: {fileID: 2342765597424613051}
-  DefaultDescription: {fileID: 0}
+  DefaultDescription: {fileID: 11400000, guid: 69a6285f4de22184486340c45221f17c, type: 2}
   NumberDisplay: {fileID: 2342765596430009231}
 --- !u!58 &5667577300727899603
 CircleCollider2D:
