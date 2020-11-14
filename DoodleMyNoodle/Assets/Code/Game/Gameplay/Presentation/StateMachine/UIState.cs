@@ -9,9 +9,6 @@ public abstract class UIState
         Gameplay,
         BlockedGameplay,
         ParameterSelection,
-
-        TileSelection,
-        EntitySelection,
         GameActionRequest
     }
 

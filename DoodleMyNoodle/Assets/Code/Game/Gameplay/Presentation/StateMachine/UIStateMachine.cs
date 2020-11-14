@@ -64,12 +64,6 @@ public class UIStateMachine : GamePresentationSystem<UIStateMachine>
                 case UIState.StateTypes.ParameterSelection:
                     newStateInstance = new ParameterSelectionState();
                     break;
-                case UIState.StateTypes.TileSelection:
-                    newStateInstance = new TileSelectionState();
-                    break;
-                case UIState.StateTypes.EntitySelection:
-                    newStateInstance = new EntitySelectionState();
-                    break;
                 case UIState.StateTypes.GameActionRequest:
                     newStateInstance = new GameActionRequestState();
                     break;
