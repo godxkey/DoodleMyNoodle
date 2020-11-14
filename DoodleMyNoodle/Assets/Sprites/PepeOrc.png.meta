@@ -3,7 +3,7 @@ guid: c7427ae85738536489f1f6a3d095e3e6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 10
+  serializedVersion: 11
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -23,6 +23,7 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -50,13 +51,15 @@ TextureImporter:
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
-  spriteTessellationDetail: -1
+  spriteTessellationDetail: 0
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -85,7 +88,108 @@ TextureImporter:
   spriteSheet:
     serializedVersion: 2
     sprites: []
-    outline: []
+    outline:
+    - - {x: 205, y: -157}
+      - {x: 205, y: 145}
+      - {x: 96, y: 255}
+      - {x: -26, y: 255}
+      - {x: -45, y: 247}
+      - {x: -221, y: -23}
+      - {x: -221, y: -147}
+      - {x: -192, y: -161}
+      - {x: -134, y: -139}
+      - {x: -101, y: -96}
+      - {x: -111, y: -90}
+      - {x: -86, y: -44}
+      - {x: -115, y: -237}
+      - {x: -101, y: -256}
+      - {x: -58, y: -256}
+      - {x: -40, y: -217}
+      - {x: -3, y: -256}
+      - {x: 159, y: -256}
+    - - {x: 91, y: -53}
+      - {x: 92, y: -52}
+      - {x: 92, y: -43}
+      - {x: 94, y: -43}
+      - {x: 97, y: -45}
+      - {x: 104, y: -45}
+      - {x: 105, y: -46}
+      - {x: 114, y: -46}
+      - {x: 112, y: -46}
+      - {x: 110, y: -48}
+      - {x: 108, y: -48}
+      - {x: 105, y: -50}
+      - {x: 103, y: -50}
+      - {x: 101, y: -52}
+      - {x: 99, y: -52}
+      - {x: 94, y: -55}
+      - {x: 92, y: -55}
+      - {x: 89, y: -58}
+      - {x: 90, y: -57}
+    - - {x: -84, y: -16}
+      - {x: -85, y: -17}
+      - {x: -84, y: -16}
+      - {x: -84, y: -9}
+      - {x: -82, y: -9}
+      - {x: -76, y: -3}
+      - {x: -75, y: 12}
+      - {x: -74, y: 13}
+      - {x: -74, y: 16}
+      - {x: -73, y: 17}
+      - {x: -73, y: 23}
+      - {x: -72, y: 24}
+      - {x: -72, y: 30}
+      - {x: -71, y: 31}
+      - {x: -71, y: 39}
+      - {x: -70, y: 40}
+      - {x: -70, y: 46}
+      - {x: -69, y: 47}
+      - {x: -70, y: 50}
+      - {x: -71, y: 19}
+      - {x: -73, y: 16}
+      - {x: -74, y: 6}
+      - {x: -75, y: 5}
+      - {x: -75, y: 2}
+      - {x: -77, y: -1}
+      - {x: -78, y: -6}
+      - {x: -80, y: -9}
+      - {x: -80, y: -14}
+      - {x: -81, y: -15}
+      - {x: -81, y: -19}
+      - {x: -81, y: -18}
+    - - {x: 39, y: -5}
+      - {x: 37, y: -2}
+      - {x: 37, y: 1}
+      - {x: 36, y: 2}
+      - {x: 36, y: 9}
+      - {x: 35, y: 10}
+      - {x: 35, y: 31}
+      - {x: 36, y: 32}
+      - {x: 36, y: 42}
+      - {x: 37, y: 43}
+      - {x: 37, y: 47}
+      - {x: 38, y: 48}
+      - {x: 38, y: 53}
+      - {x: 40, y: 55}
+      - {x: 39, y: 57}
+      - {x: 39, y: 51}
+      - {x: 41, y: 48}
+      - {x: 41, y: 41}
+      - {x: 42, y: 40}
+      - {x: 42, y: 36}
+      - {x: 43, y: 35}
+      - {x: 43, y: 31}
+      - {x: 44, y: 30}
+      - {x: 44, y: 25}
+      - {x: 45, y: 24}
+      - {x: 45, y: 12}
+      - {x: 46, y: 11}
+      - {x: 46, y: 3}
+      - {x: 50, y: -2}
+      - {x: 51, y: -10}
+      - {x: 46, y: -10}
+      - {x: 45, y: -11}
+      - {x: 41, y: -11}
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -94,7 +198,9 @@ TextureImporter:
     indices: 
     edges: []
     weights: []
-    secondaryTextures: []
+    secondaryTextures:
+    - texture: {fileID: 2800000, guid: 9c7b63e21bd25b547b047b4241cc6660, type: 3}
+      name: _NormalMap
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
