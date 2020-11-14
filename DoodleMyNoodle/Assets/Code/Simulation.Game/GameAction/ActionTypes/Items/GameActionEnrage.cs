@@ -10,8 +10,7 @@ public class GameActionEnrage : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return new UseContract(
-            new GameActionParameter.Description() { });
+        return new UseContract();
     }
 
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
@@ -32,11 +31,6 @@ public class GameActionEnrage : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
     {
-        if (parameters.TryGetParameter(0, out GameActionParameter.Data self))
-        {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 }

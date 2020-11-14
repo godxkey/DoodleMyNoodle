@@ -31,7 +31,7 @@ public class MiniGameClickTiming : MiniGameBaseController
             {
                 if (hit.collider.gameObject == gameObject)
                 {
-                    OnComplete();
+                    Complete();
                 }
             }
         }
@@ -48,7 +48,7 @@ public class MiniGameClickTiming : MiniGameBaseController
 
         NumberDisplay.text = _currentNumber.ToString();
 
-        yield return new WaitForSeconds(GetMiniGameData<ClickTimingExampleDescription>().TimeBetweenChanges);
+        yield return new WaitForSeconds(GetMiniGameDescription<ClickTimingExampleDescription>().TimeBetweenChanges);
 
         yield return MiniGameLoop();
     }

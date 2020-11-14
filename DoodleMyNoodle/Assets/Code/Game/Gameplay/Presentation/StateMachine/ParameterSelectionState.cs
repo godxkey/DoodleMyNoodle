@@ -18,7 +18,7 @@ public class ParameterSelectionState : UIState
             _itemEntity = GetData<Entity>(0);
             _itemIndex = GetData<int>(1);
 
-            SimWorld.TryGetComponentData(_itemEntity, out GameActionId actionId);
+            GameActionId actionId = SimWorld.GetComponentData<GameActionId>(_itemEntity);
             GameAction itemGameAction = GameActionBank.GetAction(actionId);
 
             GameAction.UseContext useContext = new GameAction.UseContext()
@@ -72,10 +72,7 @@ public class ParameterSelectionState : UIState
         }
     }
 
-    public override StateTypes GetStateType()
-    {
-        return StateTypes.ParameterSelection;
-    }
+    public override StateTypes StateType => StateTypes.ParameterSelection;
 
     public override bool IsTransitionValid(StateTypes newState)
     {
@@ -105,9 +102,6 @@ public class ParameterSelectionState : UIState
                 return;
             }
         }
-
-        // Default Case
-        _itemUseParameters.ParameterDatas[index] = new GameActionParameter.Data();
     }
 }
 

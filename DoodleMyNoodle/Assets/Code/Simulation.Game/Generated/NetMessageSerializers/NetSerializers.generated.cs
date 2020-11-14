@@ -90,52 +90,6 @@ public static class StaticNetSerializer_GameAction_UseParameters
         ArrayNetSerializer_GameAction_ParameterData.NetDeserialize(ref obj.ParameterDatas, reader);
     }
 }
-public static class StaticNetSerializer_GameActionParameter_Data
-{
-    public static int GetNetBitSize_Class(GameActionParameter.Data obj)
-    {
-        if (obj == null)
-            return 1;
-        return 1 + GetNetBitSize(obj);
-    }
-
-    public static int GetNetBitSize(GameActionParameter.Data obj)
-    {
-        int result = 0;
-        result += StaticNetSerializer_GameAction_ParameterData.GetNetBitSize(obj);
-        return result;
-    }
-
-    public static void NetSerialize_Class(GameActionParameter.Data obj, BitStreamWriter writer)
-    {
-        if (obj == null)
-        {
-            writer.WriteBit(false);
-            return;
-        }
-        writer.WriteBit(true);
-        NetSerialize(obj, writer);
-    }
-    public static void NetSerialize(GameActionParameter.Data obj, BitStreamWriter writer)
-    {
-        StaticNetSerializer_GameAction_ParameterData.NetSerialize(obj, writer);
-    }
-
-    public static GameActionParameter.Data NetDeserialize_Class(BitStreamReader reader)
-    {
-        if (reader.ReadBit() == false)
-        {
-            return null;
-        }
-        GameActionParameter.Data obj = new GameActionParameter.Data();
-        NetDeserialize(obj, reader);
-        return obj;
-    }
-    public static void NetDeserialize(GameActionParameter.Data obj, BitStreamReader reader)
-    {
-        StaticNetSerializer_GameAction_ParameterData.NetDeserialize(obj, reader);
-    }
-}
 public static class StaticNetSerializer_GameActionParameterMiniGame_Data
 {
     public static int GetNetBitSize_Class(GameActionParameterMiniGame.Data obj)

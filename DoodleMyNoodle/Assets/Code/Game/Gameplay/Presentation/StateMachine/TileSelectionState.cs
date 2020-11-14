@@ -17,10 +17,7 @@ public class TileSelectionState : UIState
         TileHighlightManager.Instance.InterruptTileSelectionProcess();
     }
 
-    public override StateTypes GetStateType()
-    {
-        return StateTypes.TileSelection;
-    }
+    public override StateTypes StateType => StateTypes.TileSelection;
 
     public override bool IsTransitionValid(StateTypes newState)
     {

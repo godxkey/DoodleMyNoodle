@@ -18,10 +18,7 @@
         PlayerActionBarDisplay.Instance.BlockInteraction();
     }
 
-    public override StateTypes GetStateType()
-    {
-        return StateTypes.Gameplay;
-    }
+    public override StateTypes StateType => StateTypes.Gameplay;
 
     public override bool IsTransitionValid(StateTypes newState)
     {

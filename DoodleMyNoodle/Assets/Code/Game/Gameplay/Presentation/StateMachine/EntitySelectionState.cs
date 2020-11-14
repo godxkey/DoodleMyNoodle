@@ -15,10 +15,7 @@
 
     }
 
-    public override StateTypes GetStateType()
-    {
-        return StateTypes.EntitySelection;
-    }
+    public override StateTypes StateType => StateTypes.EntitySelection;
 
     public override bool IsTransitionValid(StateTypes newState)
     {

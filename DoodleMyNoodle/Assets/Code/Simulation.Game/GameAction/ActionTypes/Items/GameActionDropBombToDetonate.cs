@@ -14,14 +14,11 @@ public class GameActionDropBombToDetonate : GameAction
         {
             if (itemSpawnedObjectReference.Entity != Entity.Null)
             {
-                return new UseContract(new GameActionParameter.Description() { });
+                return new UseContract();
             }
         }
 
-        return new UseContract(
-           new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
-           {
-           });
+        return new UseContract(new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value) { });
     }
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)

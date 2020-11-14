@@ -30,10 +30,10 @@ public abstract class MiniGameBaseController : MonoBehaviour
 
         DebugDisplay.gameObject.SetActive(false);
 
-        _currentGameLoop = StartCoroutine("MiniGameLoop");
+        _currentGameLoop = StartCoroutine(MiniGameLoop());
     }
 
-    public virtual void OnComplete()
+    public virtual void Complete()
     {
         if (_isComplete)
         {
@@ -76,7 +76,7 @@ public abstract class MiniGameBaseController : MonoBehaviour
         }
     }
 
-    protected T GetMiniGameData<T>() where T : MiniGameDescriptionBase
+    protected T GetMiniGameDescription<T>() where T : MiniGameDescriptionBase
     {
         return _description as T;
     }

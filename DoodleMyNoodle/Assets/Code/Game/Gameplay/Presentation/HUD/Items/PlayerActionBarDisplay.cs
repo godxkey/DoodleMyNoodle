@@ -34,7 +34,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
     {
         if (Cache.LocalPawn != Entity.Null && Cache.LocalController != Entity.Null)
         {
-            UpdateInventorySlots(OnIntentionToUsePrimaryActionOnItem, OnIntentionToUseSecondaryActionOnItem);
+            UpdateInventorySlots();
 
             VerifyButtonInputForSlots();
         }
@@ -52,7 +52,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
         _canBeInteractedWith = true;
     }
 
-    private void UpdateInventorySlots(Action<int> primaryUseCallback, Action<int> secondaryUseCallback)
+    private void UpdateInventorySlots()
     {
         if (SimWorld.TryGetBufferReadOnly(Cache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
@@ -81,8 +81,8 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                     _slotVisuals[i].UpdateCurrentInventorySlot(itemAuth,
                                                                i,
                                                                GetSlotShotcut(i),
-                                                               primaryUseCallback,
-                                                               secondaryUseCallback,
+                                                               OnIntentionToUsePrimaryActionOnItem,
+                                                               OnIntentionToUseSecondaryActionOnItem,
                                                                stacks);
 
                     bool canBeUsed = false;

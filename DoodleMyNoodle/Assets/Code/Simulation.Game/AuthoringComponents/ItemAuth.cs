@@ -4,7 +4,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemActionPointCostData>
+public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public ItemVisualInfo ItemVisualInfo;
 
@@ -15,16 +15,5 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingD
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         
-    }
-
-    public Color GetColor()
-    {
-        return Color.white;
-    }
-
-    public string GetDescription(ItemActionPointCostData inputData)
-    {
-        // todo
-        return "";
     }
 }

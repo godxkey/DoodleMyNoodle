@@ -18,10 +18,7 @@
 
     }
 
-    public override StateTypes GetStateType()
-    {
-        return StateTypes.BlockedGameplay;
-    }
+    public override StateTypes StateType => StateTypes.BlockedGameplay;
 
     public override bool IsTransitionValid(StateTypes newState)
     {

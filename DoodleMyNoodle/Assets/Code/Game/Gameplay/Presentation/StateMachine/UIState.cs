@@ -25,5 +25,5 @@ public abstract class UIState
     public abstract void OnExit(StateTypes newState);
 
     public abstract bool IsTransitionValid(StateTypes newState);
-    public abstract StateTypes GetStateType();
+    public abstract StateTypes StateType { get; }
 }

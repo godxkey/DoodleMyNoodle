@@ -11,13 +11,4 @@ public class MiniGameDescriptionBase : ScriptableObject
         Success = 4,
         Critical = 5
     }
-
-    public enum Type
-    {
-        PhysicBased,
-        Skill,
-        Timing
-    }
-
-    public Type MiniGameType;
 }

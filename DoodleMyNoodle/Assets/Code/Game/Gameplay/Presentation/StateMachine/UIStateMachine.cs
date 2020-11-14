@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
@@ -35,24 +36,24 @@ public class UIStateMachine : GamePresentationSystem<UIStateMachine>
         }
     }
 
-    private UIState GetStateInstance(UIState.StateTypes newStat, params object[] stateData)
+    private UIState GetStateInstance(UIState.StateTypes newState, params object[] stateData)
     {
-        if (_stateInstances.ContainsKey(newStat))
+        if (_stateInstances.TryGetValue(newState, out UIState uIState))
         {
             // if someone want to transition to a state that already exist and wish to push its data, overwrite
             // the data that currently exist in state with new one
             if (stateData.Length > 0)
             {
-                _stateInstances[newStat].Data = stateData;
+                uIState.Data = stateData;
             }
 
-            return _stateInstances[newStat];
+            return uIState;
         }
         else
         {
             UIState newStateInstance = null;
 
-            switch (newStat)
+            switch (newState)
             {
                 case UIState.StateTypes.Gameplay:
                     newStateInstance = new GameplayState();
@@ -73,14 +74,14 @@ public class UIStateMachine : GamePresentationSystem<UIStateMachine>
                     newStateInstance = new MiniGameState();
                     break;
                 default:
-                    break;
+                    throw new NotImplementedException();
             }
 
             newStateInstance.Data = stateData;
             newStateInstance.Cache = Cache;
             newStateInstance.SimWorld = SimWorld;
 
-            _stateInstances.Add(newStat, newStateInstance);
+            _stateInstances.Add(newState, newStateInstance);
 
             return newStateInstance;
         }

@@ -34,10 +34,7 @@ public class MiniGameState : UIState
         // todo : cancel mini game
     }
 
-    public override StateTypes GetStateType()
-    {
-        return StateTypes.MiniGame;
-    }
+    public override StateTypes StateType => StateTypes.MiniGame;
 
     public override bool IsTransitionValid(StateTypes newState)
     {
