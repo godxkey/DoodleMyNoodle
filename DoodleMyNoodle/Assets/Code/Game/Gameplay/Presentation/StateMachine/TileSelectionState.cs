@@ -4,6 +4,7 @@ public class TileSelectionState : UIState
 {
     public override void OnEnter()
     {
+        // TODO : Change so TileHighlight is a mini-game
         TileHighlightManager.Instance.AskForSingleTileSelectionAroundPlayer(GetData<GameActionParameterTile.Description>(1), (GameAction.ParameterData TileSelectedData) =>
         {
              UIStateMachine.Instance.TransitionTo(StateTypes.ParameterSelection, GetData<Entity>(0), TileSelectedData);

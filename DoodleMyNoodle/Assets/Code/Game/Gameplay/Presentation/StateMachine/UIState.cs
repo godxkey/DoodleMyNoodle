@@ -9,9 +9,10 @@ public abstract class UIState
         Gameplay,
         BlockedGameplay,
         ParameterSelection,
+
         TileSelection,
         EntitySelection,
-        MiniGame
+        GameActionRequest
     }
 
     public object[] Data;

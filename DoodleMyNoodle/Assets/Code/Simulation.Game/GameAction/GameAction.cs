@@ -11,7 +11,20 @@ public abstract class GameAction
 {
     public static LogChannel LogChannel = Log.CreateChannel("Game Actions", activeByDefault: true);
 
-    public abstract class ParameterDescription { }
+    public enum ParameterDescriptionType
+    {
+        None,
+        Tile,
+        Entity,
+        SuccessRate,
+        Vector,
+        Position
+    }
+
+    public abstract class ParameterDescription 
+    {
+        public abstract ParameterDescriptionType GetParameterDescriptionType();
+    }
 
     [NetSerializable(baseClass = true)]
     public abstract class ParameterData

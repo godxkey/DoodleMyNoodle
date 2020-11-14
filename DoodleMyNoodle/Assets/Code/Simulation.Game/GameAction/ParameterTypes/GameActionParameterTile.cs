@@ -29,6 +29,11 @@ public class GameActionParameterTile
 
             RangeFromInstigator = rangeFromInstigator;
         }
+
+        public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
+        {
+            return GameAction.ParameterDescriptionType.Tile;
+        }
     }
 
     [NetSerializable]

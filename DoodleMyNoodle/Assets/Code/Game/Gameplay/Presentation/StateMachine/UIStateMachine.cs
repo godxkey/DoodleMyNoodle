@@ -70,8 +70,8 @@ public class UIStateMachine : GamePresentationSystem<UIStateMachine>
                 case UIState.StateTypes.EntitySelection:
                     newStateInstance = new EntitySelectionState();
                     break;
-                case UIState.StateTypes.MiniGame:
-                    newStateInstance = new MiniGameState();
+                case UIState.StateTypes.GameActionRequest:
+                    newStateInstance = new GameActionRequestState();
                     break;
                 default:
                     throw new NotImplementedException();

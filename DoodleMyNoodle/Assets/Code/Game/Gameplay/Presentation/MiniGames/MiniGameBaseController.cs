@@ -5,28 +5,28 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public abstract class MiniGameBaseController : MonoBehaviour
+public abstract class GameActionDataRequestBaseController : MonoBehaviour
 {
     public bool DebugMode = false;
     [ShowIf("DebugMode")]
     public TextMeshPro DebugDisplay;
 
-    public MiniGameDescriptionBase DefaultDescription;
+    public GameActionRequestDefinitionBase DefaultDefinition;
 
     protected bool _isComplete = false;
 
-    private Action<GameActionParameterMiniGame.Data> _onCompleteCallback;
+    private Action<List<GameAction.ParameterData>> _onCompleteCallback;
     private bool _hasStarted = false;
     private Coroutine _currentGameLoop;
 
-    private MiniGameDescriptionBase _description;
+    private GameActionRequestDefinitionBase _definition;
 
-    public virtual void StartMiniGame(MiniGameDescriptionBase miniGameDescription, Action<GameActionParameterMiniGame.Data> callback)
+    public virtual void StartRequest(GameActionRequestDefinitionBase requestDefinition, Action<List<GameAction.ParameterData>> callback)
     {
         _isComplete = false;
         _onCompleteCallback = callback;
         _hasStarted = true;
-        _description = miniGameDescription;
+        _definition = requestDefinition;
 
         DebugDisplay.gameObject.SetActive(false);
 
@@ -35,11 +35,7 @@ public abstract class MiniGameBaseController : MonoBehaviour
 
     public virtual void Complete()
     {
-        if (_isComplete)
-        {
-            StartMiniGame(DefaultDescription, null);
-        }
-        else
+        if (!_isComplete)
         {
             _isComplete = true;
             StopCoroutine(_currentGameLoop);
@@ -67,7 +63,7 @@ public abstract class MiniGameBaseController : MonoBehaviour
     {
         if (!_hasStarted && DebugMode)
         {
-            StartMiniGame(DefaultDescription, null);
+            StartRequest(DefaultDefinition, null);
         }
 
         if (_hasStarted)
@@ -76,12 +72,12 @@ public abstract class MiniGameBaseController : MonoBehaviour
         }
     }
 
-    protected T GetMiniGameDescription<T>() where T : MiniGameDescriptionBase
+    protected T GetMiniGameDefinition<T>() where T : GameActionRequestDefinitionBase
     {
-        return _description as T;
+        return _definition as T;
     }
 
     protected virtual void OnUpdate() { }
-    protected abstract GameActionParameterMiniGame.Data GetResult();
+    protected abstract List<GameAction.ParameterData> GetResult();
     protected abstract string GetTextResult();
 }

@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using System.Collections.Generic;
+using Unity.Entities;
 
 public class ParameterSelectionState : UIState
 {
@@ -43,13 +44,24 @@ public class ParameterSelectionState : UIState
             }
 
             // let's get the info child state sent us
-            _itemUseParameters.ParameterDatas[_parameterIndex] = GetData<GameAction.ParameterData>(1);
-            _parameterIndex++;
+            List<GameAction.ParameterData> parameterDatas = GetData<List<GameAction.ParameterData>>(1);
+            foreach (GameAction.ParameterData parameterData in parameterDatas)
+            {
+                _itemUseParameters.ParameterDatas[_parameterIndex] = parameterData;
+                _parameterIndex++;
+            }
         }
 
         if (_itemUseContract.ParameterTypes.Length > _parameterIndex)
         {
-            IdentifyParameterTypeAndTransition(_itemUseContract.ParameterTypes[_parameterIndex], _parameterIndex);
+            List<GameAction.ParameterDescription> newParameterList = new List<GameAction.ParameterDescription>();
+
+            for (int i = _parameterIndex; i < _itemUseContract.ParameterTypes.Length; i++)
+            {
+                newParameterList.Add(_itemUseContract.ParameterTypes[i]);
+            }
+
+            UIStateMachine.Instance.TransitionTo(UIState.StateTypes.GameActionRequest, _itemEntity, newParameterList.ToArray());
         }
         else
         {
@@ -77,31 +89,6 @@ public class ParameterSelectionState : UIState
     public override bool IsTransitionValid(StateTypes newState)
     {
         return true;
-    }
-
-    private void IdentifyParameterTypeAndTransition(GameAction.ParameterDescription parameterDescription, byte index)
-    {
-        // SELECT A SINGLE TILE
-        if (parameterDescription is GameActionParameterTile.Description TileDescription)
-        {
-            if (TileDescription != null)
-            {
-                UIStateMachine.Instance.TransitionTo(UIState.StateTypes.TileSelection, _itemEntity, TileDescription);
-                return;
-            }
-        }
-
-        // TODO Entity selection...
-
-        // MINI GAME
-        if (parameterDescription is GameActionParameterMiniGame.Description MiniGameDescription)
-        {
-            if (MiniGameDescription != null)
-            {
-                UIStateMachine.Instance.TransitionTo(UIState.StateTypes.MiniGame, _itemEntity, MiniGameDescription);
-                return;
-            }
-        }
     }
 }
 

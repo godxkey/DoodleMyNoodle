@@ -90,26 +90,24 @@ public static class StaticNetSerializer_GameAction_UseParameters
         ArrayNetSerializer_GameAction_ParameterData.NetDeserialize(ref obj.ParameterDatas, reader);
     }
 }
-public static class StaticNetSerializer_GameActionParameterMiniGame_Data
+public static class StaticNetSerializer_GameActionParameterSuccessRate_Data
 {
-    public static int GetNetBitSize_Class(GameActionParameterMiniGame.Data obj)
+    public static int GetNetBitSize_Class(GameActionParameterSuccessRate.Data obj)
     {
         if (obj == null)
             return 1;
         return 1 + GetNetBitSize(obj);
     }
 
-    public static int GetNetBitSize(GameActionParameterMiniGame.Data obj)
+    public static int GetNetBitSize(GameActionParameterSuccessRate.Data obj)
     {
         int result = 0;
-        result += StaticNetSerializer_fix3.GetNetBitSize(ref obj.DirectionnalForce);
         result += StaticNetSerializer_System_Int32.GetNetBitSize();
-        result += StaticNetSerializer_Unity_Mathematics_int2.GetNetBitSize(ref obj.Position);
         result += StaticNetSerializer_GameAction_ParameterData.GetNetBitSize(obj);
         return result;
     }
 
-    public static void NetSerialize_Class(GameActionParameterMiniGame.Data obj, BitStreamWriter writer)
+    public static void NetSerialize_Class(GameActionParameterSuccessRate.Data obj, BitStreamWriter writer)
     {
         if (obj == null)
         {
@@ -119,29 +117,25 @@ public static class StaticNetSerializer_GameActionParameterMiniGame_Data
         writer.WriteBit(true);
         NetSerialize(obj, writer);
     }
-    public static void NetSerialize(GameActionParameterMiniGame.Data obj, BitStreamWriter writer)
+    public static void NetSerialize(GameActionParameterSuccessRate.Data obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_fix3.NetSerialize(ref obj.DirectionnalForce, writer);
         StaticNetSerializer_System_Int32.NetSerialize((System.Int32)obj.SuccessRate, writer);
-        StaticNetSerializer_Unity_Mathematics_int2.NetSerialize(ref obj.Position, writer);
         StaticNetSerializer_GameAction_ParameterData.NetSerialize(obj, writer);
     }
 
-    public static GameActionParameterMiniGame.Data NetDeserialize_Class(BitStreamReader reader)
+    public static GameActionParameterSuccessRate.Data NetDeserialize_Class(BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
             return null;
         }
-        GameActionParameterMiniGame.Data obj = new GameActionParameterMiniGame.Data();
+        GameActionParameterSuccessRate.Data obj = new GameActionParameterSuccessRate.Data();
         NetDeserialize(obj, reader);
         return obj;
     }
-    public static void NetDeserialize(GameActionParameterMiniGame.Data obj, BitStreamReader reader)
+    public static void NetDeserialize(GameActionParameterSuccessRate.Data obj, BitStreamReader reader)
     {
-        StaticNetSerializer_fix3.NetDeserialize(ref obj.DirectionnalForce, reader);
-        obj.SuccessRate = (MiniGameDescriptionBase.SuccessRate)StaticNetSerializer_System_Int32.NetDeserialize(reader);
-        StaticNetSerializer_Unity_Mathematics_int2.NetDeserialize(ref obj.Position, reader);
+        obj.SuccessRate = (MiniGameSuccessRate)StaticNetSerializer_System_Int32.NetDeserialize(reader);
         StaticNetSerializer_GameAction_ParameterData.NetDeserialize(obj, reader);
     }
 }

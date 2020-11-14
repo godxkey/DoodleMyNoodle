@@ -81,8 +81,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemVisualInfo: {fileID: 11400000, guid: 89c2cf37dc054934ab000f8e659056ca, type: 2}
-  HasMiniGame: 1
-  MiniGame: {fileID: 11400000, guid: fe7fed9ec231bb747b3f7d6cd86f4040, type: 2}
+  HasMiniGames: 1
+  RequestReference:
+  - ParameterTypes: 03000000
+    Definition: {fileID: -5422090953374789535, guid: 29dabb35c21f95649858601fe85c7c1d,
+      type: 3}
 --- !u!114 &7484598955039597738
 MonoBehaviour:
   m_ObjectHideFlags: 0

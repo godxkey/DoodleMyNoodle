@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2342765595949023337}
   - component: {fileID: 2342765595949023336}
   - component: {fileID: 5667577300727899603}
+  - component: {fileID: -5422090953374789535}
   m_Layer: 0
   m_Name: ClickTimingMiniGame
   m_TagString: Untagged
@@ -48,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DebugMode: 0
   DebugDisplay: {fileID: 2342765597424613051}
-  DefaultDescription: {fileID: 11400000, guid: 69a6285f4de22184486340c45221f17c, type: 2}
+  DefaultDefinition: {fileID: -5422090953374789535}
   NumberDisplay: {fileID: 2342765596430009231}
 --- !u!58 &5667577300727899603
 CircleCollider2D:
@@ -66,6 +67,20 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &-5422090953374789535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2342765595949023338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 669c0ef1f856ae743a9d3a57468590f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DisplayName: Click Timing
+  TimeBetweenChanges: 0.5
 --- !u!1 &2342765596430009225
 GameObject:
   m_ObjectHideFlags: 0

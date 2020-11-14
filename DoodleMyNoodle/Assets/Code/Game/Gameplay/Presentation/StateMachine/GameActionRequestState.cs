@@ -1,6 +1,7 @@
-﻿using Unity.Entities;
+﻿using System.Collections.Generic;
+using Unity.Entities;
 
-public class MiniGameState : UIState
+public class GameActionRequestState : UIState
 {
     public override void OnEnter()
     {
@@ -10,11 +11,12 @@ public class MiniGameState : UIState
             ItemAuth itemAuth = ItemInfoBank.Instance.GetItemAuthFromID(itemSimAssetID);
             if (itemAuth != null)
             {
-                MiniGameManager.Instance.TriggerMiniGame(GetData<GameActionParameterMiniGame.Description>(1), itemAuth.MiniGame, 
-                (GameAction.ParameterData MiniGameResultData) =>
+                GameAction.ParameterDescription[] ParameterDescriptionList = GetData<GameAction.ParameterDescription[]>(1);
+                GameActionRequestManager.Instance.RequestData(Cache.LocalPawnPosition.ToUnityVec(), itemAuth.FindRequestDefinitionForParameters(ParameterDescriptionList),
+                (List<GameAction.ParameterData> Results) =>
                 {
-                    UIStateMachine.Instance.TransitionTo(StateTypes.ParameterSelection, GetData<Entity>(0), MiniGameResultData);
-                });
+                    UIStateMachine.Instance.TransitionTo(StateTypes.ParameterSelection, GetData<Entity>(0), Results);
+                }, ParameterDescriptionList);
             }
             else
             {
@@ -34,7 +36,7 @@ public class MiniGameState : UIState
         // todo : cancel mini game
     }
 
-    public override StateTypes StateType => StateTypes.MiniGame;
+    public override StateTypes StateType => StateTypes.GameActionRequest;
 
     public override bool IsTransitionValid(StateTypes newState)
     {

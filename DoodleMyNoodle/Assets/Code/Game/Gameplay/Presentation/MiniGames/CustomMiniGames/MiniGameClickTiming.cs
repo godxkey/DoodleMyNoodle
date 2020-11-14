@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class MiniGameClickTiming : MiniGameBaseController
+public class MiniGameClickTiming : GameActionDataRequestBaseController
 {
     public TextMeshPro NumberDisplay;
 
     private int _currentNumber = 0;
 
-    protected override GameActionParameterMiniGame.Data GetResult()
+    protected override List<GameAction.ParameterData> GetResult()
     {
-        return new GameActionParameterMiniGame.Data((MiniGameDescriptionBase.SuccessRate)_currentNumber);
+        List<GameAction.ParameterData> results = new List<GameAction.ParameterData>();
+        results.Add(new GameActionParameterSuccessRate.Data((MiniGameSuccessRate)_currentNumber));
+        return results;
     }
 
     protected override string GetTextResult()
@@ -31,7 +33,14 @@ public class MiniGameClickTiming : MiniGameBaseController
             {
                 if (hit.collider.gameObject == gameObject)
                 {
-                    Complete();
+                    if (_isComplete)
+                    {
+                        StartRequest(DefaultDefinition, null);
+                    }
+                    else
+                    {
+                        Complete();
+                    }
                 }
             }
         }
@@ -39,17 +48,18 @@ public class MiniGameClickTiming : MiniGameBaseController
 
     protected override IEnumerator MiniGameLoop()
     {
-        _currentNumber++;
-
-        if (_currentNumber > 5)
+        while (true)
         {
-            _currentNumber = 1;
+            _currentNumber++;
+
+            if (_currentNumber > 5)
+            {
+                _currentNumber = 1;
+            }
+
+            NumberDisplay.text = _currentNumber.ToString();
+
+            yield return new WaitForSeconds(GetMiniGameDefinition<ClickTimingExampleDefinition>().TimeBetweenChanges);
         }
-
-        NumberDisplay.text = _currentNumber.ToString();
-
-        yield return new WaitForSeconds(GetMiniGameDescription<ClickTimingExampleDescription>().TimeBetweenChanges);
-
-        yield return MiniGameLoop();
     }
 }

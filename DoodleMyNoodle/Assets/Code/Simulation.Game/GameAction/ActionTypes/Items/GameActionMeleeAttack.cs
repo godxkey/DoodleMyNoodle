@@ -17,9 +17,9 @@ public class GameActionMeleeAttack : GameAction
         };
 
         int2 position = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value);
-        GameActionParameterMiniGame.Description miniGameParam = new GameActionParameterMiniGame.Description(position);
+        GameActionParameterSuccessRate.Description successParam = new GameActionParameterSuccessRate.Description();
 
-        return new UseContract(tileParam, miniGameParam);
+        return new UseContract(tileParam, successParam);
     }
 
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
@@ -36,38 +36,38 @@ public class GameActionMeleeAttack : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            if (useData.TryGetParameter(1, out GameActionParameterMiniGame.Data paramMiniGame))
+            int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
+
+            // melee attack has a range of RANGE
+            if (lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
             {
-                int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
+                LogGameActionInfo(context, $"Melee attack at {paramTile.Tile} out of range. Ignoring.");
+                return false;
+            }
 
-                // melee attack has a range of RANGE
-                if (lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
-                {
-                    LogGameActionInfo(context, $"Melee attack at {paramTile.Tile} out of range. Ignoring.");
-                    return false;
-                }
+            // reduce target health
+            NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
+            CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
 
-                // reduce target health
-                NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-                CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
+            int damageValue = accessor.GetComponentData<ItemDamageData>(context.Entity).Value;
 
-                int damageValue = accessor.GetComponentData<ItemDamageData>(context.Entity).Value;
-
-                if (((int)paramMiniGame.SuccessRate) < 3)
+            if (useData.TryGetParameter(1, out GameActionParameterSuccessRate.Data successParam))
+            {
+                if (((int)successParam.SuccessRate) < 3)
                 {
                     damageValue = 0;
-                } 
-
-                foreach (Entity entity in victims)
-                {
-                    CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, damageValue);
                 }
-
-                int2 attackDirection = paramTile.Tile - instigatorTile;
-                CommonWrites.SetEntityAnimation(accessor, context.InstigatorPawn, CommonReads.AnimationTypes.Attack, new KeyValuePair<string, object>("Direction", attackDirection));
-
-                return true;
             }
+
+            foreach (Entity entity in victims)
+            {
+                CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, damageValue);
+            }
+
+            int2 attackDirection = paramTile.Tile - instigatorTile;
+            CommonWrites.SetEntityAnimation(accessor, context.InstigatorPawn, CommonReads.AnimationTypes.Attack, new KeyValuePair<string, object>("Direction", attackDirection));
+
+            return true;
         }
 
         return false;
