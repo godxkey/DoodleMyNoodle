@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6556467484503437601}
   - component: {fileID: 6556467484503437600}
   m_Layer: 0
-  m_Name: MiniGameManager
+  m_Name: GS_SurveyManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,4 +46,11 @@ MonoBehaviour:
   SystemSettings:
     Type: 1
     OnlineFlags: -1
-  MiniGameContainer: {fileID: 6556467484503437601}
+  _surveyContainer: {fileID: 6556467484503437601}
+  _defaultSurveys:
+  - ParameterType: 1
+    Survey: {fileID: 2342765595949023338, guid: f94fd0e228537f34a845b52db663bc0a,
+      type: 3}
+  - ParameterType: 3
+    Survey: {fileID: 2342765595949023338, guid: 29dabb35c21f95649858601fe85c7c1d,
+      type: 3}

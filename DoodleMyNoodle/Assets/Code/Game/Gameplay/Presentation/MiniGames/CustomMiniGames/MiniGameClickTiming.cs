@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class MiniGameClickTiming : GameActionDataRequestBaseController
+public class MiniGameClickTiming : SurveyBaseController
 {
     public TextMeshPro NumberDisplay;
+    public float TimeBetweenChanges = 0.5f;
 
     private int _currentNumber = 0;
 
@@ -35,7 +36,7 @@ public class MiniGameClickTiming : GameActionDataRequestBaseController
                 {
                     if (_isComplete)
                     {
-                        StartRequest(DefaultDefinition, null);
+                        StartSurvey(null);
                     }
                     else
                     {
@@ -46,7 +47,7 @@ public class MiniGameClickTiming : GameActionDataRequestBaseController
         }
     }
 
-    protected override IEnumerator MiniGameLoop()
+    protected override IEnumerator SurveyLoop()
     {
         while (true)
         {
@@ -59,7 +60,7 @@ public class MiniGameClickTiming : GameActionDataRequestBaseController
 
             NumberDisplay.text = _currentNumber.ToString();
 
-            yield return new WaitForSeconds(GetMiniGameDefinition<ClickTimingExampleDefinition>().TimeBetweenChanges);
+            yield return new WaitForSeconds(TimeBetweenChanges);
         }
     }
 }

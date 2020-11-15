@@ -9,7 +9,7 @@ public abstract class UIState
         Gameplay,
         BlockedGameplay,
         ParameterSelection,
-        GameActionRequest
+        Survey
     }
 
     public object[] Data;

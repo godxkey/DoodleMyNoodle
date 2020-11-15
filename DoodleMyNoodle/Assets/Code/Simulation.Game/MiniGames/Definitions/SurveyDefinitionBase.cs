@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//public class ClickTimingExampleDefinition : SurveyDefinitionBase
+//public class SurveyDefinitionBase : MonoBehaviour
 //{
-
+//    public string DisplayName;
 //}

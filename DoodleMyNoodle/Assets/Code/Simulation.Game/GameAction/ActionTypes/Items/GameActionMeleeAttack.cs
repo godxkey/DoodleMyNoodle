@@ -16,7 +16,6 @@ public class GameActionMeleeAttack : GameAction
             RequiresAttackableEntity = true,
         };
 
-        int2 position = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value);
         GameActionParameterSuccessRate.Description successParam = new GameActionParameterSuccessRate.Description();
 
         return new UseContract(tileParam, successParam);
@@ -53,7 +52,7 @@ public class GameActionMeleeAttack : GameAction
 
             if (useData.TryGetParameter(1, out GameActionParameterSuccessRate.Data successParam))
             {
-                if (((int)successParam.SuccessRate) < 3)
+                if (successParam.SuccessRate < MiniGameSuccessRate.Three)
                 {
                     damageValue = 0;
                 }

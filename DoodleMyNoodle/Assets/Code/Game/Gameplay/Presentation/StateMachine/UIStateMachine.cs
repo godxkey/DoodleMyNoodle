@@ -64,8 +64,8 @@ public class UIStateMachine : GamePresentationSystem<UIStateMachine>
                 case UIState.StateTypes.ParameterSelection:
                     newStateInstance = new ParameterSelectionState();
                     break;
-                case UIState.StateTypes.GameActionRequest:
-                    newStateInstance = new GameActionRequestState();
+                case UIState.StateTypes.Survey:
+                    newStateInstance = new SurveyState();
                     break;
                 default:
                     throw new NotImplementedException();

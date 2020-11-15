@@ -60,7 +60,7 @@ public abstract class GameAction
 
         public bool TryGetParameter<T>(int index, out T parameterData) where T : ParameterData
         {
-            if (ParameterDatas[index] == null && index >= 0 && index < ParameterDatas.Length)
+            if (index >= 0 && index < ParameterDatas.Length && ParameterDatas[index] == null)
             {
                 Log.Warning($"GameAction parameters[{index}] is null");
                 parameterData = null;

@@ -52,16 +52,19 @@ public class ParameterSelectionState : UIState
             }
         }
 
+        // We still have parameters to process in order to get the data we need to execute the game action
         if (_itemUseContract.ParameterTypes.Length > _parameterIndex)
         {
             List<GameAction.ParameterDescription> newParameterList = new List<GameAction.ParameterDescription>();
 
+            // Get only the parameters we still need to trigger survey and get data (the rest is already done)
             for (int i = _parameterIndex; i < _itemUseContract.ParameterTypes.Length; i++)
             {
                 newParameterList.Add(_itemUseContract.ParameterTypes[i]);
             }
 
-            UIStateMachine.Instance.TransitionTo(UIState.StateTypes.GameActionRequest, _itemEntity, newParameterList.ToArray());
+            // We feed those parameters to the substate in order for it to find the best way to get the data
+            UIStateMachine.Instance.TransitionTo(UIState.StateTypes.Survey, _itemEntity, newParameterList.ToArray());
         }
         else
         {

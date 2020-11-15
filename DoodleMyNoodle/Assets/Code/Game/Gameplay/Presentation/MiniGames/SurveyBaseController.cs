@@ -5,40 +5,47 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public abstract class GameActionDataRequestBaseController : MonoBehaviour
+public abstract class SurveyBaseController : MonoBehaviour
 {
     public bool DebugMode = false;
     [ShowIf("DebugMode")]
     public TextMeshPro DebugDisplay;
 
-    public GameActionRequestDefinitionBase DefaultDefinition;
+    public string DisplayName;
 
     protected bool _isComplete = false;
 
     private Action<List<GameAction.ParameterData>> _onCompleteCallback;
     private bool _hasStarted = false;
-    private Coroutine _currentGameLoop;
+    private Coroutine _currentLoop;
 
-    private GameActionRequestDefinitionBase _definition;
+    protected GameAction.ParameterDescription[] _parameters;
 
-    public virtual void StartRequest(GameActionRequestDefinitionBase requestDefinition, Action<List<GameAction.ParameterData>> callback)
+    public virtual void StartSurvey(Action<List<GameAction.ParameterData>> callback, params GameAction.ParameterDescription[] parameters)
     {
         _isComplete = false;
         _onCompleteCallback = callback;
         _hasStarted = true;
-        _definition = requestDefinition;
+        _parameters = parameters;
 
-        DebugDisplay.gameObject.SetActive(false);
+        if (DebugDisplay != null)
+        {
+            DebugDisplay.gameObject.SetActive(false);
+        }
 
-        _currentGameLoop = StartCoroutine(MiniGameLoop());
+        _currentLoop = StartCoroutine(SurveyLoop());
+
+        OnStartSurvey();
     }
+
+    protected virtual void OnStartSurvey() { }
 
     public virtual void Complete()
     {
         if (!_isComplete)
         {
             _isComplete = true;
-            StopCoroutine(_currentGameLoop);
+            StopCoroutine(_currentLoop);
 
             if (_onCompleteCallback != null)
             {
@@ -57,24 +64,19 @@ public abstract class GameActionDataRequestBaseController : MonoBehaviour
         }
     }
 
-    protected abstract IEnumerator MiniGameLoop();
+    protected abstract IEnumerator SurveyLoop();
 
     private void Update()
     {
         if (!_hasStarted && DebugMode)
         {
-            StartRequest(DefaultDefinition, null);
+            StartSurvey(null);
         }
 
         if (_hasStarted)
         {
             OnUpdate();
         }
-    }
-
-    protected T GetMiniGameDefinition<T>() where T : GameActionRequestDefinitionBase
-    {
-        return _definition as T;
     }
 
     protected virtual void OnUpdate() { }
