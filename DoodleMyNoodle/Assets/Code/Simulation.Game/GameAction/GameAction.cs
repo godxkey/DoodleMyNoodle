@@ -11,21 +11,25 @@ public abstract class GameAction
 {
     public static LogChannel LogChannel = Log.CreateChannel("Game Actions", activeByDefault: true);
 
-    public abstract class ParameterDescription
+    public enum ParameterDescriptionType
     {
+        None,
+        Tile,
+        Entity,
+        SuccessRate,
+        Vector,
+        Position
+    }
+
+    public abstract class ParameterDescription 
+    {
+        public abstract ParameterDescriptionType GetParameterDescriptionType();
     }
 
     [NetSerializable(baseClass = true)]
     public abstract class ParameterData
     {
-        public byte ParamIndex;
-
         public ParameterData() { }
-
-        protected ParameterData(byte paramIndex)
-        {
-            ParamIndex = paramIndex;
-        }
     }
 
     public sealed class UseContract
@@ -56,19 +60,17 @@ public abstract class GameAction
 
         public bool TryGetParameter<T>(int index, out T parameterData) where T : ParameterData
         {
-            for (int i = 0; i < ParameterDatas.Length; i++)
+            if (index >= 0 && index < ParameterDatas.Length && ParameterDatas[index] == null)
             {
-                if (ParameterDatas[i] == null)
-                {
-                    Log.Warning($"GameAction parameters[{i}] is null");
-                    continue;
-                }
+                Log.Warning($"GameAction parameters[{index}] is null");
+                parameterData = null;
+                return false;
+            }
 
-                if (ParameterDatas[i].ParamIndex == index && ParameterDatas[i] is T p)
-                {
-                    parameterData = p;
-                    return true;
-                }
+            if (ParameterDatas[index] is T p)
+            {
+                parameterData = p;
+                return true;
             }
 
             parameterData = null;

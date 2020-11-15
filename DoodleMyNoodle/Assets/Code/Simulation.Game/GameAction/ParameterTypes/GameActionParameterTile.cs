@@ -29,6 +29,11 @@ public class GameActionParameterTile
 
             RangeFromInstigator = rangeFromInstigator;
         }
+
+        public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
+        {
+            return GameAction.ParameterDescriptionType.Tile;
+        }
     }
 
     [NetSerializable]
@@ -38,8 +43,7 @@ public class GameActionParameterTile
 
         public Data() { }
 
-        public Data(byte parameterIndex, int2 tile)
-            : base(parameterIndex)
+        public Data(int2 tile)
         {
             Tile = tile;
         }

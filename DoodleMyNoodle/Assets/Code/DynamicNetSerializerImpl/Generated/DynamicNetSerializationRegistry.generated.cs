@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class DynamicNetSerializationRegistry
 {
-    public static readonly ulong crc = 18292586966717604783;
+    public static readonly ulong crc = 1900434701764127761;
 
     public static readonly Type[] types = new Type[]
     {
@@ -48,7 +48,7 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(GameAction.UseParameters)
         ,
-        typeof(GameActionParameterSelfTarget.Data)
+        typeof(GameActionParameterSuccessRate.Data)
         ,
         typeof(GameActionParameterTile.Data)
         ,
@@ -267,10 +267,10 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_GameAction_UseParameters.GetNetBitSize(castedObj);
         }
         ,
-        [typeof(GameActionParameterSelfTarget.Data)] = (obj) =>
+        [typeof(GameActionParameterSuccessRate.Data)] = (obj) =>
         {
-            GameActionParameterSelfTarget.Data castedObj = (GameActionParameterSelfTarget.Data)obj;
-            return StaticNetSerializer_GameActionParameterSelfTarget_Data.GetNetBitSize(castedObj);
+            GameActionParameterSuccessRate.Data castedObj = (GameActionParameterSuccessRate.Data)obj;
+            return StaticNetSerializer_GameActionParameterSuccessRate_Data.GetNetBitSize(castedObj);
         }
         ,
         [typeof(GameActionParameterTile.Data)] = (obj) =>
@@ -690,10 +690,10 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_GameAction_UseParameters.NetSerialize(castedObj, writer);
         }
         ,
-        [typeof(GameActionParameterSelfTarget.Data)] = (obj, writer) =>
+        [typeof(GameActionParameterSuccessRate.Data)] = (obj, writer) =>
         {
-            GameActionParameterSelfTarget.Data castedObj = (GameActionParameterSelfTarget.Data)obj;
-            StaticNetSerializer_GameActionParameterSelfTarget_Data.NetSerialize(castedObj, writer);
+            GameActionParameterSuccessRate.Data castedObj = (GameActionParameterSuccessRate.Data)obj;
+            StaticNetSerializer_GameActionParameterSuccessRate_Data.NetSerialize(castedObj, writer);
         }
         ,
         [typeof(GameActionParameterTile.Data)] = (obj, writer) =>
@@ -1134,8 +1134,8 @@ public static class DynamicNetSerializationRegistry
         ,
         [19] = (reader) =>
         {
-            GameActionParameterSelfTarget.Data obj = new GameActionParameterSelfTarget.Data();
-            StaticNetSerializer_GameActionParameterSelfTarget_Data.NetDeserialize(obj, reader);
+            GameActionParameterSuccessRate.Data obj = new GameActionParameterSuccessRate.Data();
+            StaticNetSerializer_GameActionParameterSuccessRate_Data.NetDeserialize(obj, reader);
             return obj;
         }
         ,

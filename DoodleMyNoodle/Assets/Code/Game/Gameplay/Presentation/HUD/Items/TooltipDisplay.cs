@@ -70,7 +70,7 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         }
     }
 
-    public void ActivateTooltipDisplay(ItemVisualInfo itemInfo, Entity itemOwner)
+    public void ActivateTooltipDisplay(ItemAuth itemInfo, Entity itemOwner)
     {
         if (!Input.GetKey(KeyCode.LeftAlt))
         {
@@ -90,15 +90,19 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
             }
         }
 
-        if (itemInfo.ID != null)
+        if (itemInfo != null)
         {
-            Entity itemEntity = FindItemFromAssetId(itemInfo.ID.GetSimAssetId(), itemOwner);
-            if (itemEntity != Entity.Null)
+            SimAsset simAsset = itemInfo.GetComponent<SimAsset>();
+            if (simAsset != null)
             {
-                _itemName.text = itemInfo.Name; // update title Text
-                UpdateTooltipDescription(itemInfo.EffectDescription, itemEntity, itemInfo.ItemPrefab);
-                UpdateTooltipColors(itemInfo.Rarity);
-                _shouldBeDisplayed = true;
+                Entity itemEntity = FindItemFromAssetId(simAsset.GetSimAssetId(), itemOwner);
+                if (itemEntity != Entity.Null)
+                {
+                    _itemName.text = itemInfo.ItemVisualInfo.Name; // update title Text
+                    UpdateTooltipDescription(itemInfo.ItemVisualInfo.EffectDescription, itemEntity, itemInfo.gameObject);
+                    UpdateTooltipColors(itemInfo.ItemVisualInfo.Rarity);
+                    _shouldBeDisplayed = true;
+                }
             }
         }
     }

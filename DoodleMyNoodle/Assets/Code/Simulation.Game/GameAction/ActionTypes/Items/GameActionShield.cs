@@ -19,7 +19,7 @@ public class GameActionShield : GameAction
         }
         else
         {
-            return new UseContract(new GameActionParameterSelfTarget.Description() { });
+            return new UseContract();
         }
     }
 
@@ -35,12 +35,6 @@ public class GameActionShield : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
     {
-        if (useData.TryGetParameter(0, out GameActionParameterSelfTarget.Data self))
-        {
-            ShieldTarget(accessor, context.Entity, context.InstigatorPawn);
-            return true;
-        }
-
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             // reduce target health
@@ -54,7 +48,8 @@ public class GameActionShield : GameAction
             return true;
         }
 
-        return false;
+        ShieldTarget(accessor, context.Entity, context.InstigatorPawn);
+        return true;
     }
 
     private void ShieldTarget(ISimWorldReadWriteAccessor accessor, Entity itemEntity, Entity pawn)

@@ -68,7 +68,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                 if (SimWorld.TryGetComponentData(item, out SimAssetId itemIDComponent))
                 {
                     int itemIndex = i;
-                    ItemVisualInfo itemInfo = ItemVisualInfoBank.Instance.GetItemInfoFromID(itemIDComponent);
+                    ItemAuth itemAuth = ItemInfoBank.Instance.GetItemAuthFromID(itemIDComponent);
 
                     Action onClick = () =>
                     {
@@ -80,11 +80,11 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                     // Update Item Slot Stacks
                     if (SimWorld.TryGetComponentData(item, out ItemStackableData itemStackableData))
                     {
-                        _currentItemSlots[i].UpdateCurrentItemSlot(itemInfo, onClick, null, _lastInventoryEntity, itemStackableData.Value);
+                        _currentItemSlots[i].UpdateCurrentItemSlot(itemAuth, onClick, null, _lastInventoryEntity, itemStackableData.Value);
                     }
                     else
                     {
-                        _currentItemSlots[i].UpdateCurrentItemSlot(itemInfo, onClick, null, _lastInventoryEntity);
+                        _currentItemSlots[i].UpdateCurrentItemSlot(itemAuth, onClick, null, _lastInventoryEntity);
                     }
                 }
                 else

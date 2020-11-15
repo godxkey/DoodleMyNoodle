@@ -4,18 +4,21 @@ using Unity.Mathematics;
 using UnityEngineX;
 using static fixMath;
 using System.Collections.Generic;
-
+using UnityEngine;
 
 public class GameActionMeleeAttack : GameAction
 {
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        return new UseContract(
-            new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
-            {
-                IncludeSelf = false,
-                RequiresAttackableEntity = true,
-            });
+        GameActionParameterTile.Description tileParam = new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
+        {
+            IncludeSelf = false,
+            RequiresAttackableEntity = true,
+        };
+
+        GameActionParameterSuccessRate.Description successParam = new GameActionParameterSuccessRate.Description();
+
+        return new UseContract(tileParam, successParam);
     }
 
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
@@ -44,9 +47,20 @@ public class GameActionMeleeAttack : GameAction
             // reduce target health
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
             CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
+
+            int damageValue = accessor.GetComponentData<ItemDamageData>(context.Entity).Value;
+
+            if (useData.TryGetParameter(1, out GameActionParameterSuccessRate.Data successParam))
+            {
+                if (successParam.SuccessRate < MiniGameSuccessRate.Three)
+                {
+                    damageValue = 0;
+                }
+            }
+
             foreach (Entity entity in victims)
             {
-                CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, accessor.GetComponentData<ItemDamageData>(context.Entity).Value);
+                CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, damageValue);
             }
 
             int2 attackDirection = paramTile.Tile - instigatorTile;

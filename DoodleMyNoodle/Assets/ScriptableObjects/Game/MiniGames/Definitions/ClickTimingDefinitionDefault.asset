@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 669c0ef1f856ae743a9d3a57468590f1, type: 3}
+  m_Name: ClickTimingDefinitionDefault
+  m_EditorClassIdentifier: 
+  Name: Click Timing
+  Prefab: {fileID: 2342765595949023338, guid: 29dabb35c21f95649858601fe85c7c1d, type: 3}
+  CustomDescription: {fileID: 11400000, guid: 69a6285f4de22184486340c45221f17c, type: 2}

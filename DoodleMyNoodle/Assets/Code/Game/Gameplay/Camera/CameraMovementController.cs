@@ -20,6 +20,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
 
     [Header("Limits")]
     public bool EnableMovementLimits;
+    public float MinZoom = 1;
     public float MaxZoom;
 
     private Transform _transform;
@@ -56,7 +57,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     private float CamSize
     {
         get => Cam.orthographicSize;
-        set => Cam.orthographicSize = Mathf.Clamp(value, 1, MaxZoom);
+        set => Cam.orthographicSize = Mathf.Clamp(value, MinZoom, MaxZoom);
     }
 
     protected override void Awake()
@@ -84,8 +85,6 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         CenterOnPawnIfChange();
 
         UpdateMovement();
-
-        UpdateSize();
 
         UpdateBounds();
     }
@@ -123,22 +122,22 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
             && Input.mousePosition.y >= 0 
             && MouseMovementsEnabled;
 
-        if (Input.GetKey(KeyCode.W) || (MouseMovementsEnabled && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
+        if (Input.GetKey(KeyCode.W) || (useMouseMovements && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
         {
             movement += Vector2.up;
         }
 
-        if (Input.GetKey(KeyCode.S) || (MouseMovementsEnabled && (Input.mousePosition.y >= 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
+        if (Input.GetKey(KeyCode.S) || (useMouseMovements && (Input.mousePosition.y >= 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
         {
             movement -= Vector2.up;
         }
 
-        if (Input.GetKey(KeyCode.A) || (MouseMovementsEnabled && (Input.mousePosition.x >= 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
+        if (Input.GetKey(KeyCode.A) || (useMouseMovements && (Input.mousePosition.x >= 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
         {
             movement += Vector2.left;
         }
 
-        if (Input.GetKey(KeyCode.D) || (MouseMovementsEnabled && (Input.mousePosition.x >= (Screen.width - ScreenEdgeBorderThickness))))
+        if (Input.GetKey(KeyCode.D) || (useMouseMovements && (Input.mousePosition.x >= (Screen.width - ScreenEdgeBorderThickness))))
         {
             movement += Vector2.right;
         }
@@ -149,17 +148,18 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
             CamPosition += movement * Speed * CamSize * Time.deltaTime;
         }
 
+        // Zoom
+        if (useMouseMovements)
+        {
+            CamSize -= Input.mouseScrollDelta.y * ZoomSpeed;
+        }
+
         if (Input.GetKey(KeyCode.LeftShift) && Cache.LocalPawn != Entity.Null)
         {
             fix3 playerPosition = SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn).Value;
             Vector3 cameraPostion = transform.position;
             transform.position = new Vector3((float)playerPosition.x, (float)playerPosition.y, cameraPostion.z);
         }
-    }
-
-    private void UpdateSize()
-    {
-        CamSize -= Input.mouseScrollDelta.y * ZoomSpeed;
     }
 
     private void UpdateBounds()
@@ -184,5 +184,10 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         _boundsMin = min;
         _boundsMax = max;
         CamPosition = CamPosition;
+    }
+
+    public void TeleportCameraToPosition(Vector2 newPosition)
+    {
+        CamPosition = newPosition;
     }
 }

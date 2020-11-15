@@ -14,11 +14,8 @@ public class ItemVisualInfo : ScriptableObject
         Legendary
     }
 
-    public SimAsset ID;
     public Sprite Icon;
     public string Name;
     public ItemRarity Rarity;
     public string EffectDescription;
-    
-    public GameObject ItemPrefab => ID.gameObject;
 }
