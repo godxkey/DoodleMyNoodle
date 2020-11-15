@@ -31,8 +31,8 @@ public static class SceneShortcuts
     [MenuItem("Scene Shortcuts/Gym_AI", priority = 4007)]
     public static void Assets_Scenes_Levels_Scene_Assets_Gym_AI() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_AI.unity");
 
-    [MenuItem("Scene Shortcuts/Gym_MiniGames", priority = 4008)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Gym_MiniGames() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_MiniGames.unity");
+    [MenuItem("Scene Shortcuts/Gym_Art", priority = 4008)]
+    public static void Assets_Scenes_Levels_Scene_Assets_Gym_Art() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_Art.unity");
 
     [MenuItem("Scene Shortcuts/Gym_Physics", priority = 4009)]
     public static void Assets_Scenes_Levels_Scene_Assets_Gym_Physics() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_Physics.unity");
