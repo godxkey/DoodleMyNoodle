@@ -89,7 +89,7 @@ public class LobbyOverviewDisplay : GamePresentationSystem<LobbyOverviewDisplay>
             characterName = characterNameComponent.Value;
         }
 
-        display.UpdatePlayerInfoDisplay(playerName, characterName);
+        display.UpdatePlayerInfoDisplay(playerName, characterName, data.pawn);
     }
 
     private void SetVisible(bool visible)
