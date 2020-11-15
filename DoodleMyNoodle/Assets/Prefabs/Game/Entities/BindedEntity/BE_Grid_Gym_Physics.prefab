@@ -68,6 +68,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7905076531735690271}
     m_Modifications:
+    - target: {fileID: 5217987042345694196, guid: 8a033de365fb1e24e9fd7a63d6f209b5,
+        type: 3}
+      propertyPath: m_Name
+      value: SE_Grid_Gym_Physics
+      objectReference: {fileID: 0}
     - target: {fileID: 5217987042345694197, guid: 8a033de365fb1e24e9fd7a63d6f209b5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -122,6 +127,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5217987043277819722, guid: 8a033de365fb1e24e9fd7a63d6f209b5,
+        type: 3}
+      propertyPath: m_TileMatrixArray.Array.data[0].m_Data.e00
+      value: 0.9999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 5217987043277819722, guid: 8a033de365fb1e24e9fd7a63d6f209b5,
+        type: 3}
+      propertyPath: m_TileMatrixArray.Array.data[0].m_Data.e11
+      value: 0.9999999
       objectReference: {fileID: 0}
     - target: {fileID: 6381771211143514163, guid: 8a033de365fb1e24e9fd7a63d6f209b5,
         type: 3}

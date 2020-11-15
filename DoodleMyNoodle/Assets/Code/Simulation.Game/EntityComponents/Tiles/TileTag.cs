@@ -2,6 +2,6 @@
 using Unity.Entities;
 
 [Serializable]
-public class TileTag : IComponentData
+public struct TileTag : IComponentData
 {
 }

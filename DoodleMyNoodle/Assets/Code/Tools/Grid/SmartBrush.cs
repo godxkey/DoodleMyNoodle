@@ -18,8 +18,7 @@ public class SmartBrush : GridBrush
     [System.Serializable]
     public struct SpriteLayerData
     {
-        public Sprite Sprite;
-        public RuleTile RuleTile;
+        public TileBase Tile;
         public TileMapLayers Layer;
     }
 
@@ -27,7 +26,10 @@ public class SmartBrush : GridBrush
 
     public override void Pick(GridLayout gridLayout, GameObject brushTarget, BoundsInt position, Vector3Int pivot)
     {
-        GameObject newLayer = FindLayerObject(FindLayerFromSelection(GetCurrentSelection(brushTarget, position)));
+        TileMapLayers? targetLayer = FindLayerFromSelection(GetCurrentSelection(brushTarget, position));
+        
+        GameObject newLayer = FindLayerObject(targetLayer);
+
         if (newLayer != null)
         {
             GridPaintingState.scenePaintTarget = newLayer;
@@ -36,11 +38,13 @@ public class SmartBrush : GridBrush
         base.Pick(gridLayout, brushTarget, position, pivot);
     }
 
-    private GameObject FindLayerObject(TileMapLayers layer)
+    private GameObject FindLayerObject(TileMapLayers? layer)
     {
+        if (layer == null)
+            return null;
+
         foreach (GameObject target in GridPaintingState.validTargets)
         {
-            string test = layer.ToString();
             if (layer.ToString() == target.name)
             {
                 return target;
@@ -50,43 +54,26 @@ public class SmartBrush : GridBrush
         return null;
     }
 
-    private TileMapLayers FindLayerFromSelection(Sprite selection)
+    private TileMapLayers? FindLayerFromSelection(TileBase selection)
     {
         if (selection != null)
         {
             foreach (SpriteLayerData spriteLayerData in SpriteLayers)
             {
-                if (spriteLayerData.RuleTile?.m_DefaultSprite == selection)
-                {
-                    return spriteLayerData.Layer;
-                }
-
-                if (spriteLayerData.Sprite == selection)
+                if (spriteLayerData.Tile == selection)
                 {
                     return spriteLayerData.Layer;
                 }
             }
         }
 
-        return TileMapLayers.Background;
+        return null;
     }
 
-    private Sprite GetCurrentSelection(GameObject brushTarget, BoundsInt position)
+    private TileBase GetCurrentSelection(GameObject brushTarget, BoundsInt position)
     {
-        UnityEngine.Tilemaps.Tilemap currentTileMap = brushTarget.GetComponent<UnityEngine.Tilemaps.Tilemap>();
-        var currentlySelectedTile = currentTileMap.GetTile(position.position);
-
-        if (currentlySelectedTile is Tile tile)
-        {
-            return tile.sprite;
-        }
-
-        if (currentlySelectedTile is RuleTile ruleTile)
-        {
-            return ruleTile.m_DefaultSprite;
-        }
-
-        return null;
+        Tilemap currentTileMap = brushTarget.GetComponent<Tilemap>();
+        return currentTileMap.GetTile(position.position);
     }
 }
 

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: cd3d61e28790b2e49bcb28f77c1f216c, type: 3}
   m_Name: TILE_Terrain_Grass
   m_EditorClassIdentifier: Assembly-CSharp::AdvancedTerrainTile
   SpriteDatas:

@@ -23,21 +23,21 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
             }
         }
 
-        foreach (SimAsset item in SimAssetBank.GetLookUp().SimAssets)
-        {
-            if (item && item.ViewTechType == SimAsset.TechType.Entity)
-            {
-                if (item.BindedViewPrefab)
-                {
-                    referencedPrefabs.Add(item.BindedViewPrefab);
-                }
-            }
-        }
+        //foreach (SimAsset item in SimAssetBankInstance.GetLookup().SimAssets)
+        //{
+        //    if (item && item.ViewTechType == ViewTechType.Entity)
+        //    {
+        //        if (item.BindedViewPrefab)
+        //        {
+        //            referencedPrefabs.Add(item.BindedViewPrefab);
+        //        }
+        //    }
+        //}
     }
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        SimAssetBank.LookUp simAssetBank = SimAssetBank.GetLookUp();
+        SimAssetBank.Lookup simAssetBank = SimAssetBankInstance.GetLookup();
 
         var bindingGOs = new Settings_ViewBindingSystem_BindingGameObjectList();
         dstManager.AddComponentObject(entity, bindingGOs);
@@ -56,7 +56,7 @@ public class ViewBindingSystemSettingsAuth : MonoBehaviour, IConvertGameObjectTo
                 if (viewGameObject == null)
                     continue;
 
-                add(item.gameObject.name, item.GetSimAssetId(), viewGameObject, item.ViewTechType == SimAsset.TechType.Entity);
+                add(item.gameObject.name, item.GetSimAssetId(), viewGameObject, useEntityTech: false);
             }
         }
 

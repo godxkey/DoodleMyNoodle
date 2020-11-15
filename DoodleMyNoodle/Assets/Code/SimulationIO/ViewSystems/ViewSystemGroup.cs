@@ -31,7 +31,7 @@ public class ViewSystemGroup : ManualCreationComponentSystemGroup, IManualSystem
         IEnumerable<Type> viewComponentSystemTypes =
 
                     // get all ViewComponent systems
-                    TypeUtility.GetTypesDerivedFrom(typeof(ViewComponentSystem))
+                    TypeUtility.GetTypesDerivedFrom(typeof(ViewSystemBase))
             .Concat(TypeUtility.GetTypesDerivedFrom(typeof(ViewJobComponentSystem)))
             .Concat(TypeUtility.GetTypesDerivedFrom(typeof(ViewEntityCommandBufferSystem)))
 

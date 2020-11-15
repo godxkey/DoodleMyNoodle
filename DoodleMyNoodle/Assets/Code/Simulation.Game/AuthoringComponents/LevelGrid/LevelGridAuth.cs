@@ -46,7 +46,7 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
                     Vector3 worldPos = new Vector3(x, y, 0);
                     Vector3Int gridCell = _grid.WorldToCell(worldPos);
 
-                    GameObject simEntityPrefab = _globalGridSettings.GetSimEntityPrefabFromSprite(tileMap.GetSprite(gridCell));
+                    GameObject simEntityPrefab = _globalGridSettings.GetSimEntityPrefabFromTile(tileMap.GetTile(gridCell));
 
                     if (simEntityPrefab != null)
                     {

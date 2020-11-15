@@ -13,48 +13,12 @@ MonoBehaviour:
   m_Name: GridSettings
   m_EditorClassIdentifier: 
   SimEntitySpriteBindings:
-  - SpriteVisual: {fileID: 21300000, guid: d13dcc49e37b9e645aa2ecfedc2a9106, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: 9d3cabb8edc17794ca081cb8e604aab6,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: 3ae154574c78f1a48b47145288688620, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: eb91fe59064ac5f48b5da6500df4bc78,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: 3e53a9ab12829e344ba0f42dcb28b86e, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: 2a881688de6801c4a8b83ca8cad464e7,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: 6cd1c3ebe564e3140a34f0c39f2a078e, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: 5b4edc6d8065db6499e97f13d2e5248b,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: a5ed6aca975cff9438a1d93082e7b25d, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: 0a18bb89928ae304eb2ae8537ca68d11,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: b02d368404c3916419cf2caf7490e01e, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: bf77868f711a5534eae61725acbcece2,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: 2ffba942685a8ab4ebf6ef4a4312f156, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: d606373781c26244790c85ffce100ce7,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: 7857eaee211d8024382e861f1993d44a, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: 055d27559dd397b48b69b5db7c75142f,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: 0ae04b3b5d4a0984fbcc53173e1e51e4, type: 3}
+  - Tile: {fileID: 11400000, guid: ccc3bc4a74475b3438cd042b4c9e608b, type: 2}
     EntityPrefab: {fileID: 30145307963041151, guid: c22c460c2bab90046a7326ddb6fd03b6,
       type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: 36d09550dca773644a06ebafccf2d342, type: 3}
+  - Tile: {fileID: 11400000, guid: 6bcd2cf474d1a9e4f91e16d939a41402, type: 2}
     EntityPrefab: {fileID: 30145307963041151, guid: d0421163de1d6aa4289ff31f953949e7,
       type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: cb4d7058ae9fabf439c46db24c7c068a, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: ee6cc0fda5ef6764a8b29d1090e15e0d,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: c545340dbd6bec1499771aba21350be9, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: 248ce49109cc6154bbf607e271c0fe65,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: 0c95d2946e929854d9a581e6afcbb615, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: 9824e84da3d6234418808fdb8ef988ed,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: 12ae2e09ef93f16498abbee98f777a8c, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: 1a9f3e53029a46a4f912894712c146e4,
-      type: 3}
-  - SpriteVisual: {fileID: 21300000, guid: 219656141dee1f4488b4827e65cc9de0, type: 3}
-    EntityPrefab: {fileID: 30145307963041151, guid: 231606a2fb6b6d04f97fd73bed9770bc,
+  - Tile: {fileID: 11400000, guid: 95d0f9492db4b144a88fc1f1e9d6f3fe, type: 2}
+    EntityPrefab: {fileID: 30145307963041151, guid: d6ddc52b73996c9498b513f70d9bbb6b,
       type: 3}
