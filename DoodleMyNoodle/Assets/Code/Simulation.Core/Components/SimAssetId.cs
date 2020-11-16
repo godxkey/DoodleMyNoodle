@@ -4,11 +4,11 @@ using Unity.Entities;
 [Serializable]
 public struct SimAssetId : IComponentData, IEquatable<SimAssetId>
 {
-    public int Value;
+    public ushort Value;
 
     public static SimAssetId Invalid => new SimAssetId();
 
-    public SimAssetId(int value)
+    public SimAssetId(ushort value)
     {
         Value = value;
     }

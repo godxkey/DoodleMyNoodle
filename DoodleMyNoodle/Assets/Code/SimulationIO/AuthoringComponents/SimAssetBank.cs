@@ -29,7 +29,14 @@ public class SimAssetBank : ScriptableObject
 
                 if (asset != null)
                 {
-                    SimAssetId assetId = new SimAssetId(SimAssets.Count + 1);
+                    int v = SimAssets.Count + 1;
+                    if (v > ushort.MaxValue)
+                    {
+                        Log.Error($"Too many SimAssets! We are exceeding the maximal SimAssetId value of {ushort.MaxValue}.");
+                        break;
+                    }
+
+                    SimAssetId assetId = new SimAssetId((ushort)v);
 
                     SimAssets.Add(asset);
                     EditIdToRuntimeId.Add(asset.Guid, assetId);
