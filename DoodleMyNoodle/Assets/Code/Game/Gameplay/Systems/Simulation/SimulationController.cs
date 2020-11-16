@@ -8,12 +8,7 @@ using UnityEngineX;
 
 public class SimulationController : GameSystem<SimulationController>
 {
-    [SerializeField] private ViewBindingDefinitionBank _simAssetBank;
-    
     private TickSimulationSystem _tickSystem;
-
-    public ViewBindingDefinitionBank SimAssetBank => _simAssetBank;
-
 
     public override void OnGameAwake()
     {
