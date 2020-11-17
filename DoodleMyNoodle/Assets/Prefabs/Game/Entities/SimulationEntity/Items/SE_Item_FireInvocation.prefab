@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -1627743658129135454}
   - component: {fileID: 7812675529334335826}
   - component: {fileID: 3952309816212110363}
+  - component: {fileID: 7696596069231721272}
   m_Layer: 0
   m_Name: SE_Item_FireInvocation
   m_TagString: Untagged
@@ -135,3 +136,18 @@ MonoBehaviour:
   UseTime: 0
   TimeCooldown: 1
   TurnCooldown: 6
+--- !u!114 &7696596069231721272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemVisualInfo: {fileID: 11400000, guid: bd4b80e66ded5454b850426dcdda8af5, type: 2}
+  UseSpecificSurveys: 0
+  SurveyList: []

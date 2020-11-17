@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -448175739285880440}
   - component: {fileID: -4447897880707759495}
   - component: {fileID: 8201080054300536663}
+  - component: {fileID: 1407060609036426014}
   m_Layer: 0
   m_Name: SE_Item_DropRock
   m_TagString: Untagged
@@ -122,3 +123,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Range: 1
+--- !u!114 &1407060609036426014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemVisualInfo: {fileID: 11400000, guid: 630e71a4e5f6c6e47a3caee2e3c8b92d, type: 2}
+  UseSpecificSurveys: 0
+  SurveyList: []

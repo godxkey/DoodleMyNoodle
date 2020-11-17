@@ -29,7 +29,7 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity
     {
         if (parameters.Length == 0 || UseSpecificSurveys == false)
         {
-            Debug.LogError("Can't find a survey since parameters are empty");
+            Debug.LogWarning("Can't find a survey since parameters are empty");
             return null;
         }
 
