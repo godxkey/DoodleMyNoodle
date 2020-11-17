@@ -9,7 +9,7 @@ using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Jobs;
 
-[UpdateAfter(typeof(CreateBindedViewEntitiesSystem))]
+[UpdateAfter(typeof(MaintainBindedViewEntitiesSystem))]
 public class CopyTransformToViewSystem : ViewJobComponentSystem
 {
     protected override JobHandle OnUpdate(JobHandle jobHandle)
@@ -51,8 +51,8 @@ public class CopyTransformToViewSystem : ViewJobComponentSystem
 
 
 
-[UpdateAfter(typeof(CreateBindedViewGameObjectsSystem))]
-public class CopyTransformToViewGameObjectSystem : ViewJobComponentSystem
+[UpdateAfter(typeof(MaintainBindedViewGameObjectsSystem))]
+public class CopyTransformToViewGameObjectSystem : ViewSystemBase
 {
     [BurstCompile]
     struct CopyTransforms : IJobParallelForTransform
@@ -88,21 +88,19 @@ public class CopyTransformToViewGameObjectSystem : ViewJobComponentSystem
         base.OnCreate();
         _viewTransformsQ = GetEntityQuery(
             ComponentType.ReadOnly<BindedSimEntity>(),
-            ComponentType.ReadOnly<BindedGameObject>(),
+            ComponentType.ReadOnly<BindedGameObjectTag>(),
             ComponentType.ReadWrite<Transform>());
     }
 
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    protected override void OnUpdate()
     {
         TransformAccessArray transforms = _viewTransformsQ.GetTransformAccessArray();
         
-        inputDeps = new CopyTransforms
+        Dependency = new CopyTransforms
         {
             SimTranslations = SimWorldAccessor.GetComponentDataFromEntity<FixTranslation>(),
             SimRotations = SimWorldAccessor.GetComponentDataFromEntity<FixRotation>(),
-            BindedSimEntities = _viewTransformsQ.ToComponentDataArrayAsync<BindedSimEntity>(Allocator.TempJob, out inputDeps),
-        }.Schedule(transforms, inputDeps);
-
-        return inputDeps;
+            BindedSimEntities = _viewTransformsQ.ToComponentDataArrayAsync<BindedSimEntity>(Allocator.TempJob, out JobHandle dep),
+        }.Schedule(transforms, dep);
     }
 }

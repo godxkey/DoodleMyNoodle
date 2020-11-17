@@ -7,7 +7,8 @@ using UnityEngineX;
 public class SimAssetEditor : Editor
 {
     private SerializedProperty _guidProp;
-    private SerializedProperty _bindedViewProp;
+    private SerializedProperty _bindedViewPrefabProp;
+    private SerializedProperty _bindedViewTileProp;
     private SerializedProperty _viewTechTypeProp;
     private SerializedProperty _showGhostProp;
     private SerializedProperty _hasTransform;
@@ -15,7 +16,8 @@ public class SimAssetEditor : Editor
     protected void OnEnable()
     {
         _guidProp = serializedObject.FindProperty("_guid");
-        _bindedViewProp = serializedObject.FindProperty("_bindedViewPrefab");
+        _bindedViewPrefabProp = serializedObject.FindProperty("_bindedViewPrefab");
+        _bindedViewTileProp = serializedObject.FindProperty("_bindedViewTile");
         _viewTechTypeProp = serializedObject.FindProperty("_viewTechType");
         _showGhostProp = serializedObject.FindProperty("_showGhost");
         _hasTransform = serializedObject.FindProperty("_hasTransform");
@@ -44,15 +46,21 @@ public class SimAssetEditor : Editor
                 GUI.enabled = false;
             }
 
-            EditorGUILayout.PropertyField(_bindedViewProp, EditorGUIUtilityX.TempContent("View Prefab"));
-            //if (_bindedViewProp.objectReferenceValue != null)
-            //{
-            //    EditorGUILayout.PropertyField(_viewTechTypeProp);
-            //}
+            EditorGUILayout.PropertyField(_viewTechTypeProp);
+
+            var viewTechType = (ViewTechType)_viewTechTypeProp.enumValueIndex;
+            if (viewTechType == ViewTechType.GameObject)
+            {
+                EditorGUILayout.PropertyField(_bindedViewPrefabProp, EditorGUIUtilityX.TempContent("View Prefab"));
+            }
+            else if (viewTechType == ViewTechType.Tile)
+            {
+                EditorGUILayout.PropertyField(_bindedViewTileProp, EditorGUIUtilityX.TempContent("View Tile"));
+            }
 
             GUI.enabled = wasGUI;
 
-            if (_bindedViewProp.objectReferenceValue != null)
+            if (viewTechType == ViewTechType.GameObject && _bindedViewPrefabProp.objectReferenceValue != null)
             {
                 EditorGUILayout.PropertyField(_showGhostProp);
             }

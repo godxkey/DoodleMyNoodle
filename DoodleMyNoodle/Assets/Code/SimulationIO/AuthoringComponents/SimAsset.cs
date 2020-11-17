@@ -4,23 +4,26 @@ using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.Tilemaps;
 using UnityEngineX;
+
+public enum ViewTechType
+{
+    GameObject,
+    Tile
+}
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
 [ExecuteAlways]
 public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
 {
-    public enum TechType
-    {
-        GameObject,
-        Entity
-    }
 
     [FormerlySerializedAs("Guid")]
     [SerializeField] private string _guid;
     [SerializeField] private GameObject _bindedViewPrefab;
-    [SerializeField] TechType _viewTechType = TechType.GameObject;
+    [SerializeField] private TileBase _bindedViewTile;
+    [SerializeField] ViewTechType _viewTechType = ViewTechType.GameObject;
     [SerializeField] bool _showGhost = true; // temporary
     [SerializeField] bool _hasTransform = true;
 
@@ -36,7 +39,8 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
 
     public string Guid => _guid;
     public GameObject BindedViewPrefab => _bindedViewPrefab;
-    public TechType ViewTechType => _viewTechType;
+    public TileBase BindedViewTile => _bindedViewTile;
+    public ViewTechType ViewTechType => _viewTechType;
 
     [NonSerialized] private SimAssetId _runtimeId;
     [NonSerialized] private bool _runtimeIdAssigned = false;
@@ -45,10 +49,10 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
     {
         if (!_runtimeIdAssigned)
         {
-            var lookup = SimAssetBankInstance.GetLookup();
-            if (lookup != null)
+            if (SimAssetBankInstance.Ready)
             {
-                _runtimeId = lookup.EditIdToRuntimeId(Guid);
+                var lookup = SimAssetBankInstance.GetLookup();
+                _runtimeId = lookup.GetRuntimeSimAssetId(Guid);
                 _runtimeIdAssigned = true; 
             }
             else
@@ -86,7 +90,7 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
         _bindedViewPrefab = value;
     }
 
-    public void Editor_SetViewTechType(TechType value)
+    public void Editor_SetViewTechType(ViewTechType value)
     {
         _viewTechType = value;
     }

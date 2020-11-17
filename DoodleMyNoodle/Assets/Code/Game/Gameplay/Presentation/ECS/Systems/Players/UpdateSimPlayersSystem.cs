@@ -3,7 +3,7 @@ using Unity.Collections;
 using Unity.Entities;
 
 [MasterOnly]
-public class UpdateSimPlayersSystem : ViewComponentSystem
+public class UpdateSimPlayersSystem : ViewSystemBase
 {
     Dictionary<PlayerInfo, double> _dontAskForPlayerCreateCooldownMap = new Dictionary<PlayerInfo, double>();
 

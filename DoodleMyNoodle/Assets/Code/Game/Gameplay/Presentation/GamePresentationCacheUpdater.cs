@@ -31,7 +31,7 @@ public class GamePresentationCache
 
 // should we change this to a component system ?
 [AlwaysUpdateSystem]
-public class GamePresentationCacheUpdater : ViewComponentSystem
+public class GamePresentationCacheUpdater : ViewSystemBase
 {
     GamePresentationCache Cache => GamePresentationCache.Instance;
 

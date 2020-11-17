@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SmartBrush
   m_EditorClassIdentifier: 
   m_Cells:
-  - m_Tile: {fileID: 11400000, guid: 9df3002da42c1cf4db3625f830903c03, type: 2}
+  - m_Tile: {fileID: 11400000, guid: 95d0f9492db4b144a88fc1f1e9d6f3fe, type: 2}
     m_Matrix:
       e00: 1
       e01: 0
@@ -36,15 +36,13 @@ MonoBehaviour:
   m_Pivot: {x: 0, y: 0, z: 0}
   m_CanChangeZPosition: 0
   SpriteLayers:
-  - Sprite: {fileID: 0}
-    RuleTile: {fileID: 11400000, guid: 9df3002da42c1cf4db3625f830903c03, type: 2}
+  - Tile: {fileID: 11400000, guid: 9df3002da42c1cf4db3625f830903c03, type: 2}
     Layer: 1
-  - Sprite: {fileID: 21300000, guid: 0ae04b3b5d4a0984fbcc53173e1e51e4, type: 3}
-    RuleTile: {fileID: 0}
+  - Tile: {fileID: 11400000, guid: ccc3bc4a74475b3438cd042b4c9e608b, type: 2}
     Layer: 1
-  - Sprite: {fileID: 21300000, guid: 36d09550dca773644a06ebafccf2d342, type: 3}
-    RuleTile: {fileID: 0}
+  - Tile: {fileID: 11400000, guid: 6bcd2cf474d1a9e4f91e16d939a41402, type: 2}
     Layer: 1
-  - Sprite: {fileID: 21300000, guid: 88183622566175f439db3ba776d64290, type: 3}
-    RuleTile: {fileID: 0}
+  - Tile: {fileID: 11400000, guid: 478a9e8d32e229b4dbff1861b758e062, type: 2}
+    Layer: 1
+  - Tile: {fileID: 11400000, guid: 95d0f9492db4b144a88fc1f1e9d6f3fe, type: 2}
     Layer: 1

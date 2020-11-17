@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms.VisualStyles;
 using UnityEngine;
@@ -8,6 +9,22 @@ using UnityEngineX;
 
 internal static class VariousCommandLines
 {
+    [ConsoleCommand]
+    private static void OpenSaveLocation() => OpenDirectory(Application.persistentDataPath);
+
+    private static void OpenDirectory(string path)
+    {
+        path = path.Replace('/', '\\');
+        if (Directory.Exists(path))
+        {
+            Process.Start("explorer.exe", path);
+        }
+        else
+        {
+            Log.Warning("Cannot open log file location(" + path + "). Directory was not found.");
+        }
+    }
+
     [ConsoleCommand]
     private static void SetResolution(int width, int height, bool fullScreen)
     {

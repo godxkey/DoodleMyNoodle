@@ -2,7 +2,7 @@
 
 public class SimAssetBankInstance : MonoBehaviour
 {
-    private static SimAssetBank s_instance;
+    private static SimAssetBank.LookupData s_instance;
 
     [SerializeField] SimAssetBank _bank;
 
@@ -14,17 +14,24 @@ public class SimAssetBankInstance : MonoBehaviour
             return;
         }
         
-        s_instance = _bank;
+        s_instance = new SimAssetBank.LookupData(_bank);
     }
 
     private void OnDestroy()
     {
+        s_instance.Dispose();
         s_instance = null;
     }
 
+    public static bool Ready => s_instance != null;
 
-    public static SimAssetBank.LookUp GetLookup()
+    public static SimAssetBank.Lookup GetLookup()
     {
-        return s_instance.GetLookUp();
+        return new SimAssetBank.Lookup(s_instance);
+    }
+    
+    public static SimAssetBank.JobLookup GetJobLookup()
+    {
+        return new SimAssetBank.JobLookup(s_instance);
     }
 }
