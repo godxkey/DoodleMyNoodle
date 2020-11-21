@@ -37,7 +37,8 @@ public class ParameterSelectionState : UIState
         else // same item as we were the last time in this state, we're coming from a child state
         {
             // no data found, cancel and go back to gameplay
-            if (Data[1] == null)
+            var paramList = GetData<List<GameAction.ParameterData>>(1);
+            if (paramList == null || paramList.Count == 0)
             {
                 UIStateMachine.Instance.TransitionTo(StateTypes.Gameplay);
                 return;
@@ -81,7 +82,7 @@ public class ParameterSelectionState : UIState
     public override void OnExit(StateTypes newState) 
     {
         // we're completly exiting the parameter selection process, so there's no item currently used anymore
-        if (newState == StateTypes.Gameplay || newState == StateTypes.BlockedGameplay)
+        if (newState != StateTypes.Survey)
         {
             _itemEntity = Entity.Null;
         }
