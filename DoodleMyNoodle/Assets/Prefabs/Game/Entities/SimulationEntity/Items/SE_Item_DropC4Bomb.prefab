@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8201080054300536663}
   - component: {fileID: -4078316212525815410}
   - component: {fileID: -6470349746516010537}
+  - component: {fileID: 8287164231811506844}
   m_Layer: 0
   m_Name: SE_Item_DropC4Bomb
   m_TagString: Untagged
@@ -150,3 +151,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ExplosionRange: 2
+--- !u!114 &8287164231811506844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemVisualInfo: {fileID: 11400000, guid: 553d78ddb8aa19e4f9aab82b1c59b344, type: 2}
+  UseSpecificSurveys: 0
+  SurveyList: []

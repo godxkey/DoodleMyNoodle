@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 971858758830137585}
   - component: {fileID: 5742253346417087590}
   - component: {fileID: 6782051550689936977}
+  - component: {fileID: 145666425010416309}
   m_Layer: 0
   m_Name: SE_Item_Move
   m_TagString: Untagged
@@ -77,3 +78,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Range: 1
+--- !u!114 &145666425010416309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemVisualInfo: {fileID: 11400000, guid: ce617dedf9ddc07498faaae42fc65041, type: 2}
+  UseSpecificSurveys: 0
+  SurveyList: []

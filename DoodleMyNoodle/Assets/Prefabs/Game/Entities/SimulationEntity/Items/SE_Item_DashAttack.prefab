@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2342595259483819386}
   - component: {fileID: -2474827681856516994}
   - component: {fileID: -5992459184069680995}
+  - component: {fileID: 4388241147689542363}
   m_Layer: 0
   m_Name: SE_Item_DashAttack
   m_TagString: Untagged
@@ -121,3 +122,18 @@ MonoBehaviour:
   UseTime: 0
   TimeCooldown: 1
   TurnCooldown: 3
+--- !u!114 &4388241147689542363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemVisualInfo: {fileID: 11400000, guid: 8e451d55f6bb4e84491f0e4be4dd29f0, type: 2}
+  UseSpecificSurveys: 0
+  SurveyList: []

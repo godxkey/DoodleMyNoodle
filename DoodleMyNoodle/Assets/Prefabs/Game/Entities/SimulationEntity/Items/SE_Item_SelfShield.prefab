@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -6298230777731521353}
   - component: {fileID: 5111337425678688756}
   - component: {fileID: -7218728750706546194}
+  - component: {fileID: -8174355629325406418}
   m_Layer: 0
   m_Name: SE_Item_SelfShield
   m_TagString: Untagged
@@ -134,3 +135,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9e0141aaa0bc44e941ec8d8c9e5b78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-8174355629325406418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemVisualInfo: {fileID: 11400000, guid: c5bdea15cb1f7304b93d27af0b07571a, type: 2}
+  UseSpecificSurveys: 0
+  SurveyList: []

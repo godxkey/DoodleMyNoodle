@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DebugMode: 0
   DebugDisplay: {fileID: 2342765597424613051}
+  InitOnStart: 0
   DisplayName: Click Timing
   NumberDisplay: {fileID: 2342765596430009231}
   TimeBetweenChanges: 0.5
@@ -143,7 +144,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &2342765596430009231
 MonoBehaviour:
@@ -235,7 +236,7 @@ MonoBehaviour:
   m_renderer: {fileID: 2342765596430009230}
   m_maskType: 0
   _SortingLayerID: 0
-  _SortingOrder: 1
+  _SortingOrder: 2
 --- !u!1 &2342765596579232295
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +308,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 090a739780771a54297a0181ebc7b359, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2531664542941852176}
   - component: {fileID: 1725349915119862877}
   - component: {fileID: 654114501825988275}
+  - component: {fileID: 1839868509227135459}
   m_Layer: 0
   m_Name: SE_Item_TwinSlice
   m_TagString: Untagged
@@ -121,3 +122,18 @@ MonoBehaviour:
   UseTime: 0
   TimeCooldown: 1
   TurnCooldown: 2
+--- !u!114 &1839868509227135459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemVisualInfo: {fileID: 11400000, guid: 7e4bc51e19a2e7b4f8e5d240eab772e1, type: 2}
+  UseSpecificSurveys: 0
+  SurveyList: []
