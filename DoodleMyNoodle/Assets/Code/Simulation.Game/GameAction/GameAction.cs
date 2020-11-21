@@ -21,7 +21,7 @@ public abstract class GameAction
         Position
     }
 
-    public abstract class ParameterDescription 
+    public abstract class ParameterDescription
     {
         public abstract ParameterDescriptionType GetParameterDescriptionType();
     }
@@ -60,21 +60,29 @@ public abstract class GameAction
 
         public bool TryGetParameter<T>(int index, out T parameterData) where T : ParameterData
         {
-            if (index >= 0 && index < ParameterDatas.Length && ParameterDatas[index] == null)
+            if (index < 0 || index >= ParameterDatas.Length)
+            {
+                parameterData = null;
+                return false;
+            }
+
+            if (ParameterDatas[index] is null)
             {
                 Log.Warning($"GameAction parameters[{index}] is null");
                 parameterData = null;
                 return false;
             }
 
-            if (ParameterDatas[index] is T p)
+            if (!(ParameterDatas[index] is T p))
             {
-                parameterData = p;
-                return true;
+                Log.Warning($"GameAction parameters[{index}] is of type {ParameterDatas[index].GetType().GetPrettyName()}," +
+                    $" not of expected type {typeof(T).GetPrettyName()}");
+                parameterData = null;
+                return false;
             }
 
-            parameterData = null;
-            return false;
+            parameterData = p;
+            return true;
         }
     }
 
@@ -216,7 +224,7 @@ public abstract class GameAction
         }
 
         // reduce instigator AP
-        if (accessor.TryGetComponentData(context.Entity, out ItemActionPointCostData itemActionPointCost)) 
+        if (accessor.TryGetComponentData(context.Entity, out ItemActionPointCostData itemActionPointCost))
         {
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -itemActionPointCost.Value);
         }

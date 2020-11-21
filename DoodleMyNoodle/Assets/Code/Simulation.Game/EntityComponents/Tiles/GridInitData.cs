@@ -5,9 +5,16 @@ using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using Unity.MathematicsX;
 
-public struct StartingTileActors : IBufferElementData
+public struct StartingTileActorElement : IBufferElementData
 {
     public Entity Prefab;
+    public int2 Position;
+}
+
+public struct StartingTileElement : IBufferElementData
+{
+    public SimAssetId AssetId;
+    public TileFlagComponent TileFlags;
     public int2 Position;
 }
 

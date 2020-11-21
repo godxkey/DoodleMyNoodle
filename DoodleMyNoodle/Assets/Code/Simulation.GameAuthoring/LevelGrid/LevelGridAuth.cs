@@ -33,9 +33,12 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
             TileMin = minCoord,
             TileMax = maxCoord,
         });
+        dstManager.AddBuffer<StartingTileActorElement>(entity);
+        dstManager.AddBuffer<StartingTileElement>(entity);
 
         // Lets get all tilemaps and spawn whatever was drawn on them
-        DynamicBuffer<StartingTileActors> startingEntities = dstManager.AddBuffer<StartingTileActors>(entity);
+        DynamicBuffer<StartingTileActorElement> startingEntities = dstManager.GetBuffer<StartingTileActorElement>(entity);
+        DynamicBuffer<StartingTileElement> startingTiles = dstManager.GetBuffer<StartingTileElement>(entity);
 
         foreach (Tilemap tileMap in tileMaps)
         {
@@ -50,10 +53,24 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
 
                     if (simEntityPrefab != null)
                     {
-                        Entity tileActorPrefab = conversionSystem.GetPrimaryEntity(simEntityPrefab);
                         int2 tilePos = int2((int)worldPos.x, (int)worldPos.y);
+                        if (simEntityPrefab.TryGetComponent(out TileActorAuth tileActorAuth) && tileActorAuth.ShouldBeConvertedToTile())
+                        {
+                            var simAssetId = simEntityPrefab.GetComponent<SimAsset>();
+                            startingTiles.Add(new StartingTileElement()
+                            {
+                                AssetId = simAssetId != null ? simAssetId.GetSimAssetId() : SimAssetId.Invalid,
+                                Position = tilePos,
+                                TileFlags = tileActorAuth.GetTileFlags()
+                            });
+                        }
+                        else
+                        {
+                            Entity tileActorPrefab = conversionSystem.GetPrimaryEntity(simEntityPrefab);
 
-                        startingEntities.Add(new StartingTileActors() { Prefab = tileActorPrefab, Position = tilePos });
+                            startingEntities.Add(new StartingTileActorElement() { Prefab = tileActorPrefab, Position = tilePos });
+                        }
+
                     }
                 }
             }
@@ -86,13 +103,20 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
     {
         foreach (EntitySpriteBinding binding in _globalGridSettings.SimEntitySpriteBindings)
         {
+            // skip tile actors meant for tiles
+            if (binding.EntityPrefab.TryGetComponent(out TileActorAuth tileActorAuth) &&
+                tileActorAuth.ShouldBeConvertedToTile())
+            {
+                continue;
+            }
+
             referencedPrefabs.Add(binding.EntityPrefab);
         }
     }
 
     void OnValidate()
     {
-        if(_grid == null)
+        if (_grid == null)
         {
             Log.Warning($"({gameObject.name}) Level Grid Auth needs a grid", gameObject);
             return;

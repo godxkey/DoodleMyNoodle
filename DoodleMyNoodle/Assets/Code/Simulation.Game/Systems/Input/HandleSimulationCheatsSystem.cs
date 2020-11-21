@@ -40,6 +40,14 @@ public class SimInputCheatInfiniteAP : SimCheatInput
     public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
 }
 
+public struct CheatsAllItemElement : IBufferElementData
+{
+    public Entity ItemPrefab;
+
+    public static implicit operator Entity(CheatsAllItemElement val) => val.ItemPrefab;
+    public static implicit operator CheatsAllItemElement(Entity val) => new CheatsAllItemElement() { ItemPrefab = val };
+}
+
 [UpdateInGroup(typeof(InputSystemGroup))]
 public class HandleSimulationCheatsSystem : SimComponentSystem
 {

@@ -17,7 +17,7 @@ public class CreateLevelGridSystem : SimComponentSystem
         base.OnCreate();
 
         RequireSingletonForUpdate<GridInfo>();
-        RequireSingletonForUpdate<StartingTileActors>();
+        RequireSingletonForUpdate<StartingTileActorElement>();
     }
 
     protected override void OnUpdate()
@@ -25,10 +25,10 @@ public class CreateLevelGridSystem : SimComponentSystem
         var gridInfo = GetSingleton<GridInfo>();
 
         Entity gridInfoEntity = GetSingletonEntity<GridInfo>();
-        NativeArray<StartingTileActors> startingTileActors = EntityManager.GetBufferReadOnly<StartingTileActors>(gridInfoEntity).ToNativeArray(Allocator.Temp);
+        NativeArray<StartingTileActorElement> startingTileActors = EntityManager.GetBufferReadOnly<StartingTileActorElement>(gridInfoEntity).ToNativeArray(Allocator.Temp);
+        NativeArray<StartingTileElement> startingTiles = EntityManager.GetBufferReadOnly<StartingTileElement>(gridInfoEntity).ToNativeArray(Allocator.Temp);
 
         // Spawn Actors
-        NativeArray<Entity> tileActors = new NativeArray<Entity>(startingTileActors.Length, Allocator.Temp);
         for (int i = 0; i < startingTileActors.Length; i++)
         {
             if (!gridInfo.Contains(startingTileActors[i].Position))
@@ -37,8 +37,8 @@ public class CreateLevelGridSystem : SimComponentSystem
                 continue;
             }
 
-            tileActors[i] = EntityManager.Instantiate(startingTileActors[i].Prefab);
-            EntityManager.SetComponentData(tileActors[i], new FixTranslation() { Value = Helpers.GetTileCenter(startingTileActors[i].Position) });
+            Entity tileActor = EntityManager.Instantiate(startingTileActors[i].Prefab);
+            EntityManager.SetComponentData<FixTranslation>(tileActor, Helpers.GetTileCenter(startingTileActors[i].Position));
         }
 
         // Creating singleton with a buffer of all tile entities (container of tiles)
@@ -52,49 +52,52 @@ public class CreateLevelGridSystem : SimComponentSystem
             for (int x = gridInfo.TileMin.x; x <= gridInfo.TileMax.x; x++)
             {
                 int2 pos = int2(x, y);
-                GridTileReference gridTileReference = CreateTileEntity(pos, FindTileFlags(startingTileActors, pos));
+                StartingTileElement tileData = FindStartingTileData(startingTiles, pos);
+                GridTileReference gridTileReference = CreateTileEntity(tileData);
                 tiles.Add(gridTileReference);
             }
         }
 
-        EntityManager.RemoveComponent<StartingTileActors>(gridInfoEntity);
+        EntityManager.RemoveComponent<StartingTileActorElement>(gridInfoEntity);
         EntityManager.AddBuffer<GridTileReference>(gridInfoEntity).AddRange(tiles);
     }
 
-    private Entity CreateTileEntity(int2 tilePosition, TileFlags tileFlags)
+    private Entity CreateTileEntity(StartingTileElement tileData)
     {
         // Create Tile
         Entity newTileEntity = EntityManager.CreateEntity(
             typeof(TileTag),
             typeof(TileActorReference),
-            typeof(TileFlagComponent));
+            typeof(TileFlagComponent),
+            typeof(TileId),
+            typeof(SimAssetId));
 
-        EntityManager.SetComponentData(newTileEntity, new TileFlagComponent() { Value = tileFlags });
+        EntityManager.SetComponentData(newTileEntity, new TileFlagComponent() { Value = tileData.TileFlags });
+        EntityManager.SetComponentData(newTileEntity, new TileId(tileData.Position));
+        EntityManager.SetComponentData(newTileEntity, tileData.AssetId);
 
 #if UNITY_EDITOR
-        EntityManager.SetName(newTileEntity, $"Tile {tilePosition.x}, {tilePosition.y}");
+        EntityManager.SetName(newTileEntity, $"Tile {tileData.Position.x}, {tileData.Position.y}");
 #endif
 
         return newTileEntity;
     }
 
-    private TileFlags FindTileFlags(NativeArray<StartingTileActors> tileActors, int2 position)
+    private StartingTileElement FindStartingTileData(NativeArray<StartingTileElement> tiles, int2 position)
     {
-        foreach (StartingTileActors actor in tileActors)
+        foreach (StartingTileElement tile in tiles)
         {
-            if (actor.Position.Equals(position))
+            if (tile.Position.Equals(position))
             {
-                if (EntityManager.HasComponent<TerrainTag>(actor.Prefab))
-                {
-                    return TileFlags.Terrain;
-                }
-
-                if (EntityManager.HasComponent<LadderTag>(actor.Prefab))
-                {
-                    return TileFlags.Ladder;
-                }
+                return tile;
             }
         }
-        return TileFlags.Empty;
+        
+        return new StartingTileElement()
+        {
+            AssetId = SimAssetId.Invalid,
+            TileFlags = TileFlags.Empty,
+            Position = position
+        };
     }
 }

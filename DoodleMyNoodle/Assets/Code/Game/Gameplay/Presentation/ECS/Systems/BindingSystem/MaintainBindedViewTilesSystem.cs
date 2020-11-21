@@ -12,10 +12,10 @@ public struct BindedTileTag : ISystemStateComponentData
 
 public struct BindedTile : ISystemStateComponentData
 {
-    public int2 Value;
+    public TileId Value;
 
-    public static implicit operator int2(BindedTile val) => val.Value;
-    public static implicit operator BindedTile(int2 val) => new BindedTile() { Value = val };
+    public static implicit operator TileId(BindedTile val) => val.Value;
+    public static implicit operator BindedTile(TileId val) => new BindedTile() { Value = val };
 }
 
 [UpdateAfter(typeof(BindedViewEntityCommandBufferSystem))]
@@ -55,7 +55,7 @@ public class MaintainBindedViewTilesSystem : ViewSystemBase
             {
                 if (EntityManager.TryGetComponentData(entity, out BindedTile tile))
                 {
-                    outTilePos.Add(new Vector3Int(tile.Value.x, tile.Value.y, 0));
+                    outTilePos.Add(new Vector3Int(tile.Value.X, tile.Value.X, 0));
                     outTiles.Add(null);
 
                     EntityManager.RemoveComponent<BindedTile>(entity);
@@ -68,6 +68,7 @@ public class MaintainBindedViewTilesSystem : ViewSystemBase
     private void CreateNewTiles(SimAssetBank.Lookup lookup, List<Vector3Int> outTilePos, List<TileBase> outTiles)
     {
         var simEntityPos = SimWorldAccessor.GetComponentDataFromEntity<FixTranslation>();
+        var simEntityTileIds = SimWorldAccessor.GetComponentDataFromEntity<TileId>();
 
         Entities
             .WithSharedComponentFilter(new BindedViewType() { Value = ViewTechType.Tile })
@@ -77,22 +78,32 @@ public class MaintainBindedViewTilesSystem : ViewSystemBase
             .WithReadOnly(simEntityPos)
             .ForEach((Entity viewEntity, in SimAssetId id, in BindedSimEntity simEntity) =>
             {
-                if (simEntityPos.HasComponent(simEntity))
+                TileId? tile = null;
+
+                if (simEntityTileIds.HasComponent(simEntity))
+                {
+                    tile = simEntityTileIds[simEntity];
+                }
+                else if (simEntityPos.HasComponent(simEntity))
                 {
                     FixTranslation pos = simEntityPos[simEntity];
+                    tile = Helpers.GetTileId(pos);
+                }
 
+                if(tile != null)
+                {
                     SimAsset simAsset = lookup.GetSimAsset(id);
 
                     if (simAsset.BindedViewTile != null)
                     {
-                        int2 tile = Helpers.GetTile(pos);
-                        
-                        outTilePos.Add(new Vector3Int(tile.x, tile.y, 0));
+                        TileId t = tile.Value;
+                        outTilePos.Add(new Vector3Int(t.X, t.Y, 0));
                         outTiles.Add(simAsset.BindedViewTile);
 
-                        EntityManager.AddComponentData(viewEntity, new BindedTile() { Value = tile });
+                        EntityManager.AddComponentData(viewEntity, new BindedTile() { Value = t });
                     }
                 }
+
                 EntityManager.AddComponent<BindedTileTag>(viewEntity);
             }).Run();
     }

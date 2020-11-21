@@ -27,11 +27,3 @@ public class CheatsDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
         }
     }
 }
-
-public struct CheatsAllItemElement : IBufferElementData
-{
-    public Entity ItemPrefab;
-
-    public static implicit operator Entity(CheatsAllItemElement val) => val.ItemPrefab;
-    public static implicit operator CheatsAllItemElement(Entity val) => new CheatsAllItemElement() { ItemPrefab = val };
-}

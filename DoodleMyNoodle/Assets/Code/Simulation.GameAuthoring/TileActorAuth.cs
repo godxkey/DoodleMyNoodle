@@ -2,22 +2,6 @@
 using Unity.Entities;
 using UnityEngine;
 
-[Serializable]
-public struct Velocity : IComponentData
-{
-    public fix3 Value;
-
-    public static implicit operator fix3(Velocity velocity) => velocity.Value;
-    public static implicit operator Velocity(fix3 velocity) => new Velocity() { Value = velocity };
-}
-
-public struct TileActorTag : IComponentData { }
-public struct StaticTag : IComponentData { }
-
-// TODO: This should not be needed!
-public struct TerrainTag : IComponentData { }
-public struct LadderTag : IComponentData { }
-
 public enum TypeActorType
 {
     Terrain, // Might not need this here in the future !!
@@ -48,15 +32,36 @@ public class TileActorAuth : MonoBehaviour, IConvertGameObjectToEntity
                 dstManager.AddComponent<StaticTag>(entity);
                 break;
 
-            case TypeActorType.Terrain:
-                dstManager.AddComponent<StaticTag>(entity);
-                dstManager.AddComponent<TerrainTag>(entity);
-                break;
+            default:
+                throw new NotImplementedException();
+        }
+    }
 
+    public bool ShouldBeConvertedToTile()
+    {
+        switch (_type)
+        {
+            case TypeActorType.Terrain:
             case TypeActorType.Ladder:
-                dstManager.AddComponent<StaticTag>(entity);
-                dstManager.AddComponent<LadderTag>(entity);
-                break;
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    public TileFlagComponent GetTileFlags()
+    {
+        switch (_type)
+        {
+            case TypeActorType.Terrain:
+                return new TileFlagComponent() { Value = TileFlags.Terrain };
+            
+            case TypeActorType.Ladder:
+                return new TileFlagComponent() { Value = TileFlags.Ladder };
+
+            default:
+                return default;
         }
     }
 }

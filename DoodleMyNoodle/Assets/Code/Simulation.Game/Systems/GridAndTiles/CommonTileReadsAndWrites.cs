@@ -153,12 +153,18 @@ public partial class CommonReads
 
 public partial class Helpers
 {
-    public static int2 GetTile(in FixTranslation translation) => floorToInt(translation.Value).xy;
-    public static int2 GetTile(in fix3 worldPosition) => floorToInt(worldPosition).xy;
-    public static int2 GetTile(in Vector3 worldPosition) => int2(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y));
-    public static int2 GetTile(in Vector2 worldPosition) => int2(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y));
+    public static int2 GetTile(FixTranslation translation) => floorToInt(translation.Value).xy;
+    public static int2 GetTile(fix3 worldPosition) => floorToInt(worldPosition).xy;
+    public static int2 GetTile(Vector3 worldPosition) => int2(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y));
+    public static int2 GetTile(Vector2 worldPosition) => int2(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y));
     
-    public static fix3 GetTileCenter(in FixTranslation translation) => GetTileCenter(GetTile(translation));
-    public static fix3 GetTileCenter(in fix3 worldPosition) => GetTileCenter(GetTile(worldPosition));
-    public static fix3 GetTileCenter(in int2 tile) => fix3(tile.x + fix.Half, tile.y + fix.Half, 0);
+    public static TileId GetTileId(FixTranslation translation) => new TileId(floorToInt(translation.Value).xy);
+    public static TileId GetTileId(fix3 worldPosition) => new TileId(floorToInt(worldPosition).xy);
+    public static TileId GetTileId(Vector3 worldPosition) => new TileId(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y));
+    public static TileId GetTileId(Vector2 worldPosition) => new TileId(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y));
+
+    public static fix3 GetTileCenter(FixTranslation translation) => GetTileCenter(GetTile(translation));
+    public static fix3 GetTileCenter(fix3 worldPosition) => GetTileCenter(GetTile(worldPosition));
+    public static fix3 GetTileCenter(int2 tile) => fix3(tile.x + fix.Half, tile.y + fix.Half, 0);
+    public static fix3 GetTileCenter(TileId tileId) => fix3(tileId.X + fix.Half, tileId.Y + fix.Half, 0);
 }
