@@ -10,6 +10,8 @@ public abstract class SurveyBaseController : MonoBehaviour
     public bool DebugMode = false;
     [ShowIf("DebugMode")]
     public TextMeshPro DebugDisplay;
+    [ShowIf("DebugMode")]
+    public bool InitOnStart = false;
 
     public string DisplayName;
 
@@ -54,8 +56,12 @@ public abstract class SurveyBaseController : MonoBehaviour
 
             if (DebugMode)
             {
-                DebugDisplay.text = GetTextResult();
-                DebugDisplay.gameObject.SetActive(true);
+                string debugText = GetDebugResult();
+                if (DebugDisplay != null)
+                {
+                    DebugDisplay.text = debugText;
+                    DebugDisplay.gameObject.SetActive(true);
+                }
             }
             else
             {
@@ -68,18 +74,15 @@ public abstract class SurveyBaseController : MonoBehaviour
 
     private void Update()
     {
-        if (!_hasStarted && DebugMode)
+        if (!_hasStarted && DebugMode && InitOnStart)
         {
             StartSurvey(null);
         }
 
-        if (_hasStarted)
-        {
-            OnUpdate();
-        }
+        OnUpdate();
     }
 
     protected virtual void OnUpdate() { }
     protected abstract List<GameAction.ParameterData> GetResult();
-    protected abstract string GetTextResult();
+    protected abstract string GetDebugResult();
 }

@@ -17,7 +17,7 @@ public class MiniGameClickTiming : SurveyBaseController
         return results;
     }
 
-    protected override string GetTextResult()
+    protected override string GetDebugResult()
     {
         return "Result : " + _currentNumber;
     }

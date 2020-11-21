@@ -19,7 +19,7 @@ public class TileHighlightSurveyController : SurveyBaseController
         return results;
     }
 
-    protected override string GetTextResult()
+    protected override string GetDebugResult()
     {
         return "Tiles Found";
     }
