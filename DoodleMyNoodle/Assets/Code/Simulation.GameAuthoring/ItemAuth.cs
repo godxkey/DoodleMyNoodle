@@ -29,7 +29,8 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity
     {
         if (parameters.Length == 0 || UseSpecificSurveys == false)
         {
-            Debug.LogWarning("Can't find a survey since parameters are empty");
+            // I commented this since it's a very normal scenario. We don't need to be warned in the editor
+            // Debug.LogWarning("Can't find a survey since parameters are empty");
             return null;
         }
 
