@@ -92,7 +92,7 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
     private void CreateNewViewEntities(SimAssetBank.JobLookup simAssetBank, EntityQuery simEntitiesInNeedOfViewBinding)
     {
         var ecb = _ecb.CreateCommandBuffer();
-        NativeArray<Entity> simEntities = simEntitiesInNeedOfViewBinding.ToEntityArray(Allocator.Temp);
+        NativeArray<Entity> simEntities = simEntitiesInNeedOfViewBinding.ToEntityArray(Allocator.TempJob);
         NativeArray<SimAssetId> simAssetIds = simEntitiesInNeedOfViewBinding.ToComponentDataArray<SimAssetId>(Allocator.Temp);
 
         for (int i = 0; i < simEntities.Length; i++)
@@ -106,5 +106,7 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
                 ecb.SetSharedComponent(viewEntity, new BindedViewType() { Value = viewTechType });
             }
         }
+
+        simEntities.Dispose();
     }
 }

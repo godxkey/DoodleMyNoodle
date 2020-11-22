@@ -15,6 +15,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     public float WalkingHeight = 0.08f;
 
     private Sequence _currentSequence;
+    private AnimationDefinition _currentAnimation;
     private CommonReads.AnimationTypes _previousState = CommonReads.AnimationTypes.None;
 
     private Vector3 _spriteStartPos;
@@ -36,10 +37,16 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             // New Animation State has been apply, play the animation
             if (currentPlayerAnimationState != _previousState)
             {
+                // Interupt and restart
                 _currentSequence.Kill(true);
                 _currentSequence = DOTween.Sequence();
+                if (_currentAnimation != null)
+                {
+                    _currentAnimation.InteruptAnimation();
+                }
                 SpriteTransform.localPosition = _spriteStartPos;
 
+                // Trigger animation by anim type
                 switch (currentPlayerAnimationState)
                 {
                     case CommonReads.AnimationTypes.Idle:
@@ -63,12 +70,18 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
                         break;
 
-                    case CommonReads.AnimationTypes.Attack:
+                    case CommonReads.AnimationTypes.GameAction:
 
-                        Vector3 startPos = _spriteStartPos;
-                        Vector3 endPos = new Vector3(startPos.x + animationData.Direction.x, startPos.y + animationData.Direction.y, startPos.z);
-                        _currentSequence.Append(SpriteTransform.DOLocalMove(endPos, (float)animationData.TotalDuration / 2));
-                        _currentSequence.Append(SpriteTransform.DOLocalMove(startPos, (float)animationData.TotalDuration / 2));
+                        if (animationData.GameActionEntity != Entity.Null)
+                        {
+                            SimWorld.TryGetComponentData(animationData.GameActionEntity, out SimAssetId instigatorAssetId);
+                            GameObject instigatorPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
+                            if (instigatorPrefab.TryGetComponent(out GameActionIdAuth gameActionAuth))
+                            {
+                                _currentAnimation = gameActionAuth.Animation;
+                                _currentAnimation.TriggerAnimation(_spriteStartPos, SpriteTransform, animationData);
+                            }
+                        }
 
                         break;
 

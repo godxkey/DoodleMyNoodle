@@ -115,12 +115,13 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     {
         Vector2 movement = Vector2.zero;
 
-        bool useMouseMovements = 
-               Input.mousePosition.x <= Screen.width 
-            && Input.mousePosition.x >= 0 
-            && Input.mousePosition.y <= Screen.height 
-            && Input.mousePosition.y >= 0 
-            && MouseMovementsEnabled;
+        bool isMouseInsideScreen =
+               Input.mousePosition.x <= Screen.width
+            && Input.mousePosition.x >= 0
+            && Input.mousePosition.y <= Screen.height
+            && Input.mousePosition.y >= 0;
+
+        bool useMouseMovements = isMouseInsideScreen && MouseMovementsEnabled;
 
         if (Input.GetKey(KeyCode.W) || (useMouseMovements && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
         {
@@ -149,7 +150,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         }
 
         // Zoom
-        if (useMouseMovements)
+        if (isMouseInsideScreen)
         {
             CamSize -= Input.mouseScrollDelta.y * ZoomSpeed;
         }

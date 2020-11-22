@@ -32,7 +32,7 @@ public class AnimationStateMachineSystem : SimSystemBase
                             break;
                             
                         // Example of a one time anim that ends after it's done
-                        case CommonReads.AnimationTypes.Attack:
+                        case CommonReads.AnimationTypes.GameAction:
                             CommonWrites.SetEntityAnimation(Accessor, entity, CommonReads.AnimationTypes.Idle);
                             break;
                     }
@@ -57,7 +57,7 @@ public partial class CommonReads
         None,
         Idle,
         Walking,
-        Attack
+        GameAction
     }
 }
 
@@ -73,6 +73,7 @@ internal static partial class CommonWrites
     {
         AnimationData newAnimationData = new AnimationData();
         newAnimationData.Direction = GetAdditionnalAnimationData<int2>("Direction", additionnalData);
+        newAnimationData.GameActionEntity = GetAdditionnalAnimationData<Entity>("GameActionEntity", additionnalData);
         newAnimationData.LastTransitionTime = accessor.Time.ElapsedTime;
 
         // Data defined by animation hard coded here, could be filled elsewhere the system has access to
@@ -84,7 +85,7 @@ internal static partial class CommonWrites
             case CommonReads.AnimationTypes.Walking:
                 newAnimationData.TotalDuration = (fix)0.25f;
                 break;
-            case CommonReads.AnimationTypes.Attack:
+            case CommonReads.AnimationTypes.GameAction:
                 newAnimationData.TotalDuration = (fix)0.5f;
                 break;
             default:

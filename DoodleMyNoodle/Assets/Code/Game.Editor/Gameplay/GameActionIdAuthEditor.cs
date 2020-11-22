@@ -27,10 +27,13 @@ public class GameActionIdAuthEditor : Editor
         EditorGUI.BeginChangeCheck();
 
         GUIContent label = EditorGUIUtilityX.TempContent("Game Action Type");
-        SerializedProperty property = serializedObject.FindProperty("Value");
-        EditorGUILayoutX.SearchablePopupString(property, label, s_availableTypeNames);
+        SerializedProperty gameActionProperty = serializedObject.FindProperty("Value");
+        EditorGUILayoutX.SearchablePopupString(gameActionProperty, label, s_availableTypeNames);
 
-        if(EditorGUI.EndChangeCheck())
+        SerializedProperty animationProperty = serializedObject.FindProperty("Animation");
+        EditorGUILayout.PropertyField(animationProperty);
+
+        if (EditorGUI.EndChangeCheck())
         {
             serializedObject.ApplyModifiedProperties();
         }

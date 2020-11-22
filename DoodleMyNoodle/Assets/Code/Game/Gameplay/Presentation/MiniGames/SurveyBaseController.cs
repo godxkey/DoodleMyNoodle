@@ -7,6 +7,8 @@ using UnityEngine;
 
 public abstract class SurveyBaseController : MonoBehaviour
 {
+    public GamePresentationCache Cache => GamePresentationCache.Instance;
+
     public bool DebugMode = false;
     [ShowIf("DebugMode")]
     public TextMeshPro DebugDisplay;

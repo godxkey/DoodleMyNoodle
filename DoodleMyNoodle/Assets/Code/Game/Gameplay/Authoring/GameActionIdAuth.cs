@@ -8,6 +8,7 @@ using System;
 public class GameActionIdAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public string Value;
+    public AnimationDefinition Animation;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {

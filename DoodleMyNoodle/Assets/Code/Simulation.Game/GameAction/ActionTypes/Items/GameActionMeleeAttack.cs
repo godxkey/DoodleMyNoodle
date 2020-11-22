@@ -16,9 +16,7 @@ public class GameActionMeleeAttack : GameAction
             RequiresAttackableEntity = true,
         };
 
-        GameActionParameterSuccessRate.Description successParam = new GameActionParameterSuccessRate.Description();
-
-        return new UseContract(tileParam, successParam);
+        return new UseContract(tileParam);
     }
 
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
@@ -50,21 +48,15 @@ public class GameActionMeleeAttack : GameAction
 
             int damageValue = accessor.GetComponentData<ItemDamageData>(context.Entity).Value;
 
-            if (useData.TryGetParameter(1, out GameActionParameterSuccessRate.Data successParam))
-            {
-                if (successParam.SuccessRate < MiniGameSuccessRate.Three)
-                {
-                    damageValue = 0;
-                }
-            }
-
             foreach (Entity entity in victims)
             {
                 CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, damageValue);
             }
 
             int2 attackDirection = paramTile.Tile - instigatorTile;
-            CommonWrites.SetEntityAnimation(accessor, context.InstigatorPawn, CommonReads.AnimationTypes.Attack, new KeyValuePair<string, object>("Direction", attackDirection));
+            CommonWrites.SetEntityAnimation(accessor, context.InstigatorPawn, CommonReads.AnimationTypes.GameAction, 
+                new KeyValuePair<string, object>("Direction", attackDirection),
+                new KeyValuePair<string, object>("GameActionEntity", context.Entity));
 
             return true;
         }

@@ -52,6 +52,7 @@ MonoBehaviour:
   ConversionMode: 0
   _guid: 8fe72c48eacd0c642818eff638603c62
   _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
@@ -68,6 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionMeleeAttack
+  Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
 --- !u!114 &-6404501569915862778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,8 +83,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemVisualInfo: {fileID: 11400000, guid: ab9a3676dc98c21409db73a34fe158b4, type: 2}
-  HasMiniGames: 1
-  MiniGames: []
+  UseSpecificSurveys: 0
+  SurveyList: []
 --- !u!114 &7484598955039597738
 MonoBehaviour:
   m_ObjectHideFlags: 0

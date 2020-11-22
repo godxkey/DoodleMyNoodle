@@ -38,7 +38,7 @@ public class DestroyDeadEntitiesSystem : SimComponentSystem
                 // Create Event
                 EntityManager.CreateEventEntity(new EntityDeathEventData() { Entity = entity });
 
-                PostUpdateCommands.DestroyEntity(entity);
+                //PostUpdateCommands.DestroyEntity(entity);
             }
         });
     }

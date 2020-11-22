@@ -52,6 +52,7 @@ MonoBehaviour:
   ConversionMode: 0
   _guid: 3fa80de446fd0ed409cdb9374b921d40
   _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
@@ -68,6 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionComboAttack
+  Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
 --- !u!114 &-2521835402880927039
 MonoBehaviour:
   m_ObjectHideFlags: 0
