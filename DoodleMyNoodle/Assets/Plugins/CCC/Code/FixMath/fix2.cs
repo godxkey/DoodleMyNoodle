@@ -7,7 +7,6 @@ using UnityEngine;
 /// <summary>
 /// Provides XNA-like 2D vector math.
 /// </summary>
-[NetSerializable]
 [Serializable]
 [JsonObject(IsReference =false)]
 public struct fix2 : IEquatable<fix2>

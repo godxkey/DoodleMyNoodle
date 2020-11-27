@@ -6,7 +6,6 @@ using Unity.Mathematics;
 /// <summary>
 /// Provides XNA-like 3D vector math.
 /// </summary>
-[NetSerializable]
 [Serializable]
 [JsonObject(IsReference = false)]
 public struct fix3 : IEquatable<fix3>

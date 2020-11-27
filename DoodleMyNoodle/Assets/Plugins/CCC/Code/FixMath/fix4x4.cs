@@ -4,7 +4,6 @@ using UnityEngine;
 /// <summary>
 /// Provides XNA-like 4x4 matrix math.
 /// </summary>
-[NetSerializable]
 [Serializable]
 public struct fix4x4
 {

@@ -9,6 +9,16 @@ using UnityEngineX;
 [assembly: GenerateSerializer(typeof(Vector2))]
 [assembly: GenerateSerializer(typeof(Vector3))]
 [assembly: GenerateSerializer(typeof(Vector4))]
+[assembly: GenerateSerializer(typeof(fix))]
+[assembly: GenerateSerializer(typeof(fix2))]
+[assembly: GenerateSerializer(typeof(fix2x2))]
+[assembly: GenerateSerializer(typeof(fix2x3))]
+[assembly: GenerateSerializer(typeof(fix3))]
+[assembly: GenerateSerializer(typeof(fix3x2))]
+[assembly: GenerateSerializer(typeof(fix3x3))]
+[assembly: GenerateSerializer(typeof(fix4))]
+[assembly: GenerateSerializer(typeof(fix4x4))]
+[assembly: GenerateSerializer(typeof(fixQuaternion))]
 
 namespace Internals.OnlineServiceImpl
 {
