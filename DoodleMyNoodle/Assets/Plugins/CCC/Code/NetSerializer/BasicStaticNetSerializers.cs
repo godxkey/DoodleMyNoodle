@@ -201,33 +201,6 @@ public static class StaticNetSerializer_System_Char
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Deserialize(ref Char value, BitStreamReader reader) => value = reader.ReadChar();
 }
-public static class StaticNetSerializer_UnityEngine_Vector2
-{
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetSerializedBitSize(ref Vector2 value) => 2 * sizeof(Single) * 8;
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Serialize(ref Vector2 value, BitStreamWriter writer) => writer.WriteVector2(value);
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Deserialize(ref Vector2 value, BitStreamReader reader) => value = reader.ReadVector2();
-}
-public static class StaticNetSerializer_UnityEngine_Vector3
-{
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetSerializedBitSize(ref Vector3 value) => 3 * sizeof(Single) * 8;
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Serialize(ref Vector3 value, BitStreamWriter writer) => writer.WriteVector3(value);
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Deserialize(ref Vector3 value, BitStreamReader reader) => value = reader.ReadVector3();
-}
-public static class StaticNetSerializer_UnityEngine_Vector4
-{
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetSerializedBitSize(ref Vector4 value) => 4 * sizeof(Single) * 8;
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Serialize(ref Vector4 value, BitStreamWriter writer) => writer.WriteVector4(value);
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Deserialize(ref Vector4 value, BitStreamReader reader) => value = reader.ReadVector4();
-}
 public static class StaticNetSerializer_UnityEngine_Vector2Int
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -274,26 +247,6 @@ public static class StaticNetSerializer_System_Object
             return null;
         }
         return NetSerializer.Deserialize(reader);
-    }
-}
-
-public static class StaticNetSerializer_Unity_Mathematics_int2
-{
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetSerializedBitSize(ref int2 value) => 2 * sizeof(Int32) * 8;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Serialize(ref int2 value, BitStreamWriter writer)
-    {
-        writer.WriteInt32(value.x);
-        writer.WriteInt32(value.y);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Deserialize(ref int2 value, BitStreamReader reader)
-    {
-        value.x = reader.ReadInt32();
-        value.y = reader.ReadInt32();
     }
 }
 

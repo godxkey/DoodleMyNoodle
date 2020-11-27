@@ -2647,6 +2647,28 @@ public static class StaticNetSerializer_TestMessageDog
         StaticNetSerializer_TestMessageAnimal.Deserialize(obj, reader);
     }
 }
+public static class StaticNetSerializer_Unity_Mathematics_int2
+{
+    public static int GetSerializedBitSize(ref Unity.Mathematics.int2 obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_System_Int32.GetSerializedBitSize(ref obj.x);
+        result += StaticNetSerializer_System_Int32.GetSerializedBitSize(ref obj.y);
+        return result;
+    }
+
+    public static void Serialize(ref Unity.Mathematics.int2 obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_System_Int32.Serialize(ref obj.x, writer);
+        StaticNetSerializer_System_Int32.Serialize(ref obj.y, writer);
+    }
+
+    public static void Deserialize(ref Unity.Mathematics.int2 obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_System_Int32.Deserialize(ref obj.x, reader);
+        StaticNetSerializer_System_Int32.Deserialize(ref obj.y, reader);
+    }
+}
 public static class StaticNetSerializer_UnityEngine_Vector2
 {
     public static int GetSerializedBitSize(ref UnityEngine.Vector2 obj)
@@ -2667,6 +2689,59 @@ public static class StaticNetSerializer_UnityEngine_Vector2
     {
         StaticNetSerializer_System_Single.Deserialize(ref obj.x, reader);
         StaticNetSerializer_System_Single.Deserialize(ref obj.y, reader);
+    }
+}
+public static class StaticNetSerializer_UnityEngine_Vector3
+{
+    public static int GetSerializedBitSize(ref UnityEngine.Vector3 obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_System_Single.GetSerializedBitSize(ref obj.x);
+        result += StaticNetSerializer_System_Single.GetSerializedBitSize(ref obj.y);
+        result += StaticNetSerializer_System_Single.GetSerializedBitSize(ref obj.z);
+        return result;
+    }
+
+    public static void Serialize(ref UnityEngine.Vector3 obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_System_Single.Serialize(ref obj.x, writer);
+        StaticNetSerializer_System_Single.Serialize(ref obj.y, writer);
+        StaticNetSerializer_System_Single.Serialize(ref obj.z, writer);
+    }
+
+    public static void Deserialize(ref UnityEngine.Vector3 obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_System_Single.Deserialize(ref obj.x, reader);
+        StaticNetSerializer_System_Single.Deserialize(ref obj.y, reader);
+        StaticNetSerializer_System_Single.Deserialize(ref obj.z, reader);
+    }
+}
+public static class StaticNetSerializer_UnityEngine_Vector4
+{
+    public static int GetSerializedBitSize(ref UnityEngine.Vector4 obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_System_Single.GetSerializedBitSize(ref obj.x);
+        result += StaticNetSerializer_System_Single.GetSerializedBitSize(ref obj.y);
+        result += StaticNetSerializer_System_Single.GetSerializedBitSize(ref obj.z);
+        result += StaticNetSerializer_System_Single.GetSerializedBitSize(ref obj.w);
+        return result;
+    }
+
+    public static void Serialize(ref UnityEngine.Vector4 obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_System_Single.Serialize(ref obj.x, writer);
+        StaticNetSerializer_System_Single.Serialize(ref obj.y, writer);
+        StaticNetSerializer_System_Single.Serialize(ref obj.z, writer);
+        StaticNetSerializer_System_Single.Serialize(ref obj.w, writer);
+    }
+
+    public static void Deserialize(ref UnityEngine.Vector4 obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_System_Single.Deserialize(ref obj.x, reader);
+        StaticNetSerializer_System_Single.Deserialize(ref obj.y, reader);
+        StaticNetSerializer_System_Single.Deserialize(ref obj.z, reader);
+        StaticNetSerializer_System_Single.Deserialize(ref obj.w, reader);
     }
 }
 

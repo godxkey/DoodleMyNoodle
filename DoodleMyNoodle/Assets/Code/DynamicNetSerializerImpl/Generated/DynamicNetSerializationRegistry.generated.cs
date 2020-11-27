@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class DynamicNetSerializationRegistry
 {
-    public static readonly ulong crc = 10574265284173838717;
+    public static readonly ulong crc = 10954144175267185274;
 
     public static readonly Type[] types = new Type[]
     {
@@ -150,7 +150,13 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(TestMessageDog)
         ,
+        typeof(Unity.Mathematics.int2)
+        ,
         typeof(UnityEngine.Vector2)
+        ,
+        typeof(UnityEngine.Vector3)
+        ,
+        typeof(UnityEngine.Vector4)
     };
 
     public static readonly Dictionary<Type, Func<object, int>> map_GetBitSize = new Dictionary<Type, Func<object, int>>()
@@ -575,10 +581,28 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_TestMessageDog.GetSerializedBitSize(castedObj);
         }
         ,
+        [typeof(Unity.Mathematics.int2)] = (obj) =>
+        {
+            Unity.Mathematics.int2 castedObj = (Unity.Mathematics.int2)obj;
+            return StaticNetSerializer_Unity_Mathematics_int2.GetSerializedBitSize(ref castedObj);
+        }
+        ,
         [typeof(UnityEngine.Vector2)] = (obj) =>
         {
             UnityEngine.Vector2 castedObj = (UnityEngine.Vector2)obj;
             return StaticNetSerializer_UnityEngine_Vector2.GetSerializedBitSize(ref castedObj);
+        }
+        ,
+        [typeof(UnityEngine.Vector3)] = (obj) =>
+        {
+            UnityEngine.Vector3 castedObj = (UnityEngine.Vector3)obj;
+            return StaticNetSerializer_UnityEngine_Vector3.GetSerializedBitSize(ref castedObj);
+        }
+        ,
+        [typeof(UnityEngine.Vector4)] = (obj) =>
+        {
+            UnityEngine.Vector4 castedObj = (UnityEngine.Vector4)obj;
+            return StaticNetSerializer_UnityEngine_Vector4.GetSerializedBitSize(ref castedObj);
         }
     };
 
@@ -1004,10 +1028,28 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_TestMessageDog.Serialize(castedObj, writer);
         }
         ,
+        [typeof(Unity.Mathematics.int2)] = (obj, writer) =>
+        {
+            Unity.Mathematics.int2 castedObj = (Unity.Mathematics.int2)obj;
+            StaticNetSerializer_Unity_Mathematics_int2.Serialize(ref castedObj, writer);
+        }
+        ,
         [typeof(UnityEngine.Vector2)] = (obj, writer) =>
         {
             UnityEngine.Vector2 castedObj = (UnityEngine.Vector2)obj;
             StaticNetSerializer_UnityEngine_Vector2.Serialize(ref castedObj, writer);
+        }
+        ,
+        [typeof(UnityEngine.Vector3)] = (obj, writer) =>
+        {
+            UnityEngine.Vector3 castedObj = (UnityEngine.Vector3)obj;
+            StaticNetSerializer_UnityEngine_Vector3.Serialize(ref castedObj, writer);
+        }
+        ,
+        [typeof(UnityEngine.Vector4)] = (obj, writer) =>
+        {
+            UnityEngine.Vector4 castedObj = (UnityEngine.Vector4)obj;
+            StaticNetSerializer_UnityEngine_Vector4.Serialize(ref castedObj, writer);
         }
     };
 
@@ -1505,8 +1547,29 @@ public static class DynamicNetSerializationRegistry
         ,
         [70] = (reader) =>
         {
+            Unity.Mathematics.int2 obj = new Unity.Mathematics.int2();
+            StaticNetSerializer_Unity_Mathematics_int2.Deserialize(ref obj, reader);
+            return obj;
+        }
+        ,
+        [71] = (reader) =>
+        {
             UnityEngine.Vector2 obj = new UnityEngine.Vector2();
             StaticNetSerializer_UnityEngine_Vector2.Deserialize(ref obj, reader);
+            return obj;
+        }
+        ,
+        [72] = (reader) =>
+        {
+            UnityEngine.Vector3 obj = new UnityEngine.Vector3();
+            StaticNetSerializer_UnityEngine_Vector3.Deserialize(ref obj, reader);
+            return obj;
+        }
+        ,
+        [73] = (reader) =>
+        {
+            UnityEngine.Vector4 obj = new UnityEngine.Vector4();
+            StaticNetSerializer_UnityEngine_Vector4.Deserialize(ref obj, reader);
             return obj;
         }
     };

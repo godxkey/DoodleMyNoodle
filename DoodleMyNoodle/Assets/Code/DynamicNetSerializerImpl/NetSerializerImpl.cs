@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
 
+[assembly: GenerateSerializer(typeof(int2))]
 [assembly: GenerateSerializer(typeof(Vector2))]
+[assembly: GenerateSerializer(typeof(Vector3))]
+[assembly: GenerateSerializer(typeof(Vector4))]
 
 namespace Internals.OnlineServiceImpl
 {
