@@ -125,7 +125,7 @@ public class TestMessage
     }
 }
 
-[NetSerializable(baseClass = true)]
+[NetSerializable(IsBaseClass = true)]
 public class TestMessageAnimal
 {
     public TestMessageAnimal() { }

@@ -18,7 +18,7 @@ public static class NetMessageInterpreter
     public static Type GetMessageType(byte[] messageData)
     {
         s_reader.SetNewBuffer(messageData);
-        return DynamicNetSerializer.GetMessageType(s_reader);
+        return NetSerializer.GetMessageType(s_reader);
     }
 
     public static bool GetMessageFromData<T>(byte[] messageData, out T message)
@@ -64,7 +64,7 @@ public static class NetMessageInterpreter
 
         try
         {
-            message = DynamicNetSerializer.NetDeserialize(s_reader);
+            message = NetSerializer.Deserialize(s_reader);
 
             return true;
         }
@@ -88,7 +88,7 @@ public static class NetMessageInterpreter
             return false;
         }
 
-        int netBitSize = DynamicNetSerializer.GetNetBitSize(message);
+        int netBitSize = NetSerializer.GetSerializedBitSize(message);
         int messageSizeByte = netBitSize.CeiledToStep(8) / 8; // this will ceil the size to a multiple of 8
 
         if (messageSizeByte > byteLimit)
@@ -102,7 +102,7 @@ public static class NetMessageInterpreter
 
         try
         {
-            DynamicNetSerializer.NetSerialize(message, s_writer);
+            NetSerializer.Serialize(message, s_writer);
             
 #if DEBUG
             if (s_dataLogChannel.Active)

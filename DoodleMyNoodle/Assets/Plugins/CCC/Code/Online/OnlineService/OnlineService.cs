@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class OnlineService : MonoCoreService<OnlineService>
 {
     protected abstract NetworkInterface CreateNetworkInterface();
-    protected abstract IDynamicNetSerializerImpl CreateNetMessageFactory();
+    protected abstract INetSerializerImpl CreateNetMessageFactory();
 
     private static NetworkInterface NetworkInterface => Instance?._networkInterface;
 
@@ -42,7 +42,7 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
     public override void Initialize(Action<ICoreService> onComplete)
     {
         _networkInterface = CreateNetworkInterface();
-        DynamicNetSerializer.impl = CreateNetMessageFactory();
+        NetSerializer.impl = CreateNetMessageFactory();
 
         _networkInterface.OnShutdownBegin += OnNetworkInterfaceShutdownBegin;
 

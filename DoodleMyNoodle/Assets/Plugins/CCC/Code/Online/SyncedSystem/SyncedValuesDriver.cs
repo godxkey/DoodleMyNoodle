@@ -87,7 +87,7 @@ namespace CCC.Online
             {
                 return new NetMessageDestroyValue()
                 {
-                    TypeId = DynamicNetSerializer.GetTypeId(container.DataType)
+                    TypeId = NetSerializer.GetTypeId(container.DataType)
                 };
             }
         }
@@ -162,9 +162,9 @@ namespace CCC.Online
 
             private void OnNetMessageReceived(NetMessageDestroyValue destroyMessage, INetworkInterfaceConnection arg2)
             {
-                if (DynamicNetSerializer.IsValidType(destroyMessage.TypeId))
+                if (NetSerializer.IsValidType(destroyMessage.TypeId))
                 {
-                    Type type = DynamicNetSerializer.GetTypeFromId(destroyMessage.TypeId);
+                    Type type = NetSerializer.GetTypeFromId(destroyMessage.TypeId);
                     var container = SyncedValues.GetContainer(type);
                     if (container != null)
                     {

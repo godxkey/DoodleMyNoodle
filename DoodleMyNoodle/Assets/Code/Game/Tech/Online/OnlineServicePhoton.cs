@@ -5,9 +5,9 @@ namespace Internals.OnlineServiceImpl
 {
     public class OnlineServicePhoton : OnlineService
     {
-        public static Func<IDynamicNetSerializerImpl> factoryCreator;
+        public static Func<INetSerializerImpl> factoryCreator;
 
-        protected override IDynamicNetSerializerImpl CreateNetMessageFactory()
+        protected override INetSerializerImpl CreateNetMessageFactory()
         {
             return factoryCreator();
         }

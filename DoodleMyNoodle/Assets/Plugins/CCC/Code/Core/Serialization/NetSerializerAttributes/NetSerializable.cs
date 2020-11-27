@@ -8,5 +8,17 @@ public class NetSerializableAttribute : Attribute
     {
     }
 
-    public bool baseClass;
+    public bool IsBaseClass;
+}
+
+
+[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+public class GenerateSerializerAttribute : Attribute
+{
+    public Type Type;
+
+    public GenerateSerializerAttribute(Type type)
+    {
+        Type = type ?? throw new ArgumentNullException(nameof(type));
+    }
 }

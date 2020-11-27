@@ -28,7 +28,7 @@ public static partial class NetSerializerCodeGenerator
             writer.WriteLine();
             writer.WriteLine("public static class " + NetSerializationCodeGenUtility.GetSerializerNameFromType(arrayType));
             writer.WriteLine("{");
-            writer.WriteLine("    public static int GetNetBitSize(ref " + elementFullName + "[] obj)");
+            writer.WriteLine("    public static int GetSerializedBitSize(ref " + elementFullName + "[] obj)");
             writer.WriteLine("    {");
 
             if (clear)
@@ -51,7 +51,7 @@ public static partial class NetSerializerCodeGenerator
 
             writer.WriteLine();
 
-            writer.WriteLine("    public static void NetSerialize(ref " + elementFullName + "[] obj, BitStreamWriter writer)");
+            writer.WriteLine("    public static void Serialize(ref " + elementFullName + "[] obj, BitStreamWriter writer)");
             writer.WriteLine("    {");
             if (!clear)
             {
@@ -71,7 +71,7 @@ public static partial class NetSerializerCodeGenerator
 
             writer.WriteLine();
 
-            writer.WriteLine("    public static void NetDeserialize(ref " + elementFullName + "[] obj, BitStreamReader reader)");
+            writer.WriteLine("    public static void Deserialize(ref " + elementFullName + "[] obj, BitStreamReader reader)");
             writer.WriteLine("    {");
             if (!clear)
             {
@@ -121,7 +121,7 @@ public static partial class NetSerializerCodeGenerator
             writer.WriteLine();
             writer.WriteLine("public static class " + NetSerializationCodeGenUtility.GetSerializerNameFromType(listType));
             writer.WriteLine("{");
-            writer.WriteLine($"    public static int GetNetBitSize_Class(List<{elementFullName}> obj)");
+            writer.WriteLine($"    public static int GetSerializedBitSize_Class(List<{elementFullName}> obj)");
             writer.WriteLine("    {");
 
             if (clear)
@@ -145,7 +145,7 @@ public static partial class NetSerializerCodeGenerator
 
             writer.WriteLine();
 
-            writer.WriteLine($"    public static void NetSerialize_Class(List<{elementFullName}> obj, BitStreamWriter writer)");
+            writer.WriteLine($"    public static void Serialize_Class(List<{elementFullName}> obj, BitStreamWriter writer)");
             writer.WriteLine("    {");
             if (!clear)
             {
@@ -166,7 +166,7 @@ public static partial class NetSerializerCodeGenerator
 
             writer.WriteLine();
 
-            writer.WriteLine($"    public static List<{elementFullName}> NetDeserialize_Class(BitStreamReader reader)");
+            writer.WriteLine($"    public static List<{elementFullName}> Deserialize_Class(BitStreamReader reader)");
             writer.WriteLine("    {");
             if (!clear)
             {

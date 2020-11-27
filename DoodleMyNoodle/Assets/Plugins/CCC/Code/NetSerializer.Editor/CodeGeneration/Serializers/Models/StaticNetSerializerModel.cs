@@ -18,7 +18,7 @@ public static partial class NetSerializerCodeGenerator
             string typeFullName = type.GetPrettyFullName();
             Type baseClass = type.BaseType == typeof(object) || type.BaseType == typeof(ValueType) ? null : type.BaseType;
             bool couldBeDynamic = !NetSerializationCodeGenUtility.ConsideredAsValueType(type);
-            bool isDynamicType = serializableAttribute != null ? serializableAttribute.baseClass : false;
+            bool isDynamicType = serializableAttribute != null ? serializableAttribute.IsBaseClass : false;
             string methodObjParameter_Rcv = couldBeDynamic ?
                 (typeFullName + " obj") :
                 ("ref " + typeFullName + " obj");
@@ -43,7 +43,7 @@ using System.Collections.Generic;
 
             if (couldBeDynamic)
             {
-                writer.WriteLine("    public static int GetNetBitSize_Class(" + methodObjParameter_Rcv + ")");
+                writer.WriteLine("    public static int GetSerializedBitSize_Class(" + methodObjParameter_Rcv + ")");
                 writer.WriteLine("    {");
                 if (clear)
                 {
@@ -55,18 +55,18 @@ using System.Collections.Generic;
                     writer.WriteLine("            return 1;");
                     if (isDynamicType)
                     {
-                        writer.WriteLine("        return 1 + DynamicNetSerializer.GetNetBitSize(obj);");
+                        writer.WriteLine("        return 1 + NetSerializer.GetSerializedBitSize(obj);");
                     }
                     else
                     {
-                        writer.WriteLine("        return 1 + GetNetBitSize(obj);");
+                        writer.WriteLine("        return 1 + GetSerializedBitSize(obj);");
                     }
                 }
                 writer.WriteLine("    }");
                 writer.WriteLine();
             }
 
-            writer.WriteLine("    public static int GetNetBitSize(" + methodObjParameter_Rcv + ")");
+            writer.WriteLine("    public static int GetSerializedBitSize(" + methodObjParameter_Rcv + ")");
             writer.WriteLine("    {");
 
             if (clear)
@@ -102,7 +102,7 @@ using System.Collections.Generic;
             if (couldBeDynamic)
             {
 
-                writer.WriteLine("    public static void NetSerialize_Class(" + methodObjParameter_Rcv + ", BitStreamWriter writer)");
+                writer.WriteLine("    public static void Serialize_Class(" + methodObjParameter_Rcv + ", BitStreamWriter writer)");
                 writer.WriteLine("    {");
                 if (clear)
                 {
@@ -119,18 +119,18 @@ using System.Collections.Generic;
 
                     if (isDynamicType)
                     {
-                        writer.WriteLine("        DynamicNetSerializer.NetSerialize(obj, writer);");
+                        writer.WriteLine("        NetSerializer.Serialize(obj, writer);");
                     }
                     else
                     {
-                        writer.WriteLine("        NetSerialize(obj, writer);");
+                        writer.WriteLine("        Serialize(obj, writer);");
                     }
                 }
                 writer.WriteLine("    }");
             }
 
 
-            writer.WriteLine("    public static void NetSerialize(" + methodObjParameter_Rcv + ", BitStreamWriter writer)");
+            writer.WriteLine("    public static void Serialize(" + methodObjParameter_Rcv + ", BitStreamWriter writer)");
             writer.WriteLine("    {");
             if (!clear)
             {
@@ -147,7 +147,7 @@ using System.Collections.Generic;
 
             if (couldBeDynamic)
             {
-                writer.WriteLine("    public static " + typeFullName + " NetDeserialize_Class(BitStreamReader reader)");
+                writer.WriteLine("    public static " + typeFullName + " Deserialize_Class(BitStreamReader reader)");
                 writer.WriteLine("    {");
                 if (clear)
                 {
@@ -162,12 +162,12 @@ using System.Collections.Generic;
 
                     if (isDynamicType)
                     {
-                        writer.WriteLine("        return (" + typeFullName + ")DynamicNetSerializer.NetDeserialize(reader);");
+                        writer.WriteLine("        return (" + typeFullName + ")NetSerializer.Deserialize(reader);");
                     }
                     else
                     {
                         writer.WriteLine("        " + typeFullName + " obj = new " + typeFullName + "();");
-                        writer.WriteLine("        NetDeserialize(obj, reader);");
+                        writer.WriteLine("        Deserialize(obj, reader);");
                         writer.WriteLine("        return obj;");
                     }
                 }
@@ -175,7 +175,7 @@ using System.Collections.Generic;
             }
 
 
-            writer.WriteLine("    public static void NetDeserialize(" + methodObjParameter_Rcv + ", BitStreamReader reader)");
+            writer.WriteLine("    public static void Deserialize(" + methodObjParameter_Rcv + ", BitStreamReader reader)");
             writer.WriteLine("    {");
             if (!clear)
             {

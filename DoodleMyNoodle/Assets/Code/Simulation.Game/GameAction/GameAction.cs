@@ -26,7 +26,7 @@ public abstract class GameAction
         public abstract ParameterDescriptionType GetParameterDescriptionType();
     }
 
-    [NetSerializable(baseClass = true)]
+    [NetSerializable(IsBaseClass = true)]
     public abstract class ParameterData
     {
         public ParameterData() { }

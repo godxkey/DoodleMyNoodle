@@ -7,7 +7,6 @@ public class BackupCamera : MonoBehaviour
     [AutoFetch, SerializeField] private Camera cameraComponent;
     [AutoFetch, SerializeField] private AudioListener audioListener;
     [SerializeField] private CameraSet.DeactivateMode deactivateMode = CameraSet.DeactivateMode.DisableGameObject;
-    [SerializeField] private bool enableMovements = false;
 
     public CameraSet CameraSet { get; private set; }
     public Camera Camera { get { return cameraComponent; } }

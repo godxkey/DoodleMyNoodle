@@ -18,7 +18,7 @@ public struct TeleportEventData : IComponentData
 [UpdateAfter(typeof(ApplyVelocitySystem))]
 [UpdateBefore(typeof(ValidatePotentialNewTranslationSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class TeleportSystem : SimComponentSystem
+public class TeleportSystem : SimSystemBase
 {
     private EntityQuery _singletonQuery;
     private EntityQuery _eventGroup;
@@ -78,14 +78,14 @@ public class TeleportSystem : SimComponentSystem
             return;
         }
 
-        if (!EntityManager.HasComponent<PotentialNewTranslation>(request.Entity))
+        if (!HasComponent<PotentialNewTranslation>(request.Entity))
         {
             Log.Info($"Teleport request on entity {request.Entity} to position {request.Destination} " +
                 $"will be ignored because the entity does not have a {nameof(PotentialNewTranslation)}.");
             return;
         }
 
-        EntityManager.SetComponentData<PotentialNewTranslation>(request.Entity, request.Destination);
+        SetComponent<PotentialNewTranslation>(request.Entity, request.Destination);
 
         EntityManager.CreateEventEntity(new TeleportEventData()
         {

@@ -1,6 +1,6 @@
 ﻿using Unity.Entities;
 
-[NetSerializable(baseClass = true)]
+[NetSerializable(IsBaseClass = true)]
 public abstract class SimPlayerInput : SimInput
 {
     // this will be assigned by the server when its about to enter the simulation

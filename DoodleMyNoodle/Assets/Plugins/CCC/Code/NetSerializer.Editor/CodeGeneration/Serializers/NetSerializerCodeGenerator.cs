@@ -67,11 +67,11 @@ public static partial class NetSerializerCodeGenerator
         }
 
         string assemblyName = elementType.Assembly.GetName().Name;
-        if (NetSerializationCodeGenSettings.s_GeneratedSerializersPath.ContainsKey(assemblyName))
+        if (NetSerializationCodeGenSettings.GeneratedSerializersPath.ContainsKey(assemblyName))
         {
             s_doNoRegenerate.Add(type);
 
-            string folder = NetSerializationCodeGenSettings.s_GeneratedSerializersPath[assemblyName];
+            string folder = NetSerializationCodeGenSettings.GeneratedSerializersPath[assemblyName];
             string fileName = "NetSerializers"; //NetSerializationCodeGenUtility.GetSerializerNameFromType(type);
             string filePath = $"{folder}/{fileName}.generated.cs";
 
