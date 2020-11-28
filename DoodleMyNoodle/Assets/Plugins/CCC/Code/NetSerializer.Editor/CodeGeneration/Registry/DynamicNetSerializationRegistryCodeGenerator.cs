@@ -112,9 +112,9 @@ public static class DynamicNetSerializationRegistryCodeGenerator
                     writer.WriteLine("        {");
                     writer.WriteLine("            " + t.GetPrettyFullName() + " castedObj = (" + t.GetPrettyFullName() + ")obj;");
                     if (NetSerializationCodeGenUtility.ConsideredAsValueType(t))
-                        writer.WriteLine("            return " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".GetNetBitSize(ref castedObj);");
+                        writer.WriteLine("            return " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".GetSerializedBitSize(ref castedObj);");
                     else
-                        writer.WriteLine("            return " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".GetNetBitSize(castedObj);");
+                        writer.WriteLine("            return " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".GetSerializedBitSize(castedObj);");
                     writer.WriteLine("        }");
                     addComma = true;
                 }
@@ -137,9 +137,9 @@ public static class DynamicNetSerializationRegistryCodeGenerator
                     writer.WriteLine("        {");
                     writer.WriteLine("            " + t.GetPrettyFullName() + " castedObj = (" + t.GetPrettyFullName() + ")obj;");
                     if (NetSerializationCodeGenUtility.ConsideredAsValueType(t))
-                        writer.WriteLine("            " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".NetSerialize(ref castedObj, writer);");
+                        writer.WriteLine("            " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".Serialize(ref castedObj, writer);");
                     else
-                        writer.WriteLine("            " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".NetSerialize(castedObj, writer);");
+                        writer.WriteLine("            " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".Serialize(castedObj, writer);");
                     writer.WriteLine("        }");
                     addComma = true;
                 }
@@ -162,9 +162,9 @@ public static class DynamicNetSerializationRegistryCodeGenerator
                     writer.WriteLine("        {");
                     writer.WriteLine("            " + t.GetPrettyFullName() + " obj = new " + t.GetPrettyFullName() + "();");
                     if (NetSerializationCodeGenUtility.ConsideredAsValueType(t))
-                        writer.WriteLine("            " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".NetDeserialize(ref obj, reader);");
+                        writer.WriteLine("            " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".Deserialize(ref obj, reader);");
                     else
-                        writer.WriteLine("            " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".NetDeserialize(obj, reader);");
+                        writer.WriteLine("            " + NetSerializationCodeGenUtility.GetSerializerNameFromType(t) + ".Deserialize(obj, reader);");
                     writer.WriteLine("            return obj;");
                     writer.WriteLine("        }");
                     addComma = true;

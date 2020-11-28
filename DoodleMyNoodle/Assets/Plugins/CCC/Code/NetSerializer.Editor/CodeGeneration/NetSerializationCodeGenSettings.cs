@@ -3,16 +3,26 @@ using System.Collections.Generic;
 
 public static class NetSerializationCodeGenSettings
 {
-    public static readonly Dictionary<string, string> s_GeneratedSerializersPath = new Dictionary<string, string>()
+    public static readonly Dictionary<string, string> GeneratedSerializersPath = new Dictionary<string, string>()
     {
-        {"Game",                "Assets/Code/Game"                      + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
-        {"mscorlib",            "Assets/Plugins/CCC/Code/NetSerializer" + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
-        {"CCC.FixMath",         "Assets/Plugins/CCC/Code/FixMath"       + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
-        {"CCC.Online",          "Assets/Plugins/CCC/Code/Online"        + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
-        {"Simulation.Core",     "Assets/Code/Simulation.Core"           + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
-        {"Simulation.Engine",   "Assets/Code/Simulation.Engine_OLD"     + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
-        {"Simulation.Game",     "Assets/Code/Simulation.Game"           + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
-        {"SimulationIO",        "Assets/Code/SimulationIO"              + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
+        {"mscorlib",                REGISTRY_FILEPATH},
+        {"UnityEngine.CoreModule",  REGISTRY_FILEPATH},
+        {"Unity.Mathematics",       REGISTRY_FILEPATH},
+        {"CCC.FixMath",             REGISTRY_FILEPATH},
+        {"CCC.Online",              REGISTRY_FILEPATH},
+        {"Simulation.Core",         REGISTRY_FILEPATH},
+        {"Simulation.Engine",       REGISTRY_FILEPATH},
+        {"Simulation.Game",         REGISTRY_FILEPATH},
+        {"SimulationIO",            REGISTRY_FILEPATH},
+        {"Game",                    REGISTRY_FILEPATH},
+        //{"Game",                "Assets/Code/Game"                      + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
+        //{"mscorlib",            "Assets/Plugins/CCC/Code/NetSerializer" + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
+        //{"CCC.FixMath",         "Assets/Plugins/CCC/Code/FixMath"       + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
+        //{"CCC.Online",          "Assets/Plugins/CCC/Code/Online"        + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
+        //{"Simulation.Core",     "Assets/Code/Simulation.Core"           + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
+        //{"Simulation.Engine",   "Assets/Code/Simulation.Engine_OLD"     + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
+        //{"Simulation.Game",     "Assets/Code/Simulation.Game"           + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
+        //{"SimulationIO",        "Assets/Code/SimulationIO"              + SERIALIZERS_ASSEMBLYGENERATIONFOLDER},
     };
 
     public const string MENUNAME_GENERATE_ALL                = "Tools/CodeGen/Net Serialization/Generate %#c";

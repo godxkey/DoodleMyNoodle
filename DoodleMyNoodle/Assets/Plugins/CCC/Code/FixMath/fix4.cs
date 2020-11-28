@@ -4,7 +4,6 @@ using Unity.Mathematics;
 /// <summary>
 /// Provides XNA-like 4-component vector math.
 /// </summary>
-[NetSerializable]
 [Serializable]
 public struct fix4 : IEquatable<fix4>
 {

@@ -244,7 +244,7 @@ namespace CCC.Online
 
         private static void ValidateContainerType(Type type)
         {
-            if (!DynamicNetSerializer.IsValidType(type))
+            if (!NetSerializer.IsValidType(type))
             {
                 throw new Exception($"[{nameof(SyncedValueContainer)}] Type {type} is not NetSerializable");
             }

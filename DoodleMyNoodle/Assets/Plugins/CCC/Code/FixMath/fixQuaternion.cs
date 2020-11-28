@@ -3,7 +3,6 @@
 /// <summary>
 /// Provides XNA-like quaternion support.
 /// </summary>
-[NetSerializable]
 [Serializable]
 public struct fixQuaternion : IEquatable<fixQuaternion>
 {

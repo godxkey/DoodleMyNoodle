@@ -8,7 +8,6 @@ using System.Runtime.Serialization;
 /// Represents a Q31.32 fixed-point number.
 /// </summary>
 [Serializable]
-[NetSerializable]
 [DataContract(IsReference = false)]
 [JsonObject(IsReference = false, ItemIsReference = false)]
 public partial struct fix : IEquatable<fix>, IComparable<fix>, IFormattable

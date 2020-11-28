@@ -4,7 +4,6 @@
 /// <summary>
 /// 3 row, 3 column matrix.
 /// </summary>
-[NetSerializable]
 [Serializable]
 public struct fix3x3
 {

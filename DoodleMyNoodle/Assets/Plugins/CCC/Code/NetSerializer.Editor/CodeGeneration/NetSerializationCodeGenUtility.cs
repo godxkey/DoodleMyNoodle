@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -13,7 +14,7 @@ public static class NetSerializationCodeGenUtility
         {
             return "ArrayNetSerializer_" + type.GetElementType().GetNiceFullNameWithUnderscores();
         }
-        else if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+        else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
         {
             return "ListNetSerializer_" + type.GetGenericArguments()[0].GetNiceFullNameWithUnderscores();
         }
@@ -42,25 +43,35 @@ public static class NetSerializationCodeGenUtility
 
     public static List<Type> GetNetSerializableTypes()
     {
-        Func<Type, Type, int> typeComparer = (t1, t2) =>
-        {
-            return string.Compare(t1.FullName, t2.FullName);
-        };
-
-        ManualSortedList<Type> netMessageTypes = new ManualSortedList<Type>(typeComparer, 128);
+        HashSet<Type> types = new HashSet<Type>();
 
         foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
+            foreach (var item in assembly.GetCustomAttributes<GenerateSerializerAttribute>())
+            {
+                if(item.Type != null)
+                {
+                    types.Add(item.Type);
+                }
+            }
+
             foreach (Type type in assembly.GetTypes())
             {
                 if (type.GetCustomAttribute<NetSerializableAttribute>() != null)
                 {
-                    netMessageTypes.Add(type);
+                    types.Add(type);
                 }
             }
         }
 
-        return netMessageTypes.internalList;
+
+
+        List<Type> list = types.ToList();
+        list.Sort((t1, t2) =>
+        {
+            return string.Compare(t1.FullName, t2.FullName);
+        });
+        return list;
     }
 
     public static bool ConsideredAsValueType(Type type)

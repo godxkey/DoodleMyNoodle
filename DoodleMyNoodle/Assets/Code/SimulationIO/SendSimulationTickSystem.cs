@@ -26,7 +26,7 @@ namespace SimulationControl
         public bool ExceedsSizeLimit(SimTickData tick)
         {
             var message = MakeMessage(tick);
-            return StaticNetSerializer_SimulationControl_NetMessageSimTick.GetNetBitSize(ref message) > OnlineConstants.MAX_MESSAGE_SIZE_BITS;
+            return NetSerializer.GetSerializedBitSize(message) > OnlineConstants.MAX_MESSAGE_SIZE_BITS;
         }
 
         private NetMessageSimTick MakeMessage(SimTickData tick)

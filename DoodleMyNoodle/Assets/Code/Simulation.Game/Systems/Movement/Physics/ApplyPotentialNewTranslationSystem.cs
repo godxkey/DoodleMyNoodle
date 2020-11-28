@@ -3,15 +3,15 @@ using Unity.Jobs;
 
 [UpdateAfter(typeof(ValidatePotentialNewTranslationSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class ApplyPotentialNewTranslationSystem : SimJobComponentSystem
+public class ApplyPotentialNewTranslationSystem : SimSystemBase
 {
-    protected override JobHandle OnUpdate(JobHandle deps)
+    protected override void OnUpdate()
     {
-        return Entities
+        Entities
             .WithChangeFilter<PotentialNewTranslation>()
             .ForEach((ref FixTranslation pos, ref PotentialNewTranslation newTranslation) =>
             {
                 pos.Value = newTranslation.Value;
-            }).Schedule(deps);
+            }).Schedule();
     }
 }

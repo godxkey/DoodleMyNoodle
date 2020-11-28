@@ -1,12 +1,28 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
 
+[assembly: GenerateSerializer(typeof(int2))]
+[assembly: GenerateSerializer(typeof(Vector2))]
+[assembly: GenerateSerializer(typeof(Vector3))]
+[assembly: GenerateSerializer(typeof(Vector4))]
+[assembly: GenerateSerializer(typeof(fix))]
+[assembly: GenerateSerializer(typeof(fix2))]
+[assembly: GenerateSerializer(typeof(fix2x2))]
+[assembly: GenerateSerializer(typeof(fix2x3))]
+[assembly: GenerateSerializer(typeof(fix3))]
+[assembly: GenerateSerializer(typeof(fix3x2))]
+[assembly: GenerateSerializer(typeof(fix3x3))]
+[assembly: GenerateSerializer(typeof(fix4))]
+[assembly: GenerateSerializer(typeof(fix4x4))]
+[assembly: GenerateSerializer(typeof(fixQuaternion))]
+
 namespace Internals.OnlineServiceImpl
 {
-    public class DynamicNetSerializerImpl : IDynamicNetSerializerImpl
+    public class NetSerializerImpl : INetSerializerImpl
     {
 
         // This is to setup the online service's factory. 
@@ -20,7 +36,7 @@ namespace Internals.OnlineServiceImpl
                 return;
             s_init = true;
 
-            OnlineServicePhoton.factoryCreator = () => new DynamicNetSerializerImpl();
+            OnlineServicePhoton.factoryCreator = () => new NetSerializerImpl();
         }
 
 
@@ -30,7 +46,7 @@ namespace Internals.OnlineServiceImpl
         static Dictionary<Type, ushort> s_typeToId = new Dictionary<Type, ushort>();
         static Dictionary<ushort, Type> s_idToType = new Dictionary<ushort, Type>();
 
-        public DynamicNetSerializerImpl()
+        public NetSerializerImpl()
         {
             s_typeToId.Clear();
             s_idToType.Clear();
@@ -77,7 +93,7 @@ namespace Internals.OnlineServiceImpl
             return s_idToType.ContainsKey(typeId);
         }
 
-        public int GetNetBitSize(object message)
+        public int GetSerializedBitSize(object message)
         {
 #if DEBUG
             try
@@ -119,7 +135,7 @@ namespace Internals.OnlineServiceImpl
             }
 #endif
         }
-        public void NetSerialize(object message, BitStreamWriter writer)
+        public void Serialize(object message, BitStreamWriter writer)
         {
 #if DEBUG
             try
@@ -140,7 +156,7 @@ namespace Internals.OnlineServiceImpl
 #endif
         }
 
-        public object NetDeserialize(BitStreamReader reader)
+        public object Deserialize(BitStreamReader reader)
         {
 #if DEBUG
             try
