@@ -69,6 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionMeleeAttack
+  PlayAnimation: 1
   Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
 --- !u!114 &-6404501569915862778
 MonoBehaviour:

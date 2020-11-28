@@ -100,6 +100,24 @@ public abstract class GameAction
         }
     }
 
+    public struct ResultData
+    {
+        public Dictionary<string, object> Data;
+
+        public ResultData(Dictionary<string, object> defaultData) 
+        {
+            Data = defaultData;
+        }
+
+        public void AddData(params KeyValuePair<string, object>[] data)
+        {
+            foreach (KeyValuePair<string, object> item in data)
+            {
+                Data.Add(item.Key, item.Value);
+            }
+        }
+    }
+
     public class DebugReason
     {
         private string _reason = null;
@@ -118,9 +136,10 @@ public abstract class GameAction
             return false;
         }
 
-        if (Use(accessor, context, parameters))
+        ResultData resultData = new ResultData(new Dictionary<string, object>());
+        if (Use(accessor, context, parameters, ref resultData))
         {
-            OnActionUsed(accessor, context);
+            OnActionUsed(accessor, context, resultData);
             return true;
         }
         else
@@ -136,9 +155,10 @@ public abstract class GameAction
             return false;
         }
 
-        if (Use(accessor, context, parameters))
+        ResultData resultData = new ResultData(new Dictionary<string, object>());
+        if (Use(accessor, context, parameters, ref resultData))
         {
-            OnActionUsed(accessor, context);
+            OnActionUsed(accessor, context, resultData);
             return true;
         }
         else
@@ -215,7 +235,7 @@ public abstract class GameAction
         return false;
     }
 
-    public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context)
+    public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context, ResultData result)
     {
         // reduce consumable amount
         if (accessor.TryGetComponentData(context.Entity, out ItemStackableData itemStacked))
@@ -250,11 +270,14 @@ public abstract class GameAction
         {
             accessor.SetOrAddComponentData(context.Entity, new ItemCooldownTurnCounter() { Value = itemTurnCooldownData.Value });
         }
+
+        // Feedbacks
+        GameActionPresentationFeedbacks.OnGameActionUsed(accessor, context, result);
     }
 
     protected abstract int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context);
     protected abstract bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason);
-    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters);
+    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData);
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context);
 
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]

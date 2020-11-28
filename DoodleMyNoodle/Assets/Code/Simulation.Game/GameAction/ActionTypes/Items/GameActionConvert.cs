@@ -35,7 +35,7 @@ public class GameActionConvert : GameAction
         return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {

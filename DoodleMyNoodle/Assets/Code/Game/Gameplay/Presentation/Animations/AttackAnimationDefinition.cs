@@ -15,6 +15,7 @@ public class AttackAnimationDefinition : AnimationDefinition
 
     public override void TriggerAnimation(Vector3 spriteStartPos, Transform spriteTransform, AnimationData animationData)
     {
+        _currentSequence = DOTween.Sequence();
         Vector3 startPos = spriteStartPos;
         Vector3 endPos = new Vector3(startPos.x + animationData.Direction.x, startPos.y + animationData.Direction.y, startPos.z);
         _currentSequence.Append(spriteTransform.DOLocalMove(endPos, (float)animationData.TotalDuration / 2));

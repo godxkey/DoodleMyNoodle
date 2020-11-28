@@ -21,7 +21,7 @@ public class GameActionDropBombToDetonate : GameAction
         return new UseContract(new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value) { });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {

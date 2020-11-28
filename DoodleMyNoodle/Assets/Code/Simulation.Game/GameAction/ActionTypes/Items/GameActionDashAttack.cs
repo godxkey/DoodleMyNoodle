@@ -32,7 +32,7 @@ public class GameActionDashAttack : GameAction
         return useContract;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {

@@ -52,6 +52,7 @@ MonoBehaviour:
   ConversionMode: 0
   _guid: 75b8a794353e6dd4296335609b094c22
   _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
@@ -68,6 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionThrowProjectile
+  Animation: {fileID: 0}
 --- !u!114 &4120848953196771097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83,7 +85,7 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 2385346486794747607, guid: 4899e73436da28d43ba3448231f4f76d,
     type: 3}
   ThrowSpeed:
-    RawValue: 30064771072
+    RawValue: 17179869184
 --- !u!114 &1206813890925547763
 MonoBehaviour:
   m_ObjectHideFlags: 0

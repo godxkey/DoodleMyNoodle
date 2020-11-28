@@ -26,7 +26,7 @@ public class GameActionComboAttack : GameAction
         return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
         int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
         NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);

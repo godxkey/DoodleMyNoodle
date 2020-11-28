@@ -41,7 +41,7 @@ public class GameActionMove : GameAction
         return useContract;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
@@ -73,8 +73,6 @@ public class GameActionMove : GameAction
             fix3 dest = Helpers.GetTileCenter(_path[_path.Length - 1]);
             dest += fix3(random.NextFix(fix(-0.2), fix(0.2)), 0, 0);
             accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = dest });
-
-            CommonWrites.SetEntityAnimation(accessor, context.InstigatorPawn, CommonReads.AnimationTypes.Walking);
 
             return true;
         }

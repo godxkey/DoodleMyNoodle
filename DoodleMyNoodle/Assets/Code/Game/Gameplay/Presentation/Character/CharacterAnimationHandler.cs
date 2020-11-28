@@ -11,8 +11,8 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     public Transform SpriteTransform;
 
     [Header("Animation Data")]
+    public AnimationDefinition DefaultAnimation;
     public float IdleHeight = 0.05f;
-    public float WalkingHeight = 0.08f;
 
     private Sequence _currentSequence;
     private AnimationDefinition _currentAnimation;
@@ -62,14 +62,6 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                         break;
 
                     case CommonReads.AnimationTypes.Walking:
-
-                        float walkingStartY = _spriteStartPos.y;
-                        float walkingEndY = walkingStartY + WalkingHeight;
-                        _currentSequence.Append(SpriteTransform.DOLocalMoveY(walkingEndY, (float)animationData.TotalDuration).SetEase(Ease.InOutQuad));
-                        _currentSequence.SetLoops(-1);
-
-                        break;
-
                     case CommonReads.AnimationTypes.GameAction:
 
                         if (animationData.GameActionEntity != Entity.Null)
@@ -79,7 +71,17 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                             if (instigatorPrefab.TryGetComponent(out GameActionIdAuth gameActionAuth))
                             {
                                 _currentAnimation = gameActionAuth.Animation;
-                                _currentAnimation.TriggerAnimation(_spriteStartPos, SpriteTransform, animationData);
+                                if (gameActionAuth.PlayAnimation && _currentAnimation != null)
+                                {
+                                    _currentAnimation.TriggerAnimation(_spriteStartPos, SpriteTransform, animationData);
+                                }
+                                else if (gameActionAuth.PlayAnimation && DefaultAnimation != null)
+                                {
+                                    _currentAnimation = DefaultAnimation;
+                                    _currentAnimation.TriggerAnimation(_spriteStartPos, SpriteTransform, animationData);
+                                }
+                                
+                                break;
                             }
                         }
 

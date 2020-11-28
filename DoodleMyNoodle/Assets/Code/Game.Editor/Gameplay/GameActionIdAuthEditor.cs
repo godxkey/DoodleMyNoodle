@@ -30,8 +30,14 @@ public class GameActionIdAuthEditor : Editor
         SerializedProperty gameActionProperty = serializedObject.FindProperty("Value");
         EditorGUILayoutX.SearchablePopupString(gameActionProperty, label, s_availableTypeNames);
 
-        SerializedProperty animationProperty = serializedObject.FindProperty("Animation");
-        EditorGUILayout.PropertyField(animationProperty);
+        SerializedProperty animationConditionProperty = serializedObject.FindProperty("PlayAnimation");
+        EditorGUILayout.PropertyField(animationConditionProperty);
+
+        if (animationConditionProperty.boolValue)
+        {
+            SerializedProperty animationProperty = serializedObject.FindProperty("Animation");
+            EditorGUILayout.PropertyField(animationProperty);
+        }
 
         if (EditorGUI.EndChangeCheck())
         {

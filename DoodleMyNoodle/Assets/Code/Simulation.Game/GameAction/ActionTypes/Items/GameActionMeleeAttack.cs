@@ -29,7 +29,7 @@ public class GameActionMeleeAttack : GameAction
         return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
@@ -54,9 +54,7 @@ public class GameActionMeleeAttack : GameAction
             }
 
             int2 attackDirection = paramTile.Tile - instigatorTile;
-            CommonWrites.SetEntityAnimation(accessor, context.InstigatorPawn, CommonReads.AnimationTypes.GameAction, 
-                new KeyValuePair<string, object>("Direction", attackDirection),
-                new KeyValuePair<string, object>("GameActionEntity", context.Entity));
+            resultData.AddData(new KeyValuePair<string, object>("Direction", attackDirection));
 
             return true;
         }

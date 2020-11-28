@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bd733b45488e5644abddea70f89ac0e, type: 3}
-  m_Name: DefaultAttackAnimation
+  m_Script: {fileID: 11500000, guid: a5ea576f0fa3b4146b5cf2ccfd9d1dff, type: 3}
+  m_Name: DefaultMoveAnimation
   m_EditorClassIdentifier: 
-  AnimationType: 3
-  Duration: 0.5
+  AnimationType: 2
+  Duration: 0.25
+  WalkingHeight: 0.08
