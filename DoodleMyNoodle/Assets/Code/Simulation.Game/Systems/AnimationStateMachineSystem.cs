@@ -25,7 +25,7 @@ public class AnimationStateMachineSystem : SimSystemBase
                     {
                         // Example of an anim where we're stuck in the end state
                         case CommonReads.AnimationTypes.Death:
-                            if (!EntityManager.HasComponent<Dead>(entity))
+                            if (!EntityManager.HasComponent<DeadTag>(entity))
                             {
                                 CommonWrites.SetEntityAnimation(Accessor, entity
                                     , new KeyValuePair<string, object>("Type", (int)CommonReads.AnimationTypes.Idle)

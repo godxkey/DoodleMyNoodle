@@ -45,7 +45,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                 _currentSequence = DOTween.Sequence();
                 if (_currentAnimation != null)
                 {
-                    _currentAnimation.InteruptAnimation();
+                    _currentAnimation.InteruptAnimation(SimEntity);
                 }
                 SpriteTransform.localPosition = _spriteStartPos;
                 SpriteTransform.localRotation = _spriteStartRot;

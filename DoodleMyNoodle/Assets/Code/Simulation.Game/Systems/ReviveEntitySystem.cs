@@ -31,14 +31,14 @@ public class ReviveEntitySystem : SimComponentSystem
         // destroy events
         EntityManager.DestroyEntity(_eventsGroup);
 
-        Entities.ForEach((Entity entity, ref Health health, ref Dead dead, ref FixTranslation translation) =>
+        Entities.ForEach((Entity entity, ref Health health, ref DeadTag dead, ref FixTranslation translation) =>
         {
             if (health.Value > 0)
             {
                 // Create Event
                 EntityManager.CreateEventEntity(new ReviveEntityEventData() { Entity = entity });
 
-                PostUpdateCommands.RemoveComponent<Dead>(entity);
+                PostUpdateCommands.RemoveComponent<DeadTag>(entity);
             }
         });
     }

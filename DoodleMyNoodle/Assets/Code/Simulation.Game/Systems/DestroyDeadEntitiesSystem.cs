@@ -49,7 +49,7 @@ public class DestroyDeadEntitiesSystem : SimComponentSystem
                     // if not destroyed, play a death animation
                     CommonWrites.SetEntityAnimation(Accessor, entity, new KeyValuePair<string, object>("Type", (int)CommonReads.AnimationTypes.Death));
 
-                    EntityManager.AddComponentData(entity, new Dead());
+                    EntityManager.AddComponentData(entity, new DeadTag());
                 }
             }
         });

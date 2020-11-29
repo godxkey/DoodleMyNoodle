@@ -1,5 +1,7 @@
 using DG.Tweening;
 using System;
+using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
@@ -8,19 +10,23 @@ public class MoveAnimationDefinition : AnimationDefinition
 {
     public float WalkingHeight = 0.08f;
 
-    private Sequence _currentSequence;
+    private Dictionary<Entity, Sequence> _sequences;
 
-    public override void InteruptAnimation()
+    public override void InteruptAnimation(Entity entity)
     {
-        _currentSequence.Kill(true);
+        if (_sequences.ContainsKey(entity))
+        {
+            _sequences[entity].Kill(true);
+        }
     }
 
-    public override void TriggerAnimation(Vector3 spriteStartPos, Transform spriteTransform, AnimationData animationData)
+    public override void TriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform, AnimationData animationData)
     {
-        _currentSequence = DOTween.Sequence();
+        Sequence currentSequence = DOTween.Sequence();
         float walkingStartY = spriteStartPos.y;
         float walkingEndY = walkingStartY + WalkingHeight;
-        _currentSequence.Append(spriteTransform.DOLocalMoveY(walkingEndY, (float)animationData.TotalDuration).SetEase(Ease.InOutQuad));
-        _currentSequence.SetLoops(-1);
+        currentSequence.Append(spriteTransform.DOLocalMoveY(walkingEndY, (float)animationData.TotalDuration).SetEase(Ease.InOutQuad));
+        currentSequence.SetLoops(-1);
+        _sequences.Add(entity, currentSequence);
     }
 }

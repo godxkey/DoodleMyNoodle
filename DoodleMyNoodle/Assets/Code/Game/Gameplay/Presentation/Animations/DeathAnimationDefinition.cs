@@ -1,22 +1,28 @@
 using DG.Tweening;
 using System;
+using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
 [CreateAssetMenu(menuName = "DoodleMyNoodle/Animations/Death Animation")]
 public class DeathAnimationDefinition : AnimationDefinition
 {
-    private Sequence _currentSequence;
+    private Dictionary<Entity, Sequence> _sequences;
 
-    public override void InteruptAnimation()
+    public override void InteruptAnimation(Entity entity)
     {
-        _currentSequence.Kill(true);
+        if (_sequences.ContainsKey(entity))
+        {
+            _sequences[entity].Kill(true);
+        }
     }
 
-    public override void TriggerAnimation(Vector3 spriteStartPos, Transform spriteTransform, AnimationData animationData)
+    public override void TriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform, AnimationData animationData)
     {
-        _currentSequence = DOTween.Sequence();
-        _currentSequence.Join(spriteTransform.DOLocalRotate(new Vector3(0, 0, -90), 1, RotateMode.LocalAxisAdd));
-        _currentSequence.Join(spriteTransform.DOLocalMoveY(-0.5f, 1));
+        Sequence currentSequence = DOTween.Sequence();
+        currentSequence.Join(spriteTransform.DOLocalRotate(new Vector3(0, 0, -90), 1, RotateMode.LocalAxisAdd));
+        currentSequence.Join(spriteTransform.DOLocalMoveY(-0.5f, 1));
+        _sequences.Add(entity, currentSequence);
     }
 }
