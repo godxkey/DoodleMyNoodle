@@ -8,3 +8,6 @@
 	path = DoodleMyNoodle/Packages/com.unity.entities-ccc-modified
 	url = https://github.com/CCC-Development/Unity.Entities-Modified.git
 	branch = CCC-Modifications
+[submodule "DoodleMyNoodle/Packages/com.unity-x.fixmath"]
+	path = DoodleMyNoodle/Packages/com.unity-x.fixmath
+	url = https://github.com/Unity-X/FixMath.git
