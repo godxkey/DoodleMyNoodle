@@ -77,12 +77,12 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                                 _currentAnimation = gameActionAuth.Animation;
                                 if (gameActionAuth.PlayAnimation && _currentAnimation != null)
                                 {
-                                    _currentAnimation.TriggerAnimation(_spriteStartPos, SpriteTransform, animationData);
+                                    _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, animationData);
                                 }
                                 else if (gameActionAuth.PlayAnimation && DefaultAnimation != null)
                                 {
                                     _currentAnimation = DefaultAnimation;
-                                    _currentAnimation.TriggerAnimation(_spriteStartPos, SpriteTransform, animationData);
+                                    _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, animationData);
                                 }
                                 
                                 break;
@@ -94,7 +94,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                     case CommonReads.AnimationTypes.Death:
 
                         _currentAnimation = DeathAnimation;
-                        _currentAnimation.TriggerAnimation(_spriteStartPos, SpriteTransform, animationData);
+                        _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, animationData);
 
                         break;
 
