@@ -23,6 +23,16 @@ public class AnimationStateMachineSystem : SimSystemBase
                 {
                     switch (currentPlayerAnimation)
                     {
+                        // Example of an anim where we're stuck in the end state
+                        case CommonReads.AnimationTypes.Death:
+                            if (!EntityManager.HasComponent<Dead>(entity))
+                            {
+                                CommonWrites.SetEntityAnimation(Accessor, entity
+                                    , new KeyValuePair<string, object>("Type", (int)CommonReads.AnimationTypes.Idle)
+                                    , new KeyValuePair<string, object>("Duration", (fix)0.75f));
+                            }
+                            break;
+
                         // Example of a looping anim that has another condition to its end
                         case CommonReads.AnimationTypes.Walking:
                             if (!EntityManager.HasComponent<PathPosition>(entity))
@@ -63,6 +73,7 @@ public partial class CommonReads
         None,
         Idle,
         Walking,
+        Death,
         GameAction
     }
 }

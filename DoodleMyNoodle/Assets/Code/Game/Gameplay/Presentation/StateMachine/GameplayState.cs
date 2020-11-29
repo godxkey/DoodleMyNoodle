@@ -11,10 +11,13 @@
         {
             UIStateMachine.Instance.TransitionTo(StateTypes.BlockedGameplay);
         }
-        //else if (SimWorld.GetComponentData<Health>(Cache.LocalPawn).Value <= 0)
-        //{
-        //    UIStateMachine.Instance.TransitionTo(StateTypes.BlockedGameplay);
-        //}
+        else
+        {
+            if (SimWorld.GetComponentData<Health>(Cache.LocalPawn).Value <= 0)
+            {
+                UIStateMachine.Instance.TransitionTo(StateTypes.BlockedGameplay);
+            }
+        }
     }
 
     public override void OnExit(StateTypes newState)

@@ -12,6 +12,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
     [Header("Animation Data")]
     public AnimationDefinition DefaultAnimation;
+    public AnimationDefinition DeathAnimation;
     public float IdleHeight = 0.05f;
 
     private Sequence _currentSequence;
@@ -19,12 +20,14 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     private CommonReads.AnimationTypes _previousState = CommonReads.AnimationTypes.None;
 
     private Vector3 _spriteStartPos;
+    private Quaternion _spriteStartRot;
 
     protected override void Awake()
     {
         base.Awake();
 
         _spriteStartPos = SpriteTransform.localPosition;
+        _spriteStartRot = SpriteTransform.localRotation;
     }
 
     protected override void OnGamePresentationUpdate()
@@ -45,6 +48,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                     _currentAnimation.InteruptAnimation();
                 }
                 SpriteTransform.localPosition = _spriteStartPos;
+                SpriteTransform.localRotation = _spriteStartRot;
 
                 // Trigger animation by anim type
                 switch (currentPlayerAnimationState)
@@ -84,6 +88,13 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                                 break;
                             }
                         }
+
+                        break;
+
+                    case CommonReads.AnimationTypes.Death:
+
+                        _currentAnimation = DeathAnimation;
+                        _currentAnimation.TriggerAnimation(_spriteStartPos, SpriteTransform, animationData);
 
                         break;
 

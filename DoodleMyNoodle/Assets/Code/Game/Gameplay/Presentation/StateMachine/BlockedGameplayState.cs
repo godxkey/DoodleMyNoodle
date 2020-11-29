@@ -9,12 +9,11 @@
     {
         if (CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(Cache.LocalController)))
         {
-            UIStateMachine.Instance.TransitionTo(StateTypes.Gameplay);
+            if (SimWorld.GetComponentData<Health>(Cache.LocalPawn).Value > 0)
+            {
+                UIStateMachine.Instance.TransitionTo(StateTypes.Gameplay);
+            }
         }
-        //else if (SimWorld.GetComponentData<Health>(Cache.LocalPawn).Value > 0)
-        //{
-        //    UIStateMachine.Instance.TransitionTo(StateTypes.Gameplay);
-        //}
     }
 
     public override void OnExit(StateTypes newState)

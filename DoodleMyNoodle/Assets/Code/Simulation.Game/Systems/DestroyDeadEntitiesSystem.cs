@@ -2,6 +2,7 @@ using System;
 using Unity.Entities;
 using UnityEngine;
 using static fixMath;
+using System.Collections.Generic;
 
 public struct EntityDeathEventData : IComponentData
 {
@@ -38,7 +39,18 @@ public class DestroyDeadEntitiesSystem : SimComponentSystem
                 // Create Event
                 EntityManager.CreateEventEntity(new EntityDeathEventData() { Entity = entity });
 
-                //PostUpdateCommands.DestroyEntity(entity);
+                // Only Destroy entities that have been tagged for it
+                if (EntityManager.TryGetComponentData(entity, out DestroyOnDeath destroyOnDeath))
+                {
+                    PostUpdateCommands.DestroyEntity(entity);
+                }
+                else
+                {
+                    // if not destroyed, play a death animation
+                    CommonWrites.SetEntityAnimation(Accessor, entity, new KeyValuePair<string, object>("Type", (int)CommonReads.AnimationTypes.Death));
+
+                    EntityManager.AddComponentData(entity, new Dead());
+                }
             }
         });
     }

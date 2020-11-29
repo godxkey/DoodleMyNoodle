@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpriteTransform: {fileID: 2227425351554025969}
+  DefaultAnimation: {fileID: 0}
+  DeathAnimation: {fileID: 11400000, guid: 2af3838260b930c46b4745446a1485fb, type: 2}
   IdleHeight: 0.05
-  WalkingHeight: 0.08
 --- !u!114 &5194951275285858224
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpriteTransform: {fileID: 968253360112459985}
+  DefaultAnimation: {fileID: 0}
+  DeathAnimation: {fileID: 11400000, guid: 2af3838260b930c46b4745446a1485fb, type: 2}
   IdleHeight: 0.05
-  WalkingHeight: 0.08
 --- !u!114 &1268902642882476280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,6 +232,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1546773622014970496, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546773622014970496, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
       propertyPath: m_Sprite
