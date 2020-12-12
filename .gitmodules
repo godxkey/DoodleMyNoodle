@@ -1,10 +1,13 @@
 [submodule "DoodleMyNoodle/Packages/com.unity-x.unityengine-x"]
 	path = DoodleMyNoodle/Packages/com.unity-x.unityengine-x
 	url = https://github.com/Unity-X/UnityEngine-X.git
-[submodule "DoodleMyNoodle/Packages/com.unity-x.unity.mathematicsx"]
-	path = DoodleMyNoodle/Packages/com.unity-x.unity.mathematicsx
-	url = https://github.com/Unity-X/Unity.Mathematics-X.git
 [submodule "DoodleMyNoodle/Packages/com.unity.entities-ccc-modified"]
 	path = DoodleMyNoodle/Packages/com.unity.entities-ccc-modified
 	url = https://github.com/CCC-Development/Unity.Entities-Modified.git
 	branch = CCC-Modifications
+[submodule "DoodleMyNoodle/Packages/com.unity-x.fixmath"]
+	path = DoodleMyNoodle/Packages/com.unity-x.fixmath
+	url = https://github.com/Unity-X/FixMath.git
+[submodule "DoodleMyNoodle/Packages/com.unity-x.unity.mathematics-x"]
+	path = DoodleMyNoodle/Packages/com.unity-x.unity.mathematics-x
+	url = https://github.com/Unity-X/Unity.Mathematics-X.git

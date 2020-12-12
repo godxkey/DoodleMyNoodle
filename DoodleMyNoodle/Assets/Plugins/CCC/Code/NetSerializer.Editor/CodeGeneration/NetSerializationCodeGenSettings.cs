@@ -8,7 +8,7 @@ public static class NetSerializationCodeGenSettings
         {"mscorlib",                REGISTRY_FILEPATH},
         {"UnityEngine.CoreModule",  REGISTRY_FILEPATH},
         {"Unity.Mathematics",       REGISTRY_FILEPATH},
-        {"CCC.FixMath",             REGISTRY_FILEPATH},
+        {"UnityX.FixMath",          REGISTRY_FILEPATH},
         {"CCC.Online",              REGISTRY_FILEPATH},
         {"Simulation.Core",         REGISTRY_FILEPATH},
         {"Simulation.Engine",       REGISTRY_FILEPATH},

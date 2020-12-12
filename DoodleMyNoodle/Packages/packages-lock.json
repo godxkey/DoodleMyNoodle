@@ -1,7 +1,15 @@
 {
   "dependencies": {
+    "com.unity-x.fixmath": {
+      "version": "file:com.unity-x.fixmath",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.mathematics": "1.2.1"
+      }
+    },
     "com.unity-x.unity.mathematics-x": {
-      "version": "file:com.unity-x.unity.mathematicsx",
+      "version": "file:com.unity-x.unity.mathematics-x",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
