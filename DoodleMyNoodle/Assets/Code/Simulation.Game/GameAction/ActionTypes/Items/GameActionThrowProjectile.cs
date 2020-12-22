@@ -17,24 +17,14 @@ public class GameActionThrowProjectile : GameAction
             });
     }
 
-    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {
-        return true;
-    }
-
-    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
-    {
-        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
-    }
-
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             // get settings
-            if (!accessor.TryGetComponentData(context.Entity, out ItemThrowProjectileSettings settings))
+            if (!accessor.TryGetComponentData(context.Entity, out GameActionThrowProjectileSettings settings))
             {
-                Debug.LogWarning($"Item {context.Entity} has no {nameof(ItemThrowProjectileSettings)} component");
+                Debug.LogWarning($"Item {context.Entity} has no {nameof(GameActionThrowProjectileSettings)} component");
                 return false;
             }
 
@@ -51,9 +41,9 @@ public class GameActionThrowProjectile : GameAction
             accessor.SetOrAddComponentData(projectileInstance, new PotentialNewTranslation() { Value = Helpers.GetTileCenter(paramTile.Tile) });
 
             // add 'DamageOnContact' if ItemDamageData found
-            if (accessor.HasComponent<ItemDamageData>(context.Entity))
+            if (accessor.HasComponent<GameActionDamageData>(context.Entity))
             {
-                accessor.SetOrAddComponentData(projectileInstance, new DamageOnContact() { Value = accessor.GetComponentData<ItemDamageData>(context.Entity).Value, DestroySelf = true });
+                accessor.SetOrAddComponentData(projectileInstance, new DamageOnContact() { Value = accessor.GetComponentData<GameActionDamageData>(context.Entity).Value, DestroySelf = true });
             }
 
             return true;

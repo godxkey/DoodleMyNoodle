@@ -9,7 +9,7 @@ public class GameActionConvert : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description(_.GetComponentData<ItemRangeData>(context.Entity).Value)
+            new GameActionParameterTile.Description(_.GetComponentData<GameActionRangeData>(context.Entity).Value)
             {
                 IncludeSelf = false,
                 CustomTileActorPredicate = (tileActor, accessor) =>
@@ -23,16 +23,6 @@ public class GameActionConvert : GameAction
                     return false;
                 }
             });
-    }
-
-    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {
-        return true;
-    }
-
-    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
-    {
-        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
@@ -56,7 +46,7 @@ public class GameActionConvert : GameAction
                     }
                     else
                     {
-                        accessor.AddComponentData(pawnController, new Converted() { RemainingTurns = accessor.GetComponentData<ItemEffectDurationData>(context.Entity).Value });
+                        accessor.AddComponentData(pawnController, new Converted() { RemainingTurns = accessor.GetComponentData<GameActionEffectDurationData>(context.Entity).Value });
                     }
 
                     return true;

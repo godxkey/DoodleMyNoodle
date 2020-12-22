@@ -10,7 +10,7 @@ public class MoveAnimationDefinition : AnimationDefinition
 {
     public float WalkingHeight = 0.08f;
 
-    private Dictionary<Entity, Sequence> _sequences;
+    private Dictionary<Entity, Sequence> _sequences = new Dictionary<Entity, Sequence>();
 
     public override void InteruptAnimation(Entity entity)
     {
@@ -27,6 +27,6 @@ public class MoveAnimationDefinition : AnimationDefinition
         float walkingEndY = walkingStartY + WalkingHeight;
         currentSequence.Append(spriteTransform.DOLocalMoveY(walkingEndY, (float)animationData.TotalDuration).SetEase(Ease.InOutQuad));
         currentSequence.SetLoops(-1);
-        _sequences.Add(entity, currentSequence);
+        _sequences.SetOrAdd(entity, currentSequence);
     }
 }

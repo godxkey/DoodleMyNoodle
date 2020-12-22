@@ -591,6 +591,55 @@ public static class StaticNetSerializer_GameAction_UseParameters
         ArrayNetSerializer_GameAction_ParameterData.Deserialize(ref obj.ParameterDatas, reader);
     }
 }
+public static class StaticNetSerializer_GameActionParameterEntity_Data
+{
+    public static int GetSerializedBitSize_Class(GameActionParameterEntity.Data obj)
+    {
+        if (obj == null)
+            return 1;
+        return 1 + GetSerializedBitSize(obj);
+    }
+
+    public static int GetSerializedBitSize(GameActionParameterEntity.Data obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_fix2.GetSerializedBitSize(ref obj.EntityPos);
+        result += StaticNetSerializer_GameAction_ParameterData.GetSerializedBitSize(obj);
+        return result;
+    }
+
+    public static void Serialize_Class(GameActionParameterEntity.Data obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        Serialize(obj, writer);
+    }
+    public static void Serialize(GameActionParameterEntity.Data obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_fix2.Serialize(ref obj.EntityPos, writer);
+        StaticNetSerializer_GameAction_ParameterData.Serialize(obj, writer);
+    }
+
+    public static GameActionParameterEntity.Data Deserialize_Class(BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            return null;
+        }
+        GameActionParameterEntity.Data obj = new GameActionParameterEntity.Data();
+        Deserialize(obj, reader);
+        return obj;
+    }
+    public static void Deserialize(GameActionParameterEntity.Data obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_fix2.Deserialize(ref obj.EntityPos, reader);
+        StaticNetSerializer_GameAction_ParameterData.Deserialize(obj, reader);
+    }
+}
 public static class StaticNetSerializer_GameActionParameterSuccessRate_Data
 {
     public static int GetSerializedBitSize_Class(GameActionParameterSuccessRate.Data obj)

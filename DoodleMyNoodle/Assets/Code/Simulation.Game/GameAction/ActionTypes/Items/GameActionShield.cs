@@ -8,10 +8,10 @@ public class GameActionShield : GameAction
 {
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.GetComponentData<ItemRangeData>(context.Entity).Value > 0)
+        if (accessor.GetComponentData<GameActionRangeData>(context.Entity).Value > 0)
         {
             return new UseContract(
-                new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
+                new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)
                 {
                     IncludeSelf = false,
                     RequiresAttackableEntity = true,
@@ -21,16 +21,6 @@ public class GameActionShield : GameAction
         {
             return new UseContract();
         }
-    }
-
-    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {
-        return true;
-    }
-
-    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
-    {
-        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)
@@ -54,7 +44,7 @@ public class GameActionShield : GameAction
 
     private void ShieldTarget(ISimWorldReadWriteAccessor accessor, Entity itemEntity, Entity pawn)
     {
-        int duration = accessor.GetComponentData<ItemEffectDurationData>(itemEntity).Value;
+        int duration = accessor.GetComponentData<GameActionEffectDurationData>(itemEntity).Value;
 
         if (accessor.TryGetComponentData(pawn, out Invincible invincible))
         {

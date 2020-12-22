@@ -51,7 +51,7 @@ public class TeleportToStartLocationOnReadySystem : SimComponentSystem
 
             if(teleportLocations.Count == 0)
             {
-                Log.Error("No start locations in the level");
+                Log.Warning("No start locations in the level");
                 return;
             }
 

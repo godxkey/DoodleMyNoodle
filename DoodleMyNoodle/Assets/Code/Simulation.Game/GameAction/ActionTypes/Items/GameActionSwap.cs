@@ -9,23 +9,13 @@ public class GameActionSwap : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description(_.GetComponentData<ItemRangeData>(context.Entity).Value)
+            new GameActionParameterTile.Description(_.GetComponentData<GameActionRangeData>(context.Entity).Value)
             {
                 IncludeSelf = false,
 
                 // Can swap with any non-static actor
                 CustomTileActorPredicate = (tileActor, accessor) => !accessor.HasComponent<StaticTag>(tileActor)
             });
-    }
-
-    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {
-        return true;
-    }
-
-    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
-    {
-        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)

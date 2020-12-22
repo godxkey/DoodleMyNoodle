@@ -1,5 +1,6 @@
 using System;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
 
@@ -22,13 +23,13 @@ public class GameActionParameterEntity
     [NetSerializable]
     public class Data : GameAction.ParameterData
     {
-        public Entity Entity;
+        public fix2 EntityPos;
 
         public Data() { }
 
-        public Data(Entity Entity)
+        public Data(fix2 EntityPos)
         {
-            this.Entity = Entity;
+            this.EntityPos = EntityPos;
         }
     }
 }

@@ -59,4 +59,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/Scene Assets/Gym_MiniGames.unity
     guid: c962cccd513726f4897da359bfdbb6ce
+  - enabled: 1
+    path: Assets/Scenes/Levels/Scene Assets/Gym_Interactables.unity
+    guid: a3aaad04249432c4d8bcd2f7adb6efef
   m_configObjects: {}

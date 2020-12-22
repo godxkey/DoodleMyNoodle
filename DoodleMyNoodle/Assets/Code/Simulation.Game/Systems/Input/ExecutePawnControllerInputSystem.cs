@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngineX;
@@ -91,6 +92,11 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
                     ExecuteUseItemInput(useItemInput, pawn);
                 break;
 
+            case PawnControllerInputUseObjectGameAction useGameAction:
+                if (pawn != Entity.Null)
+                    ExecuteGameAction(useGameAction, pawn);
+                break;
+
             case PawnControllerInputUseInteractable useInteractableInput:
                 if (pawn != Entity.Null)
                     ExecuteUseInteractableInput(useInteractableInput, pawn);
@@ -105,6 +111,37 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
                 if (pawn != Entity.Null)
                     ExecuteDropItemInput(pawnInputDropItem, pawn);
                 break;
+        }
+    }
+
+    private void ExecuteGameAction(PawnControllerInputUseObjectGameAction useGameAction, Entity pawn)
+    {
+        void LogDiscardReason(string str)
+        {
+            Log.Info($"Discarding {useGameAction.PawnController}'s input : {str}");
+        }
+
+        Entity entityObject = CommonReads.FindFirstTileActorWithComponent<GameActionId>(Accessor, useGameAction.ObjectPosition);
+
+        GameAction gameAction = GetGameActionFromEntity(entityObject);
+
+        if (gameAction == null)
+        {
+            LogDiscardReason($"Object {entityObject}'s gameActionId is invalid.");
+            return;
+        }
+
+        GameAction.UseContext useContext = new GameAction.UseContext()
+        {
+            InstigatorPawn = pawn,
+            InstigatorPawnController = useGameAction.PawnController,
+            Entity = entityObject
+        };
+
+        if (!gameAction.TryUse(Accessor, useContext, useGameAction.GameActionData, out string debugReason))
+        {
+            LogDiscardReason($"Can't Trigger {gameAction} because: {debugReason}");
+            return;
         }
     }
 
@@ -303,27 +340,7 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
             return;
         }
 
-        GameAction gameAction = GetGameActionFromEntity(interactableEntity);
-
-        if (gameAction == null)
-        {
-            LogDiscardReason($"Interactable {interactableEntity}'s gameActionId is invalid.");
-            return;
-        }
-
-        GameAction.UseContext useContext = new GameAction.UseContext()
-        {
-            InstigatorPawn = pawn,
-            InstigatorPawnController = inputUseInteractable.PawnController,
-            Entity = interactableEntity
-        };
-
-        // currently no use parameters
-        if (!gameAction.TryUse(Accessor, useContext, null))
-        {
-            LogDiscardReason($"Can't Trigger {gameAction}");
-            return;
-        }
+        CommonWrites.Interact(Accessor, interactableEntity, pawn);
     }
 
     private GameAction GetGameActionFromEntity(Entity entity)

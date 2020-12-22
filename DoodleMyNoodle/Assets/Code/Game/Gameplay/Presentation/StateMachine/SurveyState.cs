@@ -6,10 +6,10 @@ public class SurveyState : UIState
 {
     public override void OnEnter()
     {
-        Entity itemEntity = GetData<Entity>(0);
-        if (SimWorld.TryGetComponentData(itemEntity, out SimAssetId itemSimAssetID))
+        Entity objectEntity = GetData<Entity>(0);
+        if (SimWorld.TryGetComponentData(objectEntity, out SimAssetId objectSimAssetID))
         {
-            ItemAuth itemAuth = ItemInfoBank.Instance.GetItemAuthFromID(itemSimAssetID);
+            ItemAuth itemAuth = ItemInfoBank.Instance.GetItemAuthFromID(objectSimAssetID);
             if (itemAuth != null)
             {
                 GameAction.ParameterDescription[] ParameterDescriptionList = GetData<GameAction.ParameterDescription[]>(1);

@@ -51,6 +51,7 @@ MonoBehaviour:
   _guid: d0421163de1d6aa4289ff31f953949e7
   _bindedViewPrefab: {fileID: 6426749434754870349, guid: ee20feb0f1e212946b0400a400b75c92,
     type: 3}
+  _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 1
@@ -67,6 +68,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionInteract
+  PlayAnimation: 0
+  Animation: {fileID: 0}
 --- !u!114 &-1025191853641028646
 MonoBehaviour:
   m_ObjectHideFlags: 0

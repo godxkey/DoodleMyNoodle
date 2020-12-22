@@ -1,13 +1,14 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
-using DG.Tweening;
 using Unity.Entities;
+using UnityEngine;
+using UnityEngineX;
 
 [CreateAssetMenu(menuName = "DoodleMyNoodle/Animations/Attack Animation")]
 public class AttackAnimationDefinition : AnimationDefinition
 {
-    private Dictionary<Entity, Sequence> _sequences;
+    private Dictionary<Entity, Sequence> _sequences = new Dictionary<Entity, Sequence>();
 
     public override void InteruptAnimation(Entity entity)
     {
@@ -24,6 +25,6 @@ public class AttackAnimationDefinition : AnimationDefinition
         Vector3 endPos = new Vector3(startPos.x + animationData.Direction.x, startPos.y + animationData.Direction.y, startPos.z);
         _currentSequence.Append(spriteTransform.DOLocalMove(endPos, (float)animationData.TotalDuration / 2));
         _currentSequence.Append(spriteTransform.DOLocalMove(startPos, (float)animationData.TotalDuration / 2));
-        _sequences.Add(entity, _currentSequence);
+        _sequences.SetOrAdd(entity, _currentSequence);
     }
 }

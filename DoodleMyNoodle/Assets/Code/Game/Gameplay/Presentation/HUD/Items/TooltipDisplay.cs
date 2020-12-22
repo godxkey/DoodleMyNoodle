@@ -156,13 +156,13 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         if (item != Entity.Null)
         {
             // Order of appearance
-            TryAddTooltipItemDescription<ItemDamageData>();
-            TryAddTooltipItemDescription<ItemHealthPointsToHealData>();
-            TryAddTooltipItemDescription<ItemRangeData>();
-            TryAddTooltipItemDescription<ItemActionPointCostData>();
-            TryAddTooltipItemDescription<ItemHealthPointCostData>();
+            TryAddTooltipItemDescription<GameActionDamageData>();
+            TryAddTooltipItemDescription<GameActionHPToHealData>();
+            TryAddTooltipItemDescription<GameActionRangeData>();
+            TryAddTooltipItemDescription<GameActionAPCostData>();
+            TryAddTooltipItemDescription<GameActionHPCostData>();
             TryAddTooltipItemDescription<ItemTimeCooldownData>();
-            TryAddTooltipItemDescription<ItemEffectDurationData>();
+            TryAddTooltipItemDescription<GameActionEffectDurationData>();
 
             _descriptionData.Add(new DescriptionData(description, Color.white, true));
         }

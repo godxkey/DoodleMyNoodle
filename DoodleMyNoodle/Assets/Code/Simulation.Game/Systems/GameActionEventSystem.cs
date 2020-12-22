@@ -6,12 +6,12 @@ using static Unity.Mathematics.math;
 
 public struct GameActionEventData : IComponentData
 {
-    public Entity InstigatorPawn;
+    public GameAction.UseContext GameActionContext;
 }
 
 public struct GameActionEventRequestData : IBufferElementData
 {
-    public Entity InstigatorPawn;
+    public GameAction.UseContext GameActionContext;
 }
 
 public struct GameActionEventRequestSingletonTag : IComponentData { }
@@ -54,7 +54,7 @@ public class GameActionEventSystem : SimSystemBase
 
         foreach (GameActionEventRequestData gameActionEventRequestData in gameActionEventRequests)
         {
-            ProcessGameActionEventRequest(gameActionEventRequestData.InstigatorPawn, _newGameActionEvents);
+            ProcessGameActionEventRequest(gameActionEventRequestData, _newGameActionEvents);
         }
 
         gameActionEventRequests.Clear();
@@ -68,12 +68,12 @@ public class GameActionEventSystem : SimSystemBase
         _newGameActionEvents.Clear();
     }
 
-    private void ProcessGameActionEventRequest(Entity instigator, List<GameActionEventData> outGameActionEvents)
+    private void ProcessGameActionEventRequest(GameActionEventRequestData GameActionRequestData, List<GameActionEventData> outGameActionEvents)
     {
         outGameActionEvents.Add(new GameActionEventData()
         {
-            InstigatorPawn = instigator
-        });
+            GameActionContext = GameActionRequestData.GameActionContext
+        }); ;
     }
 }
 
@@ -81,7 +81,7 @@ internal static partial class CommonWrites
 {
     public static void RequestGameActionEvent(ISimWorldReadWriteAccessor accessor, GameAction.UseContext context, GameAction.ResultData result)
     {
-        var gameActionRequest = new GameActionEventRequestData() { InstigatorPawn = context.InstigatorPawn };
+        var gameActionRequest = new GameActionEventRequestData() { GameActionContext = context };
         accessor.GetExistingSystem<GameActionEventSystem>().RequestGameActionEvent(gameActionRequest);
     }
 }

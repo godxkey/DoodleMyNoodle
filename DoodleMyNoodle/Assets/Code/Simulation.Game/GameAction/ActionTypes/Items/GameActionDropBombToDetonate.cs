@@ -18,7 +18,7 @@ public class GameActionDropBombToDetonate : GameAction
             }
         }
 
-        return new UseContract(new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value) { });
+        return new UseContract(new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Entity).Value) { });
     }
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
@@ -26,9 +26,9 @@ public class GameActionDropBombToDetonate : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             // get settings
-            if (!accessor.TryGetComponentData(context.Entity, out ItemObjectReferenceSetting settings))
+            if (!accessor.TryGetComponentData(context.Entity, out GameActionObjectReferenceSetting settings))
             {
-                Debug.LogWarning($"Item {context.Entity} has no {nameof(ItemObjectReferenceSetting)} component");
+                Debug.LogWarning($"Item {context.Entity} has no {nameof(GameActionObjectReferenceSetting)} component");
                 return false;
             }
 
@@ -57,12 +57,12 @@ public class GameActionDropBombToDetonate : GameAction
                     int2 tilePos = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(bomb));
 
                     int explosionRange = 1;
-                    if (accessor.HasComponent<ItemExplosionRange>(context.Entity))
+                    if (accessor.HasComponent<GameActionExplosionRange>(context.Entity))
                     {
-                        explosionRange = accessor.GetComponentData<ItemExplosionRange>(context.Entity).Value;
+                        explosionRange = accessor.GetComponentData<GameActionExplosionRange>(context.Entity).Value;
                     }
 
-                    CommonWrites.RequestExplosionOnTiles(accessor, bomb, tilePos, explosionRange, accessor.GetComponentData<ItemDamageData>(context.Entity).Value);
+                    CommonWrites.RequestExplosionOnTiles(accessor, bomb, tilePos, explosionRange, accessor.GetComponentData<GameActionDamageData>(context.Entity).Value);
 
                     accessor.DestroyEntity(bomb);
 
@@ -74,15 +74,5 @@ public class GameActionDropBombToDetonate : GameAction
         }
 
         return false;
-    }
-
-    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {
-        return true;
-    }
-
-    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
-    {
-        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 }

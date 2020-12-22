@@ -5,6 +5,8 @@ using UnityEngineX;
 
 public class InteractableEntityView : BindedPresentationEntityComponent
 {
+    public bool TriggerInteractableGameAction = false;
+
     protected bool _previousInteractedState = false;
 
     protected override void OnGamePresentationUpdate() { }
@@ -20,7 +22,12 @@ public class InteractableEntityView : BindedPresentationEntityComponent
                 {
                     if (interactedData.Value)
                     {
-                        OnInteractionTriggeredByInput();
+                        OnInteractionTriggered();
+
+                        if (TriggerInteractableGameAction)
+                        {
+                            UIStateMachine.Instance.TransitionTo(UIState.StateTypes.ParameterSelection, SimEntity, false);
+                        }
                     }
                     else
                     {
@@ -33,7 +40,7 @@ public class InteractableEntityView : BindedPresentationEntityComponent
         }
     }
 
-    protected virtual void OnInteractionTriggeredByInput() { }
+    protected virtual void OnInteractionTriggered() { }
 
     protected virtual void OnInteractionReset() { }
 

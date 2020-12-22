@@ -8,7 +8,7 @@ public class ItemContainerInteractableByClick : ObjectInteractableByClick
 {
     private bool _inventoryDisplayed = false;
 
-    protected override void OnInteractionTriggeredByInput()
+    protected override void OnInteractionTriggered()
     {
         if (Cache.LocalPawn == Entity.Null || SimEntity == Entity.Null)
             return;

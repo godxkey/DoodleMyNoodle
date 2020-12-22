@@ -8,7 +8,7 @@ public class GameActionSpawnMinion : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
-                   new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
+                   new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)
                    {
                    });
     }
@@ -18,9 +18,9 @@ public class GameActionSpawnMinion : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             // get settings
-            if (!accessor.TryGetComponentData(context.Entity, out ItemObjectReferenceSetting settings))
+            if (!accessor.TryGetComponentData(context.Entity, out GameActionObjectReferenceSetting settings))
             {
-                Debug.LogWarning($"Item {context.Entity} has no {nameof(ItemObjectReferenceSetting)} component");
+                Debug.LogWarning($"Item {context.Entity} has no {nameof(GameActionObjectReferenceSetting)} component");
                 return false;
             }
 
@@ -33,15 +33,5 @@ public class GameActionSpawnMinion : GameAction
         }
 
         return false;
-    }
-
-    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {
-        return true;
-    }
-
-    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
-    {
-        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
     }
 }

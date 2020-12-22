@@ -7,22 +7,12 @@ using static Unity.Mathematics.math;
 
 public class GameActionDashAttack : GameAction
 {
-    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {
-        return true;
-    }
-
-    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
-    {
-        return accessor.GetComponentData<ItemActionPointCostData>(context.Entity).Value;
-    }
-
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
+            new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)
             {
                 IncludeSelf = false,
                 MustBeReachable = true
@@ -37,7 +27,7 @@ public class GameActionDashAttack : GameAction
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
-            int moveRange = accessor.GetComponentData<ItemRangeData>(context.Entity).Value;
+            int moveRange = accessor.GetComponentData<GameActionRangeData>(context.Entity).Value;
 
             NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);
             if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path))
@@ -52,7 +42,7 @@ public class GameActionDashAttack : GameAction
             // Remove unreachable points
             _path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
 
-            int damage = accessor.GetComponentData<ItemDamageData>(context.Entity).Value;
+            int damage = accessor.GetComponentData<GameActionDamageData>(context.Entity).Value;
             NativeList<Entity> entityToDamage = new NativeList<Entity>(Allocator.Temp);
             for (int i = 0; i < _path.Length; i++)
             {

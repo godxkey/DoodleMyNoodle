@@ -148,7 +148,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                 {
                     Entity itemEntity = item.ItemEntity;
 
-                    UIStateMachine.Instance.TransitionTo(UIState.StateTypes.ParameterSelection, itemEntity, ItemIndex);
+                    UIStateMachine.Instance.TransitionTo(UIState.StateTypes.ParameterSelection, itemEntity, true, ItemIndex);
                 }
             }
         }

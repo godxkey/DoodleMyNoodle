@@ -194,7 +194,7 @@ public abstract class GameAction
         }
 
         int minApCost = GetMinimumActionPointCost(accessor, context);
-        if (minApCost > 0)
+        if (minApCost >= 0)
         {
             if (!accessor.TryGetComponentData(context.InstigatorPawn, out ActionPoints ap))
             {
@@ -244,19 +244,19 @@ public abstract class GameAction
         }
 
         // reduce instigator AP
-        if (accessor.TryGetComponentData(context.Entity, out ItemActionPointCostData itemActionPointCost))
+        if (accessor.TryGetComponentData(context.Entity, out GameActionAPCostData itemActionPointCost))
         {
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -itemActionPointCost.Value);
         }
 
         // increase instigator AP
-        if (accessor.TryGetComponentData(context.Entity, out ItemActionPointGainData itemActionPointGain))
+        if (accessor.TryGetComponentData(context.Entity, out GameActionAPGainData itemActionPointGain))
         {
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, itemActionPointGain.Value);
         }
 
         // reduce instigator Health
-        if (accessor.TryGetComponentData(context.Entity, out ItemHealthPointCostData itemHealthPointCost))
+        if (accessor.TryGetComponentData(context.Entity, out GameActionHPCostData itemHealthPointCost))
         {
             CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, itemHealthPointCost.Value);
         }
@@ -273,10 +273,26 @@ public abstract class GameAction
 
         // Feedbacks
         GameActionPresentationFeedbacks.OnGameActionUsed(accessor, context, result);
+        CommonWrites.RequestGameActionEvent(accessor, context, result);
     }
 
-    protected abstract int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context);
-    protected abstract bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason);
+    protected virtual int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
+    {
+        if (accessor.TryGetComponentData(context.Entity, out GameActionAPCostData ActionPointCost))
+        {
+            return ActionPointCost.Value;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    protected virtual bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason) 
+    {
+        return true;
+    }
+
     public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData);
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context);
 

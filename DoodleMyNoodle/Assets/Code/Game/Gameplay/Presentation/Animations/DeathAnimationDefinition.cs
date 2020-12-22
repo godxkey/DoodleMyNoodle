@@ -8,7 +8,7 @@ using UnityEngineX;
 [CreateAssetMenu(menuName = "DoodleMyNoodle/Animations/Death Animation")]
 public class DeathAnimationDefinition : AnimationDefinition
 {
-    private Dictionary<Entity, Sequence> _sequences;
+    private Dictionary<Entity, Sequence> _sequences = new Dictionary<Entity, Sequence>();
 
     public override void InteruptAnimation(Entity entity)
     {
@@ -23,6 +23,6 @@ public class DeathAnimationDefinition : AnimationDefinition
         Sequence currentSequence = DOTween.Sequence();
         currentSequence.Join(spriteTransform.DOLocalRotate(new Vector3(0, 0, -90), 1, RotateMode.LocalAxisAdd));
         currentSequence.Join(spriteTransform.DOLocalMoveY(-0.5f, 1));
-        _sequences.Add(entity, currentSequence);
+        _sequences.SetOrAdd(entity, currentSequence);
     }
 }

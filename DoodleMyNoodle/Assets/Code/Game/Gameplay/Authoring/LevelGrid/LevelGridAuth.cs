@@ -89,7 +89,7 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
                 BoundsInt cellBounds = tm.cellBounds;
 
                 minCoord = min(int2(cellBounds.xMin, cellBounds.yMin), minCoord);
-                maxCoord = max(int2(cellBounds.xMax - 1, cellBounds.yMax - 1), maxCoord);
+                maxCoord = max(int2(cellBounds.xMax - 1, cellBounds.yMax - 1 + 1 /* include walking tile */), maxCoord);
             }
         }
         else

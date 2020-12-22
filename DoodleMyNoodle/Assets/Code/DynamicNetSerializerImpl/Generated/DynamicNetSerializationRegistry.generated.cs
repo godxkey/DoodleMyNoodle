@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class DynamicNetSerializationRegistry
 {
-    public static readonly ulong crc = 10954144175267185274;
+    public static readonly ulong crc = 3577816996724362022;
 
     public static readonly Type[] types = new Type[]
     {
@@ -47,6 +47,8 @@ public static class DynamicNetSerializationRegistry
         typeof(fixQuaternion)
         ,
         typeof(GameAction.UseParameters)
+        ,
+        typeof(GameActionParameterEntity.Data)
         ,
         typeof(GameActionParameterSuccessRate.Data)
         ,
@@ -273,6 +275,12 @@ public static class DynamicNetSerializationRegistry
         {
             GameAction.UseParameters castedObj = (GameAction.UseParameters)obj;
             return StaticNetSerializer_GameAction_UseParameters.GetSerializedBitSize(castedObj);
+        }
+        ,
+        [typeof(GameActionParameterEntity.Data)] = (obj) =>
+        {
+            GameActionParameterEntity.Data castedObj = (GameActionParameterEntity.Data)obj;
+            return StaticNetSerializer_GameActionParameterEntity_Data.GetSerializedBitSize(castedObj);
         }
         ,
         [typeof(GameActionParameterSuccessRate.Data)] = (obj) =>
@@ -720,6 +728,12 @@ public static class DynamicNetSerializationRegistry
         {
             GameAction.UseParameters castedObj = (GameAction.UseParameters)obj;
             StaticNetSerializer_GameAction_UseParameters.Serialize(castedObj, writer);
+        }
+        ,
+        [typeof(GameActionParameterEntity.Data)] = (obj, writer) =>
+        {
+            GameActionParameterEntity.Data castedObj = (GameActionParameterEntity.Data)obj;
+            StaticNetSerializer_GameActionParameterEntity_Data.Serialize(castedObj, writer);
         }
         ,
         [typeof(GameActionParameterSuccessRate.Data)] = (obj, writer) =>
@@ -1190,383 +1204,390 @@ public static class DynamicNetSerializationRegistry
         ,
         [19] = (reader) =>
         {
+            GameActionParameterEntity.Data obj = new GameActionParameterEntity.Data();
+            StaticNetSerializer_GameActionParameterEntity_Data.Deserialize(obj, reader);
+            return obj;
+        }
+        ,
+        [20] = (reader) =>
+        {
             GameActionParameterSuccessRate.Data obj = new GameActionParameterSuccessRate.Data();
             StaticNetSerializer_GameActionParameterSuccessRate_Data.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [20] = (reader) =>
+        [21] = (reader) =>
         {
             GameActionParameterTile.Data obj = new GameActionParameterTile.Data();
             StaticNetSerializer_GameActionParameterTile_Data.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [21] = (reader) =>
+        [22] = (reader) =>
         {
             InputSubmissionId obj = new InputSubmissionId();
             StaticNetSerializer_InputSubmissionId.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [22] = (reader) =>
+        [23] = (reader) =>
         {
             NetMessageAcceptSimSync obj = new NetMessageAcceptSimSync();
             StaticNetSerializer_NetMessageAcceptSimSync.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [23] = (reader) =>
+        [24] = (reader) =>
         {
             NetMessageChatMessage obj = new NetMessageChatMessage();
             StaticNetSerializer_NetMessageChatMessage.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [24] = (reader) =>
+        [25] = (reader) =>
         {
             NetMessageChatMessageSubmission obj = new NetMessageChatMessageSubmission();
             StaticNetSerializer_NetMessageChatMessageSubmission.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [25] = (reader) =>
+        [26] = (reader) =>
         {
             NetMessageClientHello obj = new NetMessageClientHello();
             StaticNetSerializer_NetMessageClientHello.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [26] = (reader) =>
+        [27] = (reader) =>
         {
             NetMessageDestroyValue obj = new NetMessageDestroyValue();
             StaticNetSerializer_NetMessageDestroyValue.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [27] = (reader) =>
+        [28] = (reader) =>
         {
             NetMessageExample obj = new NetMessageExample();
             StaticNetSerializer_NetMessageExample.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [28] = (reader) =>
+        [29] = (reader) =>
         {
             NetMessageInputSubmission obj = new NetMessageInputSubmission();
             StaticNetSerializer_NetMessageInputSubmission.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [29] = (reader) =>
+        [30] = (reader) =>
         {
             NetMessagePlayerAssets obj = new NetMessagePlayerAssets();
             StaticNetSerializer_NetMessagePlayerAssets.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [30] = (reader) =>
+        [31] = (reader) =>
         {
             NetMessagePlayerAssets.Data obj = new NetMessagePlayerAssets.Data();
             StaticNetSerializer_NetMessagePlayerAssets_Data.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [31] = (reader) =>
+        [32] = (reader) =>
         {
             NetMessagePlayerIdAssignment obj = new NetMessagePlayerIdAssignment();
             StaticNetSerializer_NetMessagePlayerIdAssignment.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [32] = (reader) =>
+        [33] = (reader) =>
         {
             NetMessagePlayerJoined obj = new NetMessagePlayerJoined();
             StaticNetSerializer_NetMessagePlayerJoined.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [33] = (reader) =>
+        [34] = (reader) =>
         {
             NetMessagePlayerLeft obj = new NetMessagePlayerLeft();
             StaticNetSerializer_NetMessagePlayerLeft.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [34] = (reader) =>
+        [35] = (reader) =>
         {
             NetMessagePlayerRepertoireSync obj = new NetMessagePlayerRepertoireSync();
             StaticNetSerializer_NetMessagePlayerRepertoireSync.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [35] = (reader) =>
+        [36] = (reader) =>
         {
             NetMessageRequestSimSync obj = new NetMessageRequestSimSync();
             StaticNetSerializer_NetMessageRequestSimSync.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [36] = (reader) =>
+        [37] = (reader) =>
         {
             NetMessageRequestValueSync obj = new NetMessageRequestValueSync();
             StaticNetSerializer_NetMessageRequestValueSync.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [37] = (reader) =>
+        [38] = (reader) =>
         {
             NetMessageSerializedSimulation obj = new NetMessageSerializedSimulation();
             StaticNetSerializer_NetMessageSerializedSimulation.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [38] = (reader) =>
+        [39] = (reader) =>
         {
             NetMessageSimPlayerIdAssignement obj = new NetMessageSimPlayerIdAssignement();
             StaticNetSerializer_NetMessageSimPlayerIdAssignement.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [39] = (reader) =>
+        [40] = (reader) =>
         {
             NetMessageSimSyncFromFile obj = new NetMessageSimSyncFromFile();
             StaticNetSerializer_NetMessageSimSyncFromFile.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [40] = (reader) =>
+        [41] = (reader) =>
         {
             NetMessageSyncValue obj = new NetMessageSyncValue();
             StaticNetSerializer_NetMessageSyncValue.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [41] = (reader) =>
+        [42] = (reader) =>
         {
             NetMessageValueSyncComplete obj = new NetMessageValueSyncComplete();
             StaticNetSerializer_NetMessageValueSyncComplete.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [42] = (reader) =>
+        [43] = (reader) =>
         {
             PersistentId obj = new PersistentId();
             StaticNetSerializer_PersistentId.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [43] = (reader) =>
+        [44] = (reader) =>
         {
             PlayerId obj = new PlayerId();
             StaticNetSerializer_PlayerId.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [44] = (reader) =>
+        [45] = (reader) =>
         {
             PlayerInfo obj = new PlayerInfo();
             StaticNetSerializer_PlayerInfo.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [45] = (reader) =>
+        [46] = (reader) =>
         {
             SimCommandLoadScene obj = new SimCommandLoadScene();
             StaticNetSerializer_SimCommandLoadScene.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [46] = (reader) =>
+        [47] = (reader) =>
         {
             SimInputCheatAddAllItems obj = new SimInputCheatAddAllItems();
             StaticNetSerializer_SimInputCheatAddAllItems.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [47] = (reader) =>
+        [48] = (reader) =>
         {
             SimInputCheatDamagePlayer obj = new SimInputCheatDamagePlayer();
             StaticNetSerializer_SimInputCheatDamagePlayer.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [48] = (reader) =>
+        [49] = (reader) =>
         {
             SimInputCheatInfiniteAP obj = new SimInputCheatInfiniteAP();
             StaticNetSerializer_SimInputCheatInfiniteAP.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [49] = (reader) =>
+        [50] = (reader) =>
         {
             SimInputCheatKillPlayerPawn obj = new SimInputCheatKillPlayerPawn();
             StaticNetSerializer_SimInputCheatKillPlayerPawn.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [50] = (reader) =>
+        [51] = (reader) =>
         {
             SimInputCheatNextTurn obj = new SimInputCheatNextTurn();
             StaticNetSerializer_SimInputCheatNextTurn.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [51] = (reader) =>
+        [52] = (reader) =>
         {
             SimInputCheatToggleInvincible obj = new SimInputCheatToggleInvincible();
             StaticNetSerializer_SimInputCheatToggleInvincible.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [52] = (reader) =>
+        [53] = (reader) =>
         {
             SimInputPlayerCreate obj = new SimInputPlayerCreate();
             StaticNetSerializer_SimInputPlayerCreate.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [53] = (reader) =>
+        [54] = (reader) =>
         {
             SimInputSetPlayerActive obj = new SimInputSetPlayerActive();
             StaticNetSerializer_SimInputSetPlayerActive.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [54] = (reader) =>
+        [55] = (reader) =>
         {
             SimInputSubmission obj = new SimInputSubmission();
             StaticNetSerializer_SimInputSubmission.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [55] = (reader) =>
+        [56] = (reader) =>
         {
             SimPlayerInputDropItem obj = new SimPlayerInputDropItem();
             StaticNetSerializer_SimPlayerInputDropItem.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [56] = (reader) =>
+        [57] = (reader) =>
         {
             SimPlayerInputEquipItem obj = new SimPlayerInputEquipItem();
             StaticNetSerializer_SimPlayerInputEquipItem.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [57] = (reader) =>
+        [58] = (reader) =>
         {
             SimPlayerInputNextTurn obj = new SimPlayerInputNextTurn();
             StaticNetSerializer_SimPlayerInputNextTurn.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [58] = (reader) =>
+        [59] = (reader) =>
         {
             SimPlayerInputSelectStartingInventory obj = new SimPlayerInputSelectStartingInventory();
             StaticNetSerializer_SimPlayerInputSelectStartingInventory.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [59] = (reader) =>
+        [60] = (reader) =>
         {
             SimPlayerInputSetPawnDoodle obj = new SimPlayerInputSetPawnDoodle();
             StaticNetSerializer_SimPlayerInputSetPawnDoodle.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [60] = (reader) =>
+        [61] = (reader) =>
         {
             SimPlayerInputSetPawnName obj = new SimPlayerInputSetPawnName();
             StaticNetSerializer_SimPlayerInputSetPawnName.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [61] = (reader) =>
+        [62] = (reader) =>
         {
             SimPlayerInputUseInteractable obj = new SimPlayerInputUseInteractable();
             StaticNetSerializer_SimPlayerInputUseInteractable.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [62] = (reader) =>
+        [63] = (reader) =>
         {
             SimPlayerInputUseItem obj = new SimPlayerInputUseItem();
             StaticNetSerializer_SimPlayerInputUseItem.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [63] = (reader) =>
+        [64] = (reader) =>
         {
             SimulationControl.NetMessageSimTick obj = new SimulationControl.NetMessageSimTick();
             StaticNetSerializer_SimulationControl_NetMessageSimTick.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [64] = (reader) =>
+        [65] = (reader) =>
         {
             SimulationControl.SimTickData obj = new SimulationControl.SimTickData();
             StaticNetSerializer_SimulationControl_SimTickData.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [65] = (reader) =>
+        [66] = (reader) =>
         {
             SyncedValueCurrentLevel obj = new SyncedValueCurrentLevel();
             StaticNetSerializer_SyncedValueCurrentLevel.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [66] = (reader) =>
+        [67] = (reader) =>
         {
             TestMessage obj = new TestMessage();
             StaticNetSerializer_TestMessage.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [67] = (reader) =>
+        [68] = (reader) =>
         {
             TestMessageAnimal obj = new TestMessageAnimal();
             StaticNetSerializer_TestMessageAnimal.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [68] = (reader) =>
+        [69] = (reader) =>
         {
             TestMessageCat obj = new TestMessageCat();
             StaticNetSerializer_TestMessageCat.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [69] = (reader) =>
+        [70] = (reader) =>
         {
             TestMessageDog obj = new TestMessageDog();
             StaticNetSerializer_TestMessageDog.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [70] = (reader) =>
+        [71] = (reader) =>
         {
             Unity.Mathematics.int2 obj = new Unity.Mathematics.int2();
             StaticNetSerializer_Unity_Mathematics_int2.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [71] = (reader) =>
+        [72] = (reader) =>
         {
             UnityEngine.Vector2 obj = new UnityEngine.Vector2();
             StaticNetSerializer_UnityEngine_Vector2.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [72] = (reader) =>
+        [73] = (reader) =>
         {
             UnityEngine.Vector3 obj = new UnityEngine.Vector3();
             StaticNetSerializer_UnityEngine_Vector3.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [73] = (reader) =>
+        [74] = (reader) =>
         {
             UnityEngine.Vector4 obj = new UnityEngine.Vector4();
             StaticNetSerializer_UnityEngine_Vector4.Deserialize(ref obj, reader);

@@ -51,6 +51,10 @@ public class ExecutePlayerInputSystem : SimSystemBase
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseInteractable(playerEntity, useInteractableInput.InteractablePosition));
                 break;
 
+            case SimPlayerInputUseObjectGameAction useGameActionInput:
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseObjectGameAction(playerEntity, useGameActionInput.ObjectPosition, useGameActionInput.UseData));
+                break;
+
             case SimPlayerInputSetPawnDoodle setPawnDoodleInput:
             {
                 Entity pawn = GetPlayerPawn(playerEntity);
