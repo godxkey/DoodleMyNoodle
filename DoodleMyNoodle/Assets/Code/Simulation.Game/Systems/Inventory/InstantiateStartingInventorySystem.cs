@@ -30,6 +30,24 @@ public class InstantiateStartingInventorySystem : SimComponentSystem
                     if (!CommonReads.IsInventoryFull(Accessor, entity) || !CommonWrites.TryIncrementStackableItemInInventory(Accessor, entity, itemInstance, inventory))
                     {
                         inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
+
+                        ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
+                        {
+                            InstigatorPawn = entity,
+                            ItemEntity = itemInstance
+                        };
+
+                        if (EntityManager.TryGetBuffer(itemInstance, out DynamicBuffer<ItemPassiveEffectId> itemPassiveEffectIds))
+                        {
+                            foreach (ItemPassiveEffectId itemPassiveEffectId in itemPassiveEffectIds)
+                            {
+                                ItemPassiveEffect itemPassiveEffect = ItemPassiveEffectBank.GetItemPassiveEffect(itemPassiveEffectId);
+                                if (itemPassiveEffect != null)
+                                {
+                                    itemPassiveEffect.Equip(Accessor, itemContext);
+                                }
+                            }
+                        }
                     }
                 }
 

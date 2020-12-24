@@ -155,14 +155,24 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         _descriptionData.Clear();
         if (item != Entity.Null)
         {
+            // TODO : fix this place in some way please...
+
             // Order of appearance
-            TryAddTooltipItemDescription<GameActionDamageData>();
-            TryAddTooltipItemDescription<GameActionHPToHealData>();
-            TryAddTooltipItemDescription<GameActionRangeData>();
-            TryAddTooltipItemDescription<GameActionAPCostData>();
-            TryAddTooltipItemDescription<GameActionHPCostData>();
-            TryAddTooltipItemDescription<ItemTimeCooldownData>();
-            TryAddTooltipItemDescription<GameActionEffectDurationData>();
+
+            // Game Actions
+            TryAddTooltipItemDescriptionForInt<GameActionDamageData>();
+            TryAddTooltipItemDescriptionForInt<GameActionHPToHealData>();
+            TryAddTooltipItemDescriptionForInt<GameActionRangeData>();
+            TryAddTooltipItemDescriptionForInt<GameActionAPCostData>();
+            TryAddTooltipItemDescriptionForInt<GameActionHPCostData>();
+            TryAddTooltipItemDescriptionForInt<GameActionEffectDurationData>();
+
+            // Item Setting
+            TryAddTooltipItemDescriptionForInt<ItemTimeCooldownData>();
+
+            // Item Passive Effect
+            TryAddTooltipItemDescriptionForInt<ItemPassiveEffectHealthIncreaseData>();
+            ///TryAddTooltipItemDescriptionForFix<ItemPassiveEffectHealthIncreaseMultiplierData>(); // fix me
 
             _descriptionData.Add(new DescriptionData(description, Color.white, true));
         }
@@ -172,7 +182,7 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
 
 
         // local functions
-        void TryAddTooltipItemDescription<TItemStat>()
+        void TryAddTooltipItemDescriptionForInt<TItemStat>()
             where TItemStat : struct, IComponentData, IStatInt
         {
             IItemSettingDescription<TItemStat> itemStatAuth = itemPrefab.GetComponent<IItemSettingDescription<TItemStat>>();

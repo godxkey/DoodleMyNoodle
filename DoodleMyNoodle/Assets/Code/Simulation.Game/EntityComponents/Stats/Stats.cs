@@ -60,7 +60,7 @@ internal static partial class CommonWrites
         SetStatInt(accessor, entity, new T { Value = newValue });
     }
 
-    public static void ModifyStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, int value)
+    public static void ModifyStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, fix value)
         where T : struct, IComponentData, IStatFix
     {
         fix currentValue = accessor.GetComponentData<T>(entity).Value;
@@ -83,6 +83,8 @@ internal static partial class CommonWrites
         }
 
         accessor.SetComponentData(entity, compData);
+
+        OnIntStatChanged(accessor, entity, compData);
     }
 
     public static void SetStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T compData)
@@ -99,6 +101,90 @@ internal static partial class CommonWrites
         }
 
         accessor.SetComponentData(entity, compData);
+
+        OnFixStatChanged(accessor, entity, compData);
+    }
+
+    public static void AddStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, fix value)
+    where T : struct, IComponentData, IStatFix
+    {
+        if (!accessor.HasComponent<T>(entity))
+        {
+            accessor.AddComponentData(entity, new T { Value = value });
+        }
+    }
+
+    public static void AddStatInt<T>(ISimWorldReadWriteAccessor accessor, Entity entity, int value)
+    where T : struct, IComponentData, IStatInt
+    {
+        if (!accessor.HasComponent<T>(entity))
+        {
+            accessor.AddComponentData(entity, new T { Value = value });
+        }
+    }
+
+    public static void OnFixStatChanged<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T ChangedStat)
+    where T : struct, IComponentData, IStatFix
+    {
+        // if we added a stat to a pawn, notify its items of the change if he has any
+        if (accessor.TryGetComponentData(entity, out Controllable pawn))
+        {
+            if (accessor.TryGetBufferReadOnly(entity, out DynamicBuffer<InventoryItemReference> inventory))
+            {
+                foreach (InventoryItemReference ItemReference in inventory)
+                {
+                    if (accessor.TryGetBufferReadOnly(ItemReference.ItemEntity, out DynamicBuffer<ItemPassiveEffectId> itemPassiveEffectIds))
+                    {
+                        ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
+                        {
+                            InstigatorPawn = entity,
+                            ItemEntity = ItemReference.ItemEntity
+                        };
+
+                        foreach (ItemPassiveEffectId itemPassiveEffectId in itemPassiveEffectIds)
+                        {
+                            ItemPassiveEffect itemPassiveEffect = ItemPassiveEffectBank.GetItemPassiveEffect(itemPassiveEffectId);
+                            if (itemPassiveEffect != null)
+                            {
+                                itemPassiveEffect.OnPawnFixStatChanged(accessor, itemContext, ChangedStat);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void OnIntStatChanged<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T ChangedStat)
+    where T : struct, IComponentData, IStatInt
+    {
+        // if we added a stat to a pawn, notify its items of the change if he has any
+        if (accessor.TryGetComponentData(entity, out Controllable pawn))
+        {
+            if (accessor.TryGetBufferReadOnly(entity, out DynamicBuffer<InventoryItemReference> inventory))
+            {
+                foreach (InventoryItemReference ItemReference in inventory)
+                {
+                    if (accessor.TryGetBufferReadOnly(ItemReference.ItemEntity, out DynamicBuffer<ItemPassiveEffectId> itemPassiveEffectIds))
+                    {
+                        ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
+                        {
+                            InstigatorPawn = entity,
+                            ItemEntity = ItemReference.ItemEntity
+                        };
+
+                        foreach (ItemPassiveEffectId itemPassiveEffectId in itemPassiveEffectIds)
+                        {
+                            ItemPassiveEffect itemPassiveEffect = ItemPassiveEffectBank.GetItemPassiveEffect(itemPassiveEffectId);
+                            if (itemPassiveEffect != null)
+                            {
+                                itemPassiveEffect.OnPawnIntStatChanged(accessor, itemContext, ChangedStat);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

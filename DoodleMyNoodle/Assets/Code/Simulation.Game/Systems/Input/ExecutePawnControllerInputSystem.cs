@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngineX;
@@ -190,6 +191,22 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
             if (CommonWrites.TryIncrementStackableItemInInventory(Accessor, chestEntity, itemToMove, chestInventory))
             {
                 CommonWrites.DecrementStackableItemInInventory(Accessor, pawn, itemToMove);
+
+                List<ItemPassiveEffect> itemPassiveEffects = GetItemPassiveEffects(itemToMove);
+
+                ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
+                {
+                    InstigatorPawn = pawn,
+                    ItemEntity = itemToMove
+                };
+
+                foreach (ItemPassiveEffect itemPassiveEffect in itemPassiveEffects)
+                {
+                    if (itemPassiveEffect != null)
+                    {
+                        itemPassiveEffect.Unequip(Accessor, itemContext);
+                    }
+                }
             }
             else
             {
@@ -210,6 +227,22 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
 
                 chestInventory = GetBuffer<InventoryItemReference>(chestEntity);
                 chestInventory.Add(new InventoryItemReference() { ItemEntity = entityToGiveToChest });
+
+                List<ItemPassiveEffect> itemPassiveEffects = GetItemPassiveEffects(entityToGiveToChest);
+
+                ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
+                {
+                    InstigatorPawn = pawn,
+                    ItemEntity = entityToGiveToChest
+                };
+
+                foreach (ItemPassiveEffect itemPassiveEffect in itemPassiveEffects)
+                {
+                    if (itemPassiveEffect != null)
+                    {
+                        itemPassiveEffect.Unequip(Accessor, itemContext);
+                    }
+                }
             }
         }
     }
@@ -250,6 +283,22 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
             if (CommonWrites.TryIncrementStackableItemInInventory(Accessor, pawn, item, GetBuffer<InventoryItemReference>(pawn)))
             {
                 CommonWrites.DecrementStackableItemInInventory(Accessor, chestEntity, item);
+
+                List<ItemPassiveEffect> itemPassiveEffects = GetItemPassiveEffects(item);
+
+                ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
+                {
+                    InstigatorPawn = pawn,
+                    ItemEntity = item
+                };
+
+                foreach (ItemPassiveEffect itemPassiveEffect in itemPassiveEffects)
+                {
+                    if (itemPassiveEffect != null)
+                    {
+                        itemPassiveEffect.Equip(Accessor, itemContext);
+                    }
+                }
             }
             else
             {
@@ -270,6 +319,22 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
 
                 // Move item from chest inventory to player's inventory
                 GetBuffer<InventoryItemReference>(pawn).Add(new InventoryItemReference() { ItemEntity = itemToGiveToPawn });
+
+                List<ItemPassiveEffect> itemPassiveEffects = GetItemPassiveEffects(item);
+
+                ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
+                {
+                    InstigatorPawn = pawn,
+                    ItemEntity = itemToGiveToPawn
+                };
+
+                foreach (ItemPassiveEffect itemPassiveEffect in itemPassiveEffects)
+                {
+                    if (itemPassiveEffect != null)
+                    {
+                        itemPassiveEffect.Equip(Accessor, itemContext);
+                    }
+                }
             }
         }
     }
@@ -295,13 +360,27 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
 
         Entity item = inventory[inputUseItem.ItemIndex].ItemEntity;
 
-        GameAction gameAction = GetGameActionFromEntity(item);
+        // ITEM PASSIVES
 
-        if (gameAction == null)
+        List<ItemPassiveEffect> itemPassiveEffects = GetItemPassiveEffects(item);
+
+        ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
         {
-            LogDiscardReason($"Item {item}'s gameActionId is invalid.");
-            return;
+            InstigatorPawn = pawn,
+            ItemEntity = item
+        };
+
+        foreach (ItemPassiveEffect itemPassiveEffect in itemPassiveEffects)
+        {
+            if (itemPassiveEffect != null)
+            {
+                itemPassiveEffect.Use(Accessor, itemContext);
+            }
         }
+
+        // GAME ACTIONS
+
+        GameAction gameAction = GetGameActionFromEntity(item);
 
         GameAction.UseContext useContext = new GameAction.UseContext()
         {
@@ -310,7 +389,7 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
             Entity = item
         };
 
-        if (!gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData, out string debugReason))
+        if (gameAction != null && !gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData, out string debugReason))
         {
             LogDiscardReason($"Can't Trigger {gameAction} because: {debugReason}");
             return;
@@ -351,6 +430,20 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
         }
 
         return null;
+    }
+
+    private List<ItemPassiveEffect> GetItemPassiveEffects(Entity entity)
+    {
+        List<ItemPassiveEffect> result = new List<ItemPassiveEffect>();
+        if (EntityManager.TryGetBuffer(entity, out DynamicBuffer<ItemPassiveEffectId> itemPassiveEffectIds))
+        {
+            foreach (ItemPassiveEffectId itemPassiveEffectId in itemPassiveEffectIds)
+            {
+                result.Add(ItemPassiveEffectBank.GetItemPassiveEffect(itemPassiveEffectId));
+            }
+        }
+
+        return result;
     }
 }
 
