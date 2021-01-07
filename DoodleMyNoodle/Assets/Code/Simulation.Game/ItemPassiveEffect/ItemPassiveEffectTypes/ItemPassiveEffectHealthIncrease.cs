@@ -38,7 +38,7 @@ public class ItemPassiveEffectHealthIncrease : ItemPassiveEffect
         }
     }
 
-    public override void OnPawnFixStatChanged(ISimWorldReadWriteAccessor accessor, ItemContext context, IStatFix Stat) 
+    public override void OnPawnIntStatChanged(ISimWorldReadWriteAccessor accessor, ItemContext context, IStatInt Stat) 
     {
         // if HealthIncreaseMultiplier is changed or removed, update the amount of health that is increased
         if (Stat is HealthIncreaseMultiplier)

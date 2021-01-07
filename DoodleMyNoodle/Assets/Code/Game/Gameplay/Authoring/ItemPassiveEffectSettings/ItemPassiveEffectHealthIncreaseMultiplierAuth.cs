@@ -3,7 +3,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemPassiveEffectHealthIncreaseMultiplierAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemPassiveEffectHealthIncreaseData>
+public class ItemPassiveEffectHealthIncreaseMultiplierAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemPassiveEffectHealthIncreaseMultiplierData>
 {
     public int Multiplier;
 
@@ -17,15 +17,15 @@ public class ItemPassiveEffectHealthIncreaseMultiplierAuth : MonoBehaviour, ICon
         return Color.white;
     }
 
-    public string GetDescription(ItemPassiveEffectHealthIncreaseData inputData)
+    public string GetDescription(ItemPassiveEffectHealthIncreaseMultiplierData inputData)
     {
         if (inputData.Value == Multiplier)
         {
-            return $"Health Multiplier : {inputData.Value}";
+            return $"HP Increase Multiplier : {inputData.Value}";
         }
         else
         {
-            return $"Health Multiplier : {inputData.Value} ({Multiplier})";
+            return $"HP Increase Multiplier : {inputData.Value} ({Multiplier})";
         }
     }
 }

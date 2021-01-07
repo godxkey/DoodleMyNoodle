@@ -9,6 +9,7 @@ public class DestroyEmptyInteractableInventorySystem : SimComponentSystem
     {
         Entities
         .WithAll<Interactable>()
+        .WithAll<Interacted>()
         .WithNone<StartingInventoryItem>()
         .ForEach((Entity interactable, ref FixTranslation pos, DynamicBuffer<InventoryItemReference> inventory) =>
         {

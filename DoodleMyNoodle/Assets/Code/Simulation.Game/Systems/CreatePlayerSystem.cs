@@ -90,7 +90,59 @@ public class CreatePlayerSystem : SimComponentSystem
             }
         });
 
+        if (uncontrolledEntity == Entity.Null)
+        {
+            SpawnUncontrolledPawn();
+            return FindUncontrolledPawn();
+        }
+
         return uncontrolledEntity;
+    }
+
+    private void SpawnUncontrolledPawn()
+    {
+        int amountOfPlayers = 0; // put = to 1 if new player that just join isn't counted in foreach that follows
+        Entities
+            .WithAll<PlayerTag>()
+            .ForEach((Entity playerController) =>
+            {
+                amountOfPlayers++;
+            });
+
+        int amountOfSpawn = 0;
+        Entities
+            .WithAll<SpawnLocationTag>()
+            .ForEach((Entity playerController) =>
+            {
+                amountOfSpawn++;
+            });
+
+        int spawnSelected = amountOfPlayers;
+        if (amountOfSpawn < amountOfPlayers)
+        {
+            // manque de spawn point = loop dans les spawn points, eg: 3 spawn points, 5 joueurs: A B C A B
+            spawnSelected = (amountOfPlayers % amountOfSpawn) + 1;
+        }
+
+        FixTranslation posToSpawn = new FixTranslation();
+        Entities
+        .ForEach((Entity spawnEntity, ref SpawnLocationTag spawnTag, ref FixTranslation spawnLocation) =>
+        {
+            if (spawnTag.OrderPosition == spawnSelected)
+            {
+                posToSpawn = spawnLocation;
+            }
+        });
+
+        if (Accessor.TryGetSingleton(out PlayerPawnPrefabReferenceSingletonComponent playerPawnPrefab))
+        {
+            Entity playerInstance = EntityManager.Instantiate(playerPawnPrefab.Prefab);
+            Accessor.SetOrAddComponentData(playerInstance, new FixTranslation() { Value = posToSpawn.Value });
+        }
+        else
+        {
+            Log.Error($"No Player Pawn Prefab Singelton, can't spawn player");
+        }
     }
 }
 

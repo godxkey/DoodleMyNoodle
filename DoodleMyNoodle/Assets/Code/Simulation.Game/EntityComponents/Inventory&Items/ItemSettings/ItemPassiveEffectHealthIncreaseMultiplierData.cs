@@ -1,8 +1,8 @@
 ﻿using Unity.Entities;
 
-public struct ItemPassiveEffectHealthIncreaseMultiplierData : IComponentData, IStatFix
+public struct ItemPassiveEffectHealthIncreaseMultiplierData : IComponentData, IStatInt
 {
-    public fix Value;
+    public int Value;
 
-    fix IStatFix.Value { get => Value; set => Value = value; }
+    int IStatInt.Value { get => Value; set => Value = value; }
 }

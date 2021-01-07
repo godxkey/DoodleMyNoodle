@@ -30,32 +30,42 @@ public class InstantiateStartingInventorySystem : SimComponentSystem
                     if (!CommonReads.IsInventoryFull(Accessor, entity) || !CommonWrites.TryIncrementStackableItemInInventory(Accessor, entity, itemInstance, inventory))
                     {
                         inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
-
-                        ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
-                        {
-                            InstigatorPawn = entity,
-                            ItemEntity = itemInstance
-                        };
-
-                        if (EntityManager.TryGetBuffer(itemInstance, out DynamicBuffer<ItemPassiveEffectId> itemPassiveEffectIds))
-                        {
-                            foreach (ItemPassiveEffectId itemPassiveEffectId in itemPassiveEffectIds)
-                            {
-                                ItemPassiveEffect itemPassiveEffect = ItemPassiveEffectBank.GetItemPassiveEffect(itemPassiveEffectId);
-                                if (itemPassiveEffect != null)
-                                {
-                                    itemPassiveEffect.Equip(Accessor, itemContext);
-                                }
-                            }
-                        }
                     }
                 }
-
-                // Remove starting inventory buffer
-                EntityManager.RemoveComponent<StartingInventoryItem>(entity);
 
                 itemInstances.Dispose();
                 startingInventory.Dispose();
             });
+
+        Entities
+        .WithAll<StartingInventoryItem>()
+        .ForEach((Entity entity, DynamicBuffer<InventoryItemReference> inventoryBuffer) =>
+        {
+            NativeArray<InventoryItemReference> inventory = inventoryBuffer.ToNativeArray(Allocator.Temp);
+
+            foreach (InventoryItemReference item in inventory)
+            {
+                ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
+                {
+                    InstigatorPawn = entity,
+                    ItemEntity = item.ItemEntity
+                };
+
+                if (EntityManager.TryGetBuffer(item.ItemEntity, out DynamicBuffer<ItemPassiveEffectId> itemPassiveEffectIds))
+                {
+                    foreach (ItemPassiveEffectId itemPassiveEffectId in itemPassiveEffectIds)
+                    {
+                        ItemPassiveEffect itemPassiveEffect = ItemPassiveEffectBank.GetItemPassiveEffect(itemPassiveEffectId);
+                        if (itemPassiveEffect != null)
+                        {
+                            itemPassiveEffect.Equip(Accessor, itemContext);
+                        }
+                    }
+                }
+            }
+
+            // Remove starting inventory buffer
+            EntityManager.RemoveComponent<StartingInventoryItem>(entity);
+        });
     }
 }

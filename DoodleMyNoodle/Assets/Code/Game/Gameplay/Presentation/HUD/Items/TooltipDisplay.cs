@@ -172,7 +172,7 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
 
             // Item Passive Effect
             TryAddTooltipItemDescriptionForInt<ItemPassiveEffectHealthIncreaseData>();
-            ///TryAddTooltipItemDescriptionForFix<ItemPassiveEffectHealthIncreaseMultiplierData>(); // fix me
+            TryAddTooltipItemDescriptionForInt<ItemPassiveEffectHealthIncreaseMultiplierData>();
 
             _descriptionData.Add(new DescriptionData(description, Color.white, true));
         }
@@ -180,7 +180,7 @@ public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
         UIUtility.UpdateGameObjectList(_descriptionElements, _descriptionData, _itemDescriptionPrefab, _itemDescriptionContainer,
             onUpdate: (element, data) => element.UpdateDescription(data.Desc, data.Color, data.AddBG));
 
-
+        // THERE IS NO FIX VERSION ATM (TODO : Fix this)
         // local functions
         void TryAddTooltipItemDescriptionForInt<TItemStat>()
             where TItemStat : struct, IComponentData, IStatInt

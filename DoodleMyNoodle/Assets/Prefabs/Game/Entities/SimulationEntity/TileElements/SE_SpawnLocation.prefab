@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 30145307963041148}
   - component: {fileID: 30145307963041147}
   - component: {fileID: 30145307963041146}
-  - component: {fileID: 1048712783553758544}
+  - component: {fileID: 1378176214442733060}
   - component: {fileID: 861611753015387949}
   m_Layer: 0
-  m_Name: SE_StartLocation
+  m_Name: SE_SpawnLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: d1f1f2998922310428cc322345838c89
+  _guid: 6cb6e986d21803a49a531c7fce997321
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -68,9 +68,9 @@ MonoBehaviour:
   _data:
     LocalPosition:
       x:
-        RawValue: -15582142464
+        RawValue: -35304030208
       y:
-        RawValue: 66529034240
+        RawValue: -1678141568
       z:
         RawValue: 0
     LocalRotation:
@@ -91,7 +91,7 @@ MonoBehaviour:
         RawValue: 4294967296
     Parent: {fileID: 0}
     SiblingIndex: 0
---- !u!114 &1048712783553758544
+--- !u!114 &1378176214442733060
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,9 +100,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 30145307963041151}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e18ce60e0bceb6c4dbf566ce5b2f84b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 2592ae2275aaa064580595501896a4f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OrderPosition: 0
 --- !u!114 &861611753015387949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,5 +117,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DestroyOnAwake: 1
-  GizmoColor: {r: 0, g: 1, b: 0, a: 0.75}
-  Pos: {x: -3.6280003, y: 15.489998, z: 0}
+  GizmoColor: {r: 0, g: 0.010243893, b: 1, a: 0.75}
+  Pos: {x: -8.21986, y: -0.39072278, z: 0}

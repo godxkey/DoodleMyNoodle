@@ -6,7 +6,7 @@
         {
             if (accessor.HasComponent<HealthIncreaseMultiplier>(context.InstigatorPawn))
             {
-                CommonWrites.ModifyStatFix<HealthIncreaseMultiplier>(accessor, context.InstigatorPawn, healthIncreaseBoostData.Value);
+                CommonWrites.ModifyStatInt<HealthIncreaseMultiplier>(accessor, context.InstigatorPawn, healthIncreaseBoostData.Value);
             }
             else
             {
@@ -21,7 +21,7 @@
         {
             if (accessor.HasComponent<HealthIncreaseMultiplier>(context.InstigatorPawn))
             {
-                CommonWrites.ModifyStatFix<HealthIncreaseMultiplier>(accessor, context.InstigatorPawn, -healthIncreaseBoostData.Value);
+                CommonWrites.ModifyStatInt<HealthIncreaseMultiplier>(accessor, context.InstigatorPawn, -healthIncreaseBoostData.Value);
             }
         }
     }

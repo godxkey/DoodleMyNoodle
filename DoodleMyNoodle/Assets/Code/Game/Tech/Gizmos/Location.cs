@@ -1,22 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CCC.InspectorDisplay;
 
 public class Location : MonoBehaviour
 {
-    [CCC.InspectorDisplay.ReadOnlyAlways]
-    public Vector3 pos;
+    public bool DestroyOnAwake = true;
+
+    public Color GizmoColor = new Color(0, 1, 0, 0.75f);
+
+    [ReadOnlyAlways]
+    public Vector3 Pos;
 
     void Awake()
     {
-        pos = transform.position;
+        Pos = transform.position;
+
+        if (DestroyOnAwake)
+        {
+            Destroy(this);
+        }
     }
 
     // Debug Display
     void OnDrawGizmos()
     {
-        pos = transform.position;
-        Gizmos.color = new Color(0, 1, 0, 0.75f);
+        Pos = transform.position;
+        Gizmos.color = GizmoColor;
         Gizmos.DrawSphere(transform.position, 0.25f);
     }
 }

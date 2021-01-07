@@ -1,8 +1,8 @@
 ﻿using Unity.Entities;
 
-public struct HealthIncreaseMultiplier : IComponentData, IStatFix
+public struct HealthIncreaseMultiplier : IComponentData, IStatInt
 {
-    public fix Value;
+    public int Value;
 
-    fix IStatFix.Value { get => Value; set => Value = value; }
+    int IStatInt.Value { get => Value; set => Value = value; }
 }
