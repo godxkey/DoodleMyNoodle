@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
-// CODED ADDED FROM : https://forum.unity.com/threads/group-components-in-inspector.513931/
+// CODE ADDED FROM : https://forum.unity.com/threads/group-components-in-inspector.513931/
 // USED TO BETTER ORGANIZE HUGE LIST OF COMPONENTS IN INSPECTOR
 
 // TODO : Change components order so that when you enable a group, it displays them below the current component from which you toggled them on.
