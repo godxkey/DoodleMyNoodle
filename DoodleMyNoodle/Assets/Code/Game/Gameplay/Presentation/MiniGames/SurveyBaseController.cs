@@ -25,7 +25,7 @@ public abstract class SurveyBaseController : MonoBehaviour
 
     protected GameAction.ParameterDescription[] _parameters;
 
-    public virtual void StartSurvey(Action<List<GameAction.ParameterData>> callback, params GameAction.ParameterDescription[] parameters)
+    public void StartSurvey(Action<List<GameAction.ParameterData>> callback, params GameAction.ParameterDescription[] parameters)
     {
         _isComplete = false;
         _onCompleteCallback = callback;
@@ -37,9 +37,9 @@ public abstract class SurveyBaseController : MonoBehaviour
             DebugDisplay.gameObject.SetActive(false);
         }
 
-        _currentLoop = StartCoroutine(SurveyLoop());
-
         OnStartSurvey();
+
+        _currentLoop = StartCoroutine(SurveyLoop());
     }
 
     protected virtual void OnStartSurvey() { }
