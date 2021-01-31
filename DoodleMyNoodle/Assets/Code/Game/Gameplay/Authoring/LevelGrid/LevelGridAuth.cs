@@ -17,6 +17,9 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
     [SerializeField] private LevelGridSettings _globalGridSettings;
     [SerializeField] private Grid _grid;
 
+    public LevelGridSettings GlobalGridSettings { get => _globalGridSettings; set => _globalGridSettings = value; }
+    public Grid Grid { get => _grid; set => _grid = value; }
+
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         Tilemap[] tileMaps = _grid.GetComponentsInChildren<Tilemap>();
