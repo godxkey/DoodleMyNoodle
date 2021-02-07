@@ -348,7 +348,7 @@ public static class Pathfinding
     }
 
     // d(current,neighbor) is the weight of the edge from current to neighbor
-    private static fix d(in int2 current, in int2 neighbor)
+    private static fix d(int2 current, int2 neighbor)
     {
         return 1; // in a 2D grid, neighbor weight is always 1
     }
@@ -361,7 +361,7 @@ public static class Pathfinding
         int2(0, -1) // down
     };
 
-    private static void get_neighbors(in int2 tile, NativeList<int2> neighbors, in TileWorld tileWorld)
+    private static void get_neighbors(int2 tile, NativeList<int2> neighbors, TileWorld tileWorld)
     {
         neighbors.Clear();
         for (int i = 0; i < s_directionVectors.Length; i++)
@@ -376,7 +376,7 @@ public static class Pathfinding
     }
 
     // h is the heuristic function. h(n) estimates the cost to reach goal from node n.
-    private static fix h(in int2 tile, in int2 goal)
+    private static fix h(int2 tile, int2 goal)
     {
         int2 delta = abs(goal - tile);
         //delta *= delta; // making tiles in diagonal more appealing than tiles in a straight line far away

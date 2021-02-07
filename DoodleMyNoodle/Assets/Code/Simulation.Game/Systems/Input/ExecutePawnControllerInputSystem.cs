@@ -398,10 +398,10 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
 
     private void ExecuteUseInteractableInput(PawnControllerInputUseInteractable inputUseInteractable, Entity pawn)
     {
-        void LogDiscardReason(string str)
-        {
-            Log.Info($"Discarding input {inputUseInteractable} : {str}");
-        }
+        //void LogDiscardReason(string str)
+        //{
+        //    Log.Info($"Discarding input {inputUseInteractable} : {str}");
+        //}
 
         Entity interactableEntity = CommonReads.FindFirstTileActorWithComponent<Interactable>(Accessor, inputUseInteractable.InteractablePosition);
         if (interactableEntity == Entity.Null)

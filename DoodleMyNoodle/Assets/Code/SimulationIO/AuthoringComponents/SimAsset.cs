@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Bolt.Compiler.Utils;
+using CCC.Fix2D.Authoring;
+using System;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEditor;
@@ -71,8 +73,7 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
 
         if (_hasTransform)
         {
-            var tr = transform;
-            FixTransformAuth.AddFixTransformComponents(entity, dstManager, conversionSystem, tr.localPosition, tr.localRotation, tr.localScale);
+            conversionSystem.World.GetExistingSystem<ConvertToFixTransformSystem>()?.ToConvert.Add(transform);
         }
 
         //if (_hasTransform && _bindedViewPrefab != null) // only add sim asset id if we have a binded view, otherwise its useless

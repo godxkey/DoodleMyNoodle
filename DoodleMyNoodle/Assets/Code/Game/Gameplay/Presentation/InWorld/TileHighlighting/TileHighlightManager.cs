@@ -92,7 +92,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
         {
             // Activate Highlight
             _highlights[i].SetActive(true);
-            _highlights[i].transform.position = (Vector3)Helpers.GetTileCenter(tiles[i]);
+            _highlights[i].transform.position = (Vector2)Helpers.GetTileCenter(tiles[i]);
         }
 
     }

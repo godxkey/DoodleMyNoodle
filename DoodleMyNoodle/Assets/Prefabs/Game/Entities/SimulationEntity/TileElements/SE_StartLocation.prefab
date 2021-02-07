@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 30145307963041148}
   - component: {fileID: 30145307963041147}
-  - component: {fileID: 30145307963041146}
   - component: {fileID: 1048712783553758544}
   - component: {fileID: 861611753015387949}
   m_Layer: 0
@@ -53,44 +52,6 @@ MonoBehaviour:
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 1
---- !u!114 &30145307963041146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30145307963041151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dce6e510c1c416f449379284ac9a2922, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    LocalPosition:
-      x:
-        RawValue: -15582142464
-      y:
-        RawValue: 66529034240
-      z:
-        RawValue: 0
-    LocalRotation:
-      x:
-        RawValue: 0
-      y:
-        RawValue: 0
-      z:
-        RawValue: 0
-      w:
-        RawValue: 4294967296
-    LocalScale:
-      x:
-        RawValue: 4294967296
-      y:
-        RawValue: 4294967296
-      z:
-        RawValue: 4294967296
-    Parent: {fileID: 0}
-    SiblingIndex: 0
 --- !u!114 &1048712783553758544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,4 +78,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DestroyOnAwake: 1
   GizmoColor: {r: 0, g: 1, b: 0, a: 0.75}
-  Pos: {x: -3.6280003, y: 15.489998, z: 0}
+  Pos: {x: 0, y: 0, z: 0}

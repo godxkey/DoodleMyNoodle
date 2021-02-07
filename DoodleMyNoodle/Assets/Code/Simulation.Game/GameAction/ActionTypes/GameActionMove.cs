@@ -70,8 +70,8 @@ public class GameActionMove : GameAction
 
             // set destination
             var random = accessor.Random();
-            fix3 dest = Helpers.GetTileCenter(_path[_path.Length - 1]);
-            dest += fix3(random.NextFix(fix(-0.2), fix(0.2)), 0, 0);
+            fix2 dest = Helpers.GetTileCenter(_path[_path.Length - 1]);
+            dest += fix2(random.NextFix(fix(-0.2), fix(0.2)), 0);
             accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = dest });
 
             return true;

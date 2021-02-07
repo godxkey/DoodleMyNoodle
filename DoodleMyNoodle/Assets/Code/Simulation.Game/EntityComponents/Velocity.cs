@@ -5,8 +5,8 @@ using Unity.Mathematics;
 [Serializable]
 public struct Velocity : IComponentData
 {
-    public fix3 Value;
+    public fix2 Value;
 
-    public static implicit operator fix3(Velocity velocity) => velocity.Value;
-    public static implicit operator Velocity(fix3 velocity) => new Velocity() { Value = velocity };
+    public static implicit operator fix2(Velocity velocity) => velocity.Value;
+    public static implicit operator Velocity(fix2 velocity) => new Velocity() { Value = velocity };
 }

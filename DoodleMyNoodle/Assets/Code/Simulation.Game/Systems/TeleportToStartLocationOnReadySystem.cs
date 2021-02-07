@@ -41,7 +41,7 @@ public class TeleportToStartLocationOnReadySystem : SimComponentSystem
         if ((_players.Count > 0) && (_players.Count == playerReadyAmount) && !HasSingleton<ScenarioHasStartedSingletonTag>())
         {
             // Get Teleport Location
-            List<fix3> teleportLocations = new List<fix3>();
+            List<fix2> teleportLocations = new List<fix2>();
             Entities
                 .WithAll<StartLocationTag>()
                 .ForEach((ref FixTranslation translation) =>

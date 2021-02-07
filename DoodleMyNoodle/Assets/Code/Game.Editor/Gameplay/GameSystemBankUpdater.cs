@@ -35,17 +35,7 @@ public class GameSystemBankUpdater : AssetPostprocessor
         {
             if (item.TryGetComponent(out GameSystem gameSystem))
             {
-                bool isInBank = false;
-                foreach (var prefab in bank.Prefabs)
-                {
-                    if (ReferenceEquals(prefab, gameSystem))
-                    {
-                        isInBank = true;
-                        break;
-                    }
-                }
-
-                if (!isInBank)
+                if (!bank.Prefabs.Contains(gameSystem))
                 {
                     bank.Prefabs.Add(gameSystem);
                     change = true;

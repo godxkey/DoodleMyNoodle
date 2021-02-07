@@ -6,13 +6,13 @@ using UnityEngineX;
 public struct TeleportRequestSingletonBufferElement : IBufferElementData
 {
     public Entity Entity;
-    public fix3 Destination;
+    public fix2 Destination;
 }
 
 public struct TeleportEventData : IComponentData
 {
     public Entity Entity;
-    public fix3 Destination;
+    public fix2 Destination;
 }
 
 [UpdateAfter(typeof(ApplyVelocitySystem))]
@@ -102,7 +102,7 @@ internal partial class CommonWrites
         RequestTeleport(accessor, entity, Helpers.GetTileCenter(destination));
     }
 
-    public static void RequestTeleport(ISimWorldReadWriteAccessor accessor, Entity entity, fix3 destination)
+    public static void RequestTeleport(ISimWorldReadWriteAccessor accessor, Entity entity, fix2 destination)
     {
         var requests = accessor.GetExistingSystem<TeleportSystem>().GetRequestBuffer();
         requests.Add(new TeleportRequestSingletonBufferElement()

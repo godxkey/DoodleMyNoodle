@@ -34,16 +34,16 @@ public class DirectAlongPathSystem : SimComponentSystem
         {
             if (pathPositions.Length == 0)
             {
-                velocity.Value = fix3(0);
+                velocity.Value = fix2(0);
                 PostUpdateCommands.RemoveComponent<PathPosition>(entity);
                 return;
             }
 
             fix moveDist = moveSpeed.Value * deltaTime;
 
-            fix3 a = translation.Value;
-            fix3 b = translation.Value;
-            fix3 v = fix3(0);
+            fix2 a = translation.Value;
+            fix2 b = translation.Value;
+            fix2 v = fix2(0);
             fix vLength = 0;
             bool canRemovePositions = false;
 
@@ -67,9 +67,8 @@ public class DirectAlongPathSystem : SimComponentSystem
                 vLength = length(v);
             }
 
-            fix3 dir = (vLength == 0 ? fix3(0) : (v / vLength));
-
-            fix3 targetPosition = a + (dir * min(moveDist, vLength));
+            fix2 dir = (vLength == 0 ? fix2(0) : (v / vLength));
+            fix2 targetPosition = a + (dir * min(moveDist, vLength));
 
             velocity.Value = (targetPosition - translation.Value) / deltaTime;
         });
@@ -79,8 +78,8 @@ public class DirectAlongPathSystem : SimComponentSystem
     {
         if (EntityManager.HasComponent<PathPosition>(entity))
         {
-            fix3 entityPos = EntityManager.GetComponentData<FixTranslation>(entity);
-            fix3 newDestination = Helpers.GetTileCenter(entityPos);
+            fix2 entityPos = EntityManager.GetComponentData<FixTranslation>(entity);
+            fix2 newDestination = Helpers.GetTileCenter(entityPos);
             EntityManager.SetOrAddComponentData(entity, new Destination() { Value = newDestination });
         }
     }

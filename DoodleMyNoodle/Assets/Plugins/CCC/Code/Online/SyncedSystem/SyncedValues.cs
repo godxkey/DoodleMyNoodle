@@ -22,7 +22,7 @@ namespace CCC.Online
         public static bool CanWriteValues { get; internal set; }
         public static bool IsSystemReady => s_DriverInstance != null;
 
-        public delegate void DataChangeDelegate<T>(in T newValue);
+        public delegate void DataChangeDelegate<T>(T newValue);
         public delegate void DataDestroyDelegate();
 
         public static void SetOrCreate<T>(in T value) where T : struct

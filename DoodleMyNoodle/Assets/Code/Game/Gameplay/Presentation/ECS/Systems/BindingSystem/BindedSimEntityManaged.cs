@@ -121,14 +121,14 @@ public class BindedSimEntityManaged : MonoBehaviour, IIndexedInList, ISystemStat
         Gizmos.color = Color.white;
         foreach (int2 tile in UpdateArcherAISystem._shootingPositions)
         {
-            Gizmos.DrawWireCube((Vector3)Helpers.GetTileCenter(tile), Vector3.one);
+            Gizmos.DrawWireCube((Vector2)Helpers.GetTileCenter(tile), Vector3.one);
         }
 
 
         Gizmos.color = Color.green;
         foreach (int2 tile in UpdateArcherAISystem._path)
         {
-            Gizmos.DrawWireCube((Vector3)Helpers.GetTileCenter(tile), Vector3.one * 0.9f);
+            Gizmos.DrawWireCube((Vector2)Helpers.GetTileCenter(tile), Vector3.one * 0.9f);
         }
     }
 #endif

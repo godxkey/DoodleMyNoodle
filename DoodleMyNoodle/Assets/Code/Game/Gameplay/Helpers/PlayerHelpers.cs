@@ -70,7 +70,7 @@ public static class PlayerHelpers
             return null;
     }
 
-    public static PlayerInfo GetPlayerFromSimPlayer(in PersistentId simPlayerId)
+    public static PlayerInfo GetPlayerFromSimPlayer(PersistentId simPlayerId)
     {
         if (PlayerRepertoireSystem.Instance == null)
             return null;

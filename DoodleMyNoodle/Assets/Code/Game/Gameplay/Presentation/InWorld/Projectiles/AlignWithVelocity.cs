@@ -24,7 +24,7 @@ public class AlignWithVelocity : BindedPresentationEntityComponent
     {
         if (SimWorld.TryGetComponentData(SimEntity, out Velocity velocity))
         {
-            float2 velocity2D = (float2)((fix3)velocity).xy;
+            float2 velocity2D = (float2)(fix2)velocity;
 
             if (!velocity2D.Equals(float2(0, 0)))
             {

@@ -18,10 +18,10 @@ public class GamePresentationCache
     public List<Entity> PointedTileActors = new List<Entity>();
 
     public Entity LocalPawn;
-    public fix3 LocalPawnPosition;
+    public fix2 LocalPawnPosition;
     public int2 LocalPawnTile;
     public Entity LocalPawnTileEntity;
-    public Vector3 LocalPawnPositionFloat;
+    public Vector2 LocalPawnPositionFloat;
     public Entity LocalController;
     public Team LocalPawnTeam;
     public Team CurrentTeam;

@@ -83,7 +83,7 @@ public class ParameterSelectionState : UIState
             }
             else
             {
-                int2 entityPosition = (int2)SimWorld.GetComponentData<FixTranslation>(_objectEntity).Value.xy;
+                int2 entityPosition = (int2)SimWorld.GetComponentData<FixTranslation>(_objectEntity).Value;
 
                 SimPlayerInputUseObjectGameAction simInput = new SimPlayerInputUseObjectGameAction(entityPosition, _objectUseParameters);
                 SimWorld.SubmitInput(simInput);

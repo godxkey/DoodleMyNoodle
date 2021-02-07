@@ -81,7 +81,7 @@ public class LevelManager : GameSystem<LevelManager>
         }
     }
 
-    private void OnLevelSet(in SyncedValueCurrentLevel newValue)
+    private void OnLevelSet(SyncedValueCurrentLevel newValue)
     {
         if (!string.IsNullOrEmpty(newValue.Name))
         {

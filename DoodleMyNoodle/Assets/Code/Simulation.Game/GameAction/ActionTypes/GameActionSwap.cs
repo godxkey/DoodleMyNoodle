@@ -22,7 +22,7 @@ public class GameActionSwap : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            fix3 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn).Value;
+            fix2 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
 
             // find target
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);

@@ -76,7 +76,7 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
 
     private static void KillVelocityInDirection(ref Velocity velocity, int2 dir)
     {
-        fix3 vel = velocity.Value;
+        fix2 vel = velocity.Value;
         if (dir.x > 0)
             vel.x = min(vel.x, 0);
         else if (dir.x < 0)

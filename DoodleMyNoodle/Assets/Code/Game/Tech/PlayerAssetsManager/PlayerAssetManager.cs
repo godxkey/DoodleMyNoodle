@@ -47,7 +47,7 @@ public abstract class PlayerAssetManager : GameSystem<PlayerAssetManager>
         _assetMap.Clear();
     }
 
-    public void PublishAssetChanges(in Guid id)
+    public void PublishAssetChanges(Guid id)
     {
         if (!_assetMap.TryGetValue(id, out PlayerAsset playerAsset))
         {
@@ -58,12 +58,12 @@ public abstract class PlayerAssetManager : GameSystem<PlayerAssetManager>
         PublishAssetChangesInternal(playerAsset);
     }
 
-    public T GetAsset<T>(in Guid id) where T : PlayerAsset
+    public T GetAsset<T>(Guid id) where T : PlayerAsset
     {
         return GetAsset(id) as T;
     }
 
-    public PlayerAsset GetAsset(in Guid id)
+    public PlayerAsset GetAsset(Guid id)
     {
         if (id == Guid.Empty)
             return null;

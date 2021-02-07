@@ -35,8 +35,8 @@ public class ItemContainerInteractableByClick : ObjectInteractableByClick
         {
             if (_inventoryDisplayed && Cache.LocalPawn == interacted.Instigator)
             {
-                fix3 itemContainerPosition = SimWorld.GetComponentData<FixTranslation>(SimEntity);
-                fix3 localPawnPosition = SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn);
+                fix2 itemContainerPosition = SimWorld.GetComponentData<FixTranslation>(SimEntity);
+                fix2 localPawnPosition = SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn);
 
                 fix interactionTileRange = SimWorld.GetComponentData<Interactable>(SimEntity).Range;
 

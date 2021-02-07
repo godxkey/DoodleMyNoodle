@@ -32,9 +32,9 @@ public class GameActionThrowProjectile : GameAction
             Entity projectileInstance = accessor.Instantiate(settings.ProjectilePrefab);
 
             // set projectile data
-            fix3 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
-            fix3 instigatorPos = Helpers.GetTileCenter(Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn)));
-            fix3 v = normalize(spawnPos - instigatorPos);
+            fix2 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
+            fix2 instigatorPos = Helpers.GetTileCenter(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
+            fix2 v = normalize(spawnPos - instigatorPos);
 
             accessor.SetOrAddComponentData(projectileInstance, new Velocity() { Value = settings.ThrowSpeed * v });
             accessor.SetOrAddComponentData(projectileInstance, new FixTranslation() { Value = Helpers.GetTileCenter(paramTile.Tile) });

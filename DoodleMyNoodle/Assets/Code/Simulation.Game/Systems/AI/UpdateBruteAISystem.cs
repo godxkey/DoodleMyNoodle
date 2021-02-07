@@ -103,7 +103,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         _attackableEntities.Dispose();
     }
 
-    private void UpdateMentalState(in Entity controller, in Team controllerTeam, ref BruteAIData agentData, in Entity agentPawn)
+    private void UpdateMentalState(Entity controller, Team controllerTeam, ref BruteAIData agentData, Entity agentPawn)
     {
         switch (agentData.State)
         {
@@ -146,10 +146,10 @@ public class UpdateBruteAISystem : SimComponentSystem
         }
     }
 
-    private void UpdateMentalState_Patrol(in Entity controller, in Team controllerTeam, ref BruteAIData agentData, in Entity agentPawn)
+    private void UpdateMentalState_Patrol(Entity controller, Team controllerTeam, ref BruteAIData agentData, Entity agentPawn)
     {
         // TDLR: Search for enemy within range (no line of sight required)
-        fix3 pawnPos = EntityManager.GetComponentData<FixTranslation>(agentPawn);
+        fix2 pawnPos = EntityManager.GetComponentData<FixTranslation>(agentPawn);
         int2 agentTile = Helpers.GetTile(pawnPos);
 
         Entity closest = Entity.Null;
@@ -205,7 +205,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         }
     }
 
-    private bool IsReadyToAct(in fix time, in Entity controller, in Team team, in BruteAIData agentData, in ControlledEntity pawn)
+    private bool IsReadyToAct(fix time, Entity controller, Team team, BruteAIData agentData, ControlledEntity pawn)
     {
         if (time < agentData.NoActionUntilTime)
         {
@@ -220,7 +220,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         return true;
     }
 
-    private bool Act(in Entity controller, in Team team, ref BruteAIData agentData, in ControlledEntity pawn)
+    private bool Act(Entity controller, Team team, ref BruteAIData agentData, ControlledEntity pawn)
     {
         switch (agentData.State)
         {
@@ -237,7 +237,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         return false;
     }
 
-    private bool Act_Patrol(in Entity controller, in Team team, ref BruteAIData agentData, in ControlledEntity pawn)
+    private bool Act_Patrol(Entity controller, Team team, ref BruteAIData agentData, ControlledEntity pawn)
     {
         int turnCount = CommonReads.GetTurn(Accessor);
 
@@ -280,7 +280,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         return false;
     }
 
-    private bool Act_PositionForAttack(in Entity controller, in Team team, ref BruteAIData agentData, in ControlledEntity pawn)
+    private bool Act_PositionForAttack(Entity controller, Team team, ref BruteAIData agentData, ControlledEntity pawn)
     {
         int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(pawn));
         int2 enemyTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
@@ -327,7 +327,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         return CommonWrites.TryInputUseItem<GameActionMove>(Accessor, controller, closestTile.Value);
     }
 
-    private bool Act_Attacking(in Entity controller, in Team team, ref BruteAIData agentData, in ControlledEntity pawn)
+    private bool Act_Attacking(Entity controller, Team team, ref BruteAIData agentData, ControlledEntity pawn)
     {
         int2 attackTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
 

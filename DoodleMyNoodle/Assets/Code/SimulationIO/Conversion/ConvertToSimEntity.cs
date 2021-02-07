@@ -1,26 +1,20 @@
-﻿using System.Collections;
+﻿using CCC.Fix2D.Authoring;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
-public class ConvertToSimEntity : ConvertToEntityMultiWorld
+public class ConvertToSimEntity : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
 {
     public override GameWorldType WorldToConvertTo => GameWorldType.Simulation;
 
-    protected override void Awake()
+    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        FillLocalFixTransformData();
-
-        base.Awake();
-    }
-
-    public void FillLocalFixTransformData()
-    {
-        if (gameObject.HasComponent<NoTransform>())
-            return;
-
-        gameObject.GetOrAddComponent<FixTransformAuth>();
+        if (!gameObject.HasComponent<NoTransform>())
+        {
+            conversionSystem.World.GetExistingSystem<ConvertToFixTransformSystem>().ToConvert.Add(transform);
+        }
     }
 }
 

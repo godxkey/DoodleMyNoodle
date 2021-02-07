@@ -9,14 +9,14 @@ public struct DamageEventData : IComponentData
 {
     public Entity EntityDamaged;
     public int DamageApplied;
-    public fix3 Position;
+    public fix2 Position;
 }
 
 public struct HealEventData : IComponentData
 {
     public Entity EntityHealed;
     public int HealApplied;
-    public fix3 Position;
+    public fix2 Position;
 }
 
 public struct DamageRequestSingletonTag : IComponentData

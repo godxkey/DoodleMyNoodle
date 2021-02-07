@@ -59,8 +59,8 @@ public class ConvertViewBindingDefinitionToEntities : ConvertToEntity, IConvertG
         childTr.localPosition = tr.localPosition;
         childTr.localRotation = tr.localRotation;
         childTr.localScale = tr.localScale;
-        if (childConverter is ConvertToSimEntity simConverter)
-            simConverter.FillLocalFixTransformData();
+        //if (childConverter is ConvertToSimEntity simConverter)
+        //    simConverter.FillLocalFixTransformData();
 
         // if we have blueprints under our hierarchy ...
         int childCount = tr.childCount;

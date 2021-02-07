@@ -28,7 +28,7 @@ public struct RemoveTransformInConversionTag : IComponentData
 }
 
 [UpdateInGroup(typeof(GameObjectAfterConversionGroup))]
-[ConverterVersion("joe", 1)]
+[ConverterVersion("fred", 1)]
 class RemoveTransformConversionSystem : GameObjectConversionSystem
 {
     private void Convert(Transform transform)

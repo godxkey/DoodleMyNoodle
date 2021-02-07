@@ -34,7 +34,7 @@ public class MessageDisplaySystem : GamePresentationSystem<MessageDisplaySystem>
                     if (SimWorld.TryGetComponentData(tileActor, out Message message))
                     {
                         _displayedMessage.Set(message);
-                        _messagePosition.Set((Vector3)(fix3)SimWorld.GetComponentData<FixTranslation>(tileActor));
+                        _messagePosition.Set((Vector2)(fix2)SimWorld.GetComponentData<FixTranslation>(tileActor));
                         break;
                     }
                 }

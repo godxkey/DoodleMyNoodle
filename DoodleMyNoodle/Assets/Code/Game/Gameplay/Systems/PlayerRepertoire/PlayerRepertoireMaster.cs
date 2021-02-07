@@ -8,7 +8,7 @@ public abstract class PlayerRepertoireMaster : PlayerRepertoireSystem
 
     ushort _playerIdCounter = PlayerId.FirstValid.Value;
 
-    public void AssignSimPlayerToPlayer(in PlayerId playerId, in PersistentId simPlayerId)
+    public void AssignSimPlayerToPlayer(PlayerId playerId, PersistentId simPlayerId)
     {
         PlayerInfo playerInfo = GetPlayerInfo(playerId);
 
@@ -23,7 +23,7 @@ public abstract class PlayerRepertoireMaster : PlayerRepertoireSystem
         OnAssignSimPlayerToPlayer(playerInfo, simPlayerId);
     }
 
-    protected virtual void OnAssignSimPlayerToPlayer(PlayerInfo playerInfo, in PersistentId simPlayerId) { }
+    protected virtual void OnAssignSimPlayerToPlayer(PlayerInfo playerInfo, PersistentId simPlayerId) { }
 
     protected override void Internal_OnGameReady()
     {

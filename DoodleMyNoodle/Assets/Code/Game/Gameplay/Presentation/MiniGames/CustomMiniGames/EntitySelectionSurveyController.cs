@@ -14,7 +14,7 @@ public class EntitySelectionSurveyController : SurveyBaseController
         List<GameAction.ParameterData> results = new List<GameAction.ParameterData>();
         if (_selectedEntity != Entity.Null)
         {
-            results.Add(new GameActionParameterEntity.Data(Cache.SimWorld.GetComponentData<FixTranslation>(_selectedEntity).Value.xy));
+            results.Add(new GameActionParameterEntity.Data(Cache.SimWorld.GetComponentData<FixTranslation>(_selectedEntity)));
         }
         return results;
     }

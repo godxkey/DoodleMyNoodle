@@ -40,7 +40,7 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
         return null;
     }
 
-    protected int GetIndexOfPlayer(in PlayerId playerId)
+    protected int GetIndexOfPlayer(PlayerId playerId)
     {
         for (int i = 0; i < _players.Count; i++)
         {

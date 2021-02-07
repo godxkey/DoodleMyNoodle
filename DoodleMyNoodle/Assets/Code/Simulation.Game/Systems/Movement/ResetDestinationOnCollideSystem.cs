@@ -11,8 +11,8 @@ public class ResetDestinationOnCollideSystem : SimComponentSystem
         {
             if (EntityManager.HasComponent<PathPosition>(collisionEvent.Entity))
             {
-                fix3 entityPos = EntityManager.GetComponentData<FixTranslation>(collisionEvent.Entity).Value;
-                fix3 newDestination = Helpers.GetTileCenter(entityPos);
+                fix2 entityPos = EntityManager.GetComponentData<FixTranslation>(collisionEvent.Entity);
+                fix2 newDestination = Helpers.GetTileCenter(entityPos);
                 EntityManager.SetOrAddComponentData(collisionEvent.Entity, new Destination() { Value = newDestination });
             }
         });

@@ -245,7 +245,7 @@ public class UpdateArcherAISystem : SimComponentSystem
             return (Entity.Null, default);
         }
 
-        fix3 pawnPos = EntityManager.GetComponentData<FixTranslation>(agentPawn);
+        fix2 pawnPos = EntityManager.GetComponentData<FixTranslation>(agentPawn);
         int2 pawnTile = Helpers.GetTile(pawnPos);
         Pathfinding.FindCheapestNavigablePathFromMany(Accessor, pawnTile, _shootingPositions.Slice(), Pathfinding.MAX_PATH_LENGTH, _path);
 

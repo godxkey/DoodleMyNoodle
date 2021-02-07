@@ -11,7 +11,7 @@ public class ExplosionEventDisplaySystem : GamePresentationSystem<ExplosionEvent
         Cache.SimWorld.Entities.ForEach((ref ExplosionEventData explosionData) =>
         {
             // TODO : Do a pool system for explosion
-            Vector3 tileCenter = (Vector3)Helpers.GetTileCenter(explosionData.ExplodedTile);
+            Vector2 tileCenter = (Vector2)Helpers.GetTileCenter(explosionData.ExplodedTile);
             Instantiate(ExplosionPrefab, tileCenter, Quaternion.identity);
         });
     }

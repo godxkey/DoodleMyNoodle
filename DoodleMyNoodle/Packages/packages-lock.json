@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "com.ccc-development.fix2d": {
+      "version": "file:com.ccc.fix2d",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.entities": "0.16.0-preview.21"
+      }
+    },
     "com.unity-x.fixmath": {
       "version": "file:com.unity-x.fixmath",
       "depth": 0,

@@ -21,11 +21,12 @@ public class CopyTransformToViewSystem : ViewJobComponentSystem
 
         var copyRotJobHandle = Entities
             .WithReadOnly(simRotations)
-            .ForEach((ref Rotation rotation, in BindedSimEntity linkedSimEntity)=>
+            .ForEach((ref Rotation rotation, in BindedSimEntity linkedSimEntity) =>
         {
             if (simRotations.HasComponent(linkedSimEntity.SimEntity))
             {
-                rotation.Value = simRotations[linkedSimEntity.SimEntity].Value.ToUnityQuat();
+                fix rot = simRotations[linkedSimEntity.SimEntity].Value;
+                rotation.Value = fixQuaternion.FromEuler(0, 0, rot).ToUnityQuat();
             }
         }).Schedule(jobHandle);
 
@@ -34,14 +35,15 @@ public class CopyTransformToViewSystem : ViewJobComponentSystem
         //      Copy Translation
         ////////////////////////////////////////////////////////////////////////////////////////
         ComponentDataFromEntity<FixTranslation> simTranslations = SimWorldAccessor.GetComponentDataFromEntity<FixTranslation>();
-        
+
         var copyTrJobHandle = Entities
             .WithReadOnly(simTranslations)
             .ForEach((ref Translation translation, in BindedSimEntity linkedSimEntity) =>
         {
             if (simTranslations.HasComponent(linkedSimEntity.SimEntity))
             {
-                translation.Value = simTranslations[linkedSimEntity.SimEntity].Value.ToUnityVec();
+                fix2 pos = simTranslations[linkedSimEntity.SimEntity].Value;
+                translation.Value = new float3((float)pos.x, (float)pos.y, 0);
             }
         }).Schedule(jobHandle);
 
@@ -57,9 +59,9 @@ public class CopyTransformToViewGameObjectSystem : ViewSystemBase
     [BurstCompile]
     struct CopyTransforms : IJobParallelForTransform
     {
-        [ReadOnly] 
+        [ReadOnly]
         public ComponentDataFromEntity<FixTranslation> SimTranslations;
-        [ReadOnly] 
+        [ReadOnly]
         public ComponentDataFromEntity<FixRotation> SimRotations;
 
         [DeallocateOnJobCompletion]
@@ -76,7 +78,7 @@ public class CopyTransformToViewGameObjectSystem : ViewSystemBase
 
             if (SimRotations.HasComponent(simEntity))
             {
-                transform.localRotation = SimRotations[simEntity].Value.ToUnityQuat();
+                transform.localRotation = Quaternion.Euler(0, 0, (float)SimRotations[simEntity].Value);
             }
         }
     }
@@ -95,7 +97,7 @@ public class CopyTransformToViewGameObjectSystem : ViewSystemBase
     protected override void OnUpdate()
     {
         TransformAccessArray transforms = _viewTransformsQ.GetTransformAccessArray();
-        
+
         Dependency = new CopyTransforms
         {
             SimTranslations = SimWorldAccessor.GetComponentDataFromEntity<FixTranslation>(),

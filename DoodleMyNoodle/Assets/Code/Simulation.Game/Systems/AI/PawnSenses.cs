@@ -40,8 +40,8 @@ public partial class CommonReads
             NativeList<Entity> result,
             bool drawGizmos = false)
         {
-            fix3 pawnPos = accessor.GetComponentData<FixTranslation>(pawn);
-            fix2 pawnEyes = (fix2)pawnPos + UpdateArcherAISystem.PAWN_EYES_OFFSET;
+            fix2 pawnPos = accessor.GetComponentData<FixTranslation>(pawn);
+            fix2 pawnEyes = pawnPos + UpdateArcherAISystem.PAWN_EYES_OFFSET;
 
             var positions = accessor.GetComponentDataFromEntity<FixTranslation>();
             var attackableEntities = pawnsQuery.ToEntityArray(Allocator.TempJob);

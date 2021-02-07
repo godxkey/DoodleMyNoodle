@@ -30,9 +30,9 @@ public class GameActionDropObject : GameAction
             Entity objectInstance = accessor.Instantiate(settings.ObjectPrefab);
 
             // set projectile data
-            fix3 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
+            fix2 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
 
-            accessor.SetOrAddComponentData(objectInstance, new Velocity() { Value = DROPPING_SPEED * fix3.down });
+            accessor.SetOrAddComponentData(objectInstance, new Velocity() { Value = DROPPING_SPEED * fix2.down });
             accessor.SetOrAddComponentData(objectInstance, new FixTranslation() { Value = spawnPos });
             accessor.SetOrAddComponentData(objectInstance, new PotentialNewTranslation() { Value = spawnPos });
 

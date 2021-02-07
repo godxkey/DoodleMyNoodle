@@ -10,10 +10,12 @@ namespace SimulationControl
     [UpdateInGroup(typeof(SimulationControlSystemGroup))]
     public class LoadSimulationSceneSystem : ComponentSystem
     {
+        private List<SimCommandLoadScene> _inputsToIgnore = new List<SimCommandLoadScene>();
         private List<ISceneLoadPromise> _sceneLoads = new List<ISceneLoadPromise>();
         private List<ISceneLoadPromise> _sceneLoadsToUnregisterOnUpdate = new List<ISceneLoadPromise>();
         private SimulationWorldSystem _simulationWorldSystem;
         private TickSimulationSystem _tickSystem;
+        private DirtyValue<uint> _tickId;
 
         public ReadOnlyList<ISceneLoadPromise> OngoingSceneLoads => _sceneLoads.AsReadOnlyNoAlloc();
 
@@ -27,6 +29,7 @@ namespace SimulationControl
 
         protected override void OnUpdate()
         {
+
             foreach (var item in _sceneLoadsToUnregisterOnUpdate)
             {
                 _simulationWorldSystem.UnregisterIncomingEntityInjection(item.SceneName);
@@ -40,13 +43,25 @@ namespace SimulationControl
             {
                 SimTickData tick = _tickSystem.AvailableTicks.First();
 
+                _tickId.Set(tick.ExpectedNewTickId); // clear ignore list if tick has changed
+                if (_tickId.ClearDirty())
+                {
+                    _inputsToIgnore.Clear();
+                }
+
                 foreach (SimInputSubmission inputSubmission in tick.InputSubmissions)
                 {
                     if (inputSubmission.Input is SimCommandLoadScene loadSceneCommand)
                     {
-                        if (!WasAddedToSceneLoads(loadSceneCommand.SceneName))
+                        if (!IsLoading(loadSceneCommand.SceneName) && !_inputsToIgnore.Contains(loadSceneCommand))
                         {
+                            // add input to 'ignore list' to make sure we don't load the same scenes over and over
+                            _inputsToIgnore.Add(loadSceneCommand);
+
+                            // prepare for entity injection (through convertion)
                             _simulationWorldSystem.RegisterIncomingEntityInjection(loadSceneCommand.SceneName);
+
+                            // request load
                             _sceneLoads.Add(SceneService.Load(loadSceneCommand.SceneName, LoadSceneMode.Additive, LocalPhysicsMode.Physics3D));
                         }
                     }
@@ -61,7 +76,7 @@ namespace SimulationControl
             }
         }
 
-        bool WasAddedToSceneLoads(string sceneName)
+        bool IsLoading(string sceneName)
         {
             foreach (ISceneLoadPromise scenePromise in _sceneLoads)
             {
