@@ -42,7 +42,8 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
     public string Guid => _guid;
     public GameObject BindedViewPrefab => _bindedViewPrefab;
     public TileBase BindedViewTile => _bindedViewTile;
-    public ViewTechType ViewTechType => _viewTechType;
+    public ViewTechType ViewTechType { get => _viewTechType; set => _viewTechType = value; }
+    public bool HasTransform { get => _hasTransform; set => _hasTransform = value; }
 
     [NonSerialized] private SimAssetId _runtimeId;
     [NonSerialized] private bool _runtimeIdAssigned = false;
