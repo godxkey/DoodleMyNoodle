@@ -125,6 +125,7 @@ namespace SimulationControl
 
             // sim group
             _simSimGroup.AddSystemToUpdateList(simWorld.CreateSystem<BeginSimulationEntityCommandBufferSystem>());
+            CCC.Fix2D.Fix2DHelpers.AddPhysicsSystemsToGroup(simWorld, _simSimGroup);
             _simSimGroup.AddSystemToUpdateList(simWorld.CreateSystem<EndSimulationEntityCommandBufferSystem>());
 
             // pres group

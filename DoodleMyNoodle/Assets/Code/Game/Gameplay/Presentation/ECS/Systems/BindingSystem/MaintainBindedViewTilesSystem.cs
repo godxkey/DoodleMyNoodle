@@ -21,8 +21,7 @@ public struct BindedTile : ISystemStateComponentData
 [UpdateAfter(typeof(BindedViewEntityCommandBufferSystem))]
 public class MaintainBindedViewTilesSystem : ViewSystemBase
 {
-    List<Vector3Int> _tilePos = new List<Vector3Int>();
-    List<TileBase> _tiles = new List<TileBase>();
+    List<(Vector3Int pos, TileBase tile)> _tileChangeBuffer = new List<(Vector3Int pos, TileBase tile)>();
 
     protected override void OnUpdate()
     {
@@ -31,20 +30,31 @@ public class MaintainBindedViewTilesSystem : ViewSystemBase
             return;
         }
 
-        _tilePos.Clear();
-        _tiles.Clear();
+        // scan over new and old bindings
 
-        DestroyOldTiles(_tilePos, _tiles);
-        CreateNewTiles(SimAssetBankInstance.GetLookup(), _tilePos, _tiles);
-
-        if (_tilePos.Count > 0)
-        {
-            var tilemap = SimTilemapViewInstance.Instance;
-            tilemap.SetTiles(_tilePos.ToArray(), _tiles.ToArray());
-        }
+        _tileChangeBuffer.Clear();
+        FindOldTiles(outTileChanges: _tileChangeBuffer);
+        FindNewTiles(SimAssetBankInstance.GetLookup(), outTileChanges: _tileChangeBuffer);
+        ApplyTileChanges(_tileChangeBuffer);
     }
 
-    private void DestroyOldTiles(List<Vector3Int> outTilePos, List<TileBase> outTiles)
+    private void ApplyTileChanges(List<(Vector3Int pos, TileBase tile)> tileChanges)
+    {
+        if (tileChanges.Count == 0)
+            return;
+
+        var tilemap = SimTilemapViewInstance.Instance;
+        Vector3Int[] pos = new Vector3Int[tileChanges.Count];
+        TileBase[] tiles = new TileBase[tileChanges.Count];
+        for (int i = 0; i < tileChanges.Count; i++)
+        {
+            pos[i] = tileChanges[i].pos;
+            tiles[i] = tileChanges[i].tile;
+        }
+        tilemap.SetTiles(pos, tiles);
+    }
+
+    private void FindOldTiles(List<(Vector3Int, TileBase)> outTileChanges)
     {
         Entities
             .WithAll<BindedTileTag>()
@@ -55,8 +65,7 @@ public class MaintainBindedViewTilesSystem : ViewSystemBase
             {
                 if (EntityManager.TryGetComponentData(entity, out BindedTile tile))
                 {
-                    outTilePos.Add(new Vector3Int(tile.Value.X, tile.Value.X, 0));
-                    outTiles.Add(null);
+                    outTileChanges.Add((new Vector3Int(tile.Value.X, tile.Value.Y, 0), null));
 
                     EntityManager.RemoveComponent<BindedTile>(entity);
                 }
@@ -65,7 +74,7 @@ public class MaintainBindedViewTilesSystem : ViewSystemBase
             }).Run();
     }
 
-    private void CreateNewTiles(SimAssetBank.Lookup lookup, List<Vector3Int> outTilePos, List<TileBase> outTiles)
+    private void FindNewTiles(SimAssetBank.Lookup lookup, List<(Vector3Int, TileBase)> outTileChanges)
     {
         var simEntityPos = SimWorldAccessor.GetComponentDataFromEntity<FixTranslation>();
         var simEntityTileIds = SimWorldAccessor.GetComponentDataFromEntity<TileId>();
@@ -90,15 +99,14 @@ public class MaintainBindedViewTilesSystem : ViewSystemBase
                     tile = Helpers.GetTileId(pos);
                 }
 
-                if(tile != null)
+                if (tile != null)
                 {
                     SimAsset simAsset = lookup.GetSimAsset(id);
 
                     if (simAsset.BindedViewTile != null)
                     {
                         TileId t = tile.Value;
-                        outTilePos.Add(new Vector3Int(t.X, t.Y, 0));
-                        outTiles.Add(simAsset.BindedViewTile);
+                        outTileChanges.Add((new Vector3Int(t.X, t.Y, 0), simAsset.BindedViewTile));
 
                         EntityManager.AddComponentData(viewEntity, new BindedTile() { Value = t });
                     }
