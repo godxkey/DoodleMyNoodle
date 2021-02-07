@@ -101,21 +101,8 @@ public class CreatePlayerSystem : SimComponentSystem
 
     private void SpawnUncontrolledPawn()
     {
-        int amountOfPlayers = 0; // put = to 1 if new player that just join isn't counted in foreach that follows
-        Entities
-            .WithAll<PlayerTag>()
-            .ForEach((Entity playerController) =>
-            {
-                amountOfPlayers++;
-            });
-
-        int amountOfSpawn = 0;
-        Entities
-            .WithAll<SpawnLocationTag>()
-            .ForEach((Entity playerController) =>
-            {
-                amountOfSpawn++;
-            });
+        int amountOfPlayers = GetEntityQuery(typeof(PlayerTag)).CalculateEntityCount();
+        int amountOfSpawn = GetEntityQuery(typeof(SpawnLocationTag)).CalculateEntityCount();
 
         int spawnSelected = amountOfPlayers;
         if (amountOfSpawn < amountOfPlayers)
@@ -125,10 +112,12 @@ public class CreatePlayerSystem : SimComponentSystem
         }
 
         FixTranslation posToSpawn = new FixTranslation();
+        int spawnPointIndex = 0;
         Entities
         .ForEach((Entity spawnEntity, ref SpawnLocationTag spawnTag, ref FixTranslation spawnLocation) =>
         {
-            if (spawnTag.OrderPosition == spawnSelected)
+            spawnPointIndex++;
+            if (spawnPointIndex == spawnSelected)
             {
                 posToSpawn = spawnLocation;
             }

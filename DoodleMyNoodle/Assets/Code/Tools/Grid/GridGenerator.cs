@@ -13,26 +13,9 @@ public class GridGenerator
     public static void Generate()
     {
         GameObject newSimulationGridPrefab = new GameObject();
-        newSimulationGridPrefab.AddComponent<Grid>();
-        newSimulationGridPrefab.GetComponent<Grid>().cellSize = new Vector3(1, 1, 0);
-        newSimulationGridPrefab.GetComponent<Grid>().cellGap = new Vector3(0, 0, 0);
-        newSimulationGridPrefab.GetComponent<Grid>().cellLayout = GridLayout.CellLayout.Rectangle;
-        newSimulationGridPrefab.GetComponent<Grid>().cellSwizzle = GridLayout.CellSwizzle.XYZ;
-
         newSimulationGridPrefab.AddComponent<SimAsset>();
         newSimulationGridPrefab.GetComponent<SimAsset>().HasTransform = true;
         newSimulationGridPrefab.GetComponent<SimAsset>().ViewTechType = ViewTechType.GameObject;
-
-        newSimulationGridPrefab.AddComponent<LevelGridAuth>();
-        newSimulationGridPrefab.GetComponent<LevelGridAuth>().Grid = newSimulationGridPrefab.GetComponent<Grid>();
-
-        LevelGridSettings GlobalGridSettings = AssetDatabase.LoadAssetAtPath<LevelGridSettings>("Assets/ScriptableObjects/Game/GridSettings/GridSettings.asset");
-        if (GlobalGridSettings == null)
-        {
-            Debug.LogError("Global Grid Settings missing (GridSettings.asset), please create the file in Assets/ScriptableObjects/Game/GridSettings");
-            return;
-        }
-        newSimulationGridPrefab.GetComponent<LevelGridAuth>().GlobalGridSettings = GlobalGridSettings;
 
         GameObject newViewGridPrefab = new GameObject();
         newViewGridPrefab.AddComponent<Grid>();
@@ -42,18 +25,32 @@ public class GridGenerator
         newViewGridPrefab.GetComponent<Grid>().cellSwizzle = GridLayout.CellSwizzle.XYZ;
 
         GameObject[] RootGameObjects = EditorSceneManager.GetActiveScene().GetRootGameObjects();
+        GameObject sceneGrid = null;
         foreach (GameObject gameObject in RootGameObjects)
         {
             if (gameObject.HasComponent<Grid>())
             {
+                sceneGrid = gameObject;
+                SetupSceneGrid(gameObject);
+
                 TilemapRenderer[] tilemapRenderers = gameObject.GetComponentsInChildren<TilemapRenderer>();
-                foreach (TilemapRenderer tileMap in tilemapRenderers)
+                foreach (TilemapRenderer tileMapRenderer in tilemapRenderers)
                 {
-                    GameObject tileMapCopy = new GameObject();
-                    tileMapCopy.name = tileMap.gameObject.name;
-                    CopyComponent(tileMap, tileMapCopy);
-                    CopyComponent(tileMap.gameObject.GetComponent<Tilemap>(), tileMapCopy);
-                    tileMapCopy.transform.parent = tileMap.sortingLayerName == "Grid_Addons" ? newSimulationGridPrefab.transform : newViewGridPrefab.transform;
+                    // Simulation Grid doesn't need to be copied in a prefab
+                    if (tileMapRenderer.sortingLayerName == "Grid_Addons")
+                    {
+                        continue;
+                    }
+
+                    Tilemap editorTilemap = tileMapRenderer.GetComponent<Tilemap>();
+                    if (tileMapRenderer == null || editorTilemap == null)
+                    {
+                        Debug.LogError("Grid is invalid since there's no tilemap or tilemaprenderer");
+                        continue;
+                    }
+
+                    GameObject tileMapCopy = CopySceneTileMap(tileMapRenderer, editorTilemap);
+                    tileMapCopy.transform.parent = newViewGridPrefab.transform;
                 }
 
                 break; // only do one grid
@@ -62,9 +59,26 @@ public class GridGenerator
 
         PrefabUtility.SaveAsPrefabAsset(newSimulationGridPrefab, GetGeneratedFilePath());
         newSimulationGridPrefab.DestroyImmediate();
-
+        
         PrefabUtility.SaveAsPrefabAsset(newViewGridPrefab, GetGeneratedFilePath(true));
         newViewGridPrefab.DestroyImmediate();
+
+        GameObject createdSimulationPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(GetGeneratedFilePath());
+        if (createdSimulationPrefab != null)
+        {
+            SimAsset simAsset = createdSimulationPrefab.GetComponent<SimAsset>();
+            if (simAsset != null)
+            {
+                createdSimulationPrefab.GetComponent<SimAsset>().Editor_SetBindedViewPrefab((GameObject)AssetDatabase.LoadAssetAtPath(GetGeneratedFilePath(true), typeof(GameObject)));
+                EditorUtility.SetDirty(createdSimulationPrefab);
+                AssetDatabase.SaveAssets();
+            }
+
+            if (sceneGrid != null && simAsset != null && sceneGrid.HasComponent<LevelGridAuth>())
+            {
+                sceneGrid.GetComponent<LevelGridAuth>().PrefabSimAsset = simAsset;
+            }
+        }
     }
 
     private static string GetGeneratedFilePath(bool isForView = false)
@@ -75,26 +89,62 @@ public class GridGenerator
         return PATH + category + "/Grids/" + fileName + ".prefab";
     }
 
-    static T CopyComponent<T>(T original, GameObject destination) where T : Component
+    private static void SetupSceneGrid(GameObject gridGameObject)
     {
-        System.Type type = original.GetType();
-        var dst = destination.GetComponent(type) as T;
-        if (!dst) dst = destination.AddComponent(type) as T;
-
-        var fields = type.GetFields();
-        foreach (var field in fields)
+        if (!gridGameObject.HasComponent<ConvertToSimEntity>())
         {
-            if (field.IsStatic) continue;
-            field.SetValue(dst, field.GetValue(original));
+            gridGameObject.AddComponent<ConvertToSimEntity>();
         }
 
-        var props = type.GetProperties();
-        foreach (var prop in props)
+        Grid gridComponent = gridGameObject.HasComponent<Grid>() ? gridGameObject.GetComponent<Grid>() : gridGameObject.AddComponent<Grid>();
+        gridComponent.cellSize = new Vector3(1, 1, 0);
+        gridComponent.cellGap = new Vector3(0, 0, 0);
+        gridComponent.cellLayout = GridLayout.CellLayout.Rectangle;
+        gridComponent.cellSwizzle = GridLayout.CellSwizzle.XYZ;
+
+        LevelGridAuth levelGridAuth = gridGameObject.HasComponent<LevelGridAuth>() ? gridGameObject.GetComponent<LevelGridAuth>() : gridGameObject.AddComponent<LevelGridAuth>();
+        levelGridAuth.Grid = gridComponent;
+
+        LevelGridSettings GlobalGridSettings = AssetDatabase.LoadAssetAtPath<LevelGridSettings>("Assets/ScriptableObjects/Game/GridSettings/GridSettings.asset");
+        if (GlobalGridSettings == null)
         {
-            if (!prop.CanWrite || !prop.CanWrite || prop.Name == "name") continue;
-            prop.SetValue(dst, prop.GetValue(original, null), null);
+            Debug.LogError("Global Grid Settings missing (GridSettings.asset), please create the file in Assets/ScriptableObjects/Game/GridSettings");
+            return;
+        }
+        levelGridAuth.GlobalGridSettings = GlobalGridSettings;
+    }
+
+    private static GameObject CopySceneTileMap(TilemapRenderer editorTileMapRenderer, Tilemap editorTilemap)
+    {
+        GameObject tileMapCopy = new GameObject();
+        tileMapCopy.name = editorTileMapRenderer.gameObject.name;
+
+        TilemapRenderer newTilemapRenderer = tileMapCopy.AddComponent<TilemapRenderer>();
+        if (newTilemapRenderer != null)
+        {
+            newTilemapRenderer.sortingLayerID = editorTileMapRenderer.sortingLayerID;
+            newTilemapRenderer.sortingOrder = editorTileMapRenderer.sortingOrder;
         }
 
-        return dst as T;
+        Tilemap newTilemap = tileMapCopy.GetComponent<Tilemap>();
+        newTilemap.size = editorTilemap.size;
+        newTilemap.origin = editorTilemap.origin;
+        if (newTilemap != null)
+        {
+            for (int i = 0; i < editorTilemap.size.x; i++)
+            {
+                for (int j = 0; j < editorTilemap.size.y; j++)
+                {
+                    Vector3Int currentTilePos = new Vector3Int(editorTilemap.origin.x + i, editorTilemap.origin.y + j, 0);
+                    TileBase currentTile = editorTilemap.GetTile(currentTilePos);
+                    if (currentTile != null)
+                    {
+                        newTilemap.SetTile(currentTilePos, currentTile);
+                    }
+                }
+            }
+        }
+
+        return tileMapCopy;
     }
 }

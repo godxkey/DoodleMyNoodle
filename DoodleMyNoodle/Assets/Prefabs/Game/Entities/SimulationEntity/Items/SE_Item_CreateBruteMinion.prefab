@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 294870752159730247}
   - component: {fileID: 1206813890925547763}
   - component: {fileID: -448175739285880440}
-  - component: {fileID: -4447897880707759495}
   - component: {fileID: 8201080054300536663}
   - component: {fileID: 2167994451671594935}
   - component: {fileID: 7310627432149463567}
+  - component: {fileID: 7721637205818176179}
   m_Layer: 0
   m_Name: SE_Item_CreateBruteMinion
   m_TagString: Untagged
@@ -53,6 +53,7 @@ MonoBehaviour:
   ConversionMode: 0
   _guid: 9baf798de8cb6b44b9a3d1ca5632da38
   _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
@@ -69,6 +70,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionSpawnMinion
+  PlayAnimation: 0
+  Animation: {fileID: 0}
 --- !u!114 &1206813890925547763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,20 +100,6 @@ MonoBehaviour:
   UseTime: 0
   TimeCooldown: 0
   TurnCooldown: 0
---- !u!114 &-4447897880707759495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aab0bbb9d8fb72349838f37b827631cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObjectPrefab: {fileID: 2768931431184588227, guid: e493693d6bc1d7141996b2e998c53144,
-    type: 3}
 --- !u!114 &8201080054300536663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,3 +140,17 @@ MonoBehaviour:
   ItemVisualInfo: {fileID: 11400000, guid: 40eb7b28a82cc1b4f98fdfe63415ed7e, type: 2}
   UseSpecificSurveys: 0
   SurveyList: []
+--- !u!114 &7721637205818176179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb26e9555303ed145bf40ee85413686e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectReference: {fileID: 6327200456021105714, guid: c2499b6284c63c449a6f80c27024d6f0,
+    type: 3}

@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 294870752159730247}
   - component: {fileID: 1206813890925547763}
   - component: {fileID: -448175739285880440}
-  - component: {fileID: -4447897880707759495}
   - component: {fileID: 8201080054300536663}
   - component: {fileID: 1407060609036426014}
+  - component: {fileID: 2803069504637877028}
   m_Layer: 0
   m_Name: SE_Item_DropRock
   m_TagString: Untagged
@@ -52,6 +52,7 @@ MonoBehaviour:
   ConversionMode: 0
   _guid: 8f11772ddaf2e2e448005076f4e04426
   _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
@@ -68,6 +69,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionDropObject
+  PlayAnimation: 0
+  Animation: {fileID: 0}
 --- !u!114 &1206813890925547763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,20 +99,6 @@ MonoBehaviour:
   UseTime: 0
   TimeCooldown: 0
   TurnCooldown: 4
---- !u!114 &-4447897880707759495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aab0bbb9d8fb72349838f37b827631cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObjectPrefab: {fileID: 2385346486794747607, guid: cdb5765c8d4f95f489e8a5505300a065,
-    type: 3}
 --- !u!114 &8201080054300536663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,3 +127,17 @@ MonoBehaviour:
   ItemVisualInfo: {fileID: 11400000, guid: 630e71a4e5f6c6e47a3caee2e3c8b92d, type: 2}
   UseSpecificSurveys: 0
   SurveyList: []
+--- !u!114 &2803069504637877028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb26e9555303ed145bf40ee85413686e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectReference: {fileID: 2385346486794747607, guid: b10aea4c768093045875e79bb85ea81c,
+    type: 3}

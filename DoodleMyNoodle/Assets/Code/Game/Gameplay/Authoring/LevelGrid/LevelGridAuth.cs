@@ -16,9 +16,11 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
     [FormerlySerializedAs("LevelGridSetting")]
     [SerializeField] private LevelGridSettings _globalGridSettings;
     [SerializeField] private Grid _grid;
+    [SerializeField] private SimAsset _prefabSimAsset;
 
     public LevelGridSettings GlobalGridSettings { get => _globalGridSettings; set => _globalGridSettings = value; }
     public Grid Grid { get => _grid; set => _grid = value; }
+    public SimAsset PrefabSimAsset { get => _prefabSimAsset; set => _prefabSimAsset = value; }
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -45,39 +47,44 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
 
         foreach (Tilemap tileMap in tileMaps)
         {
-            for (int y = minCoord.y; y <= maxCoord.y; y++)
+            // VE is already done in grid generator
+            if (tileMap.GetComponent<TilemapRenderer>().sortingLayerName == "Grid_Addons")
             {
-                for (int x = minCoord.x; x <= maxCoord.x; x++)
+                for (int y = minCoord.y; y <= maxCoord.y; y++)
                 {
-                    Vector3 worldPos = new Vector3(x, y, 0);
-                    Vector3Int gridCell = _grid.WorldToCell(worldPos);
-
-                    GameObject simEntityPrefab = _globalGridSettings.GetSimEntityPrefabFromTile(tileMap.GetTile(gridCell));
-
-                    if (simEntityPrefab != null)
+                    for (int x = minCoord.x; x <= maxCoord.x; x++)
                     {
-                        int2 tilePos = int2((int)worldPos.x, (int)worldPos.y);
-                        if (simEntityPrefab.TryGetComponent(out TileActorAuth tileActorAuth) && tileActorAuth.ShouldBeConvertedToTile())
+                        Vector3 worldPos = new Vector3(x, y, 0);
+                        Vector3Int gridCell = _grid.WorldToCell(worldPos);
+
+                        GameObject simEntityPrefab = _globalGridSettings.GetSimEntityPrefabFromTile(tileMap.GetTile(gridCell));
+
+                        if (simEntityPrefab != null)
                         {
-                            var simAssetId = simEntityPrefab.GetComponent<SimAsset>();
-                            startingTiles.Add(new StartingTileElement()
+                            int2 tilePos = int2((int)worldPos.x, (int)worldPos.y);
+                            if (simEntityPrefab.TryGetComponent(out TileActorAuth tileActorAuth) && tileActorAuth.ShouldBeConvertedToTile())
                             {
-                                AssetId = simAssetId != null ? simAssetId.GetSimAssetId() : SimAssetId.Invalid,
-                                Position = tilePos,
-                                TileFlags = tileActorAuth.GetTileFlags()
-                            });
-                        }
-                        else
-                        {
-                            Entity tileActorPrefab = conversionSystem.GetPrimaryEntity(simEntityPrefab);
+                                var simAssetId = simEntityPrefab.GetComponent<SimAsset>();
+                                startingTiles.Add(new StartingTileElement()
+                                {
+                                    AssetId = simAssetId != null ? simAssetId.GetSimAssetId() : SimAssetId.Invalid,
+                                    Position = tilePos,
+                                    TileFlags = tileActorAuth.GetTileFlags()
+                                });
+                            }
+                            else
+                            {
+                                Entity tileActorPrefab = conversionSystem.GetPrimaryEntity(simEntityPrefab);
 
-                            startingEntities.Add(new StartingTileActorElement() { Prefab = tileActorPrefab, Position = tilePos });
+                                startingEntities.Add(new StartingTileActorElement() { Prefab = tileActorPrefab, Position = tilePos });
+                            }
                         }
-
                     }
                 }
             }
         }
+
+        dstManager.AddComponentData(entity, _prefabSimAsset.GetSimAssetId());
     }
 
     private static void FindGridMinMax(Grid grid, Tilemap[] tileMaps, out int2 minCoord, out int2 maxCoord)
