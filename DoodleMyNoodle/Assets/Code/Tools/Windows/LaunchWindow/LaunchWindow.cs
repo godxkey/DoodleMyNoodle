@@ -4,30 +4,33 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEditor.UIElements;
 using UnityEditorX;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using UnityEngineX;
 
 public class LaunchWindow : EditorWindow
 {
     const string PATH = "Assets/Code/Tools/Windows/LaunchWindow/";
 
-    [MenuItem("Tools/Launch Window _F11", priority = 100)]
-    public static void ShowExample()
-    {
-        LaunchWindow wnd = GetWindow<LaunchWindow>();
-        wnd.titleContent = new GUIContent("LaunchWindow");
-    }
+    private List<PlayerProfile> _localPlayerProfiles;
+    private List<LaunchProfileElement> _profileElements = new List<LaunchProfileElement>();
+    private string[] _localPlayerProfileNames;
+    private PopupField<string> _elementLevel;
 
     public void OnEnable()
     {
         Rebuild();
+        EditorSceneManager.sceneOpened += OnSceneOpened;
     }
 
-    List<PlayerProfile> _localPlayerProfiles;
-    List<LaunchProfileElement> _profileElements = new List<LaunchProfileElement>();
-    string[] _localPlayerProfileNames;
+    private void OnDisable()
+    {
+        EditorSceneManager.sceneOpened -= OnSceneOpened;
+    }
 
     void Rebuild()
     {
@@ -152,7 +155,7 @@ public class LaunchWindow : EditorWindow
 
             List<string> levels = new List<string>();
             levels.Add(""); // the 'none' option
-            
+
             if (levelBank != null)
             {
                 foreach (var item in levelBank.Levels)
@@ -170,18 +173,18 @@ public class LaunchWindow : EditorWindow
                 return level;
             }
 
-            PopupField<string> levelMenu = new PopupField<string>("Level", levels, 0,
+            _elementLevel = new PopupField<string>("Level", levels, 0,
                 formatSelectedValueCallback: levelToDisplayName,
                 formatListItemCallback: levelToDisplayName);
 
-            container.Insert(0, levelMenu);
+            container.Insert(0, _elementLevel);
 
             if (levels.Contains(EditorLaunchData.level))
             {
-                levelMenu.value = EditorLaunchData.level;
+                _elementLevel.value = EditorLaunchData.level;
             }
 
-            levelMenu.RegisterValueChangedCallback(
+            _elementLevel.RegisterValueChangedCallback(
                 (ChangeEvent<string> changeEvent) =>
                 {
                     EditorLaunchData.level = changeEvent.newValue;
@@ -191,7 +194,7 @@ public class LaunchWindow : EditorWindow
         {
             var elementPlayOnline = root.Q<Toggle>(name: "online");
             var elementServerName = root.Q<TextField>(name: "serverName");
-            
+
             elementServerName.value = EditorLaunchData.serverName;
             elementServerName.RegisterValueChangedCallback(
                 (ChangeEvent<string> changeEvent) =>
@@ -207,10 +210,10 @@ public class LaunchWindow : EditorWindow
 
                     for (int i = 0; i < _profileElements.Count; i++)
                         _profileElements[i].UpdateContent();
-                    
+
                     elementServerName.EnableInClassList("hidden", !changeEvent.newValue);
                 });
-            
+
             elementServerName.EnableInClassList("hidden", !elementPlayOnline.value);
         }
 
@@ -331,6 +334,39 @@ public class LaunchWindow : EditorWindow
                 element.Add(newElement);
             }
         }
+
+        UpdateFromScenes();
+    }
+
+    private void OnSceneOpened(Scene scene, OpenSceneMode mode)
+    {
+        UpdateFromScenes();
+    }
+
+    private void UpdateFromScenes()
+    {
+        QuickStartEditorComponent quickStart = null;
+        for (int i = 0; i < EditorSceneManager.sceneCount; i++)
+        {
+            foreach (GameObject rooGO in EditorSceneManager.GetSceneAt(i).GetRootGameObjects())
+            {
+                if (rooGO.TryGetComponent(out quickStart))
+                    break;
+            }
+            if (quickStart != null)
+                break;
+        }
+
+        if (quickStart != null && quickStart.overrideLevel)
+        {
+            _elementLevel.SetEnabled(!quickStart.overrideLevel);
+            _elementLevel.label = "Level (set by scene)";
+        }
+        else
+        {
+            _elementLevel.SetEnabled(true);
+            _elementLevel.label = "Level";
+        }
     }
 
     void SetAsServer(LaunchProfileElement newServer)
@@ -449,4 +485,10 @@ public class LaunchWindow : EditorWindow
         }
     }
 
+    [MenuItem("Tools/Launch Window _F11", priority = 100)]
+    public static void ShowWindow()
+    {
+        LaunchWindow wnd = GetWindow<LaunchWindow>();
+        wnd.titleContent = new GUIContent("LaunchWindow");
+    }
 }
