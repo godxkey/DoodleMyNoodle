@@ -11,6 +11,3 @@
 [submodule "DoodleMyNoodle/Packages/com.unity-x.unity.mathematics-x"]
 	path = DoodleMyNoodle/Packages/com.unity-x.unity.mathematics-x
 	url = https://github.com/Unity-X/Unity.Mathematics-X.git
-[submodule "DoodleMyNoodle/Packages/com.ccc.fix2d"]
-	path = DoodleMyNoodle/Packages/com.ccc.fix2d
-	url = https://github.com/CCC-Development/Fix2D.git
