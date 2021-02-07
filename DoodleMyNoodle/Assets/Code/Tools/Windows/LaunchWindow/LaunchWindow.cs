@@ -189,26 +189,29 @@ public class LaunchWindow : EditorWindow
         }
 
         {
-            var element = root.Q<TextField>(name: "serverName");
-            element.value = EditorLaunchData.serverName;
-            element.RegisterValueChangedCallback(
+            var elementPlayOnline = root.Q<Toggle>(name: "online");
+            var elementServerName = root.Q<TextField>(name: "serverName");
+            
+            elementServerName.value = EditorLaunchData.serverName;
+            elementServerName.RegisterValueChangedCallback(
                 (ChangeEvent<string> changeEvent) =>
                 {
                     EditorLaunchData.serverName = changeEvent.newValue;
                 });
-        }
 
-        {
-            var element = root.Q<Toggle>(name: "online");
-            element.value = EditorLaunchData.playOnline;
-            element.RegisterValueChangedCallback(
+            elementPlayOnline.value = EditorLaunchData.playOnline;
+            elementPlayOnline.RegisterValueChangedCallback(
                 (ChangeEvent<bool> changeEvent) =>
                 {
                     EditorLaunchData.playOnline = changeEvent.newValue;
 
                     for (int i = 0; i < _profileElements.Count; i++)
                         _profileElements[i].UpdateContent();
+                    
+                    elementServerName.EnableInClassList("hidden", !changeEvent.newValue);
                 });
+            
+            elementServerName.EnableInClassList("hidden", !elementPlayOnline.value);
         }
 
         {
@@ -239,16 +242,16 @@ public class LaunchWindow : EditorWindow
 
         {
             var element = root.Q<Toggle>(name: "overrideScreen");
-            var childrendContainer = root.Q<VisualElement>(name: "overrideScreenContainer");
+            var childrenContainer = root.Q<VisualElement>(name: "overrideScreenContainer");
 
             element.value = EditorLaunchData.launchOverrideScreen;
-            childrendContainer.EnableInClassList("hidden", !element.value);
+            childrenContainer.EnableInClassList("hidden", !element.value);
 
             element.RegisterValueChangedCallback(
                 (ChangeEvent<bool> changeEvent) =>
                 {
                     EditorLaunchData.launchOverrideScreen = changeEvent.newValue;
-                    childrendContainer.EnableInClassList("hidden", !changeEvent.newValue);
+                    childrenContainer.EnableInClassList("hidden", !changeEvent.newValue);
                 });
         }
 
