@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngineX;
 
 public abstract class SurveyBaseController : MonoBehaviour
 {
@@ -17,13 +18,12 @@ public abstract class SurveyBaseController : MonoBehaviour
 
     public string DisplayName;
 
-    protected bool _isComplete = false;
+    [NonSerialized] protected bool _isComplete = true; // must be true on start
+    [NonSerialized] private bool _hasStarted = false;
+    [NonSerialized] protected GameAction.ParameterDescription[] _parameters;
 
     private Action<List<GameAction.ParameterData>> _onCompleteCallback;
-    private bool _hasStarted = false;
     private Coroutine _currentLoop;
-
-    protected GameAction.ParameterDescription[] _parameters;
 
     public void StartSurvey(Action<List<GameAction.ParameterData>> callback, params GameAction.ParameterDescription[] parameters)
     {
@@ -46,29 +46,29 @@ public abstract class SurveyBaseController : MonoBehaviour
 
     public virtual void Complete()
     {
-        if (!_isComplete)
+        if (_isComplete)
+            return;
+
+        _isComplete = true;
+        StopCoroutine(_currentLoop);
+
+        if (_onCompleteCallback != null)
         {
-            _isComplete = true;
-            StopCoroutine(_currentLoop);
+            _onCompleteCallback.Invoke(GetResult());
+        }
 
-            if (_onCompleteCallback != null)
+        if (DebugMode)
+        {
+            string debugText = GetDebugResult();
+            if (DebugDisplay != null)
             {
-                _onCompleteCallback.Invoke(GetResult());
+                DebugDisplay.text = debugText;
+                DebugDisplay.gameObject.SetActive(true);
             }
-
-            if (DebugMode)
-            {
-                string debugText = GetDebugResult();
-                if (DebugDisplay != null)
-                {
-                    DebugDisplay.text = debugText;
-                    DebugDisplay.gameObject.SetActive(true);
-                }
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+        }
+        else
+        {
+            Destroy(gameObject);
         }
     }
 

@@ -97,6 +97,11 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
         _viewTechType = value;
     }
 
+    public void Editor_SetShowGhost(bool showGhost)
+    {
+        _showGhost = showGhost;
+    }
+
     [NonSerialized] private GameObject _viewGhost;
     [NonSerialized] private Transform _viewGhostTr;
     [NonSerialized] private bool _enabled;

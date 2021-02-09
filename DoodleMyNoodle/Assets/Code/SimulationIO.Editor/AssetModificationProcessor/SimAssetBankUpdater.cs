@@ -43,6 +43,7 @@ public class SimAssetBankUpdater : AssetPostprocessor
 
         if (saveAsset)
         {
+            EditorUtility.SetDirty(bank);
             AssetDatabase.SaveAssets();
         }
     }
@@ -78,7 +79,6 @@ public class SimAssetBankUpdater : AssetPostprocessor
                 prefab.Editor_SetGuid(guid);
                 DebugEditor.LogAssetIntegrity($"[{nameof(SimAssetBankUpdater)}] Updated {prefab.name}'s assetId to: {guid}");
                 PrefabUtility.RecordPrefabInstancePropertyModifications(prefab);
-                EditorUtility.SetDirty(prefab);
                 return true;
             }
         }

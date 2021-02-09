@@ -2,6 +2,7 @@ using System;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngineX;
 
@@ -15,6 +16,7 @@ public class GridGenerator
         GameObject newSimulationGridPrefab = new GameObject();
         newSimulationGridPrefab.AddComponent<SimAsset>();
         newSimulationGridPrefab.GetComponent<SimAsset>().HasTransform = true;
+        newSimulationGridPrefab.GetComponent<SimAsset>().Editor_SetShowGhost(false);
         newSimulationGridPrefab.GetComponent<SimAsset>().ViewTechType = ViewTechType.GameObject;
 
         GameObject newViewGridPrefab = new GameObject();
@@ -24,9 +26,10 @@ public class GridGenerator
         newViewGridPrefab.GetComponent<Grid>().cellLayout = GridLayout.CellLayout.Rectangle;
         newViewGridPrefab.GetComponent<Grid>().cellSwizzle = GridLayout.CellSwizzle.XYZ;
 
-        GameObject[] RootGameObjects = EditorSceneManager.GetActiveScene().GetRootGameObjects();
+        Scene activeScene = EditorSceneManager.GetActiveScene();
+        GameObject[] rootGameObjects = activeScene.GetRootGameObjects();
         GameObject sceneGrid = null;
-        foreach (GameObject gameObject in RootGameObjects)
+        foreach (GameObject gameObject in rootGameObjects)
         {
             if (gameObject.HasComponent<Grid>())
             {
@@ -37,7 +40,7 @@ public class GridGenerator
                 foreach (TilemapRenderer tileMapRenderer in tilemapRenderers)
                 {
                     // Simulation Grid doesn't need to be copied in a prefab
-                    if (tileMapRenderer.sortingLayerName == "Grid_Addons")
+                    if (tileMapRenderer.sortingLayerName == GameConstants.GRID_SIMULATION_LAYER_NAME)
                     {
                         continue;
                     }
@@ -62,7 +65,6 @@ public class GridGenerator
         
         PrefabUtility.SaveAsPrefabAsset(newViewGridPrefab, GetGeneratedFilePath(true));
         newViewGridPrefab.DestroyImmediate();
-
         GameObject createdSimulationPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(GetGeneratedFilePath());
         if (createdSimulationPrefab != null)
         {
@@ -71,7 +73,6 @@ public class GridGenerator
             {
                 createdSimulationPrefab.GetComponent<SimAsset>().Editor_SetBindedViewPrefab((GameObject)AssetDatabase.LoadAssetAtPath(GetGeneratedFilePath(true), typeof(GameObject)));
                 EditorUtility.SetDirty(createdSimulationPrefab);
-                AssetDatabase.SaveAssets();
             }
 
             if (sceneGrid != null && simAsset != null && sceneGrid.HasComponent<LevelGridAuth>())
@@ -79,14 +80,18 @@ public class GridGenerator
                 sceneGrid.GetComponent<LevelGridAuth>().PrefabSimAsset = simAsset;
             }
         }
+
+        EditorSceneManager.MarkSceneDirty(activeScene);
+        AssetDatabase.SaveAssets();
     }
 
     private static string GetGeneratedFilePath(bool isForView = false)
     {
+        string prefix = isForView ? "VE" : "SE";
         string category = isForView ? "ViewEntity" : "SimulationEntity";
         string sceneName = EditorSceneManager.GetActiveScene().name;
-        string fileName = isForView ? "VE_" + sceneName + "_Grid" : "SE_" + sceneName + "_Grid";
-        return PATH + category + "/Grids/" + fileName + ".prefab";
+        string fileName =  $"{prefix}_Grid_{sceneName}";
+        return  $"{PATH}{category}/Grids/{fileName}.prefab";
     }
 
     private static void SetupSceneGrid(GameObject gridGameObject)

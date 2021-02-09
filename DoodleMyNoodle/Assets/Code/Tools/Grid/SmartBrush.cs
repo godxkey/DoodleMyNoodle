@@ -11,7 +11,7 @@ public class SmartBrush : GridBrush
     public enum TileMapLayers
     {
         Background,
-        LevelContent,
+        Gameplay,
         Foreground
     }
 

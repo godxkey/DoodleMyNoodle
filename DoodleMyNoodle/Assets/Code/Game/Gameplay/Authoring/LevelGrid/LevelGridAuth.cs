@@ -48,7 +48,7 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
         foreach (Tilemap tileMap in tileMaps)
         {
             // VE is already done in grid generator
-            if (tileMap.GetComponent<TilemapRenderer>().sortingLayerName == "Grid_Addons")
+            if (tileMap.GetComponent<TilemapRenderer>().sortingLayerName == GameConstants.GRID_SIMULATION_LAYER_NAME)
             {
                 for (int y = minCoord.y; y <= maxCoord.y; y++)
                 {
