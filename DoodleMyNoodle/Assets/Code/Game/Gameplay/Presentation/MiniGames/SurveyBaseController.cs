@@ -50,7 +50,9 @@ public abstract class SurveyBaseController : MonoBehaviour
             return;
 
         _isComplete = true;
-        StopCoroutine(_currentLoop);
+
+        if (_currentLoop != null)
+            StopCoroutine(_currentLoop);
 
         if (_onCompleteCallback != null)
         {

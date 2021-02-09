@@ -1,6 +1,8 @@
 ﻿using Unity.Entities;
 using Unity.Collections;
 using UnityEngineX;
+using Unity.Mathematics;
+using Unity.MathematicsX;
 
 [NetSerializable]
 public class SimInputPlayerCreate : SimMasterInput
@@ -39,6 +41,12 @@ public class CreatePlayerSystem : SimComponentSystem
 
                 // assign controllable entity if possible
                 Entity uncontrolledEntity = FindUncontrolledPawn();
+
+                if (uncontrolledEntity == Entity.Null) // if no pawn found, try spawing one
+                {
+                    uncontrolledEntity = SpawnUncontrolledPawn();
+                }
+
                 if (uncontrolledEntity != Entity.Null)
                 {
                     EntityManager.SetComponentData(newPlayerEntity, new ControlledEntity() { Value = uncontrolledEntity });
@@ -90,48 +98,40 @@ public class CreatePlayerSystem : SimComponentSystem
             }
         });
 
-        if (uncontrolledEntity == Entity.Null)
-        {
-            SpawnUncontrolledPawn();
-            return FindUncontrolledPawn();
-        }
-
         return uncontrolledEntity;
     }
 
-    private void SpawnUncontrolledPawn()
+    private Entity SpawnUncontrolledPawn()
     {
-        int amountOfPlayers = GetEntityQuery(typeof(PlayerTag)).CalculateEntityCount();
-        int amountOfSpawn = GetEntityQuery(typeof(SpawnLocationTag)).CalculateEntityCount();
-
-        int spawnSelected = amountOfPlayers;
-        if (amountOfSpawn < amountOfPlayers)
+        // get pawn prefab
+        if (!this.TryGetSingleton(out PlayerPawnPrefabReferenceSingletonComponent playerPawnPrefab))
         {
-            // manque de spawn point = loop dans les spawn points, eg: 3 spawn points, 5 joueurs: A B C A B
-            spawnSelected = (amountOfPlayers % amountOfSpawn) + 1;
+            Log.Error($"No Player Pawn Prefab Singelton, can't spawn player");
+            return Entity.Null;
         }
 
-        FixTranslation posToSpawn = new FixTranslation();
-        int spawnPointIndex = 0;
-        Entities
-        .ForEach((Entity spawnEntity, ref SpawnLocationTag spawnTag, ref FixTranslation spawnLocation) =>
-        {
-            spawnPointIndex++;
-            if (spawnPointIndex == spawnSelected)
-            {
-                posToSpawn = spawnLocation;
-            }
-        });
+        int playerCount = GetEntityQuery(typeof(PlayerTag)).CalculateEntityCount();
+        int spawnPointCount = GetEntityQuery(typeof(SpawnLocationTag)).CalculateEntityCount();
 
-        if (Accessor.TryGetSingleton(out PlayerPawnPrefabReferenceSingletonComponent playerPawnPrefab))
+        fix2 spawnPosition;
+
+        if (spawnPointCount == 0) // no spawn point, cannot spawn
         {
-            Entity playerInstance = EntityManager.Instantiate(playerPawnPrefab.Prefab);
-            Accessor.SetOrAddComponentData(playerInstance, new FixTranslation() { Value = posToSpawn.Value });
+            Log.Warning($"No spawn point, creating player pawn at (0,10).");
+            spawnPosition = new fix2(0, 10);
         }
         else
         {
-            Log.Error($"No Player Pawn Prefab Singelton, can't spawn player");
+            // loop dans les spawn points, eg: 3 spawn points, 5 joueurs: A B C A B
+            int spawnPointsIndex = mathX.mod(playerCount, spawnPointCount);
+            NativeArray<FixTranslation> spawnPointPositions = GetEntityQuery(typeof(SpawnLocationTag), typeof(FixTranslation)).ToComponentDataArray<FixTranslation>(Allocator.Temp);
+            spawnPosition = spawnPointPositions[spawnPointsIndex];
         }
+
+        Entity pawn = EntityManager.Instantiate(playerPawnPrefab.Prefab);
+        EntityManager.SetOrAddComponentData(pawn, new FixTranslation() { Value = spawnPosition });
+
+        return pawn;
     }
 }
 
