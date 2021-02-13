@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.MathematicsX;
 using UnityEngine;
 using UnityEngineX;
 
@@ -89,7 +90,7 @@ public static class NetMessageInterpreter
         }
 
         int netBitSize = NetSerializer.GetSerializedBitSize(message);
-        int messageSizeByte = netBitSize.CeiledToStep(8) / 8; // this will ceil the size to a multiple of 8
+        int messageSizeByte = mathX.ceil(netBitSize, 8) / 8; // this will ceil the size to a multiple of 8
 
         if (messageSizeByte > byteLimit)
         {

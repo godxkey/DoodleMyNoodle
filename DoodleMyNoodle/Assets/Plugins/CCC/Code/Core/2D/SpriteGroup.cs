@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngineX;
+using static Unity.Mathematics.math;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -34,7 +35,7 @@ public class SpriteGroup : MonoBehaviour
         {
             for (int i = 0; i < childRenderers.Length; i++)
             {
-                defaultAlphas[i] = (childRenderers[i].color.a / alpha).MaxLimit(1);
+                defaultAlphas[i] = min(childRenderers[i].color.a / alpha, 1);
             }
             ApplyAlphaToChildren();
         }
@@ -48,7 +49,7 @@ public class SpriteGroup : MonoBehaviour
         if (childRenderers != null)
             for (int i = 0; i < childRenderers.Length; i++)
             {
-                childRenderers[i].SetAlpha((defaultAlphas[i] * alpha).Clamped(0, 1));
+                childRenderers[i].SetAlpha(clamp(defaultAlphas[i] * alpha, 0, 1));
             }
     }
 }

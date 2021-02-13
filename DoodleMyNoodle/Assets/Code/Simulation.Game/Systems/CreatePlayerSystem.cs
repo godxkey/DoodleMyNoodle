@@ -110,7 +110,6 @@ public class CreatePlayerSystem : SimComponentSystem
             return Entity.Null;
         }
 
-        int playerCount = GetEntityQuery(typeof(PlayerTag)).CalculateEntityCount();
         int spawnPointCount = GetEntityQuery(typeof(SpawnLocationTag)).CalculateEntityCount();
 
         fix2 spawnPosition;
@@ -123,6 +122,7 @@ public class CreatePlayerSystem : SimComponentSystem
         else
         {
             // loop dans les spawn points, eg: 3 spawn points, 5 joueurs: A B C A B
+            int playerCount = GetEntityQuery(typeof(PlayerTag)).CalculateEntityCount();
             int spawnPointsIndex = mathX.mod(playerCount, spawnPointCount);
             NativeArray<FixTranslation> spawnPointPositions = GetEntityQuery(typeof(SpawnLocationTag), typeof(FixTranslation)).ToComponentDataArray<FixTranslation>(Allocator.Temp);
             spawnPosition = spawnPointPositions[spawnPointsIndex];

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CCC.Hidden;
+using static Unity.Mathematics.math;
+using static Unity.MathematicsX.mathX;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -48,7 +50,7 @@ public class InputAxis : ScriptableObject
 
     private void Consider(ref float val, float newVal)
     {
-        if (newVal.Abs() > val.Abs())
+        if (abs(newVal) > abs(val))
             val = newVal;
     }
 }

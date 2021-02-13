@@ -1,5 +1,7 @@
 using Unity.Mathematics;
 using UnityEngine;
+using static Unity.Mathematics.math;
+using static Unity.MathematicsX.mathX;
 
 public static class VectorExtensions
 {
@@ -95,16 +97,16 @@ public static class VectorExtensions
 
     public static Vector2 Rounded(this in Vector2 v)
     {
-        return new Vector2(v.x.Rounded(), v.y.Rounded());
+        return new Vector2(round(v.x), round(v.y));
     }
 
     public static Vector2Int RoundedToInt(this in Vector2 v)
     {
-        return new Vector2Int(v.x.RoundedToInt(), v.y.RoundedToInt());
+        return new Vector2Int((int)round(v.x), (int)round(v.y));
     }
     public static int2 RoundedToInt2(this in Vector2 v)
     {
-        return new int2(v.x.RoundedToInt(), v.y.RoundedToInt());
+        return new int2((int)round(v.x), (int)round(v.y));
     }
 
     public static Vector2 Rotate(this in Vector2 v, float angle)
@@ -200,10 +202,10 @@ public static class VectorExtensions
 
     public static Vector2 Abs(this in Vector2 v)
     {
-        return new Vector2(v.x.Abs(), v.y.Abs());
+        return new Vector2(abs(v.x), abs(v.y));
     }
     public static Vector3 Abs(this in Vector3 v)
     {
-        return new Vector3(v.x.Abs(), v.y.Abs(), v.z.Abs());
+        return new Vector3(abs(v.x), abs(v.y), abs(v.z));
     }
 }

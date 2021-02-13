@@ -28,7 +28,7 @@ public static class PresentationHelpers
 
     public static GameObject FindSimAssetPrefab(SimAssetId simAssetId)
     {
-        return SimAssetBankInstance.GetLookup().GetSimAsset(simAssetId).gameObject;
+        return SimAssetBankInstance.GetLookup().GetSimAsset(simAssetId)?.gameObject;
     }
 
     public static GameObject FindBindedView(Entity simEntity)

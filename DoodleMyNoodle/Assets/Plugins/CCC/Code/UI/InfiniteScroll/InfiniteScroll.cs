@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System;
 using UnityEngine.Events;
 using CCC.InspectorDisplay;
+using static Unity.Mathematics.math;
+using static Unity.MathematicsX.mathX;
 
 public abstract class InfiniteScroll : MonoBehaviour, IDragHandler
 {
@@ -103,7 +102,7 @@ public abstract class InfiniteScroll : MonoBehaviour, IDragHandler
         int mult = normalizedPosition > 1 ? -1 : 1;
 
         scrollRect.verticalNormalizedPosition += deplacement * mult;
-        OnVerticalRewind((itemDelta * mult).RoundedToInt());
+        OnVerticalRewind((int)round(itemDelta * mult));
     }
 
     protected virtual void OnVerticalRewind(int value) { }
@@ -116,7 +115,7 @@ public abstract class InfiniteScroll : MonoBehaviour, IDragHandler
         int mult = normalizedPosition > 1 ? -1 : 1;
 
         scrollRect.horizontalNormalizedPosition += deplacement * mult;
-        OnHorizontalRewind((itemDelta * mult).RoundedToInt());
+        OnHorizontalRewind((int)round(itemDelta * mult));
     }
     protected virtual void OnHorizontalRewind(int value) { }
 

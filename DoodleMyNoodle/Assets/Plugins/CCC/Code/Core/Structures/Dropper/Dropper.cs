@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Unity.Mathematics.math;
+using static Unity.MathematicsX.mathX;
 
 [System.Serializable]
 public class Dropper<T>
@@ -45,7 +47,7 @@ public class Dropper<T>
         LastEnqueuedElement = new Element()
         {
             Value = item,
-            ScheduledDrop = (scheduleBase + deltaTime).MinLimit(CurrentTime)
+            ScheduledDrop = max(scheduleBase + deltaTime, CurrentTime)
         };
 
         queue.Enqueue(LastEnqueuedElement);
