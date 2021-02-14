@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using CCC.Fix2D;
 using UnityEngineX;
 
 public struct BindedTileTag : ISystemStateComponentData

@@ -4,6 +4,7 @@ using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
 using UnityEngine;
+using CCC.Fix2D;
 
 public class GameActionThrowProjectile : GameAction
 {
@@ -36,9 +37,8 @@ public class GameActionThrowProjectile : GameAction
             fix2 instigatorPos = Helpers.GetTileCenter(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
             fix2 v = normalize(spawnPos - instigatorPos);
 
-            accessor.SetOrAddComponentData(projectileInstance, new Velocity() { Value = settings.ThrowSpeed * v });
-            accessor.SetOrAddComponentData(projectileInstance, new FixTranslation() { Value = Helpers.GetTileCenter(paramTile.Tile) });
-            accessor.SetOrAddComponentData(projectileInstance, new PotentialNewTranslation() { Value = Helpers.GetTileCenter(paramTile.Tile) });
+            accessor.SetOrAddComponentData(projectileInstance, new PhysicsVelocity(settings.ThrowSpeed * v));
+            accessor.SetOrAddComponentData(projectileInstance, new FixTranslation(Helpers.GetTileCenter(paramTile.Tile)));
 
             // add 'DamageOnContact' if ItemDamageData found
             if (accessor.HasComponent<GameActionDamageData>(context.Entity))

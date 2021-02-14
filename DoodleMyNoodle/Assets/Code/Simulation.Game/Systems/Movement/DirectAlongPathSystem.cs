@@ -1,9 +1,9 @@
 ﻿using Unity.Entities;
 using static Unity.Mathematics.math;
 using static fixMath;
+using CCC.Fix2D;
 using Unity.Mathematics;
 
-[UpdateBefore(typeof(ApplyVelocitySystem))]
 [UpdateAfter(typeof(CreatePathToDestinationSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class DirectAlongPathSystem : SimComponentSystem
@@ -28,13 +28,13 @@ public class DirectAlongPathSystem : SimComponentSystem
         Entities.ForEach(
             (Entity entity,
             DynamicBuffer<PathPosition> pathPositions,
-            ref Velocity velocity,
+            ref PhysicsVelocity velocity,
             ref FixTranslation translation,
             ref MoveSpeed moveSpeed) =>
         {
             if (pathPositions.Length == 0)
             {
-                velocity.Value = fix2(0);
+                velocity.Linear = fix2(0);
                 PostUpdateCommands.RemoveComponent<PathPosition>(entity);
                 return;
             }
@@ -69,8 +69,8 @@ public class DirectAlongPathSystem : SimComponentSystem
 
             fix2 dir = (vLength == 0 ? fix2(0) : (v / vLength));
             fix2 targetPosition = a + (dir * min(moveDist, vLength));
-
-            velocity.Value = (targetPosition - translation.Value) / deltaTime;
+            fix2 targetVelocity = (targetPosition - translation.Value) / deltaTime;
+            velocity.Linear = targetVelocity;// lerp(velocity, targetVelocity, deltaTime);
         });
     }
 

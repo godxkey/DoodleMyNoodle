@@ -2,6 +2,7 @@ using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
 using UnityEngine;
+using CCC.Fix2D;
 
 public class GameActionSpawnMinion : GameAction
 {

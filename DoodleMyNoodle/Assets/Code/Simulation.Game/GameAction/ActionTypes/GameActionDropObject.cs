@@ -2,6 +2,7 @@ using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
 using UnityEngine;
+using CCC.Fix2D;
 
 public class GameActionDropObject : GameAction
 {
@@ -32,9 +33,8 @@ public class GameActionDropObject : GameAction
             // set projectile data
             fix2 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
 
-            accessor.SetOrAddComponentData(objectInstance, new Velocity() { Value = DROPPING_SPEED * fix2.down });
-            accessor.SetOrAddComponentData(objectInstance, new FixTranslation() { Value = spawnPos });
-            accessor.SetOrAddComponentData(objectInstance, new PotentialNewTranslation() { Value = spawnPos });
+            accessor.SetOrAddComponentData(objectInstance, new PhysicsVelocity(DROPPING_SPEED * fix2.down));
+            accessor.SetOrAddComponentData(objectInstance, new FixTranslation(spawnPos));
 
             return true;
         }

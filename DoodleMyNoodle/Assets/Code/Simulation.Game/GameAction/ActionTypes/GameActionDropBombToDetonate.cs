@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Collections;
 using UnityEngine;
 using Unity.Mathematics;
+using CCC.Fix2D;
 
 public class GameActionDropBombToDetonate : GameAction
 {
@@ -38,10 +39,8 @@ public class GameActionDropBombToDetonate : GameAction
             // set projectile data
             fix2 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
 
-            accessor.SetOrAddComponentData(objectInstance, new Velocity() { Value = DROPPING_SPEED * fix2.down });
+            accessor.SetOrAddComponentData(objectInstance, new PhysicsVelocity() { Linear = DROPPING_SPEED * fix2.down });
             accessor.SetOrAddComponentData(objectInstance, new FixTranslation() { Value = spawnPos });
-            accessor.SetOrAddComponentData(objectInstance, new PotentialNewTranslation() { Value = spawnPos });
-
             accessor.SetOrAddComponentData(context.Entity, new ItemSpawnedObjectReference() { Entity = objectInstance });
 
             return true;

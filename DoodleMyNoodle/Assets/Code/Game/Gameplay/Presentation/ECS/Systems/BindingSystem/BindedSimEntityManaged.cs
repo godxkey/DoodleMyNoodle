@@ -8,6 +8,7 @@ using Unity.Mathematics;
 using static fixMath;
 using UnityEngine.UI;
 using Unity.Assertions;
+using CCC.Fix2D;
 
 #if UNITY_EDITOR
 using UnityEditor;

@@ -3,6 +3,7 @@ using Unity.Entities;
 using UnityEngine;
 using static fixMath;
 using System.Collections.Generic;
+using CCC.Fix2D;
 
 public struct EntityDeathEventData : IComponentData
 {

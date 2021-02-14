@@ -40,6 +40,13 @@ public class SimInputCheatInfiniteAP : SimCheatInput
     public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
 }
 
+[NetSerializable]
+public class SimInputCheatTeleport : SimCheatInput
+{
+    public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
+    public fix2 Destination;
+}
+
 public struct CheatsAllItemElement : IBufferElementData
 {
     public Entity ItemPrefab;
@@ -166,6 +173,18 @@ public class HandleSimulationCheatsSystem : SimComponentSystem
                 {
                     EntityManager.SetComponentData(pawn, new MaximumInt<ActionPoints>() { Value = 999999 });
                     EntityManager.SetComponentData(pawn, new ActionPoints() { Value = 999999 });
+                }
+                break;
+            }
+
+            case SimInputCheatTeleport teleport:
+            {
+                Entity player = CommonReads.FindPlayerEntity(Accessor, teleport.PlayerId);
+
+                if (EntityManager.Exists(player) &&
+                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
+                {
+                    CommonWrites.RequestTeleport(Accessor, pawn, teleport.Destination);
                 }
                 break;
             }

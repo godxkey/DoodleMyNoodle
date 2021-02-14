@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using Unity.MathematicsX;
 using UnityEditor;
+using CCC.Fix2D;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]

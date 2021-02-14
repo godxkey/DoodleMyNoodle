@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
+using CCC.Fix2D;
 
 public struct DamageEventData : IComponentData
 {

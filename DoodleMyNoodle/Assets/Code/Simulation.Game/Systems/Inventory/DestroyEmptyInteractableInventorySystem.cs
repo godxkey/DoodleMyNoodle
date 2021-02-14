@@ -1,5 +1,6 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using CCC.Fix2D;
 using static fixMath;
 using static Unity.Mathematics.math;
 

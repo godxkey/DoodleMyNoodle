@@ -9,7 +9,7 @@ public struct TileCollisionEventData : IComponentData
     public int2 Tile;
     public Entity TileEntity;
 }
-
+/*
 [UpdateInGroup(typeof(MovementSystemGroup))]
 [UpdateAfter(typeof(ApplyVelocitySystem))]
 public class ValidatePotentialNewTranslationSystem : SimComponentSystem
@@ -90,3 +90,4 @@ public class ValidatePotentialNewTranslationSystem : SimComponentSystem
         velocity.Value = vel;
     }
 }
+*/

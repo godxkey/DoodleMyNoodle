@@ -7,6 +7,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using CCC.Fix2D;
 using UnityEngine.Jobs;
 
 [UpdateAfter(typeof(MaintainBindedViewEntitiesSystem))]
@@ -78,7 +79,7 @@ public class CopyTransformToViewGameObjectSystem : ViewSystemBase
 
             if (SimRotations.HasComponent(simEntity))
             {
-                transform.localRotation = Quaternion.Euler(0, 0, (float)SimRotations[simEntity].Value);
+                transform.localRotation = PresentationHelpers.SimRotationToUnityRotation(SimRotations[simEntity]);
             }
         }
     }

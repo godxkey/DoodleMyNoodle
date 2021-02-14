@@ -1,6 +1,7 @@
 ﻿using Unity.Entities;
 using Unity.Jobs;
 
+/*
 [UpdateAfter(typeof(ValidatePotentialNewTranslationSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class ApplyPotentialNewTranslationSystem : SimSystemBase
@@ -14,4 +15,4 @@ public class ApplyPotentialNewTranslationSystem : SimSystemBase
                 pos.Value = newTranslation.Value;
             }).Schedule();
     }
-}
+}*/

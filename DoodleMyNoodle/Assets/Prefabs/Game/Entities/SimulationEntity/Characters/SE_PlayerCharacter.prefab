@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1983468408252183681}
   - component: {fileID: -7961090127367493644}
   - component: {fileID: 5072555852515810054}
+  - component: {fileID: 6261282694214183520}
   - component: {fileID: -8888525555049467793}
   - component: {fileID: 7591131864914787085}
   - component: {fileID: 8435132431937638192}
@@ -55,7 +56,10 @@ MonoBehaviour:
   _guid: 8029a8339c41fdc459279bcc5978cc42
   _bindedViewPrefab: {fileID: 5776912470226665749, guid: 9e7d403e2969f8141bb2c6fdfb99df62,
     type: 3}
+  _bindedViewTile: {fileID: 0}
   _viewTechType: 0
+  _showGhost: 1
+  _hasTransform: 1
 --- !u!114 &5072555852515810054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,6 +74,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DefaultAIPrefab: {fileID: 0}
   InstantiateAIOnSpawn: 1
+--- !u!114 &6261282694214183520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951368162375339519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93e46ee13bcdb224bb3a8c3df684bc12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 2
+  Shape: 1
+  Material: {fileID: 0}
+  IsTrigger: 0
+  LinearDrag: 0
+  AngularDrag: 0.05
+  GravityScale: 1
+  FireEvents: 0
+  BoxSize: {x: 0.7, y: 1}
+  CircleRadius: 0.5
+  BoxAndCircleOffset: {x: 0, y: 0}
+  PolygonPoints: []
 --- !u!114 &-8888525555049467793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,6 +183,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Capacity: 999
+  FillingType: 2
+  ConsumablesMaxAmount: 3
+  CustomItemBank: {fileID: 0}
   InitialItems:
   - {fileID: 5742253346417087641, guid: d170c0eb81b945e458f35303555d6027, type: 3}
   - {fileID: 5742253346417087641, guid: 85996829317b3aa448e8ac3761770021, type: 3}

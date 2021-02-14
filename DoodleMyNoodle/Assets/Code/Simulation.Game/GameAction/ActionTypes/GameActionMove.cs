@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
+using CCC.Fix2D;
 
 public class GameActionMove : GameAction
 {

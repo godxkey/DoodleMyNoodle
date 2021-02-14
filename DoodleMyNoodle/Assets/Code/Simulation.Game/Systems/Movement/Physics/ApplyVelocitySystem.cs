@@ -2,6 +2,7 @@
 using Unity.Entities;
 using Unity.Jobs;
 
+/*
 public struct PotentialNewTranslation : IComponentData
 {
     public fix2 Value;
@@ -22,4 +23,4 @@ public class ApplyVelocitySystem : SimSystemBase
             newTranslation.Value = pos.Value + (vel.Value * deltaTime);
         }).Run();
     }
-}
+}*/

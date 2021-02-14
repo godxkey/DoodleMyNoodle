@@ -1,3 +1,4 @@
+using CCC.Fix2D;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -26,7 +27,6 @@ public struct TileActorOverlapEndEventData : IComponentData
     public Entity TileEntity;
 }
 
-[UpdateAfter(typeof(ApplyPotentialNewTranslationSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class UpdateTileActorReferenceSystem : SimJobComponentSystem
 {

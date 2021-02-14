@@ -21,11 +21,13 @@ public class CameraSet
 
     public void Activate()
     {
+        Camera.gameObject.tag = "MainCamera";
         SetActive(true);
     }
 
     public void Deactivate()
     {
+        Camera.gameObject.tag = "Untagged";
         SetActive(false);
     }
 

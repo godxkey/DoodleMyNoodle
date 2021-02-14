@@ -2,7 +2,7 @@
 using Unity.Entities;
 using static fixMath;
 using Unity.Collections;
-using UnityEditor;
+using CCC.Fix2D;
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class CreatePathToDestinationSystem : SimComponentSystem

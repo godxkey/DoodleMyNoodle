@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
 using static Unity.Mathematics.math;
+using CCC.Fix2D;
 
 
 public class MessageDisplaySystem : GamePresentationSystem<MessageDisplaySystem>

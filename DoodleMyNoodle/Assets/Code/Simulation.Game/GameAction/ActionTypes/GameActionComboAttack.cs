@@ -2,6 +2,7 @@ using Unity.Mathematics;
 using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
+using CCC.Fix2D;
 
 public class GameActionComboAttack : GameAction
 {
