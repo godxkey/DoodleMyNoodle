@@ -6,36 +6,48 @@ using Unity.Mathematics;
 
 [UpdateAfter(typeof(CreatePathToDestinationSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class DirectAlongPathSystem : SimComponentSystem
+public class DirectAlongPathSystem : SimSystemBase
 {
+    EntityCommandBufferSystem _endSimECB;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        _endSimECB = World.GetExistingSystem<EndSimulationEntityCommandBufferSystem>();
+    }
+
     protected override void OnUpdate()
     {
         // if entities collide when moving along path, reset their destination
-        Entities.ForEach((ref TileCollisionEventData collisionEvent) =>
+        Entities.ForEach((in TileCollisionEventData collisionEvent) =>
         {
             TryCancelPathForEntity(collisionEvent.Entity);
-        });
+        }).WithoutBurst()
+        .Run();
 
         // if entities teleports when moving along path, reset their destination
-        Entities.ForEach((ref TeleportEventData teleportEvent) =>
+        Entities.ForEach((in TeleportEventData teleportEvent) =>
         {
             TryCancelPathForEntity(teleportEvent.Entity);
-        });
+        }).WithoutBurst()
+        .Run();
 
         var deltaTime = Time.DeltaTime;
 
         // move along path
+        EntityCommandBuffer cmdBuffer = _endSimECB.CreateCommandBuffer();
         Entities.ForEach(
             (Entity entity,
             DynamicBuffer<PathPosition> pathPositions,
             ref PhysicsVelocity velocity,
-            ref FixTranslation translation,
-            ref MoveSpeed moveSpeed) =>
+            in FixTranslation translation,
+            in MoveSpeed moveSpeed) =>
         {
             if (pathPositions.Length == 0)
             {
                 velocity.Linear = fix2(0);
-                PostUpdateCommands.RemoveComponent<PathPosition>(entity);
+                cmdBuffer.RemoveComponent<PathPosition>(entity);
                 return;
             }
 
@@ -71,7 +83,7 @@ public class DirectAlongPathSystem : SimComponentSystem
             fix2 targetPosition = a + (dir * min(moveDist, vLength));
             fix2 targetVelocity = (targetPosition - translation.Value) / deltaTime;
             velocity.Linear = targetVelocity;// lerp(velocity, targetVelocity, deltaTime);
-        });
+        }).Run();
     }
 
     private void TryCancelPathForEntity(Entity entity)
