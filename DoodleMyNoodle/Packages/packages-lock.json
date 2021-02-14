@@ -8,6 +8,17 @@
         "com.unity.entities": "0.16.0-preview.21"
       }
     },
+    "com.ccc.upaint": {
+      "version": "file:com.ccc.upaint",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity-x.unityengine-x": "",
+        "com.unity.mathematics": "1.1.0",
+        "com.unity.collections": "0.8.0-preview.5",
+        "com.unity.burst": "1.3.0-preview.9"
+      }
+    },
     "com.unity-x.fixmath": {
       "version": "file:com.unity-x.fixmath",
       "depth": 0,
