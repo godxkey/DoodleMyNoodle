@@ -38,16 +38,16 @@ public class UIStateMachine : GamePresentationSystem<UIStateMachine>
 
     private UIState GetStateInstance(UIState.StateTypes newState, params object[] stateData)
     {
-        if (_stateInstances.TryGetValue(newState, out UIState uIState))
+        if (_stateInstances.TryGetValue(newState, out UIState uiState))
         {
             // if someone want to transition to a state that already exist and wish to push its data, overwrite
             // the data that currently exist in state with new one
             if (stateData.Length > 0)
             {
-                uIState.Data = stateData;
+                uiState.Data = stateData;
             }
 
-            return uIState;
+            return uiState;
         }
         else
         {
