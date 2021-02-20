@@ -1255,6 +1255,7 @@ MonoBehaviour:
   SystemSettings:
     Type: 1
     OnlineFlags: -1
+  _library: {fileID: 11400000, guid: 420d0ecd761780a4993b6ea48136ed5f, type: 2}
   _screenContainer: {fileID: 5744127808120056433}
   _readyButton: {fileID: 2085521455149601460}
   _characterIsLookingRightToggle: {fileID: 4825507465146464522}
