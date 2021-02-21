@@ -4,6 +4,7 @@ using Unity.Transforms;
 using Unity.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using CCC.Fix2D;
 using static fixMath;
 
 public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDisplayManagementSystem>

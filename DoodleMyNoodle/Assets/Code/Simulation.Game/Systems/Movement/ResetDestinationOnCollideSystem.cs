@@ -1,6 +1,6 @@
-﻿using Unity.Entities;
+﻿using CCC.Fix2D;
+using Unity.Entities;
 
-[UpdateAfter(typeof(ApplyPotentialNewTranslationSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class ResetDestinationOnCollideSystem : SimComponentSystem
 {

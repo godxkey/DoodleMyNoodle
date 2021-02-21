@@ -5,6 +5,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using static fixMath;
+using CCC.Fix2D;
 
 public struct ReadyForNextTurnDelayed : IComponentData
 {

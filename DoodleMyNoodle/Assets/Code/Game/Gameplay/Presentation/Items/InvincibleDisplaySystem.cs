@@ -5,6 +5,7 @@ using System;
 using UnityEngine;
 using UnityEngineX;
 using System.Collections.Generic;
+using CCC.Fix2D;
 
 public class InvincibleDisplaySystem : GamePresentationSystem<InvincibleDisplaySystem>
 {

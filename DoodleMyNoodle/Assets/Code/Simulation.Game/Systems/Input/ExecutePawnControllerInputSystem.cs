@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngineX;
+using CCC.Fix2D;
 
 
 // THIS CLASS SHOULD NOT BE SERIALIZABLE

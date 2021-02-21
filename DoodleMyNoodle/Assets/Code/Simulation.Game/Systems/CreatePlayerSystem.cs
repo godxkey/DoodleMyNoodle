@@ -3,6 +3,7 @@ using Unity.Collections;
 using UnityEngineX;
 using Unity.Mathematics;
 using Unity.MathematicsX;
+using CCC.Fix2D;
 
 [NetSerializable]
 public class SimInputPlayerCreate : SimMasterInput

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Unity.Entities;
-using UnityEngine;
-using UnityEngine.AI;
+using CCC.Fix2D;
 using UnityEngineX;
 
 public abstract class GameAction

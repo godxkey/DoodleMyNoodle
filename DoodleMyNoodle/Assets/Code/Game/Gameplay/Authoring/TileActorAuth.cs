@@ -24,12 +24,12 @@ public class TileActorAuth : MonoBehaviour, IConvertGameObjectToEntity
         switch (_type)
         {
             case TypeActorType.Dynamic:
-                dstManager.AddComponentData(entity, new Velocity { Value = new fix2(0, 0) });
-                dstManager.AddComponentData(entity, new PotentialNewTranslation { Value = new fix2(0, 0) });
+                //dstManager.AddComponentData(entity, new Velocity { Value = new fix2(0, 0) });
+                //dstManager.AddComponentData(entity, new PotentialNewTranslation { Value = new fix2(0, 0) });
                 break;
 
             case TypeActorType.Static:
-                dstManager.AddComponent<StaticTag>(entity);
+                //dstManager.AddComponent<StaticTag>(entity);
                 break;
 
             default:

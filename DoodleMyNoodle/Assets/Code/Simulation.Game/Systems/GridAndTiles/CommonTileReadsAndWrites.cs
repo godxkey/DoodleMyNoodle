@@ -5,6 +5,7 @@ using Unity.Collections;
 using Unity.Entities;
 using System;
 using UnityEngine;
+using CCC.Fix2D;
 
 public partial class CommonReads
 {
