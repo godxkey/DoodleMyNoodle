@@ -37,7 +37,9 @@ public class DirectAlongPathSystem : SimSystemBase
 
         // move along path
         EntityCommandBuffer cmdBuffer = _endSimECB.CreateCommandBuffer();
-        Entities.ForEach(
+        Entities
+            .WithNone<MovingPlatformSettings>()
+            .ForEach(
             (Entity entity,
             DynamicBuffer<PathPosition> pathPositions,
             ref PhysicsVelocity velocity,

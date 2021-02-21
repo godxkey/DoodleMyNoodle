@@ -25,8 +25,7 @@ public class CreatePathToDestinationSystem : SimSystemBase
 
     protected override void OnUpdate()
     {
-        Entities
-            .ForEach((Entity entity, in FixTranslation pos, in Destination destination) =>
+        Entities.ForEach((Entity entity, in FixTranslation pos, in Destination destination) =>
         {
             int2 from = Helpers.GetTile(pos);
             int2 to = Helpers.GetTile(destination.Value);
@@ -39,7 +38,7 @@ public class CreatePathToDestinationSystem : SimSystemBase
                 pathBuffer.Clear();
 
                 for (int i = 1; i < _tilePath.Length - 1; i++) // exclude last point since we add 'destination' last
-                {
+                            {
                     pathBuffer.Add(new PathPosition() { Position = Helpers.GetTileCenter(_tilePath[i]) });
                 }
 
@@ -47,6 +46,9 @@ public class CreatePathToDestinationSystem : SimSystemBase
             }
 
             EntityManager.RemoveComponent<Destination>(entity);
-        }).WithoutBurst().Run();
+        })
+            .WithStructuralChanges()
+            .WithoutBurst()
+            .Run();
     }
 }
