@@ -20,18 +20,22 @@ public class DirectAlongPathSystem : SimSystemBase
     protected override void OnUpdate()
     {
         // if entities collide when moving along path, reset their destination
-        Entities.ForEach((in TileCollisionEventData collisionEvent) =>
+        Entities
+            .WithoutBurst()
+            .WithStructuralChanges()
+            .ForEach((in TileCollisionEventData collisionEvent) =>
         {
             TryCancelPathForEntity(collisionEvent.Entity);
-        }).WithoutBurst()
-        .Run();
+        }).Run();
 
         // if entities teleports when moving along path, reset their destination
-        Entities.ForEach((in TeleportEventData teleportEvent) =>
+        Entities
+            .WithStructuralChanges()
+            .WithoutBurst()
+            .ForEach((in TeleportEventData teleportEvent) =>
         {
             TryCancelPathForEntity(teleportEvent.Entity);
-        }).WithoutBurst()
-        .Run();
+        }).Run();
 
         var deltaTime = Time.DeltaTime;
 

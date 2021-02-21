@@ -13,11 +13,11 @@ GameObject:
   - component: {fileID: 5072555852515810054}
   - component: {fileID: -8888525555049467793}
   - component: {fileID: -6450381012629423667}
-  - component: {fileID: 7591131864914787085}
   - component: {fileID: 8435132431937638192}
   - component: {fileID: 6657921186239294675}
   - component: {fileID: 947375423039552990}
   - component: {fileID: 8655927559677642130}
+  - component: {fileID: 2401102004981749674}
   m_Layer: 9
   m_Name: SE_BaseCharacter
   m_TagString: Untagged
@@ -111,20 +111,6 @@ MonoBehaviour:
   CircleRadius: 0.45
   BoxAndCircleOffset: {x: 0, y: 0}
   PolygonPoints: []
---- !u!114 &7591131864914787085
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4951368162375339519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da8751e3a9c213b4bb85f9a6a12e3e62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Value:
-    RawValue: 17179869184
 --- !u!114 &8435132431937638192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,3 +173,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StateID: 0
+--- !u!114 &2401102004981749674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951368162375339519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e1bbed0578679845bbf57b4794a56ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed:
+    RawValue: 17179869184
