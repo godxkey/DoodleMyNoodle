@@ -45,6 +45,8 @@ public class DoodleLibrary : FileScriptableInterface
         }
 
         SaveDoodle(doodleTexture);
+
+        Save();
     }
 
     private void SaveDoodle(Texture2D doodleTexture)
@@ -63,7 +65,7 @@ public class DoodleLibrary : FileScriptableInterface
 
     private Texture2D GetDoodle(int index)
     {
-        Texture2D resultTexture = null;
+        Texture2D resultTexture = new Texture2D(512,512);
         if (File.Exists(GetDoodlePath(index)))
         {
             try

@@ -7,7 +7,7 @@ using TMPro;
 using Unity.Entities;
 using System;
 
-public class TooltipDisplay : GamePresentationSystem<TooltipDisplay>
+public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
 {
     // TOOLTIP
     [SerializeField] private GameObject _tooltipDisplay;
