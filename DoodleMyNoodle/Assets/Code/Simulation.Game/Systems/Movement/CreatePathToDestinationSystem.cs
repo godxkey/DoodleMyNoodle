@@ -38,7 +38,7 @@ public class CreatePathToDestinationSystem : SimSystemBase
                 pathBuffer.Clear();
 
                 for (int i = 1; i < _tilePath.Length - 1; i++) // exclude last point since we add 'destination' last
-                            {
+                {
                     pathBuffer.Add(new PathPosition() { Position = Helpers.GetTileCenter(_tilePath[i]) });
                 }
 
