@@ -33,12 +33,17 @@ public class GameActionThrowProjectile : GameAction
             Entity projectileInstance = accessor.Instantiate(settings.ProjectilePrefab);
 
             // set projectile data
-            fix2 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
+            fix2 dirPos = Helpers.GetTileCenter(paramTile.Tile);
             fix2 instigatorPos = Helpers.GetTileCenter(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
-            fix2 v = normalize(spawnPos - instigatorPos);
+            fix2 instigatorVel = fix2.zero;
+            if (accessor.TryGetComponentData(context.InstigatorPawn, out PhysicsVelocity vel))
+            {
+                instigatorVel = vel.Linear;
+            }
+            fix2 dir = normalize(dirPos - instigatorPos);
 
-            accessor.SetOrAddComponentData(projectileInstance, new PhysicsVelocity(settings.ThrowSpeed * v));
-            accessor.SetOrAddComponentData(projectileInstance, new FixTranslation(Helpers.GetTileCenter(paramTile.Tile)));
+            accessor.SetOrAddComponentData(projectileInstance, new PhysicsVelocity(settings.ThrowSpeed * dir + instigatorVel));
+            accessor.SetOrAddComponentData(projectileInstance, new FixTranslation(instigatorPos + dir));
 
             // add 'DamageOnContact' if ItemDamageData found
             if (accessor.HasComponent<GameActionDamageData>(context.Entity))

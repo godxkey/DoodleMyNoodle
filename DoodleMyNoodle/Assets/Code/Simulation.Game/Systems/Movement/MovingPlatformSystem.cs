@@ -25,7 +25,7 @@ public struct MovingPlatformSettings : IComponentData
     public static readonly fix SLOW_DOWN_MINIMUM_SPEED = (fix)0.1f;
     
     // how fast can the platform slow down (lower value will cause the platform to start slowing down earlier)
-    public static readonly fix SLOW_DOWN_FACTOR_INV = 3;
+    public static readonly fix SLOW_DOWN_FACTOR_INV = (fix)2.4f;
 }
 
 public struct MovingPlatformState : IComponentData

@@ -20,6 +20,7 @@ public class ControlPhysicsSystem : SimSystemBase
 
         var settings = GetSingleton<PhysicsStepSettings>();
         settings.TimeStep = (float)Time.DeltaTime;
+        settings.GravityFix = SimulationGameConstants.Gravity;
         SetSingleton(settings);
     }
 }
