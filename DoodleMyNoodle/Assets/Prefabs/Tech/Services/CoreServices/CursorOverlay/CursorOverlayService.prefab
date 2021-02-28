@@ -83,6 +83,6 @@ MonoBehaviour:
     type: 3}
   _tooltipUpdateDelay: 0.25
   _tooltipScreenEdgeToolTipLimit: 200
-  _tooltipDisplacementRatioXRight: 0
-  _tooltipDisplacementRatioXLeft: 0
+  _tooltipDisplacementRatioXRight: 0.13
+  _tooltipDisplacementRatioXLeft: -0.108
   _tooltipDisplacementRatioY: 0

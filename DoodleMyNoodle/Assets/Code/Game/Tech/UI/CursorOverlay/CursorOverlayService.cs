@@ -186,12 +186,10 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         displacementRatioX *= Screen.width;
         displacementRatioY *= Screen.height;
 
-        foreach (var child in _currentTooltip.transform.GetComponentsInChildren<ContentSizeFitter>())
+        Transform tooltipTransform = _currentTooltip.transform.GetComponentInChildren<Image>().transform;
+        if (tooltipTransform != null)
         {
-            if (child.transform.parent == _currentTooltip.transform)
-            {
-                child.transform.position = Input.mousePosition + new Vector3(displacementRatioX, displacementRatioY, 0);
-            }
+            tooltipTransform.position = Input.mousePosition + new Vector3(displacementRatioX, displacementRatioY, 0);
         }
     }
 
