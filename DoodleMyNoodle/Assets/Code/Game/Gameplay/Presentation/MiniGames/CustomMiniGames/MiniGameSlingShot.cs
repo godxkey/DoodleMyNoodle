@@ -37,7 +37,7 @@ public class MiniGameSlingShot : SurveyBaseController
                 {
                     _dragging = true;
 
-                    if ((DebugMode && !InitOnStart) || _isComplete)
+                    if ((DebugMode && !InitOnStart) || !_running)
                     {
                         if (_currentResultLine != null)
                         {
@@ -62,9 +62,9 @@ public class MiniGameSlingShot : SurveyBaseController
         }
     }
 
-    protected override IEnumerator SurveyLoop()
+    protected override IEnumerator SurveyRoutine()
     {
-        while (!_isComplete)
+        while (_running)
         {
             if (_dragging)
             {
@@ -89,5 +89,9 @@ public class MiniGameSlingShot : SurveyBaseController
 
             yield return new WaitForEndOfFrame();
         }
+    }
+
+    protected override void OnEndSurvey(bool wasCompleted)
+    {
     }
 }

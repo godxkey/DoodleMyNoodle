@@ -1,5 +1,7 @@
 ﻿public class BlockedGameplayState : UIState
 {
+    public override UIStateType Type => UIStateType.BlockedGameplay;
+
     public override void OnEnter()
     {
         
@@ -11,20 +13,13 @@
         {
             if (SimWorld.GetComponentData<Health>(Cache.LocalPawn).Value > 0)
             {
-                UIStateMachine.Instance.TransitionTo(StateTypes.Gameplay);
+                StateMachine.TransitionTo(Blackboard.GameplayState);
             }
         }
     }
 
-    public override void OnExit(StateTypes newState)
+    public override void OnExit(UIState newState)
     {
 
-    }
-
-    public override StateTypes StateType => StateTypes.BlockedGameplay;
-
-    public override bool IsTransitionValid(StateTypes newState)
-    {
-        return true;
     }
 }

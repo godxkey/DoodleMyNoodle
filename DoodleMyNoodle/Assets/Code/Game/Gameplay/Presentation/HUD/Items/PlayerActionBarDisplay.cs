@@ -144,11 +144,17 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
             if (inventory.Length > ItemIndex && ItemIndex > -1)
             {
                 InventoryItemReference item = inventory[ItemIndex];
-                if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemIDComponent))
+
+                if (SimWorld.Exists(item.ItemEntity))
                 {
                     Entity itemEntity = item.ItemEntity;
 
-                    UIStateMachine.Instance.TransitionTo(UIState.StateTypes.ParameterSelection, itemEntity, true, ItemIndex);
+                    UIStateMachineController.Instance.TransitionTo(UIStateType.ParameterSelection, new ParameterSelectionState.InputParam()
+                    {
+                        ObjectEntity = itemEntity,
+                        IsItem = true,
+                        ItemIndex = ItemIndex
+                    });
                 }
             }
         }

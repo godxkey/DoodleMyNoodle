@@ -53,7 +53,7 @@ public class MiniGameTrafficLight : SurveyBaseController
                     _buttonHeld = true;
                     ContainerBG.color = HeldBGColor;
 
-                    if ((DebugMode && !InitOnStart) || _isComplete)
+                    if ((DebugMode && !InitOnStart) || !_running)
                     {
                         StartSurvey(null);
                     }
@@ -68,7 +68,7 @@ public class MiniGameTrafficLight : SurveyBaseController
         }
     }
 
-    protected override IEnumerator SurveyLoop()
+    protected override IEnumerator SurveyRoutine()
     {
         // Intro
 
@@ -94,7 +94,7 @@ public class MiniGameTrafficLight : SurveyBaseController
         yield return new WaitForSeconds(IntroDuration);
 
         // Light Switching
-        while (!_isComplete)
+        while (_running)
         {
             _currentLight = 0;
             while (_buttonHeld)
@@ -136,5 +136,9 @@ public class MiniGameTrafficLight : SurveyBaseController
         {
             data.LightInstance.GetComponent<SpriteRenderer>().color = InactiveColor;
         }
+    }
+
+    protected override void OnEndSurvey(bool wasCompleted)
+    {
     }
 }

@@ -1,5 +1,7 @@
 ﻿public class GameplayState : UIState
 {
+    public override UIStateType Type => UIStateType.Gameplay;
+
     public override void OnEnter()
     {
         PlayerActionBarDisplay.Instance.EnableInteraction();
@@ -9,26 +11,19 @@
     {
         if (!CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(Cache.LocalController))) 
         {
-            UIStateMachine.Instance.TransitionTo(StateTypes.BlockedGameplay);
+            StateMachine.TransitionTo(UIStateType.BlockedGameplay);
         }
         else
         {
             if (SimWorld.GetComponentData<Health>(Cache.LocalPawn).Value <= 0)
             {
-                UIStateMachine.Instance.TransitionTo(StateTypes.BlockedGameplay);
+                StateMachine.TransitionTo(UIStateType.BlockedGameplay);
             }
         }
     }
 
-    public override void OnExit(StateTypes newState)
+    public override void OnExit(UIState newState)
     {
         PlayerActionBarDisplay.Instance.BlockInteraction();
-    }
-
-    public override StateTypes StateType => StateTypes.Gameplay;
-
-    public override bool IsTransitionValid(StateTypes newState)
-    {
-        return true;
     }
 }
