@@ -5,7 +5,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity
+public class ItemAuth : MonoBehaviour
 {
     [System.Serializable]
     public struct SurveyReference
@@ -15,15 +15,11 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity
     }
 
     public ItemVisualInfo ItemVisualInfo;
+    public AudioPlayable SfxOnUse;
 
     public bool UseSpecificSurveys = false;
     [ShowIf("UseSpecificSurveys")]
     public List<SurveyReference> SurveyList;
-
-    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
-    {
-        
-    }
 
     public GameObject FindSurveyDefinitionForParameters(params GameAction.ParameterDescription[] parameters)
     {

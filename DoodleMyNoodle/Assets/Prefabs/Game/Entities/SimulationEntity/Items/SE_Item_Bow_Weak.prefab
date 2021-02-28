@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 8821241209944219005}
   - component: {fileID: 2677628293349642642}
   - component: {fileID: 294870752159730247}
+  - component: {fileID: 3724988509256142475}
   - component: {fileID: 4120848953196771097}
   - component: {fileID: 1206813890925547763}
   - component: {fileID: -8001016936392042338}
   - component: {fileID: -448175739285880440}
-  - component: {fileID: 3724988509256142475}
   m_Layer: 0
   m_Name: SE_Item_Bow_Weak
   m_TagString: Untagged
@@ -69,7 +69,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionThrowProjectile
+  PlayAnimation: 0
   Animation: {fileID: 0}
+--- !u!114 &3724988509256142475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemVisualInfo: {fileID: 11400000, guid: 3702125b2dd755e42afcf2dffd5580d9, type: 2}
+  UseSpecificSurveys: 0
+  SurveyList: []
 --- !u!114 &4120848953196771097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,7 +101,7 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 2385346486794747607, guid: 4899e73436da28d43ba3448231f4f76d,
     type: 3}
   ThrowSpeed:
-    RawValue: 17179869184
+    RawValue: 21474836480
 --- !u!114 &1206813890925547763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b3569fbe963ceb4fb9da4315e9207de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 3
+  Damage: 1
 --- !u!114 &-448175739285880440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,18 +143,3 @@ MonoBehaviour:
   UseTime: 0
   TimeCooldown: 1
   TurnCooldown: 1
---- !u!114 &3724988509256142475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ItemVisualInfo: {fileID: 11400000, guid: 3702125b2dd755e42afcf2dffd5580d9, type: 2}
-  UseSpecificSurveys: 0
-  SurveyList: []

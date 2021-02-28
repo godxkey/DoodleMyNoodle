@@ -69,6 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionThrowProjectile
+  PlayAnimation: 0
   Animation: {fileID: 0}
 --- !u!114 &6504929175459107924
 MonoBehaviour:
@@ -100,7 +101,7 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 2385346486794747607, guid: 4899e73436da28d43ba3448231f4f76d,
     type: 3}
   ThrowSpeed:
-    RawValue: 17179869184
+    RawValue: 21474836480
 --- !u!114 &1206813890925547763
 MonoBehaviour:
   m_ObjectHideFlags: 0

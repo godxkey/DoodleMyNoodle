@@ -20,7 +20,6 @@ GameObject:
   - component: {fileID: 6326101201239624051}
   - component: {fileID: -1919864443569858546}
   - component: {fileID: 3078341331002791777}
-  - component: {fileID: 6233962408537370255}
   - component: {fileID: -4154220866743386285}
   m_Layer: 0
   m_Name: SE_Item_Fist
@@ -90,6 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemVisualInfo: {fileID: 11400000, guid: 89c2cf37dc054934ab000f8e659056ca, type: 2}
+  SfxOnUse: {fileID: 11400000, guid: 62ef15d00dd5d1b418325960c2dffeb7, type: 2}
   UseSpecificSurveys: 1
   SurveyList:
   - ParameterTypes: 03000000
@@ -218,21 +218,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Amount: 1
---- !u!114 &6233962408537370255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bb285b594ad8d74ead8d509b9a57424, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _useRandomizeSoundGroup: 0
-  _soundEffect: {fileID: 11400000, guid: 62ef15d00dd5d1b418325960c2dffeb7, type: 2}
-  _soundEffectGroup: {fileID: 11400000, guid: 5c320f115b0acba47b489b27ed6dd199, type: 2}
 --- !u!114 &-4154220866743386285
 MonoBehaviour:
   m_ObjectHideFlags: 0
