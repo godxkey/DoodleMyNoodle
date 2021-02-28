@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
+using CCC.Fix2D;
 
 public class LobbyPlayerInfoDisplay : GamePresentationBehaviour
 {

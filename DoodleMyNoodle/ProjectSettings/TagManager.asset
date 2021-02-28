@@ -13,9 +13,9 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
+  - Terrain
+  - Characters
+  - Arrow-likes
   - 
   - 
   - 
@@ -38,6 +38,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Wallpaper
+    uniqueID: 2847775101
+    locked: 0
   - name: Grid_Background
     uniqueID: 910406721
     locked: 0

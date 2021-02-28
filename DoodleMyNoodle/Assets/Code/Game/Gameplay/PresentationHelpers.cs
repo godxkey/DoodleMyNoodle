@@ -1,5 +1,7 @@
-﻿using SimulationControl;
+﻿using CCC.Fix2D;
+using SimulationControl;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 public static class PresentationHelpers
@@ -28,7 +30,7 @@ public static class PresentationHelpers
 
     public static GameObject FindSimAssetPrefab(SimAssetId simAssetId)
     {
-        return SimAssetBankInstance.GetLookup().GetSimAsset(simAssetId).gameObject;
+        return SimAssetBankInstance.GetLookup().GetSimAsset(simAssetId)?.gameObject;
     }
 
     public static GameObject FindBindedView(Entity simEntity)
@@ -38,5 +40,15 @@ public static class PresentationHelpers
             return result;
         }
         return null;
+    }
+
+    public static Quaternion SimRotationToUnityRotation(FixRotation fixRotation)
+    {
+        return SimRotationToUnityRotation(fixRotation.Value);
+    }
+
+    public static Quaternion SimRotationToUnityRotation(fix radAngle)
+    {
+        return Quaternion.Euler(0, 0, math.degrees((float)radAngle));
     }
 }

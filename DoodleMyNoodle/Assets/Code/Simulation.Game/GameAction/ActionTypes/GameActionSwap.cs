@@ -3,6 +3,7 @@ using static Unity.Mathematics.math;
 using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
+using CCC.Fix2D;
 
 public class GameActionSwap : GameAction
 {

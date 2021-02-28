@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UdpKit;
 using UnityEngine;
 using UnityEngine.UI;
+using static Unity.Mathematics.math;
+using static Unity.MathematicsX.mathX;
 
 // LDT: Large Data Transfer
 public class SimpleClientAndServerLDTViaPackets : /*MonoBehaviour,*/ Bolt.GlobalEventListener
@@ -51,7 +53,7 @@ public class SimpleClientAndServerLDTViaPackets : /*MonoBehaviour,*/ Bolt.Global
 
         int.TryParse(DataMultiplierText.text, out _dataMultiplier);
         int byteCount = DataToSend.text.Length * sizeof(char) * _dataMultiplier;
-        DataSizeDisplay.text = $"{byteCount} bytes ({(byteCount / (1024f * 1024f)).Rounded(numberOfDecimal: 2)} MB)";
+        DataSizeDisplay.text = $"{byteCount} bytes ({round(byteCount / (1024f * 1024f), 0.01f)} MB)";
 
         if (_op != null)
         {

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static Unity.Mathematics.math;
+using static Unity.MathematicsX.mathX;
 
 public class InfiniteVerticalScroll : InfiniteScroll
 {
@@ -14,7 +16,7 @@ public class InfiniteVerticalScroll : InfiniteScroll
         RectTransform content = verticalLayoutGroup.GetComponent<RectTransform>();
         RectTransform child0 = content.GetChild(0) as RectTransform;
         RectTransform child1 = content.GetChild(1) as RectTransform;
-        float childSize = (child1.anchoredPosition.y - child0.anchoredPosition.y).Abs() - verticalLayoutGroup.spacing;
+        float childSize = abs(child1.anchoredPosition.y - child0.anchoredPosition.y) - verticalLayoutGroup.spacing;
 
         return new Vector2(0, childSize);
     }

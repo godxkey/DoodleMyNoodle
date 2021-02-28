@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngineX;
+using CCC.Fix2D;
 
 public class InteractableInventoryDisplaySystem : GamePresentationSystem<InteractableInventoryDisplaySystem>
 {

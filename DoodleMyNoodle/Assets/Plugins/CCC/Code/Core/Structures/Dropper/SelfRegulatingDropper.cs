@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Unity.Mathematics.math;
+using static Unity.MathematicsX.mathX;
 
 /// <summary>
 /// This dropper class will regulate the drop speed depending on the current queue length.
@@ -26,7 +28,7 @@ public class SelfRegulatingDropper<T> : Dropper<T>
         if (queue.Count > 0)
         {
             float timeUntilQueueEmpty = LastEnqueuedElement.ScheduledDrop - CurrentTime;
-            Speed = (timeUntilQueueEmpty / _timeLimitForLastItem).Clamped(1, MaximalCatchUpSpeed);
+            Speed = clamp(timeUntilQueueEmpty / _timeLimitForLastItem, 1, MaximalCatchUpSpeed);
         }
         else
         {
@@ -35,7 +37,7 @@ public class SelfRegulatingDropper<T> : Dropper<T>
 
 
         _timeLimitForLastItem -= deltaTime;
-        _timeLimitForLastItem = _timeLimitForLastItem.MinLimit(0.0001f);
+        _timeLimitForLastItem = max(_timeLimitForLastItem, 0.0001f);
         base.Update(deltaTime);
     }
 

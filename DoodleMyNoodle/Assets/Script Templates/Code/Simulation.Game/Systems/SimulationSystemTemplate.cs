@@ -18,7 +18,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class #SCRIPTNAME# : {typeof(SimComponentSystem).GetPrettyName()}
+public class #SCRIPTNAME# : {typeof(SimSystemBase).GetPrettyName()}
 {{
     protected override void OnUpdate()
     {{

@@ -7,6 +7,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
+using CCC.Fix2D;
 
 public partial class CommonReads
 {

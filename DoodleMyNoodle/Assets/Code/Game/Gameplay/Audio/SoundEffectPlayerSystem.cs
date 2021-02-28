@@ -6,13 +6,14 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
 {
     [SerializeField] private AudioSource _audioSource;
 
-    [SerializeField] private SoundEffectDescription _damageSound; // global for now but can be per character/ennemy
+    [SerializeField] private AudioPlayable _damageSound; // global for now but can be per character/ennemy
 
     public override void OnPostSimulationTick()
     {
         if (_audioSource == null)
             return;
 
+        // Item sounds
         Cache.SimWorld.Entities.ForEach((ref GameActionEventData gameActionEvent) =>
         {
             SimWorld.TryGetComponentData(gameActionEvent.GameActionContext.Entity, out SimAssetId entitySimAssetID);
@@ -20,19 +21,20 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
             GameObject entityPrefab = PresentationHelpers.FindSimAssetPrefab(entitySimAssetID);
             if (entityPrefab != null)
             {
-                SoundEffectDescription soundEffect = entityPrefab.GetComponent<SoundEffectDescription>();
-                if (soundEffect != null)
+                var sfx = entityPrefab.GetComponent<ItemAuth>()?.SfxOnUse;
+                if (sfx != null)
                 {
-                    soundEffect.SoundEffect.PlayOn(_audioSource);
+                    sfx.PlayOn(_audioSource);
                 }
             }
         });
 
+        // Damage sounds
         Cache.SimWorld.Entities.ForEach((ref DamageEventData gameActionEvent) =>
         {
             if (_damageSound != null)
             {
-                _damageSound.SoundEffect.PlayOn(_audioSource);
+                _damageSound.PlayOn(_audioSource);
             }
         });
     }

@@ -1,3 +1,4 @@
+using CCC.Fix2D;
 using System;
 using Unity.Collections;
 using Unity.Entities;

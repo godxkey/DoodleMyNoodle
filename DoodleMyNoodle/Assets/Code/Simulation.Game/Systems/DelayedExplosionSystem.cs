@@ -1,3 +1,4 @@
+using CCC.Fix2D;
 using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;

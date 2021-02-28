@@ -77,7 +77,6 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
             conversionSystem.World.GetExistingSystem<ConvertToFixTransformSystem>()?.ToConvert.Add(transform);
         }
 
-        //if (_hasTransform && _bindedViewPrefab != null) // only add sim asset id if we have a binded view, otherwise its useless
         dstManager.AddComponentData(entity, GetSimAssetId());
     }
 
@@ -149,7 +148,8 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
         if (_viewGhost != null)
         {
             _viewGhostTr.position = _tr.position;
-            // rotation and scale are not yet handled by the game sim
+            _viewGhostTr.rotation = _tr.rotation;
+            // scale is not yet handled by the game sim
         }
     }
 #endif

@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using Unity.MathematicsX;
 using UnityEditor;
+using CCC.Fix2D;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
@@ -19,7 +20,6 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     public float ZoomSpeed;
 
     [Header("Limits")]
-    public bool EnableMovementLimits;
     public float MinZoom = 1;
     public float MaxZoom;
 
@@ -27,6 +27,9 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     private float2 _boundsMin;
     private float2 _boundsMax;
     private DirtyValue<Entity> _localPawn;
+
+    [ConsoleVar("CameraLimits", "Enable/Disable the game camera move limits.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
+    private static bool s_enableMovementLimits = true;
 
     [ConsoleVar("CameraMouseMovementEnabledWhenWindowed", "Enable/Disable the game camera moving when moving the mouse pointer near the edges of the screen.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
     private static bool s_mouseMovementsEnabledWindowedMode = false;
@@ -173,7 +176,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         float2 min = float2(float.MinValue, float.MinValue);
         float2 max = float2(float.MaxValue, float.MaxValue);
 
-        if (EnableMovementLimits == true)
+        if (s_enableMovementLimits == true)
         {
             if (SimWorld == null || !SimWorld.HasSingleton<GridInfo>())
                 return;

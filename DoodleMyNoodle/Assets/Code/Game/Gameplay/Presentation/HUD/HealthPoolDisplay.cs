@@ -18,7 +18,8 @@ public class HealthPoolDisplay : GamePresentationBehaviour
 
             Health hp = SimWorld.GetComponentData<Health>(Cache.LocalPawn);
             MaximumInt<Health> maxHP = SimWorld.GetComponentData<MaximumInt<Health>>(Cache.LocalPawn);
-            Armor armor = SimWorld.GetComponentData<Armor>(Cache.LocalPawn);
+            //Armor armor = SimWorld.GetComponentData<Armor>(Cache.LocalPawn);
+            Armor armor = default; // 0 armor
 
             int totalHealth = maxHP.Value + armor.Value;
 

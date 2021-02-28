@@ -2,6 +2,7 @@ using System;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using CCC.Fix2D;
 using UnityEngineX;
 
 public class ObjectInteractableOnContact : InteractableEntityView

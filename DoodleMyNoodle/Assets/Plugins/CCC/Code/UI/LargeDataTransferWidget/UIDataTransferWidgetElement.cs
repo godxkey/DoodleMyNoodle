@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngineX;
+using static Unity.Mathematics.math;
+using static Unity.MathematicsX.mathX;
 
 public class UIDataTransferWidgetElement : MonoBehaviour
 {
@@ -45,7 +47,7 @@ public class UIDataTransferWidgetElement : MonoBehaviour
 
                 float ratio = (float)CurrentDataSize.Get() / TotalDataSize.Get();
                 _progressSlider.value = ratio;
-                _progressText.text = $"{StringUtility.ByteCountRatioToReadableString(CurrentDataSize.Get(), TotalDataSize.Get())} ({(ratio * 100).Rounded()}%)";
+                _progressText.text = $"{StringUtility.ByteCountRatioToReadableString(CurrentDataSize.Get(), TotalDataSize.Get())} ({round(ratio * 100)}%)";
             }
         }
     }

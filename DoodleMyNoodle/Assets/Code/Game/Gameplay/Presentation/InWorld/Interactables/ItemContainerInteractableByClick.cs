@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
+using CCC.Fix2D;
 
 public class ItemContainerInteractableByClick : ObjectInteractableByClick
 {

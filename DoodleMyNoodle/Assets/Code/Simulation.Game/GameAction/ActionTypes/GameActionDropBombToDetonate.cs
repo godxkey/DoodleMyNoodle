@@ -3,11 +3,10 @@ using Unity.Entities;
 using Unity.Collections;
 using UnityEngine;
 using Unity.Mathematics;
+using CCC.Fix2D;
 
 public class GameActionDropBombToDetonate : GameAction
 {
-    fix DROPPING_SPEED = (fix)5f;
-
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         if (accessor.TryGetComponentData(context.Entity, out ItemSpawnedObjectReference itemSpawnedObjectReference))
@@ -38,10 +37,7 @@ public class GameActionDropBombToDetonate : GameAction
             // set projectile data
             fix2 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
 
-            accessor.SetOrAddComponentData(objectInstance, new Velocity() { Value = DROPPING_SPEED * fix2.down });
             accessor.SetOrAddComponentData(objectInstance, new FixTranslation() { Value = spawnPos });
-            accessor.SetOrAddComponentData(objectInstance, new PotentialNewTranslation() { Value = spawnPos });
-
             accessor.SetOrAddComponentData(context.Entity, new ItemSpawnedObjectReference() { Entity = objectInstance });
 
             return true;

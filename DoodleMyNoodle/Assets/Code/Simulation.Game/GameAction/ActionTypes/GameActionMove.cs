@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
+using CCC.Fix2D;
 
 public class GameActionMove : GameAction
 {
@@ -71,7 +72,7 @@ public class GameActionMove : GameAction
             // set destination
             var random = accessor.Random();
             fix2 dest = Helpers.GetTileCenter(_path[_path.Length - 1]);
-            dest += fix2(random.NextFix(fix(-0.2), fix(0.2)), 0);
+            dest += fix2(random.NextFix(fix(-0.075), fix(0.075)), 0);
             accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = dest });
 
             return true;

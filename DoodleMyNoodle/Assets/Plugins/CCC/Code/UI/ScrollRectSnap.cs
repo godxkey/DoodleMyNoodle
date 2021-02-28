@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngineX.InspectorDisplay;
+using static Unity.Mathematics.math;
+using static Unity.MathematicsX.mathX;
 
 [RequireComponent(typeof(ScrollRect))]
 public class ScrollRectSnap : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
@@ -45,7 +47,7 @@ public class ScrollRectSnap : MonoBehaviour, IPointerDownHandler, IPointerUpHand
             }
             else
             {
-                targetAnchoredPos = (currentPos - baseSnapDelta).RoundedTo(snapInterval) + baseSnapDelta;
+                targetAnchoredPos = round(currentPos - baseSnapDelta, snapInterval) + baseSnapDelta;
             }
 
             var deltaTime = Time.deltaTime;

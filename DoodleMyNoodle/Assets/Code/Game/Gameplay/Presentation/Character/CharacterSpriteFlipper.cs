@@ -1,3 +1,4 @@
+using CCC.Fix2D;
 using System;
 using UnityEngine;
 using UnityEngineX;
@@ -9,7 +10,7 @@ public class CharacterSpriteFlipper : BindedPresentationEntityComponent
 
     protected override void OnGamePresentationUpdate()
     {
-        Velocity velocity = GamePresentationCache.Instance.SimWorld.GetComponentData<Velocity>(SimEntity);
+        PhysicsVelocity velocity = GamePresentationCache.Instance.SimWorld.GetComponentData<PhysicsVelocity>(SimEntity);
 
         bool IsSpriteLookingRight = _baseSpriteIsLookingRight;
         if (GamePresentationCache.Instance.SimWorld.HasComponent<DoodleStartDirection>(SimEntity))
@@ -17,11 +18,11 @@ public class CharacterSpriteFlipper : BindedPresentationEntityComponent
             IsSpriteLookingRight = GamePresentationCache.Instance.SimWorld.GetComponentData<DoodleStartDirection>(SimEntity).IsLookingRight;
         }
 
-        if (velocity.Value.x > 0)
+        if (velocity.Linear.x > 0)
         {
             _spriteRenderer.flipX = !IsSpriteLookingRight;
         }
-        else if (velocity.Value.x < 0)
+        else if (velocity.Linear.x < 0)
         {
             _spriteRenderer.flipX = IsSpriteLookingRight;
         }

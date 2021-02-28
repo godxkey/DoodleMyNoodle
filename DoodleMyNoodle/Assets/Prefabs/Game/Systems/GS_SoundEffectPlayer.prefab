@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1614422505081050552}
   - component: {fileID: 1614422505081050555}
   - component: {fileID: 1614422505081050554}
-  - component: {fileID: 4011795223051970214}
   m_Layer: 0
   m_Name: GS_SoundEffectPlayer
   m_TagString: Untagged
@@ -27,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1614422505081050557}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.11237594, y: -0.1396694, z: -160.72823}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -49,7 +48,7 @@ MonoBehaviour:
     Type: 1
     OnlineFlags: -1
   _audioSource: {fileID: 1614422505081050554}
-  _damageSound: {fileID: 4011795223051970214}
+  _damageSound: {fileID: 11400000, guid: d3c63adf9bf6c0d4bad2a8bcf8f9fffc, type: 2}
 --- !u!82 &1614422505081050554
 AudioSource:
   m_ObjectHideFlags: 0
@@ -147,18 +146,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4011795223051970214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1614422505081050557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bb285b594ad8d74ead8d509b9a57424, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _useRandomizeSoundGroup: 1
-  _soundEffect: {fileID: 0}
-  _soundEffectGroup: {fileID: 11400000, guid: 5c320f115b0acba47b489b27ed6dd199, type: 2}

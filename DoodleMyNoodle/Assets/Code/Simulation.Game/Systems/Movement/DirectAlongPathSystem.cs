@@ -1,41 +1,50 @@
 ﻿using Unity.Entities;
 using static Unity.Mathematics.math;
 using static fixMath;
+using CCC.Fix2D;
 using Unity.Mathematics;
 
-[UpdateBefore(typeof(ApplyVelocitySystem))]
 [UpdateAfter(typeof(CreatePathToDestinationSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class DirectAlongPathSystem : SimComponentSystem
+public class DirectAlongPathSystem : SimSystemBase
 {
+    EntityCommandBufferSystem _endSimECB;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        _endSimECB = World.GetExistingSystem<EndSimulationEntityCommandBufferSystem>();
+    }
+
     protected override void OnUpdate()
     {
-        // if entities collide when moving along path, reset their destination
-        Entities.ForEach((ref TileCollisionEventData collisionEvent) =>
-        {
-            TryCancelPathForEntity(collisionEvent.Entity);
-        });
-
         // if entities teleports when moving along path, reset their destination
-        Entities.ForEach((ref TeleportEventData teleportEvent) =>
+        Entities
+            .WithStructuralChanges()
+            .WithoutBurst()
+            .ForEach((in TeleportEventData teleportEvent) =>
         {
             TryCancelPathForEntity(teleportEvent.Entity);
-        });
+        }).Run();
 
         var deltaTime = Time.DeltaTime;
 
         // move along path
-        Entities.ForEach(
+        EntityCommandBuffer cmdBuffer = _endSimECB.CreateCommandBuffer();
+        Entities
+            .WithNone<MovingPlatformSettings>()
+            .ForEach(
             (Entity entity,
             DynamicBuffer<PathPosition> pathPositions,
-            ref Velocity velocity,
-            ref FixTranslation translation,
-            ref MoveSpeed moveSpeed) =>
+            ref PhysicsVelocity velocity,
+            in FixTranslation translation,
+            in MoveSpeed moveSpeed) =>
         {
             if (pathPositions.Length == 0)
             {
-                velocity.Value = fix2(0);
-                PostUpdateCommands.RemoveComponent<PathPosition>(entity);
+                velocity.Linear = fix2(0);
+                cmdBuffer.RemoveComponent<PathPosition>(entity);
                 return;
             }
 
@@ -69,9 +78,9 @@ public class DirectAlongPathSystem : SimComponentSystem
 
             fix2 dir = (vLength == 0 ? fix2(0) : (v / vLength));
             fix2 targetPosition = a + (dir * min(moveDist, vLength));
-
-            velocity.Value = (targetPosition - translation.Value) / deltaTime;
-        });
+            fix2 targetVelocity = (targetPosition - translation.Value) / deltaTime;
+            velocity.Linear = targetVelocity;// lerp(velocity, targetVelocity, deltaTime);
+        }).Run();
     }
 
     private void TryCancelPathForEntity(Entity entity)

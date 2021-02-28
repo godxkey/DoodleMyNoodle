@@ -2,10 +2,10 @@
 using Unity.Entities;
 using static fixMath;
 using Unity.Collections;
-using UnityEditor;
+using CCC.Fix2D;
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class CreatePathToDestinationSystem : SimComponentSystem
+public class CreatePathToDestinationSystem : SimSystemBase
 {
     NativeList<int2> _tilePath;
 
@@ -25,8 +25,7 @@ public class CreatePathToDestinationSystem : SimComponentSystem
 
     protected override void OnUpdate()
     {
-        Entities
-            .ForEach((Entity entity, ref FixTranslation pos, ref Destination destination) =>
+        Entities.ForEach((Entity entity, in FixTranslation pos, in Destination destination) =>
         {
             int2 from = Helpers.GetTile(pos);
             int2 to = Helpers.GetTile(destination.Value);
@@ -47,6 +46,9 @@ public class CreatePathToDestinationSystem : SimComponentSystem
             }
 
             EntityManager.RemoveComponent<Destination>(entity);
-        });
+        })
+            .WithStructuralChanges()
+            .WithoutBurst()
+            .Run();
     }
 }

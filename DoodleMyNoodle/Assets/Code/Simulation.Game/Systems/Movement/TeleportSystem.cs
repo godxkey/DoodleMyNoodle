@@ -1,3 +1,4 @@
+using CCC.Fix2D;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -15,8 +16,6 @@ public struct TeleportEventData : IComponentData
     public fix2 Destination;
 }
 
-[UpdateAfter(typeof(ApplyVelocitySystem))]
-[UpdateBefore(typeof(ValidatePotentialNewTranslationSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class TeleportSystem : SimSystemBase
 {
@@ -78,14 +77,14 @@ public class TeleportSystem : SimSystemBase
             return;
         }
 
-        if (!HasComponent<PotentialNewTranslation>(request.Entity))
+        if (!HasComponent<FixTranslation>(request.Entity))
         {
             Log.Info($"Teleport request on entity {request.Entity} to position {request.Destination} " +
-                $"will be ignored because the entity does not have a {nameof(PotentialNewTranslation)}.");
+                $"will be ignored because the entity does not have a {nameof(FixTranslation)}.");
             return;
         }
 
-        SetComponent<PotentialNewTranslation>(request.Entity, request.Destination);
+        SetComponent<FixTranslation>(request.Entity, request.Destination);
 
         EntityManager.CreateEventEntity(new TeleportEventData()
         {
