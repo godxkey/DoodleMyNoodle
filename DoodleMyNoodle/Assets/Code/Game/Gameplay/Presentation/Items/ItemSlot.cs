@@ -126,12 +126,12 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         {
             if (_currentItem)
             {
-                TooltipDisplay.Instance.ActivateTooltipDisplay(_currentItem, _itemsOwner);
+                ItemTooltipDisplay.Instance.ActivateTooltipDisplay(_currentItem, _itemsOwner);
             }
         }
         else
         {
-            TooltipDisplay.Instance.DeactivateToolTipDisplay();
+            ItemTooltipDisplay.Instance.DeactivateToolTipDisplay();
         }
     }
 

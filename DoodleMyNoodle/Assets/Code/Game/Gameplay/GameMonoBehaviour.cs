@@ -20,7 +20,7 @@ public class GameMonoBehaviour : MonoBehaviour, IElementIndexHint
         if (Game.Ready)
             OnGameAwake();
         
-        if (Game.Started)
+        if (Game.Started && !Game.CallingOnGameStart)
             Game.AddLateStarter(this);
     }
 

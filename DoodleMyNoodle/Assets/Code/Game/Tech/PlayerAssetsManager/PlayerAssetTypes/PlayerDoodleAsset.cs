@@ -40,6 +40,12 @@ public class PlayerDoodleAsset : PlayerAsset
         return Texture.EncodeToPNG();
     }
 
+    public void SetTexture(Texture2D newTexture)
+    {
+        Texture = newTexture;
+        RecreateSprite();
+    }
+
     private void RecreateSprite()
     {
         if (Sprite != null)

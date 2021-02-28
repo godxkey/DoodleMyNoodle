@@ -7,7 +7,21 @@ public class PromptDisplay : GameSystem<PromptDisplay>
 {
     [SerializeField] private TextMeshProUGUI _questionText;
     [SerializeField] private PromptAnswerDisplay _answerButtonPrefab;
+    [SerializeField] private PromptAnswerFieldDisplay _answerFieldPrefab;
     [SerializeField] private Transform _answersContainer;
+
+    private bool _waitingForAnswer = false;
+    public bool IsWaitingForAnswer
+    {
+        get
+        {
+            return _waitingForAnswer;
+        }
+        set
+        {
+            _waitingForAnswer = value;
+        }
+    }
 
     protected override void Awake()
     {
@@ -18,6 +32,9 @@ public class PromptDisplay : GameSystem<PromptDisplay>
     public void Ask(string question, Action<int> onAnswerSelected, params string[] answers)
     {
         ClearAnswers();
+
+        _waitingForAnswer = true;
+        UIStateMachineController.Instance.TransitionTo(UIStateType.BlockedGameplay);
 
         gameObject.SetActive(true);
 
@@ -33,8 +50,31 @@ public class PromptDisplay : GameSystem<PromptDisplay>
             {
                 onAnswerSelected(choiceIndex);
                 gameObject.SetActive(false);
+
+                _waitingForAnswer = false;
             });
         }
+    }
+
+    public void AskString(string question, Action<string> onAnswerSelected)
+    {
+        ClearAnswers();
+
+        _waitingForAnswer = true;
+        UIStateMachineController.Instance.TransitionTo(UIStateType.BlockedGameplay);
+
+        gameObject.SetActive(true);
+
+        _questionText.text = question;
+
+        PromptAnswerFieldDisplay promptAnswerFieldDisplay = Instantiate(_answerFieldPrefab, _answersContainer);
+        promptAnswerFieldDisplay.Init((string answer) =>
+        {
+            onAnswerSelected(answer);
+            gameObject.SetActive(false);
+
+            _waitingForAnswer = false;
+        });
     }
 
     private void ClearAnswers()

@@ -17,6 +17,7 @@ public class Game : MonoBehaviour
 
     public static bool Ready => s_instance && s_instance._ready;
     public static bool Started => s_instance && s_instance._started;
+    public static bool CallingOnGameStart => s_instance && s_instance._callingOnGameStart;
 
     [SerializeField] GameSystemBank _systemBank;
 
@@ -24,6 +25,7 @@ public class Game : MonoBehaviour
 
     bool _ready;
     bool _started;
+    bool _callingOnGameStart = false;
 
     int _lateStarterIterator;
     Scene _gameContentScene;
@@ -188,11 +190,14 @@ public class Game : MonoBehaviour
         {
             _fireOnGameStart = false;
             _started = true;
+            _callingOnGameStart = true;
 
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
                 b.OnGameStart();
             }
+
+            _callingOnGameStart = false;
         }
 
         if (_started)

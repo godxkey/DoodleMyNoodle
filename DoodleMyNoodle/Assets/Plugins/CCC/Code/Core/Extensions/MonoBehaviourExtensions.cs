@@ -26,4 +26,17 @@ public static class MonoBehaviourExtensions
     {
         return component.TryGetComponent<T>(out _);
     }
+
+    public static T GetComponentOnlyInChildren<T>(this Component source) where T : Component
+    {
+        foreach (T component in source.GetComponentsInChildren<T>())
+        {
+            if (component.gameObject != source.gameObject)
+            {
+                return component;
+            }
+        }
+
+        return null;
+    }
 }

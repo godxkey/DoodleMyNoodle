@@ -85,6 +85,11 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
             return;
         }
 
+        if (UIStateMachineController.Instance?.CurrentState.Type == UIStateType.BlockedGameplay)
+        {
+            return;
+        }
+
         CenterOnPawnIfChange();
 
         UpdateMovement();
