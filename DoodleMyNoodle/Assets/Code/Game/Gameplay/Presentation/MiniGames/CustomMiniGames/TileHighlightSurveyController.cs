@@ -24,17 +24,12 @@ public class TileHighlightSurveyController : SurveyBaseController
         return "Tiles Found";
     }
 
-    protected override IEnumerator SurveyLoop()
-    {
-        yield return null;
-    }
-
-    protected override void OnStartSurvey() 
+    protected override IEnumerator SurveyRoutine()
     {
         if (_parameters.Length < 1)
         {
             Complete();
-            return;
+            yield break;
         }
 
         foreach (GameAction.ParameterDescription parameter in _parameters)
@@ -48,17 +43,22 @@ public class TileHighlightSurveyController : SurveyBaseController
                         _tileSelected = TileSelectedData;
                         Complete();
                     });
-
-                    return; // only one at a time, we'll get back here anyway at next UI state entry if more tile are needed
+                    yield break;  // only one at a time, we'll get back here anyway at next UI state entry if more tile are needed
                 }
             }
             else
             {
                 Debug.LogError("We have been requested a tilehilight survey for parameters that are not even for tiles");
                 Complete();
-                return;
+                yield break;
             }
         }
-        
+
+        yield return null;
+    }
+
+    protected override void OnEndSurvey(bool wasCompleted)
+    {
+        TileHighlightManager.Instance?.InterruptTileSelectionProcess();
     }
 }

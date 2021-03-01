@@ -34,7 +34,7 @@ public class PromptDisplay : GameSystem<PromptDisplay>
         ClearAnswers();
 
         _waitingForAnswer = true;
-        UIStateMachine.Instance.TransitionTo(BlockedGameplayState.StateTypes.BlockedGameplay);
+        UIStateMachine.Instance.TransitionTo(UIStateType.BlockedGameplay);
 
         gameObject.SetActive(true);
 
@@ -61,7 +61,7 @@ public class PromptDisplay : GameSystem<PromptDisplay>
         ClearAnswers();
 
         _waitingForAnswer = true;
-        UIStateMachine.Instance.TransitionTo(BlockedGameplayState.StateTypes.BlockedGameplay);
+        UIStateMachine.Instance.TransitionTo(UIStateType.BlockedGameplay);
 
         gameObject.SetActive(true);
 

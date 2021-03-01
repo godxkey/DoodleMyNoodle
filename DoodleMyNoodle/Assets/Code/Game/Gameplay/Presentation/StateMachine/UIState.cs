@@ -1,27 +1,37 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineX;
 
-public abstract class UIState
+// the blackboard is meant to be used as a hub of shared information (across all UI states). It can be modified as needed.
+public class UIStateMachineBlackboard
 {
-    public enum StateTypes
-    {
-        Gameplay,
-        BlockedGameplay,
-        ParameterSelection,
-        Survey
-    }
-
-    public object[] Data;
     public GamePresentationCache Cache;
     public ExternalSimWorldAccessor SimWorld;
 
-    protected T GetData<T>(int index) { return (T)Data[index]; }
+    // state instances
+    public GameplayState GameplayState = new GameplayState();
+    public ParameterSelectionState ParameterSelectionState = new ParameterSelectionState();
+    public BlockedGameplayState BlockedGameplayState = new BlockedGameplayState();
+}
 
-    public abstract void OnEnter();
-    public abstract void OnUpdate();
-    public abstract void OnExit(StateTypes newState);
+public enum UIStateType
+{
+    Gameplay,
+    BlockedGameplay,
+    ParameterSelection,
+}
 
-    public abstract bool IsTransitionValid(StateTypes newState);
-    public abstract StateTypes StateType { get; }
+public abstract class UIState<TInputDataType> : UIState
+{
+    public new TInputDataType InputParameter => (TInputDataType)base.InputParameter;
+}
+
+public abstract class UIState : State<UIStateMachine, UIState, UIStateMachineBlackboard>
+{
+    public GamePresentationCache Cache => Blackboard.Cache;
+    public ExternalSimWorldAccessor SimWorld => Blackboard.SimWorld;
+
+    public abstract UIStateType Type { get; }
 }

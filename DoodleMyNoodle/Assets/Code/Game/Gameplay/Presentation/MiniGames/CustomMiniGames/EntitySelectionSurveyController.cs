@@ -69,7 +69,7 @@ public class EntitySelectionSurveyController : SurveyBaseController
         }
     }
 
-    protected override IEnumerator SurveyLoop()
+    protected override IEnumerator SurveyRoutine()
     {
         yield return null;
     }
@@ -107,5 +107,9 @@ public class EntitySelectionSurveyController : SurveyBaseController
         }
 
         return false;
+    }
+
+    protected override void OnEndSurvey(bool wasCompleted)
+    {
     }
 }

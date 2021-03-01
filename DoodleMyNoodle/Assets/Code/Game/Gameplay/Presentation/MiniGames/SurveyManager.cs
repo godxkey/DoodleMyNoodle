@@ -14,27 +14,31 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
     }
 
     [SerializeField] private Transform _surveyContainer;
-
     [SerializeField] private List<DefaultSurveyReference> _defaultSurveys;
 
+
+    SurveyBaseController _currentSurvey;
     private Action<List<GameAction.ParameterData>> _currentSurveyCallback;
 
-    public void RequestData(Vector3 surveyLocation,
-        GameObject survey,  
-        Action<List<GameAction.ParameterData>> onCompleteCallback, 
+    public void BeginSurvey(Vector3 surveyLocation,
+        GameObject survey,
+        Action<List<GameAction.ParameterData>> onCompleteCallback,
         params GameAction.ParameterDescription[] parameters)
     {
         _currentSurveyCallback = onCompleteCallback;
 
-        GameObject SurveyInstance = Instantiate(survey, surveyLocation, Quaternion.identity, _surveyContainer);
+        GameObject surveyInstance = Instantiate(survey, surveyLocation, Quaternion.identity, _surveyContainer);
 
-        SurveyBaseController surveyController = SurveyInstance.GetComponent<SurveyBaseController>();
+        SurveyBaseController surveyController = surveyInstance.GetComponent<SurveyBaseController>();
 
         if (surveyController != null)
         {
-            surveyController.StartSurvey(delegate(List<GameAction.ParameterData> resultData)
+            _currentSurvey = surveyController;
+
+            surveyController.StartSurvey(delegate (List<GameAction.ParameterData> resultData)
             {
                 _currentSurveyCallback.Invoke(resultData);
+                Destroy(surveyController.gameObject);
             }, parameters);
         }
         else
@@ -47,15 +51,32 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
         }
     }
 
-    public void RequestDataWithDefaultSurvey(Vector3 requestLocation, GameAction.ParameterDescription parameterDescription, Action<List<GameAction.ParameterData>> onCompleteCallback)
+    public void BeginDefaultSurvey(Vector3 requestLocation, GameAction.ParameterDescription parameterDescription, Action<List<GameAction.ParameterData>> onCompleteCallback)
     {
+        GameObject survey = null;
+        
+        // find default survey for param
         foreach (DefaultSurveyReference request in _defaultSurveys)
         {
             if (request.ParameterType == parameterDescription.GetParameterDescriptionType())
             {
-                RequestData(requestLocation, request.Survey, onCompleteCallback, parameterDescription);
-                return;
+                survey = request.Survey;
+                break;
             }
+        }
+
+        if (survey != null)
+        {
+            BeginSurvey(requestLocation, survey, onCompleteCallback, parameterDescription);
+        }
+    }
+
+    public void StopCurrentSurvey()
+    {
+        if(_currentSurvey != null)
+        {
+            _currentSurvey.Stop();
+            Destroy(_currentSurvey.gameObject);
         }
     }
 }
