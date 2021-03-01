@@ -17,9 +17,6 @@ namespace UnityEditorX
 
         private static void OnHierarchyItemGUI(int instanceID, Rect selectionRect)
         {
-            if (Event.current.type != EventType.Repaint && Event.current.type != EventType.Layout)
-                return;
-
             InitializeIfNeeded();
 
             GameObject gameObject = (GameObject)EditorUtility.InstanceIDToObject(instanceID);

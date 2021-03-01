@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngineX;
 
+// the blackboard is meant to be used as a hub of shared information (across all UI states). It can be modified as needed.
 public class UIStateMachineBlackboard
 {
     public GamePresentationCache Cache;
@@ -33,28 +34,4 @@ public abstract class UIState : State<UIStateMachine, UIState, UIStateMachineBla
     public ExternalSimWorldAccessor SimWorld => Blackboard.SimWorld;
 
     public abstract UIStateType Type { get; }
-}
-
-public class UIStateMachine : StateMachine<UIStateMachine, UIState, UIStateMachineBlackboard>
-{
-    public void TransitionTo(UIStateType type, object inputData = null)
-    {
-        switch (type)
-        {
-            case UIStateType.Gameplay:
-                TransitionTo(Blackboard.GameplayState, inputData);
-                break;
-
-            case UIStateType.BlockedGameplay:
-                TransitionTo(Blackboard.BlockedGameplayState, inputData);
-                break;
-
-            case UIStateType.ParameterSelection:
-                TransitionTo(Blackboard.ParameterSelectionState, inputData);
-                break;
-
-            default:
-                throw new NotImplementedException();
-        }
-    }
 }

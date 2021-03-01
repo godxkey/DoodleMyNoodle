@@ -149,7 +149,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                 {
                     Entity itemEntity = item.ItemEntity;
 
-                    UIStateMachineController.Instance.TransitionTo(UIStateType.ParameterSelection, new ParameterSelectionState.InputParam()
+                    UIStateMachine.Instance.TransitionTo(UIStateType.ParameterSelection, new ParameterSelectionState.InputParam()
                     {
                         ObjectEntity = itemEntity,
                         IsItem = true,

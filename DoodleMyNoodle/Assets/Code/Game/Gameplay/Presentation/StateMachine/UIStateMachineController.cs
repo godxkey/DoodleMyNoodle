@@ -8,8 +8,6 @@ public class UIStateMachineController : GamePresentationSystem<UIStateMachineCon
     public UIState CurrentSate => StateMachine.CurrentState;
     public UIStateMachine StateMachine { get; private set; } = new UIStateMachine();
 
-    public new static UIStateMachine Instance => GamePresentationSystem<UIStateMachineController>.Instance.StateMachine;
-
     protected override void OnGamePresentationUpdate()
     {
         StateMachine.Blackboard.SimWorld = SimWorld;
@@ -24,5 +22,31 @@ public class UIStateMachineController : GamePresentationSystem<UIStateMachineCon
         }
 
         StateMachine.Update();
+    }
+}
+
+public class UIStateMachine : StateMachine<UIStateMachine, UIState, UIStateMachineBlackboard>
+{
+    public static UIStateMachine Instance => UIStateMachineController.Instance?.StateMachine;
+
+    public void TransitionTo(UIStateType type, object inputData = null)
+    {
+        switch (type)
+        {
+            case UIStateType.Gameplay:
+                TransitionTo(Blackboard.GameplayState, inputData);
+                break;
+
+            case UIStateType.BlockedGameplay:
+                TransitionTo(Blackboard.BlockedGameplayState, inputData);
+                break;
+
+            case UIStateType.ParameterSelection:
+                TransitionTo(Blackboard.ParameterSelectionState, inputData);
+                break;
+
+            default:
+                throw new NotImplementedException();
+        }
     }
 }

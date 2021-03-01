@@ -26,7 +26,7 @@ public class InteractableEntityView : BindedPresentationEntityComponent
 
                         if (TriggerInteractableGameAction)
                         {
-                            UIStateMachineController.Instance.TransitionTo(UIStateType.ParameterSelection, new ParameterSelectionState.InputParam()
+                            UIStateMachine.Instance.TransitionTo(UIStateType.ParameterSelection, new ParameterSelectionState.InputParam()
                             {
                                 ObjectEntity = SimEntity,
                                 IsItem = false
