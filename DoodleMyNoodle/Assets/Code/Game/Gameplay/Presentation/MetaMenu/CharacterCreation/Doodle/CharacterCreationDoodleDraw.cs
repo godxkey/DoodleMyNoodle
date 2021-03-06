@@ -123,6 +123,16 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
         }
     }
 
+    public void SetCurrentDoodle(Texture2D newTexture)
+    {
+        for (int i = 0; i < _uPaint.LayerCount; i++)
+        {
+            _uPaint.RemoveLayer(i);
+        }
+
+        _uPaint.ImportImage(newTexture);
+    }
+
     public Texture2D ExportCurrentDoodleTexture()
     {
         Export();

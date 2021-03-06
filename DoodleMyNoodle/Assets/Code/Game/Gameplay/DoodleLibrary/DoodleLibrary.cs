@@ -49,6 +49,11 @@ public class DoodleLibrary : FileScriptableInterface
         Save();
     }
 
+    public void SetLastDoodle(int index)
+    {
+        _data.LastDoodleUsedIndex = index;
+    }
+
     private void SaveDoodle(Texture2D doodleTexture)
     {
         byte[] result = doodleTexture.EncodeToPNG();
