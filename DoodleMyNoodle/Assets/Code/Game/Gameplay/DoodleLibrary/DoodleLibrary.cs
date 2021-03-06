@@ -64,7 +64,7 @@ public class DoodleLibrary : FileScriptableInterface
         }
         catch (Exception e)
         {
-            Debug.LogError("Could not export and save doodle in library");
+            Debug.LogError($"Could not export and save doodle in library: {e.Message}");
         }
     }
 

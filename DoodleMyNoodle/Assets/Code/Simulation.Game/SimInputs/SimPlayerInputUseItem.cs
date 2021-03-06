@@ -16,6 +16,18 @@ public class SimPlayerInputUseItem : SimPlayerInput
         UseData = useData;
     }
 
+    public SimPlayerInputUseItem(int itemIndex, GameAction.ParameterData[] useData)
+    {
+        ItemIndex = itemIndex;
+        UseData = GameAction.UseParameters.Create(useData);
+    }
+
+    public SimPlayerInputUseItem(int itemIndex, List<GameAction.ParameterData> useData)
+    {
+        ItemIndex = itemIndex;
+        UseData = GameAction.UseParameters.Create(useData.ToArray());
+    }
+
     public override string ToString()
     {
         return $"SimPlayerInputUseItem(player:{SimPlayerId.Value}, ItemIndex: {ItemIndex}, ParamCount:{UseData?.ParameterDatas?.Length})";

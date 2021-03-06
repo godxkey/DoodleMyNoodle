@@ -50,16 +50,6 @@ public class SlideAreaTiming : SurveyBaseController
         return "Result : " + result;
     }
 
-    protected override void OnStartSurvey() 
-    {
-        _inProgress = true;
-
-        Circle.transform.localPosition = LeftCircleLimit.localPosition;
-
-        Section.localPosition = new Vector3(Random.Range(SectionLeftRandomLimit.localPosition.x, SectionRightRandomLimit.localPosition.x), 0, 0);
-        Section.localScale = new Vector3(Random.Range(SectionSizeMin, SectionSizeMax), 1, 1);
-    }
-
     protected override void OnUpdate()
     {
         if (Input.GetMouseButtonDown(0))
@@ -85,8 +75,16 @@ public class SlideAreaTiming : SurveyBaseController
         }
     }
 
-    protected override IEnumerator SurveyLoop()
+    protected override IEnumerator SurveyRoutine()
     {
+        _inProgress = true;
+
+        Circle.transform.localPosition = LeftCircleLimit.localPosition;
+
+        Section.localPosition = new Vector3(Random.Range(SectionLeftRandomLimit.localPosition.x, SectionRightRandomLimit.localPosition.x), 0, 0);
+        Section.localScale = new Vector3(Random.Range(SectionSizeMin, SectionSizeMax), 1, 1);
+
+
         Sequence circleAnim = DOTween.Sequence();
 
         circleAnim.Append(Circle.transform.DOLocalMoveX(RightCircleLimit.transform.localPosition.x, CircleSpeed).SetEase(Ease.Linear));
@@ -118,5 +116,9 @@ public class SlideAreaTiming : SurveyBaseController
 
             yield return new WaitForEndOfFrame();
         }
+    }
+
+    protected override void OnEndSurvey(bool wasCompleted)
+    {
     }
 }

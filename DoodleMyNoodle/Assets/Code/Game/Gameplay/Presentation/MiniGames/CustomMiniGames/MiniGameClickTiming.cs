@@ -34,7 +34,7 @@ public class MiniGameClickTiming : SurveyBaseController
             {
                 if (hit.collider.gameObject == gameObject)
                 {
-                    if (_isComplete)
+                    if (!_running)
                     {
                         StartSurvey(null);
                     }
@@ -47,7 +47,7 @@ public class MiniGameClickTiming : SurveyBaseController
         }
     }
 
-    protected override IEnumerator SurveyLoop()
+    protected override IEnumerator SurveyRoutine()
     {
         while (true)
         {
@@ -62,5 +62,9 @@ public class MiniGameClickTiming : SurveyBaseController
 
             yield return new WaitForSeconds(TimeBetweenChanges);
         }
+    }
+
+    protected override void OnEndSurvey(bool wasCompleted)
+    {
     }
 }

@@ -85,7 +85,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
             return;
         }
 
-        if ((UIStateMachine.Instance != null) && (UIStateMachine.Instance.CurrentSate != null) && (UIStateMachine.Instance.CurrentSate.StateType == UIState.StateTypes.BlockedGameplay))
+        if (UIStateMachine.Instance?.CurrentState?.Type == UIStateType.BlockedGameplay)
         {
             return;
         }

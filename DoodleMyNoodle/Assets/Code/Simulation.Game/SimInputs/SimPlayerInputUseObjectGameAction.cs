@@ -1,4 +1,5 @@
-﻿using Unity.Mathematics;
+﻿using System.Collections.Generic;
+using Unity.Mathematics;
 
 [NetSerializable]
 public class SimPlayerInputUseObjectGameAction : SimPlayerInput
@@ -12,6 +13,18 @@ public class SimPlayerInputUseObjectGameAction : SimPlayerInput
     {
         ObjectPosition = objectPosition;
         UseData = useData;
+    }
+
+    public SimPlayerInputUseObjectGameAction(int2 objectPosition, GameAction.ParameterData[] useData)
+    {
+        ObjectPosition = objectPosition;
+        UseData = GameAction.UseParameters.Create(useData);
+    }
+
+    public SimPlayerInputUseObjectGameAction(int2 objectPosition, List<GameAction.ParameterData> useData)
+    {
+        ObjectPosition = objectPosition;
+        UseData = GameAction.UseParameters.Create(useData.ToArray());
     }
 
     public override string ToString()

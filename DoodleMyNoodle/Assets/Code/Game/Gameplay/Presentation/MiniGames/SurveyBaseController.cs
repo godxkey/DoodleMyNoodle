@@ -18,7 +18,7 @@ public abstract class SurveyBaseController : MonoBehaviour
 
     public string DisplayName;
 
-    [NonSerialized] protected bool _isComplete = true; // must be true on start
+    [NonSerialized] protected bool _running = false;
     [NonSerialized] private bool _hasStarted = false;
     [NonSerialized] protected GameAction.ParameterDescription[] _parameters;
 
@@ -27,7 +27,7 @@ public abstract class SurveyBaseController : MonoBehaviour
 
     public void StartSurvey(Action<List<GameAction.ParameterData>> callback, params GameAction.ParameterDescription[] parameters)
     {
-        _isComplete = false;
+        _running = true;
         _onCompleteCallback = callback;
         _hasStarted = true;
         _parameters = parameters;
@@ -37,44 +37,46 @@ public abstract class SurveyBaseController : MonoBehaviour
             DebugDisplay.gameObject.SetActive(false);
         }
 
-        OnStartSurvey();
-
-        _currentLoop = StartCoroutine(SurveyLoop());
+        _currentLoop = StartCoroutine(SurveyRoutine());
     }
 
-    protected virtual void OnStartSurvey() { }
-
-    public virtual void Complete()
+    public void Stop()
     {
-        if (_isComplete)
+        EndSurvey(completed: false);
+    }
+
+    public void Complete()
+    {
+        EndSurvey(completed: true);
+    }
+
+    private void EndSurvey(bool completed)
+    {
+        if (!_running)
             return;
 
-        _isComplete = true;
+        _running = false;
+
+        OnEndSurvey(completed);
 
         if (_currentLoop != null)
             StopCoroutine(_currentLoop);
 
-        if (_onCompleteCallback != null)
+        if (completed)
         {
-            _onCompleteCallback.Invoke(GetResult());
-        }
+            _onCompleteCallback?.Invoke(GetResult());
 
-        if (DebugMode)
-        {
-            string debugText = GetDebugResult();
-            if (DebugDisplay != null)
+            if (DebugMode)
             {
-                DebugDisplay.text = debugText;
-                DebugDisplay.gameObject.SetActive(true);
+                string debugText = GetDebugResult();
+                if (DebugDisplay != null)
+                {
+                    DebugDisplay.text = debugText;
+                    DebugDisplay.gameObject.SetActive(true);
+                }
             }
         }
-        else
-        {
-            Destroy(gameObject);
-        }
     }
-
-    protected abstract IEnumerator SurveyLoop();
 
     private void Update()
     {
@@ -87,6 +89,8 @@ public abstract class SurveyBaseController : MonoBehaviour
     }
 
     protected virtual void OnUpdate() { }
+    protected abstract IEnumerator SurveyRoutine();
     protected abstract List<GameAction.ParameterData> GetResult();
     protected abstract string GetDebugResult();
+    protected abstract void OnEndSurvey(bool wasCompleted);
 }
