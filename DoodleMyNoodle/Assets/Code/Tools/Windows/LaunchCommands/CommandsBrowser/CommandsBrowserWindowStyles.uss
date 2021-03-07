@@ -1,0 +1,21 @@
+
+#refreshButton {
+    position: absolute;
+    right: 2px;
+    top: 0px;
+    width: 55px;
+}
+
+#favoritesContainer {
+    padding: 0px;
+    flex-shrink: 0;
+}
+
+#invokablesContainer {
+    padding: 5px;
+}
+
+#searchField{
+    width:auto;
+    margin-right:26px;
+}

@@ -12,18 +12,19 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using UnityEngineX;
 
-public class LaunchWindow : EditorWindow
+public class LaunchWindow : ToolsWindowBase
 {
-    const string PATH = "Assets/Code/Tools/Windows/LaunchWindow/";
-
     private List<PlayerProfile> _localPlayerProfiles;
     private List<LaunchProfileElement> _profileElements = new List<LaunchProfileElement>();
     private string[] _localPlayerProfileNames;
     private PopupField<string> _elementLevel;
 
-    public void OnEnable()
+    protected override string UssGuid => "d13a97c21d8810b44af913ddbff4af18";
+    protected override string UxmlGuid => "56f189421eb1e05429a4f0281d7300c9";
+
+    protected override void OnEnable()
     {
-        Rebuild();
+        base.OnEnable();
         EditorSceneManager.sceneOpened += OnSceneOpened;
     }
 
@@ -32,7 +33,8 @@ public class LaunchWindow : EditorWindow
         EditorSceneManager.sceneOpened -= OnSceneOpened;
     }
 
-    void Rebuild()
+
+    protected override void Rebuild(VisualElement root)
     {
         _localPlayerProfiles = PlayerProfileService.LoadProfilesOnDisk();
 
@@ -43,19 +45,7 @@ public class LaunchWindow : EditorWindow
         }
         _localPlayerProfileNames[_localPlayerProfiles.Count] = "- none -";
 
-
-        VisualElement root = rootVisualElement;
-        root.Clear();
         _profileElements.Clear();
-
-        StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(PATH + "LaunchWindowStyles.uss");
-        VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(PATH + "LaunchWindowTree.uxml");
-        SerializedObject serializedQuickStartAssets = new SerializedObject(QuickStartAssets.instance);
-
-        visualTree.CloneTree(root);
-        root.styleSheets.Add(styleSheet);
-
-        root.Q<Button>(name: "refreshButton").clickable.clicked += Rebuild;
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Build Target
@@ -239,6 +229,7 @@ public class LaunchWindow : EditorWindow
             element.RegisterValueChangedCallback(
                 (ChangeEvent<string> changeEvent) =>
                 {
+                    GameConsole.EditorPlayCommands = CommandLine.SplitCommandLine(changeEvent.newValue).ToArray();
                     EditorLaunchData.extraArguments = changeEvent.newValue;
                 });
         }

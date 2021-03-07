@@ -1,0 +1,29 @@
+:root {
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+}
+#addButton {
+    background-image: url("../../Icons/add.png");
+    -unity-background-image-tint-color: #5e5e5e;
+    width: 22px;
+    height: 22px;
+}
+#favoritesContainer{
+    padding: 0px;
+    flex-shrink: 0;
+}
+
+#invokablesContainer {
+    padding: 5px;
+}
+
+#searchField{
+    flex-shrink:1;
+    width:auto;
+    min-width:20px;
+}
+#headerContainer{
+    flex-direction:row;
+    margin-right:25px;
+}

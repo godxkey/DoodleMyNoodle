@@ -5,8 +5,36 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngineX;
 
+public abstract class ConsoleInvokableAttribute : Attribute
+{
+    /// <summary>
+    /// The display name of the command or var. Case insensitive when invoked by user.
+    /// </summary>
+    public string Name;
+
+    /// <summary>
+    /// The description of the command of var.
+    /// </summary>
+    public string Description;
+
+    /// <summary>
+    /// If set to false, the command will not be usable until manually enabled using <see cref="GameConsole.SetCommandOrVarEnabled"/>.
+    /// </summary>
+    public bool EnabledByDefault = true;
+
+    /// <summary>
+    /// If set, this command or var will only be usable when the group is enabled using <see cref="GameConsole.SetGroupEnabled(string, bool)"/>. Case insensitive when invoked by user.
+    /// </summary>
+    public string EnableGroup = null;
+
+    /// <summary>
+    /// If the command or var is used while deactivated, should we buffer the executing for when it is re-enabled?
+    /// </summary>
+    public bool BufferWhileInactive = true;
+}
+
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-public class ConsoleVarAttribute : Attribute
+public class ConsoleVarAttribute : ConsoleInvokableAttribute
 {
     public enum SaveMode
     {
@@ -14,9 +42,6 @@ public class ConsoleVarAttribute : Attribute
         PlayerPrefs
     }
 
-    public string Name;
-    public string Description;
-    public bool EnabledByDefault = true;
     public SaveMode Save = SaveMode.NotSaved;
 
     public ConsoleVarAttribute() { }
@@ -29,12 +54,8 @@ public class ConsoleVarAttribute : Attribute
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public class ConsoleCommandAttribute : Attribute
+public class ConsoleCommandAttribute : ConsoleInvokableAttribute
 {
-    public string Name;
-    public string Description;
-    public bool EnabledByDefault = true;
-
     public ConsoleCommandAttribute() { }
 
     public ConsoleCommandAttribute(string name, string description)
@@ -44,9 +65,27 @@ public class ConsoleCommandAttribute : Attribute
     }
 }
 
-internal abstract class GameConsoleInvokable
+public interface IGameConsoleInvokable
 {
-    public class Parameter
+    string DisplayName { get; }
+    string Description { get; }
+    Type ReturnType { get; }
+    ReadOnlyListDynamic<IGameConsoleParameter> Parameters { get; }
+    bool Enabled { get; }
+}
+
+public interface IGameConsoleParameter
+{
+    string Name { get; }
+    Type Type { get; }
+    bool Optional { get; }
+    bool HasDefaultValue { get; }
+    object DefaultValue { get; }
+}
+
+internal abstract class GameConsoleInvokable : IGameConsoleInvokable
+{
+    public class Parameter : IGameConsoleParameter
     {
         public readonly string Name;
         public readonly Type Type;
@@ -62,23 +101,49 @@ internal abstract class GameConsoleInvokable
             HasDefaultValue = hasDefaultValue;
             DefaultValue = defaultValue;
         }
+
+        string IGameConsoleParameter.Name => Name;
+        Type IGameConsoleParameter.Type => Type;
+        bool IGameConsoleParameter.Optional => Optional;
+        bool IGameConsoleParameter.HasDefaultValue => HasDefaultValue;
+        object IGameConsoleParameter.DefaultValue => DefaultValue;
     }
 
-    public bool Enabled = true;
-
+    public bool EnabledSelf = true;
     public string Name { get; protected set; }
     public string DisplayName { get; protected set; }
     public string Description { get; protected set; }
     public Type ReturnType { get; protected set; }
-    public Parameter[] InvokeParameters { get; protected set; }
+    public List<Parameter> InvokeParameters { get; protected set; }
     public int MandatoryParameterCount { get; protected set; }
+    public string EnableGroup { get; protected set; }
+    public bool BufferWhileInactive { get; protected set; }
 
-    protected void Construct(bool enabledByDefault, string displayName, string description, Parameter[] parameters)
+    string IGameConsoleInvokable.DisplayName => DisplayName;
+    string IGameConsoleInvokable.Description => Description;
+    Type IGameConsoleInvokable.ReturnType => ReturnType;
+    ReadOnlyListDynamic<IGameConsoleParameter> IGameConsoleInvokable.Parameters => InvokeParameters.AsReadOnlyNoAlloc().DynamicCast<IGameConsoleParameter>();
+    bool IGameConsoleInvokable.Enabled => EnabledSelf;
+
+
+    protected void Construct(MemberInfo memberInfo, ConsoleInvokableAttribute attribute, List<Parameter> parameters)
     {
+        string displayName;
+        if (string.IsNullOrEmpty(attribute.Name))
+        {
+            displayName = memberInfo.Name;
+        }
+        else
+        {
+            displayName = attribute.Name;
+        }
+        
+        EnabledSelf = attribute.EnabledByDefault;
+        EnableGroup = attribute.EnableGroup?.ToLower();
+        BufferWhileInactive = attribute.BufferWhileInactive;
         DisplayName = displayName;
         Name = DisplayName.ToLower();
-        Description = description;
-        Enabled = enabledByDefault;
+        Description = attribute.Description;
         InvokeParameters = parameters;
         MandatoryParameterCount = InvokeParameters.Count((p) => !p.Optional);
     }
@@ -134,24 +199,15 @@ internal abstract class GameConsoleFieldOrProperty : GameConsoleInvokable
     {
         _memberType = memberType;
         ConsoleVarAttribute attribute = memberInfo.GetCustomAttribute<ConsoleVarAttribute>();
-        string displayName;
-        if (string.IsNullOrEmpty(attribute.Name))
-        {
-            displayName = memberInfo.Name;
-        }
-        else
-        {
-            displayName = attribute.Name;
-        }
 
-        var invokeParameters = new Parameter[]
+        var invokeParameters = new List<Parameter>()
         {
             new Parameter(null, memberType, optional: true, hasDefaultValue: false, null)
         };
 
         _saveMode = attribute.Save;
 
-        Construct(attribute.EnabledByDefault, displayName, attribute.Description, invokeParameters);
+        Construct(memberInfo, attribute, invokeParameters);
     }
 
     public override void Init()
@@ -329,32 +385,21 @@ internal class GameConsoleCommand : GameConsoleInvokable
     {
         _methodInfo = methodInfo;
         ConsoleCommandAttribute attribute = methodInfo.GetCustomAttribute<ConsoleCommandAttribute>();
-
-        string displayName;
-        if (string.IsNullOrEmpty(attribute.Name))
-        {
-            displayName = methodInfo.Name;
-        }
-        else
-        {
-            displayName = attribute.Name;
-        }
-
         List<Parameter> parameters = new List<Parameter>();
         foreach (ParameterInfo paramInfo in methodInfo.GetParameters())
         {
             parameters.Add(new Parameter(paramInfo.Name, paramInfo.ParameterType, paramInfo.HasDefaultValue, paramInfo.HasDefaultValue, paramInfo.DefaultValue));
         }
 
-        Construct(attribute.EnabledByDefault, displayName, attribute.Description, parameters.ToArray());
+        Construct(methodInfo, attribute, parameters);
     }
 
     public override void Invoke(string[] paramStrings)
     {
-        object[] paramObjs = new object[InvokeParameters.Length];
+        object[] paramObjs = new object[InvokeParameters.Count];
 
         // fill default values
-        for (int i = 0; i < InvokeParameters.Length; i++)
+        for (int i = 0; i < InvokeParameters.Count; i++)
         {
             if (InvokeParameters[i].Optional)
             {
@@ -362,9 +407,9 @@ internal class GameConsoleCommand : GameConsoleInvokable
             }
         }
 
-        if (paramStrings.Length > InvokeParameters.Length)
+        if (paramStrings.Length > InvokeParameters.Count)
         {
-            Log.Warning($"The command {DisplayName} does not take {paramStrings.Length} arguments. It takes {InvokeParameters.Length}.");
+            Log.Warning($"The command {DisplayName} does not take {paramStrings.Length} arguments. It takes {InvokeParameters.Count}.");
             return;
         }
 

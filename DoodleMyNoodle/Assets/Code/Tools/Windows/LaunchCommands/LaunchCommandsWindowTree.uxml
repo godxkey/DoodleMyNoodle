@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xmlns:upm="UnityEditor.PackageManager.UI"
+
+xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+>
+  <engine:VisualElement name="headerContainer">
+    <engine:Label text="Commands" class="title"/>
+    <engine:Button name="addButton"/>
+    <!--<editor:ToolbarSearchField name="searchField"/>-->
+  </engine:VisualElement>
+  <engine:Button name="refreshButton"/>
+  <engine:ListView name ="invokablesContainer"/>
+</engine:UXML>

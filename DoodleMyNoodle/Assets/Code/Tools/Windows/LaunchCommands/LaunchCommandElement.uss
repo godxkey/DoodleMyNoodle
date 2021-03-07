@@ -1,0 +1,26 @@
+LaunchCommandElement {
+    flex-direction: row;
+}
+
+#removeButton {
+    position: absolute;
+    right: 0px;
+    background-image: url("../../Icons/remove.png");
+    -unity-background-image-tint-color: #5e5e5e;
+    width: 16px;
+    height: 16px;
+    visibility: hidden;
+}
+
+#paramsContainer {
+    flex-direction: row;
+}
+
+    #paramsContainer > * {
+        margin: 0px 1px 0px 1px;
+        min-width: 18px;
+    }
+
+:hover > #removeButton {
+    visibility: visible;
+}
