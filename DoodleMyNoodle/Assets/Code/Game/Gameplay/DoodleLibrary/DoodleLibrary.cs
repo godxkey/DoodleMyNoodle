@@ -49,6 +49,25 @@ public class DoodleLibrary : FileScriptableInterface
         Save();
     }
 
+    public void RemoveDoodle(int index)
+    {
+        _data.TotalDoodleCount--;
+
+        if (File.Exists(GetDoodlePath(index)))
+        {
+            try
+            {
+                File.Delete(GetDoodlePath(index));
+            }
+            catch (Exception e)
+            {
+                Log.Info($"Cannot delete texture at path {GetDoodlePath(index)}: {e.Message}");
+            }
+        }
+
+        Save();
+    }
+
     public void SetLastDoodle(int index)
     {
         _data.LastDoodleUsedIndex = index;
@@ -70,12 +89,13 @@ public class DoodleLibrary : FileScriptableInterface
 
     private Texture2D GetDoodle(int index)
     {
-        Texture2D resultTexture = new Texture2D(512,512);
+        Texture2D resultTexture = null;
         if (File.Exists(GetDoodlePath(index)))
         {
             try
             {
                 byte[] bytes = File.ReadAllBytes(GetDoodlePath(index));
+                resultTexture = new Texture2D(512, 512);
                 resultTexture.LoadImage(bytes);
             }
             catch (Exception e)

@@ -9,9 +9,17 @@ public class DoodleDrawBrushSelect : MonoBehaviour
     [SerializeField] private float _gradient = 1;
     [SerializeField] private bool _isSmall = false;
 
+    [SerializeField] private bool _defaultBrush = false;
+
     private void Start()
     {
         GetComponent<Button>().onClick.AddListener(OnBrushSelected);
+
+        if (_defaultBrush)
+        {
+            OnBrushSelected();
+            transform.parent.gameObject.SetActive(false);
+        }
     }
 
     private void OnBrushSelected()

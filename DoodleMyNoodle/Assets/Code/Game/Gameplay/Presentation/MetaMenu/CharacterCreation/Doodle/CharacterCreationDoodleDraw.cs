@@ -23,6 +23,7 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
     [SerializeField] private Button _fillBrush;
 
     [SerializeField] private Button _undoButton;
+    [SerializeField] private Button _trashCanButton;
 
     [Header("Draw Settings")]
     [SerializeField] private int _size = 512;
@@ -33,6 +34,7 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
     private Color _previousColor = Color.white;
     private bool _wasHoveringDoodle = false;
     private bool _isUsingBrush = false;
+    private bool _isUsingFill = false;
 
     private bool _recentlyChangedTool = false;
 
@@ -57,7 +59,7 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
                 _brushContainer.ToggleActiveState();
             }
 
-            if (_isUsingBrush)
+            if (_isUsingBrush || _isUsingFill)
             {
                 _colorContainer.ToggleActiveState();
             }
@@ -73,10 +75,11 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
             _brushContainer.ToggleActiveState(); 
         });
 
-        _eraserBrush.onClick.AddListener(() => SetEraser());
-        _moveBrush.onClick.AddListener(() => SetMove());
-        _fillBrush.onClick.AddListener(() => SetFill());
+        _eraserBrush.onClick.AddListener(SetEraser);
+        _moveBrush.onClick.AddListener(SetMove);
+        _fillBrush.onClick.AddListener(SetFill);
         _undoButton.onClick.AddListener(_uPaint.Undo);
+        _trashCanButton.onClick.AddListener(EraseCurrentDoodle);
 
         // Default Brush
         _uPaint.SetDefaultBrush(0, 0);
@@ -106,7 +109,7 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
                 else
                 {
                     CursorOverlayService.Instance.RevertToPreviousSetting();
-                    if (_isUsingBrush)
+                    if (_isUsingBrush || _isUsingFill)
                     {
                         CursorOverlayService.Instance.SetCursorColor(_previousColor);
                     }
@@ -144,9 +147,10 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
     private void Import()
     {
         Texture2D lastDoodle = _library.GetLastDoodle();
+
         if (lastDoodle != null)
         {
-            _uPaint.ImportImage(lastDoodle);
+            SetCurrentDoodle(lastDoodle);
         }
     }
 
@@ -161,7 +165,6 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
         if (!_recentlyChangedTool)
         {
             _recentlyChangedTool = true;
-            _isUsingBrush = true;
             CursorOverlayService.Instance.RevertToPreviousSetting();
         }
 
@@ -176,6 +179,7 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
     {
         _recentlyChangedTool = true;
         _isUsingBrush = true;
+        _isUsingFill = false;
         CursorOverlayService.Instance.SetCursorType(isSmall ? CursorOverlayService.CursorType.SmallBrush : CursorOverlayService.CursorType.BigBrush);
         CursorOverlayService.Instance.SetCursorColor(_previousColor);
         _uPaint.SetDefaultBrush(Mathf.RoundToInt(brushSize), brushGradient);
@@ -187,6 +191,7 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
     private void SetEraser()
     {
         _recentlyChangedTool = true;
+        _isUsingFill = false;
         _isUsingBrush = false;
         CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Erase);
         _uPaint.SetEraserBrush(_eraserSize);
@@ -197,6 +202,7 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
     private void SetMove()
     {
         _recentlyChangedTool = true;
+        _isUsingFill = false;
         _isUsingBrush = false;
         CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Move);
         _uPaint.SetMoveBrush();
@@ -206,12 +212,25 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
 
     private void SetFill()
     {
-        _recentlyChangedTool = true;
+        // if you're coming from the doodle directly, make sure we don't color the default cursor
+        if (!_recentlyChangedTool)
+        {
+            _recentlyChangedTool = true;
+            _isUsingFill = true;
+            CursorOverlayService.Instance.RevertToPreviousSetting();
+        }
+
         _isUsingBrush = false;
         CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Fill);
+        CursorOverlayService.Instance.SetCursorColor(_previousColor);
         _uPaint.SetFillBrush();
         _uPaint.PaintColor = _previousColor;
         _brushButtonImage.sprite = _fillBrush.GetComponentOnlyInChildren<Image>().sprite;
         _brushContainer.ToggleActiveState();
+    }
+
+    public void EraseCurrentDoodle()
+    {
+        _uPaint.Initialize(new Vector2Int(_size, _size), FilterMode.Point, _history);
     }
 }
