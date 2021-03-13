@@ -90,26 +90,45 @@ public class GameConsole
         s_init = true;
 
         PopulateAllInvokables();
-        ExecuteCommandLineStyleInvokables(CommandLine.Arguments.ToArray());
-#if UNITY_EDITOR
-        ExecuteCommandLineStyleInvokables(EditorPlayCommands);
-#endif
 
         Write("Console ready", LineColor.Normal);
     }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] // initializes in build & playmode
+    private static void BeforeSceneLoad()
+    {
+        if (Application.isPlaying)
+        {
+            ExecuteCommandLineStyleInvokables(CommandLine.Arguments.ToArray());
+#if UNITY_EDITOR
+            ExecuteCommandLineStyleInvokables(EditorPlayCommands);
+#endif
+        }
+    }
+
+    public static ReadOnlyListDynamic<IGameConsoleInvokable> Invokables
+    {
+        get
+        {
+            InitIfNeeded();
+            return s_database.Invokables.AsReadOnlyNoAlloc().DynamicCast<IGameConsoleInvokable>();
+        }
+    }
+
     public static void ExecuteCommandLineStyleInvokables(string[] args)
     {
+        InitIfNeeded();
+        Debug.Log($"Executing commands: {string.Join(" ", args)}");
         for (int i = 0; i < args.Length; i++)
         {
-            if (args[i].StartsWith("+"))
+            if (args[i].StartsWith("-"))
             {
                 string invokableName = args[i].Substring(1, args[i].Length - 1);
 
                 if (s_database.InvokablesMap.TryGetValue(invokableName.ToLower(), out GameConsoleInvokable invokable))
                 {
                     int minParam = invokable.MandatoryParameterCount;
-                    int maxParam = invokable.InvokeParameters.Length;
+                    int maxParam = invokable.InvokeParameters.Count;
 
                     int paramStart = i + 1;
                     int paramEnd = paramStart;
@@ -290,13 +309,18 @@ public class GameConsole
 
         if (s_database.InvokablesMap.TryGetValue(invokableName, out GameConsoleInvokable invokable))
         {
-            if (invokable.Enabled)
+            if (IsEnabled(invokable))
             {
                 invokable.Invoke(tokens.GetRange(1, tokens.Count - 1).ToArray());
             }
+            else if (invokable.BufferWhileInactive)
+            {
+                Log.Info($"Buffering '{invokableName}' until is it enabled.");
+                s_database.BufferedInvokables.Add((invokable, command));
+            }
             else
             {
-                Log.Warning($"'{invokableName}' is disabled.");
+                Log.Warning($"Discarding '{invokableName}' because it is disabled.");
             }
         }
         //else if (ConfigVarService.Instance.configVarRegistry.ConfigVars.TryGetValue(invokableName, out ConfigVarBase configVar))
@@ -319,6 +343,18 @@ public class GameConsole
         {
             OutputString("Unknown command: " + tokens[0], LineColor.Warning);
         }
+    }
+
+    private static bool IsEnabled(GameConsoleInvokable invokable)
+    {
+        bool enabled = invokable.EnabledSelf;
+
+        if (enabled && !string.IsNullOrEmpty(invokable.EnableGroup))
+        {
+            enabled = s_database.EnabledGroups.Contains(invokable.EnableGroup);
+        }
+
+        return enabled;
     }
 
     public static void EnqueueCommandNoHistory(string command)
@@ -344,7 +380,7 @@ public class GameConsole
 
         foreach (var c in s_database.InvokablesMap)
         {
-            if (!c.Value.Enabled)
+            if (!c.Value.EnabledSelf)
                 continue;
 
             var name = c.Key;
@@ -433,13 +469,51 @@ public class GameConsole
 
         if (s_database.InvokablesMap.TryGetValue(command.ToLower(), out GameConsoleInvokable c))
         {
-            c.Enabled = enabled;
+            c.EnabledSelf = enabled;
+
+            if (enabled)
+            {
+                FlushBufferedInvokes();
+            }
         }
         else
         {
             Log.Error($"Command '{command}' does not exist.");
         }
     }
+
+    public static void SetGroupEnabled(string group, bool enabled)
+    {
+        InitIfNeeded();
+
+        group = group.ToLower();
+
+        if (enabled)
+        {
+            s_database.EnabledGroups.AddUnique(group);
+            FlushBufferedInvokes();
+        }
+        else
+        {
+            s_database.EnabledGroups.Remove(group);
+        }
+    }
+
+    private static void FlushBufferedInvokes()
+    {
+        // Find all enabled invokables and enqueue their execution
+        for (int i = 0; i < s_database.BufferedInvokables.Count; i++)
+        {
+            if (IsEnabled(s_database.BufferedInvokables[i].invokable))
+            {
+                EnqueueCommandNoHistory(s_database.BufferedInvokables[i].invoke);
+
+                s_database.BufferedInvokables.RemoveAt(i);
+                i--;
+            }
+        }
+    }
+
 
     [ConsoleCommand("help", "Show available commands")]
     static void Help()
@@ -448,7 +522,7 @@ public class GameConsole
 
         foreach (var c in s_database.Invokables)
         {
-            if (c.Enabled)
+            if (c.EnabledSelf)
                 OutputString(c.DisplayName + ": " + c.Description, LineColor.Normal);
         }
     }

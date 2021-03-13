@@ -5,6 +5,19 @@ using UnityEngineX;
 
 public static class SimulationCheats
 {
+    /// <summary>
+    /// These cheats can only be used when the player has a local pawn.
+    /// </summary>
+    public const string LOCAL_PAWN_GROUP = "sim-cheats-local-pawn";
+
+    /// <summary>
+    /// These cheats can be used anytime
+    /// </summary>
+    public const string GLOBAL_GROUP = "sim-cheats-global";
+
+    private static DirtyValue<bool> s_globalGroupEnabled;
+    private static DirtyValue<bool> s_localPawnGroupEnabled;
+
     [Updater.StaticUpdateMethod(UpdateType.Update)]
     public static void Update()
     {
@@ -15,10 +28,25 @@ public static class SimulationCheats
                 CheatTeleportAtMouse();
             }
         }
+
+        var cache = GamePresentationCache.Instance;
+
+        s_globalGroupEnabled.Set(cache?.SimWorld != null);
+        s_localPawnGroupEnabled.Set(s_globalGroupEnabled && cache.SimWorld.Exists(GamePresentationCache.Instance.LocalPawn));
+
+        if (s_globalGroupEnabled.ClearDirty())
+        {
+            GameConsole.SetGroupEnabled(GLOBAL_GROUP, s_globalGroupEnabled);
+        }
+
+        if (s_localPawnGroupEnabled.ClearDirty())
+        {
+            GameConsole.SetGroupEnabled(LOCAL_PAWN_GROUP, s_localPawnGroupEnabled);
+        }
     }
 
 
-    [ConsoleCommand(Description = "Kill the local player pawn")]
+    [ConsoleCommand(Description = "Kill the local player pawn", EnableGroup = LOCAL_PAWN_GROUP)]
     public static void CheatSuicide()
     {
         var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
@@ -35,7 +63,7 @@ public static class SimulationCheats
         });
     }
 
-    [ConsoleCommand(Description = "Render your local pawn immune to damage")]
+    [ConsoleCommand(Description = "Render your local pawn immune to damage", EnableGroup = LOCAL_PAWN_GROUP)]
     public static void CheatInvicible()
     {
         var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
@@ -52,7 +80,7 @@ public static class SimulationCheats
         });
     }
 
-    [ConsoleCommand(Description = "Damage your local pawn by the given amount")]
+    [ConsoleCommand(Description = "Damage your local pawn by the given amount", EnableGroup = LOCAL_PAWN_GROUP)]
     public static void CheatDamageSelf(int amount)
     {
         var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
@@ -70,7 +98,7 @@ public static class SimulationCheats
         });
     }
 
-    [ConsoleCommand(Description = "Heal your local pawn by the given amount")]
+    [ConsoleCommand(Description = "Heal your local pawn by the given amount", EnableGroup = LOCAL_PAWN_GROUP)]
     public static void CheatHealSelf(int amount)
     {
         var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
@@ -88,7 +116,7 @@ public static class SimulationCheats
         });
     }
 
-    [ConsoleCommand(Description = "Give your pawn all the game items")]
+    [ConsoleCommand(Description = "Give your pawn all the game items", EnableGroup = LOCAL_PAWN_GROUP)]
     public static void CheatGiveAllItems()
     {
         var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
@@ -105,13 +133,13 @@ public static class SimulationCheats
         });
     }
 
-    [ConsoleCommand(Description = "Next Turn")]
+    [ConsoleCommand(Description = "Next Turn", EnableGroup = GLOBAL_GROUP)]
     public static void CheatNextTurn()
     {
         PresentationHelpers.SubmitInput(new SimInputCheatNextTurn());
     }
 
-    [ConsoleCommand(Description = "Give your pawn infinit action points")]
+    [ConsoleCommand(Description = "Give your pawn infinit action points", EnableGroup = LOCAL_PAWN_GROUP)]
     public static void CheatInfinitAP()
     {
         var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
@@ -128,7 +156,7 @@ public static class SimulationCheats
         });
     }
 
-    [ConsoleCommand(Description = "Teleport your character at the current mouse location. Shortcut: C + T")]
+    [ConsoleCommand(Description = "Teleport your character at the current mouse location. Shortcut: C + T", EnableGroup = LOCAL_PAWN_GROUP)]
     public static void CheatTeleportAtMouse()
     {
         var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();

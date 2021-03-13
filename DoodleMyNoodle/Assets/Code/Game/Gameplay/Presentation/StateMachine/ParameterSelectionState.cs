@@ -13,8 +13,6 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         public Entity ObjectEntity;
         public bool IsItem;
         public int ItemIndex;
-
-        public List<GameAction.ParameterData> Hack;
     }
 
     private SurveyBlackboard _surveySMBlackboard = new SurveyBlackboard();

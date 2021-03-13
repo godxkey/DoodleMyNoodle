@@ -8,10 +8,8 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class LaunchProfileElement : VisualElement
+public class LaunchProfileElement : ToolsVisualElementBase
 {
-    const string PATH = "Assets/Code/Tools/Windows/LaunchWindow/LaunchProfileElement/";
-
     public PlayerProfile PlayerProfile { get; private set; }
 
     bool _isMarkedAsServer;
@@ -31,6 +29,9 @@ public class LaunchProfileElement : VisualElement
         && PlayerProfileService.Instance != null
         && PlayerProfileService.Instance.currentProfile == PlayerProfile;
 
+    public override string UxmlGuid => "04ab12ab6d1ce71409dfafb6e7178471";
+    public override string UssGuid => "ca3898a92df42194d969b1f0347a0c6c";
+
     readonly TextField _content_profileName;
     readonly Button _content_play;
     readonly Button _content_stop;
@@ -42,16 +43,11 @@ public class LaunchProfileElement : VisualElement
     bool _subscribedToUpdate = false;
 
     public LaunchProfileElement(PlayerProfile playerProfile)
+        : base()
     {
         this.PlayerProfile = playerProfile;
 
         RegisterCallback<DetachFromPanelEvent>(OnDetach, TrickleDown.TrickleDown);
-
-        styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(PATH + "LaunchProfileElementStyles.uss"));
-        VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(PATH + "LaunchProfileElementTree.uxml");
-
-
-        visualTree.CloneTree(this);
 
         _content_profileName = this.Q<TextField>("profileName");
         _content_play = this.Q<Button>("play");

@@ -1,0 +1,26 @@
+﻿
+.title {
+    font-size: 18px;
+    -unity-font-style: bold;
+}
+
+.subtitle {
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+.hidden {
+    height: 0;
+    visibility: hidden;
+}
+
+#refreshButton {
+    position: absolute;
+    margin-right: 0px;
+    right: 0px;
+    top: 0px;
+    width: 22px;
+    height: 22px;
+    background-image: url("Icons/refresh.png");
+    -unity-background-image-tint-color: #5e5e5e;
+}

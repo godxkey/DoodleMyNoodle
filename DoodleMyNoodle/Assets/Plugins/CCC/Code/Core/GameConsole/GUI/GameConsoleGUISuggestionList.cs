@@ -20,18 +20,26 @@ internal class GameConsoleGUISuggestionList : MonoBehaviour
     private GameConsoleDatabase _database;
     private List<(int score, GameConsoleInvokable command)> _suggestionsAndScores = new List<(int score, GameConsoleInvokable command)>();
     private int _selectionIndex = -1;
+    private GameConsoleInvokableSearcher _searcher = new GameConsoleInvokableSearcher();
+    private List<IGameConsoleInvokable> _suggestions = new List<IGameConsoleInvokable>();
 
     public GameConsoleInvokable HighlightedSuggestion
     {
         get
         {
-            if (_selectionIndex >= 0 && _selectionIndex < _suggestionsAndScores.Count && gameObject.activeSelf)
-                return _suggestionsAndScores[_selectionIndex].command;
+            if (_selectionIndex >= 0 && _selectionIndex < _suggestions.Count && gameObject.activeSelf)
+                return (GameConsoleInvokable)_suggestions[_selectionIndex];
             return null;
         }
     }
 
     public event Action<GameConsoleInvokable> SuggestionPicked;
+
+    private void Awake()
+    {
+        _searcher.ReverseResult = true;
+        _searcher.FilterDisabled = true;
+    }
 
     public void Init(GameConsoleDatabase database)
     {
@@ -52,7 +60,7 @@ internal class GameConsoleGUISuggestionList : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Tab) && _selectionIndex >= 0)
         {
-            SuggestionPicked?.Invoke(_suggestionsAndScores[_selectionIndex].command);
+            SuggestionPicked?.Invoke((GameConsoleInvokable)_suggestions[_selectionIndex]);
         }
 
         UpdateSelectorVisualPosition();
@@ -79,7 +87,7 @@ internal class GameConsoleGUISuggestionList : MonoBehaviour
             _strBuilder.EndHTMLColor();
 
             _strBuilder.BeginHTMLColor(_inlineParameterColor);
-            for (int i = currentTokenCount - 1; i < HighlightedSuggestion.InvokeParameters.Length; i++)
+            for (int i = currentTokenCount - 1; i < HighlightedSuggestion.InvokeParameters.Count; i++)
             {
                 AppendParam(_strBuilder, HighlightedSuggestion.InvokeParameters[i]);
             }
@@ -106,7 +114,7 @@ internal class GameConsoleGUISuggestionList : MonoBehaviour
 
     private void MoveSelection(int move)
     {
-        _selectionIndex = Mathf.Clamp(_selectionIndex + move, 0, _suggestionsAndScores.Count - 1);
+        _selectionIndex = Mathf.Clamp(_selectionIndex + move, 0, _suggestions.Count - 1);
     }
 
     public void DisplaySuggestionsFor(string text)
@@ -114,56 +122,54 @@ internal class GameConsoleGUISuggestionList : MonoBehaviour
         _text = text;
         text = text.ToLower();
 
-        _suggestionsAndScores.Clear();
+        _suggestions.Clear();
 
         bool onlyExactMatches = text.Contains(" ");
 
         if (onlyExactMatches)
         {
+            _suggestionsAndScores.Clear();
             text = text.Substring(0, text.IndexOf(' '));
             for (int i = 0; i < _database.Invokables.Count; i++)
             {
-                if (!_database.Invokables[i].Enabled)
+                if (!_database.Invokables[i].EnabledSelf)
                     continue;
 
                 if (string.Equals(text, _database.Invokables[i].Name))
                 {
-                    _suggestionsAndScores.Add((score: _database.Invokables[i].InvokeParameters.Length, _database.Invokables[i]));
+                    _suggestionsAndScores.Add((score: _database.Invokables[i].InvokeParameters.Count, _database.Invokables[i]));
                 }
+            }
+
+            _suggestionsAndScores.Sort((a, b) =>
+            {
+                if (a.score == b.score)
+                {
+                    return b.command.Name.Length.CompareTo(a.command.Name.Length);
+                }
+                return a.score.CompareTo(b.score);
+            });
+
+            foreach (var item in _suggestionsAndScores)
+            {
+                _suggestions.Add(item.command);
             }
         }
         else
         {
-            for (int i = 0; i < _database.Invokables.Count; i++)
-            {
-                if (!_database.Invokables[i].Enabled)
-                    continue;
-
-                int score = GetScore(text, _database.Invokables[i].Name);
-                if (score > 0)
-                    _suggestionsAndScores.Add((score, _database.Invokables[i]));
-            }
+            _searcher.GetSuggestions(_database.Invokables, text, _suggestions);
         }
-
-        _suggestionsAndScores.Sort((a, b) =>
-        {
-            if (a.score == b.score)
-            {
-                return b.command.Name.Length.CompareTo(a.command.Name.Length);
-            }
-            return a.score.CompareTo(b.score);
-        });
 
 
         // select the text at the bottom
-        _selectionIndex = _suggestionsAndScores.Count - 1;
+        _selectionIndex = _suggestions.Count - 1;
 
-        DisplaySuggestions(_suggestionsAndScores);
+        DisplaySuggestions(_suggestions);
 
-        gameObject.SetActive(_suggestionsAndScores.Count > 0);
+        gameObject.SetActive(_suggestions.Count > 0);
     }
 
-    private void DisplaySuggestions(List<(int score, GameConsoleInvokable command)> suggestions)
+    private void DisplaySuggestions(List<IGameConsoleInvokable> suggestions)
     {
         int i = 0;
         for (; i < suggestions.Count; i++)
@@ -174,7 +180,7 @@ internal class GameConsoleGUISuggestionList : MonoBehaviour
             }
 
             _suggestionTexts[i].gameObject.SetActive(true);
-            FormatSuggestion(_suggestionTexts[i], suggestions[i].command);
+            FormatSuggestion(_suggestionTexts[i], (GameConsoleInvokable)suggestions[i]);
         }
 
         for (int r = _suggestionTexts.Count - 1; r >= i; r--)
@@ -203,75 +209,6 @@ internal class GameConsoleGUISuggestionList : MonoBehaviour
         AppendDescription(_strBuilder, command.Description);
 
         text.text = _strBuilder.ToString();
-    }
-
-    private int GetScore(string text, string candidate)
-    {
-        List<char> candidateBuffer = ListPool<char>.Take();
-
-        // add candidate characters to a buffer
-        for (int i = 0; i < candidate.Length; i++)
-        {
-            candidateBuffer.Add(candidate[i]);
-        }
-
-        int index = -1;
-        int score = 1; // if the candidate passes the test, it has a starting score of 1
-
-        // for each character in 'text'
-        for (int i = 0; i < text.Length; i++)
-        {
-            int previousIndex = index;
-
-            // if any of the characters match
-            index = indexOfFrom(candidateBuffer, text[i], previousIndex);
-            if (index == -1)
-            {
-                score -= 2;
-            }
-            else
-            {
-                // if we matched at the first letter, score ++
-                // This is to make 'hello' more favorable to 'push' if submitting 'h'
-                if (i == 0 && index == 0)
-                {
-                    score++;
-                }
-
-                // if the character is next to the previous one, score ++
-                // This is to make 'hello' more favorable to 'hogward' if submitting 'he'
-                if (previousIndex == index)
-                {
-                    score++;
-                }
-
-                candidateBuffer.RemoveAt(index);
-            }
-        }
-
-        ListPool<char>.Release(candidateBuffer);
-
-        return score;
-
-        // this method is like list.IndexOf(value), but starts from a specific given position
-        int indexOfFrom(List<char> buffer, char c, int fromIndex)
-        {
-            if (fromIndex < 0)
-                fromIndex = 0;
-
-            for (int i = fromIndex; i < buffer.Count; i++)
-            {
-                if (buffer[i] == c)
-                    return i;
-            }
-
-            for (int i = 0; i < fromIndex; i++)
-            {
-                if (buffer[i] == c)
-                    return i;
-            }
-            return -1;
-        }
     }
 
     public void Hide()
