@@ -84,7 +84,7 @@ public class CopyTransformToViewGameObjectSystem : ViewSystemBase
         }
     }
 
-    EntityQuery _viewTransformsQ;
+    private EntityQuery _viewTransformsQ;
 
     protected override void OnCreate()
     {
@@ -97,6 +97,8 @@ public class CopyTransformToViewGameObjectSystem : ViewSystemBase
 
     protected override void OnUpdate()
     {
+        // todo optim: we should only update once per frame
+
         TransformAccessArray transforms = _viewTransformsQ.GetTransformAccessArray();
 
         Dependency = new CopyTransforms

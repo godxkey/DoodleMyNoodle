@@ -7,6 +7,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using UnityEngineX;
 using static Unity.Mathematics.math;
 
 public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisplay>
@@ -21,12 +22,13 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
 
     private List<PlayerActionBarSlot> _slotVisuals = new List<PlayerActionBarSlot>();
 
-    private bool _canBeInteractedWith = true;
+    private DisablableValue _interactible = new DisablableValue();
 
     public override void OnGameAwake()
     {
         base.OnGameAwake();
 
+        _interactible.ValueChanged += OnInteractableChange;
         _slotsContainer.GetComponentsInChildren(_slotVisuals);
     }
 
@@ -40,16 +42,19 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
         }
     }
 
-    public void BlockInteraction()
+    private void OnInteractableChange(bool interactable)
     {
-        _blockedDisplay.gameObject.SetActive(true);
-        _canBeInteractedWith = false;
+        _blockedDisplay.gameObject.SetActive(!interactable);
     }
 
-    public void EnableInteraction()
+    public void DisableInteraction(string cause)
     {
-        _blockedDisplay.gameObject.SetActive(false);
-        _canBeInteractedWith = true;
+        _interactible.AddDisable(cause);
+    }
+
+    public void UndoDisableInteraction(string cause)
+    {
+        _interactible.RemoveDisable(cause);
     }
 
     private void UpdateInventorySlots()
@@ -136,7 +141,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
 
     private void OnIntentionToUsePrimaryActionOnItem(int ItemIndex)
     {
-        if (!_canBeInteractedWith)
+        if (!_interactible)
             return;
 
         if (SimWorld.TryGetBufferReadOnly(Cache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))

@@ -19,15 +19,20 @@ public class GamePresentationCache
     public List<Entity> PointedTileActors = new List<Entity>();
 
     public Entity LocalPawn;
+    public int LocalPawnHealth;
     public fix2 LocalPawnPosition;
     public int2 LocalPawnTile;
     public Entity LocalPawnTileEntity;
     public Vector2 LocalPawnPositionFloat;
     public Entity LocalController;
-    public Team LocalPawnTeam;
+    public Team LocalControllerTeam;
     public Team CurrentTeam;
     public TileWorld TileWorld;
     public ExternalSimWorldAccessor SimWorld;
+
+    public bool LocalPawnExists => LocalPawn != Entity.Null;
+    public bool LocalControllerExists => LocalController != Entity.Null;
+    public bool LocalPawnAlive => LocalPawnExists && LocalPawnHealth > 0;
 }
 
 // should we change this to a component system ?
@@ -103,12 +108,13 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         if (Cache.LocalPawn != Entity.Null)
         {
             Cache.LocalController = CommonReads.GetPawnController(Cache.SimWorld, Cache.LocalPawn);
-            if (Cache.LocalController != Entity.Null && Cache.SimWorld.TryGetComponentData(Cache.LocalController, out Team pawnTeam))
+            if (Cache.LocalController != Entity.Null && Cache.SimWorld.TryGetComponentData(Cache.LocalController, out Team controllerTeam))
             {
-                Cache.LocalPawnTeam = pawnTeam;
+                Cache.LocalControllerTeam = controllerTeam;
             }
 
             Cache.LocalPawnPosition = Cache.SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn).Value;
+            Cache.LocalPawnHealth = Cache.SimWorld.GetComponentData<Health>(Cache.LocalPawn).Value;
             Cache.LocalPawnPositionFloat = Cache.LocalPawnPosition.ToUnityVec();
             Cache.LocalPawnTile = Helpers.GetTile(Cache.LocalPawnPosition);
             Cache.LocalPawnTileEntity = Cache.TileWorld.IsCreated ? Cache.TileWorld.GetEntity(Cache.LocalPawnTile) : Entity.Null;
@@ -124,7 +130,8 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         ////////////////////////////////////////////////////////////////////////////////////////
         {
             Cache.PointerWorldPosition = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
-            Cache.PointerInWorld = WorldUIEventSystem.Instance.MouseInWorld;
+            if (WorldUIEventSystem.Instance != null)
+                Cache.PointerInWorld = WorldUIEventSystem.Instance.MouseInWorld;
             Cache.PointedTile = Helpers.GetTile(Cache.PointerWorldPosition);
 
             Cache.PointedTileActors.Clear();

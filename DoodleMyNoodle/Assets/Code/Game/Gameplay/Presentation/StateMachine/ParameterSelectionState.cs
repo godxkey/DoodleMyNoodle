@@ -67,8 +67,8 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             return;
         }
 
-        // Are we done with the current survey ?
-        if (((SurveyState)_surveyStateMachine.CurrentState).Done)
+        // No currently running survey ? (or current survey done)
+        if (_surveyStateMachine.CurrentState == null || ((SurveyState)_surveyStateMachine.CurrentState).Done)
         {
             bool isFinished = _surveySMBlackboard.ResultParameters.Count == _surveySMBlackboard.ParametersDescriptions.Length;
             if (isFinished)
@@ -145,7 +145,9 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             // the parameter
             int remainingParamCount = Blackboard.ParametersDescriptions.Length - Blackboard.ResultParameters.Count;
 
-            GameAction.ParameterDescription[] remainingParams = ArrayX.Slice(Blackboard.ParametersDescriptions, 0, remainingParamCount);
+            Log.Assert(remainingParamCount > 0); // we should not enter in survey state if no param to fill
+
+            GameAction.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, 0, remainingParamCount);
             GameObject surveyPrefab = Blackboard.ItemAuth.FindSurveyDefinitionForParameters(remainingParams);
 
             if (surveyPrefab != null)
@@ -157,8 +159,8 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
                 // Default Case
 
                 // For default case, we handle them one at a time with the survey corresponding to the first parameter we have
-                GameAction.ParameterDescription ParameterToHandle = remainingParams[0];
-                SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, ParameterToHandle, OnSurveyComplete);
+                GameAction.ParameterDescription parameterToHandle = remainingParams[0];
+                SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, parameterToHandle, OnSurveyComplete);
             }
         }
 

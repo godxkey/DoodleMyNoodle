@@ -58,8 +58,21 @@ public class StateMachine<TStateMachine, TState, TBlackboard> : StateMachine
 
 public abstract class State
 {
+    private string _nameCache = null;
+
     public StateMachine StateMachine { get; private set; }
     public object Blackboard => StateMachine.Blackboard;
+    public virtual string Name
+    {
+        get
+        {
+            if(_nameCache == null)
+            {
+                _nameCache = GetType().GetPrettyName();
+            }
+            return _nameCache;
+        }
+    }
 
     public abstract void OnEnter();
     public abstract void OnUpdate();
@@ -121,7 +134,7 @@ public class StateMachine
         }
     }
 
-    public void Update()
+    public virtual void Update()
     {
         if (CurrentState != null)
         {

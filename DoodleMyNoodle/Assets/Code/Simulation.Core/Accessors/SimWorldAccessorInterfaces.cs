@@ -751,6 +751,7 @@ public interface ISimWorldReadAccessor
     uint ReplaceVersion { get; }
     event Action WorldReplaced;
     SimInput[] TickInputs { get; }
+    uint ExpectedNewTickId { get; }
 
     // fbessette: 
     //  Here we are giving the presentation access to a query builder in the simulation.

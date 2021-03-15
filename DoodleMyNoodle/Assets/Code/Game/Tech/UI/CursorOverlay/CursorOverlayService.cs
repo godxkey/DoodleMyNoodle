@@ -251,7 +251,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
             }
         }
 
-        coloredTexture.alphaIsTransparency = true;
+        //coloredTexture.alphaIsTransparency = true;
 
         // Apply changes
         coloredTexture.Apply();

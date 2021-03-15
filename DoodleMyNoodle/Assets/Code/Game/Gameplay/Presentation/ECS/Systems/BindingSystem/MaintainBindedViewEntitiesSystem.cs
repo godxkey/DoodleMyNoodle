@@ -2,6 +2,7 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
+using UnityEngineX;
 
 public struct BindedViewType : ISharedComponentData
 {
@@ -21,6 +22,7 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
     private EntityQuery _allSimEntitiesQ;
 
     private DirtyValue<uint> _simWorldReplaceVersion;
+    private DirtyValue<uint> _simWorldTickId;
     private BindedViewEntityCommandBufferSystem _ecb;
     private EntityArchetype _viewEntityArchetype;
 
@@ -39,31 +41,36 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
         if (!SimAssetBankInstance.Ready)
             return;
 
-        EntityQuery simEntitiesInNeedOfViewBinding;
-
-        // If sim world was cleared and replaced
         _simWorldReplaceVersion.Set(SimWorldAccessor.ReplaceVersion);
-        if (_simWorldReplaceVersion.ClearDirty())
+        _simWorldTickId.Set(SimWorldAccessor.ExpectedNewTickId);
+
+        if (!_simWorldTickId.IsDirty && !_simWorldReplaceVersion.IsDirty) // only continue if sim has changed since last update
+            return;
+
+        _simWorldTickId.ClearDirty();
+
+        if (_simWorldReplaceVersion.ClearDirty()) // world replaced!
         {
-            ////////////////////////////////////////////////////////////////////////////////////////
-            //      Destroy all binded view entities
-            ////////////////////////////////////////////////////////////////////////////////////////
-
-            DestroyAllViewEntities();
-
+            // update cached sim queries since world got replaced
             // NB: No need to dispose of these queries because the world gets disposed ...
             _newSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<NewlyCreatedTag>(), ComponentType.ReadOnly<SimAssetId>());
             _allSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<SimAssetId>());
 
-            simEntitiesInNeedOfViewBinding = _allSimEntitiesQ;
+            // Destroy all view
+            DestroyAllViewEntities();
+
+            // Create all view
+            CreateNewViewEntities(SimAssetBankInstance.GetJobLookup(), _allSimEntitiesQ);
         }
         else
         {
-            simEntitiesInNeedOfViewBinding = _newSimEntitiesQ;
+            // Destroy dangling view
             DestroyDanglingViewEntities();
+
+            // Create new view
+            CreateNewViewEntities(SimAssetBankInstance.GetJobLookup(), _newSimEntitiesQ);
         }
 
-        CreateNewViewEntities(SimAssetBankInstance.GetJobLookup(), simEntitiesInNeedOfViewBinding);
     }
 
     private void DestroyAllViewEntities()

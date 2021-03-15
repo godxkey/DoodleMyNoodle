@@ -24,10 +24,6 @@ public class ViewSystemGroup : ManualCreationComponentSystemGroup, IManualSystem
 
     public void Initialize(SimulationControlSystemGroup simControlGroup)
     {
-        // TODO: create/destroy systems + Initialize() + Shutdown() pattern
-        //ManualCreateAndAddSystem<BeginViewSystem>();
-        //ManualCreateAndAddSystem<EndViewSystem>(); 
-
         IEnumerable<Type> viewComponentSystemTypes =
 
                     // get all ViewComponent systems
@@ -68,7 +64,9 @@ public class ViewSystemGroup : ManualCreationComponentSystemGroup, IManualSystem
     protected override void OnUpdate()
     {
         if (CanUpdate)
+        {
             base.OnUpdate();
+        }
     }
 }
 

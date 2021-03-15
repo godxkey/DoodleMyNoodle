@@ -4,28 +4,17 @@
 
     public override void OnEnter()
     {
-        
+        // disable interactions. We need to provide a key, we use our state name.
+        PlayerActionBarDisplay.Instance.DisableInteraction(cause: Name);
     }
 
     public override void OnUpdate()
     {
-        // todo : something better for when a system manually transition to state and wanna keep handling manually
-        if (PromptDisplay.Instance.IsWaitingForAnswer)
-        {
-            return;
-        }
-
-        if (CommonReads.CanTeamPlay(SimWorld, SimWorld.GetComponentData<Team>(Cache.LocalController)))
-        {
-            if (SimWorld.GetComponentData<Health>(Cache.LocalPawn).Value > 0)
-            {
-                StateMachine.TransitionTo(Blackboard.GameplayState);
-            }
-        }
     }
 
     public override void OnExit(UIState newState)
     {
-
+        // re-enable interactions. We need to provide the same key (our state name).
+        PlayerActionBarDisplay.Instance.UndoDisableInteraction(cause: Name);
     }
 }

@@ -5,6 +5,12 @@ using Unity.Jobs;
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class UpdateNavAgentFootingSystem : SimSystemBase
 {
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        RequireSingletonForUpdate<GridInfo>();
+    }
+
     protected override void OnUpdate()
     {
         TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);

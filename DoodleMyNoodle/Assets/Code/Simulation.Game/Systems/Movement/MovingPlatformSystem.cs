@@ -1,9 +1,7 @@
 using CCC.Fix2D;
 using Unity.Entities;
-using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using Unity.MathematicsX;
-using UnityEditor.XR;
 using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;

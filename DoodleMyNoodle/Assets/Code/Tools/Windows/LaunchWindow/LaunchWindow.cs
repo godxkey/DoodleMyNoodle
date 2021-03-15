@@ -352,6 +352,8 @@ public class LaunchWindow : ToolsWindowBase
         {
             _elementLevel.SetEnabled(!quickStart.overrideLevel);
             _elementLevel.label = "Level (set by scene)";
+            _elementLevel.value = quickStart.level.name;
+            EditorLaunchData.level = quickStart.level.name;
         }
         else
         {
