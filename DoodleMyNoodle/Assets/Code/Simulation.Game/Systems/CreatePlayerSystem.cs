@@ -11,7 +11,7 @@ public class SimInputPlayerCreate : SimMasterInput
     public string PlayerName;
 }
 
-public class CreatePlayerSystem : SimComponentSystem
+public class CreatePlayerSystem : SimSystemBase
 {
     protected override void OnUpdate()
     {
@@ -85,19 +85,20 @@ public class CreatePlayerSystem : SimComponentSystem
     {
         Entity uncontrolledEntity = Entity.Null;
 
+        var controllers = GetComponentDataFromEntity<ControlledEntity>(isReadOnly: true);
+
         Entities
-            .WithNone<InstantiateAndUseDefaultControllerTag>() // entities with this tag will have their DefaultController spawned
-            .WithAll<Controllable>()
-            .ForEach((Entity controllableEntity) =>
+            .ForEach((Entity pawn, in Controllable controllable, in DefaultControllerPrefab defaultController) =>
         {
-            //Log.Info($"potential uncontrolled pawn ({controllableEntity}) ?");
-            if (!CommonReads.IsPawnControlled(Accessor, controllableEntity))
+            if (defaultController.Value != Entity.Null)  // entities with this will have their DefaultController spawned
+                return;
+
+            if (!controllers.HasComponent(controllable.CurrentController))
             {
-                //Log.Info($"Found uncontrolled pawn ({controllableEntity})!");
-                uncontrolledEntity = controllableEntity;
+                uncontrolledEntity = pawn;
                 return;
             }
-        });
+        }).Run();
 
         return uncontrolledEntity;
     }
@@ -105,7 +106,7 @@ public class CreatePlayerSystem : SimComponentSystem
     private Entity SpawnUncontrolledPawn()
     {
         // get pawn prefab
-        if (!this.TryGetSingleton(out PlayerPawnPrefabReferenceSingletonComponent playerPawnPrefab))
+        if (!TryGetSingleton(out PlayerPawnPrefabReferenceSingletonComponent playerPawnPrefab))
         {
             Log.Error($"No Player Pawn Prefab Singelton, can't spawn player");
             return Entity.Null;
@@ -141,10 +142,5 @@ public partial class CommonReads
     public static Entity GetPawnController(ISimWorldReadAccessor accessor, Entity pawn)
     {
         return accessor.GetComponentData<Controllable>(pawn).CurrentController;
-    }
-
-    public static bool IsPawnControlled(ISimWorldReadAccessor accessor, Entity pawn)
-    {
-        return GetPawnController(accessor, pawn) != Entity.Null;
     }
 }

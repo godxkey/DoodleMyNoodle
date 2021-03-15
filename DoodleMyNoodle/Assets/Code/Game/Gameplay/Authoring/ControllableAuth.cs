@@ -11,27 +11,17 @@ public class ControllableAuth : MonoBehaviour, IConvertGameObjectToEntity, IDecl
 {
     public GameObject DefaultAIPrefab;
 
-    [ShowIf(nameof(DefaultControllerPrefabIsValid))]
-    public bool InstantiateAIOnSpawn = true;
-
-    private bool DefaultControllerPrefabIsValid => DefaultAIPrefab != null;
-
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponent<Controllable>(entity);
+        Entity defaultController = Entity.Null;
 
-        if (DefaultAIPrefab)
+        if (DefaultAIPrefab != null)
         {
-            dstManager.AddComponentData(entity, new DefaultControllerPrefab()
-            {
-                Value = conversionSystem.GetPrimaryEntity(DefaultAIPrefab)
-            });
-
-            if (InstantiateAIOnSpawn)
-            {
-                dstManager.AddComponent<InstantiateAndUseDefaultControllerTag>(entity);
-            }
+            defaultController = conversionSystem.GetPrimaryEntity(DefaultAIPrefab);
         }
+
+        dstManager.AddComponent<Controllable>(entity);
+        dstManager.AddComponentData(entity, new DefaultControllerPrefab() { Value = defaultController });
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)

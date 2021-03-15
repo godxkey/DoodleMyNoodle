@@ -10,9 +10,10 @@ public struct EntityDeathEventData : IComponentData
     public Entity Entity;
 }
 
-public class DestroyDeadEntitiesSystem : SimComponentSystem
+public class DestroyDeadEntitiesSystem : SimSystemBase
 {
-    EntityQuery _eventsGroup;
+    private EntityQuery _eventsGroup;
+    private List<Entity> _toDestroy = new List<Entity>();
 
     protected override void OnCreate()
     {
@@ -33,7 +34,10 @@ public class DestroyDeadEntitiesSystem : SimComponentSystem
         // destroy events
         EntityManager.DestroyEntity(_eventsGroup);
 
-        Entities.ForEach((Entity entity, ref Health health, ref FixTranslation translation) =>
+        Entities
+            .WithoutBurst()
+            .WithStructuralChanges()
+            .ForEach((Entity entity, ref Health health, ref FixTranslation translation) =>
         {
             if (health.Value <= 0)
             {
@@ -43,7 +47,7 @@ public class DestroyDeadEntitiesSystem : SimComponentSystem
                 // Only Destroy entities that have been tagged for it
                 if (EntityManager.TryGetComponentData(entity, out DestroyOnDeath destroyOnDeath))
                 {
-                    PostUpdateCommands.DestroyEntity(entity);
+                    _toDestroy.Add(entity);
                 }
                 else
                 {
@@ -53,6 +57,12 @@ public class DestroyDeadEntitiesSystem : SimComponentSystem
                     EntityManager.AddComponentData(entity, new DeadTag());
                 }
             }
-        });
+        }).Run();
+
+        foreach (var entity in _toDestroy)
+        {
+            EntityManager.DestroyEntity(entity);
+        }
+        _toDestroy.Clear();
     }
 }
