@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 800b27a6aa6c95b41835b5a1d0ae75ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionThrowProjectile
+  Value: GameActionThrowVectorProjectile
   PlayAnimation: 0
   Animation: {fileID: 0}
 --- !u!114 &6504929175459107924
