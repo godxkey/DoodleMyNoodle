@@ -5,22 +5,31 @@ using UnityEngine;
 
 public class MiniGameSlingShot : SurveyBaseController
 {
+    // Feedback
     public Shader LineShader;
-
-    private bool _dragging = false;
     private GameObject _currentLine = null;
     private GameObject _currentResultLine = null;
+    public GameObject DraggingBall;
+
+    // Settings
+    public int speedMultiplier = 1;
+
+    // Cache
+    private bool _dragging = false;
+
+    // Results
+    private fix2 _vector;
 
     protected override List<GameAction.ParameterData> GetResult()
     {
         List<GameAction.ParameterData> results = new List<GameAction.ParameterData>();
-        // TODO : Parameter Vector / Direction ?
+        results.Add(new GameActionParameterVector.Data(_vector));
         return results;
     }
 
     protected override string GetDebugResult()
     {
-        return "";
+        return "Direction : " + _vector;
     }
 
     protected override void OnUpdate()
@@ -37,14 +46,17 @@ public class MiniGameSlingShot : SurveyBaseController
                 {
                     _dragging = true;
 
-                    if ((DebugMode && !InitOnStart) || !_running)
+                    if (!_running)
                     {
-                        if (_currentResultLine != null)
+                        if (DebugMode && !InitOnStart)
                         {
-                            Destroy(_currentResultLine);
-                        }
+                            if (_currentResultLine != null)
+                            {
+                                Destroy(_currentResultLine);
+                            }
 
-                        StartSurvey(null);
+                            StartSurvey(null); // manually starting the survey for debug
+                        }
                     }
                 }
             }
@@ -56,6 +68,12 @@ public class MiniGameSlingShot : SurveyBaseController
             if (_currentLine != null)
             {
                 Destroy(_currentLine);
+                if (!DebugMode)
+                {
+                    Destroy(_currentResultLine);
+                }
+                
+                DraggingBall.transform.position = transform.position;
             }
             
             Complete();
@@ -79,12 +97,15 @@ public class MiniGameSlingShot : SurveyBaseController
                 }
 
                 Vector3 mousePos = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(Input.mousePosition);
-                _currentLine = MiniGameUtility.DrawLine(new Vector3(mousePos.x, mousePos.y, 0), transform.position, Color.red, -1, 0.1f, LineShader);
+                DraggingBall.transform.position = new Vector3(mousePos.x, mousePos.y, 0);
+                _currentLine = MiniGameUtility.DrawLine(new Vector3(mousePos.x, mousePos.y, 0), transform.position, Color.grey, -1, 0.1f, LineShader);
 
                 Vector3 DirectionnalVector = transform.position - new Vector3(mousePos.x, mousePos.y, 0);
                 Vector3 EndPreviewPosition = transform.position + DirectionnalVector;
 
                 _currentResultLine = MiniGameUtility.DrawLine(transform.position, EndPreviewPosition, Color.blue, -1, 0.1f, LineShader);
+
+                _vector = new fix2((fix)DirectionnalVector.x, (fix)DirectionnalVector.y) * speedMultiplier;
             }
 
             yield return new WaitForEndOfFrame();
