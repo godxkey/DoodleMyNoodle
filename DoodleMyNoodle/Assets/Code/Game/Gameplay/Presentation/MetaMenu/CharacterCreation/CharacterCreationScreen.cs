@@ -66,6 +66,8 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
         {
             _settingsApplied = true;
 
+            CursorOverlayService.Instance.ResetCursorToDefault();
+
             // Publish player asset (will sync across network)
             _doodleAsset.SetTexture(_doodelDraw.ExportCurrentDoodleTexture());
             PlayerAssetManager.Instance.PublishAssetChanges(_doodleAsset.Guid);
