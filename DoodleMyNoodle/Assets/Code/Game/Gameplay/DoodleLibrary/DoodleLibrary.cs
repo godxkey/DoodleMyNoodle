@@ -71,6 +71,7 @@ public class DoodleLibrary : FileScriptableInterface
     public void SetLastDoodle(int index)
     {
         _data.LastDoodleUsedIndex = index;
+        Save();
     }
 
     private void SaveDoodle(Texture2D doodleTexture)

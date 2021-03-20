@@ -84,5 +84,11 @@ public class PromptDisplay : GameSystem<PromptDisplay>
         {
             Destroy(answers[i].gameObject);
         }
+
+        PromptAnswerFieldDisplay[] fieldAnswers = _answersContainer.GetComponentsInChildren<PromptAnswerFieldDisplay>();
+        for (int i = 0; i < fieldAnswers.Length; i++)
+        {
+            Destroy(fieldAnswers[i].gameObject);
+        }
     }
 }

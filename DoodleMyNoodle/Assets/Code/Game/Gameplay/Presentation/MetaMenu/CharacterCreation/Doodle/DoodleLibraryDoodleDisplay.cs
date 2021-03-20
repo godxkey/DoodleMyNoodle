@@ -9,12 +9,12 @@ public class DoodleLibraryDoodleDisplay : MonoBehaviour
     [SerializeField] public Button _loadButton;
     [SerializeField] public Button _deleteButton;
 
-    private Action<Texture2D> _onDoodleDisplaySelected;
+    private Action<Texture2D, int> _onDoodleDisplaySelected;
     private Action<int> _onDoodleDisplayDeleted;
 
     private int _doodleIndex;
 
-    public void SetDoodleDisplay(Texture2D doodle, int index, Action<Texture2D> onDoodleDisplaySelected, Action<int> onDoodleDisplayDeleted)
+    public void SetDoodleDisplay(Texture2D doodle, int index, Action<Texture2D, int> onDoodleDisplaySelected, Action<int> onDoodleDisplayDeleted)
     {
         _loadButton.onClick.AddListener(OnLoadButtonClicked);
         _deleteButton.onClick.AddListener(OnDeleteButtonClicked);
@@ -28,7 +28,7 @@ public class DoodleLibraryDoodleDisplay : MonoBehaviour
     {
         if (_onDoodleDisplaySelected != null)
         {
-            _onDoodleDisplaySelected.Invoke((Texture2D)_image.texture);
+            _onDoodleDisplaySelected.Invoke((Texture2D)_image.texture, _doodleIndex);
         }
     }
 

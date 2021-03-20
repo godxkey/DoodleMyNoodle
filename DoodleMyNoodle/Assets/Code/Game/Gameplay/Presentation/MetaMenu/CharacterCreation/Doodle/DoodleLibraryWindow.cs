@@ -31,9 +31,10 @@ public class DoodleLibraryWindow : MonoBehaviour
         }
     }
 
-    private void OnDoodleSelected(Texture2D doodle)
+    private void OnDoodleSelected(Texture2D doodle, int doodleIndex)
     {
         _doodleDraw.SetCurrentDoodle(doodle);
+        _library.SetLastDoodle(doodleIndex);
         gameObject.ToggleActiveState();
     }
 

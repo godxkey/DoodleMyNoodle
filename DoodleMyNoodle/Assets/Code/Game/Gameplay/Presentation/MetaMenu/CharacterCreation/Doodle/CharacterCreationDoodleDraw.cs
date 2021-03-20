@@ -156,7 +156,11 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
 
     private void Export()
     {
-        _library.AddDoodle(_uPaint.GetLayerTexture(0), true);
+        // save if at least 1 modification
+        if (_uPaint.CanUndo())
+        {
+            _library.AddDoodle(_uPaint.GetLayerTexture(0), true);
+        }
     }
 
     public void SetBrushColor(Color newColor)
