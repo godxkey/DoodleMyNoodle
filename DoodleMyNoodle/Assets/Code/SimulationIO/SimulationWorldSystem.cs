@@ -28,8 +28,6 @@ namespace SimulationControl
         protected override void OnCreate()
         {
             base.OnCreate();
-            
-            Updater.LateUpdate += Monobehaviour_LateUpdate;
 
             SimWorldAccessor = new ExternalSimWorldAccessor();
             World.GetOrCreateSystem<LoadSimulationSceneSystem>();
@@ -42,8 +40,6 @@ namespace SimulationControl
         {
             base.OnDestroy();
 
-            Updater.LateUpdate -= Monobehaviour_LateUpdate;
-
             if (SimulationWorld.IsCreated)
                 SimulationWorld.Dispose();
 
@@ -54,9 +50,7 @@ namespace SimulationControl
             SimulationWorld = null;
         }
 
-        protected override void OnUpdate() { }
-
-        private void Monobehaviour_LateUpdate()
+        protected override void OnUpdate()
         {
             if (_replaceWorld != null)
             {

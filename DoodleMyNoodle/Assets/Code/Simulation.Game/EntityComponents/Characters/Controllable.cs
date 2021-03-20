@@ -20,11 +20,3 @@ public struct DefaultControllerPrefab : IComponentData
 {
     public Entity Value;
 }
-
-/// <summary>
-/// An entity with this tag will have its default controller instantiated
-/// </summary>
-[Serializable]
-public struct InstantiateAndUseDefaultControllerTag : IComponentData
-{
-}

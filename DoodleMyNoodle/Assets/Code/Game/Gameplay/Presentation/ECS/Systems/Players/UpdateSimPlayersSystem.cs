@@ -7,9 +7,20 @@ public class UpdateSimPlayersSystem : ViewSystemBase
 {
     Dictionary<PlayerInfo, double> _dontAskForPlayerCreateCooldownMap = new Dictionary<PlayerInfo, double>();
 
+    DirtyValue<uint> _simTick = new DirtyValue<uint>();
+
     protected override void OnUpdate()
     {
         if (PlayerRepertoireSystem.Instance == null)
+            return;
+
+        // wait for level to be loaded before trying to spawn pawns, kinda hack ...
+        if (!SimWorldAccessor.HasSingleton<GridInfo>())
+            return;
+
+        _simTick.Set(SimWorldAccessor.ExpectedNewTickId);
+
+        if (!_simTick.ClearDirty()) // makes sure we wait for sim update before sending new request
             return;
 
         // When we submit an input in the simulation, we have no guarantee that it will be processed in the next frame
@@ -18,7 +29,7 @@ public class UpdateSimPlayersSystem : ViewSystemBase
         {
             foreach (KeyValuePair<PlayerInfo, double> playerInCooldown in _dontAskForPlayerCreateCooldownMap)
             {
-                if(playerInCooldown.Value < Time.ElapsedTime)
+                if (playerInCooldown.Value < Time.ElapsedTime)
                 {
                     _dontAskForPlayerCreateCooldownMap.Remove(playerInCooldown.Key);
                     break;
@@ -28,7 +39,7 @@ public class UpdateSimPlayersSystem : ViewSystemBase
 
         foreach (PlayerInfo playerInfo in PlayerRepertoireSystem.Instance.Players)
         {
-            if(playerInfo.SimPlayerId == PersistentId.Invalid)
+            if (playerInfo.SimPlayerId == PersistentId.Invalid)
             {
                 Entity unassignedSimPlayer = GetUnassignedSimPlayer();
 

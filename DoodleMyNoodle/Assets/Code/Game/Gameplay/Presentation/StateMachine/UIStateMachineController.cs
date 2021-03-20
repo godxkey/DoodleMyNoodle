@@ -13,14 +13,6 @@ public class UIStateMachineController : GamePresentationSystem<UIStateMachineCon
         StateMachine.Blackboard.SimWorld = SimWorld;
         StateMachine.Blackboard.Cache = Cache;
 
-        if (Cache.LocalController != Entity.Null)
-        {
-            if (StateMachine.CurrentState == null)
-            {
-                StateMachine.TransitionTo(UIStateType.Gameplay);
-            }
-        }
-
         StateMachine.Update();
     }
 }
@@ -28,6 +20,39 @@ public class UIStateMachineController : GamePresentationSystem<UIStateMachineCon
 public class UIStateMachine : StateMachine<UIStateMachine, UIState, UIStateMachineBlackboard>
 {
     public static UIStateMachine Instance => UIStateMachineController.Instance?.StateMachine;
+
+    public GamePresentationCache Cache => Blackboard.Cache;
+    public ExternalSimWorldAccessor SimWorld => Blackboard.SimWorld;
+
+    public override void Update()
+    {
+        base.Update();
+
+        // todo : something better for when a system manually transition to state and wanna keep handling manually
+        if (PromptDisplay.Instance.IsWaitingForAnswer)
+        {
+            return;
+        }
+
+
+        bool couldPlay =
+            Cache.LocalControllerExists
+            && CommonReads.CanTeamPlay(SimWorld, Cache.LocalControllerTeam)
+            && Cache.LocalPawnAlive;
+
+        UIStateType? currentType = CurrentState?.Type;
+
+        if (couldPlay)
+        {
+            if (currentType == null || currentType == UIStateType.BlockedGameplay)
+                TransitionTo(UIStateType.Gameplay);
+        }
+        else
+        {
+            if (currentType == null || currentType == UIStateType.Gameplay)
+                TransitionTo(UIStateType.BlockedGameplay);
+        }
+    }
 
     public void TransitionTo(UIStateType type, object inputData = null)
     {

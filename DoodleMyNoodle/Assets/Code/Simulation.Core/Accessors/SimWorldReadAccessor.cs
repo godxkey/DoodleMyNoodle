@@ -33,6 +33,9 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     public uint ReplaceVersion
         => SimWorld.Owner.ReplaceVersion;
 
+    public uint ExpectedNewTickId
+        => SimWorld.ExpectedNewTickId;
+
     public event Action WorldReplaced
     {
         add => SimWorld.Owner.WorldReplaced += value;

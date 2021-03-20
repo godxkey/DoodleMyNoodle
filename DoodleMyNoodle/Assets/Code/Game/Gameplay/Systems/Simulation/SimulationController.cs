@@ -28,6 +28,7 @@ public class SimulationController : GameSystem<SimulationController>
     public override void OnGameStart()
     {
         base.OnGameStart();
+        _tickSystem.ShouldUpdateView = true;
         _tickSystem.UnpauseSimulation("game-not-ready");
     }
 

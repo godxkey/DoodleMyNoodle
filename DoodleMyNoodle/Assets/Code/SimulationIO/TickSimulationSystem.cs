@@ -40,7 +40,7 @@ namespace SimulationControl
     public class TickSimulationSystem : ComponentSystem
     {
         public List<SimTickData> AvailableTicks = new List<SimTickData>();
-        public bool IsTicking { get; private set; }
+        public bool ShouldUpdateView { get; set; } = false;
         public bool CanTick => _playSimulation
             && _simulationLoadSceneSystem.OngoingSceneLoads.Count == 0
             && _inPlayerLoop;
@@ -152,6 +152,7 @@ namespace SimulationControl
                 _addToPlayerLoop = false;
             }
 
+            bool tickedThisFrame = false;
 
             while (AvailableTicks.Count > 0)
             {
@@ -160,7 +161,7 @@ namespace SimulationControl
                 if (!CanTick)
                     break;
 
-                IsTicking = true;
+                tickedThisFrame = true;
 
                 SimTickData tick = AvailableTicks.First();
                 AvailableTicks.RemoveAt(0);
@@ -178,7 +179,10 @@ namespace SimulationControl
 
                 Log.Info(SimulationIO.LogChannel, $"End sim tick '{tick.ExpectedNewTickId}'");
 
-                ManualUpdate(_viewGroup);
+                if (ShouldUpdateView)
+                {
+                    ManualUpdate(_viewGroup);
+                }
 
                 // this ensures our previously scheduled view jobs are done (we might want to find a more performant alternative)
                 World.EntityManager.CompleteAllJobs();
@@ -186,8 +190,14 @@ namespace SimulationControl
                 SimulationTicked?.Invoke(tick);
 
                 _simulationWorldSystem.SimulationWorld.TickInputs = null;
+            }
 
-                IsTicking = false;
+            if (!tickedThisFrame && ShouldUpdateView)
+            {
+                ManualUpdate(_viewGroup);
+
+                // this ensures our previously scheduled view jobs are done (we might want to find a more performant alternative)
+                World.EntityManager.CompleteAllJobs();
             }
         }
 

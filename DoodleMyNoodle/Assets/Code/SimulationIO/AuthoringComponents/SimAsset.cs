@@ -1,13 +1,9 @@
-﻿using Bolt.Compiler.Utils;
-using CCC.Fix2D.Authoring;
+﻿using CCC.Fix2D.Authoring;
 using System;
 using Unity.Entities;
-using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
-using UnityEngineX;
 
 public enum ViewTechType
 {

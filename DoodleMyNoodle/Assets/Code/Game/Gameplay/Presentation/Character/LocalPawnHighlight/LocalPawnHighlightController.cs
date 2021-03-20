@@ -10,7 +10,7 @@ public class LocalPawnHighlightController : GamePresentationSystem<LocalPawnHigh
         base.OnPostSimulationTick();
 
         // On player's new turn
-        if (SimWorld.HasSingleton<NewTurnEventData>() && Cache.CurrentTeam == Cache.LocalPawnTeam) 
+        if (SimWorld.HasSingleton<NewTurnEventData>() && Cache.CurrentTeam == Cache.LocalControllerTeam) 
         {
             // Find local pawn's doodle
             if (Cache.LocalPawn != Entity.Null &&

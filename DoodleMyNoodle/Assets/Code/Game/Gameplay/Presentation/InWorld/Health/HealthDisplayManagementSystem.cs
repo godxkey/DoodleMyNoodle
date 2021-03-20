@@ -17,7 +17,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
     {
         int healthBarAmount = 0;
         
-        Team localPlayerTeam = Cache.LocalPawnTeam;
+        Team localPlayerTeam = Cache.LocalControllerTeam;
 
         Cache.SimWorld.Entities.ForEach((Entity pawn, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
         {
