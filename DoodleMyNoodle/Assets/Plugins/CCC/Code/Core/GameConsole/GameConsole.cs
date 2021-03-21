@@ -5,6 +5,7 @@ using GameConsoleInterals;
 using UnityEngineX;
 using System.Collections.Concurrent;
 using System.Reflection;
+using System.Linq;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -113,6 +114,11 @@ public class GameConsole
             InitIfNeeded();
             return s_database.Invokables.AsReadOnlyNoAlloc().DynamicCast<IGameConsoleInvokable>();
         }
+    }
+    
+    public static void ExecuteCommandLineStyleInvokables(string args)
+    {
+        ExecuteCommandLineStyleInvokables(CommandLine.SplitCommandLine(args).ToArray());
     }
 
     public static void ExecuteCommandLineStyleInvokables(string[] args)

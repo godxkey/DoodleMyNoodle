@@ -41,7 +41,8 @@ public class UpdateBruteAISystem : SimComponentSystem
         _attackableGroup = EntityManager.CreateEntityQuery(
             ComponentType.ReadOnly<Health>(),
             ComponentType.ReadOnly<Controllable>(),
-            ComponentType.ReadOnly<FixTranslation>());
+            ComponentType.ReadOnly<FixTranslation>(),
+            ComponentType.Exclude<DeadTag>());
     }
 
     protected override void OnDestroy()

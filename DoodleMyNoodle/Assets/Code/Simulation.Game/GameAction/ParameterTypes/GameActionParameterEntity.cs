@@ -8,7 +8,7 @@ public class GameActionParameterEntity
 {
     public class Description : GameAction.ParameterDescription
     {
-        public int RangeFromInstigator { get; private set; }
+        public fix RangeFromInstigator { get; private set; } = new fix(9999);
         public bool IncludeSelf = true;
         public bool RequiresAttackableEntity = false;
 
@@ -30,6 +30,11 @@ public class GameActionParameterEntity
         public Data(fix2 EntityPos)
         {
             this.EntityPos = EntityPos;
+        }
+
+        public override string ToString()
+        {
+            return $"EntityPos({EntityPos})";
         }
     }
 }

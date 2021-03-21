@@ -11,16 +11,14 @@ public class GameActionThrowProjectile : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description(rangeFromInstigator: 1)
+            new GameActionParameterVector.Description()
             {
-                IncludeSelf = false,
-                TileFilter = ~TileFlags.Terrain, // All EXCEPT terrain 
             });
     }
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
-        if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
         {
             // get settings
             if (!accessor.TryGetComponentData(context.Entity, out GameActionThrowProjectileSettings settings))
@@ -33,17 +31,19 @@ public class GameActionThrowProjectile : GameAction
             Entity projectileInstance = accessor.Instantiate(settings.ProjectilePrefab);
 
             // set projectile data
-            fix2 dirPos = Helpers.GetTileCenter(paramTile.Tile);
-            fix2 instigatorPos = Helpers.GetTileCenter(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
+            fix2 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
             fix2 instigatorVel = fix2.zero;
             if (accessor.TryGetComponentData(context.InstigatorPawn, out PhysicsVelocity vel))
             {
                 instigatorVel = vel.Linear;
             }
-            fix2 dir = normalize(dirPos - instigatorPos);
+            fix2 dir = normalize(paramVector.Vector);
+            fix projectileRadius = GetActorRadius(accessor, projectileInstance);
+            fix instigatorRadius = GetActorRadius(accessor, context.InstigatorPawn);
+            fix2 spawnPos = instigatorPos + dir * (instigatorRadius + projectileRadius + (fix)0.05f);
 
-            accessor.SetOrAddComponentData(projectileInstance, new PhysicsVelocity(settings.ThrowSpeed * dir + instigatorVel));
-            accessor.SetOrAddComponentData(projectileInstance, new FixTranslation(instigatorPos + dir));
+            accessor.SetOrAddComponentData(projectileInstance, new PhysicsVelocity(paramVector.Vector + instigatorVel));
+            accessor.SetOrAddComponentData(projectileInstance, new FixTranslation(spawnPos));
 
             // add 'DamageOnContact' if ItemDamageData found
             if (accessor.HasComponent<GameActionDamageData>(context.Entity))
@@ -55,5 +55,17 @@ public class GameActionThrowProjectile : GameAction
         }
 
         return false;
+    }
+
+    private static fix GetActorRadius(ISimWorldReadWriteAccessor accessor, Entity projectileInstance)
+    {
+        if (accessor.TryGetComponentData(projectileInstance, out PhysicsColliderBlob colliderBlob) && colliderBlob.Collider.IsCreated)
+        {
+            return (fix)colliderBlob.Collider.Value.Radius;
+        }
+        else
+        {
+            return 1;
+        }
     }
 }

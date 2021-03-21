@@ -17,6 +17,8 @@ public class GamePresentationCache
     public Vector2 PointerWorldPosition;
     public int2 PointedTile;
     public List<Entity> PointedTileActors = new List<Entity>();
+    public List<BindedSimEntityManaged> PointedViewEntities = new List<BindedSimEntityManaged>();
+    public List<Collider2D> PointedColliders = new List<Collider2D>();
 
     public Entity LocalPawn;
     public int LocalPawnHealth;
@@ -40,6 +42,8 @@ public class GamePresentationCache
 public class GamePresentationCacheUpdater : ViewSystemBase
 {
     GamePresentationCache Cache => GamePresentationCache.Instance;
+
+    private Collider2D[] _overlapResults = new Collider2D[64];
 
     protected override void OnCreate()
     {
@@ -70,6 +74,8 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         Cache.LocalPawnTileEntity = Entity.Null;
         Cache.TileWorld = default;
         Cache.PointedTileActors.Clear();
+        Cache.PointedViewEntities.Clear();
+        Cache.PointedColliders.Clear();
     }
 
     protected override void OnUpdate()
@@ -133,6 +139,22 @@ public class GamePresentationCacheUpdater : ViewSystemBase
             if (WorldUIEventSystem.Instance != null)
                 Cache.PointerInWorld = WorldUIEventSystem.Instance.MouseInWorld;
             Cache.PointedTile = Helpers.GetTile(Cache.PointerWorldPosition);
+
+        
+            int hitCount = Physics2D.OverlapPointNonAlloc(Cache.PointerWorldPosition, _overlapResults, layerMask: ~0);
+
+            Cache.PointedViewEntities.Clear();
+            Cache.PointedColliders.Clear();
+            for (int i = 0; i < hitCount; i++)
+            {
+                Cache.PointedColliders.Add(_overlapResults[i]);
+
+                if (_overlapResults[i].gameObject.TryGetComponent(out BindedSimEntityManaged bindedSimEntity))
+                {
+                    Cache.PointedViewEntities.Add(bindedSimEntity);
+                }
+            }
+            
 
             Cache.PointedTileActors.Clear();
             Entity tileEntity = Cache.TileWorld.IsCreated ? Cache.TileWorld.GetEntity(Cache.PointedTile) : Entity.Null;

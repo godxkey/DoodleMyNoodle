@@ -1,35 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &109873154646524946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4876621640926341173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07383b009abc6e644b31689b634e51ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _spriteRenderer: {fileID: 1677122438993250552}
-  _baseSpriteIsLookingRight: 1
---- !u!114 &2032266337720222604
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4876621640926341173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 509ce5fa136e29145bbb2c0af8867429, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SpriteTransform: {fileID: 2227425351554025969}
-  DefaultAnimation: {fileID: 0}
-  DeathAnimation: {fileID: 11400000, guid: 2af3838260b930c46b4745446a1485fb, type: 2}
-  IdleHeight: 0.05
 --- !u!1001 &837205417786753905
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -118,23 +88,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6166303341697273731, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: _baseSpriteIsLookingRight
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 950f116e90b5f1d4f9a86da78a6e1e45, type: 3}
---- !u!1 &4876621640926341173 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5202612425808145220, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
-    type: 3}
-  m_PrefabInstance: {fileID: 837205417786753905}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &2227425351554025969 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1546773622014970496, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
-    type: 3}
-  m_PrefabInstance: {fileID: 837205417786753905}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &1677122438993250552 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
-    type: 3}
-  m_PrefabInstance: {fileID: 837205417786753905}
-  m_PrefabAsset: {fileID: 0}

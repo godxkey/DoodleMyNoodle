@@ -1,4 +1,5 @@
 ﻿using CCC.InspectorDisplay;
+using System;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
@@ -7,36 +8,43 @@ using UnityEngine;
 [RequiresEntityConversion]
 public class ItemAuth : MonoBehaviour
 {
-    [System.Serializable]
-    public struct SurveyReference
-    {
-        public List<GameAction.ParameterDescriptionType> ParameterTypes;
-        public GameObject Survey;
-    }
-
     public ItemVisualInfo ItemVisualInfo;
     public AudioPlayable SfxOnUse;
+    public List<SurveyBaseController2> CustomSurveys;
 
-    public bool UseSpecificSurveys = false;
-    [ShowIf("UseSpecificSurveys")]
-    public List<SurveyReference> SurveyList;
-
-    public SurveyBaseController2 FindSurveyDefinitionForParameters(params GameAction.ParameterDescription[] parameters)
+    public SurveyBaseController2 FindCustomSurveyPrefabForParameters(params GameAction.ParameterDescription[] parameters)
     {
-        if (parameters.Length == 0 || UseSpecificSurveys == false)
+        if (parameters.Length == 0)
         {
-            // I commented this since it's a very normal scenario. We don't need to be warned in the editor
-            // Debug.LogWarning("Can't find a survey since parameters are empty");
             return null;
         }
 
-        // TODO : Handle case where we multiple survey with multiple parameters
-        foreach (SurveyReference survey in SurveyList)
+        // example: 3 parameters
+        // try find survey for all 3 params
+        // then try find survey for 2 params
+        // then try find survey for 1 params
+        // return null
+
+        SurveyBaseController2 result = null;
+        for (int i = parameters.Length; i > 0; i--)
+        {
+            result = TryFindCustomSurveyPrefabForParametersSubset(parameters, i);
+            if (result != null)
+                break;
+        }
+
+        return result;
+    }
+
+    private SurveyBaseController2 TryFindCustomSurveyPrefabForParametersSubset(GameAction.ParameterDescription[] parameters, int paramCount)
+    {
+        foreach (SurveyBaseController2 survey in CustomSurveys)
         {
             bool hasAllTypes = false;
-            foreach (GameAction.ParameterDescription parameter in parameters)
+
+            for (int i = 0; i < paramCount; i++)
             {
-                if (survey.ParameterTypes.Contains(parameter.GetParameterDescriptionType()))
+                if (Array.IndexOf(survey.ExpectedQuery, parameters[i].GetParameterDescriptionType()) != 0)
                 {
                     hasAllTypes = true;
                 }
@@ -49,7 +57,7 @@ public class ItemAuth : MonoBehaviour
 
             if (hasAllTypes)
             {
-                return survey.Survey.GetComponent<SurveyBaseController2>();
+                return survey;
             }
         }
 

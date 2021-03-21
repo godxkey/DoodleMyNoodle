@@ -73,8 +73,8 @@ public abstract class GameAction
 
             if (!(ParameterDatas[index] is T p))
             {
-                Log.Warning($"GameAction parameters[{index}] is of type {ParameterDatas[index].GetType().GetPrettyName()}," +
-                    $" not of expected type {typeof(T).GetPrettyName()}");
+                Log.Warning($"GameAction parameters[{index}] is of type {ParameterDatas[index].GetType().GetPrettyFullName()}," +
+                    $" not of expected type {typeof(T).GetPrettyFullName()}");
                 parameterData = null;
                 return false;
             }

@@ -18,17 +18,15 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
 
 
     SurveyBaseController2 _currentSurvey;
-    private Action<List<GameAction.ParameterData>> _currentSurveyCallback;
 
     public bool IsSurveyRunning => _currentSurvey != null && _currentSurvey.Running;
 
     public void BeginSurvey(Vector3 surveyLocation,
         SurveyBaseController2 surveyPrefab,
         Action<List<GameAction.ParameterData>> onCompleteCallback,
+        Action onCancelCallback,
         params GameAction.ParameterDescription[] parameters)
     {
-        _currentSurveyCallback = onCompleteCallback;
-
         GameObject surveyInstance = Instantiate(surveyPrefab.gameObject, surveyLocation, Quaternion.identity, _surveyContainer);
 
         SurveyBaseController2 surveyController = surveyInstance.GetComponent<SurveyBaseController2>();
@@ -39,9 +37,9 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
 
             surveyController.StartSurvey(delegate (List<GameAction.ParameterData> resultData)
             {
-                _currentSurveyCallback.Invoke(resultData);
+                onCompleteCallback.Invoke(resultData);
                 Destroy(surveyController.gameObject);
-            }, parameters);
+            }, onCancelCallback, parameters);
         }
         else
         {
@@ -49,11 +47,11 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
 
             // can't start mini-game, complete it immediatly
             List<GameAction.ParameterData> DefaultResults = new List<GameAction.ParameterData>();
-            _currentSurveyCallback.Invoke(DefaultResults);
+            onCompleteCallback.Invoke(DefaultResults);
         }
     }
 
-    public void BeginDefaultSurvey(Vector3 requestLocation, GameAction.ParameterDescription parameterDescription, Action<List<GameAction.ParameterData>> onCompleteCallback)
+    public void BeginDefaultSurvey(Vector3 requestLocation, GameAction.ParameterDescription parameterDescription, Action<List<GameAction.ParameterData>> onCompleteCallback, Action onCancelCallback)
     {
         SurveyBaseController2 surveyPrefab = null;
         
@@ -69,7 +67,7 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
 
         if (surveyPrefab != null)
         {
-            BeginSurvey(requestLocation, surveyPrefab, onCompleteCallback, parameterDescription);
+            BeginSurvey(requestLocation, surveyPrefab, onCompleteCallback, onCancelCallback, parameterDescription);
         }
     }
 

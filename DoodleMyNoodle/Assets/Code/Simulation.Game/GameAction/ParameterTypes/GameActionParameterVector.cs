@@ -18,9 +18,14 @@ public class GameActionParameterVector
 
         public Data() { }
 
-        public Data(fix2 Direction)
+        public Data(fix2 v)
         {
-            this.Vector = Direction;
+            this.Vector = v;
+        }
+
+        public override string ToString()
+        {
+            return $"{Vector}";
         }
     }
 }

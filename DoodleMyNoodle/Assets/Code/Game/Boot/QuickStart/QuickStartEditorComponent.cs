@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using CCC.InspectorDisplay;
 using Unity.Entities;
+using UnityEngineX;
+using System.Linq;
+using System;
+using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -8,25 +12,37 @@ using UnityEditor;
 
 public class QuickStartEditorComponent : MonoBehaviour
 {
-    public bool startFromScratch;
+    public string ExtraCommands;
+    
+    [FormerlySerializedAs("startFromScratch")]
+    public bool StartFromScratch;
 
-    [HideIf("startFromScratch")]
-    public bool overridePlayMode;
-    [ShowIf("CanShowPlayMode")]
-    public QuickStartSettings.PlayMode playMode;
-    bool CanShowPlayMode => !startFromScratch && overridePlayMode;
+    [HideIf(nameof(StartFromScratch))]
+    [FormerlySerializedAs("overridePlayMode")]
+    public bool OverridePlayMode;
+    
+    [ShowIf(nameof(CanShowPlayMode))]
+    [FormerlySerializedAs("playMode")]
+    public QuickStartSettings.PlayMode PlayMode;
+    bool CanShowPlayMode => !StartFromScratch && OverridePlayMode;
 
-    [HideIf("startFromScratch")]
-    public bool overrideServerName;
-    [ShowIf("CanShowServerName")]
-    public string serverName;
-    bool CanShowServerName => !startFromScratch && overrideServerName;
+    [HideIf(nameof(StartFromScratch))]
+    [FormerlySerializedAs("overrideServerName")]
+    public bool OverrideServerName;
+    
+    [ShowIf(nameof(CanShowServerName))]
+    [FormerlySerializedAs("serverName")]
+    public string ServerName;
+    bool CanShowServerName => !StartFromScratch && OverrideServerName;
 
-    [HideIf("startFromScratch")]
-    public bool overrideLevel;
-    [ShowIf("CanShowLevel")]
-    public Level level;
-    bool CanShowLevel => !startFromScratch && overrideLevel;
+    [HideIf(nameof(StartFromScratch))]
+    [FormerlySerializedAs("overrideLevel")]
+    public bool OverrideLevel;
+
+    [ShowIf(nameof(CanShowLevel))]
+    [FormerlySerializedAs("level")]
+    public Level Level;
+    bool CanShowLevel => !StartFromScratch && OverrideLevel;
 
 #if UNITY_EDITOR
     void Awake()
@@ -45,9 +61,14 @@ public class QuickStartEditorComponent : MonoBehaviour
 
     void OnServicesReady()
     {
+        if (!string.IsNullOrEmpty(ExtraCommands))
+        {
+            GameConsole.ExecuteCommandLineStyleInvokables(ExtraCommands);
+        }
+
         if (QuickStart.HasEverQuickStarted == false)
         {
-            if (startFromScratch || EditorLaunchData.playFromScratch)
+            if (StartFromScratch || EditorLaunchData.playFromScratch)
             {
                 QuickStart.StartFromScratch(EditorLaunchData.profileLocalId);
             }
@@ -71,14 +92,14 @@ public class QuickStartEditorComponent : MonoBehaviour
                     settings.playMode = QuickStartSettings.PlayMode.Local;
                 }
 
-                if (overridePlayMode)
-                    settings.playMode = playMode;
+                if (OverridePlayMode)
+                    settings.playMode = PlayMode;
 
-                if (overrideServerName)
-                    settings.serverName = serverName;
+                if (OverrideServerName)
+                    settings.serverName = ServerName;
 
-                if (overrideLevel)
-                    settings.level = level ? level.name : "";
+                if (OverrideLevel)
+                    settings.level = Level ? Level.name : "";
 
                 QuickStart.Start(settings);
             }

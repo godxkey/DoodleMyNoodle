@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 800b27a6aa6c95b41835b5a1d0ae75ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionThrowVectorProjectile
+  Value: GameActionThrowProjectile
   PlayAnimation: 0
   Animation: {fileID: 0}
 --- !u!114 &6504929175459107924
@@ -85,11 +85,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ItemVisualInfo: {fileID: 11400000, guid: 3702125b2dd755e42afcf2dffd5580d9, type: 2}
   SfxOnUse: {fileID: 0}
-  UseSpecificSurveys: 1
-  SurveyList:
-  - ParameterTypes: 04000000
-    Survey: {fileID: 7192197591991983225, guid: 4a9670b303e62124b8760b00d6a2245e,
-      type: 3}
+  CustomSurveys: []
 --- !u!114 &4120848953196771097
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -466,6 +466,11 @@ internal partial class CommonWrites
 
     public static bool TryInputUseItem<T>(ISimWorldReadWriteAccessor accessor, Entity entityController, int2 tile) where T : GameAction
     {
+        return TryInputUseItem<T>(accessor, entityController, new GameActionParameterTile.Data(tile));
+    }
+
+    public static bool TryInputUseItem<T>(ISimWorldReadWriteAccessor accessor, Entity entityController, params GameAction.ParameterData[] arguments) where T : GameAction
+    {
         if (!accessor.TryGetComponentData(entityController, out ControlledEntity pawn))
             return false;
 
@@ -483,8 +488,7 @@ internal partial class CommonWrites
             return false;
 
         // create game action's use data
-        var useData = GameAction.UseParameters.Create(
-            new GameActionParameterTile.Data(tile));
+        var useData = GameAction.UseParameters.Create(arguments);
 
         // create input
         var input = new PawnControllerInputUseItem(entityController, itemIndex, useData);

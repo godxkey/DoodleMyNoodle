@@ -57,3 +57,6 @@ MonoBehaviour:
   - ParameterType: 2
     Survey: {fileID: 2342765595949023338, guid: 622dc7b0e380d804583a7c5d3d7b61bb,
       type: 3}
+  - ParameterType: 4
+    Survey: {fileID: 7192197591991983225, guid: 4a9670b303e62124b8760b00d6a2245e,
+      type: 3}

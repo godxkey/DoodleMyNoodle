@@ -154,6 +154,9 @@ public class HighlightService : MonoCoreService<HighlightService>
 
     private void StopHighlightInternal(SpriteRenderer spriteRenderer)
     {
+        if (spriteRenderer == null)
+            return;
+
         // find all highlights to stop
         for (int i = 0; i < _activeHighlights.Count; i++)
         {

@@ -348,12 +348,12 @@ public class LaunchWindow : ToolsWindowBase
                 break;
         }
 
-        if (quickStart != null && quickStart.overrideLevel)
+        if (quickStart != null && quickStart.OverrideLevel)
         {
-            _elementLevel.SetEnabled(!quickStart.overrideLevel);
+            _elementLevel.SetEnabled(!quickStart.OverrideLevel);
             _elementLevel.label = "Level (set by scene)";
-            _elementLevel.value = quickStart.level.name;
-            EditorLaunchData.level = quickStart.level.name;
+            _elementLevel.value = quickStart.Level.name;
+            EditorLaunchData.level = quickStart.Level.name;
         }
         else
         {

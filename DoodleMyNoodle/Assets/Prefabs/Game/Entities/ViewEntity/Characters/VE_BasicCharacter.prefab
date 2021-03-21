@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5202612425808145221}
   - component: {fileID: 6516141508588561186}
+  - component: {fileID: 7379920081520119636}
+  - component: {fileID: 6166303341697273731}
   m_Layer: 0
   m_Name: VE_BasicCharacter
   m_TagString: Untagged
@@ -48,6 +50,36 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.5, y: 1}
   m_Direction: 0
+--- !u!114 &7379920081520119636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5202612425808145220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 509ce5fa136e29145bbb2c0af8867429, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpriteTransform: {fileID: 1546773622014970496}
+  DefaultAnimation: {fileID: 0}
+  DeathAnimation: {fileID: 11400000, guid: 2af3838260b930c46b4745446a1485fb, type: 2}
+  IdleHeight: 0.05
+--- !u!114 &6166303341697273731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5202612425808145220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07383b009abc6e644b31689b634e51ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteRenderer: {fileID: 2078424545621035913}
+  _baseSpriteIsLookingRight: 0
 --- !u!1 &5519758926812518161
 GameObject:
   m_ObjectHideFlags: 0

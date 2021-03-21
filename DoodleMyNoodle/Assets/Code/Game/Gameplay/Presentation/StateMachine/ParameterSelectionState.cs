@@ -148,11 +148,11 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             Log.Assert(remainingParamCount > 0); // we should not enter in survey state if no param to fill
 
             GameAction.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, 0, remainingParamCount);
-            SurveyBaseController2 surveyPrefab = Blackboard.ItemAuth.FindSurveyDefinitionForParameters(remainingParams);
+            SurveyBaseController2 surveyPrefab = Blackboard.ItemAuth.FindCustomSurveyPrefabForParameters(remainingParams);
 
             if (surveyPrefab != null)
             {
-                SurveyManager.Instance.BeginSurvey(Blackboard.Cache.LocalPawnPositionFloat, surveyPrefab, OnSurveyComplete, remainingParams);
+                SurveyManager.Instance.BeginSurvey(Blackboard.Cache.LocalPawnPositionFloat, surveyPrefab, OnSurveyComplete, OnSurveyCancel, remainingParams);
             }
             else
             {
@@ -160,8 +160,13 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
                 // For default case, we handle them one at a time with the survey corresponding to the first parameter we have
                 GameAction.ParameterDescription parameterToHandle = remainingParams[0];
-                SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, parameterToHandle, OnSurveyComplete);
+                SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, parameterToHandle, OnSurveyComplete, OnSurveyCancel);
             }
+        }
+
+        private void OnSurveyCancel()
+        {
+            Done = true;
         }
 
         private void OnSurveyComplete(List<GameAction.ParameterData> results)

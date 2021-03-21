@@ -66,7 +66,8 @@ public class UpdateArcherAISystem : SimComponentSystem
         _attackableGroup = EntityManager.CreateEntityQuery(
             ComponentType.ReadOnly<Health>(),
             ComponentType.ReadOnly<Controllable>(),
-            ComponentType.ReadOnly<FixTranslation>());
+            ComponentType.ReadOnly<FixTranslation>(),
+            ComponentType.Exclude<DeadTag>());
 
         RequireSingletonForUpdate<GridInfo>();
     }
@@ -362,6 +363,8 @@ public class UpdateArcherAISystem : SimComponentSystem
 
         int2 dir = sign(enemyTile - shootingTile);
 
-        return CommonWrites.TryInputUseItem<GameActionThrowProjectile>(Accessor, controller, shootingTile + dir);
+        var gameActionArg = new GameActionParameterVector.Data((fix2)dir * 3); // hard coded speed at 3 for now
+
+        return CommonWrites.TryInputUseItem<GameActionThrowProjectile>(Accessor, controller, gameActionArg);
     }
 }

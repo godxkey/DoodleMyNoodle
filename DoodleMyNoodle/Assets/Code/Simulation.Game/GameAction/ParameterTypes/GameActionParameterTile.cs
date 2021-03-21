@@ -47,5 +47,10 @@ public class GameActionParameterTile
         {
             Tile = tile;
         }
+
+        public override string ToString()
+        {
+            return $"Tile({Tile})";
+        }
     }
 }

@@ -52,6 +52,7 @@ MonoBehaviour:
   ConversionMode: 0
   _guid: fafa3a940539e1b4daa812c324fc7bde
   _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
@@ -68,6 +69,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionDashAttack
+  PlayAnimation: 0
+  Animation: {fileID: 0}
 --- !u!114 &6782051550689936977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,5 +138,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemVisualInfo: {fileID: 11400000, guid: 8e451d55f6bb4e84491f0e4be4dd29f0, type: 2}
+  SfxOnUse: {fileID: 0}
   UseSpecificSurveys: 0
   SurveyList: []

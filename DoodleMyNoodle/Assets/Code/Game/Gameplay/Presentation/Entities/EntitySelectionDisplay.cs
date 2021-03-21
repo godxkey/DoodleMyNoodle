@@ -4,27 +4,27 @@ using UnityEngineX;
 
 public class EntitySelectionDisplay : BindedPresentationEntityComponent
 {
-    [SerializeField] private DoodleDisplay _doodleDisplay;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Color _overingHighlightColor = Color.white;
 
     public void StartOveringOnDisplay()
     {
-        if (_doodleDisplay)
+        if (_spriteRenderer)
         {
             var highlightParams = HighlightService.Params.Default;
             highlightParams.Color = _overingHighlightColor;
             highlightParams.FlickerSpeed = HighlightService.FlickerSpeed.Fast;
             highlightParams.Intensity = HighlightService.Intensity.High;
 
-            HighlightService.HighlightSprite(_doodleDisplay.SpriteRenderer, highlightParams);
+            HighlightService.HighlightSprite(_spriteRenderer, highlightParams);
         }
     }
 
     public void StopOveringOnDisplay()
     {
-        if (_doodleDisplay)
+        if (_spriteRenderer)
         {
-            HighlightService.StopHighlight(_doodleDisplay.SpriteRenderer);
+            HighlightService.StopHighlight(_spriteRenderer);
         }
     }
 

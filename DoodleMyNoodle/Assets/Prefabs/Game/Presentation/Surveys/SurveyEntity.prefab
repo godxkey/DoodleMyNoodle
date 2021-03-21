@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2342765595949023337}
   - component: {fileID: -2651085541402446737}
   m_Layer: 0
-  m_Name: EntitySurvey
+  m_Name: SurveyEntity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,7 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f0218ff6625d24986250228bda123b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DebugMode: 0
-  DebugDisplay: {fileID: 0}
-  InitOnStart: 0
-  DisplayName: Entity
+  _highlightSettings:
+    Duration: 2
+    FlickerSpeed: 1
+    Intensity: 0
+    Color: {r: 1, g: 1, b: 1, a: 1}
+    AnimStart: 1
