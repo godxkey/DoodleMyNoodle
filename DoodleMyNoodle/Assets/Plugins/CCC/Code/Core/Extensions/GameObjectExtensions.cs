@@ -22,19 +22,4 @@ public static class GameObjectExtensions
 
         return null;
     }
-
-    public static List<GameObject> GetAllChilds(this GameObject source, bool recursive = true)
-    {
-        List<GameObject> list = new List<GameObject>();
-        for (int i = 0; i < source.transform.childCount; i++)
-        {
-            GameObject currentChild = source.transform.GetChild(i).gameObject;
-            list.Add(currentChild);
-            if (recursive)
-            {
-                list.AddRange(GetAllChilds(currentChild));
-            }
-        }
-        return list;
-    }
 }

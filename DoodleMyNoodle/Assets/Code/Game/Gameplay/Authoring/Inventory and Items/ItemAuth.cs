@@ -21,7 +21,7 @@ public class ItemAuth : MonoBehaviour
     [ShowIf("UseSpecificSurveys")]
     public List<SurveyReference> SurveyList;
 
-    public GameObject FindSurveyDefinitionForParameters(params GameAction.ParameterDescription[] parameters)
+    public SurveyBaseController2 FindSurveyDefinitionForParameters(params GameAction.ParameterDescription[] parameters)
     {
         if (parameters.Length == 0 || UseSpecificSurveys == false)
         {
@@ -49,7 +49,7 @@ public class ItemAuth : MonoBehaviour
 
             if (hasAllTypes)
             {
-                return survey.Survey;
+                return survey.Survey.GetComponent<SurveyBaseController2>();
             }
         }
 

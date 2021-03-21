@@ -89,3 +89,7 @@ MonoBehaviour:
     Path: Assets/Scenes/Levels/Scene Assets/Gym_Interactables.unity
     BuildIndex: 18
     AssetGuid: a3aaad04249432c4d8bcd2f7adb6efef
+  - Name: Gym_Surveys
+    Path: Assets/Scenes/Levels/Scene Assets/Gym_Surveys.unity
+    BuildIndex: 19
+    AssetGuid: 21959199b973fbd42853114d789a70ac

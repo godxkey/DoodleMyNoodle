@@ -96,7 +96,7 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
 
     private void Update()
     {
-        if (CursorOverlayService.Instance.IsHoveringGroup(_uPaint.gameObject.GetAllChilds().ToArray()))
+        if (CursorOverlayService.Instance.IsHoveringAny(_uPaint.gameObject.transform.GetAllChildren()))
         {
             if (!_wasHoveringDoodle)
             {

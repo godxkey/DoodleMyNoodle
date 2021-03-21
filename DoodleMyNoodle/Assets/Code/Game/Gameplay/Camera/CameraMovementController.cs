@@ -22,6 +22,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     [Header("Limits")]
     public float MinZoom = 1;
     public float MaxZoom;
+    public float BeginZoom = 2f;
 
     private Transform _transform;
     private float2 _boundsMin;
@@ -68,6 +69,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         base.Awake();
 
         _transform = transform;
+        CamSize = BeginZoom;
     }
 
     public override void OnPostSimulationTick()

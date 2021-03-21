@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngineX;
+using System.Linq;
+using System.Runtime.Serialization.Formatters;
 
 // Can add other global mouse stuff here -> vfx following mouse
 public class CursorOverlayService : MonoCoreService<CursorOverlayService>
@@ -21,7 +23,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
     }
 
     [Serializable]
-    public class CursorSetting 
+    public class CursorSetting
     {
         public Texture2D Icon;
         public Texture2D ClickedIcon;
@@ -136,36 +138,38 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         this.DelayedCall(_tooltipUpdateDelay, UpdateOverlay, true);
     }
 
-    public bool IsHovering(GameObject hoverObject)
+    public bool IsHovering(GameObject target)
     {
-        if (_currentHoverGameObject.Count > 0)
+        foreach (var gameObject in _currentHoverGameObject)
         {
-            foreach (var gameObject in _currentHoverGameObject)
+            if (target == gameObject)
             {
-                if (hoverObject == gameObject)
-                {
-                    return true;
-                }
+                return true;
             }
-        } 
+        }
 
         return false;
     }
 
-    public bool IsHoveringGroup(GameObject[] gameObjects)
+    public bool IsHovering(Transform target) => IsHovering(target.gameObject);
+
+    public bool IsHoveringAny(List<GameObject> targets)
     {
-        if (_currentHoverGameObject.Count > 0 && gameObjects.Length > 0)
+        foreach (var gameObject in targets)
         {
-            foreach (var hoverObject in _currentHoverGameObject)
-            {
-                foreach (var gameObject in gameObjects)
-                {
-                    if (hoverObject == gameObject)
-                    {
-                        return true;
-                    }
-                }
-            }
+            if (IsHovering(gameObject))
+                return true;
+        }
+
+        return false;
+    }
+
+    public bool IsHoveringAny(List<Transform> targets)
+    {
+        foreach (var transform in targets)
+        {
+            if (IsHovering(transform))
+                return true;
         }
 
         return false;
@@ -237,7 +241,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
             coloredTexture = new Texture2D(_currentSetting.Icon.width, _currentSetting.Icon.height, TextureFormat.RGBA32, false);
             coloredTexture.SetPixels(_currentSetting.Icon.GetPixels());
         }
-        
+
         // Color It
         for (int y = 0; y < coloredTexture.height; y++)
         {
@@ -310,7 +314,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         return new Vector2(setting.Icon.width / setting.HotSpotRatio.x, setting.Icon.height / setting.HotSpotRatio.y);
     }
 
-    private void SetCurrentSetting(CursorSetting setting) 
+    private void SetCurrentSetting(CursorSetting setting)
     {
         _previousSetting = _currentSetting;
         _currentSetting = setting;

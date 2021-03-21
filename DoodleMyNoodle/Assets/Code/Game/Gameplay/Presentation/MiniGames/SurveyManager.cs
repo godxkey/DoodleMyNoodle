@@ -17,19 +17,21 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
     [SerializeField] private List<DefaultSurveyReference> _defaultSurveys;
 
 
-    SurveyBaseController _currentSurvey;
+    SurveyBaseController2 _currentSurvey;
     private Action<List<GameAction.ParameterData>> _currentSurveyCallback;
 
+    public bool IsSurveyRunning => _currentSurvey != null && _currentSurvey.Running;
+
     public void BeginSurvey(Vector3 surveyLocation,
-        GameObject survey,
+        SurveyBaseController2 surveyPrefab,
         Action<List<GameAction.ParameterData>> onCompleteCallback,
         params GameAction.ParameterDescription[] parameters)
     {
         _currentSurveyCallback = onCompleteCallback;
 
-        GameObject surveyInstance = Instantiate(survey, surveyLocation, Quaternion.identity, _surveyContainer);
+        GameObject surveyInstance = Instantiate(surveyPrefab.gameObject, surveyLocation, Quaternion.identity, _surveyContainer);
 
-        SurveyBaseController surveyController = surveyInstance.GetComponent<SurveyBaseController>();
+        SurveyBaseController2 surveyController = surveyInstance.GetComponent<SurveyBaseController2>();
 
         if (surveyController != null)
         {
@@ -53,21 +55,21 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
 
     public void BeginDefaultSurvey(Vector3 requestLocation, GameAction.ParameterDescription parameterDescription, Action<List<GameAction.ParameterData>> onCompleteCallback)
     {
-        GameObject survey = null;
+        SurveyBaseController2 surveyPrefab = null;
         
         // find default survey for param
         foreach (DefaultSurveyReference request in _defaultSurveys)
         {
             if (request.ParameterType == parameterDescription.GetParameterDescriptionType())
             {
-                survey = request.Survey;
+                surveyPrefab = request.Survey.GetComponent<SurveyBaseController2>();
                 break;
             }
         }
 
-        if (survey != null)
+        if (surveyPrefab != null)
         {
-            BeginSurvey(requestLocation, survey, onCompleteCallback, parameterDescription);
+            BeginSurvey(requestLocation, surveyPrefab, onCompleteCallback, parameterDescription);
         }
     }
 
@@ -75,7 +77,7 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
     {
         if(_currentSurvey != null)
         {
-            _currentSurvey.Stop();
+            _currentSurvey.Cancel();
             Destroy(_currentSurvey.gameObject);
         }
     }
