@@ -2,7 +2,9 @@ using SFB;
 using System;
 using System.IO;
 using TMPro;
+using Unity.Entities;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngineX;
 
@@ -19,6 +21,8 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
     protected override void Awake()
     {
         base.Awake();
+
+        _settingsApplied = false;
     }
 
     public override void OnGameStart()
@@ -42,6 +46,17 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
         if (_doodelDraw.IsLastDoodleLoaded)
         {
             _screenContainer.SetActive(!SimWorld.HasSingleton<GameStartedTag>());
+
+            // Temp fix - TODO change Ready Button use and do something better 
+            // (using sim input and apply character settings directly does not work for some reason)
+            ReadyButton readyButton = _readyButton.GetComponent<ReadyButton>();
+            if (readyButton != null)
+            {
+                if (!_settingsApplied && (Cache.LocalPawn != Entity.Null) && (readyButton.GetState() == ReadyButton.TurnState.NotReady) && _doodelDraw.IsLibraryLoaded && SkipCharacterCreation)
+                {
+                    _readyButton.onClick.Invoke();
+                }
+            }
         }
     }
 
@@ -51,6 +66,8 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
         {
             _settingsApplied = true;
 
+            CursorOverlayService.Instance.ResetCursorToDefault();
+
             // Publish player asset (will sync across network)
             _doodleAsset.SetTexture(_doodelDraw.ExportCurrentDoodleTexture());
             PlayerAssetManager.Instance.PublishAssetChanges(_doodleAsset.Guid);
@@ -59,15 +76,32 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
             SimPlayerInputSetPawnDoodle setPawnDoodleInput = new SimPlayerInputSetPawnDoodle(_doodleAsset.Guid, _characterIsLookingRightToggle.isOn);
             SimWorld.SubmitInput(setPawnDoodleInput);
 
-            // record pawn name for future use
-            PromptDisplay.Instance.AskString("Enter your character name here :", (string characterName) =>
+            if (!SkipCharacterCreation)
             {
-                // Set name
-                SimPlayerInputSetPawnName startNameInput = new SimPlayerInputSetPawnName(characterName);
-                SimWorld.SubmitInput(startNameInput);
+                // record pawn name for future use
+                PromptDisplay.Instance.AskString("Enter your character name here :", (string characterName) =>
+                {
+                    // Set name
+                    SimPlayerInputSetPawnName startNameInput = new SimPlayerInputSetPawnName(characterName);
+                    SimWorld.SubmitInput(startNameInput);
 
-                _settingsApplied = false;
-            });
+                    _settingsApplied = false;
+                });
+            }
         }
     }
+
+    #region Skip Character Creation
+    private static bool s_consoleSkipCharacterCreation = false;
+
+    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs, EnableGroup = SimulationCheats.LOCAL_PAWN_GROUP)]
+    public static bool SkipCharacterCreation
+    {
+        get => s_consoleSkipCharacterCreation;
+        set
+        {
+            s_consoleSkipCharacterCreation = value;
+        }
+    }
+    #endregion
 }

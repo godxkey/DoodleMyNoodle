@@ -30,6 +30,8 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
     [SerializeField] private int _history = 10;
     [SerializeField] private int _eraserSize = 10;
 
+    public bool IsLibraryLoaded { get { return _libraryLoaded; } }
+
     private bool _libraryLoaded = false;
     private Color _previousColor = Color.white;
     private bool _wasHoveringDoodle = false;
