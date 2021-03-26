@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SurveyTrafficLight : SurveyBaseController2
+public class SurveyTrafficLight : SurveyBaseController
 {
     [System.Serializable]
     public struct LightData

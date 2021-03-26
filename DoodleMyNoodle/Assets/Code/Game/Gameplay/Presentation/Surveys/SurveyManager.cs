@@ -17,19 +17,19 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
     [SerializeField] private List<DefaultSurveyReference> _defaultSurveys;
 
 
-    SurveyBaseController2 _currentSurvey;
+    SurveyBaseController _currentSurvey;
 
     public bool IsSurveyRunning => _currentSurvey != null && _currentSurvey.Running;
 
     public void BeginSurvey(Vector3 surveyLocation,
-        SurveyBaseController2 surveyPrefab,
+        SurveyBaseController surveyPrefab,
         Action<List<GameAction.ParameterData>> onCompleteCallback,
         Action onCancelCallback,
         params GameAction.ParameterDescription[] parameters)
     {
         GameObject surveyInstance = Instantiate(surveyPrefab.gameObject, surveyLocation, Quaternion.identity, _surveyContainer);
 
-        SurveyBaseController2 surveyController = surveyInstance.GetComponent<SurveyBaseController2>();
+        SurveyBaseController surveyController = surveyInstance.GetComponent<SurveyBaseController>();
 
         if (surveyController != null)
         {
@@ -53,14 +53,14 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
 
     public void BeginDefaultSurvey(Vector3 requestLocation, GameAction.ParameterDescription parameterDescription, Action<List<GameAction.ParameterData>> onCompleteCallback, Action onCancelCallback)
     {
-        SurveyBaseController2 surveyPrefab = null;
+        SurveyBaseController surveyPrefab = null;
         
         // find default survey for param
         foreach (DefaultSurveyReference request in _defaultSurveys)
         {
             if (request.ParameterType == parameterDescription.GetParameterDescriptionType())
             {
-                surveyPrefab = request.Survey.GetComponent<SurveyBaseController2>();
+                surveyPrefab = request.Survey.GetComponent<SurveyBaseController>();
                 break;
             }
         }

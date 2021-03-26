@@ -15,21 +15,21 @@ public class GymSurveyController : MonoBehaviour
     [SerializeField] private TMP_Dropdown _surveyDropdown;
     [SerializeField] private Button _restartButton;
     
-    private List<SurveyBaseController2> _availableSuveys;
-    private SurveyBaseController2 _requestedSurveyPrefab;
+    private List<SurveyBaseController> _availableSuveys;
+    private SurveyBaseController _requestedSurveyPrefab;
 
     private const string SURVEY_PREFABS_PATH = "Assets/Prefabs/Game/Presentation/Surveys";
 
     private void Awake()
     {
-        _availableSuveys = new List<SurveyBaseController2>();
+        _availableSuveys = new List<SurveyBaseController>();
 
 #if UNITY_EDITOR
         var assetPaths = UnityEditor.AssetDatabase.FindAssets("t:prefab", new string[] { SURVEY_PREFABS_PATH });
         for (int i = 0; i < assetPaths.Length; i++)
         {
             var go = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(UnityEditor.AssetDatabase.GUIDToAssetPath(assetPaths[i]));
-            if(go && go.TryGetComponent(out SurveyBaseController2 survey))
+            if(go && go.TryGetComponent(out SurveyBaseController survey))
             {
                 _availableSuveys.Add(survey);
             }
@@ -71,7 +71,7 @@ public class GymSurveyController : MonoBehaviour
         }
     }
 
-    private void StartNewSurvey(SurveyBaseController2 surveyPrefab)
+    private void StartNewSurvey(SurveyBaseController surveyPrefab)
     {
         if (SurveyManager.Instance.IsSurveyRunning)
         {

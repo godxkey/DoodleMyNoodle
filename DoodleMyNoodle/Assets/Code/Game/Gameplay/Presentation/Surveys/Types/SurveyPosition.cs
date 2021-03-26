@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SurveyPosition : SurveyBaseController2
+public class SurveyPosition : SurveyBaseController
 {
     [SerializeField] private Transform _pointIndicator;
 

@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using Unity.MathematicsX;
 using UnityEngine;
 
-public class SurveyAngryBirds : SurveyBaseController2
+public class SurveyAngryBirds : SurveyBaseController
 {
     [SerializeField] private Transform _center;
     [SerializeField] private Transform _dragTarget;

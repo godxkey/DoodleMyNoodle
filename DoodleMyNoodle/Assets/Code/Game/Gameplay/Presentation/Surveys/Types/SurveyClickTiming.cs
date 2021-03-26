@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class SurveyClickTiming : SurveyBaseController2, IWorldUIPointerClickHandler
+public class SurveyClickTiming : SurveyBaseController, IWorldUIPointerClickHandler
 {
     public TextMeshPro NumberDisplay;
     public float TimeBetweenChanges = 0.5f;

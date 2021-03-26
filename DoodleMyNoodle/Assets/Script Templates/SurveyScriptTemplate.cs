@@ -15,7 +15,7 @@ $@"using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class #SCRIPTNAME# : {nameof(SurveyBaseController2)}
+public class #SCRIPTNAME# : {nameof(SurveyBaseController)}
 {{
     protected override {nameof(GameAction)}.{nameof(GameAction.ParameterDescriptionType)}[] GetExpectedQuery() => new {nameof(GameAction)}.{nameof(GameAction.ParameterDescriptionType)}[]
     {{

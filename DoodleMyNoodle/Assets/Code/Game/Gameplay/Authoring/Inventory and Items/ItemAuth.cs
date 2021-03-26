@@ -10,9 +10,9 @@ public class ItemAuth : MonoBehaviour
 {
     public ItemVisualInfo ItemVisualInfo;
     public AudioPlayable SfxOnUse;
-    public List<SurveyBaseController2> CustomSurveys;
+    public List<SurveyBaseController> CustomSurveys;
 
-    public SurveyBaseController2 FindCustomSurveyPrefabForParameters(params GameAction.ParameterDescription[] parameters)
+    public SurveyBaseController FindCustomSurveyPrefabForParameters(params GameAction.ParameterDescription[] parameters)
     {
         if (parameters.Length == 0)
         {
@@ -25,7 +25,7 @@ public class ItemAuth : MonoBehaviour
         // then try find survey for 1 params
         // return null
 
-        SurveyBaseController2 result = null;
+        SurveyBaseController result = null;
         for (int i = parameters.Length; i > 0; i--)
         {
             result = TryFindCustomSurveyPrefabForParametersSubset(parameters, i);
@@ -36,9 +36,9 @@ public class ItemAuth : MonoBehaviour
         return result;
     }
 
-    private SurveyBaseController2 TryFindCustomSurveyPrefabForParametersSubset(GameAction.ParameterDescription[] parameters, int paramCount)
+    private SurveyBaseController TryFindCustomSurveyPrefabForParametersSubset(GameAction.ParameterDescription[] parameters, int paramCount)
     {
-        foreach (SurveyBaseController2 survey in CustomSurveys)
+        foreach (SurveyBaseController survey in CustomSurveys)
         {
             bool hasAllTypes = false;
 

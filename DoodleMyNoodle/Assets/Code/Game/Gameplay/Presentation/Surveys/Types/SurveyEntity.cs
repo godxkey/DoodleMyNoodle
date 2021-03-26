@@ -6,7 +6,7 @@ using CCC.Fix2D;
 using System;
 using UnityEngineX;
 
-public class SurveyEntity : SurveyBaseController2
+public class SurveyEntity : SurveyBaseController
 {
     [SerializeField] private HighlightService.Params _highlightSettings;
 
