@@ -19,6 +19,7 @@ public class GamePresentationCache
     public List<Entity> PointedTileActors = new List<Entity>();
     public List<BindedSimEntityManaged> PointedViewEntities = new List<BindedSimEntityManaged>();
     public List<Collider2D> PointedColliders = new List<Collider2D>();
+    public List<GameObject> PointedGameObjects = new List<GameObject>();
 
     public Entity LocalPawn;
     public int LocalPawnHealth;
@@ -76,6 +77,7 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         Cache.PointedTileActors.Clear();
         Cache.PointedViewEntities.Clear();
         Cache.PointedColliders.Clear();
+        Cache.PointedGameObjects.Clear();
     }
 
     protected override void OnUpdate()
@@ -145,9 +147,11 @@ public class GamePresentationCacheUpdater : ViewSystemBase
 
             Cache.PointedViewEntities.Clear();
             Cache.PointedColliders.Clear();
+            Cache.PointedGameObjects.Clear();
             for (int i = 0; i < hitCount; i++)
             {
                 Cache.PointedColliders.Add(_overlapResults[i]);
+                Cache.PointedGameObjects.AddUnique(_overlapResults[i].gameObject);
 
                 if (_overlapResults[i].gameObject.TryGetComponent(out BindedSimEntityManaged bindedSimEntity))
                 {

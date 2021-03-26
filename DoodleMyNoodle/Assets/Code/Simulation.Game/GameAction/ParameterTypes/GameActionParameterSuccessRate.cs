@@ -14,13 +14,18 @@ public class GameActionParameterSuccessRate
     [NetSerializable]
     public class Data : GameAction.ParameterData
     {
-        public MiniGameSuccessRate SuccessRate;
+        public SurveySuccessRating SuccessRate;
 
         public Data() { }
 
-        public Data(MiniGameSuccessRate SuccessRate)
+        public Data(SurveySuccessRating SuccessRate)
         {
             this.SuccessRate = SuccessRate;
+        }
+
+        public override string ToString()
+        {
+            return $"{SuccessRate}";
         }
     }
 }

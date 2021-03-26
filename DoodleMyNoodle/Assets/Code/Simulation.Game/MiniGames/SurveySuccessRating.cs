@@ -1,4 +1,4 @@
-﻿public enum MiniGameSuccessRate
+﻿public enum SurveySuccessRating
 {
     One = 1,
     Two = 2,

@@ -33,12 +33,12 @@ public class SlideAreaTiming : SurveyBaseController
         if (_resultSuccess)
         {
             // Success
-            results.Add(new GameActionParameterSuccessRate.Data(MiniGameSuccessRate.Five));
+            results.Add(new GameActionParameterSuccessRate.Data(SurveySuccessRating.Five));
         }
         else
         {
             // Failed
-            results.Add(new GameActionParameterSuccessRate.Data(MiniGameSuccessRate.One));
+            results.Add(new GameActionParameterSuccessRate.Data(SurveySuccessRating.One));
         }
 
         return results;

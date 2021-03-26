@@ -13,7 +13,7 @@ public class MiniGameClickTiming : SurveyBaseController
     protected override List<GameAction.ParameterData> GetResult()
     {
         List<GameAction.ParameterData> results = new List<GameAction.ParameterData>();
-        results.Add(new GameActionParameterSuccessRate.Data((MiniGameSuccessRate)_currentNumber));
+        results.Add(new GameActionParameterSuccessRate.Data((SurveySuccessRating)_currentNumber));
         return results;
     }
 
