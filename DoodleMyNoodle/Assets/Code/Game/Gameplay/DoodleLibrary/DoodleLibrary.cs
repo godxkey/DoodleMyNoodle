@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngineX;
 
-[CreateAssetMenu(menuName = "DoodleLibrary")]
+[CreateAssetMenu(menuName = "DoodleMyNoodle/DoodleLibrary")]
 public class DoodleLibrary : FileScriptableInterface
 {
     private const string _doodleFileName = "doodle";

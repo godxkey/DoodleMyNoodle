@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 
 
-public class GameplayPresentationScriptTemplate : ScriptTemplate
+public class PresentationScriptTemplate : ScriptTemplate
 {
     public override string GetScriptContent()
     {

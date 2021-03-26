@@ -9,6 +9,7 @@ public class SimulationComponentDataScriptTemplate : ScriptTemplate
         return
 $@"using Unity.Entities;
 using Unity.Mathematics;
+using CCC.Fix2D;
 
 public struct #SCRIPTNAME# : {nameof(IComponentData)}
 {{

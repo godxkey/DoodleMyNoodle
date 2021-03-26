@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 using UnityEditor.Tilemaps;
 using UnityEditor;
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "DoodleMyNoodle/Smart Brush")]
 [CustomGridBrush(hideAssetInstances: false, hideDefaultInstance: true, defaultBrush: false, defaultName: "Smart Brush")]
 public class SmartBrush : GridBrush
 {
