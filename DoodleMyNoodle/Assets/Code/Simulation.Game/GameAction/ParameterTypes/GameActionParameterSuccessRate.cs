@@ -7,7 +7,7 @@ public class GameActionParameterSuccessRate
 
         public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
         {
-            return GameAction.ParameterDescriptionType.SuccessRate;
+            return GameAction.ParameterDescriptionType.SuccessRating;
         }
     }
 

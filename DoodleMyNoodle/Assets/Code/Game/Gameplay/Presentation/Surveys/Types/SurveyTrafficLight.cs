@@ -68,7 +68,7 @@ public class SurveyTrafficLight : SurveyBaseController2
 
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
-        GameAction.ParameterDescriptionType.SuccessRate,
+        GameAction.ParameterDescriptionType.SuccessRating,
     };
 
     protected override IEnumerator SurveyRoutine(GameAction.ParameterDescription[] queryParams, List<GameAction.ParameterData> result, Action complete, Action cancel)

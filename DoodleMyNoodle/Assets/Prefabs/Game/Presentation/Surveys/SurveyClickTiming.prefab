@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2342765595949023336}
   - component: {fileID: 5667577300727899603}
   m_Layer: 0
-  m_Name: ClickTimingMiniGame
+  m_Name: SurveyClickTiming
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,12 +46,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d70b3f76c315d6d4d8de485707cf08f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DebugMode: 0
-  DebugDisplay: {fileID: 2342765597424613051}
-  InitOnStart: 0
-  DisplayName: Click Timing
   NumberDisplay: {fileID: 2342765596430009231}
-  TimeBetweenChanges: 0.5
+  TimeBetweenChanges: 0.18
+  _clickPunchDuration: 0.25
+  _clickPunchScale: 0.5
+  _maxNumber: 5
+  _finishPauseDuration: 1
 --- !u!58 &5667577300727899603
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ public abstract class GameAction
         None,
         Tile,
         Entity,
-        SuccessRate,
+        SuccessRating,
         Vector,
         Position
     }
