@@ -153,13 +153,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0030b9bd1e116ba41b0aeedd0fed433b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startFromScratch: 0
-  overridePlayMode: 0
-  playMode: 0
-  overrideServerName: 0
-  serverName: 
-  overrideLevel: 0
-  level: {fileID: 0}
+  ExtraCommands: 
+  StartFromScratch: 0
+  OverridePlayMode: 0
+  PlayMode: 0
+  OverrideServerName: 0
+  ServerName: 
+  OverrideLevel: 0
+  Level: {fileID: 0}
 --- !u!4 &433594086
 Transform:
   m_ObjectHideFlags: 0
@@ -465,7 +466,7 @@ MonoBehaviour:
   AITurnDuration:
     RawValue: 85899345920
   PlayerTurnDuration:
-    RawValue: 193273528320
+    RawValue: 21474836480
 --- !u!114 &1308979965
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -175,4 +175,16 @@ public static class SimulationCheats
             Destination = new fix2((fix)destination.x, (fix)destination.y)
         });
     }
+
+    [ConsoleCommand(Description = "Remove all cooldowns", EnableGroup = LOCAL_PAWN_GROUP)]
+    public static void CheatRemoveAllCooldowns()
+    {
+        PresentationHelpers.SubmitInput(new SimInputCheatRemoveAllCooldowns());
+    }
+
+    [ConsoleCommand(Description = "Turn will never end", EnableGroup = LOCAL_PAWN_GROUP)]
+    public static void CheatNeverEndingTurns()
+    {
+        PresentationHelpers.SubmitInput(new SimInputCheatNeverEndingTurns());
+    }
 }

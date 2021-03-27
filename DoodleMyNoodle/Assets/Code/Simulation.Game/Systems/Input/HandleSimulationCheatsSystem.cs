@@ -35,6 +35,16 @@ public class SimInputCheatNextTurn : SimCheatInput
 }
 
 [NetSerializable]
+public class SimInputCheatRemoveAllCooldowns : SimCheatInput
+{
+}
+
+[NetSerializable]
+public class SimInputCheatNeverEndingTurns : SimCheatInput
+{
+}
+
+[NetSerializable]
 public class SimInputCheatInfiniteAP : SimCheatInput
 {
     public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
@@ -186,6 +196,36 @@ public class HandleSimulationCheatsSystem : SimComponentSystem
                 {
                     CommonWrites.RequestTeleport(Accessor, pawn, teleport.Destination);
                 }
+                break;
+            }
+
+            case SimInputCheatRemoveAllCooldowns removeAllCooldowns:
+            {
+                if (HasSingleton<NoCooldownTag>())
+                {
+                    EntityManager.DestroyEntity(GetSingletonEntity<NoCooldownTag>());
+                }
+                else
+                {
+                    Entity entity = EntityManager.CreateEntity();
+                    EntityManager.AddComponentData(entity, new NoCooldownTag());
+                }
+
+                break;
+            }
+
+            case SimInputCheatNeverEndingTurns neverEndingTurns:
+            {
+                if (HasSingleton<NeverEndingTurnTag>())
+                {
+                    EntityManager.DestroyEntity(GetSingletonEntity<NeverEndingTurnTag>());
+                }
+                else
+                {
+                    Entity entity = EntityManager.CreateEntity();
+                    EntityManager.AddComponentData(entity, new NeverEndingTurnTag());
+                }
+
                 break;
             }
 

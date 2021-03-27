@@ -1,5 +1,7 @@
 ﻿using Unity.Entities;
 
+public struct NeverEndingTurnTag : IComponentData { }
+
 public struct NewTurnEventData : IComponentData { }
 
 public struct RequestChangeTurnData : IComponentData
@@ -69,7 +71,10 @@ public class ChangeTurnSystem : SimComponentSystem
         // NB: We do that first to make sure we don't override a changeTurnRequest when we update the turn timer
         ChangeTurnIfRequested();
 
-        UpdateTurnTimer();
+        if (!HasSingleton<NeverEndingTurnTag>())
+        {
+            UpdateTurnTimer();
+        }
     }
 
     private void ChangeTurnIfRequested()

@@ -13,10 +13,17 @@ public class UpdateItemCooldownSystem : SimComponentSystem
         Entities
             .ForEach((Entity item, ref ItemCooldownTimeCounter cooldownCounter) =>
             {
-                cooldownCounter.Value -= deltaTime;
-                if (cooldownCounter.Value <= 0)
+                if (HasSingleton<NoCooldownTag>())
                 {
                     PostUpdateCommands.RemoveComponent<ItemCooldownTimeCounter>(item);
+                }
+                else
+                {
+                    cooldownCounter.Value -= deltaTime;
+                    if (cooldownCounter.Value <= 0)
+                    {
+                        PostUpdateCommands.RemoveComponent<ItemCooldownTimeCounter>(item);
+                    }
                 }
             });
 
@@ -34,14 +41,21 @@ public class UpdateItemCooldownSystem : SimComponentSystem
                        {
                            if (EntityManager.TryGetComponentData(item.ItemEntity, out ItemCooldownTurnCounter itemTurnCounter))
                            {
-                               itemTurnCounter.Value -= 1;
-                               if (itemTurnCounter.Value <= 0)
+                               if (HasSingleton<NoCooldownTag>())
                                {
                                    PostUpdateCommands.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
                                }
                                else
                                {
-                                   EntityManager.SetComponentData(item.ItemEntity, new ItemCooldownTurnCounter() { Value = itemTurnCounter.Value });
+                                   itemTurnCounter.Value -= 1;
+                                   if (itemTurnCounter.Value <= 0)
+                                   {
+                                       PostUpdateCommands.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
+                                   }
+                                   else
+                                   {
+                                       EntityManager.SetComponentData(item.ItemEntity, new ItemCooldownTurnCounter() { Value = itemTurnCounter.Value });
+                                   }
                                }
                            }
                        }
