@@ -3,8 +3,8 @@ public class GameActionParameterVector
 {
     public class Description : GameAction.ParameterDescription
     {
-        public fix StrengthMin = 0;
-        public fix StrengthMax = 99;
+        public fix SpeedMin = 0;
+        public fix SpeedMax = 99;
 
         public Description() { }
 

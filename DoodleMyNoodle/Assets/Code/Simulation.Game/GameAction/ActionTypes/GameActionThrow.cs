@@ -6,13 +6,19 @@ using Unity.Collections;
 using UnityEngine;
 using CCC.Fix2D;
 
-public class GameActionThrowProjectile : GameAction
+public class GameActionThrow : GameAction
 {
+    static readonly fix MIN_VELOCITY = fix(0.05);
+
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
+        GameActionThrowSettings settings = accessor.GetComponentData<GameActionThrowSettings>(context.Entity);
+
         return new UseContract(
             new GameActionParameterVector.Description()
             {
+                SpeedMin = settings.SpeedMin,
+                SpeedMax = settings.SpeedMax
             });
     }
 
@@ -21,11 +27,7 @@ public class GameActionThrowProjectile : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
         {
             // get settings
-            if (!accessor.TryGetComponentData(context.Entity, out GameActionThrowProjectileSettings settings))
-            {
-                Debug.LogWarning($"Item {context.Entity} has no {nameof(GameActionThrowProjectileSettings)} component");
-                return false;
-            }
+            GameActionThrowSettings settings = accessor.GetComponentData<GameActionThrowSettings>(context.Entity);
 
             // spawn projectile
             Entity projectileInstance = accessor.Instantiate(settings.ProjectilePrefab);
@@ -33,16 +35,35 @@ public class GameActionThrowProjectile : GameAction
             // set projectile data
             fix2 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
             fix2 instigatorVel = fix2.zero;
-            if (accessor.TryGetComponentData(context.InstigatorPawn, out PhysicsVelocity vel))
+            if (accessor.TryGetComponentData(context.InstigatorPawn, out PhysicsVelocity instigatorPhysicsVelocity))
             {
-                instigatorVel = vel.Linear;
+                instigatorVel = instigatorPhysicsVelocity.Linear;
             }
-            fix2 dir = normalize(paramVector.Vector);
+
+            fix2 velocity = paramVector.Vector;
+            fix speed = length(velocity);
+            fix2 dir = speed < MIN_VELOCITY ? fix2(0, 1) : velocity / speed;
+
+            // Clamp vector and speed to min/max speed setting
+            {
+                if (speed < settings.SpeedMin)
+                {
+                    velocity = dir * settings.SpeedMin;
+                    speed = settings.SpeedMin;
+                }
+                else if (speed > settings.SpeedMax)
+                {
+                    velocity = dir * settings.SpeedMax;
+                    speed = settings.SpeedMax;
+                }
+            }
+
+
             fix projectileRadius = GetActorRadius(accessor, projectileInstance);
             fix instigatorRadius = GetActorRadius(accessor, context.InstigatorPawn);
             fix2 spawnPos = instigatorPos + dir * (instigatorRadius + projectileRadius + (fix)0.05f);
 
-            accessor.SetOrAddComponentData(projectileInstance, new PhysicsVelocity(paramVector.Vector + instigatorVel));
+            accessor.SetOrAddComponentData(projectileInstance, new PhysicsVelocity(velocity + instigatorVel));
             accessor.SetOrAddComponentData(projectileInstance, new FixTranslation(spawnPos));
 
             // add 'DamageOnContact' if ItemDamageData found

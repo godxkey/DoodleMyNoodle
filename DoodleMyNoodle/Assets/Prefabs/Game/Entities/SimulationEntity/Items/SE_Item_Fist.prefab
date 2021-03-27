@@ -16,11 +16,8 @@ GameObject:
   - component: {fileID: 9033580274841478421}
   - component: {fileID: 8192711906296489722}
   - component: {fileID: -251396275792484950}
-  - component: {fileID: 2549150572285487614}
-  - component: {fileID: 6326101201239624051}
   - component: {fileID: -1919864443569858546}
   - component: {fileID: 3078341331002791777}
-  - component: {fileID: -4154220866743386285}
   m_Layer: 0
   m_Name: SE_Item_Fist
   m_TagString: Untagged
@@ -90,11 +87,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ItemVisualInfo: {fileID: 11400000, guid: 89c2cf37dc054934ab000f8e659056ca, type: 2}
   SfxOnUse: {fileID: 11400000, guid: 62ef15d00dd5d1b418325960c2dffeb7, type: 2}
-  UseSpecificSurveys: 1
-  SurveyList:
-  - ParameterTypes: 03000000
-    Survey: {fileID: 2342765595949023338, guid: 29dabb35c21f95649858601fe85c7c1d,
-      type: 3}
+  CustomSurveys: []
 --- !u!114 &7484598955039597738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,48 +142,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ActionPointCost: 1
---- !u!114 &2549150572285487614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68e55f8d0cc538d438e7e283f815deff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GroupName: Game Actions
-  Visibility: 0
-  IsEditing: 0
-  Parent: {fileID: 0}
-  Comps:
-  - {fileID: 5742253346417087590}
-  - {fileID: 9033580274841478421}
-  - {fileID: 8192711906296489722}
-  - {fileID: -251396275792484950}
---- !u!114 &6326101201239624051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68e55f8d0cc538d438e7e283f815deff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GroupName: Item Settings
-  Visibility: 0
-  IsEditing: 0
-  Parent: {fileID: 0}
-  Comps:
-  - {fileID: 7484598955039597738}
-  - {fileID: -7263600284831078239}
-  - {fileID: -1919864443569858546}
-  - {fileID: 3078341331002791777}
 --- !u!114 &-1919864443569858546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,15 +169,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Amount: 1
---- !u!114 &-4154220866743386285
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddb1c80bf5974404bb42e428b856aca8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

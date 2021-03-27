@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7edef9b8c1166e243b03441ba9319b90, type: 3}
-  m_Name: Metal
+  m_Name: RoughMetal
   m_EditorClassIdentifier: 
   MassDensity: 8
-  Bounciness: 0
-  Friction: 0.4
+  Bounciness: 0.2
+  Friction: 0.9

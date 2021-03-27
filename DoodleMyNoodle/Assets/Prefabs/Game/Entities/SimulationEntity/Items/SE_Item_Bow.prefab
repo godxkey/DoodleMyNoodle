@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: 294870752159730247}
   - component: {fileID: 6504929175459107924}
-  - component: {fileID: 4120848953196771097}
   - component: {fileID: 1206813890925547763}
   - component: {fileID: -8001016936392042338}
   - component: {fileID: -448175739285880440}
+  - component: {fileID: -2307091624825323466}
   m_Layer: 0
   m_Name: SE_Item_Bow
   m_TagString: Untagged
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 800b27a6aa6c95b41835b5a1d0ae75ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionThrowProjectile
+  Value: GameActionThrow
   PlayAnimation: 0
   Animation: {fileID: 0}
 --- !u!114 &6504929175459107924
@@ -85,23 +85,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ItemVisualInfo: {fileID: 11400000, guid: 3702125b2dd755e42afcf2dffd5580d9, type: 2}
   SfxOnUse: {fileID: 0}
-  CustomSurveys: []
---- !u!114 &4120848953196771097
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58858c439c9be2f488d5587200941669, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ProjectilePrefab: {fileID: 2385346486794747607, guid: 4899e73436da28d43ba3448231f4f76d,
-    type: 3}
-  ThrowSpeed:
-    RawValue: 21474836480
+  CustomSurveys:
+  - {fileID: 7192197591991983227, guid: 4a9670b303e62124b8760b00d6a2245e, type: 3}
 --- !u!114 &1206813890925547763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,3 +128,21 @@ MonoBehaviour:
   UseTime: 0
   TimeCooldown: 1
   TurnCooldown: 1
+--- !u!114 &-2307091624825323466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86f0d602adc23904f9c3fa901d851253, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ProjectilePrefab: {fileID: 2385346486794747607, guid: 4899e73436da28d43ba3448231f4f76d,
+    type: 3}
+  SpeedMin:
+    RawValue: 0
+  SpeedMax:
+    RawValue: 42949672960

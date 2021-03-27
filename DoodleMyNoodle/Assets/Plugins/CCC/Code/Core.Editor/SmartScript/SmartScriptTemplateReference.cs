@@ -9,7 +9,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "CCC/Script Template Link", fileName = "_ScriptTemplate")]
 public class SmartScriptTemplateReference : ScriptableObject
 {
-    public UnityEngine.Object TemplateScript;
+    public MonoScript TemplateScript;
 }
 
 [CustomEditor(typeof(SmartScriptTemplateReference))]
@@ -33,10 +33,11 @@ public class SmartScriptTemplateReferenceEditor : Editor
     public override void OnInspectorGUI()
     {
         EditorGUILayout.HelpBox($"Pick a script that contains a class inheriting of {nameof(ScriptTemplate)}.", MessageType.Info);
+        
+        base.OnInspectorGUI();
 
+        serializedObject.Update();
         var castedTarget = (SmartScriptTemplateReference)target;
-        var label = EditorGUIUtilityX.TempContent("Script Template");
-        castedTarget.TemplateScript = EditorGUILayout.ObjectField(label, castedTarget.TemplateScript, typeof(MonoScript), allowSceneObjects: false);
 
         MonoScript script = castedTarget.TemplateScript as MonoScript;
         if (script != null)
@@ -49,5 +50,7 @@ public class SmartScriptTemplateReferenceEditor : Editor
             EditorGUILayout.LabelField($"{defaultName}.cs");
             EditorGUILayout.TextArea(content);
         }
+
+        serializedObject.ApplyModifiedProperties();
     }
 }

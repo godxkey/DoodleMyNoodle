@@ -69,7 +69,7 @@ MonoBehaviour:
   Material: {fileID: 11400000, guid: 41f8bde84fa940547b142a511cb188e0, type: 2}
   IsTrigger: 0
   LinearDrag: 0
-  AngularDrag: 0.05
+  AngularDrag: 6
   GravityScale: 1
   FireEvents: 0
   FreezeRotation: 0

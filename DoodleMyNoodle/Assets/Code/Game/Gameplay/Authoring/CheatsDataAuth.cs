@@ -2,27 +2,36 @@ using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngineX;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
 public class CheatsDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
-    [SerializeField] private List<GameActionIdAuth> _allItems; // TODO: automate this
+    [SerializeField] private ItemBank _itemBank; // TODO: automate this
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         var allItemsBuffer = dstManager.AddBuffer<CheatsAllItemElement>(entity);
 
-        foreach (var item in _allItems)
+        _itemBank.Validate();
+
+        foreach (var item in _itemBank.Items)
         {
+            if (item.gameObject == null)
+                continue;
+
             allItemsBuffer.Add(conversionSystem.GetPrimaryEntity(item));
         }
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
-        foreach (var item in _allItems)
+        foreach (var item in _itemBank.Items)
         {
+            if(item.gameObject == null)
+                continue;
+
             referencedPrefabs.Add(item.gameObject);
         }
     }

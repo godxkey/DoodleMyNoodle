@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1729315820789242975}
   - component: {fileID: 7463069179023663342}
   m_Layer: 0
-  m_Name: SE_Gym_AI_Grid
+  m_Name: SE_Grid_Gym_AI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

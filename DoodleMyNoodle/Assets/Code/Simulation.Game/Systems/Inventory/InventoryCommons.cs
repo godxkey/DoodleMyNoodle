@@ -31,7 +31,7 @@ internal partial class CommonWrites
         }
     }
 
-    public static bool TryIncrementStackableItemInInventory(ISimWorldReadWriteAccessor accessor, Entity InventoryEntity, Entity sourceItemEntity, DynamicBuffer<InventoryItemReference> inventory)
+    public static bool TryIncrementStackableItemInInventory(ISimWorldReadWriteAccessor accessor, Entity InventoryEntity, Entity sourceItemEntity, DynamicBuffer<InventoryItemReference> inventory, int count = 1)
     {
         SimAssetId sourceItemID = accessor.GetComponentData<SimAssetId>(sourceItemEntity);
 
@@ -46,7 +46,7 @@ internal partial class CommonWrites
                 if (accessor.TryGetComponentData(itemRef.ItemEntity, out ItemStackableData stackableData))
                 {
                     // Stack it, and notify caller transfer is not necesary
-                    accessor.SetComponentData(itemRef.ItemEntity, new ItemStackableData() { Value = stackableData.Value + 1 });
+                    accessor.SetComponentData(itemRef.ItemEntity, new ItemStackableData() { Value = stackableData.Value + count });
 
                     return true;
                 }

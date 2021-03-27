@@ -143,13 +143,22 @@ public class HandleSimulationCheatsSystem : SimComponentSystem
                         itemInstances[i] = EntityManager.Instantiate(allItems[i].ItemPrefab);
                     }
 
+                    // set stacks to 999
+                    for (int i = 0; i < itemInstances.Length; i++)
+                    {
+                        if (EntityManager.HasComponent<ItemStackableData>(itemInstances[i]))
+                        {
+                            EntityManager.SetComponentData(itemInstances[i], new ItemStackableData() { Value = 999 });
+                        }
+                    }
+
                     // Add item references into inventory
                     DynamicBuffer<InventoryItemReference> inventory = EntityManager.GetBuffer<InventoryItemReference>(pawn);
 
                     foreach (Entity itemInstance in itemInstances)
                     {
                         if (!CommonReads.IsInventoryFull(Accessor, pawn) ||
-                            !CommonWrites.TryIncrementStackableItemInInventory(Accessor, pawn, itemInstance, inventory))
+                            !CommonWrites.TryIncrementStackableItemInInventory(Accessor, pawn, itemInstance, inventory, count: 999))
                         {
                             inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
                         }

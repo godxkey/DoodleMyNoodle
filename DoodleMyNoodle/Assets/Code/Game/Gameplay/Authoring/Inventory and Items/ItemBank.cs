@@ -7,4 +7,13 @@ using UnityEngineX;
 public class ItemBank : ScriptableObject
 {
     public List<GameObject> Items;
+
+    public void Validate()
+    {
+        foreach (var item in Items)
+        {
+            if (item == null)
+                Log.Error($"Missing item in {name}");
+        }
+    }
 }

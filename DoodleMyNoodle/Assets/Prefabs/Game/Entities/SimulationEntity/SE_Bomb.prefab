@@ -70,7 +70,7 @@ MonoBehaviour:
   Material: {fileID: 11400000, guid: 41f8bde84fa940547b142a511cb188e0, type: 2}
   IsTrigger: 0
   LinearDrag: 0
-  AngularDrag: 0.05
+  AngularDrag: 6
   GravityScale: 1
   FireEvents: 0
   FreezeRotation: 0
@@ -90,8 +90,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e775169a0b3326343b0ae217d9258695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseTime: 0
-  TimeDelay: 1
+  UseTime: 1
+  TimeDelay: 3
   TurnDelay: 2
   Range: 3
   Damage: 4

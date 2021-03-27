@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 013940cb869b3664287afe5cb5d3f8ff, type: 3}
-  m_Name: GeneralItemBank
+  m_Name: AllItemsBank
   m_EditorClassIdentifier: 
   Items:
   - {fileID: 2784291058542494111, guid: 5ec303c45ea534846b16e38711b73617, type: 3}
-  - {fileID: 2784291058542494111, guid: 75b8a794353e6dd4296335609b094c22, type: 3}
+  - {fileID: 2362357297813377183, guid: 18fbc4d6a2fffee4eada0e76c4853d2c, type: 3}
   - {fileID: 5742253346417087641, guid: 605fd0327d22176429bfc3496ef54d7d, type: 3}
   - {fileID: 2784291058542494111, guid: c5b53218d66306c46b57cb414bbd1b56, type: 3}
   - {fileID: 2784291058542494111, guid: 9baf798de8cb6b44b9a3d1ca5632da38, type: 3}
