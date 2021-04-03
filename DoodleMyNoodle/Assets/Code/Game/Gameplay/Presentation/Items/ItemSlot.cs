@@ -17,7 +17,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
     [SerializeField] private TextMeshProUGUI _stackText;
 
     private Color _startBackgroundColor;
-    private ItemAuth _currentItem;
+    private GameActionAuth _currentItemGameActionAuth;
     private Action _onItemLeftClicked; // index of item in list, not used here
     private Action _onItemRightClicked; // index of item in list, not used here
 
@@ -39,17 +39,17 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     protected override void OnGamePresentationUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1) && _currentItem != null && _mouseInside)
+        if (Input.GetKeyDown(KeyCode.Mouse1) && _currentItemGameActionAuth != null && _mouseInside)
         {
             SecondaryUseItemSlot();
         }
     }
 
-    public virtual void UpdateCurrentItemSlot(ItemAuth itemAuth, Action onItemLeftClicked, Action onItemRightClicked, Entity owner, int stacks = -1)
+    public virtual void UpdateCurrentItemSlot(GameActionAuth gameActionAuth, Action onItemLeftClicked, Action onItemRightClicked, Entity owner, int stacks = -1)
     {
         InitIfNeeded();
 
-        _currentItem = itemAuth;
+        _currentItemGameActionAuth = gameActionAuth;
         _onItemLeftClicked = onItemLeftClicked;
         _onItemRightClicked = onItemRightClicked;
         _itemsOwner = owner;
@@ -64,10 +64,10 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
             _stackText.gameObject.SetActive(true);
         }
 
-        if (_currentItem != null)
+        if (_currentItemGameActionAuth != null)
         {
             ItemIcon.color = ItemIcon.color.ChangedAlpha(1);
-            ItemIcon.sprite = _currentItem?.ItemVisualInfo.Icon;
+            ItemIcon.sprite = _currentItemGameActionAuth?.Icon;
         }
         else
         {
@@ -105,7 +105,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     private void UpdateBackgroundColor()
     {
-        if (_currentItem && _mouseInside)
+        if (_currentItemGameActionAuth && _mouseInside)
         {
             Background.color = Color.white;
         }
@@ -124,9 +124,9 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
         if (active)
         {
-            if (_currentItem)
+            if (_currentItemGameActionAuth)
             {
-                ItemTooltipDisplay.Instance.ActivateTooltipDisplay(_currentItem, _itemsOwner);
+                ItemTooltipDisplay.Instance.ActivateTooltipDisplay(_currentItemGameActionAuth, _itemsOwner);
             }
         }
         else
@@ -148,10 +148,5 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
     public virtual void SecondaryUseItemSlot()
     {
         _onItemRightClicked?.Invoke();
-    }
-
-    public ItemVisualInfo GetItemInfoInSlot()
-    {
-        return _currentItem?.ItemVisualInfo;
     }
 }

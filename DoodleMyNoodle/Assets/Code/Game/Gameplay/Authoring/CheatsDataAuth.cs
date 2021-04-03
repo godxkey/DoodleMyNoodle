@@ -7,7 +7,7 @@ using UnityEngine;
 [RequiresEntityConversion]
 public class CheatsDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
-    [SerializeField] private List<GameActionIdAuth> _allItems; // TODO: automate this
+    [SerializeField] private List<GameActionAuth> _allItems; // TODO: automate this
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {

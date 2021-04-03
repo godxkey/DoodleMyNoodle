@@ -1,13 +1,14 @@
+using System;
 using Unity.Entities;
 using UnityEngine;
 
-[DisallowMultipleComponent]
-[RequiresEntityConversion]
-public class GameActionHPCostDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<GameActionHPCostData>
+[Serializable]
+[GameActionSettingAuth(typeof(GameActionHPCostData))]
+public class GameActionHPCostDataAuth : GameActionSettingAuthBase, IItemSettingDescription<GameActionHPCostData>
 {
     public int HealthCost;
 
-    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new GameActionHPCostData() { Value = HealthCost });
     }

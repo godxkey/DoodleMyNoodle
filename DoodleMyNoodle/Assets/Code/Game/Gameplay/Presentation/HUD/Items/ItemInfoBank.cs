@@ -5,36 +5,21 @@ using UnityEngineX;
 
 public class ItemInfoBank : GameSystem<ItemInfoBank>
 {
-    [SerializeField] private ItemAuth _fallbackItemAuth;
+    [SerializeField] private GameActionAuth _fallbackGameActionAuth;
 
-    public ItemVisualInfo GetItemInfoFromID(SimAssetId itemID)
+    public GameActionAuth GetGameActionAuthFromID(SimAssetId itemID)
     {
         GameObject itemPrefab = PresentationHelpers.FindSimAssetPrefab(itemID);
         if (itemPrefab != null)
         {
-            ItemAuth itemAuth = itemPrefab.GetComponent<ItemAuth>();
-            if (itemAuth != null)
+            GameActionAuth gameActionAuth = itemPrefab.GetComponent<GameActionAuth>();
+            if (gameActionAuth != null)
             {
-                return itemAuth.ItemVisualInfo;
+                return gameActionAuth;
             }
         }
 
-        return _fallbackItemAuth.ItemVisualInfo;
-    }
-
-    public ItemAuth GetItemAuthFromID(SimAssetId itemID)
-    {
-        GameObject itemPrefab = PresentationHelpers.FindSimAssetPrefab(itemID);
-        if (itemPrefab != null)
-        {
-            ItemAuth itemAuth = itemPrefab.GetComponent<ItemAuth>();
-            if (itemAuth != null)
-            {
-                return itemAuth;
-            }
-        }
-
-        return _fallbackItemAuth;
+        return _fallbackGameActionAuth;
     }
 
     public GameObject GetItemPrefabID(SimAssetId itemID)

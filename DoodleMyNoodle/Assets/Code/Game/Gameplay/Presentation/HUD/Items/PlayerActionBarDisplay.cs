@@ -81,9 +81,9 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                     }
 
                     SimWorld.TryGetComponentData(inventory[i], out SimAssetId itemAssetId);
-                    ItemAuth itemAuth = ItemInfoBank.Instance.GetItemAuthFromID(itemAssetId);
+                    GameActionAuth itemGameActionAuth = ItemInfoBank.Instance.GetGameActionAuthFromID(itemAssetId);
 
-                    _slotVisuals[i].UpdateCurrentInventorySlot(itemAuth,
+                    _slotVisuals[i].UpdateCurrentInventorySlot(itemGameActionAuth,
                                                                i,
                                                                GetSlotShotcut(i),
                                                                OnIntentionToUsePrimaryActionOnItem,

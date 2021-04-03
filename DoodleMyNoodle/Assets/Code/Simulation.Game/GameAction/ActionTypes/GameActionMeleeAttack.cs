@@ -6,9 +6,16 @@ using static fixMath;
 using System.Collections.Generic;
 using UnityEngine;
 using CCC.Fix2D;
+using System;
 
 public class GameActionMeleeAttack : GameAction
 {
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionDamageData),
+        typeof(GameActionRangeData)
+    };
+
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         GameActionParameterTile.Description tileParam = new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)

@@ -28,10 +28,10 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
         if (SimWorld.TryGetComponentData(InputParameter.ObjectEntity, out SimAssetId objectSimAssetID))
         {
-            _surveySMBlackboard.ItemAuth = ItemInfoBank.Instance.GetItemAuthFromID(objectSimAssetID);
+            _surveySMBlackboard.GameActionAuth = ItemInfoBank.Instance.GetGameActionAuthFromID(objectSimAssetID);
         }
 
-        if (_surveySMBlackboard.ItemAuth == null)
+        if (_surveySMBlackboard.GameActionAuth == null)
         {
             StateMachine.TransitionTo(UIStateType.Gameplay);
             return;
@@ -124,7 +124,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
     private class SurveyBlackboard
     {
-        public ItemAuth ItemAuth;
+        public GameActionAuth GameActionAuth;
         public GamePresentationCache Cache;
 
         // the description of parameters we must fill
@@ -148,7 +148,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             Log.Assert(remainingParamCount > 0); // we should not enter in survey state if no param to fill
 
             GameAction.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, 0, remainingParamCount);
-            SurveyBaseController surveyPrefab = Blackboard.ItemAuth.FindCustomSurveyPrefabForParameters(remainingParams);
+            SurveyBaseController surveyPrefab = Blackboard.GameActionAuth.FindCustomSurveyPrefabForParameters(remainingParams);
 
             if (surveyPrefab != null)
             {

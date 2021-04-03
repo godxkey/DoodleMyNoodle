@@ -297,6 +297,8 @@ public abstract class GameAction
     public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData);
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context);
 
+    public virtual Type[] GetRequiredSettingTypes() => new Type[] { };
+
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
     protected void LogGameActionInfo(UseContext context, string message)
     {

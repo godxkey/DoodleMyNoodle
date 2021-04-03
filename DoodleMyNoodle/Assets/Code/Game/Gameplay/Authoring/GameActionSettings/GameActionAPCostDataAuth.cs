@@ -1,13 +1,15 @@
+using System;
 using Unity.Entities;
 using UnityEngine;
 
-[DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class GameActionAPCostDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<GameActionAPCostData>
+[Serializable]
+[GameActionSettingAuth(typeof(GameActionAPCostData))]
+public class GameActionAPCostDataAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity, IItemSettingDescription<GameActionAPCostData>
 {
     public int ActionPointCost;
 
-    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new GameActionAPCostData() { Value = ActionPointCost });
     }

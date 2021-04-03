@@ -70,7 +70,7 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
         }
     }
 
-    public void ActivateTooltipDisplay(ItemAuth itemInfo, Entity itemOwner)
+    public void ActivateTooltipDisplay(GameActionAuth itemGameActionAuth, Entity itemOwner)
     {
         if (!Input.GetKey(KeyCode.LeftAlt))
         {
@@ -78,7 +78,7 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
             {
                 _currentDelayedTooltipActivationCoroutine = this.DelayedCall(_displayDelay, () =>
                 {
-                    ActivateTooltipDisplay(itemInfo, itemOwner);
+                    ActivateTooltipDisplay(itemGameActionAuth, itemOwner);
                 });
 
                 return;
@@ -90,17 +90,17 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
             }
         }
 
-        if (itemInfo != null)
+        if (itemGameActionAuth != null)
         {
-            SimAsset simAsset = itemInfo.GetComponent<SimAsset>();
+            SimAsset simAsset = itemGameActionAuth.GetComponent<SimAsset>();
             if (simAsset != null)
             {
                 Entity itemEntity = FindItemFromAssetId(simAsset.GetSimAssetId(), itemOwner);
                 if (itemEntity != Entity.Null)
                 {
-                    _itemName.text = itemInfo.ItemVisualInfo.Name; // update title Text
-                    UpdateTooltipDescription(itemInfo.ItemVisualInfo.EffectDescription, itemEntity, itemInfo.gameObject);
-                    UpdateTooltipColors(itemInfo.ItemVisualInfo.Rarity);
+                    _itemName.text = itemGameActionAuth.Name; // update title Text
+                    UpdateTooltipDescription(itemGameActionAuth.EffectDescription, itemEntity, itemGameActionAuth.gameObject);
+                    UpdateTooltipColors(Color.white);
                     _shouldBeDisplayed = true;
                 }
             }
@@ -193,29 +193,8 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
         }
     }
 
-    private void UpdateTooltipColors(ItemVisualInfo.ItemRarity rarity)
+    private void UpdateTooltipColors(Color currentColor)
     {
-        Color currentColor;
-        switch (rarity)
-        {
-            default:
-            case ItemVisualInfo.ItemRarity.Common:
-                currentColor = _common;
-                break;
-            case ItemVisualInfo.ItemRarity.Uncommon:
-                currentColor = _uncommon;
-                break;
-            case ItemVisualInfo.ItemRarity.Rare:
-                currentColor = _rare;
-                break;
-            case ItemVisualInfo.ItemRarity.Mythic:
-                currentColor = _mythic;
-                break;
-            case ItemVisualInfo.ItemRarity.Legendary:
-                currentColor = _legendary;
-                break;
-        }
-
         _itemName.color = currentColor;
         _tooltipContour.color = currentColor;
     }

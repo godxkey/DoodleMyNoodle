@@ -1,13 +1,14 @@
+using System;
 using Unity.Entities;
 using UnityEngine;
 
-[DisallowMultipleComponent]
-[RequiresEntityConversion]
-public class GameActionRangeDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<GameActionRangeData>
+[Serializable]
+[GameActionSettingAuth(typeof(GameActionRangeData))]
+public class GameActionRangeDataAuth : GameActionSettingAuthBase, IItemSettingDescription<GameActionRangeData>
 {
     public int Range;
 
-    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new GameActionRangeData() { Value = Range });
     }

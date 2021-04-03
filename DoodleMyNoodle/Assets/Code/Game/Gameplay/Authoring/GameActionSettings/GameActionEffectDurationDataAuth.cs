@@ -1,13 +1,15 @@
+using System;
 using Unity.Entities;
 using UnityEngine;
 
-[DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class GameActionEffectDurationDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<GameActionEffectDurationData>
+[Serializable]
+[GameActionSettingAuth(typeof(GameActionEffectDurationData))]
+public class GameActionEffectDurationDataAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity, IItemSettingDescription<GameActionEffectDurationData>
 {
     public int Duration;
 
-    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new GameActionEffectDurationData() { Value = Duration });
     }

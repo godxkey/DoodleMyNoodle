@@ -28,7 +28,7 @@ public class PlayerActionBarSlot : ItemSlot
     private bool _actionBarSlotUnavailable = false;
 
     public void UpdateCurrentInventorySlot(
-        ItemAuth itemAuth,
+        GameActionAuth gameActionAuth,
         int itemIndex,
         PlayerActionBarSlotInfo slotInfo,
         Action<int> onItemPrimaryActionUsed,
@@ -47,7 +47,7 @@ public class PlayerActionBarSlot : ItemSlot
 
         ShortcutDisplay.text = GetPrettyName(_info.InputShortcut);
 
-        UpdateCurrentItemSlot(itemAuth, null, null, GamePresentationCache.Instance.LocalPawn, stacks);
+        UpdateCurrentItemSlot(gameActionAuth, null, null, GamePresentationCache.Instance.LocalPawn, stacks);
     }
 
     public void UpdateDisplayAsUnavailable(Entity itemEntity)

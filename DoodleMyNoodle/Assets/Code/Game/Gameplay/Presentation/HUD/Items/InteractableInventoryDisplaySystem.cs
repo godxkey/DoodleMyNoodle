@@ -69,7 +69,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                 if (SimWorld.TryGetComponentData(item, out SimAssetId itemIDComponent))
                 {
                     int itemIndex = i;
-                    ItemAuth itemAuth = ItemInfoBank.Instance.GetItemAuthFromID(itemIDComponent);
+                    GameActionAuth itemAuth = ItemInfoBank.Instance.GetGameActionAuthFromID(itemIDComponent);
 
                     Action onClick = () =>
                     {

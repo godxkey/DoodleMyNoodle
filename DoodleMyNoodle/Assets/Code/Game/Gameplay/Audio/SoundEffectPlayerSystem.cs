@@ -21,7 +21,7 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
             GameObject entityPrefab = PresentationHelpers.FindSimAssetPrefab(entitySimAssetID);
             if (entityPrefab != null)
             {
-                var sfx = entityPrefab.GetComponent<ItemAuth>()?.SfxOnUse;
+                var sfx = entityPrefab.GetComponent<GameActionAuth>()?.SfxOnUse;
                 if (sfx != null)
                 {
                     sfx.PlayOn(_audioSource);

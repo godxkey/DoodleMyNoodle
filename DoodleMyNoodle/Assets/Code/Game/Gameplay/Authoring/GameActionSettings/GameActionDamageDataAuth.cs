@@ -1,13 +1,14 @@
+using System;
 using Unity.Entities;
 using UnityEngine;
 
-[DisallowMultipleComponent]
-[RequiresEntityConversion]
-public class GameActionDamageDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<GameActionDamageData>
+[Serializable]
+[GameActionSettingAuth(typeof(GameActionDamageData))]
+public class GameActionDamageDataAuth : GameActionSettingAuthBase, IItemSettingDescription<GameActionDamageData>
 {
     public int Damage;
 
-    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new GameActionDamageData() { Value = Damage });
     }
