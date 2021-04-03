@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84b940a118e724e44a66d907f6c7b49c, type: 3}
   m_Name: _ScriptTemplate
   m_EditorClassIdentifier: 
-  TemplateScript: {fileID: 0}
+  TemplateScript: {fileID: 11500000, guid: b94cdcd9320b067428cb91f7aabe19ee, type: 3}

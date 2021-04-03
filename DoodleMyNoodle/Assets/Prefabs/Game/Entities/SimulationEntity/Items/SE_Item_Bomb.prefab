@@ -16,9 +16,9 @@ GameObject:
   - component: {fileID: 8201080054300536663}
   - component: {fileID: 7130282409272405636}
   - component: {fileID: -4231352385931139325}
-  - component: {fileID: 8380715829056412607}
+  - component: {fileID: 3631105170250260349}
   m_Layer: 0
-  m_Name: SE_Item_DropBomb
+  m_Name: SE_Item_Bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 800b27a6aa6c95b41835b5a1d0ae75ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionDropObject
+  Value: GameActionThrow
   PlayAnimation: 0
   Animation: {fileID: 0}
 --- !u!114 &1206813890925547763
@@ -138,9 +138,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemVisualInfo: {fileID: 11400000, guid: 888a797202e0fb249ae83cc7182dce2e, type: 2}
-  UseSpecificSurveys: 0
-  SurveyList: []
---- !u!114 &8380715829056412607
+  SfxOnUse: {fileID: 0}
+  CustomSurveys:
+  - {fileID: 6075807751254421543, guid: 608b3f44970a7324ab091bbb7ae1585f, type: 3}
+--- !u!114 &3631105170250260349
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,8 +150,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2784291058542494111}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb26e9555303ed145bf40ee85413686e, type: 3}
+  m_Script: {fileID: 11500000, guid: 86f0d602adc23904f9c3fa901d851253, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObjectReference: {fileID: 2385346486794747607, guid: 9397ebc153b7b35489b100f7f8e04591,
+  ProjectilePrefab: {fileID: 2385346486794747607, guid: 9397ebc153b7b35489b100f7f8e04591,
     type: 3}
+  SpeedMin:
+    RawValue: 0
+  SpeedMax:
+    RawValue: 42949672960

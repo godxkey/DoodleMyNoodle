@@ -51,10 +51,10 @@ public class SurveyWorms : SurveyBaseController
 
         // Poll strength
         _state = State.PollingStrength;
-        _strength = (float)desc.StrengthMin; // start at minimum
+        _strength = (float)desc.SpeedMin; // start at minimum
         while (Input.GetMouseButton(0))
         {
-            _strength = Mathf.MoveTowards(_strength, (float)desc.StrengthMax, _growSpeed * Time.deltaTime);
+            _strength = Mathf.MoveTowards(_strength, (float)desc.SpeedMax, _growSpeed * Time.deltaTime);
             yield return null;
         }
 
@@ -78,8 +78,8 @@ public class SurveyWorms : SurveyBaseController
         {
             new GameActionParameterVector.Description()
             {
-                StrengthMax = 8,
-                StrengthMin = 0,
+                SpeedMax = 8,
+                SpeedMin = 0,
             }
         };
     }

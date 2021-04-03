@@ -365,6 +365,6 @@ public class UpdateArcherAISystem : SimComponentSystem
 
         var gameActionArg = new GameActionParameterVector.Data((fix2)dir * 3); // hard coded speed at 3 for now
 
-        return CommonWrites.TryInputUseItem<GameActionThrowProjectile>(Accessor, controller, gameActionArg);
+        return CommonWrites.TryInputUseItem<GameActionThrow>(Accessor, controller, gameActionArg);
     }
 }
