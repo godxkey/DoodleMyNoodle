@@ -39,25 +39,6 @@ public static class VectorExtensions
         return new Vector3(Mathf.Max(v.x, min.x), Mathf.Max(v.y, min.y), Mathf.Max(v.z, min.z));
     }
 
-    public static Vector2 ClampLength(this in Vector2 v, float minLength, float maxLength)
-    {
-        float mag = v.magnitude;
-        if (mag < minLength || mag > maxLength)
-        {
-            return v * (minLength / mag);
-        }
-        return v;
-    }
-    public static Vector3 ClampLength(this in Vector3 v, float minLength, float maxLength)
-    {
-        float mag = v.magnitude;
-        if (mag < minLength || mag > maxLength)
-        {
-            return v * (minLength / mag);
-        }
-        return v;
-    }
-
     public static Vector2 MaxLength(this in Vector2 v, float maximalLength)
     {
         float mag = v.magnitude;
