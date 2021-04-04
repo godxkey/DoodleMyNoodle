@@ -41,20 +41,18 @@ public class GameActionThrow : GameAction
             }
 
             fix2 velocity = paramVector.Vector;
-            fix speed = length(velocity);
-            fix2 dir = speed < MIN_VELOCITY ? fix2(0, 1) : velocity / speed;
+            fix inputSpeed = length(velocity);
+            fix2 dir = inputSpeed < MIN_VELOCITY ? fix2(0, 1) : velocity / inputSpeed;
 
             // Clamp vector and speed to min/max speed setting
             {
-                if (speed < settings.SpeedMin)
+                if (inputSpeed < settings.SpeedMin)
                 {
                     velocity = dir * settings.SpeedMin;
-                    speed = settings.SpeedMin;
                 }
-                else if (speed > settings.SpeedMax)
+                else if (inputSpeed > settings.SpeedMax)
                 {
                     velocity = dir * settings.SpeedMax;
-                    speed = settings.SpeedMax;
                 }
             }
 
@@ -65,12 +63,6 @@ public class GameActionThrow : GameAction
 
             accessor.SetOrAddComponentData(projectileInstance, new PhysicsVelocity(velocity + instigatorVel));
             accessor.SetOrAddComponentData(projectileInstance, new FixTranslation(spawnPos));
-
-            // add 'DamageOnContact' if ItemDamageData found
-            if (accessor.HasComponent<GameActionDamageData>(context.Entity))
-            {
-                accessor.SetOrAddComponentData(projectileInstance, new DamageOnContact() { Value = accessor.GetComponentData<GameActionDamageData>(context.Entity).Value, DestroySelf = true });
-            }
 
             return true;
         }
