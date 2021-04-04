@@ -20,6 +20,12 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, GameActionBank.GetActionId(Value));
+
+        foreach (GameActionSettingAuthBase GameActionSetting in GameActionSettings)
+        {
+            GameActionSetting.Convert(entity, dstManager, conversionSystem);
+        }
+
         if (Animation != null)
         {
             dstManager.AddComponentData(entity, new GameActionAnimationTypeData() { AnimationType = (int)Animation.AnimationType, Duration = (fix)Animation.Duration });
