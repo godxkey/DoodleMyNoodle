@@ -5,7 +5,7 @@ using UnityEngine;
 [RequiresEntityConversion]
 [Serializable]
 [GameActionSettingAuth(typeof(GameActionAPCostData))]
-public class GameActionAPCostDataAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity, IItemSettingDescription<GameActionAPCostData>
+public class GameActionAPCostDataAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity, IItemSettingDescription
 {
     public int ActionPointCost;
 
@@ -19,15 +19,8 @@ public class GameActionAPCostDataAuth : GameActionSettingAuthBase, IConvertGameO
         return Color.white;
     }
 
-    public string GetDescription(GameActionAPCostData inputData)
+    public string GetDescription()
     {
-        if (inputData.Value == ActionPointCost)
-        {
-            return $"Stamina Cost : {inputData.Value}";
-        }
-        else
-        {
-            return $"Stamina Cost : {inputData.Value} ({ActionPointCost})";
-        }
+        return $"AP Cost : {ActionPointCost}";
     }
 }

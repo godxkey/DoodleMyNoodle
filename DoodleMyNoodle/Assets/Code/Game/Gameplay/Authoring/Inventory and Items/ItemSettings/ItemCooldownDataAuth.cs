@@ -1,10 +1,10 @@
 using CCC.InspectorDisplay;
+using System;
 using Unity.Entities;
 using UnityEngine;
 
-[DisallowMultipleComponent]
-[RequiresEntityConversion]
-public class ItemCooldownDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemTimeCooldownData>
+[Serializable]
+public class ItemCooldownDataAuth : IItemSettingDescription
 {
     public bool UseTime = true;
     [ShowIf("UseTime")]
@@ -29,29 +29,15 @@ public class ItemCooldownDataAuth : MonoBehaviour, IConvertGameObjectToEntity, I
         return Color.white;
     }
 
-    public string GetDescription(ItemTimeCooldownData inputData)
+    public string GetDescription()
     {
         if (UseTime)
         {
-            if (inputData.Value == TimeCooldown)
-            {
-                return $"Cooldown (time) : {inputData.Value}";
-            }
-            else
-            {
-                return $"Cooldown (time) : {inputData.Value} ({TimeCooldown})";
-            }
+            return $"Cooldown (time) : {TimeCooldown}";
         }
         else
         {
-            if (inputData.Value == TurnCooldown)
-            {
-                return $"Cooldown (turn) : {inputData.Value}";
-            }
-            else
-            {
-                return $"Cooldown (turn) : {inputData.Value} ({TurnCooldown})";
-            }
+            return $"Cooldown (turn) : {TurnCooldown}";
         }
     }
 }

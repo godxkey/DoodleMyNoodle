@@ -28,7 +28,7 @@ public class PlayerActionBarSlot : ItemSlot
     private bool _actionBarSlotUnavailable = false;
 
     public void UpdateCurrentInventorySlot(
-        GameActionAuth gameActionAuth,
+        ItemAuth gameActionAuth,
         int itemIndex,
         PlayerActionBarSlotInfo slotInfo,
         Action<int> onItemPrimaryActionUsed,

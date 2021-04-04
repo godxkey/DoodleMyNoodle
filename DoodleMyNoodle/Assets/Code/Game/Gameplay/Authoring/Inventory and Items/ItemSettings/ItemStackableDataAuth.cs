@@ -3,7 +3,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemStackableDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemStackableData>
+public class ItemStackableDataAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription
 {
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -15,8 +15,8 @@ public class ItemStackableDataAuth : MonoBehaviour, IConvertGameObjectToEntity, 
         return Color.white;
     }
 
-    public string GetDescription(ItemStackableData inputData)
+    public string GetDescription()
     {
-        return $"Current Stack : {inputData.Value}";
+        return $"Stackable";
     }
 }

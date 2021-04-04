@@ -17,7 +17,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
     [SerializeField] private TextMeshProUGUI _stackText;
 
     private Color _startBackgroundColor;
-    private GameActionAuth _currentItemGameActionAuth;
+    private ItemAuth _currentItemGameActionAuth;
     private Action _onItemLeftClicked; // index of item in list, not used here
     private Action _onItemRightClicked; // index of item in list, not used here
 
@@ -45,7 +45,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         }
     }
 
-    public virtual void UpdateCurrentItemSlot(GameActionAuth gameActionAuth, Action onItemLeftClicked, Action onItemRightClicked, Entity owner, int stacks = -1)
+    public virtual void UpdateCurrentItemSlot(ItemAuth gameActionAuth, Action onItemLeftClicked, Action onItemRightClicked, Entity owner, int stacks = -1)
     {
         InitIfNeeded();
 

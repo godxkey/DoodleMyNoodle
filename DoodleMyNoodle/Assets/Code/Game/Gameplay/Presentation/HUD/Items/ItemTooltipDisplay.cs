@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.Entities;
 using System;
+using System.Reflection;
 
 public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
 {
@@ -70,7 +71,7 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
         }
     }
 
-    public void ActivateTooltipDisplay(GameActionAuth itemGameActionAuth, Entity itemOwner)
+    public void ActivateTooltipDisplay(ItemAuth itemGameActionAuth, Entity itemOwner)
     {
         if (!Input.GetKey(KeyCode.LeftAlt))
         {
@@ -99,7 +100,7 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
                 if (itemEntity != Entity.Null)
                 {
                     _itemName.text = itemGameActionAuth.Name; // update title Text
-                    UpdateTooltipDescription(itemGameActionAuth.EffectDescription, itemEntity, itemGameActionAuth.gameObject);
+                    UpdateTooltipDescription(itemEntity, itemGameActionAuth);
                     UpdateTooltipColors(Color.white);
                     _shouldBeDisplayed = true;
                 }
@@ -150,47 +151,34 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
         return Entity.Null;
     }
 
-    private void UpdateTooltipDescription(string description, Entity item, GameObject itemPrefab)
+    private void UpdateTooltipDescription(Entity item, ItemAuth gameActionAuth)
     {
         _descriptionData.Clear();
         if (item != Entity.Null)
         {
-            // TODO : fix this place in some way please...
+            // General Description
+            _descriptionData.Add(new DescriptionData(gameActionAuth.EffectDescription, Color.white, true));
 
-            // Order of appearance
+            // Game Action Settings
+            foreach (GameActionSettingAuthBase GameActionSetting in gameActionAuth.GameActionSettings)
+            {
+                _descriptionData.Add(new DescriptionData(((IItemSettingDescription)GameActionSetting).GetDescription(), Color.white, true));
+            }
 
-            // Game Actions
-            TryAddTooltipItemDescriptionForInt<GameActionDamageData>();
-            TryAddTooltipItemDescriptionForInt<GameActionHPToHealData>();
-            TryAddTooltipItemDescriptionForInt<GameActionRangeData>();
-            TryAddTooltipItemDescriptionForInt<GameActionAPCostData>();
-            TryAddTooltipItemDescriptionForInt<GameActionHPCostData>();
-            TryAddTooltipItemDescriptionForInt<GameActionEffectDurationData>();
+            // Item Specific Settings
+            if(gameActionAuth.HasCooldown)
+            {
+                _descriptionData.Add(new DescriptionData(gameActionAuth.CooldownAuth.GetDescription(), Color.white, true));
+            }
 
-            // Item Setting
-            TryAddTooltipItemDescriptionForInt<ItemTimeCooldownData>();
-
-            // Item Passive Effect
-            TryAddTooltipItemDescriptionForInt<ItemPassiveEffectHealthIncreaseData>();
-            TryAddTooltipItemDescriptionForInt<ItemPassiveEffectHealthIncreaseMultiplierData>();
-
-            _descriptionData.Add(new DescriptionData(description, Color.white, true));
+            if (gameActionAuth.gameObject.TryGetComponent(out ItemStackableDataAuth stackAuth))
+            {
+                _descriptionData.Add(new DescriptionData(stackAuth.GetDescription(), Color.white, true));
+            }
         }
 
         UIUtility.UpdateGameObjectList(_descriptionElements, _descriptionData, _itemDescriptionPrefab, _itemDescriptionContainer,
             onUpdate: (element, data) => element.UpdateDescription(data.Desc, data.Color, data.AddBG));
-
-        // THERE IS NO FIX VERSION ATM (TODO : Fix this)
-        // local functions
-        void TryAddTooltipItemDescriptionForInt<TItemStat>()
-            where TItemStat : struct, IComponentData, IStatInt
-        {
-            IItemSettingDescription<TItemStat> itemStatAuth = itemPrefab.GetComponent<IItemSettingDescription<TItemStat>>();
-            if (SimWorld.TryGetComponentData(item, out TItemStat stat) && (itemStatAuth != null))
-            {
-                _descriptionData.Add(new DescriptionData(itemStatAuth.GetDescription(stat), itemStatAuth.GetColor(), false));
-            }
-        }
     }
 
     private void UpdateTooltipColors(Color currentColor)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 [Serializable]
 [GameActionSettingAuth(typeof(GameActionHPCostData))]
-public class GameActionHPCostDataAuth : GameActionSettingAuthBase, IItemSettingDescription<GameActionHPCostData>
+public class GameActionHPCostDataAuth : GameActionSettingAuthBase, IItemSettingDescription
 {
     public int HealthCost;
 
@@ -18,15 +18,8 @@ public class GameActionHPCostDataAuth : GameActionSettingAuthBase, IItemSettingD
         return Color.white;
     }
 
-    public string GetDescription(GameActionHPCostData inputData)
+    public string GetDescription()
     {
-        if (inputData.Value == HealthCost)
-        {
-            return $"HP Cost : {inputData.Value}";
-        }
-        else
-        {
-            return $"HP Cost : {inputData.Value} ({HealthCost})";
-        }
+        return $"HP Cost : {HealthCost}";
     }
 }

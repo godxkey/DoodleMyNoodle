@@ -72,7 +72,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                         {
                             SimWorld.TryGetComponentData(animationData.GameActionEntity, out SimAssetId instigatorAssetId);
                             GameObject instigatorPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
-                            if (instigatorPrefab.TryGetComponent(out GameActionAuth gameActionAuth))
+                            if (instigatorPrefab.TryGetComponent(out ItemAuth gameActionAuth))
                             {
                                 _currentAnimation = gameActionAuth.Animation;
                                 if (gameActionAuth.PlayAnimation && _currentAnimation != null)

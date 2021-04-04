@@ -4,7 +4,7 @@ using UnityEngine;
 
 [Serializable]
 [GameActionSettingAuth(typeof(GameActionDamageData))]
-public class GameActionDamageDataAuth : GameActionSettingAuthBase, IItemSettingDescription<GameActionDamageData>
+public class GameActionDamageDataAuth : GameActionSettingAuthBase, IItemSettingDescription
 {
     public int Damage;
 
@@ -18,15 +18,8 @@ public class GameActionDamageDataAuth : GameActionSettingAuthBase, IItemSettingD
         return Color.white;
     }
 
-    public string GetDescription(GameActionDamageData inputData)
+    public string GetDescription()
     {
-        if (inputData.Value == Damage)
-        {
-            return $"Damage : {inputData.Value}";
-        }
-        else
-        {
-            return $"Damage : {inputData.Value} ({Damage})";
-        }
+        return $"Damage : {Damage}";
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [RequiresEntityConversion]
 [Serializable]
 [GameActionSettingAuth(typeof(GameActionEffectDurationData))]
-public class GameActionEffectDurationDataAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity, IItemSettingDescription<GameActionEffectDurationData>
+public class GameActionEffectDurationDataAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity, IItemSettingDescription
 {
     public int Duration;
 
@@ -19,15 +19,8 @@ public class GameActionEffectDurationDataAuth : GameActionSettingAuthBase, IConv
         return Color.white;
     }
 
-    public string GetDescription(GameActionEffectDurationData inputData)
+    public string GetDescription()
     {
-        if (inputData.Value == Duration)
-        {
-            return $"Duration : {inputData.Value}";
-        }
-        else
-        {
-            return $"Duration : {inputData.Value} ({Duration})";
-        }
+        return $"Duration : {Duration}";
     }
 }

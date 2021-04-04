@@ -5,7 +5,7 @@ using UnityEngine;
 [RequiresEntityConversion]
 [Serializable]
 [GameActionSettingAuth(typeof(GameActionHPCostData))]
-public class GameActionExplosionRangeAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity, IItemSettingDescription<GameActionHPCostData>
+public class GameActionExplosionRangeAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity, IItemSettingDescription
 {
     public int ExplosionRange;
 
@@ -19,15 +19,8 @@ public class GameActionExplosionRangeAuth : GameActionSettingAuthBase, IConvertG
         return Color.white;
     }
 
-    public string GetDescription(GameActionHPCostData inputData)
+    public string GetDescription()
     {
-        if (inputData.Value == ExplosionRange)
-        {
-            return $"Explosion Range : {inputData.Value}";
-        }
-        else
-        {
-            return $"Explosion Range : {inputData.Value} ({ExplosionRange})";
-        }
+        return $"Explosion Range : {ExplosionRange}";
     }
 }

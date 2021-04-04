@@ -5,14 +5,14 @@ using UnityEngineX;
 
 public class ItemInfoBank : GameSystem<ItemInfoBank>
 {
-    [SerializeField] private GameActionAuth _fallbackGameActionAuth;
+    [SerializeField] private ItemAuth _fallbackGameActionAuth;
 
-    public GameActionAuth GetGameActionAuthFromID(SimAssetId itemID)
+    public ItemAuth GetGameActionAuthFromID(SimAssetId itemID)
     {
         GameObject itemPrefab = PresentationHelpers.FindSimAssetPrefab(itemID);
         if (itemPrefab != null)
         {
-            GameActionAuth gameActionAuth = itemPrefab.GetComponent<GameActionAuth>();
+            ItemAuth gameActionAuth = itemPrefab.GetComponent<ItemAuth>();
             if (gameActionAuth != null)
             {
                 return gameActionAuth;

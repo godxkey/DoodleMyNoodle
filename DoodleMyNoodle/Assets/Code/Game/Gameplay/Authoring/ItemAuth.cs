@@ -1,15 +1,66 @@
-﻿using CCC.InspectorDisplay;
-using System;
-using System.Collections.Generic;
-using Unity.Entities;
+﻿using Unity.Entities;
 using UnityEngine;
+using System.Linq;
+using System;
+using CCC.InspectorDisplay;
+using System.Collections.Generic;
+using UnityEngineX.InspectorDisplay;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemAuth : MonoBehaviour
+public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
-    public ItemVisualInfo ItemVisualInfo;
+    // SIMULATION
+
+    // Game Action
+    public string Value;
+
+    [SerializeReference]
+    [AlwaysExpand]
+    public List<GameActionSettingAuthBase> GameActionSettings = new List<GameActionSettingAuthBase>();
+
+    public bool HasCooldown = false;
+    [AlwaysExpand]
+    public ItemCooldownDataAuth CooldownAuth;
+    public bool IsStackable = false;
+
+    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    {
+        dstManager.AddComponentData(entity, GameActionBank.GetActionId(Value));
+
+        foreach (GameActionSettingAuthBase GameActionSetting in GameActionSettings)
+        {
+            GameActionSetting.Convert(entity, dstManager, conversionSystem);
+        }
+
+        if (Animation != null)
+        {
+            dstManager.AddComponentData(entity, new GameActionAnimationTypeData() { AnimationType = (int)Animation.AnimationType, Duration = (fix)Animation.Duration });
+        }
+
+        if (HasCooldown)
+        {
+            CooldownAuth.Convert(entity, dstManager, conversionSystem);
+        }
+
+        if (IsStackable)
+        {
+            dstManager.AddComponentData(entity, new ItemStackableData());
+        }
+    }
+
+    // PRESENTATION
+
+    // Description
+    public Sprite Icon;
+    public string Name;
+    public string EffectDescription;
     public AudioPlayable SfxOnUse;
+
+    public bool PlayAnimation = false;
+    public AnimationDefinition Animation;
+
+    // Surveys
     public List<SurveyBaseController> CustomSurveys;
 
     public SurveyBaseController FindCustomSurveyPrefabForParameters(params GameAction.ParameterDescription[] parameters)

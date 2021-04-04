@@ -5,7 +5,7 @@ using UnityEngineX;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemPassiveEffectHealthIncreaseAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription<ItemPassiveEffectHealthIncreaseData>
+public class ItemPassiveEffectHealthIncreaseAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription
 {
     public int Amount;
 
@@ -19,15 +19,8 @@ public class ItemPassiveEffectHealthIncreaseAuth : MonoBehaviour, IConvertGameOb
         return Color.white;
     }
 
-    public string GetDescription(ItemPassiveEffectHealthIncreaseData inputData)
+    public string GetDescription()
     {
-        if (inputData.Value == Amount)
-        {
-            return $"HP Increase : {inputData.Value}";
-        }
-        else
-        {
-            return $"HP Increase : {inputData.Value} ({Amount})";
-        }
+        return $"HP Increase : {Amount}";
     }
 }

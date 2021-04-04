@@ -124,7 +124,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
     private class SurveyBlackboard
     {
-        public GameActionAuth GameActionAuth;
+        public ItemAuth GameActionAuth;
         public GamePresentationCache Cache;
 
         // the description of parameters we must fill

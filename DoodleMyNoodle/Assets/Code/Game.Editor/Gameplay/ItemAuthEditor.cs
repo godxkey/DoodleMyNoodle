@@ -8,8 +8,8 @@ using UnityEditorX;
 using UnityEngine;
 using UnityEngineX;
 
-[CustomEditor(typeof(GameActionAuth))]
-public class GameActionAuthEditor : Editor
+[CustomEditor(typeof(ItemAuth))]
+public class ItemAuthEditor : Editor
 {
     private static string[] s_availableTypeNames;
     private static Type[] s_availableTypes;
@@ -64,7 +64,7 @@ public class GameActionAuthEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        var CastedTarget = (GameActionAuth)target;
+        var CastedTarget = (ItemAuth)target;
 
         EditorGUI.BeginChangeCheck();
 
@@ -136,6 +136,20 @@ public class GameActionAuthEditor : Editor
                 }
             }
         }
+
+        DrawSecondaryTitle("Item Settings");
+
+        SerializedProperty HasCooldownSetting = serializedObject.FindProperty("HasCooldown");
+        EditorGUILayout.PropertyField(HasCooldownSetting);
+
+        if (HasCooldownSetting.boolValue)
+        {
+            SerializedProperty CooldownSetting = serializedObject.FindProperty("CooldownAuth");
+            EditorGUILayout.PropertyField(CooldownSetting);
+        }
+
+        SerializedProperty Stackable = serializedObject.FindProperty("IsStackable");
+        EditorGUILayout.PropertyField(Stackable);
 
         DrawLine(10);
 

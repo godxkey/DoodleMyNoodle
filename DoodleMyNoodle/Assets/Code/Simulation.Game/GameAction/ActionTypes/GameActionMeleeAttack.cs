@@ -13,7 +13,8 @@ public class GameActionMeleeAttack : GameAction
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
         typeof(GameActionDamageData),
-        typeof(GameActionRangeData)
+        typeof(GameActionRangeData),
+        typeof(GameActionAPCostData)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

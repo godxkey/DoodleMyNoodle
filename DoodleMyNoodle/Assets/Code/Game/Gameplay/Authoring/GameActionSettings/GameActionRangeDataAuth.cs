@@ -4,7 +4,7 @@ using UnityEngine;
 
 [Serializable]
 [GameActionSettingAuth(typeof(GameActionRangeData))]
-public class GameActionRangeDataAuth : GameActionSettingAuthBase, IItemSettingDescription<GameActionRangeData>
+public class GameActionRangeDataAuth : GameActionSettingAuthBase, IItemSettingDescription
 {
     public int Range;
 
@@ -18,15 +18,8 @@ public class GameActionRangeDataAuth : GameActionSettingAuthBase, IItemSettingDe
         return Color.white;
     }
 
-    public string GetDescription(GameActionRangeData inputData)
+    public string GetDescription()
     {
-        if (inputData.Value == Range)
-        {
-            return $"Range : {inputData.Value}";
-        }
-        else
-        {
-            return $"Range : {inputData.Value} ({Range})";
-        }
+        return $"Range : {Range}";
     }
 }
