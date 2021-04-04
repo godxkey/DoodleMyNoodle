@@ -52,12 +52,10 @@ MonoBehaviour:
   - {fileID: 3112765608119243388, guid: 5c5bae4008aca074ab9bc6a8d4886f4b, type: 3}
   - {fileID: 3112765608119243388, guid: f0c0548943d5c9141b4fba43c47c51d7, type: 3}
   _pointContainer: {fileID: 6383734189471555304}
-  _pointBaseFrequency: 6
-  _pointFrequencyMultiplier: 0.75
-  _lastPointAlpha: 0.25
-  _beforeLastPointAlpha: 0.5
+  _pointBaseFrequency: 1
+  _pointFrequencySpeedMultiplier: 0.7
+  _pointFrequencyGravScaleMultiplier: 6
   _pointCap: 400
-  _trajectories: []
 --- !u!1 &7269118276529583902
 GameObject:
   m_ObjectHideFlags: 0

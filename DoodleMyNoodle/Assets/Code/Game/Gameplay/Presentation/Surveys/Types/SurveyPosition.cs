@@ -12,7 +12,7 @@ public class SurveyPosition : SurveyBaseController
         GameAction.ParameterDescriptionType.Position
     };
 
-    protected override IEnumerator SurveyRoutine(GameAction.ParameterDescription[] queryParams, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
     {
         Vector2 mouseWorldPos = Vector2.zero;
 

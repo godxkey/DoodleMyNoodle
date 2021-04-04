@@ -31,15 +31,20 @@ public class SurveyAngryBirds : SurveyBaseController
     private TrajectoryDisplaySystem.TrajectoryHandle _trajectoryDisplay;
     private GameActionParameterVector.Description _vectorDesc;
 
+    public override GameAction.ParameterDescription[] CreateDebugQuery()
+    {
+        return new GameAction.ParameterDescription[] { new GameActionParameterVector.Description() { SpeedMax = 10, SpeedMin = 0 } };
+    }
+
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
         GameAction.ParameterDescriptionType.Vector
     };
 
-    protected override IEnumerator SurveyRoutine(GameAction.ParameterDescription[] queryParams, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
     {
         _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
-        _vectorDesc = (GameActionParameterVector.Description)queryParams[0];
+        _vectorDesc = context.GetQueryParam<GameActionParameterVector.Description>();
 
         Update(); // force first update to avoid visual issue on first frame. We should find a more general fix
 
@@ -141,8 +146,18 @@ public class SurveyAngryBirds : SurveyBaseController
         _trajectoryDisplay.Displayed = _dragState == DragState.Dragging || _dragState == DragState.Releasing;
         if (_trajectoryDisplay.Displayed)
         {
+            Vector2 startOffset = Vector2.zero;
+            if (_releaseSpeed > 0.01f)
+            {
+                if (PresentationHelpers.Surveys.TryGetThrowTrajectoryStartOffset(Cache, CurrentContext.UseContext, _releaseVector.normalized, out Vector2 offset))
+                {
+                    startOffset = offset;
+                }
+            }
+
+            _trajectoryDisplay.GravityScale = PresentationHelpers.Surveys.GetProjectileGravityScale(Cache, CurrentContext.UseContext);
             _trajectoryDisplay.Length = _trajectoryLength;
-            _trajectoryDisplay.StartPoint = _center.position;
+            _trajectoryDisplay.StartPoint = (Vector2)_center.position + startOffset;
             _trajectoryDisplay.Velocity = _releaseVector;
         }
     }

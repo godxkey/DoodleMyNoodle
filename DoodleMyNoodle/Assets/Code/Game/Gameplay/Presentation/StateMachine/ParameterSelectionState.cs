@@ -46,9 +46,10 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         {
             InstigatorPawn = Cache.LocalPawn,
             InstigatorPawnController = Cache.LocalController,
-            Entity = InputParameter.ObjectEntity
+            Item = InputParameter.ObjectEntity
         };
 
+        _surveySMBlackboard.UseContext = useContext;
         _surveySMBlackboard.ParametersDescriptions = objectGameAction.GetUseContract(SimWorld, useContext).ParameterTypes;
         _surveyStateMachine.TransitionTo(new SurveyState());
     }
@@ -127,6 +128,8 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         public ItemAuth ItemAuth;
         public GamePresentationCache Cache;
 
+        public GameAction.UseContext UseContext;
+
         // the description of parameters we must fill
         public GameAction.ParameterDescription[] ParametersDescriptions;
 
@@ -152,7 +155,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
             if (surveyPrefab != null)
             {
-                SurveyManager.Instance.BeginSurvey(Blackboard.Cache.LocalPawnPositionFloat, surveyPrefab, OnSurveyComplete, OnSurveyCancel, remainingParams);
+                SurveyManager.Instance.BeginSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, remainingParams, surveyPrefab, OnSurveyComplete, OnSurveyCancel);
             }
             else
             {
@@ -160,7 +163,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
                 // For default case, we handle them one at a time with the survey corresponding to the first parameter we have
                 GameAction.ParameterDescription parameterToHandle = remainingParams[0];
-                SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, parameterToHandle, OnSurveyComplete, OnSurveyCancel);
+                SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, parameterToHandle, OnSurveyComplete, OnSurveyCancel);
             }
         }
 

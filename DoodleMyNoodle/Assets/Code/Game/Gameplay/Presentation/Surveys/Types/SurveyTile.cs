@@ -10,9 +10,9 @@ public class SurveyTile : SurveyBaseController
         GameAction.ParameterDescriptionType.Tile
     };
 
-    protected override IEnumerator SurveyRoutine(GameAction.ParameterDescription[] queryParams, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
     {
-        GameActionParameterTile.Description paramTile = (GameActionParameterTile.Description)queryParams[0];
+        var paramTile = context.GetQueryParam<GameActionParameterTile.Description>();
 
         TileHighlightManager.Instance.AskForSingleTileSelectionAroundPlayer(paramTile, (GameAction.ParameterData selection) =>
         {

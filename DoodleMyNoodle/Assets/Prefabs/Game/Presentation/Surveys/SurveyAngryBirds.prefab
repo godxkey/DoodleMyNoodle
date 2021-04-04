@@ -299,6 +299,7 @@ MonoBehaviour:
   _collider: {fileID: 7192197591991983220}
   _velocityFactor: 3
   _minDragThreshold: 10
+  _trajectoryLength: 5
 --- !u!58 &7192197591991983220
 CircleCollider2D:
   m_ObjectHideFlags: 0

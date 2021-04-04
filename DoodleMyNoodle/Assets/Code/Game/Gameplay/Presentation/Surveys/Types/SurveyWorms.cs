@@ -37,9 +37,9 @@ public class SurveyWorms : SurveyBaseController
         GameAction.ParameterDescriptionType.Vector
     };
 
-    protected override IEnumerator SurveyRoutine(GameAction.ParameterDescription[] queryParams, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
     {
-        GameActionParameterVector.Description desc = queryParams[0] as GameActionParameterVector.Description;
+        var desc = context.GetQueryParam<GameActionParameterVector.Description>();
 
         // Poll angle
         _state = State.PollingDirection;

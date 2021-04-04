@@ -24,7 +24,7 @@ public class SurveyClickTiming : SurveyBaseController, IWorldUIPointerClickHandl
         GameAction.ParameterDescriptionType.SuccessRating,
     };
 
-    protected override IEnumerator SurveyRoutine(GameAction.ParameterDescription[] queryParams, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
     {
         _currentNumber.Set(0);
 

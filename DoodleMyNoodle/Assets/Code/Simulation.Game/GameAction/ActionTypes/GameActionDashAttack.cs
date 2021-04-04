@@ -13,7 +13,7 @@ public class GameActionDashAttack : GameAction
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)
+            new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
             {
                 IncludeSelf = false,
                 MustBeReachable = true
@@ -28,7 +28,7 @@ public class GameActionDashAttack : GameAction
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
-            int moveRange = accessor.GetComponentData<GameActionRangeData>(context.Entity).Value;
+            int moveRange = accessor.GetComponentData<GameActionRangeData>(context.Item).Value;
 
             NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);
             if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path))
@@ -43,7 +43,7 @@ public class GameActionDashAttack : GameAction
             // Remove unreachable points
             _path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
 
-            int damage = accessor.GetComponentData<GameActionDamageData>(context.Entity).Value;
+            int damage = accessor.GetComponentData<GameActionDamageData>(context.Item).Value;
             NativeList<Entity> entityToDamage = new NativeList<Entity>(Allocator.Temp);
             for (int i = 0; i < _path.Length; i++)
             {

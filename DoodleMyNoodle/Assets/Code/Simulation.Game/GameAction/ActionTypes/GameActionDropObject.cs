@@ -9,7 +9,7 @@ public class GameActionDropObject : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
-                   new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)
+                   new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
                    {
                    });
     }
@@ -19,9 +19,9 @@ public class GameActionDropObject : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             // get settings
-            if (!accessor.TryGetComponentData(context.Entity, out GameActionObjectReferenceSetting settings))
+            if (!accessor.TryGetComponentData(context.Item, out GameActionObjectReferenceSetting settings))
             {
-                Debug.LogWarning($"Item {context.Entity} has no {nameof(GameActionObjectReferenceSetting)} component");
+                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionObjectReferenceSetting)} component");
                 return false;
             }
 

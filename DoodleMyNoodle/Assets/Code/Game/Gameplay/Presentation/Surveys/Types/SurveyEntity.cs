@@ -18,7 +18,7 @@ public class SurveyEntity : SurveyBaseController
         GameAction.ParameterDescriptionType.Entity
     };
 
-    protected override IEnumerator SurveyRoutine(GameAction.ParameterDescription[] queryParams, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
     {
         while (_selectedEntity == null)
         {
@@ -79,7 +79,7 @@ public class SurveyEntity : SurveyBaseController
 
     private bool VerifyEntityForParameters(Entity entity)
     {
-        GameActionParameterEntity.Description paramDescription = (GameActionParameterEntity.Description)QueryParameters[0];
+        GameActionParameterEntity.Description paramDescription = CurrentContext.GetQueryParam<GameActionParameterEntity.Description>();
 
         if (!paramDescription.IncludeSelf && entity == Cache.LocalPawn)
         {

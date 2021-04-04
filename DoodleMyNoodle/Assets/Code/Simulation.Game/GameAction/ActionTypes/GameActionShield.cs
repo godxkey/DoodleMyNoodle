@@ -8,10 +8,10 @@ public class GameActionShield : GameAction
 {
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.GetComponentData<GameActionRangeData>(context.Entity).Value > 0)
+        if (accessor.GetComponentData<GameActionRangeData>(context.Item).Value > 0)
         {
             return new UseContract(
-                new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)
+                new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
                 {
                     IncludeSelf = false,
                     RequiresAttackableEntity = true,
@@ -32,13 +32,13 @@ public class GameActionShield : GameAction
             CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
             foreach (var victim in victims)
             {
-                ShieldTarget(accessor, context.Entity, victim);
+                ShieldTarget(accessor, context.Item, victim);
             }
 
             return true;
         }
 
-        ShieldTarget(accessor, context.Entity, context.InstigatorPawn);
+        ShieldTarget(accessor, context.Item, context.InstigatorPawn);
         return true;
     }
 

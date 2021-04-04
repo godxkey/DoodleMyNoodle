@@ -10,7 +10,7 @@ public static class GameActionPresentationFeedbacks
     {
         // ANIMATIONS
         List<KeyValuePair<string, object>> animationData = new List<KeyValuePair<string, object>>(result.Data); // to be passed in params[]
-        animationData.Add(new KeyValuePair<string, object>("GameActionEntity", context.Entity)); // animation need some contextual data
+        animationData.Add(new KeyValuePair<string, object>("GameActionEntity", context.Item)); // animation need some contextual data
         CommonWrites.SetEntityAnimation(accessor, context.InstigatorPawn, animationData.ToArray());
     }
 }
