@@ -9,6 +9,9 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class CameraMovementController : GamePresentationSystem<CameraMovementController>
 {
+    [SerializeField] private Transform _wallpaper;
+    [SerializeField] private float _wallpaperVerticalSize = 10f;
+
     [Header("Mouse Movement Edge Trigger")]
     public float ScreenEdgeBorderThickness = 5.0f;
 
@@ -61,7 +64,13 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     private float CamSize
     {
         get => Cam.orthographicSize;
-        set => Cam.orthographicSize = Mathf.Clamp(value, MinZoom, MaxZoom);
+        set
+        {
+            value = Mathf.Clamp(value, MinZoom, MaxZoom);
+            if (_wallpaper != null)
+                _wallpaper.localScale = Vector3.one * (value / (_wallpaperVerticalSize / 2f));
+            Cam.orthographicSize = value;
+        }
     }
 
     protected override void Awake()

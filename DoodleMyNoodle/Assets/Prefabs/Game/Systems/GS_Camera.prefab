@@ -151,6 +151,8 @@ MonoBehaviour:
   SystemSettings:
     Type: 1
     OnlineFlags: -1
+  _wallpaper: {fileID: 2508691285438419769}
+  _wallpaperVerticalSize: 10
   ScreenEdgeBorderThickness: 20
   Cam: {fileID: 4685809662094148431}
   Speed: 3
