@@ -17,8 +17,8 @@ public class ItemAuthEditor : Editor
     // key : setting type / value : auth type
     private static Dictionary<Type,Type> s_gameActionSettingAuthTypes;
 
-    private static GUIStyle s_PrimaryTitleFontStyle = null;
-    private static GUIStyle s_SecondaryTitleFontStyle = null;
+    private static GUIStyle s_primaryTitleFontStyle = null;
+    private static GUIStyle s_secondaryTitleFontStyle = null;
 
     private void OnEnable()
     {
@@ -28,20 +28,20 @@ public class ItemAuthEditor : Editor
             s_availableTypeNames = s_availableTypes.Select(t => t.Name).ToArray();
         }
 
-        if (s_PrimaryTitleFontStyle == null)
+        if (s_primaryTitleFontStyle == null)
         {
-            s_PrimaryTitleFontStyle = new GUIStyle();
-            s_PrimaryTitleFontStyle.normal.textColor = Color.white;
-            s_PrimaryTitleFontStyle.fontSize = 20;
-            s_PrimaryTitleFontStyle.fontStyle = FontStyle.Bold;
+            s_primaryTitleFontStyle = new GUIStyle();
+            s_primaryTitleFontStyle.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
+            s_primaryTitleFontStyle.fontSize = 20;
+            s_primaryTitleFontStyle.fontStyle = FontStyle.Bold;
         }
 
-        if (s_SecondaryTitleFontStyle == null)
+        if (s_secondaryTitleFontStyle == null)
         {
-            s_SecondaryTitleFontStyle = new GUIStyle();
-            s_SecondaryTitleFontStyle.normal.textColor = Color.white;
-            s_SecondaryTitleFontStyle.fontSize = 15;
-            s_SecondaryTitleFontStyle.fontStyle = FontStyle.Bold;
+            s_secondaryTitleFontStyle = new GUIStyle();
+            s_secondaryTitleFontStyle.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
+            s_secondaryTitleFontStyle.fontSize = 15;
+            s_secondaryTitleFontStyle.fontStyle = FontStyle.Bold;
         }
 
         if (s_gameActionSettingAuthTypes == null)
@@ -49,26 +49,22 @@ public class ItemAuthEditor : Editor
             s_gameActionSettingAuthTypes = new Dictionary<Type, Type>();
         }
 
-        Type[] GameActionSettingAuthTypes = TypeUtility.GetTypesWithAttribute(typeof(GameActionSettingAuthAttribute)).ToArray();
-        foreach (Type GameActionSettingAuthType in GameActionSettingAuthTypes)
+        Type[] gameActionSettingAuthTypes = TypeUtility.GetTypesWithAttribute(typeof(GameActionSettingAuthAttribute)).ToArray();
+        foreach (Type gameActionSettingAuthType in gameActionSettingAuthTypes)
         {
-            GameActionSettingAuthAttribute attribute = (GameActionSettingAuthAttribute)GameActionSettingAuthType.GetCustomAttribute(typeof(GameActionSettingAuthAttribute));
+            GameActionSettingAuthAttribute attribute = (GameActionSettingAuthAttribute)gameActionSettingAuthType.GetCustomAttribute(typeof(GameActionSettingAuthAttribute));
             if (!s_gameActionSettingAuthTypes.ContainsKey(attribute.SettingType))
             {
-                s_gameActionSettingAuthTypes.Add(attribute.SettingType, GameActionSettingAuthType);
+                s_gameActionSettingAuthTypes.Add(attribute.SettingType, gameActionSettingAuthType);
             }
         }
     }
 
-    private int _listSize = 0;
-
     public override void OnInspectorGUI()
     {
-        var CastedTarget = (ItemAuth)target;
+        var castedTarget = (ItemAuth)target;
 
         EditorGUI.BeginChangeCheck();
-
-        DrawLine(10);
 
         DrawPrimaryTitle("Simulation");
 
@@ -86,8 +82,8 @@ public class ItemAuthEditor : Editor
             if (gameActionType != null)
             {
                 GameAction selectedGameAction = (GameAction)Activator.CreateInstance(gameActionType);
-                SerializedProperty Values = serializedObject.FindProperty("GameActionSettings");
-                Type[] GameActionAuthSettingTypes = selectedGameAction.GetRequiredSettingTypes().Select((simType)=> 
+                SerializedProperty values = serializedObject.FindProperty("GameActionSettings");
+                Type[] gameActionAuthSettingTypes = selectedGameAction.GetRequiredSettingTypes().Select((simType)=> 
                 {
                     if (!s_gameActionSettingAuthTypes.TryGetValue(simType, out Type currentRequiredAuthSettingType))
                     {
@@ -101,37 +97,37 @@ public class ItemAuthEditor : Editor
                 }).ToArray();
 
                 // Remove extra setting in property list
-                for (int i = Values.arraySize - 1; i >= 0; i--)
+                for (int i = values.arraySize - 1; i >= 0; i--)
                 {
-                    if (!GameActionAuthSettingTypes.Contains(CastedTarget.GameActionSettings[i].GetType()))
+                    if (!gameActionAuthSettingTypes.Contains(castedTarget.GameActionSettings[i].GetType()))
                     {
-                        Values.DeleteArrayElementAtIndex(i);
-                        CastedTarget.GameActionSettings.RemoveAt(i);
+                        values.DeleteArrayElementAtIndex(i);
+                        castedTarget.GameActionSettings.RemoveAt(i);
                     }
                 }
 
                 // Add missing setting to property list
-                for (int i = 0; i < GameActionAuthSettingTypes.Length; i++)
+                for (int i = 0; i < gameActionAuthSettingTypes.Length; i++)
                 {
-                    Type currentAuthSettingType = GameActionAuthSettingTypes[i];
+                    Type currentAuthSettingType = gameActionAuthSettingTypes[i];
                     if (currentAuthSettingType == null)
                         continue;
 
-                    if (!CastedTarget.GameActionSettings.Any((x) => x.GetType() == currentAuthSettingType))
+                    if (!castedTarget.GameActionSettings.Any((x) => x.GetType() == currentAuthSettingType))
                     {
-                        Values.InsertArrayElementAtIndex(Values.arraySize);
-                        SerializedProperty currentGameActionSetting = Values.GetArrayElementAtIndex(Values.arraySize - 1);
+                        values.InsertArrayElementAtIndex(values.arraySize);
+                        SerializedProperty currentGameActionSetting = values.GetArrayElementAtIndex(values.arraySize - 1);
                         var newAuthSetting = Activator.CreateInstance(currentAuthSettingType);
                         currentGameActionSetting.managedReferenceValue = newAuthSetting;
-                        CastedTarget.GameActionSettings.Add((GameActionSettingAuthBase)newAuthSetting);
+                        castedTarget.GameActionSettings.Add((GameActionSettingAuthBase)newAuthSetting);
                     }
                 }
 
                 EditorGUILayout.Space();
-                for (int i = 0; i < Values.arraySize; i++)
+                for (int i = 0; i < values.arraySize; i++)
                 {
-                    EditorGUILayout.LabelField(CastedTarget.GameActionSettings[i].GetType().ToString(), EditorStyles.boldLabel);
-                    EditorGUILayout.PropertyField(Values.GetArrayElementAtIndex(i));
+                    EditorGUILayout.LabelField(castedTarget.GameActionSettings[i].GetType().ToString(), EditorStyles.boldLabel);
+                    EditorGUILayout.PropertyField(values.GetArrayElementAtIndex(i));
                     EditorGUILayout.Space();
                 }
             }
@@ -139,17 +135,17 @@ public class ItemAuthEditor : Editor
 
         DrawSecondaryTitle("Item Settings");
 
-        SerializedProperty HasCooldownSetting = serializedObject.FindProperty("HasCooldown");
-        EditorGUILayout.PropertyField(HasCooldownSetting);
+        SerializedProperty hasCooldownSetting = serializedObject.FindProperty("HasCooldown");
+        EditorGUILayout.PropertyField(hasCooldownSetting);
 
-        if (HasCooldownSetting.boolValue)
+        if (hasCooldownSetting.boolValue)
         {
-            SerializedProperty CooldownSetting = serializedObject.FindProperty("CooldownAuth");
-            EditorGUILayout.PropertyField(CooldownSetting);
+            SerializedProperty cooldownSetting = serializedObject.FindProperty("CooldownAuth");
+            EditorGUILayout.PropertyField(cooldownSetting);
         }
 
-        SerializedProperty Stackable = serializedObject.FindProperty("IsStackable");
-        EditorGUILayout.PropertyField(Stackable);
+        SerializedProperty stackable = serializedObject.FindProperty("IsStackable");
+        EditorGUILayout.PropertyField(stackable);
 
         DrawLine(10);
 
@@ -159,21 +155,21 @@ public class ItemAuthEditor : Editor
 
         DrawSecondaryTitle("Description");
 
-        SerializedProperty IconProperty = serializedObject.FindProperty("Icon");
-        EditorGUILayout.PropertyField(IconProperty);
+        SerializedProperty iconProperty = serializedObject.FindProperty("Icon");
+        EditorGUILayout.PropertyField(iconProperty);
 
-        SerializedProperty NameProperty = serializedObject.FindProperty("Name");
-        EditorGUILayout.PropertyField(NameProperty);
+        SerializedProperty nameProperty = serializedObject.FindProperty("Name");
+        EditorGUILayout.PropertyField(nameProperty);
 
-        SerializedProperty EffectDescriptionProperty = serializedObject.FindProperty("EffectDescription");
-        EditorGUILayout.PropertyField(EffectDescriptionProperty);
+        SerializedProperty effectDescriptionProperty = serializedObject.FindProperty("EffectDescription");
+        EditorGUILayout.PropertyField(effectDescriptionProperty);
 
         DrawLine(2);
 
         DrawSecondaryTitle("Feedbacks");
 
-        SerializedProperty SFXProperty = serializedObject.FindProperty("SfxOnUse");
-        EditorGUILayout.PropertyField(SFXProperty);
+        SerializedProperty sFXProperty = serializedObject.FindProperty("SfxOnUse");
+        EditorGUILayout.PropertyField(sFXProperty);
 
         SerializedProperty animationConditionProperty = serializedObject.FindProperty("PlayAnimation");
         EditorGUILayout.PropertyField(animationConditionProperty);
@@ -187,10 +183,8 @@ public class ItemAuthEditor : Editor
 
         DrawPrimaryTitle("Surveys");
 
-        SerializedProperty SurveyrProperty = serializedObject.FindProperty("CustomSurveys");
-        EditorGUILayout.PropertyField(SurveyrProperty);
-
-        DrawLine(10);
+        SerializedProperty surveyProperty = serializedObject.FindProperty("CustomSurveys");
+        EditorGUILayout.PropertyField(surveyProperty);
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -211,17 +205,17 @@ public class ItemAuthEditor : Editor
 
     public void DrawPrimaryTitle(string titleText)
     {
-        if (s_PrimaryTitleFontStyle != null)
+        if (s_primaryTitleFontStyle != null)
         {
-            GUILayout.Label(titleText, s_PrimaryTitleFontStyle);
+            GUILayout.Label(titleText, s_primaryTitleFontStyle);
         }
     }
 
     public void DrawSecondaryTitle(string titleText)
     {
-        if (s_SecondaryTitleFontStyle != null)
+        if (s_secondaryTitleFontStyle != null)
         {
-            GUILayout.Label(titleText, s_SecondaryTitleFontStyle);
+            GUILayout.Label(titleText, s_secondaryTitleFontStyle);
         }
     }
 }

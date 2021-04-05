@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GameSystemBankUpdater : AssetPostprocessor
 {
-    const string ASSET_PATH = "Assets/ScriptableObjects/Generated/GameSystemBank.asset";
+    const string ASSET_PATH = "Assets/Config/Generated/GameSystemBank.asset";
 
     static int s_importLoopCounter = 0;
 

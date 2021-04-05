@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a10f4577b25ccc4f98740bb6323f9c6, type: 3}
+  m_Name: AAG_Damage
+  m_EditorClassIdentifier: 
+  cooldown: -1
+  clips:
+  - {fileID: 11400000, guid: 7e6f8459caf32904087343d0990d76d8, type: 2}
+  - {fileID: 11400000, guid: d3c63adf9bf6c0d4bad2a8bcf8f9fffc, type: 2}
+  - {fileID: 11400000, guid: 492db6ad01ce7f843846bcfc64752368, type: 2}
+  - {fileID: 11400000, guid: f2afb8b43298ba04693fe62e35e431ec, type: 2}

@@ -103,7 +103,7 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
             for (int i = 0; i < paramCount; i++)
             {
-                if (Array.IndexOf(survey.ExpectedQuery, parameters[i].GetParameterDescriptionType()) != 0)
+                if (Array.IndexOf(survey.ExpectedQuery, parameters[i].GetParameterDescriptionType()) != -1)
                 {
                     hasAllTypes = true;
                 }

@@ -7,7 +7,7 @@ using UnityEngineX;
 
 public class SimAssetBankUpdater : AssetPostprocessor
 {
-    const string ASSET_PATH = "Assets/ScriptableObjects/Generated/SimAssetBank.asset";
+    const string ASSET_PATH = "Assets/Config/Generated/SimAssetBank.asset";
 
     static int s_importLoopCounter = 0;
 

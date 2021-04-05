@@ -28,7 +28,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
         if (SimWorld.TryGetComponentData(InputParameter.ObjectEntity, out SimAssetId objectSimAssetID))
         {
-            _surveySMBlackboard.GameActionAuth = ItemInfoBank.Instance.GetGameActionAuthFromID(objectSimAssetID);
+            _surveySMBlackboard.GameActionAuth = PresentationHelpers.FindItemAuth(objectSimAssetID);
         }
 
         if (_surveySMBlackboard.GameActionAuth == null)

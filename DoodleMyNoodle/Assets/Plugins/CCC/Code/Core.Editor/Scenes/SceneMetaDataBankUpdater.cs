@@ -9,7 +9,7 @@ using UnityEngineX;
 
 public class SceneMetaDataBankUpdater : AssetPostprocessor
 {
-    const string ASSET_PATH = "Assets/ScriptableObjects/Generated/SceneMetaDataBank.asset";
+    const string ASSET_PATH = "Assets/Config/Generated/SceneMetaDataBank.asset";
     private static int s_importLoopCounter;
 
     [MenuItem("Tools/Data Management/Force Update Scene Meta-data Bank", priority = 999)]

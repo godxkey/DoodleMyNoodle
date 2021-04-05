@@ -8,7 +8,7 @@ using UnityEngineX;
 
 public class GridGenerator
 {
-    private const string PATH = "Assets/Prefabs/Game/Entities/";
+    private const string PATH = "Assets/GameContent/Levels/Grids";
 
     [MenuItem("Tools/Generate Grid Files")]
     public static void Generate()
@@ -98,10 +98,9 @@ public class GridGenerator
     private static string GetGeneratedFilePath(GameObject sceneGrid, bool isForView)
     {
         string prefix = isForView ? "VE" : "SE";
-        string category = isForView ? "ViewEntity" : "SimulationEntity";
         string sceneName = sceneGrid.scene.name;
         string fileName = $"{prefix}_Grid_{sceneName}";
-        return $"{PATH}{category}/Grids/{fileName}.prefab";
+        return $"{PATH}/{fileName}.prefab";
     }
 
     private static void SetupSceneGrid(GameObject gridGameObject)
@@ -120,10 +119,10 @@ public class GridGenerator
         LevelGridAuth levelGridAuth = gridGameObject.HasComponent<LevelGridAuth>() ? gridGameObject.GetComponent<LevelGridAuth>() : gridGameObject.AddComponent<LevelGridAuth>();
         levelGridAuth.Grid = gridComponent;
 
-        LevelGridSettings GlobalGridSettings = AssetDatabase.LoadAssetAtPath<LevelGridSettings>("Assets/ScriptableObjects/Game/GridSettings/GridSettings.asset");
+        LevelGridSettings GlobalGridSettings = AssetDatabase.LoadAssetAtPath<LevelGridSettings>("Assets/Config/Game/GridSettings/GridSettings.asset");
         if (GlobalGridSettings == null)
         {
-            Debug.LogError("Global Grid Settings missing (GridSettings.asset), please create the file in Assets/ScriptableObjects/Game/GridSettings");
+            Debug.LogError("Global Grid Settings missing (GridSettings.asset), please create the file in Assets/Config/Game/GridSettings");
             return;
         }
         levelGridAuth.GlobalGridSettings = GlobalGridSettings;

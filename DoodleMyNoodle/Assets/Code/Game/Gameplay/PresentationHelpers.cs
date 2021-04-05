@@ -33,6 +33,16 @@ public static class PresentationHelpers
         return SimAssetBankInstance.GetLookup().GetSimAsset(simAssetId)?.gameObject;
     }
 
+    public static ItemAuth FindItemAuth(SimAssetId itemID)
+    {
+        GameObject itemPrefab = FindSimAssetPrefab(itemID);
+        if (itemPrefab != null)
+        {
+            return itemPrefab.GetComponent<ItemAuth>();
+        }
+        return null;
+    }
+
     public static GameObject FindBindedView(Entity simEntity)
     {
         if (BindedSimEntityManaged.InstancesMap.TryGetValue(simEntity, out GameObject result))

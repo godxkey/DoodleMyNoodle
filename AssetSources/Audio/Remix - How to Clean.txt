@@ -1,0 +1,12 @@
+1. Ouvre Audacity
+
+2. Importe le fichier audio source (avec drag and drop)
+
+3. Coupe tout le début du son où le volume est très bas. On veut l'effet sonore le plus rapidement possible, sans trop altéré sa sonorité.
+
+    3.2 Sélectionne une très courte section du début de la track, puis applique l'effet Fade In. C'est pour s'assurer que l'intro ne paraisse pas coupé.
+        NB: La sonorité ne devrait pas être altéré. Donc faire attention de ne pas gruger dans les haute amplitudes
+        
+4. Applique l'effet 'Amplify' avec la valeur de boost par défaut. Normalement, Audacity devrait boost le volume du son, jusqu'à ce qu'il atteigne 1 (le max)
+
+5. Exporte le son avec le suffix "_clean".

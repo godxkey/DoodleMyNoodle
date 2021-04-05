@@ -207,7 +207,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_Chest
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2141080257574752491, guid: d0421163de1d6aa4289ff31f953949e7, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d0421163de1d6aa4289ff31f953949e7, type: 3}
 --- !u!1001 &463047740
 PrefabInstance:
@@ -216,6 +217,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1717119584158441228, guid: 241253d57dc9c8642aafdd47087c95c3,
+        type: 3}
+      propertyPath: MaxValue
+      value: 999
+      objectReference: {fileID: 0}
     - target: {fileID: 2768931431184588227, guid: 241253d57dc9c8642aafdd47087c95c3,
         type: 3}
       propertyPath: m_Name

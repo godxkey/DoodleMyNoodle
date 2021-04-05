@@ -45,11 +45,11 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         }
     }
 
-    public virtual void UpdateCurrentItemSlot(ItemAuth gameActionAuth, Action onItemLeftClicked, Action onItemRightClicked, Entity owner, int stacks = -1)
+    public virtual void UpdateCurrentItemSlot(ItemAuth itemAuth, Action onItemLeftClicked, Action onItemRightClicked, Entity owner, int stacks = -1)
     {
         InitIfNeeded();
 
-        _currentItemGameActionAuth = gameActionAuth;
+        _currentItemGameActionAuth = itemAuth;
         _onItemLeftClicked = onItemLeftClicked;
         _onItemRightClicked = onItemRightClicked;
         _itemsOwner = owner;
@@ -126,12 +126,12 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         {
             if (_currentItemGameActionAuth)
             {
-                ItemTooltipDisplay.Instance.ActivateTooltipDisplay(_currentItemGameActionAuth, _itemsOwner);
+                ItemTooltipDisplay.Instance?.ActivateTooltipDisplay(_currentItemGameActionAuth, _itemsOwner);
             }
         }
         else
         {
-            ItemTooltipDisplay.Instance.DeactivateToolTipDisplay();
+            ItemTooltipDisplay.Instance?.DeactivateToolTipDisplay();
         }
     }
 
