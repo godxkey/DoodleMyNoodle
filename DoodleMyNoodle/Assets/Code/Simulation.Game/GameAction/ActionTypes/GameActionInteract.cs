@@ -17,7 +17,7 @@ public class GameActionInteract : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
-        CommonWrites.Interact(accessor, context.Entity, context.InstigatorPawn);
+        CommonWrites.Interact(accessor, context.Item, context.InstigatorPawn);
 
         return true;
     }

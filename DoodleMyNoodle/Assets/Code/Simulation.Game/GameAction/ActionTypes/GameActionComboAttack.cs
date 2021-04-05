@@ -16,7 +16,7 @@ public class GameActionComboAttack : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        var param = new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)
+        var param = new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
         {
             IncludeSelf = false,
             RequiresAttackableEntity = true
@@ -33,7 +33,7 @@ public class GameActionComboAttack : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data firstTile))
         {
             // melee attack has a range
-            if (lengthmanhattan(firstTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)
+            if (lengthmanhattan(firstTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
             {
                 return false;
             }
@@ -45,7 +45,7 @@ public class GameActionComboAttack : GameAction
         if (parameters.TryGetParameter(1, out GameActionParameterTile.Data secondTile))
         {
             // melee attack has a range of RANGE
-            if (lengthmanhattan(secondTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)
+            if (lengthmanhattan(secondTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
             {
                 return false;
             }
@@ -71,7 +71,7 @@ public class GameActionComboAttack : GameAction
 
     private void AttackEntityOnTile(ISimWorldReadWriteAccessor accessor, UseContext context, Entity victim)
     {
-        CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, victim, accessor.GetComponentData<GameActionDamageData>(context.Entity).Value);
+        CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, victim, accessor.GetComponentData<GameActionDamageData>(context.Item).Value);
     }
 
 }

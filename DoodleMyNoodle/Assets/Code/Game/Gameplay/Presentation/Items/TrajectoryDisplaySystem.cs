@@ -19,6 +19,8 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
             _trajectory = trajectory;
         }
 
+        public bool IsValid => _owner != null;
+        public float GravityScale { get => _trajectory.GravityScale; set => _trajectory.GravityScale = value; }
         public bool Displayed { get => _trajectory.Displayed; set => _trajectory.Displayed = value; }
         public Vector2 StartPoint { get => _trajectory.StartPoint; set => _trajectory.StartPoint = value; }
         public Vector2 Velocity { get => _trajectory.Velocity; set => _trajectory.Velocity = value; }
@@ -34,13 +36,17 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
 
     public class Trajectory
     {
-        public Vector2 StartPoint { get; set; }
-        public Vector2 Velocity { get; set; }
-        public float Length { get; set; }
-        public bool Displayed { get; set; }
+        public Vector2 StartPoint { get; set; } = Vector2.zero;
+        public Vector2 Velocity { get; set; } = Vector2.zero;
+        public float Length { get; set; } = 5;
+        public bool Displayed { get; set; } = true;
+        public float GravityScale { get; set; } = 1;
 
-        public float CalculateTravelDuration(float traveledDistance, Vector2 gravity) => mathX.Trajectory.TravelDurationApprox(Velocity, gravity, traveledDistance);
-        public Vector2 CalculatePosition(float time, Vector2 gravity) => mathX.Trajectory.Position(StartPoint, Velocity, gravity, time);
+        public float CalculateTravelDuration(float traveledDistance, Vector2 gravity) 
+            => mathX.Trajectory.TravelDurationApprox(Velocity, gravity * GravityScale, traveledDistance);
+        
+        public Vector2 CalculatePosition(float time, Vector2 gravity) 
+            => mathX.Trajectory.Position(StartPoint, Velocity, gravity * GravityScale, time);
     }
 
     private class PointManager
@@ -111,7 +117,8 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
     [SerializeField] private TrajectoryDisplayPoint[] _pointSpritePrefabs;
     [SerializeField] private Transform _pointContainer;
     [SerializeField] private float _pointBaseFrequency = 10;
-    [SerializeField] private float _pointFrequencyMultiplier = 10;
+    [SerializeField] private float _pointFrequencySpeedMultiplier = 10;
+    [SerializeField] private float _pointFrequencyGravScaleMultiplier = 10;
     [SerializeField] private int _pointCap = 400;
     [SerializeField] private List<Trajectory> _trajectories = new List<Trajectory>();
 
@@ -139,7 +146,7 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
             if (!trajectory.Displayed)
                 continue;
 
-            float frequency = _pointBaseFrequency + (trajectory.Velocity.magnitude * _pointFrequencyMultiplier);
+            float frequency = _pointBaseFrequency + (trajectory.Velocity.magnitude * _pointFrequencySpeedMultiplier) + (trajectory.GravityScale * _pointFrequencyGravScaleMultiplier);
             float travelDuration = math.min(trajectory.CalculateTravelDuration(trajectory.Length, gravity), 4f);
             float pCount = travelDuration * frequency;
 

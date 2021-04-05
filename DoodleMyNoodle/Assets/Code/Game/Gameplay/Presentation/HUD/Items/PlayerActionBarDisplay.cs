@@ -97,7 +97,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                         {
                             InstigatorPawn = Cache.LocalPawn,
                             InstigatorPawnController = Cache.LocalController,
-                            Entity = item
+                            Item = item
                         };
 
                         GameAction itemAction = GameActionBank.GetAction(itemActionId);

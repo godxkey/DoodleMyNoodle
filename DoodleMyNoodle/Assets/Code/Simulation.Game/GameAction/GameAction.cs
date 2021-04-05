@@ -88,13 +88,13 @@ public abstract class GameAction
     {
         public Entity InstigatorPawnController;
         public Entity InstigatorPawn;
-        public Entity Entity;
+        public Entity Item;
 
-        public UseContext(Entity instigatorPawnController, Entity instigatorPawn, Entity entity)
+        public UseContext(Entity instigatorPawnController, Entity instigatorPawn, Entity item)
         {
             InstigatorPawnController = instigatorPawnController;
             InstigatorPawn = instigatorPawn;
-            Entity = entity;
+            Item = item;
         }
     }
 
@@ -218,13 +218,13 @@ public abstract class GameAction
 
     public bool IsInCooldown(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.TryGetComponentData(context.Entity, out ItemCooldownTimeCounter timeCooldown) &&
+        if (accessor.TryGetComponentData(context.Item, out ItemCooldownTimeCounter timeCooldown) &&
             timeCooldown.Value > 0)
         {
             return true;
         }
 
-        if (accessor.TryGetComponentData(context.Entity, out ItemCooldownTurnCounter turnCooldown) &&
+        if (accessor.TryGetComponentData(context.Item, out ItemCooldownTurnCounter turnCooldown) &&
             turnCooldown.Value > 0)
         {
             return true;
@@ -236,47 +236,37 @@ public abstract class GameAction
     public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context, ResultData result)
     {
         // reduce consumable amount
-        if (accessor.TryGetComponentData(context.Entity, out ItemStackableData itemStacked))
+        if (accessor.TryGetComponentData(context.Item, out ItemStackableData itemStacked))
         {
-            CommonWrites.DecrementStackableItemInInventory(accessor, context.InstigatorPawn, context.Entity);
+            CommonWrites.DecrementStackableItemInInventory(accessor, context.InstigatorPawn, context.Item);
         }
 
         // reduce instigator AP
-        if (accessor.TryGetComponentData(context.Entity, out GameActionAPCostData itemActionPointCost))
+        if (accessor.TryGetComponentData(context.Item, out GameActionAPCostData itemActionPointCost))
         {
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -1 * itemActionPointCost.Value);
-        }   
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -itemActionPointCost.Value);
+        }
 
         // increase instigator AP
-        if (accessor.TryGetComponentData(context.Entity, out GameActionAPGainData itemActionPointGain))
+        if (accessor.TryGetComponentData(context.Item, out GameActionAPGainData itemActionPointGain))
         {
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, itemActionPointGain.Value);
         }
 
         // reduce instigator Health
-        if (accessor.TryGetComponentData(context.Entity, out GameActionHPCostData itemHealthPointCost))
+        if (accessor.TryGetComponentData(context.Item, out GameActionHPCostData itemHealthPointCost))
         {
-            if (itemHealthPointCost.Value > 0)
-            {
-                CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, itemHealthPointCost.Value);
-            }
-            else
-            {
-                CommonWrites.RequestHealOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, -1 * itemHealthPointCost.Value);
-            }
+            CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, itemHealthPointCost.Value);
         }
 
         // Cooldown
-        if (!accessor.HasSingleton<NoCooldownTag>())
+        if (accessor.TryGetComponentData(context.Item, out ItemTimeCooldownData itemTimeCooldownData))
         {
-            if (accessor.TryGetComponentData(context.Entity, out ItemTimeCooldownData itemTimeCooldownData))
-            {
-                accessor.SetOrAddComponentData(context.Entity, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
-            }
-            else if (accessor.TryGetComponentData(context.Entity, out ItemTurnCooldownData itemTurnCooldownData))
-            {
-                accessor.SetOrAddComponentData(context.Entity, new ItemCooldownTurnCounter() { Value = itemTurnCooldownData.Value });
-            }
+            accessor.SetOrAddComponentData(context.Item, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
+        }
+        else if (accessor.TryGetComponentData(context.Item, out ItemTurnCooldownData itemTurnCooldownData))
+        {
+            accessor.SetOrAddComponentData(context.Item, new ItemCooldownTurnCounter() { Value = itemTurnCooldownData.Value });
         }
 
         // Feedbacks
@@ -286,7 +276,7 @@ public abstract class GameAction
 
     protected virtual int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.TryGetComponentData(context.Entity, out GameActionAPCostData ActionPointCost))
+        if (accessor.TryGetComponentData(context.Item, out GameActionAPCostData ActionPointCost))
         {
             return ActionPointCost.Value;
         }
@@ -304,11 +294,9 @@ public abstract class GameAction
     public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData);
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context);
 
-    public virtual Type[] GetRequiredSettingTypes() => new Type[] { };
-
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
     protected void LogGameActionInfo(UseContext context, string message)
     {
-        Log.Info(LogChannel, $"{message} - {GetType().Name} - context(item: {context.Entity}, instigator: {context.InstigatorPawn}, instigatorController: {context.InstigatorPawnController})");
+        Log.Info(LogChannel, $"{message} - {GetType().Name} - context(item: {context.Item}, instigator: {context.InstigatorPawn}, instigatorController: {context.InstigatorPawnController})");
     }
 }

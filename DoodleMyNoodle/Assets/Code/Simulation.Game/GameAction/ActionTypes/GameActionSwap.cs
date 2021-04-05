@@ -17,7 +17,7 @@ public class GameActionSwap : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description(_.GetComponentData<GameActionRangeData>(context.Entity).Value)
+            new GameActionParameterTile.Description(_.GetComponentData<GameActionRangeData>(context.Item).Value)
             {
                 IncludeSelf = false,
 

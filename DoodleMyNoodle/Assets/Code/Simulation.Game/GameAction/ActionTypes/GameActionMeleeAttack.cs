@@ -19,7 +19,7 @@ public class GameActionMeleeAttack : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        GameActionParameterTile.Description tileParam = new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)
+        GameActionParameterTile.Description tileParam = new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
         {
             IncludeSelf = false,
             RequiresAttackableEntity = true,
@@ -35,7 +35,7 @@ public class GameActionMeleeAttack : GameAction
             int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
 
             // melee attack has a range of RANGE
-            if (lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)
+            if (lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
             {
                 LogGameActionInfo(context, $"Melee attack at {paramTile.Tile} out of range. Ignoring.");
                 return false;
@@ -45,7 +45,7 @@ public class GameActionMeleeAttack : GameAction
             NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
             CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
 
-            int damageValue = accessor.GetComponentData<GameActionDamageData>(context.Entity).Value;
+            int damageValue = accessor.GetComponentData<GameActionDamageData>(context.Item).Value;
 
             foreach (Entity entity in victims)
             {

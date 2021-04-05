@@ -137,7 +137,7 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
         {
             InstigatorPawn = pawn,
             InstigatorPawnController = useGameAction.PawnController,
-            Entity = entityObject
+            Item = entityObject
         };
 
         if (!gameAction.TryUse(Accessor, useContext, useGameAction.GameActionData, out string debugReason))
@@ -387,7 +387,7 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
         {
             InstigatorPawn = pawn,
             InstigatorPawnController = inputUseItem.PawnController,
-            Entity = item
+            Item = item
         };
 
         if (gameAction != null && !gameAction.TryUse(Accessor, useContext, inputUseItem.GameActionData, out string debugReason))

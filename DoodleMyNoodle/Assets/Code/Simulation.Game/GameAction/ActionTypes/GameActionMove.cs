@@ -32,7 +32,7 @@ public class GameActionMove : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         int highestRangePossible =
-            accessor.GetComponentData<GameActionRangeData>(context.Entity).Value *
+            accessor.GetComponentData<GameActionRangeData>(context.Item).Value *
             accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value;
 
         UseContract useContract = new UseContract();
@@ -53,7 +53,7 @@ public class GameActionMove : GameAction
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
-            int movePerAP = accessor.GetComponentData<GameActionRangeData>(context.Entity).Value;
+            int movePerAP = accessor.GetComponentData<GameActionRangeData>(context.Item).Value;
 
             NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);
             if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path))

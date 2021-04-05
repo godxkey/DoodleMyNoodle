@@ -19,7 +19,7 @@ public class GameActionThrow : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        GameActionThrowSettings settings = accessor.GetComponentData<GameActionThrowSettings>(context.Entity);
+        GameActionThrowSettings settings = accessor.GetComponentData<GameActionThrowSettings>(context.Item);
 
         return new UseContract(
             new GameActionParameterVector.Description()
@@ -34,7 +34,7 @@ public class GameActionThrow : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
         {
             // get settings
-            GameActionThrowSettings settings = accessor.GetComponentData<GameActionThrowSettings>(context.Entity);
+            GameActionThrowSettings settings = accessor.GetComponentData<GameActionThrowSettings>(context.Item);
 
             // spawn projectile
             Entity projectileInstance = accessor.Instantiate(settings.ProjectilePrefab);
@@ -63,10 +63,7 @@ public class GameActionThrow : GameAction
                 }
             }
 
-
-            fix projectileRadius = GetActorRadius(accessor, projectileInstance);
-            fix instigatorRadius = GetActorRadius(accessor, context.InstigatorPawn);
-            fix2 spawnPos = instigatorPos + dir * (instigatorRadius + projectileRadius + (fix)0.05f);
+            fix2 spawnPos = instigatorPos + GetSpawnPosOffset(accessor, projectileInstance, context.InstigatorPawn, dir);
 
             accessor.SetOrAddComponentData(projectileInstance, new PhysicsVelocity(velocity + instigatorVel));
             accessor.SetOrAddComponentData(projectileInstance, new FixTranslation(spawnPos));
@@ -77,7 +74,23 @@ public class GameActionThrow : GameAction
         return false;
     }
 
-    private static fix GetActorRadius(ISimWorldReadWriteAccessor accessor, Entity projectileInstance)
+    // used by presentation
+    public fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, UseContext context, fix2 direction)
+    {
+        GameActionThrowSettings settings = accessor.GetComponentData<GameActionThrowSettings>(context.Item);
+
+        return GetSpawnPosOffset(accessor, settings.ProjectilePrefab, context.InstigatorPawn, direction);
+    }
+
+    private fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, Entity projectile, Entity instigator, fix2 direction)
+    {
+        fix projectileRadius = GetActorRadius(accessor, projectile);
+        fix instigatorRadius = GetActorRadius(accessor, instigator);
+
+        return direction * (instigatorRadius + projectileRadius + (fix)0.05f);
+    }
+
+    private static fix GetActorRadius(ISimWorldReadAccessor accessor, Entity projectileInstance)
     {
         if (accessor.TryGetComponentData(projectileInstance, out PhysicsColliderBlob colliderBlob) && colliderBlob.Collider.IsCreated)
         {

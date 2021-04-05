@@ -3,14 +3,34 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Entities;
 using UnityEngine;
 
 public abstract class SurveyBaseController : MonoBehaviour
 {
+    public struct Context
+    {
+        public GameAction.UseContext UseContext;
+        public GameAction.ParameterDescription[] QueryParams;
+
+        public Entity Item => UseContext.Item;
+        public Entity Instigator => UseContext.InstigatorPawn;
+
+        public T GetQueryParam<T>() where T : GameAction.ParameterDescription
+        {
+            for (int i = 0; i < QueryParams.Length; i++)
+            {
+                if (QueryParams[i] is T x)
+                    return x;
+            }
+            return null;
+        }
+    }
+
     public GamePresentationCache Cache => GamePresentationCache.Instance;
 
     public bool Running { get; private set; }
-    public GameAction.ParameterDescription[] QueryParameters { get; private set; }
+    public Context CurrentContext { get; private set; }
     public GameAction.ParameterDescriptionType[] ExpectedQuery
     {
         get
@@ -27,16 +47,23 @@ public abstract class SurveyBaseController : MonoBehaviour
     private Coroutine _currentLoop;
     private GameAction.ParameterDescriptionType[] _cachedExpectedQuery;
 
-    public void StartSurvey(Action<List<GameAction.ParameterData>> completeCallback, Action cancelCallback, params GameAction.ParameterDescription[] parameters)
+    public void StartSurvey(Action<List<GameAction.ParameterData>> completeCallback, Action cancelCallback, GameAction.UseContext useContext, params GameAction.ParameterDescription[] parameters)
     {
         Running = true;
-        QueryParameters = parameters;
+
+        var context = new Context()
+        {
+            QueryParams = parameters,
+            UseContext = useContext
+        };
+
+        CurrentContext = context;
 
         _onCompleteCallback = completeCallback;
         _cancelCallback = cancelCallback;
         _result.Clear();
 
-        _currentLoop = StartCoroutine(SurveyRoutine(parameters, _result, Complete, Cancel));
+        _currentLoop = StartCoroutine(SurveyRoutine(context, _result, Complete, Cancel));
     }
 
     public void Cancel()
@@ -72,7 +99,7 @@ public abstract class SurveyBaseController : MonoBehaviour
     }
     
     protected abstract GameAction.ParameterDescriptionType[] GetExpectedQuery();
-    protected abstract IEnumerator SurveyRoutine(GameAction.ParameterDescription[] queryParams, List<GameAction.ParameterData> result, Action complete, Action cancel);
+    protected abstract IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel);
     protected abstract void OnEndSurvey(bool wasCompleted);
     public virtual GameAction.ParameterDescription[] CreateDebugQuery() => new GameAction.ParameterDescription[0] { };
 }

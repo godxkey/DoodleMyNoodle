@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngineX;
@@ -80,7 +81,8 @@ public class GymSurveyController : MonoBehaviour
 
         if (surveyPrefab != null)
         {
-            SurveyManager.Instance.BeginSurvey(_focusLocation, surveyPrefab, OnSurveyComplete, OnSurveyCancel, surveyPrefab.CreateDebugQuery());
+            var useContext = new GameAction.UseContext(Entity.Null, Entity.Null, Entity.Null);
+            SurveyManager.Instance.BeginSurvey(_focusLocation, useContext, surveyPrefab.CreateDebugQuery(), surveyPrefab, OnSurveyComplete, OnSurveyCancel);
         }
     }
 

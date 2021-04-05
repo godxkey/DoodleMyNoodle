@@ -17,7 +17,7 @@ public class GameActionConvert : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description(_.GetComponentData<GameActionRangeData>(context.Entity).Value)
+            new GameActionParameterTile.Description(_.GetComponentData<GameActionRangeData>(context.Item).Value)
             {
                 IncludeSelf = false,
                 CustomTileActorPredicate = (tileActor, accessor) =>
@@ -54,7 +54,7 @@ public class GameActionConvert : GameAction
                     }
                     else
                     {
-                        accessor.AddComponentData(pawnController, new Converted() { RemainingTurns = accessor.GetComponentData<GameActionEffectDurationData>(context.Entity).Value });
+                        accessor.AddComponentData(pawnController, new Converted() { RemainingTurns = accessor.GetComponentData<GameActionEffectDurationData>(context.Item).Value });
                     }
 
                     return true;

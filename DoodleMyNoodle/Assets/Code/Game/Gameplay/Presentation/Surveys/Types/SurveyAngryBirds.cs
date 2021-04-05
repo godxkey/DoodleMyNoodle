@@ -12,7 +12,8 @@ public class SurveyAngryBirds : SurveyBaseController
     [SerializeField] private Transform _dragTarget;
     [SerializeField] private Transform _line;
     [SerializeField] private Collider2D _collider;
-    [SerializeField] private int _velocityFactor = 3;
+    [SerializeField] private float _velocityMult = 3;
+    [SerializeField] private float _velocityPow = 1.5f;
     [SerializeField] private float _minDragThreshold = 10;
     [SerializeField] private float _trajectoryLength = 8f;
 
@@ -31,15 +32,20 @@ public class SurveyAngryBirds : SurveyBaseController
     private TrajectoryDisplaySystem.TrajectoryHandle _trajectoryDisplay;
     private GameActionParameterVector.Description _vectorDesc;
 
+    public override GameAction.ParameterDescription[] CreateDebugQuery()
+    {
+        return new GameAction.ParameterDescription[] { new GameActionParameterVector.Description() { SpeedMax = 10, SpeedMin = 0 } };
+    }
+
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
         GameAction.ParameterDescriptionType.Vector
     };
 
-    protected override IEnumerator SurveyRoutine(GameAction.ParameterDescription[] queryParams, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
     {
         _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
-        _vectorDesc = (GameActionParameterVector.Description)queryParams[0];
+        _vectorDesc = context.GetQueryParam<GameActionParameterVector.Description>();
 
         Update(); // force first update to avoid visual issue on first frame. We should find a more general fix
 
@@ -61,11 +67,35 @@ public class SurveyAngryBirds : SurveyBaseController
         complete();
     }
 
-    private Vector2 GetCurrentVelocityVector()
+    private Vector2 ViewToSimVector(Vector2 viewVector)
     {
-        var v = ((Vector2)_center.position - Cache.PointerWorldPosition) * _velocityFactor;
+        var v = viewVector;
 
-        return mathX.clampLength(v, (float)_vectorDesc.SpeedMin, (float)_vectorDesc.SpeedMax);
+        // pow
+        var length = v.magnitude;
+        v = (v / length) * math.pow(length, _velocityPow);
+
+        // mult
+        v *= _velocityMult;
+
+        // clamp
+        v = mathX.clampLength(v, (float)_vectorDesc.SpeedMin, (float)_vectorDesc.SpeedMax);
+
+        return v;
+    }
+
+    private Vector2 SimToViewVector(Vector2 simVelocityVector)
+    {
+        var v = simVelocityVector;
+
+        // undo mult
+        v /= _velocityMult;
+
+        // undo pow
+        var length = v.magnitude;
+        v = (v / length) * math.pow(length, 1f / _velocityPow);
+
+        return v;
     }
 
     private void Update()
@@ -110,7 +140,7 @@ public class SurveyAngryBirds : SurveyBaseController
         // update release vector (unless in release)
         if (_dragState != DragState.Releasing)
         {
-            _releaseVector = GetCurrentVelocityVector();
+            _releaseVector = ViewToSimVector((Vector2)_center.position - Cache.PointerWorldPosition);
             _releaseSpeed = _releaseVector.magnitude;
         }
     }
@@ -124,7 +154,7 @@ public class SurveyAngryBirds : SurveyBaseController
         }
         else if (_dragState == DragState.Dragging)
         {
-            _dragTarget.position = Cache.PointerWorldPosition;
+            _dragTarget.position = (Vector2)_center.position - SimToViewVector(_releaseVector);
         }
         else
         {
@@ -141,8 +171,18 @@ public class SurveyAngryBirds : SurveyBaseController
         _trajectoryDisplay.Displayed = _dragState == DragState.Dragging || _dragState == DragState.Releasing;
         if (_trajectoryDisplay.Displayed)
         {
+            Vector2 startOffset = Vector2.zero;
+            if (_releaseSpeed > 0.01f)
+            {
+                if (PresentationHelpers.Surveys.TryGetThrowTrajectoryStartOffset(Cache, CurrentContext.UseContext, _releaseVector.normalized, out Vector2 offset))
+                {
+                    startOffset = offset;
+                }
+            }
+
+            _trajectoryDisplay.GravityScale = PresentationHelpers.Surveys.GetProjectileGravityScale(Cache, CurrentContext.UseContext);
             _trajectoryDisplay.Length = _trajectoryLength;
-            _trajectoryDisplay.StartPoint = _center.position;
+            _trajectoryDisplay.StartPoint = (Vector2)_center.position + startOffset;
             _trajectoryDisplay.Velocity = _releaseVector;
         }
     }
