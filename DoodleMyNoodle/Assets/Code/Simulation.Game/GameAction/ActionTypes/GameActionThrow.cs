@@ -5,10 +5,17 @@ using Unity.Entities;
 using Unity.Collections;
 using UnityEngine;
 using CCC.Fix2D;
+using System;
 
 public class GameActionThrow : GameAction
 {
     static readonly fix MIN_VELOCITY = fix(0.05);
+
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionThrowSettings),
+        typeof(GameActionAPCostData)
+    };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {

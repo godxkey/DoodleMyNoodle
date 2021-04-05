@@ -3,9 +3,17 @@ using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
 using CCC.Fix2D;
+using System;
 
 public class GameActionComboAttack : GameAction
 {
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionRangeData),
+        typeof(GameActionDamageData),
+        typeof(GameActionAPCostData)
+    };
+
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         var param = new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Entity).Value)

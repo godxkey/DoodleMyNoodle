@@ -3,10 +3,15 @@ using static Unity.Mathematics.math;
 using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
+using System;
 
 public class GameActionEnrage : GameAction
 {
-    const int AP_GAIN = 2;
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionAPCostData),
+        typeof(GameActionHPCostData)
+    };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {

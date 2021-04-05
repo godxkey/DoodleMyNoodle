@@ -145,11 +145,15 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             // the parameter
             int remainingParamCount = Blackboard.ParametersDescriptions.Length - Blackboard.ResultParameters.Count;
 
-            Log.Assert(remainingParamCount > 0); // we should not enter in survey state if no param to fill
-
             GameAction.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, 0, remainingParamCount);
-            SurveyBaseController surveyPrefab = Blackboard.GameActionAuth.FindCustomSurveyPrefabForParameters(remainingParams);
 
+            if(remainingParams.Length < 1)
+            {
+                OnSurveyCancel();
+                return;
+            }
+
+            SurveyBaseController surveyPrefab = Blackboard.GameActionAuth.FindCustomSurveyPrefabForParameters(remainingParams);
             if (surveyPrefab != null)
             {
                 SurveyManager.Instance.BeginSurvey(Blackboard.Cache.LocalPawnPositionFloat, surveyPrefab, OnSurveyComplete, OnSurveyCancel, remainingParams);

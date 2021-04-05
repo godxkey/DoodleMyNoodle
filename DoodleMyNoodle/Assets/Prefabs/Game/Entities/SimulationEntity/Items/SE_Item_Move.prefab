@@ -10,11 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5742253346417087588}
   - component: {fileID: 971858758830137585}
-  - component: {fileID: 5742253346417087590}
-  - component: {fileID: 6782051550689936977}
-  - component: {fileID: 145666425010416309}
-  - component: {fileID: -6157882671598010456}
-  - component: {fileID: -2470892830529323725}
+  - component: {fileID: 2278408862114426295}
   m_Layer: 0
   m_Name: SE_Item_Move
   m_TagString: Untagged
@@ -55,7 +51,7 @@ MonoBehaviour:
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
---- !u!114 &5742253346417087590
+--- !u!114 &2278408862114426295
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -64,64 +60,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 5742253346417087641}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 800b27a6aa6c95b41835b5a1d0ae75ff, type: 3}
+  m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionMove
-  PlayAnimation: 1
-  Animation: {fileID: 11400000, guid: 3bb30c7f30627904181ea5ef9c1bee49, type: 2}
---- !u!114 &6782051550689936977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d332b6584ba4d9c42811950a96e69cd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Range: 1
---- !u!114 &145666425010416309
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ItemVisualInfo: {fileID: 11400000, guid: ce617dedf9ddc07498faaae42fc65041, type: 2}
-  UseSpecificSurveys: 0
-  SurveyList: []
---- !u!114 &-6157882671598010456
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95130f674ce15ff4096bdbc35dc9c55c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Values:
-  - ItemPassiveEffectHealthIncreaseMultiplier
---- !u!114 &-2470892830529323725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baed6303bd99e2c4483430154f59244e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Multiplier: 2
+  GameActionSettings:
+  - id: 0
+  HasCooldown: 1
+  CooldownAuth:
+    UseTime: 0
+    TimeCooldown: 1
+    TurnCooldown: 1
+  IsStackable: 1
+  Icon: {fileID: 21300000, guid: 96b3c2698e8fd3f409b90140f23df342, type: 3}
+  Name: Botte
+  EffectDescription: "Permet de vous d\xE9placer"
+  SfxOnUse: {fileID: 0}
+  PlayAnimation: 0
+  Animation: {fileID: 0}
+  CustomSurveys: []
+  references:
+    version: 1
+    00000000:
+      type: {class: GameActionRangeDataAuth, ns: , asm: Game}
+      data:
+        Range: 1

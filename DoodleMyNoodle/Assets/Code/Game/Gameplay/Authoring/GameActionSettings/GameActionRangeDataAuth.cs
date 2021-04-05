@@ -6,7 +6,7 @@ using UnityEngine;
 [GameActionSettingAuth(typeof(GameActionRangeData))]
 public class GameActionRangeDataAuth : GameActionSettingAuthBase, IItemSettingDescription
 {
-    public int Range;
+    public int Range = 1;
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -20,6 +20,6 @@ public class GameActionRangeDataAuth : GameActionSettingAuthBase, IItemSettingDe
 
     public string GetDescription()
     {
-        return $"Range : {Range}";
+        return $"Porté : {Range}";
     }
 }

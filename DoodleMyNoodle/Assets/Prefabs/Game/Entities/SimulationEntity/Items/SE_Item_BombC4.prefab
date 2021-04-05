@@ -10,14 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8821241209944219005}
   - component: {fileID: 2677628293349642642}
-  - component: {fileID: 294870752159730247}
-  - component: {fileID: 1206813890925547763}
-  - component: {fileID: -448175739285880440}
-  - component: {fileID: 8201080054300536663}
-  - component: {fileID: -4078316212525815410}
-  - component: {fileID: -6470349746516010537}
-  - component: {fileID: 8287164231811506844}
-  - component: {fileID: -5670385792238578466}
+  - component: {fileID: 8991086757953652690}
   m_Layer: 0
   m_Name: SE_Item_BombC4
   m_TagString: Untagged
@@ -58,7 +51,7 @@ MonoBehaviour:
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
---- !u!114 &294870752159730247
+--- !u!114 &8991086757953652690
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -67,110 +60,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 2784291058542494111}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 800b27a6aa6c95b41835b5a1d0ae75ff, type: 3}
+  m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionThrow
+  GameActionSettings:
+  - id: 0
+  - id: 1
+  HasCooldown: 1
+  CooldownAuth:
+    UseTime: 0
+    TimeCooldown: 1
+    TurnCooldown: 1
+  IsStackable: 1
+  Icon: {fileID: 21300000, guid: 7b946e803c30fdd43898faa8d3d77e2f, type: 3}
+  Name: C4
+  EffectDescription: "Bomb qui peut \xEAtre d\xE9ton\xE9 manuellement"
+  SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 0}
---- !u!114 &1206813890925547763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ActionPointCost: 1
---- !u!114 &-448175739285880440
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 536a42c96d4c58b408130b109e0975d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseTime: 0
-  TimeCooldown: 0
-  TurnCooldown: 0
---- !u!114 &8201080054300536663
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d332b6584ba4d9c42811950a96e69cd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Range: 1
---- !u!114 &-4078316212525815410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b3569fbe963ceb4fb9da4315e9207de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Damage: 2
---- !u!114 &-6470349746516010537
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7418ebc53c5bf5a48b873da9f5a2a34f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ExplosionRange: 2
---- !u!114 &8287164231811506844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ItemVisualInfo: {fileID: 11400000, guid: 553d78ddb8aa19e4f9aab82b1c59b344, type: 2}
-  SfxOnUse: {fileID: 0}
   CustomSurveys:
   - {fileID: 6075807751254421543, guid: 608b3f44970a7324ab091bbb7ae1585f, type: 3}
---- !u!114 &-5670385792238578466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86f0d602adc23904f9c3fa901d851253, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ProjectilePrefab: {fileID: 2385346486794747607, guid: b10aea4c768093045875e79bb85ea81c,
-    type: 3}
-  SpeedMin:
-    RawValue: 0
-  SpeedMax:
-    RawValue: 42949672960
+  references:
+    version: 1
+    00000000:
+      type: {class: GameActionThrowSettingsAuth, ns: , asm: Game}
+      data:
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: b10aea4c768093045875e79bb85ea81c,
+          type: 3}
+        SpeedMin:
+          RawValue: 0
+        SpeedMax:
+          RawValue: 12884901888
+    00000001:
+      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
+      data:
+        ActionPointCost: 1

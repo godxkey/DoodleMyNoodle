@@ -1,9 +1,18 @@
 using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
+using System;
 
 public class GameActionTileExplosion : GameAction
 {
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {  
+        typeof(GameActionDamageData),
+        typeof(GameActionExplosionRange),
+        typeof(GameActionRangeData),
+        typeof(GameActionAPCostData)
+    };
+
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(

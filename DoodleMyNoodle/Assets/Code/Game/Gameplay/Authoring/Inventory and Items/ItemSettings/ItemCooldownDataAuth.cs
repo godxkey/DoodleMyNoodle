@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public class ItemCooldownDataAuth : IItemSettingDescription
 {
-    public bool UseTime = true;
+    public bool UseTime = false;
     [ShowIf("UseTime")]
     public int TimeCooldown = 1;
     [HideIf("UseTime")]

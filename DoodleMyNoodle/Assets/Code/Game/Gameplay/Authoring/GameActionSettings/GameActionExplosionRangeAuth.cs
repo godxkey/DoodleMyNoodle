@@ -4,8 +4,8 @@ using UnityEngine;
 
 [RequiresEntityConversion]
 [Serializable]
-[GameActionSettingAuth(typeof(GameActionHPCostData))]
-public class GameActionExplosionRangeAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity, IItemSettingDescription
+[GameActionSettingAuth(typeof(GameActionExplosionRange))]
+public class GameActionExplosionRangeAuth : GameActionSettingAuthBase, IItemSettingDescription
 {
     public int ExplosionRange;
 
@@ -21,6 +21,6 @@ public class GameActionExplosionRangeAuth : GameActionSettingAuthBase, IConvertG
 
     public string GetDescription()
     {
-        return $"Explosion Range : {ExplosionRange}";
+        return $"Porté d'explosion : {ExplosionRange}";
     }
 }

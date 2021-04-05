@@ -3,9 +3,16 @@ using Unity.Entities;
 using Unity.Collections;
 using UnityEngine;
 using CCC.Fix2D;
+using System;
 
 public class GameActionDropObject : GameAction
 {
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionRangeData),
+        typeof(GameActionObjectReferenceSetting)
+    };
+
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(

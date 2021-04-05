@@ -3,9 +3,17 @@ using static Unity.Mathematics.math;
 using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
+using System;
 
 public class GameActionConvert : GameAction
 {
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionRangeData),
+        typeof(GameActionAPCostData),
+        typeof(GameActionEffectDurationData)
+    };
+
     public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
     {
         return new UseContract(

@@ -9,6 +9,13 @@ using Unity.Collections;
 
 public class GameActionHeal : GameAction
 {
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionRangeData),
+        typeof(GameActionAPCostData),
+        typeof(GameActionHPToHealData)
+    };
+
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         UseContract useContract = new UseContract();

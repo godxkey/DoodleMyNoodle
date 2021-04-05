@@ -3,9 +3,17 @@ using Unity.Entities;
 using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using static fixMath;
+using System;
 
 public class GameActionShield : GameAction
 {
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionRangeData),
+        typeof(GameActionEffectDurationData),
+        typeof(GameActionAPCostData)
+    };
+
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         if (accessor.GetComponentData<GameActionRangeData>(context.Entity).Value > 0)

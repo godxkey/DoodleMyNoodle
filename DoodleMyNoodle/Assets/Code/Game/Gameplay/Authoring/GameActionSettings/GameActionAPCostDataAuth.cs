@@ -5,9 +5,9 @@ using UnityEngine;
 [RequiresEntityConversion]
 [Serializable]
 [GameActionSettingAuth(typeof(GameActionAPCostData))]
-public class GameActionAPCostDataAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity, IItemSettingDescription
+public class GameActionAPCostDataAuth : GameActionSettingAuthBase, IItemSettingDescription
 {
-    public int ActionPointCost;
+    public int ActionPointCost = 1;
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -21,6 +21,6 @@ public class GameActionAPCostDataAuth : GameActionSettingAuthBase, IConvertGameO
 
     public string GetDescription()
     {
-        return $"AP Cost : {ActionPointCost}";
+        return $"Actions : {ActionPointCost}";
     }
 }

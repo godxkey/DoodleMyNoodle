@@ -244,8 +244,8 @@ public abstract class GameAction
         // reduce instigator AP
         if (accessor.TryGetComponentData(context.Entity, out GameActionAPCostData itemActionPointCost))
         {
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -itemActionPointCost.Value);
-        }
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -1 * itemActionPointCost.Value);
+        }   
 
         // increase instigator AP
         if (accessor.TryGetComponentData(context.Entity, out GameActionAPGainData itemActionPointGain))
@@ -256,7 +256,14 @@ public abstract class GameAction
         // reduce instigator Health
         if (accessor.TryGetComponentData(context.Entity, out GameActionHPCostData itemHealthPointCost))
         {
-            CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, itemHealthPointCost.Value);
+            if (itemHealthPointCost.Value > 0)
+            {
+                CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, itemHealthPointCost.Value);
+            }
+            else
+            {
+                CommonWrites.RequestHealOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, -1 * itemHealthPointCost.Value);
+            }
         }
 
         // Cooldown

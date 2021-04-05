@@ -10,12 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5742253346417087588}
   - component: {fileID: 971858758830137585}
-  - component: {fileID: 5742253346417087590}
-  - component: {fileID: -4180191315031449347}
-  - component: {fileID: -5714829263936780271}
-  - component: {fileID: 5648458186103839835}
-  - component: {fileID: 641842289575799488}
-  - component: {fileID: -1847607452950998916}
+  - component: {fileID: 5122401263033079630}
   m_Layer: 0
   m_Name: SE_Item_Convert
   m_TagString: Untagged
@@ -52,10 +47,11 @@ MonoBehaviour:
   ConversionMode: 0
   _guid: 605fd0327d22176429bfc3496ef54d7d
   _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
---- !u!114 &5742253346417087590
+--- !u!114 &5122401263033079630
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -64,76 +60,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 5742253346417087641}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 800b27a6aa6c95b41835b5a1d0ae75ff, type: 3}
+  m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionConvert
---- !u!114 &-4180191315031449347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d332b6584ba4d9c42811950a96e69cd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Range: 3
---- !u!114 &-5714829263936780271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ActionPointCost: 3
---- !u!114 &5648458186103839835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 773b01e80bd28d94d9f4272e372a8b3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Duration: 3
---- !u!114 &641842289575799488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 536a42c96d4c58b408130b109e0975d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseTime: 0
-  TimeCooldown: 1
-  TurnCooldown: 8
---- !u!114 &-1847607452950998916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ItemVisualInfo: {fileID: 11400000, guid: 50a1dbc40789496428ff6e82ae260551, type: 2}
-  UseSpecificSurveys: 0
-  SurveyList: []
+  GameActionSettings:
+  - id: 0
+  - id: 1
+  - id: 2
+  HasCooldown: 1
+  CooldownAuth:
+    UseTime: 0
+    TimeCooldown: 1
+    TurnCooldown: 1
+  IsStackable: 1
+  Icon: {fileID: 21300000, guid: b54f62f6c81d0834384a537b9ca18c2c, type: 3}
+  Name: Conversion
+  EffectDescription: "Convertis la cible pour qu'il soit dans votre \xE9quipe"
+  SfxOnUse: {fileID: 0}
+  PlayAnimation: 0
+  Animation: {fileID: 0}
+  CustomSurveys: []
+  references:
+    version: 1
+    00000000:
+      type: {class: GameActionRangeDataAuth, ns: , asm: Game}
+      data:
+        Range: 3
+    00000001:
+      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
+      data:
+        ActionPointCost: 1
+    00000002:
+      type: {class: GameActionEffectDurationDataAuth, ns: , asm: Game}
+      data:
+        Duration: 1

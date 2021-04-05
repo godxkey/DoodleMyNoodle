@@ -10,12 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5742253346417087588}
   - component: {fileID: 971858758830137585}
-  - component: {fileID: 5742253346417087590}
-  - component: {fileID: 6782051550689936977}
-  - component: {fileID: 2342595259483819386}
-  - component: {fileID: -2474827681856516994}
-  - component: {fileID: -5992459184069680995}
-  - component: {fileID: 4388241147689542363}
+  - component: {fileID: 6717802818722842865}
   m_Layer: 0
   m_Name: SE_Item_DashAttack
   m_TagString: Untagged
@@ -56,7 +51,7 @@ MonoBehaviour:
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
---- !u!114 &5742253346417087590
+--- !u!114 &6717802818722842865
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,79 +60,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 5742253346417087641}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 800b27a6aa6c95b41835b5a1d0ae75ff, type: 3}
+  m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionDashAttack
-  PlayAnimation: 0
-  Animation: {fileID: 0}
---- !u!114 &6782051550689936977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d332b6584ba4d9c42811950a96e69cd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Range: 3
---- !u!114 &2342595259483819386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ActionPointCost: 2
---- !u!114 &-2474827681856516994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b3569fbe963ceb4fb9da4315e9207de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Damage: 2
---- !u!114 &-5992459184069680995
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 536a42c96d4c58b408130b109e0975d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseTime: 0
-  TimeCooldown: 1
-  TurnCooldown: 3
---- !u!114 &4388241147689542363
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ItemVisualInfo: {fileID: 11400000, guid: 8e451d55f6bb4e84491f0e4be4dd29f0, type: 2}
+  GameActionSettings:
+  - id: 0
+  - id: 1
+  - id: 2
+  HasCooldown: 1
+  CooldownAuth:
+    UseTime: 0
+    TimeCooldown: 1
+    TurnCooldown: 1
+  IsStackable: 1
+  Icon: {fileID: 21300000, guid: fe47497fd9fc5524aa403f58210b8ef1, type: 3}
+  Name: Charge
+  EffectDescription: "Avance rapidement dans une direction en envoyant des d\xE9gats
+    aux \xE9nemis sur le chemin"
   SfxOnUse: {fileID: 0}
-  UseSpecificSurveys: 0
-  SurveyList: []
+  PlayAnimation: 0
+  Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
+  CustomSurveys: []
+  references:
+    version: 1
+    00000000:
+      type: {class: GameActionRangeDataAuth, ns: , asm: Game}
+      data:
+        Range: 1
+    00000001:
+      type: {class: GameActionDamageDataAuth, ns: , asm: Game}
+      data:
+        Damage: 2
+    00000002:
+      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
+      data:
+        ActionPointCost: 1

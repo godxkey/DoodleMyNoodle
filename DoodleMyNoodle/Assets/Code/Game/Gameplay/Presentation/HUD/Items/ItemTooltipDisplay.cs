@@ -162,7 +162,10 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
             // Game Action Settings
             foreach (GameActionSettingAuthBase GameActionSetting in gameActionAuth.GameActionSettings)
             {
-                _descriptionData.Add(new DescriptionData(((IItemSettingDescription)GameActionSetting).GetDescription(), Color.white, true));
+                if (GameActionSetting is IItemSettingDescription)
+                {
+                    _descriptionData.Add(new DescriptionData(((IItemSettingDescription)GameActionSetting).GetDescription(), Color.white, true));
+                }
             }
 
             // Item Specific Settings

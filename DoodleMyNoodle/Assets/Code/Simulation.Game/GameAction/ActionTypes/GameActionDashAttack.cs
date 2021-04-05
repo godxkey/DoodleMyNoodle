@@ -5,9 +5,17 @@ using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 using CCC.Fix2D;
+using System;
 
 public class GameActionDashAttack : GameAction
 {
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionRangeData),
+        typeof(GameActionDamageData),
+        typeof(GameActionAPCostData)
+    };
+
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         UseContract useContract = new UseContract();

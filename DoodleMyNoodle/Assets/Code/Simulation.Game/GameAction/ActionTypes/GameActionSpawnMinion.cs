@@ -3,9 +3,17 @@ using Unity.Entities;
 using Unity.Collections;
 using UnityEngine;
 using CCC.Fix2D;
+using System;
 
 public class GameActionSpawnMinion : GameAction
 {
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionRangeData),
+        typeof(GameActionObjectReferenceSetting),
+        typeof(GameActionAPCostData)
+    };
+
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(

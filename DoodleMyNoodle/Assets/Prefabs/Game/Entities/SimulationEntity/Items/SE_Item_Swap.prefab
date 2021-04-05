@@ -10,11 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5742253346417087588}
   - component: {fileID: 971858758830137585}
-  - component: {fileID: 5742253346417087590}
-  - component: {fileID: 5989531904968678870}
-  - component: {fileID: 7916927272796670766}
-  - component: {fileID: 2984278739534388839}
-  - component: {fileID: -4376332105433745484}
+  - component: {fileID: 8937879994819369566}
   m_Layer: 0
   m_Name: SE_Item_Swap
   m_TagString: Untagged
@@ -51,10 +47,11 @@ MonoBehaviour:
   ConversionMode: 0
   _guid: aa0538731df87df429b0362fd7f15397
   _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
---- !u!114 &5742253346417087590
+--- !u!114 &8937879994819369566
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,63 +60,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 5742253346417087641}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 800b27a6aa6c95b41835b5a1d0ae75ff, type: 3}
+  m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionSwap
---- !u!114 &5989531904968678870
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d332b6584ba4d9c42811950a96e69cd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Range: 6
---- !u!114 &7916927272796670766
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 728c9cf9c9e6bc442bb1855f7fb8ac49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ActionPointCost: 1
---- !u!114 &2984278739534388839
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 536a42c96d4c58b408130b109e0975d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseTime: 0
-  TimeCooldown: 1
-  TurnCooldown: 3
---- !u!114 &-4376332105433745484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5742253346417087641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4021240a6c2dab44d9a7232ea5fd6dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ItemVisualInfo: {fileID: 11400000, guid: bb3545b74e1c9df4483f7f9beee6ce7f, type: 2}
-  UseSpecificSurveys: 0
-  SurveyList: []
+  GameActionSettings:
+  - id: 0
+  - id: 1
+  HasCooldown: 1
+  CooldownAuth:
+    UseTime: 0
+    TimeCooldown: 1
+    TurnCooldown: 1
+  IsStackable: 1
+  Icon: {fileID: 21300000, guid: b7c33e315faed834d9e2a8288123ed62, type: 3}
+  Name: Inversion
+  EffectDescription: "Inverse votre position avec celle de l'\xE9nemi"
+  SfxOnUse: {fileID: 0}
+  PlayAnimation: 0
+  Animation: {fileID: 0}
+  CustomSurveys: []
+  references:
+    version: 1
+    00000000:
+      type: {class: GameActionRangeDataAuth, ns: , asm: Game}
+      data:
+        Range: 4
+    00000001:
+      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
+      data:
+        ActionPointCost: 1

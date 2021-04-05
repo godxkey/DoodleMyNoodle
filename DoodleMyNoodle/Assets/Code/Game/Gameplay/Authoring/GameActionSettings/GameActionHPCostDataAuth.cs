@@ -20,6 +20,6 @@ public class GameActionHPCostDataAuth : GameActionSettingAuthBase, IItemSettingD
 
     public string GetDescription()
     {
-        return $"HP Cost : {HealthCost}";
+        return $"Vie à perdre : {HealthCost}";
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [RequiresEntityConversion]
 [Serializable]
 [GameActionSettingAuth(typeof(GameActionEffectDurationData))]
-public class GameActionEffectDurationDataAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity, IItemSettingDescription
+public class GameActionEffectDurationDataAuth : GameActionSettingAuthBase, IItemSettingDescription
 {
     public int Duration;
 
@@ -21,6 +21,6 @@ public class GameActionEffectDurationDataAuth : GameActionSettingAuthBase, IConv
 
     public string GetDescription()
     {
-        return $"Duration : {Duration}";
+        return $"Durée : {Duration}";
     }
 }

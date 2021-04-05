@@ -2,16 +2,17 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using System;
 
-[DisallowMultipleComponent]
-[RequiresEntityConversion]
-public class GameActionThrowSettingsAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
+[Serializable]
+[GameActionSettingAuth(typeof(GameActionThrowSettings))]
+public class GameActionThrowSettingsAuth : GameActionSettingAuthBase
 {
     public GameObject ProjectilePrefab;
     public fix SpeedMin = 0;
     public fix SpeedMax = 10;
 
-    public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+    public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new GameActionThrowSettings()
         {
@@ -21,7 +22,7 @@ public class GameActionThrowSettingsAuth : MonoBehaviour, IConvertGameObjectToEn
         });
     }
 
-    public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
+    public override void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
         referencedPrefabs.Add(ProjectilePrefab);
     }

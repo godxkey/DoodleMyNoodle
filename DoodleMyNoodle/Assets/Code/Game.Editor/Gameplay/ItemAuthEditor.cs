@@ -211,12 +211,17 @@ public class ItemAuthEditor : Editor
 
     public void DrawPrimaryTitle(string titleText)
     {
-        GUILayout.Label(titleText, s_PrimaryTitleFontStyle);
+        if (s_PrimaryTitleFontStyle != null)
+        {
+            GUILayout.Label(titleText, s_PrimaryTitleFontStyle);
+        }
     }
 
     public void DrawSecondaryTitle(string titleText)
     {
-
-        GUILayout.Label(titleText, s_SecondaryTitleFontStyle);
+        if (s_SecondaryTitleFontStyle != null)
+        {
+            GUILayout.Label(titleText, s_SecondaryTitleFontStyle);
+        }
     }
 }

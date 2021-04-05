@@ -12,11 +12,11 @@ public class GameActionSettingAuthAttribute : Attribute
 }
 
 [Serializable]
-public abstract class GameActionSettingAuthBase
+public abstract class GameActionSettingAuthBase : IDeclareReferencedPrefabs
 {
     // mandatory
     public abstract void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem);
 
     // optional
-    public virtual void DeclareReferencePrefabs(List<GameObject> referencedPrefabs) { }
+    public virtual void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs) { }
 }

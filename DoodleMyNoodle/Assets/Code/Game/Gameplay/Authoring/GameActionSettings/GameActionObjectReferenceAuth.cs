@@ -6,7 +6,7 @@ using UnityEngine;
 [RequiresEntityConversion]
 [Serializable]
 [GameActionSettingAuth(typeof(GameActionObjectReferenceSetting))]
-public class GameActionObjectReferenceAuth : GameActionSettingAuthBase, IConvertGameObjectToEntity
+public class GameActionObjectReferenceAuth : GameActionSettingAuthBase
 {
     public GameObject ObjectReference;
 
@@ -15,7 +15,7 @@ public class GameActionObjectReferenceAuth : GameActionSettingAuthBase, IConvert
         dstManager.AddComponentData(entity, new GameActionObjectReferenceSetting() { ObjectPrefab = conversionSystem.GetPrimaryEntity(ObjectReference) });
     }
 
-    public override void DeclareReferencePrefabs(List<GameObject> referencedPrefabs) 
+    public override void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs) 
     {
         referencedPrefabs.Add(ObjectReference);
     }

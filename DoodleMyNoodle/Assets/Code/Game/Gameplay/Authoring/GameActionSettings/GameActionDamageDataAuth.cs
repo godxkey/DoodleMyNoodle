@@ -20,6 +20,6 @@ public class GameActionDamageDataAuth : GameActionSettingAuthBase, IItemSettingD
 
     public string GetDescription()
     {
-        return $"Damage : {Damage}";
+        return $"Dégâts : {Damage}";
     }
 }

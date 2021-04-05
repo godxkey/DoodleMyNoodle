@@ -5,9 +5,15 @@ using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 using CCC.Fix2D;
+using System;
 
 public class GameActionMove : GameAction
 {
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionRangeData)
+    };
+
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
     {
         if (accessor.HasComponent<PathPosition>(context.InstigatorPawn))

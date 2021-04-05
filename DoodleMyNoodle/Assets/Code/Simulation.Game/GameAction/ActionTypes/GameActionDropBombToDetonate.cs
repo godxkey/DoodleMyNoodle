@@ -4,9 +4,18 @@ using Unity.Collections;
 using UnityEngine;
 using Unity.Mathematics;
 using CCC.Fix2D;
+using System;
 
 public class GameActionDropBombToDetonate : GameAction
 {
+    public override Type[] GetRequiredSettingTypes() => new Type[]
+    {
+        typeof(GameActionRangeData),
+        typeof(GameActionDamageData),
+        typeof(GameActionObjectReferenceSetting),
+        typeof(GameActionExplosionRange)
+    };
+
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         if (accessor.TryGetComponentData(context.Entity, out ItemSpawnedObjectReference itemSpawnedObjectReference))

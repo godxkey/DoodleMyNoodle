@@ -8,7 +8,7 @@ using UnityEngineX.InspectorDisplay;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity
+public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     // SIMULATION
 
@@ -19,10 +19,10 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity
     [AlwaysExpand]
     public List<GameActionSettingAuthBase> GameActionSettings = new List<GameActionSettingAuthBase>();
 
-    public bool HasCooldown = false;
+    public bool HasCooldown = true;
     [AlwaysExpand]
     public ItemCooldownDataAuth CooldownAuth;
-    public bool IsStackable = false;
+    public bool IsStackable = true;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -46,6 +46,14 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity
         if (IsStackable)
         {
             dstManager.AddComponentData(entity, new ItemStackableData());
+        }
+    }
+
+    public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
+    {
+        foreach (GameActionSettingAuthBase GameActionSetting in GameActionSettings)
+        {
+            GameActionSetting.DeclareReferencedPrefabs(referencedPrefabs);
         }
     }
 
