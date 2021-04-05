@@ -197,6 +197,7 @@ MonoBehaviour:
   _arrow: {fileID: 6075807749962798162}
   _growSpeed: 5
   _strengthVisualScale: 0.33333334
+  _trajectoryLength: 6
 --- !u!1 &6075807751334587644
 GameObject:
   m_ObjectHideFlags: 0

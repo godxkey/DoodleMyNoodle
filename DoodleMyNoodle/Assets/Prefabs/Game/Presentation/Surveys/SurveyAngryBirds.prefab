@@ -297,9 +297,10 @@ MonoBehaviour:
   _dragTarget: {fileID: 5300373789913655904}
   _line: {fileID: 2658469290181016938}
   _collider: {fileID: 7192197591991983220}
-  _velocityFactor: 3
+  _velocityMult: 3
+  _velocityPow: 1
   _minDragThreshold: 10
-  _trajectoryLength: 5
+  _trajectoryLength: 4
 --- !u!58 &7192197591991983220
 CircleCollider2D:
   m_ObjectHideFlags: 0

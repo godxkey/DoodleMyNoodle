@@ -19,6 +19,7 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
             _trajectory = trajectory;
         }
 
+        public bool IsValid => _owner != null;
         public float GravityScale { get => _trajectory.GravityScale; set => _trajectory.GravityScale = value; }
         public bool Displayed { get => _trajectory.Displayed; set => _trajectory.Displayed = value; }
         public Vector2 StartPoint { get => _trajectory.StartPoint; set => _trajectory.StartPoint = value; }
@@ -35,11 +36,11 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
 
     public class Trajectory
     {
-        public Vector2 StartPoint { get; set; }
-        public Vector2 Velocity { get; set; }
-        public float Length { get; set; }
-        public bool Displayed { get; set; }
-        public float GravityScale { get; set; }
+        public Vector2 StartPoint { get; set; } = Vector2.zero;
+        public Vector2 Velocity { get; set; } = Vector2.zero;
+        public float Length { get; set; } = 5;
+        public bool Displayed { get; set; } = true;
+        public float GravityScale { get; set; } = 1;
 
         public float CalculateTravelDuration(float traveledDistance, Vector2 gravity) 
             => mathX.Trajectory.TravelDurationApprox(Velocity, gravity * GravityScale, traveledDistance);
