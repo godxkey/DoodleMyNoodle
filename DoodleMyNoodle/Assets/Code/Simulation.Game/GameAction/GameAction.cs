@@ -9,6 +9,8 @@ public abstract class GameAction
 {
     public static LogChannel LogChannel = Log.CreateChannel("Game Actions", activeByDefault: true);
 
+    public virtual Type[] GetRequiredSettingTypes() => new Type[] { };
+
     public enum ParameterDescriptionType
     {
         None,
@@ -244,19 +246,20 @@ public abstract class GameAction
         // reduce instigator AP
         if (accessor.TryGetComponentData(context.Item, out GameActionAPCostData itemActionPointCost))
         {
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -itemActionPointCost.Value);
-        }
-
-        // increase instigator AP
-        if (accessor.TryGetComponentData(context.Item, out GameActionAPGainData itemActionPointGain))
-        {
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, itemActionPointGain.Value);
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, itemActionPointCost.Value);
         }
 
         // reduce instigator Health
         if (accessor.TryGetComponentData(context.Item, out GameActionHPCostData itemHealthPointCost))
         {
-            CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, itemHealthPointCost.Value);
+            if (itemHealthPointCost.Value > 0)
+            {
+                CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, itemHealthPointCost.Value);
+            }
+            else
+            {
+                CommonWrites.RequestHealOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, -1 * itemHealthPointCost.Value);
+            }
         }
 
         // Cooldown
