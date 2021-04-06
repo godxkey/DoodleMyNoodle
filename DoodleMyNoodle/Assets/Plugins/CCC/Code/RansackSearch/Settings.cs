@@ -29,7 +29,7 @@ public static partial class RansackSearch
 
                     if(GUILayout.Button("Download Agent Ransack"))
                     {
-                        Process.Start("https://www.mythicsoft.com/download/");
+                        Process.Start("https://www.mythicsoft.com/agentransack/download/");
                     }
                 },
 
