@@ -1,0 +1,18 @@
+{
+    "name": "CCC.RansackSearch",
+    "references": [
+        "GUID:735109854ac7b3d40bffa04c3f643492",
+        "GUID:7a8d7696eb7a56745b9cdb92a8a28234"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
