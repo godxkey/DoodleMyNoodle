@@ -45,7 +45,8 @@ public abstract class SurveyBaseController : MonoBehaviour
     private Action<List<GameAction.ParameterData>> _onCompleteCallback;
     private Action _cancelCallback;
     private Coroutine _currentLoop;
-    private GameAction.ParameterDescriptionType[] _cachedExpectedQuery;
+    [NonSerialized]
+    private GameAction.ParameterDescriptionType[] _cachedExpectedQuery = null;
 
     public void StartSurvey(Action<List<GameAction.ParameterData>> completeCallback, Action cancelCallback, GameAction.UseContext useContext, params GameAction.ParameterDescription[] parameters)
     {
