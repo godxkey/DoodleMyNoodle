@@ -5,7 +5,7 @@ using Unity.Collections;
 using Unity.Entities;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public class InstantiateStartingInventorySystem : SimComponentSystem
+public class InstantiateStartingInventorySystem : SimSystemBase
 {
     protected override void OnUpdate()
     {
@@ -23,7 +23,7 @@ public class InstantiateStartingInventorySystem : SimComponentSystem
                 }
 
                 // Add item references into inventory
-                DynamicBuffer<InventoryItemReference> inventory = EntityManager.GetBuffer<InventoryItemReference>(entity);
+                DynamicBuffer<InventoryItemReference> inventory = GetBuffer<InventoryItemReference>(entity);
 
                 foreach (Entity itemInstance in itemInstances)
                 {
@@ -33,39 +33,36 @@ public class InstantiateStartingInventorySystem : SimComponentSystem
                     }
                 }
 
-                itemInstances.Dispose();
-                startingInventory.Dispose();
-            });
-
-        Entities
-        .WithAll<StartingInventoryItem>()
-        .ForEach((Entity entity, DynamicBuffer<InventoryItemReference> inventoryBuffer) =>
-        {
-            NativeArray<InventoryItemReference> inventory = inventoryBuffer.ToNativeArray(Allocator.Temp);
-
-            foreach (InventoryItemReference item in inventory)
-            {
-                ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
+                // Passive stuff
+                foreach (var item in inventory)
                 {
-                    InstigatorPawn = entity,
-                    ItemEntity = item.ItemEntity
-                };
-
-                if (EntityManager.TryGetBuffer(item.ItemEntity, out DynamicBuffer<ItemPassiveEffectId> itemPassiveEffectIds))
-                {
-                    foreach (ItemPassiveEffectId itemPassiveEffectId in itemPassiveEffectIds)
+                    ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
                     {
-                        ItemPassiveEffect itemPassiveEffect = ItemPassiveEffectBank.GetItemPassiveEffect(itemPassiveEffectId);
-                        if (itemPassiveEffect != null)
+                        InstigatorPawn = entity,
+                        ItemEntity = item.ItemEntity
+                    };
+
+                    if (EntityManager.TryGetBuffer(item.ItemEntity, out DynamicBuffer<ItemPassiveEffectId> itemPassiveEffectIds))
+                    {
+                        foreach (ItemPassiveEffectId itemPassiveEffectId in itemPassiveEffectIds)
                         {
-                            itemPassiveEffect.Equip(Accessor, itemContext);
+                            ItemPassiveEffect itemPassiveEffect = ItemPassiveEffectBank.GetItemPassiveEffect(itemPassiveEffectId);
+                            if (itemPassiveEffect != null)
+                            {
+                                itemPassiveEffect.Equip(Accessor, itemContext);
+                            }
                         }
                     }
                 }
-            }
 
-            // Remove starting inventory buffer
-            EntityManager.RemoveComponent<StartingInventoryItem>(entity);
-        });
+                itemInstances.Dispose();
+                startingInventory.Dispose();
+
+                // Remove starting inventory buffer
+                EntityManager.RemoveComponent<StartingInventoryItem>(entity);
+            })
+            .WithoutBurst()
+            .WithStructuralChanges()
+            .Run();
     }
 }
