@@ -11,6 +11,7 @@ public class SimInputPlayerCreate : SimMasterInput
     public string PlayerName;
 }
 
+[AlwaysUpdateSystem]
 public class CreatePlayerSystem : SimSystemBase
 {
     protected override void OnUpdate()

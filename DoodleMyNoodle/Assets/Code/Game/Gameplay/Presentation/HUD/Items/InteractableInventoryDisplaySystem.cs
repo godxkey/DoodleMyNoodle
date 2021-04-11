@@ -18,7 +18,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
     private List<Entity> _itemData = new List<Entity>();
 
     private Entity _lastInventoryEntity = Entity.Null;
-    private int2 _lastInventoryTile;
+    private fix2 _lastInventoryPosition;
 
     protected override void Awake()
     {
@@ -38,18 +38,29 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
     private void UpdateData()
     {
         _itemData.Clear();
-        if (_lastInventoryEntity != Entity.Null)
-        {
-            if (SimWorld.Exists(_lastInventoryEntity) &&
-                SimWorld.TryGetBufferReadOnly(_lastInventoryEntity, out DynamicBuffer<InventoryItemReference> items))
-            {
-                _lastInventoryTile = Helpers.GetTile(SimWorld.GetComponentData<FixTranslation>(_lastInventoryEntity));
+        
+        if (!Cache.LocalPawnAlive)
+            return;
 
-                foreach (var item in items)
-                {
-                    _itemData.Add(item);
-                }
-            }
+        if (_lastInventoryEntity == Entity.Null)
+            return;
+
+        if (!SimWorld.Exists(_lastInventoryEntity))
+            return;
+
+        if (!SimWorld.TryGetBufferReadOnly(_lastInventoryEntity, out DynamicBuffer<InventoryItemReference> items))
+            return;
+
+        fix2 pos = SimWorld.GetComponentData<FixTranslation>(_lastInventoryEntity);
+        
+        if (fixMath.distancemanhattan(pos, Cache.LocalPawnPosition) > SimulationGameConstants.InteractibleMaxDistanceManhattan)
+            return;
+
+        _lastInventoryPosition = SimWorld.GetComponentData<FixTranslation>(_lastInventoryEntity);
+
+        foreach (var item in items)
+        {
+            _itemData.Add(item);
         }
     }
 
@@ -74,7 +85,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                     Action onClick = () =>
                     {
                         // when clicking on Take Item, we send a sim input
-                        SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, _lastInventoryTile);
+                        SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, _lastInventoryPosition);
                         SimWorld.SubmitInput(simInputEquipItem);
                     };
 

@@ -62,6 +62,11 @@ public static class PresentationHelpers
         return Quaternion.Euler(0, 0, math.degrees((float)radAngle));
     }
 
+    public static void RequestFloatingText(Vector2 position, string text, Color color)
+    {
+        FloatingTextSystem.Instance.RequestText(position, text, color);
+    }
+
     public static class Surveys
     {
         public static GameAction GetGameAction(ISimWorldReadAccessor simWorld, Entity item)

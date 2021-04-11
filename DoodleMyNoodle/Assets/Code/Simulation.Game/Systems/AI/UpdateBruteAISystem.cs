@@ -3,6 +3,7 @@ using System;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.MathematicsX;
 using UnityEngine.Profiling;
 using UnityEngineX;
 using static fixMath;
@@ -135,7 +136,7 @@ public class UpdateBruteAISystem : SimComponentSystem
 
                 int2 enemyTile = Helpers.GetTile(enemyPos);
                 int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn));
-                if (lengthmanhattan(enemyTile - agentTile) == 1)
+                if (mathX.lengthmanhattan(enemyTile - agentTile) == 1)
                 {
                     agentData.State = BruteAIState.Attack;
                 }
@@ -196,7 +197,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         {
             agentData.AttackTarget = closest;
 
-            if (lengthmanhattan(closestTile - agentTile) == 1)
+            if (mathX.lengthmanhattan(closestTile - agentTile) == 1)
             {
                 agentData.State = BruteAIState.Attack;
             }

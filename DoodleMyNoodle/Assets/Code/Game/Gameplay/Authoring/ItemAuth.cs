@@ -28,9 +28,9 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
     {
         dstManager.AddComponentData(entity, GameActionBank.GetActionId(Value));
 
-        foreach (GameActionSettingAuthBase GameActionSetting in GameActionSettings)
+        foreach (GameActionSettingAuthBase settings in GameActionSettings)
         {
-            GameActionSetting.Convert(entity, dstManager, conversionSystem);
+            settings.Convert(entity, dstManager, conversionSystem);
         }
 
         if (Animation != null)
@@ -45,15 +45,15 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
         if (IsStackable)
         {
-            dstManager.AddComponentData(entity, new ItemStackableData());
+            dstManager.AddComponentData(entity, new ItemStackableData() { Value = 1 }); // 1 instance by default
         }
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
-        foreach (GameActionSettingAuthBase GameActionSetting in GameActionSettings)
+        foreach (GameActionSettingAuthBase settings in GameActionSettings)
         {
-            GameActionSetting.DeclareReferencedPrefabs(referencedPrefabs);
+            settings.DeclareReferencedPrefabs(referencedPrefabs);
         }
     }
 

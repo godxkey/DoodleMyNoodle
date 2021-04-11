@@ -1771,6 +1771,52 @@ public static class StaticNetSerializer_SimInputCheatKillPlayerPawn
         StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
     }
 }
+public static class StaticNetSerializer_SimInputCheatNeverEndingTurns
+{
+    public static int GetSerializedBitSize_Class(SimInputCheatNeverEndingTurns obj)
+    {
+        if (obj == null)
+            return 1;
+        return 1 + GetSerializedBitSize(obj);
+    }
+
+    public static int GetSerializedBitSize(SimInputCheatNeverEndingTurns obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_SimCheatInput.GetSerializedBitSize(obj);
+        return result;
+    }
+
+    public static void Serialize_Class(SimInputCheatNeverEndingTurns obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        Serialize(obj, writer);
+    }
+    public static void Serialize(SimInputCheatNeverEndingTurns obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_SimCheatInput.Serialize(obj, writer);
+    }
+
+    public static SimInputCheatNeverEndingTurns Deserialize_Class(BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            return null;
+        }
+        SimInputCheatNeverEndingTurns obj = new SimInputCheatNeverEndingTurns();
+        Deserialize(obj, reader);
+        return obj;
+    }
+    public static void Deserialize(SimInputCheatNeverEndingTurns obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
+    }
+}
 public static class StaticNetSerializer_SimInputCheatNextTurn
 {
     public static int GetSerializedBitSize_Class(SimInputCheatNextTurn obj)
@@ -1813,6 +1859,52 @@ public static class StaticNetSerializer_SimInputCheatNextTurn
         return obj;
     }
     public static void Deserialize(SimInputCheatNextTurn obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
+    }
+}
+public static class StaticNetSerializer_SimInputCheatRemoveAllCooldowns
+{
+    public static int GetSerializedBitSize_Class(SimInputCheatRemoveAllCooldowns obj)
+    {
+        if (obj == null)
+            return 1;
+        return 1 + GetSerializedBitSize(obj);
+    }
+
+    public static int GetSerializedBitSize(SimInputCheatRemoveAllCooldowns obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_SimCheatInput.GetSerializedBitSize(obj);
+        return result;
+    }
+
+    public static void Serialize_Class(SimInputCheatRemoveAllCooldowns obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        Serialize(obj, writer);
+    }
+    public static void Serialize(SimInputCheatRemoveAllCooldowns obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_SimCheatInput.Serialize(obj, writer);
+    }
+
+    public static SimInputCheatRemoveAllCooldowns Deserialize_Class(BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            return null;
+        }
+        SimInputCheatRemoveAllCooldowns obj = new SimInputCheatRemoveAllCooldowns();
+        Deserialize(obj, reader);
+        return obj;
+    }
+    public static void Deserialize(SimInputCheatRemoveAllCooldowns obj, BitStreamReader reader)
     {
         StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
     }
@@ -2135,6 +2227,58 @@ public static class StaticNetSerializer_SimPlayerInput
         StaticNetSerializer_SimInput.Deserialize(obj, reader);
     }
 }
+public static class StaticNetSerializer_SimPlayerInputClickSignalEmitter
+{
+    public static int GetSerializedBitSize_Class(SimPlayerInputClickSignalEmitter obj)
+    {
+        if (obj == null)
+            return 1;
+        return 1 + GetSerializedBitSize(obj);
+    }
+
+    public static int GetSerializedBitSize(SimPlayerInputClickSignalEmitter obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_fix2.GetSerializedBitSize(ref obj.EmitterPosition);
+        result += StaticNetSerializer_PersistentId.GetSerializedBitSize(ref obj.SimPlayerId);
+        result += StaticNetSerializer_SimPlayerInput.GetSerializedBitSize(obj);
+        return result;
+    }
+
+    public static void Serialize_Class(SimPlayerInputClickSignalEmitter obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        Serialize(obj, writer);
+    }
+    public static void Serialize(SimPlayerInputClickSignalEmitter obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_fix2.Serialize(ref obj.EmitterPosition, writer);
+        StaticNetSerializer_PersistentId.Serialize(ref obj.SimPlayerId, writer);
+        StaticNetSerializer_SimPlayerInput.Serialize(obj, writer);
+    }
+
+    public static SimPlayerInputClickSignalEmitter Deserialize_Class(BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            return null;
+        }
+        SimPlayerInputClickSignalEmitter obj = new SimPlayerInputClickSignalEmitter();
+        Deserialize(obj, reader);
+        return obj;
+    }
+    public static void Deserialize(SimPlayerInputClickSignalEmitter obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_fix2.Deserialize(ref obj.EmitterPosition, reader);
+        StaticNetSerializer_PersistentId.Deserialize(ref obj.SimPlayerId, reader);
+        StaticNetSerializer_SimPlayerInput.Deserialize(obj, reader);
+    }
+}
 public static class StaticNetSerializer_SimPlayerInputDropItem
 {
     public static int GetSerializedBitSize_Class(SimPlayerInputDropItem obj)
@@ -2197,7 +2341,7 @@ public static class StaticNetSerializer_SimPlayerInputEquipItem
     public static int GetSerializedBitSize(SimPlayerInputEquipItem obj)
     {
         int result = 0;
-        result += StaticNetSerializer_Unity_Mathematics_int2.GetSerializedBitSize(ref obj.ItemEntityPosition);
+        result += StaticNetSerializer_fix2.GetSerializedBitSize(ref obj.ItemEntityPosition);
         result += StaticNetSerializer_System_Int32.GetSerializedBitSize(ref obj.ItemIndex);
         result += StaticNetSerializer_PersistentId.GetSerializedBitSize(ref obj.SimPlayerId);
         result += StaticNetSerializer_SimPlayerInput.GetSerializedBitSize(obj);
@@ -2216,7 +2360,7 @@ public static class StaticNetSerializer_SimPlayerInputEquipItem
     }
     public static void Serialize(SimPlayerInputEquipItem obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_Unity_Mathematics_int2.Serialize(ref obj.ItemEntityPosition, writer);
+        StaticNetSerializer_fix2.Serialize(ref obj.ItemEntityPosition, writer);
         StaticNetSerializer_System_Int32.Serialize(ref obj.ItemIndex, writer);
         StaticNetSerializer_PersistentId.Serialize(ref obj.SimPlayerId, writer);
         StaticNetSerializer_SimPlayerInput.Serialize(obj, writer);
@@ -2232,7 +2376,7 @@ public static class StaticNetSerializer_SimPlayerInputEquipItem
     }
     public static void Deserialize(SimPlayerInputEquipItem obj, BitStreamReader reader)
     {
-        StaticNetSerializer_Unity_Mathematics_int2.Deserialize(ref obj.ItemEntityPosition, reader);
+        StaticNetSerializer_fix2.Deserialize(ref obj.ItemEntityPosition, reader);
         StaticNetSerializer_System_Int32.Deserialize(ref obj.ItemIndex, reader);
         StaticNetSerializer_PersistentId.Deserialize(ref obj.SimPlayerId, reader);
         StaticNetSerializer_SimPlayerInput.Deserialize(obj, reader);
@@ -2445,58 +2589,6 @@ public static class StaticNetSerializer_SimPlayerInputSetPawnName
     public static void Deserialize(SimPlayerInputSetPawnName obj, BitStreamReader reader)
     {
         StaticNetSerializer_System_String.Deserialize(ref obj.Name, reader);
-        StaticNetSerializer_PersistentId.Deserialize(ref obj.SimPlayerId, reader);
-        StaticNetSerializer_SimPlayerInput.Deserialize(obj, reader);
-    }
-}
-public static class StaticNetSerializer_SimPlayerInputUseInteractable
-{
-    public static int GetSerializedBitSize_Class(SimPlayerInputUseInteractable obj)
-    {
-        if (obj == null)
-            return 1;
-        return 1 + GetSerializedBitSize(obj);
-    }
-
-    public static int GetSerializedBitSize(SimPlayerInputUseInteractable obj)
-    {
-        int result = 0;
-        result += StaticNetSerializer_Unity_Mathematics_int2.GetSerializedBitSize(ref obj.InteractablePosition);
-        result += StaticNetSerializer_PersistentId.GetSerializedBitSize(ref obj.SimPlayerId);
-        result += StaticNetSerializer_SimPlayerInput.GetSerializedBitSize(obj);
-        return result;
-    }
-
-    public static void Serialize_Class(SimPlayerInputUseInteractable obj, BitStreamWriter writer)
-    {
-        if (obj == null)
-        {
-            writer.WriteBit(false);
-            return;
-        }
-        writer.WriteBit(true);
-        Serialize(obj, writer);
-    }
-    public static void Serialize(SimPlayerInputUseInteractable obj, BitStreamWriter writer)
-    {
-        StaticNetSerializer_Unity_Mathematics_int2.Serialize(ref obj.InteractablePosition, writer);
-        StaticNetSerializer_PersistentId.Serialize(ref obj.SimPlayerId, writer);
-        StaticNetSerializer_SimPlayerInput.Serialize(obj, writer);
-    }
-
-    public static SimPlayerInputUseInteractable Deserialize_Class(BitStreamReader reader)
-    {
-        if (reader.ReadBit() == false)
-        {
-            return null;
-        }
-        SimPlayerInputUseInteractable obj = new SimPlayerInputUseInteractable();
-        Deserialize(obj, reader);
-        return obj;
-    }
-    public static void Deserialize(SimPlayerInputUseInteractable obj, BitStreamReader reader)
-    {
-        StaticNetSerializer_Unity_Mathematics_int2.Deserialize(ref obj.InteractablePosition, reader);
         StaticNetSerializer_PersistentId.Deserialize(ref obj.SimPlayerId, reader);
         StaticNetSerializer_SimPlayerInput.Deserialize(obj, reader);
     }

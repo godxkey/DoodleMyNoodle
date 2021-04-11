@@ -4,20 +4,28 @@ using CCC.Fix2D;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class DestroyEmptyInteractableInventorySystem : SimComponentSystem
+public class DestroyEmptyInteractableInventorySystem : SimSystemBase
 {
+    EndSimulationEntityCommandBufferSystem _ecb;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        _ecb = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+    }
+
     protected override void OnUpdate()
     {
+        var ecb = _ecb.CreateCommandBuffer();
         Entities
-        .WithAll<Interactable>()
-        .WithAll<Interacted>()
-        .WithNone<StartingInventoryItem>()
-        .ForEach((Entity interactable, ref FixTranslation pos, DynamicBuffer<InventoryItemReference> inventory) =>
-        {
-            if (inventory.Length == 0)
+            .WithNone<Controllable>()
+            .WithNone<StartingInventoryItem>()
+            .ForEach((Entity chest, DynamicBuffer<InventoryItemReference> inventory) =>
             {
-                PostUpdateCommands.DestroyEntity(interactable);
-            }
-        });
+                if (inventory.Length == 0)
+                {
+                    ecb.DestroyEntity(chest);
+                }
+            }).Run();
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8274829124037174870}
   - component: {fileID: 2016125391269451561}
   m_Layer: 0
-  m_Name: SE_Gym_Interactables_Grid
+  m_Name: SE_Grid_Gym_Interactables
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
