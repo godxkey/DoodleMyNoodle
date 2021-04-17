@@ -47,7 +47,20 @@ public class LocalizationSettings : ScriptableObject
         Localizations = NewLocalizations;
     }
 
-    private LocalizationData FindData(string ID)
+    public int GetLanguageIndex(string language)
+    {
+        for (int i = 0; i < Languages.Count; i++)
+        {
+            if (language == Languages[i])
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public LocalizationData FindData(string ID)
     {
         foreach (LocalizationData Localization in Localizations)
         {

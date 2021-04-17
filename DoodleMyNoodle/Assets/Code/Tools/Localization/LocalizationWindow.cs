@@ -3,6 +3,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEditor;
 using UnityEngineX;
+using System.IO;
 
 public partial class LocalizationWindow : EditorWindow
 {
@@ -45,11 +46,22 @@ public partial class LocalizationWindow : EditorWindow
 
     void OnGUI()
     {
+        Localizations = SavedSettings.Localizations;
+        Languages = SavedSettings.Languages;
+
         GUILayout.Label("Localization Settings", EditorStyles.boldLabel);
 
         if (GUILayout.Button("Import CSV"))
         {
-            // ToDo
+            string path = EditorUtility.OpenFilePanel("Import CSV", "", "csv");
+            if (path.Length != 0)
+            {
+                byte[] fileBytes = File.ReadAllBytes(path);
+                string fileString = System.Text.Encoding.UTF8.GetString(fileBytes);
+
+                ImportCSV(fileString);
+                return;
+            }
         }
 
         GUILayout.BeginHorizontal(EditorStyles.helpBox);
@@ -60,7 +72,8 @@ public partial class LocalizationWindow : EditorWindow
                 {
                     if (GUILayout.Button("Clear All"))
                     {
-                        Languages.Add("New Language");
+                        Languages.Clear();
+                        Localizations.Clear();
                     }
                 }
                 GUILayout.EndVertical();
@@ -84,15 +97,6 @@ public partial class LocalizationWindow : EditorWindow
                 GUILayout.BeginVertical(EditorStyles.helpBox);
                 {
                     Languages[i] = EditorGUILayout.TextField(Languages[i]);
-
-                    GUILayout.BeginHorizontal(EditorStyles.helpBox);
-                    {
-                        if (GUILayout.Button("Import CSV"))
-                        {
-                            // ToDo
-                        }
-                    }
-                    GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal(EditorStyles.helpBox);
                     {
@@ -176,5 +180,48 @@ public partial class LocalizationWindow : EditorWindow
         Rect rect = EditorGUILayout.GetControlRect(false, size);
         rect.height = size;
         EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
+    }
+
+    private void ImportCSV(string fileString, bool overwrideAll = true)
+    {
+        string[] rows = fileString.Split(char.Parse("\n"));
+
+        // Setup languages
+        string[] languages = rows[0].Split(char.Parse(","));
+        List<string> currentLanguages = new List<string>(languages);
+        currentLanguages.RemoveAt(0);
+
+        // Setup localization datas
+        List<LocalizationData> NewLocalizations = new List<LocalizationData>();
+        for (int r = 1; r < rows.Length; r++)
+        {
+            string row = rows[r];
+            string currentRowCleaned = row.Replace("\r", "");
+            string[] elements = currentRowCleaned.Split(char.Parse(","));
+
+            // ID
+            LocalizationData newLocalizationData = new LocalizationData(currentLanguages.Count);
+            newLocalizationData.ID = elements[0];
+
+            // TRADUCTION
+            if (overwrideAll)
+            {
+                for (int i = 1; i < elements.Length; i++)
+                {
+                    newLocalizationData.Localization[i-1] = elements[i];
+                }
+
+                NewLocalizations.Add(newLocalizationData);
+            }
+        }
+
+        if (SavedSettings != null)
+        {
+            SavedSettings.Save(NewLocalizations, currentLanguages);
+        }
+        else
+        {
+            Debug.LogError("Localization Settings couldn't be found. Localization won't be saved");
+        }
     }
 }
