@@ -5,58 +5,72 @@ using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 using CCC.Fix2D;
+using Unity.Collections;
 
-public class TeleportToStartLocationOnReadySystem : SimComponentSystem
+public class TeleportToStartLocationOnReadySystem : SimSystemBase
 {
-    private List<Entity> _players = new List<Entity>();
+    private NativeList<Entity> _players;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        _players = new NativeList<Entity>(Allocator.Persistent);
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        _players.Dispose();
+    }
 
     protected override void OnUpdate()
     {
         // How many player in game ?
         _players.Clear();
 
-        // count players
+        // count active players
+        var players = _players;
         Entities
             .WithAll<PlayerTag, ControlledEntity>()
-            .ForEach((Entity player, ref Active isActive) =>
+            .ForEach((Entity player, in Active isActive) =>
             {
                 if (isActive)
                 {
-                    _players.Add(player);
+                    players.Add(player);
                 }
-            });
+            }).Run();
 
         // How many player ready ?
         int playerReadyAmount = 0;
         Entities
-            .WithAll<Interactable, ReadyInteractableTag>()
-            .ForEach((ref Interacted interacted) =>
+            .WithAll<ReadyToPlayTag>()
+            .ForEach((in Signal signal) =>
             {
-                if (interacted)
+                if (signal)
                 {
                     playerReadyAmount++;
                 }
-            });
+            }).Run();
 
         // Teleport to start location if not already done
-        if ((_players.Count > 0) && (_players.Count == playerReadyAmount) && !HasSingleton<ScenarioHasStartedSingletonTag>())
+        if ((players.Length > 0) && (players.Length == playerReadyAmount) && !HasSingleton<ScenarioHasStartedSingletonTag>())
         {
             // Get Teleport Location
-            List<fix2> teleportLocations = new List<fix2>();
+            NativeList<fix2> teleportLocations = new NativeList<fix2>(Allocator.TempJob);
             Entities
                 .WithAll<StartLocationTag>()
-                .ForEach((ref FixTranslation translation) =>
+                .ForEach((in FixTranslation translation) =>
                 {
                     teleportLocations.Add(translation);
-                });
+                }).Run();
 
-            if(teleportLocations.Count == 0)
+            if(teleportLocations.Length == 0)
             {
                 Log.Warning("No start locations in the level");
                 return;
             }
 
-            if (teleportLocations.Count < _players.Count)
+            if (teleportLocations.Length < players.Length)
             {
                 Log.Warning("Not enough start locations in the level. We will reuse some more than once.");
             }
@@ -64,16 +78,18 @@ public class TeleportToStartLocationOnReadySystem : SimComponentSystem
             FixRandom rand = World.Random();
             rand.Shuffle(teleportLocations);
 
-            for (int i = 0; i < _players.Count; i++)
+            for (int i = 0; i < players.Length; i++)
             {
-                Entity playerPawn = EntityManager.GetComponentData<ControlledEntity>(_players[i]);
+                Entity playerPawn = EntityManager.GetComponentData<ControlledEntity>(players[i]);
                 if (EntityManager.Exists(playerPawn))
                 {
-                    CommonWrites.RequestTeleport(Accessor, playerPawn, teleportLocations[i % teleportLocations.Count]);
+                    CommonWrites.RequestTeleport(Accessor, playerPawn, teleportLocations[i % teleportLocations.Length]);
                 }
             }
 
             EntityManager.CreateEntity(typeof(ScenarioHasStartedSingletonTag));
+
+            teleportLocations.Dispose();
         }
     }
 }

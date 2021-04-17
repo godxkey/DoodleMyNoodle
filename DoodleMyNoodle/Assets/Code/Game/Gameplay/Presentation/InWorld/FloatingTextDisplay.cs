@@ -4,7 +4,7 @@ using UnityEngineX;
 using TMPro;
 using DG.Tweening;
 
-public class FloatingNumberDisplay : MonoBehaviour
+public class FloatingTextDisplay : MonoBehaviour
 {
     [SerializeField] private TextMeshPro _number;
 

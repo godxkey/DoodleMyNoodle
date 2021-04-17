@@ -9,12 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 30145307963041148}
-  - component: {fileID: 30145307963041147}
-  - component: {fileID: 2200807518188857802}
-  - component: {fileID: 9127798904645233242}
-  - component: {fileID: -3731423881315057188}
-  m_Layer: 11
-  m_Name: SE_ReadyUpPressurePlate
+  - component: {fileID: 3445985624800957972}
+  - component: {fileID: 6297753553573562534}
+  m_Layer: 0
+  m_Name: SE_SignalEmitter_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &30145307963041147
+--- !u!114 &3445985624800957972
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,26 +45,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 3b9d2b60f777b7c4d960a12cca42e960
-  _bindedViewPrefab: {fileID: 6426749434754870349, guid: 2f6a96a99db88a04385987255ab13a97,
+  _guid: 327beafc82c729d4496553e8256148f0
+  _bindedViewPrefab: {fileID: 6426749434754870349, guid: 4743a8ebc97850e40866df9f02c2a0b0,
     type: 3}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 1
---- !u!114 &2200807518188857802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30145307963041151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 679fb0168f775314fa166e2188e32179, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &9127798904645233242
+--- !u!114 &6297753553573562534
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -78,30 +64,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dceeaaf196c53b4281bc9e1ffe55bd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Emission: 1
+  Emission: 3
   PropagationTargets: []
---- !u!114 &-3731423881315057188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30145307963041151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93e46ee13bcdb224bb3a8c3df684bc12, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Type: 0
-  Shape: 1
-  Material: {fileID: 0}
-  IsTrigger: 1
-  LinearDrag: 0
-  AngularDrag: 0.05
-  GravityScale: 1
-  FireEvents: 0
-  FreezeRotation: 0
-  BoxSize: {x: 0.5, y: 0.18}
-  CircleRadius: 0.5
-  BoxAndCircleOffset: {x: 0, y: 0}
-  PolygonPoints: []

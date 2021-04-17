@@ -9,6 +9,7 @@ using UnityEngineX;
 public class GridGenerator
 {
     private const string PATH = "Assets/GameContent/Levels/Grids";
+    private const string SETTINGS_ASSET_PATH = "Assets/Config/GridSettings.asset";
 
     [MenuItem("Tools/Generate Grid Files")]
     public static void Generate()
@@ -119,13 +120,13 @@ public class GridGenerator
         LevelGridAuth levelGridAuth = gridGameObject.HasComponent<LevelGridAuth>() ? gridGameObject.GetComponent<LevelGridAuth>() : gridGameObject.AddComponent<LevelGridAuth>();
         levelGridAuth.Grid = gridComponent;
 
-        LevelGridSettings GlobalGridSettings = AssetDatabase.LoadAssetAtPath<LevelGridSettings>("Assets/Config/Game/GridSettings/GridSettings.asset");
-        if (GlobalGridSettings == null)
+        LevelGridSettings globalGridSettings = AssetDatabase.LoadAssetAtPath<LevelGridSettings>(SETTINGS_ASSET_PATH);
+        if (globalGridSettings == null)
         {
-            Debug.LogError("Global Grid Settings missing (GridSettings.asset), please create the file in Assets/Config/Game/GridSettings");
+            Debug.LogError($"Global Grid Settings missing (GridSettings.asset), please create the file in {SETTINGS_ASSET_PATH}");
             return;
         }
-        levelGridAuth.GlobalGridSettings = GlobalGridSettings;
+        levelGridAuth.GlobalGridSettings = globalGridSettings;
     }
 
     private static GameObject CloneTilemap(TilemapRenderer renderer, Tilemap tilemap)

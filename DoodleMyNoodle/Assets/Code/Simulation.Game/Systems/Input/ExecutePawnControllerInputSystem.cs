@@ -5,6 +5,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngineX;
 using CCC.Fix2D;
+using Unity.Collections;
 
 
 // THIS CLASS SHOULD NOT BE SERIALIZABLE
@@ -15,33 +16,6 @@ public abstract class PawnControllerInputBase
     protected PawnControllerInputBase(Entity pawnController)
     {
         PawnController = pawnController;
-    }
-}
-
-/// <summary>
-/// This system makes sure inputs sent from the previous frame don't leak to the next. 
-/// This is a necessary precaution because inputs are not natively serialized in the sim world
-/// </summary>
-[UpdateInGroup(typeof(InitializationSystemGroup))]
-public class ClearPawnControllerInputSystem : SimSystemBase
-{
-    private ExecutePawnControllerInputSystem _executeSys;
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-
-        _executeSys = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
-    }
-
-    protected override void OnUpdate()
-    {
-        foreach (PawnControllerInputBase input in _executeSys.Inputs)
-        {
-            Log.Warning($"The PawnControllerInput {input} seems to have been queued too late. " +
-                $"Use [UpdateBefore({nameof(ExecutePawnControllerInputSystem)})] to make sure you deliver the input in time.");
-        }
-        _executeSys.Inputs.Clear();
     }
 }
 
@@ -99,7 +73,7 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
                     ExecuteGameAction(useGameAction, pawn);
                 break;
 
-            case PawnControllerInputUseInteractable useInteractableInput:
+            case PawnControllerInputClickSignalEmitter useInteractableInput:
                 if (pawn != Entity.Null)
                     ExecuteUseInteractableInput(useInteractableInput, pawn);
                 break;
@@ -250,20 +224,13 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
 
     private void ExecuteEquipItemInput(PawnControllerInputEquipItem pawnInputEquipItem, Entity pawn)
     {
-        int2 itemEntityTile = pawnInputEquipItem.ItemEntityPosition;
-        var tileWorld = CommonReads.GetTileWorld(Accessor);
-        if (!tileWorld.IsValid(itemEntityTile))
-        {
-            return;
-        }
-
         // Pawn has inventory ?
         if (!EntityManager.HasComponent<InventoryItemReference>(pawn))
             return;
 
         // Find chest inventory
-        Entity chestEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference, Interactable>(Accessor, itemEntityTile);
-        if (chestEntity == Entity.Null)
+        Entity chestEntity = FindEntityInInteractableRange(pawnInputEquipItem.ItemEntityPosition, pawn);
+        if (chestEntity == Entity.Null || !EntityManager.HasComponent<InventoryItemReference>(chestEntity))
         {
             return;
         }
@@ -397,30 +364,19 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
         }
     }
 
-    private void ExecuteUseInteractableInput(PawnControllerInputUseInteractable inputUseInteractable, Entity pawn)
+    private void ExecuteUseInteractableInput(PawnControllerInputClickSignalEmitter inputClickEmitter, Entity pawn)
     {
-        //void LogDiscardReason(string str)
-        //{
-        //    Log.Info($"Discarding input {inputUseInteractable} : {str}");
-        //}
+        Entity emitter = FindEntityInInteractableRange(inputClickEmitter.EmitterPosition, pawn);
 
-        Entity interactableEntity = CommonReads.FindFirstTileActorWithComponent<Interactable>(Accessor, inputUseInteractable.InteractablePosition);
-        if (interactableEntity == Entity.Null)
+        if (emitter != Entity.Null && HasComponent<SignalEmissionType>(emitter))
         {
-            return;
+            var emissionType = GetComponent<SignalEmissionType>(emitter);
+
+            if (emissionType.Value == ESignalEmissionType.OnClick || emissionType.Value == ESignalEmissionType.ToggleOnClick)
+            {
+                World.GetOrCreateSystem<SetSignalSystem>().EmitterClickRequests.Add(emitter);
+            }
         }
-
-        fix interactableTileDistance = Accessor.GetComponentData<Interactable>(interactableEntity).Range;
-        FixTranslation pawnPosition = GetComponent<FixTranslation>(pawn);
-        fix3 interactablePosition = Helpers.GetTileCenter(inputUseInteractable.InteractablePosition);
-
-        int tilesBetween = fix.RoundToInt(fix.Abs((interactablePosition.x - pawnPosition.Value.x) + (interactablePosition.y - pawnPosition.Value.y)));
-        if (tilesBetween > interactableTileDistance)
-        {
-            return;
-        }
-
-        CommonWrites.Interact(Accessor, interactableEntity, pawn);
     }
 
     private GameAction GetGameActionFromEntity(Entity entity)
@@ -445,6 +401,37 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
         }
 
         return result;
+    }
+
+    private Entity FindEntityInInteractableRange(fix2 targetPosition, Entity pawn)
+    {
+        Entity closest = FindNearestEntity(targetPosition);
+        fix2 closestPosition = GetComponent<FixTranslation>(closest);
+
+        fix2 pawnPosition = GetComponent<FixTranslation>(pawn);
+        if (fixMath.distancemanhattan(closestPosition, pawnPosition) > SimulationGameConstants.InteractibleMaxDistanceManhattan)
+            return Entity.Null;
+
+        return closest;
+    }
+
+    private Entity FindNearestEntity(fix2 targetPosition)
+    {
+        fix closestDistance = fix.MaxValue;
+        Entity closestEntity = Entity.Null;
+
+        Entities
+            .ForEach((Entity entity, in FixTranslation position) =>
+            {
+                fix distance = fixMath.lengthmanhattan(position.Value - targetPosition);
+                if (distance < closestDistance)
+                {
+                    closestEntity = entity;
+                    closestDistance = distance;
+                }
+            }).Run();
+
+        return closestEntity;
     }
 }
 

@@ -60,7 +60,7 @@ internal partial class CommonWrites
     {
         if (accessor.TryGetComponentData(sourceItemEntity, out ItemStackableData stackableData))
         {
-            if (stackableData.Value == 1)
+            if (stackableData.Value <= 1)
             {
                 DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(InventoryEntity);
 

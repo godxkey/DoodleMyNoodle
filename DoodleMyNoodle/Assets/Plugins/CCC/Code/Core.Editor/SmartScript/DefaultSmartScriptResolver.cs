@@ -135,30 +135,52 @@ public class DefaultSmartScriptResolver : SmartScriptResolver
     {
         string directory = path;
 
-        while (!string.IsNullOrEmpty(directory))
+        try
         {
-            try
+            if(File.Exists(Application.dataPath.RemoveLast("Assets") + path))
             {
-                directory = Path.GetDirectoryName(directory);
-            }
-            catch
-            {
-                return null;
-            }
-            
-            string[] templateAssetLinkGUIDs = AssetDatabase.FindAssets($"t:{nameof(SmartScriptTemplateReference)}", new string[] { directory });
-
-            if (templateAssetLinkGUIDs.Length > 0)
-            {
-                var templateAssetLink = AssetDatabase.LoadAssetAtPath<SmartScriptTemplateReference>(AssetDatabase.GUIDToAssetPath(templateAssetLinkGUIDs[0]));
-
-                if (templateAssetLink != null)
-                {
-                    return templateAssetLink.TemplateScript as MonoScript;
-                }
+                directory = GetDirectory(directory);
             }
         }
+        catch
+        {
+            return null;
+        }
+
+        string[] templateAssetLinkGUIDs = AssetDatabase.FindAssets($"t:{nameof(SmartScriptTemplateReference)}");
+
+        if (templateAssetLinkGUIDs.Length > 0)
+        {
+            // Find template asset with longest directory path (meaning closest to context path)
+            string bestAssetPath = string.Empty;
+            int longestDirectoryLength = int.MinValue;
+
+            for (int i = 0; i < templateAssetLinkGUIDs.Length; i++)
+            {
+                var candidatePath = AssetDatabase.GUIDToAssetPath(templateAssetLinkGUIDs[i]);
+                var candidateDirectory = GetDirectory(candidatePath);
+
+                if (directory.Contains(candidateDirectory) && candidateDirectory.Length > longestDirectoryLength)
+                {
+                    longestDirectoryLength = candidateDirectory.Length;
+                    bestAssetPath = candidatePath;
+                }
+            }
+
+            var templateAssetLink = AssetDatabase.LoadAssetAtPath<SmartScriptTemplateReference>(bestAssetPath);
+
+            if (templateAssetLink != null)
+            {
+                return templateAssetLink.TemplateScript as MonoScript;
+            }
+        }
+
         return null;
+
+        string GetDirectory(string p)
+        {
+            return Path.GetDirectoryName(p).Replace('\\', '/');
+        }
     }
 
     protected virtual string GetDefaultScriptTemplate()

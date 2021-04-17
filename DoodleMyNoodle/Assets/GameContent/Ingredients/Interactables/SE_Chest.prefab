@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 30145307963041148}
   - component: {fileID: 30145307963041147}
   - component: {fileID: -1025191853641028646}
-  - component: {fileID: 5498494662151174257}
   - component: {fileID: 4089162127439891888}
   m_Layer: 0
   m_Name: SE_Chest
@@ -71,22 +70,6 @@ MonoBehaviour:
   ConsumablesMaxAmount: 3
   CustomItemBank: {fileID: 0}
   InitialItems: []
---- !u!114 &5498494662151174257
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30145307963041151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13492315c65cf204abfe5a85eeb96527, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InteractOnContact: 0
-  InteractionRange: 1
-  CanBeInteractedOnlyOnce: 0
-  DelayBetweenInteraction: 0.1
 --- !u!114 &4089162127439891888
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using CCC.Fix2D;
 using System;
+using Unity.MathematicsX;
 
 public class GameActionMeleeAttack : GameAction
 {
@@ -35,7 +36,7 @@ public class GameActionMeleeAttack : GameAction
             int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
 
             // melee attack has a range of RANGE
-            if (lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+            if (mathX.lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
             {
                 LogGameActionInfo(context, $"Melee attack at {paramTile.Tile} out of range. Ignoring.");
                 return false;

@@ -8,7 +8,7 @@ using UnityEngineX;
 
 public static class SmartScript
 {
-    public static SmartScriptResolver s_Resolver = new DefaultSmartScriptResolver();
+    public static SmartScriptResolver Resolver = new DefaultSmartScriptResolver();
 
     [MenuItem("Assets/Create/C# Script (Smart Templates)", priority = 80)]
     public static void CreateSmartScript()
@@ -52,7 +52,7 @@ public static class SmartScript
 
     private static void GetScriptTemplateForPath(string path, out string content, out string defaultName)
     {
-        s_Resolver.GetNewScriptContent(path, out content, out defaultName);
+        Resolver.GetNewScriptContent(path, out content, out defaultName);
     }
 
     private static string GetSelectionAssetPath()

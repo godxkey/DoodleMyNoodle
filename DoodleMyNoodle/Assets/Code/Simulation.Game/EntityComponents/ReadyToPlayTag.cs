@@ -2,4 +2,4 @@ using Unity.Entities;
 using Unity.Mathematics;
 
 [GenerateAuthoringComponent]
-public struct ReadyInteractableTag : IComponentData { }
+public struct ReadyToPlayTag : IComponentData { }

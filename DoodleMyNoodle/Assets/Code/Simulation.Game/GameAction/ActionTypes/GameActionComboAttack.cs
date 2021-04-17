@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Collections;
 using CCC.Fix2D;
 using System;
+using Unity.MathematicsX;
 
 public class GameActionComboAttack : GameAction
 {
@@ -33,7 +34,7 @@ public class GameActionComboAttack : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data firstTile))
         {
             // melee attack has a range
-            if (lengthmanhattan(firstTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+            if (mathX.lengthmanhattan(firstTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
             {
                 return false;
             }
@@ -45,7 +46,7 @@ public class GameActionComboAttack : GameAction
         if (parameters.TryGetParameter(1, out GameActionParameterTile.Data secondTile))
         {
             // melee attack has a range of RANGE
-            if (lengthmanhattan(secondTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+            if (mathX.lengthmanhattan(secondTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
             {
                 return false;
             }

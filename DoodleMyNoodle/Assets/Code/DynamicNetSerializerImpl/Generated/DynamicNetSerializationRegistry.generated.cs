@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public static class DynamicNetSerializationRegistry
 {
-    public static readonly ulong crc = 4602271289810344645;
+    public static readonly ulong crc = 2590417910721240593;
 
     public static readonly Type[] types = new Type[]
     {
@@ -116,7 +116,11 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(SimInputCheatKillPlayerPawn)
         ,
+        typeof(SimInputCheatNeverEndingTurns)
+        ,
         typeof(SimInputCheatNextTurn)
+        ,
+        typeof(SimInputCheatRemoveAllCooldowns)
         ,
         typeof(SimInputCheatTeleport)
         ,
@@ -127,6 +131,8 @@ public static class DynamicNetSerializationRegistry
         typeof(SimInputSetPlayerActive)
         ,
         typeof(SimInputSubmission)
+        ,
+        typeof(SimPlayerInputClickSignalEmitter)
         ,
         typeof(SimPlayerInputDropItem)
         ,
@@ -139,8 +145,6 @@ public static class DynamicNetSerializationRegistry
         typeof(SimPlayerInputSetPawnDoodle)
         ,
         typeof(SimPlayerInputSetPawnName)
-        ,
-        typeof(SimPlayerInputUseInteractable)
         ,
         typeof(SimPlayerInputUseItem)
         ,
@@ -489,10 +493,22 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_SimInputCheatKillPlayerPawn.GetSerializedBitSize(castedObj);
         }
         ,
+        [typeof(SimInputCheatNeverEndingTurns)] = (obj) =>
+        {
+            SimInputCheatNeverEndingTurns castedObj = (SimInputCheatNeverEndingTurns)obj;
+            return StaticNetSerializer_SimInputCheatNeverEndingTurns.GetSerializedBitSize(castedObj);
+        }
+        ,
         [typeof(SimInputCheatNextTurn)] = (obj) =>
         {
             SimInputCheatNextTurn castedObj = (SimInputCheatNextTurn)obj;
             return StaticNetSerializer_SimInputCheatNextTurn.GetSerializedBitSize(castedObj);
+        }
+        ,
+        [typeof(SimInputCheatRemoveAllCooldowns)] = (obj) =>
+        {
+            SimInputCheatRemoveAllCooldowns castedObj = (SimInputCheatRemoveAllCooldowns)obj;
+            return StaticNetSerializer_SimInputCheatRemoveAllCooldowns.GetSerializedBitSize(castedObj);
         }
         ,
         [typeof(SimInputCheatTeleport)] = (obj) =>
@@ -523,6 +539,12 @@ public static class DynamicNetSerializationRegistry
         {
             SimInputSubmission castedObj = (SimInputSubmission)obj;
             return StaticNetSerializer_SimInputSubmission.GetSerializedBitSize(ref castedObj);
+        }
+        ,
+        [typeof(SimPlayerInputClickSignalEmitter)] = (obj) =>
+        {
+            SimPlayerInputClickSignalEmitter castedObj = (SimPlayerInputClickSignalEmitter)obj;
+            return StaticNetSerializer_SimPlayerInputClickSignalEmitter.GetSerializedBitSize(castedObj);
         }
         ,
         [typeof(SimPlayerInputDropItem)] = (obj) =>
@@ -559,12 +581,6 @@ public static class DynamicNetSerializationRegistry
         {
             SimPlayerInputSetPawnName castedObj = (SimPlayerInputSetPawnName)obj;
             return StaticNetSerializer_SimPlayerInputSetPawnName.GetSerializedBitSize(castedObj);
-        }
-        ,
-        [typeof(SimPlayerInputUseInteractable)] = (obj) =>
-        {
-            SimPlayerInputUseInteractable castedObj = (SimPlayerInputUseInteractable)obj;
-            return StaticNetSerializer_SimPlayerInputUseInteractable.GetSerializedBitSize(castedObj);
         }
         ,
         [typeof(SimPlayerInputUseItem)] = (obj) =>
@@ -966,10 +982,22 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_SimInputCheatKillPlayerPawn.Serialize(castedObj, writer);
         }
         ,
+        [typeof(SimInputCheatNeverEndingTurns)] = (obj, writer) =>
+        {
+            SimInputCheatNeverEndingTurns castedObj = (SimInputCheatNeverEndingTurns)obj;
+            StaticNetSerializer_SimInputCheatNeverEndingTurns.Serialize(castedObj, writer);
+        }
+        ,
         [typeof(SimInputCheatNextTurn)] = (obj, writer) =>
         {
             SimInputCheatNextTurn castedObj = (SimInputCheatNextTurn)obj;
             StaticNetSerializer_SimInputCheatNextTurn.Serialize(castedObj, writer);
+        }
+        ,
+        [typeof(SimInputCheatRemoveAllCooldowns)] = (obj, writer) =>
+        {
+            SimInputCheatRemoveAllCooldowns castedObj = (SimInputCheatRemoveAllCooldowns)obj;
+            StaticNetSerializer_SimInputCheatRemoveAllCooldowns.Serialize(castedObj, writer);
         }
         ,
         [typeof(SimInputCheatTeleport)] = (obj, writer) =>
@@ -1000,6 +1028,12 @@ public static class DynamicNetSerializationRegistry
         {
             SimInputSubmission castedObj = (SimInputSubmission)obj;
             StaticNetSerializer_SimInputSubmission.Serialize(ref castedObj, writer);
+        }
+        ,
+        [typeof(SimPlayerInputClickSignalEmitter)] = (obj, writer) =>
+        {
+            SimPlayerInputClickSignalEmitter castedObj = (SimPlayerInputClickSignalEmitter)obj;
+            StaticNetSerializer_SimPlayerInputClickSignalEmitter.Serialize(castedObj, writer);
         }
         ,
         [typeof(SimPlayerInputDropItem)] = (obj, writer) =>
@@ -1036,12 +1070,6 @@ public static class DynamicNetSerializationRegistry
         {
             SimPlayerInputSetPawnName castedObj = (SimPlayerInputSetPawnName)obj;
             StaticNetSerializer_SimPlayerInputSetPawnName.Serialize(castedObj, writer);
-        }
-        ,
-        [typeof(SimPlayerInputUseInteractable)] = (obj, writer) =>
-        {
-            SimPlayerInputUseInteractable castedObj = (SimPlayerInputUseInteractable)obj;
-            StaticNetSerializer_SimPlayerInputUseInteractable.Serialize(castedObj, writer);
         }
         ,
         [typeof(SimPlayerInputUseItem)] = (obj, writer) =>
@@ -1498,180 +1526,194 @@ public static class DynamicNetSerializationRegistry
         ,
         [53] = (reader) =>
         {
+            SimInputCheatNeverEndingTurns obj = new SimInputCheatNeverEndingTurns();
+            StaticNetSerializer_SimInputCheatNeverEndingTurns.Deserialize(obj, reader);
+            return obj;
+        }
+        ,
+        [54] = (reader) =>
+        {
             SimInputCheatNextTurn obj = new SimInputCheatNextTurn();
             StaticNetSerializer_SimInputCheatNextTurn.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [54] = (reader) =>
+        [55] = (reader) =>
+        {
+            SimInputCheatRemoveAllCooldowns obj = new SimInputCheatRemoveAllCooldowns();
+            StaticNetSerializer_SimInputCheatRemoveAllCooldowns.Deserialize(obj, reader);
+            return obj;
+        }
+        ,
+        [56] = (reader) =>
         {
             SimInputCheatTeleport obj = new SimInputCheatTeleport();
             StaticNetSerializer_SimInputCheatTeleport.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [55] = (reader) =>
+        [57] = (reader) =>
         {
             SimInputCheatToggleInvincible obj = new SimInputCheatToggleInvincible();
             StaticNetSerializer_SimInputCheatToggleInvincible.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [56] = (reader) =>
+        [58] = (reader) =>
         {
             SimInputPlayerCreate obj = new SimInputPlayerCreate();
             StaticNetSerializer_SimInputPlayerCreate.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [57] = (reader) =>
+        [59] = (reader) =>
         {
             SimInputSetPlayerActive obj = new SimInputSetPlayerActive();
             StaticNetSerializer_SimInputSetPlayerActive.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [58] = (reader) =>
+        [60] = (reader) =>
         {
             SimInputSubmission obj = new SimInputSubmission();
             StaticNetSerializer_SimInputSubmission.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [59] = (reader) =>
+        [61] = (reader) =>
+        {
+            SimPlayerInputClickSignalEmitter obj = new SimPlayerInputClickSignalEmitter();
+            StaticNetSerializer_SimPlayerInputClickSignalEmitter.Deserialize(obj, reader);
+            return obj;
+        }
+        ,
+        [62] = (reader) =>
         {
             SimPlayerInputDropItem obj = new SimPlayerInputDropItem();
             StaticNetSerializer_SimPlayerInputDropItem.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [60] = (reader) =>
+        [63] = (reader) =>
         {
             SimPlayerInputEquipItem obj = new SimPlayerInputEquipItem();
             StaticNetSerializer_SimPlayerInputEquipItem.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [61] = (reader) =>
+        [64] = (reader) =>
         {
             SimPlayerInputNextTurn obj = new SimPlayerInputNextTurn();
             StaticNetSerializer_SimPlayerInputNextTurn.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [62] = (reader) =>
+        [65] = (reader) =>
         {
             SimPlayerInputSelectStartingInventory obj = new SimPlayerInputSelectStartingInventory();
             StaticNetSerializer_SimPlayerInputSelectStartingInventory.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [63] = (reader) =>
+        [66] = (reader) =>
         {
             SimPlayerInputSetPawnDoodle obj = new SimPlayerInputSetPawnDoodle();
             StaticNetSerializer_SimPlayerInputSetPawnDoodle.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [64] = (reader) =>
+        [67] = (reader) =>
         {
             SimPlayerInputSetPawnName obj = new SimPlayerInputSetPawnName();
             StaticNetSerializer_SimPlayerInputSetPawnName.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [65] = (reader) =>
-        {
-            SimPlayerInputUseInteractable obj = new SimPlayerInputUseInteractable();
-            StaticNetSerializer_SimPlayerInputUseInteractable.Deserialize(obj, reader);
-            return obj;
-        }
-        ,
-        [66] = (reader) =>
+        [68] = (reader) =>
         {
             SimPlayerInputUseItem obj = new SimPlayerInputUseItem();
             StaticNetSerializer_SimPlayerInputUseItem.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [67] = (reader) =>
+        [69] = (reader) =>
         {
             SimPlayerInputUseObjectGameAction obj = new SimPlayerInputUseObjectGameAction();
             StaticNetSerializer_SimPlayerInputUseObjectGameAction.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [68] = (reader) =>
+        [70] = (reader) =>
         {
             SimulationControl.NetMessageSimTick obj = new SimulationControl.NetMessageSimTick();
             StaticNetSerializer_SimulationControl_NetMessageSimTick.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [69] = (reader) =>
+        [71] = (reader) =>
         {
             SimulationControl.SimTickData obj = new SimulationControl.SimTickData();
             StaticNetSerializer_SimulationControl_SimTickData.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [70] = (reader) =>
+        [72] = (reader) =>
         {
             SyncedValueCurrentLevel obj = new SyncedValueCurrentLevel();
             StaticNetSerializer_SyncedValueCurrentLevel.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [71] = (reader) =>
+        [73] = (reader) =>
         {
             TestMessage obj = new TestMessage();
             StaticNetSerializer_TestMessage.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [72] = (reader) =>
+        [74] = (reader) =>
         {
             TestMessageAnimal obj = new TestMessageAnimal();
             StaticNetSerializer_TestMessageAnimal.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [73] = (reader) =>
+        [75] = (reader) =>
         {
             TestMessageCat obj = new TestMessageCat();
             StaticNetSerializer_TestMessageCat.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [74] = (reader) =>
+        [76] = (reader) =>
         {
             TestMessageDog obj = new TestMessageDog();
             StaticNetSerializer_TestMessageDog.Deserialize(obj, reader);
             return obj;
         }
         ,
-        [75] = (reader) =>
+        [77] = (reader) =>
         {
             Unity.Mathematics.int2 obj = new Unity.Mathematics.int2();
             StaticNetSerializer_Unity_Mathematics_int2.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [76] = (reader) =>
+        [78] = (reader) =>
         {
             UnityEngine.Vector2 obj = new UnityEngine.Vector2();
             StaticNetSerializer_UnityEngine_Vector2.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [77] = (reader) =>
+        [79] = (reader) =>
         {
             UnityEngine.Vector3 obj = new UnityEngine.Vector3();
             StaticNetSerializer_UnityEngine_Vector3.Deserialize(ref obj, reader);
             return obj;
         }
         ,
-        [78] = (reader) =>
+        [80] = (reader) =>
         {
             UnityEngine.Vector4 obj = new UnityEngine.Vector4();
             StaticNetSerializer_UnityEngine_Vector4.Deserialize(ref obj, reader);
