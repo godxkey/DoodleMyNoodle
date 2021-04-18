@@ -25,15 +25,16 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
     [Serializable]
     public class CursorSetting
     {
-        public Texture2D Icon;
-        public Texture2D ClickedIcon;
-        public Vector2 HotSpotRatio;
+        public Sprite Icon;
+        public Sprite ClickedIcon;
         public CursorType Type = CursorType.Default;
-        public CursorMode Mode = CursorMode.Auto;
+        public Vector2 Displacement = new Vector2(0, 0);
+        public float Scale = 1;
     }
 
     [SerializeField] private List<CursorSetting> CursorSettings = new List<CursorSetting>();
 
+    [SerializeField] private GameObject _cursorPrefab;
     [SerializeField] private GameObject _tooltipPrefab;
     [SerializeField] private float _tooltipUpdateDelay;
     [SerializeField] private float _tooltipScreenEdgeToolTipLimit = 200.0f;
@@ -47,6 +48,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
     private CursorSetting _previousSetting;
     private CursorSetting _currentSetting;
 
+    private GameObject _currentCursor;
     private GameObject _currentTooltip;
 
     private Vector3 _previousMousePosition;
@@ -69,7 +71,9 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
     // Input and fluid position update
     private void Update()
     {
-        UpdateTooltipPosition();
+        Cursor.visible = false;
+
+        UpdateAllPosition();
 
         if (_currentSetting != null)
         {
@@ -175,11 +179,16 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         return false;
     }
 
-    private void UpdateTooltipPosition()
+    private void UpdateAllPosition()
     {
         if (_currentTooltip == null)
         {
             _currentTooltip = Instantiate(_tooltipPrefab);
+        }
+
+        if (_currentCursor == null)
+        {
+            _currentCursor = Instantiate(_cursorPrefab);
         }
 
         bool exitRight = Input.mousePosition.x >= (Screen.width - _tooltipScreenEdgeToolTipLimit);
@@ -195,6 +204,17 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         {
             tooltipTransform.position = Input.mousePosition + new Vector3(displacementRatioX, displacementRatioY, 0);
         }
+
+        Transform cursorTransform = GetCursor().transform;
+        if (cursorTransform != null)
+        {
+            cursorTransform.position = Input.mousePosition + new Vector3(_currentSetting.Displacement.x, _currentSetting.Displacement.y, 0);
+        }
+    }
+
+    private Image GetCursor()
+    {
+        return _currentCursor.transform.GetComponentInChildren<Image>();
     }
 
     public void ResetCursorToDefault()
@@ -223,47 +243,15 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
             }
 
             _isColored = false;
-            Cursor.SetCursor(setting.Icon, GetHotSpot(setting), setting.Mode);
+            SetCursorIcon(setting.Icon, _currentSetting.Scale);
         }
     }
 
     public void SetCursorColor(Color color)
     {
-        // Copy texture
-        Texture2D coloredTexture;
-        if (_isInClickMode && _currentSetting.ClickedIcon != null)
-        {
-            coloredTexture = new Texture2D(_currentSetting.ClickedIcon.width, _currentSetting.ClickedIcon.height, TextureFormat.RGBA32, false);
-            coloredTexture.SetPixels(_currentSetting.ClickedIcon.GetPixels());
-        }
-        else
-        {
-            coloredTexture = new Texture2D(_currentSetting.Icon.width, _currentSetting.Icon.height, TextureFormat.RGBA32, false);
-            coloredTexture.SetPixels(_currentSetting.Icon.GetPixels());
-        }
-
-        // Color It
-        for (int y = 0; y < coloredTexture.height; y++)
-        {
-            for (int x = 0; x < coloredTexture.width; x++)
-            {
-                Color currentColor = coloredTexture.GetPixel(x, y);
-                if (currentColor == Color.white)
-                {
-                    coloredTexture.SetPixel(x, y, color);
-                }
-            }
-        }
-
-        //coloredTexture.alphaIsTransparency = true;
-
-        // Apply changes
-        coloredTexture.Apply();
-
-        // Change Cursor
+        GetCursor().color = color;
         _lastColor = color;
         _isColored = true;
-        Cursor.SetCursor(coloredTexture, GetHotSpot(_currentSetting), _currentSetting.Mode);
     }
 
     public void SetCursorClickMode()
@@ -276,7 +264,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
             }
             else
             {
-                Cursor.SetCursor(_currentSetting.ClickedIcon, GetHotSpot(_currentSetting), _currentSetting.Mode);
+                SetCursorIcon(_currentSetting.ClickedIcon, _currentSetting.Scale);
             }
         }
     }
@@ -291,7 +279,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
             }
             else
             {
-                Cursor.SetCursor(_currentSetting.Icon, GetHotSpot(_currentSetting), _currentSetting.Mode);
+                SetCursorIcon(_currentSetting.Icon, _currentSetting.Scale);
             }
         }
     }
@@ -309,14 +297,15 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         return null;
     }
 
-    private Vector2 GetHotSpot(CursorSetting setting)
-    {
-        return new Vector2(setting.Icon.width / setting.HotSpotRatio.x, setting.Icon.height / setting.HotSpotRatio.y);
-    }
-
     private void SetCurrentSetting(CursorSetting setting)
     {
         _previousSetting = _currentSetting;
         _currentSetting = setting;
+    }
+
+    private void SetCursorIcon(Sprite sprite, float scale)
+    {
+        GetCursor().transform.localScale = new Vector3(scale, scale, scale);
+        GetCursor().sprite = sprite;
     }
 }

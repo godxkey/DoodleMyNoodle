@@ -19,16 +19,21 @@ public partial class LocalizationWindow : EditorWindow
         // Get existing open window or if none, make a new one:
         LocalizationWindow window = (LocalizationWindow)EditorWindow.GetWindow(typeof(LocalizationWindow));
 
+        window.Show();
+    }
+
+    private void OnEnable()
+    {
         string[] settingsGUID = AssetDatabase.FindAssets(LocalizationManager.LOCALIZATION_SETTING_FILENAME, null);
         if (settingsGUID.Length > 0)
         {
             string settingPath = AssetDatabase.GUIDToAssetPath(settingsGUID[0]);
-            window.SavedSettings = (LocalizationSettings)AssetDatabase.LoadAssetAtPath(settingPath, typeof(LocalizationSettings));
+            SavedSettings = (LocalizationSettings)AssetDatabase.LoadAssetAtPath(settingPath, typeof(LocalizationSettings));
 
-            if (window.SavedSettings)
+            if (SavedSettings)
             {
-                window.Localizations = window.SavedSettings.Localizations;
-                window.Languages = window.SavedSettings.Languages;
+                Localizations = SavedSettings.Localizations;
+                Languages = SavedSettings.Languages;
                 Debug.Log("Localization Settings successfully loaded");
             }
             else
@@ -40,8 +45,6 @@ public partial class LocalizationWindow : EditorWindow
         {
             Debug.LogError("Localization Settings couldn't be found. Localization won't be saved");
         }
-
-        window.Show();
     }
 
     void OnGUI()

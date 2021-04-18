@@ -94,12 +94,13 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
     #region Skip Character Creation
     private static bool s_consoleSkipCharacterCreation = false;
 
-    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs, EnableGroup = SimulationCheats.LOCAL_PAWN_GROUP)]
+    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
     public static bool SkipCharacterCreation
     {
         get => s_consoleSkipCharacterCreation;
         set
         {
+            Debug.Log($"Setting Skip Character Creation : {value}");
             s_consoleSkipCharacterCreation = value;
         }
     }

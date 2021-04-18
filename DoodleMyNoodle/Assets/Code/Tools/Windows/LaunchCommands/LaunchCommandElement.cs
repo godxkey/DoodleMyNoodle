@@ -94,6 +94,8 @@ public class LaunchCommandElement : ToolsVisualElementBase
             item.SetEnabled(data.Active);
         }
 
+        OnParameterModified();
+
         string TryPopParam()
         {
             if (data.Parameters == null)

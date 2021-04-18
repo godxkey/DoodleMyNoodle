@@ -16,6 +16,11 @@ public class DoodleLibraryButton : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        CharacterCreationDoodleDraw.Instance.LibraryOpen = DoodleLibraryWindow.activeSelf;
+    }
+
     private void OnButtonClicked()
     {
         if (DoodleLibraryWindow != null)
