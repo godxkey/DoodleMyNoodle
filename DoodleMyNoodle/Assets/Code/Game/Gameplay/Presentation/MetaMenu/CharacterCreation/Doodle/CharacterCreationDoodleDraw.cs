@@ -32,6 +32,8 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
 
     public bool IsLibraryLoaded { get { return _libraryLoaded; } }
 
+    public bool LibraryOpen = false;
+
     private bool _libraryLoaded = false;
     private Color _previousColor = Color.white;
     private bool _wasHoveringDoodle = false;
@@ -98,6 +100,11 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
 
     private void Update()
     {
+        if (LibraryOpen)
+        {
+            return;
+        }
+
         if (CursorOverlayService.Instance.IsHoveringAny(_uPaint.gameObject.transform.GetAllChildren()))
         {
             if (!_wasHoveringDoodle)
