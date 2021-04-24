@@ -1,4 +1,4 @@
-﻿
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -7,6 +7,16 @@ using Unity.Entities;
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 public class InstantiateStartingInventorySystem : SimSystemBase
 {
+    private GlobalItemBankSystem _itemBankSystem;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        _itemBankSystem = World.GetOrCreateSystem<GlobalItemBankSystem>();
+
+        RequireSingletonForUpdate<GlobalItemBankTag>();
+    }
+
     protected override void OnUpdate()
     {
         Entities
@@ -14,27 +24,28 @@ public class InstantiateStartingInventorySystem : SimSystemBase
             .ForEach((Entity entity, DynamicBuffer<StartingInventoryItem> startingInventoryBuffer) =>
             {
                 NativeArray<StartingInventoryItem> startingInventory = startingInventoryBuffer.ToNativeArray(Allocator.Temp);
-                NativeArray<Entity> itemInstances = new NativeArray<Entity>(startingInventory.Length, Allocator.Temp);
+                NativeArray<(Entity item, int stack)> itemTransfers = new NativeArray<(Entity item, int stack)>(startingInventoryBuffer.Length, Allocator.Temp);
 
-                // Spawn items
+                var random = World.Random();
+
                 for (int i = 0; i < startingInventory.Length; i++)
                 {
-                    itemInstances[i] = EntityManager.Instantiate(startingInventory[i].ItemEntityPrefab);
+                    var itemInstance = _itemBankSystem.GetItemInstance(startingInventory[i].ItemAssetId);
+                    itemTransfers[i] = (itemInstance, random.NextInt(startingInventory[i].StacksMin, startingInventory[i].StacksMax));
                 }
 
-                // Add item references into inventory
-                DynamicBuffer<InventoryItemReference> inventory = GetBuffer<InventoryItemReference>(entity);
-
-                foreach (Entity itemInstance in itemInstances)
+                ItemTransationBatch itemTransationBatch = new ItemTransationBatch()
                 {
-                    if (!CommonReads.IsInventoryFull(Accessor, entity) || !CommonWrites.TryIncrementStackableItemInInventory(Accessor, entity, itemInstance, inventory))
-                    {
-                        inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
-                    }
-                }
+                    Source = null,
+                    Destination = entity,
+                    ItemsAndStacks = itemTransfers,
+                    OutResults = default
+                };
+
+                CommonWrites.ExecuteItemTransaction(Accessor, itemTransationBatch);
 
                 // Passive stuff
-                foreach (var item in inventory)
+                foreach (var item in GetBuffer<InventoryItemReference>(entity))
                 {
                     ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
                     {
@@ -54,9 +65,6 @@ public class InstantiateStartingInventorySystem : SimSystemBase
                         }
                     }
                 }
-
-                itemInstances.Dispose();
-                startingInventory.Dispose();
 
                 // Remove starting inventory buffer
                 EntityManager.RemoveComponent<StartingInventoryItem>(entity);

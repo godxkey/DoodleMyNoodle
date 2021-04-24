@@ -8,21 +8,27 @@ using UnityEngineX;
 [RequiresEntityConversion]
 public class GlobalItemBankAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
-    public ItemBank Bank;
+    public GlobalItemBank Bank;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new GlobalItemPrefabBankSingletonTag());
+        dstManager.AddComponentData(entity, new GlobalItemBankTag());
+        dstManager.AddBuffer<GlobalItemBankInstanceElement>(entity);
+        dstManager.AddBuffer<GlobalItemBankSimAssetIdElement>(entity);
 
-        DynamicBuffer<ItemBankPrefabReference> itemBank = dstManager.AddBuffer<ItemBankPrefabReference>(entity);
+        var prefabBuffer = dstManager.AddBuffer<GlobalItemBankPrefabElement>(entity);
 
-        foreach (GameObject item in Bank.Items)
+        foreach (ItemAuth item in Bank.Items)
         {
-            Entity itemEntity = conversionSystem.GetPrimaryEntity(item);
+            if (item == null)
+                continue;
 
-            ItemBankPrefabReference newItemPrefabReference = new ItemBankPrefabReference() { ItemEntityPrefab = itemEntity };
+            Entity itemPrefabEntity = conversionSystem.GetPrimaryEntity(item.gameObject);
 
-            itemBank.Add(newItemPrefabReference);
+            if (itemPrefabEntity == Entity.Null)
+                continue;
+
+            prefabBuffer.Add(itemPrefabEntity);
         }
     }
 
@@ -30,7 +36,13 @@ public class GlobalItemBankAuth : MonoBehaviour, IConvertGameObjectToEntity, IDe
     {
         if (Bank != null)
         {
-            referencedPrefabs.AddRange(Bank.Items);
+            foreach (ItemAuth item in Bank.Items)
+            {
+                if (item != null)
+                {
+                    referencedPrefabs.Add(item.gameObject);
+                }
+            }
         }
     }
 }

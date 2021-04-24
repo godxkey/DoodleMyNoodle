@@ -18,12 +18,6 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
     [SerializeField] private Transform _itemDescriptionContainer;
     [SerializeField] private TooltipItemDescription _itemDescriptionPrefab;
 
-    [SerializeField] private Color _common = Color.white;
-    [SerializeField] private Color _uncommon = Color.green;
-    [SerializeField] private Color _rare = Color.blue;
-    [SerializeField] private Color _mythic = Color.magenta;
-    [SerializeField] private Color _legendary = Color.yellow;
-
     [SerializeField] private float _screenEdgeToolTipLimit = 200.0f;
     [SerializeField] private float _displayDelay = 2.0f;
 
@@ -160,11 +154,11 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
             _descriptionData.Add(new DescriptionData(gameActionAuth.EffectDescription, Color.white, true));
 
             // Game Action Settings
-            foreach (GameActionSettingAuthBase GameActionSetting in gameActionAuth.GameActionSettings)
+            foreach (GameActionSettingAuthBase gameActionSetting in gameActionAuth.GameActionSettings)
             {
-                if (GameActionSetting is IItemSettingDescription)
+                if (gameActionSetting is IItemSettingDescription)
                 {
-                    _descriptionData.Add(new DescriptionData(((IItemSettingDescription)GameActionSetting).GetDescription(), Color.white, true));
+                    _descriptionData.Add(new DescriptionData(((IItemSettingDescription)gameActionSetting).GetDescription(), Color.white, true));
                 }
             }
 
@@ -172,11 +166,6 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
             if(gameActionAuth.HasCooldown)
             {
                 _descriptionData.Add(new DescriptionData(gameActionAuth.CooldownAuth.GetDescription(), Color.white, true));
-            }
-
-            if (gameActionAuth.gameObject.TryGetComponent(out ItemStackableDataAuth stackAuth))
-            {
-                _descriptionData.Add(new DescriptionData(stackAuth.GetDescription(), Color.white, true));
             }
         }
 

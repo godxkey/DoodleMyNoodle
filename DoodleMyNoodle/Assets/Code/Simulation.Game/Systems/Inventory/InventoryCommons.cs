@@ -4,95 +4,281 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-internal partial class CommonWrites
+public struct ItemTransation
 {
-    // We keep the item reference into the inventory / container even after transfering the items
-    public static void InstantiateToEntityInventory(ISimWorldReadWriteAccessor accessor, Entity destinationEntity, DynamicBuffer<InventoryItemPrefabReference> sourceItemsBuffer)
+    public Entity? Source;
+    public Entity? Destination;
+    public Entity Item;
+    public int Stacks;
+}
+
+public struct ItemTransationBatch
+{
+    public Entity? Source;
+    public Entity? Destination;
+    public NativeArray<(Entity item, int stacks)> ItemsAndStacks;
+    public NativeArray<ItemTransactionResult> OutResults;
+}
+
+public enum ItemTransactionResultType
+{
+    Failed_BadTransationRequest,
+    Failed_ItemNotFoundInSource,
+    Failed_SourceStack0,
+    Failed_UniqueItemAlreadyInDestination,
+    Failed_DestinationFull,
+    Failed_SourceInvalid,
+    Failed_DestinationInvalid,
+    Success
+}
+
+public struct ItemTransactionResult
+{
+    public ItemTransactionResultType Type;
+    public int StacksTransfered;
+
+    public bool HasFailed => Type != ItemTransactionResultType.Success;
+    public bool HasSucceeded => Type == ItemTransactionResultType.Success;
+
+    public ItemTransactionResult(ItemTransactionResultType failureType)
     {
-        if (sourceItemsBuffer.Length <= 0)
-            return;
-
-        NativeArray<InventoryItemPrefabReference> sourceItems = sourceItemsBuffer.ToNativeArray(Allocator.Temp);
-        NativeArray<Entity> itemInstances = new NativeArray<Entity>(sourceItems.Length, Allocator.Temp);
-
-        // Spawn items
-        for (int i = 0; i < sourceItems.Length; i++)
-        {
-            itemInstances[i] = accessor.Instantiate(sourceItems[i].ItemEntityPrefab);
-        }
-
-        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(destinationEntity);
-        foreach (Entity itemInstance in itemInstances)
-        {
-            if (!CommonReads.IsInventoryFull(accessor, destinationEntity) || !TryIncrementStackableItemInInventory(accessor, destinationEntity, itemInstance, inventory))
-            {
-                inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
-            }
-        }
+        Type = failureType;
+        StacksTransfered = 0;
     }
 
-    public static bool TryIncrementStackableItemInInventory(ISimWorldReadWriteAccessor accessor, Entity InventoryEntity, Entity sourceItemEntity, DynamicBuffer<InventoryItemReference> inventory, int count = 1)
+    public ItemTransactionResult(int stackTransfered)
     {
-        SimAssetId sourceItemID = accessor.GetComponentData<SimAssetId>(sourceItemEntity);
-
-        foreach (InventoryItemReference itemRef in inventory)
-        {
-            SimAssetId inventoryItemID = accessor.GetComponentData<SimAssetId>(itemRef.ItemEntity);
-
-            // Found an identical item in destination inventory
-            if (sourceItemID.Value == inventoryItemID.Value)
-            {
-                // Does the item present in destination inventory is stackable
-                if (accessor.TryGetComponentData(itemRef.ItemEntity, out ItemStackableData stackableData))
-                {
-                    // Stack it, and notify caller transfer is not necesary
-                    accessor.SetComponentData(itemRef.ItemEntity, new ItemStackableData() { Value = stackableData.Value + count });
-
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public static void DecrementStackableItemInInventory(ISimWorldReadWriteAccessor accessor, Entity InventoryEntity, Entity sourceItemEntity)
-    {
-        if (accessor.TryGetComponentData(sourceItemEntity, out ItemStackableData stackableData))
-        {
-            if (stackableData.Value <= 1)
-            {
-                DynamicBuffer<InventoryItemReference> inventory = accessor.GetBuffer<InventoryItemReference>(InventoryEntity);
-
-                for (int i = 0; i < inventory.Length; i++)
-                {
-                    // Found an identical item in destination inventory
-                    if (sourceItemEntity == inventory[i].ItemEntity)
-                    {
-                        inventory.RemoveAt(i);
-                        accessor.DestroyEntity(sourceItemEntity);
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                // Stack it, and notify caller transfer is not necesary
-                accessor.SetComponentData(sourceItemEntity, new ItemStackableData() { Value = stackableData.Value - 1 });
-            }
-
-            return;
-        }
+        Type = ItemTransactionResultType.Success;
+        StacksTransfered = stackTransfered;
     }
 }
 
-public partial class CommonReads
+internal partial class CommonWrites
 {
-    public static bool IsInventoryFull(ISimWorldReadAccessor accessor, Entity destinationEntity)
+    public static ItemTransactionResult DecrementItem(ISimWorldReadWriteAccessor accessor, Entity item, Entity source, int stacks = 1)
     {
-        DynamicBuffer<InventoryItemReference> inventory = accessor.GetBufferReadOnly<InventoryItemReference>(destinationEntity);
-        InventoryCapacity inventorySize = accessor.GetComponentData<InventoryCapacity>(destinationEntity);
+        ItemTransation transaction = new ItemTransation()
+        {
+            Source = source,
+            Destination = null,
+            Stacks = stacks,
+            Item = item,
+        };
 
-        return inventory.Length >= inventorySize.Value;
+        return ExecuteItemTransaction(accessor, transaction);
+    }
+
+    public static ItemTransactionResult IncrementItem(ISimWorldReadWriteAccessor accessor, Entity item, Entity destination, int stacks = 1)
+    {
+        ItemTransation transaction = new ItemTransation()
+        {
+            Source = null,
+            Destination = destination,
+            Stacks = stacks,
+            Item = item,
+        };
+
+        return ExecuteItemTransaction(accessor, transaction);
+    }
+
+    public static ItemTransactionResult MoveItemAll(ISimWorldReadWriteAccessor accessor, Entity item, Entity source, Entity destination)
+    {
+        return MoveItem(accessor, item, source, destination, int.MaxValue);
+    }
+
+    public static ItemTransactionResult MoveItem(ISimWorldReadWriteAccessor accessor, Entity item, Entity source, Entity destination, int stacks = 1)
+    {
+        ItemTransation transaction = new ItemTransation()
+        {
+            Source = source,
+            Destination = destination,
+            Stacks = stacks,
+            Item = item,
+        };
+
+        return ExecuteItemTransaction(accessor, transaction);
+    }
+
+    public static void ExecuteItemTransaction(ISimWorldReadWriteAccessor accessor, ItemTransationBatch transaction)
+    {
+        int destinationCap, sourceCap;
+        DynamicBuffer<InventoryItemReference>? sourceBuffer, destinationBuffer;
+        GetTransationInfo(accessor, transaction.Source, out sourceCap, out sourceBuffer);
+        GetTransationInfo(accessor, transaction.Destination, out destinationCap, out destinationBuffer);
+
+        for (int i = 0; i < transaction.ItemsAndStacks.Length; i++)
+        {
+            var report = ExecuteItemTransaction_Internal(accessor,
+                item: transaction.ItemsAndStacks[i].item,
+                source: sourceBuffer,
+                destination: destinationBuffer,
+                stacks: transaction.ItemsAndStacks[i].stacks,
+                sourceCapacity: sourceCap,
+                destinationCapacity: destinationCap);
+
+            if (transaction.OutResults.IsCreated && transaction.OutResults.Length > i)
+            {
+                transaction.OutResults[i] = report;
+            }
+        }
+    }
+
+    public static ItemTransactionResult ExecuteItemTransaction(ISimWorldReadWriteAccessor accessor, ItemTransation transaction)
+    {
+        int destinationCap, sourceCap;
+        DynamicBuffer<InventoryItemReference>? sourceBuffer, destinationBuffer;
+        GetTransationInfo(accessor, transaction.Source, out sourceCap, out sourceBuffer);
+        GetTransationInfo(accessor, transaction.Destination, out destinationCap, out destinationBuffer);
+
+        return ExecuteItemTransaction_Internal(accessor,
+            item: transaction.Item,
+            source: sourceBuffer,
+            destination: destinationBuffer,
+            stacks: transaction.Stacks,
+            sourceCapacity: sourceCap,
+            destinationCapacity: destinationCap);
+    }
+
+    private static void GetTransationInfo(ISimWorldReadWriteAccessor accessor, Entity? sourceOrDestination, out int cap, out DynamicBuffer<InventoryItemReference>? buffer)
+    {
+        cap = accessor.HasComponent<InventoryCapacity>(sourceOrDestination.GetValueOrDefault())
+            ? accessor.GetComponentData<InventoryCapacity>(sourceOrDestination.Value) : default;
+
+        buffer = accessor.HasComponent<InventoryItemReference>(sourceOrDestination.GetValueOrDefault())
+            ? (DynamicBuffer<InventoryItemReference>?)accessor.GetBuffer<InventoryItemReference>(sourceOrDestination.Value) : null;
+    }
+
+    /// <param name="accessor"></param>
+    /// <param name="item">The item to transfer</param>
+    /// <param name="source">The source inventory</param>
+    /// <param name="destination">The destination inventory</param>
+    /// <param name="stacks">How many stacks to move. Use -1 to specify 'all' stacks</param>
+    /// <param name="destinationCapacity">The capacity of the destination inventory</param>
+    private static ItemTransactionResult ExecuteItemTransaction_Internal(ISimWorldReadWriteAccessor accessor
+        , Entity item
+        , DynamicBuffer<InventoryItemReference>? source
+        , DynamicBuffer<InventoryItemReference>? destination
+        , int stacks
+        , int sourceCapacity
+        , int destinationCapacity
+        )
+    {
+        if (stacks == 0)
+            return new ItemTransactionResult(stackTransfered: 0);
+
+        if (stacks < 0) // invert source and destination ?
+        {
+            var temp1 = source;
+            var temp2 = sourceCapacity;
+            source = destination;
+            sourceCapacity = destinationCapacity;
+            destination = temp1;
+            destinationCapacity = temp2;
+            stacks = -stacks;
+        }
+
+        if (!accessor.Exists(item))
+            return new ItemTransactionResult(ItemTransactionResultType.Failed_BadTransationRequest);
+
+        if (source != null && !source.Value.IsCreated)
+            return new ItemTransactionResult(ItemTransactionResultType.Failed_SourceInvalid);
+
+        if (destination != null && !destination.Value.IsCreated)
+            return new ItemTransactionResult(ItemTransactionResultType.Failed_DestinationInvalid);
+
+        var sourceIndex = -1;
+        var destinationIndex = -1;
+        var itemStackable = accessor.GetComponentData<StackableFlag>(item);
+        var sourceBuffer = source.GetValueOrDefault();
+        var destinationBuffer = destination.GetValueOrDefault();
+
+        if (sourceBuffer.IsCreated) // Find item in source
+        {
+            for (int i = 0; i < sourceBuffer.Length; i++)
+            {
+                if (sourceBuffer[i].ItemEntity == item)
+                {
+                    sourceIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (destinationBuffer.IsCreated) // Find item in destination
+        {
+            for (int i = 0; i < destinationBuffer.Length; i++)
+            {
+                if (destinationBuffer[i].ItemEntity == item)
+                {
+                    destinationIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (sourceBuffer.IsCreated && sourceIndex == -1)
+        {
+            return new ItemTransactionResult(ItemTransactionResultType.Failed_ItemNotFoundInSource);
+        }
+
+        if (destinationBuffer.IsCreated && destinationIndex == -1 && destinationBuffer.Length >= destinationCapacity)
+        {
+            return new ItemTransactionResult(ItemTransactionResultType.Failed_DestinationFull);
+        }
+
+        // cap stacks
+        if (sourceIndex >= 0)
+        {
+            stacks = min(stacks, sourceBuffer[sourceIndex].Stacks);
+            if (stacks == 0)
+                return new ItemTransactionResult(ItemTransactionResultType.Failed_SourceStack0);
+        }
+
+        if (!itemStackable)
+        {
+            stacks = 1;
+        }
+
+        // check unique item is not about to be added twice
+        if (!itemStackable && destinationIndex != -1 && destinationBuffer[destinationIndex].Stacks > 0)
+        {
+            return new ItemTransactionResult(ItemTransactionResultType.Failed_UniqueItemAlreadyInDestination);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Perform Transaction
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        // Remove from source
+        if (sourceIndex != -1)
+        {
+            // decrease stacks
+            var sourceEntry = sourceBuffer[sourceIndex];
+            sourceEntry.Stacks -= stacks;
+            sourceBuffer[sourceIndex] = sourceEntry;
+
+            if (sourceEntry.Stacks <= 0) // remove from source if 0 left
+            {
+                // remove from source
+                sourceBuffer.RemoveAt(sourceIndex);
+            }
+        }
+
+        if (destinationBuffer.IsCreated)
+        {
+            // not found ? add new reference
+            if (destinationIndex == -1)
+            {
+                destinationBuffer.Add(new InventoryItemReference() { ItemEntity = item, Stacks = 0 });
+                destinationIndex = destinationBuffer.Length - 1;
+            }
+
+            // increase stacks
+            var destinationEntry = destinationBuffer[destinationIndex];
+            destinationEntry.Stacks += stacks;
+            destinationBuffer[destinationIndex] = destinationEntry;
+        }
+
+        return new ItemTransactionResult(stacks);
     }
 }

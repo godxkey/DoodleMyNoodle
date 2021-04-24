@@ -72,15 +72,13 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
             {
                 if (i < inventory.Length)
                 {
-                    Entity item = inventory[i];
+                    Entity item = inventory[i].ItemEntity;
+                    int stacks = inventory[i].Stacks;
 
-                    int stacks = -1;
-                    if (SimWorld.TryGetComponentData(item, out ItemStackableData itemStackableData))
-                    {
-                        stacks = itemStackableData.Value;
-                    }
+                    if (stacks == 1 && !SimWorld.GetComponentData<StackableFlag>(item))
+                        stacks = -1; // used in display to hide stacks
 
-                    SimWorld.TryGetComponentData(inventory[i], out SimAssetId itemAssetId);
+                    SimWorld.TryGetComponentData(item, out SimAssetId itemAssetId);
                     ItemAuth itemGameActionAuth = PresentationHelpers.FindItemAuth(itemAssetId);
 
                     _slotVisuals[i].UpdateCurrentInventorySlot(itemGameActionAuth,

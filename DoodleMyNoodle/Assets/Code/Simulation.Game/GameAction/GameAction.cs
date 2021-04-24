@@ -238,9 +238,9 @@ public abstract class GameAction
     public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context, ResultData result)
     {
         // reduce consumable amount
-        if (accessor.TryGetComponentData(context.Item, out ItemStackableData itemStacked))
+        if (accessor.GetComponentData<StackableFlag>(context.Item))
         {
-            CommonWrites.DecrementStackableItemInInventory(accessor, context.InstigatorPawn, context.Item);
+            CommonWrites.DecrementItem(accessor, context.Item, context.InstigatorPawn);
         }
 
         // reduce instigator AP

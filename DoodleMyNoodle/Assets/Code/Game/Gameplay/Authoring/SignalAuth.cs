@@ -15,8 +15,9 @@ public class SignalAuth : MonoBehaviour, IConvertGameObjectToEntity
     {
         dstManager.AddComponent<Signal>(entity);
         dstManager.AddComponent<PreviousSignal>(entity);
-        dstManager.AddComponentData<SignalEmissionType>(entity, Emission);
         dstManager.AddComponent<SignalEmissionFlags>(entity);
+        dstManager.AddComponentData<InteractableFlag>(entity, Emission == ESignalEmissionType.OnClick || Emission == ESignalEmissionType.ToggleOnClick);
+        dstManager.AddComponentData<SignalEmissionType>(entity, Emission);
         var targetsECS = dstManager.AddBuffer<SignalPropagationTarget>(entity);
 
         foreach (var target in PropagationTargets)
@@ -28,12 +29,15 @@ public class SignalAuth : MonoBehaviour, IConvertGameObjectToEntity
 
     void OnValidate()
     {
-        for (int i = PropagationTargets.Count - 1; i >= 0; i--)
+        if (PropagationTargets != null)
         {
-            if (PropagationTargets[i] != null && !PropagationTargets[i].gameObject.scene.IsValid())
+            for (int i = PropagationTargets.Count - 1; i >= 0; i--)
             {
-                PropagationTargets.RemoveAt(i);
-                Log.Error($"Cannot reference an asset. {nameof(PropagationTargets)} needs to be a scene reference");
+                if (PropagationTargets[i] != null && !PropagationTargets[i].gameObject.scene.IsValid())
+                {
+                    PropagationTargets.RemoveAt(i);
+                    Log.Error($"Cannot reference an asset. {nameof(PropagationTargets)} needs to be a scene reference");
+                }
             }
         }
     }

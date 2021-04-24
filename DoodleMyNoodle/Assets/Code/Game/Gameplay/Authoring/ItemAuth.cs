@@ -43,10 +43,7 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
             CooldownAuth.Convert(entity, dstManager, conversionSystem);
         }
 
-        if (IsStackable)
-        {
-            dstManager.AddComponentData(entity, new ItemStackableData() { Value = 1 }); // 1 instance by default
-        }
+        dstManager.AddComponentData(entity, new StackableFlag() { Value = IsStackable });
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)

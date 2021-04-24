@@ -4,27 +4,30 @@ using Unity.Entities;
 public struct InventoryItemReference : IBufferElementData
 {
     public Entity ItemEntity;
-
-    public static implicit operator Entity(InventoryItemReference val) => val.ItemEntity;
-    public static implicit operator InventoryItemReference(Entity val) => new InventoryItemReference() { ItemEntity = val };
+    public int Stacks;
 }
 
 // used for item bundle added dynamicly while in game
 public struct InventoryItemPrefabReference : IBufferElementData
 {
     public Entity ItemEntityPrefab;
-
-    public static implicit operator Entity(InventoryItemPrefabReference val) => val.ItemEntityPrefab;
-    public static implicit operator InventoryItemPrefabReference(Entity val) => new InventoryItemPrefabReference() { ItemEntityPrefab = val };
+    public int Stacks;
 }
 
 // Used for default base inventory when creating it
 public struct StartingInventoryItem : IBufferElementData
 {
-    public Entity ItemEntityPrefab;
+    public SimAssetId ItemAssetId;
+    public int StacksMin;
+    public int StacksMax;
+}
 
-    public static implicit operator Entity(StartingInventoryItem val) => val.ItemEntityPrefab;
-    public static implicit operator StartingInventoryItem(Entity val) => new StartingInventoryItem() { ItemEntityPrefab = val };
+public struct StackableFlag : IComponentData
+{
+    public bool Value;
+
+    public static implicit operator bool(StackableFlag val) => val.Value;
+    public static implicit operator StackableFlag(bool val) => new StackableFlag() { Value = val };
 }
 
 public partial class CommonReads

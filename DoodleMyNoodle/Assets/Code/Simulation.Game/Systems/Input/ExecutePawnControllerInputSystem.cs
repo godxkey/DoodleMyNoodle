@@ -123,103 +123,48 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
 
     private void ExecuteDropItemInput(PawnControllerInputDropItem pawnInputDropItem, Entity pawn)
     {
-        FixTranslation pawnTranslation = GetComponent<FixTranslation>(pawn);
-        int2 pawnTile = Helpers.GetTile(pawnTranslation);
-        var tileWorld = CommonReads.GetTileWorld(Accessor);
-        if (!tileWorld.IsValid(pawnTile))
-        {
-            return;
-        }
-
-        // Does the player have an inventory with a valid item at 'ItemIndex' ?
-        if (!EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> p) ||
-            p.Length <= pawnInputDropItem.ItemIndex)
-        {
-            return;
-        }
+        FixTranslation pawnPos = GetComponent<FixTranslation>(pawn);
 
         // Searching for a chest entity
-        DynamicBuffer<InventoryItemReference> chestInventory = default;
-
-        Entity chestEntity = CommonReads.FindFirstTileActorWithComponent<InventoryItemReference, Interactable>(Accessor, tileWorld, pawnTile);
-        if (chestEntity != Entity.Null)
-        {
-            chestInventory = GetBuffer<InventoryItemReference>(chestEntity);
-        }
+        Entity chestEntity = FindChestInRange(pawnPos, pawn);
 
         // Didn't found an inventory, let's spawn one
-        if (!chestInventory.IsCreated)
+        if (chestEntity == Entity.Null)
         {
             InteractableInventoryPrefabReferenceSingletonComponent chestPrefab = GetSingleton<InteractableInventoryPrefabReferenceSingletonComponent>();
             chestEntity = EntityManager.Instantiate(chestPrefab.Prefab);
-            SetComponent(chestEntity, pawnTranslation);
-
-            chestInventory = Accessor.GetBuffer<InventoryItemReference>(chestEntity);
+            SetComponent(chestEntity, pawnPos);
         }
 
-        // Move item from player's inventory to chest inventory
-        if (!CommonReads.IsInventoryFull(Accessor, chestEntity))
+        // Does the player have an inventory with a valid item at 'ItemIndex' ?
+        if (!EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> pawnInventory) ||
+            pawnInventory.Length <= pawnInputDropItem.ItemIndex)
         {
-            DynamicBuffer<InventoryItemReference> pawnInventory = GetBuffer<InventoryItemReference>(pawn);
+            return;
+        }
 
-            Entity itemToMove = pawnInventory[pawnInputDropItem.ItemIndex].ItemEntity;
-            if (CommonWrites.TryIncrementStackableItemInInventory(Accessor, chestEntity, itemToMove, chestInventory))
+        var item = pawnInventory[pawnInputDropItem.ItemIndex].ItemEntity;
+
+        CommonWrites.MoveItemAll(Accessor, item, source: pawn, destination: chestEntity);
+
+        
+        /* // Disabled passive system code
+        List<ItemPassiveEffect> itemPassiveEffects = GetItemPassiveEffects(entityToGiveToChest);
+
+        ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
+        {
+            InstigatorPawn = pawn,
+            ItemEntity = entityToGiveToChest
+        };
+
+        foreach (ItemPassiveEffect itemPassiveEffect in itemPassiveEffects)
+        {
+            if (itemPassiveEffect != null)
             {
-                CommonWrites.DecrementStackableItemInInventory(Accessor, pawn, itemToMove);
-
-                List<ItemPassiveEffect> itemPassiveEffects = GetItemPassiveEffects(itemToMove);
-
-                ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
-                {
-                    InstigatorPawn = pawn,
-                    ItemEntity = itemToMove
-                };
-
-                foreach (ItemPassiveEffect itemPassiveEffect in itemPassiveEffects)
-                {
-                    if (itemPassiveEffect != null)
-                    {
-                        itemPassiveEffect.Unequip(Accessor, itemContext);
-                    }
-                }
-            }
-            else
-            {
-                Entity entityToGiveToChest;
-
-                // We did not find any stackable in destination inventory, but we want to transfer only one if stackable
-                if (HasComponent<ItemStackableData>(itemToMove))
-                {
-                    entityToGiveToChest = EntityManager.Instantiate(itemToMove);
-                    SetComponent(entityToGiveToChest, new ItemStackableData() { Value = 1 });
-                    CommonWrites.DecrementStackableItemInInventory(Accessor, pawn, itemToMove);
-                }
-                else
-                {
-                    entityToGiveToChest = itemToMove;
-                    pawnInventory.RemoveAt(pawnInputDropItem.ItemIndex);
-                }
-
-                chestInventory = GetBuffer<InventoryItemReference>(chestEntity);
-                chestInventory.Add(new InventoryItemReference() { ItemEntity = entityToGiveToChest });
-
-                List<ItemPassiveEffect> itemPassiveEffects = GetItemPassiveEffects(entityToGiveToChest);
-
-                ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
-                {
-                    InstigatorPawn = pawn,
-                    ItemEntity = entityToGiveToChest
-                };
-
-                foreach (ItemPassiveEffect itemPassiveEffect in itemPassiveEffects)
-                {
-                    if (itemPassiveEffect != null)
-                    {
-                        itemPassiveEffect.Unequip(Accessor, itemContext);
-                    }
-                }
+                itemPassiveEffect.Unequip(Accessor, itemContext);
             }
         }
+         */
     }
 
     private void ExecuteEquipItemInput(PawnControllerInputEquipItem pawnInputEquipItem, Entity pawn)
@@ -229,7 +174,7 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
             return;
 
         // Find chest inventory
-        Entity chestEntity = FindEntityInInteractableRange(pawnInputEquipItem.ItemEntityPosition, pawn);
+        Entity chestEntity = FindChestInRange(pawnInputEquipItem.ItemEntityPosition, pawn);
         if (chestEntity == Entity.Null || !EntityManager.HasComponent<InventoryItemReference>(chestEntity))
         {
             return;
@@ -242,69 +187,26 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
             return;
         }
 
-        // Get item to move
         Entity item = chestInventory[pawnInputEquipItem.ItemIndex].ItemEntity;
 
-        if (!CommonReads.IsInventoryFull(Accessor, pawn))
-        {
-            // Trying to increment stack on pawn and if succeed decrement original item on chest
-            if (CommonWrites.TryIncrementStackableItemInInventory(Accessor, pawn, item, GetBuffer<InventoryItemReference>(pawn)))
+        CommonWrites.MoveItemAll(Accessor, item, source: chestEntity, destination: pawn);
+
+        /* Disabled passive code
+         * 
+            ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
             {
-                CommonWrites.DecrementStackableItemInInventory(Accessor, chestEntity, item);
+                InstigatorPawn = pawn,
+                ItemEntity = item
+            };
 
-                List<ItemPassiveEffect> itemPassiveEffects = GetItemPassiveEffects(item);
-
-                ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
+            foreach (ItemPassiveEffect itemPassiveEffect in itemPassiveEffects)
+            {
+                if (itemPassiveEffect != null)
                 {
-                    InstigatorPawn = pawn,
-                    ItemEntity = item
-                };
-
-                foreach (ItemPassiveEffect itemPassiveEffect in itemPassiveEffects)
-                {
-                    if (itemPassiveEffect != null)
-                    {
-                        itemPassiveEffect.Equip(Accessor, itemContext);
-                    }
+                    itemPassiveEffect.Equip(Accessor, itemContext);
                 }
             }
-            else
-            {
-                Entity itemToGiveToPawn;
-
-                // We did not find any stackable in destination inventory, but we want to transfer only one if stackable
-                if (HasComponent<ItemStackableData>(item))
-                {
-                    itemToGiveToPawn = EntityManager.Instantiate(item);
-                    SetComponent(itemToGiveToPawn, new ItemStackableData() { Value = 1 });
-                    CommonWrites.DecrementStackableItemInInventory(Accessor, chestEntity, item);
-                }
-                else
-                {
-                    chestInventory.RemoveAt(pawnInputEquipItem.ItemIndex);
-                    itemToGiveToPawn = item;
-                }
-
-                // Move item from chest inventory to player's inventory
-                GetBuffer<InventoryItemReference>(pawn).Add(new InventoryItemReference() { ItemEntity = itemToGiveToPawn });
-
-                List<ItemPassiveEffect> itemPassiveEffects = GetItemPassiveEffects(item);
-
-                ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
-                {
-                    InstigatorPawn = pawn,
-                    ItemEntity = itemToGiveToPawn
-                };
-
-                foreach (ItemPassiveEffect itemPassiveEffect in itemPassiveEffects)
-                {
-                    if (itemPassiveEffect != null)
-                    {
-                        itemPassiveEffect.Equip(Accessor, itemContext);
-                    }
-                }
-            }
-        }
+         * */
     }
 
     private void ExecuteUseItemInput(PawnControllerInputUseItem inputUseItem, Entity pawn)
@@ -366,7 +268,7 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
 
     private void ExecuteUseInteractableInput(PawnControllerInputClickSignalEmitter inputClickEmitter, Entity pawn)
     {
-        Entity emitter = FindEntityInInteractableRange(inputClickEmitter.EmitterPosition, pawn);
+        Entity emitter = FindInteractableInRange(inputClickEmitter.EmitterPosition, pawn);
 
         if (emitter != Entity.Null && HasComponent<SignalEmissionType>(emitter))
         {
@@ -403,9 +305,21 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
         return result;
     }
 
-    private Entity FindEntityInInteractableRange(fix2 targetPosition, Entity pawn)
+    private Entity FindInteractableInRange(fix2 targetPosition, Entity pawn)
     {
-        Entity closest = FindNearestEntity(targetPosition);
+        return ValidateInRange(pawn, FindNearestInteractable(targetPosition));
+    }
+
+    private Entity FindChestInRange(fix2 targetPosition, Entity pawn)
+    {
+        return ValidateInRange(pawn, FindNearestChest(targetPosition));
+    }
+
+    private Entity ValidateInRange(Entity pawn, Entity closest)
+    {
+        if (closest == Entity.Null)
+            return Entity.Null;
+
         fix2 closestPosition = GetComponent<FixTranslation>(closest);
 
         fix2 pawnPosition = GetComponent<FixTranslation>(pawn);
@@ -415,14 +329,40 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
         return closest;
     }
 
-    private Entity FindNearestEntity(fix2 targetPosition)
+    private Entity FindNearestInteractable(fix2 targetPosition)
     {
         fix closestDistance = fix.MaxValue;
         Entity closestEntity = Entity.Null;
 
         Entities
-            .ForEach((Entity entity, in FixTranslation position) =>
+            .ForEach((Entity entity, in FixTranslation position, in InteractableFlag interactable) =>
             {
+                if (!interactable)
+                    return;
+
+                fix distance = fixMath.lengthmanhattan(position.Value - targetPosition);
+                if (distance < closestDistance)
+                {
+                    closestEntity = entity;
+                    closestDistance = distance;
+                }
+            }).Run();
+
+        return closestEntity;
+    }
+
+    private Entity FindNearestChest(fix2 targetPosition)
+    {
+        fix closestDistance = fix.MaxValue;
+        Entity closestEntity = Entity.Null;
+
+        Entities
+            .WithAll<InventoryItemReference>()
+            .ForEach((Entity entity, in FixTranslation position, in InteractableFlag interactable) =>
+            {
+                if (!interactable)
+                    return;
+
                 fix distance = fixMath.lengthmanhattan(position.Value - targetPosition);
                 if (distance < closestDistance)
                 {

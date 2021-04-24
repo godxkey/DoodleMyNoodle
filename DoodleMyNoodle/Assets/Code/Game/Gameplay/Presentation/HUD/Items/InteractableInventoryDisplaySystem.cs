@@ -15,7 +15,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
     [SerializeField] private Button _closeButton;
 
     private List<ItemSlot> _currentItemSlots = new List<ItemSlot>();
-    private List<Entity> _itemData = new List<Entity>();
+    private List<(Entity item, int stack)> _itemData = new List<(Entity item, int stack)>();
 
     private Entity _lastInventoryEntity = Entity.Null;
     private fix2 _lastInventoryPosition;
@@ -38,7 +38,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
     private void UpdateData()
     {
         _itemData.Clear();
-        
+
         if (!Cache.LocalPawnAlive)
             return;
 
@@ -52,7 +52,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
             return;
 
         fix2 pos = SimWorld.GetComponentData<FixTranslation>(_lastInventoryEntity);
-        
+
         if (fixMath.distancemanhattan(pos, Cache.LocalPawnPosition) > SimulationGameConstants.InteractibleMaxDistanceManhattan)
             return;
 
@@ -60,7 +60,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
 
         foreach (var item in items)
         {
-            _itemData.Add(item);
+            _itemData.Add((item.ItemEntity, item.Stacks));
         }
     }
 
@@ -74,7 +74,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
 
             for (int i = 0; i < _itemData.Count; i++)
             {
-                Entity item = _itemData[i];
+                Entity item = _itemData[i].item;
                 ItemSlot slot = _currentItemSlots[i];
 
                 if (SimWorld.TryGetComponentData(item, out SimAssetId itemIDComponent))
@@ -89,15 +89,11 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                         SimWorld.SubmitInput(simInputEquipItem);
                     };
 
-                    // Update Item Slot Stacks
-                    if (SimWorld.TryGetComponentData(item, out ItemStackableData itemStackableData))
-                    {
-                        _currentItemSlots[i].UpdateCurrentItemSlot(itemAuth, onClick, null, _lastInventoryEntity, itemStackableData.Value);
-                    }
-                    else
-                    {
-                        _currentItemSlots[i].UpdateCurrentItemSlot(itemAuth, onClick, null, _lastInventoryEntity);
-                    }
+                    int stacks = _itemData[i].stack;
+                    if (stacks == 1 && !SimWorld.GetComponentData<StackableFlag>(item))
+                        stacks = -1;
+
+                    _currentItemSlots[i].UpdateCurrentItemSlot(itemAuth, onClick, null, _lastInventoryEntity, stacks);
                 }
                 else
                 {

@@ -6,107 +6,49 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngineX;
 using CCC.InspectorDisplay;
+using System;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
+public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
-    public enum FillType
+    [Serializable]
+    public class ItemAndQuantity
     {
-        GlobalItemBank,
-        CustomItemBank,
-        CustomList
+        public GameObject Item;
+
+        [MinMaxSlider(0, 10)]
+        public Vector2Int Quantity = new Vector2Int(1, 1);
     }
 
-    [FormerlySerializedAs("Size")]
-    public int Capacity = 6;
-
-    public FillType FillingType = FillType.CustomList;
-
-    private bool IsGlobalItemBank { get { return FillingType == FillType.GlobalItemBank; } }
-    private bool IsCustomItemBank { get { return FillingType == FillType.CustomItemBank; } }
-    private bool IsRandom { get { return (IsGlobalItemBank || IsCustomItemBank); } }
-
-    [ShowIf("IsRandom")]
-    public int ConsumablesMaxAmount = 3;
-
-    [ShowIf("IsCustomItemBank")]
-    public ItemBank CustomItemBank;
-
-    [HideIf("IsRandom")] // TODO: Not working with list ?
+    public int Capacity = 9999;
     public List<GameObject> InitialItems = new List<GameObject>();
+    public List<ItemAndQuantity> StartingItems = new List<ItemAndQuantity>();
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new InventoryCapacity() { Value = Capacity });
-
         dstManager.AddBuffer<InventoryItemReference>(entity);
 
-        switch (FillingType)
+        DynamicBuffer<StartingInventoryItem> startingInventory = dstManager.AddBuffer<StartingInventoryItem>(entity);
+
+        foreach (ItemAndQuantity itemAndQuantity in StartingItems)
         {
-            case FillType.GlobalItemBank:
-
-                dstManager.AddComponentData(entity, new RandomInventoryInfo() { MaxConsumableAmount = ConsumablesMaxAmount });
-
+            if (startingInventory.Length >= Capacity)
                 break;
 
-            case FillType.CustomItemBank:
+            if (!itemAndQuantity.Item)
+                continue;
 
-                dstManager.AddComponentData(entity, new RandomInventoryInfo() { MaxConsumableAmount = ConsumablesMaxAmount });
+            if (!itemAndQuantity.Item.TryGetComponent(out SimAsset simAsset))
+                continue;
 
-                DynamicBuffer<ItemBankPrefabReference> itemBank = dstManager.AddBuffer<ItemBankPrefabReference>(entity);
-
-                foreach (GameObject item in CustomItemBank.Items)
-                {
-                    Entity itemEntity = conversionSystem.GetPrimaryEntity(item);
-
-                    ItemBankPrefabReference newItemPrefabReference = new ItemBankPrefabReference() { ItemEntityPrefab = itemEntity };
-
-                    itemBank.Add(newItemPrefabReference);
-                }
-
-                break;
-
-            case FillType.CustomList:
-
-                DynamicBuffer<StartingInventoryItem> startingInventory = dstManager.AddBuffer<StartingInventoryItem>(entity);
-
-                foreach (GameObject itemGO in InitialItems)
-                {
-                    if (startingInventory.Length >= Capacity)
-                        break;
-
-                    if (!itemGO)
-                        continue;
-
-                    startingInventory.Add(new StartingInventoryItem() { ItemEntityPrefab = conversionSystem.GetPrimaryEntity(itemGO) });
-                }
-
-                break;
-
-            default:
-
-                break;
-        }
-    }
-
-    public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
-    {
-        switch (FillingType)
-        {
-            case FillType.CustomItemBank:
-
-                if (CustomItemBank != null)
-                {
-                    referencedPrefabs.AddRange(CustomItemBank.Items);
-                }
-
-                break;
-            case FillType.CustomList:
-                referencedPrefabs.AddRange(InitialItems);
-                break;
-            default:
-                break;
+            startingInventory.Add(new StartingInventoryItem()
+            {
+                ItemAssetId = simAsset.GetSimAssetId(),
+                StacksMin = Mathf.Min(itemAndQuantity.Quantity.x, itemAndQuantity.Quantity.y),
+                StacksMax = Mathf.Max(itemAndQuantity.Quantity.x, itemAndQuantity.Quantity.y),
+            });
         }
     }
 }

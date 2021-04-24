@@ -144,35 +144,25 @@ public class HandleSimulationCheatsSystem : SimComponentSystem
                 if (EntityManager.Exists(player) &&
                     EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
                 {
-                    var allItems = EntityManager.GetBuffer<CheatsAllItemElement>(GetSingletonEntity<CheatsAllItemElement>()).ToNativeArray(Allocator.Temp);
-                    NativeArray<Entity> itemInstances = new NativeArray<Entity>(allItems.Length, Allocator.Temp);
+                    var itemBankSystem = Accessor.GetExistingSystem<GlobalItemBankSystem>();
+                    var allItems = itemBankSystem.GetAllItemInstances();
 
-                    // Spawn items
+                    NativeArray<(Entity item, int stack)> itemTransfers = new NativeArray<(Entity item, int stack)>(allItems.Length, Allocator.Temp);
+
                     for (int i = 0; i < allItems.Length; i++)
                     {
-                        itemInstances[i] = EntityManager.Instantiate(allItems[i].ItemPrefab);
+                        itemTransfers[i] = (allItems[i], 99);
                     }
 
-                    // set stacks to 999
-                    for (int i = 0; i < itemInstances.Length; i++)
+                    ItemTransationBatch itemTransationBatch = new ItemTransationBatch()
                     {
-                        if (EntityManager.HasComponent<ItemStackableData>(itemInstances[i]))
-                        {
-                            EntityManager.SetComponentData(itemInstances[i], new ItemStackableData() { Value = 999 });
-                        }
-                    }
+                        Source = null,
+                        Destination = pawn,
+                        ItemsAndStacks = itemTransfers,
+                        OutResults = default
+                    };
 
-                    // Add item references into inventory
-                    DynamicBuffer<InventoryItemReference> inventory = EntityManager.GetBuffer<InventoryItemReference>(pawn);
-
-                    foreach (Entity itemInstance in itemInstances)
-                    {
-                        if (!CommonReads.IsInventoryFull(Accessor, pawn) ||
-                            !CommonWrites.TryIncrementStackableItemInInventory(Accessor, pawn, itemInstance, inventory, count: 999))
-                        {
-                            inventory.Add(new InventoryItemReference() { ItemEntity = itemInstance });
-                        }
-                    }
+                    CommonWrites.ExecuteItemTransaction(Accessor, itemTransationBatch);
                 }
                 break;
             }

@@ -317,7 +317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49f345c3a9a1388478f47e76301d7ce4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Bank: {fileID: 11400000, guid: 448702bda764bba4285fbff6cdb81422, type: 2}
+  Bank: {fileID: 11400000, guid: 1641f0817ec19fa4d99fdb0e1a3d7664, type: 2}
 --- !u!1 &783429873
 GameObject:
   m_ObjectHideFlags: 0
@@ -537,7 +537,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9f1f4bbd472cbf46bf328a4eda0bfa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemBank: {fileID: 11400000, guid: 448702bda764bba4285fbff6cdb81422, type: 2}
 --- !u!4 &1383137263
 Transform:
   m_ObjectHideFlags: 0
