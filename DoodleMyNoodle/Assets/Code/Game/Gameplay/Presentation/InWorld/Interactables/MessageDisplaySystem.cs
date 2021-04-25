@@ -30,7 +30,7 @@ public class MessageDisplaySystem : GamePresentationSystem<MessageDisplaySystem>
         {
             if (distance(Cache.LocalPawnTile, Cache.PointedTile) <= _readRange)
             {
-                foreach (var tileActor in Cache.PointedTileActors)
+                foreach (var tileActor in Cache.PointedBodies)
                 {
                     if (SimWorld.TryGetComponentData(tileActor, out Message message))
                     {

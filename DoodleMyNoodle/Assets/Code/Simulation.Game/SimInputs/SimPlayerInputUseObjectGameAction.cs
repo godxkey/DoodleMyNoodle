@@ -4,24 +4,24 @@ using Unity.Mathematics;
 [NetSerializable]
 public class SimPlayerInputUseObjectGameAction : SimPlayerInput
 {
-    public int2 ObjectPosition;
+    public fix2 ObjectPosition;
     public GameAction.UseParameters UseData;
 
     public SimPlayerInputUseObjectGameAction() { }
 
-    public SimPlayerInputUseObjectGameAction(int2 objectPosition, GameAction.UseParameters useData)
+    public SimPlayerInputUseObjectGameAction(fix2 objectPosition, GameAction.UseParameters useData)
     {
         ObjectPosition = objectPosition;
         UseData = useData;
     }
 
-    public SimPlayerInputUseObjectGameAction(int2 objectPosition, GameAction.ParameterData[] useData)
+    public SimPlayerInputUseObjectGameAction(fix2 objectPosition, GameAction.ParameterData[] useData)
     {
         ObjectPosition = objectPosition;
         UseData = GameAction.UseParameters.Create(useData);
     }
 
-    public SimPlayerInputUseObjectGameAction(int2 objectPosition, List<GameAction.ParameterData> useData)
+    public SimPlayerInputUseObjectGameAction(fix2 objectPosition, List<GameAction.ParameterData> useData)
     {
         ObjectPosition = objectPosition;
         UseData = GameAction.UseParameters.Create(useData.ToArray());

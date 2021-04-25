@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using CCC.Fix2D;
 using UnityEngineX;
+using Unity.Collections;
 
 public class GamePresentationCache
 {
@@ -18,7 +19,7 @@ public class GamePresentationCache
     public bool PointerInWorld;
     public Vector2 PointerWorldPosition;
     public int2 PointedTile;
-    public List<Entity> PointedTileActors = new List<Entity>();
+    public List<Entity> PointedBodies = new List<Entity>();
     public List<BindedSimEntityManaged> PointedViewEntities = new List<BindedSimEntityManaged>();
     public List<Collider2D> PointedColliders = new List<Collider2D>();
     public List<GameObject> PointedGameObjects = new List<GameObject>();
@@ -76,7 +77,7 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         Cache.LocalPawn = Entity.Null;
         Cache.LocalPawnTileEntity = Entity.Null;
         Cache.TileWorld = default;
-        Cache.PointedTileActors.Clear();
+        Cache.PointedBodies.Clear();
         Cache.PointedViewEntities.Clear();
         Cache.PointedColliders.Clear();
         Cache.PointedGameObjects.Clear();
@@ -168,13 +169,17 @@ public class GamePresentationCacheUpdater : ViewSystemBase
             }
             
 
-            Cache.PointedTileActors.Clear();
-            Entity tileEntity = Cache.TileWorld.IsCreated ? Cache.TileWorld.GetEntity(Cache.PointedTile) : Entity.Null;
-            if (tileEntity != Entity.Null)
+            Cache.PointedBodies.Clear();
+            var physicsWorldSys = Cache.SimWorld.GetExistingSystem<PhysicsWorldSystem>();
+            if (physicsWorldSys.PhysicsWorldFullyUpdated)
             {
-                foreach (var tileActor in Cache.SimWorld.GetBufferReadOnly<TileActorReference>(tileEntity))
+                NativeList<OverlapPointHit> hits = new NativeList<OverlapPointHit>(Allocator.Temp);
+                OverlapPointInput input = OverlapPointInput.Default;
+                input.Position = Cache.PointerWorldPosition;
+                physicsWorldSys.PhysicsWorld.OverlapPoint(input, ref hits);
+                foreach (var hit in hits)
                 {
-                    Cache.PointedTileActors.Add(tileActor);
+                    Cache.PointedBodies.Add(hit.Entity);
                 }
             }
         }

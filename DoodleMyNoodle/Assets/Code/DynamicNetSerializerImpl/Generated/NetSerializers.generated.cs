@@ -2660,7 +2660,7 @@ public static class StaticNetSerializer_SimPlayerInputUseObjectGameAction
     public static int GetSerializedBitSize(SimPlayerInputUseObjectGameAction obj)
     {
         int result = 0;
-        result += StaticNetSerializer_Unity_Mathematics_int2.GetSerializedBitSize(ref obj.ObjectPosition);
+        result += StaticNetSerializer_fix2.GetSerializedBitSize(ref obj.ObjectPosition);
         result += StaticNetSerializer_GameAction_UseParameters.GetSerializedBitSize_Class(obj.UseData);
         result += StaticNetSerializer_PersistentId.GetSerializedBitSize(ref obj.SimPlayerId);
         result += StaticNetSerializer_SimPlayerInput.GetSerializedBitSize(obj);
@@ -2679,7 +2679,7 @@ public static class StaticNetSerializer_SimPlayerInputUseObjectGameAction
     }
     public static void Serialize(SimPlayerInputUseObjectGameAction obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_Unity_Mathematics_int2.Serialize(ref obj.ObjectPosition, writer);
+        StaticNetSerializer_fix2.Serialize(ref obj.ObjectPosition, writer);
         StaticNetSerializer_GameAction_UseParameters.Serialize_Class(obj.UseData, writer);
         StaticNetSerializer_PersistentId.Serialize(ref obj.SimPlayerId, writer);
         StaticNetSerializer_SimPlayerInput.Serialize(obj, writer);
@@ -2697,7 +2697,7 @@ public static class StaticNetSerializer_SimPlayerInputUseObjectGameAction
     }
     public static void Deserialize(SimPlayerInputUseObjectGameAction obj, BitStreamReader reader)
     {
-        StaticNetSerializer_Unity_Mathematics_int2.Deserialize(ref obj.ObjectPosition, reader);
+        StaticNetSerializer_fix2.Deserialize(ref obj.ObjectPosition, reader);
         obj.UseData = StaticNetSerializer_GameAction_UseParameters.Deserialize_Class(reader);
         StaticNetSerializer_PersistentId.Deserialize(ref obj.SimPlayerId, reader);
         StaticNetSerializer_SimPlayerInput.Deserialize(obj, reader);
