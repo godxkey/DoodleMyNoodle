@@ -49,7 +49,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         }
     }
 
-    private Vector2 CamPosition
+    public Vector2 CamPosition
     {
         get => _transform.position;
         set
@@ -61,7 +61,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         }
     }
 
-    private float CamSize
+    public float CamSize
     {
         get => Cam.orthographicSize;
         set

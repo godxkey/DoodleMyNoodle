@@ -11,7 +11,6 @@ public class GameActionSpawnMinion : GameAction
     {
         typeof(GameActionRangeData),
         typeof(GameActionObjectReferenceSetting),
-        typeof(GameActionAPCostData)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

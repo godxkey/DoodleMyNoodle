@@ -10,7 +10,6 @@ public class GameActionTileExplosion : GameAction
         typeof(GameActionDamageData),
         typeof(GameActionExplosionRange),
         typeof(GameActionRangeData),
-        typeof(GameActionAPCostData)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

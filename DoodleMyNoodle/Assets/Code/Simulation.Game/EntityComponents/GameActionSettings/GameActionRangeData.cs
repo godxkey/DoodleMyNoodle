@@ -1,9 +1,10 @@
 ﻿using Unity.Entities;
 using UnityEngine;
 
-public struct GameActionRangeData : IComponentData, IStatInt
+public struct GameActionRangeData : IComponentData
 {
-    public int Value;
+    public fix Value;
 
-    int IStatInt.Value { get => Value; set => Value = value; }
+    public static implicit operator fix(GameActionRangeData val) => val.Value;
+    public static implicit operator GameActionRangeData(fix val) => new GameActionRangeData() { Value = val };
 }

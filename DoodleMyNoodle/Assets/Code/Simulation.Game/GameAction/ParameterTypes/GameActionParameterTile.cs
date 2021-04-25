@@ -29,6 +29,7 @@ public class GameActionParameterTile
 
             RangeFromInstigator = rangeFromInstigator;
         }
+        public Description(fix rangeFromInstigator) : this((int)rangeFromInstigator) { }
 
         public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
         {

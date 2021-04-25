@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CCC.Fix2D;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngineX;
@@ -8,6 +9,7 @@ public class CheckNoLeftoverDataSystem : SimSystemBase
 {
     private SetSignalSystem _emitSignalSystem;
     private ExecutePawnControllerInputSystem _executeSys;
+    private PhysicsWorldSystem _physicsWorldSystem;
 
     protected override void OnCreate()
     {
@@ -15,14 +17,16 @@ public class CheckNoLeftoverDataSystem : SimSystemBase
 
         _emitSignalSystem = World.GetOrCreateSystem<SetSignalSystem>();
         _executeSys = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
+        _physicsWorldSystem = World.GetOrCreateSystem<PhysicsWorldSystem>();
     }
 
     protected override void OnUpdate()
     {
         ScreamIfNotEmpty(_emitSignalSystem.EmitterClickRequests, nameof(SetSignalSystem.EmitterClickRequests), nameof(SetSignalSystem));
         ScreamIfNotEmpty(_emitSignalSystem.EmitterOverlaps, nameof(SetSignalSystem.EmitterOverlaps), nameof(SetSignalSystem));
-
         ScreamIfNotEmpty(_executeSys.Inputs, nameof(ExecutePawnControllerInputSystem.Inputs), nameof(ExecutePawnControllerInputSystem));
+
+        _physicsWorldSystem.PhysicsWorldFullyUpdated = false;
     }
 
     private void ScreamIfNotEmpty<T>(NativeList<T> list, string memberName, string needUpdateBefore) where T : struct

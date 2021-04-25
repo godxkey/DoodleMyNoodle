@@ -95,15 +95,13 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
     }
 }
 
-[UpdateAfter(typeof(PhysicsSystemGroup))]
+[UpdateInGroup(typeof(PostPhysicsSystemGroup))]
 [AlwaysUpdateSystem]
 public class ReactOnCollisionSystem : SimSystemBase
 {
     public NativeList<(Entity instigator, Entity target, int damage)> DamagesRequests;
     public NativeList<Entity> DestroyRequests;
     public NativeList<(Entity instigator, fix2 pos, fix range, int damage)> ExplosionRequests;
-    
-    private EndFramePhysicsSystem _endFramePhysicsSystem;
 
     protected override void OnCreate()
     {
@@ -111,7 +109,6 @@ public class ReactOnCollisionSystem : SimSystemBase
         DamagesRequests = new NativeList<(Entity instigator, Entity target, int damage)>(Allocator.Persistent);
         DestroyRequests = new NativeList<Entity>(Allocator.Persistent);
         ExplosionRequests = new NativeList<(Entity instigator, fix2 pos, fix range, int damage)>(Allocator.Persistent);
-        _endFramePhysicsSystem = World.GetOrCreateSystem<EndFramePhysicsSystem>();
     }
 
     protected override void OnDestroy()
@@ -124,8 +121,6 @@ public class ReactOnCollisionSystem : SimSystemBase
 
     protected override void OnUpdate()
     {
-        _endFramePhysicsSystem.FinalJobHandle.Complete();
-
         // damage
         foreach ((Entity instigator, Entity target, int damage) in DamagesRequests)
         {

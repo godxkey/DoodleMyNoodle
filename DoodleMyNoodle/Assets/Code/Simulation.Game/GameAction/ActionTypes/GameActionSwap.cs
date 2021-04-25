@@ -11,7 +11,6 @@ public class GameActionSwap : GameAction
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
         typeof(GameActionRangeData),
-        typeof(GameActionAPCostData)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)

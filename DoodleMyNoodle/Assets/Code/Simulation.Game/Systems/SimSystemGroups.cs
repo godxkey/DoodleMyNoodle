@@ -1,17 +1,33 @@
-using CCC.Fix2D;
 using Unity.Entities;
 
-[UpdateBefore(typeof(AISystemGroup))]
-public class PreAISystemGroup : SimComponentSystemGroup { }
+[UpdateAfter(typeof(CCC.Fix2D.PhysicsSystemGroup))]
+public class PostPhysicsSystemGroup : SimComponentSystemGroup
+{
+    private CCC.Fix2D.EndFramePhysicsSystem _endPhysics;
+    private CCC.Fix2D.PhysicsWorldSystem _physicsWorldSystem;
 
-[UpdateBefore(typeof(InputSystemGroup))]
-public class AISystemGroup : SimComponentSystemGroup { }
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        _endPhysics = World.GetExistingSystem<CCC.Fix2D.EndFramePhysicsSystem>();
+        _physicsWorldSystem = World.GetExistingSystem<CCC.Fix2D.PhysicsWorldSystem>();
+    }
 
-[UpdateBefore(typeof(MovementSystemGroup))]
-[UpdateBefore(typeof(SignalSystemGroup))]
-public class InputSystemGroup : SimComponentSystemGroup { }
+    protected override void OnUpdate()
+    {
+        _endPhysics.FinalJobHandle.Complete();
+        _physicsWorldSystem.PhysicsWorldFullyUpdated = true;
 
-[UpdateAfter(typeof(ReactOnCollisionSystem))]
-public class SignalSystemGroup : SimComponentSystemGroup { }
+        base.OnUpdate();
+    }
+}
 
-public class MovementSystemGroup : SimComponentSystemGroup { }
+[UpdateAfter(typeof(PostPhysicsSystemGroup))] public class PreAISystemGroup : SimComponentSystemGroup { }
+
+[UpdateAfter(typeof(PreAISystemGroup))] public class AISystemGroup : SimComponentSystemGroup { }
+
+[UpdateAfter(typeof(AISystemGroup))] public class InputSystemGroup : SimComponentSystemGroup { }
+
+[UpdateAfter(typeof(InputSystemGroup))] public class SignalSystemGroup : SimComponentSystemGroup { }
+[UpdateAfter(typeof(InputSystemGroup))] public class MovementSystemGroup : SimComponentSystemGroup { }
+

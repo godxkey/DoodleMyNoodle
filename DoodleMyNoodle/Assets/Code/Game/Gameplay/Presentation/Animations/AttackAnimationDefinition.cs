@@ -20,11 +20,11 @@ public class AttackAnimationDefinition : AnimationDefinition
 
     public override void TriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform, AnimationData animationData)
     {
-        Sequence _currentSequence = DOTween.Sequence();
-        Vector3 startPos = spriteStartPos;
-        Vector3 endPos = new Vector3(startPos.x + animationData.Direction.x, startPos.y + animationData.Direction.y, startPos.z);
-        _currentSequence.Append(spriteTransform.DOLocalMove(endPos, (float)animationData.TotalDuration / 2));
-        _currentSequence.Append(spriteTransform.DOLocalMove(startPos, (float)animationData.TotalDuration / 2));
-        _sequences.SetOrAdd(entity, _currentSequence);
+        Sequence sq = DOTween.Sequence();
+        Vector2 startPos = spriteStartPos;
+        Vector2 endPos = startPos + (Vector2)animationData.Direction;
+        sq.Append(spriteTransform.DOLocalMove(endPos, (float)animationData.TotalDuration / 2));
+        sq.Append(spriteTransform.DOLocalMove(startPos, (float)animationData.TotalDuration / 2));
+        _sequences.SetOrAdd(entity, sq);
     }
 }

@@ -12,7 +12,6 @@ public class GameActionHeal : GameAction
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
         typeof(GameActionRangeData),
-        typeof(GameActionAPCostData),
         typeof(GameActionHPToHealData)
     };
 

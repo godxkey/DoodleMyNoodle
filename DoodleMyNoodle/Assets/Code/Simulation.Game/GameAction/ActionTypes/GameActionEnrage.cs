@@ -9,7 +9,6 @@ public class GameActionEnrage : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionAPCostData),
         typeof(GameActionHPCostData)
     };
 

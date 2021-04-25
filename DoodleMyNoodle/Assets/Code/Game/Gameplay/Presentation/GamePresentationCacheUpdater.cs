@@ -13,6 +13,8 @@ public class GamePresentationCache
 
     public bool Ready;
 
+    public Vector2 CameraPosition;
+    public float CameraSize;
     public bool PointerInWorld;
     public Vector2 PointerWorldPosition;
     public int2 PointedTile;
@@ -82,6 +84,12 @@ public class GamePresentationCacheUpdater : ViewSystemBase
 
     protected override void OnUpdate()
     {
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Camera
+        ////////////////////////////////////////////////////////////////////////////////////////
+        Cache.CameraPosition = CameraMovementController.Instance.CamPosition;
+        Cache.CameraSize = CameraMovementController.Instance.CamSize;
+
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Tile World
         ////////////////////////////////////////////////////////////////////////////////////////

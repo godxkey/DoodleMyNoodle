@@ -1,11 +1,11 @@
 using Unity.Entities;
 using UnityEngine;
 
-public struct ItemTimeCooldownData : IComponentData, IStatInt
+public struct ItemTimeCooldownData : IComponentData, IStatFix
 {
-    public int Value;
+    public fix Value;
 
-    int IStatInt.Value { get => Value; set => Value = value; }
+    fix IStatFix.Value { get => Value; set => Value = value; }
 }
 
 public struct ItemTurnCooldownData : IComponentData, IStatInt

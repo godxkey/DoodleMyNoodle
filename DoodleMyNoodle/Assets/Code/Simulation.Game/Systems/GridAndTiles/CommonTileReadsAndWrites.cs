@@ -150,6 +150,15 @@ public partial class CommonReads
             }
         }
     }
+
+    //public static void FindBodies<T>(ISimWorldReadAccessor accessor, fix2 position, fix radius)
+    //{
+    //    var physicsWorld = accessor.GetExistingSystem<CCC.Fix2D.PhysicsWorldSystem>();
+
+    //    CCC.Fix2D.Collider c;
+
+    //    physicsWorld.PhysicsWorld.OverlapCollider
+    //}
 }
 
 public partial class Helpers

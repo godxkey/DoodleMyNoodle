@@ -13,7 +13,6 @@ public class GameActionDashAttack : GameAction
     {
         typeof(GameActionRangeData),
         typeof(GameActionDamageData),
-        typeof(GameActionAPCostData)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
@@ -36,26 +35,26 @@ public class GameActionDashAttack : GameAction
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
-            int moveRange = accessor.GetComponentData<GameActionRangeData>(context.Item).Value;
+            int moveRange = roundToInt(accessor.GetComponentData<GameActionRangeData>(context.Item).Value);
 
-            NativeList<int2> _path = new NativeList<int2>(Allocator.Temp);
-            if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, _path))
+            NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
+            if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, path))
             {
                 LogGameActionInfo(context, $"Discarding: cannot find navigable path from { instigatorTile} to { paramTile.Tile}.");
                 return false;
             }
 
             // Get the last reachable point considering the user's AP
-            int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(_path.AsArray().Slice(), moveRange);
+            int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(path.AsArray().Slice(), moveRange);
 
             // Remove unreachable points
-            _path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
+            path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
 
             int damage = accessor.GetComponentData<GameActionDamageData>(context.Item).Value;
             NativeList<Entity> entityToDamage = new NativeList<Entity>(Allocator.Temp);
-            for (int i = 0; i < _path.Length; i++)
+            for (int i = 0; i < path.Length; i++)
             {
-                int2 pos = _path[i];
+                int2 pos = path[i];
                 if (!pos.Equals(instigatorTile))
                 {
                     CommonReads.FindTileActorsWithComponent<Health>(accessor, CommonReads.GetTileEntity(accessor, pos), entityToDamage);
@@ -63,7 +62,7 @@ public class GameActionDashAttack : GameAction
             }
 
             // set destination
-            accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(_path[_path.Length - 1]) });
+            accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(path[path.Length - 1]) });
 
             foreach (Entity entity in entityToDamage)
             {

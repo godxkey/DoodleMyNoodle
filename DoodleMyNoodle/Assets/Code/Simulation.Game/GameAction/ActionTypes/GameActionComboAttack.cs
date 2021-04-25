@@ -12,7 +12,6 @@ public class GameActionComboAttack : GameAction
     {
         typeof(GameActionRangeData),
         typeof(GameActionDamageData),
-        typeof(GameActionAPCostData)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

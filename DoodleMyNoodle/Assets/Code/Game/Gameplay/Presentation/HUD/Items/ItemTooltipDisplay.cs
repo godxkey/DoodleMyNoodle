@@ -163,9 +163,13 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
             }
 
             // Item Specific Settings
-            if(gameActionAuth.HasCooldown)
+            if (gameActionAuth.CooldownType == ItemAuth.CooldownMode.Seconds)
             {
-                _descriptionData.Add(new DescriptionData(gameActionAuth.CooldownAuth.GetDescription(), Color.white, true));
+                _descriptionData.Add(new DescriptionData($"Cooldown (time) : {gameActionAuth.CooldownDuration}", Color.white, true));
+            }
+            else if (gameActionAuth.CooldownType == ItemAuth.CooldownMode.Turns)
+            {
+                _descriptionData.Add(new DescriptionData($"Cooldown (turns) : {gameActionAuth.CooldownDuration}", Color.white, true));
             }
         }
 

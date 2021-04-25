@@ -10,7 +10,6 @@ public class GameActionConvert : GameAction
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
         typeof(GameActionRangeData),
-        typeof(GameActionAPCostData),
         typeof(GameActionEffectDurationData)
     };
 

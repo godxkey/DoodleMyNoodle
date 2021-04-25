@@ -185,7 +185,7 @@ public class GenerateDumbGridBattleAIInputSystem : SimComponentSystem
         {
             // create game action's use data
             var useData = GameAction.UseParameters.Create(
-                new GameActionParameterTile.Data(tile));
+                new GameActionParameterPosition.Data(Helpers.GetTileCenter(tile)));
 
             // create input
             var input = new PawnControllerInputUseItem(controllerEntity, itemIndex, useData);

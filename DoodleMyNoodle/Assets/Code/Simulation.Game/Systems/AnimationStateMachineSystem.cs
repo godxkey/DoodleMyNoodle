@@ -92,7 +92,7 @@ internal static partial class CommonWrites
         newAnimationData.LastTransitionTime = accessor.Time.ElapsedTime;
 
         // Add things that can be useful
-        newAnimationData.Direction = GetAdditionnalAnimationData<int2>("Direction", additionnalData);
+        newAnimationData.Direction = GetAdditionnalAnimationData<fix2>("Direction", additionnalData);
         newAnimationData.GameActionEntity = GetAdditionnalAnimationData<Entity>("GameActionEntity", additionnalData);
 
         // Get Duration for State Machine

@@ -66,13 +66,11 @@ MonoBehaviour:
   Value: GameActionThrow
   GameActionSettings:
   - id: 0
-  - id: 1
-  HasCooldown: 1
-  CooldownAuth:
-    UseTime: 0
-    TimeCooldown: 1
-    TurnCooldown: 1
+  ApCost: 1
   IsStackable: 1
+  CooldownType: 0
+  CooldownDuration:
+    RawValue: 4294967296
   Icon: {fileID: 21300000, guid: c1b5006aa2c881a4b8eb04a8ed1435d5, type: 3}
   Name: Arc
   EffectDescription: "Lance une fl\xE8che"
@@ -92,7 +90,3 @@ MonoBehaviour:
           RawValue: 0
         SpeedMax:
           RawValue: 42949672960
-    00000001:
-      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
-      data:
-        ActionPointCost: 1

@@ -1,6 +1,4 @@
-﻿using Unity.Collections;
-using Unity.Entities;
-using Unity.Mathematics;
+﻿using Unity.Mathematics;
 using UnityEngineX;
 using static fixMath;
 using System.Collections.Generic;
@@ -15,15 +13,14 @@ public class GameActionMeleeAttack : GameAction
     {
         typeof(GameActionDamageData),
         typeof(GameActionRangeData),
-        typeof(GameActionAPCostData)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        GameActionParameterTile.Description tileParam = new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+        var range = accessor.GetComponentData<GameActionRangeData>(context.Item);
+        GameActionParameterPosition.Description tileParam = new GameActionParameterPosition.Description()
         {
-            IncludeSelf = false,
-            RequiresAttackableEntity = true,
+            MaxRangeFromInstigator = range.Value
         };
 
         return new UseContract(tileParam);
@@ -31,30 +28,27 @@ public class GameActionMeleeAttack : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)
     {
-        if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {
-            int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
+            fix2 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
 
             // melee attack has a range of RANGE
-            if (mathX.lengthmanhattan(paramTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+            fix range = accessor.GetComponentData<GameActionRangeData>(context.Item);
+            int damage = accessor.GetComponentData<GameActionDamageData>(context.Item);
+
+            fix2 attackVector = clampLength(paramPosition.Position - instigatorPos, 0, range);
+            fix2 attackPosition = instigatorPos + attackVector;
+            fix attackRadius = (fix)0.1f;
+
+            foreach (DistanceHit hit in CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.InstigatorPawn))
             {
-                LogGameActionInfo(context, $"Melee attack at {paramTile.Tile} out of range. Ignoring.");
-                return false;
+                if (accessor.HasComponent<Health>(hit.Entity))
+                {
+                    CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, hit.Entity, damage);
+                }
             }
 
-            // reduce target health
-            NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
-
-            int damageValue = accessor.GetComponentData<GameActionDamageData>(context.Item).Value;
-
-            foreach (Entity entity in victims)
-            {
-                CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, damageValue);
-            }
-
-            int2 attackDirection = paramTile.Tile - instigatorTile;
-            resultData.AddData(new KeyValuePair<string, object>("Direction", attackDirection));
+            resultData.AddData(new KeyValuePair<string, object>("Direction", attackVector));
 
             return true;
         }

@@ -67,6 +67,7 @@ MonoBehaviour:
   GameActionSettings:
   - id: 0
   - id: 1
+  ApCost: -2
   HasCooldown: 1
   CooldownAuth:
     UseTime: 0

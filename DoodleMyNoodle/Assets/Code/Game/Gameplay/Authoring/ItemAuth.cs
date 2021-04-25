@@ -19,10 +19,21 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
     [AlwaysExpand]
     public List<GameActionSettingAuthBase> GameActionSettings = new List<GameActionSettingAuthBase>();
 
-    public bool HasCooldown = true;
-    [AlwaysExpand]
-    public ItemCooldownDataAuth CooldownAuth;
+    public int ApCost = 1;
+
     public bool IsStackable = true;
+
+    public enum CooldownMode
+    {
+        NoCooldown,
+        Seconds,
+        Turns
+    }
+
+    public CooldownMode CooldownType = CooldownMode.NoCooldown;
+    public fix CooldownDuration = 1;
+
+    public bool HasCooldown => CooldownType != CooldownMode.NoCooldown;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -38,9 +49,13 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
             dstManager.AddComponentData(entity, new GameActionAnimationTypeData() { AnimationType = (int)Animation.AnimationType, Duration = (fix)Animation.Duration });
         }
 
-        if (HasCooldown)
+        if (CooldownType == CooldownMode.Seconds)
         {
-            CooldownAuth.Convert(entity, dstManager, conversionSystem);
+            dstManager.AddComponentData(entity, new ItemTimeCooldownData() { Value = CooldownDuration });
+        }
+        else if (CooldownType == CooldownMode.Turns)
+        {
+            dstManager.AddComponentData(entity, new ItemTurnCooldownData() { Value = fixMath.roundToInt(CooldownDuration) });
         }
 
         dstManager.AddComponentData(entity, new StackableFlag() { Value = IsStackable });

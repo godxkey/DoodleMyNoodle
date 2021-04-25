@@ -6,9 +6,7 @@ public class GameActionParameterPosition
 {
     public class Description : GameAction.ParameterDescription
     {
-        public bool LimitedRange;
-        public fix2 LimitCenter;
-        public fix LimitRadius;
+        public fix MaxRangeFromInstigator = fix.MaxValue;
 
         public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
         {

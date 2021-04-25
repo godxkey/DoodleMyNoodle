@@ -19,7 +19,7 @@ public class GymSurveyController : MonoBehaviour
     private List<SurveyBaseController> _availableSuveys;
     private SurveyBaseController _requestedSurveyPrefab;
 
-    private const string SURVEY_PREFABS_PATH = "Assets/Prefabs/Game/Presentation/Surveys";
+    private const string SURVEY_PREFABS_PATH = "Assets/GameContent/Presentation/Surveys";
 
     private void Awake()
     {

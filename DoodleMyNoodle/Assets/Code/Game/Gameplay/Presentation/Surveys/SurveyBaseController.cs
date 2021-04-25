@@ -28,6 +28,7 @@ public abstract class SurveyBaseController : MonoBehaviour
     }
 
     public GamePresentationCache Cache => GamePresentationCache.Instance;
+    public ISimWorldReadAccessor SimWorld => Cache.SimWorld;
 
     public bool Running { get; private set; }
     public Context CurrentContext { get; private set; }

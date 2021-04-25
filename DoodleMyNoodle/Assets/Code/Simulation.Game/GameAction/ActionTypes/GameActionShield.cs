@@ -11,7 +11,6 @@ public class GameActionShield : GameAction
     {
         typeof(GameActionRangeData),
         typeof(GameActionEffectDurationData),
-        typeof(GameActionAPCostData)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

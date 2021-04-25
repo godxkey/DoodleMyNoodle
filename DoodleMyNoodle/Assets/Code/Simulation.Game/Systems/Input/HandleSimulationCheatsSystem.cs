@@ -66,7 +66,8 @@ public struct CheatsAllItemElement : IBufferElementData
 }
 
 [UpdateInGroup(typeof(InputSystemGroup))]
-public class HandleSimulationCheatsSystem : SimComponentSystem
+[AlwaysUpdateSystem]
+public class HandleSimulationCheatsSystem : SimSystemBase
 {
     protected override void OnUpdate()
     {
@@ -144,6 +145,11 @@ public class HandleSimulationCheatsSystem : SimComponentSystem
                 if (EntityManager.Exists(player) &&
                     EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
                 {
+                    if (HasComponent<InventoryCapacity>(pawn))
+                    {
+                        SetComponent<InventoryCapacity>(pawn, 999);
+                    }
+
                     var itemBankSystem = Accessor.GetExistingSystem<GlobalItemBankSystem>();
                     var allItems = itemBankSystem.GetAllItemInstances();
 
