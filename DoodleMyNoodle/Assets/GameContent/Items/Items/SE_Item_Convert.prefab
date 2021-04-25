@@ -67,13 +67,11 @@ MonoBehaviour:
   GameActionSettings:
   - id: 0
   - id: 1
-  - id: 2
-  HasCooldown: 1
-  CooldownAuth:
-    UseTime: 0
-    TimeCooldown: 1
-    TurnCooldown: 1
+  ApCost: 1
   IsStackable: 1
+  CooldownType: 0
+  CooldownDuration:
+    RawValue: 0
   Icon: {fileID: 21300000, guid: b54f62f6c81d0834384a537b9ca18c2c, type: 3}
   Name: Conversion
   EffectDescription: "Convertis la cible pour qu'il soit dans votre \xE9quipe"
@@ -86,12 +84,8 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionRangeDataAuth, ns: , asm: Game}
       data:
-        Range: 3
+        Range: 1
     00000001:
-      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
-      data:
-        ActionPointCost: 1
-    00000002:
       type: {class: GameActionEffectDurationDataAuth, ns: , asm: Game}
       data:
-        Duration: 1
+        Duration: 0

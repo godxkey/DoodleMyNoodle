@@ -66,13 +66,11 @@ MonoBehaviour:
   Value: GameActionThrow
   GameActionSettings:
   - id: 0
-  - id: 1
-  HasCooldown: 1
-  CooldownAuth:
-    UseTime: 0
-    TimeCooldown: 1
-    TurnCooldown: 1
+  ApCost: 1
   IsStackable: 1
+  CooldownType: 0
+  CooldownDuration:
+    RawValue: 0
   Icon: {fileID: 21300000, guid: c1b5006aa2c881a4b8eb04a8ed1435d5, type: 3}
   Name: "Fl\xE8ches explosives"
   EffectDescription: "Tire une fl\xE8che qui explose au contact"
@@ -86,13 +84,8 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionThrowSettingsAuth, ns: , asm: Game}
       data:
-        ProjectilePrefab: {fileID: 2385346486794747607, guid: 1f293d3772835fd4b9ed879f0b33710d,
-          type: 3}
+        ProjectilePrefab: {fileID: 0}
         SpeedMin:
           RawValue: 0
         SpeedMax:
           RawValue: 42949672960
-    00000001:
-      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
-      data:
-        ActionPointCost: 1

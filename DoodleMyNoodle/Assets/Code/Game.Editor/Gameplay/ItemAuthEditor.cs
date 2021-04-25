@@ -90,7 +90,7 @@ public class ItemAuthEditor : Editor
                 // Remove extra setting in property list
                 for (int i = _gameActionSettingsProp.arraySize - 1; i >= 0; i--)
                 {
-                    if (!gameActionAuthSettingTypes.Contains(castedTarget.GameActionSettings[i].GetType()))
+                    if (castedTarget.GameActionSettings[i] == null || !gameActionAuthSettingTypes.Contains(castedTarget.GameActionSettings[i].GetType()))
                     {
                         _gameActionSettingsProp.DeleteArrayElementAtIndex(i);
                         castedTarget.GameActionSettings.RemoveAt(i);

@@ -67,13 +67,11 @@ MonoBehaviour:
   GameActionSettings:
   - id: 0
   - id: 1
-  - id: 2
-  HasCooldown: 1
-  CooldownAuth:
-    UseTime: 0
-    TimeCooldown: 1
-    TurnCooldown: 1
+  ApCost: 1
   IsStackable: 1
+  CooldownType: 0
+  CooldownDuration:
+    RawValue: 0
   Icon: {fileID: 21300000, guid: c7427ae85738536489f1f6a3d095e3e6, type: 3}
   Name: Recrute Brute
   EffectDescription: "Fait apparaitre une brute \xE0 vos c\xF4t\xE9s"
@@ -90,9 +88,4 @@ MonoBehaviour:
     00000001:
       type: {class: GameActionObjectReferenceAuth, ns: , asm: Game}
       data:
-        ObjectReference: {fileID: 2768931431184588227, guid: e493693d6bc1d7141996b2e998c53144,
-          type: 3}
-    00000002:
-      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
-      data:
-        ActionPointCost: 1
+        ObjectReference: {fileID: 0}

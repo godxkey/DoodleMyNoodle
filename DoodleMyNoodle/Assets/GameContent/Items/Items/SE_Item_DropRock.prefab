@@ -68,12 +68,10 @@ MonoBehaviour:
   - id: 0
   - id: 1
   ApCost: 0
-  HasCooldown: 1
-  CooldownAuth:
-    UseTime: 0
-    TimeCooldown: 1
-    TurnCooldown: 1
   IsStackable: 1
+  CooldownType: 0
+  CooldownDuration:
+    RawValue: 0
   Icon: {fileID: 21300000, guid: 448cb793edd8dc04fb5800936c7336af, type: 3}
   Name: Roche
   EffectDescription: "Fait tomber une roche \xE0 l'endroit selectionn\xE9"

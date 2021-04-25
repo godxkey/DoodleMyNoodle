@@ -68,13 +68,11 @@ MonoBehaviour:
   - id: 0
   - id: 1
   - id: 2
-  - id: 3
-  HasCooldown: 1
-  CooldownAuth:
-    UseTime: 0
-    TimeCooldown: 1
-    TurnCooldown: 1
+  ApCost: 1
   IsStackable: 1
+  CooldownType: 0
+  CooldownDuration:
+    RawValue: 0
   Icon: {fileID: 21300000, guid: fb0330350953e6b498e483d0e0671dc5, type: 3}
   Name: "Explosion Instantann\xE9"
   EffectDescription: "Explose un point pr\xE9cis"
@@ -87,16 +85,12 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionDamageDataAuth, ns: , asm: Game}
       data:
-        Damage: 1
+        Damage: 0
     00000001:
       type: {class: GameActionExplosionRangeAuth, ns: , asm: Game}
       data:
-        ExplosionRange: 2
+        ExplosionRange: 0
     00000002:
       type: {class: GameActionRangeDataAuth, ns: , asm: Game}
       data:
-        Range: 4
-    00000003:
-      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
-      data:
-        ActionPointCost: 1
+        Range: 1

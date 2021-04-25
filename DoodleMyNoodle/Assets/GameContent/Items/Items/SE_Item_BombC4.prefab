@@ -66,13 +66,11 @@ MonoBehaviour:
   Value: GameActionThrow
   GameActionSettings:
   - id: 0
-  - id: 1
-  HasCooldown: 1
-  CooldownAuth:
-    UseTime: 0
-    TimeCooldown: 1
-    TurnCooldown: 1
+  ApCost: 1
   IsStackable: 1
+  CooldownType: 0
+  CooldownDuration:
+    RawValue: 0
   Icon: {fileID: 21300000, guid: 7b946e803c30fdd43898faa8d3d77e2f, type: 3}
   Name: C4
   EffectDescription: "Bomb qui peut \xEAtre d\xE9ton\xE9 manuellement"
@@ -86,13 +84,8 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionThrowSettingsAuth, ns: , asm: Game}
       data:
-        ProjectilePrefab: {fileID: 2385346486794747607, guid: b10aea4c768093045875e79bb85ea81c,
-          type: 3}
+        ProjectilePrefab: {fileID: 0}
         SpeedMin:
           RawValue: 0
         SpeedMax:
           RawValue: 42949672960
-    00000001:
-      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
-      data:
-        ActionPointCost: 1

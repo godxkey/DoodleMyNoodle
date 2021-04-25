@@ -67,13 +67,11 @@ MonoBehaviour:
   GameActionSettings:
   - id: 0
   - id: 1
-  - id: 2
-  HasCooldown: 1
-  CooldownAuth:
-    UseTime: 0
-    TimeCooldown: 1
-    TurnCooldown: 1
+  ApCost: 1
   IsStackable: 1
+  CooldownType: 0
+  CooldownDuration:
+    RawValue: 0
   Icon: {fileID: 21300000, guid: 75c2d6bc34f935741bf573094c162cce, type: 3}
   Name: Recruter Archer
   EffectDescription: "Fait apparaitre un archer \xE0 vos c\xF4t\xE9s"
@@ -90,9 +88,4 @@ MonoBehaviour:
     00000001:
       type: {class: GameActionObjectReferenceAuth, ns: , asm: Game}
       data:
-        ObjectReference: {fileID: 2768931431184588227, guid: 507665529e2c0014ea6c118272f141ab,
-          type: 3}
-    00000002:
-      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
-      data:
-        ActionPointCost: 1
+        ObjectReference: {fileID: 0}

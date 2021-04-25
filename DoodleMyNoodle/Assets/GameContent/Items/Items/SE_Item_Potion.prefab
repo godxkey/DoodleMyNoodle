@@ -67,13 +67,11 @@ MonoBehaviour:
   GameActionSettings:
   - id: 0
   - id: 1
-  - id: 2
-  HasCooldown: 1
-  CooldownAuth:
-    UseTime: 0
-    TimeCooldown: 1
-    TurnCooldown: 1
+  ApCost: 1
   IsStackable: 1
+  CooldownType: 0
+  CooldownDuration:
+    RawValue: 0
   Icon: {fileID: 21300000, guid: 2e772c182ce66684083eb92cdc4cca45, type: 3}
   Name: Potion
   EffectDescription: Redonne des points de vies
@@ -88,10 +86,6 @@ MonoBehaviour:
       data:
         Range: 1
     00000001:
-      type: {class: GameActionAPCostDataAuth, ns: , asm: Game}
-      data:
-        ActionPointCost: 1
-    00000002:
       type: {class: GameActionHPToHealDataAuth, ns: , asm: Game}
       data:
-        HealthToGive: 999
+        HealthToGive: 0

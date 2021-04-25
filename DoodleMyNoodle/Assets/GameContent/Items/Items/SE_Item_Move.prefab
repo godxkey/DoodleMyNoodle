@@ -66,12 +66,11 @@ MonoBehaviour:
   Value: GameActionMove
   GameActionSettings:
   - id: 0
-  HasCooldown: 0
-  CooldownAuth:
-    UseTime: 0
-    TimeCooldown: 1
-    TurnCooldown: 1
+  ApCost: 1
   IsStackable: 0
+  CooldownType: 0
+  CooldownDuration:
+    RawValue: 0
   Icon: {fileID: 21300000, guid: 96b3c2698e8fd3f409b90140f23df342, type: 3}
   Name: Botte
   EffectDescription: "Permet de vous d\xE9placer"
