@@ -85,11 +85,11 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionDamageDataAuth, ns: , asm: Game}
       data:
-        Damage: 0
+        Damage: 2
     00000001:
       type: {class: GameActionExplosionRangeAuth, ns: , asm: Game}
       data:
-        ExplosionRange: 0
+        ExplosionRange: 2
     00000002:
       type: {class: GameActionRangeDataAuth, ns: , asm: Game}
       data:

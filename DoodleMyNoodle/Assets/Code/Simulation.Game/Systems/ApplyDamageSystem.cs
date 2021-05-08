@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 using CCC.Fix2D;
+using Unity.Collections;
 
 public struct DamageEventData : IComponentData
 {
@@ -157,10 +158,27 @@ public class ApplyDamageSystem : SimSystemBase
 
 internal static partial class CommonWrites
 {
+    public static void RequestDamageOnTargets(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, NativeArray<Entity> targetPawns, int amount)
+    {
+        var sys = accessor.GetExistingSystem<ApplyDamageSystem>();
+
+        for (int i = 0; i < targetPawns.Length; i++)
+        {
+            var request = new DamageRequestData() { Amount = amount, InstigatorPawn = instigatorPawn, TargetPawn = targetPawns[i] };
+            sys.RequestDamage(request);
+        }
+    }
+
     public static void RequestDamageOnTarget(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, Entity targetPawn, int amount)
     {
         var request = new DamageRequestData() { Amount = amount, InstigatorPawn = instigatorPawn, TargetPawn = targetPawn };
         accessor.GetExistingSystem<ApplyDamageSystem>().RequestDamage(request);
+    }
+
+    public static void RequestHealOnTargets(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, NativeArray<Entity> targetPawns, int amount)
+    {
+        // for now a heal request is a negative damage request
+        RequestDamageOnTargets(accessor, instigatorPawn, targetPawns, -amount);
     }
 
     public static void RequestHealOnTarget(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, Entity targetPawn, int amount)

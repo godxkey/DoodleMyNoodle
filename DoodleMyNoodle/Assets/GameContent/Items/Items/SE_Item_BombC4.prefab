@@ -84,7 +84,8 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionThrowSettingsAuth, ns: , asm: Game}
       data:
-        ProjectilePrefab: {fileID: 0}
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: b10aea4c768093045875e79bb85ea81c,
+          type: 3}
         SpeedMin:
           RawValue: 0
         SpeedMax:

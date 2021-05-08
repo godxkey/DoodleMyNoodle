@@ -88,8 +88,11 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Camera
         ////////////////////////////////////////////////////////////////////////////////////////
-        Cache.CameraPosition = CameraMovementController.Instance.CamPosition;
-        Cache.CameraSize = CameraMovementController.Instance.CamSize;
+        if (CameraMovementController.Instance != null)
+        {
+            Cache.CameraPosition = CameraMovementController.Instance.CamPosition;
+            Cache.CameraSize = CameraMovementController.Instance.CamSize;
+        }
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Tile World
@@ -151,7 +154,7 @@ public class GamePresentationCacheUpdater : ViewSystemBase
                 Cache.PointerInWorld = WorldUIEventSystem.Instance.MouseInWorld;
             Cache.PointedTile = Helpers.GetTile(Cache.PointerWorldPosition);
 
-        
+
             int hitCount = Physics2D.OverlapPointNonAlloc(Cache.PointerWorldPosition, _overlapResults, layerMask: ~0);
 
             Cache.PointedViewEntities.Clear();
@@ -167,7 +170,7 @@ public class GamePresentationCacheUpdater : ViewSystemBase
                     Cache.PointedViewEntities.Add(bindedSimEntity);
                 }
             }
-            
+
 
             Cache.PointedBodies.Clear();
             var physicsWorldSys = Cache.SimWorld.GetExistingSystem<PhysicsWorldSystem>();

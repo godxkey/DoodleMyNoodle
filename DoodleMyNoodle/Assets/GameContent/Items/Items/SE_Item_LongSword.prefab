@@ -84,8 +84,8 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionDamageDataAuth, ns: , asm: Game}
       data:
-        Damage: 0
+        Damage: 2
     00000001:
       type: {class: GameActionRangeDataAuth, ns: , asm: Game}
       data:
-        Range: 1
+        Range: 2

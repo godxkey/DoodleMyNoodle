@@ -88,4 +88,5 @@ MonoBehaviour:
     00000001:
       type: {class: GameActionObjectReferenceAuth, ns: , asm: Game}
       data:
-        ObjectReference: {fileID: 0}
+        ObjectReference: {fileID: 2768931431184588227, guid: 507665529e2c0014ea6c118272f141ab,
+          type: 3}

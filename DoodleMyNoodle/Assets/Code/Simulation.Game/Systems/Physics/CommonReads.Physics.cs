@@ -20,9 +20,9 @@ public static partial class CommonReads
             NativeList<int> outBodyIndexes = new NativeList<int>(Allocator.Temp);
             bool hit = physicsSystem.PhysicsWorld.OverlapAabb(input, outBodyIndexes);
 
-            foreach (var bodyIndex in outBodyIndexes)
+            for (int i = 0; i < outBodyIndexes.Length; i++)
             {
-                outEntities.Add(physicsSystem.PhysicsWorld.AllBodies[bodyIndex].Entity);
+                outEntities.Add(physicsSystem.PhysicsWorld.AllBodies[outBodyIndexes[i]].Entity);
             }
 
             return hit;

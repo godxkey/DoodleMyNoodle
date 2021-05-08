@@ -52,22 +52,26 @@ public class GameActionDashAttack : GameAction
 
             int damage = accessor.GetComponentData<GameActionDamageData>(context.Item).Value;
             NativeList<Entity> entityToDamage = new NativeList<Entity>(Allocator.Temp);
+
+            fix2 min, max, center;
+            fix radius = (fix)0.4;
             for (int i = 0; i < path.Length; i++)
             {
                 int2 pos = path[i];
                 if (!pos.Equals(instigatorTile))
                 {
-                    CommonReads.FindTileActorsWithComponent<Health>(accessor, CommonReads.GetTileEntity(accessor, pos), entityToDamage);
+                    center = Helpers.GetTileCenter(path[i]);
+                    min = center - fix2(radius, radius);
+                    max = center + fix2(radius, radius);
+
+                    CommonReads.Physics.OverlapAabb(accessor, min, max, entityToDamage, ignoreEntity: context.InstigatorPawn);
                 }
             }
 
             // set destination
             accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(path[path.Length - 1]) });
 
-            foreach (Entity entity in entityToDamage)
-            {
-                CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, entity, damage);
-            }
+            CommonWrites.RequestDamageOnTargets(accessor, context.InstigatorPawn, entityToDamage.AsArray(), damage);
 
             return true;
         }

@@ -88,4 +88,4 @@ MonoBehaviour:
     00000001:
       type: {class: GameActionHPToHealDataAuth, ns: , asm: Game}
       data:
-        HealthToGive: 0
+        HealthToGive: 999

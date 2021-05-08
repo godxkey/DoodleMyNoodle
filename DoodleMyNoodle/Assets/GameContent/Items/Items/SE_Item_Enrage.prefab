@@ -83,4 +83,4 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionHPCostDataAuth, ns: , asm: Game}
       data:
-        HealthCost: 0
+        HealthCost: 3
