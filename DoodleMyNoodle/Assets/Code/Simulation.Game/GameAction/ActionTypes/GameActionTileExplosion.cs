@@ -2,6 +2,7 @@ using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
 using System;
+using CCC.Fix2D;
 
 public class GameActionTileExplosion : GameAction
 {
@@ -26,15 +27,13 @@ public class GameActionTileExplosion : GameAction
     {
         if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {
+            fix2 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
             int damage = accessor.GetComponentData<GameActionSettingDamage>(context.Item).Value;
+            fix range = accessor.GetComponentData<GameActionSettingRange>(context.Item).Value;
+            fix radius = accessor.GetComponentData<GameActionSettingRadius>(context.Item).Value;
 
-            fix radius = 1;
-            if (accessor.HasComponent<GameActionSettingRadius>(context.Item))
-            {
-                radius = accessor.GetComponentData<GameActionSettingRadius>(context.Item).Value;
-            }
-
-            CommonWrites.RequestExplosion(accessor, context.InstigatorPawn, paramPosition.Position, radius, damage);
+            fix2 pos = Helpers.ClampPositionInsideRange(paramPosition.Position, instigatorPos, range);
+            CommonWrites.RequestExplosion(accessor, context.InstigatorPawn, pos, radius, damage);
 
             return true;
         }

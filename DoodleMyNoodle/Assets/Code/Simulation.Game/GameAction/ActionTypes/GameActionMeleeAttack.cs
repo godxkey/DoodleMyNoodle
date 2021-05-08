@@ -31,13 +31,10 @@ public class GameActionMeleeAttack : GameAction
         if (useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {
             fix2 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
-
-            // melee attack has a range of RANGE
             fix range = accessor.GetComponentData<GameActionSettingRange>(context.Item);
             int damage = accessor.GetComponentData<GameActionSettingDamage>(context.Item);
 
-            fix2 attackVector = clampLength(paramPosition.Position - instigatorPos, 0, range);
-            fix2 attackPosition = instigatorPos + attackVector;
+            fix2 attackPosition = Helpers.ClampPositionInsideRange(paramPosition.Position, instigatorPos, range);
             fix attackRadius = (fix)0.1f;
 
             foreach (DistanceHit hit in CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.InstigatorPawn))
@@ -48,6 +45,7 @@ public class GameActionMeleeAttack : GameAction
                 }
             }
 
+            fix2 attackVector = attackPosition - instigatorPos;
             resultData.AddData(new KeyValuePair<string, object>("Direction", attackVector));
 
             return true;
