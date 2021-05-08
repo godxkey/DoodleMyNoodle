@@ -13,12 +13,12 @@ public class GameActionThrow : GameAction
 
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionThrowSettings),
+        typeof(GameActionSettingThrow),
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        GameActionThrowSettings settings = accessor.GetComponentData<GameActionThrowSettings>(context.Item);
+        GameActionSettingThrow settings = accessor.GetComponentData<GameActionSettingThrow>(context.Item);
 
         return new UseContract(
             new GameActionParameterVector.Description()
@@ -33,7 +33,7 @@ public class GameActionThrow : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
         {
             // get settings
-            GameActionThrowSettings settings = accessor.GetComponentData<GameActionThrowSettings>(context.Item);
+            GameActionSettingThrow settings = accessor.GetComponentData<GameActionSettingThrow>(context.Item);
 
             // spawn projectile
             Entity projectileInstance = accessor.Instantiate(settings.ProjectilePrefab);
@@ -76,7 +76,7 @@ public class GameActionThrow : GameAction
     // used by presentation
     public fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, UseContext context, fix2 direction)
     {
-        GameActionThrowSettings settings = accessor.GetComponentData<GameActionThrowSettings>(context.Item);
+        GameActionSettingThrow settings = accessor.GetComponentData<GameActionSettingThrow>(context.Item);
 
         return GetSpawnPosOffset(accessor, settings.ProjectilePrefab, context.InstigatorPawn, direction);
     }

@@ -82,10 +82,10 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionRangeDataAuth, ns: , asm: Game}
+      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
       data:
         Range: 1
     00000001:
-      type: {class: GameActionEffectDurationDataAuth, ns: , asm: Game}
+      type: {class: GameActionSettingEffectDurationAuth, ns: , asm: Game}
       data:
         Duration: 2

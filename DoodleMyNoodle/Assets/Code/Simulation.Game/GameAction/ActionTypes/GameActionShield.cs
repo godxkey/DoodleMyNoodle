@@ -9,16 +9,16 @@ public class GameActionShield : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionRangeData),
-        typeof(GameActionEffectDurationData),
+        typeof(GameActionSettingRange),
+        typeof(GameActionSettingEffectDuration),
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.GetComponentData<GameActionRangeData>(context.Item).Value > 0)
+        if (accessor.GetComponentData<GameActionSettingRange>(context.Item).Value > 0)
         {
             return new UseContract(
-                new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+                new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
                 {
                     IncludeSelf = false,
                     RequiresAttackableEntity = true,
@@ -51,7 +51,7 @@ public class GameActionShield : GameAction
 
     private void ShieldTarget(ISimWorldReadWriteAccessor accessor, Entity itemEntity, Entity pawn)
     {
-        int duration = accessor.GetComponentData<GameActionEffectDurationData>(itemEntity).Value;
+        int duration = accessor.GetComponentData<GameActionSettingEffectDuration>(itemEntity).Value;
 
         if (accessor.TryGetComponentData(pawn, out Invincible invincible))
         {

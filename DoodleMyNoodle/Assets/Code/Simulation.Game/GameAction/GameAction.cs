@@ -244,21 +244,21 @@ public abstract class GameAction
         }
 
         // reduce instigator AP
-        if (accessor.TryGetComponentData(context.Item, out GameActionAPCostData itemActionPointCost))
+        if (accessor.TryGetComponentData(context.Item, out GameActionSettingAPCost itemActionPointCost))
         {
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, itemActionPointCost.Value);
         }
 
         // reduce instigator Health
-        if (accessor.TryGetComponentData(context.Item, out GameActionHPCostData itemHealthPointCost))
+        if (accessor.TryGetComponentData(context.Item, out GameActionSettingHPCost itemHealthPointCost))
         {
             if (itemHealthPointCost.Value > 0)
             {
-                CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, itemHealthPointCost.Value);
+                CommonWrites.RequestDamage(accessor, context.InstigatorPawn, context.InstigatorPawn, itemHealthPointCost.Value);
             }
             else
             {
-                CommonWrites.RequestHealOnTarget(accessor, context.InstigatorPawn, context.InstigatorPawn, -1 * itemHealthPointCost.Value);
+                CommonWrites.RequestHeal(accessor, context.InstigatorPawn, context.InstigatorPawn, -1 * itemHealthPointCost.Value);
             }
         }
 
@@ -279,7 +279,7 @@ public abstract class GameAction
 
     protected virtual int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.TryGetComponentData(context.Item, out GameActionAPCostData ActionPointCost))
+        if (accessor.TryGetComponentData(context.Item, out GameActionSettingAPCost ActionPointCost))
         {
             return ActionPointCost.Value;
         }

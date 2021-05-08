@@ -10,10 +10,10 @@ public class GameActionDropBombToDetonate : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionRangeData),
-        typeof(GameActionDamageData),
-        typeof(GameActionObjectReferenceSetting),
-        typeof(GameActionExplosionRange)
+        typeof(GameActionSettingRange),
+        typeof(GameActionSettingDamage),
+        typeof(GameActionSettingObjectReference),
+        typeof(GameActionSettingRadius)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
@@ -26,7 +26,7 @@ public class GameActionDropBombToDetonate : GameAction
             }
         }
 
-        return new UseContract(new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value) { });
+        return new UseContract(new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value) { });
     }
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
@@ -34,9 +34,9 @@ public class GameActionDropBombToDetonate : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             // get settings
-            if (!accessor.TryGetComponentData(context.Item, out GameActionObjectReferenceSetting settings))
+            if (!accessor.TryGetComponentData(context.Item, out GameActionSettingObjectReference settings))
             {
-                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionObjectReferenceSetting)} component");
+                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionSettingObjectReference)} component");
                 return false;
             }
 
@@ -59,15 +59,15 @@ public class GameActionDropBombToDetonate : GameAction
 
                 if (bomb != Entity.Null)
                 {
-                    int2 tilePos = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(bomb));
+                    fix2 bombPos = accessor.GetComponentData<FixTranslation>(bomb);
 
-                    int explosionRange = 1;
-                    if (accessor.HasComponent<GameActionExplosionRange>(context.Item))
+                    fix radius = 1;
+                    if (accessor.HasComponent<GameActionSettingRadius>(context.Item))
                     {
-                        explosionRange = accessor.GetComponentData<GameActionExplosionRange>(context.Item).Value;
+                        radius = accessor.GetComponentData<GameActionSettingRadius>(context.Item).Value;
                     }
 
-                    CommonWrites.RequestExplosionOnTiles(accessor, bomb, tilePos, explosionRange, accessor.GetComponentData<GameActionDamageData>(context.Item).Value);
+                    CommonWrites.RequestExplosion(accessor, bomb, bombPos, radius, accessor.GetComponentData<GameActionSettingDamage>(context.Item).Value);
 
                     accessor.DestroyEntity(bomb);
 

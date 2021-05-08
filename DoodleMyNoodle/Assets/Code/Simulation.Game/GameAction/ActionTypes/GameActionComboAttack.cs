@@ -10,13 +10,13 @@ public class GameActionComboAttack : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionRangeData),
-        typeof(GameActionDamageData),
+        typeof(GameActionSettingRange),
+        typeof(GameActionSettingDamage),
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        var param = new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+        var param = new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
         {
             IncludeSelf = false,
             RequiresAttackableEntity = true
@@ -33,7 +33,7 @@ public class GameActionComboAttack : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data firstTile))
         {
             // melee attack has a range
-            if (mathX.lengthmanhattan(firstTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+            if (mathX.lengthmanhattan(firstTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
             {
                 return false;
             }
@@ -45,7 +45,7 @@ public class GameActionComboAttack : GameAction
         if (parameters.TryGetParameter(1, out GameActionParameterTile.Data secondTile))
         {
             // melee attack has a range of RANGE
-            if (mathX.lengthmanhattan(secondTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+            if (mathX.lengthmanhattan(secondTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
             {
                 return false;
             }
@@ -71,7 +71,7 @@ public class GameActionComboAttack : GameAction
 
     private void AttackEntityOnTile(ISimWorldReadWriteAccessor accessor, UseContext context, Entity victim)
     {
-        CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, victim, accessor.GetComponentData<GameActionDamageData>(context.Item).Value);
+        CommonWrites.RequestDamage(accessor, context.InstigatorPawn, victim, accessor.GetComponentData<GameActionSettingDamage>(context.Item).Value);
     }
 
 }

@@ -109,7 +109,7 @@ public static class PresentationHelpers
             if (!cache.SimWorld.Exists(useContext.Item))
                 return 1;
 
-            if (!cache.SimWorld.TryGetComponentData(useContext.Item, out GameActionThrowSettings throwSettings))
+            if (!cache.SimWorld.TryGetComponentData(useContext.Item, out GameActionSettingThrow throwSettings))
                 return 1;
 
             var projectilePrefab = throwSettings.ProjectilePrefab;

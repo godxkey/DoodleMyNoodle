@@ -3,6 +3,6 @@ using Unity.Entities;
 [GenerateAuthoringComponent]
 public struct ExplodeOnContact : IComponentData
 {
-    public int Range;
+    public fix Radius;
     public int Damage;
 }

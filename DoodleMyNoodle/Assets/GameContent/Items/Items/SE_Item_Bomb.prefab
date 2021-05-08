@@ -82,7 +82,7 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionThrowSettingsAuth, ns: , asm: Game}
+      type: {class: GameActionSettingThrowAuth, ns: , asm: Game}
       data:
         ProjectilePrefab: {fileID: 2385346486794747607, guid: 9397ebc153b7b35489b100f7f8e04591,
           type: 3}

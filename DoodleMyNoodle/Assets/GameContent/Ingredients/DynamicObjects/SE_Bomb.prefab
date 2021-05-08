@@ -93,5 +93,6 @@ MonoBehaviour:
   UseTime: 1
   TimeDelay: 3
   TurnDelay: 2
-  Range: 3
+  Radius:
+    RawValue: 6442450944
   Damage: 4

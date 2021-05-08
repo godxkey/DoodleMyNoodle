@@ -82,11 +82,11 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionRangeDataAuth, ns: , asm: Game}
+      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
       data:
         Range: 1
     00000001:
-      type: {class: GameActionObjectReferenceAuth, ns: , asm: Game}
+      type: {class: GameActionSettingObjectReferenceAuth, ns: , asm: Game}
       data:
         ObjectReference: {fileID: 2768931431184588227, guid: e493693d6bc1d7141996b2e998c53144,
           type: 3}

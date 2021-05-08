@@ -14,7 +14,7 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
             return;
 
         // Item sounds
-        Cache.SimWorld.Entities.ForEach((Unity.Entities.EntityQueryBuilder.F_D<GameActionEventData>)((ref GameActionEventData gameActionEvent) =>
+        Cache.SimWorld.Entities.ForEach((ref GameActionEventData gameActionEvent) =>
         {
             SimWorld.TryGetComponentData(gameActionEvent.GameActionContext.Item, out SimAssetId entitySimAssetID);
 
@@ -27,7 +27,7 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
                     sfx.PlayOn(_audioSource);
                 }
             }
-        }));
+        });
 
         // Damage sounds
         Cache.SimWorld.Entities.ForEach((ref DamageEventData gameActionEvent) =>

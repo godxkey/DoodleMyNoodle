@@ -9,14 +9,14 @@ public class GameActionSpawnMinion : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionRangeData),
-        typeof(GameActionObjectReferenceSetting),
+        typeof(GameActionSettingRange),
+        typeof(GameActionSettingObjectReference),
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
-                   new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+                   new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
                    {
                    });
     }
@@ -26,9 +26,9 @@ public class GameActionSpawnMinion : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             // get settings
-            if (!accessor.TryGetComponentData(context.Item, out GameActionObjectReferenceSetting settings))
+            if (!accessor.TryGetComponentData(context.Item, out GameActionSettingObjectReference settings))
             {
-                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionObjectReferenceSetting)} component");
+                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionSettingObjectReference)} component");
                 return false;
             }
 

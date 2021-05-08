@@ -11,8 +11,8 @@ public class GameActionDashAttack : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionRangeData),
-        typeof(GameActionDamageData),
+        typeof(GameActionSettingRange),
+        typeof(GameActionSettingDamage),
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
@@ -20,7 +20,7 @@ public class GameActionDashAttack : GameAction
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+            new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
             {
                 IncludeSelf = false,
                 MustBeReachable = true
@@ -35,7 +35,7 @@ public class GameActionDashAttack : GameAction
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
-            int moveRange = roundToInt(accessor.GetComponentData<GameActionRangeData>(context.Item).Value);
+            int moveRange = roundToInt(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value);
 
             NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
             if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, path))
@@ -50,7 +50,7 @@ public class GameActionDashAttack : GameAction
             // Remove unreachable points
             path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
 
-            int damage = accessor.GetComponentData<GameActionDamageData>(context.Item).Value;
+            int damage = accessor.GetComponentData<GameActionSettingDamage>(context.Item).Value;
             NativeList<Entity> entityToDamage = new NativeList<Entity>(Allocator.Temp);
 
             fix2 min, max, center;
@@ -71,7 +71,7 @@ public class GameActionDashAttack : GameAction
             // set destination
             accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(path[path.Length - 1]) });
 
-            CommonWrites.RequestDamageOnTargets(accessor, context.InstigatorPawn, entityToDamage.AsArray(), damage);
+            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, entityToDamage.AsArray(), damage);
 
             return true;
         }

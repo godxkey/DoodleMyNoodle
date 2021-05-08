@@ -51,11 +51,11 @@ public static partial class CommonReads
             return physicsSystem.PhysicsWorld.CalculateDistance(pointDistanceInput, ref outHits);
         }
 
-        public static NativeList<DistanceHit> OverlapCircle(ISimWorldReadWriteAccessor accessor, fix2 attackPosition, fix attackRadius, Entity ignoreEntity = default)
+        public static NativeList<DistanceHit> OverlapCircle(ISimWorldReadWriteAccessor accessor, fix2 position, fix radius, Entity ignoreEntity = default)
         {
             NativeList<DistanceHit> outHits = new NativeList<DistanceHit>(Allocator.Temp);
 
-            OverlapCircle(accessor, attackPosition, attackRadius, outHits, ignoreEntity);
+            OverlapCircle(accessor, position, radius, outHits, ignoreEntity);
 
             return outHits;
         }

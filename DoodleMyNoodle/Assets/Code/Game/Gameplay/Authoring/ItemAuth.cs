@@ -46,7 +46,7 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
         if (Animation != null)
         {
-            dstManager.AddComponentData(entity, new GameActionAnimationTypeData() { AnimationType = (int)Animation.AnimationType, Duration = (fix)Animation.Duration });
+            dstManager.AddComponentData(entity, new GameActionSettingAnimationType() { AnimationType = (int)Animation.AnimationType, Duration = (fix)Animation.Duration });
         }
 
         if (CooldownType == CooldownMode.Seconds)

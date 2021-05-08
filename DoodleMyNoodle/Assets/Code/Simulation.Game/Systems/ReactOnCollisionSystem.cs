@@ -53,7 +53,7 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
 
         public NativeList<(Entity instigator, Entity target, int damage)> OutDamages;
         public NativeList<Entity> OutDestroys;
-        public NativeList<(Entity instigator, fix2 pos, fix range, int damage)> OutExplosions;
+        public NativeList<(Entity instigator, fix2 pos, fix radius, int damage)> OutExplosions;
 
         public void Execute(CollisionEvent collisionEvent)
         {
@@ -88,7 +88,7 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
                 OutExplosions.Add((
                     instigator: entityA,
                     pos: details.AverageContactPointPositionFix,
-                    range: explodeOnContact.Range,
+                    radius: explodeOnContact.Radius,
                     damage: explodeOnContact.Damage));
             }
         }
@@ -124,13 +124,13 @@ public class ReactOnCollisionSystem : SimSystemBase
         // damage
         foreach ((Entity instigator, Entity target, int damage) in DamagesRequests)
         {
-            CommonWrites.RequestDamageOnTarget(Accessor, instigator, target, damage);
+            CommonWrites.RequestDamage(Accessor, instigator, target, damage);
         }
 
         // explosions
-        foreach ((Entity instigator, fix2 pos, fix range, int damage) in ExplosionRequests)
+        foreach ((Entity instigator, fix2 pos, fix radius, int damage) in ExplosionRequests)
         {
-            CommonWrites.RequestExplosionOnTiles(Accessor, instigator, Helpers.GetTile(pos), (int)range, damage);
+            CommonWrites.RequestExplosion(Accessor, instigator, pos, radius, damage);
         }
 
         // destroy

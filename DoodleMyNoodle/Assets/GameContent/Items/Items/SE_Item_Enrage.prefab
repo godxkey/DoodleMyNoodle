@@ -81,6 +81,6 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionHPCostDataAuth, ns: , asm: Game}
+      type: {class: GameActionSettingHPCostAuth, ns: , asm: Game}
       data:
         HealthCost: 3
