@@ -7,6 +7,6 @@ public struct DelayedExplosion : IComponentData
     public int TurnDuration;
     public fix TimeDuration;
 
-    public int Range;
+    public fix Radius;
     public int Damage;
 }

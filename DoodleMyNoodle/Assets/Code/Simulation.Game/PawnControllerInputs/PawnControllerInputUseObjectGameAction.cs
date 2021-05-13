@@ -3,10 +3,10 @@ using Unity.Mathematics;
 
 public class PawnControllerInputUseObjectGameAction : PawnControllerInputBase
 {
-    public int2 ObjectPosition;
+    public fix2 ObjectPosition;
     public GameAction.UseParameters GameActionData;
 
-    public PawnControllerInputUseObjectGameAction(Entity pawnController, int2 objectPosition, GameAction.UseParameters gameActionData) : base(pawnController)
+    public PawnControllerInputUseObjectGameAction(Entity pawnController, fix2 objectPosition, GameAction.UseParameters gameActionData) : base(pawnController)
     {
         ObjectPosition = objectPosition;
         GameActionData = gameActionData;

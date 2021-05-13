@@ -11,13 +11,13 @@ public class GameActionMeleeAttack : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionDamageData),
-        typeof(GameActionRangeData),
+        typeof(GameActionSettingDamage),
+        typeof(GameActionSettingRange),
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        var range = accessor.GetComponentData<GameActionRangeData>(context.Item);
+        var range = accessor.GetComponentData<GameActionSettingRange>(context.Item);
         GameActionParameterPosition.Description tileParam = new GameActionParameterPosition.Description()
         {
             MaxRangeFromInstigator = range.Value
@@ -31,23 +31,21 @@ public class GameActionMeleeAttack : GameAction
         if (useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {
             fix2 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
+            fix range = accessor.GetComponentData<GameActionSettingRange>(context.Item);
+            int damage = accessor.GetComponentData<GameActionSettingDamage>(context.Item);
 
-            // melee attack has a range of RANGE
-            fix range = accessor.GetComponentData<GameActionRangeData>(context.Item);
-            int damage = accessor.GetComponentData<GameActionDamageData>(context.Item);
-
-            fix2 attackVector = clampLength(paramPosition.Position - instigatorPos, 0, range);
-            fix2 attackPosition = instigatorPos + attackVector;
+            fix2 attackPosition = Helpers.ClampPositionInsideRange(paramPosition.Position, instigatorPos, range);
             fix attackRadius = (fix)0.1f;
 
             foreach (DistanceHit hit in CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.InstigatorPawn))
             {
                 if (accessor.HasComponent<Health>(hit.Entity))
                 {
-                    CommonWrites.RequestDamageOnTarget(accessor, context.InstigatorPawn, hit.Entity, damage);
+                    CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hit.Entity, damage);
                 }
             }
 
+            fix2 attackVector = attackPosition - instigatorPos;
             resultData.AddData(new KeyValuePair<string, object>("Direction", attackVector));
 
             return true;

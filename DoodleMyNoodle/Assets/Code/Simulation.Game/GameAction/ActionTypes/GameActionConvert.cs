@@ -9,14 +9,14 @@ public class GameActionConvert : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionRangeData),
-        typeof(GameActionEffectDurationData)
+        typeof(GameActionSettingRange),
+        typeof(GameActionSettingEffectDuration)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description(_.GetComponentData<GameActionRangeData>(context.Item).Value)
+            new GameActionParameterTile.Description(_.GetComponentData<GameActionSettingRange>(context.Item).Value)
             {
                 IncludeSelf = false,
                 CustomTileActorPredicate = (tileActor, accessor) =>
@@ -53,7 +53,7 @@ public class GameActionConvert : GameAction
                     }
                     else
                     {
-                        accessor.AddComponentData(pawnController, new Converted() { RemainingTurns = accessor.GetComponentData<GameActionEffectDurationData>(context.Item).Value });
+                        accessor.AddComponentData(pawnController, new Converted() { RemainingTurns = accessor.GetComponentData<GameActionSettingEffectDuration>(context.Item).Value });
                     }
 
                     return true;

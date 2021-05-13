@@ -83,14 +83,15 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionDamageDataAuth, ns: , asm: Game}
+      type: {class: GameActionSettingDamageAuth, ns: , asm: Game}
       data:
-        Damage: 0
+        Damage: 2
     00000001:
-      type: {class: GameActionExplosionRangeAuth, ns: , asm: Game}
+      type: {class: GameActionSettingRadiusAuth, ns: , asm: Game}
       data:
-        ExplosionRange: 0
+        Radius:
+          RawValue: 3221225472
     00000002:
-      type: {class: GameActionRangeDataAuth, ns: , asm: Game}
+      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
       data:
-        Range: 1
+        Range: 5

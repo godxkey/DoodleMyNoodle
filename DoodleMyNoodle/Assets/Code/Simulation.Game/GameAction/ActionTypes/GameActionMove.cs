@@ -11,7 +11,7 @@ public class GameActionMove : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionRangeData)
+        typeof(GameActionSettingRange)
     };
 
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
@@ -32,7 +32,7 @@ public class GameActionMove : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         int highestRangePossible = ceilToInt(
-            accessor.GetComponentData<GameActionRangeData>(context.Item).Value *
+            accessor.GetComponentData<GameActionSettingRange>(context.Item).Value *
             accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value);
 
         UseContract useContract = new UseContract();
@@ -53,7 +53,7 @@ public class GameActionMove : GameAction
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
-            fix movePerAP = accessor.GetComponentData<GameActionRangeData>(context.Item).Value;
+            fix movePerAP = accessor.GetComponentData<GameActionSettingRange>(context.Item).Value;
 
             NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
             if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, path))

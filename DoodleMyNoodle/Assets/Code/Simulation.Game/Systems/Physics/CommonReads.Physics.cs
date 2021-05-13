@@ -20,9 +20,9 @@ public static partial class CommonReads
             NativeList<int> outBodyIndexes = new NativeList<int>(Allocator.Temp);
             bool hit = physicsSystem.PhysicsWorld.OverlapAabb(input, outBodyIndexes);
 
-            foreach (var bodyIndex in outBodyIndexes)
+            for (int i = 0; i < outBodyIndexes.Length; i++)
             {
-                outEntities.Add(physicsSystem.PhysicsWorld.AllBodies[bodyIndex].Entity);
+                outEntities.Add(physicsSystem.PhysicsWorld.AllBodies[outBodyIndexes[i]].Entity);
             }
 
             return hit;
@@ -51,11 +51,11 @@ public static partial class CommonReads
             return physicsSystem.PhysicsWorld.CalculateDistance(pointDistanceInput, ref outHits);
         }
 
-        public static NativeList<DistanceHit> OverlapCircle(ISimWorldReadWriteAccessor accessor, fix2 attackPosition, fix attackRadius, Entity ignoreEntity = default)
+        public static NativeList<DistanceHit> OverlapCircle(ISimWorldReadWriteAccessor accessor, fix2 position, fix radius, Entity ignoreEntity = default)
         {
             NativeList<DistanceHit> outHits = new NativeList<DistanceHit>(Allocator.Temp);
 
-            OverlapCircle(accessor, attackPosition, attackRadius, outHits, ignoreEntity);
+            OverlapCircle(accessor, position, radius, outHits, ignoreEntity);
 
             return outHits;
         }

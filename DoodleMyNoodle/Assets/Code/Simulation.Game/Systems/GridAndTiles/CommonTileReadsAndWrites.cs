@@ -43,50 +43,6 @@ public partial class CommonReads
         return tileReferences[index].Tile;
     }
 
-    public static Entity FindFirstTileActorWithComponent<T1, T2>(ISimWorldReadAccessor accessor, int2 tile)
-    {
-        return FindFirstTileActorWithComponent<T1, T2>(accessor, GetTileWorld(accessor), tile);
-    }
-
-    public static Entity FindFirstTileActorWithComponent<T>(ISimWorldReadAccessor accessor, int2 tile)
-    {
-        return FindFirstTileActorWithComponent<T>(accessor, GetTileWorld(accessor), tile);
-    }
-
-    public static Entity FindFirstTileActorWithComponent<T1, T2>(ISimWorldReadAccessor accessor, in TileWorld tileWorld, int2 tile)
-    {
-        Entity entity = tileWorld.GetEntity(tile);
-        if (entity != Entity.Null)
-        {
-            foreach (var actor in accessor.GetBufferReadOnly<TileActorReference>(entity))
-            {
-                if (accessor.HasComponent<T1>(actor) && accessor.HasComponent<T2>(actor))
-                {
-                    return actor;
-                }
-            }
-        }
-
-        return Entity.Null;
-    }
-
-    public static Entity FindFirstTileActorWithComponent<T>(ISimWorldReadAccessor accessor, in TileWorld tileWorld, int2 tile)
-    {
-        Entity entity = tileWorld.GetEntity(tile);
-        if (entity != Entity.Null)
-        {
-            foreach (var actor in accessor.GetBufferReadOnly<TileActorReference>(entity))
-            {
-                if (accessor.HasComponent<T>(actor))
-                {
-                    return actor;
-                }
-            }
-        }
-
-        return Entity.Null;
-    }
-
     public static void FindTileActorsWithComponent<T>(ISimWorldReadAccessor accessor, Entity tile, NativeList<Entity> result)
     {
         foreach (TileActorReference actor in accessor.GetBufferReadOnly<TileActorReference>(tile))

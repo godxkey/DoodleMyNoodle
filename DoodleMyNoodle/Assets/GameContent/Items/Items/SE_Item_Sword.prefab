@@ -68,7 +68,7 @@ MonoBehaviour:
   - id: 0
   - id: 1
   ApCost: 1
-  IsStackable: 0
+  IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
@@ -82,10 +82,10 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionDamageDataAuth, ns: , asm: Game}
+      type: {class: GameActionSettingDamageAuth, ns: , asm: Game}
       data:
-        Damage: 0
+        Damage: 1
     00000001:
-      type: {class: GameActionRangeDataAuth, ns: , asm: Game}
+      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
       data:
         Range: 1

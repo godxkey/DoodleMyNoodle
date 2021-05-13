@@ -10,13 +10,13 @@ public class GameActionSwap : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionRangeData),
+        typeof(GameActionSettingRange),
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description(_.GetComponentData<GameActionRangeData>(context.Item).Value)
+            new GameActionParameterTile.Description(_.GetComponentData<GameActionSettingRange>(context.Item).Value)
             {
                 IncludeSelf = false,
 

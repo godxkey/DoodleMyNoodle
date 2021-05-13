@@ -14,7 +14,7 @@ public class DelayedExplosionAuth : MonoBehaviour, IConvertGameObjectToEntity
     [HideIf("UseTime")]
     public int TurnDelay = 1;
 
-    public int Range = 1;
+    public fix Radius = 1;
     public int Damage = 1;
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -24,7 +24,7 @@ public class DelayedExplosionAuth : MonoBehaviour, IConvertGameObjectToEntity
             UseTime = UseTime,
             TimeDuration = TimeDelay,
             TurnDuration = TurnDelay,
-            Range = Range,
+            Radius = Radius,
             Damage = Damage
         });
     }

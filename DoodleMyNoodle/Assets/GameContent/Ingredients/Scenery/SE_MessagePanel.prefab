@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 30145307963041148}
   - component: {fileID: 30145307963041147}
   - component: {fileID: 1096712865075129230}
-  - component: {fileID: -4347481765904522969}
-  m_Layer: 0
+  - component: {fileID: 4137276699734051947}
+  m_Layer: 12
   m_Name: SE_MessagePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49,6 +49,7 @@ MonoBehaviour:
   _guid: da7a6ad0f0ffd614097380430530c577
   _bindedViewPrefab: {fileID: 6426749434754870349, guid: 1c8df7d1727b94a4bac29ccace5eb76d,
     type: 3}
+  _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 1
@@ -65,7 +66,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: 
---- !u!114 &-4347481765904522969
+--- !u!114 &4137276699734051947
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -74,7 +75,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 30145307963041151}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5e262d8f98129648ae67986145f644f, type: 3}
+  m_Script: {fileID: 11500000, guid: 93e46ee13bcdb224bb3a8c3df684bc12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _type: 3
+  Type: 0
+  Shape: 1
+  Material: {fileID: 0}
+  IsTrigger: 0
+  LinearDrag: 0
+  AngularDrag: 0.05
+  GravityScale: 1
+  FireEvents: 0
+  FreezeRotation: 0
+  BoxSize: {x: 0.7, y: 0.7}
+  CircleRadius: 0.5
+  BoxAndCircleOffset: {x: 0, y: 0}
+  PolygonPoints: []

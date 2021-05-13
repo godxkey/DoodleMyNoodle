@@ -97,7 +97,7 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
             Log.Info($"Discarding {useGameAction.PawnController}'s input : {str}");
         }
 
-        Entity entityObject = CommonReads.FindFirstTileActorWithComponent<GameActionId>(Accessor, useGameAction.ObjectPosition);
+        Entity entityObject = FindInteractableInRange(useGameAction.ObjectPosition, pawn);
 
         GameAction gameAction = GetGameActionFromEntity(entityObject);
 

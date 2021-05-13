@@ -11,8 +11,8 @@ public class GameActionHeal : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionRangeData),
-        typeof(GameActionHPToHealData)
+        typeof(GameActionSettingRange),
+        typeof(GameActionSettingHPToHeal)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
@@ -20,7 +20,7 @@ public class GameActionHeal : GameAction
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description(accessor.GetComponentData<GameActionRangeData>(context.Item).Value)
+            new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
             {
                 RequiresAttackableEntity = true,
             }
@@ -33,13 +33,13 @@ public class GameActionHeal : GameAction
     {
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            int healValue = accessor.GetComponentData<GameActionHPToHealData>(context.Item).Value;
+            int healValue = accessor.GetComponentData<GameActionSettingHPToHeal>(context.Item).Value;
             
             NativeList<Entity> targets = new NativeList<Entity>(Allocator.Temp);
             CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, targets);
             foreach (var target in targets)
             {
-                CommonWrites.RequestHealOnTarget(accessor, context.InstigatorPawn, target, healValue);
+                CommonWrites.RequestHeal(accessor, context.InstigatorPawn, target, healValue);
             }
 
             return true;

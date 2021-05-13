@@ -9,7 +9,7 @@ public class GameActionEnrage : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
-        typeof(GameActionHPCostData)
+        typeof(GameActionSettingHPCost)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
