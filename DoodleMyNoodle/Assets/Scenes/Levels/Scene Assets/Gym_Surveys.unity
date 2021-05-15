@@ -691,7 +691,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0060b4d514a21f44a8be132e3f1113c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _focusLocation: {x: 0, y: 0}
+  _focusLocation: {x: 0, y: 0.5}
   _surveyDropdown: {fileID: 343981793}
   _restartButton: {fileID: 1443010145}
 --- !u!1 &769329639
@@ -830,7 +830,8 @@ PrefabInstance:
         type: 3}
       propertyPath: DefaultAIPrefab
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 6327200456021105714, guid: 14133f71835ce52438710699fb308266,
+        type: 3}
     - target: {fileID: 2768931431184588227, guid: 241253d57dc9c8642aafdd47087c95c3,
         type: 3}
       propertyPath: m_Name
@@ -2274,7 +2275,7 @@ PrefabInstance:
     - target: {fileID: 8132708406327359654, guid: fe36a28ed936c19459a39e66b5d9eecb,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.37
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8132708406327359654, guid: fe36a28ed936c19459a39e66b5d9eecb,
         type: 3}
