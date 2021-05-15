@@ -826,6 +826,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1717119584158441228, guid: 241253d57dc9c8642aafdd47087c95c3,
+        type: 3}
+      propertyPath: MaxValue
+      value: 99999
+      objectReference: {fileID: 0}
     - target: {fileID: 2647735906956266298, guid: 241253d57dc9c8642aafdd47087c95c3,
         type: 3}
       propertyPath: DefaultAIPrefab
