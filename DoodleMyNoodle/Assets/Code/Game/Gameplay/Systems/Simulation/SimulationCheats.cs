@@ -187,4 +187,22 @@ public static class SimulationCheats
     {
         PresentationHelpers.SubmitInput(new SimInputCheatNeverEndingTurns());
     }
+
+    [ConsoleCommand(Description = "Add impulse to your local pawn", EnableGroup = LOCAL_PAWN_GROUP)]
+    public static void CheatImpulseSelf(float x, float y)
+    {
+        var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
+
+        if (localPlayerInfo == null)
+        {
+            Log.Warning("No local player found");
+            return;
+        }
+
+        PresentationHelpers.SubmitInput(new SimInputCheatImpulseSelf()
+        {
+            PlayerId = localPlayerInfo.SimPlayerId,
+            ImpulseValue = new fix2((fix)x, (fix)y)
+        });
+    }
 }

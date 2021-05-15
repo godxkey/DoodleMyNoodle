@@ -1,3 +1,4 @@
+using CCC.Fix2D;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -55,6 +56,13 @@ public class SimInputCheatTeleport : SimCheatInput
 {
     public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
     public fix2 Destination;
+}
+
+[NetSerializable]
+public class SimInputCheatImpulseSelf : SimCheatInput
+{
+    public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
+    public fix2 ImpulseValue;
 }
 
 public struct CheatsAllItemElement : IBufferElementData
@@ -231,6 +239,20 @@ public class HandleSimulationCheatsSystem : SimSystemBase
                     EntityManager.AddComponentData(entity, new NeverEndingTurnTag());
                 }
 
+                break;
+            }
+
+            case SimInputCheatImpulseSelf impulseSelf:
+            {
+                Entity player = CommonReads.FindPlayerEntity(Accessor, impulseSelf.PlayerId);
+
+                if (EntityManager.Exists(player) &&
+                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
+                {
+                    PhysicsVelocity vel = EntityManager.GetComponentData<PhysicsVelocity>(pawn);
+                    vel.Linear += impulseSelf.ImpulseValue;
+                    EntityManager.SetComponentData<PhysicsVelocity>(pawn, vel);
+                }
                 break;
             }
 
