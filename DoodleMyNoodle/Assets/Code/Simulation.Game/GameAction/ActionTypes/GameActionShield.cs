@@ -18,9 +18,10 @@ public class GameActionShield : GameAction
         if (accessor.GetComponentData<GameActionSettingRange>(context.Item).Value > 0)
         {
             return new UseContract(
-                new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
+                new GameActionParameterEntity.Description()
                 {
-                    IncludeSelf = false,
+                    RangeFromInstigator = accessor.GetComponentData<GameActionSettingRange>(context.Item),
+                    IncludeSelf = true,
                     RequiresAttackableEntity = true,
                 });
         }
@@ -32,21 +33,16 @@ public class GameActionShield : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)
     {
-        if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (useData.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {
-            // reduce target health
-            NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, victims);
-            foreach (var victim in victims)
-            {
-                ShieldTarget(accessor, context.Item, victim);
-            }
-
+            Entity target = CommonReads.Physics.FindFirstEntityWithComponentAtPosition<Health>(accessor, paramEntity.EntityPos);
+            ShieldTarget(accessor, context.Item, target);
             return true;
         }
 
-        ShieldTarget(accessor, context.Item, context.InstigatorPawn);
-        return true;
+        LogGameActionInfo(context, "Wrong parameters");
+
+        return false;
     }
 
     private void ShieldTarget(ISimWorldReadWriteAccessor accessor, Entity itemEntity, Entity pawn)

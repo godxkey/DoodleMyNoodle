@@ -16,10 +16,9 @@ public class GameActionComboAttack : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        var param = new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
+        var param = new GameActionParameterPosition.Description()
         {
-            IncludeSelf = false,
-            RequiresAttackableEntity = true
+            MaxRangeFromInstigator = accessor.GetComponentData<GameActionSettingRange>(context.Item)
         };
 
         return new UseContract(param, param);
@@ -27,51 +26,28 @@ public class GameActionComboAttack : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
-        int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
-        NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
+        int damage = accessor.GetComponentData<GameActionSettingDamage>(context.Item);
+        var instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
+        var range = accessor.GetComponentData<GameActionSettingRange>(context.Item);
+        fix attackRadius = (fix)0.1f;
+        NativeList<DistanceHit> hits = new NativeList<DistanceHit>(Allocator.Temp);
 
-        if (parameters.TryGetParameter(0, out GameActionParameterTile.Data firstTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data firstStrikePos))
         {
-            // melee attack has a range
-            if (mathX.lengthmanhattan(firstTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
-            {
-                return false;
-            }
+            var attackPos = Helpers.ClampPositionInsideRange(firstStrikePos.Position, instigatorPos, range);
 
-            // find victims
-            CommonReads.FindTileActorsWithComponents<Health>(accessor, firstTile.Tile, victims);
+            CommonReads.Physics.OverlapCircle(accessor, attackPos, attackRadius, hits, ignoreEntity: context.InstigatorPawn);
         }
 
-        if (parameters.TryGetParameter(1, out GameActionParameterTile.Data secondTile))
+        if (parameters.TryGetParameter(1, out GameActionParameterPosition.Data secondStrikePos))
         {
-            // melee attack has a range of RANGE
-            if (mathX.lengthmanhattan(secondTile.Tile - instigatorTile) > accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
-            {
-                return false;
-            }
+            var attackPos = Helpers.ClampPositionInsideRange(secondStrikePos.Position, instigatorPos, range);
 
-            // find victims
-            CommonReads.FindTileActorsWithComponents<Health>(accessor, secondTile.Tile, victims);
+            CommonReads.Physics.OverlapCircle(accessor, attackPos, attackRadius, hits, ignoreEntity: context.InstigatorPawn);
         }
 
-        foreach (Entity entity in victims)
-        {
-            AttackEntityOnTile(accessor, context, entity);
-        }
+        CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, damage);
 
-        if (victims.Length > 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return true;
     }
-
-    private void AttackEntityOnTile(ISimWorldReadWriteAccessor accessor, UseContext context, Entity victim)
-    {
-        CommonWrites.RequestDamage(accessor, context.InstigatorPawn, victim, accessor.GetComponentData<GameActionSettingDamage>(context.Item).Value);
-    }
-
 }

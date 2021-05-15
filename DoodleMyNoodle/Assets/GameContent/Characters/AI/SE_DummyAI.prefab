@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6327200456021105715}
   - component: {fileID: 6966495271230225975}
-  - component: {fileID: -6236910964871357771}
+  - component: {fileID: 6120363827026546561}
   m_Layer: 0
-  m_Name: SE_ArcherAI
+  m_Name: SE_DummyAI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,13 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 50022b4208f616b4eb21d14fb57ef7e1
+  _guid: 14133f71835ce52438710699fb308266
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _showGhost: 1
   _hasTransform: 0
---- !u!114 &-6236910964871357771
+--- !u!114 &6120363827026546561
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6327200456021105714}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36c09f8a9f4f4b247a6a88efcf956a5d, type: 3}
+  m_Script: {fileID: 11500000, guid: cb6e23f0a8d92ec49aa944043aeecaf1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   StartingTeam: 1

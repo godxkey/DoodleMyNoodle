@@ -2,11 +2,53 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using CCC.Fix2D;
+using System;
 
 public static partial class CommonReads
 {
     public static class Physics
     {
+        public static Entity FindFirstEntityWithComponentAtPosition<T>(ISimWorldReadWriteAccessor accessor, fix2 position, Entity ignoreEntity = default) where T : struct
+        {
+            Entity closestEntity = Entity.Null;
+            fix closestDistanceSq = 9999;
+
+            var hits = OverlapPoint(accessor, position, ignoreEntity);
+            for (int i = 0; i < hits.Length; i++)
+            {
+                fix dist = fixMath.distancesq((fix2)hits[i].Position, position);
+                if (dist < closestDistanceSq && accessor.HasComponent<T>(hits[i].Entity))
+                {
+                    closestDistanceSq = dist;
+                    closestEntity = hits[i].Entity;
+                }
+            }
+
+            return closestEntity;
+        }
+
+        public static NativeList<OverlapPointHit> OverlapPoint(ISimWorldReadWriteAccessor accessor, fix2 position, Entity ignoreEntity = default)
+        {
+            NativeList<OverlapPointHit> outHits = new NativeList<OverlapPointHit>(Allocator.Temp);
+
+            OverlapPoint(accessor, position, outHits, ignoreEntity);
+
+            return outHits;
+        }
+
+        public static bool OverlapPoint(ISimWorldReadWriteAccessor accessor, fix2 position, NativeList<OverlapPointHit> outHits, Entity ignoreEntity = default)
+        {
+            var physicsSystem = accessor.GetExistingSystem<PhysicsWorldSystem>();
+
+            OverlapPointInput pointDistanceInput = OverlapPointInput.Default;
+            pointDistanceInput.Position = (float2)position;
+
+            if (ignoreEntity != Entity.Null)
+                pointDistanceInput.Ignore = new IgnoreHit(physicsSystem.GetPhysicsBodyIndex(ignoreEntity));
+
+            return physicsSystem.PhysicsWorld.OverlapPoint(pointDistanceInput, ref outHits);
+        }
+
         public static bool OverlapAabb(ISimWorldReadWriteAccessor accessor, fix2 min, fix2 max, NativeList<Entity> outEntities, Entity ignoreEntity = default)
         {
             var physicsSystem = accessor.GetExistingSystem<PhysicsWorldSystem>();
@@ -26,6 +68,11 @@ public static partial class CommonReads
             }
 
             return hit;
+        }
+
+        internal static object OverlapCircle(ISimWorldReadWriteAccessor accessor, object attackPosition, fix attackRadius, Entity ignoreEntity)
+        {
+            throw new NotImplementedException();
         }
 
         public static NativeList<Entity> OverlapAabb(ISimWorldReadWriteAccessor accessor, fix2 min, fix2 max, Entity ignoreEntity = default)

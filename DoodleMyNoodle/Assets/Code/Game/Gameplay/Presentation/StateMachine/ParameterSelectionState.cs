@@ -141,9 +141,12 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
     {
         public bool Done;
 
+        private bool _doneNextFrame = false;
+
         public override void OnEnter()
         {
             Done = false;
+            _doneNextFrame = false;
 
             // the parameter
             int remainingParamCount = Blackboard.ParametersDescriptions.Length - Blackboard.ResultParameters.Count;
@@ -173,18 +176,23 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
         private void OnSurveyCancel()
         {
-            Done = true;
+            _doneNextFrame = true;
         }
 
         private void OnSurveyComplete(List<GameAction.ParameterData> results)
         {
             // add param to results
             Blackboard.ResultParameters.AddRange(results);
-            Done = true;
+            _doneNextFrame = true;
         }
 
         public override void OnUpdate()
         {
+            if (_doneNextFrame) // this is needed to make sure we don't start the next survey in the same frame as the previous
+            {
+                _doneNextFrame = false;
+                Done = true;
+            }
         }
 
         public override void OnExit(State nextState)

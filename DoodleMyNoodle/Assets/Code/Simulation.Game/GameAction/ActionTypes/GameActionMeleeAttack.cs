@@ -37,13 +37,8 @@ public class GameActionMeleeAttack : GameAction
             fix2 attackPosition = Helpers.ClampPositionInsideRange(paramPosition.Position, instigatorPos, range);
             fix attackRadius = (fix)0.1f;
 
-            foreach (DistanceHit hit in CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.InstigatorPawn))
-            {
-                if (accessor.HasComponent<Health>(hit.Entity))
-                {
-                    CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hit.Entity, damage);
-                }
-            }
+            var hits = CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.InstigatorPawn);
+            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, damage);
 
             fix2 attackVector = attackPosition - instigatorPos;
             resultData.AddData(new KeyValuePair<string, object>("Direction", attackVector));

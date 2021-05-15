@@ -13,19 +13,21 @@ public class GameActionConvert : GameAction
         typeof(GameActionSettingEffectDuration)
     };
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description(_.GetComponentData<GameActionSettingRange>(context.Item).Value)
+            new GameActionParameterEntity.Description()
             {
+                RangeFromInstigator = accessor.GetComponentData<GameActionSettingRange>(context.Item).Value,
                 IncludeSelf = false,
-                CustomTileActorPredicate = (tileActor, accessor) =>
+                RequiresAttackableEntity = false,
+                CustomPredicate = (simWorld, tileActor) =>
                 {
-                    if (accessor.HasComponent<Controllable>(tileActor))
+                    if (simWorld.HasComponent<Controllable>(tileActor))
                     {
-                        var pawnController = CommonReads.GetPawnController(accessor, tileActor);
-                        
-                        return accessor.Exists(pawnController) && accessor.HasComponent<Team>(pawnController);
+                        var pawnController = CommonReads.GetPawnController(simWorld, tileActor);
+
+                        return simWorld.Exists(pawnController) && simWorld.HasComponent<Team>(pawnController);
                     }
                     return false;
                 }
@@ -34,30 +36,26 @@ public class GameActionConvert : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
-        if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterEntity.Data paramTile))
         {
             // find target
-            NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindTileActorsWithComponents<Controllable>(accessor, paramTile.Tile, victims);
-            foreach (Entity entity in victims)
+            Entity target = CommonReads.Physics.FindFirstEntityWithComponentAtPosition<Controllable>(accessor, paramTile.EntityPos);
+            Entity targetController = CommonReads.GetPawnController(accessor, target);
+            if (accessor.TryGetComponentData(targetController, out Team currentTeam))
             {
-                Entity pawnController = CommonReads.GetPawnController(accessor, entity);
-                if (pawnController != Entity.Null && accessor.TryGetComponentData(pawnController, out Team currentTeam))
+                var newTeam = currentTeam.Value == 0 ? 1 : 0;
+
+                accessor.SetComponentData(targetController, new Team() { Value = newTeam });
+                if (accessor.HasComponent<Converted>(targetController))
                 {
-                    var newTeam = currentTeam.Value == 0 ? 1 : 0;
-
-                    accessor.SetComponentData(pawnController, new Team() { Value = newTeam });
-                    if (accessor.HasComponent<Converted>(pawnController))
-                    {
-                        accessor.RemoveComponent<Converted>(pawnController);
-                    }
-                    else
-                    {
-                        accessor.AddComponentData(pawnController, new Converted() { RemainingTurns = accessor.GetComponentData<GameActionSettingEffectDuration>(context.Item).Value });
-                    }
-
-                    return true;
+                    accessor.RemoveComponent<Converted>(targetController);
                 }
+                else
+                {
+                    accessor.AddComponentData(targetController, new Converted() { RemainingTurns = accessor.GetComponentData<GameActionSettingEffectDuration>(context.Item).Value });
+                }
+
+                return true;
             }
         }
 

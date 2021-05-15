@@ -8,9 +8,10 @@ public class GameActionParameterEntity
 {
     public class Description : GameAction.ParameterDescription
     {
-        public fix RangeFromInstigator { get; private set; } = new fix(9999);
+        public fix RangeFromInstigator = new fix(9999);
         public bool IncludeSelf = true;
         public bool RequiresAttackableEntity = false;
+        public Func<ISimWorldReadAccessor, Entity, bool> CustomPredicate = null;
 
         public Description() { }
 

@@ -94,6 +94,12 @@ public class SurveyEntity : SurveyBaseController
             }
         }
 
+        if (paramDescription.CustomPredicate != null)
+        {
+            if (paramDescription.CustomPredicate(SimWorld, entity) == false)
+                return false;
+        }
+
         fix2 targetPos = Cache.SimWorld.GetComponentData<FixTranslation>(entity);
         fix squaredDistance = fixMath.distancesq(Cache.LocalPawnPosition, targetPos);
         if (squaredDistance > paramDescription.RangeFromInstigator * paramDescription.RangeFromInstigator)
