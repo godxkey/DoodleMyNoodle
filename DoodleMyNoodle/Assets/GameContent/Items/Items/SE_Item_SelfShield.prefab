@@ -88,4 +88,4 @@ MonoBehaviour:
     00000001:
       type: {class: GameActionSettingEffectDurationAuth, ns: , asm: Game}
       data:
-        Duration: 1
+        Duration: 2
