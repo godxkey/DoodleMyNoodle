@@ -4,12 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlideAreaTiming : SurveyBaseController, IWorldUIPointerClickHandler
+public class SurveyZoneBar : SurveyBaseController
 {
-    ////////////////////////////////////////////////////////////////////////////////////////
-    //      WARNING! THIS WAS NOT TESTED AFTER BEING PORTED TO NEW SurveyBaseController
-    ////////////////////////////////////////////////////////////////////////////////////////
-
     public Transform LeftCircleLimit;
     public Transform RightCircleLimit;
 
@@ -29,14 +25,37 @@ public class SlideAreaTiming : SurveyBaseController, IWorldUIPointerClickHandler
     private bool _hasClicked = false;
     private Sequence _circleAnim;
 
+    private void Awake()
+    {
+        InfoTextDisplay.Instance.SetText("Click at the right time");
+    }
+
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
         GameAction.ParameterDescriptionType.SuccessRating
     };
 
-    void IWorldUIPointerClickHandler.OnPointerClick()
+    public override GameAction.ParameterDescription[] CreateDebugQuery()
     {
-        _hasClicked = true;
+        return new GameAction.ParameterDescription[] { new GameActionParameterSuccessRate.Description() {  } };
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            if (!_hasClicked)
+            {
+                _hasClicked = true;
+            }
+        }
+        else
+        {
+            if (_hasClicked)
+            {
+                _hasClicked = false;
+            }
+        }
     }
 
     protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
@@ -48,9 +67,7 @@ public class SlideAreaTiming : SurveyBaseController, IWorldUIPointerClickHandler
         Section.localPosition = new Vector3(UnityEngine.Random.Range(SectionLeftRandomLimit.localPosition.x, SectionRightRandomLimit.localPosition.x), 0, 0);
         Section.localScale = new Vector3(UnityEngine.Random.Range(SectionSizeMin, SectionSizeMax), 1, 1);
 
-
         _circleAnim = DOTween.Sequence();
-
         _circleAnim.Append(Circle.transform.DOLocalMoveX(RightCircleLimit.transform.localPosition.x, CircleSpeed).SetEase(Ease.Linear));
         _circleAnim.SetLoops(-1, LoopType.Yoyo);
 
@@ -71,11 +88,13 @@ public class SlideAreaTiming : SurveyBaseController, IWorldUIPointerClickHandler
             // Failed
             result.Add(new GameActionParameterSuccessRate.Data(SurveySuccessRating.One));
         }
+
         complete();
     }
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
+        InfoTextDisplay.Instance.ForceHideText();
         _circleAnim?.Kill();
     }
 }

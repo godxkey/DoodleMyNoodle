@@ -10,8 +10,21 @@ public class SurveyEntity : SurveyBaseController
 {
     [SerializeField] private HighlightService.Params _highlightSettings;
 
+    [SerializeField] private Color _outOfRangeColor;
+    [SerializeField] private Color _normalColor;
+    [SerializeField] private Transform _rangeIndicator1;
+    [SerializeField] private Transform _rangeIndicator2;
+    [SerializeField] private float _rangeIndicatorScaleDiff = 0.1f;
+
     private Entity? _selectedEntity;
     private DirtyRef<BindedSimEntityManaged> _hoveredEntity;
+    private Vector2 _instigatorPosition;
+
+    private void Awake()
+    {
+        InfoTextDisplay.Instance.SetText("Select an Entity");
+        CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Target);
+    }
 
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
@@ -63,6 +76,44 @@ public class SurveyEntity : SurveyBaseController
                     HighlightService.HighlightSprite(sprRenderer, _highlightSettings);
             }
         }
+
+        UpdateRangeFeedback();
+    }
+    
+    private void UpdateRangeFeedback()
+    {
+        if (SimWorld.TryGetComponentData(CurrentContext.Instigator, out FixTranslation position))
+        {
+            _instigatorPosition = (Vector2)position.Value;
+        }
+
+        var paramEntity = CurrentContext.GetQueryParam<GameActionParameterEntity.Description>();
+
+        float range = paramEntity == null ? float.MaxValue : (float)paramEntity.RangeFromInstigator;
+
+        bool inRange = (Cache.PointerWorldPosition - _instigatorPosition).magnitude < range;
+
+        if (inRange)
+        {
+            CursorOverlayService.Instance.SetCursorColor(_normalColor);
+        }
+        else
+        {
+            CursorOverlayService.Instance.SetCursorColor(_outOfRangeColor);
+        }
+
+        if (range < 1000)
+        {
+            _rangeIndicator1.gameObject.SetActive(true);
+            _rangeIndicator2.gameObject.SetActive(true);
+            _rangeIndicator1.localScale = Vector3.one * range * 2f;
+            _rangeIndicator2.localScale = _rangeIndicator1.localScale + Vector3.one * _rangeIndicatorScaleDiff * Cache.CameraSize;
+        }
+        else
+        {
+            _rangeIndicator1.gameObject.SetActive(false);
+            _rangeIndicator2.gameObject.SetActive(false);
+        }
     }
 
     private BindedSimEntityManaged FindHoveredEntity()
@@ -112,6 +163,8 @@ public class SurveyEntity : SurveyBaseController
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
+        CursorOverlayService.Instance.ResetCursorToDefault();
+        InfoTextDisplay.Instance.ForceHideText();
         _selectedEntity = null;
     }
 
@@ -119,7 +172,7 @@ public class SurveyEntity : SurveyBaseController
     {
         return new GameAction.ParameterDescription[]
         {
-            new GameActionParameterEntity.Description()
+            new GameActionParameterEntity.Description() { RangeFromInstigator = 5 }
         };
     }
 }

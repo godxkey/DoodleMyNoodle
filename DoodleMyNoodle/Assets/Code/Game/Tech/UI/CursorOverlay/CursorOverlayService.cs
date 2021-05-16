@@ -19,7 +19,9 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         SmallBrush,
         Fill,
         Erase,
-        Move
+        Move,
+        Grab,
+        Target
     }
 
     [Serializable]

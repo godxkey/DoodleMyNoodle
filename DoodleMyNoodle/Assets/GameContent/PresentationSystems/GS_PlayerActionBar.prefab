@@ -61,6 +61,8 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.3301887, g: 0.32240123, b: 0.32240123, a: 0.53333336}
   m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -159,6 +161,7 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!114 &5383613741767361857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,9 +188,9 @@ GameObject:
   - component: {fileID: 5383613742091577746}
   - component: {fileID: 5383613742091577453}
   - component: {fileID: 5383613742091577452}
-  - component: {fileID: 2024580545896227462}
+  - component: {fileID: 1370532780328028526}
   m_Layer: 5
-  m_Name: GS_PlayerActionBar 1
+  m_Name: GS_PlayerActionBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -273,7 +276,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &2024580545896227462
+--- !u!114 &1370532780328028526
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -282,12 +285,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5383613742091577455}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0271521737d7cbe4383715efd816474f, type: 3}
+  m_Script: {fileID: 11500000, guid: 11916f5179b132144a932c0f63a1e57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SystemSettings:
     Type: 1
     OnlineFlags: -1
+  _hudContainer: {fileID: 5383613741767361859}
 --- !u!1 &5383613742160408227
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,6 +356,8 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.392}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -377,6 +383,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16fbdff7fb9bd8b41a866fe227f20739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SystemSettings:
+    Type: 1
+    OnlineFlags: -1
   _gridLayoutGroup: {fileID: 5383613742359317524}
   _maxCollumns: 10
   _background: {fileID: 5383613742160408231}
@@ -419,6 +428,7 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &5383613742359317526
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,6 +492,8 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.392}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -519,26 +531,6 @@ MonoBehaviour:
   m_Spacing: {x: 2, y: 2}
   m_Constraint: 1
   m_ConstraintCount: 2
---- !u!114 &5383613742721782888
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5761953596002007172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: 160
-  m_PreferredHeight: 160
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
 --- !u!1 &5383613742805569403
 GameObject:
   m_ObjectHideFlags: 0
@@ -602,6 +594,27 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &5383613742721782888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5761953596002007172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 160
+  m_PreferredHeight: 160
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1001 &5383613741397342834
 PrefabInstance:
   m_ObjectHideFlags: 0

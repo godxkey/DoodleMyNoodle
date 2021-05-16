@@ -14,27 +14,27 @@ public class SurveyTrafficLight : SurveyBaseController
     }
 
     public Color InactiveColor;
-    public float DelayBeforeStartDuration;
-    public float IntroDuration;
-
-    public SpriteRenderer ContainerBG;
-    public Color NotHeldBGColor;
-    public Color HeldBGColor;
-
+    public GameObject Container;
     public List<LightData> LightDatas = new List<LightData>();
 
     private int _currentLight = 0;
+    private int _resultLight = 0;
     private bool _buttonHeld = false;
     private bool _complete;
+
+    private void Awake()
+    {
+        Container.SetActive(true);
+        InfoTextDisplay.Instance.SetText("Hold and release at the last light");
+    }
 
     private void Update()
     {
         if (Input.GetMouseButton(0))
         {
-            if (!_buttonHeld && Cache.PointedGameObjects.Contains(gameObject))
+            if (!_buttonHeld)
             {
                 _buttonHeld = true;
-                ContainerBG.color = HeldBGColor;
             }
         }
         else
@@ -42,7 +42,8 @@ public class SurveyTrafficLight : SurveyBaseController
             if (_buttonHeld)
             {
                 _buttonHeld = false;
-                ContainerBG.color = NotHeldBGColor;
+                Container.SetActive(false);
+                _resultLight = _currentLight;
                 _complete = true;
             }
         }
@@ -63,6 +64,7 @@ public class SurveyTrafficLight : SurveyBaseController
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
+        InfoTextDisplay.Instance.ForceHideText();
         _complete = false;
     }
 
@@ -73,29 +75,6 @@ public class SurveyTrafficLight : SurveyBaseController
 
     protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
     {
-        // Intro
-
-        for (int i = 0; i < LightDatas.Count; i++)
-        {
-            ChangeLightActiveState(i, false);
-        }
-
-        yield return new WaitForSeconds(DelayBeforeStartDuration);
-
-        for (int i = 0; i < LightDatas.Count; i++)
-        {
-            ChangeLightActiveState(i, true);
-        }
-
-        yield return new WaitForSeconds(IntroDuration);
-
-        for (int i = 0; i < LightDatas.Count; i++)
-        {
-            ChangeLightActiveState(i, false);
-        }
-
-        yield return new WaitForSeconds(IntroDuration);
-
         // Light Switching
         while (!_complete)
         {
@@ -127,8 +106,7 @@ public class SurveyTrafficLight : SurveyBaseController
             yield return null;
         }
 
-
-        int success = Mathf.Clamp(Mathf.CeilToInt((_currentLight + 1) * 5 / LightDatas.Count), 1, 5);
+        int success = Mathf.Clamp(Mathf.CeilToInt((_resultLight + 1) * 5 / LightDatas.Count), 1, 5);
         result.Add(new GameActionParameterSuccessRate.Data((SurveySuccessRating)success));
         complete();
     }

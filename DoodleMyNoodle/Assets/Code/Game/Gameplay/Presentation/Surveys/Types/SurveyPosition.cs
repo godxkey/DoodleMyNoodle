@@ -6,19 +6,18 @@ using UnityEngine;
 
 public class SurveyPosition : SurveyBaseController
 {
-    [SerializeField] private Transform _pointIndicator;
-    [SerializeField] private SpriteRenderer _pointRenderer;
     [SerializeField] private Color _outOfRangeColor;
+    [SerializeField] private Color _normalColor;
     [SerializeField] private Transform _rangeIndicator1;
     [SerializeField] private Transform _rangeIndicator2;
     [SerializeField] private float _rangeIndicatorScaleDiff = 0.1f;
 
-    private Color _normalColor;
     private Vector2 _instigatorPosition;
 
     private void Awake()
     {
-        _normalColor = _pointRenderer.color;
+        InfoTextDisplay.Instance.SetText("Select a Position");
+        CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Target);
     }
 
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
@@ -40,6 +39,8 @@ public class SurveyPosition : SurveyBaseController
             yield return null;
         }
 
+        CursorOverlayService.Instance.ResetCursorToDefault();
+
         result.Add(new GameActionParameterPosition.Data((fix2)Cache.PointerWorldPosition));
         complete();
 
@@ -48,8 +49,6 @@ public class SurveyPosition : SurveyBaseController
 
     private void Update()
     {
-        _pointIndicator.position = Cache.PointerWorldPosition;
-
         if (SimWorld.TryGetComponentData(CurrentContext.Instigator, out FixTranslation position))
         {
             _instigatorPosition = (Vector2)position.Value;
@@ -61,7 +60,14 @@ public class SurveyPosition : SurveyBaseController
 
         bool inRange = (Cache.PointerWorldPosition - _instigatorPosition).magnitude < range;
 
-        _pointRenderer.color = inRange ? _normalColor : _outOfRangeColor;
+        if (inRange)
+        {
+            CursorOverlayService.Instance.SetCursorColor(_normalColor);
+        }
+        else
+        {
+            CursorOverlayService.Instance.SetCursorColor(_outOfRangeColor);
+        }
 
         if (range < 1000)
         {
@@ -79,7 +85,6 @@ public class SurveyPosition : SurveyBaseController
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
+        InfoTextDisplay.Instance.ForceHideText();
     }
-
-
 }

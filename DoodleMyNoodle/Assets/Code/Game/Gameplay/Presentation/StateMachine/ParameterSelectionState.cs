@@ -148,6 +148,8 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             Done = false;
             _doneNextFrame = false;
 
+            HUDDisplay.Instance.ToggleVisibility(false);
+
             // the parameter
             int remainingParamCount = Blackboard.ParametersDescriptions.Length - Blackboard.ResultParameters.Count;
 
@@ -197,6 +199,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
         public override void OnExit(State nextState)
         {
+            HUDDisplay.Instance.ToggleVisibility(true);
             SurveyManager.Instance.StopCurrentSurvey();
         }
     }

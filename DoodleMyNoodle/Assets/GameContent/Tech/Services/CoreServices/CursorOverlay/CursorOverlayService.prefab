@@ -74,6 +74,16 @@ MonoBehaviour:
     Type: 5
     Displacement: {x: 0, y: 0}
     Scale: 2
+  - Icon: {fileID: 21300000, guid: 7fb7a443b23b2fd4eb81f576fe049ac2, type: 3}
+    ClickedIcon: {fileID: 0}
+    Type: 8
+    Displacement: {x: 0, y: 0}
+    Scale: 2.5
+  - Icon: {fileID: 21300000, guid: 98892f67a2885d54b934bcca1085acf9, type: 3}
+    ClickedIcon: {fileID: 0}
+    Type: 7
+    Displacement: {x: 0, y: 0}
+    Scale: 1
   - Icon: {fileID: 21300000, guid: 43f48d0d71d151d429d9a245c2122e72, type: 3}
     ClickedIcon: {fileID: 0}
     Type: 6

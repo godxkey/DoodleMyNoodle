@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class SurveyTile : SurveyBaseController
 {
+    private void Awake()
+    {
+        InfoTextDisplay.Instance.SetText("Select a Tile");
+    }
+
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
         GameAction.ParameterDescriptionType.Tile
@@ -25,6 +30,7 @@ public class SurveyTile : SurveyBaseController
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
+        InfoTextDisplay.Instance.ForceHideText();
         TileHighlightManager.Instance?.InterruptTileSelectionProcess();
     }
 

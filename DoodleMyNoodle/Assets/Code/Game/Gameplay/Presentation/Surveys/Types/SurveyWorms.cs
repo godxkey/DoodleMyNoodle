@@ -31,6 +31,7 @@ public class SurveyWorms : SurveyBaseController
 
     private void Awake()
     {
+        InfoTextDisplay.Instance.SetText("Select a direction and hold to control the power");
         _transform = transform;
     }
 
@@ -74,6 +75,7 @@ public class SurveyWorms : SurveyBaseController
     // Clean up
     protected override void OnEndSurvey(bool wasCompleted)
     {
+        InfoTextDisplay.Instance.ForceHideText();
         _trajectoryDisplay.Dispose();
     }
 
