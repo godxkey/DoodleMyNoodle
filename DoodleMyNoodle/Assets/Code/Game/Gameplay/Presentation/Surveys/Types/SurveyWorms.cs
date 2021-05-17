@@ -31,7 +31,7 @@ public class SurveyWorms : SurveyBaseController
 
     private void Awake()
     {
-        InfoTextDisplay.Instance.SetText("Select a direction and hold to control the power");
+        InfoTextDisplay.Instance.SetText("Choisi une direction et ensuite contrôle la puissance");
         _transform = transform;
     }
 

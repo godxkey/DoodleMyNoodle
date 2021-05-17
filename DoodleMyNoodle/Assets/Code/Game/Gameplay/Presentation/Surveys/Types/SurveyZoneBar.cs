@@ -27,7 +27,7 @@ public class SurveyZoneBar : SurveyBaseController
 
     private void Awake()
     {
-        InfoTextDisplay.Instance.SetText("Click at the right time");
+        InfoTextDisplay.Instance.SetText("Clique au bon moment");
     }
 
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]

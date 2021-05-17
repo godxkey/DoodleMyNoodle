@@ -22,7 +22,7 @@ public class SurveyEntity : SurveyBaseController
 
     private void Awake()
     {
-        InfoTextDisplay.Instance.SetText("Select an Entity");
+        InfoTextDisplay.Instance.SetText("Choisi une entité");
         CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Target);
     }
 

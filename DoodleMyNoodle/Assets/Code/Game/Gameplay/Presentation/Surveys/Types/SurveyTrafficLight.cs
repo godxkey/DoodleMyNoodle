@@ -25,7 +25,7 @@ public class SurveyTrafficLight : SurveyBaseController
     private void Awake()
     {
         Container.SetActive(true);
-        InfoTextDisplay.Instance.SetText("Hold and release at the last light");
+        InfoTextDisplay.Instance.SetText("Tire et relâche au dernier instant");
     }
 
     private void Update()

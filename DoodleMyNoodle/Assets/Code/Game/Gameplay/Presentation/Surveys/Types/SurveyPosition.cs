@@ -16,7 +16,7 @@ public class SurveyPosition : SurveyBaseController
 
     private void Awake()
     {
-        InfoTextDisplay.Instance.SetText("Select a Position");
+        InfoTextDisplay.Instance.SetText("Choisi une position");
         CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Target);
     }
 

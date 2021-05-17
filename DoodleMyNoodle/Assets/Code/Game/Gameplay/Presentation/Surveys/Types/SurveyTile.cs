@@ -7,7 +7,7 @@ public class SurveyTile : SurveyBaseController
 {
     private void Awake()
     {
-        InfoTextDisplay.Instance.SetText("Select a Tile");
+        InfoTextDisplay.Instance.SetText("Choisi une tuile");
     }
 
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]

@@ -34,7 +34,7 @@ public class SurveyAngryBirds : SurveyBaseController
 
     private void Awake()
     {
-        InfoTextDisplay.Instance.SetText("Drag and Release");
+        InfoTextDisplay.Instance.SetText("Tire et relâche");
     }
 
     public override GameAction.ParameterDescription[] CreateDebugQuery()
