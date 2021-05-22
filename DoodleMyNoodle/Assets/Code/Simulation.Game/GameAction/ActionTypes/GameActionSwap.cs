@@ -13,42 +13,38 @@ public class GameActionSwap : GameAction
         typeof(GameActionSettingRange),
     };
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor _, in UseContext context)
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
-            new GameActionParameterTile.Description(_.GetComponentData<GameActionSettingRange>(context.Item).Value)
+            new GameActionParameterEntity.Description()
             {
+                RangeFromInstigator = accessor.GetComponent<GameActionSettingRange>(context.Item),
                 IncludeSelf = false,
-
-                // Can swap with any non-static actor
-                CustomTileActorPredicate = (tileActor, accessor) => !accessor.HasComponent<StaticTag>(tileActor)
             });
     }
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)
     {
-        if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (useData.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {
-            fix2 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
+            var settingsRange = accessor.GetComponent<GameActionSettingRange>(context.Item);
 
-            // find target
-            NativeList<Entity> victims = new NativeList<Entity>(Allocator.Temp);
-
-            CommonReads.FindTileActors(accessor, paramTile.Tile, victims,
-                (tileActor)
-                => accessor.HasComponent<FixTranslation>(tileActor)
-                && !accessor.HasComponent<StaticTag>(tileActor));
-
-            if (victims.Length > 0)
+            if (!accessor.Exists(paramEntity.Entity))
             {
-                // teleport instigator to destination
-                CommonWrites.RequestTeleport(accessor, context.InstigatorPawn, paramTile.Tile);
+                LogGameActionInfo(context, "Target does not exit");
             }
 
-            foreach (Entity entity in victims)
+            if (!CommonReads.IsInRange(accessor, context.InstigatorPawn, paramEntity.Entity, settingsRange))
             {
-                CommonWrites.RequestTeleport(accessor, entity, instigatorPos);
+                LogGameActionInfo(context, "Target is out of range");
             }
+
+            fix2 targetPos = accessor.GetComponent<FixTranslation>(paramEntity.Entity);
+            fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
+            
+            // swap positions
+            CommonWrites.RequestTeleport(accessor, context.InstigatorPawn, targetPos);
+            CommonWrites.RequestTeleport(accessor, paramEntity.Entity, instigatorPos);
 
             return true;
         }

@@ -32,8 +32,8 @@ public class GameActionMove : GameAction
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         int highestRangePossible = ceilToInt(
-            accessor.GetComponentData<GameActionSettingRange>(context.Item).Value *
-            accessor.GetComponentData<ActionPoints>(context.InstigatorPawn).Value);
+            accessor.GetComponent<GameActionSettingRange>(context.Item).Value *
+            accessor.GetComponent<ActionPoints>(context.InstigatorPawn).Value);
 
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
@@ -52,8 +52,8 @@ public class GameActionMove : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
-            fix movePerAP = accessor.GetComponentData<GameActionSettingRange>(context.Item).Value;
+            int2 instigatorTile = Helpers.GetTile(accessor.GetComponent<FixTranslation>(context.InstigatorPawn));
+            fix movePerAP = accessor.GetComponent<GameActionSettingRange>(context.Item).Value;
 
             NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
             if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, path))
@@ -62,7 +62,7 @@ public class GameActionMove : GameAction
                 return false;
             }
 
-            int userAP = accessor.GetComponentData<ActionPoints>(context.InstigatorPawn);
+            int userAP = accessor.GetComponent<ActionPoints>(context.InstigatorPawn);
 
             // Get the last reachable point considering the user's AP
             int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(path.AsArray().Slice(), userAP * movePerAP);
@@ -79,7 +79,7 @@ public class GameActionMove : GameAction
             var random = accessor.Random();
             fix2 dest = Helpers.GetTileCenter(path[path.Length - 1]);
             dest += fix2(random.NextFix(fix(-0.075), fix(0.075)), 0);
-            accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = dest });
+            accessor.SetOrAddComponent(context.InstigatorPawn, new Destination() { Value = dest });
 
             return true;
         }

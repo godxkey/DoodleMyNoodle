@@ -44,6 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f0218ff6625d24986250228bda123b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tooltip:
+    _string: Choisis une cible
+    _useLocID: 1
+    _locID: 
   _highlightSettings:
     Duration: 2
     FlickerSpeed: 1
@@ -54,7 +58,7 @@ MonoBehaviour:
   _normalColor: {r: 1, g: 1, b: 1, a: 1}
   _rangeIndicator1: {fileID: 8117023159960859301}
   _rangeIndicator2: {fileID: 2007814250234015998}
-  _rangeIndicatorScaleDiff: 0.2
+  _rangeIndicatorScaleDiff: 0.02
 --- !u!1 &2574199132595235440
 GameObject:
   m_ObjectHideFlags: 0

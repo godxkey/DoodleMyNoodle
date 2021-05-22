@@ -17,7 +17,7 @@ public class GameActionMeleeAttack : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        var range = accessor.GetComponentData<GameActionSettingRange>(context.Item);
+        var range = accessor.GetComponent<GameActionSettingRange>(context.Item);
         GameActionParameterPosition.Description tileParam = new GameActionParameterPosition.Description()
         {
             MaxRangeFromInstigator = range.Value
@@ -30,9 +30,9 @@ public class GameActionMeleeAttack : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {
-            fix2 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
-            fix range = accessor.GetComponentData<GameActionSettingRange>(context.Item);
-            int damage = accessor.GetComponentData<GameActionSettingDamage>(context.Item);
+            fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
+            fix range = accessor.GetComponent<GameActionSettingRange>(context.Item);
+            int damage = accessor.GetComponent<GameActionSettingDamage>(context.Item);
 
             fix2 attackPosition = Helpers.ClampPositionInsideRange(paramPosition.Position, instigatorPos, range);
             fix attackRadius = (fix)0.1f;

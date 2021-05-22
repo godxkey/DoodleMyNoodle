@@ -59,7 +59,7 @@ public class UpdateSimPlayersSystem : ViewSystemBase
                 else
                 {
                     // assign the sim player to the player
-                    PersistentId simPlayerId = SimWorldAccessor.GetComponentData<PersistentId>(unassignedSimPlayer);
+                    PersistentId simPlayerId = SimWorldAccessor.GetComponent<PersistentId>(unassignedSimPlayer);
 
                     PlayerRepertoireMaster.Instance.AssignSimPlayerToPlayer(playerInfo.PlayerId, simPlayerId);
                 }

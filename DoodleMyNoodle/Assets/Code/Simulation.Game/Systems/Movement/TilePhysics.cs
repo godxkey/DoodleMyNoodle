@@ -39,7 +39,7 @@ public static class TilePhysics
             Entity tileEntity = CommonReads.GetTileEntity(tile, GridInfo, TileEntities);
             if(tileEntity != Entity.Null)
             {
-                return Accessor.GetComponentData<TileFlagComponent>(tileEntity).IsTerrain;
+                return Accessor.GetComponent<TileFlagComponent>(tileEntity).IsTerrain;
             }
             return false;
         }

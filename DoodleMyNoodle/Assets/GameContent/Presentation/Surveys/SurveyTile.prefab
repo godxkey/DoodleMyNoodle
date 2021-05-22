@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2342765595949023337}
   - component: {fileID: 6162727964174217614}
   m_Layer: 0
-  m_Name: TileHighlightSurvey
+  m_Name: SurveyTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,6 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c83bc60c32da7da4393e10b5876257da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DebugMode: 0
-  DebugDisplay: {fileID: 0}
-  DisplayName: Tile Highlight
+  _tooltip:
+    _string: Choisis une tuile
+    _useLocID: 1
+    _locID: 

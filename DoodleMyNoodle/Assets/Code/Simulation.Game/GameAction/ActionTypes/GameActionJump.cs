@@ -6,8 +6,6 @@ using System;
 
 public class GameActionJump : GameAction
 {
-    static readonly fix MIN_VELOCITY = fix(0.05);
-
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
         typeof(GameActionSettingThrow),
@@ -15,7 +13,7 @@ public class GameActionJump : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        GameActionSettingThrow settings = accessor.GetComponentData<GameActionSettingThrow>(context.Item);
+        GameActionSettingThrow settings = accessor.GetComponent<GameActionSettingThrow>(context.Item);
 
         return new UseContract(
             new GameActionParameterVector.Description()
@@ -29,26 +27,13 @@ public class GameActionJump : GameAction
     {
         if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
         {
-            // get settings
-            GameActionSettingThrow settings = accessor.GetComponentData<GameActionSettingThrow>(context.Item);
+            GameActionSettingThrow settings = accessor.GetComponent<GameActionSettingThrow>(context.Item);
 
             fix2 velocity = paramVector.Vector;
-            fix inputSpeed = length(velocity);
-            fix2 dir = inputSpeed < MIN_VELOCITY ? fix2(0, 1) : velocity / inputSpeed;
 
-            // Clamp vector and speed to min/max speed setting
-            {
-                if (inputSpeed < settings.SpeedMin)
-                {
-                    velocity = dir * settings.SpeedMin;
-                }
-                else if (inputSpeed > settings.SpeedMax)
-                {
-                    velocity = dir * settings.SpeedMax;
-                }
-            }
+            velocity = clampLength(velocity, settings.SpeedMin, settings.SpeedMax);
 
-            CommonWrites.RequestImpulse(accessor, context.InstigatorPawn, velocity);
+            CommonWrites.RequestImpulse(accessor, context.InstigatorPawn, velocity, ignoreMass: true);
 
             return true;
         }

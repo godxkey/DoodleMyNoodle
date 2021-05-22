@@ -18,7 +18,7 @@ public class GameActionConvert : GameAction
         return new UseContract(
             new GameActionParameterEntity.Description()
             {
-                RangeFromInstigator = accessor.GetComponentData<GameActionSettingRange>(context.Item).Value,
+                RangeFromInstigator = accessor.GetComponent<GameActionSettingRange>(context.Item).Value,
                 IncludeSelf = false,
                 RequiresAttackableEntity = false,
                 CustomPredicate = (simWorld, tileActor) =>
@@ -36,27 +36,50 @@ public class GameActionConvert : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
-        if (parameters.TryGetParameter(0, out GameActionParameterEntity.Data paramTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {
-            // find target
-            Entity target = CommonReads.Physics.FindFirstEntityWithComponentAtPosition<Controllable>(accessor, paramTile.EntityPos);
-            Entity targetController = CommonReads.GetPawnController(accessor, target);
-            if (accessor.TryGetComponentData(targetController, out Team currentTeam))
+            var settingsRange = accessor.GetComponent<GameActionSettingRange>(context.Item);
+
+            Entity target = paramEntity.Entity;
+
+            if (!accessor.Exists(target))
             {
-                var newTeam = currentTeam.Value == 0 ? 1 : 0;
-
-                accessor.SetComponentData(targetController, new Team() { Value = newTeam });
-                if (accessor.HasComponent<Converted>(targetController))
-                {
-                    accessor.RemoveComponent<Converted>(targetController);
-                }
-                else
-                {
-                    accessor.AddComponentData(targetController, new Converted() { RemainingTurns = accessor.GetComponentData<GameActionSettingEffectDuration>(context.Item).Value });
-                }
-
-                return true;
+                LogGameActionInfo(context, "Target does not exit");
+                return false;
             }
+
+            if (!CommonReads.IsInRange(accessor, context.InstigatorPawn, target, settingsRange))
+            {
+                LogGameActionInfo(context, "Target not in range");
+                return false;
+            }
+
+            if (!accessor.TryGetComponent(target, out Controllable controllable))
+            {
+                LogGameActionInfo(context, "Target not controllable");
+                return false;
+            }
+
+            Entity targetController = controllable.CurrentController;
+            if (!accessor.TryGetComponent(targetController, out Team currentTeam))
+            {
+                LogGameActionInfo(context, "Target has no team");
+                return false;
+            }
+
+            var newTeam = currentTeam.Value == 0 ? 1 : 0;
+
+            accessor.SetComponent(targetController, new Team() { Value = newTeam });
+            if (accessor.HasComponent<Converted>(targetController))
+            {
+                accessor.RemoveComponent<Converted>(targetController);
+            }
+            else
+            {
+                accessor.AddComponent(targetController, new Converted() { RemainingTurns = accessor.GetComponent<GameActionSettingEffectDuration>(context.Item).Value });
+            }
+
+            return true;
         }
 
         return false;

@@ -25,11 +25,6 @@ public class SurveyZoneBar : SurveyBaseController
     private bool _hasClicked = false;
     private Sequence _circleAnim;
 
-    private void Awake()
-    {
-        InfoTextDisplay.Instance.SetText("Clique au bon moment");
-    }
-
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
         GameAction.ParameterDescriptionType.SuccessRating
@@ -94,7 +89,6 @@ public class SurveyZoneBar : SurveyBaseController
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
-        InfoTextDisplay.Instance.ForceHideText();
         _circleAnim?.Kill();
     }
 }

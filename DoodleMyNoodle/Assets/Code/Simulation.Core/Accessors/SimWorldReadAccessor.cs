@@ -75,7 +75,7 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     public int GetSharedComponentCount()
         => EntityManager.GetSharedComponentCount();
 
-    public T GetComponentData<T>(Entity entity) where T : struct, IComponentData
+    public T GetComponent<T>(Entity entity) where T : struct, IComponentData
         => EntityManager.GetComponentData<T>(entity);
 
     public bool Exists(Entity entity)

@@ -142,6 +142,6 @@ public partial class CommonReads
 {
     public static Entity GetPawnController(ISimWorldReadAccessor accessor, Entity pawn)
     {
-        return accessor.GetComponentData<Controllable>(pawn).CurrentController;
+        return accessor.GetComponent<Controllable>(pawn).CurrentController;
     }
 }

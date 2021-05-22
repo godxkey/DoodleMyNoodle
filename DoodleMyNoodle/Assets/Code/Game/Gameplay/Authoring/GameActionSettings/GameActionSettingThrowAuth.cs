@@ -10,7 +10,6 @@ using UnityEngine.Scripting.APIUpdating;
 [MovedFrom(false, sourceClassName: "GameActionThrowSettingsAuth")]
 public class GameActionSettingThrowAuth : GameActionSettingAuthBase
 {
-    public GameObject ProjectilePrefab;
     public fix SpeedMin = 0;
     public fix SpeedMax = 10;
 
@@ -20,12 +19,6 @@ public class GameActionSettingThrowAuth : GameActionSettingAuthBase
         {
             SpeedMax = SpeedMax,
             SpeedMin = SpeedMin,
-            ProjectilePrefab = conversionSystem.GetPrimaryEntity(ProjectilePrefab),
         });
-    }
-
-    public override void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
-    {
-        referencedPrefabs.Add(ProjectilePrefab);
     }
 }

@@ -56,7 +56,7 @@ public struct TileFinder
         }
 
         // tile filters
-        var tileFlags = _accessor.GetComponentData<TileFlagComponent>(tileEntity);
+        var tileFlags = _accessor.GetComponent<TileFlagComponent>(tileEntity);
         if ((tileFlags & description.TileFilter) == 0)
         {
             return false; // tile is filtered out

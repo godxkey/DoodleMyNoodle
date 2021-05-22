@@ -51,12 +51,12 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
         if (!SimWorld.TryGetBufferReadOnly(_lastInventoryEntity, out DynamicBuffer<InventoryItemReference> items))
             return;
 
-        fix2 pos = SimWorld.GetComponentData<FixTranslation>(_lastInventoryEntity);
+        fix2 pos = SimWorld.GetComponent<FixTranslation>(_lastInventoryEntity);
 
         if (fixMath.distancemanhattan(pos, Cache.LocalPawnPosition) > SimulationGameConstants.InteractibleMaxDistanceManhattan)
             return;
 
-        _lastInventoryPosition = SimWorld.GetComponentData<FixTranslation>(_lastInventoryEntity);
+        _lastInventoryPosition = SimWorld.GetComponent<FixTranslation>(_lastInventoryEntity);
 
         foreach (var item in items)
         {
@@ -77,7 +77,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                 Entity item = _itemData[i].item;
                 ItemSlot slot = _currentItemSlots[i];
 
-                if (SimWorld.TryGetComponentData(item, out SimAssetId itemIDComponent))
+                if (SimWorld.TryGetComponent(item, out SimAssetId itemIDComponent))
                 {
                     int itemIndex = i;
                     ItemAuth itemAuth = PresentationHelpers.FindItemAuth(itemIDComponent);
@@ -90,7 +90,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                     };
 
                     int stacks = _itemData[i].stack;
-                    if (stacks == 1 && !SimWorld.GetComponentData<StackableFlag>(item))
+                    if (stacks == 1 && !SimWorld.GetComponent<StackableFlag>(item))
                         stacks = -1;
 
                     _currentItemSlots[i].UpdateCurrentItemSlot(itemAuth, onClick, null, _lastInventoryEntity, stacks);

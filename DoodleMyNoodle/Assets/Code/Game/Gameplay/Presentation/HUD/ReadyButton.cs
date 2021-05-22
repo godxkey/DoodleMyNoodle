@@ -89,7 +89,7 @@ public class ReadyButton : GamePresentationBehaviour
         else
         {
             // if it's our turn to play
-            if (SimWorld.TryGetComponentData(Cache.LocalController, out ReadyForNextTurn ready) && ready.Value)
+            if (SimWorld.TryGetComponent(Cache.LocalController, out ReadyForNextTurn ready) && ready.Value)
             {
                 _viewState.Set(TurnState.Ready);
             }

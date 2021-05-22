@@ -5,7 +5,6 @@ using UnityEngine.Scripting.APIUpdating;
 
 [Serializable]
 [GameActionSettingAuth(typeof(GameActionSettingDamage))]
-[MovedFrom(false, sourceClassName: "GameActionDamageDataAuth")]
 public class GameActionSettingDamageAuth : GameActionSettingAuthBase, IItemSettingDescription
 {
     public int Damage;

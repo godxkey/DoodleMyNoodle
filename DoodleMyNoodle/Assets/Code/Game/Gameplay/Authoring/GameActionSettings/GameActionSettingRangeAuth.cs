@@ -8,7 +8,7 @@ using UnityEngine.Scripting.APIUpdating;
 [MovedFrom(false, sourceClassName: "GameActionRangeDataAuth")]
 public class GameActionSettingRangeAuth : GameActionSettingAuthBase, IItemSettingDescription
 {
-    public int Range = 1;
+    public fix Range = 1;
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {

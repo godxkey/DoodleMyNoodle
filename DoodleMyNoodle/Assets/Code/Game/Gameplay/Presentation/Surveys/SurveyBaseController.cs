@@ -27,6 +27,8 @@ public abstract class SurveyBaseController : MonoBehaviour
         }
     }
 
+    [SerializeField] private TextData _tooltip;
+
     public GamePresentationCache Cache => GamePresentationCache.Instance;
     public ISimWorldReadAccessor SimWorld => Cache.SimWorld;
 
@@ -52,6 +54,8 @@ public abstract class SurveyBaseController : MonoBehaviour
     public void StartSurvey(Action<List<GameAction.ParameterData>> completeCallback, Action cancelCallback, GameAction.UseContext useContext, params GameAction.ParameterDescription[] parameters)
     {
         Running = true;
+
+        InfoTextDisplay.Instance.SetText(_tooltip);
 
         var context = new Context()
         {
@@ -84,6 +88,8 @@ public abstract class SurveyBaseController : MonoBehaviour
             return;
 
         Running = false;
+
+        InfoTextDisplay.Instance.ForceHideText();
 
         OnEndSurvey(completed);
 

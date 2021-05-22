@@ -20,7 +20,7 @@ public partial class CommonReads
         {
             Team excludeTeam = Team.Null;
 
-            if (pawnController != Entity.Null && accessor.TryGetComponentData(pawnController, out Team team))
+            if (pawnController != Entity.Null && accessor.TryGetComponent(pawnController, out Team team))
             {
                 excludeTeam = team;
             }
@@ -41,7 +41,7 @@ public partial class CommonReads
             NativeList<Entity> result,
             bool drawGizmos = false)
         {
-            fix2 pawnPos = accessor.GetComponentData<FixTranslation>(pawn);
+            fix2 pawnPos = accessor.GetComponent<FixTranslation>(pawn);
             fix2 pawnEyes = pawnPos + UpdateArcherAISystem.PAWN_EYES_OFFSET;
 
             var positions = accessor.GetComponentDataFromEntity<FixTranslation>();
@@ -59,7 +59,7 @@ public partial class CommonReads
 
                 // excluse teammates
                 if (enemyController != Entity.Null && 
-                    accessor.TryGetComponentData(enemyController, out Team enemyTeam) && 
+                    accessor.TryGetComponent(enemyController, out Team enemyTeam) && 
                     enemyTeam == excludeTeam) 
                     continue;
 

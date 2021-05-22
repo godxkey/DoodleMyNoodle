@@ -79,12 +79,12 @@ public class LobbyOverviewDisplay : GamePresentationSystem<LobbyOverviewDisplay>
         FixedString64 playerName = "N/A";
         FixedString64 characterName = "N/A";
 
-        if (SimWorld.TryGetComponentData(data.player, out Name playerNameComponent))
+        if (SimWorld.TryGetComponent(data.player, out Name playerNameComponent))
         {
             playerName = playerNameComponent.Value;
         }
 
-        if (SimWorld.TryGetComponentData(data.pawn, out Name characterNameComponent))
+        if (SimWorld.TryGetComponent(data.pawn, out Name characterNameComponent))
         {
             characterName = characterNameComponent.Value;
         }

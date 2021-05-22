@@ -66,6 +66,7 @@ MonoBehaviour:
   Value: GameActionThrow
   GameActionSettings:
   - id: 0
+  - id: 1
   ApCost: 1
   IsStackable: 1
   CooldownType: 0
@@ -84,9 +85,12 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionSettingThrowAuth, ns: , asm: Game}
       data:
-        ProjectilePrefab: {fileID: 2385346486794747607, guid: 1f293d3772835fd4b9ed879f0b33710d,
-          type: 3}
         SpeedMin:
           RawValue: 0
         SpeedMax:
           RawValue: 42949672960
+    00000001:
+      type: {class: GameActionSettingEntityReferenceAuth, ns: , asm: Game}
+      data:
+        Entity: {fileID: 2385346486794747607, guid: 1f293d3772835fd4b9ed879f0b33710d,
+          type: 3}

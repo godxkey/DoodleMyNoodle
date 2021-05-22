@@ -23,7 +23,7 @@ public class AlignWithVelocity : BindedPresentationEntityComponent
 
     protected override void OnGamePresentationUpdate()
     {
-        if (SimWorld.TryGetComponentData(SimEntity, out PhysicsVelocity velocity))
+        if (SimWorld.TryGetComponent(SimEntity, out PhysicsVelocity velocity))
         {
             float2 velocity2D = (float2)velocity.Linear;
 

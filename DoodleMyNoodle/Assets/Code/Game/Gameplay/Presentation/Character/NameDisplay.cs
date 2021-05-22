@@ -13,7 +13,7 @@ public class NameDisplay : BindedPresentationEntityComponent
 
     protected override void OnGamePresentationUpdate()
     {
-        if (SimEntity != Entity.Null && SimWorld.TryGetComponentData(SimEntity, out Name name))
+        if (SimEntity != Entity.Null && SimWorld.TryGetComponent(SimEntity, out Name name))
         {
             _displayName.Set(name);
         }

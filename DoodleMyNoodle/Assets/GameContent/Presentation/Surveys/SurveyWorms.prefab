@@ -190,6 +190,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8c23ccc1c49705409e90b61e268e8e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tooltip:
+    _string: Appuye plus longtemps pour lancer plus loin
+    _useLocID: 1
+    _locID: 
   _rotator: {fileID: 6075807751254421536}
   _arrowContainer: {fileID: 6075807749962798163}
   _textTransform: {fileID: 6075807751334587645}

@@ -84,9 +84,10 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
       data:
-        Range: 1
+        Range:
+          RawValue: 6442450944
     00000001:
-      type: {class: GameActionSettingObjectReferenceAuth, ns: , asm: Game}
+      type: {class: GameActionSettingEntityReferenceAuth, ns: , asm: Game}
       data:
-        ObjectReference: {fileID: 2768931431184588227, guid: 507665529e2c0014ea6c118272f141ab,
+        Entity: {fileID: 2768931431184588227, guid: 507665529e2c0014ea6c118272f141ab,
           type: 3}

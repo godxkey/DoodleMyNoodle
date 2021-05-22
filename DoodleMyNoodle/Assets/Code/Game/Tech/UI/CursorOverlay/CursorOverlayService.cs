@@ -222,6 +222,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
     public void ResetCursorToDefault()
     {
         SetCursorType(CursorType.Default);
+        SetCursorColor(Color.white);
     }
 
     public void RevertToPreviousSetting()

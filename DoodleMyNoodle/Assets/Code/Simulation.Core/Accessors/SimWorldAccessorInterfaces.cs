@@ -463,7 +463,7 @@ public interface ISimWorldWriteAccessor
     /// <param name="componentData">The data to set.</param>
     /// <typeparam name="T">The type of component.</typeparam>
     /// <returns></returns>
-    bool AddComponentData<T>(Entity entity, T componentData) where T : struct, IComponentData;
+    bool AddComponent<T>(Entity entity, T componentData) where T : struct, IComponentData;
 
     /// <summary>
     /// Removes a chunk component from the specified entity. Returns false if the entity did not have the component.
@@ -653,7 +653,7 @@ public interface ISimWorldWriteAccessor
     /// <param name="componentData">The data to set.</param>
     /// <typeparam name="T">The component type.</typeparam>
     /// <exception cref="ArgumentException">Thrown if the component type has no fields.</exception>
-    void SetComponentData<T>(Entity entity, T componentData) where T : struct, IComponentData;
+    void SetComponent<T>(Entity entity, T componentData) where T : struct, IComponentData;
 
     /// <summary>
     /// Sets the value of a chunk component.
@@ -825,7 +825,7 @@ public interface ISimWorldReadAccessor
     /// <typeparam name="T">The type of component to retrieve.</typeparam>
     /// <returns>A struct of type T containing the component value.</returns>
     /// <exception cref="ArgumentException">Thrown if the component type has no fields.</exception>
-    T GetComponentData<T>(Entity entity) where T : struct, IComponentData;
+    T GetComponent<T>(Entity entity) where T : struct, IComponentData;
 
     /// <summary>
     /// Reports whether an Entity object is still valid.

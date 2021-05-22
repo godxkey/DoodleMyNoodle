@@ -23,7 +23,7 @@ public class LobbyPlayerInfoDisplay : GamePresentationBehaviour
 
     public void OnPlayerInfoClicked()
     {
-        if (SimWorld.TryGetComponentData(_currentPlayer, out FixTranslation translation))
+        if (SimWorld.TryGetComponent(_currentPlayer, out FixTranslation translation))
         {
             CameraMovementController.Instance.TeleportCameraToPosition(translation.Value.ToUnityVec());
         }

@@ -10,13 +10,13 @@ public class GameActionSpawnMinion : GameAction
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
         typeof(GameActionSettingRange),
-        typeof(GameActionSettingObjectReference),
+        typeof(GameActionSettingEntityReference),
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
-                   new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
+                   new GameActionParameterTile.Description(accessor.GetComponent<GameActionSettingRange>(context.Item).Value)
                    {
                    });
     }
@@ -26,16 +26,16 @@ public class GameActionSpawnMinion : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             // get settings
-            if (!accessor.TryGetComponentData(context.Item, out GameActionSettingObjectReference settings))
+            if (!accessor.TryGetComponent(context.Item, out GameActionSettingEntityReference settings))
             {
-                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionSettingObjectReference)} component");
+                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionSettingEntityReference)} component");
                 return false;
             }
 
             // spawn minion
-            Entity objectInstance = accessor.Instantiate(settings.ObjectPrefab);
+            Entity objectInstance = accessor.Instantiate(settings.EntityPrefab);
 
-            accessor.SetOrAddComponentData(objectInstance, new FixTranslation() { Value = Helpers.GetTileCenter(paramTile.Tile) });
+            accessor.SetOrAddComponent(objectInstance, new FixTranslation() { Value = Helpers.GetTileCenter(paramTile.Tile) });
 
             return true;
         }

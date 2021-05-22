@@ -48,7 +48,7 @@ public class DoodleDisplay : BindedPresentationEntityComponent
 
     protected override void OnGamePresentationUpdate()
     {
-        if (SimWorld.TryGetComponentData(SimEntity, out DoodleId doodleId))
+        if (SimWorld.TryGetComponent(SimEntity, out DoodleId doodleId))
         {
             _doodleAssetGuid.Set(doodleId.Guid);
         }
@@ -114,7 +114,7 @@ public class DoodleDisplay : BindedPresentationEntityComponent
 
         // find current pawn's doodle asset
         Guid currentDoodleGuid = Guid.Empty;
-        if (simWorld.TryGetComponentData(localPawn, out DoodleId doodleId))
+        if (simWorld.TryGetComponent(localPawn, out DoodleId doodleId))
         {
             currentDoodleGuid = doodleId.Guid;
         }

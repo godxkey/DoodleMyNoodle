@@ -10,13 +10,13 @@ public class GameActionDropObject : GameAction
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
         typeof(GameActionSettingRange),
-        typeof(GameActionSettingObjectReference)
+        typeof(GameActionSettingEntityReference)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return new UseContract(
-                   new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
+                   new GameActionParameterTile.Description(accessor.GetComponent<GameActionSettingRange>(context.Item).Value)
                    {
                    });
     }
@@ -26,19 +26,19 @@ public class GameActionDropObject : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             // get settings
-            if (!accessor.TryGetComponentData(context.Item, out GameActionSettingObjectReference settings))
+            if (!accessor.TryGetComponent(context.Item, out GameActionSettingEntityReference settings))
             {
-                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionSettingObjectReference)} component");
+                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionSettingEntityReference)} component");
                 return false;
             }
 
             // spawn projectile
-            Entity objectInstance = accessor.Instantiate(settings.ObjectPrefab);
+            Entity objectInstance = accessor.Instantiate(settings.EntityPrefab);
 
             // set projectile data
             fix2 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
 
-            accessor.SetOrAddComponentData(objectInstance, new FixTranslation(spawnPos));
+            accessor.SetOrAddComponent(objectInstance, new FixTranslation(spawnPos));
 
             return true;
         }

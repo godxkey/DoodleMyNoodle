@@ -77,7 +77,7 @@ public static class PresentationHelpers
             if (!simWorld.Exists(item))
                 return null;
 
-            if (!simWorld.TryGetComponentData(item, out GameActionId gameActionId))
+            if (!simWorld.TryGetComponent(item, out GameActionId gameActionId))
                 return null;
 
             return GameActionBank.GetAction(gameActionId);
@@ -109,15 +109,15 @@ public static class PresentationHelpers
             if (!cache.SimWorld.Exists(useContext.Item))
                 return 1;
 
-            if (!cache.SimWorld.TryGetComponentData(useContext.Item, out GameActionSettingThrow throwSettings))
+            if (!cache.SimWorld.TryGetComponent(useContext.Item, out GameActionSettingEntityReference entityReference))
                 return 1;
 
-            var projectilePrefab = throwSettings.ProjectilePrefab;
+            var projectilePrefab = entityReference.EntityPrefab;
 
             if (!cache.SimWorld.Exists(projectilePrefab))
                 return 1;
 
-            if (!cache.SimWorld.TryGetComponentData(projectilePrefab, out PhysicsGravity grav))
+            if (!cache.SimWorld.TryGetComponent(projectilePrefab, out PhysicsGravity grav))
                 return 1;
 
             return (float)grav.Scale;

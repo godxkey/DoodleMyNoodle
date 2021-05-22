@@ -2,25 +2,25 @@
 
 public static class SimWorldAccessorExtensions
 {
-    public static void SetOrAddComponentData<T>(this ISimWorldReadWriteAccessor accessor, Entity entity, in T componentData)
+    public static void SetOrAddComponent<T>(this ISimWorldReadWriteAccessor accessor, Entity entity, in T componentData)
          where T : struct, IComponentData
     {
         if (accessor.HasComponent<T>(entity))
         {
-            accessor.SetComponentData<T>(entity, componentData);
+            accessor.SetComponent<T>(entity, componentData);
         }
         else
         {
-            accessor.AddComponentData<T>(entity, componentData);
+            accessor.AddComponent<T>(entity, componentData);
         }
     }
 
-    public static bool TryGetComponentData<T>(this ISimWorldReadAccessor accessor, Entity entity, out T componentData)
+    public static bool TryGetComponent<T>(this ISimWorldReadAccessor accessor, Entity entity, out T componentData)
          where T : struct, IComponentData
     {
         if (accessor.HasComponent<T>(entity))
         {
-            componentData = accessor.GetComponentData<T>(entity);
+            componentData = accessor.GetComponent<T>(entity);
             return true;
         }
 
@@ -113,7 +113,7 @@ public static class SimWorldAccessorExtensions
          where T : struct, IComponentData
     {
         Entity e = accessor.CreateEventEntity<T>();
-        accessor.SetComponentData(e, data);
+        accessor.SetComponent(e, data);
         return e;
     }
 }

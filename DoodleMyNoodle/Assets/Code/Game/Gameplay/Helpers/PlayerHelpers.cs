@@ -41,7 +41,7 @@ public static class PlayerHelpers
 
         // player is controlling an entity
         if (localPlayerEntity != Entity.Null &&
-            simulationWorld.TryGetComponentData(localPlayerEntity, out ControlledEntity controlledEntity))
+            simulationWorld.TryGetComponent(localPlayerEntity, out ControlledEntity controlledEntity))
         {
             // entity still exists and is controllable
             if (simulationWorld.Exists(controlledEntity.Value) &&
@@ -65,7 +65,7 @@ public static class PlayerHelpers
     public static PlayerInfo GetPlayerFromSimPlayer(Entity playerEntity, ExternalSimWorldAccessor simWorldAccessor)
     {
         if (simWorldAccessor.HasComponent<PersistentId>(playerEntity))
-            return GetPlayerFromSimPlayer(simWorldAccessor.GetComponentData<PersistentId>(playerEntity));
+            return GetPlayerFromSimPlayer(simWorldAccessor.GetComponent<PersistentId>(playerEntity));
         else
             return null;
     }

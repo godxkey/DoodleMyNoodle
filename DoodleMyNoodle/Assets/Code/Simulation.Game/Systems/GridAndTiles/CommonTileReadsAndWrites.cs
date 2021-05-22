@@ -1,9 +1,7 @@
 ﻿using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using static fixMath;
-using Unity.Collections;
 using Unity.Entities;
-using System;
 using UnityEngine;
 using CCC.Fix2D;
 
@@ -42,79 +40,6 @@ public partial class CommonReads
 
         return tileReferences[index].Tile;
     }
-
-    public static void FindTileActorsWithComponent<T>(ISimWorldReadAccessor accessor, Entity tile, NativeList<Entity> result)
-    {
-        foreach (TileActorReference actor in accessor.GetBufferReadOnly<TileActorReference>(tile))
-        {
-            if (accessor.HasComponent<T>(actor))
-            {
-                result.Add(actor);
-            }
-        }
-    }
-
-    public static void FindTileActors(ISimWorldReadAccessor accessor, Entity tile, NativeList<Entity> result, Predicate<Entity> predicate)
-    {
-        if (predicate is null)
-        {
-            throw new ArgumentNullException(nameof(predicate));
-        }
-
-        foreach (TileActorReference actor in accessor.GetBufferReadOnly<TileActorReference>(tile))
-        {
-            if (predicate(actor))
-            {
-                result.Add(actor);
-            }
-        }
-    }
-
-    public static void FindTileActorsWithComponent<T>(ISimWorldReadAccessor accessor, int2 tile, NativeList<Entity> result)
-    {
-        var tileEntity = GetTileEntity(accessor, tile);
-        if (tileEntity != Entity.Null)
-        {
-            FindTileActorsWithComponent<T>(accessor, tileEntity, result);
-        }
-    }
-
-    public static void FindTileActors(ISimWorldReadAccessor accessor, int2 tile, NativeList<Entity> result, Predicate<Entity> predicate)
-    {
-        var tileEntity = GetTileEntity(accessor, tile);
-        if(tileEntity != Entity.Null)
-        {
-            FindTileActors(accessor, tileEntity, result, predicate);
-        }
-    }
-
-    public static void FindTileActorsWithComponents<T>(ISimWorldReadAccessor accessor, int2 tile, NativeList<Entity> result)
-        where T : struct, IComponentData
-    {
-        Entity tileEntity = GetTileEntity(accessor, tile);
-
-        if(tileEntity == Entity.Null)
-        {
-            return;
-        }
-
-        foreach (var tileActor in accessor.GetBufferReadOnly<TileActorReference>(tileEntity))
-        {
-            if (accessor.HasComponent<T>(tileActor))
-            {
-                result.Add(tileActor);
-            }
-        }
-    }
-
-    //public static void FindBodies<T>(ISimWorldReadAccessor accessor, fix2 position, fix radius)
-    //{
-    //    var physicsWorld = accessor.GetExistingSystem<CCC.Fix2D.PhysicsWorldSystem>();
-
-    //    CCC.Fix2D.Collider c;
-
-    //    physicsWorld.PhysicsWorld.OverlapCollider
-    //}
 }
 
 public partial class Helpers
