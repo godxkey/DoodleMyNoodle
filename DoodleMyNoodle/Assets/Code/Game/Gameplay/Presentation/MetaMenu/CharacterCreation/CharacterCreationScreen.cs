@@ -52,7 +52,7 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
             ReadyButton readyButton = _readyButton.GetComponent<ReadyButton>();
             if (readyButton != null)
             {
-                if (!_settingsApplied && (Cache.LocalPawn != Entity.Null) && (readyButton.GetState() == ReadyButton.TurnState.NotReady) && _doodelDraw.IsLibraryLoaded && SkipCharacterCreation)
+                if (!_settingsApplied && (Cache.LocalPawn != Entity.Null) && (readyButton.GetState() == ReadyButton.TurnState.NotReady) && _doodelDraw.IsLibraryLoaded && s_consoleSkipCharacterCreation)
                 {
                     _readyButton.onClick.Invoke();
                 }
@@ -76,7 +76,7 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
             SimPlayerInputSetPawnDoodle setPawnDoodleInput = new SimPlayerInputSetPawnDoodle(_doodleAsset.Guid, _characterIsLookingRightToggle.isOn);
             SimWorld.SubmitInput(setPawnDoodleInput);
 
-            if (!SkipCharacterCreation)
+            if (!s_consoleSkipCharacterCreation)
             {
                 // record pawn name for future use
                 PromptDisplay.Instance.AskString("Enter your character name here :", (string characterName) =>
@@ -94,14 +94,7 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
     #region Skip Character Creation
     private static bool s_consoleSkipCharacterCreation = false;
 
-    [ConsoleVar(Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
-    public static bool SkipCharacterCreation
-    {
-        get => s_consoleSkipCharacterCreation;
-        set
-        {
-            s_consoleSkipCharacterCreation = value;
-        }
-    }
+    [ConsoleCommand]
+    public static bool SkipCharacterCreation() => s_consoleSkipCharacterCreation = true;
     #endregion
 }

@@ -6,34 +6,34 @@ public class ItemPassiveEffectHealthIncrease : ItemPassiveEffect
 {
     public override void Equip(ISimWorldReadWriteAccessor accessor, ItemContext context)
     {
-        if (accessor.TryGetComponentData(context.ItemEntity, out ItemPassiveEffectHealthIncreaseData healthIncreaseData))
+        if (accessor.TryGetComponent(context.ItemEntity, out ItemPassiveEffectHealthIncreaseData healthIncreaseData))
         {
-            if (accessor.TryGetComponentData(context.InstigatorPawn, out Health hp))
+            if (accessor.TryGetComponent(context.InstigatorPawn, out Health hp))
             {
                 fix valueToAdd = healthIncreaseData.Value;
-                if (accessor.TryGetComponentData(context.InstigatorPawn, out HealthIncreaseMultiplier hpIncreaseBoost))
+                if (accessor.TryGetComponent(context.InstigatorPawn, out HealthIncreaseMultiplier hpIncreaseBoost))
                 {
                     valueToAdd *= hpIncreaseBoost.Value;
                 }
 
-                accessor.SetComponentData(context.InstigatorPawn, new MaximumInt<Health>() { Value = hp.Value + fix.RoundToInt(valueToAdd) });
+                accessor.SetComponent(context.InstigatorPawn, new MaximumInt<Health>() { Value = hp.Value + fix.RoundToInt(valueToAdd) });
             }
         }
     }
 
     public override void Unequip(ISimWorldReadWriteAccessor accessor, ItemContext context)
     {
-        if (accessor.TryGetComponentData(context.ItemEntity, out ItemPassiveEffectHealthIncreaseData healthIncreaseData))
+        if (accessor.TryGetComponent(context.ItemEntity, out ItemPassiveEffectHealthIncreaseData healthIncreaseData))
         {
-            if (accessor.TryGetComponentData(context.InstigatorPawn, out Health hp))
+            if (accessor.TryGetComponent(context.InstigatorPawn, out Health hp))
             {
                 fix valueToAdd = healthIncreaseData.Value;
-                if (accessor.TryGetComponentData(context.InstigatorPawn, out HealthIncreaseMultiplier hpIncreaseBoost))
+                if (accessor.TryGetComponent(context.InstigatorPawn, out HealthIncreaseMultiplier hpIncreaseBoost))
                 {
                     valueToAdd *= hpIncreaseBoost.Value;
                 }
 
-                accessor.SetComponentData(context.InstigatorPawn, new MaximumInt<Health>() { Value = hp.Value + fix.RoundToInt(valueToAdd) });
+                accessor.SetComponent(context.InstigatorPawn, new MaximumInt<Health>() { Value = hp.Value + fix.RoundToInt(valueToAdd) });
             }
         }
     }

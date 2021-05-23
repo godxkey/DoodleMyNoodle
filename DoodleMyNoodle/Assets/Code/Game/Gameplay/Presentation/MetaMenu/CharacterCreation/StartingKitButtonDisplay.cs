@@ -44,7 +44,7 @@ public class StartingKitButtonDisplay : GamePresentationBehaviour
         {
             GameObject newItemSlot = Instantiate(_itemSlotPrefab, _itemSlotContainer);
             ItemSlot itemSlot = newItemSlot.GetComponent<ItemSlot>();
-            if (SimWorld.TryGetComponentData(item.ItemEntityPrefab, out SimAssetId itemIDComponent))
+            if (SimWorld.TryGetComponent(item.ItemEntityPrefab, out SimAssetId itemIDComponent))
             {
                 ItemAuth gameActionAuth = PresentationHelpers.FindItemAuth(itemIDComponent);
                 itemSlot.UpdateCurrentItemSlot(gameActionAuth, KitButtonClicked, null, startingKit);

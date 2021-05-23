@@ -12,13 +12,13 @@ public class GameActionDropBombToDetonate : GameAction
     {
         typeof(GameActionSettingRange),
         typeof(GameActionSettingDamage),
-        typeof(GameActionSettingObjectReference),
+        typeof(GameActionSettingEntityReference),
         typeof(GameActionSettingRadius)
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.TryGetComponentData(context.Item, out ItemSpawnedObjectReference itemSpawnedObjectReference))
+        if (accessor.TryGetComponent(context.Item, out ItemSpawnedObjectReference itemSpawnedObjectReference))
         {
             if (itemSpawnedObjectReference.Entity != Entity.Null)
             {
@@ -26,7 +26,7 @@ public class GameActionDropBombToDetonate : GameAction
             }
         }
 
-        return new UseContract(new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value) { });
+        return new UseContract(new GameActionParameterTile.Description(accessor.GetComponent<GameActionSettingRange>(context.Item).Value) { });
     }
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
@@ -34,44 +34,44 @@ public class GameActionDropBombToDetonate : GameAction
         if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             // get settings
-            if (!accessor.TryGetComponentData(context.Item, out GameActionSettingObjectReference settings))
+            if (!accessor.TryGetComponent(context.Item, out GameActionSettingEntityReference settings))
             {
-                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionSettingObjectReference)} component");
+                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionSettingEntityReference)} component");
                 return false;
             }
 
             // spawn projectile
-            Entity objectInstance = accessor.Instantiate(settings.ObjectPrefab);
+            Entity objectInstance = accessor.Instantiate(settings.EntityPrefab);
 
             // set projectile data
             fix2 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
 
-            accessor.SetOrAddComponentData(objectInstance, new FixTranslation() { Value = spawnPos });
-            accessor.SetOrAddComponentData(context.Item, new ItemSpawnedObjectReference() { Entity = objectInstance });
+            accessor.SetOrAddComponent(objectInstance, new FixTranslation() { Value = spawnPos });
+            accessor.SetOrAddComponent(context.Item, new ItemSpawnedObjectReference() { Entity = objectInstance });
 
             return true;
         }
         else
         {
-            if (accessor.TryGetComponentData(context.Item, out ItemSpawnedObjectReference itemSpawnedObjectReference))
+            if (accessor.TryGetComponent(context.Item, out ItemSpawnedObjectReference itemSpawnedObjectReference))
             {
                 Entity bomb = itemSpawnedObjectReference.Entity;
 
                 if (bomb != Entity.Null)
                 {
-                    fix2 bombPos = accessor.GetComponentData<FixTranslation>(bomb);
+                    fix2 bombPos = accessor.GetComponent<FixTranslation>(bomb);
 
                     fix radius = 1;
                     if (accessor.HasComponent<GameActionSettingRadius>(context.Item))
                     {
-                        radius = accessor.GetComponentData<GameActionSettingRadius>(context.Item).Value;
+                        radius = accessor.GetComponent<GameActionSettingRadius>(context.Item).Value;
                     }
 
-                    CommonWrites.RequestExplosion(accessor, bomb, bombPos, radius, accessor.GetComponentData<GameActionSettingDamage>(context.Item).Value);
+                    CommonWrites.RequestExplosion(accessor, bomb, bombPos, radius, accessor.GetComponent<GameActionSettingDamage>(context.Item).Value);
 
                     accessor.DestroyEntity(bomb);
 
-                    accessor.SetOrAddComponentData(context.Item, new ItemSpawnedObjectReference() { Entity = Entity.Null });
+                    accessor.SetOrAddComponent(context.Item, new ItemSpawnedObjectReference() { Entity = Entity.Null });
 
                     return true;
                 }

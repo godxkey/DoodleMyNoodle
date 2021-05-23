@@ -15,12 +15,12 @@ public class GameActionShield : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.GetComponentData<GameActionSettingRange>(context.Item).Value > 0)
+        if (accessor.GetComponent<GameActionSettingRange>(context.Item).Value > 0)
         {
             return new UseContract(
                 new GameActionParameterEntity.Description()
                 {
-                    RangeFromInstigator = accessor.GetComponentData<GameActionSettingRange>(context.Item),
+                    RangeFromInstigator = accessor.GetComponent<GameActionSettingRange>(context.Item),
                     IncludeSelf = true,
                     RequiresAttackableEntity = true,
                 });
@@ -35,8 +35,21 @@ public class GameActionShield : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {
-            Entity target = CommonReads.Physics.FindFirstEntityWithComponentAtPosition<Health>(accessor, paramEntity.EntityPos);
-            ShieldTarget(accessor, context.Item, target);
+            var settingsRange = accessor.GetComponent<GameActionSettingRange>(context.Item);
+
+            if (!accessor.Exists(paramEntity.Entity))
+            {
+                LogGameActionInfo(context, "Target does not exist");
+                return false;
+            }
+
+            if (!CommonReads.IsInRange(accessor, context.InstigatorPawn, paramEntity.Entity, settingsRange))
+            {
+                LogGameActionInfo(context, "Target out of range");
+                return false;
+            }
+
+            ShieldTarget(accessor, context.Item, paramEntity.Entity);
             return true;
         }
 
@@ -47,15 +60,15 @@ public class GameActionShield : GameAction
 
     private void ShieldTarget(ISimWorldReadWriteAccessor accessor, Entity itemEntity, Entity pawn)
     {
-        int duration = accessor.GetComponentData<GameActionSettingEffectDuration>(itemEntity).Value;
+        int duration = accessor.GetComponent<GameActionSettingEffectDuration>(itemEntity).Value;
 
-        if (accessor.TryGetComponentData(pawn, out Invincible invincible))
+        if (accessor.TryGetComponent(pawn, out Invincible invincible))
         {
-            accessor.AddComponentData(pawn, new Invincible() { Duration = max(duration, invincible.Duration) });
+            accessor.AddComponent(pawn, new Invincible() { Duration = max(duration, invincible.Duration) });
         }
         else
         {
-            accessor.AddComponentData(pawn, new Invincible() { Duration = duration });
+            accessor.AddComponent(pawn, new Invincible() { Duration = duration });
         }
     }
 }

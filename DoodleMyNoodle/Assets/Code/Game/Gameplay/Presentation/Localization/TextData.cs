@@ -11,10 +11,11 @@ public struct TextData
 {
     public static LogChannel LogChannel = Log.CreateChannel("Localization", activeByDefault: true);
 
-    public string _string;
-    public bool _useLocID;
-    public string _locID;
-    List<(string tag, string replacement)> TagReplacements;
+    [SerializeField] private string _string;
+    [SerializeField] private bool _useLocID;
+    [SerializeField] private string _locID;
+
+    private List<(string tag, string replacement)> _tagReplacements;
 
     public static TextData FromLocId(string locId, string failedLocText = null)
     {
@@ -38,10 +39,10 @@ public struct TextData
 
     public void AddTagReplacement(string tag, string replacement)
     {
-        if (TagReplacements == null)
-            TagReplacements = new List<(string tag, string replacement)>();
+        if (_tagReplacements == null)
+            _tagReplacements = new List<(string tag, string replacement)>();
 
-        TagReplacements.Add((tag, replacement));
+        _tagReplacements.Add((tag, replacement));
     }
 
     public override string ToString()
@@ -49,7 +50,7 @@ public struct TextData
         string outputString = null;
         if (_useLocID)
         {
-            if(!LocalizationManager.Instance.GetLocalizedText(_locID, out outputString))
+            if (!LocalizationManager.Instance.GetLocalizedText(_locID, out outputString))
             {
                 outputString = "#" + _string;
                 Log.Info(LogChannel, $"No Localized Text Found for ID {_locID}, using failedLocText");
@@ -60,11 +61,11 @@ public struct TextData
             outputString = _string;
         }
 
-        if (TagReplacements != null && TagReplacements.Count > 0)
+        if (_tagReplacements != null && _tagReplacements.Count > 0)
         {
-            foreach (var Tag in TagReplacements)
+            foreach (var tag in _tagReplacements)
             {
-                outputString.Replace(Tag.tag, Tag.replacement);
+                outputString.Replace(tag.tag, tag.replacement);
             }
         }
 
@@ -76,8 +77,8 @@ public struct TextData
 [CustomPropertyDrawer(typeof(TextData))]
 public class TextDataDrawer : PropertyDrawer
 {
-    private string lastID = "";
-    private string lastPreview = "";
+    private string _lastID = "";
+    private string _lastPreview = "";
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
@@ -111,16 +112,16 @@ public class TextDataDrawer : PropertyDrawer
 
         position = EditorGUI.PrefixLabel(previewDisplayPos, new GUIContent("Preview :"));
         string currentID = property.FindPropertyRelative("_locID").stringValue;
-        if (currentID != lastID)
+        if (currentID != _lastID)
         {
-            lastPreview = GetPreviewText(property.FindPropertyRelative("_locID").stringValue);
-            EditorGUI.LabelField(previewLabelPos, lastPreview);
+            _lastPreview = GetPreviewText(property.FindPropertyRelative("_locID").stringValue);
+            EditorGUI.LabelField(previewLabelPos, _lastPreview);
         }
         else
         {
-            EditorGUI.LabelField(previewLabelPos, lastPreview);
+            EditorGUI.LabelField(previewLabelPos, _lastPreview);
         }
-        lastID = currentID;
+        _lastID = currentID;
 
         EditorGUI.indentLevel--;
 
@@ -133,10 +134,10 @@ public class TextDataDrawer : PropertyDrawer
         if (settingsGUID.Length > 0)
         {
             string settingPath = AssetDatabase.GUIDToAssetPath(settingsGUID[0]);
-            LocalizationSettings LocalizationSettings = (LocalizationSettings)AssetDatabase.LoadAssetAtPath(settingPath, typeof(LocalizationSettings));
-            if(LocalizationSettings.GetLocalizedText("English", ID, out string ResultLocalizedText))
+            LocalizationSettings localizationSettings = (LocalizationSettings)AssetDatabase.LoadAssetAtPath(settingPath, typeof(LocalizationSettings));
+            if (localizationSettings.GetLocalizedText("English", ID, out string resultLocalizedText))
             {
-                return ResultLocalizedText;
+                return resultLocalizedText;
             }
         }
 

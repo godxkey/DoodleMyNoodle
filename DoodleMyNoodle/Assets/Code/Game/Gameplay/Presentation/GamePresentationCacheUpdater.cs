@@ -128,13 +128,13 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         if (Cache.LocalPawn != Entity.Null)
         {
             Cache.LocalController = CommonReads.GetPawnController(Cache.SimWorld, Cache.LocalPawn);
-            if (Cache.LocalController != Entity.Null && Cache.SimWorld.TryGetComponentData(Cache.LocalController, out Team controllerTeam))
+            if (Cache.LocalController != Entity.Null && Cache.SimWorld.TryGetComponent(Cache.LocalController, out Team controllerTeam))
             {
                 Cache.LocalControllerTeam = controllerTeam;
             }
 
-            Cache.LocalPawnPosition = Cache.SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn).Value;
-            Cache.LocalPawnHealth = Cache.SimWorld.GetComponentData<Health>(Cache.LocalPawn).Value;
+            Cache.LocalPawnPosition = Cache.SimWorld.GetComponent<FixTranslation>(Cache.LocalPawn).Value;
+            Cache.LocalPawnHealth = Cache.SimWorld.GetComponent<Health>(Cache.LocalPawn).Value;
             Cache.LocalPawnPositionFloat = Cache.LocalPawnPosition.ToUnityVec();
             Cache.LocalPawnTile = Helpers.GetTile(Cache.LocalPawnPosition);
             Cache.LocalPawnTileEntity = Cache.TileWorld.IsCreated ? Cache.TileWorld.GetEntity(Cache.LocalPawnTile) : Entity.Null;

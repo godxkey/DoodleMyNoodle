@@ -97,7 +97,7 @@ public class BindedSimEntityManaged : MonoBehaviour, IIndexedInList, ISystemStat
             Entity pawnController = CommonReads.GetPawnController(simWorld, SimEntity);
             if (pawnController != Entity.Null)
             {
-                if (simWorld.TryGetComponentData(pawnController, out ArcherAIData archerAIData))
+                if (simWorld.TryGetComponent(pawnController, out ArcherAIData archerAIData))
                 {
                     DrawArcherAIGizmos(cache, simWorld, SimEntity, pawnController);
                 }

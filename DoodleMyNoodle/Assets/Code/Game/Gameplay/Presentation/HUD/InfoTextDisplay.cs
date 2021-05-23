@@ -13,9 +13,9 @@ public class InfoTextDisplay : GamePresentationSystem<InfoTextDisplay>
     }
 
     // TODO : add possibility to format (color, bold, etc.)
-    public void SetText(string infoText, float duration = 1)
+    public void SetText(TextData infoText, float duration = 1)
     {
-        _textObject.text = infoText;
+        _textObject.text = infoText.ToString();
         _textObject.gameObject.SetActive(true);
 
         // TODO support duration

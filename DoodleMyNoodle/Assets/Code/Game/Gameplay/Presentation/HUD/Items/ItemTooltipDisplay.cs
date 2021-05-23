@@ -119,7 +119,7 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
         {
             foreach (InventoryItemReference item in inventory)
             {
-                if (SimWorld.TryGetComponentData(item.ItemEntity, out SimAssetId itemID))
+                if (SimWorld.TryGetComponent(item.ItemEntity, out SimAssetId itemID))
                 {
                     if (itemID.Value == ID.Value)
                     {
@@ -132,7 +132,7 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
         {
             foreach (InventoryItemPrefabReference item in bundle)
             {
-                if (SimWorld.TryGetComponentData(item.ItemEntityPrefab, out SimAssetId itemID))
+                if (SimWorld.TryGetComponent(item.ItemEntityPrefab, out SimAssetId itemID))
                 {
                     if (itemID.Value == ID.Value)
                     {

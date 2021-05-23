@@ -22,12 +22,6 @@ public class SurveyTrafficLight : SurveyBaseController
     private bool _buttonHeld = false;
     private bool _complete;
 
-    private void Awake()
-    {
-        Container.SetActive(true);
-        InfoTextDisplay.Instance.SetText("Tire et relâche au dernier instant");
-    }
-
     private void Update()
     {
         if (Input.GetMouseButton(0))
@@ -64,7 +58,6 @@ public class SurveyTrafficLight : SurveyBaseController
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
-        InfoTextDisplay.Instance.ForceHideText();
         _complete = false;
     }
 
@@ -75,6 +68,8 @@ public class SurveyTrafficLight : SurveyBaseController
 
     protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
     {
+        Container.SetActive(true);
+
         // Light Switching
         while (!_complete)
         {

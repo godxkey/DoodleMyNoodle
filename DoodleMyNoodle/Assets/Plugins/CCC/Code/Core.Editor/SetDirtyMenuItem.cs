@@ -6,7 +6,7 @@ public static class SetDirtyMenuItem
     [MenuItem("Assets/Set Dirty")]
     public static void SetDirty()
     {
-        foreach (var item in Selection.objects)
+        foreach (Object item in Selection.GetFiltered<Object>(SelectionMode.DeepAssets | SelectionMode.Editable))
         {
             EditorUtility.SetDirty(item);
         }

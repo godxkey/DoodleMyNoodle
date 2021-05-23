@@ -171,7 +171,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
 
         if (Input.GetKey(KeyCode.LeftShift) && Cache.LocalPawn != Entity.Null)
         {
-            fix3 playerPosition = SimWorld.GetComponentData<FixTranslation>(Cache.LocalPawn).Value;
+            fix3 playerPosition = SimWorld.GetComponent<FixTranslation>(Cache.LocalPawn).Value;
             Vector3 cameraPostion = transform.position;
             transform.position = new Vector3((float)playerPosition.x, (float)playerPosition.y, cameraPostion.z);
         }

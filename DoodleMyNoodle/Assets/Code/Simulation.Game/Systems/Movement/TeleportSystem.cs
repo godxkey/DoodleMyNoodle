@@ -96,11 +96,6 @@ public class TeleportSystem : SimSystemBase
 
 internal partial class CommonWrites
 {
-    public static void RequestTeleport(ISimWorldReadWriteAccessor accessor, Entity entity, int2 destination)
-    {
-        RequestTeleport(accessor, entity, Helpers.GetTileCenter(destination));
-    }
-
     public static void RequestTeleport(ISimWorldReadWriteAccessor accessor, Entity entity, fix2 destination)
     {
         var requests = accessor.GetExistingSystem<TeleportSystem>().GetRequestBuffer();

@@ -15,7 +15,7 @@ public class GameActionTileExplosion : GameAction
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        var range = accessor.GetComponentData<GameActionSettingRange>(context.Item);
+        var range = accessor.GetComponent<GameActionSettingRange>(context.Item);
         return new UseContract(
                    new GameActionParameterPosition.Description()
                    {
@@ -27,10 +27,10 @@ public class GameActionTileExplosion : GameAction
     {
         if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {
-            fix2 instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
-            int damage = accessor.GetComponentData<GameActionSettingDamage>(context.Item).Value;
-            fix range = accessor.GetComponentData<GameActionSettingRange>(context.Item).Value;
-            fix radius = accessor.GetComponentData<GameActionSettingRadius>(context.Item).Value;
+            fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
+            int damage = accessor.GetComponent<GameActionSettingDamage>(context.Item).Value;
+            fix range = accessor.GetComponent<GameActionSettingRange>(context.Item).Value;
+            fix radius = accessor.GetComponent<GameActionSettingRadius>(context.Item).Value;
 
             fix2 pos = Helpers.ClampPositionInsideRange(paramPosition.Position, instigatorPos, range);
             CommonWrites.RequestExplosion(accessor, context.InstigatorPawn, pos, radius, damage);

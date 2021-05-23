@@ -320,6 +320,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc8e826623f27c4498a6aa29ebc4e447, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tooltip:
+    _string: Clique sur le plus gros chiffre
+    _useLocID: 1
+    _locID: 
   LeftCircleLimit: {fileID: 580173298084315602}
   RightCircleLimit: {fileID: 580173297661533709}
   Section: {fileID: 580173298033699285}

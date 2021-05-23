@@ -37,7 +37,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
 
             fix healthRatio = (fix)entityHealth.Value / (fix)entityMaximumHealth.Value;
 
-            Team CurrentPawnTeam = Cache.SimWorld.GetComponentData<Team>(pawnController);
+            Team CurrentPawnTeam = Cache.SimWorld.GetComponent<Team>(pawnController);
 
             SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, healthRatio, localPlayerTeam.Value == CurrentPawnTeam.Value);
 

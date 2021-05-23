@@ -147,7 +147,7 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
 
         CommonWrites.MoveItemAll(Accessor, item, source: pawn, destination: chestEntity);
 
-        
+
         /* // Disabled passive system code
         List<ItemPassiveEffect> itemPassiveEffects = GetItemPassiveEffects(entityToGiveToChest);
 
@@ -174,8 +174,8 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
             return;
 
         // Find chest inventory
-        Entity chestEntity = FindChestInRange(pawnInputEquipItem.ItemEntityPosition, pawn);
-        if (chestEntity == Entity.Null || !EntityManager.HasComponent<InventoryItemReference>(chestEntity))
+        Entity chestEntity = pawnInputEquipItem.ChestEntity;
+        if (!EntityManager.HasComponent<InventoryItemReference>(chestEntity))
         {
             return;
         }
@@ -268,7 +268,7 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
 
     private void ExecuteUseInteractableInput(PawnControllerInputClickSignalEmitter inputClickEmitter, Entity pawn)
     {
-        Entity emitter = FindInteractableInRange(inputClickEmitter.EmitterPosition, pawn);
+        Entity emitter = inputClickEmitter.Emitter;
 
         if (emitter != Entity.Null && HasComponent<SignalEmissionType>(emitter))
         {
@@ -398,7 +398,7 @@ internal partial class CommonWrites
 
     public static bool TryInputUseItem<T>(ISimWorldReadWriteAccessor accessor, Entity entityController, params GameAction.ParameterData[] arguments) where T : GameAction
     {
-        if (!accessor.TryGetComponentData(entityController, out ControlledEntity pawn))
+        if (!accessor.TryGetComponent(entityController, out ControlledEntity pawn))
             return false;
 
         if (pawn == Entity.Null)

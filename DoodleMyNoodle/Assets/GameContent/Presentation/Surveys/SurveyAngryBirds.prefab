@@ -293,6 +293,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a39a4e8cb8b1d484889ce710b68615cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tooltip:
+    _string: "Tire et rel\xE2che"
+    _useLocID: 1
+    _locID: 
   _center: {fileID: 7192197591626535530}
   _dragTarget: {fileID: 5300373789913655904}
   _line: {fileID: 2658469290181016938}

@@ -25,7 +25,7 @@ public class SignalDisplay : BindedPresentationEntityComponent
     {
         base.OnPostSimulationTick();
 
-        _isOn = SimWorld.TryGetComponentData(SimEntity, out Signal signal) && signal;
+        _isOn = SimWorld.TryGetComponent(SimEntity, out Signal signal) && signal;
         _wasOn |= _isOn;
     }
 

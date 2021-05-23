@@ -276,6 +276,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae4b5c60baccacc45854c1b3086cc47d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tooltip:
+    _string: "Tire et rel\xE2che au dernier instant"
+    _useLocID: 1
+    _locID: 
   InactiveColor: {r: 0.6509804, g: 0.6509804, b: 0.6509804, a: 1}
   Container: {fileID: 5880446164183343010}
   LightDatas:

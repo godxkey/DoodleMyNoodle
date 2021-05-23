@@ -32,9 +32,9 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
     protected override void OnGamePresentationUpdate()
     {
-        if (SimWorld.TryGetComponentData(SimEntity, out AnimationState currentAnimationState))
+        if (SimWorld.TryGetComponent(SimEntity, out AnimationState currentAnimationState))
         {
-            AnimationData animationData = SimWorld.GetComponentData<AnimationData>(SimEntity);
+            AnimationData animationData = SimWorld.GetComponent<AnimationData>(SimEntity);
             CommonReads.AnimationTypes currentPlayerAnimationState = (CommonReads.AnimationTypes)currentAnimationState.StateID;
 
             // New Animation State has been apply, play the animation
@@ -70,7 +70,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
                         if (animationData.GameActionEntity != Entity.Null)
                         {
-                            SimWorld.TryGetComponentData(animationData.GameActionEntity, out SimAssetId instigatorAssetId);
+                            SimWorld.TryGetComponent(animationData.GameActionEntity, out SimAssetId instigatorAssetId);
                             GameObject instigatorPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
                             if (instigatorPrefab.TryGetComponent(out ItemAuth gameActionAuth))
                             {

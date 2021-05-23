@@ -32,11 +32,6 @@ public class SurveyAngryBirds : SurveyBaseController
     private TrajectoryDisplaySystem.TrajectoryHandle _trajectoryDisplay;
     private GameActionParameterVector.Description _vectorDesc;
 
-    private void Awake()
-    {
-        InfoTextDisplay.Instance.SetText("Tire et relâche");
-    }
-
     public override GameAction.ParameterDescription[] CreateDebugQuery()
     {
         return new GameAction.ParameterDescription[] { new GameActionParameterVector.Description() { SpeedMax = 10, SpeedMin = 0 } };
@@ -194,7 +189,6 @@ public class SurveyAngryBirds : SurveyBaseController
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
-        InfoTextDisplay.Instance.ForceHideText();
         _dragState = DragState.Idle;
         _trajectoryDisplay.Dispose();
     }

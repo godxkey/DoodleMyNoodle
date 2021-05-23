@@ -25,14 +25,14 @@ public class SimPlayerInputEquipItem : SimPlayerInput
 
 public class PawnControllerInputEquipItem : PawnControllerInputBase
 {
-    public fix2 ItemEntityPosition;
+    public Entity ChestEntity;
     public int ItemIndex;
 
     public PawnControllerInputEquipItem(Entity pawnController) : base(pawnController) { }
 
-    public PawnControllerInputEquipItem(Entity pawnController, int ItemIndex, fix2 ItemEntityPosition) : base(pawnController)
+    public PawnControllerInputEquipItem(Entity pawnController, int itemIndex, Entity chestEntity) : base(pawnController)
     {
-        this.ItemIndex = ItemIndex;
-        this.ItemEntityPosition = ItemEntityPosition;
+        ItemIndex = itemIndex;
+        ChestEntity = chestEntity;
     }
 }

@@ -20,12 +20,6 @@ public class SurveyEntity : SurveyBaseController
     private DirtyRef<BindedSimEntityManaged> _hoveredEntity;
     private Vector2 _instigatorPosition;
 
-    private void Awake()
-    {
-        InfoTextDisplay.Instance.SetText("Choisi une entité");
-        CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Target);
-    }
-
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
         GameAction.ParameterDescriptionType.Entity
@@ -33,6 +27,8 @@ public class SurveyEntity : SurveyBaseController
 
     protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
     {
+        CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Target);
+
         while (_selectedEntity == null)
         {
             yield return null;
@@ -40,7 +36,7 @@ public class SurveyEntity : SurveyBaseController
 
         if (Cache.SimWorld.Exists(_selectedEntity.Value))
         {
-            result.Add(new GameActionParameterEntity.Data(Cache.SimWorld.GetComponentData<FixTranslation>(_selectedEntity.Value)));
+            result.Add(new GameActionParameterEntity.Data(Cache.SimWorld.GetComponent<FixTranslation>(_selectedEntity.Value)));
             complete();
         }
         else
@@ -82,7 +78,7 @@ public class SurveyEntity : SurveyBaseController
     
     private void UpdateRangeFeedback()
     {
-        if (SimWorld.TryGetComponentData(CurrentContext.Instigator, out FixTranslation position))
+        if (SimWorld.TryGetComponent(CurrentContext.Instigator, out FixTranslation position))
         {
             _instigatorPosition = (Vector2)position.Value;
         }
@@ -151,7 +147,7 @@ public class SurveyEntity : SurveyBaseController
                 return false;
         }
 
-        fix2 targetPos = Cache.SimWorld.GetComponentData<FixTranslation>(entity);
+        fix2 targetPos = Cache.SimWorld.GetComponent<FixTranslation>(entity);
         fix squaredDistance = fixMath.distancesq(Cache.LocalPawnPosition, targetPos);
         if (squaredDistance > paramDescription.RangeFromInstigator * paramDescription.RangeFromInstigator)
         {
@@ -163,8 +159,11 @@ public class SurveyEntity : SurveyBaseController
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
+        var sprRenderer = _hoveredEntity.Get()?.GetComponentInChildren<SpriteRenderer>();
+        if (sprRenderer)
+            HighlightService.StopHighlight(sprRenderer);
+
         CursorOverlayService.Instance.ResetCursorToDefault();
-        InfoTextDisplay.Instance.ForceHideText();
         _selectedEntity = null;
     }
 

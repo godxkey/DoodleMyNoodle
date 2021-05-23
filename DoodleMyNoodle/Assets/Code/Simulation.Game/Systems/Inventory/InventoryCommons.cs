@@ -142,7 +142,7 @@ internal partial class CommonWrites
     private static void GetTransationInfo(ISimWorldReadWriteAccessor accessor, Entity? sourceOrDestination, out int cap, out DynamicBuffer<InventoryItemReference>? buffer)
     {
         cap = accessor.HasComponent<InventoryCapacity>(sourceOrDestination.GetValueOrDefault())
-            ? accessor.GetComponentData<InventoryCapacity>(sourceOrDestination.Value) : default;
+            ? accessor.GetComponent<InventoryCapacity>(sourceOrDestination.Value) : default;
 
         buffer = accessor.HasComponent<InventoryItemReference>(sourceOrDestination.GetValueOrDefault())
             ? (DynamicBuffer<InventoryItemReference>?)accessor.GetBuffer<InventoryItemReference>(sourceOrDestination.Value) : null;
@@ -188,7 +188,7 @@ internal partial class CommonWrites
 
         var sourceIndex = -1;
         var destinationIndex = -1;
-        var itemStackable = accessor.GetComponentData<StackableFlag>(item);
+        var itemStackable = accessor.GetComponent<StackableFlag>(item);
         var sourceBuffer = source.GetValueOrDefault();
         var destinationBuffer = destination.GetValueOrDefault();
 

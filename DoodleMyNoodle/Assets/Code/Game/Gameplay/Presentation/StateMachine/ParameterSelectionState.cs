@@ -26,7 +26,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         _surveySMBlackboard.Cache = Cache;
         _surveySMBlackboard.ResultParameters.Clear();
 
-        if (SimWorld.TryGetComponentData(InputParameter.ObjectEntity, out SimAssetId objectSimAssetID))
+        if (SimWorld.TryGetComponent(InputParameter.ObjectEntity, out SimAssetId objectSimAssetID))
         {
             _surveySMBlackboard.GameActionAuth = PresentationHelpers.FindItemAuth(objectSimAssetID);
         }
@@ -39,7 +39,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
         // Init process of parameter selection
 
-        GameActionId actionId = SimWorld.GetComponentData<GameActionId>(InputParameter.ObjectEntity);
+        GameActionId actionId = SimWorld.GetComponent<GameActionId>(InputParameter.ObjectEntity);
         GameAction objectGameAction = GameActionBank.GetAction(actionId);
 
         GameAction.UseContext useContext = new GameAction.UseContext()
@@ -113,7 +113,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         }
         else
         {
-            fix2 entityPosition = SimWorld.GetComponentData<FixTranslation>(InputParameter.ObjectEntity);
+            fix2 entityPosition = SimWorld.GetComponent<FixTranslation>(InputParameter.ObjectEntity);
 
             SimPlayerInputUseObjectGameAction simInput = new SimPlayerInputUseObjectGameAction(entityPosition, _surveySMBlackboard.ResultParameters);
             SimWorld.SubmitInput(simInput);

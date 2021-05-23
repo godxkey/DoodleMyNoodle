@@ -14,12 +14,6 @@ public class SurveyPosition : SurveyBaseController
 
     private Vector2 _instigatorPosition;
 
-    private void Awake()
-    {
-        InfoTextDisplay.Instance.SetText("Choisi une position");
-        CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Target);
-    }
-
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
         GameAction.ParameterDescriptionType.Position
@@ -32,6 +26,8 @@ public class SurveyPosition : SurveyBaseController
 
     protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
     {
+        CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Target);
+
         Update(); // force an update
 
         while (!Input.GetMouseButtonDown(0))
@@ -49,7 +45,7 @@ public class SurveyPosition : SurveyBaseController
 
     private void Update()
     {
-        if (SimWorld.TryGetComponentData(CurrentContext.Instigator, out FixTranslation position))
+        if (SimWorld.TryGetComponent(CurrentContext.Instigator, out FixTranslation position))
         {
             _instigatorPosition = (Vector2)position.Value;
         }
@@ -85,6 +81,6 @@ public class SurveyPosition : SurveyBaseController
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
-        InfoTextDisplay.Instance.ForceHideText();
+        CursorOverlayService.Instance.ResetCursorToDefault();
     }
 }

@@ -26,6 +26,9 @@ public class GameActionParameterEntity
     {
         public fix2 EntityPos;
 
+        // NON SERIALIZED
+        public Entity Entity { get; set; }
+
         public Data() { }
 
         public Data(fix2 EntityPos)

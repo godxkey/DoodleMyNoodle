@@ -54,7 +54,7 @@ internal static partial class CommonWrites
     public static void ModifyStatInt<T>(ISimWorldReadWriteAccessor accessor, Entity entity, int value)
         where T : struct, IComponentData, IStatInt
     {
-        int currentValue = accessor.GetComponentData<T>(entity).Value;
+        int currentValue = accessor.GetComponent<T>(entity).Value;
         int newValue = currentValue + value;
 
         SetStatInt(accessor, entity, new T { Value = newValue });
@@ -63,7 +63,7 @@ internal static partial class CommonWrites
     public static void ModifyStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, fix value)
         where T : struct, IComponentData, IStatFix
     {
-        fix currentValue = accessor.GetComponentData<T>(entity).Value;
+        fix currentValue = accessor.GetComponent<T>(entity).Value;
         fix newValue = currentValue + value;
 
         SetStatFix(accessor, entity, new T { Value = newValue });
@@ -72,17 +72,17 @@ internal static partial class CommonWrites
     public static void SetStatInt<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T compData)
         where T : struct, IComponentData, IStatInt
     {
-        if (accessor.TryGetComponentData(entity, out MinimumInt<T> minimum))
+        if (accessor.TryGetComponent(entity, out MinimumInt<T> minimum))
         {
             compData.Value = max(minimum.Value, compData.Value);
         }
 
-        if (accessor.TryGetComponentData(entity, out MaximumInt<T> maximum))
+        if (accessor.TryGetComponent(entity, out MaximumInt<T> maximum))
         {
             compData.Value = min(maximum.Value, compData.Value);
         }
 
-        accessor.SetComponentData(entity, compData);
+        accessor.SetComponent(entity, compData);
 
         OnIntStatChanged(accessor, entity, compData);
     }
@@ -90,17 +90,17 @@ internal static partial class CommonWrites
     public static void SetStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T compData)
         where T : struct, IComponentData, IStatFix
     {
-        if (accessor.TryGetComponentData(entity, out MinimumFix<T> minimum))
+        if (accessor.TryGetComponent(entity, out MinimumFix<T> minimum))
         {
             compData.Value = max(minimum.Value, compData.Value);
         }
 
-        if (accessor.TryGetComponentData(entity, out MaximumFix<T> maximum))
+        if (accessor.TryGetComponent(entity, out MaximumFix<T> maximum))
         {
             compData.Value = min(maximum.Value, compData.Value);
         }
 
-        accessor.SetComponentData(entity, compData);
+        accessor.SetComponent(entity, compData);
 
         OnFixStatChanged(accessor, entity, compData);
     }
@@ -110,7 +110,7 @@ internal static partial class CommonWrites
     {
         if (!accessor.HasComponent<T>(entity))
         {
-            accessor.AddComponentData(entity, new T { Value = value });
+            accessor.AddComponent(entity, new T { Value = value });
         }
     }
 
@@ -119,7 +119,7 @@ internal static partial class CommonWrites
     {
         if (!accessor.HasComponent<T>(entity))
         {
-            accessor.AddComponentData(entity, new T { Value = value });
+            accessor.AddComponent(entity, new T { Value = value });
         }
     }
 
@@ -127,7 +127,7 @@ internal static partial class CommonWrites
     where T : struct, IComponentData, IStatFix
     {
         // if we added a stat to a pawn, notify its items of the change if he has any
-        if (accessor.TryGetComponentData(entity, out Controllable pawn))
+        if (accessor.TryGetComponent(entity, out Controllable pawn))
         {
             if (accessor.TryGetBufferReadOnly(entity, out DynamicBuffer<InventoryItemReference> inventory))
             {
@@ -159,7 +159,7 @@ internal static partial class CommonWrites
     where T : struct, IComponentData, IStatInt
     {
         // if we added a stat to a pawn, notify its items of the change if he has any
-        if (accessor.TryGetComponentData(entity, out Controllable pawn))
+        if (accessor.TryGetComponent(entity, out Controllable pawn))
         {
             if (accessor.TryGetBufferReadOnly(entity, out DynamicBuffer<InventoryItemReference> inventory))
             {

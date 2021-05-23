@@ -37,7 +37,7 @@ public class DebugPanelSimPlayers : DebugPanel
         for (int i = 0; i < simPlayers.Count; i++)
         {
             ApplyPlayerTextColor(simPlayers[i]);
-            GUILayout.Label(simWorldAccessor.GetComponentData<Name>(simPlayers[i]).Value.ToString());
+            GUILayout.Label(simWorldAccessor.GetComponent<Name>(simPlayers[i]).Value.ToString());
         }
         ResetTextColor();
         GUILayout.EndVertical();
@@ -48,7 +48,7 @@ public class DebugPanelSimPlayers : DebugPanel
         for (int i = 0; i < simPlayers.Count; i++)
         {
             ApplyPlayerTextColor(simPlayers[i]);
-            GUILayout.Label(simWorldAccessor.GetComponentData<PersistentId>(simPlayers[i]).Value.ToString());
+            GUILayout.Label(simWorldAccessor.GetComponent<PersistentId>(simPlayers[i]).Value.ToString());
         }
         ResetTextColor();
         GUILayout.EndVertical();

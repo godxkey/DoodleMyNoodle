@@ -20,7 +20,7 @@ public class GameActionDashAttack : GameAction
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
+            new GameActionParameterTile.Description(accessor.GetComponent<GameActionSettingRange>(context.Item).Value)
             {
                 IncludeSelf = false,
                 MustBeReachable = true
@@ -34,8 +34,8 @@ public class GameActionDashAttack : GameAction
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            int2 instigatorTile = Helpers.GetTile(accessor.GetComponentData<FixTranslation>(context.InstigatorPawn));
-            int moveRange = roundToInt(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value);
+            int2 instigatorTile = Helpers.GetTile(accessor.GetComponent<FixTranslation>(context.InstigatorPawn));
+            int moveRange = roundToInt(accessor.GetComponent<GameActionSettingRange>(context.Item).Value);
 
             NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
             if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, path))
@@ -50,7 +50,7 @@ public class GameActionDashAttack : GameAction
             // Remove unreachable points
             path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
 
-            int damage = accessor.GetComponentData<GameActionSettingDamage>(context.Item).Value;
+            int damage = accessor.GetComponent<GameActionSettingDamage>(context.Item).Value;
             NativeList<Entity> entityToDamage = new NativeList<Entity>(Allocator.Temp);
 
             fix2 min, max, center;
@@ -69,7 +69,7 @@ public class GameActionDashAttack : GameAction
             }
 
             // set destination
-            accessor.SetOrAddComponentData(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(path[path.Length - 1]) });
+            accessor.SetOrAddComponent(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(path[path.Length - 1]) });
 
             CommonWrites.RequestDamage(accessor, context.InstigatorPawn, entityToDamage.AsArray(), damage);
 

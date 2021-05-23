@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class PawnControllerInputClickSignalEmitter : PawnControllerInputBase
 {
-    public fix2 EmitterPosition;
+    public Entity Emitter;
 
-    public PawnControllerInputClickSignalEmitter(Entity pawnController, fix2 emitterPosition) : base(pawnController)
+    public PawnControllerInputClickSignalEmitter(Entity pawnController, Entity emitter) : base(pawnController)
     {
-        EmitterPosition = emitterPosition;
+        Emitter = emitter;
     }
 
     public override string ToString()
     {
-        return $"PawnControllerInputUseItem(pawnControlled: {PawnController}, emitterPosition: {EmitterPosition})";
+        return $"PawnControllerInputUseItem(pawnControlled: {PawnController}, emitterPosition: {Emitter})";
     }
 }

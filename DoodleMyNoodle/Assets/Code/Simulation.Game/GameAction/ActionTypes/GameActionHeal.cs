@@ -20,8 +20,9 @@ public class GameActionHeal : GameAction
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description(accessor.GetComponentData<GameActionSettingRange>(context.Item).Value)
+            new GameActionParameterEntity.Description()
             {
+                RangeFromInstigator = accessor.GetComponent<GameActionSettingRange>(context.Item).Value,
                 RequiresAttackableEntity = true,
             }
         };
@@ -31,16 +32,30 @@ public class GameActionHeal : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
-        if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {
-            int healValue = accessor.GetComponentData<GameActionSettingHPToHeal>(context.Item).Value;
-            
-            NativeList<Entity> targets = new NativeList<Entity>(Allocator.Temp);
-            CommonReads.FindTileActorsWithComponents<Health>(accessor, paramTile.Tile, targets);
-            foreach (var target in targets)
+            var settingsHeal = accessor.GetComponent<GameActionSettingHPToHeal>(context.Item);
+            var settingsRange = accessor.GetComponent<GameActionSettingRange>(context.Item);
+
+            if (!accessor.Exists(paramEntity.Entity))
             {
-                CommonWrites.RequestHeal(accessor, context.InstigatorPawn, target, healValue);
+                LogGameActionInfo(context, "Target does not exist");
+                return false;
             }
+
+            if(!CommonReads.IsInRange(accessor, context.InstigatorPawn, paramEntity.Entity, settingsRange))
+            {
+                LogGameActionInfo(context, "Target out of range");
+                return false;
+            }
+
+            if (!accessor.HasComponent<Health>(paramEntity.Entity))
+            {
+                LogGameActionInfo(context, "Target has no health");
+                return false;
+            }
+
+            CommonWrites.RequestHeal(accessor, context.InstigatorPawn, paramEntity.Entity, settingsHeal.Value);
 
             return true;
         }

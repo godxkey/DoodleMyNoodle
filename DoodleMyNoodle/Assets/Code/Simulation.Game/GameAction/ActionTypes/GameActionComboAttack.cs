@@ -18,7 +18,7 @@ public class GameActionComboAttack : GameAction
     {
         var param = new GameActionParameterPosition.Description()
         {
-            MaxRangeFromInstigator = accessor.GetComponentData<GameActionSettingRange>(context.Item)
+            MaxRangeFromInstigator = accessor.GetComponent<GameActionSettingRange>(context.Item)
         };
 
         return new UseContract(param, param);
@@ -26,9 +26,9 @@ public class GameActionComboAttack : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
-        int damage = accessor.GetComponentData<GameActionSettingDamage>(context.Item);
-        var instigatorPos = accessor.GetComponentData<FixTranslation>(context.InstigatorPawn);
-        var range = accessor.GetComponentData<GameActionSettingRange>(context.Item);
+        int damage = accessor.GetComponent<GameActionSettingDamage>(context.Item);
+        var instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
+        var range = accessor.GetComponent<GameActionSettingRange>(context.Item);
         fix attackRadius = (fix)0.1f;
         NativeList<DistanceHit> hits = new NativeList<DistanceHit>(Allocator.Temp);
 

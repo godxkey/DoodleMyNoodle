@@ -74,7 +74,7 @@ MonoBehaviour:
     RawValue: 0
   Icon: {fileID: 21300000, guid: b54f62f6c81d0834384a537b9ca18c2c, type: 3}
   Name: Conversion
-  EffectDescription: "Convertis la cible pour qu'il soit dans votre \xE9quipe"
+  EffectDescription: "Change la cible d'\xE9quipe."
   SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 0}
@@ -84,7 +84,8 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
       data:
-        Range: 1
+        Range:
+          RawValue: 13743895552
     00000001:
       type: {class: GameActionSettingEffectDurationAuth, ns: , asm: Game}
       data:

@@ -10,6 +10,5 @@ public static partial class Helpers
     {
         fix2 v = clampLength(position - centerPoint, 0, range);
         return centerPoint + v;
-
     }
 }

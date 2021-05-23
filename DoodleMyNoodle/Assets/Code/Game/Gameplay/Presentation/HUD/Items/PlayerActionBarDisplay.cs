@@ -62,7 +62,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
         if (SimWorld.TryGetBufferReadOnly(Cache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             // Ajust Slot amount accordiwdng to inventory max size
-            InventoryCapacity inventoryCapacity = SimWorld.GetComponentData<InventoryCapacity>(Cache.LocalPawn);
+            InventoryCapacity inventoryCapacity = SimWorld.GetComponent<InventoryCapacity>(Cache.LocalPawn);
 
             _gridLayoutGroup.constraintCount = min(_maxCollumns, inventoryCapacity);
 
@@ -75,10 +75,10 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                     Entity item = inventory[i].ItemEntity;
                     int stacks = inventory[i].Stacks;
 
-                    if (stacks == 1 && !SimWorld.GetComponentData<StackableFlag>(item))
+                    if (stacks == 1 && !SimWorld.GetComponent<StackableFlag>(item))
                         stacks = -1; // used in display to hide stacks
 
-                    SimWorld.TryGetComponentData(item, out SimAssetId itemAssetId);
+                    SimWorld.TryGetComponent(item, out SimAssetId itemAssetId);
                     ItemAuth itemGameActionAuth = PresentationHelpers.FindItemAuth(itemAssetId);
 
                     _slotVisuals[i].UpdateCurrentInventorySlot(itemGameActionAuth,
@@ -89,7 +89,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                                                                stacks);
 
                     bool canBeUsed = false;
-                    if (SimWorld.TryGetComponentData(item, out GameActionId itemActionId))
+                    if (SimWorld.TryGetComponent(item, out GameActionId itemActionId))
                     {
                         GameAction.UseContext useContext = new GameAction.UseContext()
                         {

@@ -33,7 +33,7 @@ public class InternalSimWorldAccessor : SimWorldReadAccessor, ISimWorldReadWrite
     void ISimWorldWriteAccessor.AddComponentData<T>(EntityQuery entityQuery, NativeArray<T> componentArray)
         => EntityManager.AddComponentData<T>(entityQuery, componentArray);
 
-    bool ISimWorldWriteAccessor.AddComponentData<T>(Entity entity, T componentData)
+    bool ISimWorldWriteAccessor.AddComponent<T>(Entity entity, T componentData)
         => EntityManager.AddComponentData<T>(entity, componentData);
 
     void ISimWorldWriteAccessor.AddComponentObject(Entity entity, object componentData)
@@ -123,7 +123,7 @@ public class InternalSimWorldAccessor : SimWorldReadAccessor, ISimWorldReadWrite
     void ISimWorldWriteAccessor.SetChunkComponentData<T>(ArchetypeChunk chunk, T componentValue)
         => EntityManager.SetChunkComponentData(chunk, componentValue);
 
-    void ISimWorldWriteAccessor.SetComponentData<T>(Entity entity, T componentData)
+    void ISimWorldWriteAccessor.SetComponent<T>(Entity entity, T componentData)
         => EntityManager.SetComponentData(entity, componentData);
 
     void ISimWorldWriteAccessor.SetEnabled(Entity entity, bool enabled)

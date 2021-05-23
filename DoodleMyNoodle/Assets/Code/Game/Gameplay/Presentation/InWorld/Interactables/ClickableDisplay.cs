@@ -31,7 +31,7 @@ public class ClickableDisplay : BindedPresentationEntityComponent, IWorldUIPoint
         if (!Cache.LocalPawnAlive)
             return;
 
-        fix2 entityPosition = SimWorld.GetComponentData<FixTranslation>(SimEntity);
+        fix2 entityPosition = SimWorld.GetComponent<FixTranslation>(SimEntity);
         fix2 pawnPosition = Cache.LocalPawnPosition;
 
         if (fixMath.distancemanhattan(entityPosition, pawnPosition) > SimulationGameConstants.InteractibleMaxDistanceManhattan)

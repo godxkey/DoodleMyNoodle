@@ -84,7 +84,8 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
       data:
-        Range: 1
+        Range:
+          RawValue: 4294967296
     00000001:
       type: {class: GameActionSettingDamageAuth, ns: , asm: Game}
       data:

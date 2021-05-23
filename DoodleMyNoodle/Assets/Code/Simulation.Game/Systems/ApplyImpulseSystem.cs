@@ -137,12 +137,13 @@ internal static partial class CommonWrites
         accessor.GetExistingSystem<ApplyImpulseSystem>().RequestImpulseRadial(request);
     }
 
-    public static void RequestImpulse(ISimWorldReadWriteAccessor accessor, Entity target, fix2 strength)
+    public static void RequestImpulse(ISimWorldReadWriteAccessor accessor, Entity target, fix2 strength, bool ignoreMass = false)
     {
         DirectImpulseRequestData request = new DirectImpulseRequestData()
         {
             Target = target,
             Strength = strength,
+            IgnoreMass = ignoreMass,
         };
 
         accessor.GetExistingSystem<ApplyImpulseSystem>().RequestImpulseDirect(request);

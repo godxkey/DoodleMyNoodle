@@ -54,7 +54,7 @@ public partial class CommonReads
         {
             for (int i = 0; i < inventory.Length; i++)
             {
-                if (accessor.TryGetComponentData(inventory[i].ItemEntity, out GameActionId candidateGameActionId))
+                if (accessor.TryGetComponent(inventory[i].ItemEntity, out GameActionId candidateGameActionId))
                 {
                     if (candidateGameActionId.Equals(gameActionId))
                     {

@@ -82,8 +82,8 @@ internal static partial class CommonWrites
 {
     public static void SetEntityAnimation(ISimWorldReadWriteAccessor accessor, Entity entity, params KeyValuePair<string, object>[] additionnalData)
     {
-        accessor.SetOrAddComponentData(entity, GetAnimationData(accessor, additionnalData));
-        accessor.SetOrAddComponentData(entity, new AnimationState() { StateID = GetAnimationType(accessor,additionnalData) });
+        accessor.SetOrAddComponent(entity, GetAnimationData(accessor, additionnalData));
+        accessor.SetOrAddComponent(entity, new AnimationState() { StateID = GetAnimationType(accessor,additionnalData) });
     }
 
     private static AnimationData GetAnimationData(ISimWorldReadWriteAccessor accessor, params KeyValuePair<string, object>[] additionnalData)
@@ -96,7 +96,7 @@ internal static partial class CommonWrites
         newAnimationData.GameActionEntity = GetAdditionnalAnimationData<Entity>("GameActionEntity", additionnalData);
 
         // Get Duration for State Machine
-        if (accessor.TryGetComponentData(newAnimationData.GameActionEntity, out GameActionSettingAnimationType animationTypeData))
+        if (accessor.TryGetComponent(newAnimationData.GameActionEntity, out GameActionSettingAnimationType animationTypeData))
         {
             newAnimationData.TotalDuration = animationTypeData.Duration;
         }
@@ -111,7 +111,7 @@ internal static partial class CommonWrites
 
     private static int GetAnimationType(ISimWorldReadWriteAccessor accessor, params KeyValuePair<string, object>[] additionnalData)
     {
-        if (accessor.TryGetComponentData(GetAdditionnalAnimationData<Entity>("GameActionEntity", additionnalData), out GameActionSettingAnimationType animationTypeData))
+        if (accessor.TryGetComponent(GetAdditionnalAnimationData<Entity>("GameActionEntity", additionnalData), out GameActionSettingAnimationType animationTypeData))
         {
             return animationTypeData.AnimationType;
         }

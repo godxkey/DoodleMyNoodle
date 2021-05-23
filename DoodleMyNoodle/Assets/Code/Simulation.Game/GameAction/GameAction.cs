@@ -196,7 +196,7 @@ public abstract class GameAction
         int minApCost = GetMinimumActionPointCost(accessor, context);
         if (minApCost >= 0)
         {
-            if (!accessor.TryGetComponentData(context.InstigatorPawn, out ActionPoints ap))
+            if (!accessor.TryGetComponent(context.InstigatorPawn, out ActionPoints ap))
             {
                 debugReason?.Set("Pawn has no ActionPoints component.");
                 return false;
@@ -220,13 +220,13 @@ public abstract class GameAction
 
     public bool IsInCooldown(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.TryGetComponentData(context.Item, out ItemCooldownTimeCounter timeCooldown) &&
+        if (accessor.TryGetComponent(context.Item, out ItemCooldownTimeCounter timeCooldown) &&
             timeCooldown.Value > 0)
         {
             return true;
         }
 
-        if (accessor.TryGetComponentData(context.Item, out ItemCooldownTurnCounter turnCooldown) &&
+        if (accessor.TryGetComponent(context.Item, out ItemCooldownTurnCounter turnCooldown) &&
             turnCooldown.Value > 0)
         {
             return true;
@@ -238,19 +238,19 @@ public abstract class GameAction
     public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context, ResultData result)
     {
         // reduce consumable amount
-        if (accessor.GetComponentData<StackableFlag>(context.Item))
+        if (accessor.GetComponent<StackableFlag>(context.Item))
         {
             CommonWrites.DecrementItem(accessor, context.Item, context.InstigatorPawn);
         }
 
         // reduce instigator AP
-        if (accessor.TryGetComponentData(context.Item, out GameActionSettingAPCost itemActionPointCost))
+        if (accessor.TryGetComponent(context.Item, out GameActionSettingAPCost itemActionPointCost))
         {
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, itemActionPointCost.Value);
         }
 
         // reduce instigator Health
-        if (accessor.TryGetComponentData(context.Item, out GameActionSettingHPCost itemHealthPointCost))
+        if (accessor.TryGetComponent(context.Item, out GameActionSettingHPCost itemHealthPointCost))
         {
             if (itemHealthPointCost.Value > 0)
             {
@@ -263,13 +263,13 @@ public abstract class GameAction
         }
 
         // Cooldown
-        if (accessor.TryGetComponentData(context.Item, out ItemTimeCooldownData itemTimeCooldownData))
+        if (accessor.TryGetComponent(context.Item, out ItemTimeCooldownData itemTimeCooldownData))
         {
-            accessor.SetOrAddComponentData(context.Item, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
+            accessor.SetOrAddComponent(context.Item, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
         }
-        else if (accessor.TryGetComponentData(context.Item, out ItemTurnCooldownData itemTurnCooldownData))
+        else if (accessor.TryGetComponent(context.Item, out ItemTurnCooldownData itemTurnCooldownData))
         {
-            accessor.SetOrAddComponentData(context.Item, new ItemCooldownTurnCounter() { Value = itemTurnCooldownData.Value });
+            accessor.SetOrAddComponent(context.Item, new ItemCooldownTurnCounter() { Value = itemTurnCooldownData.Value });
         }
 
         // Feedbacks
@@ -279,7 +279,7 @@ public abstract class GameAction
 
     protected virtual int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.TryGetComponentData(context.Item, out GameActionSettingAPCost ActionPointCost))
+        if (accessor.TryGetComponent(context.Item, out GameActionSettingAPCost ActionPointCost))
         {
             return ActionPointCost.Value;
         }

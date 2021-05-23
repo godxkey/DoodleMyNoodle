@@ -46,6 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d70b3f76c315d6d4d8de485707cf08f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tooltip:
+    _string: 
+    _useLocID: 1
+    _locID: 
   NumberDisplay: {fileID: 2342765596430009231}
   TimeBetweenChanges: 0.18
   _clickPunchDuration: 0.25

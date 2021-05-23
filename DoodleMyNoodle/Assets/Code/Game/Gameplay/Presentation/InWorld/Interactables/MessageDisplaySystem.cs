@@ -32,10 +32,10 @@ public class MessageDisplaySystem : GamePresentationSystem<MessageDisplaySystem>
             {
                 foreach (var tileActor in Cache.PointedBodies)
                 {
-                    if (SimWorld.TryGetComponentData(tileActor, out Message message))
+                    if (SimWorld.TryGetComponent(tileActor, out Message message))
                     {
                         _displayedMessage.Set(message);
-                        _messagePosition.Set((Vector2)(fix2)SimWorld.GetComponentData<FixTranslation>(tileActor));
+                        _messagePosition.Set((Vector2)(fix2)SimWorld.GetComponent<FixTranslation>(tileActor));
                         break;
                     }
                 }

@@ -44,6 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 707d578dbd703fb4783c3011bce4f748, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tooltip:
+    _string: Choisis une position
+    _useLocID: 1
+    _locID: 
   _outOfRangeColor: {r: 1, g: 0, b: 0, a: 0.53333336}
   _normalColor: {r: 1, g: 1, b: 1, a: 1}
   _rangeIndicator1: {fileID: 2019217665004339940}

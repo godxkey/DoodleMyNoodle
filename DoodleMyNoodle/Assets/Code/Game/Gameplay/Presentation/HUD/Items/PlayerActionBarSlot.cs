@@ -52,7 +52,7 @@ public class PlayerActionBarSlot : ItemSlot
 
     public void UpdateDisplayAsUnavailable(Entity itemEntity)
     {
-        if (SimWorld.TryGetComponentData(itemEntity, out ItemCooldownTimeCounter timerCounter))
+        if (SimWorld.TryGetComponent(itemEntity, out ItemCooldownTimeCounter timerCounter))
         {
             if (timerCounter.Value != 0)
             {
@@ -63,7 +63,7 @@ public class PlayerActionBarSlot : ItemSlot
             }
         }
 
-        if (SimWorld.TryGetComponentData(itemEntity, out ItemCooldownTurnCounter turnCounter))
+        if (SimWorld.TryGetComponent(itemEntity, out ItemCooldownTurnCounter turnCounter))
         {
             if (turnCounter.Value != 0)
             {
