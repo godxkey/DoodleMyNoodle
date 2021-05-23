@@ -84,7 +84,7 @@ MonoBehaviour:
   - Name: 
     Path: 
     BuildIndex: 17
-    AssetGuid: 00000000000000000000000000000000
+    AssetGuid: c962cccd513726f4897da359bfdbb6ce
   - Name: Gym_Interactables
     Path: Assets/Scenes/Levels/Scene Assets/Gym_Interactables.unity
     BuildIndex: 18
