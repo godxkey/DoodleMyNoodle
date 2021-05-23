@@ -84,14 +84,14 @@ namespace CCC.Online.DataTransfer
                 ////////////////////////////////////////////////////////////////////////////////////////
                 //      Await the 'ready!' reponse
                 ////////////////////////////////////////////////////////////////////////////////////////
-                var readyResponse = DisposeOnTerminate(new AwaitNetMessage<NetMessageViaStreamReady>(_sessionInterface));
+                var readyResponse = DisposeOnTerminate(new AwaitNetMessage<NetMessageViaStreamReady>(_sessionInterface, (source, response) =>
+                {
+                    return source == _connection && response.TransferId == _transferId;
+                }));
 
                 CurrentState = TransferState.WaitingForReady;
-                while (readyResponse.Source != _connection || readyResponse.Response.TransferId != _transferId)
-                {
-                    yield return readyResponse.WaitForResponse();
-                }
 
+                yield return readyResponse.WaitForResponse();
             }
 
             {
@@ -101,24 +101,25 @@ namespace CCC.Online.DataTransfer
                 CurrentState = TransferState.SendingData;
                 var streamChannel = _sessionInterface.NetworkInterface.GetStreamChannel(StreamChannelType.LargeDataTransfer);
 
-                _sessionInterface.NetworkInterface.StreamDataAborted += OnStreamAborted;
-                _connection.StreamBytes(streamChannel, _data);
-
                 // listen for progress update
                 _sessionInterface.RegisterNetMessageReceiver<NetMessageViaStreamUpdate>(OnProgressUpdate);
+                _sessionInterface.NetworkInterface.StreamDataAborted += OnStreamAborted;
+
+                _connection.StreamBytes(streamChannel, _data);
             }
 
             {
                 ////////////////////////////////////////////////////////////////////////////////////////
                 //      Await reponse from the destination that indicates that it received all of the data
                 ////////////////////////////////////////////////////////////////////////////////////////
-                var ackResponse = DisposeOnTerminate(new AwaitNetMessage<NetMessageViaStreamACK>(_sessionInterface));
+                var ackResponse = DisposeOnTerminate(new AwaitNetMessage<NetMessageViaStreamACK>(_sessionInterface, (source, response) =>
+                {
+                    return source == _connection && response.TransferId == _transferId;
+                }));
 
                 CurrentState = TransferState.WaitingCompleteDataACK;
-                while (ackResponse.Source != _connection || ackResponse.Response.TransferId != _transferId)
-                {
-                    yield return ackResponse.WaitForResponse();
-                }
+
+                yield return ackResponse.WaitForResponse();
             }
 
             TerminateWithSuccess();
