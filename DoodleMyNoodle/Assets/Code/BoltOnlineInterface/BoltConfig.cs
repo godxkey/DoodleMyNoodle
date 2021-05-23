@@ -1,4 +1,6 @@
-﻿public static class GameBoltConfig
+﻿using Photon.Bolt;
+
+public static class GameBoltConfig
 {
     public static BoltConfig GetConfig()
     {

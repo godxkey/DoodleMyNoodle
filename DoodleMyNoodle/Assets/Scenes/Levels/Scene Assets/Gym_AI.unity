@@ -147,6 +147,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_BasicCharacter_Archer (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2768931431184588227, guid: 241253d57dc9c8642aafdd47087c95c3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8313493033907681224, guid: 241253d57dc9c8642aafdd47087c95c3,
         type: 3}
       propertyPath: _showGhost
@@ -379,6 +384,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SE_BasicCharacter_Archer
+      objectReference: {fileID: 0}
+    - target: {fileID: 2768931431184588227, guid: 241253d57dc9c8642aafdd47087c95c3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8313493033907681224, guid: 241253d57dc9c8642aafdd47087c95c3,
         type: 3}
@@ -622,6 +632,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SE_BasicCharacter_Archer (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2768931431184588227, guid: 241253d57dc9c8642aafdd47087c95c3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8313493033907681224, guid: 241253d57dc9c8642aafdd47087c95c3,
         type: 3}

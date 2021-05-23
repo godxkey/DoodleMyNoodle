@@ -1,5 +1,6 @@
 ﻿using CCC.Online.DataTransfer;
 using CCC.Operations;
+using Photon.Bolt;
 using System.Collections;
 using System.Collections.Generic;
 using UdpKit;
@@ -9,7 +10,7 @@ using static Unity.Mathematics.math;
 using static Unity.MathematicsX.mathX;
 
 // LDT: Large Data Transfer
-public class SimpleClientAndServerLDTViaPackets : /*MonoBehaviour,*/ Bolt.GlobalEventListener
+public class SimpleClientAndServerLDTViaPackets : GlobalEventListener
 {
     public Slider ProgressSlider;
     public Text DataToSend;

@@ -1,14 +1,11 @@
-﻿using Bolt;
-using Bolt.Matchmaking;
-using Bolt.Photon;
+﻿using Photon.Bolt;
+using Photon.Bolt.Matchmaking;
+using UdpKit;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using UdpKit;
 using UnityEngine;
 using UnityEngineX;
-using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace Internals.PhotonNetworkInterface
 {
@@ -353,9 +350,9 @@ namespace Internals.PhotonNetworkInterface
             ConcludeOperationCallback(ref _operationCallbackSessionConnected, false, null);
         }
 
-        public void Event_SessionCreated(UdpSession session)
+        public void Event_SessionCreatedOrUpdated(UdpSession session)
         {
-            Log.Info(LogChannel, $"[PhotonNetworkInterface] SessionCreated: session:{session.Id} name:{session.HostName}");
+            Log.Info(LogChannel, $"[PhotonNetworkInterface] SessionCreatedOrUpdated: session:{session.Id} name:{session.HostName}");
             _connectedSessionInfo = new PhotonNetworkInterfaceSession(session);
 
             ConcludeOperationCallback(ref _operationCallbackSessionCreated, true, null);
@@ -404,7 +401,7 @@ namespace Internals.PhotonNetworkInterface
                 Log.Error($"[PhotonNetworkInterface] StreamDataStarted from an unknown channel '{channel}'.");
                 return;
             }
-            
+
             Log.Info(LogChannel, $"[PhotonNetworkInterface] Incoming stream data started: (streamID){streamID}");
 
             StreamDataStarted?.Invoke(interfaceConnection, streamChannel, streamID);
