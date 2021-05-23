@@ -294,7 +294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tooltip:
-    _string: "Tire et rel\xE2che"
+    _string: Tire et relache
     _useLocID: 1
     _locID: 
   _center: {fileID: 7192197591626535530}

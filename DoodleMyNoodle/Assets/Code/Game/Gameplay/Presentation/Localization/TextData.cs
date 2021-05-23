@@ -119,6 +119,12 @@ public class TextDataDrawer : PropertyDrawer
         }
         else
         {
+            string stringValue = property.FindPropertyRelative("_string").stringValue;
+            if (_lastPreview == "" || _lastID == "")
+            {
+                _lastPreview = stringValue;
+            }
+
             EditorGUI.LabelField(previewLabelPos, _lastPreview);
         }
         _lastID = currentID;

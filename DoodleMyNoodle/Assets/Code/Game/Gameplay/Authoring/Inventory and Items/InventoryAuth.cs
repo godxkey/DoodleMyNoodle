@@ -12,6 +12,8 @@ using System;
 [RequiresEntityConversion]
 public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
+    private const int DEFAULT_CAPACITY = 9999;
+
     [Serializable]
     public class ItemAndQuantity
     {
@@ -21,20 +23,18 @@ public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity
         public Vector2Int Quantity = new Vector2Int(1, 1);
     }
 
-    public int Capacity = 9999;
-    public List<GameObject> InitialItems = new List<GameObject>();
     public List<ItemAndQuantity> StartingItems = new List<ItemAndQuantity>();
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new InventoryCapacity() { Value = Capacity });
+        dstManager.AddComponentData(entity, new InventoryCapacity() { Value = DEFAULT_CAPACITY });
         dstManager.AddBuffer<InventoryItemReference>(entity);
 
         DynamicBuffer<StartingInventoryItem> startingInventory = dstManager.AddBuffer<StartingInventoryItem>(entity);
 
         foreach (ItemAndQuantity itemAndQuantity in StartingItems)
         {
-            if (startingInventory.Length >= Capacity)
+            if (startingInventory.Length >= DEFAULT_CAPACITY)
                 break;
 
             if (!itemAndQuantity.Item)
