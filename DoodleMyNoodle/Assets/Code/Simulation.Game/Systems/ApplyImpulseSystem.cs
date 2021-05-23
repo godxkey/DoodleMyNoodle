@@ -1,4 +1,5 @@
 ﻿using CCC.Fix2D;
+using System.Collections.Generic;
 using Unity.Entities;
 using static fixMath;
 using static Unity.Mathematics.math;
@@ -93,13 +94,14 @@ public class ApplyImpulseSystem : SimSystemBase
         }
     }
 
-    // TODO : enlever le footing c'est un component data sur la target du impulse
     private void HandleDirectImpulseRequests()
     {
         DynamicBuffer<DirectImpulseRequestData> directImpulseRequests = GetBuffer<DirectImpulseRequestData>(GetRequestSingleton());
 
         if (directImpulseRequests.Length > 0)
         {
+            List<Entity> EntityToClearFooting = new List<Entity>();
+
             foreach (DirectImpulseRequestData request in directImpulseRequests)
             {
                 if (!HasComponent<PhysicsVelocity>(request.Target))
@@ -113,9 +115,17 @@ public class ApplyImpulseSystem : SimSystemBase
                 PhysicsVelocity vel = GetComponent<PhysicsVelocity>(request.Target);
                 vel.Linear += request.Strength * (request.IgnoreMass ? 1 : (fix)mass.InverseMass);
                 SetComponent(request.Target, vel);
+
+                // remove footing to fix ladders
+                EntityToClearFooting.Add(request.Target);
             }
 
             directImpulseRequests.Clear();
+
+            foreach (Entity entity in EntityToClearFooting)
+            {
+                Accessor.RemoveComponent<NavAgentFootingState>(entity);
+            }
         }
     }
 }
