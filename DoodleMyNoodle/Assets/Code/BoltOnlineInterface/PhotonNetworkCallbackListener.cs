@@ -1,10 +1,10 @@
 ﻿using System;
-using Bolt;
+using Photon.Bolt;
 using UdpKit;
 
 namespace Internals.PhotonNetworkInterface
 {
-    public class PhotonNetworkCallbackListener : Bolt.GlobalEventListener
+    public class PhotonNetworkCallbackListener : GlobalEventListener
     {
         public PhotonNetworkInterface PhotonNetworkInterface;
 
@@ -13,7 +13,7 @@ namespace Internals.PhotonNetworkInterface
         public override void BoltStartBegin() => PhotonNetworkInterface.Event_BoltStartBegin();
         public override void BoltStartDone() => PhotonNetworkInterface.Event_BoltStartDone();
         public override void BoltStartFailed(UdpConnectionDisconnectReason disconnectReason) => PhotonNetworkInterface.Event_BoltStartFailed(disconnectReason);
-        public override void BoltShutdownBegin(AddCallback registerDoneCallback, UdpConnectionDisconnectReason disconnectReason)=> PhotonNetworkInterface.Event_BoltShutdownBegin(registerDoneCallback, disconnectReason);
+        public override void BoltShutdownBegin(AddCallback registerDoneCallback, UdpConnectionDisconnectReason disconnectReason) => PhotonNetworkInterface.Event_BoltShutdownBegin(registerDoneCallback, disconnectReason);
 
         public override void Connected(BoltConnection connection) => PhotonNetworkInterface.Event_Connected(connection);
         public override void Disconnected(BoltConnection connection) => PhotonNetworkInterface.Event_Disconnected(connection);
@@ -25,7 +25,7 @@ namespace Internals.PhotonNetworkInterface
 
         public override void SessionListUpdated(Map<Guid, UdpSession> sessionList) => PhotonNetworkInterface.Event_SessionListUpdated(sessionList);
         public override void SessionConnectFailed(UdpSession session, IProtocolToken token, UdpSessionError errorReason) => PhotonNetworkInterface.Event_SessionConnectFailed(session, token, errorReason);
-        public override void SessionCreated(UdpSession session) => PhotonNetworkInterface.Event_SessionCreated(session);
+        public override void SessionCreatedOrUpdated(UdpSession session) => PhotonNetworkInterface.Event_SessionCreatedOrUpdated(session);
         public override void SessionCreationFailed(UdpSession session, UdpSessionError errorReason) => PhotonNetworkInterface.Event_SessionCreationFailed(session, errorReason);
         public override void SessionConnected(UdpSession session, IProtocolToken token) => PhotonNetworkInterface.Event_SessionConnected(session, token);
 

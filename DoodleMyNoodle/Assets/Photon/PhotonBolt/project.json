@@ -1,0 +1,14 @@
+{
+  "$type": "Photon.Bolt.Compiler.Assets.BoltProject, bolt.compiler",
+  "Filters": [],
+  "Assets": [
+    {
+      "$type": "Photon.Bolt.Compiler.EventDefinition, bolt.compiler",
+      "Properties": [],
+      "Name": "BoltCommunicationEvent",
+      "Guid": "bf05141a-07de-4651-a3b1-0df243c68c23",
+      "Groups": []
+    }
+  ],
+  "ActiveGroup": "Everything"
+}

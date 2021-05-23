@@ -74,5 +74,77 @@ public abstract class NetworkInterface : IDisposable
     public abstract IStreamChannel GetStreamChannel(StreamChannelType channel);
 
     public virtual void Dispose() { }
+}
 
+public class NetworkInterfaceNone : NetworkInterface
+{
+    public override bool IsServer => false;
+    public override INetworkInterfaceSession ConnectedSessionInfo => throw new NotImplementedException();
+    public override ReadOnlyList<INetworkInterfaceConnection> Connections => throw new NotImplementedException();
+    public override ReadOnlyList<INetworkInterfaceSession> Sessions => throw new NotImplementedException();
+
+#pragma warning disable CS0067 // Naming Styles
+    public override event Action OnDisconnectedFromSession;
+    public override event Action OnShutdownBegin;
+    public override event Action<INetworkInterfaceConnection> OnDisconnect;
+    public override event Action<INetworkInterfaceConnection> OnConnect;
+    public override event Action OnSessionListUpdated;
+    public override event Action<byte[], IStreamChannel, INetworkInterfaceConnection> StreamDataReceived;
+    public override event StreamDataStartedDelegate StreamDataStarted;
+    public override event StreamDataProgressDelegate StreamDataProgress;
+    public override event StreamDataAbortedDelegate StreamDataAborted;
+#pragma warning restore CS0067 // Naming Styles
+
+    public override void ConnectToSession(INetworkInterfaceSession session, OperationResultDelegate onComplete = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void CreateSession(string sessionName, OperationResultDelegate onComplete = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void DisconnectFromSession(OperationResultDelegate onComplete = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void GetSessions(ref List<INetworkInterfaceSession> list)
+    {
+    }
+
+    public override IStreamChannel GetStreamChannel(StreamChannelType channel)
+    {
+        return null;
+    }
+
+    public override void LaunchClient(OperationResultDelegate onComplete = null)
+    {
+        onComplete(false, "Not implemented");
+    }
+
+    public override void LaunchServer(OperationResultDelegate onComplete = null)
+    {
+        onComplete(false, "Not implemented");
+    }
+
+    public override void SendMessage(INetworkInterfaceConnection connection, byte[] data, bool reliableAndOrdered)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void SetMessageReader(Action<INetworkInterfaceConnection, byte[]> messageReader)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Shutdown(OperationResultDelegate onComplete = null)
+    {
+        onComplete(true, "");
+    }
+
+    public override void Update()
+    {
+    }
 }
