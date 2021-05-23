@@ -80,9 +80,6 @@ public class GameActionMove : GameAction
             fix2 dest = Helpers.GetTileCenter(path[path.Length - 1]);
             dest += fix2(random.NextFix(fix(-0.075), fix(0.075)), 0);
 
-            if (!accessor.HasComponent<NavAgentFootingState>(context.InstigatorPawn))
-                accessor.SetOrAddComponent(context.InstigatorPawn, new NavAgentFootingState() { Value = NavAgentFooting.None });
-
             accessor.SetOrAddComponent(context.InstigatorPawn, new Destination() { Value = dest });
 
             return true;

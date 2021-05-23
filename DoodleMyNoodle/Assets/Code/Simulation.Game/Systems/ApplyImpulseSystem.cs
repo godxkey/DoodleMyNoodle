@@ -116,16 +116,10 @@ public class ApplyImpulseSystem : SimSystemBase
                 vel.Linear += request.Strength * (request.IgnoreMass ? 1 : (fix)mass.InverseMass);
                 SetComponent(request.Target, vel);
 
-                // remove footing to fix ladders
-                EntityToClearFooting.Add(request.Target);
+                SetComponent(request.Target, new NavAgentFootingState() { Value = NavAgentFooting.None });
             }
 
             directImpulseRequests.Clear();
-
-            foreach (Entity entity in EntityToClearFooting)
-            {
-                Accessor.RemoveComponent<NavAgentFootingState>(entity);
-            }
         }
     }
 }
