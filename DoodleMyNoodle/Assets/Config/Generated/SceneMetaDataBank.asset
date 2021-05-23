@@ -81,19 +81,15 @@ MonoBehaviour:
     Path: Assets/Scenes/Game/Scene Assets/Game Systems (dynamic).unity
     BuildIndex: 16
     AssetGuid: b9dc8cc8b12a9e74faa0ead59f7273b6
-  - Name: 
-    Path: 
-    BuildIndex: 17
-    AssetGuid: c962cccd513726f4897da359bfdbb6ce
   - Name: Gym_Interactables
     Path: Assets/Scenes/Levels/Scene Assets/Gym_Interactables.unity
-    BuildIndex: 18
+    BuildIndex: 17
     AssetGuid: a3aaad04249432c4d8bcd2f7adb6efef
   - Name: Gym_Surveys
     Path: Assets/Scenes/Levels/Scene Assets/Gym_Surveys.unity
-    BuildIndex: 19
+    BuildIndex: 18
     AssetGuid: 21959199b973fbd42853114d789a70ac
   - Name: Lvl_Prototype4
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype4.unity
-    BuildIndex: 20
+    BuildIndex: 19
     AssetGuid: de112d99d442a5342ba101a7fa9d56fa
