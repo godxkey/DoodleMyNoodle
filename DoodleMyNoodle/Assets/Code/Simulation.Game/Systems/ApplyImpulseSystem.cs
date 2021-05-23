@@ -93,6 +93,7 @@ public class ApplyImpulseSystem : SimSystemBase
         }
     }
 
+    // TODO : enlever le footing c'est un component data sur la target du impulse
     private void HandleDirectImpulseRequests()
     {
         DynamicBuffer<DirectImpulseRequestData> directImpulseRequests = GetBuffer<DirectImpulseRequestData>(GetRequestSingleton());

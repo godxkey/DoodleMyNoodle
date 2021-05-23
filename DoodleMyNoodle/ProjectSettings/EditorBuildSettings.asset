@@ -57,7 +57,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Game/Scene Assets/Game Systems (dynamic).unity
     guid: b9dc8cc8b12a9e74faa0ead59f7273b6
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Gym_MiniGames.unity
+    path: 
     guid: c962cccd513726f4897da359bfdbb6ce
   - enabled: 1
     path: Assets/Scenes/Levels/Scene Assets/Gym_Interactables.unity
@@ -65,4 +65,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/Scene Assets/Gym_Surveys.unity
     guid: 21959199b973fbd42853114d789a70ac
+  - enabled: 1
+    path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype4.unity
+    guid: de112d99d442a5342ba101a7fa9d56fa
   m_configObjects: {}
