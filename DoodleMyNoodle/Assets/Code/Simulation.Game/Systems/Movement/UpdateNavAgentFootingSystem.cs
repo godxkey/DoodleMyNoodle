@@ -17,11 +17,11 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
         Entities
             .ForEach((ref NavAgentFootingState footing, in FixTranslation fixTranslation) =>
             {
-                fix2 PosTileBeneath = new fix2(fixTranslation.Value.x, fixTranslation.Value.y - (fix)0.5);
+                fix2 posTileBeneath = new fix2(fixTranslation.Value.x, fixTranslation.Value.y - (fix)0.5);
 
-                if ((footing.Value == NavAgentFooting.Ladder)
-                || ((tileWorld.GetFlags(Helpers.GetTile(fixTranslation)).IsLadder)
-                && (tileWorld.GetFlags(Helpers.GetTile(PosTileBeneath)).IsTerrain)))
+                if (footing.Value == NavAgentFooting.Ladder
+                || (tileWorld.GetFlags(Helpers.GetTile(fixTranslation)).IsLadder
+                    && tileWorld.GetFlags(Helpers.GetTile(posTileBeneath)).IsTerrain))
                 {
                     footing.Value = NavAgentFooting.Ladder;
                 }
