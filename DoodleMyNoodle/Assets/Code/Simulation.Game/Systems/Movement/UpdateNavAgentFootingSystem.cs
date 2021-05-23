@@ -17,6 +17,7 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
         Entities
             .ForEach((ref NavAgentFootingState footing, in FixTranslation fixTranslation) =>
             {
+                // TODO : si t'étais ladder si on a les pieds au sol
                 if (tileWorld.GetFlags(Helpers.GetTile(fixTranslation)).IsLadder)
                 {
                     footing.Value = NavAgentFooting.Ladder;
