@@ -332,8 +332,8 @@ public class UpdateBruteAISystem : SimComponentSystem
 
     private bool Act_Attacking(Entity controller, Team team, ref BruteAIData agentData, ControlledEntity pawn)
     {
-        int2 attackTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
+        fix2 targetPos = EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget);
 
-        return CommonWrites.TryInputUseItem<GameActionMeleeAttack>(Accessor, controller, attackTile);
+        return CommonWrites.TryInputUseItem<GameActionMeleeAttack>(Accessor, controller, targetPos);
     }
 }
