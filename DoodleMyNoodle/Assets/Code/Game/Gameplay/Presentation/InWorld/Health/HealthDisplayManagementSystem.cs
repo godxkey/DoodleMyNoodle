@@ -29,17 +29,9 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
                 return;
             }
 
-            // Remove healthbar for self
-            if (pawnController == Cache.LocalController)
-            {
-                return;
-            }
-
-            fix healthRatio = (fix)entityHealth.Value / (fix)entityMaximumHealth.Value;
-
             Team CurrentPawnTeam = Cache.SimWorld.GetComponent<Team>(pawnController);
 
-            SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, healthRatio, localPlayerTeam.Value == CurrentPawnTeam.Value);
+            SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, entityMaximumHealth.Value, entityHealth.Value, localPlayerTeam.Value == CurrentPawnTeam.Value);
 
             healthBarAmount++;
         });
@@ -51,7 +43,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
         }
     }
 
-    private void SetOrAddHealthBar(int index, fix3 position, fix ratio, bool friendly)
+    private void SetOrAddHealthBar(int index, fix3 position, int maxHealth, int health, bool friendly)
     {
         GameObject currentHealthBar;
         if (_healthBarInstances.Count <= index)
@@ -64,9 +56,9 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
             currentHealthBar = _healthBarInstances[index];
         }
 
-        currentHealthBar.transform.position = (position + new fix3(0,fix(0.6f),fix(-0.1f))).ToUnityVec();
-        currentHealthBar.GetComponent<UIBarDisplay>()?.AjustDisplay((float)ratio);
-        currentHealthBar.GetComponent<UIBarDisplay>()?.ChangeColor(friendly ? Color.green : Color.red);
+        currentHealthBar.transform.position = (position + new fix3(0,fix(0.7f),0)).ToUnityVec();
+        currentHealthBar.GetComponent<UIBarDisplay>()?.SetMaxHealth(maxHealth);
+        currentHealthBar.GetComponent<UIBarDisplay>()?.SetHealth(health);
         currentHealthBar.SetActive(true);
     }
 }
