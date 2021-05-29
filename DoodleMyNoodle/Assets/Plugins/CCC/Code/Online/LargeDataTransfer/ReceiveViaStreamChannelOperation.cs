@@ -66,6 +66,16 @@ namespace CCC.Online.DataTransfer
 
             {
                 ////////////////////////////////////////////////////////////////////////////////////////
+                //      Hook into transfer events
+                ////////////////////////////////////////////////////////////////////////////////////////
+                _sessionInterface.NetworkInterface.StreamDataStarted += OnStreamDataStarted;
+                _sessionInterface.NetworkInterface.StreamDataProgress += OnStreamDataProgress;
+                _sessionInterface.NetworkInterface.StreamDataAborted += OnStreamDataAborted;
+                _sessionInterface.NetworkInterface.StreamDataReceived += OnStreamDataReceived;
+            }
+
+            {
+                ////////////////////////////////////////////////////////////////////////////////////////
                 //      Send 'Ready'
                 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -85,10 +95,6 @@ namespace CCC.Online.DataTransfer
                 //      Wait for stream data
                 ////////////////////////////////////////////////////////////////////////////////////////
                 CurrentState = TransferState.WaitingForCompletedStreamData;
-                _sessionInterface.NetworkInterface.StreamDataStarted += OnStreamDataStarted;
-                _sessionInterface.NetworkInterface.StreamDataProgress += OnStreamDataProgress;
-                _sessionInterface.NetworkInterface.StreamDataAborted += OnStreamDataAborted;
-                _sessionInterface.NetworkInterface.StreamDataReceived += OnStreamDataReceived;
 
                 while (!_streamDataReceived)
                 {
@@ -113,7 +119,7 @@ namespace CCC.Online.DataTransfer
         private void OnStreamDataStarted(INetworkInterfaceConnection connection, IStreamChannel channel, ulong streamID)
         {
             // if our id is unset and the connection and channel match, associate streamID
-            if(connection == _connection && channel.Type == StreamChannelType.LargeDataTransfer && _streamID == ulong.MaxValue)
+            if (connection == _connection && channel.Type == StreamChannelType.LargeDataTransfer && _streamID == ulong.MaxValue)
             {
                 _streamID = streamID;
             }
@@ -121,12 +127,12 @@ namespace CCC.Online.DataTransfer
 
         private void OnStreamDataProgress(INetworkInterfaceConnection connection, IStreamChannel channel, ulong streamID, float progress)
         {
-            if(streamID == _streamID)
+            if (streamID == _streamID)
             {
                 Progress = progress;
 
                 // send a message back to the uploader with the 'progress' of the large data transfer (needed because of a Bolt api limitation ...)
-                if(_nextProgressUpdateTime < Time.time)
+                if (_nextProgressUpdateTime < Time.time)
                 {
                     _nextProgressUpdateTime = Time.time + PROGRESS_UPDATE_INTERVAL;
 
@@ -137,7 +143,7 @@ namespace CCC.Online.DataTransfer
 
         private void OnStreamDataAborted(INetworkInterfaceConnection connection, IStreamChannel channel, ulong streamID)
         {
-            if(streamID == _streamID)
+            if (streamID == _streamID)
             {
                 WasCancelledByDestination = true;
                 TerminateWithNormalFailure("StreamData aborted");
@@ -162,7 +168,6 @@ namespace CCC.Online.DataTransfer
             base.OnTerminate();
 
             CurrentState = TransferState.Terminated;
-
 
             if (_sessionInterface.NetworkInterface != null)
             {
