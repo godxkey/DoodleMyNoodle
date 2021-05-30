@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DebugPanelClientSimController : DebugPanel
@@ -12,10 +13,13 @@ public class DebugPanelClientSimController : DebugPanel
 
     float[] _simTickQueueLengths = new float[60];
     int _simTickQueueLengthsIterator = 0;
-    float _averagedSimTickQueueLength = 0;
+    float _simTickQueueLengthAverage = 0;
 
     float[] _simTickDropperSpeeds = new float[60];
-    float _averagedSimTickDropperSpeed = 0;
+    float _simTickDropperSpeedAverage = 0;
+
+    float[] _simTickQueueMaxDurations = new float[60];
+    float _simTickQueueMaxDurationAverage = 0;
 
     DirtyValue<uint> _currentSimTick;
     bool[] _offsettedSimTicks = new bool[60];
@@ -28,30 +32,31 @@ public class DebugPanelClientSimController : DebugPanel
 
         _simTickQueueLengths[_simTickQueueLengthsIterator] = receiveTickSystem.SimTicksInQueue;
         _simTickDropperSpeeds[_simTickQueueLengthsIterator] = receiveTickSystem.CurrentSimPlayingSpeed;
+        _simTickQueueMaxDurations[_simTickQueueLengthsIterator] = receiveTickSystem.SimTickQueueMaxDuration;
         _simTickQueueLengthsIterator++;
         _simTickQueueLengthsIterator %= _simTickQueueLengths.Length;
 
         if (_simTickQueueLengthsIterator == 0)
         {
-            _averagedSimTickQueueLength = 0;
-            for (int i = 0; i < _simTickQueueLengths.Length; i++)
-            {
-                _averagedSimTickQueueLength += _simTickQueueLengths[i];
-            }
-            _averagedSimTickQueueLength /= _simTickQueueLengths.Length;
-
-
-            _averagedSimTickDropperSpeed = 0;
-            for (int i = 0; i < _simTickDropperSpeeds.Length; i++)
-            {
-                _averagedSimTickDropperSpeed += _simTickDropperSpeeds[i];
-            }
-            _averagedSimTickDropperSpeed /= _simTickDropperSpeeds.Length;
+            _simTickQueueLengthAverage = average(_simTickQueueLengths);
+            _simTickDropperSpeedAverage = average(_simTickDropperSpeeds);
+            _simTickQueueMaxDurationAverage = average(_simTickQueueMaxDurations);
         }
 
-        GUILayout.Label($"Average SimTick queue length (over 60 frames): {_averagedSimTickQueueLength:F3}");
-        GUILayout.Label($"Offsetted SimTicks (over 60 frames): {_totalOffsettedSimTicks}");
-        GUILayout.Label($"SimTick Dropper Speed (over 60 frames): {_averagedSimTickDropperSpeed}");
+        GUILayout.Label($"Average SimTick queue length (over 60 frames): {_simTickQueueLengthAverage:F3}");
+        GUILayout.Label($"SimTick queue max duration (over 60 frames): {_simTickQueueMaxDurationAverage:F4}");
+        GUILayout.Label($"SimTick Dropper Speed (over 60 frames): {_simTickDropperSpeedAverage}");
+
+        float average(float[] array)
+        {
+            float result = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                result += array[i];
+            }
+            result /= array.Length;
+            return result;
+        }
     }
 
     void OnFixedUpdate()

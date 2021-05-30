@@ -16,16 +16,20 @@ public static class SimulationConstants
     
     public static readonly float CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED = 3f;
 
+    // In theory, ticks should only stay in queue for this duration: SimTimeStep * ceil((TickRate / PacketsPerSeconds) - 1);
+    // 0.01667 * ceil(60/20 - 1)
+    // 0.01667 * ceil(3 - 1)
+    // 0.01667 * 2
+    // 0.03333
+    // But in practice, the packet rate varies a lot so ticks should stay in queue a bit longer to ensure a smoother playback
+    public static readonly float CLIENT_SIM_TICK_QUEUE_DURATION_MIN = 0.03333f; // minimum queue buffer duration
+    public static readonly float CLIENT_SIM_TICK_QUEUE_DURATION_MAX = 0.20000f; // maxiumu queue buffer duration
+    public static readonly float CLIENT_SIM_TICK_QUEUE_DURATION_ADJUSTMENT_DELTA = 0.005f; // how much should we adjust the queue buffer duration, per frame
 
-    /// <summary>
-    /// AUGMENTER cette variable augmente la stabilité du 'playback' de la simulation. Ce qui veux dire qu'elle parait plus fluide
-    /// <para/>
-    /// DIMINUER cette variable augmente la 'responsiveness' de la simulation. Les ticks reçu par le serveur passe moins de temps en file d'attente
-    /// </summary>
-    public static readonly float CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE = 0.2f; // devrais être entre 0.03333 et genre 0.1
-        //(float)SimulationConstants.TIME_STEP * Mathf.Ceil(((float)SimulationConstants.TICK_RATE / ONLINE_PACKETS_PER_SECOND) - 1);
-        // 0.01667 * ceil(60/20 - 1)
-        // 0.01667 * ceil(3 - 1)
-        // 0.01667 * 2
-        // 0.03333
+    // How many ticks do we use for interval sampling.
+    public static readonly int CLIENT_SIM_TICK_QUEUE_DURATION_SAMPLE_SIZE = 120; 
+
+    // The longest realistic interval between two packets. 
+    // Beyond that, we consider it a server lag spike and cap the interval to prevent over-adjustment of the buffer duration.
+    public static readonly double CLIENT_SIM_TICK_QUEUE_DURATION_MAX_CONSIDERED_INTERVAL = 0.4d;
 }

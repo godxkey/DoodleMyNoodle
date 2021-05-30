@@ -14,19 +14,25 @@ namespace SimulationControl
     {
         public int SimTicksInQueue => _simTicksDropper.QueueLength;
         public float CurrentSimPlayingSpeed => _simTicksDropper.Speed;
+        public float SimTickQueueMaxDuration => _simTicksDropper.MaximalExpectedTimeInQueue;
 
         private SessionInterface _session;
 
         private TickSimulationSystem _tickSystem;
-
         private SelfRegulatingDropper<NetMessageSimTick> _simTicksDropper = new SelfRegulatingDropper<NetMessageSimTick>(
                 maximalCatchUpSpeed: SimulationConstants.CLIENT_SIM_TICK_MAX_CATCH_UP_SPEED,
-                maximalExpectedTimeInQueue: SimulationConstants.CLIENT_SIM_TICK_MAX_EXPECTED_TIME_IN_QUEUE);
+                maximalExpectedTimeInQueue: SimulationConstants.CLIENT_SIM_TICK_QUEUE_DURATION_MIN);
 
         private bool _shelveTicks = false;
+        private List<NetMessageSimTick> _shelvedSimTicks = new List<NetMessageSimTick>(); // used while we are in sync process
 
-        // used while we are in sync process
-        private List<NetMessageSimTick> _shelvedSimTicks = new List<NetMessageSimTick>();
+        private double _lastTickReceiveTime;
+        private CircularBuffer<double> _tickReceiveIntervals = new CircularBuffer<double>(SimulationConstants.CLIENT_SIM_TICK_QUEUE_DURATION_SAMPLE_SIZE);
+
+        //private SpaceTimeDebugger.Clock _debugClock;
+        //private SpaceTimeDebugger.Stream _debugStreamQueueLength;
+        //private SpaceTimeDebugger.Stream _debugStreamTicksPerFrame;
+        //private SpaceTimeDebugger.Stream _debugStreamMaxQueueDuration;
 
         protected override void OnCreate()
         {
@@ -43,12 +49,18 @@ namespace SimulationControl
             _session.RegisterNetMessageReceiver<NetMessageSimTick>(OnNetMessageSimTick);
 
             _tickSystem = World.GetOrCreateSystem<TickSimulationSystem>();
+
+            //_debugStreamQueueLength = SpaceTimeDebugger.CreateStream("Sim Tick Queue", Color.yellow);
+            //_debugStreamTicksPerFrame = SpaceTimeDebugger.CreateStream("Sim Ticks Per Frame", Color.magenta);
+            //_debugStreamMaxQueueDuration = SpaceTimeDebugger.CreateStream("Sim Tick Queue Max Duration", Color.cyan);
         }
 
         protected override void OnDestroy()
         {
             _session.UnregisterNetMessageReceiver<NetMessageSimTick>(OnNetMessageSimTick);
-
+            //_debugStreamQueueLength.Dispose();
+            //_debugStreamTicksPerFrame.Dispose();
+            //_debugStreamMaxQueueDuration.Dispose();
             base.OnDestroy();
         }
 
@@ -65,6 +77,12 @@ namespace SimulationControl
                 // The server has sent a tick message
                 Log.Info(SimulationIO.LogChannel, $"Receiving tick {tick.TickData.ExpectedNewTickId}. Queueing for execution.");
                 _simTicksDropper.Enqueue(tick, (float)SimulationConstants.TIME_STEP);
+
+                double time = Time.ElapsedTime;
+                double receiveInterval = Math.Min(time - _lastTickReceiveTime, SimulationConstants.CLIENT_SIM_TICK_QUEUE_DURATION_MAX_CONSIDERED_INTERVAL);
+
+                _tickReceiveIntervals.PushBack(receiveInterval);
+                _lastTickReceiveTime = time;
             }
         }
 
@@ -96,12 +114,33 @@ namespace SimulationControl
 
         protected override void OnUpdate()
         {
+            double maxInterval = GetMaxRecentTickInterval();
+            _simTicksDropper.MaximalExpectedTimeInQueue = (float)(maxInterval - (1f / SimulationConstants.TICK_RATE_F));
+
+            //_debugStreamMaxQueueDuration.Log(_simTicksDropper.MaximalExpectedTimeInQueue);
+            //_debugStreamQueueLength.Log(_simTicksDropper.QueueLength);
+
             _simTicksDropper.Update(Time.DeltaTime);
+
+            int ticksThisFrame = 0;
 
             while (_tickSystem.CanTick && _simTicksDropper.TryDrop(out NetMessageSimTick tick))
             {
+                ticksThisFrame++;
                 _tickSystem.AvailableTicks.Add(tick.TickData);
             }
+
+            //_debugStreamTicksPerFrame.Log(ticksThisFrame);
+        }
+
+        private double GetMaxRecentTickInterval()
+        {
+            double max = 0;
+            foreach (var interval in _tickReceiveIntervals)
+            {
+                max = Math.Max(max, interval);
+            }
+            return max;
         }
     }
 

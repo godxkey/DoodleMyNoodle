@@ -47,7 +47,7 @@ public class DebugGraph
 
     private static List<LoggedCurve> s_loggedCurves = new List<LoggedCurve>();
     private static List<LoggedTime> s_loggedTimes = new List<LoggedTime>();
-    private static List<ColoredCurve> s_curveCache = new List<ColoredCurve>();
+    private static List<GraphDrawer.Curve> s_curveCache = new List<GraphDrawer.Curve>();
 
     private static void Init()
     {
@@ -55,14 +55,14 @@ public class DebugGraph
         s_graphDrawer.AutoZoomHorizontal = false;
     }
 
-    [Updater.StaticUpdateMethod(UpdateType.Update)]
-    private static void OnUpdate()
-    {
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            s_displayGraph = !s_displayGraph;
-        }
-    }
+    //[Updater.StaticUpdateMethod(UpdateType.Update)]
+    //private static void OnUpdate()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.F3))
+    //    {
+    //        s_displayGraph = !s_displayGraph;
+    //    }
+    //}
 
     [Updater.StaticUpdateMethod(UpdateType.GUI)]
     private static void OnGUI()
@@ -71,10 +71,10 @@ public class DebugGraph
             return;
 
         int curveI = 0;
-        ColoredCurve GetCurve()
+        GraphDrawer.Curve GetCurve()
         {
             if (curveI == s_curveCache.Count)
-                s_curveCache.Add(new ColoredCurve());
+                s_curveCache.Add(new GraphDrawer.Curve());
             return s_curveCache[curveI];
         }
 
@@ -101,7 +101,7 @@ public class DebugGraph
             }
             else
             {
-                ColoredCurve coloredCurve = GetCurve();
+                GraphDrawer.Curve coloredCurve = GetCurve();
 
                 coloredCurve.Positions.Clear();
                 coloredCurve.Positions.AddRange(loggedCurve.Points);

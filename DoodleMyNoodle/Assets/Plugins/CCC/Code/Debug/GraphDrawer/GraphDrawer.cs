@@ -6,13 +6,13 @@ using CCC.InspectorDisplay;
 namespace CCC.Debug
 {
     [Serializable]
-    public class GraphDrawer
+    public partial class GraphDrawer
     {
         private const string SHADER_NAME = "CCC/Internal/GraphDrawer";
         private static Material s_material;
 
-        public List<ColoredCurve> Curves = new List<ColoredCurve>();
-        public List<ColoredPoint> Points = new List<ColoredPoint>();
+        public List<Curve> Curves = new List<Curve>();
+        public List<Point> Points = new List<Point>();
 
         public Rect ValueDisplayRect;
         public Rect ScreenDisplayRect;
@@ -20,10 +20,9 @@ namespace CCC.Debug
         public bool AutoZoomHorizontal = true;
         public bool AutoZoomVertical = true;
 
-        [ShowIf(nameof(AutoSizeAny))]
-        public float AutoZoomPadding = 15;
-
         private bool AutoSizeAny => AutoZoomVertical | AutoZoomHorizontal;
+
+        public const float MIN_DISPLAY_RANGE = 0.001f;
 
         public GraphDrawer()
         {
@@ -38,7 +37,7 @@ namespace CCC.Debug
 
             if (AutoSizeAny)
             {
-                Rect dataValueRect = CalculateValueRectFromData(AutoZoomPadding);
+                Rect dataValueRect = CalculateValueRectFromData();
                 if (AutoZoomHorizontal)
                 {
                     ValueDisplayRect.xMin = dataValueRect.xMin;
@@ -70,8 +69,8 @@ namespace CCC.Debug
             // Draw points
             for (int i = 0; i < Points.Count; i++)
             {
-                GL.Color(Points[i].color);
-                AddCross_GS(Points[i].position);
+                GL.Color(Points[i].Color);
+                AddCross_GS(Points[i].Position);
             }
             GL.End();
 
@@ -80,6 +79,7 @@ namespace CCC.Debug
 
         Rect CalculateValueRectFromData()
         {
+
             Vector2 min = new Vector2(int.MaxValue, int.MaxValue);
             Vector2 max = new Vector2(int.MinValue, int.MinValue);
 
@@ -96,6 +96,14 @@ namespace CCC.Debug
                     max.y = p.y;
             }
 
+            void ensureMinimalRange(float rangeMin, ref float rangeMax)
+            {
+                float d = rangeMax - rangeMin;
+                float sign = Mathf.Sign(d);
+                if (sign * d < MIN_DISPLAY_RANGE)
+                    rangeMax = rangeMin + (MIN_DISPLAY_RANGE * sign);
+            }
+
             // Check curves
             for (int i = 0; i < Curves.Count; i++)
                 for (int j = 0; j < Curves[i].Positions.Count; j++)
@@ -103,7 +111,7 @@ namespace CCC.Debug
 
             // Check points
             for (int i = 0; i < Points.Count; i++)
-                considerPoint(Points[i].position);
+                considerPoint(Points[i].Position);
 
             // Si ya aucun point, on met des valeurs par défaut
             if (max.x == int.MinValue)
@@ -112,23 +120,11 @@ namespace CCC.Debug
                 max = Vector2.one;
             }
 
+            // ensure a minimum range of MIN_DISPLAY_RANGE
+            ensureMinimalRange(min.x, ref max.x);
+            ensureMinimalRange(min.y, ref max.y);
+
             return new Rect(position: min, size: max - min);
-        }
-
-        Rect CalculateValueRectFromData(float screenSpacePadding)
-        {
-            Rect valueRect = CalculateValueRectFromData();
-
-            // Convert screen-space padding to value-space padding
-            float verticalValuePadding = screenSpacePadding * (valueRect.height / ScreenDisplayRect.height);
-            float horizontalValuePadding = screenSpacePadding * (valueRect.width / ScreenDisplayRect.width);
-
-            valueRect.xMin -= horizontalValuePadding;
-            valueRect.yMin -= verticalValuePadding;
-            valueRect.xMax += horizontalValuePadding;
-            valueRect.yMax += verticalValuePadding;
-
-            return valueRect;
         }
 
         /// <summary>
@@ -162,7 +158,7 @@ namespace CCC.Debug
         {
             return new Vector2(
                 (point.x - ValueDisplayRect.xMin) / ValueDisplayRect.width * ScreenDisplayRect.width + ScreenDisplayRect.x,
-                (point.y - ValueDisplayRect.yMin) / ValueDisplayRect.height * ScreenDisplayRect.height + (Screen.height - ScreenDisplayRect.yMax));
+                (point.y - ValueDisplayRect.yMin) / ValueDisplayRect.height * ScreenDisplayRect.height + ScreenDisplayRect.y);//(Screen.height - ScreenDisplayRect.yMax));
         }
 
         private static Material GetMaterial()
