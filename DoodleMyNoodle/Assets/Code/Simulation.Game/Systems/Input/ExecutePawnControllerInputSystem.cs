@@ -396,6 +396,11 @@ internal partial class CommonWrites
         return TryInputUseItem<T>(accessor, entityController, new GameActionParameterTile.Data(tile));
     }
 
+    public static bool TryInputUseItem<T>(ISimWorldReadWriteAccessor accessor, Entity entityController, fix2 pos) where T : GameAction
+    {
+        return TryInputUseItem<T>(accessor, entityController, new GameActionParameterPosition.Data(pos));
+    }
+
     public static bool TryInputUseItem<T>(ISimWorldReadWriteAccessor accessor, Entity entityController, params GameAction.ParameterData[] arguments) where T : GameAction
     {
         if (!accessor.TryGetComponent(entityController, out ControlledEntity pawn))

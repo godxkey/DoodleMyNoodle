@@ -246,7 +246,7 @@ public abstract class GameAction
         // reduce instigator AP
         if (accessor.TryGetComponent(context.Item, out GameActionSettingAPCost itemActionPointCost))
         {
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, itemActionPointCost.Value);
+            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -itemActionPointCost.Value);
         }
 
         // reduce instigator Health

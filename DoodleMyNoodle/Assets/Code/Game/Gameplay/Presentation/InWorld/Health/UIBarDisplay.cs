@@ -3,19 +3,52 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIBarDisplay : GameMonoBehaviour
 {
-    public GameObject ValueBar;
-    public SpriteRenderer BarDisplay;
+    [SerializeField] private GameObject EmptyHearthPrefab;
+    [SerializeField] private Transform HearthContainer;
 
-    public void AjustDisplay(float ratio)
+    [SerializeField] private Sprite EmptyHearth;
+    [SerializeField] private Sprite FilledHearth;
+
+    private List<GameObject> SpawnedHearth = new List<GameObject>();
+
+    public void SetMaxHealth(int amount)
     {
-        ValueBar.transform.localScale = new Vector3(Mathf.Lerp(0, 1, ratio), 1, 1);
+        while (SpawnedHearth.Count != amount)
+        {
+            if (SpawnedHearth.Count < amount)
+            {
+                SpawnedHearth.Add(Instantiate(EmptyHearthPrefab, HearthContainer));
+            }
+            else if (SpawnedHearth.Count > amount)
+            {
+                Destroy(SpawnedHearth[SpawnedHearth.Count - 1]);
+                SpawnedHearth.RemoveAt(SpawnedHearth.Count - 1);
+            }
+        }
     }
 
-    public void ChangeColor(Color newColor)
+    public void SetHealth(int amount)
     {
-        BarDisplay.color = newColor;
+        for (int i = 0; i < amount; i++)
+        {
+            Image Image = SpawnedHearth[i].GetComponent<Image>();
+            if (Image != null)
+            {
+                Image.sprite = FilledHearth;
+            }
+        }
+
+        for (int i = amount; i < SpawnedHearth.Count; i++)
+        {
+            Image Image = SpawnedHearth[i].GetComponent<Image>();
+            if (Image != null)
+            {
+                Image.sprite = EmptyHearth;
+            }
+        }
     }
 }
