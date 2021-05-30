@@ -68,28 +68,10 @@ public class GameActionDashAttack : GameAction
                     CommonReads.Physics.OverlapAabb(accessor, min, max, entityToDamage, ignoreEntity: context.InstigatorPawn);
                 }
             }
+            entityToDamage.RemoveDuplicates();
 
             // set destination
             accessor.SetOrAddComponent(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(path[path.Length - 1]) });
-
-            List<int> EntitiesIndexToRemove = new List<int>();
-            for (int i = 0; i < entityToDamage.Length; i++)
-            {
-                Entity currentEntity = entityToDamage[i];
-
-                for (int j = i + 1; j < entityToDamage.Length; j++)
-                {
-                    if ((currentEntity == entityToDamage[j]) && (!EntitiesIndexToRemove.Contains(j)))
-                    {
-                        EntitiesIndexToRemove.Add(j);
-                    }
-                }
-            }
-
-            for (int i = 0; i < EntitiesIndexToRemove.Count; i++)
-            {
-                entityToDamage.RemoveAt(EntitiesIndexToRemove[i]);
-            }
 
             CommonWrites.RequestDamage(accessor, context.InstigatorPawn, entityToDamage.AsArray(), damage);
 

@@ -19,15 +19,15 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
             {
                 fix2 posTileBeneath = new fix2(fixTranslation.Value.x, fixTranslation.Value.y - (fix)0.5);
 
-                if (footing.Value == NavAgentFooting.Ladder
-                || (tileWorld.GetFlags(Helpers.GetTile(fixTranslation)).IsLadder
-                    && tileWorld.GetFlags(Helpers.GetTile(posTileBeneath)).IsTerrain))
+                // IF on ladder && (already has footing on ladder || over terrain)
+                if (tileWorld.GetFlags(Helpers.GetTile(fixTranslation)).IsLadder
+                    && (footing.Value == NavAgentFooting.Ladder || tileWorld.GetFlags(Helpers.GetTile(posTileBeneath)).IsTerrain))
                 {
                     footing.Value = NavAgentFooting.Ladder;
                 }
                 else
                 {
-                    // TODO
+                    // TODO: use footing 'Ground'
                     footing.Value = NavAgentFooting.None;
                 }
             }).Run();

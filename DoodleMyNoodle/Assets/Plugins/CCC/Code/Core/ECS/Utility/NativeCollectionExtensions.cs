@@ -15,6 +15,26 @@ public static class NativeCollectionExtensions
         return false;
     }
 
+    public static int RemoveDuplicates<T>(this NativeList<T> list) where T : struct, IEquatable<T>
+    {
+        int removeCount = 0;
+        for (int i = 0; i < list.Length; i++)
+        {
+            T current = list[i];
+
+            for (int r = list.Length - 1; r > i; r--)
+            {
+                if (current.Equals(list[r]))
+                {
+                    list.RemoveAt(r);
+                    removeCount++;
+                }
+            }
+        }
+
+        return removeCount;
+    }
+
     public static void SetOrAdd<TKey, TValue>(this NativeHashMap<TKey, TValue> nativeHashMap, TKey key, TValue value)
         where TKey : struct, IEquatable<TKey>
         where TValue : struct
