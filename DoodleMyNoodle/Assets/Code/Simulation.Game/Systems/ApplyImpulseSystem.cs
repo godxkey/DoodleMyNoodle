@@ -100,8 +100,6 @@ public class ApplyImpulseSystem : SimSystemBase
 
         if (directImpulseRequests.Length > 0)
         {
-            List<Entity> EntityToClearFooting = new List<Entity>();
-
             foreach (DirectImpulseRequestData request in directImpulseRequests)
             {
                 if (!HasComponent<PhysicsVelocity>(request.Target))
@@ -116,7 +114,10 @@ public class ApplyImpulseSystem : SimSystemBase
                 vel.Linear += request.Strength * (request.IgnoreMass ? 1 : (fix)mass.InverseMass);
                 SetComponent(request.Target, vel);
 
-                SetComponent(request.Target, new NavAgentFootingState() { Value = NavAgentFooting.None });
+                if (HasComponent<NavAgentFootingState>(request.Target))
+                {
+                    SetComponent(request.Target, new NavAgentFootingState() { Value = NavAgentFooting.None });
+                }
             }
 
             directImpulseRequests.Clear();
