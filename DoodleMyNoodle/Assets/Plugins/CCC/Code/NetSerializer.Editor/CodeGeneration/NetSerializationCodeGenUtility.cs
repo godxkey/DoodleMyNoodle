@@ -83,7 +83,7 @@ public static class NetSerializationCodeGenUtility
     {
         return type.GetCustomAttributes(typeof(NotNetSerializedAttribute), false).Length != 0;
     }
-    public static bool ShouldIgnoreCodeGeneration(FieldInfo fieldInfo)
+    public static bool ShouldIgnoreCodeGeneration(FieldInfo fieldInfo, Type containerType)
     {
         if (fieldInfo.GetCustomAttributes(typeof(NotNetSerializedAttribute), false).Length != 0)
         {
@@ -93,7 +93,7 @@ public static class NetSerializationCodeGenUtility
         {
             if (!fieldInfo.IsPublic)
             {
-                Debug.LogWarning("The " + fieldInfo.Name + " field is not public and will be ignored in net serialization." +
+                Debug.LogWarning($"The field '{fieldInfo.Name}' in {containerType.GetPrettyFullName()} is not public and will be ignored in net serialization." +
                     " If it is intended, please add [NotNetSerialized] to the field.");
                 return true;
             }

@@ -13,7 +13,7 @@ public static partial class NetSerializerCodeGenerator
             NetSerializableAttribute serializableAttribute = type.GetCustomAttribute<NetSerializableAttribute>();
 
             List<FieldInfo> fields = new List<FieldInfo>(type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public));
-            fields.RemoveAll((f) => NetSerializationCodeGenUtility.ShouldIgnoreCodeGeneration(f));
+            fields.RemoveAll((f) => NetSerializationCodeGenUtility.ShouldIgnoreCodeGeneration(f, type));
 
             string typeFullName = type.GetPrettyFullName();
             Type baseClass = type.BaseType == typeof(object) || type.BaseType == typeof(ValueType) ? null : type.BaseType;

@@ -27,11 +27,18 @@ namespace Sim.Operations
 
         protected override IEnumerator ExecuteRoutine()
         {
-            if (_world is SimulationWorld simWorld && simWorld.GetLastedTickIdFromEntity() != s_CachedSerializationTickId)
+            Log.Info("Serialize: " + ((SimulationWorld)_world).GetLastTickIdFromEntity());
+            if (_world is SimulationWorld simWorld && simWorld.GetLastTickIdFromEntity() != s_CachedSerializationTickId)
             {
                 s_CachedSerializationOp = new SimSerializationOperation(_world);
                 s_CachedSerializationOp.Execute();
-                s_CachedSerializationTickId = simWorld.GetLastedTickIdFromEntity();
+                s_CachedSerializationTickId = simWorld.GetLastTickIdFromEntity();
+            Log.Info("New Op");
+            }
+            else
+            {
+                Log.Info("Use cache");
+
             }
 
             if (s_CachedSerializationOp.IsRunning)

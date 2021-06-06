@@ -26,7 +26,7 @@ public class GameActionParameterEntity
     {
         public fix2 EntityPos;
 
-        // NON SERIALIZED
+        [field: NotNetSerialized]
         public Entity Entity { get; set; }
 
         public Data() { }

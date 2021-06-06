@@ -1,4 +1,6 @@
-﻿public class Crc64
+﻿using System.Runtime.CompilerServices;
+
+public class Crc64
 {
     private static readonly ulong[] Table = {
             0x0000000000000000, 0x7ad870c830358979,
@@ -131,13 +133,26 @@
             0x536fa08fdfd90e51, 0x29b7d047efec8728,
         };
 
-    public static ulong Compute(byte[] s, ulong crc = 0)
+    public static unsafe ulong Compute(void* data, int byteLength, ulong crc = 0)
     {
-        for (int j = 0; j < s.Length; j++)
+        byte* bytes = (byte*)data;
+
+        for (int j = 0; j < byteLength; j++)
         {
-            crc = Crc64.Table[(byte)(crc ^ s[j])] ^ (crc >> 8);
+            crc = Crc64.Table[(byte)(crc ^ bytes[j])] ^ (crc >> 8);
         }
 
         return crc;
+    }
+
+    public static ulong Compute(byte[] bytes, ulong crc = 0)
+    {
+        unsafe
+        {
+            fixed (byte* p = bytes)
+            {
+                return Compute(p, bytes.Length, crc);
+            }
+        }
     }
 }

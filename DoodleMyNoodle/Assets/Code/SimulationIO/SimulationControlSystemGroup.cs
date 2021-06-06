@@ -55,7 +55,7 @@ namespace SimulationControl
             ManualCreateAndAddSystem<SubmitSimulationInputSystem>();
             ManualCreateAndAddSystem<LoadSimulationSceneSystem>();
             ManualCreateAndAddSystem<SaveAndLoadSimulationSystem>();
-
+            ManualCreateAndAddSystem<ChecksumSystem>();
 
             if (IsMaster)
             {
@@ -74,6 +74,7 @@ namespace SimulationControl
                 ManualCreateAndAddSystem<SendSimulationTickSystem>();
                 ManualCreateAndAddSystem<ReceiveSimulationInputSystem>();
             }
+                ManualCreateAndAddSystem<RequestChecksumSystem>(); // todo: move back to server
 
 
 #if UNITY_EDITOR
