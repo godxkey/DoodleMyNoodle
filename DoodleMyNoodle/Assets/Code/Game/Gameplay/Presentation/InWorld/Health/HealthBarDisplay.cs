@@ -5,32 +5,34 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.Serialization;
 
 public class HealthBarDisplay : GameMonoBehaviour
 {
-    [SerializeField] private GameObject EmptyHearthPrefab;
-    [SerializeField] private Transform HearthContainer;
+    [SerializeField] private GameObject _emptyHearthPrefab = null;
+    [SerializeField] private Transform _hearthContainer = null;
 
-    [SerializeField] private Sprite EmptyHearth;
-    [SerializeField] private Sprite FilledHearth;
+    [SerializeField] private Sprite _emptyHearth = null;
+    [SerializeField] private Sprite _filledHearth = null;
 
-    [SerializeField] private CanvasGroup CanvasGroup;
-    [SerializeField] private float CanvasFadeSpeed = 0.1f;
+    [SerializeField] private CanvasGroup _canvasGroup = null;
+    [SerializeField] private float _canvasFadeSpeed = 0.1f;
 
-    private List<GameObject> SpawnedHearth = new List<GameObject>();
+    private List<GameObject> _spawnedHearth = new List<GameObject>();
+    private float _fadeDelayTimer;
 
     public void SetMaxHealth(int amount)
     {
-        while (SpawnedHearth.Count != amount)
+        while (_spawnedHearth.Count != amount)
         {
-            if (SpawnedHearth.Count < amount)
+            if (_spawnedHearth.Count < amount)
             {
-                SpawnedHearth.Add(Instantiate(EmptyHearthPrefab, HearthContainer));
+                _spawnedHearth.Add(Instantiate(_emptyHearthPrefab, _hearthContainer));
             }
-            else if (SpawnedHearth.Count > amount)
+            else if (_spawnedHearth.Count > amount)
             {
-                Destroy(SpawnedHearth[SpawnedHearth.Count - 1]);
-                SpawnedHearth.RemoveAt(SpawnedHearth.Count - 1);
+                Destroy(_spawnedHearth[_spawnedHearth.Count - 1]);
+                _spawnedHearth.RemoveAt(_spawnedHearth.Count - 1);
             }
         }
     }
@@ -39,32 +41,34 @@ public class HealthBarDisplay : GameMonoBehaviour
     {
         for (int i = 0; i < amount; i++)
         {
-            Image Image = SpawnedHearth[i].GetComponent<Image>();
-            if (Image != null)
+            if (_spawnedHearth[i].TryGetComponent(out Image image))
             {
-                Image.sprite = FilledHearth;
+                image.sprite = _filledHearth;
             }
         }
 
-        for (int i = amount; i < SpawnedHearth.Count; i++)
+        for (int i = amount; i < _spawnedHearth.Count; i++)
         {
-            Image Image = SpawnedHearth[i].GetComponent<Image>();
-            if (Image != null)
+            if (_spawnedHearth[i].TryGetComponent(out Image image))
             {
-                Image.sprite = EmptyHearth;
+                image.sprite = _emptyHearth;
             }
         }
     }
 
     private void Update()
     {
-        CanvasGroup.alpha -= (Time.deltaTime * CanvasFadeSpeed);
+        _fadeDelayTimer -= Time.deltaTime;
 
-
+        if (_fadeDelayTimer <= 0)
+        {
+            _canvasGroup.alpha -= (Time.deltaTime * _canvasFadeSpeed);
+        }
     }
 
-    public void ForceDisplay()
+    public void Show(float fadeDelay)
     {
-        CanvasGroup.alpha = 1;
+        _canvasGroup.alpha = 1;
+        _fadeDelayTimer = Mathf.Max(fadeDelay, _fadeDelayTimer);
     }
 }

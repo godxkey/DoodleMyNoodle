@@ -225,10 +225,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10cf6211772ce64498ee96daba76641d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EmptyHearthPrefab: {fileID: 8991297770476160728, guid: 9d4adf175b807c848994aea3c02c5e5c,
+  _emptyHearthPrefab: {fileID: 8991297770476160728, guid: 9d4adf175b807c848994aea3c02c5e5c,
     type: 3}
-  HearthContainer: {fileID: 6661507625212345112}
-  EmptyHearth: {fileID: 21300000, guid: 776061e11ab2faf4a88a24e2aa03f203, type: 3}
-  FilledHearth: {fileID: 21300000, guid: d2fb763feeada0e449754d62ea1c9b70, type: 3}
-  CanvasGroup: {fileID: 3469271791465091720}
-  CanvasFadeDuration: 1
+  _hearthContainer: {fileID: 6661507625212345112}
+  _emptyHearth: {fileID: 21300000, guid: 776061e11ab2faf4a88a24e2aa03f203, type: 3}
+  _filledHearth: {fileID: 21300000, guid: d2fb763feeada0e449754d62ea1c9b70, type: 3}
+  _canvasGroup: {fileID: 3469271791465091720}
+  _canvasFadeSpeed: 4
+  _canvasFadeDelay: 0.35
