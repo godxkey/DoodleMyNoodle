@@ -61,6 +61,16 @@ public class GameActionThrow : GameAction
         return false;
     }
 
+    private fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, Entity projectile, Entity instigator, fix2 direction, fix extraDistance)
+    {
+        fix projectileRadius = CommonReads.GetActorRadius(accessor, projectile);
+        fix instigatorRadius = CommonReads.GetActorRadius(accessor, instigator);
+
+        return direction * (instigatorRadius + projectileRadius + (fix)0.05f + extraDistance);
+    }
+
+
+    #region Used by presentation
     // used by presentation
     public fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, UseContext context, fix2 direction)
     {
@@ -70,23 +80,12 @@ public class GameActionThrow : GameAction
         return GetSpawnPosOffset(accessor, settingsPrefab.EntityPrefab, context.InstigatorPawn, direction, settingsThrow.SpawnExtraDistance);
     }
 
-    private fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, Entity projectile, Entity instigator, fix2 direction, fix extraDistance)
+    // used by presentation
+    public fix GetProjectileRadius(ISimWorldReadAccessor accessor, UseContext context)
     {
-        fix projectileRadius = GetActorRadius(accessor, projectile);
-        fix instigatorRadius = GetActorRadius(accessor, instigator);
+        GameActionSettingEntityReference settingsPrefab = accessor.GetComponent<GameActionSettingEntityReference>(context.Item);
 
-        return direction * (instigatorRadius + projectileRadius + (fix)0.05f + extraDistance);
+        return CommonReads.GetActorRadius(accessor, settingsPrefab.EntityPrefab);
     }
-
-    private static fix GetActorRadius(ISimWorldReadAccessor accessor, Entity projectileInstance)
-    {
-        if (accessor.TryGetComponent(projectileInstance, out PhysicsColliderBlob colliderBlob) && colliderBlob.Collider.IsCreated)
-        {
-            return (fix)colliderBlob.Collider.Value.Radius;
-        }
-        else
-        {
-            return 1;
-        }
-    }
+    #endregion
 }

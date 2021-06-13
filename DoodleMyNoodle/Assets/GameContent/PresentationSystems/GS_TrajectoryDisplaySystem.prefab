@@ -56,6 +56,9 @@ MonoBehaviour:
   _pointFrequencySpeedMultiplier: 0.7
   _pointFrequencyGravScaleMultiplier: 6
   _pointCap: 400
+  _basePointAlpha: 0.75
+  _lineRendererPrefab: {fileID: 1008013025557578546, guid: d1894d85aa1fd504aa295f9efe166bb3,
+    type: 3}
 --- !u!1 &7269118276529583902
 GameObject:
   m_ObjectHideFlags: 0

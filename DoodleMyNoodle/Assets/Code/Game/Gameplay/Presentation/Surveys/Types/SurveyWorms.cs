@@ -104,9 +104,10 @@ public class SurveyWorms : SurveyBaseController
         {
             // trajectory
             Vector2 startOffset = Vector2.zero;
-            if (PresentationHelpers.Surveys.TryGetThrowTrajectoryStartOffset(Cache, CurrentContext.UseContext, _dir, out Vector2 offset))
+            if (PresentationHelpers.Surveys.GetItemTrajectorySettings(Cache, CurrentContext.UseContext, _dir, out Vector2 offset, out float radius))
             {
                 startOffset = offset;
+                _trajectoryDisplay.Radius = radius;
             }
 
             _trajectoryDisplay.GravityScale = PresentationHelpers.Surveys.GetProjectileGravityScale(Cache, CurrentContext.UseContext);

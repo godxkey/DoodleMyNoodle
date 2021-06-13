@@ -172,12 +172,10 @@ public class SurveyAngryBirds : SurveyBaseController
         if (_trajectoryDisplay.Displayed)
         {
             Vector2 startOffset = Vector2.zero;
-            if (_releaseSpeed > 0.01f)
+            if (PresentationHelpers.Surveys.GetItemTrajectorySettings(Cache, CurrentContext.UseContext, _releaseVector.normalized, out Vector2 offset, out float radius))
             {
-                if (PresentationHelpers.Surveys.TryGetThrowTrajectoryStartOffset(Cache, CurrentContext.UseContext, _releaseVector.normalized, out Vector2 offset))
-                {
-                    startOffset = offset;
-                }
+                startOffset = offset;
+                _trajectoryDisplay.Radius = radius;
             }
 
             _trajectoryDisplay.GravityScale = PresentationHelpers.Surveys.GetProjectileGravityScale(Cache, CurrentContext.UseContext);

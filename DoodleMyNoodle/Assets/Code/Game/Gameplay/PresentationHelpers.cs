@@ -88,17 +88,32 @@ public static class PresentationHelpers
             return GetGameAction(simWorld, item) as T;
         }
 
-        public static bool TryGetThrowTrajectoryStartOffset(GamePresentationCache cache, GameAction.UseContext useContext, Vector2 direction, out Vector2 offset)
+        public static bool GetItemTrajectorySettings(GamePresentationCache cache, GameAction.UseContext useContext, Vector2 direction, 
+            out Vector2 spawnOffset, 
+            out float radius)
         {
-            offset = Vector2.zero;
+            spawnOffset = Vector2.zero;
+            radius = 0.05f;
 
             GameActionThrow throwAction = GetGameAction<GameActionThrow>(cache.SimWorld, useContext.Item);
 
-            if (throwAction == null)
-                return false;
+            if (throwAction != null)
+            {
+                spawnOffset = (Vector2)throwAction.GetSpawnPosOffset(cache.SimWorld, useContext, (fix2)direction);
+                radius = (float)throwAction.GetProjectileRadius(cache.SimWorld, useContext);
+                return true;
+            }
 
-            offset = (Vector2)throwAction.GetSpawnPosOffset(cache.SimWorld, useContext, (fix2)direction);
-            return true;
+            GameActionJump jumpAction = GetGameAction<GameActionJump>(cache.SimWorld, useContext.Item);
+
+            if (jumpAction != null)
+            {
+                spawnOffset = Vector2.zero;
+                radius = (float)CommonReads.GetActorRadius(cache.SimWorld, useContext.InstigatorPawn);
+                return true;
+            }
+
+            return false;
         }
 
         public static float GetProjectileGravityScale(GamePresentationCache cache, GameAction.UseContext useContext)
