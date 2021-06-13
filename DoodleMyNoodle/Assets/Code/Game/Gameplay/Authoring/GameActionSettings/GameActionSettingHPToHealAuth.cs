@@ -8,11 +8,11 @@ using UnityEngine.Scripting.APIUpdating;
 [MovedFrom(false, sourceClassName: "GameActionHPToHealDataAuth")]
 public class GameActionSettingHPToHealAuth : GameActionSettingAuthBase, IItemSettingDescription
 {
-    public int HealthToGive;
+    public int MaxHealthToGive;
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new GameActionSettingHPToHeal() { Value = HealthToGive });
+        dstManager.AddComponentData(entity, new GameActionSettingHPToHeal() { Value = MaxHealthToGive });
     }
 
     public Color GetColor()
@@ -22,6 +22,6 @@ public class GameActionSettingHPToHealAuth : GameActionSettingAuthBase, IItemSet
 
     public string GetDescription()
     {
-        return $"Vie à donner : {HealthToGive}";
+        return $"Vie à donner : {MaxHealthToGive}";
     }
 }
