@@ -15,19 +15,23 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
     {
         TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);
         Entities
-            .ForEach((ref NavAgentFootingState footing, in FixTranslation fixTranslation) =>
+            .ForEach((ref NavAgentFootingState footing, in FixTranslation fixTranslation, in PhysicsColliderBlob colliderRef) =>
             {
-                fix2 posTileBeneath = new fix2(fixTranslation.Value.x, fixTranslation.Value.y - (fix)0.5);
+                ref Collider collider = ref colliderRef.Collider.Value;
+                fix2 belowFeet = new fix2(fixTranslation.Value.x, fixTranslation.Value.y - (fix)collider.Radius - (fix)0.05);
 
-                // IF on ladder && (already has footing on ladder || over terrain)
+                // IF on ladder && (already has footing on ladder || already has footing on ground)
                 if (tileWorld.GetFlags(Helpers.GetTile(fixTranslation)).IsLadder
-                    && (footing.Value == NavAgentFooting.Ladder || tileWorld.GetFlags(Helpers.GetTile(posTileBeneath)).IsTerrain))
+                    && (footing.Value == NavAgentFooting.Ladder || footing.Value == NavAgentFooting.Ground))
                 {
                     footing.Value = NavAgentFooting.Ladder;
                 }
+                else if (tileWorld.GetFlags(Helpers.GetTile(belowFeet)).IsTerrain)
+                {
+                    footing.Value = NavAgentFooting.Ground;
+                }
                 else
                 {
-                    // TODO: use footing 'Ground'
                     footing.Value = NavAgentFooting.None;
                 }
             }).Run();
