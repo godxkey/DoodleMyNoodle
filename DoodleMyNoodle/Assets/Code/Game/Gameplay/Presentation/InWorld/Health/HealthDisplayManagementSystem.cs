@@ -10,13 +10,15 @@ using static fixMath;
 public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDisplayManagementSystem>
 {
     public GameObject HealthBarPrefab;
+    public float HideDelayFromMouse = 0.4f;
+    public float HideDelayFromDamageOrHeal = 1f;
 
     private List<GameObject> _healthBarInstances = new List<GameObject>();
 
     protected override void OnGamePresentationUpdate()
     {
         int healthBarAmount = 0;
-        
+
         Team localPlayerTeam = Cache.LocalControllerTeam;
 
         Cache.SimWorld.Entities.ForEach((Entity pawn, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
@@ -29,9 +31,9 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
                 return;
             }
 
-            Team CurrentPawnTeam = Cache.SimWorld.GetComponent<Team>(pawnController);
+            Team currentPawnTeam = Cache.SimWorld.GetComponent<Team>(pawnController);
 
-            SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, entityMaximumHealth.Value, entityHealth.Value, localPlayerTeam.Value == CurrentPawnTeam.Value);
+            SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, entityMaximumHealth.Value, entityHealth.Value, localPlayerTeam.Value == currentPawnTeam.Value);
 
             healthBarAmount++;
         });
@@ -51,17 +53,16 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
         {
             foreach (var tileActor in Cache.PointedBodies)
             {
-                if (SimWorld.TryGetComponent(tileActor, out Health health))
+                if (!SimWorld.HasComponent<Health>(tileActor))
+                    continue;
+
+                FixTranslation position = SimWorld.GetComponent<FixTranslation>(tileActor);
+
+                foreach (var healthBar in _healthBarInstances)
                 {
-                    if (SimWorld.TryGetComponent(tileActor, out FixTranslation position))
+                    if (healthBar.transform.position == (position.Value + new fix3(0, fix(0.7f), 0)).ToUnityVec())
                     {
-                        foreach (var healthBar in _healthBarInstances)
-                        {
-                            if (healthBar.transform.position == (position.Value + new fix3(0, fix(0.7f), 0)).ToUnityVec())
-                            {
-                                healthBar.GetComponent<HealthBarDisplay>()?.ForceDisplay();
-                            }
-                        }
+                        healthBar.GetComponent<HealthBarDisplay>().Show(HideDelayFromMouse);
                     }
                 }
             }
@@ -75,7 +76,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
                 {
                     if (healthBar.transform.position == (position.Value + new fix3(0, fix(0.7f), 0)).ToUnityVec())
                     {
-                        healthBar.GetComponent<HealthBarDisplay>()?.ForceDisplay();
+                        healthBar.GetComponent<HealthBarDisplay>().Show(HideDelayFromDamageOrHeal);
                     }
                 }
             }
@@ -95,7 +96,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
             currentHealthBar = _healthBarInstances[index];
         }
 
-        currentHealthBar.transform.position = (position + new fix3(0,fix(0.7f),0)).ToUnityVec();
+        currentHealthBar.transform.position = (position + new fix3(0, fix(0.7f), 0)).ToUnityVec();
         currentHealthBar.GetComponent<HealthBarDisplay>()?.SetMaxHealth(maxHealth);
         currentHealthBar.GetComponent<HealthBarDisplay>()?.SetHealth(health);
         currentHealthBar.SetActive(true);
