@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4305869326659949640}
   - component: {fileID: 5232156575525426454}
   - component: {fileID: 1924742212740786834}
+  - component: {fileID: 3469271791465091720}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -99,6 +100,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &3469271791465091720
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 609178208764638475}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6150836390797422753
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,7 +190,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 441856737791022927}
-  - component: {fileID: 5956359214843326561}
+  - component: {fileID: 272167070138966388}
   m_Layer: 0
   m_Name: HealthBar
   m_TagString: Untagged
@@ -200,7 +213,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5956359214843326561
+--- !u!114 &272167070138966388
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -209,7 +222,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6674601025037133760}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d3a7e754e43f744ab9ddba9e0af1125, type: 3}
+  m_Script: {fileID: 11500000, guid: 10cf6211772ce64498ee96daba76641d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   EmptyHearthPrefab: {fileID: 8991297770476160728, guid: 9d4adf175b807c848994aea3c02c5e5c,
@@ -217,3 +230,5 @@ MonoBehaviour:
   HearthContainer: {fileID: 6661507625212345112}
   EmptyHearth: {fileID: 21300000, guid: 776061e11ab2faf4a88a24e2aa03f203, type: 3}
   FilledHearth: {fileID: 21300000, guid: d2fb763feeada0e449754d62ea1c9b70, type: 3}
+  CanvasGroup: {fileID: 3469271791465091720}
+  CanvasFadeDuration: 1

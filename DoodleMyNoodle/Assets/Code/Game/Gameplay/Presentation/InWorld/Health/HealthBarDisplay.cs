@@ -4,14 +4,18 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
-public class UIBarDisplay : GameMonoBehaviour
+public class HealthBarDisplay : GameMonoBehaviour
 {
     [SerializeField] private GameObject EmptyHearthPrefab;
     [SerializeField] private Transform HearthContainer;
 
     [SerializeField] private Sprite EmptyHearth;
     [SerializeField] private Sprite FilledHearth;
+
+    [SerializeField] private CanvasGroup CanvasGroup;
+    [SerializeField] private float CanvasFadeSpeed = 0.1f;
 
     private List<GameObject> SpawnedHearth = new List<GameObject>();
 
@@ -50,5 +54,17 @@ public class UIBarDisplay : GameMonoBehaviour
                 Image.sprite = EmptyHearth;
             }
         }
+    }
+
+    private void Update()
+    {
+        CanvasGroup.alpha -= (Time.deltaTime * CanvasFadeSpeed);
+
+
+    }
+
+    public void ForceDisplay()
+    {
+        CanvasGroup.alpha = 1;
     }
 }

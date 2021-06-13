@@ -41,6 +41,45 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
         {
             _healthBarInstances[i].SetActive(false);
         }
+
+        UpdateHealthDisplay();
+    }
+
+    private void UpdateHealthDisplay()
+    {
+        if (Cache.PointerInWorld && Cache.LocalPawn != Entity.Null)
+        {
+            foreach (var tileActor in Cache.PointedBodies)
+            {
+                if (SimWorld.TryGetComponent(tileActor, out Health health))
+                {
+                    if (SimWorld.TryGetComponent(tileActor, out FixTranslation position))
+                    {
+                        foreach (var healthBar in _healthBarInstances)
+                        {
+                            if (healthBar.transform.position == (position.Value + new fix3(0, fix(0.7f), 0)).ToUnityVec())
+                            {
+                                healthBar.GetComponent<HealthBarDisplay>()?.ForceDisplay();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Cache.SimWorld.Entities.ForEach((ref DamageEventData damageEvent) =>
+        {
+            if (SimWorld.TryGetComponent(damageEvent.EntityDamaged, out FixTranslation position))
+            {
+                foreach (var healthBar in _healthBarInstances)
+                {
+                    if (healthBar.transform.position == (position.Value + new fix3(0, fix(0.7f), 0)).ToUnityVec())
+                    {
+                        healthBar.GetComponent<HealthBarDisplay>()?.ForceDisplay();
+                    }
+                }
+            }
+        });
     }
 
     private void SetOrAddHealthBar(int index, fix3 position, int maxHealth, int health, bool friendly)
@@ -57,8 +96,8 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
         }
 
         currentHealthBar.transform.position = (position + new fix3(0,fix(0.7f),0)).ToUnityVec();
-        currentHealthBar.GetComponent<UIBarDisplay>()?.SetMaxHealth(maxHealth);
-        currentHealthBar.GetComponent<UIBarDisplay>()?.SetHealth(health);
+        currentHealthBar.GetComponent<HealthBarDisplay>()?.SetMaxHealth(maxHealth);
+        currentHealthBar.GetComponent<HealthBarDisplay>()?.SetHealth(health);
         currentHealthBar.SetActive(true);
     }
 }
