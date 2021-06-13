@@ -203,6 +203,9 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
 
     private void SetEraser()
     {
+        SetBrushColor(Color.white);
+        _colorContainer.ToggleActiveState();
+
         _recentlyChangedTool = true;
         _isUsingFill = false;
         _isUsingBrush = false;
@@ -214,6 +217,9 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
 
     private void SetMove()
     {
+        SetBrushColor(Color.white);
+        _colorContainer.ToggleActiveState();
+
         _recentlyChangedTool = true;
         _isUsingFill = false;
         _isUsingBrush = false;
@@ -229,11 +235,11 @@ public class CharacterCreationDoodleDraw : GamePresentationSystem<CharacterCreat
         if (!_recentlyChangedTool)
         {
             _recentlyChangedTool = true;
-            _isUsingFill = true;
             CursorOverlayService.Instance.RevertToPreviousSetting();
         }
 
         _isUsingBrush = false;
+        _isUsingFill = true;
         CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Fill);
         CursorOverlayService.Instance.SetCursorColor(_previousColor);
         _uPaint.SetFillBrush();

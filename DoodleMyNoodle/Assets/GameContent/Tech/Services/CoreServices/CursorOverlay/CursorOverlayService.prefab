@@ -49,46 +49,55 @@ MonoBehaviour:
     Type: 0
     Displacement: {x: 8, y: -10}
     Scale: 1
+    DisplaySecondaryIcon: 0
   - Icon: {fileID: 21300000, guid: 91ad5a7e2d0b7ee4cb9bb2b11c3eafc0, type: 3}
     ClickedIcon: {fileID: 21300000, guid: a27d44801a83478499393b093049a285, type: 3}
     Type: 1
     Displacement: {x: 8, y: -10}
     Scale: 1
+    DisplaySecondaryIcon: 0
   - Icon: {fileID: 21300000, guid: fb81ac34298fd0746b53c6b856ef9322, type: 3}
     ClickedIcon: {fileID: 0}
     Type: 2
     Displacement: {x: 0, y: 0}
     Scale: 2
+    DisplaySecondaryIcon: 1
   - Icon: {fileID: 21300000, guid: 0fc05ec8d4aaf6745a8aaec6359ad0e8, type: 3}
     ClickedIcon: {fileID: 0}
     Type: 3
     Displacement: {x: 0, y: 0}
     Scale: 2
+    DisplaySecondaryIcon: 1
   - Icon: {fileID: 21300000, guid: e0b2c16d3d992db46912d92196444d79, type: 3}
     ClickedIcon: {fileID: 0}
     Type: 4
     Displacement: {x: 5, y: 5}
     Scale: 1
+    DisplaySecondaryIcon: 0
   - Icon: {fileID: 21300000, guid: dbcc7778165ec67449a544f78d0c73b3, type: 3}
     ClickedIcon: {fileID: 0}
     Type: 5
     Displacement: {x: 0, y: 0}
     Scale: 2
+    DisplaySecondaryIcon: 1
   - Icon: {fileID: 21300000, guid: 7fb7a443b23b2fd4eb81f576fe049ac2, type: 3}
     ClickedIcon: {fileID: 0}
     Type: 8
     Displacement: {x: 0, y: 0}
     Scale: 2.5
+    DisplaySecondaryIcon: 0
   - Icon: {fileID: 21300000, guid: 98892f67a2885d54b934bcca1085acf9, type: 3}
     ClickedIcon: {fileID: 0}
     Type: 7
     Displacement: {x: 0, y: 0}
     Scale: 1
+    DisplaySecondaryIcon: 0
   - Icon: {fileID: 21300000, guid: 43f48d0d71d151d429d9a245c2122e72, type: 3}
     ClickedIcon: {fileID: 0}
     Type: 6
     Displacement: {x: 0, y: 0}
     Scale: 1.5
+    DisplaySecondaryIcon: 0
   _cursorPrefab: {fileID: 7951381205537041577, guid: 6d70fd9a73cf778438a842b6cce7b495,
     type: 3}
   _tooltipPrefab: {fileID: 7951381205537041577, guid: bea7d18015cc6bd41a29c086b07b301b,
