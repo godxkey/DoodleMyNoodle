@@ -67,7 +67,7 @@ MonoBehaviour:
   GameActionSettings:
   - id: 0
   - id: 1
-  ApCost: 1
+  ApCost: 2
   IsStackable: 1
   CooldownType: 0
   CooldownDuration:
@@ -88,6 +88,8 @@ MonoBehaviour:
           RawValue: 0
         SpeedMax:
           RawValue: 42949672960
+        SpawnExtraDistance:
+          RawValue: 2147483648
     00000001:
       type: {class: GameActionSettingEntityReferenceAuth, ns: , asm: Game}
       data:
