@@ -89,5 +89,5 @@ MonoBehaviour:
     00000001:
       type: {class: GameActionSettingEntityReferenceAuth, ns: , asm: Game}
       data:
-        Entity: {fileID: 2768931431184588227, guid: e493693d6bc1d7141996b2e998c53144,
+        Entity: {fileID: 3506976763963629017, guid: 7f1b972c36d18a54381b4354a7fd05b4,
           type: 3}

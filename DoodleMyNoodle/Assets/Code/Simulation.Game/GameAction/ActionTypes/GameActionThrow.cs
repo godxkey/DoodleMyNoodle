@@ -50,7 +50,7 @@ public class GameActionThrow : GameAction
             fix inputSpeed = length(velocity);
             fix2 dir = inputSpeed < (fix)0.01 ? fix2(0, 1) : velocity / inputSpeed;
 
-            fix2 spawnPos = instigatorPos + GetSpawnPosOffset(accessor, projectileInstance, context.InstigatorPawn, dir);
+            fix2 spawnPos = instigatorPos + GetSpawnPosOffset(accessor, projectileInstance, context.InstigatorPawn, dir, settingsThrow.SpawnExtraDistance);
 
             accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(velocity + instigatorVel));
             accessor.SetOrAddComponent(projectileInstance, new FixTranslation(spawnPos));
@@ -61,31 +61,31 @@ public class GameActionThrow : GameAction
         return false;
     }
 
+    private fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, Entity projectile, Entity instigator, fix2 direction, fix extraDistance)
+    {
+        fix projectileRadius = CommonReads.GetActorRadius(accessor, projectile);
+        fix instigatorRadius = CommonReads.GetActorRadius(accessor, instigator);
+
+        return direction * (instigatorRadius + projectileRadius + (fix)0.05f + extraDistance);
+    }
+
+
+    #region Used by presentation
     // used by presentation
     public fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, UseContext context, fix2 direction)
     {
-        GameActionSettingEntityReference settings = accessor.GetComponent<GameActionSettingEntityReference>(context.Item);
+        GameActionSettingEntityReference settingsPrefab = accessor.GetComponent<GameActionSettingEntityReference>(context.Item);
+        GameActionSettingThrow settingsThrow = accessor.GetComponent<GameActionSettingThrow>(context.Item);
 
-        return GetSpawnPosOffset(accessor, settings.EntityPrefab, context.InstigatorPawn, direction);
+        return GetSpawnPosOffset(accessor, settingsPrefab.EntityPrefab, context.InstigatorPawn, direction, settingsThrow.SpawnExtraDistance);
     }
 
-    private fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, Entity projectile, Entity instigator, fix2 direction)
+    // used by presentation
+    public fix GetProjectileRadius(ISimWorldReadAccessor accessor, UseContext context)
     {
-        fix projectileRadius = GetActorRadius(accessor, projectile);
-        fix instigatorRadius = GetActorRadius(accessor, instigator);
+        GameActionSettingEntityReference settingsPrefab = accessor.GetComponent<GameActionSettingEntityReference>(context.Item);
 
-        return direction * (instigatorRadius + projectileRadius + (fix)0.05f);
+        return CommonReads.GetActorRadius(accessor, settingsPrefab.EntityPrefab);
     }
-
-    private static fix GetActorRadius(ISimWorldReadAccessor accessor, Entity projectileInstance)
-    {
-        if (accessor.TryGetComponent(projectileInstance, out PhysicsColliderBlob colliderBlob) && colliderBlob.Collider.IsCreated)
-        {
-            return (fix)colliderBlob.Collider.Value.Radius;
-        }
-        else
-        {
-            return 1;
-        }
-    }
+    #endregion
 }

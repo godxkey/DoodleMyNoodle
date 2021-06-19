@@ -32,6 +32,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         public CursorType Type = CursorType.Default;
         public Vector2 Displacement = new Vector2(0, 0);
         public float Scale = 1;
+        public bool DisplaySecondaryIcon = false;
     }
 
     [SerializeField] private List<CursorSetting> CursorSettings = new List<CursorSetting>();
@@ -50,7 +51,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
     private CursorSetting _previousSetting;
     private CursorSetting _currentSetting;
 
-    private GameObject _currentCursor;
+    private CursorDisplay _currentCursor;
     private GameObject _currentTooltip;
 
     private Vector3 _previousMousePosition;
@@ -190,7 +191,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
 
         if (_currentCursor == null)
         {
-            _currentCursor = Instantiate(_cursorPrefab);
+            _currentCursor = Instantiate(_cursorPrefab).GetComponent<CursorDisplay>();
         }
 
         bool exitRight = Input.mousePosition.x >= (Screen.width - _tooltipScreenEdgeToolTipLimit);
@@ -207,16 +208,10 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
             tooltipTransform.position = Input.mousePosition + new Vector3(displacementRatioX, displacementRatioY, 0);
         }
 
-        Transform cursorTransform = GetCursor().transform;
-        if (cursorTransform != null)
+        if (_currentCursor != null)
         {
-            cursorTransform.position = Input.mousePosition + new Vector3(_currentSetting.Displacement.x, _currentSetting.Displacement.y, 0);
+            _currentCursor.SetCursorsPosition(Input.mousePosition + new Vector3(_currentSetting.Displacement.x, _currentSetting.Displacement.y, 0));
         }
-    }
-
-    private Image GetCursor()
-    {
-        return _currentCursor.transform.GetComponentInChildren<Image>();
     }
 
     public void ResetCursorToDefault()
@@ -247,12 +242,14 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
 
             _isColored = false;
             SetCursorIcon(setting.Icon, _currentSetting.Scale);
+
+            _currentCursor.ChangeDisplaySecondaryCursor(setting.DisplaySecondaryIcon);
         }
     }
 
     public void SetCursorColor(Color color)
     {
-        GetCursor().color = color;
+        _currentCursor.SetPrimaryCursorColor(color);
         _lastColor = color;
         _isColored = true;
     }
@@ -308,7 +305,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
 
     private void SetCursorIcon(Sprite sprite, float scale)
     {
-        GetCursor().transform.localScale = new Vector3(scale, scale, scale);
-        GetCursor().sprite = sprite;
+        _currentCursor.SetPrimaryCursorSize(new Vector3(scale, scale, scale));
+        _currentCursor.SetPrimaryCursorIcon(sprite);
     }
 }

@@ -25,6 +25,7 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
         public Vector2 StartPoint { get => _trajectory.StartPoint; set => _trajectory.StartPoint = value; }
         public Vector2 Velocity { get => _trajectory.Velocity; set => _trajectory.Velocity = value; }
         public float Length { get => _trajectory.Length; set => _trajectory.Length = value; }
+        public float Radius { get => _trajectory.Radius; set => _trajectory.Radius = value; }
 
         public void Dispose()
         {
@@ -36,17 +37,92 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
 
     public class Trajectory
     {
-        public Vector2 StartPoint { get; set; } = Vector2.zero;
-        public Vector2 Velocity { get; set; } = Vector2.zero;
-        public float Length { get; set; } = 5;
-        public bool Displayed { get; set; } = true;
-        public float GravityScale { get; set; } = 1;
+        public Vector2 StartPoint { get; set; }
+        public Vector2 Velocity { get; set; }
+        public float Length { get; set; }
+        public bool Displayed { get; set; }
+        public float GravityScale { get; set; }
+        public float Radius { get; set; }
 
-        public float CalculateTravelDuration(float traveledDistance, Vector2 gravity) 
+        public Trajectory()
+        {
+            ResetToDefault();
+        }
+
+        public void ResetToDefault()
+        {
+            StartPoint = Vector2.zero;
+            Velocity = Vector2.zero;
+            Length = 5;
+            Displayed = true;
+            GravityScale = 1;
+            Radius = 1;
+        }
+
+        public float CalculateTravelDuration(float traveledDistance, Vector2 gravity)
             => mathX.Trajectory.TravelDurationApprox(Velocity, gravity * GravityScale, traveledDistance);
-        
-        public Vector2 CalculatePosition(float time, Vector2 gravity) 
+
+        public Vector2 CalculatePosition(float time, Vector2 gravity)
             => mathX.Trajectory.Position(StartPoint, Velocity, gravity * GravityScale, time);
+    }
+
+    private class LineManager
+    {
+        private readonly LineRenderer _prefab;
+        private readonly Transform _container;
+        private readonly List<LineRenderer> _lines = new List<LineRenderer>();
+
+        private List<Vector3> _segments = new List<Vector3>();
+        private int _lineIterator = 0;
+
+        public LineManager(LineRenderer prefab, Transform container)
+        {
+            _prefab = prefab;
+            _container = container;
+        }
+
+        public void BeginLines()
+        {
+            _lineIterator = 0;
+        }
+
+        public void SetSegment(Vector2 point)
+        {
+            _segments.Add(point);
+        }
+
+        public void FinishLine(float radius)
+        {
+            if (_segments.Count == 0)
+                return;
+
+            if (_lineIterator >= _lines.Count)
+                SpawnLine();
+
+            _lines[_lineIterator].positionCount = _segments.Count;
+            _lines[_lineIterator].SetPositions(_segments.ToArray());
+            _lines[_lineIterator].startWidth = radius * 2f;
+            _lines[_lineIterator].endWidth = radius * 2f;
+            _lines[_lineIterator].gameObject.SetActive(true);
+
+            _lineIterator++;
+            _segments.Clear();
+        }
+
+        public void EndLines()
+        {
+            while (_lineIterator < _lines.Count)
+            {
+                _lines[_lineIterator].gameObject.SetActive(false);
+                _lineIterator++;
+            }
+        }
+
+        private void SpawnLine()
+        {
+            LineRenderer instance = Instantiate(_prefab, _container);
+            _lines.Add(instance);
+        }
     }
 
     private class PointManager
@@ -120,15 +196,19 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
     [SerializeField] private float _pointFrequencySpeedMultiplier = 10;
     [SerializeField] private float _pointFrequencyGravScaleMultiplier = 10;
     [SerializeField] private int _pointCap = 400;
+    [SerializeField] private float _basePointAlpha = 0.75f;
     [SerializeField] private List<Trajectory> _trajectories = new List<Trajectory>();
+    [SerializeField] private LineRenderer _lineRendererPrefab = null;
 
     private PointManager _pointManager;
+    private LineManager _lineManager;
 
     protected override void Awake()
     {
         base.Awake();
 
         _pointManager = new PointManager(_pointSpritePrefabs, _pointContainer, _pointCap);
+        _lineManager = new LineManager(_lineRendererPrefab, _pointContainer);
     }
 
     protected override void OnGamePresentationUpdate()
@@ -141,6 +221,8 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
         }
 
         _pointManager.BeginPoints();
+        _lineManager.BeginLines();
+
         foreach (var trajectory in _trajectories)
         {
             if (!trajectory.Displayed)
@@ -154,12 +236,17 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
             {
                 Vector2 pointPosition = trajectory.CalculatePosition(p / frequency, gravity);
                 float alpha = math.min(pCount - p, 1);
-                _pointManager.SetPoint(pointPosition, alpha);
+                _pointManager.SetPoint(pointPosition, alpha * _basePointAlpha);
+                _lineManager.SetSegment(pointPosition);
             }
+
+            _lineManager.FinishLine(trajectory.Radius);
 
             if (_pointManager.ReachedLimit)
                 break;
         }
+
+        _lineManager.EndLines();
         _pointManager.EndPoints();
     }
 

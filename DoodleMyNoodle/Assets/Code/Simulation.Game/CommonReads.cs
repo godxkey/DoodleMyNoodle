@@ -12,4 +12,16 @@ public static partial class CommonReads
             accessor.GetComponent<FixTranslation>(entityB), 
             accessor.GetComponent<FixTranslation>(entityA)) < rangeMax;
     }
+
+    public static fix GetActorRadius(ISimWorldReadAccessor accessor, Entity projectileInstance)
+    {
+        if (accessor.TryGetComponent(projectileInstance, out PhysicsColliderBlob colliderBlob) && colliderBlob.Collider.IsCreated)
+        {
+            return (fix)colliderBlob.Collider.Value.Radius;
+        }
+        else
+        {
+            return (fix)0.5;
+        }
+    }
 }

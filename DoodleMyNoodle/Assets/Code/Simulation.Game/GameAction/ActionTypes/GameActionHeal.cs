@@ -55,7 +55,14 @@ public class GameActionHeal : GameAction
                 return false;
             }
 
-            CommonWrites.RequestHeal(accessor, context.InstigatorPawn, paramEntity.Entity, settingsHeal.Value);
+            var maxHealth = accessor.GetComponent<MaximumInt<Health>>(context.InstigatorPawn);
+            var currentHealth = accessor.GetComponent<Health>(context.InstigatorPawn);
+
+            var diffHealth = maxHealth - currentHealth;
+            var healthToGive = fix.RoundToInt(((fix)0.98 * diffHealth) - (fix)1.5);
+            healthToGive = Mathf.Clamp(healthToGive, 1, settingsHeal.Value);
+
+            CommonWrites.RequestHeal(accessor, context.InstigatorPawn, paramEntity.Entity, healthToGive);
 
             return true;
         }
