@@ -153,6 +153,9 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
             // General Description
             _descriptionData.Add(new DescriptionData(gameActionAuth.EffectDescription, Color.white, true));
 
+            // AP Cost
+            _descriptionData.Add(new DescriptionData("Coût AP : " + gameActionAuth.ApCost, Color.white, true));
+
             // Game Action Settings
             foreach (GameActionSettingAuthBase gameActionSetting in gameActionAuth.GameActionSettings)
             {
