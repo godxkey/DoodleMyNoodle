@@ -20,17 +20,15 @@ public class HealthBarDisplay : GameMonoBehaviour
     [SerializeField] private float _canvasFadeSpeed = 0.1f;
 
     [SerializeField] private GameObject _moreHearthContainer = null;
-    [SerializeField] private TextMeshPro _moreHearthText = null;
+    [SerializeField] private TextMeshProUGUI _moreHearthText = null;
 
     private List<GameObject> _spawnedHearth = new List<GameObject>();
     private float _fadeDelayTimer;
-    private bool moreHearthDisplayActive = false;
 
     public void SetMaxHealth(int amount, int maxAmount)
     {
         if (_spawnedHearth.Count >= maxAmount)
         {
-            UpdateMoreHealthDisplay(amount);
             return;
         }
         else
@@ -58,28 +56,13 @@ public class HealthBarDisplay : GameMonoBehaviour
                 }
             }
 
-            moreHearthDisplayActive = false;
             _moreHearthContainer.SetActive(false);
         }
     }
 
     public void SetHealth(int amount)
     {
-        if (moreHearthDisplayActive)
-        {
-            if (amount < _spawnedHearth.Count)
-            {
-                moreHearthDisplayActive = false;
-                _moreHearthContainer.SetActive(false);
-            }
-            else
-            {
-                UpdateMoreHealthDisplay(amount);
-                return;
-            }
-        }
-
-        for (int i = 0; i < amount; i++)
+        for (int i = 0; i < _spawnedHearth.Count; i++)
         {
             if (_spawnedHearth[i].TryGetComponent(out Image image))
             {
@@ -93,6 +76,16 @@ public class HealthBarDisplay : GameMonoBehaviour
             {
                 image.sprite = _emptyHearth;
             }
+        }
+
+        if (amount < _spawnedHearth.Count)
+        {
+            _moreHearthContainer.SetActive(false);
+        }
+        else
+        {
+            UpdateMoreHealthDisplay(amount);
+            return;
         }
     }
 
@@ -117,7 +110,6 @@ public class HealthBarDisplay : GameMonoBehaviour
         int count = totalAmount - _spawnedHearth.Count;
         if (count > 0)
         {
-            moreHearthDisplayActive = true;
             _moreHearthContainer.SetActive(true);
             _moreHearthText.text = "x" + (totalAmount - _spawnedHearth.Count);
         }
