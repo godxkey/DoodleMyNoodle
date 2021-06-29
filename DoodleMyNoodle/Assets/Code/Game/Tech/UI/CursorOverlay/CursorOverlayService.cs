@@ -62,6 +62,10 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
     private bool _isColored = false;
     private Color _lastColor;
 
+    private bool _isLocked = false;
+    private bool _isLockedInWorldPos = false;
+    private Vector2 _lockedPosition;
+
     public override void Initialize(Action<ICoreService> onComplete)
     {
         this.DelayedCall(_tooltipUpdateDelay, UpdateOverlay, true);
@@ -76,7 +80,26 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
     {
         Cursor.visible = false;
 
-        UpdateAllPosition();
+        if (_isLocked)
+        {
+            if (_currentCursor != null)
+            {
+                if (_isLockedInWorldPos)
+                {
+                    Vector3 screemPos = CameraService.Instance.ActiveCamera.WorldToScreenPoint(_lockedPosition);
+                    _currentCursor.SetCursorsPosition(new Vector2(screemPos.x, screemPos.y));
+                }
+                else
+                {
+                    _currentCursor.SetCursorsPosition(_lockedPosition);
+                }
+            }
+        }
+        else
+        {
+            UpdateAllPosition();
+        }
+        
 
         if (_currentSetting != null)
         {
@@ -282,6 +305,26 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
                 SetCursorIcon(_currentSetting.Icon, _currentSetting.Scale);
             }
         }
+    }
+
+    public void SetCursorLockAtPosition(Vector2 position, bool lockOnWorldPos = false) 
+    {
+        _isLocked = true;
+        _isLockedInWorldPos = lockOnWorldPos;
+        if (lockOnWorldPos)
+        {
+            Vector3 worldPos = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(position);
+            _lockedPosition = new Vector2(worldPos.x, worldPos.y);
+        }
+        else
+        {
+            _lockedPosition = position;
+        }
+    }
+
+    public void UnlockCursorPosition()
+    {
+        _isLocked = false;
     }
 
     private CursorSetting FindSettingByType(CursorType type)
