@@ -10,19 +10,28 @@ public class CharacterControllerSystem : GamePresentationSystem<CharacterControl
         if ((UIStateMachineController.Instance.CurrentSate.Type == UIStateType.ParameterSelection))
             return;
 
-        // TODO : remove when conflict between boots speed and character speed is figured out
-        fix speed = (fix)0.05;
+        fix horizontalMovement = 0;
+        fix verticalMovement = 0;
 
         if (Input.GetKey(KeyCode.D))
         {
-            SimPlayerInputMovingCharacter simInput = new SimPlayerInputMovingCharacter(new fix2(speed, 0));
-            SimWorld.SubmitInput(simInput);
+            horizontalMovement = 1;
+        } 
+        else if (Input.GetKey(KeyCode.A))
+        {
+            horizontalMovement = -1;
         }
 
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.W))
         {
-            SimPlayerInputMovingCharacter simInput = new SimPlayerInputMovingCharacter(new fix2(-speed, 0));
-            SimWorld.SubmitInput(simInput);
+            verticalMovement = 1;
+        } 
+        else if (Input.GetKey(KeyCode.S))
+        {
+            verticalMovement = -1;
         }
+
+        SimPlayerInputMovingCharacter simInput = new SimPlayerInputMovingCharacter(new fix2(horizontalMovement, verticalMovement));
+        SimWorld.SubmitInput(simInput);
     }
 }

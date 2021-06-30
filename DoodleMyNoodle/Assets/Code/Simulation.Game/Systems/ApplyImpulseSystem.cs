@@ -9,7 +9,7 @@ public struct ImpulseRequestSingletonTag : IComponentData { }
 public struct DirectMoveRequestData : IBufferElementData
 {
     public Entity Target;
-    public fix2 Velocity;
+    public fix2 Direction;
 }
 
 public struct DirectImpulseRequestData : IBufferElementData
@@ -153,33 +153,39 @@ public class ApplyImpulseSystem : SimSystemBase
 
                 var speed = GetComponent<MoveSpeed>(request.Target);
                 PhysicsVelocity vel = GetComponent<PhysicsVelocity>(request.Target);
+                fix2 RealDirection = request.Direction;
 
-                // vel is already above speed limit, cannot move to go faster than that
-                if (vel.Linear.lengthSquared > fix.Pow(speed.Value, 2))
-                    continue;
+                // never vertical movement when outside ladders
+                if (GetComponent<NavAgentFootingState>(request.Target).Value != NavAgentFooting.Ladder)
+                    RealDirection.y = 0;
+
+                // TODO : slow movement on ground with no input
 
                 var mass = GetComponent<PhysicsMass>(request.Target);
 
-                fix2 currentVelLinear = vel.Linear;
-                fix2 velToAdd = request.Velocity * (fix)mass.InverseMass;
-                currentVelLinear += velToAdd;
+                fix2 velToAdd = RealDirection * (fix)mass.InverseMass;
 
-                // is the movement sending us past the move speed
-                if (currentVelLinear.lengthSquared > fix.Pow(speed.Value,2))
+                if (GetComponent<NavAgentFootingState>(request.Target).Value != NavAgentFooting.None)
                 {
-                    // yes, so ajust it to reach the speed limit
-                    fix diff = currentVelLinear.length - vel.Linear.length;
-                    velToAdd.Normalize();
-                    velToAdd *= diff;
-                }
+                    // if we are already too fast, don't go faster
+                    if (vel.Linear.lengthSquared < fix.Pow(speed.Value, 2))
+                    {
+                        fix2 currentVelCumul = vel.Linear;
+                        currentVelCumul += velToAdd;
 
-                vel.Linear += velToAdd;
+                        // is the movement sending us past the move speed
+                        if (currentVelCumul.lengthSquared > fix.Pow(speed.Value, 2))
+                        {
+                            // yes, so ajust it to reach the speed limit
+                            fix diff = speed.Value - vel.Linear.length;
+                            velToAdd.Normalize();
+                            velToAdd *= diff;
+                        }
 
-                SetComponent(request.Target, vel);
+                        vel.Linear += velToAdd;
 
-                if (HasComponent<NavAgentFootingState>(request.Target))
-                {
-                    SetComponent(request.Target, new NavAgentFootingState() { Value = NavAgentFooting.None });
+                        SetComponent(request.Target, vel);
+                    }
                 }
             }
 
@@ -217,12 +223,12 @@ internal static partial class CommonWrites
         accessor.GetExistingSystem<ApplyImpulseSystem>().RequestImpulseDirect(request);
     }
 
-    public static void RequestMove(ISimWorldReadWriteAccessor accessor, Entity target, fix2 velocity)
+    public static void RequestMove(ISimWorldReadWriteAccessor accessor, Entity target, fix2 direction)
     {
         DirectMoveRequestData request = new DirectMoveRequestData()
         {
             Target = target,
-            Velocity = velocity
+            Direction = direction
         };
 
         accessor.GetExistingSystem<ApplyImpulseSystem>().RequestMoveDirect(request);

@@ -25,7 +25,7 @@ public class StickToLadderSystem : SimSystemBase
         {
             if (footing.Value == NavAgentFooting.Ladder)
             {
-                velocity.Linear = counterGravity * gravScale.ScaleFix;// movetowards(velocity.Linear, fix2.zero, 2);
+                velocity.Linear += counterGravity * gravScale.ScaleFix;// movetowards(velocity.Linear, fix2.zero, 2);
             }
 
         }).Run();
