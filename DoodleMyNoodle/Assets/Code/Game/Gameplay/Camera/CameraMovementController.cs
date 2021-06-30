@@ -36,6 +36,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     private float2 _boundsMax;
     private DirtyValue<Entity> _localPawn;
     private Vector3 dragOrigin;
+    private Vector2 _lastMousePos;
 
     [ConsoleVar("CameraLimits", "Enable/Disable the game camera move limits.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
     private static bool s_enableMovementLimits = true;
@@ -132,6 +133,10 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
 
     private void UpdateMovement()
     {
+        if (UIStateMachineController.Instance.CurrentSate.Type == UIStateType.Drawing
+            || UIStateMachineController.Instance.CurrentSate.Type == UIStateType.BlockedGameplay)
+            return;
+
         Vector2 movement = Vector2.zero;
 
         bool isMouseInsideScreen =
@@ -142,31 +147,25 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
 
         bool useMouseMovements = isMouseInsideScreen && MouseMovementsEnabled;
 
+        Vector2 currentMousePosition = Input.mousePosition;
+
         if (Input.GetMouseButtonDown(0)) 
         {
-            dragOrigin = Input.mousePosition;
-            CursorOverlayService.Instance.SetCursorLockAtPosition(dragOrigin, true);
+            _lastMousePos = currentMousePosition;
             CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Grab);
         }
 
-        if (Input.GetMouseButton(0) && (UIStateMachineController.Instance.CurrentSate.Type != UIStateType.ParameterSelection)) 
+        if (Input.GetMouseButton(0) && UIStateMachineController.Instance.CurrentSate.Type != UIStateType.ParameterSelection) 
         {
-            Vector3 dragDirection = (dragOrigin - Input.mousePosition);
-            movement += new Vector2(dragDirection.x, dragDirection.y);
-            movement *= DragSpeed * Time.deltaTime;
+            Vector2 lastMouseWorld = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(_lastMousePos);
+            Vector2 currentMouseWorld = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(currentMousePosition);
 
-            // Speed is greater than max, ajust it
-            if (movement.sqrMagnitude > Mathf.Pow(DragMaxSpeed, 2))
-            {
-                movement.Normalize();
-                movement *= DragMaxSpeed;
-            }
+            _lastMousePos = currentMousePosition;
 
-            CamPosition += movement;
+            CamPosition += lastMouseWorld - currentMouseWorld;
         }
         else
         {
-            CursorOverlayService.Instance.UnlockCursorPosition();
             CursorOverlayService.Instance.ResetCursorToDefault();
 
             if (Input.GetKey(KeyCode.UpArrow) || (useMouseMovements && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))

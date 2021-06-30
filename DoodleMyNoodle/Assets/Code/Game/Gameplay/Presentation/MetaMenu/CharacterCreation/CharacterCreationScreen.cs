@@ -29,6 +29,8 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
     {
         base.OnGameStart();
 
+        UIStateMachine.Instance.TransitionTo(UIStateType.Drawing);
+
         _readyButton.onClick.AddListener(ApplyCharacterSettings);
 
         _doodleAsset = PlayerAssetManager.Instance.CreateAsset<PlayerDoodleAsset>();
@@ -65,6 +67,8 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
         if (!_settingsApplied)
         {
             _settingsApplied = true;
+
+            UIStateMachine.Instance.TransitionTo(UIStateType.Gameplay);
 
             CursorOverlayService.Instance.ResetCursorToDefault();
 

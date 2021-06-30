@@ -33,7 +33,7 @@ PrefabInstance:
     - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: StartingItems.Array.size
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
@@ -59,6 +59,18 @@ PrefabInstance:
     - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: StartingItems.Array.data[2].Item
+      value: 
+      objectReference: {fileID: 5742253346417087641, guid: 85996829317b3aa448e8ac3761770021,
+        type: 3}
+    - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: StartingItems.Array.data[1].Item
+      value: 
+      objectReference: {fileID: 5742253346417087641, guid: 85996829317b3aa448e8ac3761770021,
+        type: 3}
+    - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: StartingItems.Array.data[0].Item
       value: 
       objectReference: {fileID: 5742253346417087641, guid: 75bc2c27660403642a7b13386ca7fb87,
         type: 3}

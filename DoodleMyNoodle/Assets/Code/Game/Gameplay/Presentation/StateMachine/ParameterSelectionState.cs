@@ -26,6 +26,8 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         _surveySMBlackboard.Cache = Cache;
         _surveySMBlackboard.ResultParameters.Clear();
 
+        CursorOverlayService.Instance.ResetCursorToDefault();
+
         if (SimWorld.TryGetComponent(InputParameter.ObjectEntity, out SimAssetId objectSimAssetID))
         {
             _surveySMBlackboard.GameActionAuth = PresentationHelpers.FindItemAuth(objectSimAssetID);

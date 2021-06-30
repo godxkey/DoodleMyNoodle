@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &2278408862114426295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,7 +66,7 @@ MonoBehaviour:
   Value: GameActionJump
   GameActionSettings:
   - id: 0
-  ApCost: 2
+  ApCost: 0
   IsStackable: 0
   CooldownType: 0
   CooldownDuration:
@@ -77,15 +77,16 @@ MonoBehaviour:
   SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 0}
-  CustomSurveys: []
+  CustomSurveys:
+  - {fileID: 6075807751254421543, guid: 7ad36a1016f47834f86aa818a26cd2c3, type: 3}
   references:
     version: 1
     00000000:
       type: {class: GameActionSettingThrowAuth, ns: , asm: Game}
       data:
         SpeedMin:
-          RawValue: 0
+          RawValue: 8589934592
         SpeedMax:
-          RawValue: 42949672960
+          RawValue: 38654705664
         SpawnExtraDistance:
           RawValue: 0

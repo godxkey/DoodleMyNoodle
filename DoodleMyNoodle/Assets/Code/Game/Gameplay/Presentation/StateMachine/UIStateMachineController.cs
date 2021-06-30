@@ -70,6 +70,10 @@ public class UIStateMachine : StateMachine<UIStateMachine, UIState, UIStateMachi
                 TransitionTo(Blackboard.ParameterSelectionState, inputData);
                 break;
 
+            case UIStateType.Drawing:
+                TransitionTo(Blackboard.DrawingState, inputData);
+                break;
+
             default:
                 throw new NotImplementedException();
         }

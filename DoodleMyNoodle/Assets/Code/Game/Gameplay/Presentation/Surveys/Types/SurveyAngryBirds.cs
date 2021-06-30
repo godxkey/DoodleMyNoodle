@@ -108,6 +108,8 @@ public class SurveyAngryBirds : SurveyBaseController
     {
         if (Input.GetMouseButton(0))
         {
+            CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Grab);
+
             if (_dragState == DragState.Idle && Cache.PointedColliders.Contains(_collider))
             {
                 _dragStartScreenPos = Input.mousePosition;
@@ -125,6 +127,8 @@ public class SurveyAngryBirds : SurveyBaseController
         }
         else
         {
+            CursorOverlayService.Instance.ResetCursorToDefault();
+
             if (_dragState == DragState.AlmostDrag)
             {
                 _dragState = DragState.Idle;

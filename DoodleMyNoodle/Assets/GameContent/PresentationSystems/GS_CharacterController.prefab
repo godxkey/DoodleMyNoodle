@@ -46,3 +46,5 @@ MonoBehaviour:
   SystemSettings:
     Type: 1
     OnlineFlags: -1
+  _jumpSurveyPrefab: {fileID: 6075807751254421543, guid: 7ad36a1016f47834f86aa818a26cd2c3,
+    type: 3}

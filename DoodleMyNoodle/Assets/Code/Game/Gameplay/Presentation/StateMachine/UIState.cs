@@ -14,6 +14,7 @@ public class UIStateMachineBlackboard
     public GameplayState GameplayState = new GameplayState();
     public ParameterSelectionState ParameterSelectionState = new ParameterSelectionState();
     public BlockedGameplayState BlockedGameplayState = new BlockedGameplayState();
+    public DrawingState DrawingState = new DrawingState();
 }
 
 public enum UIStateType
@@ -21,6 +22,7 @@ public enum UIStateType
     Gameplay,
     BlockedGameplay,
     ParameterSelection,
+    Drawing,
 }
 
 public abstract class UIState<TInputDataType> : UIState
