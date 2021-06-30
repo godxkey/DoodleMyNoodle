@@ -98,53 +98,31 @@ public class ChecksumSystem : SystemBase
         UpdateSimEntityQuery();
 
         NativeArray<FixTranslation> translations = _entitiesWithTranslastionQ.ToComponentDataArray<FixTranslation>(Allocator.TempJob);
+        NativeArray<Entity> entities = _entitiesWithTranslastionQ.ToEntityArray(Allocator.TempJob);
 
         var hashJob = new HasDataJob()
         {
             Hash = new NativeArray<ulong>(1, Allocator.TempJob),
-            Translations = translations
+            Translations = translations,
+            Entities = entities,
         };
 
         hashJob.Run();
-        
+
         ulong hash = hashJob.Hash[0];
-        
+
+        entities.Dispose();
         translations.Dispose();
         hashJob.Hash.Dispose();
-        
+
         return hash;
     }
-
-    //[BurstCompile]
-    //public struct CollectDataJob : IJobChunk
-    //{
-    //    // Read-only data in the current chunk
-    //    [ReadOnly]
-    //    public EntityTypeHandle EntityTypeHandleAccessor;
-
-    //    [ReadOnly]
-    //    public ComponentTypeHandle<FixTranslation> TranslationTypeHandleAccessor;
-
-    //    //[NativeDisableContainerSafetyRestriction]
-    //    //[NativeDisableParallelForRestriction]
-    //    public NativeHashMap<Entity, FixTranslation> Map;
-
-    //    public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
-    //    {
-    //        NativeArray<Entity> entities = chunk.GetNativeArray(EntityTypeHandleAccessor);
-    //        NativeArray<FixTranslation> translations = chunk.GetNativeArray(TranslationTypeHandleAccessor);
-    //        for (int i = 0; i < entities.Length; i++)
-    //        {
-    //            Map[entities[i]] = translations[i];
-    //        }
-    //    }
-    //}
 
     [BurstCompile]
     public struct HasDataJob : IJob
     {
-        [ReadOnly]
-        public NativeArray<FixTranslation> Translations;
+        [ReadOnly] public NativeArray<FixTranslation> Translations;
+        [ReadOnly] public NativeArray<Entity> Entities;
 
         public NativeArray<ulong> Hash;
 
@@ -155,6 +133,10 @@ public class ChecksumSystem : SystemBase
                 var ptr = Translations.GetUnsafeReadOnlyPtr();
                 var lengthByte = FixTranslation.BYTE_SIZE * Translations.Length;
                 Hash[0] = Crc64.Compute(ptr, lengthByte);
+
+                ptr = Entities.GetUnsafeReadOnlyPtr();
+                lengthByte = sizeof(int) * 2 * Entities.Length;
+                Hash[0] ^= Crc64.Compute(ptr, lengthByte);
             }
         }
     }

@@ -17,7 +17,7 @@ public class SurveyEntity : SurveyBaseController
     [SerializeField] private float _rangeIndicatorScaleDiff = 0.1f;
 
     private Entity? _selectedEntity;
-    private DirtyRef<BindedSimEntityManaged> _hoveredEntity;
+    private DirtyRef<BindedSimEntityManaged> _hoveredEntity = default;
     private Vector2 _instigatorPosition;
 
     protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
@@ -36,7 +36,7 @@ public class SurveyEntity : SurveyBaseController
 
         if (Cache.SimWorld.Exists(_selectedEntity.Value))
         {
-            result.Add(new GameActionParameterEntity.Data(Cache.SimWorld.GetComponent<FixTranslation>(_selectedEntity.Value)));
+            result.Add(new GameActionParameterEntity.Data(_selectedEntity.Value));
             complete();
         }
         else

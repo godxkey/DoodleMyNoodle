@@ -1,22 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
 [NetSerializable]
 public class SimPlayerInputClickSignalEmitter : SimPlayerInput
 {
-    public fix2 EmitterPosition;
+    public Entity Emitter;
 
     public SimPlayerInputClickSignalEmitter() { }
 
-    public SimPlayerInputClickSignalEmitter(fix2 position)
+    public SimPlayerInputClickSignalEmitter(Entity emitter)
     {
-        EmitterPosition = position;
+        Emitter = emitter;
     }
 
     public override string ToString()
     {
-        return $"SimPlayerInputUseItem(player:{SimPlayerId.Value}, emitterPosition:{EmitterPosition})";
+        return $"SimPlayerInputUseItem(player:{SimPlayerId.Value}, emitter:{Emitter})";
     }
 }

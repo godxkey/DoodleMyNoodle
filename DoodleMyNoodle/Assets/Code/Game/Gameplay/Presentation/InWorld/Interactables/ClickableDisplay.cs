@@ -48,7 +48,7 @@ public class ClickableDisplay : BindedPresentationEntityComponent, IWorldUIPoint
                 break;
 
             case ClickAction.TriggerSignal:
-                SimWorld.SubmitInput(new SimPlayerInputClickSignalEmitter(entityPosition));
+                SimWorld.SubmitInput(new SimPlayerInputClickSignalEmitter(SimEntity));
                 break;
         }
     }

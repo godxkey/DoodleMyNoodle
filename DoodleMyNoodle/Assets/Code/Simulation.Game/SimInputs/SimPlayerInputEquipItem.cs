@@ -6,20 +6,20 @@ using UnityEngineX;
 
 public class SimPlayerInputEquipItem : SimPlayerInput
 {
-    public fix2 ItemEntityPosition;
+    public Entity ChestEntity;
     public int ItemIndex;
 
     public SimPlayerInputEquipItem() { }
 
-    public SimPlayerInputEquipItem(int ItemIndex, fix2 ItemEntityPosition)
+    public SimPlayerInputEquipItem(int ItemIndex, Entity chest)
     {
         this.ItemIndex = ItemIndex;
-        this.ItemEntityPosition = ItemEntityPosition;
+        this.ChestEntity = chest;
     }
 
     public override string ToString()
     {
-        return $"SimPlayerInputEquipItem(player:{SimPlayerId.Value}, ItemPrefabID:{ItemIndex}, ItemEntityPosition:{ItemEntityPosition})";
+        return $"SimPlayerInputEquipItem(player:{SimPlayerId.Value}, ItemPrefabID:{ItemIndex}, ItemEntityPosition:{ChestEntity})";
     }
 }
 
