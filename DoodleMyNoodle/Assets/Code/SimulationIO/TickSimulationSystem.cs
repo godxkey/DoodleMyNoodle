@@ -14,6 +14,8 @@ namespace SimulationControl
     {
         public uint ExpectedNewTickId;
         public List<SimInputSubmission> InputSubmissions;
+        public bool RepackEntities; // if true, the tick system should serialize->deserialize the world before ticking
+        public bool ChecksumAfter;
 
         public bool Equals(SimTickData other)
         {
@@ -59,6 +61,14 @@ namespace SimulationControl
         private SimPostPresentationSystemGroup _simPostPresGroup;
         private ViewSystemGroup _viewGroup;
         private bool _inPlayerLoop;
+        private (RepackSimulationOperation op, uint tick, bool worldReplaceRequested) _repack;
+
+        private enum RepackSteps
+        {
+            None,
+            InProgress,
+            ReplacementRequested
+        }
 
         private static IEnumerable<Type> s_simSystemTypes;
         public static IEnumerable<Type> AllSimSystemTypes
@@ -86,14 +96,14 @@ namespace SimulationControl
 
 #if DEBUG
             s_commandInstance = this;
-            GameConsole.SetCommandOrVarEnabled("Sim.Pause", true);
+            GameConsole.SetGroupEnabled("Sim", true);
 #endif
         }
 
         protected override void OnDestroy()
         {
 #if DEBUG
-            GameConsole.SetCommandOrVarEnabled("Sim.Pause", false);
+            GameConsole.SetGroupEnabled("Sim", false);
             s_commandInstance = null;
 #endif
             base.OnDestroy();
@@ -156,18 +166,38 @@ namespace SimulationControl
 
             while (AvailableTicks.Count > 0)
             {
-                _simulationLoadSceneSystem.UpdateSceneLoading();
+                SimTickData tick = AvailableTicks.First();
 
+                if (UpdateWorldRepack(tick))
+                    break;
+
+                _simulationLoadSceneSystem.UpdateSceneLoading();
+#if DEBUG
+                if (_isPausedByCmd && _stepCmdCounter == 0)
+                {
+                    PauseSimulation("cmd");
+                }
+                else
+                {
+                    UnpauseSimulation("cmd");
+                }
+#endif
                 if (!CanTick)
                     break;
 
+#if DEBUG
+                if (_stepCmdCounter > 0)
+                    _stepCmdCounter--;
+#endif
+
                 tickedThisFrame = true;
 
-                SimTickData tick = AvailableTicks.First();
+                // Consume tick!
                 AvailableTicks.RemoveAt(0);
 
                 Log.Info(SimulationIO.LogChannel, $"Begin sim tick '{tick.ExpectedNewTickId}' with {tick.InputSubmissions.Count} inputs.");
 
+                _simulationWorldSystem.HasJustRepacked = false;
                 _simulationWorldSystem.SimulationWorld.TickInputs = tick.ToSimInputArray();
                 _simulationWorldSystem.SimulationWorld.ExpectedNewTickId = tick.ExpectedNewTickId;
 
@@ -199,6 +229,57 @@ namespace SimulationControl
                 // this ensures our previously scheduled view jobs are done (we might want to find a more performant alternative)
                 World.EntityManager.CompleteAllJobs();
             }
+        }
+
+        private bool UpdateWorldRepack(SimTickData tick)
+        {
+            // if the tick does not mention repack, we do not need to repack
+            if (!tick.RepackEntities)
+                return false;
+
+            // If we already repacked last tick, no need to do it again
+            if (_simulationWorldSystem.HasJustRepacked)
+                return false;
+
+            // start operation if not already ongoing
+            if (_repack.op == null || _repack.tick != tick.ExpectedNewTickId)
+            {
+                //Log.Warning("new RepackSimulationOperation()");
+                var newWorld = _simulationWorldSystem.CreateNewReplacementWorld();
+                var op = new RepackSimulationOperation(_simulationWorldSystem.SimulationWorld, newWorld);
+                var tickId = tick.ExpectedNewTickId;
+                var worldReplaceRequested = false;
+
+                _repack = (op, tickId, worldReplaceRequested);
+                _repack.op.Execute();
+            }
+
+            if (_repack.op.IsDone && !_repack.worldReplaceRequested)
+            {
+                if (_repack.op.HasSucceeded)
+                {
+                    DebugScreenMessage.DisplayMessage("Repack successful");
+                    _simulationWorldSystem.RequestReplaceSimWorld((SimulationWorld)_repack.op.NewWorld);
+                }
+                else
+                {
+                    DebugScreenMessage.DisplayMessage("Repack failed");
+                    Log.Error($"Failed to repack before tick {tick.ExpectedNewTickId}. Simulation will continue normally, but entities might be desynced from server.");
+
+                    // remove the 'Repack' flag from the first tick to let simulation continue
+                    if (AvailableTicks.Count > 0)
+                    {
+                        var t = AvailableTicks[0];
+                        t.RepackEntities = false;
+                        AvailableTicks[0] = t;
+                    }
+                }
+
+                _repack.worldReplaceRequested = true;
+                //Log.Warning("_repackOperation = null;");
+            }
+
+            return true; // means "cannot tick"
         }
 
         private void ManualUpdate(IManualSystemGroupUpdate systemGroup)
@@ -330,21 +411,19 @@ namespace SimulationControl
 
 #if DEBUG
         private bool _isPausedByCmd = false;
+        private int _stepCmdCounter = 0;
         private static TickSimulationSystem s_commandInstance;
 
-        [ConsoleCommand("Sim.Pause", "Pause the simulation playback", EnabledByDefault = false)]
+        [ConsoleCommand("Sim.Pause", "Pause the simulation playback", EnableGroup = "Sim")]
         private static void Cmd_SimPause()
         {
-            if (s_commandInstance._isPausedByCmd)
-            {
-                s_commandInstance.UnpauseSimulation(key: "cmd");
-                s_commandInstance._isPausedByCmd = false;
-            }
-            else
-            {
-                s_commandInstance.PauseSimulation(key: "cmd");
-                s_commandInstance._isPausedByCmd = true;
-            }
+            s_commandInstance._isPausedByCmd = !s_commandInstance._isPausedByCmd;
+        }
+
+        [ConsoleCommand("Sim.Step", "Tick 1 frame of the simulation", EnableGroup = "Sim")]
+        private static void Cmd_SimStep()
+        {
+            s_commandInstance._stepCmdCounter++;
         }
 #endif
 

@@ -60,19 +60,6 @@ public abstract class CCCSystemBase : SystemBase
         }
     }
 
-    public bool TryGetSingleton<T>(out T componentData)
-        where T : struct, IComponentData
-    {
-        if (HasSingleton<T>())
-        {
-            componentData = GetSingleton<T>();
-            return true;
-        }
-
-        componentData = default;
-        return false;
-    }
-
     public void DestroySingleton<T>()
         where T : struct, IComponentData
     {

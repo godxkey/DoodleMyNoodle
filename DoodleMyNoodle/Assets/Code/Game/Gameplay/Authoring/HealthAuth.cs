@@ -4,7 +4,6 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public int MaxValue = 10;

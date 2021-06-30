@@ -1,60 +1,56 @@
 ﻿using System;
 using System.IO;
+using Unity.Build;
 using UnityEditor;
-using UnityEditor.Build.Reporting;
 using UnityEngine;
+using UnityEngineX;
 
 public class BuildTools
 {
-    public static BuildReport BuildGame(
-        string buildPath,
-        string exeName,
-        BuildOptions options,
-        string buildId,
-        string[] scenes,
-        BuildTarget buildTarget/*, 
-        string[] scriptingSymbols*/)
+    public static void BuildGame(bool andRun)
     {
-        switch (buildTarget)
+        KillProcessesAndStopEditor();
+
+        BuildConfiguration buildConfig = GetBuildConfig();
+        BuildResult buildResult = buildConfig.Build();
+
+        buildResult.LogResult();
+
+        if (andRun && buildResult.Succeeded)
         {
-            case BuildTarget.StandaloneWindows:
-            case BuildTarget.StandaloneWindows64:
-                break;
-            default:
-                Debug.LogError("Unsupported build target (for the moment)");
-                return null;
+            RunResult runResult = buildConfig.Run();
+            runResult.LogResult();
+        }
+    }
+
+    public static void KillProcessesAndStopEditor()
+    {
+        var lastBuildFile = GetLastBuildFile();
+
+        if (lastBuildFile != null)
+        {
+            KillAllProcesses(lastBuildFile.Name);
         }
 
+        EditorApplication.isPlaying = false;
+    }
 
-        string exePathName = buildPath + "/" + exeName;
-
-        Debug.Log("Building: " + exePathName);
-        Directory.CreateDirectory(buildPath);
-
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
-        
-        //string previousSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
-        //PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, string.Join(";", scriptingSymbols));
-
-        Environment.SetEnvironmentVariable("BUILD_ID", buildId, EnvironmentVariableTarget.Process);
-        BuildReport report = BuildPipeline.BuildPlayer(scenes, exePathName, buildTarget, options);
-        Environment.SetEnvironmentVariable("BUILD_ID", "", EnvironmentVariableTarget.Process);
-
-        int stepCount = report.steps.Length;
-        Debug.Log(" Steps:" + stepCount);
-        for (var i = 0; i < stepCount; i++)
+    public static FileInfo GetLastBuildFile()
+    {
+        Type windowsArtifactType = TypeUtility.FindType("Unity.Build.Windows.Classic.WindowsArtifact", throwOnError: true);
+        var fileInfoField = windowsArtifactType.GetField("OutputTargetFile");
+        foreach (var artifact in GetBuildConfig().GetAllBuildArtifacts())
         {
-            var step = report.steps[i];
-            Debug.Log("-- " + (i + 1) + "/" + stepCount + " " + step.name + " " + step.duration.Seconds + "s --");
-            foreach (var msg in step.messages)
-                Debug.Log(msg.content);
+            if (artifact.GetType() == windowsArtifactType)
+            {
+                FileInfo fileInfo = fileInfoField.GetValue(artifact) as FileInfo;
+                if (fileInfo != null)
+                {
+                    return fileInfo;
+                }
+            }
         }
-
-        Debug.Log($"<color=green> ==== Build Done ({report.summary.totalTime.TotalSeconds}s) ===== </color>");
-        
-        //PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, previousSymbols);
-
-        return report;
+        return null;
     }
 
 
@@ -80,6 +76,11 @@ public class BuildTools
                 Debug.LogWarning("Error when trying to kill all processes: " + e.ToString());
             }
         }
+    }
+
+    public static BuildConfiguration GetBuildConfig()
+    {
+        return AssetDatabase.LoadAssetAtPath<BuildConfiguration>(PipelineSettings.WindowsBuildConfiguration);
     }
 }
 

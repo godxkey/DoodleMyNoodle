@@ -10,17 +10,11 @@ xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
   <engine:ScrollView>
     <engine:VisualElement class="category">
       <engine:Label text="Build" class="title"/>
-      <engine:Label name="buildTarget" text="Building for:"/>
-      <engine:VisualElement name="symbolsProfile" label="Symbols Profile"/>
-      <engine:Toggle name="developmentBuild" label="Development Build"/>
-      <engine:Toggle name="allowDebugging" label="Allow Debugging"/>
-
       <engine:VisualElement name="buildButtonsContainer">
-        <engine:Button name="buildGame" class="buildButton" text="Build Game"/>
-        <engine:VisualElement name="buildButtonSpacing" />
-        <engine:Button name="buildScripts" class="buildButton" text="Build ONLY Scripts"/>
+        <engine:Button name="buildGame" class="buildButton" text="Build"/>
+        <engine:Button name="buildGameAndRun" class="buildButton" text="Build And Run"/>
+        <engine:Button name="openBuildFolder" class="buildButton" text="Open Folder"/>
       </engine:VisualElement>
-      <engine:Button name="openBuildFolder" text="Open Build Folder"/>
 
     </engine:VisualElement>
 

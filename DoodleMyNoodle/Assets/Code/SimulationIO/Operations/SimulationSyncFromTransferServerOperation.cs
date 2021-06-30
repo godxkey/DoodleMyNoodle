@@ -31,8 +31,8 @@ public class SimulationSyncFromTransferServerOperation : CoroutineOperation
             SerializedSimulation = serializeOp.SerializationData
         };
 
-        var transferOp = _sessionInterface.BeginLargeDataTransfer(netMessage, _client, description: $"Simulation-{((SimulationWorld)_simulationWorld).GetLastedTickIdFromEntity()}");
-        
+        var transferOp = _sessionInterface.BeginLargeDataTransfer(netMessage, _client, description: $"Simulation-{((SimulationWorld)_simulationWorld).GetLastTickIdFromEntity()}");
+
         yield return ExecuteSubOperationAndWaitForSuccess(transferOp);
 
         // Terminate

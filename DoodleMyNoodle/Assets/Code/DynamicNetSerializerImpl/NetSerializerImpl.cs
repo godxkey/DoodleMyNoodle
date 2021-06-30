@@ -95,7 +95,7 @@ namespace Internals.OnlineServiceImpl
 
         public int GetSerializedBitSize(object message)
         {
-#if DEBUG
+#if SAFETY
             try
             {
 #endif
@@ -103,7 +103,7 @@ namespace Internals.OnlineServiceImpl
                 return 16 + DynamicNetSerializationRegistry.map_GetBitSize[message.GetType()].Invoke(message);
 
 
-#if DEBUG
+#if SAFETY
             }
             catch (Exception e)
             {
@@ -114,9 +114,9 @@ namespace Internals.OnlineServiceImpl
 #endif
         }
 
-        public Type GetMessageType(BitStreamReader reader)
+        public Type GetObjectType(BitStreamReader reader)
         {
-#if DEBUG
+#if SAFETY
             try
             {
 #endif
@@ -125,7 +125,7 @@ namespace Internals.OnlineServiceImpl
                 return s_idToType[typeId];
 
 
-#if DEBUG
+#if SAFETY
             }
             catch (Exception e)
             {
@@ -137,7 +137,7 @@ namespace Internals.OnlineServiceImpl
         }
         public void Serialize(object message, BitStreamWriter writer)
         {
-#if DEBUG
+#if SAFETY
             try
             {
 #endif
@@ -146,7 +146,7 @@ namespace Internals.OnlineServiceImpl
                 DynamicNetSerializationRegistry.map_Serialize[message.GetType()].Invoke(message, writer);
 
 
-#if DEBUG
+#if SAFETY
             }
             catch (Exception e)
             {
@@ -158,16 +158,13 @@ namespace Internals.OnlineServiceImpl
 
         public object Deserialize(BitStreamReader reader)
         {
-#if DEBUG
+#if SAFETY
             try
             {
 #endif
-
                 ushort typeId = reader.ReadUInt16();
                 return DynamicNetSerializationRegistry.map_Deserialize[typeId].Invoke(reader);
-
-
-#if DEBUG
+#if SAFETY
             }
             catch (Exception e)
             {

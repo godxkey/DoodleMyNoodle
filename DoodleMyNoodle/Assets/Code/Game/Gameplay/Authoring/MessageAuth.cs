@@ -3,7 +3,6 @@ using Unity.Entities;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class MessageAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public string Value;

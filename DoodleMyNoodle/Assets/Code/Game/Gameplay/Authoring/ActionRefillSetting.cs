@@ -4,7 +4,6 @@ using Unity.Entities;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class ActionRefillSetting : MonoBehaviour, IConvertGameObjectToEntity
 {
     public int AmountToAdd = 0;

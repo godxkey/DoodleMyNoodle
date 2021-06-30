@@ -4,7 +4,6 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class ArcherAIAuth : AIAuth, IConvertGameObjectToEntity
 {
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

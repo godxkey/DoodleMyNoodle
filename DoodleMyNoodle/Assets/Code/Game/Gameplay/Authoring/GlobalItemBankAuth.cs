@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngineX;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class GlobalItemBankAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     public GlobalItemBank Bank;

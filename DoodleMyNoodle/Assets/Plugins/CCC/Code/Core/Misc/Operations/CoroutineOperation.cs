@@ -10,6 +10,7 @@ namespace CCC.Operations
     {
         public bool HasStarted { get; private set; }
         public bool IsRunning { get; private set; }
+        public bool IsDone => !IsRunning;
         public bool HasSucceeded { get; private set; }
         public bool HasFailed => _hasRun && !IsRunning && !HasSucceeded;
         public Action<CoroutineOperation> OnTerminateCallback;

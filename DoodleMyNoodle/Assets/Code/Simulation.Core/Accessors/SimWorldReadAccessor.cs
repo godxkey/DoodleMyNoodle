@@ -129,6 +129,9 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     public bool GetEnabled(Entity entity)
         => EntityManager.GetEnabled(entity);
 
+    public ComponentDataFromEntity<T> GetComponentFromEntity<T>() where T : struct, IComponentData
+        => SomeSimSystem.GetComponentDataFromEntity<T>(isReadOnly: true);
+
 #if UNITY_EDITOR
     public string GetName(Entity entity)
         => EntityManager.GetName(entity);

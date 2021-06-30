@@ -19,6 +19,7 @@ namespace SimulationControl
         private List<CoroutineOperation> _ongoingOperations = new List<CoroutineOperation>();
         private SimulationWorldSystem _simWorldSystem;
         private TickSimulationSystem _tickSystem;
+        private ConstructSimulationTickSystem _constructTickSystem;
 
         protected override void OnCreate()
         {
@@ -29,6 +30,7 @@ namespace SimulationControl
 
             _simWorldSystem = World.GetOrCreateSystem<SimulationWorldSystem>();
             _tickSystem = World.GetOrCreateSystem<TickSimulationSystem>();
+            _constructTickSystem = World.GetOrCreateSystem<ConstructSimulationTickSystem>();
         }
 
         protected override void OnDestroy()
@@ -72,6 +74,8 @@ namespace SimulationControl
             Log.Info($"Starting new sync...");
 
             var newOp = new SimulationSyncFromTransferServerOperation(_session, clientConnection, _simWorldSystem.SimulationWorld);
+
+            _constructTickSystem.RequestRepackBeforeNextTick();
 
             newOp.OnFailCallback = (op) =>
             {

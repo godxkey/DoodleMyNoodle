@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using UnityEngineX.InspectorDisplay;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     // SIMULATION

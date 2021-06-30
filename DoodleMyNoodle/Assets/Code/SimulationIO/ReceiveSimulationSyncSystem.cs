@@ -61,7 +61,7 @@ namespace SimulationControl
                 return null;
             }
 
-            Debug.Log($"Starting sync (old world was at {_simWorldSystem.SimulationWorld.GetLastedTickIdFromEntity()})");
+            Debug.Log($"Starting sync (old world was at {_simWorldSystem.SimulationWorld.GetLastTickIdFromEntity()})");
             _tickSystem.PauseSimulation(key: "sync");
 
             _receiveTickSystem.ClearAccumulatedTicks();
@@ -81,9 +81,9 @@ namespace SimulationControl
             _ongoingSyncOp.OnSucceedCallback = (op) =>
             {
                 DebugScreenMessage.DisplayMessage($"Transfered sim. {op.Message}");
-                Debug.Log($"Post sync, restore shelve from {newWorld.GetLastedTickIdFromEntity() + 1} (new world is at {newWorld.GetLastedTickIdFromEntity()})");
+                Debug.Log($"Post sync, restore shelve from {newWorld.GetLastTickIdFromEntity() + 1} (new world is at {newWorld.GetLastTickIdFromEntity()})");
                 _receiveTickSystem.ClearAccumulatedTicks();
-                _receiveTickSystem.RestoreTicksFromShelf(newWorld.GetLastedTickIdFromEntity() + 1);
+                _receiveTickSystem.RestoreTicksFromShelf(newWorld.GetLastTickIdFromEntity() + 1);
                 _simWorldSystem.RequestReplaceSimWorld(newWorld);
             };
 

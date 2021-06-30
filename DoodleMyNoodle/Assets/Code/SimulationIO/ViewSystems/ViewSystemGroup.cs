@@ -89,7 +89,7 @@ public abstract class ManualCreationComponentSystemGroup : ComponentSystemGroup
         AddSystemToUpdateList(sys);
         return sys;
     }
-    protected T ManualCreateAndAddSystem<T>() where T : ComponentSystem
+    protected T ManualCreateAndAddSystem<T>() where T : ComponentSystemBase
     {
         return ManualCreateAndAddSystem(typeof(T)) as T;
     }

@@ -3,7 +3,6 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
-[RequiresEntityConversion]
 [DisallowMultipleComponent]
 public class NavAgentAuth : MonoBehaviour, IConvertGameObjectToEntity
 {

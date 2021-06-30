@@ -23,6 +23,7 @@ MonoBehaviour:
     - UNITY_X_LOG_ASSERT
     - UNITY_X_LOG_ERROR
     - UNITY_X_LOG_METHOD
+    - SAFETY
   - Name: Release
     Symbols:
     - UNITY_X_LOG_ERROR
@@ -34,3 +35,5 @@ MonoBehaviour:
       debug overlays \n* Additional logs"
   - Name: BOLT_CLOUD
     Description: 
+  - Name: SAFETY
+    Description: Enables various safety checks

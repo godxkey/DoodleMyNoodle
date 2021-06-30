@@ -23,13 +23,20 @@ public static class EditorHelpers
     {
         if (GUILayout.Button("Open File Location"))
         {
-            path = path.Replace('/', '\\');
-
-            if (Directory.Exists(path))
-            {
-                System.Diagnostics.Process.Start("explorer.exe", path);
-            }
+            OpenDirectoryWithExplorer(path);
         }
+    }
+
+    public static bool OpenDirectoryWithExplorer(string path)
+    {
+        path = path.Replace('/', '\\');
+
+        if (Directory.Exists(path))
+        {
+            System.Diagnostics.Process.Start("explorer.exe", path);
+            return true;
+        }
+        return false;
     }
 
     private static PropertyInfo _cachedInspectorModeInfo;

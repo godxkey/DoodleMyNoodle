@@ -9,6 +9,9 @@ public class UpdateSimPlayersSystem : ViewSystemBase
 
     DirtyValue<uint> _simTick = new DirtyValue<uint>();
 
+    [ConsoleVar(Description = "If set to false, the simulation controller will not request the create of players.")]
+    public static bool AllowCreatePlayers { get; private set; } = true;
+
     protected override void OnUpdate()
     {
         if (PlayerRepertoireSystem.Instance == null)
@@ -39,7 +42,7 @@ public class UpdateSimPlayersSystem : ViewSystemBase
 
         foreach (PlayerInfo playerInfo in PlayerRepertoireSystem.Instance.Players)
         {
-            if (playerInfo.SimPlayerId == PersistentId.Invalid)
+            if (playerInfo.SimPlayerId == PersistentId.Invalid && AllowCreatePlayers)
             {
                 Entity unassignedSimPlayer = GetUnassignedSimPlayer();
 

@@ -1005,4 +1005,6 @@ public interface ISimWorldReadAccessor
 #endif
 
     T GetExistingSystem<T>() where T : ComponentSystemBase;
+
+    ComponentDataFromEntity<T> GetComponentFromEntity<T>() where T : struct, IComponentData;
 }
