@@ -24,21 +24,18 @@ public class GameActionParameterEntity
     [NetSerializable]
     public class Data : GameAction.ParameterData
     {
-        public fix2 EntityPos;
-
-        [field: NotNetSerialized]
-        public Entity Entity { get; set; }
+        public Entity Entity;
 
         public Data() { }
 
-        public Data(fix2 EntityPos)
+        public Data(Entity entity)
         {
-            this.EntityPos = EntityPos;
+            this.Entity = entity;
         }
 
         public override string ToString()
         {
-            return $"EntityPos({EntityPos})";
+            return $"Entity({Entity})";
         }
     }
 }

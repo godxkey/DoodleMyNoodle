@@ -18,7 +18,6 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
     private List<(Entity item, int stack)> _itemData = new List<(Entity item, int stack)>();
 
     private Entity _lastInventoryEntity = Entity.Null;
-    private fix2 _lastInventoryPosition;
 
     protected override void Awake()
     {
@@ -56,8 +55,6 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
         if (fixMath.distancemanhattan(pos, Cache.LocalPawnPosition) > SimulationGameConstants.InteractibleMaxDistanceManhattan)
             return;
 
-        _lastInventoryPosition = SimWorld.GetComponent<FixTranslation>(_lastInventoryEntity);
-
         foreach (var item in items)
         {
             _itemData.Add((item.ItemEntity, item.Stacks));
@@ -85,7 +82,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                     Action onClick = () =>
                     {
                         // when clicking on Take Item, we send a sim input
-                        SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, _lastInventoryPosition);
+                        SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, _lastInventoryEntity);
                         SimWorld.SubmitInput(simInputEquipItem);
                     };
 
