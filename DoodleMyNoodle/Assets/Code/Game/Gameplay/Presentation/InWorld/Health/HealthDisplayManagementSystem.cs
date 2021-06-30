@@ -13,6 +13,8 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
     public float HideDelayFromMouse = 0.4f;
     public float HideDelayFromDamageOrHeal = 1f;
 
+    public int MaxHearthToDisplay = 10;
+
     private List<GameObject> _healthBarInstances = new List<GameObject>();
 
     protected override void OnGamePresentationUpdate()
@@ -97,7 +99,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
         }
 
         currentHealthBar.transform.position = (position + new fix3(0, fix(0.7f), 0)).ToUnityVec();
-        currentHealthBar.GetComponent<HealthBarDisplay>()?.SetMaxHealth(maxHealth);
+        currentHealthBar.GetComponent<HealthBarDisplay>()?.SetMaxHealth(maxHealth, MaxHearthToDisplay);
         currentHealthBar.GetComponent<HealthBarDisplay>()?.SetHealth(health);
         currentHealthBar.SetActive(true);
     }

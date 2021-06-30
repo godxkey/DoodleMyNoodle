@@ -6,6 +6,12 @@ using static Unity.Mathematics.math;
 
 public struct ImpulseRequestSingletonTag : IComponentData { }
 
+public struct DirectMoveRequestData : IBufferElementData
+{
+    public Entity Target;
+    public fix2 Velocity;
+}
+
 public struct DirectImpulseRequestData : IBufferElementData
 {
     public Entity Target;
@@ -37,11 +43,17 @@ public class ApplyImpulseSystem : SimSystemBase
         buffer.Add(request);
     }
 
+    public void RequestMoveDirect(DirectMoveRequestData request)
+    {
+        var buffer = GetBuffer<DirectMoveRequestData>(GetRequestSingleton());
+        buffer.Add(request);
+    }
+
     private Entity GetRequestSingleton()
     {
         if (!HasSingleton<ImpulseRequestSingletonTag>())
         {
-            return EntityManager.CreateEntity(typeof(ImpulseRequestSingletonTag), typeof(DirectImpulseRequestData), typeof(RadialImpulseRequestData));
+            return EntityManager.CreateEntity(typeof(ImpulseRequestSingletonTag), typeof(DirectImpulseRequestData), typeof(RadialImpulseRequestData), typeof(DirectMoveRequestData));
         }
         return GetSingletonEntity<ImpulseRequestSingletonTag>();
     }
@@ -50,6 +62,7 @@ public class ApplyImpulseSystem : SimSystemBase
     {
         HandleRadialImpulseRequests();
         HandleDirectImpulseRequests();
+        HandleDirectMoveRequests();
     }
 
     private void HandleRadialImpulseRequests()
@@ -123,6 +136,56 @@ public class ApplyImpulseSystem : SimSystemBase
             directImpulseRequests.Clear();
         }
     }
+
+    private void HandleDirectMoveRequests()
+    {
+        DynamicBuffer<DirectMoveRequestData> directMoveRequests = GetBuffer<DirectMoveRequestData>(GetRequestSingleton());
+
+        if (directMoveRequests.Length > 0)
+        {
+            foreach (DirectMoveRequestData request in directMoveRequests)
+            {
+                if (!HasComponent<PhysicsVelocity>(request.Target))
+                    continue;
+
+                if (!HasComponent<PhysicsMass>(request.Target))
+                    continue;
+
+                var speed = GetComponent<MoveSpeed>(request.Target);
+                PhysicsVelocity vel = GetComponent<PhysicsVelocity>(request.Target);
+
+                // vel is already above speed limit, cannot move to go faster than that
+                if (vel.Linear.lengthSquared > fix.Pow(speed.Value, 2))
+                    continue;
+
+                var mass = GetComponent<PhysicsMass>(request.Target);
+
+                fix2 currentVelLinear = vel.Linear;
+                fix2 velToAdd = request.Velocity * (fix)mass.InverseMass;
+                currentVelLinear += velToAdd;
+
+                // is the movement sending us past the move speed
+                if (currentVelLinear.lengthSquared > fix.Pow(speed.Value,2))
+                {
+                    // yes, so ajust it to reach the speed limit
+                    fix diff = currentVelLinear.length - vel.Linear.length;
+                    velToAdd.Normalize();
+                    velToAdd *= diff;
+                }
+
+                vel.Linear += velToAdd;
+
+                SetComponent(request.Target, vel);
+
+                if (HasComponent<NavAgentFootingState>(request.Target))
+                {
+                    SetComponent(request.Target, new NavAgentFootingState() { Value = NavAgentFooting.None });
+                }
+            }
+
+            directMoveRequests.Clear();
+        }
+    }
 }
 
 internal static partial class CommonWrites
@@ -152,5 +215,16 @@ internal static partial class CommonWrites
         };
 
         accessor.GetExistingSystem<ApplyImpulseSystem>().RequestImpulseDirect(request);
+    }
+
+    public static void RequestMove(ISimWorldReadWriteAccessor accessor, Entity target, fix2 velocity)
+    {
+        DirectMoveRequestData request = new DirectMoveRequestData()
+        {
+            Target = target,
+            Velocity = velocity
+        };
+
+        accessor.GetExistingSystem<ApplyImpulseSystem>().RequestMoveDirect(request);
     }
 }

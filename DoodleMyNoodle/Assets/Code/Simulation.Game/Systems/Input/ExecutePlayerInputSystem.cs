@@ -95,8 +95,16 @@ public class ExecutePlayerInputSystem : SimSystemBase
                 break;
             }
             case SimPlayerInputDropItem dropItemInput:
+            {
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputDropItem(playerEntity, dropItemInput.ItemIndex));
                 break;
+            }
+            case SimPlayerInputMovingCharacter movingCharacterInput:
+            {
+                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputMovingCharacter(playerEntity, movingCharacterInput.Direction));
+                break;
+            }
+
         }
     }
 

@@ -22,15 +22,20 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     public float Speed;
     public float ZoomSpeed;
 
+    [Header("Draggin")]
+    public float DragSpeed = 1;
+    public float DragMaxSpeed = 1;
+
     [Header("Limits")]
     public float MinZoom = 1;
     public float MaxZoom;
-    public float BeginZoom = 2f;
+    public float BeginZoom = 2;
 
     private Transform _transform;
     private float2 _boundsMin;
     private float2 _boundsMax;
     private DirtyValue<Entity> _localPawn;
+    private Vector3 dragOrigin;
 
     [ConsoleVar("CameraLimits", "Enable/Disable the game camera move limits.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
     private static bool s_enableMovementLimits = true;
@@ -137,30 +142,58 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
 
         bool useMouseMovements = isMouseInsideScreen && MouseMovementsEnabled;
 
-        if (Input.GetKey(KeyCode.W) || (useMouseMovements && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
+        if (Input.GetMouseButtonDown(0)) 
         {
-            movement += Vector2.up;
+            dragOrigin = Input.mousePosition;
+            CursorOverlayService.Instance.SetCursorLockAtPosition(dragOrigin, true);
+            CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Grab);
         }
 
-        if (Input.GetKey(KeyCode.S) || (useMouseMovements && (Input.mousePosition.y >= 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
+        if (Input.GetMouseButton(0) && (UIStateMachineController.Instance.CurrentSate.Type != UIStateType.ParameterSelection)) 
         {
-            movement -= Vector2.up;
-        }
+            Vector3 dragDirection = (dragOrigin - Input.mousePosition);
+            movement += new Vector2(dragDirection.x, dragDirection.y);
+            movement *= DragSpeed * Time.deltaTime;
 
-        if (Input.GetKey(KeyCode.A) || (useMouseMovements && (Input.mousePosition.x >= 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
-        {
-            movement += Vector2.left;
-        }
+            // Speed is greater than max, ajust it
+            if (movement.sqrMagnitude > Mathf.Pow(DragMaxSpeed, 2))
+            {
+                movement.Normalize();
+                movement *= DragMaxSpeed;
+            }
 
-        if (Input.GetKey(KeyCode.D) || (useMouseMovements && (Input.mousePosition.x >= (Screen.width - ScreenEdgeBorderThickness))))
-        {
-            movement += Vector2.right;
+            CamPosition += movement;
         }
-
-        if (movement != Vector2.zero)
+        else
         {
-            movement.Normalize();
-            CamPosition += movement * Speed * CamSize * Time.deltaTime;
+            CursorOverlayService.Instance.UnlockCursorPosition();
+            CursorOverlayService.Instance.ResetCursorToDefault();
+
+            if (Input.GetKey(KeyCode.UpArrow) || (useMouseMovements && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
+            {
+                movement += Vector2.up;
+            }
+
+            if (Input.GetKey(KeyCode.DownArrow) || (useMouseMovements && (Input.mousePosition.y >= 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
+            {
+                movement -= Vector2.up;
+            }
+
+            if (Input.GetKey(KeyCode.LeftArrow) || (useMouseMovements && (Input.mousePosition.x >= 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
+            {
+                movement += Vector2.left;
+            }
+
+            if (Input.GetKey(KeyCode.RightArrow) || (useMouseMovements && (Input.mousePosition.x >= (Screen.width - ScreenEdgeBorderThickness))))
+            {
+                movement += Vector2.right;
+            }
+
+            if (movement != Vector2.zero)
+            {
+                movement.Normalize();
+                CamPosition += movement * Speed * CamSize * Time.deltaTime;
+            }
         }
 
         // Zoom

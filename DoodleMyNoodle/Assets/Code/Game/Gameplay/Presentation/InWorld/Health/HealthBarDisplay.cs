@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.Serialization;
+using TMPro;
 
 public class HealthBarDisplay : GameMonoBehaviour
 {
@@ -18,28 +19,50 @@ public class HealthBarDisplay : GameMonoBehaviour
     [SerializeField] private CanvasGroup _canvasGroup = null;
     [SerializeField] private float _canvasFadeSpeed = 0.1f;
 
+    [SerializeField] private GameObject _moreHearthContainer = null;
+    [SerializeField] private TextMeshProUGUI _moreHearthText = null;
+
     private List<GameObject> _spawnedHearth = new List<GameObject>();
     private float _fadeDelayTimer;
 
-    public void SetMaxHealth(int amount)
+    public void SetMaxHealth(int amount, int maxAmount)
     {
-        while (_spawnedHearth.Count != amount)
+        if (_spawnedHearth.Count >= maxAmount)
         {
-            if (_spawnedHearth.Count < amount)
+            return;
+        }
+        else
+        {
+            while (_spawnedHearth.Count != amount)
             {
-                _spawnedHearth.Add(Instantiate(_emptyHearthPrefab, _hearthContainer));
+                if (_spawnedHearth.Count == maxAmount)
+                {
+                    UpdateMoreHealthDisplay(amount);
+                    return;
+                }
+
+                if (_spawnedHearth.Count < amount)
+                {
+                    _spawnedHearth.Add(Instantiate(_emptyHearthPrefab, _hearthContainer));
+                    if (_spawnedHearth[_spawnedHearth.Count - 1].TryGetComponent(out Image image))
+                    {
+                        image.sprite = _filledHearth;
+                    }
+                }
+                else if (_spawnedHearth.Count > amount)
+                {
+                    Destroy(_spawnedHearth[_spawnedHearth.Count - 1]);
+                    _spawnedHearth.RemoveAt(_spawnedHearth.Count - 1);
+                }
             }
-            else if (_spawnedHearth.Count > amount)
-            {
-                Destroy(_spawnedHearth[_spawnedHearth.Count - 1]);
-                _spawnedHearth.RemoveAt(_spawnedHearth.Count - 1);
-            }
+
+            _moreHearthContainer.SetActive(false);
         }
     }
 
     public void SetHealth(int amount)
     {
-        for (int i = 0; i < amount; i++)
+        for (int i = 0; i < _spawnedHearth.Count; i++)
         {
             if (_spawnedHearth[i].TryGetComponent(out Image image))
             {
@@ -53,6 +76,16 @@ public class HealthBarDisplay : GameMonoBehaviour
             {
                 image.sprite = _emptyHearth;
             }
+        }
+
+        if (amount < _spawnedHearth.Count)
+        {
+            _moreHearthContainer.SetActive(false);
+        }
+        else
+        {
+            UpdateMoreHealthDisplay(amount);
+            return;
         }
     }
 
@@ -70,5 +103,15 @@ public class HealthBarDisplay : GameMonoBehaviour
     {
         _canvasGroup.alpha = 1;
         _fadeDelayTimer = Mathf.Max(fadeDelay, _fadeDelayTimer);
+    }
+
+    private void UpdateMoreHealthDisplay(int totalAmount)
+    {
+        int count = totalAmount - _spawnedHearth.Count;
+        if (count > 0)
+        {
+            _moreHearthContainer.SetActive(true);
+            _moreHearthText.text = "x" + (totalAmount - _spawnedHearth.Count);
+        }
     }
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 971858758830137585}
   - component: {fileID: 2278408862114426295}
   m_Layer: 0
-  m_Name: SE_Item_Jump
+  m_Name: SE_Item_Jump_Large
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 189b26f3fa7a7ef48a9f45c1e247f696
+  _guid: 75bc2c27660403642a7b13386ca7fb87
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -66,14 +66,14 @@ MonoBehaviour:
   Value: GameActionJump
   GameActionSettings:
   - id: 0
-  ApCost: 1
+  ApCost: 2
   IsStackable: 0
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
   Icon: {fileID: 21300000, guid: a7c0857bee529884c801da6380546a43, type: 3}
-  Name: Saut
-  EffectDescription: Permet de sauter
+  Name: Grand Saut
+  EffectDescription: Permet de sauter loin
   SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 0}
@@ -87,3 +87,5 @@ MonoBehaviour:
           RawValue: 0
         SpeedMax:
           RawValue: 42949672960
+        SpawnExtraDistance:
+          RawValue: 0

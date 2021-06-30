@@ -87,6 +87,11 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
                 if (pawn != Entity.Null)
                     ExecuteDropItemInput(pawnInputDropItem, pawn);
                 break;
+
+            case PawnControllerInputMovingCharacter movingCharacterInput:
+                if (pawn != Entity.Null)
+                    CommonWrites.RequestMove(Accessor, pawn, movingCharacterInput.Direction);
+                break;
         }
     }
 

@@ -9,6 +9,8 @@ using System;
 
 public class GameActionMove : GameAction
 {
+    private fix COST_PER_TILE = (fix)0.5;
+
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
         typeof(GameActionSettingRange)
@@ -41,7 +43,8 @@ public class GameActionMove : GameAction
             new GameActionParameterTile.Description(highestRangePossible)
             {
                 IncludeSelf = false,
-                MustBeReachable = true
+                MustBeReachable = true,
+                TileFilter = TileFlags.Ladder
             }
         };
 
