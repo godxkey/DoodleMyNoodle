@@ -75,9 +75,9 @@ public class ChecksumSystem : SystemBase
     {
         if (_producedHash != null)
         {
-            string str = $"tick {_hashTick}, sim checksum: {_producedHash.Value}";
-            DebugScreenMessage.DisplayMessage(str);
-            Log.Info(str);
+            //string str = $"tick {_hashTick}, sim checksum: {_producedHash.Value}";
+            //DebugScreenMessage.DisplayMessage(str);
+            //Log.Info(str);
             _producedHash = null;
         }
     }

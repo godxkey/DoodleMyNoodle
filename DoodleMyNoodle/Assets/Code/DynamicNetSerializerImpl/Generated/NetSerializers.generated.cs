@@ -1394,6 +1394,104 @@ public static class StaticNetSerializer_PlayerInfo
         StaticNetSerializer_PersistentId.Deserialize(ref obj.SimPlayerId, reader);
     }
 }
+public static class StaticNetSerializer_Sim_Operations_SerializedWorld
+{
+    public static int GetSerializedBitSize_Class(Sim.Operations.SerializedWorld obj)
+    {
+        if (obj == null)
+            return 1;
+        return 1 + GetSerializedBitSize(obj);
+    }
+
+    public static int GetSerializedBitSize(Sim.Operations.SerializedWorld obj)
+    {
+        int result = 0;
+        result += ArrayNetSerializer_Sim_Operations_SerializedWorld_BlobAsset.GetSerializedBitSize(ref obj.BlobAssets);
+        result += ArrayNetSerializer_System_Byte.GetSerializedBitSize(ref obj.WorldData);
+        return result;
+    }
+
+    public static void Serialize_Class(Sim.Operations.SerializedWorld obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        Serialize(obj, writer);
+    }
+    public static void Serialize(Sim.Operations.SerializedWorld obj, BitStreamWriter writer)
+    {
+        ArrayNetSerializer_Sim_Operations_SerializedWorld_BlobAsset.Serialize(ref obj.BlobAssets, writer);
+        ArrayNetSerializer_System_Byte.Serialize(ref obj.WorldData, writer);
+    }
+
+    public static Sim.Operations.SerializedWorld Deserialize_Class(BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            return null;
+        }
+        Sim.Operations.SerializedWorld obj = new Sim.Operations.SerializedWorld();
+        Deserialize(obj, reader);
+        return obj;
+    }
+    public static void Deserialize(Sim.Operations.SerializedWorld obj, BitStreamReader reader)
+    {
+        ArrayNetSerializer_Sim_Operations_SerializedWorld_BlobAsset.Deserialize(ref obj.BlobAssets, reader);
+        ArrayNetSerializer_System_Byte.Deserialize(ref obj.WorldData, reader);
+    }
+}
+public static class StaticNetSerializer_Sim_Operations_SerializedWorld_BlobAsset
+{
+    public static int GetSerializedBitSize_Class(Sim.Operations.SerializedWorld.BlobAsset obj)
+    {
+        if (obj == null)
+            return 1;
+        return 1 + GetSerializedBitSize(obj);
+    }
+
+    public static int GetSerializedBitSize(Sim.Operations.SerializedWorld.BlobAsset obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_System_UInt32.GetSerializedBitSize(ref obj.Id);
+        result += ArrayNetSerializer_System_Byte.GetSerializedBitSize(ref obj.Data);
+        return result;
+    }
+
+    public static void Serialize_Class(Sim.Operations.SerializedWorld.BlobAsset obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        Serialize(obj, writer);
+    }
+    public static void Serialize(Sim.Operations.SerializedWorld.BlobAsset obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_System_UInt32.Serialize(ref obj.Id, writer);
+        ArrayNetSerializer_System_Byte.Serialize(ref obj.Data, writer);
+    }
+
+    public static Sim.Operations.SerializedWorld.BlobAsset Deserialize_Class(BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            return null;
+        }
+        Sim.Operations.SerializedWorld.BlobAsset obj = new Sim.Operations.SerializedWorld.BlobAsset();
+        Deserialize(obj, reader);
+        return obj;
+    }
+    public static void Deserialize(Sim.Operations.SerializedWorld.BlobAsset obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_System_UInt32.Deserialize(ref obj.Id, reader);
+        ArrayNetSerializer_System_Byte.Deserialize(ref obj.Data, reader);
+    }
+}
 public static class StaticNetSerializer_SimCheatInput
 {
     public static int GetSerializedBitSize_Class(SimCheatInput obj)
@@ -3365,6 +3463,50 @@ public static class ArrayNetSerializer_PlayerInfo
         for (int i = 0; i < obj.Length; i++)
         {
             obj[i] = StaticNetSerializer_PlayerInfo.Deserialize_Class(reader);
+        }
+    }
+}
+
+public static class ArrayNetSerializer_Sim_Operations_SerializedWorld_BlobAsset
+{
+    public static int GetSerializedBitSize(ref Sim.Operations.SerializedWorld.BlobAsset[] obj)
+    {
+        if (obj == null)
+            return 1;
+        int result = 1 + sizeof(Int32) * 8;
+        for (int i = 0; i < obj.Length; i++)
+        {
+            result += StaticNetSerializer_Sim_Operations_SerializedWorld_BlobAsset.GetSerializedBitSize_Class(obj[i]);
+        }
+        return result;
+    }
+
+    public static void Serialize(ref Sim.Operations.SerializedWorld.BlobAsset[] obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        writer.WriteInt32(obj.Length);
+        for (int i = 0; i < obj.Length; i++)
+        {
+            StaticNetSerializer_Sim_Operations_SerializedWorld_BlobAsset.Serialize_Class(obj[i], writer);
+        }
+    }
+
+    public static void Deserialize(ref Sim.Operations.SerializedWorld.BlobAsset[] obj, BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            obj = null;
+            return;
+        }
+        obj = new Sim.Operations.SerializedWorld.BlobAsset[reader.ReadInt32()];
+        for (int i = 0; i < obj.Length; i++)
+        {
+            obj[i] = StaticNetSerializer_Sim_Operations_SerializedWorld_BlobAsset.Deserialize_Class(reader);
         }
     }
 }

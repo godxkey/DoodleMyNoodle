@@ -20,7 +20,6 @@ public class CreatePlayerSystem : SimSystemBase
         {
             if (input is SimInputPlayerCreate createPlayerInput)
             {
-
                 var newPlayerEntity = EntityManager.CreateEntity(
                     typeof(PlayerTag),
                     typeof(PersistentId),
@@ -31,7 +30,7 @@ public class CreatePlayerSystem : SimSystemBase
                     typeof(Active));
 
                 // set persistent id
-                EntityManager.SetComponentData(newPlayerEntity, this.MakeUniquePersistentId());
+                SetComponent(newPlayerEntity, this.MakeUniquePersistentId());
 
                 // cap player name at 30 characters
                 string playerName = createPlayerInput.PlayerName;
@@ -39,7 +38,7 @@ public class CreatePlayerSystem : SimSystemBase
                     playerName = playerName.Substring(0, 30);
 
                 // set name
-                EntityManager.SetComponentData(newPlayerEntity, new Name() { Value = playerName });
+                SetComponent(newPlayerEntity, new Name() { Value = playerName });
 
                 // assign controllable entity if possible
                 Entity uncontrolledEntity = FindUncontrolledPawn();
@@ -51,18 +50,18 @@ public class CreatePlayerSystem : SimSystemBase
 
                 if (uncontrolledEntity != Entity.Null)
                 {
-                    EntityManager.SetComponentData(newPlayerEntity, new ControlledEntity() { Value = uncontrolledEntity });
-                    EntityManager.SetComponentData(uncontrolledEntity, new Controllable() { CurrentController = newPlayerEntity });
+                    SetComponent(newPlayerEntity, new ControlledEntity() { Value = uncontrolledEntity });
+                    SetComponent(uncontrolledEntity, new Controllable() { CurrentController = newPlayerEntity });
                 }
 
                 // set team
-                EntityManager.SetComponentData(newPlayerEntity, new Team() { Value = 0 });
+                SetComponent(newPlayerEntity, new Team() { Value = 0 });
 
                 // set 'not ready for next turn'
-                EntityManager.SetComponentData(newPlayerEntity, new ReadyForNextTurn() { Value = false });
+                SetComponent(newPlayerEntity, new ReadyForNextTurn() { Value = false });
 
                 // set new player controller as currently active
-                EntityManager.SetComponentData(newPlayerEntity, new Active() { Value = true });
+                SetComponent(newPlayerEntity, new Active() { Value = true });
 
                 // FOR DEBUGGING ONLY
 #if UNITY_EDITOR
@@ -72,11 +71,11 @@ public class CreatePlayerSystem : SimSystemBase
 
             if (input is SimInputSetPlayerActive setPlayerActiveInput)
             {
-                Entity PlayerEntity = CommonReads.FindPlayerEntity(Accessor, setPlayerActiveInput.PlayerID);
+                Entity playerEntity = CommonReads.FindPlayerEntity(Accessor, setPlayerActiveInput.PlayerID);
 
-                if (PlayerEntity != Entity.Null)
+                if (playerEntity != Entity.Null)
                 {
-                    EntityManager.SetComponentData(PlayerEntity, new Active() { Value = setPlayerActiveInput.IsActive });
+                    SetComponent(playerEntity, new Active() { Value = setPlayerActiveInput.IsActive });
                 }
             }
         }

@@ -96,14 +96,14 @@ namespace SimulationControl
 
 #if DEBUG
             s_commandInstance = this;
-            GameConsole.SetCommandOrVarEnabled("Sim.Pause", true);
+            GameConsole.SetGroupEnabled("Sim", true);
 #endif
         }
 
         protected override void OnDestroy()
         {
 #if DEBUG
-            GameConsole.SetCommandOrVarEnabled("Sim.Pause", false);
+            GameConsole.SetGroupEnabled("Sim", false);
             s_commandInstance = null;
 #endif
             base.OnDestroy();
@@ -172,9 +172,23 @@ namespace SimulationControl
                     break;
 
                 _simulationLoadSceneSystem.UpdateSceneLoading();
-
+#if DEBUG
+                if (_isPausedByCmd && _stepCmdCounter == 0)
+                {
+                    PauseSimulation("cmd");
+                }
+                else
+                {
+                    UnpauseSimulation("cmd");
+                }
+#endif
                 if (!CanTick)
                     break;
+
+#if DEBUG
+                if (_stepCmdCounter > 0)
+                    _stepCmdCounter--;
+#endif
 
                 tickedThisFrame = true;
 
@@ -235,7 +249,7 @@ namespace SimulationControl
                 var op = new RepackSimulationOperation(_simulationWorldSystem.SimulationWorld, newWorld);
                 var tickId = tick.ExpectedNewTickId;
                 var worldReplaceRequested = false;
-                
+
                 _repack = (op, tickId, worldReplaceRequested);
                 _repack.op.Execute();
             }
@@ -251,7 +265,7 @@ namespace SimulationControl
                 {
                     DebugScreenMessage.DisplayMessage("Repack failed");
                     Log.Error($"Failed to repack before tick {tick.ExpectedNewTickId}. Simulation will continue normally, but entities might be desynced from server.");
-                    
+
                     // remove the 'Repack' flag from the first tick to let simulation continue
                     if (AvailableTicks.Count > 0)
                     {
@@ -397,21 +411,19 @@ namespace SimulationControl
 
 #if DEBUG
         private bool _isPausedByCmd = false;
+        private int _stepCmdCounter = 0;
         private static TickSimulationSystem s_commandInstance;
 
-        [ConsoleCommand("Sim.Pause", "Pause the simulation playback", EnabledByDefault = false)]
+        [ConsoleCommand("Sim.Pause", "Pause the simulation playback", EnableGroup = "Sim")]
         private static void Cmd_SimPause()
         {
-            if (s_commandInstance._isPausedByCmd)
-            {
-                s_commandInstance.UnpauseSimulation(key: "cmd");
-                s_commandInstance._isPausedByCmd = false;
-            }
-            else
-            {
-                s_commandInstance.PauseSimulation(key: "cmd");
-                s_commandInstance._isPausedByCmd = true;
-            }
+            s_commandInstance._isPausedByCmd = !s_commandInstance._isPausedByCmd;
+        }
+
+        [ConsoleCommand("Sim.Step", "Tick 1 frame of the simulation", EnableGroup = "Sim")]
+        private static void Cmd_SimStep()
+        {
+            s_commandInstance._stepCmdCounter++;
         }
 #endif
 

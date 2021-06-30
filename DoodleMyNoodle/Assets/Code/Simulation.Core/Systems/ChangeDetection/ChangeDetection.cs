@@ -103,8 +103,10 @@ public static class ChangeDetection
 
         using (NativeArray<ArchetypeChunk> chunks = entityManager.GetAllChunks(Allocator.TempJob)) // needs to be temp job to preven unity error :(
         {
-            foreach (ArchetypeChunk chunk in chunks)
+            for (int i = 0; i < chunks.Length; i++)
             {
+                ArchetypeChunk chunk = chunks[i];
+
                 while (chunkI >= trace.Chunks.Count)
                     trace.Chunks.Add(s_chunkTracePool.Count > 0 ? s_chunkTracePool.Dequeue() : new ChunkTrace());
 

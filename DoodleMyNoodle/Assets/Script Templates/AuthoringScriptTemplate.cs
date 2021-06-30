@@ -17,7 +17,6 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class #SCRIPTNAME# : MonoBehaviour, IConvertGameObjectToEntity
 {{
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

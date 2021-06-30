@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngineX;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class SignalAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public ESignalEmissionType Emission = ESignalEmissionType.None;

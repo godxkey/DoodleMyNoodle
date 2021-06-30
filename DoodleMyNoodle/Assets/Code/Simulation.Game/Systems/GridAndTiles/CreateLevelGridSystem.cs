@@ -9,12 +9,16 @@ using static Unity.Mathematics.math;
 using UnityEngineX;
 using CCC.Fix2D;
 
+public struct TileColliderTag : IComponentData { }
+public struct TileTag : IComponentData { }
+
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 public class CreateLevelGridSystem : SimComponentSystem
 {
     private BlobAssetReference<Collider> _sharedTileCollider;
-    private EntityArchetype _tileArchetype;
-    private EntityArchetype _tileColliderArchetype;
+
+    public EntityArchetype TileArchetype { get; private set; }
+    public EntityArchetype TileColliderArchetype { get; private set; }
 
     protected override void OnCreate()
     {
@@ -23,14 +27,15 @@ public class CreateLevelGridSystem : SimComponentSystem
         RequireSingletonForUpdate<GridInfo>();
         RequireSingletonForUpdate<StartingTileActorElement>();
 
-        _tileArchetype = EntityManager.CreateArchetype(
+        TileArchetype = EntityManager.CreateArchetype(
             typeof(TileTag),
             typeof(TileActorReference),
             typeof(TileFlagComponent),
             typeof(TileId),
             typeof(SimAssetId));
 
-        _tileColliderArchetype = EntityManager.CreateArchetype(
+        TileColliderArchetype = EntityManager.CreateArchetype(
+            typeof(TileColliderTag),
             typeof(FixTranslation),
             typeof(PhysicsColliderBlob));
 
@@ -97,7 +102,7 @@ public class CreateLevelGridSystem : SimComponentSystem
     private Entity CreateTileEntity(StartingTileElement tileData)
     {
         // Create Tile
-        Entity newTileEntity = EntityManager.CreateEntity(_tileArchetype);
+        Entity newTileEntity = EntityManager.CreateEntity(TileArchetype);
 
         EntityManager.SetComponentData(newTileEntity, new TileFlagComponent() { Value = tileData.TileFlags });
         EntityManager.SetComponentData(newTileEntity, new TileId(tileData.Position));
@@ -110,7 +115,11 @@ public class CreateLevelGridSystem : SimComponentSystem
         // Create tile collider
         if (tileData.TileFlags.IsTerrain)
         {
-            Entity tileCollider = EntityManager.CreateEntity(_tileColliderArchetype);
+            Entity tileCollider = EntityManager.CreateEntity(TileColliderArchetype);
+
+#if UNITY_EDITOR
+            EntityManager.SetName(tileCollider, $"Tile Collider {tileData.Position.x}, {tileData.Position.y}");
+#endif
             EntityManager.SetComponentData(tileCollider, new FixTranslation() { Value = Helpers.GetTileCenter(tileData.Position) });
             EntityManager.SetComponentData(tileCollider, new PhysicsColliderBlob() { Collider = _sharedTileCollider });
         }
@@ -127,7 +136,7 @@ public class CreateLevelGridSystem : SimComponentSystem
                 return tile;
             }
         }
-        
+
         return new StartingTileElement()
         {
             AssetId = SimAssetId.Invalid,

@@ -4,7 +4,6 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class TurnSystemSetting : MonoBehaviour, IConvertGameObjectToEntity
 {
     public enum Team

@@ -48,6 +48,7 @@ public class LifeCycleTagSystem : SimComponentSystem
         // New entity! Add NewlyCreatedTag + MidLifeCycleTag + MidLifeCycleSystemTag
         Entities
             .WithNone<MidLifeCycleTag, MidLifeCycleSystemTag, NewlyDestroyedTag>()
+            .WithAll<SimAssetId>()
             .ForEach((Entity entity) =>
         {
             EntityManager.AddComponent<NewlyCreatedTag>(entity);

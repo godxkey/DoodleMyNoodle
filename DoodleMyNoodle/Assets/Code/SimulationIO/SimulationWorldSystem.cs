@@ -85,7 +85,7 @@ namespace SimulationControl
 
         private void ReplaceSimWorld(SimulationWorld newWorld)
         {
-            Log.Error($"Replacing sim world with new one (at tick {newWorld.GetLastTickIdFromEntity()})");
+            Log.Info($"Replacing sim world with new one (at tick {newWorld.GetLastTickIdFromEntity()})");
             if (SimulationWorld != null)
             {
                 if (_inPlayerLoop)

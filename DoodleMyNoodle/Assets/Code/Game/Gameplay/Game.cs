@@ -206,13 +206,13 @@ public class Game : MonoBehaviour
 
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
-#if DEBUG
+#if SAFETY
                 try
                 {
 #endif
                     if (b.isActiveAndEnabled)
                         b.OnGameUpdate();
-#if DEBUG
+#if SAFETY
                 }
                 catch (Exception e)
                 {
@@ -229,13 +229,13 @@ public class Game : MonoBehaviour
         {
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
-#if DEBUG
+#if SAFETY
                 try
                 {
 #endif
                     if (b.isActiveAndEnabled)
                         b.OnGameFixedUpdate();
-#if DEBUG
+#if SAFETY
                 }
                 catch (Exception e)
                 {
@@ -253,13 +253,13 @@ public class Game : MonoBehaviour
         {
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
-#if DEBUG
+#if SAFETY
                 try
                 {
 #endif
                     if (b.isActiveAndEnabled)
                         b.OnGameLateUpdate();
-#if DEBUG
+#if SAFETY
                 }
                 catch (Exception e)
                 {

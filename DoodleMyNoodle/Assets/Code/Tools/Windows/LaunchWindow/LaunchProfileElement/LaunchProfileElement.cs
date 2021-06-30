@@ -173,15 +173,19 @@ public class LaunchProfileElement : ToolsVisualElementBase
     {
         string args = GetFinalLaunchArguments().ToString();
 
-        var buildPath = PipelineSettings.AutoBuildPath;
-        var buildExe = PipelineSettings.AutoBuildExecutableName;
+        var lastBuildArtifact = BuildTools.GetLastBuildFile();
+        if (lastBuildArtifact == null)
+        {
+            EditorUtility.DisplayDialog("No Build", "No windows build artifact found.", "Ok");
+            return;
+        }
 
         var process = new Process();
 
         process.StartInfo.UseShellExecute = args.Contains("-batchmode");
-        process.StartInfo.FileName = Application.dataPath + "/../" + buildPath + "/" + buildExe;
+        process.StartInfo.FileName = lastBuildArtifact.FullName;
         process.StartInfo.Arguments = args;
-        process.StartInfo.WorkingDirectory = buildPath;
+        process.StartInfo.WorkingDirectory = lastBuildArtifact.Directory.FullName;
         process.Start();
 
         ProcessHandle processHandle = new ProcessHandle(process, customId: PlayerProfile.localId);

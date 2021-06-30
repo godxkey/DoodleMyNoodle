@@ -6,7 +6,6 @@ using UnityEngine;
 
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class ControllableAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     public GameObject DefaultAIPrefab;

@@ -5,7 +5,6 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class DelayedExplosionAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public bool UseTime = true;

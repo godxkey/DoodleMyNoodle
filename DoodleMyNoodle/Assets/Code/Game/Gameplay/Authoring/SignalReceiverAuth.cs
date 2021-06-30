@@ -4,7 +4,6 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class SignalReceiverAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

@@ -9,7 +9,6 @@ using CCC.InspectorDisplay;
 using System;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     private const int DEFAULT_CAPACITY = 9999;

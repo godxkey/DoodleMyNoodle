@@ -1,18 +1,22 @@
-﻿using CCC.Operations;
+﻿using CCC.Fix2D;
+using CCC.Operations;
+using Sim.Operations;
 using SimulationControl;
 using System;
-using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
-public class SimulationController : GameSystem<SimulationController>
+public partial class SimulationController : GameSystem<SimulationController>
 {
     private TickSimulationSystem _tickSystem;
 
     public override void OnGameAwake()
     {
         base.OnGameAwake();
+
+        SimSerializationOperation.BlobAssetDataCollectors[typeof(PhysicsColliderBlob)] = new BlobPhysicsColliderCollector();
+        SimDeserializationOperation.BlobAssetDataDistributors[typeof(PhysicsColliderBlob)] = new BlobPhysicsColliderDistributor();
 
         Time.fixedDeltaTime = (float)SimulationConstants.TIME_STEP;
 

@@ -2,7 +2,6 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class MoveSpeedAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public fix Value;

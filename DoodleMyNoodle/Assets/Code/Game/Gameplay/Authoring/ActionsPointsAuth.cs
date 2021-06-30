@@ -4,7 +4,6 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class ActionsPointsAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public int MaxValue = 4;
