@@ -275,10 +275,8 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
     {
         Entity emitter = inputClickEmitter.Emitter;
 
-        if (emitter != Entity.Null && HasComponent<SignalEmissionType>(emitter))
+        if (TryGetComponent(emitter, out SignalEmissionType emissionType))
         {
-            var emissionType = GetComponent<SignalEmissionType>(emitter);
-
             if (emissionType.Value == ESignalEmissionType.OnClick || emissionType.Value == ESignalEmissionType.ToggleOnClick)
             {
                 World.GetOrCreateSystem<SetSignalSystem>().EmitterClickRequests.Add(emitter);
