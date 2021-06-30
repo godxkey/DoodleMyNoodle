@@ -3,7 +3,6 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class ArmorAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public int StartValue = 0;

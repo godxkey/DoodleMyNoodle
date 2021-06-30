@@ -3,7 +3,6 @@ using Unity.Entities;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class ItemPassiveEffectsAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public List<string> Values;

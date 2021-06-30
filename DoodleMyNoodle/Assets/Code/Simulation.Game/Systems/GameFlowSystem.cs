@@ -1,6 +1,7 @@
 using System;
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 
@@ -47,8 +48,7 @@ public class GameFlowSystem : SimSystemBase
 
             if (atLeastOnePlayerExists && everyoneIsReady)
             {
-                SetOrCreateSingleton(new GameStartedTag());
-
+                CreateSingleton<GameStartedTag>();
                 CommonWrites.RequestNextTurn(Accessor);
             }
         }

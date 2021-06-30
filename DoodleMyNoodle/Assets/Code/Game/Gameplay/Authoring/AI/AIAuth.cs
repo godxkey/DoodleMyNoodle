@@ -3,7 +3,6 @@ using UnityEngine;
 
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public abstract class AIAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public DesignerFriendlyTeam StartingTeam = DesignerFriendlyTeam.Baddies;

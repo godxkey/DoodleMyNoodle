@@ -25,6 +25,8 @@ namespace SimulationControl
         public event Action WorldReplaced;
         public uint ReplaceVersion { get; private set; }
 
+        public bool HasJustRepacked { get; set; }
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -83,7 +85,7 @@ namespace SimulationControl
 
         private void ReplaceSimWorld(SimulationWorld newWorld)
         {
-            Log.Info($"Replacing sim world");
+            Log.Info($"Replacing sim world with new one (at tick {newWorld.GetLastTickIdFromEntity()})");
             if (SimulationWorld != null)
             {
                 if (_inPlayerLoop)
@@ -106,6 +108,7 @@ namespace SimulationControl
             SimWorldAccessor.EntityManager = newWorld.GetInternalAccessor().EntityManager;
             SimWorldAccessor.SomeSimSystem = newWorld.GetInternalAccessor().SomeSimSystem; // could be any system
 
+            HasJustRepacked = true;
             ReplaceVersion++;
             WorldReplaced?.Invoke();
         }

@@ -2,7 +2,6 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class ItemPassiveEffectHealthIncreaseMultiplierAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription
 {
     public int Multiplier;

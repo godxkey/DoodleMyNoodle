@@ -4,8 +4,5 @@ using UnityEngine;
 
 public class PipelineSettings
 {
-    public static string AutoBuildExecutableName => "Autobuild.exe";
-    public static string AutoBuildPath           => "../Builds/Autobuild";
-
-    public static int BuildId => 1;
+    public static string WindowsBuildConfiguration => "Assets\\Config\\Build Configurations\\Build_Windows_Debug.buildconfiguration";
 }

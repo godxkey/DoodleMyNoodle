@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngineX;
 using Collider = CCC.Fix2D.Collider;
 
-[RequiresEntityConversion]
 [RequireComponent(typeof(PhysicsBodyAuth))]
 public class MovingPlatformAuth : MonoBehaviour, IConvertGameObjectToEntity
 {

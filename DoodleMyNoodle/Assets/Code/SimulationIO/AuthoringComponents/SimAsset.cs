@@ -12,18 +12,19 @@ public enum ViewTechType
 }
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 [ExecuteAlways]
 public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
 {
-
     [FormerlySerializedAs("Guid")]
     [SerializeField] private string _guid;
     [SerializeField] private GameObject _bindedViewPrefab;
     [SerializeField] private TileBase _bindedViewTile;
     [SerializeField] ViewTechType _viewTechType = ViewTechType.GameObject;
-    [SerializeField] bool _showGhost = true; // temporary
     [SerializeField] bool _hasTransform = true;
+
+#pragma warning disable CS0414 // Field assigned but never used
+    [SerializeField] bool _showGhost = true; // temporary
+#pragma warning restore CS0414 // Field assigned but never used
 
     public override GameWorldType WorldToConvertTo => GameWorldType.Simulation;
 

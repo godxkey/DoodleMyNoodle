@@ -13,30 +13,23 @@ public static class NetMessageInterpreter
     static LogChannel s_dataLogChannel = Log.CreateChannel("NetMessageByteData", activeByDefault: false);
 #endif
 
-    static BitStreamReader s_reader = new BitStreamReader(null);
-    static BitStreamWriter s_writer = new BitStreamWriter(null);
-
     public static Type GetMessageType(byte[] messageData)
     {
-        s_reader.SetNewBuffer(messageData);
-        return NetSerializer.GetMessageType(s_reader);
+        return NetSerializer.GetObjectType(messageData);
     }
 
     public static bool GetMessageFromData<T>(byte[] messageData, out T message)
     {
-        bool res = GetMessageFromData(messageData, out object messageObj);
-
-        if (res)
+        if (GetMessageFromData(messageData, out object msg))
         {
-            message = (T)messageObj;
-        }
-        else
-        {
-            message = default;
+            message = (T)msg;
+            return message != null;
         }
 
-        return res;
+        message = default;
+        return false;
     }
+
     public static bool GetMessageFromData(byte[] messageData, out object message)
     {
 #if DEBUG
@@ -46,31 +39,14 @@ public static class NetMessageInterpreter
             DebugLogUtility.LogByteArray(s_dataLogChannel, messageData);
         }
 #endif
-        message = null;
-
-        if (!ThreadUtility.IsMainThread) // need main thread because of static s_reader
-        {
-            Log.Error($"[{nameof(NetMessageInterpreter)}] Interpreting from thread not yet supported (but it should be!). ");
-            return false;
-        }
-
-        s_reader.SetNewBuffer(messageData);
-
-
-        if (messageData.Length < 2) // 2 minimum bytes required for the message type
-        {
-            Log.Error($"[{nameof(NetMessageInterpreter)}] Error interpreting: data size to small ({messageData.Length} bytes)");
-            return false;
-        }
-
         try
         {
-            message = NetSerializer.Deserialize(s_reader);
-
+            message = NetSerializer.Deserialize(messageData);
             return true;
         }
         catch (Exception e)
         {
+            message = null;
             Log.Error($"[{nameof(NetMessageInterpreter)}] Failed to deserialize Message. {e.Message} - {e.StackTrace}");
             return false;
         }
@@ -82,34 +58,21 @@ public static class NetMessageInterpreter
     public static bool GetDataFromMessage<T>(in T message, out byte[] data, int byteLimit = int.MaxValue)
     {
         data = null;
-        
-        if (!ThreadUtility.IsMainThread) // need main thread because of static s_writer
-        {
-            Log.Error($"[{nameof(NetMessageInterpreter)}] Interpreting from thread not yet supported (but it should be!). ");
-            return false;
-        }
-
-        int netBitSize = NetSerializer.GetSerializedBitSize(message);
-        int messageSizeByte = mathX.ceil(netBitSize, 8) / 8; // this will ceil the size to a multiple of 8
-
-        if (messageSizeByte > byteLimit)
-        {
-            Log.Error($"The net message's ({data}) size ({messageSizeByte}) is exceeding the {byteLimit} byte capacity.");
-            return false;
-        }
-        data = new byte[messageSizeByte];
-
-        s_writer.SetNewBuffer(data);
 
         try
         {
-            NetSerializer.Serialize(message, s_writer);
+            data = NetSerializer.Serialize(message);
             
+            if (data.Length > byteLimit)
+            {
+                Log.Error($"The net message's ({data}) size ({data.Length}) is exceeding the {byteLimit} byte capacity.");
+                return false;
+            }
 #if DEBUG
             if (s_dataLogChannel.Active)
             {
                 Log.Info(s_dataLogChannel, $"[{nameof(NetMessageInterpreter)}] Serialize Message '{message}' to byte[{data.Length}]");
-                if(data.Length <= 128)
+                if (data.Length <= 128)
                     DebugLogUtility.LogByteArray(data);
                 else
                 {
@@ -118,7 +81,7 @@ public static class NetMessageInterpreter
                         directory += "/..";
 
                     string filePath = $"{directory}/Logs/NetMessageMessageInterperter_{Time.time}_{message.GetType()}_{s_avoidCollisionValue++}.txt";
-                    using(var writer = FileX.OpenFileFlushedAndReadyToWrite(filePath))
+                    using (var writer = FileX.OpenFileFlushedAndReadyToWrite(filePath))
                     {
                         DebugLogUtility.LogByteArrayToFile(data, writer.StreamWriter);
                     }

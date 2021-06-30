@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngineX;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class ItemPassiveEffectHealthIncreaseAuth : MonoBehaviour, IConvertGameObjectToEntity, IItemSettingDescription
 {
     public int Amount;

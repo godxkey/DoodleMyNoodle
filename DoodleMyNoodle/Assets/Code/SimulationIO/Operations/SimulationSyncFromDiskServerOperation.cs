@@ -29,7 +29,7 @@ public class SimulationSyncFromDiskServerOperation : CoroutineOperation
         string filePath;
         if (_simulationWorld is SimulationWorld simWorld)
         {
-            var latestTick = simWorld.GetLastedTickIdFromEntity();
+            var latestTick = simWorld.GetLastTickIdFromEntity();
 
             filePath = $"{Application.persistentDataPath}/{LOCAL_FILE_NAME_PREFIX}-{latestTick}.txt";
         }

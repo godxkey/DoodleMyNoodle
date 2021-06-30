@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using Unity.Build;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.UIElements;
@@ -48,66 +50,8 @@ public class LaunchWindow : ToolsWindowBase
         _profileElements.Clear();
 
         ////////////////////////////////////////////////////////////////////////////////////////
-        //      Build Target
+        //      Build
         ////////////////////////////////////////////////////////////////////////////////////////
-        {
-            var element = root.Q<Label>(name: "buildTarget");
-            element.text = EditorUserBuildSettings.activeBuildTarget.ToString();
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        //      Symbols Profile
-        ////////////////////////////////////////////////////////////////////////////////////////
-        /*{
-            List<string> choices = new List<string>(ScriptDefineSymbolManager.Profiles.ToArray().Select(p => p.Name));
-
-            if (choices.Count == 0)
-            {
-                choices.Add("");
-            }
-
-            int currentChoice = choices.IndexOf(EditorLaunchData.symbolsProfile);
-
-            if (currentChoice == -1)
-            {
-                EditorLaunchData.symbolsProfile = choices[0];
-                currentChoice = 0;
-            }
-
-            PopupField<string> popupField = new PopupField<string>("Symbols Profile", choices, currentChoice);
-            popupField.RegisterValueChangedCallback(
-                (ChangeEvent<string> changeEvent) =>
-                {
-                    EditorLaunchData.symbolsProfile = changeEvent.newValue;
-                });
-
-            var element = root.Q<VisualElement>(name: "symbolsProfile");
-            element.Add(popupField);
-        }*/
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        //      Developement Build
-        ////////////////////////////////////////////////////////////////////////////////////////
-
-        {
-            var element = root.Q<Toggle>(name: "developmentBuild");
-            element.value = EditorLaunchData.developmentBuild;
-            element.RegisterValueChangedCallback(
-                (ChangeEvent<bool> changeEvent) =>
-                {
-                    EditorLaunchData.developmentBuild = changeEvent.newValue;
-                });
-        }
-
-        {
-            var element = root.Q<Toggle>(name: "allowDebugging");
-            element.value = EditorLaunchData.allowDebugging;
-            element.RegisterValueChangedCallback(
-                (ChangeEvent<bool> changeEvent) =>
-                {
-                    EditorLaunchData.allowDebugging = changeEvent.newValue;
-                });
-        }
 
         {
             var element = root.Q<Button>(name: "buildGame");
@@ -115,8 +59,8 @@ public class LaunchWindow : ToolsWindowBase
         }
 
         {
-            var element = root.Q<Button>(name: "buildScripts");
-            element.clickable.clicked += OnClick_BuildScripts;
+            var element = root.Q<Button>(name: "buildGameAndRun");
+            element.clickable.clicked += OnClick_BuildGameAndRun;
         }
 
         {
@@ -124,6 +68,9 @@ public class LaunchWindow : ToolsWindowBase
             element.clickable.clicked += OnClick_OpenBuildFolder;
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Launch
+        ////////////////////////////////////////////////////////////////////////////////////////
         {
             var element = root.Q<Toggle>(name: "fromScratch");
             var childrenContainer = root.Q<VisualElement>(name: "startingPointContainer");
@@ -382,99 +329,27 @@ public class LaunchWindow : ToolsWindowBase
         }
     }
 
-
-    private struct BuildOptionsData
-    {
-        public bool buildScriptsOnly;
-        public bool developmentBuild;
-        public bool allowDebugging;
-
-        public BuildOptions ProduceBuildOptions()
-        {
-            BuildOptions result = BuildOptions.None;
-
-            if (buildScriptsOnly)
-                result |= BuildOptions.BuildScriptsOnly;
-
-            if (developmentBuild)
-                result |= BuildOptions.Development;
-
-            if (allowDebugging)
-                result |= BuildOptions.AllowDebugging;
-
-            return result;
-        }
-    }
-
     void OnClick_BuildGame()
     {
-        BuildGame(scriptsOnly: false);
+        BuildTools.BuildGame(andRun: false);
     }
 
-    void OnClick_BuildScripts()
+    void OnClick_BuildGameAndRun()
     {
-        BuildGame(scriptsOnly: true);
-    }
-
-    void BuildGame(bool scriptsOnly)
-    {
-        KillProcessesAndStopEditor();
-
-        BuildOptionsData buildData = new BuildOptionsData()
-        {
-            buildScriptsOnly = scriptsOnly,
-            developmentBuild = EditorLaunchData.developmentBuild,
-            allowDebugging = EditorLaunchData.allowDebugging
-        };
-
-        var scriptSymbolsProfile = ScriptDefineSymbolManager.GetProfile(EditorLaunchData.symbolsProfile);
-        string[] scriptingSymbols = scriptSymbolsProfile != null ? scriptSymbolsProfile.DefinedSymbols.ToArray() : new string[] { };
-
-        BuildTools.BuildGame(
-            PipelineSettings.AutoBuildPath,             // path
-            PipelineSettings.AutoBuildExecutableName,   // exec name
-            buildData.ProduceBuildOptions(),            // build options
-            "AutoBuild",                                // build id
-            GetAllEnabledScenes(),                      // scenes
-            EditorUserBuildSettings.activeBuildTarget/*,  // build target
-            scriptingSymbols*/);                          // scripting symbols
-    }
-
-    static string[] GetAllEnabledScenes()
-    {
-        EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
-        List<string> result = new List<string>(scenes.Length);
-
-        for (int i = 0; i < scenes.Length; i++)
-        {
-            if (scenes[i].enabled)
-                result.Add(scenes[i].path);
-        }
-
-        return result.ToArray();
-    }
-
-    static void KillProcessesAndStopEditor()
-    {
-        BuildTools.KillAllProcesses(PipelineSettings.AutoBuildExecutableName);
-        EditorApplication.isPlaying = false;
+        BuildTools.BuildGame(andRun: true);
     }
 
     void OnClick_OpenBuildFolder()
     {
-        string path = Application.dataPath.BeforeLast("Assets") + PipelineSettings.AutoBuildPath;
-        string windowsPath = path.Replace("/", "\\");
-        if (Directory.Exists(windowsPath))
+        var lastBuildFile = BuildTools.GetLastBuildFile();
+
+        if (lastBuildFile != null)
         {
-            var p = new Process
-            {
-                StartInfo = new ProcessStartInfo("explorer.exe", windowsPath)
-            };
-            p.Start();
+            EditorHelpers.OpenDirectoryWithExplorer(lastBuildFile.Directory.FullName);
         }
         else
         {
-            EditorUtility.DisplayDialog("Folder missing", string.Format("Folder {0} doesn't exist yet", windowsPath), "Ok");
+            EditorUtility.DisplayDialog("No Build Found", "No existing windows build artifact was found.", "Ok");
         }
     }
 

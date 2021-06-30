@@ -51,7 +51,7 @@ public class SimulationWorld : World, IOwnedWorld
     }
 
     private EntityQuery _tickSingletonQuery;
-    internal uint GetLastedTickIdFromEntity()
+    internal uint GetLastTickIdFromEntity()
     {
         if (TryGetTickDataSingleton(out Entity singleton))
         {

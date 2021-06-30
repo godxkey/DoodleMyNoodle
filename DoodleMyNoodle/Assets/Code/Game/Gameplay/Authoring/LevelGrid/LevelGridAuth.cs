@@ -10,7 +10,6 @@ using UnityEngineX;
 using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     [FormerlySerializedAs("LevelGridSetting")]

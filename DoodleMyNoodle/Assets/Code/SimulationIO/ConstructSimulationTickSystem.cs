@@ -26,10 +26,15 @@ namespace SimulationControl
         private Queue<SimInputSubmission> _inputSubmissionQueue = new Queue<SimInputSubmission>();
         private TickSimulationSystem _tickSystem;
         private SimulationWorldSystem _simWorldSystem;
+        private bool _repackBeforeNextTick;
+        private bool _checksumAfterNextTick;
 
         public delegate bool ValidationDelegate(SimInput input, INetworkInterfaceConnection instigator);
 
         public ValidationDelegate ValidationMethod;
+
+        public void RequestRepackBeforeNextTick() => _repackBeforeNextTick = true;
+        public void RequestChecksumAfterNextTick() => _checksumAfterNextTick = true;
 
         protected override void OnCreate()
         {
@@ -107,9 +112,13 @@ namespace SimulationControl
                     SimTickData tickData = new SimTickData()
                     {
                         InputSubmissions = _inputSubmissionQueue.ToList(),
-                        ExpectedNewTickId = FindExpectedNewTickId()
+                        ExpectedNewTickId = FindExpectedNewTickId(),
+                        RepackEntities = _repackBeforeNextTick,
+                        ChecksumAfter    = _checksumAfterNextTick,
                     };
                     _inputSubmissionQueue.Clear();
+                    _repackBeforeNextTick = false;
+                    _checksumAfterNextTick = false;
 
                     var sendTickSystem = World.GetExistingSystem<SendSimulationTickSystem>();
 
@@ -141,7 +150,7 @@ namespace SimulationControl
             }
         }
 
-        uint FindExpectedNewTickId()
+        public uint FindExpectedNewTickId()
         {
             if (_tickSystem.AvailableTicks.Count > 0)
             {
@@ -159,6 +168,11 @@ namespace SimulationControl
                 }
             }
         }
-    }
 
+        [ConsoleCommand(Name = "RepackSimulation")]
+        private static void CheatRequestRepackBeforeNextTick() => World.DefaultGameObjectInjectionWorld.GetExistingSystem<ConstructSimulationTickSystem>().RequestRepackBeforeNextTick();
+
+        [ConsoleCommand(Name = "ChecksumSimulation")]
+        private static void CheatRequestChecksumAfterNextTick() => World.DefaultGameObjectInjectionWorld.GetExistingSystem<ConstructSimulationTickSystem>().RequestChecksumAfterNextTick();
+    }
 }

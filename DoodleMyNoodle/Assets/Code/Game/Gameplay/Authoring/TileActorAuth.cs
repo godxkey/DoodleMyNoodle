@@ -12,7 +12,6 @@ public enum TypeActorType
 }
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class TileActorAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     [SerializeField] private TypeActorType _type = TypeActorType.Dynamic;

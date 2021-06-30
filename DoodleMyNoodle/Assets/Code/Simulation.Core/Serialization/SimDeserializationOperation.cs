@@ -1,5 +1,8 @@
 ﻿using CCC.Operations;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Entities.Serialization;
 using UnityEngineX;
@@ -9,6 +12,15 @@ namespace Sim.Operations
 {
     public class SimDeserializationOperation : CoroutineOperation
     {
+        public interface IPtrObjectDistributor
+        {
+            void BeginDistribute(World world);
+            void Distribute(DynamicComponentTypeHandle typeHandle, ArchetypeChunk chunk, Dictionary<uint, byte[]> objects);
+            void EndDistribute();
+        }
+
+        public static Dictionary<Type, IPtrObjectDistributor> BlobAssetDataDistributors = new Dictionary<Type, IPtrObjectDistributor>();
+
         public bool PartialSuccess;
 
         byte[] _serializedData;
@@ -24,31 +36,62 @@ namespace Sim.Operations
         {
             Log.Info("Start Sim Deserialization Process...");
 
-            //// force the 'ChangeDetectionSystem' to end the current sample, making our entity changes undetectable.
-            //var changeDetectionSystemEnd = _simulationWorld.GetExistingSystem<ChangeDetectionSystemEnd>();
-            //if (changeDetectionSystemEnd != null)
-            //{
-            //    changeDetectionSystemEnd.ForceEndSample();
-            //}
+            SerializedWorld serializedWorld = NetSerializer.Deserialize<SerializedWorld>(_serializedData);
 
-            //World tempWorld = new World("tempWorld");
-            //GetEntityWorldFromByteArray(_serializedData, tempWorld);
-            //_simulationWorld.EntityManager.CopyAndReplaceEntitiesFrom(tempWorld.EntityManager);
-            //tempWorld.Dispose();
+            SerializeUtilityX.DeserializeWorld(serializedWorld.WorldData, _simulationWorld.EntityManager);
 
-            //if (_simulationWorld is SimulationWorld simWorld)
-            //{
-            //    simWorld.OnEndDeserialization();
-            //}
+            Dictionary<uint, byte[]> blobAssetsMap = new Dictionary<uint, byte[]>(serializedWorld.BlobAssets.Length);
 
-            //// force the 'ChangeDetectionSystem' to resample, making our entity changes undetectable.
-            //var changeDetectionSystemBegin = _simulationWorld.GetExistingSystem<ChangeDetectionSystemBegin>();
-            //if (changeDetectionSystemBegin != null)
-            //{
-            //    changeDetectionSystemBegin.ResetSample();
-            //}
+            for (int i = 0; i < serializedWorld.BlobAssets.Length; i++)
+            {
+                blobAssetsMap.Add(serializedWorld.BlobAssets[i].Id, serializedWorld.BlobAssets[i].Data);
+            }
 
-            SerializeUtilityX.DeserializeWorld(_serializedData, _simulationWorld.EntityManager);
+            Dictionary<ComponentType, Type> compToManaged = new Dictionary<ComponentType, Type>();
+            Dictionary<ComponentType, DynamicComponentTypeHandle> compToHandle = new Dictionary<ComponentType, DynamicComponentTypeHandle>();
+            NativeArray<ArchetypeChunk> chunks = _simulationWorld.EntityManager.GetAllChunks(Allocator.TempJob);
+
+            foreach (var item in BlobAssetDataDistributors.Values)
+            {
+                item.BeginDistribute(_simulationWorld);
+            }
+
+            // iterate over all chunks
+            for (int i = 0; i < chunks.Length; i++)
+            {
+                ArchetypeChunk chunk = chunks[i];
+
+                // iterate over all components in chunk
+                foreach (ComponentType componentType in chunk.Archetype.GetComponentTypes())
+                {
+                    // get managed type
+                    if (!compToManaged.TryGetValue(componentType, out Type managedType))
+                    {
+                        managedType = componentType.GetManagedType();
+                        compToManaged[componentType] = managedType;
+                    }
+
+                    // if collector exists for given component, invoke it
+                    if (BlobAssetDataDistributors.TryGetValue(managedType, out IPtrObjectDistributor collector))
+                    {
+                        // get componentTypeHandle (necessary for chunk data access)
+                        if (!compToHandle.TryGetValue(componentType, out DynamicComponentTypeHandle typeHandle))
+                        {
+                            typeHandle = _simulationWorld.EntityManager.GetDynamicComponentTypeHandle(componentType);
+                            compToHandle[componentType] = typeHandle;
+                        }
+
+                        // invoke!
+                        collector.Distribute(typeHandle, chunk, blobAssetsMap);
+                    }
+                }
+            }
+            chunks.Dispose();
+
+            foreach (var item in BlobAssetDataDistributors.Values)
+            {
+                item.EndDistribute();
+            }
 
             Log.Info("Sim Deserialization Complete!");
             TerminateWithSuccess();

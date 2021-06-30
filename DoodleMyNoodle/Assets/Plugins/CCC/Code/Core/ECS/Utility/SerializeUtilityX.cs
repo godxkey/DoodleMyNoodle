@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Entities.Serialization;
 using UnityEngine;
@@ -31,11 +32,14 @@ namespace UnityX.EntitiesX.SerializationX
             {
                 SerializeUtility.SerializeWorld(entityManager, binaryWriter, out referencedObjects);
 
-                return GetByteArrayFromBinaryWriter(binaryWriter);
+                return binaryWriter.GetDataArray();
             }
         }
+    }
 
-        private static byte[] GetByteArrayFromBinaryWriter(MemoryBinaryWriter binaryWriter)
+    public static class MemoryBinaryWriterExtension
+    {
+        public static byte[] GetDataArray(this MemoryBinaryWriter binaryWriter)
         {
             byte[] arr = new byte[binaryWriter.Length];
 

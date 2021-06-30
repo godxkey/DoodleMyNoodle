@@ -4,7 +4,6 @@ using Unity.Transforms;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-[RequiresEntityConversion]
 public class NoTransform : MonoBehaviour, IConvertGameObjectToEntity
 {
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
