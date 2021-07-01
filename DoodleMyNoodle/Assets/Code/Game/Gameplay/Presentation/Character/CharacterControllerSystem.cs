@@ -38,7 +38,7 @@ public class CharacterControllerSystem : GamePresentationSystem<CharacterControl
         SimPlayerInputMovingCharacter simInput = new SimPlayerInputMovingCharacter(new fix2(horizontalMovement, verticalMovement));
         SimWorld.SubmitInput(simInput);
 
-        if (Input.GetKey(KeyCode.Space) && !_isJumping)
+        if (Input.GetKey(KeyCode.Space) && !_isJumping && SimWorld.GetComponent<NavAgentFootingState>(Cache.LocalPawn).Value == NavAgentFooting.Ground)
         {
             _isJumping = true;
 

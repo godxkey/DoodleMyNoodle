@@ -29,6 +29,7 @@ public struct RadialImpulseRequestData : IBufferElementData
     public bool IgnoreMass;
 }
 
+[UpdateInGroup(typeof(MovementSystemGroup))]
 public class ApplyImpulseSystem : SimSystemBase
 {
     public void RequestImpulseRadial(RadialImpulseRequestData request)

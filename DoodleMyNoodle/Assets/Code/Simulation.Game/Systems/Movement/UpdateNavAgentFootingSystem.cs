@@ -15,7 +15,7 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
     {
         TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);
         Entities
-            .ForEach((ref NavAgentFootingState footing, in FixTranslation fixTranslation, in PhysicsColliderBlob colliderRef) =>
+            .ForEach((ref NavAgentFootingState footing, in FixTranslation fixTranslation, in PhysicsColliderBlob colliderRef, in PhysicsVelocity velocity) =>
             {
                 ref Collider collider = ref colliderRef.Collider.Value;
                 fix2 belowFeet = new fix2(fixTranslation.Value.x, fixTranslation.Value.y - (fix)collider.Radius - (fix)0.05);
@@ -26,7 +26,7 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
                 {
                     footing.Value = NavAgentFooting.Ladder;
                 }
-                else if (tileWorld.GetFlags(Helpers.GetTile(belowFeet)).IsTerrain)
+                else if (tileWorld.GetFlags(Helpers.GetTile(belowFeet)).IsTerrain && (footing.Value == NavAgentFooting.Ground || velocity.Linear.lengthSquared < 4))
                 {
                     footing.Value = NavAgentFooting.Ground;
                 }
