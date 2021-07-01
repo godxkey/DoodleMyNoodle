@@ -70,10 +70,13 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
 
             for (int i = 0; i < _slotVisuals.Count; i++)
             {
-                if (i < inventory.Length)
+                // first item is a jump, it is hidden. (TODO : Make it so some item can be hidden)
+                int realInventoryIndex = i + 1;
+
+                if (realInventoryIndex < inventory.Length)
                 {
-                    Entity item = inventory[i].ItemEntity;
-                    int stacks = inventory[i].Stacks;
+                    Entity item = inventory[realInventoryIndex].ItemEntity;
+                    int stacks = inventory[realInventoryIndex].Stacks;
 
                     if (stacks == 1 && !SimWorld.GetComponent<StackableFlag>(item))
                         stacks = -1; // used in display to hide stacks
@@ -82,7 +85,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                     ItemAuth itemGameActionAuth = PresentationHelpers.FindItemAuth(itemAssetId);
 
                     _slotVisuals[i].UpdateCurrentInventorySlot(itemGameActionAuth,
-                                                               i,
+                                                               realInventoryIndex,
                                                                GetSlotShotcut(i),
                                                                OnIntentionToUsePrimaryActionOnItem,
                                                                OnIntentionToUseSecondaryActionOnItem,

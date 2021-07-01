@@ -66,7 +66,8 @@ MonoBehaviour:
   Value: GameActionJump
   GameActionSettings:
   - id: 0
-  ApCost: 0
+  - id: 1
+  ApCost: 2
   IsStackable: 0
   CooldownType: 0
   CooldownDuration:
@@ -77,8 +78,7 @@ MonoBehaviour:
   SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 0}
-  CustomSurveys:
-  - {fileID: 6075807751254421543, guid: 7ad36a1016f47834f86aa818a26cd2c3, type: 3}
+  CustomSurveys: []
   references:
     version: 1
     00000000:
@@ -90,3 +90,7 @@ MonoBehaviour:
           RawValue: 38654705664
         SpawnExtraDistance:
           RawValue: 0
+    00000001:
+      type: {class: GameActionSettingIgnoreSurveyAuth, ns: , asm: Game}
+      data:
+        IgnoreSurvey: 0

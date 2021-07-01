@@ -9,6 +9,7 @@ public class GameActionJump : GameAction
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
         typeof(GameActionSettingThrow),
+        typeof(GameActionSettingIgnoreSurvey),
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
@@ -25,10 +26,10 @@ public class GameActionJump : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {
+        GameActionSettingThrow settings = accessor.GetComponent<GameActionSettingThrow>(context.Item);
+
         if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
         {
-            GameActionSettingThrow settings = accessor.GetComponent<GameActionSettingThrow>(context.Item);
-
             fix2 velocity = paramVector.Vector;
 
             velocity = clampLength(velocity, settings.SpeedMin, settings.SpeedMax);
@@ -37,7 +38,11 @@ public class GameActionJump : GameAction
 
             return true;
         }
+        else
+        {
+            CommonWrites.RequestImpulse(accessor, context.InstigatorPawn, new fix2(0, settings.SpeedMin), ignoreMass: true);
 
-        return false;
+            return true;
+        }
     }
 }
