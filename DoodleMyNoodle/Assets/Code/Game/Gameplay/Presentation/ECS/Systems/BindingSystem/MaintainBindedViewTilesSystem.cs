@@ -81,7 +81,7 @@ public class MaintainBindedViewTilesSystem : ViewSystemBase
         var simEntityTileIds = SimWorldAccessor.GetComponentDataFromEntity<TileId>();
 
         Entities
-            .WithSharedComponentFilter(new BindedViewType() { Value = ViewTechType.Tile })
+            .WithAll<BindedViewType_Tile>()
             .WithNone<BindedTileTag>()
             .WithoutBurst()
             .WithStructuralChanges()

@@ -100,7 +100,7 @@ public struct TileWorld
     }
 }
 
-[UpdateAfter(typeof(CreateLevelGridSystem))]
+[UpdateAfter(typeof(CreateGridSystem))]
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 public class CreateTileWorldSystem : SimSystemBase
 {

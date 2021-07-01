@@ -33,7 +33,7 @@ public class GameActionTileExplosion : GameAction
             fix radius = accessor.GetComponent<GameActionSettingRadius>(context.Item).Value;
 
             fix2 pos = Helpers.ClampPositionInsideRange(paramPosition.Position, instigatorPos, range);
-            CommonWrites.RequestExplosion(accessor, context.InstigatorPawn, pos, radius, damage);
+            CommonWrites.RequestExplosion(accessor, context.InstigatorPawn, pos, radius, damage, true);
 
             return true;
         }

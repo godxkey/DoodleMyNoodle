@@ -130,7 +130,7 @@ public class ReactOnCollisionSystem : SimSystemBase
         // explosions
         foreach ((Entity instigator, fix2 pos, fix radius, int damage) in ExplosionRequests)
         {
-            CommonWrites.RequestExplosion(Accessor, instigator, pos, radius, damage);
+            CommonWrites.RequestExplosion(Accessor, instigator, pos, radius, damage, true);
         }
 
         // destroy

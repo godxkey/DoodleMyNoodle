@@ -51,7 +51,7 @@ public class MaintainBindedViewGameObjectsSystem : ViewSystemBase
     private void CreateNewGameObjects(SimAssetBank.Lookup simAssetBank)
     {
         Entities
-            .WithSharedComponentFilter(new BindedViewType() { Value = ViewTechType.GameObject })
+            .WithAll<BindedViewType_GameObject>()
             .WithNone<BindedGameObjectTag>()
             .WithoutBurst()
             .WithStructuralChanges()

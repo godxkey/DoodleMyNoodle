@@ -37,6 +37,12 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
             TileMin = minCoord,
             TileMax = maxCoord,
         });
+        dstManager.AddComponentData(entity, new DefaultTilesInfo()
+        {
+            DefaultEmptyTile = SimAssetId.Invalid,
+            DefaultLadderTile = _globalGridSettings.DefaultLadderTile.GetSimAssetId(),
+            DefaultTerrainTile = _globalGridSettings.DefaultTerrainTile.GetSimAssetId(),
+        });
         dstManager.AddBuffer<StartingTileActorElement>(entity);
         dstManager.AddBuffer<StartingTileElement>(entity);
 
@@ -61,7 +67,7 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
                         if (simEntityPrefab != null)
                         {
                             int2 tilePos = int2((int)worldPos.x, (int)worldPos.y);
-                            if (simEntityPrefab.TryGetComponent(out TileActorAuth tileActorAuth) && tileActorAuth.ShouldBeConvertedToTile())
+                            if (simEntityPrefab.TryGetComponent(out TileAuth tileActorAuth))
                             {
                                 var simAssetId = simEntityPrefab.GetComponent<SimAsset>();
                                 startingTiles.Add(new StartingTileElement()
@@ -74,7 +80,6 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
                             else
                             {
                                 Entity tileActorPrefab = conversionSystem.GetPrimaryEntity(simEntityPrefab);
-
                                 startingEntities.Add(new StartingTileActorElement() { Prefab = tileActorPrefab, Position = tilePos });
                             }
                         }
@@ -113,7 +118,7 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
         foreach (EntitySpriteBinding binding in _globalGridSettings.SimEntitySpriteBindings)
         {
             // skip tile actors meant for tiles
-            if (binding.EntityPrefab.TryGetComponent(out TileActorAuth tileActorAuth) &&
+            if (binding.EntityPrefab.TryGetComponent(out TileAuth tileActorAuth) &&
                 tileActorAuth.ShouldBeConvertedToTile())
             {
                 continue;

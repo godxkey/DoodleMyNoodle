@@ -67,7 +67,7 @@ public class GameActionDropBombToDetonate : GameAction
                         radius = accessor.GetComponent<GameActionSettingRadius>(context.Item).Value;
                     }
 
-                    CommonWrites.RequestExplosion(accessor, bomb, bombPos, radius, accessor.GetComponent<GameActionSettingDamage>(context.Item).Value);
+                    CommonWrites.RequestExplosion(accessor, bomb, bombPos, radius, accessor.GetComponent<GameActionSettingDamage>(context.Item).Value, true);
 
                     accessor.DestroyEntity(bomb);
 

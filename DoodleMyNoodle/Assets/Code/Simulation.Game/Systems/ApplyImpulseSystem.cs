@@ -93,7 +93,7 @@ public class ApplyImpulseSystem : SimSystemBase
                     request.StrengthMax, request.StrengthMin,
                     distance);
 
-                fix2 direction = distance < fix.epsilon ? new fix2(0, 1) : v / distance;
+                fix2 direction = distance < fix.Epsilon ? new fix2(0, 1) : v / distance;
 
                 directImpulseRequests.Add(new DirectImpulseRequestData()
                 {

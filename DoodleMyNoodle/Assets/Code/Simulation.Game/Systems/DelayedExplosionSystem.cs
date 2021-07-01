@@ -34,7 +34,7 @@ public class DelayedExplosionSystem : SimSystemBase
             if (readyToExplode)
             {
                 var entityTilePos = EntityManager.GetComponentData<FixTranslation>(entity);
-                CommonWrites.RequestExplosion(Accessor, entity, entityTilePos, delayedExplosion.Radius, delayedExplosion.Damage);
+                CommonWrites.RequestExplosion(Accessor, entity, entityTilePos, delayedExplosion.Radius, delayedExplosion.Damage, true);
                 EntityManager.DestroyEntity(entity);
             }
         })

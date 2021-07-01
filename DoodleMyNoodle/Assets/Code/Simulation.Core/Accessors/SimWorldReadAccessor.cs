@@ -22,6 +22,9 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     public int Version
         => SimWorld.Version;
 
+    public uint GlobalSystemVersion
+        => SimWorld.EntityManager.GlobalSystemVersion;
+
     public bool IsCreated
         => SimWorld.IsCreated;
 
@@ -140,5 +143,10 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     public T GetExistingSystem<T>() where T : ComponentSystemBase
     {
         return SimWorld.GetExistingSystem<T>();
+    }
+
+    public DynamicBuffer<T> GetSystemRequests<T>() where T : struct, ISystemRequestData
+    {
+        return EntityManager.GetBuffer<T>(GetSingletonEntity<SystemRequestsSingletonTag>());
     }
 }

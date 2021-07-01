@@ -13,6 +13,31 @@ public interface ITilePredicate
 
 public static class TilePhysics
 {
+    public static int GetAllTilesWithin(fix2 position, fix radius, NativeList<int2> result)
+    {
+        int countBefore = result.Length;
+
+        int2 min = new int2((int)(position.x - radius), (int)(position.y - radius));
+        int2 max = new int2((int)ceil(position.x + radius), (int)ceil(position.y + radius));
+
+        fix radiusSq = radius * radius;
+
+        for (int x = min.x; x < max.x; x++)
+        {
+            for (int y = min.y; y < max.y; y++)
+            {
+                int2 tile = new int2(x, y);
+                var tileCenter = Helpers.GetTileCenter(tile);
+                if (distancesq(tileCenter, position) < radiusSq)
+                {
+                    result.Add(tile);
+                }
+            }
+        }
+
+        return result.Length - countBefore;
+    }
+
     public struct Line2D
     {
         private fix _a;

@@ -16,6 +16,8 @@ public struct EntitySpriteBinding
 public class LevelGridSettings : ScriptableObject
 {
     public List<EntitySpriteBinding> SimEntitySpriteBindings = new List<EntitySpriteBinding>();
+    public SimAsset DefaultTerrainTile;
+    public SimAsset DefaultLadderTile;
 
     public GameObject GetSimEntityPrefabFromTile(TileBase tile)
     {

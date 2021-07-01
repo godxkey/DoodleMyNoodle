@@ -742,6 +742,7 @@ public interface ISimWorldReadAccessor
 {
     string Name { get; }
     int Version { get; }
+    uint GlobalSystemVersion { get; }
 
     bool IsCreated { get; }
 
@@ -1007,4 +1008,6 @@ public interface ISimWorldReadAccessor
     T GetExistingSystem<T>() where T : ComponentSystemBase;
 
     ComponentDataFromEntity<T> GetComponentFromEntity<T>() where T : struct, IComponentData;
+    
+    DynamicBuffer<T> GetSystemRequests<T>() where T : struct, ISystemRequestData;
 }

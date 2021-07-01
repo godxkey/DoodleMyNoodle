@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 11400000, guid: ccc3bc4a74475b3438cd042b4c9e608b, type: 2}
   _viewTechType: 1
-  _showGhost: 1
   _hasTransform: 1
+  _showGhost: 1
 --- !u!114 &3954427377480494286
 MonoBehaviour:
   m_ObjectHideFlags: 0

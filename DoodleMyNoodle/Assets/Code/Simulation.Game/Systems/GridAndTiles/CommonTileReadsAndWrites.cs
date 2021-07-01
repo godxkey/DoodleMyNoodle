@@ -48,6 +48,7 @@ public partial class Helpers
     public static int2 GetTile(fix2 worldPosition) => floorToInt(worldPosition).xy;
     public static int2 GetTile(Vector3 worldPosition) => int2(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y));
     public static int2 GetTile(Vector2 worldPosition) => int2(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y));
+    public static int2 GetTile(TileId tileId) => int2(tileId.X, tileId.Y);
     
     public static TileId GetTileId(FixTranslation translation) => new TileId(floorToInt(translation.Value).xy);
     public static TileId GetTileId(fix2 worldPosition) => new TileId(floorToInt(worldPosition).xy);

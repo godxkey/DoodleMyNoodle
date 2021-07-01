@@ -62,47 +62,6 @@ public struct TileFinder
             return false; // tile is filtered out
         }
 
-        // tile requires an attackable target
-        if (description.RequiresAttackableEntity)
-        {
-            bool hasAtLeastOneAttackableActor = false;
-            foreach (TileActorReference tileActor in _accessor.GetBufferReadOnly<TileActorReference>(tileEntity))
-            {
-                if (_accessor.Exists(tileActor))
-                {
-                    if (_accessor.HasComponent<Health>(tileActor) || _accessor.HasComponent<Armor>(tileActor))
-                    {
-                        hasAtLeastOneAttackableActor = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!hasAtLeastOneAttackableActor)
-            {
-                return false;
-            }
-        }
-
-        // Custom tile actor predicate
-        if (description.CustomTileActorPredicate != null)
-        {
-            bool hasAtLeastOneMatch = false;
-            foreach (TileActorReference tileActor in _accessor.GetBufferReadOnly<TileActorReference>(tileEntity))
-            {
-                if (_accessor.Exists(tileActor) && description.CustomTileActorPredicate(tileActor, _accessor))
-                {
-                    hasAtLeastOneMatch = true;
-                    break;
-                }
-            }
-
-            if (!hasAtLeastOneMatch)
-            {
-                return false;
-            }
-        }
-
         // Custom tile predicate
         if (description.CustomTilePredicate != null)
         {
@@ -115,8 +74,8 @@ public struct TileFinder
         // tile reachable
         if (description.MustBeReachable)
         {
-            NativeList<int2> _highlightNavigablePath = new NativeList<int2>(Allocator.Temp);
-            if (!Pathfinding.FindNavigablePath(_accessor, parameters.PawnTile, tilePosition, description.RangeFromInstigator, _highlightNavigablePath))
+            NativeList<int2> highlightNavigablePath = new NativeList<int2>(Allocator.Temp);
+            if (!Pathfinding.FindNavigablePath(_accessor, parameters.PawnTile, tilePosition, description.RangeFromInstigator, highlightNavigablePath))
             {
                 return false; // tile is non-reachable
             }

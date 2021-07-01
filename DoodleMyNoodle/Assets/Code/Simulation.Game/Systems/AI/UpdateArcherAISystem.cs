@@ -40,7 +40,6 @@ public class UpdateArcherAISystem : SimComponentSystem
     public static NativeList<Entity> _shootingTargets;
 
     private NativeList<Entity> _enemies;
-    private BufferFromEntity<TileActorReference> _tileActorBuffers;
     private ComponentDataFromEntity<FixTranslation> _positions;
     private TileWorld _tileWorld;
     private readonly int2[] _shootingDirections = new int2[]
@@ -87,7 +86,6 @@ public class UpdateArcherAISystem : SimComponentSystem
     {
         Profiler.BeginSample("Update Archer Mental State");
 
-        _tileActorBuffers = GetBufferFromEntity<TileActorReference>(isReadOnly: true);
         _positions = GetComponentDataFromEntity<FixTranslation>(isReadOnly: true);
         _tileWorld = CommonReads.GetTileWorld(Accessor);
 
@@ -223,17 +221,17 @@ public class UpdateArcherAISystem : SimComponentSystem
                         _shootingTargets.Add(enemy);
                     }
 
-                    // stop is actor blocking the way
+                    // stop if actor blocking the way
                     bool anyActorBlockingTheWay = false;
-                    var tileActors = _tileActorBuffers[tileEntity];
-                    foreach (var actor in tileActors)
-                    {
-                        if (actor != agentPawn && EntityManager.HasComponent<Health>(actor))
-                        {
-                            anyActorBlockingTheWay = true;
-                            break;
-                        }
-                    }
+                    //var tileActors = _tileActorBuffers[tileEntity];
+                    //foreach (var actor in tileActors)
+                    //{
+                    //    if (actor != agentPawn && EntityManager.HasComponent<Health>(actor))
+                    //    {
+                    //        anyActorBlockingTheWay = true;
+                    //        break;
+                    //    }
+                    //}
                     if (anyActorBlockingTheWay)
                     {
                         break;

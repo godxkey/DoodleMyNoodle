@@ -18,6 +18,13 @@ public struct StartingTileElement : IBufferElementData
     public int2 Position;
 }
 
+public struct DefaultTilesInfo : IComponentData
+{
+    public SimAssetId DefaultTerrainTile;
+    public SimAssetId DefaultEmptyTile;
+    public SimAssetId DefaultLadderTile;
+}
+
 public struct GridInfo : IComponentData
 {
     public int2 TileMin;
