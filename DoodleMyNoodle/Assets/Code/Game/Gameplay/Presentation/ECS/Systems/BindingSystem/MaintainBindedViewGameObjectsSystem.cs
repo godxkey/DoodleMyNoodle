@@ -57,6 +57,8 @@ public class MaintainBindedViewGameObjectsSystem : ViewSystemBase
             .WithStructuralChanges()
             .ForEach((Entity viewEntity, in SimAssetId id, in BindedSimEntity simEntity) =>
             {
+                EntityManager.AddComponent<BindedGameObjectTag>(viewEntity);
+
                 SimAsset simAsset = simAssetBank.GetSimAsset(id);
 
                 if (simAsset.BindedViewPrefab != null)
@@ -69,8 +71,6 @@ public class MaintainBindedViewGameObjectsSystem : ViewSystemBase
                     EntityManager.AddComponentObject(viewEntity, bindedSimEntityManaged);
                     EntityManager.AddComponentObject(viewEntity, viewGO.transform);
                 }
-
-                EntityManager.AddComponent<BindedGameObjectTag>(viewEntity);
             }).Run();
     }
 }

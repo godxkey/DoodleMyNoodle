@@ -16,6 +16,7 @@ public class SmartScriptTemplateReference : ScriptableObject
 public class SmartScriptTemplateReferenceEditor : Editor
 {
     private DefaultSmartScriptResolver _defaultSmartScriptResolver = new DefaultSmartScriptResolver();
+    private SerializedProperty _templateScript;
 
     [OnOpenAsset(1)]
     public static bool OnOpenAsset(int instanceID, int line)
@@ -30,13 +31,19 @@ public class SmartScriptTemplateReferenceEditor : Editor
         return false; // we did not handle the open
     }
 
+    private void OnEnable()
+    {
+        _templateScript = serializedObject.FindProperty(nameof(SmartScriptTemplateReference.TemplateScript));
+    }
+
     public override void OnInspectorGUI()
     {
         EditorGUILayout.HelpBox($"Pick a script that contains a class inheriting of {nameof(ScriptTemplate)}.", MessageType.Info);
         
-        base.OnInspectorGUI();
-
         serializedObject.Update();
+
+        EditorGUILayout.PropertyField(_templateScript);
+
         var castedTarget = (SmartScriptTemplateReference)target;
 
         MonoScript script = castedTarget.TemplateScript as MonoScript;

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using Unity.Entities;
 using System;
 
-public struct SystemRequestsSingletonTag : IComponentData { }
-public interface ISystemRequestData : IBufferElementData { }
+public struct SingletonBuffersTag : IComponentData { }
+public interface ISingletonBufferElementData : IBufferElementData { }
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 [AlwaysUpdateSystem]
@@ -21,11 +21,11 @@ public class CreateRequestSingletonSystem : SimSystemBase
 
         List<ComponentType> types = new List<ComponentType>();
 
-        types.Add(typeof(SystemRequestsSingletonTag));
+        types.Add(typeof(SingletonBuffersTag));
 
         foreach (var item in TypeManager.AllTypes)
         {
-            if (typeof(ISystemRequestData).IsAssignableFrom(item.Type) && item.Category == TypeManager.TypeCategory.BufferData)
+            if (typeof(ISingletonBufferElementData).IsAssignableFrom(item.Type) && item.Category == TypeManager.TypeCategory.BufferData)
             {
                 types.Add(new ComponentType(item.Type));
             }
@@ -36,7 +36,7 @@ public class CreateRequestSingletonSystem : SimSystemBase
 
     protected override void OnUpdate()
     {
-        if (!HasSingleton<SystemRequestsSingletonTag>())
+        if (!HasSingleton<SingletonBuffersTag>())
         {
             // create singleton
             EntityManager.CreateEntity(_singletonArchetype);
@@ -44,7 +44,7 @@ public class CreateRequestSingletonSystem : SimSystemBase
         else if (_singletonArchetype.ChunkCount == 0)
         {
             // adjust singleton
-            var entity = GetSingletonEntity<SystemRequestsSingletonTag>();
+            var entity = GetSingletonEntity<SingletonBuffersTag>();
             EntityManager.SetArchetype(entity, _singletonArchetype);
         }
     }

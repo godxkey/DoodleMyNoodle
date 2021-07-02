@@ -147,4 +147,9 @@ public class InternalSimWorldAccessor : SimWorldReadAccessor, ISimWorldReadWrite
         => EntityManager.SwapComponents(leftChunk, leftIndex, rightChunk, rightIndex);
 
     FixRandom ISimWorldWriteAccessor.Random() => SimWorld.Random();
+
+    DynamicBuffer<T> ISimWorldWriteAccessor.GetSingletonBuffer<T>()
+    {
+        return EntityManager.GetBuffer<T>(GetSingletonEntity<SingletonBuffersTag>());
+    }
 }

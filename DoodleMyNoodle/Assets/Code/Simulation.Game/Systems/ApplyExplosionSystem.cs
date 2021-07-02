@@ -7,17 +7,13 @@ using Unity.Mathematics;
 using UnityEngineX;
 using static fixMath;
 
-public struct ExplosionEventData : IComponentData
+public struct EventExplosion : ISingletonBufferElementData
 {
     public fix2 Position;
     public fix Radius;
 }
 
-public struct ExplosionRequestsSingletonTag : IComponentData
-{
-}
-
-public struct ExplosionRequestData : IBufferElementData
+public struct SystemRequestExplosion : ISingletonBufferElementData
 {
     public Entity Instigator;
     public fix2 Position;
@@ -26,14 +22,12 @@ public struct ExplosionRequestData : IBufferElementData
     public bool DestroyTiles;
 }
 
-[UpdateBefore(typeof(ApplyImpulseSystem))]
 public class ApplyExplosionSystem : SimSystemBase
 {
     private const int IMPULSE_MAX = 4;
     private const int IMPULSE_MIN = 2;
 
-    private EntityQuery _explosionEvents;
-    private List<ExplosionEventData> _newExplosionEvents = new List<ExplosionEventData>();
+    private List<EventExplosion> _newExplosionEvents = new List<EventExplosion>();
     private NativeList<Entity> _entitiesToDamage;
     private ApplyImpulseSystem _applyImpulseSystem;
 
@@ -41,7 +35,6 @@ public class ApplyExplosionSystem : SimSystemBase
     {
         base.OnCreate();
 
-        _explosionEvents = GetEntityQuery(typeof(ExplosionEventData));
         _entitiesToDamage = new NativeList<Entity>(Allocator.Persistent);
         _applyImpulseSystem = World.GetOrCreateSystem<ApplyImpulseSystem>();
     }
@@ -52,36 +45,20 @@ public class ApplyExplosionSystem : SimSystemBase
         _entitiesToDamage.Dispose();
     }
 
-    public void RequestExplosion(ExplosionRequestData request)
-    {
-        var buffer = GetExplosionRequestBuffer();
-        buffer.Add(request);
-    }
-
-    private DynamicBuffer<ExplosionRequestData> GetExplosionRequestBuffer()
-    {
-        if (!HasSingleton<ExplosionRequestsSingletonTag>())
-        {
-            EntityManager.CreateEntity(typeof(ExplosionRequestsSingletonTag), typeof(ExplosionRequestData));
-        }
-
-        return GetBuffer<ExplosionRequestData>(GetSingletonEntity<ExplosionRequestsSingletonTag>());
-    }
-
     protected override void OnUpdate()
     {
         // Clear Damage Applied Events
-        EntityManager.DestroyEntity(_explosionEvents);
+        GetSingletonBuffer<EventExplosion>().Clear();
 
-        DynamicBuffer<ExplosionRequestData> explosionRequestBuffer = GetExplosionRequestBuffer();
+        DynamicBuffer<SystemRequestExplosion> explosionRequestBuffer = GetSingletonBuffer<SystemRequestExplosion>();
 
         if (explosionRequestBuffer.Length > 0)
         {
-            NativeArray<ExplosionRequestData> requests = explosionRequestBuffer.ToNativeArray(Allocator.Temp);
+            NativeArray<SystemRequestExplosion> requests = explosionRequestBuffer.ToNativeArray(Allocator.Temp);
             explosionRequestBuffer.Clear();
             NativeList<DistanceHit> hits = new NativeList<DistanceHit>(Allocator.Temp);
 
-            foreach (ExplosionRequestData request in requests)
+            foreach (SystemRequestExplosion request in requests)
             {
                 if (request.DestroyTiles)
                 {
@@ -112,12 +89,13 @@ public class ApplyExplosionSystem : SimSystemBase
                     }
                 }
 
-                _newExplosionEvents.Add(new ExplosionEventData() { Position = request.Position, Radius = request.Radius });
+                _newExplosionEvents.Add(new EventExplosion() { Position = request.Position, Radius = request.Radius });
             }
 
-            foreach (ExplosionEventData evnt in _newExplosionEvents)
+            var explosionEvents = GetSingletonBuffer<EventExplosion>();
+            foreach (EventExplosion evnt in _newExplosionEvents)
             {
-                EntityManager.CreateEventEntity(evnt);
+                explosionEvents.Add(evnt);
             }
             _newExplosionEvents.Clear();
         }
@@ -128,7 +106,7 @@ public class ApplyExplosionSystem : SimSystemBase
         TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);
         NativeList<int2> tiles = new NativeList<int2>(Allocator.Temp);
 
-        var transformTileRequests = GetSystemRequests<SystemRequestTransformTile>();
+        var transformTileRequests = GetSingletonBuffer<SystemRequestTransformTile>();
 
         Job.WithCode(() =>
         {
@@ -157,7 +135,7 @@ internal static partial class CommonWrites
 {
     public static void RequestExplosion(ISimWorldReadWriteAccessor accessor, Entity instigator, fix2 position, fix radius, int damage, bool destroyTiles)
     {
-        ExplosionRequestData request = new ExplosionRequestData()
+        SystemRequestExplosion request = new SystemRequestExplosion()
         {
             Damage = damage,
             Radius = radius,
@@ -166,6 +144,6 @@ internal static partial class CommonWrites
             DestroyTiles = destroyTiles
         };
 
-        accessor.GetExistingSystem<ApplyExplosionSystem>().RequestExplosion(request);
+        accessor.GetSingletonBuffer<SystemRequestExplosion>().Add(request);
     }
 }

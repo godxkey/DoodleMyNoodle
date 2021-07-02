@@ -24,9 +24,9 @@ public class CopyTransformToViewSystem : ViewJobComponentSystem
             .WithReadOnly(simRotations)
             .ForEach((ref Rotation rotation, in BindedSimEntity linkedSimEntity) =>
         {
-            if (simRotations.HasComponent(linkedSimEntity.SimEntity))
+            if (simRotations.HasComponent(linkedSimEntity))
             {
-                fix rot = simRotations[linkedSimEntity.SimEntity].Value;
+                fix rot = simRotations[linkedSimEntity].Value;
                 rotation.Value = fixQuaternion.FromEuler(0, 0, rot).ToUnityQuat();
             }
         }).Schedule(jobHandle);
@@ -41,9 +41,9 @@ public class CopyTransformToViewSystem : ViewJobComponentSystem
             .WithReadOnly(simTranslations)
             .ForEach((ref Translation translation, in BindedSimEntity linkedSimEntity) =>
         {
-            if (simTranslations.HasComponent(linkedSimEntity.SimEntity))
+            if (simTranslations.HasComponent(linkedSimEntity))
             {
-                fix2 pos = simTranslations[linkedSimEntity.SimEntity].Value;
+                fix2 pos = simTranslations[linkedSimEntity].Value;
                 translation.Value = new float3((float)pos.x, (float)pos.y, 0);
             }
         }).Schedule(jobHandle);
@@ -70,7 +70,7 @@ public class CopyTransformToViewGameObjectSystem : ViewSystemBase
 
         public void Execute(int index, TransformAccess transform)
         {
-            var simEntity = BindedSimEntities[index].SimEntity;
+            Entity simEntity = BindedSimEntities[index];
 
             if (SimTranslations.HasComponent(simEntity))
             {

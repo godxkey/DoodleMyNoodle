@@ -81,7 +81,7 @@ public class CreateGridSystem : SimComponentSystem
         EntityManager.SetComponentData(newTileEntity, tileData.AssetId);
 
 #if UNITY_EDITOR
-        EntityManager.SetName(newTileEntity, $"Tile Entity {tileData.Position.x}, {tileData.Position.y}");
+        EntityManager.SetName(newTileEntity, $"Tile_Entity {tileData.Position.x}, {tileData.Position.y}");
 #endif
 
         return newTileEntity;
