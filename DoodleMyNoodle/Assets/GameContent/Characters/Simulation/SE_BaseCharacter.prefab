@@ -85,7 +85,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 2
   Shape: 0
-  Material: {fileID: 0}
+  Material: {fileID: 11400000, guid: 9705fa77e59bed24cad3ce4dffa5f2f3, type: 2}
   IsTrigger: 0
   LinearDrag: 0
   AngularDrag: 0.05
@@ -171,6 +171,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveSpeed:
-    RawValue: 12884901888
+    RawValue: 8589934592
   AirControl:
     RawValue: 1288490240

@@ -361,7 +361,7 @@ public class UpdateArcherAISystem : SimComponentSystem
 
         int2 dir = sign(enemyTile - shootingTile);
 
-        var gameActionArg = new GameActionParameterVector.Data((fix2)dir * 3); // hard coded speed at 3 for now
+        var gameActionArg = new GameActionParameterVector.Data((fix2)dir * 5); // hard coded speed at 3 for now
 
         return CommonWrites.TryInputUseItem<GameActionThrow>(Accessor, controller, gameActionArg);
     }
