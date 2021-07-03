@@ -97,5 +97,66 @@ public partial class CommonReads
 
             attackableEntities.Dispose();
         }
+
+        public static void FindAllPawnsNearby(ISimWorldReadAccessor accessor, EntityQuery pawnsQuery, Entity pawn, Entity pawnController, NativeList<Entity> result)
+        {
+            Team excludeTeam = Team.Null;
+
+            if (pawnController != Entity.Null && accessor.TryGetComponent(pawnController, out Team team))
+            {
+                excludeTeam = team;
+            }
+
+            FindAllPawnsNearbyInternal(accessor, pawn, pawnsQuery, excludeTeam, result);
+        }
+
+        public static void FindAllPawnsNearby(ISimWorldReadAccessor accessor, EntityQuery pawnsQuery, Entity pawn, Team excludeTeam, NativeList<Entity> result, bool withGizmos = false)
+        {
+            FindAllPawnsNearbyInternal(accessor, pawn, pawnsQuery, excludeTeam, result, withGizmos);
+        }
+
+        private static void FindAllPawnsNearbyInternal(
+            ISimWorldReadAccessor accessor,
+            Entity pawn,
+            EntityQuery pawnsQuery,
+            Team excludeTeam,
+            NativeList<Entity> result,
+            bool drawGizmos = false)
+        {
+            fix2 pawnPos = accessor.GetComponent<FixTranslation>(pawn);
+            fix2 pawnEyes = pawnPos + UpdateArcherAISystem.PAWN_EYES_OFFSET;
+
+            var positions = accessor.GetComponentDataFromEntity<FixTranslation>();
+            var attackableEntities = pawnsQuery.ToEntityArray(Allocator.TempJob);
+
+            fix detectRangeSq = UpdateArcherAISystem.DETECT_RANGE * UpdateArcherAISystem.DETECT_RANGE;
+
+            foreach (var enemy in attackableEntities)
+            {
+                // excluse self
+                if (enemy == pawn)
+                    continue;
+
+                Entity enemyController = CommonReads.GetPawnController(accessor, enemy);
+
+                // excluse teammates
+                if (enemyController != Entity.Null &&
+                    accessor.TryGetComponent(enemyController, out Team enemyTeam) &&
+                    enemyTeam == excludeTeam)
+                    continue;
+
+                fix2 enemyPos = (fix2)positions[enemy].Value;
+
+                // excluse enemes too far
+                if (lengthsq(enemyPos - pawnEyes) > detectRangeSq) // not too far
+                {
+                    continue;
+                }
+
+                result.Add(enemy);
+            }
+
+            attackableEntities.Dispose();
+        }
     }
 }
