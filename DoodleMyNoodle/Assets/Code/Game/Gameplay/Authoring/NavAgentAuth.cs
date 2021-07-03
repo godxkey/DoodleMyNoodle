@@ -7,6 +7,7 @@ using UnityEngineX;
 public class NavAgentAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public fix MoveSpeed;
+    public fix AirControl;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -14,5 +15,6 @@ public class NavAgentAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponent<NavAgentFootingState>(entity);
         dstManager.AddComponentData(entity, new MoveSpeed { Value = MoveSpeed });
         dstManager.AddComponentData(entity, new MoveInput { Value = fix2.zero });
+        dstManager.AddComponentData(entity, new AirControl { Value = AirControl });
     }
 }

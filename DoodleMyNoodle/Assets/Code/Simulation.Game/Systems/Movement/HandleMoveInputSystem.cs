@@ -1,6 +1,7 @@
 using CCC.Fix2D;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.MathematicsX;
 using static fixMath;
 using static Unity.Mathematics.math;
 
@@ -12,23 +13,30 @@ public class HandleMoveInputSystem : SimSystemBase
     {
         Entities.ForEach((ref PhysicsVelocity velocity, in MoveInput moveInput, in MoveSpeed moveSpeed, in NavAgentFootingState footing) =>
         {
-            fix2 move = moveInput.Value;
-
-            if (footing.Value == NavAgentFooting.Ground || footing.Value == NavAgentFooting.None)
-            {
-                // NB: If we ever get slopped terrain, we might want to set the move perpendicular to the normal of the floor
-                move.y = 0;
-            }
-
-            move = clampLength(move, 0, 1);
-
             if (footing.Value == NavAgentFooting.Ground || footing.Value == NavAgentFooting.Ladder)
             {
+                fix2 move = moveInput.Value;
+
+                if (footing.Value == NavAgentFooting.Ground)
+                {
+                    // NB: If we ever get slopped terrain, we might want to set the move perpendicular to the normal of the floor
+                    move.y = 0;
+                }
+
+                move = clampLength(move, 0, 1);
+
                 velocity.Linear = move * moveSpeed;
             }
-            else if (footing.Value == NavAgentFooting.AirControl)
+        }).Run();
+
+        Entities.ForEach((ref PhysicsVelocity velocity, in MoveInput moveInput, in MoveSpeed moveSpeed, in NavAgentFootingState footing, in AirControl airControl) =>
+        {
+            if (footing.Value == NavAgentFooting.AirControl)
             {
-                velocity.Linear.x = movetowards(velocity.Linear.x, move.x * moveSpeed, (fix)0.2);
+                velocity.Linear.x = movetowards(
+                    current: velocity.Linear.x,
+                    target: clamp(moveInput.Value.x, -1, 1) * moveSpeed,
+                    maxDistanceDelta: airControl);
             }
         }).Run();
     }
