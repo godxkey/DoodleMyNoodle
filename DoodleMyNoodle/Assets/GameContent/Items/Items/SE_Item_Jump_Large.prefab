@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionJump
+  Value: GameActionDirectionalJump
   GameActionSettings:
   - id: 0
   - id: 1

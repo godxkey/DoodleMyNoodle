@@ -2534,23 +2534,23 @@ public static class StaticNetSerializer_SimPlayerInputEquipItem
 }
 public static class StaticNetSerializer_SimPlayerInputMovingCharacter
 {
-    public static int GetSerializedBitSize_Class(SimPlayerInputMovingCharacter obj)
+    public static int GetSerializedBitSize_Class(SimPlayerInputMove obj)
     {
         if (obj == null)
             return 1;
         return 1 + GetSerializedBitSize(obj);
     }
 
-    public static int GetSerializedBitSize(SimPlayerInputMovingCharacter obj)
+    public static int GetSerializedBitSize(SimPlayerInputMove obj)
     {
         int result = 0;
-        result += StaticNetSerializer_fix2.GetSerializedBitSize(ref obj.Direction);
+        result += StaticNetSerializer_fix2.GetSerializedBitSize(ref obj.NewDirection);
         result += StaticNetSerializer_PersistentId.GetSerializedBitSize(ref obj.SimPlayerId);
         result += StaticNetSerializer_SimPlayerInput.GetSerializedBitSize(obj);
         return result;
     }
 
-    public static void Serialize_Class(SimPlayerInputMovingCharacter obj, BitStreamWriter writer)
+    public static void Serialize_Class(SimPlayerInputMove obj, BitStreamWriter writer)
     {
         if (obj == null)
         {
@@ -2560,26 +2560,26 @@ public static class StaticNetSerializer_SimPlayerInputMovingCharacter
         writer.WriteBit(true);
         Serialize(obj, writer);
     }
-    public static void Serialize(SimPlayerInputMovingCharacter obj, BitStreamWriter writer)
+    public static void Serialize(SimPlayerInputMove obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_fix2.Serialize(ref obj.Direction, writer);
+        StaticNetSerializer_fix2.Serialize(ref obj.NewDirection, writer);
         StaticNetSerializer_PersistentId.Serialize(ref obj.SimPlayerId, writer);
         StaticNetSerializer_SimPlayerInput.Serialize(obj, writer);
     }
 
-    public static SimPlayerInputMovingCharacter Deserialize_Class(BitStreamReader reader)
+    public static SimPlayerInputMove Deserialize_Class(BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
             return null;
         }
-        SimPlayerInputMovingCharacter obj = new SimPlayerInputMovingCharacter();
+        SimPlayerInputMove obj = new SimPlayerInputMove();
         Deserialize(obj, reader);
         return obj;
     }
-    public static void Deserialize(SimPlayerInputMovingCharacter obj, BitStreamReader reader)
+    public static void Deserialize(SimPlayerInputMove obj, BitStreamReader reader)
     {
-        StaticNetSerializer_fix2.Deserialize(ref obj.Direction, reader);
+        StaticNetSerializer_fix2.Deserialize(ref obj.NewDirection, reader);
         StaticNetSerializer_PersistentId.Deserialize(ref obj.SimPlayerId, reader);
         StaticNetSerializer_SimPlayerInput.Deserialize(obj, reader);
     }

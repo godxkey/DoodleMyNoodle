@@ -13,5 +13,6 @@ public class NavAgentAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponent<NavAgentTag>(entity);
         dstManager.AddComponent<NavAgentFootingState>(entity);
         dstManager.AddComponentData(entity, new MoveSpeed { Value = MoveSpeed });
+        dstManager.AddComponentData(entity, new MoveInput { Value = fix2.zero });
     }
 }

@@ -26,11 +26,12 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
                 {
                     footing.Value = NavAgentFooting.Ladder;
                 }
-                else if (tileWorld.GetFlags(Helpers.GetTile(belowFeet)).IsTerrain && (footing.Value == NavAgentFooting.Ground || velocity.Linear.lengthSquared < 4))
+                else if (tileWorld.GetFlags(Helpers.GetTile(belowFeet)).IsTerrain 
+                    && (footing.Value == NavAgentFooting.Ground || footing.Value == NavAgentFooting.Ladder || velocity.Linear.lengthSquared < 4))
                 {
                     footing.Value = NavAgentFooting.Ground;
                 }
-                else
+                else if (footing.Value != NavAgentFooting.AirControl)
                 {
                     footing.Value = NavAgentFooting.None;
                 }

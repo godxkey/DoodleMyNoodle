@@ -6,12 +6,6 @@ using static Unity.Mathematics.math;
 
 public struct ImpulseRequestSingletonTag : IComponentData { }
 
-public struct DirectMoveRequestData : IBufferElementData
-{
-    public Entity Target;
-    public fix2 Direction;
-}
-
 public struct DirectImpulseRequestData : IBufferElementData
 {
     public Entity Target;
@@ -44,17 +38,11 @@ public class ApplyImpulseSystem : SimSystemBase
         buffer.Add(request);
     }
 
-    public void RequestMoveDirect(DirectMoveRequestData request)
-    {
-        var buffer = GetBuffer<DirectMoveRequestData>(GetRequestSingleton());
-        buffer.Add(request);
-    }
-
     private Entity GetRequestSingleton()
     {
         if (!HasSingleton<ImpulseRequestSingletonTag>())
         {
-            return EntityManager.CreateEntity(typeof(ImpulseRequestSingletonTag), typeof(DirectImpulseRequestData), typeof(RadialImpulseRequestData), typeof(DirectMoveRequestData));
+            return EntityManager.CreateEntity(typeof(ImpulseRequestSingletonTag), typeof(DirectImpulseRequestData), typeof(RadialImpulseRequestData));
         }
         return GetSingletonEntity<ImpulseRequestSingletonTag>();
     }
@@ -63,7 +51,6 @@ public class ApplyImpulseSystem : SimSystemBase
     {
         HandleRadialImpulseRequests();
         HandleDirectImpulseRequests();
-        HandleDirectMoveRequests();
     }
 
     private void HandleRadialImpulseRequests()
@@ -137,62 +124,6 @@ public class ApplyImpulseSystem : SimSystemBase
             directImpulseRequests.Clear();
         }
     }
-
-    private void HandleDirectMoveRequests()
-    {
-        DynamicBuffer<DirectMoveRequestData> directMoveRequests = GetBuffer<DirectMoveRequestData>(GetRequestSingleton());
-
-        if (directMoveRequests.Length > 0)
-        {
-            foreach (DirectMoveRequestData request in directMoveRequests)
-            {
-                if (!HasComponent<PhysicsVelocity>(request.Target))
-                    continue;
-
-                if (!HasComponent<PhysicsMass>(request.Target))
-                    continue;
-
-                var speed = GetComponent<MoveSpeed>(request.Target);
-                PhysicsVelocity vel = GetComponent<PhysicsVelocity>(request.Target);
-                fix2 RealDirection = request.Direction;
-
-                // never vertical movement when outside ladders
-                if (GetComponent<NavAgentFootingState>(request.Target).Value != NavAgentFooting.Ladder)
-                    RealDirection.y = 0;
-
-                // TODO : slow movement on ground with no input
-
-                var mass = GetComponent<PhysicsMass>(request.Target);
-
-                fix2 velToAdd = RealDirection * (fix)mass.InverseMass;
-
-                if (GetComponent<NavAgentFootingState>(request.Target).Value != NavAgentFooting.None)
-                {
-                    // if we are already too fast, don't go faster
-                    if (vel.Linear.lengthSquared < fix.Pow(speed.Value, 2))
-                    {
-                        fix2 currentVelCumul = vel.Linear;
-                        currentVelCumul += velToAdd;
-
-                        // is the movement sending us past the move speed
-                        if (currentVelCumul.lengthSquared > fix.Pow(speed.Value, 2))
-                        {
-                            // yes, so ajust it to reach the speed limit
-                            fix diff = speed.Value - vel.Linear.length;
-                            velToAdd.Normalize();
-                            velToAdd *= diff;
-                        }
-
-                        vel.Linear += velToAdd;
-
-                        SetComponent(request.Target, vel);
-                    }
-                }
-            }
-
-            directMoveRequests.Clear();
-        }
-    }
 }
 
 internal static partial class CommonWrites
@@ -222,16 +153,5 @@ internal static partial class CommonWrites
         };
 
         accessor.GetExistingSystem<ApplyImpulseSystem>().RequestImpulseDirect(request);
-    }
-
-    public static void RequestMove(ISimWorldReadWriteAccessor accessor, Entity target, fix2 direction)
-    {
-        DirectMoveRequestData request = new DirectMoveRequestData()
-        {
-            Target = target,
-            Direction = direction
-        };
-
-        accessor.GetExistingSystem<ApplyImpulseSystem>().RequestMoveDirect(request);
     }
 }

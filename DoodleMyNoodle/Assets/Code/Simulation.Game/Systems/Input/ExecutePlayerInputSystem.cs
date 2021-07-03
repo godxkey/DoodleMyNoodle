@@ -82,9 +82,27 @@ public class ExecutePlayerInputSystem : SimSystemBase
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputDropItem(playerEntity, dropItemInput.ItemIndex));
                 break;
             }
-            case SimPlayerInputMovingCharacter movingCharacterInput:
+            case SimPlayerInputMove moveInput:
             {
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputMovingCharacter(playerEntity, movingCharacterInput.Direction));
+                Entity pawn = GetPlayerPawn(playerEntity);
+                if (HasComponent<MoveInput>(pawn))
+                {
+                    SetComponent<MoveInput>(pawn, moveInput.NewDirection);
+                }
+                break;
+            }
+            case SimPlayerInputJump jumpInput:
+            {
+                Entity pawn = GetPlayerPawn(playerEntity);
+                if (EntityManager.HasComponent<InventoryItemReference>(pawn))
+                {
+                    CommonReads.FindFirstItemWithGameAction<GameActionBasicJump>(Accessor, pawn, out int itemIndex);
+
+                    if (itemIndex != -1)
+                    {
+                        pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, itemIndex, new GameAction.UseParameters()));
+                    }
+                }
                 break;
             }
 
