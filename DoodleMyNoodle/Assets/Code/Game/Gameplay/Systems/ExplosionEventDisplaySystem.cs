@@ -8,12 +8,15 @@ public class ExplosionEventDisplaySystem : GamePresentationSystem<ExplosionEvent
 
     public override void OnPostSimulationTick()
     {
-        Cache.SimWorld.Entities.ForEach((ref ExplosionEventData explosionEvent) =>
+        var explosions = Cache.SimWorld.GetSingletonBufferReadOnly<EventExplosion>();
+
+        for (int i = 0; i < explosions.Length; i++)
         {
+            var explosionEvent = explosions[i];
             Vector2 position = (Vector2)explosionEvent.Position;
-            var explosion = Instantiate(ExplosionPrefab, position, Quaternion.identity);
-            explosion.transform.localScale = Vector3.one * ((float)explosionEvent.Radius * 2f);
-        });
+            var explosionVfx = Instantiate(ExplosionPrefab, position, Quaternion.identity);
+            explosionVfx.transform.localScale = Vector3.one * ((float)explosionEvent.Radius * 2f);
+        }
     }
 
     protected override void OnGamePresentationUpdate() { }

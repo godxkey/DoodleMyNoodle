@@ -14,6 +14,11 @@ public enum NavAgentFooting
     Ladder,
 
     /// <summary>
+    /// Agent is in the air and has weak control
+    /// </summary>
+    AirControl,
+
+    /// <summary>
     /// Agent has no footing (falling in slope, moving in mid-air)
     /// </summary>
     None,

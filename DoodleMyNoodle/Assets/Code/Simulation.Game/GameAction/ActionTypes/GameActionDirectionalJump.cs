@@ -4,12 +4,11 @@ using Unity.Collections;
 using CCC.Fix2D;
 using System;
 
-public class GameActionJump : GameAction
+public class GameActionDirectionalJump : GameAction
 {
     public override Type[] GetRequiredSettingTypes() => new Type[]
     {
         typeof(GameActionSettingThrow),
-        typeof(GameActionSettingIgnoreSurvey),
     };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)

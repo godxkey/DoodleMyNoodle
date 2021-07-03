@@ -171,4 +171,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveSpeed:
-    RawValue: 17179869184
+    RawValue: 12884901888
+  AirControl:
+    RawValue: 1288490240

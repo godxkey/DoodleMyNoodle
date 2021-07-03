@@ -7,7 +7,6 @@ using static Unity.Mathematics.math;
 
 // [UpdateBefore(typeof(PhysicsSystemGroup))]  // implicit
 [UpdateBefore(typeof(DirectAlongPathSystem))]
-[UpdateBefore(typeof(ApplyImpulseSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class StickToLadderSystem : SimSystemBase
 {
@@ -26,11 +25,7 @@ public class StickToLadderSystem : SimSystemBase
         {
             if (footing.Value == NavAgentFooting.Ladder)
             {
-                velocity.Linear = (velocity.Linear * (fix)0.75) + counterGravity * gravScale.ScaleFix;
-            }
-            else if (footing.Value == NavAgentFooting.Ground)
-            {
-                velocity.Linear = (velocity.Linear * (fix)0.75);
+                velocity.Linear += counterGravity * gravScale.ScaleFix;
             }
         }).Run();
     }

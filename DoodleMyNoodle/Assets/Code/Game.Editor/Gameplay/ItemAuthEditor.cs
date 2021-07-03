@@ -31,6 +31,7 @@ public class ItemAuthEditor : Editor
     private SerializedProperty _animationConditionProp;
     private SerializedProperty _animationProp;
     private SerializedProperty _surveyProp;
+    private SerializedProperty _hideInInventory;
 
     private void OnEnable()
     {
@@ -47,6 +48,7 @@ public class ItemAuthEditor : Editor
         _animationConditionProp = serializedObject.FindProperty(nameof(ItemAuth.PlayAnimation));
         _animationProp = serializedObject.FindProperty(nameof(ItemAuth.Animation));
         _surveyProp = serializedObject.FindProperty(nameof(ItemAuth.CustomSurveys));
+        _hideInInventory = serializedObject.FindProperty(nameof(ItemAuth.HideInInventory));
 
         InitStaticData();
     }
@@ -133,6 +135,7 @@ public class ItemAuthEditor : Editor
         if (_animationConditionProp.boolValue)
             EditorGUILayout.PropertyField(_animationProp);
         EditorGUILayout.PropertyField(_surveyProp);
+        EditorGUILayout.PropertyField(_hideInInventory);
 
         if (EditorGUI.EndChangeCheck())
         {

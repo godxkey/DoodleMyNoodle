@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -14,8 +15,6 @@ public class BindedViewEntityCommandBufferSystem : ViewEntityCommandBufferSystem
 [AlwaysUpdateSystem]
 public class MaintainBindedViewEntitiesSystem : ViewSystemBase
 {
-    private EntityQuery _newSimEntitiesQ;
-    private EntityQuery _allSimEntitiesQ;
     private EntityQuery _updatedSimEntitiesQ;
 
     private EntityArchetype _viewArchetypeTile;
@@ -67,30 +66,24 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
         {
             // update cached sim queries since world got replaced
             // NB: No need to dispose of these queries because the world gets disposed ...
-            _newSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<NewlyCreatedTag>(), ComponentType.ReadOnly<SimAssetId>());
-            _allSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<SimAssetId>());
-            _updatedSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<SimAssetId>(), ComponentType.ReadOnly<MidLifeCycleTag>());
+            _updatedSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<SimAssetId>());
             _updatedSimEntitiesQ.SetChangedVersionFilter(ComponentType.ReadOnly<SimAssetId>());
 
             // Destroy all view
             DestroyAllViewEntities();
 
-            // Create all view
-            CreateNewViewEntities(SimAssetBankInstance.GetJobLookup(), _allSimEntitiesQ);
         }
         else
         {
             // Destroy dangling view
             DestroyDanglingViewEntities();
-
-            // Create new view
-            CreateNewViewEntities(SimAssetBankInstance.GetJobLookup(), _newSimEntitiesQ);
         }
 
+        // update map
         UpdateSim2ViewMap();
 
         // destroy then create view for entities that had their SimAssetId modified
-        DestroyAndCreateViewEntitiesForModifiedSimAssetIds(SimAssetBankInstance.GetJobLookup(), _updatedSimEntitiesQ);
+        UpdateViewEntities(SimAssetBankInstance.GetJobLookup(), _updatedSimEntitiesQ);
 
         _updatedSimEntitiesQ.SetChangedFilterRequiredVersion(SimWorldAccessor.GlobalSystemVersion);
 
@@ -123,41 +116,16 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
         var simEntities = SimWorldAccessor.GetComponentDataFromEntity<SimAssetId>();
         Entities
             .WithReadOnly(simEntities)
-            .ForEach((Entity viewEntity, int entityInQueryIndex, in BindedSimEntity linkedSimEntity) =>
+            .ForEach((Entity viewEntity, in BindedSimEntity simEntity) =>
             {
-                if (!simEntities.HasComponent(linkedSimEntity.SimEntity))
+                if (!simEntities.HasComponent(simEntity))
                 {
                     ecb.DestroyEntity(viewEntity);
                 }
             }).Schedule();
     }
 
-    private void CreateNewViewEntities(SimAssetBank.JobLookup simAssetBank, EntityQuery simEntityQuery)
-    {
-        if (simEntityQuery.IsEmpty)
-            return;
-
-        EntityCommandBuffer ecb = _ecb.CreateCommandBuffer();
-        NativeArray<Entity> simEntities = simEntityQuery.ToEntityArrayAsync(Allocator.TempJob, out JobHandle job1);
-        NativeArray<SimAssetId> simAssetIds = simEntityQuery.ToComponentDataArrayAsync<SimAssetId>(Allocator.TempJob, out JobHandle job2);
-        EntityArchetype viewArchetypeTile = _viewArchetypeTile;
-        EntityArchetype viewArchetypeGameObject = _viewArchetypeGameObject;
-
-        var jobHandle = Job.WithCode(() =>
-        {
-            for (int i = 0; i < simEntities.Length; i++)
-            {
-                TryCreateViewEntity(simAssetBank, ecb, simEntities[i], simAssetIds[i], viewArchetypeTile, viewArchetypeGameObject);
-            }
-        })
-            .WithDisposeOnCompletion(simAssetIds)
-            .WithDisposeOnCompletion(simEntities)
-            .Schedule(JobHandle.CombineDependencies(Dependency, job1, job2));
-
-        Dependency = jobHandle;
-    }
-
-    private void DestroyAndCreateViewEntitiesForModifiedSimAssetIds(SimAssetBank.JobLookup simAssetBank, EntityQuery simEntityQuery)
+    private void UpdateViewEntities(SimAssetBank.JobLookup simAssetBank, EntityQuery simEntityQuery)
     {
         if (simEntityQuery.IsEmpty)
             return;
@@ -174,22 +142,24 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
         {
             for (int i = 0; i < simEntities.Length; i++)
             {
+                SimAssetId viewAssetId = SimAssetId.Invalid;
+                SimAssetId simAssetId = simAssetIds[i];
                 Entity simEntity = simEntities[i];
+
                 if (sim2ViewMap.TryGetValue(simEntity, out Entity viewEntity))
                 {
-                    SimAssetId simAssetId = simAssetIds[i];
-
                     if (viewSimAssetIds.HasComponent(viewEntity))
                     {
-                        var viewAssetId = viewSimAssetIds[viewEntity];
-                        if (viewAssetId != simAssetId)
-                        {
-                            ecb.DestroyEntity(viewEntity);
-                            TryCreateViewEntity(simAssetBank, ecb, simEntities[i], simAssetId, viewArchetypeTile, viewArchetypeGameObject);
-                        }
+                        viewAssetId = viewSimAssetIds[viewEntity];
                     }
                 }
 
+                if (viewAssetId != simAssetId)
+                {
+                    if (viewEntity != Entity.Null)
+                        ecb.DestroyEntity(viewEntity);
+                    TryCreateViewEntity(simAssetBank, ecb, simEntities[i], simAssetId, viewArchetypeTile, viewArchetypeGameObject);
+                }
             }
         })
             .WithReadOnly(sim2ViewMap)
@@ -207,7 +177,7 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
         {
             var archetype = viewTechType == ViewTechType.Tile ? tileArchetype : gameObjectArchetype;
             Entity viewEntity = ecb.CreateEntity(archetype);
-            ecb.SetComponent(viewEntity, new BindedSimEntity() { SimEntity = simEntity });
+            ecb.SetComponent(viewEntity, (BindedSimEntity)simEntity);
             ecb.SetComponent(viewEntity, simAssetId);
         }
     }

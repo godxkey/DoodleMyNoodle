@@ -24,6 +24,13 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
 
     private DisablableValue _interactible = new DisablableValue();
 
+    private struct DisplayedItemData
+    {
+        public InventoryItemReference ItemRef;
+        public int Index;
+        public ItemAuth ItemAuth;
+    }
+
     public override void OnGameAwake()
     {
         base.OnGameAwake();
@@ -61,31 +68,47 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
     {
         if (SimWorld.TryGetBufferReadOnly(Cache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
+            List<DisplayedItemData> displayedInventory = ListPool<DisplayedItemData>.Take();
+
+            // gather all items to display
+            for (int i = 0; i < inventory.Length; i++)
+            {
+                Entity item = inventory[i].ItemEntity;
+
+                if (SimWorld.TryGetComponent(item, out SimAssetId itemAssetId))
+                {
+                    ItemAuth itemGameActionAuth = PresentationHelpers.FindItemAuth(itemAssetId);
+                    if (itemGameActionAuth != null && !itemGameActionAuth.HideInInventory)
+                    {
+                        displayedInventory.Add(new DisplayedItemData()
+                        {
+                            ItemAuth = itemGameActionAuth,
+                            ItemRef = inventory[i],
+                            Index = i
+                        });
+                    }
+                }
+            }
+
             // Ajust Slot amount accordiwdng to inventory max size
             InventoryCapacity inventoryCapacity = SimWorld.GetComponent<InventoryCapacity>(Cache.LocalPawn);
 
             _gridLayoutGroup.constraintCount = min(_maxCollumns, inventoryCapacity);
 
-            UIUtility.ResizeGameObjectList(_slotVisuals, max(min(_maxCollumns, inventoryCapacity), inventory.Length), _inventorySlotPrefab, _slotsContainer);
+            UIUtility.ResizeGameObjectList(_slotVisuals, max(min(_maxCollumns, inventoryCapacity), displayedInventory.Count), _inventorySlotPrefab, _slotsContainer);
 
             for (int i = 0; i < _slotVisuals.Count; i++)
             {
-                // first item is a jump, it is hidden. (TODO : Make it so some item can be hidden)
-                int realInventoryIndex = i + 1;
-
-                if (realInventoryIndex < inventory.Length)
+                if (i < displayedInventory.Count)
                 {
-                    Entity item = inventory[realInventoryIndex].ItemEntity;
-                    int stacks = inventory[realInventoryIndex].Stacks;
+                    Entity item = displayedInventory[i].ItemRef.ItemEntity;
+                    int stacks = displayedInventory[i].ItemRef.Stacks;
 
                     if (stacks == 1 && !SimWorld.GetComponent<StackableFlag>(item))
                         stacks = -1; // used in display to hide stacks
 
-                    SimWorld.TryGetComponent(item, out SimAssetId itemAssetId);
-                    ItemAuth itemGameActionAuth = PresentationHelpers.FindItemAuth(itemAssetId);
-
-                    _slotVisuals[i].UpdateCurrentInventorySlot(itemGameActionAuth,
-                                                               realInventoryIndex,
+                    _slotVisuals[i].UpdateCurrentInventorySlot(displayedInventory[i].ItemAuth,
+                                                               displayedInventory[i].Index,
                                                                GetSlotShotcut(i),
                                                                OnIntentionToUsePrimaryActionOnItem,
                                                                OnIntentionToUseSecondaryActionOnItem,
@@ -105,7 +128,6 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                         canBeUsed = itemAction != null && itemAction.CanBeUsedInContext(SimWorld, useContext);
                     }
 
-
                     if (!canBeUsed)
                     {
                         _slotVisuals[i].UpdateDisplayAsUnavailable(item);
@@ -116,6 +138,8 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                     _slotVisuals[i].UpdateCurrentInventorySlot(null, i, GetSlotShotcut(i), null, null);
                 }
             }
+
+            ListPool<DisplayedItemData>.Release(displayedInventory);
         }
     }
 

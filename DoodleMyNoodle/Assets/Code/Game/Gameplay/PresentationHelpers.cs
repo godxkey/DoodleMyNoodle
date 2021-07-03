@@ -104,7 +104,7 @@ public static class PresentationHelpers
                 return true;
             }
 
-            GameActionJump jumpAction = GetGameAction<GameActionJump>(cache.SimWorld, useContext.Item);
+            GameActionDirectionalJump jumpAction = GetGameAction<GameActionDirectionalJump>(cache.SimWorld, useContext.Item);
 
             if (jumpAction != null)
             {

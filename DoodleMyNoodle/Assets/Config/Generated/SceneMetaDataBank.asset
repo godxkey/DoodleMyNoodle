@@ -93,3 +93,7 @@ MonoBehaviour:
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype4.unity
     BuildIndex: 19
     AssetGuid: de112d99d442a5342ba101a7fa9d56fa
+  - Name: Gym_Fred
+    Path: Assets/Scenes/Levels/Scene Assets/Gym_Fred.unity
+    BuildIndex: 20
+    AssetGuid: 88424a4ab48a6b440a5b18e40e0bf10f

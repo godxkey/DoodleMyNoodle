@@ -144,7 +144,7 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(SimPlayerInputEquipItem)
         ,
-        typeof(SimPlayerInputMovingCharacter)
+        typeof(SimPlayerInputMove)
         ,
         typeof(SimPlayerInputNextTurn)
         ,
@@ -585,9 +585,9 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_SimPlayerInputEquipItem.GetSerializedBitSize(castedObj);
         }
         ,
-        [typeof(SimPlayerInputMovingCharacter)] = (obj) =>
+        [typeof(SimPlayerInputMove)] = (obj) =>
         {
-            SimPlayerInputMovingCharacter castedObj = (SimPlayerInputMovingCharacter)obj;
+            SimPlayerInputMove castedObj = (SimPlayerInputMove)obj;
             return StaticNetSerializer_SimPlayerInputMovingCharacter.GetSerializedBitSize(castedObj);
         }
         ,
@@ -1098,9 +1098,9 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_SimPlayerInputEquipItem.Serialize(castedObj, writer);
         }
         ,
-        [typeof(SimPlayerInputMovingCharacter)] = (obj, writer) =>
+        [typeof(SimPlayerInputMove)] = (obj, writer) =>
         {
-            SimPlayerInputMovingCharacter castedObj = (SimPlayerInputMovingCharacter)obj;
+            SimPlayerInputMove castedObj = (SimPlayerInputMove)obj;
             StaticNetSerializer_SimPlayerInputMovingCharacter.Serialize(castedObj, writer);
         }
         ,
@@ -1680,7 +1680,7 @@ public static class DynamicNetSerializationRegistry
         ,
         [67] = (reader) =>
         {
-            SimPlayerInputMovingCharacter obj = new SimPlayerInputMovingCharacter();
+            SimPlayerInputMove obj = new SimPlayerInputMove();
             StaticNetSerializer_SimPlayerInputMovingCharacter.Deserialize(obj, reader);
             return obj;
         }

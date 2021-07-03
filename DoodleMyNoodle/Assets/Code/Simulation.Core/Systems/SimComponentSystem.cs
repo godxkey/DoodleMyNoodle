@@ -66,8 +66,8 @@ public abstract class SimSystemBase : CCCSystemBase, ISimSystem
         Accessor = World.GetInternalAccessor();
     }
 
-    protected DynamicBuffer<T> GetSystemRequests<T>() where T: struct, ISystemRequestData
+    protected DynamicBuffer<T> GetSingletonBuffer<T>() where T: struct, ISingletonBufferElementData
     {
-        return GetBuffer<T>(GetSingletonEntity<SystemRequestsSingletonTag>());
+        return GetBuffer<T>(GetSingletonEntity<SingletonBuffersTag>());
     }
 }

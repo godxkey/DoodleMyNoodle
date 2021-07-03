@@ -736,6 +736,8 @@ public interface ISimWorldWriteAccessor
     T GetOrCreateSystem<T>() where T : ComponentSystemBase;
 
     FixRandom Random();
+
+    DynamicBuffer<T> GetSingletonBuffer<T>() where T : struct, ISingletonBufferElementData;
 }
 
 public interface ISimWorldReadAccessor
@@ -1009,5 +1011,5 @@ public interface ISimWorldReadAccessor
 
     ComponentDataFromEntity<T> GetComponentFromEntity<T>() where T : struct, IComponentData;
     
-    DynamicBuffer<T> GetSystemRequests<T>() where T : struct, ISystemRequestData;
+    DynamicBuffer<T> GetSingletonBufferReadOnly<T>() where T : struct, ISingletonBufferElementData;
 }

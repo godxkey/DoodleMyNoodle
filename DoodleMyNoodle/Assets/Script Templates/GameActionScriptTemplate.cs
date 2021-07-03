@@ -20,21 +20,15 @@ public class #SCRIPTNAME# : {nameof(GameAction)}
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
     {{
         return new UseContract(
-                   new GameActionParameterTile.Description(accessor.GetComponentData<ItemRangeData>(context.Entity).Value)
+                   new GameActionParameterPosition.Description()
                    {{
-                       TileFilter = TileFlags.All,
-                       IncludeSelf = false,
-                       MustBeReachable = false,
-                       RequiresAttackableEntity = false,
-
-                       CustomTileActorPredicate = (tileActor, accessor) => !accessor.HasComponent<StaticTag>(tileActor),
-                       CustomTilePredicate = (tilePosition, tileEntity, accessor) => !accessor.HasComponent<StaticTag>(tileEntity)
+                       MaxRangeFromInstigator = 20,
                    }});
     }}
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
     {{
-        if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {{
             return true;   
         }}
@@ -44,12 +38,12 @@ public class #SCRIPTNAME# : {nameof(GameAction)}
 
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
     {{
-        throw new System.NotImplementedException();
+        return base.CanBeUsedInContextSpecific(accessor, context, debugReason);
     }}
 
     protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {{
-        throw new System.NotImplementedException();
+        return base.GetMinimumActionPointCost(accessor, context);
     }}
 }}";
     }

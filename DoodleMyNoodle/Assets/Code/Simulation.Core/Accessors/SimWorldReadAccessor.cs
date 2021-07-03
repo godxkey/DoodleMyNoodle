@@ -145,8 +145,8 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
         return SimWorld.GetExistingSystem<T>();
     }
 
-    public DynamicBuffer<T> GetSystemRequests<T>() where T : struct, ISystemRequestData
+    public DynamicBuffer<T> GetSingletonBufferReadOnly<T>() where T : struct, ISingletonBufferElementData
     {
-        return EntityManager.GetBuffer<T>(GetSingletonEntity<SystemRequestsSingletonTag>());
+        return EntityManager.GetBufferReadOnly<T>(GetSingletonEntity<SingletonBuffersTag>());
     }
 }

@@ -6,7 +6,7 @@ using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngineX;
 
-public struct SystemRequestTransformTile : ISystemRequestData
+public struct SystemRequestTransformTile : ISingletonBufferElementData
 {
     public int2 Tile;
     public TileFlagComponent NewTileFlags;
@@ -52,7 +52,7 @@ public class UpdateGridSystem : SimSystemBase
 
     private void HandleTransformRequests()
     {
-        var requests = GetSystemRequests<SystemRequestTransformTile>();
+        var requests = GetSingletonBuffer<SystemRequestTransformTile>();
 
         if (requests.Length <= 0)
             return;
@@ -150,7 +150,7 @@ public class UpdateGridSystem : SimSystemBase
         Entity tileCollider = EntityManager.CreateEntity(_tileColliderArchetype);
 
 #if UNITY_EDITOR
-        EntityManager.SetName(tileCollider, $"Tile Collider ({tileId.X}, {tileId.Y})");
+        EntityManager.SetName(tileCollider, $"Tile_Collider ({tileId.X}, {tileId.Y})");
 #endif
         EntityManager.SetComponentData(tileCollider, new FixTranslation() { Value = Helpers.GetTileCenter(tileId) });
         EntityManager.SetComponentData(tileCollider, new PhysicsColliderBlob() { Collider = _sharedTileCollider });
@@ -161,7 +161,7 @@ public class UpdateGridSystem : SimSystemBase
 
 internal static partial class CommonWrites
 {
-    public static void RequestTransformTile(ISimWorldReadWriteAccessor accessor, int2 tile, TileFlags newTileFlags)
+    public static void RequestTransformTile(ISimWorldReadWriteAccessor accessor, int2 tile, TileFlagComponent newTileFlags)
     {
         SystemRequestTransformTile request = new SystemRequestTransformTile()
         {
@@ -169,6 +169,6 @@ internal static partial class CommonWrites
             NewTileFlags = newTileFlags,
         };
 
-        accessor.GetSystemRequests<SystemRequestTransformTile>().Add(request);
+        accessor.GetSingletonBuffer<SystemRequestTransformTile>().Add(request);
     }
 }
