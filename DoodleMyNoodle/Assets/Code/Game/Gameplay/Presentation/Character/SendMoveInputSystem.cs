@@ -11,9 +11,6 @@ public class SendMoveInputSystem : GamePresentationSystem<SendMoveInputSystem>
 
     protected override void OnGamePresentationUpdate()
     {
-        if (UIStateMachineController.Instance.CurrentSate.Type != UIStateType.Gameplay)
-            return;
-
         if (!Cache.LocalPawnExists)
             return;
 
@@ -25,17 +22,20 @@ public class SendMoveInputSystem : GamePresentationSystem<SendMoveInputSystem>
     {
         fix2 input = fix2.zero;
 
-        if (Input.GetKey(KeyCode.D))
-            input.x += 1;
+        if (UIStateMachineController.Instance.CurrentSate.Type != UIStateType.Gameplay)
+        {
+            if (Input.GetKey(KeyCode.D))
+                input.x += 1;
 
-        if (Input.GetKey(KeyCode.A))
-            input.x += -1;
+            if (Input.GetKey(KeyCode.A))
+                input.x += -1;
 
-        if (Input.GetKey(KeyCode.W))
-            input.y += 1;
+            if (Input.GetKey(KeyCode.W))
+                input.y += 1;
 
-        if (Input.GetKey(KeyCode.S))
-            input.y += -1;
+            if (Input.GetKey(KeyCode.S))
+                input.y += -1;
+        }
 
         _moveInput.Set(input);
 
