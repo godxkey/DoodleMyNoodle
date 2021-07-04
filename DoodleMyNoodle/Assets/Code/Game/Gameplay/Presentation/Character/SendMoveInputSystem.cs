@@ -22,7 +22,7 @@ public class SendMoveInputSystem : GamePresentationSystem<SendMoveInputSystem>
     {
         fix2 input = fix2.zero;
 
-        if (UIStateMachineController.Instance.CurrentSate.Type != UIStateType.Gameplay)
+        if (UIStateMachineController.Instance.CurrentSate.Type == UIStateType.Gameplay)
         {
             if (Input.GetKey(KeyCode.D))
                 input.x += 1;
