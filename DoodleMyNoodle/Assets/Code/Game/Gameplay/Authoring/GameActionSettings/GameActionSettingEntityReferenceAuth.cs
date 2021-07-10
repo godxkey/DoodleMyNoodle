@@ -16,7 +16,7 @@ public class GameActionSettingEntityReferenceAuth : GameActionSettingAuthBase
     {
         if (Entity == null)
         {
-            Log.Error($"Invalid reference in {nameof(GameActionSettingEntityReferenceAuth)}");
+            Log.Error($"Invalid reference in {nameof(GameActionSettingEntityReferenceAuth)}", Context);
         }
 
         dstManager.AddComponentData(entity, new GameActionSettingEntityReference() { EntityPrefab = conversionSystem.GetPrimaryEntity(Entity) });

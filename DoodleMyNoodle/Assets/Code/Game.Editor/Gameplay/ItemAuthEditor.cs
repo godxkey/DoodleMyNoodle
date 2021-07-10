@@ -14,7 +14,6 @@ public class ItemAuthEditor : Editor
     private static string[] s_availableTypeNames;
     private static Type[] s_availableTypes;
     // key : setting type / value : auth type
-    private static Dictionary<Type, Type> s_gameActionSettingAuthTypes;
     private static GUIStyle s_primaryTitleFontStyle = null;
     private static GUIStyle s_secondaryTitleFontStyle = null;
 
@@ -77,24 +76,12 @@ public class ItemAuthEditor : Editor
             Type gameActionType = TypeUtility.FindType(_gameActionProp.stringValue, false);
             if (gameActionType != null)
             {
-                GameAction selectedGameAction = (GameAction)Activator.CreateInstance(gameActionType);
-                Type[] gameActionAuthSettingTypes = selectedGameAction.GetRequiredSettingTypes().Select((simType) =>
-                {
-                    if (!s_gameActionSettingAuthTypes.TryGetValue(simType, out Type currentRequiredAuthSettingType))
-                    {
-                        Debug.LogError($"Game Action Setting Auth Type doesn't exist for {simType}");
-                        return null;
-                    }
-                    else
-                    {
-                        return currentRequiredAuthSettingType;
-                    }
-                }).ToArray();
+                Type[] settingAuthTypes = GameActionSettingAuthBase.GetRequiredSettingAuthTypes(gameActionType);
 
                 // Remove extra setting in property list
                 for (int i = _gameActionSettingsProp.arraySize - 1; i >= 0; i--)
                 {
-                    if (castedTarget.GameActionSettings[i] == null || !gameActionAuthSettingTypes.Contains(castedTarget.GameActionSettings[i].GetType()))
+                    if (castedTarget.GameActionSettings[i] == null || !settingAuthTypes.Contains(castedTarget.GameActionSettings[i].GetType()))
                     {
                         _gameActionSettingsProp.DeleteArrayElementAtIndex(i);
                         castedTarget.GameActionSettings.RemoveAt(i);
@@ -102,9 +89,9 @@ public class ItemAuthEditor : Editor
                 }
 
                 // Add missing setting to property list
-                for (int i = 0; i < gameActionAuthSettingTypes.Length; i++)
+                for (int i = 0; i < settingAuthTypes.Length; i++)
                 {
-                    Type currentAuthSettingType = gameActionAuthSettingTypes[i];
+                    Type currentAuthSettingType = settingAuthTypes[i];
                     if (currentAuthSettingType == null)
                         continue;
 
@@ -190,21 +177,6 @@ public class ItemAuthEditor : Editor
             s_secondaryTitleFontStyle.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
             s_secondaryTitleFontStyle.fontSize = 15;
             s_secondaryTitleFontStyle.fontStyle = FontStyle.Bold;
-        }
-
-        if (s_gameActionSettingAuthTypes == null)
-        {
-            s_gameActionSettingAuthTypes = new Dictionary<Type, Type>();
-        }
-
-        Type[] gameActionSettingAuthTypes = TypeUtility.GetTypesWithAttribute(typeof(GameActionSettingAuthAttribute)).ToArray();
-        foreach (Type gameActionSettingAuthType in gameActionSettingAuthTypes)
-        {
-            GameActionSettingAuthAttribute attribute = (GameActionSettingAuthAttribute)gameActionSettingAuthType.GetCustomAttribute(typeof(GameActionSettingAuthAttribute));
-            if (!s_gameActionSettingAuthTypes.ContainsKey(attribute.SettingType))
-            {
-                s_gameActionSettingAuthTypes.Add(attribute.SettingType, gameActionSettingAuthType);
-            }
         }
     }
 }

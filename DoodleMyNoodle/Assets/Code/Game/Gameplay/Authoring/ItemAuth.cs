@@ -5,6 +5,8 @@ using System;
 using CCC.InspectorDisplay;
 using System.Collections.Generic;
 using UnityEngineX.InspectorDisplay;
+using UnityEngineX;
+using System.Reflection;
 
 [DisallowMultipleComponent]
 public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
@@ -40,11 +42,27 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, GameActionBank.GetActionId(Value));
+        var gameAction = GameActionBank.GetAction(Value);
+        dstManager.AddComponentData(entity, GameActionBank.GetActionId(gameAction));
 
-        foreach (GameActionSettingAuthBase settings in GameActionSettings)
+        // Update list of GameActionSettingAuth by adding any missing instances and removing any extra
         {
-            settings.Convert(entity, dstManager, conversionSystem);
+            var requiredSettingAuths = GameActionSettingAuthBase.GetRequiredSettingAuthTypes(gameAction.GetType());
+            GameActionSettings.RemoveAll(authInstance => !requiredSettingAuths.Contains(authInstance.GetType()));
+            foreach (var authType in requiredSettingAuths)
+            {
+                if (!GameActionSettings.Any(x => x.GetType() == authType))
+                {
+                    GameActionSettings.Add(Activator.CreateInstance(authType) as GameActionSettingAuthBase);
+                }
+            }
+        }
+
+        // Convert all GameActionSettingAuths
+        foreach (GameActionSettingAuthBase setting in GameActionSettings)
+        {
+            setting.Context = gameObject;
+            setting.Convert(entity, dstManager, conversionSystem);
         }
 
         if (Animation != null)
