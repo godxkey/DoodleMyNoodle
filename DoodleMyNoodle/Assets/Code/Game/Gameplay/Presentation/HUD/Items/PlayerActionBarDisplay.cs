@@ -128,6 +128,11 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                         canBeUsed = itemAction != null && itemAction.CanBeUsedInContext(SimWorld, useContext);
                     }
 
+                    if (!displayedInventory[i].ItemAuth.CanBeUsedAtAnytime && !CommonReads.CanTeamPlay(SimWorld, Cache.LocalControllerTeam))
+                    {
+                        canBeUsed = false;
+                    }
+
                     if (!canBeUsed)
                     {
                         _slotVisuals[i].UpdateDisplayAsUnavailable(item);

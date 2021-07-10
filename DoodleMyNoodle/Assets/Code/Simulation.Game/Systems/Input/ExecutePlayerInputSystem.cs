@@ -59,6 +59,8 @@ public class ExecutePlayerInputSystem : SimSystemBase
 
             case SimPlayerInputUseObjectGameAction useGameActionInput:
             {
+                StopPlayerMovement(playerEntity);
+
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseObjectGameAction(playerEntity, useGameActionInput.ObjectPosition, useGameActionInput.UseData));
                 break;
             }
@@ -122,6 +124,11 @@ public class ExecutePlayerInputSystem : SimSystemBase
         }
 
         return Entity.Null;
+    }
+
+    private void StopPlayerMovement(Entity playerEntity)
+    {
+        EntityManager.SetOrAddComponentData(GetPlayerPawn(playerEntity), new CanMoveFreely() { CanMove = false });
     }
 }
 

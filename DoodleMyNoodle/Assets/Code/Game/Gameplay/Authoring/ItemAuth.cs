@@ -34,6 +34,8 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
     public bool HideInInventory = false;
 
+    public bool CanBeUsedAtAnytime = false;
+
     public bool HasCooldown => CooldownType != CooldownMode.NoCooldown;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

@@ -32,6 +32,7 @@ public class ItemAuthEditor : Editor
     private SerializedProperty _animationProp;
     private SerializedProperty _surveyProp;
     private SerializedProperty _hideInInventory;
+    private SerializedProperty _canBeUsedAtAnytime;
 
     private void OnEnable()
     {
@@ -49,6 +50,7 @@ public class ItemAuthEditor : Editor
         _animationProp = serializedObject.FindProperty(nameof(ItemAuth.Animation));
         _surveyProp = serializedObject.FindProperty(nameof(ItemAuth.CustomSurveys));
         _hideInInventory = serializedObject.FindProperty(nameof(ItemAuth.HideInInventory));
+        _canBeUsedAtAnytime = serializedObject.FindProperty(nameof(ItemAuth.CanBeUsedAtAnytime));
 
         InitStaticData();
     }
@@ -136,6 +138,7 @@ public class ItemAuthEditor : Editor
             EditorGUILayout.PropertyField(_animationProp);
         EditorGUILayout.PropertyField(_surveyProp);
         EditorGUILayout.PropertyField(_hideInInventory);
+        EditorGUILayout.PropertyField(_canBeUsedAtAnytime);
 
         if (EditorGUI.EndChangeCheck())
         {

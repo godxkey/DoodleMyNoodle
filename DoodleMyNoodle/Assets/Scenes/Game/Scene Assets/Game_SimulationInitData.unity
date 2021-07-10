@@ -466,7 +466,7 @@ MonoBehaviour:
   AITurnDuration:
     RawValue: 4290672328704
   PlayerTurnDuration:
-    RawValue: 21474836480
+    RawValue: 42949672960
 --- !u!114 &1308979965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -665,7 +665,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f4fd85b1df4bb4cbce8b997c520575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AmountToAdd: 1
+  AmountToAdd: 3
 --- !u!114 &2129100818
 MonoBehaviour:
   m_ObjectHideFlags: 0

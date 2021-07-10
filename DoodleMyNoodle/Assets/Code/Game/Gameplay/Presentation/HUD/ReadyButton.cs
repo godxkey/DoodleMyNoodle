@@ -67,11 +67,11 @@ public class ReadyButton : GamePresentationBehaviour
 
         UpdateView();
 
-        // Shortcut
-        if (Input.GetKeyDown(KeyCode.Space) && EventSystem.current.currentSelectedGameObject?.GetComponent<TMP_InputField>() == null)
-        {
-            _button.onClick.Invoke();
-        }
+        //// Shortcut
+        //if (Input.GetKeyDown(KeyCode.Space) && EventSystem.current.currentSelectedGameObject?.GetComponent<TMP_InputField>() == null)
+        //{
+        //    _button.onClick.Invoke();
+        //}
     }
 
     private void UpdateState()

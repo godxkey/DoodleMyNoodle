@@ -37,7 +37,6 @@ public class UIStateMachine : StateMachine<UIStateMachine, UIState, UIStateMachi
 
         bool couldPlay =
             Cache.LocalControllerExists
-           // && CommonReads.CanTeamPlay(SimWorld, Cache.LocalControllerTeam)
             && Cache.LocalPawnAlive;
 
         UIStateType? currentType = CurrentState?.Type;
