@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 971858758830137585}
   - component: {fileID: 2278408862114426295}
   m_Layer: 0
-  m_Name: SE_Item_Move_Ladder
+  m_Name: SE_Item_Move
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: d170c0eb81b945e458f35303555d6027
+  _guid: 2ba4222c34d6bfc469b68c509779edad
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,17 +63,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionMove
+  Value: GameActionMoveFreely
   GameActionSettings: []
-  ApCost: 0
+  ApCost: 1
   IsStackable: 0
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
-  HideInInventory: 1
-  Icon: {fileID: 21300000, guid: bfe152dc0d499694e85e0e0a216d6d26, type: 3}
-  Name: Grimper
-  EffectDescription: "Permet de vous d\xE9placer dans les \xE9chelles"
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
+  Icon: {fileID: 21300000, guid: 96b3c2698e8fd3f409b90140f23df342, type: 3}
+  Name: Marcher
+  EffectDescription: "Permet de vous d\xE9placer jusqu'a votre prochaine action"
   SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 0}
