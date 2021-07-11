@@ -6,8 +6,6 @@ using CCC.Fix2D;
 
 public class GameActionBasicJump : GameAction
 {
-    private const int JUMP_COST = 1;
-
     public override Type[] GetRequiredSettingTypes() => new Type[] { typeof(GameActionSettingBasicJump) };
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
@@ -27,7 +25,7 @@ public class GameActionBasicJump : GameAction
 
         if (accessor.TryGetComponent(context.InstigatorPawn, out MoveEnergy moveEnergy))
         {
-            CommonWrites.SetStatFix(accessor, context.InstigatorPawn, new MoveEnergy() { Value = moveEnergy.Value - JUMP_COST });
+            CommonWrites.SetStatFix(accessor, context.InstigatorPawn, new MoveEnergy() { Value = moveEnergy.Value - settings.EnergyCost });
         }
 
         return true;
@@ -46,7 +44,7 @@ public class GameActionBasicJump : GameAction
 
         if (accessor.TryGetComponent(context.InstigatorPawn, out MoveEnergy moveEnergy))
         {
-            if (moveEnergy.Value < JUMP_COST)
+            if (moveEnergy.Value <= 0)
             {
                 debugReason?.Set("Pawn has not enough juice to jump");
                 return false;
