@@ -302,11 +302,11 @@ public class UpdateGrenadierAISystem : SimComponentSystem
         // négatif horaire
         if (angleToUp < 46)
         {
-            ajustedDir =  fixMath.Rotate(ajustedDir, fixMath.radians(signedAngle * 20));
+            ajustedDir =  fixMath.rotate(ajustedDir, fixMath.radians(signedAngle * 20));
         }
         else if (angleToUp < 91)
         {
-            ajustedDir = fixMath.Rotate(ajustedDir, fixMath.radians(signedAngle * 45));
+            ajustedDir = fixMath.rotate(ajustedDir, fixMath.radians(signedAngle * 45));
         }
         else if (angleToUp < 181)
         {
