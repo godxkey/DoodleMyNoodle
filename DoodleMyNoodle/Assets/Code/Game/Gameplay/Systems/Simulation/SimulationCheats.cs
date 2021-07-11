@@ -1,4 +1,5 @@
 using System;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
@@ -151,6 +152,23 @@ public static class SimulationCheats
         }
 
         PresentationHelpers.SubmitInput(new SimInputCheatInfiniteAP()
+        {
+            PlayerId = localPlayerInfo.SimPlayerId,
+        });
+    }
+
+    [ConsoleCommand(Description = "Give your pawn a lot of move energy", EnableGroup = LOCAL_PAWN_GROUP)]
+    public static void CheatInfiniteMoveEnergy()
+    {
+        var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
+
+        if (localPlayerInfo == null)
+        {
+            Log.Warning("No local player found");
+            return;
+        }
+
+        PresentationHelpers.SubmitInput(new SimInputCheatInfiniteMoveEnergy()
         {
             PlayerId = localPlayerInfo.SimPlayerId,
         });
