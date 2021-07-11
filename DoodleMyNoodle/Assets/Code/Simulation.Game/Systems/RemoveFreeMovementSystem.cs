@@ -27,5 +27,14 @@ public class RemoveFreeMovementSystem : SimComponentSystem
                 }
             });
         }
+
+        Entities.ForEach((Entity entity, ref CanMoveFreely canMoveFreely, ref MoveInput moveInput, ref MoveEnergy moveEnergy) =>
+        {
+            if (moveEnergy.Value <= 0)
+            {
+                canMoveFreely = new CanMoveFreely() { CanMove = false };
+                moveInput = new MoveInput() { Value = new fix2(0, 0) };
+            }
+        });
     }
 }

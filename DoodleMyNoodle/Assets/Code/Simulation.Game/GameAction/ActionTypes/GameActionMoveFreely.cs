@@ -9,11 +9,6 @@ using System;
 
 public class GameActionMoveFreely : GameAction
 {
-    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {
-        return true;
-    }
-
     protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
         return 1;
@@ -26,6 +21,7 @@ public class GameActionMoveFreely : GameAction
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)
     {
+        accessor.SetOrAddComponent(context.InstigatorPawn, new MoveEnergy() { Value = accessor.GetComponent<MaximumFix<MoveEnergy>>(context.InstigatorPawn).Value });
         accessor.SetOrAddComponent(context.InstigatorPawn, new CanMoveFreely() { CanMove = true });
 
         return true;

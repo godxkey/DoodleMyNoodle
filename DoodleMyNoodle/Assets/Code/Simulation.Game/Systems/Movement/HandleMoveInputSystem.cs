@@ -11,7 +11,9 @@ public class HandleMoveInputSystem : SimSystemBase
 {
     protected override void OnUpdate()
     {
-        Entities.ForEach((ref PhysicsVelocity velocity, in MoveInput moveInput, in MoveSpeed moveSpeed, in NavAgentFootingState footing) =>
+        fix deltaTime = Time.DeltaTime;
+
+        Entities.ForEach((Entity entity, ref PhysicsVelocity velocity, ref MoveEnergy moveEnergy, in MoveInput moveInput, in MoveSpeed moveSpeed, in NavAgentFootingState footing) =>
         {
             if (footing.Value == NavAgentFooting.Ground || footing.Value == NavAgentFooting.Ladder)
             {
@@ -24,6 +26,11 @@ public class HandleMoveInputSystem : SimSystemBase
                 }
 
                 move = clampLength(move, 0, 1);
+
+                if (move.x != 0 || move.y != 0)
+                {
+                    moveEnergy.Value = max(0, moveEnergy.Value - deltaTime);
+                }
 
                 velocity.Linear = move * moveSpeed;
             }

@@ -24,6 +24,14 @@ public class SendMoveInputSystem : GamePresentationSystem<SendMoveInputSystem>
             return;
         }
 
+        if (SimWorld.TryGetComponent(Cache.LocalPawn, out MoveEnergy moveEnergy))
+        {
+            if (moveEnergy.Value == 0)
+            {
+                return;
+            }
+        }
+
         HandleDirectionalMove();
         HandleJump();
     }
