@@ -27,23 +27,32 @@ public class MoveEnergyDisplay : GameMonoBehaviour
 
     private void Update()
     {
-        _fadeDelayTimer -= Time.deltaTime;
-
-        if (_fadeDelayTimer <= 0)
+        if (EnergyBar.value == 0)
         {
-            _canvasGroup.alpha -= (Time.deltaTime * _canvasFadeSpeed);
+            _fadeDelayTimer -= Time.deltaTime;
+
+            if (_fadeDelayTimer <= 0)
+            {
+                _canvasGroup.alpha -= (Time.deltaTime * _canvasFadeSpeed);
+            }
         }
     }
 
     public void ShowFromMouse()
     {
-        _canvasGroup.alpha = 1;
-        _fadeDelayTimer = Mathf.Max(HideDelayFromMouse, _fadeDelayTimer);
+        if (EnergyBar.value > 0)
+        {
+            _canvasGroup.alpha = 1;
+            _fadeDelayTimer = Mathf.Max(HideDelayFromMouse, _fadeDelayTimer);
+        }
     }
 
     public void ShowFromMovement()
     {
-        _canvasGroup.alpha = 1;
-        _fadeDelayTimer = Mathf.Max(HideDelayFromMovement, _fadeDelayTimer);
+        if (EnergyBar.value > 0)
+        {
+            _canvasGroup.alpha = 1;
+            _fadeDelayTimer = Mathf.Max(HideDelayFromMovement, _fadeDelayTimer);
+        }
     }
 }
