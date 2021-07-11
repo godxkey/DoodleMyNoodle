@@ -157,9 +157,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
             if (velocity.Linear.lengthSquared > 0)
             {
                 CursorOverlayService.Instance.ResetCursorToDefault();
-
-                CamPosition = StableLerps.StableLerp(CamPosition, Cache.LocalPawnPositionFloat, followSmoothSpeed);
-
+                CamPosition = Cache.LocalPawnPositionFloat;
                 return;
             }
         }

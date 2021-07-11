@@ -84,18 +84,15 @@ public class ExecutePlayerInputSystem : SimSystemBase
             }
             case SimPlayerInputMove moveInput:
             {
-                if (HasComponent<Team>(playerEntity)) 
+                if (HasComponent<Team>(playerEntity))
                 {
-                    if (CommonReads.CanTeamPlay(Accessor, GetComponent<Team>(playerEntity)))
+                    Entity pawn = GetPlayerPawn(playerEntity);
+                    if (HasComponent<MoveInput>(pawn))
                     {
-                        Entity pawn = GetPlayerPawn(playerEntity);
-                        if (HasComponent<MoveInput>(pawn))
-                        {
-                            SetComponent<MoveInput>(pawn, moveInput.NewDirection);
-                        }
+                        SetComponent<MoveInput>(pawn, moveInput.NewDirection);
                     }
                 }
-                
+
                 break;
             }
             case SimPlayerInputJump jumpInput:
@@ -116,7 +113,7 @@ public class ExecutePlayerInputSystem : SimSystemBase
                         }
                     }
                 }
-                
+
                 break;
             }
 
