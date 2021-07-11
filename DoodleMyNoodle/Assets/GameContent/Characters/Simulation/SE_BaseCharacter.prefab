@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 947375423039552990}
   - component: {fileID: 8655927559677642130}
   - component: {fileID: 2401102004981749674}
+  - component: {fileID: 2939019851991202618}
   m_Layer: 9
   m_Name: SE_BaseCharacter
   m_TagString: Untagged
@@ -174,3 +175,18 @@ MonoBehaviour:
     RawValue: 8589934592
   AirControl:
     RawValue: 1288490240
+--- !u!114 &2939019851991202618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951368162375339519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eb29bdfca5d40c4092fed8a47c06b39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxValue: 10
+  StartAtMax: 1
+  StartValue: 10

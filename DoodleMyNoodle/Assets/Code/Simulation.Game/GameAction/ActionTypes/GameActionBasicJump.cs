@@ -23,6 +23,11 @@ public class GameActionBasicJump : GameAction
         velocity.Linear.y = settings.JumpVelocity;
         accessor.SetComponent(context.InstigatorPawn, velocity);
 
+        if (accessor.TryGetComponent(context.InstigatorPawn, out MoveEnergy moveEnergy))
+        {
+            CommonWrites.SetStatFix(accessor, context.InstigatorPawn, new MoveEnergy() { Value = moveEnergy.Value - settings.EnergyCost });
+        }
+
         return true;
     }
 
@@ -33,6 +38,15 @@ public class GameActionBasicJump : GameAction
             if (footing.Value != NavAgentFooting.Ground && footing.Value != NavAgentFooting.Ladder)
             {
                 debugReason?.Set("Pawn has no ground or ladder footing.");
+                return false;
+            }
+        }
+
+        if (accessor.TryGetComponent(context.InstigatorPawn, out MoveEnergy moveEnergy))
+        {
+            if (moveEnergy.Value <= 0)
+            {
+                debugReason?.Set("Pawn has not enough juice to jump");
                 return false;
             }
         }
