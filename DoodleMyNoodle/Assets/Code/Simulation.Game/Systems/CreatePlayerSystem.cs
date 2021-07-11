@@ -131,6 +131,12 @@ public class CreatePlayerSystem : SimSystemBase
         }
 
         Entity pawn = EntityManager.Instantiate(playerPawnPrefab.Prefab);
+
+        // duplicate collider so we don't all share the same one
+        var colliderRef = GetComponent<PhysicsColliderBlob>(pawn).Collider;
+        var newColliderRef = BlobAssetReference<Collider>.Create(colliderRef.Value);
+        SetComponent(pawn, new PhysicsColliderBlob() { Collider = newColliderRef });
+
         EntityManager.SetOrAddComponentData(pawn, new FixTranslation() { Value = spawnPosition });
 
         return pawn;
