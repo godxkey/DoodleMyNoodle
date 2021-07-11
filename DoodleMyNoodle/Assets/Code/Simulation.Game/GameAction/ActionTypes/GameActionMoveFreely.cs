@@ -22,7 +22,6 @@ public class GameActionMoveFreely : GameAction
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)
     {
         accessor.SetOrAddComponent(context.InstigatorPawn, new MoveEnergy() { Value = accessor.GetComponent<MaximumFix<MoveEnergy>>(context.InstigatorPawn).Value });
-        accessor.SetOrAddComponent(context.InstigatorPawn, new CanMoveFreely() { CanMove = true });
 
         return true;
     }

@@ -27,6 +27,11 @@ public class HandleMoveInputSystem : SimSystemBase
 
                 move = clampLength(move, 0, 1);
 
+                if (moveEnergy.Value == 0)
+                {
+                    move *= 0;
+                }
+
                 if (move.x != 0 || move.y != 0)
                 {
                     moveEnergy.Value = max(0, moveEnergy.Value - deltaTime);

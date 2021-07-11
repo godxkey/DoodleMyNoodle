@@ -136,6 +136,8 @@ public abstract class GameAction
             return false;
         }
 
+        BeforeActionUsed(accessor, context);
+
         ResultData resultData = new ResultData(new Dictionary<string, object>());
         if (Use(accessor, context, parameters, ref resultData))
         {
@@ -154,6 +156,8 @@ public abstract class GameAction
         {
             return false;
         }
+
+        BeforeActionUsed(accessor, context);
 
         ResultData resultData = new ResultData(new Dictionary<string, object>());
         if (Use(accessor, context, parameters, ref resultData))
@@ -233,6 +237,15 @@ public abstract class GameAction
         }
 
         return false;
+    }
+
+    public void BeforeActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context)
+    {
+        // hack can't move anymore after doing an action
+        if (!(this is GameActionBasicJump))
+        {
+            accessor.SetComponent(context.InstigatorPawn, new MoveEnergy() { Value = 0 });
+        }
     }
 
     public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context, ResultData result)

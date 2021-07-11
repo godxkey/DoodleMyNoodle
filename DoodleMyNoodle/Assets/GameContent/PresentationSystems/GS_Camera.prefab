@@ -159,6 +159,7 @@ MonoBehaviour:
   ZoomSpeed: 0.25
   DragSpeed: 0.05
   DragMaxSpeed: 0.06
+  followSmoothSpeed: 0.05
   MinZoom: 1
   MaxZoom: 5
   BeginZoom: 2

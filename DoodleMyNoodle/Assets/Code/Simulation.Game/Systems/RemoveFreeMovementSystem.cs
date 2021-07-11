@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngineX;
 using Unity.Entities;
 
-public class RemoveFreeMovementSystem : SimComponentSystem
+public class RemoveFreeMovementSystem : SimSystemBase
 {
     protected override void OnUpdate()
     {
@@ -14,27 +14,17 @@ public class RemoveFreeMovementSystem : SimComponentSystem
         {
             int currentTeam = CommonReads.GetTurnTeam(Accessor);
 
-            Entities.ForEach((Entity entity, ref CanMoveFreely canMoveFreely, ref MoveInput moveInput) =>
+            Entities.ForEach((Entity entity, ref MoveEnergy moveEnergy) =>
             {
                 Entity pawnController = CommonReads.GetPawnController(Accessor, entity);
                 if (pawnController != Entity.Null)
                 {
                     if (EntityManager.GetComponentData<Team>(pawnController).Value != currentTeam)
                     {
-                        canMoveFreely = new CanMoveFreely() { CanMove = false };
-                        moveInput = new MoveInput() { Value = new fix2(0, 0) };
+                        moveEnergy.Value = 0;
                     }
                 }
-            });
+            }).WithoutBurst().Run();
         }
-
-        Entities.ForEach((Entity entity, ref CanMoveFreely canMoveFreely, ref MoveInput moveInput, ref MoveEnergy moveEnergy) =>
-        {
-            if (moveEnergy.Value <= 0)
-            {
-                canMoveFreely = new CanMoveFreely() { CanMove = false };
-                moveInput = new MoveInput() { Value = new fix2(0, 0) };
-            }
-        });
     }
 }

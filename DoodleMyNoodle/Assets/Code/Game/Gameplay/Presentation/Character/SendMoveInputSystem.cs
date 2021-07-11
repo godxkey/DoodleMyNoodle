@@ -14,22 +14,9 @@ public class SendMoveInputSystem : GamePresentationSystem<SendMoveInputSystem>
         if (!Cache.LocalPawnExists)
             return;
 
-        if (SimWorld.TryGetComponent(Cache.LocalPawn, out CanMoveFreely canMoveFreely)) 
-        {
-            if (!canMoveFreely.CanMove)
-                return;
-        }
-        else
+        if (GameConsole.IsOpen())
         {
             return;
-        }
-
-        if (SimWorld.TryGetComponent(Cache.LocalPawn, out MoveEnergy moveEnergy))
-        {
-            if (moveEnergy.Value == 0)
-            {
-                return;
-            }
         }
 
         HandleDirectionalMove();

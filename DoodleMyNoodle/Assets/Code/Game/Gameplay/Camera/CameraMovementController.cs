@@ -26,6 +26,9 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     public float DragSpeed = 1;
     public float DragMaxSpeed = 1;
 
+    [Header("Smooth Follow")]
+    public float followSmoothSpeed = 0.125f;
+
     [Header("Limits")]
     public float MinZoom = 1;
     public float MaxZoom;
@@ -95,7 +98,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
 
     protected override void OnGamePresentationUpdate() { }
 
-    void Update()
+    private void LateUpdate()
     {
         if (GameConsole.IsOpen())
         {
@@ -148,6 +151,18 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         bool useMouseMovements = isMouseInsideScreen && MouseMovementsEnabled;
 
         Vector2 currentMousePosition = Input.mousePosition;
+
+        if (SimWorld.TryGetComponent(Cache.LocalPawn, out PhysicsVelocity velocity))
+        {
+            if (velocity.Linear.lengthSquared > 0)
+            {
+                CursorOverlayService.Instance.ResetCursorToDefault();
+
+                CamPosition = StableLerps.StableLerp(CamPosition, Cache.LocalPawnPositionFloat, followSmoothSpeed);
+
+                return;
+            }
+        }
 
         if (Input.GetMouseButtonDown(0)) 
         {

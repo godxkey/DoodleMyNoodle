@@ -59,8 +59,6 @@ public class ExecutePlayerInputSystem : SimSystemBase
 
             case SimPlayerInputUseObjectGameAction useGameActionInput:
             {
-                StopPlayerMovement(playerEntity);
-
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseObjectGameAction(playerEntity, useGameActionInput.ObjectPosition, useGameActionInput.UseData));
                 break;
             }
@@ -86,25 +84,39 @@ public class ExecutePlayerInputSystem : SimSystemBase
             }
             case SimPlayerInputMove moveInput:
             {
-                Entity pawn = GetPlayerPawn(playerEntity);
-                if (HasComponent<MoveInput>(pawn))
+                if (HasComponent<Team>(playerEntity)) 
                 {
-                    SetComponent<MoveInput>(pawn, moveInput.NewDirection);
+                    if (CommonReads.CanTeamPlay(Accessor, GetComponent<Team>(playerEntity)))
+                    {
+                        Entity pawn = GetPlayerPawn(playerEntity);
+                        if (HasComponent<MoveInput>(pawn))
+                        {
+                            SetComponent<MoveInput>(pawn, moveInput.NewDirection);
+                        }
+                    }
                 }
+                
                 break;
             }
             case SimPlayerInputJump jumpInput:
             {
-                Entity pawn = GetPlayerPawn(playerEntity);
-                if (EntityManager.HasComponent<InventoryItemReference>(pawn))
+                if (HasComponent<Team>(playerEntity))
                 {
-                    CommonReads.FindFirstItemWithGameAction<GameActionBasicJump>(Accessor, pawn, out int itemIndex);
-
-                    if (itemIndex != -1)
+                    if (CommonReads.CanTeamPlay(Accessor, GetComponent<Team>(playerEntity)))
                     {
-                        pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, itemIndex, new GameAction.UseParameters()));
+                        Entity pawn = GetPlayerPawn(playerEntity);
+                        if (EntityManager.HasComponent<InventoryItemReference>(pawn))
+                        {
+                            CommonReads.FindFirstItemWithGameAction<GameActionBasicJump>(Accessor, pawn, out int itemIndex);
+
+                            if (itemIndex != -1)
+                            {
+                                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, itemIndex, new GameAction.UseParameters()));
+                            }
+                        }
                     }
                 }
+                
                 break;
             }
 
@@ -124,11 +136,6 @@ public class ExecutePlayerInputSystem : SimSystemBase
         }
 
         return Entity.Null;
-    }
-
-    private void StopPlayerMovement(Entity playerEntity)
-    {
-        EntityManager.SetOrAddComponentData(GetPlayerPawn(playerEntity), new CanMoveFreely() { CanMove = false });
     }
 }
 

@@ -72,6 +72,7 @@ MonoBehaviour:
   CooldownDuration:
     RawValue: 0
   HideInInventory: 1
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: a7c0857bee529884c801da6380546a43, type: 3}
   Name: Petit Saut
   EffectDescription: Permet de sauter proche
@@ -86,3 +87,5 @@ MonoBehaviour:
       data:
         JumpVelocity:
           RawValue: 17179869184
+        EnergyCost:
+          RawValue: 12884901888

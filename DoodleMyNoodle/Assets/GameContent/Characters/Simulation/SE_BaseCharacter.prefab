@@ -188,5 +188,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxValue: 10
-  StartAtMax: 1
-  StartValue: 10
+  StartAtMax: 0
+  StartValue: 0
