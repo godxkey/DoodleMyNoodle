@@ -182,7 +182,7 @@ GameObject:
   - component: {fileID: 2411286556387156847}
   - component: {fileID: 8941124588349994161}
   m_Layer: 5
-  m_Name: FewHearts
+  m_Name: FewAP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -248,9 +248,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 441856737791022927}
-  - component: {fileID: 272167070138966388}
+  - component: {fileID: -2374265788659355313}
   m_Layer: 0
-  m_Name: HealthBar
+  m_Name: APBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -271,7 +271,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &272167070138966388
+--- !u!114 &-2374265788659355313
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -280,19 +280,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 6674601025037133760}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10cf6211772ce64498ee96daba76641d, type: 3}
+  m_Script: {fileID: 11500000, guid: 3588b93d315aa624f963d4197e6584a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _heartPrefab: {fileID: 8991297770476160728, guid: 9d4adf175b807c848994aea3c02c5e5c,
-    type: 3}
-  _heartContainer: {fileID: 6661507625212345112}
-  _emptySprite: {fileID: 21300000, guid: 776061e11ab2faf4a88a24e2aa03f203, type: 3}
-  _filledSprite: {fileID: 21300000, guid: d2fb763feeada0e449754d62ea1c9b70, type: 3}
+  _apPrefab: {fileID: 6150836390797422753}
+  _apContainer: {fileID: 6661507625212345112}
+  _emptySprite: {fileID: 21300000, guid: 12c51fd80a0331a408f0ab03ce1a6d65, type: 3}
+  _filledSprite: {fileID: 21300000, guid: 976bd24729cff4648a93e436e46df764, type: 3}
   _canvasGroup: {fileID: 3469271791465091720}
-  _canvasFadeSpeed: 4
-  _fewHeartsContainer: {fileID: 6150836390797422753}
-  _manyHeartsContainer: {fileID: 7733255461499059824}
-  _manyHeartsText: {fileID: 1103229671544866281}
+  _canvasFadeSpeed: 0.1
+  _fewAPContainer: {fileID: 6150836390797422753}
+  _manyAPContainer: {fileID: 7733255461499059824}
+  _manyAPText: {fileID: 1103229671544866281}
 --- !u!1 &7183227927982623306
 GameObject:
   m_ObjectHideFlags: 0
@@ -386,8 +385,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.15
-  m_fontSizeBase: 0.15
+  m_fontSize: 0.2
+  m_fontSizeBase: 0.2
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -438,7 +437,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7224084004329718624}
   m_Layer: 5
-  m_Name: ManyHearts
+  m_Name: ManyAP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

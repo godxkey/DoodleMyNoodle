@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 789226531472662068}
   - component: {fileID: 789226531472662069}
   m_Layer: 0
-  m_Name: GS_HealthDisplayManagementSystem
+  m_Name: GS_APDisplayManagementSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,7 @@ MonoBehaviour:
   SystemSettings:
     Type: 1
     OnlineFlags: -1
-  HealthBarPrefab: {fileID: 6674601025037133760, guid: e10a426e9027d96489c298c100ffc8df,
+  HealthBarPrefab: {fileID: 6674601025037133760, guid: 5212bb96a0d37a24698298a54b401ce8,
     type: 3}
   HideDelayFromMouse: 0.4
   HideDelayFromDamageOrHeal: 1
