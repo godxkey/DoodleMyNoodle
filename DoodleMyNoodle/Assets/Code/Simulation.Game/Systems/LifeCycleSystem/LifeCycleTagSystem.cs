@@ -2,18 +2,8 @@
 
 public class LifeCycleTagSystem : SimSystemBase
 {
-    private EndSimulationEntityCommandBufferSystem _ecbSystem;
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-        _ecbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-    }
-
     protected override void OnUpdate()
     {
-        var ecb = _ecbSystem.CreateCommandBuffer();
-
         // Entities life cycle:
         // tick 0: Freshly created - no components
         // tick 1: NewlyCreatedTag + MidLifeCycleTag + MidLifeCycleSystemTag
@@ -34,8 +24,9 @@ public class LifeCycleTagSystem : SimSystemBase
             .WithAll<NewlyDestroyedTag>()
             .ForEach((Entity entity) =>
         {
-            ecb.RemoveComponent<NewlyDestroyedTag>(entity);
-        }).Run();
+            EntityManager.RemoveComponent<NewlyDestroyedTag>(entity);
+        }).WithoutBurst()
+        .Run();
 
         // Change MidLifeCycleSystemTag for NewlyDestroyedTag
         Entities
@@ -43,17 +34,19 @@ public class LifeCycleTagSystem : SimSystemBase
             .WithNone<MidLifeCycleTag>()
             .ForEach((Entity entity) =>
         {
-            ecb.AddComponent<NewlyDestroyedTag>(entity);
-            ecb.RemoveComponent<MidLifeCycleSystemTag>(entity);
-        }).Run();
+            EntityManager.AddComponent<NewlyDestroyedTag>(entity);
+            EntityManager.RemoveComponent<MidLifeCycleSystemTag>(entity);
+        }).WithoutBurst()
+        .Run();
 
         // Remove NewlyCreatedTag
         Entities
             .WithAll<NewlyCreatedTag>()
             .ForEach((Entity entity) =>
         {
-            ecb.RemoveComponent<NewlyCreatedTag>(entity);
-        }).Run();
+            EntityManager.RemoveComponent<NewlyCreatedTag>(entity);
+        }).WithoutBurst()
+        .Run();
 
         // New entity! Add NewlyCreatedTag + MidLifeCycleTag + MidLifeCycleSystemTag
         Entities
@@ -61,10 +54,11 @@ public class LifeCycleTagSystem : SimSystemBase
             .WithAll<SimAssetId>()
             .ForEach((Entity entity) =>
         {
-            ecb.AddComponent<NewlyCreatedTag>(entity);
-            ecb.AddComponent<MidLifeCycleTag>(entity);
-            ecb.AddComponent<MidLifeCycleSystemTag>(entity);
-        }).Run();
+            EntityManager.AddComponent<NewlyCreatedTag>(entity);
+            EntityManager.AddComponent<MidLifeCycleTag>(entity);
+            EntityManager.AddComponent<MidLifeCycleSystemTag>(entity);
+        }).WithoutBurst()
+        .Run();
 
         // mid-life cycle entity! Add MidLifeCycleSystemTag
         Entities
@@ -72,7 +66,8 @@ public class LifeCycleTagSystem : SimSystemBase
             .WithNone<MidLifeCycleSystemTag>()
             .ForEach((Entity entity) =>
             {
-                ecb.AddComponent<MidLifeCycleSystemTag>(entity);
-            }).Run();
+                EntityManager.AddComponent<MidLifeCycleSystemTag>(entity);
+            }).WithoutBurst()
+            .Run();
     }
 }
