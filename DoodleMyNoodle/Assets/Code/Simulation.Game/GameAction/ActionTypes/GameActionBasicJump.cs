@@ -70,6 +70,6 @@ public class GameActionBasicJump : GameAction<GameActionBasicJump.Settings>
             }
         }
 
-        return base.CanBeUsedInContextSpecific(accessor, context, debugReason);
+        return base.CanBeUsedInContextSpecific(accessor, context, debugReason, settings);
     }
 }

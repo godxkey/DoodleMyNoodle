@@ -14,36 +14,46 @@ public class GameActionScriptTemplate : ScriptTemplate
 $@"using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
+using System;
 
-public class #SCRIPTNAME# : {nameof(GameAction)}
+public class #SCRIPTNAME# : {nameof(GameAction)}<#SCRIPTNAME#.Settings>
 {{
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
+    {{
+        public fix Range;
+
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {{
+            dstManager.AddComponentData(entity, new Settings()
+            {{
+            }});
+        }}
+    }}
+
+    public struct Settings : IComponentData
+    {{
+        public fix Range;
+    }}
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
     {{
         return new UseContract(
                    new GameActionParameterPosition.Description()
                    {{
-                       MaxRangeFromInstigator = 20,
+                       MaxRangeFromInstigator = settings.Range
                    }});
     }}
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
     {{
         if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {{
-            return true;   
+            return true;
         }}
 
         return false;
-    }}
-
-    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {{
-        return base.CanBeUsedInContextSpecific(accessor, context, debugReason);
-    }}
-
-    protected override int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
-    {{
-        return base.GetMinimumActionPointCost(accessor, context);
     }}
 }}";
     }
