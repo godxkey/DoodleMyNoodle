@@ -8,12 +8,12 @@ using DG.Tweening;
 using UnityEngine.Serialization;
 using TMPro;
 
-public class HealthBarDisplay : GameMonoBehaviour
+public class APBarDisplay : GameMonoBehaviour
 {
     [FormerlySerializedAs("_emptyHearthPrefab")]
-    [SerializeField] private GameObject _heartPrefab = null;
+    [SerializeField] private GameObject _apPrefab = null;
     [FormerlySerializedAs("_hearthContainer")]
-    [SerializeField] private Transform _heartContainer = null;
+    [SerializeField] private Transform _apContainer = null;
 
     [FormerlySerializedAs("_emptyHearth")]
     [SerializeField] private Sprite _emptySprite = null;
@@ -25,27 +25,27 @@ public class HealthBarDisplay : GameMonoBehaviour
     [FormerlySerializedAs("_canvasFadeSpeed")]
     [SerializeField] private float _canvasFadeSpeed = 0.1f;
 
-    [SerializeField] private GameObject _fewHeartsContainer = null;
+    [SerializeField] private GameObject _fewAPContainer = null;
     [FormerlySerializedAs("_moreHearthContainer")]
-    [SerializeField] private GameObject _manyHeartsContainer = null;
+    [SerializeField] private GameObject _manyAPContainer = null;
     [FormerlySerializedAs("_moreHearthText")]
-    [SerializeField] private TextMeshProUGUI _manyHeartsText = null;
+    [SerializeField] private TextMeshProUGUI _manyAPText = null;
 
-    private List<GameObject> _spawnedHearth = new List<GameObject>();
+    private List<GameObject> _spawnedAP = new List<GameObject>();
     private float _fadeDelayTimer;
 
-    public void SetHealth(int amount, int maxHp, int maxDisplayedHp)
+    public void SetAP(int amount, int maxHp, int maxDisplayedHp)
     {
         if (amount < maxDisplayedHp)
         {
-            _fewHeartsContainer.SetActive(true);
-            _manyHeartsContainer.SetActive(false);
+            _fewAPContainer.SetActive(true);
+            _manyAPContainer.SetActive(false);
 
-            PresentationHelpers.ResizeGameObjectList(_spawnedHearth, Mathf.Min(maxHp, maxDisplayedHp), _heartPrefab, _heartContainer);
+            PresentationHelpers.ResizeGameObjectList(_spawnedAP, Mathf.Min(maxHp, maxDisplayedHp), _apPrefab, _apContainer);
 
-            for (int i = 0; i < _spawnedHearth.Count; i++)
+            for (int i = 0; i < _spawnedAP.Count; i++)
             {
-                if (_spawnedHearth[i].TryGetComponent(out Image image))
+                if (_spawnedAP[i].TryGetComponent(out Image image))
                 {
                     image.sprite = i < amount ? _filledSprite : _emptySprite;
                 }
@@ -53,10 +53,10 @@ public class HealthBarDisplay : GameMonoBehaviour
         }
         else
         {
-            _fewHeartsContainer.SetActive(false);
-            _manyHeartsContainer.SetActive(true);
+            _fewAPContainer.SetActive(false);
+            _manyAPContainer.SetActive(true);
 
-            _manyHeartsText.text = $"{amount}";
+            _manyAPText.text = $"{amount}";
         }
     }
 
