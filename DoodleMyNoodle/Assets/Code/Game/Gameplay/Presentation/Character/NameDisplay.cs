@@ -11,6 +11,10 @@ public class NameDisplay : BindedPresentationEntityComponent
 
     DirtyValue<Name> _displayName;
 
+    private float _fadeDelayTimer;
+
+    [SerializeField] private float fadeSpeed = 4;
+
     protected override void OnGamePresentationUpdate()
     {
         if (SimEntity != Entity.Null && SimWorld.TryGetComponent(SimEntity, out Name name))
@@ -25,6 +29,33 @@ public class NameDisplay : BindedPresentationEntityComponent
         if (_displayName.ClearDirty())
         {
             _nameText.text = _displayName.Get().ToString();
+            Show(5);
         }
+        if (Cache.PointerInWorld && Cache.LocalPawn != Entity.Null)
+        {
+            foreach (var entity in Cache.PointedBodies)
+            {
+                if (entity == SimEntity)
+                {
+                    Show(0.4f);
+                }
+            }
+        }
+    }
+
+    private void Update()
+    {
+        _fadeDelayTimer -= Time.deltaTime;
+
+        if (_fadeDelayTimer <= 0)
+        {
+            _nameText.alpha -= (Time.deltaTime * fadeSpeed);
+        }
+    }
+
+    public void Show(float fadeDelay)
+    {
+        _nameText.alpha = 1;
+        _fadeDelayTimer = Mathf.Max(fadeDelay, _fadeDelayTimer);
     }
 }

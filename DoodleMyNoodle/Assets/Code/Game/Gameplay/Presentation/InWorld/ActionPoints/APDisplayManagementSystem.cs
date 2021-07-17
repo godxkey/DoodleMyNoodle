@@ -15,7 +15,10 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
 
     public int MaxAPToDisplay = 10;
 
+    public fix3 Displacement = new fix3(fix(0.25f), fix(0.675f), 0);
+
     private List<GameObject> _APBarInstances = new List<GameObject>();
+    private Dictionary<Entity, int> EntitiesAP = new Dictionary<Entity, int>();
 
     protected override void OnGamePresentationUpdate()
     {
@@ -36,6 +39,26 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
             Team currentPawnTeam = Cache.SimWorld.GetComponent<Team>(pawnController);
 
             SetOrAddAPBar(apBarAmount, entityTranslation.Value, entityMaximumAP.Value, entityAP.Value, localPlayerTeam.Value == currentPawnTeam.Value);
+
+            if (EntitiesAP.ContainsKey(pawn) && EntitiesAP[pawn] != entityAP.Value)
+            {
+                foreach (var apBar in _APBarInstances)
+                {
+                    if (apBar.transform.position == (entityTranslation.Value + Displacement).ToUnityVec())
+                    {
+                        apBar.GetComponent<APBarDisplay>().Show(HideDelayFromAPUsage);
+                    }
+                }
+            }
+
+            if (EntitiesAP.ContainsKey(pawn))
+            {
+                EntitiesAP[pawn] = entityAP.Value;
+            }
+            else
+            {
+                EntitiesAP.Add(pawn, entityAP.Value);
+            }
 
             apBarAmount++;
         });
@@ -62,28 +85,13 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
 
                 foreach (var apBar in _APBarInstances)
                 {
-                    if (apBar.transform.position == (position.Value + new fix3(0, fix(0.7f), 0)).ToUnityVec())
+                    if (apBar.transform.position == (position.Value + Displacement).ToUnityVec())
                     {
                         apBar.GetComponent<APBarDisplay>().Show(HideDelayFromMouse);
                     }
                 }
             }
         }
-
-        // TODO
-        //Cache.SimWorld.Entities.ForEach((ref DamageEventData damageEvent) =>
-        //{
-        //    if (SimWorld.TryGetComponent(damageEvent.EntityDamaged, out FixTranslation position))
-        //    {
-        //        foreach (var apBar in _APBarInstances)
-        //        {
-        //            if (apBar.transform.position == (position.Value + new fix3(0, fix(0.7f), 0)).ToUnityVec())
-        //            {
-        //                apBar.GetComponent<HealthBarDisplay>().Show(HideDelayFromAPUsage);
-        //            }
-        //        }
-        //    }
-        //});
     }
 
     private void SetOrAddAPBar(int index, fix3 position, int maxAP, int ap, bool friendly)
@@ -99,7 +107,7 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
             currentAPBar = _APBarInstances[index];
         }
 
-        currentAPBar.transform.position = (position + new fix3(0, fix(0.7f), 0) + new fix3(fix(0.25f), 0, 0)).ToUnityVec();
+        currentAPBar.transform.position = (position + Displacement).ToUnityVec();
         currentAPBar.GetComponent<APBarDisplay>()?.SetAP(ap, maxAP, MaxAPToDisplay);
         currentAPBar.SetActive(true);
     }
