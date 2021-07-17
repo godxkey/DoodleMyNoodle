@@ -60,11 +60,11 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
 
                 FixTranslation position = SimWorld.GetComponent<FixTranslation>(tileActor);
 
-                foreach (var healthBar in _APBarInstances)
+                foreach (var apBar in _APBarInstances)
                 {
-                    if (healthBar.transform.position == (position.Value + new fix3(0, fix(0.7f), 0)).ToUnityVec())
+                    if (apBar.transform.position == (position.Value + new fix3(0, fix(0.7f), 0)).ToUnityVec())
                     {
-                        healthBar.GetComponent<HealthBarDisplay>().Show(HideDelayFromMouse);
+                        apBar.GetComponent<APBarDisplay>().Show(HideDelayFromMouse);
                     }
                 }
             }
@@ -99,7 +99,7 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
             currentAPBar = _APBarInstances[index];
         }
 
-        currentAPBar.transform.position = (position + new fix3(0, fix(0.7f), 0)).ToUnityVec();
+        currentAPBar.transform.position = (position + new fix3(0, fix(0.7f), 0) + new fix3(fix(0.25f), 0, 0)).ToUnityVec();
         currentAPBar.GetComponent<APBarDisplay>()?.SetAP(ap, maxAP, MaxAPToDisplay);
         currentAPBar.SetActive(true);
     }

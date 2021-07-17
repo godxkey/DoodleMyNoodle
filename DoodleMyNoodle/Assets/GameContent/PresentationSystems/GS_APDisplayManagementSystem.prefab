@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 789226531472662068}
-  - component: {fileID: 789226531472662069}
+  - component: {fileID: 3727328232560162580}
   m_Layer: 0
   m_Name: GS_APDisplayManagementSystem
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &789226531472662069
+--- !u!114 &3727328232560162580
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,14 +40,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 789226531472662058}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f104fed423ecc0a4ebe6b7f76b4d684a, type: 3}
+  m_Script: {fileID: 11500000, guid: 746e581f845fb664cbd00f8a9b7202f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SystemSettings:
     Type: 1
     OnlineFlags: -1
-  HealthBarPrefab: {fileID: 6674601025037133760, guid: 5212bb96a0d37a24698298a54b401ce8,
+  APBarPrefab: {fileID: 6674601025037133760, guid: 5212bb96a0d37a24698298a54b401ce8,
     type: 3}
   HideDelayFromMouse: 0.4
-  HideDelayFromDamageOrHeal: 1
-  MaxHearthToDisplay: 0
+  HideDelayFromAPUsage: 1
+  MaxAPToDisplay: 0
