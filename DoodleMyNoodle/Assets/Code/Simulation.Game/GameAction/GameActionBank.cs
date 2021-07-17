@@ -24,6 +24,9 @@ public static class GameActionBank
         ushort id = 1; // 0 is invalid
         foreach (Type gameActionType in gameActionTypes)
         {
+            if (gameActionType.IsAbstract)
+                continue;
+
             GameAction instance = (GameAction)Activator.CreateInstance(gameActionType);
             s_idToGameAction.Add(id, instance);
             s_nameToGameAction.Add(gameActionType.Name, instance);
