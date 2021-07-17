@@ -18,7 +18,10 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
             .ForEach((ref NavAgentFootingState footing, in FixTranslation fixTranslation, in PhysicsColliderBlob colliderRef, in PhysicsVelocity velocity) =>
             {
                 ref Collider collider = ref colliderRef.Collider.Value;
-                fix2 belowFeet = new fix2(fixTranslation.Value.x, fixTranslation.Value.y - (fix)collider.Radius - (fix)0.05);
+                fix pawnRadius = (fix)collider.Radius;
+                fix pawnFeetXOffset = pawnRadius * (fix)0.8f;
+                fix2 belowLeftFoot = new fix2(fixTranslation.Value.x - pawnFeetXOffset, fixTranslation.Value.y - pawnRadius - (fix)0.05);
+                fix2 belowRightFoot = new fix2(fixTranslation.Value.x + pawnFeetXOffset, fixTranslation.Value.y - pawnRadius - (fix)0.05);
 
                 // GOTO Ladder IF on ladder && (already has footing on ladder || already has footing on ground)
                 if (tileWorld.GetFlags(Helpers.GetTile(fixTranslation)).IsLadder
@@ -28,8 +31,8 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
                 }
 
                 // GOTO Ground IF above terrain && (previously grounded || previously ladder || previously airControl and not jumping || velocity is low)
-                else if (tileWorld.GetFlags(Helpers.GetTile(belowFeet)).IsTerrain 
-                    && (footing.Value == NavAgentFooting.Ground 
+                else if ((tileWorld.GetFlags(Helpers.GetTile(belowRightFoot)).IsTerrain || tileWorld.GetFlags(Helpers.GetTile(belowLeftFoot)).IsTerrain)
+                    && (footing.Value == NavAgentFooting.Ground
                         || footing.Value == NavAgentFooting.Ladder
                         || (footing.Value == NavAgentFooting.AirControl && velocity.Linear.y <= (fix)0.5)
                         || velocity.Linear.lengthSquared < 4))
