@@ -9,11 +9,19 @@ using static Unity.Mathematics.math;
 [UpdateBefore(typeof(StickToLadderSystem))]
 public class HandleMoveInputSystem : SimSystemBase
 {
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        
+        RequireSingletonForUpdate<GridInfo>();
+    }
+
     protected override void OnUpdate()
     {
         fix deltaTime = Time.DeltaTime;
 
-        Entities.ForEach((Entity entity, ref PhysicsVelocity velocity, ref MoveEnergy moveEnergy, in MoveInput moveInput, in MoveSpeed moveSpeed, in NavAgentFootingState footing) =>
+        // Influence velocity from moveInput when pawn is on ground or ladder
+        Entities.ForEach((ref PhysicsVelocity velocity, ref MoveEnergy moveEnergy, in MoveInput moveInput, in MoveSpeed moveSpeed, in NavAgentFootingState footing) =>
         {
             if (footing.Value == NavAgentFooting.Ground || footing.Value == NavAgentFooting.Ladder)
             {
@@ -41,6 +49,7 @@ public class HandleMoveInputSystem : SimSystemBase
             }
         }).Run();
 
+        // Influence velocity from moveInput when pawn is in air control
         Entities.ForEach((ref PhysicsVelocity velocity, in MoveInput moveInput, in MoveSpeed moveSpeed, in NavAgentFootingState footing, in AirControl airControl) =>
         {
             if (footing.Value == NavAgentFooting.AirControl)
@@ -49,6 +58,23 @@ public class HandleMoveInputSystem : SimSystemBase
                     current: velocity.Linear.x,
                     target: clamp(moveInput.Value.x, -1, 1) * moveSpeed,
                     maxDistanceDelta: airControl);
+            }
+        }).Run();
+
+
+        TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);
+
+        // If pawn is in AirControl and he presses W or S and he's in front of ladder, attach to ladder!
+        Entities.ForEach((ref NavAgentFootingState footing, in MoveInput moveInput, in FixTranslation position) =>
+        {
+            if (footing.Value == NavAgentFooting.AirControl && moveInput.Value.y != 0)
+            {
+                var tileFlags = tileWorld.GetFlags(Helpers.GetTile(position));
+
+                if (tileFlags.IsLadder)
+                {
+                    footing.Value = NavAgentFooting.Ladder;
+                }
             }
         }).Run();
     }
