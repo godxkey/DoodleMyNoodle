@@ -95,7 +95,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
 
             _gridLayoutGroup.constraintCount = min(_maxCollumns, inventoryCapacity);
 
-            UIUtility.ResizeGameObjectList(_slotVisuals, max(min(_maxCollumns, inventoryCapacity), displayedInventory.Count), _inventorySlotPrefab, _slotsContainer);
+            PresentationHelpers.ResizeGameObjectList(_slotVisuals, max(min(_maxCollumns, inventoryCapacity), displayedInventory.Count), _inventorySlotPrefab, _slotsContainer);
 
             for (int i = 0; i < _slotVisuals.Count; i++)
             {

@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &3648472793949699111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,12 +66,13 @@ MonoBehaviour:
   Value: GameActionMeleeAttack
   GameActionSettings:
   - id: 0
-  - id: 1
   ApCost: 1
   IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: f60bb367ece611d429d90e53a56b4f4b, type: 3}
   Name: "\xC9p\xE9e"
   EffectDescription: "Envoie de plus grand d\xE9gats \xE0 une cible \xE0 proximiter"
@@ -82,11 +83,8 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingDamageAuth, ns: , asm: Game}
-      data:
-        Damage: 1
-    00000001:
-      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
+      type: {class: GameActionMeleeAttack/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
           RawValue: 8589934592
+        Damage: 1

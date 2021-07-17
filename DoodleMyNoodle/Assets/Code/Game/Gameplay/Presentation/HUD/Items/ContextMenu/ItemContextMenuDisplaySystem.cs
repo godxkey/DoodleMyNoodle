@@ -40,7 +40,7 @@ public class ItemContextMenuDisplaySystem : GamePresentationSystem<ItemContextMe
         // set position
         _contextMenuDisplay.position = Input.mousePosition + new Vector3(_displacementX, _displacementY, 0);
 
-        UIUtility.ResizeGameObjectList(_actionElements, actionsName.Length, _actionPrefab, _actionContainer);
+        PresentationHelpers.ResizeGameObjectList(_actionElements, actionsName.Length, _actionPrefab, _actionContainer);
 
         for (int i = 0; i < actionsName.Length; i++)
         {

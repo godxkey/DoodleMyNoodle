@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7772757194558074303}
   - component: {fileID: 4305869326659949640}
   - component: {fileID: 5232156575525426454}
-  - component: {fileID: 1924742212740786834}
   - component: {fileID: 3469271791465091720}
   m_Layer: 5
   m_Name: Canvas
@@ -84,23 +83,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &1924742212740786834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 609178208764638475}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!225 &3469271791465091720
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -110,8 +92,8 @@ CanvasGroup:
   m_GameObject: {fileID: 609178208764638475}
   m_Enabled: 1
   m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!1 &4112944882621068443
 GameObject:
@@ -147,8 +129,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0857, y: -0.1975}
-  m_SizeDelta: {x: 0.1, y: 0.1}
+  m_AnchoredPosition: {x: -0.027, y: 0}
+  m_SizeDelta: {x: 0.2, y: 0.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2495991491045631146
 CanvasRenderer:
@@ -200,7 +182,7 @@ GameObject:
   - component: {fileID: 2411286556387156847}
   - component: {fileID: 8941124588349994161}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: FewHearts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -301,15 +283,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10cf6211772ce64498ee96daba76641d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _emptyHearthPrefab: {fileID: 8991297770476160728, guid: 9d4adf175b807c848994aea3c02c5e5c,
+  _heartPrefab: {fileID: 8991297770476160728, guid: 9d4adf175b807c848994aea3c02c5e5c,
     type: 3}
-  _hearthContainer: {fileID: 6661507625212345112}
-  _emptyHearth: {fileID: 21300000, guid: 776061e11ab2faf4a88a24e2aa03f203, type: 3}
-  _filledHearth: {fileID: 21300000, guid: d2fb763feeada0e449754d62ea1c9b70, type: 3}
+  _heartContainer: {fileID: 6661507625212345112}
+  _emptySprite: {fileID: 21300000, guid: 776061e11ab2faf4a88a24e2aa03f203, type: 3}
+  _filledSprite: {fileID: 21300000, guid: d2fb763feeada0e449754d62ea1c9b70, type: 3}
   _canvasGroup: {fileID: 3469271791465091720}
   _canvasFadeSpeed: 4
-  _moreHearthContainer: {fileID: 7733255461499059824}
-  _moreHearthText: {fileID: 1103229671544866281}
+  _fewHeartsContainer: {fileID: 6150836390797422753}
+  _manyHeartsContainer: {fileID: 7733255461499059824}
+  _manyHeartsText: {fileID: 1103229671544866281}
 --- !u!1 &7183227927982623306
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,10 +325,10 @@ RectTransform:
   m_Father: {fileID: 7224084004329718624}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50.138508, y: -50.206017}
-  m_SizeDelta: {x: 0.32887894, y: 0.1996325}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0.241, y: 0}
+  m_SizeDelta: {x: 0.3288803, y: 0.19963074}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &819090807728125444
 CanvasRenderer:
@@ -411,7 +394,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -419,7 +402,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -455,12 +438,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7224084004329718624}
   m_Layer: 5
-  m_Name: MoreHearthsContainer
+  m_Name: ManyHearts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7224084004329718624
 RectTransform:
   m_ObjectHideFlags: 0

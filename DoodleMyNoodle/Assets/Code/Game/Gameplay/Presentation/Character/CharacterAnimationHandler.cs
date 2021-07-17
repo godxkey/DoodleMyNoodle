@@ -32,9 +32,8 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
     protected override void OnGamePresentationUpdate()
     {
-        if (SimWorld.TryGetComponent(SimEntity, out AnimationState currentAnimationState))
+        if (SimWorld.TryGetComponent(SimEntity, out AnimationState currentAnimationState) && SimWorld.TryGetComponent(SimEntity, out AnimationData animationData))
         {
-            AnimationData animationData = SimWorld.GetComponent<AnimationData>(SimEntity);
             CommonReads.AnimationTypes currentPlayerAnimationState = (CommonReads.AnimationTypes)currentAnimationState.StateID;
 
             // New Animation State has been apply, play the animation

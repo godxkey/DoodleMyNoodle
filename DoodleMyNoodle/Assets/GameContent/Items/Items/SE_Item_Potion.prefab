@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &1448392492409014109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,12 +66,13 @@ MonoBehaviour:
   Value: GameActionHeal
   GameActionSettings:
   - id: 0
-  - id: 1
   ApCost: 1
   IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 2e772c182ce66684083eb92cdc4cca45, type: 3}
   Name: Potion
   EffectDescription: Redonne des points de vies
@@ -82,11 +83,9 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
+      type: {class: GameActionHeal/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
-          RawValue: 13743895552
-    00000001:
-      type: {class: GameActionSettingHPToHealAuth, ns: , asm: Game}
-      data:
-        MaxHealthToGive: 999
+          RawValue: 15032385536
+        MaxHeal: 0
+        MinHeal: 7

@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &6160366907501951724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,6 +71,8 @@ MonoBehaviour:
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 541197b18e76b424996d060d64a689d6, type: 3}
   Name: "Enrag\xE9"
   EffectDescription: Consomme de la vie pour donner des actions
@@ -81,6 +83,6 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingHPCostAuth, ns: , asm: Game}
+      type: {class: GameActionEnrage/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        HealthCost: 3
+        HPCost: 2

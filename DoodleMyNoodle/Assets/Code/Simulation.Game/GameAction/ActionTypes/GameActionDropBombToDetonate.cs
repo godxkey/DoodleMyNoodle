@@ -5,18 +5,47 @@ using UnityEngine;
 using Unity.Mathematics;
 using CCC.Fix2D;
 using System;
+using System.Collections.Generic;
 
-public class GameActionDropBombToDetonate : GameAction
+public class GameActionDropBombToDetonate : GameAction<GameActionDropBombToDetonate.Settings>
 {
-    public override Type[] GetRequiredSettingTypes() => new Type[]
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
     {
-        typeof(GameActionSettingRange),
-        typeof(GameActionSettingDamage),
-        typeof(GameActionSettingEntityReference),
-        typeof(GameActionSettingRadius)
-    };
+        public fix Range;
+        public int Damage;
+        public fix Radius;
+        public GameObject Prefab;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings()
+            {
+                Range = Range,
+                Damage = Damage,
+                Radius = Radius,
+                Prefab = conversionSystem.GetPrimaryEntity(Prefab)
+            });
+        }
+
+        public override void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
+        {
+            referencedPrefabs.Add(Prefab);
+
+            base.DeclareReferencedPrefabs(referencedPrefabs);
+        }
+    }
+
+    public struct Settings : IComponentData
+    {
+        public fix Range;
+        public int Damage;
+        public Entity Prefab;
+        public fix Radius;
+    }
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
     {
         if (accessor.TryGetComponent(context.Item, out ItemSpawnedObjectReference itemSpawnedObjectReference))
         {
@@ -26,25 +55,23 @@ public class GameActionDropBombToDetonate : GameAction
             }
         }
 
-        return new UseContract(new GameActionParameterTile.Description(accessor.GetComponent<GameActionSettingRange>(context.Item).Value) { });
+        return new UseContract(new GameActionParameterPosition.Description() { MaxRangeFromInstigator = settings.Range });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
     {
-        if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramTile))
         {
-            // get settings
-            if (!accessor.TryGetComponent(context.Item, out GameActionSettingEntityReference settings))
+            if (!CommonReads.IsInRange(accessor, context.InstigatorPawn, paramTile.Position, settings.Range))
             {
-                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionSettingEntityReference)} component");
-                return false;
+                LogGameActionInfo(context, "Not in range");
             }
 
             // spawn projectile
-            Entity objectInstance = accessor.Instantiate(settings.EntityPrefab);
+            Entity objectInstance = accessor.Instantiate(settings.Prefab);
 
             // set projectile data
-            fix2 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
+            fix2 spawnPos = Helpers.GetTileCenter(paramTile.Position);
 
             accessor.SetOrAddComponent(objectInstance, new FixTranslation() { Value = spawnPos });
             accessor.SetOrAddComponent(context.Item, new ItemSpawnedObjectReference() { Entity = objectInstance });
@@ -61,13 +88,7 @@ public class GameActionDropBombToDetonate : GameAction
                 {
                     fix2 bombPos = accessor.GetComponent<FixTranslation>(bomb);
 
-                    fix radius = 1;
-                    if (accessor.HasComponent<GameActionSettingRadius>(context.Item))
-                    {
-                        radius = accessor.GetComponent<GameActionSettingRadius>(context.Item).Value;
-                    }
-
-                    CommonWrites.RequestExplosion(accessor, bomb, bombPos, radius, accessor.GetComponent<GameActionSettingDamage>(context.Item).Value, true);
+                    CommonWrites.RequestExplosion(accessor, bomb, bombPos, settings.Range, settings.Damage, true);
 
                     accessor.DestroyEntity(bomb);
 

@@ -4,64 +4,62 @@ using static fixMath;
 using static Unity.Mathematics.math;
 
 [UpdateInGroup(typeof(PreAISystemGroup))]
-public class UpdateItemCooldownSystem : SimComponentSystem
+public class UpdateItemCooldownSystem : SimSystemBase
 {
     protected override void OnUpdate()
     {
         var deltaTime = Time.DeltaTime;
+        bool noCooldownSingleton = HasSingleton<NoCooldownTag>();
 
         Entities
             .ForEach((Entity item, ref ItemCooldownTimeCounter cooldownCounter) =>
             {
-                if (HasSingleton<NoCooldownTag>())
+                if (noCooldownSingleton)
                 {
-                    PostUpdateCommands.RemoveComponent<ItemCooldownTimeCounter>(item);
+                    EntityManager.RemoveComponent<ItemCooldownTimeCounter>(item);
                 }
                 else
                 {
                     cooldownCounter.Value -= deltaTime;
                     if (cooldownCounter.Value <= 0)
                     {
-                        PostUpdateCommands.RemoveComponent<ItemCooldownTimeCounter>(item);
+                        EntityManager.RemoveComponent<ItemCooldownTimeCounter>(item);
                     }
                 }
-            });
+            }).WithStructuralChanges().WithoutBurst().Run();
 
         if (HasSingleton<NewTurnEventData>())
         {
             Team currentTeam = CommonReads.GetTurnTeam(Accessor);
             Entities
-           .ForEach((Entity pawnController, ref ControlledEntity pawn) =>
-           {
-               if (EntityManager.TryGetComponentData(pawnController, out Team team) && team == currentTeam)
+               .ForEach((Entity pawnController, ref ControlledEntity pawn, in Team team) =>
                {
-                   if (EntityManager.Exists(pawn) && EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
+                   if (team == currentTeam && EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
                    {
                        foreach (InventoryItemReference item in inventory)
                        {
-                           if (EntityManager.TryGetComponentData(item.ItemEntity, out ItemCooldownTurnCounter itemTurnCounter))
+                           if (TryGetComponent(item.ItemEntity, out ItemCooldownTurnCounter itemTurnCounter))
                            {
-                               if (HasSingleton<NoCooldownTag>())
+                               if (noCooldownSingleton)
                                {
-                                   PostUpdateCommands.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
+                                   EntityManager.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
                                }
                                else
                                {
                                    itemTurnCounter.Value -= 1;
                                    if (itemTurnCounter.Value <= 0)
                                    {
-                                       PostUpdateCommands.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
+                                       EntityManager.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
                                    }
                                    else
                                    {
-                                       EntityManager.SetComponentData(item.ItemEntity, new ItemCooldownTurnCounter() { Value = itemTurnCounter.Value });
+                                       SetComponent(item.ItemEntity, new ItemCooldownTurnCounter() { Value = itemTurnCounter.Value });
                                    }
                                }
                            }
                        }
                    }
-               }
-           });
+               }).WithStructuralChanges().WithoutBurst().Run();
         }
     }
 }

@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &9055538026326287129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,12 +66,13 @@ MonoBehaviour:
   Value: GameActionDropObject
   GameActionSettings:
   - id: 0
-  - id: 1
   ApCost: 0
   IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 448cb793edd8dc04fb5800936c7336af, type: 3}
   Name: Roche
   EffectDescription: "Fait tomber une roche \xE0 l'endroit selectionn\xE9"
@@ -82,12 +83,9 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
+      type: {class: GameActionDropObject/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
           RawValue: 8589934592
-    00000001:
-      type: {class: GameActionSettingEntityReferenceAuth, ns: , asm: Game}
-      data:
-        Entity: {fileID: 2385346486794747607, guid: cdb5765c8d4f95f489e8a5505300a065,
+        Prefab: {fileID: 2385346486794747607, guid: cdb5765c8d4f95f489e8a5505300a065,
           type: 3}

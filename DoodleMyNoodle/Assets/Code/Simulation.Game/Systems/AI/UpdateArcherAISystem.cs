@@ -27,7 +27,7 @@ public enum ArcherAIState
 }
 
 [UpdateInGroup(typeof(AISystemGroup))]
-public class UpdateArcherAISystem : SimComponentSystem
+public class UpdateArcherAISystem : SimSystemBase
 {
     public static fix DETECT_RANGE => 10;
     public static fix2 PAWN_EYES_OFFSET => fix2(0, fix(0.15));
@@ -89,10 +89,10 @@ public class UpdateArcherAISystem : SimComponentSystem
         _positions = GetComponentDataFromEntity<FixTranslation>(isReadOnly: true);
         _tileWorld = CommonReads.GetTileWorld(Accessor);
 
-        Entities.ForEach((Entity controller, ref Team controllerTeam, ref ArcherAIData agentData, ref ControlledEntity pawn) =>
+        Entities.ForEach((Entity controller, ref ArcherAIData agentData, in Team controllerTeam, in ControlledEntity pawn) =>
         {
             UpdateMentalState(controller, controllerTeam, ref agentData, pawn);
-        });
+        }).WithoutBurst().Run();
 
         Profiler.EndSample();
 
@@ -101,7 +101,7 @@ public class UpdateArcherAISystem : SimComponentSystem
 
         Profiler.BeginSample("Try Act Archer");
         Entities
-            .ForEach((Entity controller, ref Team team, ref ArcherAIData agentData, ref ControlledEntity pawn, ref ReadyForNextTurn readyForNextTurn) =>
+            .ForEach((Entity controller, ref ReadyForNextTurn readyForNextTurn, ref ArcherAIData agentData, in ControlledEntity pawn, in Team team) =>
             {
                 // Can the corresponding team play ?
                 if (team.Value != currentTeam)
@@ -129,7 +129,7 @@ public class UpdateArcherAISystem : SimComponentSystem
                 {
                     readyForNextTurn.Value = true;
                 }
-            });
+            }).WithoutBurst().Run();
         Profiler.EndSample();
     }
 
@@ -142,7 +142,7 @@ public class UpdateArcherAISystem : SimComponentSystem
             agentData.AttackTarget = newAttackTarget;
             agentData.ShootTile = newShootTile;
 
-            if (Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn)).Equals(newShootTile))
+            if (Helpers.GetTile(GetComponent<FixTranslation>(agentPawn)).Equals(newShootTile))
             {
                 agentData.State = ArcherAIState.Attack;
             }
@@ -163,10 +163,10 @@ public class UpdateArcherAISystem : SimComponentSystem
         CommonReads.PawnSenses.FindAllPawnsInSight(Accessor, _attackableGroup, agentPawn, excludeTeam: controllerTeam, _enemies);
 
         // If the archer has spotted an enemy once, it can track it through walls (compensates for lack of memory)
-        if (EntityManager.Exists(previousAttackTarget) && EntityManager.HasComponent<FixTranslation>(previousAttackTarget))
+        if (HasComponent<FixTranslation>(previousAttackTarget))
         {
-            Entity targetController = EntityManager.GetComponentData<Controllable>(previousAttackTarget).CurrentController;
-            if (EntityManager.Exists(targetController) && EntityManager.TryGetComponentData(targetController, out Team team) && team != controllerTeam)
+            Entity targetController = GetComponent<Controllable>(previousAttackTarget).CurrentController;
+            if (TryGetComponent(targetController, out Team team) && team != controllerTeam)
             {
                 _enemies.AddUnique(previousAttackTarget);
             }
@@ -245,7 +245,7 @@ public class UpdateArcherAISystem : SimComponentSystem
             return (Entity.Null, default);
         }
 
-        fix2 pawnPos = EntityManager.GetComponentData<FixTranslation>(agentPawn);
+        fix2 pawnPos = GetComponent<FixTranslation>(agentPawn);
         int2 pawnTile = Helpers.GetTile(pawnPos);
         Pathfinding.FindCheapestNavigablePathFromMany(Accessor, pawnTile, _shootingPositions.Slice(), Pathfinding.MAX_PATH_LENGTH, _path);
 
@@ -303,7 +303,7 @@ public class UpdateArcherAISystem : SimComponentSystem
         agentData.LastPatrolTurn = turnCount;
 
         // find random tile in 1 range
-        int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(pawn));
+        int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(pawn));
 
         int2[] potentialDestinations = new int2[]
         {
@@ -337,7 +337,7 @@ public class UpdateArcherAISystem : SimComponentSystem
 
     private bool Act_PositionForAttack(Entity controller, Team team, ref ArcherAIData agentData, ControlledEntity pawn)
     {
-        int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(pawn));
+        int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(pawn));
         fix minimalMoveCost = default;
 
         if (Pathfinding.FindNavigablePath(Accessor, agentTile, agentData.ShootTile, Pathfinding.MAX_PATH_LENGTH, _path))
@@ -346,7 +346,7 @@ public class UpdateArcherAISystem : SimComponentSystem
         }
 
         // verify pawn has enough ap to move at least once
-        if (EntityManager.TryGetComponentData(pawn, out ActionPoints ap) && ap.Value < minimalMoveCost)
+        if (TryGetComponent(pawn, out ActionPoints ap) && ap.Value < minimalMoveCost)
         {
             return false;
         }
@@ -356,7 +356,7 @@ public class UpdateArcherAISystem : SimComponentSystem
 
     private bool Act_Attacking(Entity controller, Team team, ref ArcherAIData agentData, ControlledEntity pawn)
     {
-        int2 enemyTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
+        int2 enemyTile = Helpers.GetTile(GetComponent<FixTranslation>(agentData.AttackTarget));
         int2 shootingTile = agentData.ShootTile;
 
         int2 dir = sign(enemyTile - shootingTile);

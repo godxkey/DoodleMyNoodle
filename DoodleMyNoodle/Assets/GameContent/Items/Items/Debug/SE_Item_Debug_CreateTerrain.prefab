@@ -71,6 +71,8 @@ MonoBehaviour:
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 0ac7cc386583e11409114fb683376d2b, type: 3}
   Name: Create Terrain
   EffectDescription: "Cr\xE9e une tuile de terrain"
@@ -82,7 +84,7 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingTransformTileAuth, ns: , asm: Game}
+      type: {class: GameActionTransformTile/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         NewTileFlags: 3
         Radius:

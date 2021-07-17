@@ -71,6 +71,8 @@ MonoBehaviour:
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 5468a9b25c988734aa6f7a2084033efc, type: 3}
   Name: Destroy Tile
   EffectDescription: "D\xE9truit le contenu d'une tuile (e.g. \xE9chelle, terrain)"
@@ -82,7 +84,7 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingTransformTileAuth, ns: , asm: Game}
+      type: {class: GameActionTransformTile/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         NewTileFlags: 1
         Radius:

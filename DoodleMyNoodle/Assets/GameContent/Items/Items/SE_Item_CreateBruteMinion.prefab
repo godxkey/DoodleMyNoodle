@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &665432544149252257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,12 +66,13 @@ MonoBehaviour:
   Value: GameActionSpawnMinion
   GameActionSettings:
   - id: 0
-  - id: 1
   ApCost: 1
   IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: c7427ae85738536489f1f6a3d095e3e6, type: 3}
   Name: Recrute Brute
   EffectDescription: "Fait apparaitre une brute \xE0 vos c\xF4t\xE9s"
@@ -82,12 +83,9 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
+      type: {class: GameActionSpawnMinion/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
           RawValue: 6442450944
-    00000001:
-      type: {class: GameActionSettingEntityReferenceAuth, ns: , asm: Game}
-      data:
-        Entity: {fileID: 3506976763963629017, guid: 7f1b972c36d18a54381b4354a7fd05b4,
+        MinionPrefab: {fileID: 3506976763963629017, guid: 7f1b972c36d18a54381b4354a7fd05b4,
           type: 3}

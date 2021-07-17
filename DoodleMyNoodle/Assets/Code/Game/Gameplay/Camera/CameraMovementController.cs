@@ -152,59 +152,67 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
 
         Vector2 currentMousePosition = Input.mousePosition;
 
-        if (SimWorld.TryGetComponent(Cache.LocalPawn, out PhysicsVelocity velocity))
+        // Camera follow
+        if (SimWorld.TryGetComponent(Cache.LocalPawn, out PhysicsVelocity velocity) && velocity.Linear.lengthSquared > 0)
         {
-            if (velocity.Linear.lengthSquared > 0)
-            {
-                CursorOverlayService.Instance.ResetCursorToDefault();
-                CamPosition = Cache.LocalPawnPositionFloat;
-                return;
-            }
-        }
-
-        if (Input.GetMouseButtonDown(0)) 
-        {
-            _lastMousePos = currentMousePosition;
-            CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Grab);
-        }
-
-        if (Input.GetMouseButton(0) && UIStateMachineController.Instance.CurrentSate.Type != UIStateType.ParameterSelection) 
-        {
-            Vector2 lastMouseWorld = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(_lastMousePos);
-            Vector2 currentMouseWorld = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(currentMousePosition);
-
-            _lastMousePos = currentMousePosition;
-
-            CamPosition += lastMouseWorld - currentMouseWorld;
+            CursorOverlayService.Instance.ResetCursorToDefault();
+            CamPosition = Cache.LocalPawnPositionFloat;
         }
         else
         {
-            CursorOverlayService.Instance.ResetCursorToDefault();
-
-            if (Input.GetKey(KeyCode.UpArrow) || (useMouseMovements && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
+            if (Input.GetMouseButtonDown(0))
             {
-                movement += Vector2.up;
+                _lastMousePos = currentMousePosition;
+                CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Grab);
             }
 
-            if (Input.GetKey(KeyCode.DownArrow) || (useMouseMovements && (Input.mousePosition.y >= 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
+            // Camera Drag
+            if (Input.GetMouseButton(0) && UIStateMachineController.Instance.CurrentSate.Type != UIStateType.ParameterSelection)
             {
-                movement -= Vector2.up;
+                Vector2 lastMouseWorld = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(_lastMousePos);
+                Vector2 currentMouseWorld = CameraService.Instance.ActiveCamera.ScreenToWorldPoint(currentMousePosition);
+
+                _lastMousePos = currentMousePosition;
+
+                CamPosition += lastMouseWorld - currentMouseWorld;
+            }
+            else
+            {
+                // Camera edge move
+                CursorOverlayService.Instance.ResetCursorToDefault();
+
+                if (Input.GetKey(KeyCode.UpArrow) || (useMouseMovements && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
+                {
+                    movement += Vector2.up;
+                }
+
+                if (Input.GetKey(KeyCode.DownArrow) || (useMouseMovements && (Input.mousePosition.y >= 0 && Input.mousePosition.y <= ScreenEdgeBorderThickness)))
+                {
+                    movement -= Vector2.up;
+                }
+
+                if (Input.GetKey(KeyCode.LeftArrow) || (useMouseMovements && (Input.mousePosition.x >= 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
+                {
+                    movement += Vector2.left;
+                }
+
+                if (Input.GetKey(KeyCode.RightArrow) || (useMouseMovements && (Input.mousePosition.x >= (Screen.width - ScreenEdgeBorderThickness))))
+                {
+                    movement += Vector2.right;
+                }
+
+                if (movement != Vector2.zero)
+                {
+                    movement.Normalize();
+                    CamPosition += movement * Speed * CamSize * Time.deltaTime;
+                }
             }
 
-            if (Input.GetKey(KeyCode.LeftArrow) || (useMouseMovements && (Input.mousePosition.x >= 0 && Input.mousePosition.x <= ScreenEdgeBorderThickness)))
+            if (Input.GetKey(KeyCode.LeftShift) && Cache.LocalPawn != Entity.Null)
             {
-                movement += Vector2.left;
-            }
-
-            if (Input.GetKey(KeyCode.RightArrow) || (useMouseMovements && (Input.mousePosition.x >= (Screen.width - ScreenEdgeBorderThickness))))
-            {
-                movement += Vector2.right;
-            }
-
-            if (movement != Vector2.zero)
-            {
-                movement.Normalize();
-                CamPosition += movement * Speed * CamSize * Time.deltaTime;
+                fix3 playerPosition = SimWorld.GetComponent<FixTranslation>(Cache.LocalPawn).Value;
+                Vector3 cameraPostion = transform.position;
+                transform.position = new Vector3((float)playerPosition.x, (float)playerPosition.y, cameraPostion.z);
             }
         }
 
@@ -212,13 +220,6 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         if (isMouseInsideScreen)
         {
             CamSize -= Input.mouseScrollDelta.y * ZoomSpeed;
-        }
-
-        if (Input.GetKey(KeyCode.LeftShift) && Cache.LocalPawn != Entity.Null)
-        {
-            fix3 playerPosition = SimWorld.GetComponent<FixTranslation>(Cache.LocalPawn).Value;
-            Vector3 cameraPostion = transform.position;
-            transform.position = new Vector3((float)playerPosition.x, (float)playerPosition.y, cameraPostion.z);
         }
     }
 

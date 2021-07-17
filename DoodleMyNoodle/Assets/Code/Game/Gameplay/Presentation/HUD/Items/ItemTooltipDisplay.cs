@@ -176,7 +176,7 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
             }
         }
 
-        UIUtility.UpdateGameObjectList(_descriptionElements, _descriptionData, _itemDescriptionPrefab, _itemDescriptionContainer,
+        PresentationHelpers.UpdateGameObjectList(_descriptionElements, _descriptionData, _itemDescriptionPrefab, _itemDescriptionContainer,
             onUpdate: (element, data) => element.UpdateDescription(data.Desc, data.Color, data.AddBG));
     }
 

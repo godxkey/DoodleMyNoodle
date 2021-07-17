@@ -4,22 +4,37 @@ using Unity.Collections;
 using System;
 using Unity.Mathematics;
 
-public class GameActionTransformTile : GameAction
+public class GameActionTransformTile : GameAction<GameActionTransformTile.Settings>
 {
-    public override Type[] GetRequiredSettingTypes() => new Type[] { typeof(GameActionSettingTransformTile) };
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
+    {
+        public TileFlags NewTileFlags;
+        public fix Radius = (fix)0.5;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings() { NewTileFlags = NewTileFlags, Radius = Radius });
+        }
+    }
+
+    public struct Settings : IComponentData
+    {
+        public TileFlags NewTileFlags;
+        public fix Radius;
+    }
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
     {
         return new UseContract(
                    new GameActionParameterPosition.Description() { });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {
-            var settings = accessor.GetComponent<GameActionSettingTransformTile>(context.Item);
-
             var transformTileRequests = accessor.GetSingletonBuffer<SystemRequestTransformTile>();
 
             NativeList<int2> tiles = new NativeList<int2>(Allocator.Temp);

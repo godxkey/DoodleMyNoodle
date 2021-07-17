@@ -25,7 +25,7 @@ public enum BruteAIState
 }
 
 [UpdateInGroup(typeof(AISystemGroup))]
-public class UpdateBruteAISystem : SimComponentSystem
+public class UpdateBruteAISystem : SimSystemBase
 {
     private readonly fix AGGRO_WALK_RANGE = 10;
 
@@ -60,10 +60,10 @@ public class UpdateBruteAISystem : SimComponentSystem
         _positions = GetComponentDataFromEntity<FixTranslation>(isReadOnly: true);
         _attackableEntities = _attackableGroup.ToEntityArray(Allocator.TempJob);
 
-        Entities.ForEach((Entity controller, ref Team controllerTeam, ref BruteAIData agentData, ref ControlledEntity pawn) =>
+        Entities.ForEach((Entity controller, ref BruteAIData agentData, in Team controllerTeam, in ControlledEntity pawn) =>
         {
             UpdateMentalState(controller, controllerTeam, ref agentData, pawn);
-        });
+        }).WithoutBurst().Run();
         Profiler.EndSample();
 
         int currentTeam = CommonReads.GetTurnTeam(Accessor);
@@ -71,7 +71,7 @@ public class UpdateBruteAISystem : SimComponentSystem
 
         Profiler.BeginSample("Try Act Brute");
         Entities
-            .ForEach((Entity controller, ref Team team, ref BruteAIData agentData, ref ControlledEntity pawn, ref ReadyForNextTurn readyForNextTurn) =>
+            .ForEach((Entity controller, ref BruteAIData agentData, ref ReadyForNextTurn readyForNextTurn, in ControlledEntity pawn, in Team team) =>
             {
                 // Can the corresponding team play ?
                 if (team.Value != currentTeam)
@@ -99,7 +99,7 @@ public class UpdateBruteAISystem : SimComponentSystem
                 {
                     readyForNextTurn.Value = true;
                 }
-            });
+            }).WithoutBurst().Run();
         Profiler.EndSample();
 
 
@@ -117,17 +117,15 @@ public class UpdateBruteAISystem : SimComponentSystem
             case BruteAIState.Attack:
             {
                 // if target does not exit anymore, back to patrol
-                if (!EntityManager.Exists(agentData.AttackTarget) ||
-                    !EntityManager.TryGetComponentData(agentData.AttackTarget, out FixTranslation enemyPos))
+                if (!TryGetComponent(agentData.AttackTarget, out FixTranslation enemyPos))
                 {
                     agentData.State = BruteAIState.Patrol;
                     return;
                 }
 
                 // if target's controller is not our enemy anymore, back to patrol
-                var targetController = EntityManager.GetComponentData<Controllable>(agentData.AttackTarget).CurrentController;
-                if (!EntityManager.Exists(targetController) ||
-                    !EntityManager.TryGetComponentData(targetController, out Team team) ||
+                var targetController = GetComponent<Controllable>(agentData.AttackTarget).CurrentController;
+                if (!TryGetComponent(targetController, out Team team) ||
                     team == controllerTeam)
                 {
                     agentData.State = BruteAIState.Patrol;
@@ -135,7 +133,7 @@ public class UpdateBruteAISystem : SimComponentSystem
                 }
 
                 int2 enemyTile = Helpers.GetTile(enemyPos);
-                int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentPawn));
+                int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(agentPawn));
                 if (mathX.lengthmanhattan(enemyTile - agentTile) == 1)
                 {
                     agentData.State = BruteAIState.Attack;
@@ -152,7 +150,7 @@ public class UpdateBruteAISystem : SimComponentSystem
     private void UpdateMentalState_Patrol(Entity controller, Team controllerTeam, ref BruteAIData agentData, Entity agentPawn)
     {
         // TDLR: Search for enemy within range (no line of sight required)
-        fix2 pawnPos = EntityManager.GetComponentData<FixTranslation>(agentPawn);
+        fix2 pawnPos = GetComponent<FixTranslation>(agentPawn);
         int2 agentTile = Helpers.GetTile(pawnPos);
 
         Entity closest = Entity.Null;
@@ -167,7 +165,7 @@ public class UpdateBruteAISystem : SimComponentSystem
             if (enemyController == Entity.Null)
                 continue;
 
-            if (!EntityManager.TryGetComponentData(enemyController, out Team enemyTeam))
+            if (!TryGetComponent(enemyController, out Team enemyTeam))
             {
                 continue;
             }
@@ -251,7 +249,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         agentData.LastPatrolTurn = turnCount;
 
         // find random tile in 1 range
-        int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(pawn));
+        int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(pawn));
 
         int2[] potentialDestinations = new int2[]
         {
@@ -285,8 +283,8 @@ public class UpdateBruteAISystem : SimComponentSystem
 
     private bool Act_PositionForAttack(Entity controller, Team team, ref BruteAIData agentData, ControlledEntity pawn)
     {
-        int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(pawn));
-        int2 enemyTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
+        int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(pawn));
+        int2 enemyTile = Helpers.GetTile(GetComponent<FixTranslation>(agentData.AttackTarget));
 
         int2[] potentialDestinations = new int2[]
         {
@@ -322,7 +320,7 @@ public class UpdateBruteAISystem : SimComponentSystem
         }
 
         // verify pawn has enough ap to move at least once
-        if (EntityManager.TryGetComponentData(pawn, out ActionPoints ap) && ap.Value < closestMinimalMoveCost)
+        if (TryGetComponent(pawn, out ActionPoints ap) && ap.Value < closestMinimalMoveCost)
         {
             return false;
         }
@@ -332,7 +330,7 @@ public class UpdateBruteAISystem : SimComponentSystem
 
     private bool Act_Attacking(Entity controller, Team team, ref BruteAIData agentData, ControlledEntity pawn)
     {
-        fix2 targetPos = EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget);
+        fix2 targetPos = GetComponent<FixTranslation>(agentData.AttackTarget);
 
         return CommonWrites.TryInputUseItem<GameActionMeleeAttack>(Accessor, controller, targetPos);
     }

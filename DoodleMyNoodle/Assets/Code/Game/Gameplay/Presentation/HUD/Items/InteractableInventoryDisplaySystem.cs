@@ -67,7 +67,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
         {
             _displayContainer.SetActive(true);
 
-            UIUtility.ResizeGameObjectList(_currentItemSlots, _itemData.Count, _itemSlotPrefab, _itemSlotContainer);
+            PresentationHelpers.ResizeGameObjectList(_currentItemSlots, _itemData.Count, _itemSlotPrefab, _itemSlotContainer);
 
             for (int i = 0; i < _itemData.Count; i++)
             {

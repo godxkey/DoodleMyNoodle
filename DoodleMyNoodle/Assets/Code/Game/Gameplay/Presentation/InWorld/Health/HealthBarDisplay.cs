@@ -10,82 +10,53 @@ using TMPro;
 
 public class HealthBarDisplay : GameMonoBehaviour
 {
-    [SerializeField] private GameObject _emptyHearthPrefab = null;
-    [SerializeField] private Transform _hearthContainer = null;
+    [FormerlySerializedAs("_emptyHearthPrefab")]
+    [SerializeField] private GameObject _heartPrefab = null;
+    [FormerlySerializedAs("_hearthContainer")]
+    [SerializeField] private Transform _heartContainer = null;
 
-    [SerializeField] private Sprite _emptyHearth = null;
-    [SerializeField] private Sprite _filledHearth = null;
+    [FormerlySerializedAs("_emptyHearth")]
+    [SerializeField] private Sprite _emptySprite = null;
+    [FormerlySerializedAs("_filledHearth")]
+    [SerializeField] private Sprite _filledSprite = null;
 
+    [FormerlySerializedAs("_canvasGroup")]
     [SerializeField] private CanvasGroup _canvasGroup = null;
+    [FormerlySerializedAs("_canvasFadeSpeed")]
     [SerializeField] private float _canvasFadeSpeed = 0.1f;
 
-    [SerializeField] private GameObject _moreHearthContainer = null;
-    [SerializeField] private TextMeshProUGUI _moreHearthText = null;
+    [SerializeField] private GameObject _fewHeartsContainer = null;
+    [FormerlySerializedAs("_moreHearthContainer")]
+    [SerializeField] private GameObject _manyHeartsContainer = null;
+    [FormerlySerializedAs("_moreHearthText")]
+    [SerializeField] private TextMeshProUGUI _manyHeartsText = null;
 
     private List<GameObject> _spawnedHearth = new List<GameObject>();
     private float _fadeDelayTimer;
 
-    public void SetMaxHealth(int amount, int maxAmount)
+    public void SetHealth(int amount, int maxHp, int maxDisplayedHp)
     {
-        if (_spawnedHearth.Count >= maxAmount)
+        if (amount < maxDisplayedHp)
         {
-            return;
+            _fewHeartsContainer.SetActive(true);
+            _manyHeartsContainer.SetActive(false);
+
+            PresentationHelpers.ResizeGameObjectList(_spawnedHearth, Mathf.Min(maxHp, maxDisplayedHp), _heartPrefab, _heartContainer);
+
+            for (int i = 0; i < _spawnedHearth.Count; i++)
+            {
+                if (_spawnedHearth[i].TryGetComponent(out Image image))
+                {
+                    image.sprite = i < amount ? _filledSprite : _emptySprite;
+                }
+            }
         }
         else
         {
-            while (_spawnedHearth.Count != amount)
-            {
-                if (_spawnedHearth.Count == maxAmount)
-                {
-                    UpdateMoreHealthDisplay(amount);
-                    return;
-                }
+            _fewHeartsContainer.SetActive(false);
+            _manyHeartsContainer.SetActive(true);
 
-                if (_spawnedHearth.Count < amount)
-                {
-                    _spawnedHearth.Add(Instantiate(_emptyHearthPrefab, _hearthContainer));
-                    if (_spawnedHearth[_spawnedHearth.Count - 1].TryGetComponent(out Image image))
-                    {
-                        image.sprite = _filledHearth;
-                    }
-                }
-                else if (_spawnedHearth.Count > amount)
-                {
-                    Destroy(_spawnedHearth[_spawnedHearth.Count - 1]);
-                    _spawnedHearth.RemoveAt(_spawnedHearth.Count - 1);
-                }
-            }
-
-            _moreHearthContainer.SetActive(false);
-        }
-    }
-
-    public void SetHealth(int amount)
-    {
-        for (int i = 0; i < _spawnedHearth.Count; i++)
-        {
-            if (_spawnedHearth[i].TryGetComponent(out Image image))
-            {
-                image.sprite = _filledHearth;
-            }
-        }
-
-        for (int i = amount; i < _spawnedHearth.Count; i++)
-        {
-            if (_spawnedHearth[i].TryGetComponent(out Image image))
-            {
-                image.sprite = _emptyHearth;
-            }
-        }
-
-        if (amount < _spawnedHearth.Count)
-        {
-            _moreHearthContainer.SetActive(false);
-        }
-        else
-        {
-            UpdateMoreHealthDisplay(amount);
-            return;
+            _manyHeartsText.text = $"x{amount}";
         }
     }
 
@@ -103,15 +74,5 @@ public class HealthBarDisplay : GameMonoBehaviour
     {
         _canvasGroup.alpha = 1;
         _fadeDelayTimer = Mathf.Max(fadeDelay, _fadeDelayTimer);
-    }
-
-    private void UpdateMoreHealthDisplay(int totalAmount)
-    {
-        int count = totalAmount - _spawnedHearth.Count;
-        if (count > 0)
-        {
-            _moreHearthContainer.SetActive(true);
-            _moreHearthText.text = "x" + (totalAmount - _spawnedHearth.Count);
-        }
     }
 }

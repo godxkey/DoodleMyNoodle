@@ -8,9 +8,16 @@ public static partial class CommonReads
 {
     public static bool IsInRange(ISimWorldReadAccessor accessor, Entity entityA, Entity entityB, fix rangeMax)
     {
-        return fixMath.distance(
-            accessor.GetComponent<FixTranslation>(entityB), 
-            accessor.GetComponent<FixTranslation>(entityA)) < rangeMax;
+        return fixMath.distancesq(
+            accessor.GetComponent<FixTranslation>(entityB),
+            accessor.GetComponent<FixTranslation>(entityA)) < rangeMax * rangeMax;
+    }
+
+    public static bool IsInRange(ISimWorldReadAccessor accessor, Entity entityA, fix2 position, fix rangeMax)
+    {
+        return fixMath.distancesq(
+            position,
+            accessor.GetComponent<FixTranslation>(entityA)) < rangeMax * rangeMax;
     }
 
     public static fix GetActorRadius(ISimWorldReadAccessor accessor, Entity projectileInstance)

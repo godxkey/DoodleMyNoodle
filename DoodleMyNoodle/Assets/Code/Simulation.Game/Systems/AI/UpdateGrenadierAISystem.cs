@@ -26,7 +26,7 @@ public enum GrenadierAIState
 }
 
 [UpdateInGroup(typeof(AISystemGroup))]
-public class UpdateGrenadierAISystem : SimComponentSystem
+public class UpdateGrenadierAISystem : SimSystemBase
 {
     public static fix DETECT_RANGE => 10;
     public static fix2 PAWN_EYES_OFFSET => fix2(0, fix(0.15));
@@ -40,18 +40,6 @@ public class UpdateGrenadierAISystem : SimComponentSystem
 
     private NativeList<Entity> _enemies;
     private ComponentDataFromEntity<FixTranslation> _positions;
-    private TileWorld _tileWorld;
-    private readonly int2[] _shootingDirections = new int2[]
-    {
-        int2(-1, 0),
-        int2(0, -1),
-        int2(1, 0),
-        int2(0, 1),
-        int2(1, 1),
-        int2(-1, 1),
-        int2(1, -1),
-        int2(-1, -1),
-    };
 
     protected override void OnCreate()
     {
@@ -86,12 +74,13 @@ public class UpdateGrenadierAISystem : SimComponentSystem
         Profiler.BeginSample("Update Grenadier Mental State");
 
         _positions = GetComponentDataFromEntity<FixTranslation>(isReadOnly: true);
-        _tileWorld = CommonReads.GetTileWorld(Accessor);
 
-        Entities.ForEach((Entity controller, ref Team controllerTeam, ref GrenadierAIData agentData, ref ControlledEntity pawn) =>
+        Entities.ForEach((Entity controller, ref GrenadierAIData agentData, in ControlledEntity pawn, in Team controllerTeam) =>
         {
             UpdateMentalState(controller, controllerTeam, ref agentData, pawn);
-        });
+        })
+            .WithoutBurst()
+            .Run();
 
         Profiler.EndSample();
 
@@ -100,7 +89,7 @@ public class UpdateGrenadierAISystem : SimComponentSystem
 
         Profiler.BeginSample("Try Act Grenadier");
         Entities
-            .ForEach((Entity controller, ref Team team, ref GrenadierAIData agentData, ref ControlledEntity pawn, ref ReadyForNextTurn readyForNextTurn) =>
+            .ForEach((Entity controller, ref GrenadierAIData agentData, ref ReadyForNextTurn readyForNextTurn, in ControlledEntity pawn, in Team team) =>
             {
                 // Can the corresponding team play ?
                 if (team.Value != currentTeam)
@@ -128,7 +117,9 @@ public class UpdateGrenadierAISystem : SimComponentSystem
                 {
                     readyForNextTurn.Value = true;
                 }
-            });
+            })
+            .WithoutBurst()
+            .Run();
         Profiler.EndSample();
     }
 
@@ -140,7 +131,7 @@ public class UpdateGrenadierAISystem : SimComponentSystem
         {
             agentData.AttackTarget = newAttackTarget;
 
-            fix2 distanceToTarget = EntityManager.GetComponentData<FixTranslation>(agentPawn).Value - EntityManager.GetComponentData<FixTranslation>(newAttackTarget).Value;
+            fix2 distanceToTarget = GetComponent<FixTranslation>(agentPawn).Value - GetComponent<FixTranslation>(newAttackTarget).Value;
 
             if (distanceToTarget.length <= 6) // HARDCODED RANGE TO SHOOT GRENADES
             {
@@ -223,7 +214,7 @@ public class UpdateGrenadierAISystem : SimComponentSystem
         agentData.LastPatrolTurn = turnCount;
 
         // find random tile in 1 range
-        int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(pawn));
+        int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(pawn));
 
         int2[] potentialDestinations = new int2[]
         {
@@ -257,13 +248,13 @@ public class UpdateGrenadierAISystem : SimComponentSystem
 
     private bool Act_PositionForAttack(Entity controller, Team team, ref GrenadierAIData agentData, ControlledEntity pawn)
     {
-        int2 agentTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(pawn));
-        int2 enemyTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
+        int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(pawn));
+        int2 enemyTile = Helpers.GetTile(GetComponent<FixTranslation>(agentData.AttackTarget));
         fix minimalMoveCost = default;
 
         if (Pathfinding.FindNavigablePath(Accessor, agentTile, enemyTile, Pathfinding.MAX_PATH_LENGTH, _path))
         {
-            // TODO : faire que l'ai s'en va s'il est trop proche
+            // TODO : faire que l'AI s'en va s'il est trop proche
             if (_path.Length <= 6)
             {
                 return false;
@@ -279,7 +270,7 @@ public class UpdateGrenadierAISystem : SimComponentSystem
         }
 
         // verify pawn has enough ap to move at least once
-        if (EntityManager.TryGetComponentData(pawn, out ActionPoints ap) && ap.Value < minimalMoveCost)
+        if (TryGetComponent(pawn, out ActionPoints ap) && ap.Value < minimalMoveCost)
         {
             return false;
         }
@@ -289,8 +280,8 @@ public class UpdateGrenadierAISystem : SimComponentSystem
 
     private bool Act_Attacking(Entity controller, Team team, ref GrenadierAIData agentData, ControlledEntity pawn)
     {
-        int2 pawnTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(pawn));
-        int2 enemyTile = Helpers.GetTile(EntityManager.GetComponentData<FixTranslation>(agentData.AttackTarget));
+        int2 pawnTile = Helpers.GetTile(GetComponent<FixTranslation>(pawn));
+        int2 enemyTile = Helpers.GetTile(GetComponent<FixTranslation>(agentData.AttackTarget));
 
         int2 dir = enemyTile - pawnTile;
         fix2 ajustedDir = new fix2(dir.x, dir.y);

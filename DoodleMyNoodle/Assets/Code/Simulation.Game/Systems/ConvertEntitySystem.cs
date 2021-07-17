@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngineX;
 using Unity.Entities;
 
-public class ConvertEntitySystem : SimComponentSystem
+public class ConvertEntitySystem : SimSystemBase
 {
     protected override void OnUpdate()
     {
@@ -27,9 +27,12 @@ public class ConvertEntitySystem : SimComponentSystem
                     if (converted.RemainingTurns <= 0)
                     {
                         team.Value = team.Value == 0 ? 1 : 0;
-                        PostUpdateCommands.RemoveComponent<Converted>(entity);
+                        EntityManager.RemoveComponent<Converted>(entity);
                     }
-                });
+                })
+                .WithStructuralChanges()
+                .WithoutBurst()
+                .Run();
         }
     }
 }

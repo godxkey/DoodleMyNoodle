@@ -44,7 +44,7 @@ public struct ReadyForNextTurn : IComponentData
 }
 
 
-public class ChangeTurnSystem : SimComponentSystem
+public class ChangeTurnSystem : SimSystemBase
 {
     EntityQuery _eventsEntityQuery;
 
@@ -79,9 +79,9 @@ public class ChangeTurnSystem : SimComponentSystem
 
     private void ChangeTurnIfRequested()
     {
-        if (this.TryGetSingleton(out RequestChangeTurnData requestData))
+        if (TryGetSingleton(out RequestChangeTurnData requestData))
         {
-            this.DestroySingleton<RequestChangeTurnData>();
+            DestroySingleton<RequestChangeTurnData>();
 
             // wrap team if necessary
             if (requestData.TeamToPlay >= GetSingleton<TurnTeamCountSingletonComponent>().Value)
@@ -109,7 +109,7 @@ public class ChangeTurnSystem : SimComponentSystem
             Entities.ForEach((ref ReadyForNextTurn readyForNextTurn) =>
             {
                 readyForNextTurn.Value = false;
-            });
+            }).Run();
 
             // fire event
             EntityManager.CreateEventEntity<NewTurnEventData>();
@@ -118,13 +118,13 @@ public class ChangeTurnSystem : SimComponentSystem
 
     private void UpdateTurnTimer()
     {
-        if (this.TryGetSingleton(out TurnCurrentTeamSingletonComponent currentTeam))
+        if (TryGetSingleton(out TurnCurrentTeamSingletonComponent currentTeam))
         {
             if (currentTeam.Value == -1) // no team, no change turn
                 return;
         }
 
-        TurnTimerSingletonComponent turnTimer = this.GetOrCreateSingleton<TurnTimerSingletonComponent>();
+        TurnTimerSingletonComponent turnTimer = GetOrCreateSingleton<TurnTimerSingletonComponent>();
 
         fix newTimerValue = turnTimer.Value - Time.DeltaTime;
         if (newTimerValue <= 0)

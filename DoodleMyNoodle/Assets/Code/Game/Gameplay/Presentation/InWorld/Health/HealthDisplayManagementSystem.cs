@@ -99,8 +99,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
         }
 
         currentHealthBar.transform.position = (position + new fix3(0, fix(0.7f), 0)).ToUnityVec();
-        currentHealthBar.GetComponent<HealthBarDisplay>()?.SetMaxHealth(maxHealth, MaxHearthToDisplay);
-        currentHealthBar.GetComponent<HealthBarDisplay>()?.SetHealth(health);
+        currentHealthBar.GetComponent<HealthBarDisplay>()?.SetHealth(health, maxHealth, MaxHearthToDisplay);
         currentHealthBar.SetActive(true);
     }
 }

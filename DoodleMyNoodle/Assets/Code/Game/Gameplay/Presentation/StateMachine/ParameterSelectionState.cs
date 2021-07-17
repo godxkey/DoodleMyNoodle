@@ -40,16 +40,6 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         }
 
         // Init process of parameter selection
-
-        if (SimWorld.TryGetComponent(InputParameter.ObjectEntity, out GameActionSettingIgnoreSurvey IgnoreSurveyComponent))
-        {
-            if (IgnoreSurveyComponent.IgnoreSurvey)
-            {
-                FinishAndSendSimInput();
-                return;
-            }
-        }
-
         GameActionId actionId = SimWorld.GetComponent<GameActionId>(InputParameter.ObjectEntity);
         GameAction objectGameAction = GameActionBank.GetAction(actionId);
 

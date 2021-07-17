@@ -8,7 +8,7 @@ using Unity.Entities;
 
 // ce system devrait être retiré lorsqu'on aura un system de buff/debuff avec durée
 
-public class RemoveInvincibilitySystem : SimComponentSystem
+public class RemoveInvincibilitySystem : SimSystemBase
 {
     protected override void OnUpdate()
     {
@@ -16,22 +16,23 @@ public class RemoveInvincibilitySystem : SimComponentSystem
         {
             int currentTeam = CommonReads.GetTurnTeam(Accessor);
 
-            Entities.ForEach((Entity entity, ref Invincible invincible) =>
+            Entities.ForEach((Entity entity, ref Invincible invincible, in Controllable controller) =>
             {
-                Entity pawnController = CommonReads.GetPawnController(Accessor, entity);
-                if (pawnController != Entity.Null)
+                if (TryGetComponent(controller, out Team team))
                 {
-                    if (EntityManager.GetComponentData<Team>(pawnController).Value == currentTeam)
+                    if (team == currentTeam)
                     {
                         invincible.Duration--;
                     }
 
                     if (invincible.Duration <= 0)
                     {
-                        PostUpdateCommands.RemoveComponent<Invincible>(entity);
+                        EntityManager.RemoveComponent<Invincible>(entity);
                     }
                 }
-            });
+            }).WithoutBurst()
+            .WithStructuralChanges()
+            .Run();
         }
     }
 }

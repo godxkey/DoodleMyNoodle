@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &8937879994819369566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,6 +71,8 @@ MonoBehaviour:
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: b7c33e315faed834d9e2a8288123ed62, type: 3}
   Name: Inversion
   EffectDescription: "Inverse votre position avec celle de l'\xE9nemi"
@@ -81,7 +83,7 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
+      type: {class: GameActionSwap/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
           RawValue: 22333829120

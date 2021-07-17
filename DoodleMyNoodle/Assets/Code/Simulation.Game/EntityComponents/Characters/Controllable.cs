@@ -10,6 +10,9 @@ using Unity.Mathematics;
 public struct Controllable : IComponentData
 {
     public Entity CurrentController;
+
+    public static implicit operator Entity(Controllable val) => val.CurrentController;
+    public static implicit operator Controllable(Entity val) => new Controllable() { CurrentController = val };
 }
 
 /// <summary>

@@ -4,39 +4,63 @@ using Unity.Collections;
 using UnityEngine;
 using CCC.Fix2D;
 using System;
+using System.Collections.Generic;
 
-public class GameActionDropObject : GameAction
+public class GameActionDropObject : GameAction<GameActionDropObject.Settings>
 {
-    public override Type[] GetRequiredSettingTypes() => new Type[]
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
     {
-        typeof(GameActionSettingRange),
-        typeof(GameActionSettingEntityReference)
-    };
+        public fix Range;
+        public GameObject Prefab;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings()
+            {
+                Range = Range,
+                Prefab = conversionSystem.GetPrimaryEntity(Prefab)
+            });
+        }
+
+        public override void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
+        {
+            referencedPrefabs.Add(Prefab);
+
+            base.DeclareReferencedPrefabs(referencedPrefabs);
+        }
+    }
+
+    public struct Settings : IComponentData
+    {
+        public fix Range;
+        public Entity Prefab;
+    }
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
     {
         return new UseContract(
-                   new GameActionParameterTile.Description(accessor.GetComponent<GameActionSettingRange>(context.Item).Value)
+                   new GameActionParameterPosition.Description()
                    {
+                       MaxRangeFromInstigator = settings.Range
                    });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
     {
-        if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramTile))
         {
-            // get settings
-            if (!accessor.TryGetComponent(context.Item, out GameActionSettingEntityReference settings))
+            if (!CommonReads.IsInRange(accessor, context.InstigatorPawn, paramTile.Position, settings.Range))
             {
-                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionSettingEntityReference)} component");
-                return false;
+                LogGameActionInfo(context, "Not in range");
             }
 
             // spawn projectile
-            Entity objectInstance = accessor.Instantiate(settings.EntityPrefab);
+            Entity objectInstance = accessor.Instantiate(settings.Prefab);
 
             // set projectile data
-            fix2 spawnPos = Helpers.GetTileCenter(paramTile.Tile);
+            fix2 spawnPos = Helpers.GetTileCenter(paramTile.Position);
 
             accessor.SetOrAddComponent(objectInstance, new FixTranslation(spawnPos));
 

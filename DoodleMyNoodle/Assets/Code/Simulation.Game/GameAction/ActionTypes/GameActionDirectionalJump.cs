@@ -4,17 +4,36 @@ using Unity.Collections;
 using CCC.Fix2D;
 using System;
 
-public class GameActionDirectionalJump : GameAction
+public class GameActionDirectionalJump : GameAction<GameActionDirectionalJump.Settings>
 {
-    public override Type[] GetRequiredSettingTypes() => new Type[]
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
     {
-        typeof(GameActionSettingThrow),
-    };
+        public fix SpeedMax;
+        public fix SpeedMin;
+        public fix SpawnExtraDistance;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings()
+            {
+                SpeedMax = SpeedMax,
+                SpeedMin = SpeedMin,
+                SpawnExtraDistance = SpawnExtraDistance,
+            });
+        }
+    }
+
+    public struct Settings : IComponentData
     {
-        GameActionSettingThrow settings = accessor.GetComponent<GameActionSettingThrow>(context.Item);
+        public fix SpeedMax;
+        public fix SpeedMin;
+        public fix SpawnExtraDistance;
+    }
 
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
+    {
         return new UseContract(
             new GameActionParameterVector.Description()
             {
@@ -23,10 +42,8 @@ public class GameActionDirectionalJump : GameAction
             });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
     {
-        GameActionSettingThrow settings = accessor.GetComponent<GameActionSettingThrow>(context.Item);
-
         if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
         {
             fix2 velocity = paramVector.Vector;

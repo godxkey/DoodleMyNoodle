@@ -262,19 +262,6 @@ public abstract class GameAction
             CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -itemActionPointCost.Value);
         }
 
-        // reduce instigator Health
-        if (accessor.TryGetComponent(context.Item, out GameActionSettingHPCost itemHealthPointCost))
-        {
-            if (itemHealthPointCost.Value > 0)
-            {
-                CommonWrites.RequestDamage(accessor, context.InstigatorPawn, context.InstigatorPawn, itemHealthPointCost.Value);
-            }
-            else
-            {
-                CommonWrites.RequestHeal(accessor, context.InstigatorPawn, context.InstigatorPawn, -1 * itemHealthPointCost.Value);
-            }
-        }
-
         // Cooldown
         if (accessor.TryGetComponent(context.Item, out ItemTimeCooldownData itemTimeCooldownData))
         {
@@ -292,9 +279,9 @@ public abstract class GameAction
 
     protected virtual int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.TryGetComponent(context.Item, out GameActionSettingAPCost ActionPointCost))
+        if (accessor.TryGetComponent(context.Item, out GameActionSettingAPCost apCost))
         {
-            return ActionPointCost.Value;
+            return apCost.Value;
         }
         else
         {
@@ -314,5 +301,35 @@ public abstract class GameAction
     protected void LogGameActionInfo(UseContext context, string message)
     {
         Log.Info(LogChannel, $"{message} - {GetType().Name} - context(item: {context.Item}, instigator: {context.InstigatorPawn}, instigatorController: {context.InstigatorPawnController})");
+    }
+}
+
+public abstract class GameAction<TSetting> : GameAction where TSetting : struct, IComponentData
+{
+    public override Type[] GetRequiredSettingTypes() => new[] { typeof(TSetting) };
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+    {
+        var settings = accessor.GetComponent<TSetting>(context.Item);
+        return GetUseContract(accessor, context, settings);
+    }
+
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    {
+        var settings = accessor.GetComponent<TSetting>(context.Item);
+        return Use(accessor, context, parameters, ref resultData, settings);
+    }
+
+    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
+    {
+        var settings = accessor.GetComponent<TSetting>(context.Item);
+        return CanBeUsedInContextSpecific(accessor, context, debugReason, settings);
+    }
+
+    public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, TSetting settings);
+    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, TSetting settings);
+    protected virtual bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason, TSetting settings)
+    {
+        return true;
     }
 }

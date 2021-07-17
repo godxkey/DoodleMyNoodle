@@ -10,7 +10,7 @@ using UnityEngineX;
 using CCC.Fix2D;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public class CreateGridSystem : SimComponentSystem
+public class CreateGridSystem : SimSystemBase
 {
     public EntityArchetype TileArchetype { get; private set; }
 
@@ -47,7 +47,7 @@ public class CreateGridSystem : SimComponentSystem
             }
 
             Entity tileActor = EntityManager.Instantiate(startingTileActors[i].Prefab);
-            EntityManager.SetComponentData<FixTranslation>(tileActor, Helpers.GetTileCenter(startingTileActors[i].Position));
+            SetComponent<FixTranslation>(tileActor, Helpers.GetTileCenter(startingTileActors[i].Position));
         }
 
         // Creating singleton with a buffer of all tile entities (container of tiles)
@@ -76,9 +76,9 @@ public class CreateGridSystem : SimComponentSystem
         // Create Tile
         Entity newTileEntity = EntityManager.CreateEntity(TileArchetype);
 
-        EntityManager.SetComponentData(newTileEntity, new TileFlagComponent() { Value = tileData.TileFlags });
-        EntityManager.SetComponentData(newTileEntity, new TileId(tileData.Position));
-        EntityManager.SetComponentData(newTileEntity, tileData.AssetId);
+        SetComponent(newTileEntity, new TileFlagComponent() { Value = tileData.TileFlags });
+        SetComponent(newTileEntity, new TileId(tileData.Position));
+        SetComponent(newTileEntity, tileData.AssetId);
 
 #if UNITY_EDITOR
         EntityManager.SetName(newTileEntity, $"Tile_Entity {tileData.Position.x}, {tileData.Position.y}");

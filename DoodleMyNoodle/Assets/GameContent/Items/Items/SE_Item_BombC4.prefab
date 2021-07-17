@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &8991086757953652690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,12 +66,13 @@ MonoBehaviour:
   Value: GameActionThrow
   GameActionSettings:
   - id: 0
-  - id: 1
   ApCost: 1
   IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 7b946e803c30fdd43898faa8d3d77e2f, type: 3}
   Name: C4
   EffectDescription: "Bomb qui peut \xEAtre d\xE9ton\xE9 manuellement"
@@ -83,14 +84,13 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingThrowAuth, ns: , asm: Game}
+      type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         SpeedMin:
           RawValue: 0
         SpeedMax:
           RawValue: 42949672960
-    00000001:
-      type: {class: GameActionSettingEntityReferenceAuth, ns: , asm: Game}
-      data:
-        Entity: {fileID: 2385346486794747607, guid: b10aea4c768093045875e79bb85ea81c,
+        SpawnExtraDistance:
+          RawValue: 0
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: b10aea4c768093045875e79bb85ea81c,
           type: 3}

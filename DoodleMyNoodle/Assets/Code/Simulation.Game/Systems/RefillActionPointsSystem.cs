@@ -4,7 +4,7 @@ using Unity.Entities;
 using UnityEngine;
 
 [UpdateInGroup(typeof(PreAISystemGroup))]
-public class RefillActionPointsSystem : SimComponentSystem
+public class RefillActionPointsSystem : SimSystemBase
 {
     protected override void OnCreate()
     {
@@ -35,7 +35,9 @@ public class RefillActionPointsSystem : SimComponentSystem
 
                         CommonWrites.ModifyStatInt<ActionPoints>(Accessor, pawn, actionPointsToAdd);
                     }
-                });
+                })
+                .WithoutBurst()
+                .Run();
         }
     }
 }

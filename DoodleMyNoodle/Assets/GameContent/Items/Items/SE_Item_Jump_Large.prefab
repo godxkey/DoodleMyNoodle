@@ -83,11 +83,11 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingThrowAuth, ns: , asm: Game}
+      type: {class: GameActionDirectionalJump/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        SpeedMin:
-          RawValue: 8589934592
         SpeedMax:
           RawValue: 38654705664
+        SpeedMin:
+          RawValue: 8589934592
         SpawnExtraDistance:
           RawValue: 0

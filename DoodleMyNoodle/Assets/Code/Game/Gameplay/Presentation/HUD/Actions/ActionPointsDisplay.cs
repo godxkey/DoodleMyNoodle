@@ -21,7 +21,7 @@ public class ActionPointsDisplay : GamePresentationBehaviour
         {
             if (SimWorld.TryGetComponent(Cache.LocalPawn, out MaximumInt<ActionPoints> maximumActions))
             {
-                UIUtility.ResizeGameObjectList(_actionPointElements, Mathf.Min(_maxDisplayedAP, maximumActions), _actionPointPrefab, transform);
+                PresentationHelpers.ResizeGameObjectList(_actionPointElements, Mathf.Min(_maxDisplayedAP, maximumActions), _actionPointPrefab, transform);
             }
 
             // Reset all & Set filled or available ones

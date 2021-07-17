@@ -83,7 +83,7 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
+      type: {class: GameActionMove/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Range:
+        RangePerAP:
           RawValue: 4294967296

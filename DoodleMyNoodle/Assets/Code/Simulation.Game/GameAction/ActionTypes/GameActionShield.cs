@@ -5,22 +5,39 @@ using static Unity.Mathematics.math;
 using static fixMath;
 using System;
 
-public class GameActionShield : GameAction
+public class GameActionShield : GameAction<GameActionShield.Settings>
 {
-    public override Type[] GetRequiredSettingTypes() => new Type[]
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
     {
-        typeof(GameActionSettingRange),
-        typeof(GameActionSettingEffectDuration),
-    };
+        public fix Range;
+        public int TurnDuration;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings()
+            {
+                Range = Range,
+                TurnDuration = TurnDuration
+            });
+        }
+    }
+
+    public struct Settings : IComponentData
     {
-        if (accessor.GetComponent<GameActionSettingRange>(context.Item).Value > 0)
+        public fix Range;
+        public int TurnDuration;
+    }
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
+    {
+        if (settings.Range > 0)
         {
             return new UseContract(
                 new GameActionParameterEntity.Description()
                 {
-                    RangeFromInstigator = accessor.GetComponent<GameActionSettingRange>(context.Item),
+                    RangeFromInstigator = settings.Range,
                     IncludeSelf = true,
                     RequiresAttackableEntity = true,
                 });
@@ -31,25 +48,23 @@ public class GameActionShield : GameAction
         }
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData, Settings settings)
     {
         if (useData.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {
-            var settingsRange = accessor.GetComponent<GameActionSettingRange>(context.Item);
-
             if (!accessor.Exists(paramEntity.Entity))
             {
                 LogGameActionInfo(context, "Target does not exist");
                 return false;
             }
 
-            if (!CommonReads.IsInRange(accessor, context.InstigatorPawn, paramEntity.Entity, settingsRange))
+            if (!CommonReads.IsInRange(accessor, context.InstigatorPawn, paramEntity.Entity, settings.Range))
             {
                 LogGameActionInfo(context, "Target out of range");
                 return false;
             }
 
-            ShieldTarget(accessor, context.Item, paramEntity.Entity);
+            ShieldTarget(accessor, context.Item, settings.TurnDuration);
             return true;
         }
 
@@ -58,10 +73,8 @@ public class GameActionShield : GameAction
         return false;
     }
 
-    private void ShieldTarget(ISimWorldReadWriteAccessor accessor, Entity itemEntity, Entity pawn)
+    private void ShieldTarget(ISimWorldReadWriteAccessor accessor, Entity pawn, int duration)
     {
-        int duration = accessor.GetComponent<GameActionSettingEffectDuration>(itemEntity).Value;
-
         if (accessor.TryGetComponent(pawn, out Invincible invincible))
         {
             accessor.AddComponent(pawn, new Invincible() { Duration = max(duration, invincible.Duration) });

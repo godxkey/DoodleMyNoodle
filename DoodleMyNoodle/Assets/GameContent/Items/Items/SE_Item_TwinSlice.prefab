@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &2014573768698307162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,12 +66,13 @@ MonoBehaviour:
   Value: GameActionComboAttack
   GameActionSettings:
   - id: 0
-  - id: 1
   ApCost: 1
   IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 91322cf9522380f4fafcc156f1e9c99a, type: 3}
   Name: "Attaque en cha\xEEne"
   EffectDescription: "Donne 2 coups d'\xE9p\xE9e au lieu d'un"
@@ -82,11 +83,7 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
+      type: {class: GameActionComboAttack/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Range:
-          RawValue: 4294967296
-    00000001:
-      type: {class: GameActionSettingDamageAuth, ns: , asm: Game}
-      data:
+        Range: 1
         Damage: 1

@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &8673805079156357965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,12 +66,13 @@ MonoBehaviour:
   Value: GameActionThrow
   GameActionSettings:
   - id: 0
-  - id: 1
   ApCost: 1
   IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: f58e2d1233a04f64d9ae59922a02b486, type: 3}
   Name: "Fl\xE8ches explosives"
   EffectDescription: "Tire une fl\xE8che qui explose au contact"
@@ -83,14 +84,13 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingThrowAuth, ns: , asm: Game}
+      type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         SpeedMin:
           RawValue: 0
         SpeedMax:
           RawValue: 42949672960
-    00000001:
-      type: {class: GameActionSettingEntityReferenceAuth, ns: , asm: Game}
-      data:
-        Entity: {fileID: 2385346486794747607, guid: 1f293d3772835fd4b9ed879f0b33710d,
+        SpawnExtraDistance:
+          RawValue: 0
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: 1f293d3772835fd4b9ed879f0b33710d,
           type: 3}

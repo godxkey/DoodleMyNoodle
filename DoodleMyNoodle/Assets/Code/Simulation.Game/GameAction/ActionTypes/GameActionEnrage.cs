@@ -5,14 +5,29 @@ using Unity.Entities;
 using Unity.Collections;
 using System;
 
-public class GameActionEnrage : GameAction
+public class GameActionEnrage : GameAction<GameActionEnrage.Settings>
 {
-    public override Type[] GetRequiredSettingTypes() => new Type[]
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
     {
-        typeof(GameActionSettingHPCost)
-    };
+        public int HPCost;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings()
+            {
+                HPCost = HPCost,
+            });
+        }
+    }
+
+    public struct Settings : IComponentData
+    {
+        public int HPCost;
+    }
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
     {
         return new UseContract();
     }
@@ -33,8 +48,17 @@ public class GameActionEnrage : GameAction
         return 0;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
     {
+        if (settings.HPCost > 0)
+        {
+            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, context.InstigatorPawn, settings.HPCost);
+        }
+        else
+        {
+            CommonWrites.RequestHeal(accessor, context.InstigatorPawn, context.InstigatorPawn, -1 * settings.HPCost);
+        }
+
         return true;
     }
 }

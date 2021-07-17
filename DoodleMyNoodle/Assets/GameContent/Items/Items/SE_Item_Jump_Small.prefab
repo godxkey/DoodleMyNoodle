@@ -83,7 +83,7 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingBasicJumpAuth, ns: , asm: Game}
+      type: {class: GameActionBasicJump/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         JumpVelocity:
           RawValue: 17179869184

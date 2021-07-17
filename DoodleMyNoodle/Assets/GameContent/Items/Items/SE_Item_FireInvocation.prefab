@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &8549762061682411268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,13 +66,13 @@ MonoBehaviour:
   Value: GameActionTileExplosion
   GameActionSettings:
   - id: 0
-  - id: 1
-  - id: 2
   ApCost: 1
   IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: fb0330350953e6b498e483d0e0671dc5, type: 3}
   Name: "Explosion Instantann\xE9"
   EffectDescription: "Explose un point pr\xE9cis"
@@ -83,16 +83,10 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingDamageAuth, ns: , asm: Game}
-      data:
-        Damage: 2
-    00000001:
-      type: {class: GameActionSettingRadiusAuth, ns: , asm: Game}
+      type: {class: GameActionTileExplosion/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Radius:
-          RawValue: 3221225472
-    00000002:
-      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
-      data:
+          RawValue: 8589934592
+        Damage: 4
         Range:
-          RawValue: 17179869184
+          RawValue: 3221225472

@@ -6,47 +6,62 @@ using CCC.Fix2D;
 using System;
 using Unity.MathematicsX;
 
-public class GameActionComboAttack : GameAction
+public class GameActionComboAttack : GameAction<GameActionComboAttack.Settings>
 {
-    public override Type[] GetRequiredSettingTypes() => new Type[]
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
     {
-        typeof(GameActionSettingRange),
-        typeof(GameActionSettingDamage),
-    };
+        public int Range;
+        public int Damage;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings()
+            {
+                Range = Range,
+                Damage = Damage,
+            });
+        }
+    }
+
+    public struct Settings : IComponentData
+    {
+        public int Range;
+        public int Damage;
+    }
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
     {
         var param = new GameActionParameterPosition.Description()
         {
-            MaxRangeFromInstigator = accessor.GetComponent<GameActionSettingRange>(context.Item)
+            MaxRangeFromInstigator = settings.Range
         };
 
         return new UseContract(param, param);
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
     {
-        int damage = accessor.GetComponent<GameActionSettingDamage>(context.Item);
         var instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
-        var range = accessor.GetComponent<GameActionSettingRange>(context.Item);
         fix attackRadius = (fix)0.1f;
         NativeList<DistanceHit> hits = new NativeList<DistanceHit>(Allocator.Temp);
 
         if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data firstStrikePos))
         {
-            var attackPos = Helpers.ClampPositionInsideRange(firstStrikePos.Position, instigatorPos, range);
+            var attackPos = Helpers.ClampPositionInsideRange(firstStrikePos.Position, instigatorPos, settings.Range);
 
             CommonReads.Physics.OverlapCircle(accessor, attackPos, attackRadius, hits, ignoreEntity: context.InstigatorPawn);
         }
 
         if (parameters.TryGetParameter(1, out GameActionParameterPosition.Data secondStrikePos))
         {
-            var attackPos = Helpers.ClampPositionInsideRange(secondStrikePos.Position, instigatorPos, range);
+            var attackPos = Helpers.ClampPositionInsideRange(secondStrikePos.Position, instigatorPos, settings.Range);
 
             CommonReads.Physics.OverlapCircle(accessor, attackPos, attackRadius, hits, ignoreEntity: context.InstigatorPawn);
         }
 
-        CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, damage);
+        CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, settings.Damage);
 
         return true;
     }

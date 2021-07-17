@@ -75,3 +75,51 @@ public abstract class GameActionSettingAuthBase : IDeclareReferencedPrefabs
         return s_sim2AuthType;
     }
 }
+
+//public class FieldValueBase { }
+
+//public class FieldValueGameObject : FieldValueBase
+//{
+//    public GameObject Value;
+//}
+
+//public class FieldValueInt : FieldValueBase
+//{
+//    public int Value;
+//}
+
+//public class FieldValueFix : FieldValueBase
+//{
+//    public fix Value;
+//}
+
+//public class Field
+//{
+//    public string Name;
+
+//    [SerializeReference]
+//    public FieldValueBase Value;
+//}
+
+//[Serializable]
+//public class GameActionSettingAuthAutoMagic : GameActionSettingAuthBase
+//{
+//    public List<Field> Fields = new List<Field>();
+
+//    [NonSerialized] // set manually, just before conversion
+//    public Type ContextSimType;
+
+//    // mandatory
+//    public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+//    {
+//        var simComponentType = ContextSimType;
+//        var simComponent = Activator.CreateInstance(simComponentType);
+
+//        MethodInfo method = typeof(EntityManager).GetMethod(nameof(EntityManager.GetComponentData));
+//        MethodInfo generic = method.MakeGenericMethod(simComponentType);
+//        generic.Invoke(dstManager, new object[] { entity, simComponent});
+//    }
+
+//    // optional
+//    public override void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs) { }
+//}

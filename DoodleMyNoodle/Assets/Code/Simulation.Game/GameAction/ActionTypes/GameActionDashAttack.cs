@@ -8,20 +8,37 @@ using CCC.Fix2D;
 using System;
 using System.Collections.Generic;
 
-public class GameActionDashAttack : GameAction
+public class GameActionDashAttack : GameAction<GameActionDashAttack.Settings>
 {
-    public override Type[] GetRequiredSettingTypes() => new Type[]
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
     {
-        typeof(GameActionSettingRange),
-        typeof(GameActionSettingDamage),
-    };
+        public int Range;
+        public int Damage;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings()
+            {
+                Range = Range,
+                Damage = Damage,
+            });
+        }
+    }
+
+    public struct Settings : IComponentData
+    {
+        public int Range;
+        public int Damage;
+    }
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
     {
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
-            new GameActionParameterTile.Description(accessor.GetComponent<GameActionSettingRange>(context.Item).Value)
+            new GameActionParameterTile.Description(settings.Range)
             {
                 IncludeSelf = false,
                 MustBeReachable = true
@@ -31,12 +48,11 @@ public class GameActionDashAttack : GameAction
         return useContract;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData, Settings settings)
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
             int2 instigatorTile = Helpers.GetTile(accessor.GetComponent<FixTranslation>(context.InstigatorPawn));
-            int moveRange = roundToInt(accessor.GetComponent<GameActionSettingRange>(context.Item).Value);
 
             NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
             if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, path))
@@ -46,12 +62,11 @@ public class GameActionDashAttack : GameAction
             }
 
             // Get the last reachable point considering the user's AP
-            int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(path.AsArray().Slice(), moveRange);
+            int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(path.AsArray().Slice(), settings.Range);
 
             // Remove unreachable points
             path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
 
-            int damage = accessor.GetComponent<GameActionSettingDamage>(context.Item).Value;
             NativeList<Entity> entityToDamage = new NativeList<Entity>(Allocator.Temp);
 
             fix2 min, max, center;
@@ -73,7 +88,7 @@ public class GameActionDashAttack : GameAction
             // set destination
             accessor.SetOrAddComponent(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(path[path.Length - 1]) });
 
-            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, entityToDamage.AsArray(), damage);
+            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, entityToDamage.AsArray(), settings.Damage);
 
             return true;
         }

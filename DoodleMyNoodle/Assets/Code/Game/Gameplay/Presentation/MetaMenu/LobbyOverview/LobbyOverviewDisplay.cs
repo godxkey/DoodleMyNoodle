@@ -71,7 +71,7 @@ public class LobbyOverviewDisplay : GamePresentationSystem<LobbyOverviewDisplay>
                 }
             });
 
-        UIUtility.UpdateGameObjectList(_playerInfos, _data, _playerInfoPrefab, _playerInfoContainer, onUpdate: UpdatePlayerInfo);
+        PresentationHelpers.UpdateGameObjectList(_playerInfos, _data, _playerInfoPrefab, _playerInfoContainer, onUpdate: UpdatePlayerInfo);
     }
 
     private void UpdatePlayerInfo(LobbyPlayerInfoDisplay display, (Entity player, Entity pawn) data)

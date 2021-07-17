@@ -4,38 +4,62 @@ using Unity.Collections;
 using UnityEngine;
 using CCC.Fix2D;
 using System;
+using System.Collections.Generic;
 
-public class GameActionSpawnMinion : GameAction
+public class GameActionSpawnMinion : GameAction<GameActionSpawnMinion.Settings>
 {
-    public override Type[] GetRequiredSettingTypes() => new Type[]
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
     {
-        typeof(GameActionSettingRange),
-        typeof(GameActionSettingEntityReference),
-    };
+        public fix Range;
+        public GameObject MinionPrefab;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings()
+            {
+                Range = Range,
+                Prefab = conversionSystem.GetPrimaryEntity(MinionPrefab)
+            });
+        }
+
+        public override void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
+        {
+            referencedPrefabs.Add(MinionPrefab);
+
+            base.DeclareReferencedPrefabs(referencedPrefabs);
+        }
+    }
+
+    public struct Settings : IComponentData
+    {
+        public fix Range;
+        public Entity Prefab;
+    }
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
     {
         return new UseContract(
-                   new GameActionParameterTile.Description(accessor.GetComponent<GameActionSettingRange>(context.Item).Value)
+                   new GameActionParameterPosition.Description()
                    {
+                       MaxRangeFromInstigator = settings.Range,
                    });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
     {
-        if (parameters.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {
-            // get settings
-            if (!accessor.TryGetComponent(context.Item, out GameActionSettingEntityReference settings))
+            if (!CommonReads.IsInRange(accessor, context.InstigatorPawn, paramPosition.Position, settings.Range))
             {
-                Debug.LogWarning($"Item {context.Item} has no {nameof(GameActionSettingEntityReference)} component");
-                return false;
+                LogGameActionInfo(context, "Target is out of range");
             }
 
             // spawn minion
-            Entity objectInstance = accessor.Instantiate(settings.EntityPrefab);
+            Entity objectInstance = accessor.Instantiate(settings.Prefab);
 
-            accessor.SetOrAddComponent(objectInstance, new FixTranslation() { Value = Helpers.GetTileCenter(paramTile.Tile) });
+            accessor.SetOrAddComponent(objectInstance, new FixTranslation() { Value = Helpers.GetTileCenter(paramPosition.Position) });
 
             return true;
         }

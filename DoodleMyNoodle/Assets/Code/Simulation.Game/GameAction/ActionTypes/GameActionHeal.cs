@@ -7,22 +7,42 @@ using UnityEngineX;
 using Unity.Entities;
 using Unity.Collections;
 
-public class GameActionHeal : GameAction
+public class GameActionHeal : GameAction<GameActionHeal.Settings>
 {
-    public override Type[] GetRequiredSettingTypes() => new Type[]
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
     {
-        typeof(GameActionSettingRange),
-        typeof(GameActionSettingHPToHeal)
-    };
+        public fix Range;
+        public int MaxHeal;
+        public int MinHeal;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings()
+            {
+                MaxHeal = MaxHeal,
+                MinHeal = MinHeal,
+                Range = Range,
+            });
+        }
+    }
+
+    public struct Settings : IComponentData
+    {
+        public int MaxHeal;
+        public int MinHeal;
+        public fix Range;
+    }
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
     {
         UseContract useContract = new UseContract();
         useContract.ParameterTypes = new ParameterDescription[]
         {
             new GameActionParameterEntity.Description()
             {
-                RangeFromInstigator = accessor.GetComponent<GameActionSettingRange>(context.Item).Value,
+                RangeFromInstigator = settings.Range,
                 RequiresAttackableEntity = true,
             }
         };
@@ -30,20 +50,17 @@ public class GameActionHeal : GameAction
         return useContract;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {
-            var settingsHeal = accessor.GetComponent<GameActionSettingHPToHeal>(context.Item);
-            var settingsRange = accessor.GetComponent<GameActionSettingRange>(context.Item);
-
             if (!accessor.Exists(paramEntity.Entity))
             {
                 LogGameActionInfo(context, "Target does not exist");
                 return false;
             }
 
-            if(!CommonReads.IsInRange(accessor, context.InstigatorPawn, paramEntity.Entity, settingsRange))
+            if (!CommonReads.IsInRange(accessor, context.InstigatorPawn, paramEntity.Entity, settings.Range))
             {
                 LogGameActionInfo(context, "Target out of range");
                 return false;
@@ -55,14 +72,12 @@ public class GameActionHeal : GameAction
                 return false;
             }
 
-            var maxHealth = accessor.GetComponent<MaximumInt<Health>>(context.InstigatorPawn);
-            var currentHealth = accessor.GetComponent<Health>(context.InstigatorPawn);
+            int maxHP = accessor.GetComponent<MaximumInt<Health>>(context.InstigatorPawn).Value;
+            int currentHP = accessor.GetComponent<Health>(context.InstigatorPawn).Value;
+            fix healPowerRatio = 1 - ((fix)currentHP / maxHP); // 0 -> min heal   1 -> max heal
+            int heal = roundToInt(lerp(settings.MinHeal, settings.MaxHeal, healPowerRatio));
 
-            var diffHealth = maxHealth - currentHealth;
-            var healthToGive = fix.RoundToInt(((fix)0.98 * diffHealth) - (fix)1.5);
-            healthToGive = Mathf.Clamp(healthToGive, 1, settingsHeal.Value);
-
-            CommonWrites.RequestHeal(accessor, context.InstigatorPawn, paramEntity.Entity, healthToGive);
+            CommonWrites.RequestHeal(accessor, context.InstigatorPawn, paramEntity.Entity, heal);
 
             return true;
         }

@@ -5,20 +5,37 @@ using Unity.Entities;
 using Unity.Collections;
 using System;
 
-public class GameActionConvert : GameAction
+public class GameActionConvert : GameAction<GameActionConvert.Settings>
 {
-    public override Type[] GetRequiredSettingTypes() => new Type[]
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
     {
-        typeof(GameActionSettingRange),
-        typeof(GameActionSettingEffectDuration)
-    };
+        public fix Range;
+        public int TurnDuration;
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context)
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings()
+            {
+                Range = Range,
+                TurnDuration = TurnDuration,
+            });
+        }
+    }
+
+    public struct Settings : IComponentData
+    {
+        public fix Range;
+        public int TurnDuration;
+    }
+
+    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
     {
         return new UseContract(
             new GameActionParameterEntity.Description()
             {
-                RangeFromInstigator = accessor.GetComponent<GameActionSettingRange>(context.Item).Value,
+                RangeFromInstigator = settings.Range,
                 IncludeSelf = false,
                 RequiresAttackableEntity = false,
                 CustomPredicate = (simWorld, tileActor) =>
@@ -34,12 +51,10 @@ public class GameActionConvert : GameAction
             });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {
-            var settingsRange = accessor.GetComponent<GameActionSettingRange>(context.Item);
-
             Entity target = paramEntity.Entity;
 
             if (!accessor.Exists(target))
@@ -48,7 +63,7 @@ public class GameActionConvert : GameAction
                 return false;
             }
 
-            if (!CommonReads.IsInRange(accessor, context.InstigatorPawn, target, settingsRange))
+            if (!CommonReads.IsInRange(accessor, context.InstigatorPawn, target, settings.Range))
             {
                 LogGameActionInfo(context, "Target not in range");
                 return false;
@@ -76,7 +91,7 @@ public class GameActionConvert : GameAction
             }
             else
             {
-                accessor.AddComponent(targetController, new Converted() { RemainingTurns = accessor.GetComponent<GameActionSettingEffectDuration>(context.Item).Value });
+                accessor.AddComponent(targetController, new Converted() { RemainingTurns = settings.TurnDuration });
             }
 
             return true;

@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &397203773403769247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,12 +66,13 @@ MonoBehaviour:
   Value: GameActionShield
   GameActionSettings:
   - id: 0
-  - id: 1
   ApCost: 1
   IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 77cf71b5c6505b0479084ba52ad94933, type: 3}
   Name: Bulle protectrice
   EffectDescription: "Envoie une bulle sur un alli\xE9 pour le prot\xE9ger"
@@ -82,11 +83,8 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSettingRangeAuth, ns: , asm: Game}
+      type: {class: GameActionShield/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
           RawValue: 9448928256
-    00000001:
-      type: {class: GameActionSettingEffectDurationAuth, ns: , asm: Game}
-      data:
-        Duration: 2
+        TurnDuration: 2
