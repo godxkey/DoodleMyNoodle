@@ -160,7 +160,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d2fb763feeada0e449754d62ea1c9b70, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 976bd24729cff4648a93e436e46df764, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -288,7 +288,7 @@ MonoBehaviour:
   _emptySprite: {fileID: 21300000, guid: 12c51fd80a0331a408f0ab03ce1a6d65, type: 3}
   _filledSprite: {fileID: 21300000, guid: 976bd24729cff4648a93e436e46df764, type: 3}
   _canvasGroup: {fileID: 3469271791465091720}
-  _canvasFadeSpeed: 0.1
+  _canvasFadeSpeed: 4
   _fewAPContainer: {fileID: 6150836390797422753}
   _manyAPContainer: {fileID: 7733255461499059824}
   _manyAPText: {fileID: 1103229671544866281}
