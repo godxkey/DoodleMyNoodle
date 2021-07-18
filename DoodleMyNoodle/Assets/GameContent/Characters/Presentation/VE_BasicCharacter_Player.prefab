@@ -60,7 +60,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 1.032}
+  m_AnchoredPosition: {x: 0, y: 0.895}
   m_SizeDelta: {x: 2.8, y: 0.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &5077931957103207469
@@ -194,6 +194,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 5077931957103207469}
   m_maskType: 0
+  _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 0
 --- !u!1001 &1736369821046630993

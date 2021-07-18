@@ -50,4 +50,11 @@ MonoBehaviour:
     type: 3}
   HideDelayFromMouse: 0.4
   HideDelayFromAPUsage: 1
-  MaxAPToDisplay: 0
+  MaxAPToDisplay: 10
+  Displacement:
+    x:
+      RawValue: 429496736
+    y:
+      RawValue: 2899102976
+    z:
+      RawValue: 0

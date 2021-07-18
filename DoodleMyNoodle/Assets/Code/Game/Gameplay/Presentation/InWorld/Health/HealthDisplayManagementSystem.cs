@@ -15,6 +15,8 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
 
     public int MaxHearthToDisplay = 10;
 
+    public fix3 Displacement = new fix3(fix(-0.1f), fix(0.675f), 0);
+
     private List<GameObject> _healthBarInstances = new List<GameObject>();
 
     protected override void OnGamePresentationUpdate()
@@ -62,7 +64,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
 
                 foreach (var healthBar in _healthBarInstances)
                 {
-                    if (healthBar.transform.position == (position.Value + new fix3(0, fix(0.7f), 0)).ToUnityVec())
+                    if (healthBar.transform.position == (position.Value + Displacement).ToUnityVec())
                     {
                         healthBar.GetComponent<HealthBarDisplay>().Show(HideDelayFromMouse);
                     }
@@ -76,7 +78,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
             {
                 foreach (var healthBar in _healthBarInstances)
                 {
-                    if (healthBar.transform.position == (position.Value + new fix3(0, fix(0.7f), 0)).ToUnityVec())
+                    if (healthBar.transform.position == (position.Value + Displacement).ToUnityVec())
                     {
                         healthBar.GetComponent<HealthBarDisplay>().Show(HideDelayFromDamageOrHeal);
                     }
@@ -98,7 +100,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
             currentHealthBar = _healthBarInstances[index];
         }
 
-        currentHealthBar.transform.position = (position + new fix3(0, fix(0.7f), 0) + new fix3(fix(-0.25f), 0, 0)).ToUnityVec();
+        currentHealthBar.transform.position = (position + Displacement).ToUnityVec();
         currentHealthBar.GetComponent<HealthBarDisplay>()?.SetHealth(health, maxHealth, MaxHearthToDisplay);
         currentHealthBar.SetActive(true);
     }
