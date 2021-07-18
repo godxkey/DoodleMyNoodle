@@ -1,5 +1,6 @@
 ﻿using Unity.Entities;
 
+[UpdateInGroup(typeof(PresentationSystemGroup))] // update at the very end of the simulation
 public class LifeCycleTagSystem : SimSystemBase
 {
     protected override void OnUpdate()
@@ -25,8 +26,10 @@ public class LifeCycleTagSystem : SimSystemBase
             .ForEach((Entity entity) =>
         {
             EntityManager.RemoveComponent<NewlyDestroyedTag>(entity);
-        }).WithoutBurst()
-        .Run();
+        })
+            .WithStructuralChanges()
+            .WithoutBurst()
+            .Run();
 
         // Change MidLifeCycleSystemTag for NewlyDestroyedTag
         Entities
@@ -36,8 +39,10 @@ public class LifeCycleTagSystem : SimSystemBase
         {
             EntityManager.AddComponent<NewlyDestroyedTag>(entity);
             EntityManager.RemoveComponent<MidLifeCycleSystemTag>(entity);
-        }).WithoutBurst()
-        .Run();
+        })
+            .WithStructuralChanges()
+            .WithoutBurst()
+            .Run();
 
         // Remove NewlyCreatedTag
         Entities
@@ -45,8 +50,10 @@ public class LifeCycleTagSystem : SimSystemBase
             .ForEach((Entity entity) =>
         {
             EntityManager.RemoveComponent<NewlyCreatedTag>(entity);
-        }).WithoutBurst()
-        .Run();
+        })
+            .WithStructuralChanges()
+            .WithoutBurst()
+            .Run();
 
         // New entity! Add NewlyCreatedTag + MidLifeCycleTag + MidLifeCycleSystemTag
         Entities
@@ -57,8 +64,10 @@ public class LifeCycleTagSystem : SimSystemBase
             EntityManager.AddComponent<NewlyCreatedTag>(entity);
             EntityManager.AddComponent<MidLifeCycleTag>(entity);
             EntityManager.AddComponent<MidLifeCycleSystemTag>(entity);
-        }).WithoutBurst()
-        .Run();
+        })
+            .WithStructuralChanges()
+            .WithoutBurst()
+            .Run();
 
         // mid-life cycle entity! Add MidLifeCycleSystemTag
         Entities
@@ -67,7 +76,9 @@ public class LifeCycleTagSystem : SimSystemBase
             .ForEach((Entity entity) =>
             {
                 EntityManager.AddComponent<MidLifeCycleSystemTag>(entity);
-            }).WithoutBurst()
+            })
+            .WithStructuralChanges()
+            .WithoutBurst()
             .Run();
     }
 }
