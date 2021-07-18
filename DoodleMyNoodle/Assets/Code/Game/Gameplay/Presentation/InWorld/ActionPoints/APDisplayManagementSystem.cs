@@ -19,6 +19,7 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
 
     private List<GameObject> _APBarInstances = new List<GameObject>();
     private Dictionary<Entity, int> EntitiesAP = new Dictionary<Entity, int>();
+    private Dictionary<Entity, GameObject> EntitiesAPBar = new Dictionary<Entity, GameObject>();
 
     protected override void OnGamePresentationUpdate()
     {
@@ -38,17 +39,11 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
 
             Team currentPawnTeam = Cache.SimWorld.GetComponent<Team>(pawnController);
 
-            SetOrAddAPBar(apBarAmount, entityTranslation.Value, entityMaximumAP.Value, entityAP.Value, localPlayerTeam.Value == currentPawnTeam.Value);
+            SetOrAddAPBar(pawn, apBarAmount, entityTranslation.Value, entityMaximumAP.Value, entityAP.Value, localPlayerTeam.Value == currentPawnTeam.Value);
 
-            if (EntitiesAP.ContainsKey(pawn) && EntitiesAP[pawn] != entityAP.Value)
+            if (EntitiesAP.ContainsKey(pawn) && EntitiesAP[pawn] != entityAP.Value && EntitiesAPBar.ContainsKey(pawn))
             {
-                foreach (var apBar in _APBarInstances)
-                {
-                    if (apBar.transform.position == (entityTranslation.Value + Displacement).ToUnityVec())
-                    {
-                        apBar.GetComponent<APBarDisplay>().Show(HideDelayFromAPUsage);
-                    }
-                }
+                EntitiesAPBar[pawn].GetComponent<APBarDisplay>().Show(HideDelayFromAPUsage);
             }
 
             if (EntitiesAP.ContainsKey(pawn))
@@ -81,26 +76,22 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
                 if (!SimWorld.HasComponent<ActionPoints>(tileActor))
                     continue;
 
-                FixTranslation position = SimWorld.GetComponent<FixTranslation>(tileActor);
-
-                foreach (var apBar in _APBarInstances)
+                if (EntitiesAPBar.ContainsKey(tileActor))
                 {
-                    if (apBar.transform.position == (position.Value + Displacement).ToUnityVec())
-                    {
-                        apBar.GetComponent<APBarDisplay>().Show(HideDelayFromMouse);
-                    }
+                    EntitiesAPBar[tileActor].GetComponent<APBarDisplay>().Show(HideDelayFromMouse);
                 }
             }
         }
     }
 
-    private void SetOrAddAPBar(int index, fix3 position, int maxAP, int ap, bool friendly)
+    private void SetOrAddAPBar(Entity entity, int index, fix3 position, int maxAP, int ap, bool friendly)
     {
         GameObject currentAPBar;
         if (_APBarInstances.Count <= index)
         {
             currentAPBar = Instantiate(APBarPrefab);
             _APBarInstances.Add(currentAPBar);
+            EntitiesAPBar.Add(entity, currentAPBar);
         }
         else
         {
