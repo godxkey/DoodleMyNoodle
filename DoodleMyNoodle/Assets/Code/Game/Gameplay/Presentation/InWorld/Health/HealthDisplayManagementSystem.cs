@@ -19,6 +19,8 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
 
     private List<GameObject> _healthBarInstances = new List<GameObject>();
 
+    private Dictionary<Entity, GameObject> EntitiesHPBar = new Dictionary<Entity, GameObject>();
+
     protected override void OnGamePresentationUpdate()
     {
         int healthBarAmount = 0;
@@ -37,7 +39,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
 
             Team currentPawnTeam = Cache.SimWorld.GetComponent<Team>(pawnController);
 
-            SetOrAddHealthBar(healthBarAmount, entityTranslation.Value, entityMaximumHealth.Value, entityHealth.Value, localPlayerTeam.Value == currentPawnTeam.Value);
+            SetOrAddHealthBar(pawn, healthBarAmount, entityTranslation.Value, entityMaximumHealth.Value, entityHealth.Value, localPlayerTeam.Value == currentPawnTeam.Value);
 
             healthBarAmount++;
         });
@@ -60,15 +62,11 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
                 if (!SimWorld.HasComponent<Health>(tileActor))
                     continue;
 
-                FixTranslation position = SimWorld.GetComponent<FixTranslation>(tileActor);
-
-                foreach (var healthBar in _healthBarInstances)
+                if (EntitiesHPBar.ContainsKey(tileActor))
                 {
-                    if (healthBar.transform.position == (position.Value + Displacement).ToUnityVec())
-                    {
-                        healthBar.GetComponent<HealthBarDisplay>().Show(HideDelayFromMouse);
-                    }
+                    EntitiesHPBar[tileActor].GetComponent<HealthBarDisplay>().Show(HideDelayFromMouse);
                 }
+                
             }
         }
 
@@ -76,24 +74,22 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
         {
             if (SimWorld.TryGetComponent(damageEvent.EntityDamaged, out FixTranslation position))
             {
-                foreach (var healthBar in _healthBarInstances)
+                if (EntitiesHPBar.ContainsKey(damageEvent.EntityDamaged))
                 {
-                    if (healthBar.transform.position == (position.Value + Displacement).ToUnityVec())
-                    {
-                        healthBar.GetComponent<HealthBarDisplay>().Show(HideDelayFromDamageOrHeal);
-                    }
+                    EntitiesHPBar[damageEvent.EntityDamaged].GetComponent<HealthBarDisplay>().Show(HideDelayFromDamageOrHeal);
                 }
             }
         });
     }
 
-    private void SetOrAddHealthBar(int index, fix3 position, int maxHealth, int health, bool friendly)
+    private void SetOrAddHealthBar(Entity entity, int index, fix3 position, int maxHealth, int health, bool friendly)
     {
         GameObject currentHealthBar;
         if (_healthBarInstances.Count <= index)
         {
             currentHealthBar = Instantiate(HealthBarPrefab);
             _healthBarInstances.Add(currentHealthBar);
+            EntitiesHPBar.Add(entity, currentHealthBar);
         }
         else
         {
