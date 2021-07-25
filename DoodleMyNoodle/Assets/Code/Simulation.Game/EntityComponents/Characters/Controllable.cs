@@ -23,3 +23,12 @@ public struct DefaultControllerPrefab : IComponentData
 {
     public Entity Value;
 }
+
+/// <summary>
+/// Indicates a controllable entity's default team
+/// </summary>
+[Serializable]
+public struct DefaultControllerTeam : IComponentData
+{
+    public int Value;
+}

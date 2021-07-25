@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Value Type Overrides</Title>
+      <Author>Frederic Bessette</Author>
+      <Description>Create all the boiler plate Value type overrides</Description>
+      <Shortcut>scValueOverrides</Shortcut>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>ContainerType</ID>
+          <ToolTip>The value container type</ToolTip>
+          <Default>ContainerType</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp"
+            Kind="method body">
+        <![CDATA[    public bool Equals($ContainerType$ other) => Value == other.Value;
+    public override bool Equals(object obj) => obj is $ContainerType$ castedObj && Equals(castedObj);
+    public override int GetHashCode() => Value.GetHashCode();
+    public static bool operator ==($ContainerType$ a, $ContainerType$ b) => a.Equals(b);
+    public static bool operator !=($ContainerType$ a, $ContainerType$ b) => !a.Equals(b);]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

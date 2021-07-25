@@ -64,40 +64,54 @@ public class GameActionMove : GameAction<GameActionMove.Settings>
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData, Settings settings)
     {
-        if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
+        int2 destinationTile;
+        fix2 destinationPosition;
+
+        if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile, warnIfFailed: false))
         {
-            int2 instigatorTile = Helpers.GetTile(accessor.GetComponent<FixTranslation>(context.InstigatorPawn));
-
-            NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
-            if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, path))
-            {
-                LogGameActionInfo(context, $"Discarding: cannot find navigable path from { instigatorTile} to { paramTile.Tile}.");
-                return false;
-            }
-
-            int userAP = accessor.GetComponent<ActionPoints>(context.InstigatorPawn);
-
-            // Get the last reachable point considering the user's AP
-            int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(path.AsArray().Slice(), userAP * settings.RangePerAP);
-
-            // Remove unreachable points
-            path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
-
-            // find AP cost
-            int costToMove = ceilToInt(Pathfinding.CalculateTotalCost(path.Slice()) / settings.RangePerAP);
-
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -costToMove);
-
-            // set destination
-            var random = accessor.Random();
-            fix2 dest = Helpers.GetTileCenter(path[path.Length - 1]);
-            dest += fix2(random.NextFix(fix(-0.075), fix(0.075)), 0);
-
-            accessor.SetOrAddComponent(context.InstigatorPawn, new Destination() { Value = dest });
-
-            return true;
+            destinationTile = paramTile.Tile;
+            destinationPosition = Helpers.GetTileCenter(destinationTile);
+        }
+        else if (useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
+        {
+            destinationTile = Helpers.GetTile(paramPosition.Position);
+            destinationPosition = paramPosition.Position;
+            destinationPosition.y = Helpers.GetTileCenter(destinationTile).y; // make sure Y is at center
+        }
+        else
+        {
+            return false;
         }
 
-        return false;
+        int2 instigatorTile = Helpers.GetTile(accessor.GetComponent<FixTranslation>(context.InstigatorPawn));
+
+        NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
+        if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, destinationTile, Pathfinding.MAX_PATH_LENGTH, path))
+        {
+            LogGameActionInfo(context, $"Discarding: cannot find navigable path from {instigatorTile} to {destinationTile}.");
+            return false;
+        }
+
+        int userAP = accessor.GetComponent<ActionPoints>(context.InstigatorPawn);
+
+        // Get the last reachable point considering the user's AP
+        int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(path.AsArray().Slice(), userAP * settings.RangePerAP);
+
+        // Remove unreachable points
+        if (path.Length > lastReachablePathPointIndex + 1)
+        {
+            path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
+
+            destinationPosition = Helpers.GetTileCenter(path[path.Length - 1]);
+        }
+
+        // find AP cost
+        int costToMove = ceilToInt(Pathfinding.CalculateTotalCost(path.Slice()) / settings.RangePerAP);
+
+        CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -costToMove);
+
+        accessor.SetOrAddComponent(context.InstigatorPawn, new Destination() { Value = destinationPosition });
+
+        return true;
     }
 }

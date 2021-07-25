@@ -87,5 +87,5 @@ MonoBehaviour:
       data:
         Range:
           RawValue: 15032385536
-        MaxHeal: 0
-        MinHeal: 7
+        MaxHeal: 7
+        MinHeal: 0

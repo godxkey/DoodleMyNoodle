@@ -86,6 +86,6 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionTransformTile/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        NewTileFlags: 3
+        NewTileFlags: 5
         Radius:
           RawValue: 2147483648

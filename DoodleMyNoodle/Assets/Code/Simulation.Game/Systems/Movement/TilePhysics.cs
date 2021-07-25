@@ -55,16 +55,19 @@ public static class TilePhysics
 
     private struct TerrainTilePredicate : ITilePredicate
     {
-        public DynamicBuffer<GridTileReference> TileEntities;
-        public GridInfo GridInfo;
-        public ISimWorldReadAccessor Accessor;
-        
+        public TileWorld TileWorld;
+
+        public TerrainTilePredicate(TileWorld tileWorld)
+        {
+            TileWorld = tileWorld;
+        }
+
         public bool Evaluate(int2 tile)
         {
-            Entity tileEntity = CommonReads.GetTileEntity(tile, GridInfo, TileEntities);
-            if(tileEntity != Entity.Null)
+            Entity tileEntity = TileWorld.GetEntity(tile);
+            if (tileEntity != Entity.Null)
             {
-                return Accessor.GetComponent<TileFlagComponent>(tileEntity).IsTerrain;
+                return TileWorld.GetFlags(tileEntity).IsTerrain;
             }
             return false;
         }
@@ -72,26 +75,19 @@ public static class TilePhysics
 
     public static fix DefaultBevel => fix(0.1);
 
-    public static bool RaycastTerrain(ISimWorldReadAccessor accessor, fix2 start, fix2 end)
+    public static bool RaycastTerrain(TileWorld tileWorld, fix2 start, fix2 end)
     {
-        return RaycastTerrain(accessor, start, end, DefaultBevel, out _);
+        return RaycastTerrain(tileWorld, start, end, DefaultBevel, out _);
     }
 
-    public static bool RaycastTerrain(ISimWorldReadAccessor accessor, fix2 start, fix2 end, fix bevel)
+    public static bool RaycastTerrain(TileWorld tileWorld, fix2 start, fix2 end, fix bevel)
     {
-        return RaycastTerrain(accessor, start, end, bevel, out _);
+        return RaycastTerrain(tileWorld, start, end, bevel, out _);
     }
 
-    public static bool RaycastTerrain(ISimWorldReadAccessor accessor, fix2 start, fix2 end, fix bevel, out int2 result)
+    public static bool RaycastTerrain(TileWorld tileWorld, fix2 start, fix2 end, fix bevel, out int2 result)
     {
-        TerrainTilePredicate terrainTilePredicate = new TerrainTilePredicate()
-        {
-            Accessor = accessor,
-            GridInfo = accessor.GetSingleton<GridInfo>(),
-            TileEntities = accessor.GetBufferReadOnly<GridTileReference>(accessor.GetSingletonEntity<GridInfo>())
-        };
-
-        return Raycast(start, end, bevel, terrainTilePredicate, out result);
+        return Raycast(start, end, bevel, new TerrainTilePredicate(tileWorld), out result);
     }
 
     public static bool Raycast<T>(fix2 start, fix2 end, fix bevel, T predicate, out int2 result) where T : struct, ITilePredicate
@@ -110,7 +106,7 @@ public static class TilePhysics
                 return true;
             }
         }
-        
+
         result = default;
         return false;
     }
@@ -170,7 +166,7 @@ public static class TilePhysics
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static fix2 rotate90(fix2 v) => fix2(v.y, -v.x);
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int2 rotate270(int2 v) => int2(-v.y - 1, v.x);
 

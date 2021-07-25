@@ -38,7 +38,62 @@ public static class Pathfinding
         return (int)floor(maxCost);
     }
 
-    public static bool FindCheapestNavigablePathFromMany(ISimWorldReadAccessor accessor, int2 start, NativeSlice<int2> goals, fix maxLength, NativeList<int2> result)
+    public struct TileCostPair
+    {
+        public int2 Tile;
+        public fix ReachCost;
+
+        public TileCostPair(int2 tile, fix reachCost)
+        {
+            Tile = tile;
+            ReachCost = reachCost;
+        }
+    }
+
+    public static bool NavigableFloodSearch<T>(TileWorld tileWorld, int2 start, fix maxCost, NativeQueue<TileCostPair> buffer, ref T stopPredicate, out int2 result) where T : ITilePredicate
+    {
+        NativeHashSet<int2> visited = new NativeHashSet<int2>(40, Allocator.Temp);
+        NativeQueue<TileCostPair> toVisit = buffer;
+        toVisit.Clear();
+        toVisit.Enqueue(new TileCostPair(start, 0));
+
+        while (!toVisit.IsEmpty())
+        {
+            TileCostPair x = toVisit.Dequeue();
+            if (x.ReachCost <= maxCost && tileWorld.CanStandOn(x.Tile))
+            {
+                if (stopPredicate.Evaluate(x.Tile))
+                {
+                    result = x.Tile;
+                    return true;
+                }
+
+                // add neighbords
+                add_neighbor(int2(1, 0));
+                add_neighbor(int2(0, 1));
+                add_neighbor(int2(-1, 0));
+                add_neighbor(int2(0, -1));
+
+                void add_neighbor(int2 dir)
+                {
+                    int2 neighbor = x.Tile + dir;
+
+                    if (!visited.Contains(neighbor))
+                    {
+                        fix neighborCost = x.ReachCost + d(x.Tile, neighbor);
+                        toVisit.Enqueue(new TileCostPair(neighbor, neighborCost));
+                    }
+                }
+            }
+
+            visited.Add(x.Tile);
+        }
+
+        result = default;
+        return false;
+    }
+
+    public static bool FindCheapestNavigablePath(TileWorld tileWorld, int2 start, NativeSlice<int2> goals, fix maxLength, NativeList<int2> result)
     {
         Profiler.BeginSample("Pathfinding");
         result.Clear();
@@ -65,11 +120,7 @@ public static class Pathfinding
             }
         }
 
-        TileWorld tileWorld = CommonReads.GetTileWorld(accessor);
-
-
-        NativeList<int2> why = default;
-        goals = sanitize_goals(goals, ref why);
+        goals = sanitize_goals(goals);
 
         // Destination cannot be reached
         if (goals.Length == 0)
@@ -146,7 +197,7 @@ public static class Pathfinding
 
             openSet.RemoveAtSwapBack(openSet.IndexOf(current));
 
-            get_neighbors(current, neighbors, tileWorld);
+            get_neighbors_standOn(current, neighbors, tileWorld);
             for (int i = 0; i < neighbors.Length; i++)
             {
                 // d(current,neighbor) is the weight of the edge from current to neighbor
@@ -178,7 +229,7 @@ public static class Pathfinding
 
 
         // local functions
-        NativeSlice<int2> sanitize_goals(NativeSlice<int2> currentGoals, ref NativeList<int2> test)
+        NativeSlice<int2> sanitize_goals(NativeSlice<int2> currentGoals)
         {
             NativeArray<int2> newGoals = default;
             int newGoalsCount = currentGoals.Length;
@@ -293,7 +344,7 @@ public static class Pathfinding
 
             openSet.RemoveAtSwapBack(openSet.IndexOf(current));
 
-            get_neighbors(current, neighbors, tileWorld);
+            get_neighbors_standOn(current, neighbors, tileWorld);
             for (int i = 0; i < neighbors.Length; i++)
             {
                 // d(current,neighbor) is the weight of the edge from current to neighbor
@@ -361,7 +412,7 @@ public static class Pathfinding
         int2(0, -1) // down
     };
 
-    private static void get_neighbors(int2 tile, NativeList<int2> neighbors, TileWorld tileWorld)
+    private static void get_neighbors_standOn(int2 tile, NativeList<int2> neighbors, TileWorld tileWorld)
     {
         neighbors.Clear();
         for (int i = 0; i < s_directionVectors.Length; i++)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using static fixMath;
+using Unity.Entities;
 
 public static partial class Helpers
 {

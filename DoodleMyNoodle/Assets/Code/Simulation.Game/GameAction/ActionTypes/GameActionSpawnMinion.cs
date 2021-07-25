@@ -57,9 +57,16 @@ public class GameActionSpawnMinion : GameAction<GameActionSpawnMinion.Settings>
             }
 
             // spawn minion
-            Entity objectInstance = accessor.Instantiate(settings.Prefab);
+            Entity minionInstance = accessor.Instantiate(settings.Prefab);
 
-            accessor.SetOrAddComponent(objectInstance, new FixTranslation() { Value = Helpers.GetTileCenter(paramPosition.Position) });
+            accessor.SetOrAddComponent(minionInstance, new FixTranslation() { Value = Helpers.GetTileCenter(paramPosition.Position) });
+
+            // Set minion team
+            if (accessor.HasComponent<DefaultControllerTeam>(minionInstance))
+            {
+                int instigatorTeam = accessor.GetComponent<Team>(context.InstigatorPawnController).Value;
+                accessor.SetComponent(minionInstance, new DefaultControllerTeam() { Value = instigatorTeam });
+            }
 
             return true;
         }
