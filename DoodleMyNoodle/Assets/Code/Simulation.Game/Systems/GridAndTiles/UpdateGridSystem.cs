@@ -10,6 +10,7 @@ public struct SystemRequestTransformTile : ISingletonBufferElementData
 {
     public int2 Tile;
     public TileFlagComponent NewTileFlags;
+    public SimAssetId? ForcedNewSimAssetId; // leave null to let system pick sim asset id itself
 }
 
 public class UpdateGridSystem : SimSystemBase
@@ -86,7 +87,14 @@ public class UpdateGridSystem : SimSystemBase
                     continue;
 
                 // set new asset id, if needed
-                if (request.NewTileFlags.IsLadder)
+                if (request.ForcedNewSimAssetId.HasValue)
+                {
+                    if(simAssetIds[tile] != request.ForcedNewSimAssetId.Value)
+                    {
+                        simAssetIds[tile] = request.ForcedNewSimAssetId.Value;
+                    }
+                }
+                else if (request.NewTileFlags.IsLadder)
                 {
                     if (!oldTileFlags.IsLadder)
                     {

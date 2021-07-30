@@ -84,8 +84,9 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionTransformTile/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionTransformTileSettingsAuth, ns: , asm: Game}
       data:
-        NewTileFlags: 5
+        NewTile: {fileID: 3954427377480494286, guid: c22c460c2bab90046a7326ddb6fd03b6,
+          type: 3}
         Radius:
           RawValue: 2147483648

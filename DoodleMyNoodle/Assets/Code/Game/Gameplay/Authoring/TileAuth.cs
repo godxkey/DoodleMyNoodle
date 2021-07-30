@@ -10,6 +10,7 @@ public class TileAuth : MonoBehaviour
     {
         Terrain, // Might not need this here in the future !!
         Ladder, // Might not need this here in the future !!
+        Bedrock, // Might not need this here in the future !!
     }
 
     [SerializeField] private TileAuthType _type = TileAuthType.Terrain;
@@ -20,6 +21,7 @@ public class TileAuth : MonoBehaviour
         {
             case TileAuthType.Terrain:
             case TileAuthType.Ladder:
+            case TileAuthType.Bedrock:
                 return true;
 
             default:
@@ -36,6 +38,9 @@ public class TileAuth : MonoBehaviour
 
             case TileAuthType.Ladder:
                 return TileFlagComponent.Ladder;
+
+            case TileAuthType.Bedrock:
+                return TileFlagComponent.Bedrock;
 
             default:
                 return default;
