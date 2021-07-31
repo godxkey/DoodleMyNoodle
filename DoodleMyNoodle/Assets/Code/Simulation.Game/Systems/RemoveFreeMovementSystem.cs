@@ -19,7 +19,7 @@ public class RemoveFreeMovementSystem : SimSystemBase
                 Entity pawnController = CommonReads.GetPawnController(Accessor, entity);
                 if (pawnController != Entity.Null)
                 {
-                    if (EntityManager.GetComponentData<Team>(pawnController).Value != currentTeam)
+                    if (GetComponent<Team>(pawnController).Value != currentTeam)
                     {
                         moveEnergy.Value = 0;
                     }

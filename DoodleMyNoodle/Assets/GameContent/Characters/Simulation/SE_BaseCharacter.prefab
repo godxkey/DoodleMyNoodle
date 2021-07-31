@@ -71,6 +71,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultAIPrefab: {fileID: 0}
+  StartingTeam: 1
 --- !u!114 &-6450381012629423667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,4 +176,4 @@ MonoBehaviour:
   AirControl:
     RawValue: 1288490240
   MoveEnergyMaxValue:
-    RawValue: 42949672960
+    RawValue: 25769803776

@@ -15,6 +15,7 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
     {
         TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);
         Entities
+            .WithReadOnly(tileWorld)
             .ForEach((ref NavAgentFootingState footing, in FixTranslation fixTranslation, in PhysicsColliderBlob colliderRef, in PhysicsVelocity velocity) =>
             {
                 ref Collider collider = ref colliderRef.Collider.Value;
@@ -49,6 +50,7 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
 
         // When pawn is in the air, reduce friction so we don't break on walls
         Entities
+            .WithReadOnly(tileWorld)
             .WithChangeFilter<NavAgentFootingState>()
             .ForEach((ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in NonAirControlFriction nonAirControlFriction) =>
             {

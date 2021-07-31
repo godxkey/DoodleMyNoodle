@@ -35,6 +35,27 @@ public class GizmoPathPositions : MonoBehaviour
                 }
             });
 
+        simWorld.Entities
+            .WithAll<AIPathPosition>()
+            .ForEach((Entity entity, ref ControlledEntity pawn) =>
+            {
+                if (!simWorld.HasComponent<FixTranslation>(pawn))
+                    return;
+
+                var translation = simWorld.GetComponent<FixTranslation>(pawn);
+
+                DynamicBuffer<AIPathPosition> path = simWorld.GetBufferReadOnly<AIPathPosition>(entity);
+
+                Vector3 p1 = translation.Value.ToUnityVec();
+
+                for (int i = 0; i < path.Length; i++)
+                {
+                    Vector3 p2 = path[i].Value.ToUnityVec();
+                    _lines.Add((p1, p2));
+                    p1 = p2;
+                }
+            });
+
 
         Gizmos.color = _color;
 

@@ -25,7 +25,7 @@ public enum GrenadierAIState
     Attack
 }
 
-[UpdateInGroup(typeof(AISystemGroup))]
+[UpdateInGroup(typeof(SpecificAISystemGroup))]
 public class UpdateGrenadierAISystem : SimSystemBase
 {
     public static fix DETECT_RANGE => 10;

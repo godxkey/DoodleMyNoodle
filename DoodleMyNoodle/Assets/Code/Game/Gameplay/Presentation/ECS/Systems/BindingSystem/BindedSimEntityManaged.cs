@@ -80,59 +80,58 @@ public class BindedSimEntityManaged : MonoBehaviour, IIndexedInList, ISystemStat
     private static ReadOnlyDictionary<Entity, GameObject> s_instancesMapRO = new ReadOnlyDictionary<Entity, GameObject>(s_instancesMap);
     private static List<BindedSimEntityManaged> s_instances = new List<BindedSimEntityManaged>();
 
-#if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
-    {
-        GamePresentationCache cache = GamePresentationCache.Instance;
-        if (SimEntity == Entity.Null || !cache.Ready)
-        {
-            return;
-        }
+//#if UNITY_EDITOR
+//    private void OnDrawGizmosSelected()
+//    {
+//        GamePresentationCache cache = GamePresentationCache.Instance;
+//        if (SimEntity == Entity.Null || !cache.Ready)
+//        {
+//            return;
+//        }
 
-        var simWorld = cache.SimWorld;
-
-
-        if (simWorld.HasComponent<Controllable>(SimEntity))
-        {
-            Entity pawnController = CommonReads.GetPawnController(simWorld, SimEntity);
-            if (pawnController != Entity.Null)
-            {
-                if (simWorld.TryGetComponent(pawnController, out ArcherAIData archerAIData))
-                {
-                    DrawArcherAIGizmos(cache, simWorld, SimEntity, pawnController);
-                }
-            }
-        }
-    }
-
-    private static void DrawArcherAIGizmos(GamePresentationCache cache, ISimWorldReadAccessor simWorld, Entity pawn, Entity ai)
-    {
-        var attackableGroup = simWorld.CreateEntityQuery(
-            ComponentType.ReadOnly<Health>(),
-            ComponentType.ReadOnly<Controllable>(),
-            ComponentType.ReadOnly<FixTranslation>());
-
-        NativeList<Entity> x = new NativeList<Entity>(Allocator.Temp);
-
-        CommonReads.PawnSenses.FindAllPawnsInSight(simWorld, attackableGroup, pawn, ai, x, withGizmos: true);
-
-        attackableGroup.Dispose();
+//        var simWorld = cache.SimWorld;
 
 
-        Gizmos.color = Color.white;
-        foreach (int2 tile in UpdateArcherAISystem._shootingPositions)
-        {
-            Gizmos.DrawWireCube((Vector2)Helpers.GetTileCenter(tile), Vector3.one);
-        }
+//        if (simWorld.HasComponent<Controllable>(SimEntity))
+//        {
+//            Entity pawnController = CommonReads.GetPawnController(simWorld, SimEntity);
+//            if (pawnController != Entity.Null)
+//            {
+//                if (simWorld.TryGetComponent(pawnController, out ArcherAIData archerAIData))
+//                {
+//                    DrawArcherAIGizmos(cache, simWorld, SimEntity, pawnController);
+//                }
+//            }
+//        }
+//    }
+
+//    private static void DrawArcherAIGizmos(GamePresentationCache cache, ISimWorldReadAccessor simWorld, Entity pawn, Entity ai)
+//    {
+//        var attackableGroup = simWorld.CreateEntityQuery(
+//            ComponentType.ReadOnly<Health>(),
+//            ComponentType.ReadOnly<Controllable>(),
+//            ComponentType.ReadOnly<FixTranslation>());
+
+//        NativeList<Entity> x = new NativeList<Entity>(Allocator.Temp);
+
+//        CommonReads.PawnSenses.FindAllPawnsInSight(simWorld, attackableGroup, pawn, ai, x, withGizmos: true);
+
+//        attackableGroup.Dispose();
 
 
-        Gizmos.color = Color.green;
-        foreach (int2 tile in UpdateArcherAISystem._path)
-        {
-            Gizmos.DrawWireCube((Vector2)Helpers.GetTileCenter(tile), Vector3.one * 0.9f);
-        }
-    }
-#endif
+//        Gizmos.color = Color.white;
+//        foreach (int2 tile in UpdateArcherAISystem._shootingPositions)
+//        {
+//            Gizmos.DrawWireCube((Vector2)Helpers.GetTileCenter(tile), Vector3.one);
+//        }
+
+//        Gizmos.color = Color.green;
+//        foreach (int2 tile in UpdateArcherAISystem._path)
+//        {
+//            Gizmos.DrawWireCube((Vector2)Helpers.GetTileCenter(tile), Vector3.one * 0.9f);
+//        }
+//    }
+//#endif
 }
 
 #if UNITY_EDITOR

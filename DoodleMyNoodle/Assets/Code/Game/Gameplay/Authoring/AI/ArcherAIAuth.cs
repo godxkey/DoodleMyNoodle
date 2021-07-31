@@ -10,9 +10,6 @@ public class ArcherAIAuth : AIAuth, IConvertGameObjectToEntity
     {
         base.Convert(entity, dstManager, conversionSystem);
 
-        dstManager.AddComponentData(entity, new ArcherAIData()
-        {
-            State = ArcherAIState.Patrol
-        });
+        dstManager.AddComponentData(entity, new ArcherAIData() { });
     }
 }

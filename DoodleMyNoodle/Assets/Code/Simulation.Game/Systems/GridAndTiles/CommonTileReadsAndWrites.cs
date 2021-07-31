@@ -59,4 +59,9 @@ public partial class Helpers
     public static fix2 GetTileCenter(fix2 worldPosition) => GetTileCenter(GetTile(worldPosition));
     public static fix2 GetTileCenter(int2 tile) => fix2(tile.x + fix.Half, tile.y + fix.Half);
     public static fix2 GetTileCenter(TileId tileId) => fix2(tileId.X + fix.Half, tileId.Y + fix.Half);
+
+    public static fix2 GetTileBottom(FixTranslation translation) => GetTileBottom(GetTile(translation));
+    public static fix2 GetTileBottom(fix2 worldPosition) => GetTileBottom(GetTile(worldPosition));
+    public static fix2 GetTileBottom(int2 tile) => fix2(tile.x + fix.Half, tile.y);
+    public static fix2 GetTileBottom(TileId tileId) => fix2(tileId.X + fix.Half, tileId.Y);
 }

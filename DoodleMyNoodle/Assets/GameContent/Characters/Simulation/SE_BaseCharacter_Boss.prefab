@@ -42,6 +42,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5742253346417087641, guid: 20bb671164aad2144838fc63592ea0e7,
         type: 3}
+    - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: StartingItems.Array.data[0].Item
+      value: 
+      objectReference: {fileID: 5742253346417087641, guid: 2ba4222c34d6bfc469b68c509779edad,
+        type: 3}
     - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -97,10 +103,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2401102004981749674, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: MoveEnergyMaxValue.RawValue
+      value: 8589934592
+      objectReference: {fileID: 0}
     - target: {fileID: 4951368162375339519, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: m_Name
-      value: SE_BasicCharacter_Boss
+      value: SE_BaseCharacter_Boss
       objectReference: {fileID: 0}
     - target: {fileID: 5072555852515810054, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}

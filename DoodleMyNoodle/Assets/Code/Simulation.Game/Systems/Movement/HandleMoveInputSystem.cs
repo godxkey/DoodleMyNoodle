@@ -40,6 +40,7 @@ public class HandleMoveInputSystem : SimSystemBase
                     move *= 0;
                 }
 
+                // consume energy
                 if (move.x != 0 || move.y != 0)
                 {
                     moveEnergy.Value = max(0, moveEnergy.Value - deltaTime);

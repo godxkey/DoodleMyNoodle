@@ -45,6 +45,12 @@ PrefabInstance:
       propertyPath: StartingItems.Array.data[1].Quantity.y
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: StartingItems.Array.data[0].Item
+      value: 
+      objectReference: {fileID: 5742253346417087641, guid: 2ba4222c34d6bfc469b68c509779edad,
+        type: 3}
     - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -100,6 +106,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2401102004981749674, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: MoveEnergyMaxValue.RawValue
+      value: 8589934592
+      objectReference: {fileID: 0}
     - target: {fileID: 4951368162375339519, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: m_Name
@@ -114,6 +125,11 @@ PrefabInstance:
     - target: {fileID: 6657921186239294675, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: MaxValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6657921186239294675, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: StartValue
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8435132431937638192, guid: d6dc46a8018045e48ae6776580ff1d2b,

@@ -13,4 +13,5 @@ public static class SimulationGameConstants
     public static readonly fix AISightDistanceSq = AISightDistance * AISightDistance;
     public static readonly fix2 AIEyeOffset = new fix2(0, (fix)0.15f);
     public static readonly fix AISearchForPositionMaxCost = (fix)10;
+    public static readonly fix AgentRepathCooldown = (fix)1; // repath every 1s
 }

@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using static Unity.Mathematics.math; 
 using static fixMath;
 using Unity.Entities;
+using Unity.Mathematics;
 
 public static partial class Helpers
 {
