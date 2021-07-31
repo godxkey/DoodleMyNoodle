@@ -11,33 +11,34 @@ using static Unity.Mathematics.math;
 /// </summary>
 public class InstantiateDefaultControllerSystem : SimSystemBase
 {
-    private NativeList<Entity> _toSpawnPawns;
-    private NativeList<Entity> _toSpawnControllerPrefabs;
+    private struct SpawnRequest
+    {
+        public Entity Pawn;
+        public Entity ControllerPrefab;
+        public int Team;
+    }
+
+    private NativeList<SpawnRequest> _spawnRequests;
 
     protected override void OnCreate()
     {
         base.OnCreate();
-        _toSpawnPawns = new NativeList<Entity>(Allocator.Persistent);
-        _toSpawnControllerPrefabs = new NativeList<Entity>(Allocator.Persistent);
+        _spawnRequests = new NativeList<SpawnRequest>(Allocator.Persistent);
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        _toSpawnPawns.Dispose();
-        _toSpawnControllerPrefabs.Dispose();
+        _spawnRequests.Dispose();
     }
 
     protected override void OnUpdate()
     {
-        var controllers = GetComponentDataFromEntity<ControlledEntity>(isReadOnly: true);
-
-        var toSpawnPawns = _toSpawnPawns;
-        var toSpawnControllerPrefabs = _toSpawnControllerPrefabs;
+        var spawnRequests = _spawnRequests;
 
         // Find which pawn needs a controller
         Entities
-            .ForEach((Entity pawn, in Controllable controllable, in DefaultControllerPrefab defaultControllerPrefab, in Health health) =>
+            .ForEach((Entity pawn, in Controllable controllable, in DefaultControllerPrefab defaultControllerPrefab, in DefaultControllerTeam defaultTeam, in Health health) =>
             {
                 if (defaultControllerPrefab.Value == Entity.Null)
                 {
@@ -51,35 +52,36 @@ public class InstantiateDefaultControllerSystem : SimSystemBase
                     return;
                 }
 
-                if (controllers.HasComponent(controllable.CurrentController))
+                if (HasComponent<ControlledEntity>(controllable.CurrentController))
                 {
                     // current controller exits
                     return;
                 }
 
-                toSpawnPawns.Add(pawn);
-                toSpawnControllerPrefabs.Add(defaultControllerPrefab.Value);
-
+                spawnRequests.Add(new SpawnRequest()
+                {
+                    Pawn = pawn,
+                    ControllerPrefab = defaultControllerPrefab.Value,
+                    Team = defaultTeam.Value,
+                });
             }).Run();
 
         // instantiate controllers
-        if (toSpawnControllerPrefabs.Length > 0)
+        if (spawnRequests.Length > 0)
         {
-            var spawnedControllers = new NativeArray<Entity>(toSpawnControllerPrefabs.Length, Allocator.Temp);
-            EntityManager.Instantiate(toSpawnControllerPrefabs, spawnedControllers);
-
-            // bind controllers and pawns
-            for (int i = 0; i < spawnedControllers.Length; i++)
+            for (int i = 0; i < spawnRequests.Length; i++)
             {
-                Entity newController = spawnedControllers[i];
-                Entity pawn = toSpawnPawns[i];
+                var spawnRequest = spawnRequests[i];
 
-                EntityManager.SetComponentData(newController, new ControlledEntity() { Value = pawn });
-                EntityManager.SetComponentData(pawn, new Controllable() { CurrentController = newController });
+                // bind controllers and pawns
+                Entity newController = EntityManager.Instantiate(spawnRequest.ControllerPrefab);
+
+                SetComponent(newController, new Team() { Value = spawnRequest.Team });
+                SetComponent(newController, new ControlledEntity() { Value = spawnRequest.Pawn });
+                SetComponent(spawnRequest.Pawn, new Controllable() { CurrentController = newController });
             }
 
-            toSpawnPawns.Clear();
-            toSpawnControllerPrefabs.Clear();
+            spawnRequests.Clear();
         }
     }
 }

@@ -22,6 +22,9 @@ MonoBehaviour:
   - Tile: {fileID: 11400000, guid: 95d0f9492db4b144a88fc1f1e9d6f3fe, type: 2}
     EntityPrefab: {fileID: 30145307963041151, guid: d6ddc52b73996c9498b513f70d9bbb6b,
       type: 3}
+  - Tile: {fileID: 11400000, guid: 9fe61f904dd076340a9237f493f804be, type: 2}
+    EntityPrefab: {fileID: 30145307963041151, guid: 4556c54ea4f809a498a57609d7c059ad,
+      type: 3}
   DefaultTerrainTile: {fileID: 30145307963041147, guid: d6ddc52b73996c9498b513f70d9bbb6b,
     type: 3}
   DefaultLadderTile: {fileID: 30145307963041147, guid: c22c460c2bab90046a7326ddb6fd03b6,

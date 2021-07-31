@@ -72,8 +72,8 @@ public class GameActionHeal : GameAction<GameActionHeal.Settings>
                 return false;
             }
 
-            int maxHP = accessor.GetComponent<MaximumInt<Health>>(context.InstigatorPawn).Value;
-            int currentHP = accessor.GetComponent<Health>(context.InstigatorPawn).Value;
+            int maxHP = accessor.GetComponent<MaximumInt<Health>>(paramEntity.Entity).Value;
+            int currentHP = accessor.GetComponent<Health>(paramEntity.Entity).Value;
             fix healPowerRatio = 1 - ((fix)currentHP / maxHP); // 0 -> min heal   1 -> max heal
             int heal = roundToInt(lerp(settings.MinHeal, settings.MaxHeal, healPowerRatio));
 

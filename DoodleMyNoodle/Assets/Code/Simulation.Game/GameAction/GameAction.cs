@@ -58,7 +58,7 @@ public abstract class GameAction
             return new UseParameters(parameterDescription);
         }
 
-        public bool TryGetParameter<T>(int index, out T parameterData) where T : ParameterData
+        public bool TryGetParameter<T>(int index, out T parameterData, bool warnIfFailed = true) where T : ParameterData
         {
             if (index < 0 || index >= ParameterDatas.Length)
             {
@@ -68,15 +68,17 @@ public abstract class GameAction
 
             if (ParameterDatas[index] is null)
             {
-                Log.Warning($"GameAction parameters[{index}] is null");
+                if (warnIfFailed)
+                    Log.Warning($"GameAction parameters[{index}] is null");
                 parameterData = null;
                 return false;
             }
 
             if (!(ParameterDatas[index] is T p))
             {
-                Log.Warning($"GameAction parameters[{index}] is of type {ParameterDatas[index].GetType().GetPrettyFullName()}," +
-                    $" not of expected type {typeof(T).GetPrettyFullName()}");
+                if (warnIfFailed)
+                    Log.Warning($"GameAction parameters[{index}] is of type {ParameterDatas[index].GetType().GetPrettyFullName()}," +
+                        $" not of expected type {typeof(T).GetPrettyFullName()}");
                 parameterData = null;
                 return false;
             }
@@ -104,7 +106,7 @@ public abstract class GameAction
     {
         public Dictionary<string, object> Data;
 
-        public ResultData(Dictionary<string, object> defaultData) 
+        public ResultData(Dictionary<string, object> defaultData)
         {
             Data = defaultData;
         }
@@ -289,7 +291,7 @@ public abstract class GameAction
         }
     }
 
-    protected virtual bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason) 
+    protected virtual bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
     {
         return true;
     }

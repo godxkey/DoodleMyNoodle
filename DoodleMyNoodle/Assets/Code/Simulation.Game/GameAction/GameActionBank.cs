@@ -1,14 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Burst;
 using UnityEngine;
 using UnityEngineX;
 
 public static class GameActionBank
 {
+    private sealed class GameActionBankKeyContext
+    {
+        private GameActionBankKeyContext() { }
+    }
+    private sealed class TypeId
+    {
+        public static ref ushort Get(Type componentType)
+        {
+            return ref SharedStatic<ushort>.GetOrCreate(typeof(GameActionBankKeyContext), componentType).Data;
+        }
+    }
+    private sealed class TypeId<TGameAction>
+    {
+        public static readonly SharedStatic<ushort> Ref = SharedStatic<ushort>.GetOrCreate<GameActionBankKeyContext, TGameAction>();
+    }
+
     private static Dictionary<ushort, GameAction> s_idToGameAction = new Dictionary<ushort, GameAction>();
     private static Dictionary<string, GameAction> s_nameToGameAction = new Dictionary<string, GameAction>();
-    private static Dictionary<GameAction, ushort> s_gameActionToId = new Dictionary<GameAction, ushort>();
-    private static Dictionary<Type, ushort> s_typeToId = new Dictionary<Type, ushort>();
 
     private static bool s_initialized = false;
 
@@ -28,10 +43,11 @@ public static class GameActionBank
                 continue;
 
             GameAction instance = (GameAction)Activator.CreateInstance(gameActionType);
+
+            TypeId.Get(gameActionType) = id;
+
             s_idToGameAction.Add(id, instance);
             s_nameToGameAction.Add(gameActionType.Name, instance);
-            s_gameActionToId.Add(instance, id);
-            s_typeToId.Add(gameActionType, id);
 
             id++;
         }
@@ -44,31 +60,17 @@ public static class GameActionBank
 
     public static GameActionId GetActionId<T>() where T : GameAction
     {
-        return GetActionId(typeof(T));
+        return new GameActionId { Value = TypeId<T>.Ref.Data };
     }
 
     public static GameActionId GetActionId(Type gameActionType)
     {
-        if (s_typeToId.TryGetValue(gameActionType, out ushort result))
-        {
-            return new GameActionId { Value = result };
-        }
-
-        Log.Error($"Failed to find action id from type {gameActionType}");
-
-        return GameActionId.Invalid;
+        return new GameActionId { Value = TypeId.Get(gameActionType) };
     }
 
     public static GameActionId GetActionId(GameAction gameAction)
     {
-        if (s_gameActionToId.TryGetValue(gameAction, out ushort result))
-        {
-            return new GameActionId { Value = result };
-        }
-
-        Log.Error($"Failed to find action id from action instance {gameAction}");
-
-        return GameActionId.Invalid;
+        return GetActionId(gameAction.GetType());
     }
 
     public static GameAction GetAction(GameActionId id)

@@ -21,6 +21,8 @@ namespace SimulationControl
         static float s_tickSpeed = 1;
         [ConsoleVar("Sim.MaxTickPerFrame", "The maximum amount of generated sim ticks per frame. Does not affect clients (only server or local).")]
         static int s_maxTicksPerFrame = 1;
+        [ConsoleVar("Sim.AcceptSimInputsWhilePaused", "By default, this value is false.")]
+        static bool s_acceptSimInputsWhilePaused = false;
 
         private float _tickTimeCounter;
         private Queue<SimInputSubmission> _inputSubmissionQueue = new Queue<SimInputSubmission>();
@@ -77,7 +79,7 @@ namespace SimulationControl
         private bool ValidateInput(SimInput input, INetworkInterfaceConnection instigatorConnection)
         {
             // we don't accept client input while sim is paused
-            if (!_tickSystem.CanTick && !(input is SimMasterInput))
+            if (!s_acceptSimInputsWhilePaused && !_tickSystem.CanTick && !(input is SimMasterInput))
                 return false;
 
             if (input is SimMasterInput && instigatorConnection != null)

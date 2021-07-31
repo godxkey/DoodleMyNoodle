@@ -50,6 +50,7 @@ public enum TileFlags : int
     InsideGrid = 1 << 0,
     Terrain = 1 << 1,
     Ladder = 1 << 2,
+    Indestructible = 1 << 3,
 
     All = ~0
 }
@@ -58,6 +59,7 @@ public struct TileFlagComponent : IComponentData, IEquatable<TileFlagComponent>
 {
     public TileFlags Value;
 
+    public bool IsDestructible => (Value & TileFlags.Indestructible) == 0;
     public bool IsTerrain => (Value & TileFlags.Terrain) != 0;
     public bool IsLadder => (Value & TileFlags.Ladder) != 0;
     public bool IsEmpty => Value == TileFlags.InsideGrid;
@@ -80,6 +82,7 @@ public struct TileFlagComponent : IComponentData, IEquatable<TileFlagComponent>
     public static TileFlagComponent Empty => TileFlags.InsideGrid;
     public static TileFlagComponent Terrain => TileFlags.InsideGrid | TileFlags.Terrain;
     public static TileFlagComponent Ladder => TileFlags.InsideGrid | TileFlags.Ladder;
+    public static TileFlagComponent Bedrock => TileFlags.InsideGrid | TileFlags.Terrain | TileFlags.Indestructible;
 
     public override bool Equals(object obj)
     {

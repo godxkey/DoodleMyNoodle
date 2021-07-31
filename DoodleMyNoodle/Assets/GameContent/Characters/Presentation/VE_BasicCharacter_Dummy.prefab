@@ -1,19 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-923671293955690283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4876621640926341173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07383b009abc6e644b31689b634e51ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _spriteRenderer: {fileID: 1677122438993250552}
-  _baseSpriteIsLookingRight: 1
 --- !u!1001 &837205417786753905
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21,31 +7,51 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 1546773622014970496, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
-      propertyPath: m_Color.r
-      value: 0
+      propertyPath: m_LocalPosition.y
+      value: -0.028
       objectReference: {fileID: 0}
-    - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 1546773622014970496, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
-      propertyPath: m_Color.g
-      value: 1
+      propertyPath: m_LocalScale.y
+      value: 0.97569
       objectReference: {fileID: 0}
-    - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+    - target: {fileID: 1546773622014970496, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
-      propertyPath: m_Color.b
-      value: 0.050011873
+      propertyPath: m_LocalScale.x
+      value: 0.97569
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546773622014970496, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.018
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546773622014970496, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.0841
       objectReference: {fileID: 0}
     - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: c7427ae85738536489f1f6a3d095e3e6,
+      objectReference: {fileID: 21300000, guid: e6af38fdbb8a5c84e979b09346210414,
         type: 3}
+    - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5202612425808145220, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
       propertyPath: m_Name
-      value: VE_BasicCharacter_Brute_Ally
+      value: VE_BasicCharacter_Dummy
       objectReference: {fileID: 0}
     - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
@@ -102,22 +108,5 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6166303341697273731, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
-        type: 3}
-      propertyPath: _baseSpriteIsLookingRight
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 950f116e90b5f1d4f9a86da78a6e1e45, type: 3}
---- !u!1 &4876621640926341173 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5202612425808145220, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
-    type: 3}
-  m_PrefabInstance: {fileID: 837205417786753905}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &1677122438993250552 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
-    type: 3}
-  m_PrefabInstance: {fileID: 837205417786753905}
-  m_PrefabAsset: {fileID: 0}

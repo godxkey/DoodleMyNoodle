@@ -1,26 +1,14 @@
 using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
-using System;
 using Unity.Mathematics;
 
 public class GameActionTransformTile : GameAction<GameActionTransformTile.Settings>
 {
-    [Serializable]
-    [GameActionSettingAuth(typeof(Settings))]
-    public class SettingsAuth : GameActionSettingAuthBase
-    {
-        public TileFlags NewTileFlags;
-        public fix Radius = (fix)0.5;
-
-        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
-        {
-            dstManager.AddComponentData(entity, new Settings() { NewTileFlags = NewTileFlags, Radius = Radius });
-        }
-    }
-
     public struct Settings : IComponentData
     {
+        public bool SetNewSimAssetId;
+        public SimAssetId NewSimAssetId;
         public TileFlags NewTileFlags;
         public fix Radius;
     }
@@ -44,6 +32,7 @@ public class GameActionTransformTile : GameAction<GameActionTransformTile.Settin
             {
                 transformTileRequests.Add(new SystemRequestTransformTile()
                 {
+                    ForcedNewSimAssetId = settings.SetNewSimAssetId ? (SimAssetId?)settings.NewSimAssetId : (SimAssetId?)null,
                     NewTileFlags = settings.NewTileFlags,
                     Tile = tiles[i]
                 });

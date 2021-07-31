@@ -40,23 +40,14 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
     public bool HasCooldown => CooldownType != CooldownMode.NoCooldown;
 
+    private bool _hasUpdatedListOfGameActionSettings = false;
+
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        var gameAction = GameActionBank.GetAction(Value);
-        dstManager.AddComponentData(entity, GameActionBank.GetActionId(gameAction));
+        dstManager.AddComponentData(entity, GameActionBank.GetActionId(Value));
 
         // Update list of GameActionSettingAuth by adding any missing instances and removing any extra
-        {
-            var requiredSettingAuths = GameActionSettingAuthBase.GetRequiredSettingAuthTypes(gameAction.GetType());
-            GameActionSettings.RemoveAll(authInstance => !requiredSettingAuths.Contains(authInstance.GetType()));
-            foreach (var authType in requiredSettingAuths)
-            {
-                if (!GameActionSettings.Any(x => x.GetType() == authType))
-                {
-                    GameActionSettings.Add(Activator.CreateInstance(authType) as GameActionSettingAuthBase);
-                }
-            }
-        }
+        UpdateGameActionSettingsList();
 
         // Convert all GameActionSettingAuths
         foreach (GameActionSettingAuthBase setting in GameActionSettings)
@@ -85,10 +76,30 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
+        UpdateGameActionSettingsList();
+
         foreach (GameActionSettingAuthBase settings in GameActionSettings)
         {
             settings.DeclareReferencedPrefabs(referencedPrefabs);
         }
+    }
+
+    private void UpdateGameActionSettingsList()
+    {
+        if (_hasUpdatedListOfGameActionSettings)
+            return;
+
+        var gameAction = GameActionBank.GetAction(Value);
+        var requiredSettingAuths = GameActionSettingAuthBase.GetRequiredSettingAuthTypes(gameAction.GetType());
+        GameActionSettings.RemoveAll(authInstance => authInstance == null || !requiredSettingAuths.Contains(authInstance.GetType()));
+        foreach (var authType in requiredSettingAuths)
+        {
+            if (!GameActionSettings.Any(x => x.GetType() == authType))
+            {
+                GameActionSettings.Add(Activator.CreateInstance(authType) as GameActionSettingAuthBase);
+            }
+        }
+        _hasUpdatedListOfGameActionSettings = true;
     }
 
     // PRESENTATION

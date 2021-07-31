@@ -11,8 +11,9 @@ public struct GameActionId : IComponentData, IEquatable<GameActionId>
     public static GameActionId Invalid => default;
     public bool IsValid => !Equals(Invalid);
 
-    public bool Equals(GameActionId other)
-    {
-        return Value == other.Value;
-    }
+    public bool Equals(GameActionId other) => Value == other.Value;
+    public override bool Equals(object obj) => obj is GameActionId castedObj && Equals(castedObj);
+    public override int GetHashCode() => Value.GetHashCode();
+    public static bool operator ==(GameActionId a, GameActionId b) => a.Equals(b);
+    public static bool operator !=(GameActionId a, GameActionId b) => !a.Equals(b);
 }

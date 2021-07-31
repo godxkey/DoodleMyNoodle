@@ -87,5 +87,5 @@ MonoBehaviour:
       data:
         Range:
           RawValue: 6442450944
-        MinionPrefab: {fileID: 3506976763963629017, guid: 7f1b972c36d18a54381b4354a7fd05b4,
+        MinionPrefab: {fileID: 2768931431184588227, guid: 9f5cb403c19b4734ba5a886aa4f86fbd,
           type: 3}

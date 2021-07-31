@@ -117,7 +117,7 @@ public class ApplyExplosionSystem : SimSystemBase
                 Entity tileEntity = tileWorld.GetEntity(tiles[i]);
                 TileFlagComponent tileFlags = tileWorld.GetFlags(tileEntity);
 
-                if (!tileFlags.IsOutOfGrid)
+                if (!tileFlags.IsOutOfGrid && tileFlags.IsDestructible)
                 {
                     tileFlags.Value &= ~(TileFlags.Ladder | TileFlags.Terrain);
                     transformTileRequests.Add(new SystemRequestTransformTile()

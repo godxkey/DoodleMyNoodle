@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SmartBrush
   m_EditorClassIdentifier: 
   m_Cells:
-  - m_Tile: {fileID: 11400000, guid: 95d0f9492db4b144a88fc1f1e9d6f3fe, type: 2}
+  - m_Tile: {fileID: 11400000, guid: 9fe61f904dd076340a9237f493f804be, type: 2}
     m_Matrix:
       e00: 1
       e01: 0
@@ -36,13 +36,11 @@ MonoBehaviour:
   m_Pivot: {x: 0, y: 0, z: 0}
   m_CanChangeZPosition: 0
   SpriteLayers:
-  - Tile: {fileID: 0}
+  - Tile: {fileID: 11400000, guid: 9fe61f904dd076340a9237f493f804be, type: 2}
     Layer: 1
   - Tile: {fileID: 11400000, guid: ccc3bc4a74475b3438cd042b4c9e608b, type: 2}
     Layer: 1
   - Tile: {fileID: 11400000, guid: 6bcd2cf474d1a9e4f91e16d939a41402, type: 2}
-    Layer: 1
-  - Tile: {fileID: 0}
     Layer: 1
   - Tile: {fileID: 11400000, guid: 95d0f9492db4b144a88fc1f1e9d6f3fe, type: 2}
     Layer: 1
