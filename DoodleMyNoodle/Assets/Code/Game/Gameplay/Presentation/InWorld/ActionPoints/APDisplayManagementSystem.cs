@@ -15,8 +15,6 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
 
     public int MaxAPToDisplay = 10;
 
-    public fix3 Displacement = new fix3(fix(0.25f), fix(0.675f), 0);
-
     private List<GameObject> _APBarInstances = new List<GameObject>();
     private Dictionary<Entity, int> EntitiesAP = new Dictionary<Entity, int>();
     private Dictionary<Entity, GameObject> EntitiesAPBar = new Dictionary<Entity, GameObject>();
@@ -98,7 +96,7 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
             currentAPBar = _APBarInstances[index];
         }
 
-        currentAPBar.transform.position = (position + Displacement).ToUnityVec();
+        currentAPBar.transform.position = (position + new fix3(fix(0.1f), fix(0.7f), 0)).ToUnityVec();
         currentAPBar.GetComponent<APBarDisplay>()?.SetAP(ap, maxAP, MaxAPToDisplay);
         currentAPBar.SetActive(true);
     }
