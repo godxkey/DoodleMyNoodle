@@ -8,6 +8,7 @@ public struct TeleportRequestSingletonBufferElement : IBufferElementData
 {
     public Entity Entity;
     public fix2 Destination;
+    public bool ThroughPortal;
 }
 
 public struct TeleportEventData : IComponentData
@@ -85,6 +86,10 @@ public class TeleportSystem : SimSystemBase
         }
 
         SetComponent<FixTranslation>(request.Entity, request.Destination);
+        if (request.ThroughPortal)
+        {
+            Accessor.AddComponent(request.Entity, new InsidePortalTag());
+        }
 
         EntityManager.CreateEventEntity(new TeleportEventData()
         {
@@ -96,13 +101,14 @@ public class TeleportSystem : SimSystemBase
 
 internal partial class CommonWrites
 {
-    public static void RequestTeleport(ISimWorldReadWriteAccessor accessor, Entity entity, fix2 destination)
+    public static void RequestTeleport(ISimWorldReadWriteAccessor accessor, Entity entity, fix2 destination, bool throughPortal = false)
     {
         var requests = accessor.GetExistingSystem<TeleportSystem>().GetRequestBuffer();
         requests.Add(new TeleportRequestSingletonBufferElement()
         {
             Entity = entity,
-            Destination = destination
+            Destination = destination,
+            ThroughPortal = throughPortal
         });
     }
 }

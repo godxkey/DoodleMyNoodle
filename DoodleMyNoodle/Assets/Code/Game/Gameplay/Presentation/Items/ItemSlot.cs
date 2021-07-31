@@ -66,8 +66,13 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
         if (_currentItemGameActionAuth != null)
         {
+            if (_currentItemGameActionAuth.IconSpriteColorOverride.a != 0)
+            {
+                ItemIcon.color = _currentItemGameActionAuth.IconSpriteColorOverride;
+            }
+
             ItemIcon.color = ItemIcon.color.ChangedAlpha(1);
-            ItemIcon.sprite = _currentItemGameActionAuth?.Icon;
+            ItemIcon.sprite = _currentItemGameActionAuth.Icon;
         }
         else
         {
