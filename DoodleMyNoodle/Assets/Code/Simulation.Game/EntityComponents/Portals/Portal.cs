@@ -5,4 +5,5 @@ using CCC.Fix2D;
 public struct Portal : IComponentData 
 {
     public fix2 NextPos;
+    public Entity NextPortal;
 }

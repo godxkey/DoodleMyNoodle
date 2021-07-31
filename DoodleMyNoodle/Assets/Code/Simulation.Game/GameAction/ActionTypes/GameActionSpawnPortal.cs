@@ -64,13 +64,14 @@ public class GameActionSpawnPortal : GameAction<GameActionSpawnPortal.Settings>
                 Entity firstPortalInstance = accessor.Instantiate(settings.Prefab);
 
                 accessor.SetOrAddComponent(firstPortalInstance, new FixTranslation() { Value = Helpers.GetTileCenter(firstPortalPos.Position) });
-                accessor.SetOrAddComponent(firstPortalInstance, new Portal() { NextPos = secondPortalPos.Position });
 
                 // spawn portal 2
                 Entity secondPortalInstance = accessor.Instantiate(settings.Prefab);
 
                 accessor.SetOrAddComponent(secondPortalInstance, new FixTranslation() { Value = Helpers.GetTileCenter(secondPortalPos.Position) });
-                accessor.SetOrAddComponent(secondPortalInstance, new Portal() { NextPos = firstPortalPos.Position });
+
+                accessor.SetOrAddComponent(firstPortalInstance, new Portal() { NextPos = secondPortalPos.Position, NextPortal = secondPortalInstance });
+                accessor.SetOrAddComponent(secondPortalInstance, new Portal() { NextPos = firstPortalPos.Position, NextPortal = firstPortalInstance });
             }
         }
 
