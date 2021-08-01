@@ -153,7 +153,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         Vector2 currentMousePosition = Input.mousePosition;
 
         // Camera follow
-        if (SimWorld.TryGetComponent(Cache.LocalPawn, out PhysicsVelocity velocity) && velocity.Linear.lengthSquared > 0)
+        if (SimWorld.TryGetComponent(Cache.LocalPawn, out PhysicsVelocity velocity) && velocity.Linear.lengthSquared > (fix)(0.1f))
         {
             CursorOverlayService.Instance.ResetCursorToDefault();
             CamPosition = Cache.LocalPawnPositionFloat;
@@ -179,7 +179,11 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
             else
             {
                 // Camera edge move
-                CursorOverlayService.Instance.ResetCursorToDefault();
+
+                if (CursorOverlayService.Instance.GetCurrentSettings().Type == CursorOverlayService.CursorType.Grab)
+                {
+                    CursorOverlayService.Instance.ResetCursorToDefault();
+                }
 
                 if (Input.GetKey(KeyCode.UpArrow) || (useMouseMovements && (Input.mousePosition.y >= (Screen.height - ScreenEdgeBorderThickness))))
                 {
