@@ -1,34 +1,31 @@
 ﻿
-public class GameActionParameterVector
+public class GameActionParameterBool
 {
     public class Description : GameAction.ParameterDescription
     {
-        public fix SpeedMin = 0;
-        public fix SpeedMax = 99;
-
         public Description() { }
 
         public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
         {
-            return GameAction.ParameterDescriptionType.Vector;
+            return GameAction.ParameterDescriptionType.Bool;
         }
     }
 
     [NetSerializable]
     public class Data : GameAction.ParameterData
     {
-        public fix2 Vector;
+        public bool Value;
 
         public Data() { }
 
-        public Data(fix2 v)
+        public Data(bool v)
         {
-            this.Vector = v;
+            this.Value = v;
         }
 
         public override string ToString()
         {
-            return $"{Vector}";
+            return $"{Value}";
         }
     }
 }

@@ -13,4 +13,22 @@ public static partial class Helpers
         fix2 v = clampLength(position - centerPoint, 0, range);
         return centerPoint + v;
     }
+
+    public static class AI
+    {
+        public static void FuzzifyThrow(ref fix throwAngle, ref fix throwSpeed, ref FixRandom random)
+        {
+            fix r = random.NextFixRatio();
+            r *= r;
+
+        }
+
+        public static fix NextFuzzy(ref FixRandom random, fix min, fix max)
+        {
+            fix r = random.NextFixRatio();
+            r *= r;
+
+            r
+        }
+    }
 }

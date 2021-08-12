@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: BouncingBomb
   m_EditorClassIdentifier: 
   MassDensity: 8
-  Bounciness: 1
+  Bounciness: 0.8
   Friction: 0.9

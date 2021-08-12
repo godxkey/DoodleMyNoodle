@@ -49,6 +49,9 @@ public class UpdateArcherAISystem : SimSystemBase
         public fix2 PawnPosition => PawnData.Position;
         public int2 PawnTile => Helpers.GetTile(PawnPosition);
         public BlobAssetReference<Collider> ItemProjectileCollider;
+        public fix2 ItemProjectileGravity;
+        public fix ThrowMinSpeed;
+        public fix ThrowMaxSpeed;
     }
 
     private NativeList<int2> _path;
@@ -60,9 +63,6 @@ public class UpdateArcherAISystem : SimSystemBase
     private PhysicsWorldSystem _physicsWorldSystem;
     private UpdateActorWorldSystem _updateActorWorldSystem;
     private ProfileMarkers _profileMarkers;
-
-    private static readonly SharedStatic<CollisionFilter> s_charactersAndTerrainFilter = SharedStatic<CollisionFilter>.GetOrCreate<UpdateArcherAISystem, CharactersAndTerrainFilterKey>();
-    private class CharactersAndTerrainFilterKey { }
 
     public struct ProfileMarkers
     {
@@ -83,8 +83,6 @@ public class UpdateArcherAISystem : SimSystemBase
     protected override void OnCreate()
     {
         base.OnCreate();
-
-        s_charactersAndTerrainFilter.Data = CollisionFilter.FromLayers(SimulationGameConstants.PHYSICS_LAYER_TERRAIN, SimulationGameConstants.PHYSICS_LAYER_CHARACTER);
 
         _profileMarkers = new ProfileMarkers()
         {
@@ -156,6 +154,9 @@ public class UpdateArcherAISystem : SimSystemBase
                 {
                     Controller = controller,
                     PawnData = globalCache.ActorWorld.GetPawn(globalCache.ActorWorld.GetPawnIndex(pawn)),
+                    ItemProjectileGravity = globalCache.PhysicsWorld.StepSettings.GravityFix,
+                    ThrowMaxSpeed = fix.MaxValue,
+                    ThrowMinSpeed = fix.MinValue
                 };
 
                 // Find throw item collider
@@ -174,10 +175,20 @@ public class UpdateArcherAISystem : SimSystemBase
 
                     if (throwItem != Entity.Null)
                     {
-                        var projectilePrefab = GetComponent<GameActionThrow.Settings>(throwItem).ProjectilePrefab;
+                        var throwSettings = GetComponent<GameActionThrow.Settings>(throwItem);
+
+                        agentCache.ThrowMinSpeed = throwSettings.SpeedMin;
+                        agentCache.ThrowMaxSpeed = throwSettings.SpeedMax;
+
+                        var projectilePrefab = throwSettings.ProjectilePrefab;
                         if (HasComponent<PhysicsColliderBlob>(projectilePrefab))
                         {
                             agentCache.ItemProjectileCollider = GetComponent<PhysicsColliderBlob>(projectilePrefab).Collider;
+                        }
+
+                        if (HasComponent<PhysicsGravity>(projectilePrefab))
+                        {
+                            agentCache.ItemProjectileGravity *= GetComponent<PhysicsGravity>(projectilePrefab).ScaleFix;
                         }
                     }
                 }
@@ -214,14 +225,27 @@ public class UpdateArcherAISystem : SimSystemBase
                         if (all(almostEqual(agentCache.PawnPosition, newShootPosition, epsilon: fix(0.1))))
                         {
                             aiDestination.HasDestination = false;
-                            actionCooldown.NoActionUntilTime = globalCache.Time + 1;
+                            actionCooldown.NoActionUntilTime = globalCache.Time + 2;
 
-                            fix2 dir = normalize(GetComponent<FixTranslation>(agentData.AttackTarget) - agentCache.PawnPosition);
+                            fix2 d = GetComponent<FixTranslation>(agentData.AttackTarget) - agentCache.PawnPosition;
+                            fix2 dir = normalize(d);
+                            fix2 shootVector;
+
+                            if (agentCache.ItemProjectileGravity == fix2.zero)
+                            {
+                                shootVector = SimulationGameConstants.AIShootSpeedIfNoGravity * dir;
+                            }
+                            else
+                            {
+                                shootVector = fixMath.Trajectory.SmallestLaunchVelocity(d.x, d.y, agentCache.ItemProjectileGravity);
+                            }
+
+                            Helpers.ClampPositionInsideRange
 
                             shootRequests.Add(new ShootRequest()
                             {
                                 Controller = controller,
-                                ShootVector = dir * 5, // hard coded speed at 5 for now
+                                ShootVector = shootVector,
                             });
                         }
                         else
@@ -246,9 +270,10 @@ public class UpdateArcherAISystem : SimSystemBase
 
         foreach (var item in shootRequests)
         {
-            var gameActionArg = new GameActionParameterVector.Data(item.ShootVector); // hard coded speed at 3 for now
+            var shootVecArg = new GameActionParameterVector.Data(item.ShootVector); // hard coded speed at 3 for now
+            var originateFromCenter = new GameActionParameterBool.Data(true);
 
-            bool success = CommonWrites.TryInputUseItem<GameActionThrow>(Accessor, item.Controller, gameActionArg);
+            bool success = CommonWrites.TryInputUseItem<GameActionThrow>(Accessor, item.Controller, shootVecArg, originateFromCenter);
 
             if (!success)
             {
@@ -329,7 +354,7 @@ public class UpdateArcherAISystem : SimSystemBase
             {
                 Start = (float2)(shootStartPos + dir * fix(0.7)),
                 End = (float2)(targetPos - dir * fix(0.7)),
-                Filter = s_charactersAndTerrainFilter.Data
+                Filter = SimulationGameConstants.Physics.CharactersAndTerrainFilter.Data,
             };
 
             if (!physicsWorld.CastRay(input))

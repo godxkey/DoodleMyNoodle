@@ -1,29 +1,13 @@
 using CCC.Fix2D;
-using CCC.Fix2D.Debugging;
-using System;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.MathematicsX;
-using Unity.Profiling;
-using UnityEngine.Profiling;
-using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 
 public struct BruteAIData : IComponentData
 {
-    public BruteAIState State;
     public Entity AttackTarget;
-    public fix NoActionUntilTime;
-    public int LastPatrolTurn;
-}
-
-public enum BruteAIState
-{
-    Patrol,
-    PositionForAttack,
-    Attack
 }
 
 [UpdateInGroup(typeof(SpecificAISystemGroup))]
@@ -251,5 +235,4 @@ public class UpdateBruteAISystem : SimSystemBase
         newAttackPosition = default;
         return false;
     }
-
 }
