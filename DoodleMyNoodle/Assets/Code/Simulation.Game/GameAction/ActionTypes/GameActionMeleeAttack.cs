@@ -56,7 +56,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
             CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, settings.Damage);
 
             fix2 attackVector = attackPosition - instigatorPos;
-            resultData.AddData(new KeyValuePair<string, object>("Direction", attackVector));
+            resultData.AttackVector = attackVector;
 
             return true;
         }

@@ -1,31 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &1268902642882476280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5776912470226665749}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce7437b0c13b5f64eb2446ea111b8e54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _spriteRenderer: {fileID: 342519019129053656}
---- !u!114 &5095112687909612003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5776912470226665749}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d72be967185ba5449e3980b2cacc4e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _nameText: {fileID: 3653422281167849313}
 --- !u!1 &4698551844173715227
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,6 +171,33 @@ MonoBehaviour:
   _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 0
+--- !u!114 &1268902642882476280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5776912470226665749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7437b0c13b5f64eb2446ea111b8e54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteRenderer: {fileID: 342519019129053656}
+--- !u!114 &5095112687909612003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5776912470226665749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d72be967185ba5449e3980b2cacc4e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _nameText: {fileID: 3653422281167849313}
+  fadeSpeed: 4
 --- !u!1001 &1736369821046630993
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -280,6 +281,47 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7379920081520119636, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: DefaultAnimations.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7379920081520119636, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: DefaultAnimations.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2af3838260b930c46b4745446a1485fb,
+        type: 2}
+    - target: {fileID: 7379920081520119636, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: DefaultAnimations.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: cca290fa3e889724d8e8ae7f3d165460,
+        type: 2}
+    - target: {fileID: 7379920081520119636, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: DefaultAnimations.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453,
+        type: 2}
+    - target: {fileID: 7379920081520119636, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: DefaultAnimations.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: f9005890481c8a64699b8b0c0415e24a,
+        type: 2}
+    - target: {fileID: 7379920081520119636, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: DefaultAnimations.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 35a1030aee3e6fa4f8738f1bca0da9e5,
+        type: 2}
+    - target: {fileID: 7379920081520119636, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: DefaultAnimations.Array.data[5]
+      value: 
+      objectReference: {fileID: 11400000, guid: 3bb30c7f30627904181ea5ef9c1bee49,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 950f116e90b5f1d4f9a86da78a6e1e45, type: 3}
 --- !u!1 &5776912470226665749 stripped

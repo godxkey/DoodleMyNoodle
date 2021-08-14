@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff02f3cead33644419263a34cc343336, type: 3}
   m_Name: DefaultDeathAnimation
   m_EditorClassIdentifier: 
-  AnimationType: 3
-  Duration: 0.5
+  Duration: 1
+  Type: 5

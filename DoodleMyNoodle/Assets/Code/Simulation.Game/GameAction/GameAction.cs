@@ -104,20 +104,7 @@ public abstract class GameAction
 
     public struct ResultData
     {
-        public Dictionary<string, object> Data;
-
-        public ResultData(Dictionary<string, object> defaultData)
-        {
-            Data = defaultData;
-        }
-
-        public void AddData(params KeyValuePair<string, object>[] data)
-        {
-            foreach (KeyValuePair<string, object> item in data)
-            {
-                Data.Add(item.Key, item.Value);
-            }
-        }
+        public fix2 AttackVector;
     }
 
     public class DebugReason
@@ -131,27 +118,6 @@ public abstract class GameAction
 
     private static Pool<DebugReason> s_debugReasonPool = new Pool<DebugReason>();
 
-    public bool TryUse(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters)
-    {
-        if (!CanBeUsedInContext(accessor, context))
-        {
-            return false;
-        }
-
-        BeforeActionUsed(accessor, context);
-
-        ResultData resultData = new ResultData(new Dictionary<string, object>());
-        if (Use(accessor, context, parameters, ref resultData))
-        {
-            OnActionUsed(accessor, context, resultData);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
     public bool TryUse(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, out string debugReason)
     {
         if (!CanBeUsedInContext(accessor, context, out debugReason))
@@ -161,7 +127,7 @@ public abstract class GameAction
 
         BeforeActionUsed(accessor, context);
 
-        ResultData resultData = new ResultData(new Dictionary<string, object>());
+        ResultData resultData = new ResultData();
         if (Use(accessor, context, parameters, ref resultData))
         {
             OnActionUsed(accessor, context, resultData);
@@ -275,7 +241,6 @@ public abstract class GameAction
         }
 
         // Feedbacks
-        GameActionPresentationFeedbacks.OnGameActionUsed(accessor, context, result);
         CommonWrites.RequestGameActionEvent(accessor, context, result);
     }
 

@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bd733b45488e5644abddea70f89ac0e, type: 3}
-  m_Name: DefaultAttackAnimation
+  m_Script: {fileID: 11500000, guid: 7ab7b8734d0decc4ea450f111d1b6e15, type: 3}
+  m_Name: DefaultAirborneAnimation
   m_EditorClassIdentifier: 
-  Duration: 0.5
-  Type: 6
+  Duration: 0.75
+  Type: 4
