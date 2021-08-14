@@ -67,21 +67,42 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
         {
             if (SimWorld.TryGetComponent(SimEntity, out MoveInput input) && SimWorld.TryGetComponent(SimEntity, out MoveEnergy energy))
             {
-                if ((input.Value.lengthSquared > (fix)MinimumVelocityThreshold) && (energy.Value > 0))
+                if ((input.Value.lengthSquared > (fix)MinimumVelocityThreshold))
                 {
                     if (SimWorld.TryGetComponent(SimEntity, out NavAgentFootingState navAgentFootingState))
                     {
                         switch (navAgentFootingState.Value)
                         {
                             case NavAgentFooting.Ground:
-                                HandleCharacterMovementAnimation(AnimationType.Walking, animationData);
+                                
+                                if (energy.Value > 0)
+                                {
+                                    HandleCharacterMovementAnimation(AnimationType.Walking, animationData);
+                                }
+                                else
+                                {
+                                    HandleCharacterMovementAnimation(AnimationType.Idle, animationData);
+                                }
+                                
                                 break;
+
                             case NavAgentFooting.Ladder:
-                                HandleCharacterMovementAnimation(AnimationType.Ladder, animationData);
+
+                                if (input.Value.y == 0)
+                                {
+                                    HandleCharacterMovementAnimation(AnimationType.Walking, animationData);
+                                }
+                                else
+                                {
+                                    HandleCharacterMovementAnimation(AnimationType.Ladder, animationData);
+                                }
+                                
                                 break;
                             case NavAgentFooting.AirControl:
+
                                 HandleCharacterMovementAnimation(AnimationType.Aiborne, animationData);
                                 break;
+
                             case NavAgentFooting.None:
                                 break;
                             default:
