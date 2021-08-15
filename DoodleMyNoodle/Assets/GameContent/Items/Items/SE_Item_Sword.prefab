@@ -74,11 +74,12 @@ MonoBehaviour:
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: f60bb367ece611d429d90e53a56b4f4b, type: 3}
+  IconSpriteColorOverride: {r: 0, g: 0, b: 0, a: 0}
   Name: "\xC9p\xE9e"
   EffectDescription: "Envoie de plus grand d\xE9gats \xE0 une cible \xE0 proximiter"
   SfxOnUse: {fileID: 0}
   PlayAnimation: 1
-  Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
+  Animation: {fileID: 11400000, guid: 8960135fd5d1ae74eb624a5f929e8b84, type: 2}
   CustomSurveys: []
   references:
     version: 1

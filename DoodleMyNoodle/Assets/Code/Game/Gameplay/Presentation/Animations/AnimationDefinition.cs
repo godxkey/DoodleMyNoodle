@@ -19,7 +19,7 @@ public abstract class AnimationDefinition : ScriptableObject
         OnTriggerAnimation(entity, spriteStartPos, spriteTransform);
     }
 
-    public abstract void OnTriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform);
+    protected abstract void OnTriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform);
 
     public abstract void InteruptAnimation(Entity entity);
 

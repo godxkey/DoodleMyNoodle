@@ -16,7 +16,7 @@ public class DOTWEENAnimationDefinition : AnimationDefinition
         }
     }
 
-    public override void OnTriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
+    protected override void OnTriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
     {
         Sequence sq = DOTween.Sequence();
         _sequences.SetOrAdd(entity, GetDOTWEENAnimationSequence(sq, entity, spriteStartPos, spriteTransform));
