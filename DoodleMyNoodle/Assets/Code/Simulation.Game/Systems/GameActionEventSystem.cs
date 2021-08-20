@@ -7,11 +7,13 @@ using static Unity.Mathematics.math;
 public struct GameActionEventData : IComponentData
 {
     public GameAction.UseContext GameActionContext;
+    public GameAction.ResultData GameActionResult;
 }
 
 public struct GameActionEventRequestData : IBufferElementData
 {
     public GameAction.UseContext GameActionContext;
+    public GameAction.ResultData GameActionResult;
 }
 
 public struct GameActionEventRequestSingletonTag : IComponentData { }
@@ -72,7 +74,8 @@ public class GameActionEventSystem : SimSystemBase
     {
         outGameActionEvents.Add(new GameActionEventData()
         {
-            GameActionContext = GameActionRequestData.GameActionContext
+            GameActionContext = GameActionRequestData.GameActionContext,
+            GameActionResult = GameActionRequestData.GameActionResult
         }); ;
     }
 }
@@ -81,7 +84,7 @@ internal static partial class CommonWrites
 {
     public static void RequestGameActionEvent(ISimWorldReadWriteAccessor accessor, GameAction.UseContext context, GameAction.ResultData result)
     {
-        var gameActionRequest = new GameActionEventRequestData() { GameActionContext = context };
+        var gameActionRequest = new GameActionEventRequestData() { GameActionContext = context, GameActionResult = result };
         accessor.GetExistingSystem<GameActionEventSystem>().RequestGameActionEvent(gameActionRequest);
     }
 }

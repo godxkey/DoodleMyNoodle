@@ -12,6 +12,8 @@ public class MoveEnergyDisplayManagementSystem : GamePresentationSystem<MoveEner
     public GameObject MoveEnergyDisplayPrefab;
 
     private List<GameObject> _moveEnergyInstances = new List<GameObject>();
+    private Dictionary<Entity, fix> EntitiesEnergy = new Dictionary<Entity, fix>();
+    private Dictionary<Entity, GameObject> EntitiesEnergyBar = new Dictionary<Entity, GameObject>();
 
     protected override void OnGamePresentationUpdate()
     {
@@ -30,7 +32,21 @@ public class MoveEnergyDisplayManagementSystem : GamePresentationSystem<MoveEner
 
             Team currentPawnTeam = Cache.SimWorld.GetComponent<Team>(pawnController);
 
-            SetOrAddMoveEnergyBar(moveEnergyBarAmount, entityTranslation.Value, (float)entityMaximumMoveEnergy.Value, (float)entityMoveEnergy.Value);
+            SetOrAddMoveEnergyBar(pawn, moveEnergyBarAmount, entityTranslation.Value, (float)entityMaximumMoveEnergy.Value, (float)entityMoveEnergy.Value);
+
+            if (EntitiesEnergy.ContainsKey(pawn) && EntitiesEnergy[pawn] != entityMoveEnergy.Value && EntitiesEnergyBar.ContainsKey(pawn))
+            {
+                EntitiesEnergyBar[pawn].GetComponentInChildren<MoveEnergyDisplay>().ShowFromMovement();
+            }
+
+            if (EntitiesEnergy.ContainsKey(pawn))
+            {
+                EntitiesEnergy[pawn] = entityMoveEnergy.Value;
+            }
+            else
+            {
+                EntitiesEnergy.Add(pawn, entityMoveEnergy.Value);
+            }
 
             moveEnergyBarAmount++;
         });
@@ -52,33 +68,29 @@ public class MoveEnergyDisplayManagementSystem : GamePresentationSystem<MoveEner
                 if (!SimWorld.HasComponent<MoveEnergy>(tileActor))
                     continue;
 
-                FixTranslation position = SimWorld.GetComponent<FixTranslation>(tileActor);
-
-                foreach (var moveEnergy in _moveEnergyInstances)
+                if (EntitiesEnergyBar.ContainsKey(tileActor))
                 {
-                    if (moveEnergy.transform.position == (position.Value + new fix3((fix)(-0.5), (fix)(-0.3), 0)).ToUnityVec())
-                    {
-                        moveEnergy.GetComponentInChildren<MoveEnergyDisplay>().ShowFromMouse();
-                    }
+                    EntitiesEnergyBar[tileActor].GetComponentInChildren<MoveEnergyDisplay>().ShowFromMouse();
                 }
             }
         }
     }
 
-    private void SetOrAddMoveEnergyBar(int index, fix3 position, float maxMoveEnergy, float moveEnergy)
+    private void SetOrAddMoveEnergyBar(Entity entity, int index, fix3 position, float maxMoveEnergy, float moveEnergy)
     {
         GameObject currentMoveEnergyBar;
         if (_moveEnergyInstances.Count <= index)
         {
             currentMoveEnergyBar = Instantiate(MoveEnergyDisplayPrefab);
             _moveEnergyInstances.Add(currentMoveEnergyBar);
+            EntitiesEnergyBar.Add(entity, currentMoveEnergyBar);
         }
         else
         {
             currentMoveEnergyBar = _moveEnergyInstances[index];
         }
 
-        currentMoveEnergyBar.transform.position = (position + new fix3((fix)(-0.5), (fix)(-0.3), 0)).ToUnityVec();
+        currentMoveEnergyBar.transform.position = (position + new fix3(0, (fix)(0.535f), 0)).ToUnityVec();
         currentMoveEnergyBar.GetComponentInChildren<MoveEnergyDisplay>()?.SetMoveEnergy(moveEnergy, maxMoveEnergy);
         currentMoveEnergyBar.SetActive(true);
     }

@@ -346,6 +346,11 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         _currentSetting = setting;
     }
 
+    public CursorSetting GetCurrentSettings()
+    {
+        return _currentSetting;
+    }
+
     private void SetCursorIcon(Sprite sprite, float scale)
     {
         _currentCursor.SetPrimaryCursorSize(new Vector3(scale, scale, scale));

@@ -6,25 +6,25 @@ using UnityEngine;
 using UnityEngineX;
 
 [CreateAssetMenu(menuName = "DoodleMyNoodle/Animations/Attack Animation")]
-public class AttackAnimationDefinition : AnimationDefinition
+public class AttackAnimationDefinition : DOTWEENAnimationDefinition
 {
-    private Dictionary<Entity, Sequence> _sequences = new Dictionary<Entity, Sequence>();
+    public VFXDefinition VFXOnTarget = null;
 
-    public override void InteruptAnimation(Entity entity)
+    public override Sequence GetDOTWEENAnimationSequence(Sequence sq, Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
     {
-        if (_sequences.ContainsKey(entity))
-        {
-            _sequences[entity].Kill(true);
-        }
-    }
-
-    public override void TriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform, AnimationData animationData)
-    {
-        Sequence sq = DOTween.Sequence();
         Vector2 startPos = spriteStartPos;
-        Vector2 endPos = startPos + (Vector2)animationData.Direction;
-        sq.Append(spriteTransform.DOLocalMove(endPos, (float)animationData.TotalDuration / 2));
-        sq.Append(spriteTransform.DOLocalMove(startPos, (float)animationData.TotalDuration / 2));
-        _sequences.SetOrAdd(entity, sq);
+        Vector2 endPos = startPos + GetAnimationData<Vector2>("AttackVector");
+
+        if (VFXOnTarget != null)
+        {
+            sq.Append(spriteTransform.DOLocalMove(endPos, Duration / 2).OnComplete(() => { VFXOnTarget.TriggerVFX(entity, spriteTransform, Data); }));
+        }
+        else
+        {
+            sq.Append(spriteTransform.DOLocalMove(endPos, Duration / 2));
+        }
+
+        sq.Append(spriteTransform.DOLocalMove(startPos, Duration / 2));
+        return sq;
     }
 }
