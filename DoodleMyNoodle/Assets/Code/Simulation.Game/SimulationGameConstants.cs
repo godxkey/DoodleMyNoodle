@@ -27,6 +27,7 @@ public static class SimulationGameConstants
     public static readonly fix2 AIEyeOffset = new fix2(0, (fix)0.15f);
     public static readonly fix AISearchForPositionMaxCost = (fix)10;
     public static readonly fix AgentRepathCooldown = (fix)1; // repath every 1s
+    public static readonly fix AIPauseDurationAfterShoot = (fix)2;
 
     private static bool s_init = false;
 

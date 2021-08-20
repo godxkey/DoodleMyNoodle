@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using static Unity.Mathematics.math; 
+using static Unity.Mathematics.math;
 using static fixMath;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -16,19 +16,38 @@ public static partial class Helpers
 
     public static class AI
     {
-        public static void FuzzifyThrow(ref fix throwAngle, ref fix throwSpeed, ref FixRandom random)
-        {
-            fix r = random.NextFixRatio();
-            r *= r;
+        //            ___________
+        //          /      |      \
+        //        /        |        \
+        //      /          |          \
+        //    /            |            \
+        // -20°     -10°   0°  +10°     +20°
+        private static readonly fix THROW_ANGLE_RANDOM_RANGE = rad(20);
+        private static readonly fix THROW_ANGLE_RANDOM_PLATEAU_RATIO = fix.Half;
 
+        //            ___________
+        //          /      |      \
+        //        /        |        \
+        //      /          |          \
+        //    /            |            \
+        // -20%     -10%   0   +10%     +20%
+        private static readonly fix THROW_SPEED_RANDOM_RANGE = (fix)0.2;
+        private static readonly fix THROW_SPEED_RANDOM_PLATEAU_RATIO = fix.Half;
+
+        public static void FuzzifyThrow(ref fix2 throwVector, ref FixRandom random)
+        {
+            fix angle = angle2d(throwVector);
+            fix speed = length(throwVector);
+
+            FuzzifyThrow(ref angle, ref speed, ref random);
+
+            throwVector = new fix2(cos(angle) * speed, sin(angle) * speed);
         }
 
-        public static fix NextFuzzy(ref FixRandom random, fix min, fix max)
+        public static void FuzzifyThrow(ref fix throwAngle, ref fix throwSpeed, ref FixRandom random)
         {
-            fix r = random.NextFixRatio();
-            r *= r;
-
-            r
+            throwAngle = random.NextPlateau(throwAngle - THROW_ANGLE_RANDOM_RANGE, throwAngle + THROW_ANGLE_RANDOM_RANGE, THROW_ANGLE_RANDOM_PLATEAU_RATIO);
+            throwSpeed = random.NextPlateau(throwSpeed * (1 - THROW_SPEED_RANDOM_RANGE), throwSpeed * (1 + THROW_SPEED_RANDOM_RANGE), THROW_SPEED_RANDOM_PLATEAU_RATIO);
         }
     }
 }

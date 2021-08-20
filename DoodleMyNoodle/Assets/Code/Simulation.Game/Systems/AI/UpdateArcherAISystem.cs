@@ -225,7 +225,7 @@ public class UpdateArcherAISystem : SimSystemBase
                         if (all(almostEqual(agentCache.PawnPosition, newShootPosition, epsilon: fix(0.1))))
                         {
                             aiDestination.HasDestination = false;
-                            actionCooldown.NoActionUntilTime = globalCache.Time + 2;
+                            actionCooldown.NoActionUntilTime = globalCache.Time + SimulationGameConstants.AIPauseDurationAfterShoot;
 
                             fix2 d = GetComponent<FixTranslation>(agentData.AttackTarget) - agentCache.PawnPosition;
                             fix2 dir = normalize(d);
@@ -240,7 +240,7 @@ public class UpdateArcherAISystem : SimSystemBase
                                 shootVector = fixMath.Trajectory.SmallestLaunchVelocity(d.x, d.y, agentCache.ItemProjectileGravity);
                             }
 
-                            Helpers.ClampPositionInsideRange
+                            Helpers.AI.FuzzifyThrow(ref shootVector, ref globalCache.Random);
 
                             shootRequests.Add(new ShootRequest()
                             {
