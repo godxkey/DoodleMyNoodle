@@ -15,10 +15,9 @@ GameObject:
   - component: {fileID: 8435132431937638192}
   - component: {fileID: 6657921186239294675}
   - component: {fileID: 947375423039552990}
-  - component: {fileID: 8655927559677642130}
   - component: {fileID: 2401102004981749674}
   m_Layer: 9
-  m_Name: SE_BaseCharacter
+  m_Name: SE_Char
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,19 +145,6 @@ MonoBehaviour:
     Quantity: {x: 1, y: 1}
   - Item: {fileID: 5742253346417087641, guid: 85996829317b3aa448e8ac3761770021, type: 3}
     Quantity: {x: 1, y: 1}
---- !u!114 &8655927559677642130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4951368162375339519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b8c4faec082ffb4aa6805710d590824, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StateID: 0
 --- !u!114 &2401102004981749674
 MonoBehaviour:
   m_ObjectHideFlags: 0
