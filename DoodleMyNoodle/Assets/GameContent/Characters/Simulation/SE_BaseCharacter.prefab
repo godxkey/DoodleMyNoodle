@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartingItems:
-  - Item: {fileID: 5742253346417087641, guid: d170c0eb81b945e458f35303555d6027, type: 3}
+  - Item: {fileID: 5742253346417087641, guid: 2ba4222c34d6bfc469b68c509779edad, type: 3}
     Quantity: {x: 1, y: 1}
   - Item: {fileID: 5742253346417087641, guid: 189b26f3fa7a7ef48a9f45c1e247f696, type: 3}
     Quantity: {x: 1, y: 1}

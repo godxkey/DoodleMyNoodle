@@ -14,10 +14,7 @@ using static Unity.Mathematics.math;
 
 public struct GrenadierAIData : IComponentData
 {
-    public GrenadierAIState State;
     public Entity AttackTarget;
-    public fix NoActionUntilTime;
-    public int LastPatrolTurn;
 }
 
 public enum GrenadierAIState
@@ -30,8 +27,6 @@ public enum GrenadierAIState
 [UpdateInGroup(typeof(SpecificAISystemGroup))]
 public class UpdateGrenadierAISystem : SimSystemBase
 {
-    public static fix ATTACK_MAX_RANGE => 6;
-
     public struct GlobalCache
     {
         public PhysicsWorld PhysicsWorld;
@@ -56,6 +51,7 @@ public class UpdateGrenadierAISystem : SimSystemBase
         public Team Team => PawnData.Team;
         public fix2 PawnPosition => PawnData.Position;
         public int2 PawnTile => Helpers.GetTile(PawnPosition);
+        public fix2 ItemProjectileGravity;
     }
 
     private NativeList<int2> _path;
@@ -131,7 +127,34 @@ public class UpdateGrenadierAISystem : SimSystemBase
                 {
                     Controller = controller,
                     PawnData = globalCache.ActorWorld.GetPawn(globalCache.ActorWorld.GetPawnIndex(pawn)),
+                    ItemProjectileGravity = globalCache.PhysicsWorld.StepSettings.GravityFix,
                 };
+
+                // Find throw item settings
+                {
+                    var pawnInventory = GetBuffer<InventoryItemReference>(pawn);
+                    var throwActionId = GameActionBank.GetActionId<GameActionThrow>();
+                    Entity throwItem = Entity.Null;
+                    for (int i = 0; i < pawnInventory.Length; i++)
+                    {
+                        if (GetComponent<GameActionId>(pawnInventory[i].ItemEntity) == throwActionId)
+                        {
+                            throwItem = pawnInventory[i].ItemEntity;
+                            break;
+                        }
+                    }
+
+                    if (throwItem != Entity.Null)
+                    {
+                        var throwSettings = GetComponent<GameActionThrow.Settings>(throwItem);
+                        var projectilePrefab = throwSettings.ProjectilePrefab;
+
+                        if (HasComponent<PhysicsGravity>(projectilePrefab))
+                        {
+                            agentCache.ItemProjectileGravity *= GetComponent<PhysicsGravity>(projectilePrefab).ScaleFix;
+                        }
+                    }
+                }
 
                 // Clear previous target
                 {
@@ -165,14 +188,30 @@ public class UpdateGrenadierAISystem : SimSystemBase
                         if (all(almostEqual(agentCache.PawnPosition, newShootPosition, epsilon: fix(0.1))))
                         {
                             aiDestination.HasDestination = false;
-                            actionCooldown.NoActionUntilTime = globalCache.Time + 1;
+                            actionCooldown.NoActionUntilTime = globalCache.Time + SimulationGameConstants.AIPauseDurationAfterShoot;
 
-                            fix2 dir = normalize(GetComponent<FixTranslation>(agentData.AttackTarget) - agentCache.PawnPosition);
+                            fix2 d = GetComponent<FixTranslation>(agentData.AttackTarget) - agentCache.PawnPosition;
+                            fix2 dir = normalize(d);
+                            fix2 shootVector;
+
+                            // aim in front of target to account for bounces
+                            d.x *= SimulationGameConstants.AIGrenadierShootDistanceRatio;
+
+                            if (agentCache.ItemProjectileGravity == fix2.zero)
+                            {
+                                shootVector = SimulationGameConstants.AIShootSpeedIfNoGravity * dir;
+                            }
+                            else
+                            {
+                                shootVector = fixMath.Trajectory.SmallestLaunchVelocity(d.x, d.y, agentCache.ItemProjectileGravity);
+                            }
+
+                            Helpers.AI.FuzzifyThrow(ref shootVector, ref globalCache.Random);
 
                             shootRequests.Add(new ShootRequest()
                             {
                                 Controller = controller,
-                                ShootVector = dir * 5, // hard coded speed at 5 for now
+                                ShootVector = shootVector,
                             });
                         }
                         else
@@ -197,9 +236,10 @@ public class UpdateGrenadierAISystem : SimSystemBase
 
         foreach (var item in shootRequests)
         {
-            var gameActionArg = new GameActionParameterVector.Data(item.ShootVector); // hard coded speed at 3 for now
+            var shootVecArg = new GameActionParameterVector.Data(item.ShootVector);
+            var originateFromCenter = new GameActionParameterBool.Data(true);
 
-            bool success = CommonWrites.TryInputUseItem<GameActionThrow>(Accessor, item.Controller, gameActionArg);
+            bool success = CommonWrites.TryInputUseItem<GameActionThrow>(Accessor, item.Controller, shootVecArg, originateFromCenter);
 
             if (!success)
             {
@@ -218,7 +258,7 @@ public class UpdateGrenadierAISystem : SimSystemBase
         public NativeList<int> Targets;
 
         public Entity ResultTarget;
-        
+
         public bool Evaluate(int2 tile)
         {
             return Evaluate(Helpers.GetTileCenter(tile));
@@ -251,9 +291,6 @@ public class UpdateGrenadierAISystem : SimSystemBase
 
         if (distance < 1)
             return true;
-
-        if (distance > ATTACK_MAX_RANGE)
-            return false;
 
         var dir = agent2Target / distance;
         RaycastInput input = new RaycastInput()
@@ -321,6 +358,7 @@ public class UpdateGrenadierAISystem : SimSystemBase
         {
             resultAttackTarget = predicate.ResultTarget;
             resultShootPosition = agentCache.PawnPosition;
+            return true;
         }
 
         // Using a flood fill, search for any position from which we can shoot a target. This will naturally return the closest tile

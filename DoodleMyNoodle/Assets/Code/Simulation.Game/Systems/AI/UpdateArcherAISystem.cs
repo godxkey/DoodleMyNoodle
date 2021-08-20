@@ -19,9 +19,6 @@ public struct ArcherAIData : IComponentData
 [UpdateInGroup(typeof(SpecificAISystemGroup))]
 public class UpdateArcherAISystem : SimSystemBase
 {
-    public static fix DETECT_RANGE => 10;
-    public static fix2 PAWN_EYES_OFFSET => fix2(0, fix(0.15));
-
     public struct GlobalCache
     {
         public ProfileMarkers ProfileMarkers;
@@ -270,7 +267,7 @@ public class UpdateArcherAISystem : SimSystemBase
 
         foreach (var item in shootRequests)
         {
-            var shootVecArg = new GameActionParameterVector.Data(item.ShootVector); // hard coded speed at 3 for now
+            var shootVecArg = new GameActionParameterVector.Data(item.ShootVector);
             var originateFromCenter = new GameActionParameterBool.Data(true);
 
             bool success = CommonWrites.TryInputUseItem<GameActionThrow>(Accessor, item.Controller, shootVecArg, originateFromCenter);
@@ -297,17 +294,21 @@ public class UpdateArcherAISystem : SimSystemBase
 
         public bool Evaluate(int2 tile)
         {
+            return Evaluate(Helpers.GetTileCenter(tile));
+        }
+
+        public bool Evaluate(fix2 position)
+        {
             var globalCache = UnsafeUtility.AsRef<GlobalCache>(GlobalCachePtr);
             var agentCache = UnsafeUtility.AsRef<AgentCache>(AgentCachePtr);
 
             using (globalCache.ProfileMarkers.CanShootAnyTargetsFromTilePredicate.Auto())
             {
-                var tilePos = Helpers.GetTileCenter(tile);
                 foreach (int pawnIndex in Targets)
                 {
                     ref ActorWorld.Pawn enemyData = ref globalCache.ActorWorld.GetPawn(pawnIndex);
 
-                    if (CanShoot(ref globalCache.PhysicsWorld, ref agentCache, tilePos, ref enemyData))
+                    if (CanShoot(ref globalCache.PhysicsWorld, ref agentCache, position, ref enemyData))
                     {
                         ResultTarget = enemyData.Entity;
                         return true;
@@ -402,37 +403,33 @@ public class UpdateArcherAISystem : SimSystemBase
             }
         }
 
-        // For all targets in sight, check if we can shoot it right now
-        using (globalCache.ProfileMarkers.CheckIfCanShootNow.Auto())
-        {
-            for (int i = 0; i < globalCache.TargetBuffer.Length; i++)
-            {
-                ref ActorWorld.Pawn targetData = ref globalCache.ActorWorld.GetPawn(globalCache.TargetBuffer[i]);
-
-                if (CanShoot(ref globalCache.PhysicsWorld, ref agentCache, agentCache.PawnPosition, ref targetData))
-                {
-                    resultAttackTarget = targetData.Entity;
-                    resultShootPosition = agentCache.PawnPosition;
-                    return true;
-                }
-            }
-        }
-
         if (globalCache.TargetBuffer.Length == 0)
         {
             return false;
         }
 
+        var predicate = new CanShootAnyTargetsFromTilePredicate()
+        {
+            Targets = globalCache.TargetBuffer,
+            AgentCachePtr = UnsafeUtility.AddressOf(ref agentCache),
+            GlobalCachePtr = UnsafeUtility.AddressOf(ref globalCache)
+        };
+
+        // For all targets in sight, check if we can shoot it right now
+        using (globalCache.ProfileMarkers.CheckIfCanShootNow.Auto())
+        {
+            // Check if we can shoot it right now
+            if (predicate.Evaluate(agentCache.PawnPosition))
+            {
+                resultAttackTarget = predicate.ResultTarget;
+                resultShootPosition = agentCache.PawnPosition;
+                return true;
+            }
+        }
+
         // Using a flood fill, search for any position from which we can shoot a target. This will naturally return the closest tile
         using (globalCache.ProfileMarkers.FloodSearch.Auto())
         {
-            var predicate = new CanShootAnyTargetsFromTilePredicate()
-            {
-                Targets = globalCache.TargetBuffer,
-                AgentCachePtr = UnsafeUtility.AddressOf(ref agentCache),
-                GlobalCachePtr = UnsafeUtility.AddressOf(ref globalCache)
-            };
-
             if (Pathfinding.NavigableFloodSearch(globalCache.TileWorld,
                                                  agentCache.PawnTile,
                                                  SimulationGameConstants.AISearchForPositionMaxCost,
