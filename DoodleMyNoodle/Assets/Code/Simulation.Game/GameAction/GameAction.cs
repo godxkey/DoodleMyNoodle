@@ -18,7 +18,8 @@ public abstract class GameAction
         Entity,
         SuccessRating,
         Vector,
-        Position
+        Position,
+        Bool
     }
 
     public abstract class ParameterDescription

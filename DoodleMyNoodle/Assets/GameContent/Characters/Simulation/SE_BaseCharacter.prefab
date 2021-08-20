@@ -71,6 +71,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultAIPrefab: {fileID: 0}
+  StartingTeam: 1
 --- !u!114 &-6450381012629423667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,7 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartingItems:
-  - Item: {fileID: 5742253346417087641, guid: d170c0eb81b945e458f35303555d6027, type: 3}
+  - Item: {fileID: 5742253346417087641, guid: 2ba4222c34d6bfc469b68c509779edad, type: 3}
     Quantity: {x: 1, y: 1}
   - Item: {fileID: 5742253346417087641, guid: 189b26f3fa7a7ef48a9f45c1e247f696, type: 3}
     Quantity: {x: 1, y: 1}
@@ -175,4 +176,4 @@ MonoBehaviour:
   AirControl:
     RawValue: 1288490240
   MoveEnergyMaxValue:
-    RawValue: 42949672960
+    RawValue: 25769803776

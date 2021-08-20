@@ -12,7 +12,6 @@ public class GrenadierAIAuth : AIAuth, IConvertGameObjectToEntity
 
         dstManager.AddComponentData(entity, new GrenadierAIData()
         {
-            State = GrenadierAIState.Patrol
         });
     }
 }

@@ -100,6 +100,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2401102004981749674, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: MoveEnergyMaxValue.RawValue
+      value: 8589934592
+      objectReference: {fileID: 0}
     - target: {fileID: 4951368162375339519, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: m_Name
@@ -114,6 +119,11 @@ PrefabInstance:
     - target: {fileID: 6657921186239294675, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: MaxValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6657921186239294675, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
+      propertyPath: StartValue
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8435132431937638192, guid: d6dc46a8018045e48ae6776580ff1d2b,

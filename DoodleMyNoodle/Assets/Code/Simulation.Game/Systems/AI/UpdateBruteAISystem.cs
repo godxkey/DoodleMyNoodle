@@ -1,337 +1,238 @@
 using CCC.Fix2D;
-using System;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.MathematicsX;
-using UnityEngine.Profiling;
-using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 
 public struct BruteAIData : IComponentData
 {
-    public BruteAIState State;
     public Entity AttackTarget;
-    public fix NoActionUntilTime;
-    public int LastPatrolTurn;
 }
 
-public enum BruteAIState
-{
-    Patrol,
-    PositionForAttack,
-    Attack
-}
-
-[UpdateInGroup(typeof(AISystemGroup))]
+[UpdateInGroup(typeof(SpecificAISystemGroup))]
 public class UpdateBruteAISystem : SimSystemBase
 {
-    private readonly fix AGGRO_WALK_RANGE = 10;
+    public struct GlobalCache
+    {
+        public ProfileMarkers ProfileMarkers;
+        public TileWorld TileWorld;
+        public ActorWorld ActorWorld;
+        public NativeList<int> TargetBuffer;
+        public NativeList<int2> PathBuffer;
+        public fix Time;
+    }
 
-    private EntityQuery _attackableGroup;
+    public struct AgentCache
+    {
+        public ActorWorld.Pawn PawnData;
+        public Entity Pawn => PawnData.Entity;
+        public Team Team => PawnData.Team;
+        public fix2 PawnPosition => PawnData.Position;
+        public int2 PawnTile => Helpers.GetTile(PawnPosition);
+        public BlobAssetReference<Collider> ItemProjectileCollider;
+    }
+
     private NativeList<int2> _path;
-    private ComponentDataFromEntity<FixTranslation> _positions;
-    private NativeArray<Entity> _attackableEntities;
+    private NativeList<int> _targetBuffer;
+    private UpdateActorWorldSystem _updateActorWorldSystem;
+    private ProfileMarkers _profileMarkers;
+
+    public struct ProfileMarkers
+    {
+    }
+
+    private struct AttackRequest
+    {
+        public Entity Controller;
+        public fix2 AttackPos;
+    }
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
+        _profileMarkers = new ProfileMarkers() { };
+        _updateActorWorldSystem = World.GetOrCreateSystem<UpdateActorWorldSystem>();
+        _targetBuffer = new NativeList<int>(Allocator.Persistent);
         _path = new NativeList<int2>(Allocator.Persistent);
-        _attackableGroup = EntityManager.CreateEntityQuery(
-            ComponentType.ReadOnly<Health>(),
-            ComponentType.ReadOnly<Controllable>(),
-            ComponentType.ReadOnly<FixTranslation>(),
-            ComponentType.Exclude<DeadTag>());
+
+        RequireSingletonForUpdate<GridInfo>();
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
 
+        _targetBuffer.Dispose();
         _path.Dispose();
-        _attackableGroup.Dispose();
     }
 
     protected override void OnUpdate()
     {
-        Profiler.BeginSample("Update Brute Mental State");
-        _positions = GetComponentDataFromEntity<FixTranslation>(isReadOnly: true);
-        _attackableEntities = _attackableGroup.ToEntityArray(Allocator.TempJob);
+        _updateActorWorldSystem.ActorWorldDependency.Complete();
 
-        Entities.ForEach((Entity controller, ref BruteAIData agentData, in Team controllerTeam, in ControlledEntity pawn) =>
+        GlobalCache globalCache = new GlobalCache()
         {
-            UpdateMentalState(controller, controllerTeam, ref agentData, pawn);
-        }).WithoutBurst().Run();
-        Profiler.EndSample();
+            TileWorld = CommonReads.GetTileWorld(Accessor),
+            ActorWorld = _updateActorWorldSystem.ActorWorld,
+            TargetBuffer = _targetBuffer,
+            ProfileMarkers = _profileMarkers,
+            PathBuffer = _path,
+            Time = Time.ElapsedTime,
+        };
 
-        int currentTeam = CommonReads.GetTurnTeam(Accessor);
-        fix time = Time.ElapsedTime;
+        NativeList<AttackRequest> attackRequest = new NativeList<AttackRequest>(Allocator.TempJob);
 
-        Profiler.BeginSample("Try Act Brute");
         Entities
-            .ForEach((Entity controller, ref BruteAIData agentData, ref ReadyForNextTurn readyForNextTurn, in ControlledEntity pawn, in Team team) =>
+            .ForEach((Entity controller, ref BruteAIData agentData, ref AIDestination aiDestination, ref ReadyForNextTurn readyForNextTurn, ref AIActionCooldown actionCooldown,
+                in AIPlaysThisFrameToken playsThisFrameToken, in ControlledEntity pawn) =>
             {
-                // Can the corresponding team play ?
-                if (team.Value != currentTeam)
-                {
+                if (!playsThisFrameToken)
                     return;
+
+                AgentCache agentCache = new AgentCache()
+                {
+                    PawnData = globalCache.ActorWorld.GetPawn(globalCache.ActorWorld.GetPawnIndex(pawn)),
+                };
+
+                // Clear previous target
+                {
+                    bool clearPreviousTarget = true;
+                    if (agentData.AttackTarget != Entity.Null)
+                    {
+                        if (HasComponent<FixTranslation>(agentData.AttackTarget))
+                        {
+                            fix2 previousTargetPos = GetComponent<FixTranslation>(agentData.AttackTarget);
+
+                            if (distancesq(previousTargetPos, agentCache.PawnPosition) < SimulationGameConstants.AISightDistanceSq)
+                            {
+                                clearPreviousTarget = false;
+                            }
+                        }
+                    }
+
+                    if (clearPreviousTarget)
+                    {
+                        agentData.AttackTarget = Entity.Null;
+                    }
                 }
 
-                // have we already said 'ready for next turn' ?
-                if (readyForNextTurn)
+                // Find new most suitable target
+                if (FindAttackTarget(ref globalCache, ref agentCache, ref agentData, out Entity newAttackTarget, out fix2 newAttackPosition))
                 {
-                    return;
-                }
+                    SetComponent<AIState>(controller, AIStateEnum.Combat);
+                    agentData.AttackTarget = newAttackTarget;
 
-                // wait until ready for action
-                if (!IsReadyToAct(time, controller, team, agentData, pawn))
-                {
-                    return;
-                }
+                    if (all(almostEqual(agentCache.PawnPosition, newAttackPosition, epsilon: fix(0.1))))
+                    {
+                        aiDestination.HasDestination = false;
+                        actionCooldown.NoActionUntilTime = globalCache.Time + 1;
 
-                if (Act(controller, team, ref agentData, pawn))
-                {
-                    agentData.NoActionUntilTime = time + 1;
+                        attackRequest.Add(new AttackRequest()
+                        {
+                            Controller = controller,
+                            AttackPos = GetComponent<FixTranslation>(agentData.AttackTarget),
+                        });
+                    }
+                    else
+                    {
+                        aiDestination.HasDestination = true;
+                        aiDestination.Position = newAttackPosition;
+
+                        // If no more AP => readyForNextTurn
+                        if (GetComponent<MoveEnergy>(pawn).Value <= 0 && GetComponent<ActionPoints>(pawn) == 0)
+                            readyForNextTurn.Value = true;
+                    }
                 }
                 else
                 {
-                    readyForNextTurn.Value = true;
+                    SetComponent<AIState>(controller, AIStateEnum.Patrol);
+                    // patrol is handled by generic system
                 }
-            }).WithoutBurst().Run();
-        Profiler.EndSample();
+            }).Schedule();
 
+        Dependency.Complete();
 
-        _attackableEntities.Dispose();
-    }
-
-    private void UpdateMentalState(Entity controller, Team controllerTeam, ref BruteAIData agentData, Entity agentPawn)
-    {
-        switch (agentData.State)
+        foreach (var item in attackRequest)
         {
-            case BruteAIState.Patrol:
-                UpdateMentalState_Patrol(controller, controllerTeam, ref agentData, agentPawn);
-                break;
-            case BruteAIState.PositionForAttack:
-            case BruteAIState.Attack:
+            var gameActionArg = new GameActionParameterPosition.Data(item.AttackPos); // hard coded speed at 3 for now
+
+            bool success = CommonWrites.TryInputUseItem<GameActionMeleeAttack>(Accessor, item.Controller, gameActionArg);
+
+            if (!success)
             {
-                // if target does not exit anymore, back to patrol
-                if (!TryGetComponent(agentData.AttackTarget, out FixTranslation enemyPos))
-                {
-                    agentData.State = BruteAIState.Patrol;
-                    return;
-                }
-
-                // if target's controller is not our enemy anymore, back to patrol
-                var targetController = GetComponent<Controllable>(agentData.AttackTarget).CurrentController;
-                if (!TryGetComponent(targetController, out Team team) ||
-                    team == controllerTeam)
-                {
-                    agentData.State = BruteAIState.Patrol;
-                    return;
-                }
-
-                int2 enemyTile = Helpers.GetTile(enemyPos);
-                int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(agentPawn));
-                if (mathX.lengthmanhattan(enemyTile - agentTile) == 1)
-                {
-                    agentData.State = BruteAIState.Attack;
-                }
-                else
-                {
-                    agentData.State = BruteAIState.PositionForAttack;
-                }
-                break;
+                SetComponent<ReadyForNextTurn>(item.Controller, true);
             }
         }
+
+        attackRequest.Dispose();
     }
 
-    private void UpdateMentalState_Patrol(Entity controller, Team controllerTeam, ref BruteAIData agentData, Entity agentPawn)
+    private static bool FindAttackTarget(ref GlobalCache globalCache, ref AgentCache agentCache, ref BruteAIData agentData, out Entity newAttackTarget, out fix2 newAttackPosition)
     {
-        // TDLR: Search for enemy within range (no line of sight required)
-        fix2 pawnPos = GetComponent<FixTranslation>(agentPawn);
-        int2 agentTile = Helpers.GetTile(pawnPos);
-
-        Entity closest = Entity.Null;
-        fix closestDist = fix.MaxValue;
-        int2 closestTile = default;
-
-        foreach (var enemy in _attackableEntities)
+        ActorWorld.PawnSightQueryInput input = new ActorWorld.PawnSightQueryInput()
         {
-            // Find enemy controller in other teams
-            Entity enemyController = CommonReads.GetPawnController(Accessor, enemy);
+            ExcludeDead = true,
+            ExcludeTeam = agentCache.Team,
+            EyeLocation = agentCache.PawnPosition + SimulationGameConstants.AIEyeOffset,
+            SightRange = SimulationGameConstants.AISightDistance,
+            TileWorld = globalCache.TileWorld
+        };
 
-            if (enemyController == Entity.Null)
-                continue;
+        globalCache.TargetBuffer.Clear();
+        globalCache.ActorWorld.FindAllPawnsInSight(input, globalCache.TargetBuffer);
 
-            if (!TryGetComponent(enemyController, out Team enemyTeam))
+        // If the brute has spotted an enemy once, it can track it through walls (compensates for lack of memory)
+        {
+            int previousTargetPawnIndex = globalCache.ActorWorld.GetPawnIndex(agentData.AttackTarget);
+            if (previousTargetPawnIndex != -1)
             {
-                continue;
+                ref ActorWorld.Pawn previousTargetPawn = ref globalCache.ActorWorld.GetPawn(previousTargetPawnIndex);
+                if (previousTargetPawn.Team != agentCache.Team && !previousTargetPawn.Dead)
+                {
+                    globalCache.TargetBuffer.AddUnique(previousTargetPawnIndex);
+                }
             }
+        }
 
-            if (enemyTeam == controllerTeam)
-                continue;
+        int closestEnemy = -1;
+        fix closestDist = fix.MaxValue;
+        fix2 closestAttackPosition = default;
 
-            int2 enemyTile = Helpers.GetTile(_positions[enemy].Value);
+        foreach (int enemyIndex in globalCache.TargetBuffer)
+        {
+            ref var enemy = ref globalCache.ActorWorld.GetPawn(enemyIndex);
+
+            int2 enemyTile = enemy.Tile;
+
             // try find path to enemy
-            if (!Pathfinding.FindNavigablePath(Accessor, agentTile, enemyTile, maxLength: AGGRO_WALK_RANGE, _path))
+            if (!Pathfinding.FindNavigablePath(globalCache.TileWorld, agentCache.PawnTile, enemyTile, maxLength: Pathfinding.MAX_PATH_LENGTH, globalCache.PathBuffer))
             {
                 continue;
             }
 
             // If distance is closer, record enemy
-            fix dist = Pathfinding.CalculateTotalCost(_path.Slice());
-            if (dist <= AGGRO_WALK_RANGE && dist < closestDist)
+            fix dist = Pathfinding.CalculateTotalCost(globalCache.PathBuffer.Slice());
+            if (dist < closestDist)
             {
-                closest = enemy;
+                closestEnemy = enemyIndex;
                 closestDist = dist;
-                closestTile = enemyTile;
+                closestAttackPosition = globalCache.PathBuffer.Length >= 2 ? Helpers.GetTileCenter(globalCache.PathBuffer[globalCache.PathBuffer.Length - 2]) : agentCache.PawnPosition;
             }
         }
 
         // Change state!
-        if (closest != Entity.Null)
+        if (closestEnemy != -1)
         {
-            agentData.AttackTarget = closest;
-
-            if (mathX.lengthmanhattan(closestTile - agentTile) == 1)
-            {
-                agentData.State = BruteAIState.Attack;
-            }
-            else
-            {
-                agentData.State = BruteAIState.PositionForAttack;
-            }
-        }
-    }
-
-    private bool IsReadyToAct(fix time, Entity controller, Team team, BruteAIData agentData, ControlledEntity pawn)
-    {
-        if (time < agentData.NoActionUntilTime)
-        {
-            return false;
+            ref var enemy = ref globalCache.ActorWorld.GetPawn(closestEnemy);
+            newAttackTarget = enemy.Entity;
+            newAttackPosition = closestAttackPosition;
+            return true;
         }
 
-        if (EntityManager.TryGetBuffer(pawn, out DynamicBuffer<PathPosition> path) && path.Length > 0)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    private bool Act(Entity controller, Team team, ref BruteAIData agentData, ControlledEntity pawn)
-    {
-        switch (agentData.State)
-        {
-            case BruteAIState.Patrol:
-                return Act_Patrol(controller, team, ref agentData, pawn);
-
-            case BruteAIState.PositionForAttack:
-                return Act_PositionForAttack(controller, team, ref agentData, pawn);
-
-            case BruteAIState.Attack:
-                return Act_Attacking(controller, team, ref agentData, pawn);
-        }
-
+        newAttackTarget = default;
+        newAttackPosition = default;
         return false;
-    }
-
-    private bool Act_Patrol(Entity controller, Team team, ref BruteAIData agentData, ControlledEntity pawn)
-    {
-        int turnCount = CommonReads.GetTurn(Accessor);
-
-        // we don't move more than once per turn
-        if (turnCount == agentData.LastPatrolTurn)
-            return false;
-
-        agentData.LastPatrolTurn = turnCount;
-
-        // find random tile in 1 range
-        int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(pawn));
-
-        int2[] potentialDestinations = new int2[]
-        {
-            agentTile + int2(0,1),
-            agentTile + int2(0,-1),
-            agentTile + int2(1,0),
-            agentTile + int2(-1,0),
-        };
-
-        var random = World.Random();
-        random.Shuffle(potentialDestinations);
-
-        int2? destination = null;
-
-        foreach (var tile in potentialDestinations)
-        {
-            if (Pathfinding.FindNavigablePath(Accessor, agentTile, tile, maxLength: 1, _path))
-            {
-                destination = tile;
-                break;
-            }
-        }
-
-        if (destination.HasValue)
-        {
-            return CommonWrites.TryInputUseItem<GameActionMove>(Accessor, controller, destination.Value);
-        }
-
-        return false;
-    }
-
-    private bool Act_PositionForAttack(Entity controller, Team team, ref BruteAIData agentData, ControlledEntity pawn)
-    {
-        int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(pawn));
-        int2 enemyTile = Helpers.GetTile(GetComponent<FixTranslation>(agentData.AttackTarget));
-
-        int2[] potentialDestinations = new int2[]
-        {
-            enemyTile + int2(0,1),
-            enemyTile + int2(0,-1),
-            enemyTile + int2(1,0),
-            enemyTile + int2(-1,0),
-        };
-
-        int2? closestTile = null;
-        fix closestCost = fix.MaxValue;
-        fix closestMinimalMoveCost = default;
-
-        foreach (var tile in potentialDestinations)
-        {
-            if (Pathfinding.FindNavigablePath(Accessor, agentTile, tile, Pathfinding.MAX_PATH_LENGTH, _path))
-            {
-                fix cost = Pathfinding.CalculateTotalCost(_path.Slice());
-                if (cost < closestCost)
-                {
-                    closestTile = tile;
-                    closestCost = cost;
-
-                    // find cost to move 1 step
-                    closestMinimalMoveCost = Pathfinding.CalculateTotalCost(_path.Slice(0, min(2, _path.Length)));
-                }
-            }
-        }
-
-        if (closestTile == null)
-        {
-            return false;
-        }
-
-        // verify pawn has enough ap to move at least once
-        if (TryGetComponent(pawn, out ActionPoints ap) && ap.Value < closestMinimalMoveCost)
-        {
-            return false;
-        }
-
-        return CommonWrites.TryInputUseItem<GameActionMove>(Accessor, controller, closestTile.Value);
-    }
-
-    private bool Act_Attacking(Entity controller, Team team, ref BruteAIData agentData, ControlledEntity pawn)
-    {
-        fix2 targetPos = GetComponent<FixTranslation>(agentData.AttackTarget);
-
-        return CommonWrites.TryInputUseItem<GameActionMeleeAttack>(Accessor, controller, targetPos);
     }
 }

@@ -32,7 +32,7 @@ public class UpdateGridSystem : SimSystemBase
         {
             Size = float2(1, 1)
         };
-        CollisionFilter filter = CollisionFilter.FromLayer(SimulationGameConstants.PHYSICS_LAYER_TERRAIN);
+        CollisionFilter filter = CollisionFilter.FromLayer(SimulationGameConstants.Physics.LAYER_TERRAIN);
         PhysicsMaterial material = PhysicsMaterial.Default;
 
         _sharedTileCollider = Collider.Create(boxGeometry, filter, material);

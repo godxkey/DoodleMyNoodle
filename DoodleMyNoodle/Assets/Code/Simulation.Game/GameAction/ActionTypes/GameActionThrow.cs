@@ -58,6 +58,9 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
     {
+        bool orginateFromCenter = parameters.TryGetParameter(1, out GameActionParameterBool.Data paramOriginateFromCenter, warnIfFailed: false)
+            && paramOriginateFromCenter.Value;
+
         if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
         {
             // spawn projectile
@@ -75,7 +78,37 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
             fix inputSpeed = length(velocity);
             fix2 dir = inputSpeed < (fix)0.01 ? fix2(0, 1) : velocity / inputSpeed;
 
-            fix2 spawnPos = instigatorPos + GetSpawnPosOffset(accessor, projectileInstance, context.InstigatorPawn, dir, settings.SpawnExtraDistance);
+            fix2 spawnPos;
+            fix spawnDistance = GetSpawnDistance(accessor, projectileInstance, context.InstigatorPawn, settings.SpawnExtraDistance);
+
+            // When 'orginateFromCenter' is true, we simulate the projectile spawning at the center of the pawn.
+            // We adjust the start position and the start velocity to where the projectile will exit the spawn-distance
+            if (orginateFromCenter)
+            {
+                // Find how much the projectile will be affected by gravity
+                fix2 gravity = accessor.GetExistingSystem<PhysicsWorldSystem>().PhysicsWorld.StepSettings.GravityFix;
+                if (accessor.HasComponent<PhysicsGravity>(settings.ProjectilePrefab))
+                {
+                    gravity *= accessor.GetComponent<PhysicsGravity>(settings.ProjectilePrefab).ScaleFix;
+                }
+
+                // Calculate travel time to exit 'spawn-distance' zone
+                fix travelTime = Trajectory.TravelDurationApprox(velocity, gravity, spawnDistance + (fix)0.05 /* for extra safety*/, precision: (fix)0.005);
+
+                if (travelTime > 10) // travel time too long ? use normal spawnPos
+                {
+                    spawnPos = instigatorPos + spawnDistance * dir;
+                }
+                else
+                {
+                    spawnPos = Trajectory.Position(instigatorPos, velocity, gravity, travelTime);
+                    velocity = Trajectory.Velocity(velocity, gravity, travelTime);
+                }
+            }
+            else
+            {
+                spawnPos = instigatorPos + spawnDistance * dir;
+            }
 
             accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(velocity + instigatorVel));
             accessor.SetOrAddComponent(projectileInstance, new FixTranslation(spawnPos));
@@ -86,14 +119,13 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         return false;
     }
 
-    private fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, Entity projectile, Entity instigator, fix2 direction, fix extraDistance)
+    private fix GetSpawnDistance(ISimWorldReadAccessor accessor, Entity projectile, Entity instigator, fix extraDistance)
     {
         fix projectileRadius = CommonReads.GetActorRadius(accessor, projectile);
         fix instigatorRadius = CommonReads.GetActorRadius(accessor, instigator);
 
-        return direction * (instigatorRadius + projectileRadius + (fix)0.05f + extraDistance);
+        return instigatorRadius + projectileRadius + (fix)0.05f + extraDistance;
     }
-
 
     #region Used by presentation
     // used by presentation
@@ -101,7 +133,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
     {
         Settings settings = accessor.GetComponent<Settings>(context.Item);
 
-        return GetSpawnPosOffset(accessor, settings.ProjectilePrefab, context.InstigatorPawn, direction, settings.SpawnExtraDistance);
+        return direction * GetSpawnDistance(accessor, settings.ProjectilePrefab, context.InstigatorPawn, settings.SpawnExtraDistance);
     }
 
     // used by presentation

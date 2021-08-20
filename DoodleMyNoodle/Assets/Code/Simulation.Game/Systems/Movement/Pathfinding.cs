@@ -255,7 +255,11 @@ public static class Pathfinding
 
     public static bool FindNavigablePath(ISimWorldReadAccessor accessor, int2 start, int2 goal, fix maxLength, NativeList<int2> result)
     {
-        Profiler.BeginSample("Pathfinding");
+        return FindNavigablePath(CommonReads.GetTileWorld(accessor), start, goal, maxLength, result);
+    }
+
+    public static bool FindNavigablePath(TileWorld tileWorld, int2 start, int2 goal, fix maxLength, NativeList<int2> result)
+    {
         result.Clear();
 
         if (maxLength > MAX_PATH_LENGTH)
@@ -267,16 +271,12 @@ public static class Pathfinding
         if (start.Equals(goal))
         {
             result.Add(goal);
-            Profiler.EndSample();
             return true;
         }
-
-        TileWorld tileWorld = CommonReads.GetTileWorld(accessor);
 
         // Destination cannot be reached
         if (lengthmanhattan(start - goal) > maxLength || !tileWorld.CanStandOn(goal))
         {
-            Profiler.EndSample();
             return false;
         }
 
@@ -372,8 +372,6 @@ public static class Pathfinding
         cameFrom.Dispose();
         gScore.Dispose();
         fScore.Dispose();
-
-        Profiler.EndSample();
         return pathFound;
     }
 
@@ -415,9 +413,15 @@ public static class Pathfinding
     private static void get_neighbors_standOn(int2 tile, NativeList<int2> neighbors, TileWorld tileWorld)
     {
         neighbors.Clear();
-        for (int i = 0; i < s_directionVectors.Length; i++)
+
+        checkNeighbor(int2(0, 1));
+        checkNeighbor(int2(1, 0));
+        checkNeighbor(int2(0, -1));
+        checkNeighbor(int2(-1, 0));
+
+        void checkNeighbor(int2 dir)
         {
-            int2 neighborPos = tile + s_directionVectors[i];
+            int2 neighborPos = tile + dir;
 
             if (tileWorld.CanStandOn(neighborPos))
             {

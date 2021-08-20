@@ -12,7 +12,6 @@ public class BruteAIAuth : AIAuth, IConvertGameObjectToEntity
 
         dstManager.AddComponentData(entity, new BruteAIData()
         {
-            State = BruteAIState.Patrol
         });
     }
 }

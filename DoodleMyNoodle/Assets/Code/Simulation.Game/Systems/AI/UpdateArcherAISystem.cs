@@ -1,13 +1,11 @@
 using CCC.Fix2D;
 using CCC.Fix2D.Debugging;
-using System;
+using Unity.Burst;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Profiling;
-using UnityEngine;
-using UnityEngine.Profiling;
-using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 using static Unity.MathematicsX.mathX;
@@ -15,26 +13,12 @@ using Collider = CCC.Fix2D.Collider;
 
 public struct ArcherAIData : IComponentData
 {
-    public ArcherAIState State;
     public Entity AttackTarget;
-    public fix2 ShootPosition;
-    public fix NoActionUntilTime;
-    public int LastPatrolTurn;
 }
 
-public enum ArcherAIState
-{
-    Patrol,
-    PositionForAttack,
-    Attack
-}
-
-[UpdateInGroup(typeof(AISystemGroup))]
+[UpdateInGroup(typeof(SpecificAISystemGroup))]
 public class UpdateArcherAISystem : SimSystemBase
 {
-    public static fix DETECT_RANGE => 10;
-    public static fix2 PAWN_EYES_OFFSET => fix2(0, fix(0.15));
-
     public struct GlobalCache
     {
         public ProfileMarkers ProfileMarkers;
@@ -46,6 +30,11 @@ public class UpdateArcherAISystem : SimSystemBase
         public NativeList<int2> ShootingPositions;
         public NativeList<Entity> ShootingTargets;
         public NativeQueue<Pathfinding.TileCostPair> FloodSearchBuffer;
+        public FixRandom Random;
+        public int TurnCount;
+        public NativeList<int2> PathBuffer;
+        public fix Time;
+        public Team CurrentTurnTeam;
     }
 
     public struct AgentCache
@@ -57,22 +46,20 @@ public class UpdateArcherAISystem : SimSystemBase
         public fix2 PawnPosition => PawnData.Position;
         public int2 PawnTile => Helpers.GetTile(PawnPosition);
         public BlobAssetReference<Collider> ItemProjectileCollider;
+        public fix2 ItemProjectileGravity;
+        public fix ThrowMinSpeed;
+        public fix ThrowMaxSpeed;
     }
 
-    private EntityQuery _attackableGroup;
-
-    // used in debug display, todo: make this better!
-    public static NativeList<int2> _path;
-    public static NativeList<int2> _shootingPositions;
-    public static NativeList<Entity> _shootingTargets;
-
+    private NativeList<int2> _path;
+    private NativeList<int2> _shootingPositions;
+    private NativeList<Entity> _shootingTargets;
     private NativeList<int> _targetBuffer;
     private NativeQueue<Pathfinding.TileCostPair> _floodSearchBuffer;
     private PhysicsDebugStreamSystem _debugDrawSystem;
     private PhysicsWorldSystem _physicsWorldSystem;
     private UpdateActorWorldSystem _updateActorWorldSystem;
     private ProfileMarkers _profileMarkers;
-
 
     public struct ProfileMarkers
     {
@@ -81,8 +68,13 @@ public class UpdateArcherAISystem : SimSystemBase
         public ProfilerMarker FindPawnsInSight;
         public ProfilerMarker FloodSearch;
         public ProfilerMarker UpdateMentalState;
-        public ProfilerMarker TryAct;
         public ProfilerMarker CanShootAnyTargetsFromTilePredicate;
+    }
+
+    private struct ShootRequest
+    {
+        public Entity Controller;
+        public fix2 ShootVector;
     }
 
     protected override void OnCreate()
@@ -96,7 +88,6 @@ public class UpdateArcherAISystem : SimSystemBase
             FindPawnsInSight = new ProfilerMarker("UpdateArcherAISystem.FindPawnsInSight"),
             FloodSearch = new ProfilerMarker("UpdateArcherAISystem.FloodSearch"),
             UpdateMentalState = new ProfilerMarker("UpdateArcherAISystem.UpdateMentalState"),
-            TryAct = new ProfilerMarker("UpdateArcherAISystem.TryAct"),
             CanShootAnyTargetsFromTilePredicate = new ProfilerMarker("UpdateArcherAISystem.CanShootAnyTargetsFromTilePredicate"),
         };
 
@@ -108,11 +99,6 @@ public class UpdateArcherAISystem : SimSystemBase
         _shootingTargets = new NativeList<Entity>(Allocator.Persistent);
         _path = new NativeList<int2>(Allocator.Persistent);
         _floodSearchBuffer = new NativeQueue<Pathfinding.TileCostPair>(Allocator.Persistent);
-        _attackableGroup = EntityManager.CreateEntityQuery(
-            ComponentType.ReadOnly<Health>(),
-            ComponentType.ReadOnly<Controllable>(),
-            ComponentType.ReadOnly<FixTranslation>(),
-            ComponentType.Exclude<DeadTag>());
 
         RequireSingletonForUpdate<GridInfo>();
     }
@@ -125,7 +111,6 @@ public class UpdateArcherAISystem : SimSystemBase
         _shootingPositions.Dispose();
         _shootingTargets.Dispose();
         _path.Dispose();
-        _attackableGroup.Dispose();
         _floodSearchBuffer.Dispose();
     }
 
@@ -143,147 +128,187 @@ public class UpdateArcherAISystem : SimSystemBase
             ShootingPositions = _shootingPositions,
             ShootingTargets = _shootingTargets,
             FloodSearchBuffer = _floodSearchBuffer,
-            ProfileMarkers = _profileMarkers
+            ProfileMarkers = _profileMarkers,
+            Random = World.Random(),
+            TurnCount = CommonReads.GetTurn(Accessor),
+            PathBuffer = _path,
+            CurrentTurnTeam = CommonReads.GetTurnTeam(Accessor),
+            Time = Time.ElapsedTime,
         };
 
         globalCache.ProfileMarkers.UpdateMentalState.Begin();
 
+        NativeList<ShootRequest> shootRequests = new NativeList<ShootRequest>(Allocator.TempJob);
+
         Entities
-            .ForEach((Entity controller, ref ArcherAIData agentData, in ControlledEntity pawn) =>
-        {
-            AgentCache agentCache = new AgentCache()
+            .ForEach((Entity controller, ref ArcherAIData agentData, ref AIDestination aiDestination, ref ReadyForNextTurn readyForNextTurn, ref AIActionCooldown actionCooldown,
+                in AIPlaysThisFrameToken playsThisFrameToken, in ControlledEntity pawn) =>
             {
-                Controller = controller,
-                PawnData = globalCache.ActorWorld.GetPawn(globalCache.ActorWorld.GetPawnIndex(pawn)),
-            };
+                if (!playsThisFrameToken)
+                    return;
 
-            // Find throw item collider
-            {
-                var pawnInventory = GetBuffer<InventoryItemReference>(pawn);
-                var throwActionId = GameActionBank.GetActionId<GameActionThrow>();
-                Entity throwItem = Entity.Null;
-                for (int i = 0; i < pawnInventory.Length; i++)
+                AgentCache agentCache = new AgentCache()
                 {
-                    if (GetComponent<GameActionId>(pawnInventory[i].ItemEntity) == throwActionId)
-                    {
-                        throwItem = pawnInventory[i].ItemEntity;
-                        break;
-                    }
-                }
+                    Controller = controller,
+                    PawnData = globalCache.ActorWorld.GetPawn(globalCache.ActorWorld.GetPawnIndex(pawn)),
+                    ItemProjectileGravity = globalCache.PhysicsWorld.StepSettings.GravityFix,
+                    ThrowMaxSpeed = fix.MaxValue,
+                    ThrowMinSpeed = fix.MinValue
+                };
 
-                if (throwItem != Entity.Null)
+                // Find throw item collider
                 {
-                    var projectilePrefab = GetComponent<GameActionThrow.Settings>(throwItem).ProjectilePrefab;
-                    if (HasComponent<PhysicsColliderBlob>(projectilePrefab))
+                    var pawnInventory = GetBuffer<InventoryItemReference>(pawn);
+                    var throwActionId = GameActionBank.GetActionId<GameActionThrow>();
+                    Entity throwItem = Entity.Null;
+                    for (int i = 0; i < pawnInventory.Length; i++)
                     {
-                        agentCache.ItemProjectileCollider = GetComponent<PhysicsColliderBlob>(projectilePrefab).Collider;
-                    }
-                }
-            }
-
-            // Clear previous target
-            {
-                bool clearPreviousTarget = true;
-                if (agentData.AttackTarget != Entity.Null)
-                {
-                    if (HasComponent<FixTranslation>(agentData.AttackTarget))
-                    {
-                        fix2 previousTargetPos = GetComponent<FixTranslation>(agentData.AttackTarget);
-
-                        if (distancesq(previousTargetPos, agentCache.PawnPosition) < SimulationGameConstants.AISightDistanceSq)
+                        if (GetComponent<GameActionId>(pawnInventory[i].ItemEntity) == throwActionId)
                         {
-                            clearPreviousTarget = false;
+                            throwItem = pawnInventory[i].ItemEntity;
+                            break;
+                        }
+                    }
+
+                    if (throwItem != Entity.Null)
+                    {
+                        var throwSettings = GetComponent<GameActionThrow.Settings>(throwItem);
+
+                        agentCache.ThrowMinSpeed = throwSettings.SpeedMin;
+                        agentCache.ThrowMaxSpeed = throwSettings.SpeedMax;
+
+                        var projectilePrefab = throwSettings.ProjectilePrefab;
+                        if (HasComponent<PhysicsColliderBlob>(projectilePrefab))
+                        {
+                            agentCache.ItemProjectileCollider = GetComponent<PhysicsColliderBlob>(projectilePrefab).Collider;
+                        }
+
+                        if (HasComponent<PhysicsGravity>(projectilePrefab))
+                        {
+                            agentCache.ItemProjectileGravity *= GetComponent<PhysicsGravity>(projectilePrefab).ScaleFix;
                         }
                     }
                 }
 
-                if (clearPreviousTarget)
+                // Clear previous target
                 {
-                    agentData.AttackTarget = Entity.Null;
-                }
-            }
-
-            // Find new most suitable target
-            {
-                if (FindTargetAndShootPos(ref globalCache, ref agentCache, ref agentData, out Entity newAttackTarget, out fix2 newShootPosition))
-                {
-                    agentData.AttackTarget = newAttackTarget;
-                    agentData.ShootPosition = newShootPosition;
-
-                    if (all(almostEqual(agentCache.PawnPosition, newShootPosition, epsilon: fix(0.1))))
+                    bool clearPreviousTarget = true;
+                    if (agentData.AttackTarget != Entity.Null)
                     {
-                        agentData.State = ArcherAIState.Attack;
+                        if (HasComponent<FixTranslation>(agentData.AttackTarget))
+                        {
+                            fix2 previousTargetPos = GetComponent<FixTranslation>(agentData.AttackTarget);
+
+                            if (distancesq(previousTargetPos, agentCache.PawnPosition) < SimulationGameConstants.AISightDistanceSq)
+                            {
+                                clearPreviousTarget = false;
+                            }
+                        }
+                    }
+
+                    if (clearPreviousTarget)
+                    {
+                        agentData.AttackTarget = Entity.Null;
+                    }
+                }
+
+                // Find new most suitable target
+                {
+                    if (FindTargetAndShootPos(ref globalCache, ref agentCache, ref agentData, out Entity newAttackTarget, out fix2 newShootPosition))
+                    {
+                        SetComponent<AIState>(controller, AIStateEnum.Combat);
+                        agentData.AttackTarget = newAttackTarget;
+
+                        if (all(almostEqual(agentCache.PawnPosition, newShootPosition, epsilon: fix(0.1))))
+                        {
+                            aiDestination.HasDestination = false;
+                            actionCooldown.NoActionUntilTime = globalCache.Time + SimulationGameConstants.AIPauseDurationAfterShoot;
+
+                            fix2 d = GetComponent<FixTranslation>(agentData.AttackTarget) - agentCache.PawnPosition;
+                            fix2 dir = normalize(d);
+                            fix2 shootVector;
+
+                            if (agentCache.ItemProjectileGravity == fix2.zero)
+                            {
+                                shootVector = SimulationGameConstants.AIShootSpeedIfNoGravity * dir;
+                            }
+                            else
+                            {
+                                shootVector = fixMath.Trajectory.SmallestLaunchVelocity(d.x, d.y, agentCache.ItemProjectileGravity);
+                            }
+
+                            Helpers.AI.FuzzifyThrow(ref shootVector, ref globalCache.Random);
+
+                            shootRequests.Add(new ShootRequest()
+                            {
+                                Controller = controller,
+                                ShootVector = shootVector,
+                            });
+                        }
+                        else
+                        {
+                            aiDestination.HasDestination = true;
+                            aiDestination.Position = newShootPosition;
+
+                            // If no more AP => readyForNextTurn
+                            if (GetComponent<MoveEnergy>(pawn).Value <= 0 && GetComponent<ActionPoints>(pawn) == 0)
+                                readyForNextTurn.Value = true;
+                        }
                     }
                     else
                     {
-                        agentData.State = ArcherAIState.PositionForAttack;
+                        SetComponent<AIState>(controller, AIStateEnum.Patrol);
+                        // patrol is handled by generic system
                     }
                 }
-                else
-                {
-                    agentData.State = ArcherAIState.Patrol;
-                }
+            }).Schedule();
+
+        Dependency.Complete();
+
+        foreach (var item in shootRequests)
+        {
+            var shootVecArg = new GameActionParameterVector.Data(item.ShootVector);
+            var originateFromCenter = new GameActionParameterBool.Data(true);
+
+            bool success = CommonWrites.TryInputUseItem<GameActionThrow>(Accessor, item.Controller, shootVecArg, originateFromCenter);
+
+            if (!success)
+            {
+                SetComponent<ReadyForNextTurn>(item.Controller, true);
             }
-        }).Schedule();
+        }
+
+        shootRequests.Dispose();
 
         globalCache.ProfileMarkers.UpdateMentalState.End();
-
-        int currentTeam = CommonReads.GetTurnTeam(Accessor);
-        fix time = Time.ElapsedTime;
-
-        globalCache.ProfileMarkers.TryAct.Begin();
-        Entities
-            .ForEach((Entity controller, ref ReadyForNextTurn readyForNextTurn, ref ArcherAIData agentData, in ControlledEntity pawn, in Team team) =>
-            {
-                // Can the corresponding team play ?
-                if (team.Value != currentTeam)
-                {
-                    return;
-                }
-
-                // have we already said 'ready for next turn' ?
-                if (readyForNextTurn)
-                {
-                    return;
-                }
-
-                // wait until ready for action
-                if (!IsReadyToAct(time, controller, team, agentData, pawn))
-                {
-                    return;
-                }
-
-                if (Act(controller, team, ref agentData, pawn))
-                {
-                    agentData.NoActionUntilTime = time + 1;
-                }
-                else
-                {
-                    readyForNextTurn.Value = true;
-                }
-            }).WithoutBurst().Run();
-        globalCache.ProfileMarkers.TryAct.End();
     }
 
-    private struct CanShootAnyTargetsFromTilePredicate : ITilePredicate
+    private unsafe struct CanShootAnyTargetsFromTilePredicate : ITilePredicate
     {
-        public GlobalCache GlobalCache;
+        public void* GlobalCachePtr;
+        public void* AgentCachePtr;
 
         public NativeList<int> Targets;
-        public AgentCache AgentCache;
 
         public Entity ResultTarget;
 
         public bool Evaluate(int2 tile)
         {
-            using (GlobalCache.ProfileMarkers.CanShootAnyTargetsFromTilePredicate.Auto())
+            return Evaluate(Helpers.GetTileCenter(tile));
+        }
+
+        public bool Evaluate(fix2 position)
+        {
+            var globalCache = UnsafeUtility.AsRef<GlobalCache>(GlobalCachePtr);
+            var agentCache = UnsafeUtility.AsRef<AgentCache>(AgentCachePtr);
+
+            using (globalCache.ProfileMarkers.CanShootAnyTargetsFromTilePredicate.Auto())
             {
-                var tilePos = Helpers.GetTileCenter(tile);
                 foreach (int pawnIndex in Targets)
                 {
-                    ref ActorWorld.Pawn enemyData = ref GlobalCache.ActorWorld.GetPawn(pawnIndex);
+                    ref ActorWorld.Pawn enemyData = ref globalCache.ActorWorld.GetPawn(pawnIndex);
 
-                    if (CanShoot(ref GlobalCache.PhysicsWorld, ref AgentCache, tilePos, ref enemyData))
+                    if (CanShoot(ref globalCache.PhysicsWorld, ref agentCache, position, ref enemyData))
                     {
                         ResultTarget = enemyData.Entity;
                         return true;
@@ -330,7 +355,7 @@ public class UpdateArcherAISystem : SimSystemBase
             {
                 Start = (float2)(shootStartPos + dir * fix(0.7)),
                 End = (float2)(targetPos - dir * fix(0.7)),
-                Filter = CollisionFilter.FromLayers(SimulationGameConstants.PHYSICS_LAYER_TERRAIN, SimulationGameConstants.PHYSICS_LAYER_CHARACTER)
+                Filter = SimulationGameConstants.Physics.CharactersAndTerrainFilter.Data,
             };
 
             if (!physicsWorld.CastRay(input))
@@ -378,37 +403,33 @@ public class UpdateArcherAISystem : SimSystemBase
             }
         }
 
-        // For all targets in sight, check if we can shoot it right now
-        using (globalCache.ProfileMarkers.CheckIfCanShootNow.Auto())
-        {
-            for (int i = 0; i < globalCache.TargetBuffer.Length; i++)
-            {
-                ref ActorWorld.Pawn targetData = ref globalCache.ActorWorld.GetPawn(globalCache.TargetBuffer[i]);
-
-                if (CanShoot(ref globalCache.PhysicsWorld, ref agentCache, agentCache.PawnPosition, ref targetData))
-                {
-                    resultAttackTarget = targetData.Entity;
-                    resultShootPosition = agentCache.PawnPosition;
-                    return true;
-                }
-            }
-        }
-
         if (globalCache.TargetBuffer.Length == 0)
         {
             return false;
         }
 
+        var predicate = new CanShootAnyTargetsFromTilePredicate()
+        {
+            Targets = globalCache.TargetBuffer,
+            AgentCachePtr = UnsafeUtility.AddressOf(ref agentCache),
+            GlobalCachePtr = UnsafeUtility.AddressOf(ref globalCache)
+        };
+
+        // For all targets in sight, check if we can shoot it right now
+        using (globalCache.ProfileMarkers.CheckIfCanShootNow.Auto())
+        {
+            // Check if we can shoot it right now
+            if (predicate.Evaluate(agentCache.PawnPosition))
+            {
+                resultAttackTarget = predicate.ResultTarget;
+                resultShootPosition = agentCache.PawnPosition;
+                return true;
+            }
+        }
+
         // Using a flood fill, search for any position from which we can shoot a target. This will naturally return the closest tile
         using (globalCache.ProfileMarkers.FloodSearch.Auto())
         {
-            var predicate = new CanShootAnyTargetsFromTilePredicate()
-            {
-                Targets = globalCache.TargetBuffer,
-                AgentCache = agentCache,
-                GlobalCache = globalCache
-            };
-
             if (Pathfinding.NavigableFloodSearch(globalCache.TileWorld,
                                                  agentCache.PawnTile,
                                                  SimulationGameConstants.AISearchForPositionMaxCost,
@@ -423,108 +444,5 @@ public class UpdateArcherAISystem : SimSystemBase
         }
 
         return false;
-    }
-
-    private bool IsReadyToAct(fix time, Entity controller, Team team, ArcherAIData agentData, ControlledEntity pawn)
-    {
-        if (time < agentData.NoActionUntilTime)
-        {
-            return false;
-        }
-
-        if (EntityManager.TryGetBuffer(pawn, out DynamicBuffer<PathPosition> path) && path.Length > 0)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    private bool Act(Entity controller, Team team, ref ArcherAIData agentData, ControlledEntity pawn)
-    {
-        switch (agentData.State)
-        {
-            case ArcherAIState.Patrol:
-                return Act_Patrol(controller, team, ref agentData, pawn);
-
-            case ArcherAIState.PositionForAttack:
-                return Act_PositionForAttack(controller, team, ref agentData, pawn);
-
-            case ArcherAIState.Attack:
-                return Act_Attacking(controller, team, ref agentData, pawn);
-        }
-
-        return false;
-    }
-
-    private bool Act_Patrol(Entity controller, Team team, ref ArcherAIData agentData, ControlledEntity pawn)
-    {
-        int turnCount = CommonReads.GetTurn(Accessor);
-
-        // we don't move more than once per turn
-        if (turnCount == agentData.LastPatrolTurn)
-            return false;
-
-        agentData.LastPatrolTurn = turnCount;
-
-        // find random tile in 1 range
-        int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(pawn));
-
-        int2[] potentialDestinations = new int2[]
-        {
-            agentTile + int2(0,1),
-            agentTile + int2(0,-1),
-            agentTile + int2(1,0),
-            agentTile + int2(-1,0),
-        };
-
-        var random = World.Random();
-        random.Shuffle(potentialDestinations);
-
-        int2? destination = null;
-
-        foreach (var tile in potentialDestinations)
-        {
-            if (Pathfinding.FindNavigablePath(Accessor, agentTile, tile, maxLength: 1, _path))
-            {
-                destination = tile;
-                break;
-            }
-        }
-
-        if (destination.HasValue)
-        {
-            return CommonWrites.TryInputUseItem<GameActionMove>(Accessor, controller, destination.Value);
-        }
-
-        return false;
-    }
-
-    private bool Act_PositionForAttack(Entity controller, Team team, ref ArcherAIData agentData, ControlledEntity pawn)
-    {
-        int2 agentTile = Helpers.GetTile(GetComponent<FixTranslation>(pawn));
-        fix minimalMoveCost = default;
-
-        if (Pathfinding.FindNavigablePath(Accessor, agentTile, Helpers.GetTile(agentData.ShootPosition), Pathfinding.MAX_PATH_LENGTH, _path))
-        {
-            minimalMoveCost = Pathfinding.CalculateTotalCost(_path.Slice(0, min(2, _path.Length)));
-        }
-
-        // verify pawn has enough ap to move at least once
-        if (TryGetComponent(pawn, out ActionPoints ap) && ap.Value < minimalMoveCost)
-        {
-            return false;
-        }
-
-        return CommonWrites.TryInputUseItem<GameActionMove>(Accessor, controller, agentData.ShootPosition);
-    }
-
-    private bool Act_Attacking(Entity controller, Team team, ref ArcherAIData agentData, ControlledEntity pawn)
-    {
-        fix2 dir = normalize(GetComponent<FixTranslation>(agentData.AttackTarget) - agentData.ShootPosition);
-
-        var gameActionArg = new GameActionParameterVector.Data(dir * 5); // hard coded speed at 3 for now
-
-        return CommonWrites.TryInputUseItem<GameActionThrow>(Accessor, controller, gameActionArg);
     }
 }
