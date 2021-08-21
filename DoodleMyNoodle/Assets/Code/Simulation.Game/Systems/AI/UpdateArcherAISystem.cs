@@ -237,7 +237,7 @@ public class UpdateArcherAISystem : SimSystemBase
                                 shootVector = fixMath.Trajectory.SmallestLaunchVelocity(d.x, d.y, agentCache.ItemProjectileGravity);
                             }
 
-                            Helpers.AI.FuzzifyThrow(ref shootVector, ref globalCache.Random);
+                            Helpers.AI.FuzzifyThrow(ref shootVector, ref globalCache.Random, GetComponent<AIFuzzyThrowSettings>(controller));
 
                             shootRequests.Add(new ShootRequest()
                             {

@@ -33,7 +33,7 @@ PrefabInstance:
         type: 3}
       propertyPath: StartingItems.Array.data[1].Item
       value: 
-      objectReference: {fileID: 2784291058542494111, guid: 6e7aacf3548575a419264c801ec2a0d9,
+      objectReference: {fileID: 2784291058542494111, guid: 5ec303c45ea534846b16e38711b73617,
         type: 3}
     - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
@@ -108,7 +108,7 @@ PrefabInstance:
     - target: {fileID: 4951368162375339519, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: m_Name
-      value: SE_BaseCharacter_Archer
+      value: SE_Char_Archer_Noob
       objectReference: {fileID: 0}
     - target: {fileID: 5072555852515810054, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
