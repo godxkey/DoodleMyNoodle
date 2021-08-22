@@ -5,14 +5,10 @@ using System.Collections.Generic;
 
 public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDisplaySystem>
 {
-    public VFXDefinition DamageImpactVFX;
-
     public override void OnPostSimulationTick()
     {
         Cache.SimWorld.Entities.ForEach((ref DamageEventData damageApplyData) =>
         {
-            DamageImpactVFX?.TriggerVFX(new KeyValuePair<string, object>("Location", damageApplyData.Position.ToUnityVec()));
-
             if (BindedSimEntityManaged.InstancesMap.TryGetValue(damageApplyData.EntityDamaged, out GameObject presentationEntity) && presentationEntity)
             {
                 DoodleDisplay playerCharacterDoodleDisplay = presentationEntity.GetComponent<DoodleDisplay>();

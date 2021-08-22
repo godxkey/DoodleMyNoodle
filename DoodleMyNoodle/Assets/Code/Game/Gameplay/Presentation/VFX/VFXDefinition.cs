@@ -32,7 +32,7 @@ public class VFXDefinition : ScriptableObject
         Instantiate(VFXToSpawn);
     }
 
-    public T GetVFXData<T>(string dataTypeID)
+    protected T GetVFXData<T>(string dataTypeID)
     {
         foreach (KeyValuePair<string, object> data in Data)
         {
