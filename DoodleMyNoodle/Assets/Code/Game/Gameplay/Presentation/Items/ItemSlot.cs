@@ -156,11 +156,13 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     public virtual void PrimaryUseItemSlot()
     {
+        HideCostPreview();
         _onItemLeftClicked?.Invoke();
     }
 
     public virtual void SecondaryUseItemSlot()
     {
+        HideCostPreview();
         _onItemRightClicked?.Invoke();
     }
 }

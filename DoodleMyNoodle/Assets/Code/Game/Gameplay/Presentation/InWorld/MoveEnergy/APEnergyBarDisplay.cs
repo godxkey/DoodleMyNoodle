@@ -14,8 +14,8 @@ public class APEnergyBarDisplay : GameMonoBehaviour
     [SerializeField] private float HideDelayFromMovement = 1f;
 
     [SerializeField] private Slider EnergyBar = null;
+    [SerializeField] private Slider PreviewEnergyBar = null;
     [SerializeField] private Image EnergyBarSprite = null;
-    [SerializeField] private Image PrevewEnergyBarSprite = null;
     [SerializeField] private float PreviewFadeDuration = 1;
 
     private Sequence _sq;
@@ -35,20 +35,21 @@ public class APEnergyBarDisplay : GameMonoBehaviour
 
         EnergyBar.maxValue = maxValue;
         EnergyBar.value = value;
+
+        PreviewEnergyBar.maxValue = maxValue;
     }
 
     public void ShowPrevewAPEnergyCost(float value)
     {
-        if (PrevewEnergyBarSprite == null)
+        StopShowingPreview();
+
+        if (PreviewEnergyBar == null)
             return;
 
-        if (PrevewEnergyBarSprite.TryGetComponent(out RectTransform rect))
-        {
-            rect.anchorMax = new Vector2(value / EnergyBar.maxValue, 1);
-        }
-
+        PreviewEnergyBar.value = value;
         EnergyBarSprite.color = Color.red;
-        PrevewEnergyBarSprite.gameObject.SetActive(true);
+        PreviewEnergyBar.gameObject.SetActive(true);
+
         _sq = DOTween.Sequence();
         _sq.Join(EnergyBarSprite.DOFade(0, PreviewFadeDuration/2));
         _sq.Append(EnergyBarSprite.DOFade(1, PreviewFadeDuration/2));
@@ -60,7 +61,7 @@ public class APEnergyBarDisplay : GameMonoBehaviour
         EnergyBarSprite.color = _startColor;
         EnergyBarSprite.SetAlpha(1);
         _sq.Kill();
-        PrevewEnergyBarSprite.gameObject.SetActive(false);
+        PreviewEnergyBar.gameObject.SetActive(false);
     }
 
     private void Update()
