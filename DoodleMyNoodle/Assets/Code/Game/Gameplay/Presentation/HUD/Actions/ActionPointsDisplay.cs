@@ -19,9 +19,9 @@ public class ActionPointsDisplay : GamePresentationBehaviour
     {
         if (SimWorld.TryGetComponent(Cache.LocalPawn, out ActionPoints actions))
         {
-            if (SimWorld.TryGetComponent(Cache.LocalPawn, out MaximumInt<ActionPoints> maximumActions))
+            if (SimWorld.TryGetComponent(Cache.LocalPawn, out MaximumFix<ActionPoints> maximumActions))
             {
-                PresentationHelpers.ResizeGameObjectList(_actionPointElements, Mathf.Min(_maxDisplayedAP, maximumActions), _actionPointPrefab, transform);
+                PresentationHelpers.ResizeGameObjectList(_actionPointElements, Mathf.Min(_maxDisplayedAP, (int)maximumActions.Value), _actionPointPrefab, transform);
             }
 
             // Reset all & Set filled or available ones

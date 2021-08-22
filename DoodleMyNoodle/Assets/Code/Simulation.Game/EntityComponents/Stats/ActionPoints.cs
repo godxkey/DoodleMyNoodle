@@ -1,14 +1,14 @@
 ﻿using Unity.Entities;
 
-[assembly: RegisterGenericComponentType(typeof(MaximumInt<ActionPoints>))]
-[assembly: RegisterGenericComponentType(typeof(MinimumInt<ActionPoints>))]
+[assembly: RegisterGenericComponentType(typeof(MaximumFix<ActionPoints>))]
+[assembly: RegisterGenericComponentType(typeof(MinimumFix<ActionPoints>))]
 
-public struct ActionPoints : IComponentData, IStatInt
+public struct ActionPoints : IComponentData, IStatFix
 {
-    public int Value;
+    public fix Value;
 
-    int IStatInt.Value { get => Value; set => Value = value; }
+    fix IStatFix.Value { get => Value; set => Value = value; }
 
-    public static implicit operator int(ActionPoints val) => val.Value;
-    public static implicit operator ActionPoints(int val) => new ActionPoints() { Value = val };
+    public static implicit operator fix(ActionPoints val) => val.Value;
+    public static implicit operator ActionPoints(fix val) => new ActionPoints() { Value = val };
 }

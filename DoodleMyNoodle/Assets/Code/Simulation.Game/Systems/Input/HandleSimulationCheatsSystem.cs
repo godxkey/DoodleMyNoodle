@@ -200,21 +200,8 @@ public class HandleSimulationCheatsSystem : SimSystemBase
                 if (EntityManager.Exists(player) &&
                     EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
                 {
-                    EntityManager.SetComponentData(pawn, new MaximumInt<ActionPoints>() { Value = 999 });
+                    EntityManager.SetComponentData(pawn, new MaximumFix<ActionPoints>() { Value = 999 });
                     EntityManager.SetComponentData(pawn, new ActionPoints() { Value = 999 });
-                }
-                break;
-            }
-
-            case SimInputCheatInfiniteMoveEnergy moveEnergy:
-            {
-                Entity player = CommonReads.FindPlayerEntity(Accessor, moveEnergy.PlayerId);
-
-                if (EntityManager.Exists(player) &&
-                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
-                {
-                    EntityManager.SetComponentData(pawn, new MaximumFix<MoveEnergy>() { Value = 999999 });
-                    EntityManager.SetComponentData(pawn, new MoveEnergy() { Value = 999999 });
                 }
                 break;
             }

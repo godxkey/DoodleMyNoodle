@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &789226531472662068
 Transform:
   m_ObjectHideFlags: 0
@@ -51,10 +51,3 @@ MonoBehaviour:
   HideDelayFromMouse: 0.4
   HideDelayFromAPUsage: 1
   MaxAPToDisplay: 10
-  Displacement:
-    x:
-      RawValue: 429496736
-    y:
-      RawValue: 2899102976
-    z:
-      RawValue: 0

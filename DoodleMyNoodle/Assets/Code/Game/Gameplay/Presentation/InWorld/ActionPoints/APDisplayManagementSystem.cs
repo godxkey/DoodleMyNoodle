@@ -16,7 +16,7 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
     public int MaxAPToDisplay = 10;
 
     private List<GameObject> _APBarInstances = new List<GameObject>();
-    private Dictionary<Entity, int> EntitiesAP = new Dictionary<Entity, int>();
+    private Dictionary<Entity, fix> EntitiesAP = new Dictionary<Entity, fix>();
     private Dictionary<Entity, GameObject> EntitiesAPBar = new Dictionary<Entity, GameObject>();
 
     protected override void OnGamePresentationUpdate()
@@ -25,7 +25,7 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
 
         Team localPlayerTeam = Cache.LocalControllerTeam;
 
-        Cache.SimWorld.Entities.ForEach((Entity pawn, ref ActionPoints entityAP, ref MaximumInt<ActionPoints> entityMaximumAP, ref FixTranslation entityTranslation) =>
+        Cache.SimWorld.Entities.ForEach((Entity pawn, ref ActionPoints entityAP, ref MaximumFix<ActionPoints> entityMaximumAP, ref FixTranslation entityTranslation) =>
         {
             Entity pawnController = CommonReads.GetPawnController(Cache.SimWorld, pawn);
 
@@ -37,7 +37,7 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
 
             Team currentPawnTeam = Cache.SimWorld.GetComponent<Team>(pawnController);
 
-            SetOrAddAPBar(pawn, apBarAmount, entityTranslation.Value, entityMaximumAP.Value, entityAP.Value, localPlayerTeam.Value == currentPawnTeam.Value);
+            SetOrAddAPBar(pawn, apBarAmount, entityTranslation.Value, (float)entityMaximumAP.Value, (float)entityAP.Value, localPlayerTeam.Value == currentPawnTeam.Value);
 
             if (EntitiesAP.ContainsKey(pawn) && EntitiesAP[pawn] != entityAP.Value && EntitiesAPBar.ContainsKey(pawn))
             {
@@ -82,7 +82,7 @@ public class APDisplayManagementSystem : GamePresentationSystem<APDisplayManagem
         }
     }
 
-    private void SetOrAddAPBar(Entity entity, int index, fix3 position, int maxAP, int ap, bool friendly)
+    private void SetOrAddAPBar(Entity entity, int index, fix3 position, float maxAP, float ap, bool friendly)
     {
         GameObject currentAPBar;
         if (_APBarInstances.Count <= index)

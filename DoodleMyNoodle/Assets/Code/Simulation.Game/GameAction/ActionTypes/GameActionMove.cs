@@ -92,7 +92,7 @@ public class GameActionMove : GameAction<GameActionMove.Settings>
             return false;
         }
 
-        int userAP = accessor.GetComponent<ActionPoints>(context.InstigatorPawn);
+        fix userAP = accessor.GetComponent<ActionPoints>(context.InstigatorPawn);
 
         // Get the last reachable point considering the user's AP
         int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(path.AsArray().Slice(), userAP * settings.RangePerAP);
@@ -108,7 +108,7 @@ public class GameActionMove : GameAction<GameActionMove.Settings>
         // find AP cost
         int costToMove = ceilToInt(Pathfinding.CalculateTotalCost(path.Slice()) / settings.RangePerAP);
 
-        CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -costToMove);
+        CommonWrites.ModifyStatFix<ActionPoints>(accessor, context.InstigatorPawn, -costToMove);
 
         accessor.SetOrAddComponent(context.InstigatorPawn, new Destination() { Value = destinationPosition });
 

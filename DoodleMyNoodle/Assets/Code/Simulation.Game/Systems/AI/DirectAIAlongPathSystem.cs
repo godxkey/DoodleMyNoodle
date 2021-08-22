@@ -78,7 +78,7 @@ public class DirectAIAlongPathSystem : SimSystemBase
             {
                 if (moveInputLastFrame.WasAttemptingToMove && currentTeamTurn == team)
                 {
-                    if (HasComponent<MoveEnergy>(pawn) && GetComponent<MoveEnergy>(pawn).Value <= 0)
+                    if (HasComponent<ActionPoints>(pawn) && GetComponent<ActionPoints>(pawn).Value <= 0)
                     {
                         aisInNeedOfEnergy.Add(aiEntity);
                     }

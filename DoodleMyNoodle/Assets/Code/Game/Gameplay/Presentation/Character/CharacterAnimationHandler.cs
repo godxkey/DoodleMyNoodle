@@ -72,7 +72,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
         if (!_hasTriggeredAnAnimation) 
         {
-            if (SimWorld.TryGetComponent(SimEntity, out MoveInput input) && SimWorld.TryGetComponent(SimEntity, out MoveEnergy energy))
+            if (SimWorld.TryGetComponent(SimEntity, out MoveInput input) && SimWorld.TryGetComponent(SimEntity, out ActionPoints ap))
             {
                 if (SimWorld.TryGetComponent(SimEntity, out NavAgentFootingState navAgentFootingState))
                 {
@@ -80,7 +80,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                     {
                         case NavAgentFooting.Ground:
 
-                            if (input.Value.lengthSquared > (fix)(MinimumVelocityThreshold) && energy.Value > 0)
+                            if (input.Value.lengthSquared > (fix)(MinimumVelocityThreshold) && ap.Value > 0)
                             {
                                 HandleCharacterMovementAnimation(AnimationType.Walking);
                             }
@@ -93,7 +93,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
                         case NavAgentFooting.Ladder:
 
-                            if (input.Value.y == 0 || energy.Value <= 0)
+                            if (input.Value.y == 0 || ap.Value <= 0)
                             {
                                 HandleCharacterMovementAnimation(AnimationType.Idle);
                             }

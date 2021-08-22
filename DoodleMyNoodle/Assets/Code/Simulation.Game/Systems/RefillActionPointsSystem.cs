@@ -33,7 +33,7 @@ public class RefillActionPointsSystem : SimSystemBase
                             return;
                         }
 
-                        CommonWrites.ModifyStatInt<ActionPoints>(Accessor, pawn, actionPointsToAdd);
+                        CommonWrites.ModifyStatFix<ActionPoints>(Accessor, pawn, actionPointsToAdd);
                     }
                 })
                 .WithoutBurst()

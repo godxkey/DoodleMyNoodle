@@ -175,7 +175,7 @@ public abstract class GameAction
                 return false;
             }
 
-            if (ap < minApCost)
+            if (ap < (fix)minApCost)
             {
                 debugReason?.Set($"Pawn doesn't have enough ActionPoints (has {ap.Value}, need {minApCost}).");
                 return false;
@@ -210,11 +210,7 @@ public abstract class GameAction
 
     public void BeforeActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context)
     {
-        // hack can't move anymore after doing an action
-        if (!(this is GameActionBasicJump))
-        {
-            accessor.SetComponent(context.InstigatorPawn, new MoveEnergy() { Value = 0 });
-        }
+        
     }
 
     public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context, ResultData result)
@@ -228,7 +224,7 @@ public abstract class GameAction
         // reduce instigator AP
         if (accessor.TryGetComponent(context.Item, out GameActionSettingAPCost itemActionPointCost))
         {
-            CommonWrites.ModifyStatInt<ActionPoints>(accessor, context.InstigatorPawn, -itemActionPointCost.Value);
+            CommonWrites.ModifyStatFix<ActionPoints>(accessor, context.InstigatorPawn, -itemActionPointCost.Value);
         }
 
         // Cooldown
