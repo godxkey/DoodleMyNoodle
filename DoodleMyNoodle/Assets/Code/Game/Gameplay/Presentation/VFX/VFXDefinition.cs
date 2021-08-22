@@ -12,14 +12,22 @@ public class VFXDefinition : ScriptableObject
 
     protected List<KeyValuePair<string, object>> Data;
 
-    public void TriggerVFX(Entity entity, Transform spriteTransform, List<KeyValuePair<string, object>> vfxData)
+    public void TriggerVFX(List<KeyValuePair<string, object>> vfxData)
     {
         Data = vfxData;
 
-        OnTriggerVFX(entity, spriteTransform);
+        OnTriggerVFX();
     }
 
-    protected virtual void OnTriggerVFX(Entity entity, Transform spriteTransform) 
+    public void TriggerVFX(params KeyValuePair<string, object>[] vfxData)
+    {
+        List<KeyValuePair<string, object>> vfxData_List = new List<KeyValuePair<string, object>>(vfxData);
+        Data = vfxData_List;
+
+        OnTriggerVFX();
+    }
+
+    protected virtual void OnTriggerVFX() 
     {
         Instantiate(VFXToSpawn);
     }

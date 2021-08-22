@@ -8,7 +8,6 @@ using UnityEngineX;
 public abstract class AnimationDefinition : ScriptableObject
 {
     public float Duration;
-    public CharacterAnimationHandler.AnimationType Type;
 
     protected List<KeyValuePair<string, object>> Data;
 

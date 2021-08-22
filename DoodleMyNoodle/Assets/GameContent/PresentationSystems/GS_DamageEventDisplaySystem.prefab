@@ -46,3 +46,4 @@ MonoBehaviour:
   SystemSettings:
     Type: 1
     OnlineFlags: -1
+  DamageImpactVFX: {fileID: 0}

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 

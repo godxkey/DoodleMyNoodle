@@ -7,10 +7,10 @@ public class MeleeAttackVFXDefinition : VFXDefinition
     public Sprite WeaponSprite;
     public float DisplacementTowardsTarget = 1;
 
-    protected override void OnTriggerVFX(Entity entity, Transform spriteTransform)
+    protected override void OnTriggerVFX()
     {
         Vector3 DisplacementVector = GetVFXData<Vector2>("AttackVector").normalized * DisplacementTowardsTarget;
-        Vector3 endPos = spriteTransform.position + DisplacementVector;
+        Vector3 endPos = GetVFXData<Transform>("Transform").position + DisplacementVector;
 
         Vector2 attackDirection = GetVFXData<Vector2>("AttackVector");
         int AttackDirectionSign = 1;
