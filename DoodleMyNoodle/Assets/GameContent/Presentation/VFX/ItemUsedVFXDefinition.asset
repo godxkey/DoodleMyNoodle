@@ -9,7 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ab7b8734d0decc4ea450f111d1b6e15, type: 3}
-  m_Name: DefaultAirborneAnimation
+  m_Script: {fileID: 11500000, guid: b391521580a610b4a99dcbefa99865c0, type: 3}
+  m_Name: ItemUsedVFXDefinition
   m_EditorClassIdentifier: 
-  Duration: 0
+  Duration: 2
+  VFXToSpawn: {fileID: 976954550992547084, guid: 699053cbf5db0224c9d581fc6833d6a9,
+    type: 3}
+  DisplacementX: 0
+  DisplacementY: 0.6
