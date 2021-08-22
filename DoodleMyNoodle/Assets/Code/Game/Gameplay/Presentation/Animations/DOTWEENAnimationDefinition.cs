@@ -4,26 +4,23 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
-public class DOTWEENAnimationDefinition : AnimationDefinition
+public abstract class DOTWEENAnimationDefinition : AnimationDefinition
 {
-    private Dictionary<Entity, Sequence> _sequences = new Dictionary<Entity, Sequence>();
+    private Dictionary<Entity, Tween> _sequences = new Dictionary<Entity, Tween>();
 
     public override void InteruptAnimation(Entity entity)
     {
         if (_sequences.ContainsKey(entity))
         {
             _sequences[entity].Kill(true);
+            _sequences.Remove(entity);
         }
     }
 
     protected override void OnTriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
     {
-        Sequence sq = DOTween.Sequence();
-        _sequences.SetOrAdd(entity, GetDOTWEENAnimationSequence(sq, entity, spriteStartPos, spriteTransform));
+        _sequences.SetOrAdd(entity, GetDOTWEENAnimationSequence(entity, spriteStartPos, spriteTransform));
     }
 
-    public virtual Sequence GetDOTWEENAnimationSequence(Sequence sq, Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
-    {
-        return sq;
-    }
+    public abstract Tween GetDOTWEENAnimationSequence(Entity entity, Vector3 spriteStartPos, Transform spriteTransform);
 }

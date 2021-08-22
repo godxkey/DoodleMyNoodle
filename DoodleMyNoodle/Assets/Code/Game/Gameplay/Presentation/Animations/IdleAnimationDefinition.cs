@@ -9,8 +9,10 @@ public class IdleAnimationDefinition : DOTWEENAnimationDefinition
 {
     public float IdleHeight = 0.05f;
 
-    public override Sequence GetDOTWEENAnimationSequence(Sequence sq, Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
+    public override Tween GetDOTWEENAnimationSequence(Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
     {
+        Sequence sq = DOTween.Sequence();
+
         float idleStartY = spriteStartPos.y;
         float idleEndY = idleStartY + IdleHeight;
 

@@ -10,14 +10,17 @@ public class AttackAnimationDefinition : DOTWEENAnimationDefinition
 {
     public VFXDefinition VFXOnTarget = null;
 
-    public override Sequence GetDOTWEENAnimationSequence(Sequence sq, Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
+    public override Tween GetDOTWEENAnimationSequence(Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
     {
+        Sequence sq = DOTween.Sequence();
+
         Vector2 startPos = spriteStartPos;
         Vector2 endPos = startPos + GetAnimationData<Vector2>("AttackVector");
 
         if (VFXOnTarget != null)
         {
-            sq.Append(spriteTransform.DOLocalMove(endPos, Duration / 2).OnComplete(() => { VFXOnTarget.TriggerVFX(entity, spriteTransform, Data); }));
+            Data.Add(new KeyValuePair<string, object>("Transform", spriteTransform));
+            sq.Append(spriteTransform.DOLocalMove(endPos, Duration / 2).OnComplete(() => { VFXOnTarget.TriggerVFX(Data); }));
         }
         else
         {
@@ -25,6 +28,7 @@ public class AttackAnimationDefinition : DOTWEENAnimationDefinition
         }
 
         sq.Append(spriteTransform.DOLocalMove(startPos, Duration / 2));
+
         return sq;
     }
 }

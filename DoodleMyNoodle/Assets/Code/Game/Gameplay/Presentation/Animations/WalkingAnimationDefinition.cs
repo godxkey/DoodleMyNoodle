@@ -10,11 +10,12 @@ public class WalkingAnimationDefinition : DOTWEENAnimationDefinition
 {
     public float WalkingHeight = 0.08f;
 
-    public override Sequence GetDOTWEENAnimationSequence(Sequence sq, Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
+    public override Tween GetDOTWEENAnimationSequence(Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
     {
+        Sequence sq = DOTween.Sequence();
         float walkingStartY = spriteStartPos.y;
         float walkingEndY = walkingStartY + WalkingHeight;
-        sq.Append(spriteTransform.DOLocalMoveY(walkingEndY, Duration).SetEase(Ease.InOutQuad));
+        sq.Join(spriteTransform.DOLocalMoveY(walkingEndY, Duration).SetEase(Ease.InOutQuad));
         sq.SetLoops(-1);
         return sq;
     }

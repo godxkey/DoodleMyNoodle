@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c7f2b7ec340a684f9178f9ea45e4d38, type: 3}
+  m_Name: DamageImpactVFX
+  m_EditorClassIdentifier: 
+  Duration: 0.4
+  VFXToSpawn: {fileID: 1919643152631390783, guid: f66f0e03be7046846b2c1ff8b18a1257,
+    type: 3}
+  RandomDisplacementXMin: -0.15
+  RandomDisplacementXMax: 0.15
+  RandomDisplacementYMin: -0.3
+  RandomDisplacementYMax: 0.3

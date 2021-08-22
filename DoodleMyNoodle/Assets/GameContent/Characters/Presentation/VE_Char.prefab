@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7379920081520119636}
   - component: {fileID: 6166303341697273731}
   m_Layer: 0
-  m_Name: VE_BasicCharacter
+  m_Name: VE_Char
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,9 +63,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpriteTransform: {fileID: 1546773622014970496}
-  DefaultAnimation: {fileID: 0}
-  DeathAnimation: {fileID: 11400000, guid: 2af3838260b930c46b4745446a1485fb, type: 2}
-  IdleHeight: 0.05
+  MinimumVelocityThreshold: 0.1
+  DefaultAnimations:
+  - AnimationType: 1
+    AnimationDefinition: {fileID: 11400000, guid: f9005890481c8a64699b8b0c0415e24a,
+      type: 2}
+  - AnimationType: 2
+    AnimationDefinition: {fileID: 11400000, guid: 3bb30c7f30627904181ea5ef9c1bee49,
+      type: 2}
+  - AnimationType: 3
+    AnimationDefinition: {fileID: 11400000, guid: 35a1030aee3e6fa4f8738f1bca0da9e5,
+      type: 2}
+  - AnimationType: 4
+    AnimationDefinition: {fileID: 11400000, guid: cca290fa3e889724d8e8ae7f3d165460,
+      type: 2}
+  - AnimationType: 5
+    AnimationDefinition: {fileID: 11400000, guid: 2af3838260b930c46b4745446a1485fb,
+      type: 2}
+  - AnimationType: 6
+    AnimationDefinition: {fileID: 11400000, guid: 565405d55ea17d949a416ff89144bc58,
+      type: 2}
+  - AnimationType: 7
+    AnimationDefinition: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453,
+      type: 2}
 --- !u!114 &6166303341697273731
 MonoBehaviour:
   m_ObjectHideFlags: 0

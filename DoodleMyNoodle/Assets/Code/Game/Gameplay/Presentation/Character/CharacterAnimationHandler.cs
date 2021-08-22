@@ -3,6 +3,7 @@ using DG.Tweening;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngineX;
 
 public class CharacterAnimationHandler : BindedPresentationEntityComponent
 {
@@ -12,16 +13,24 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
         Idle,
         Walking,
         Ladder,
-        Aiborne,
+        AirControl,
         Death,
+        Jump,
         GameAction
+    }
+
+    [System.Serializable]
+    public struct DefaultAnimation 
+    {
+        public AnimationType AnimationType;
+        public AnimationDefinition AnimationDefinition;
     }
 
     [SerializeField] private Transform SpriteTransform;
     [SerializeField] private float MinimumVelocityThreshold = 0.1f;
 
     [Header("Animation Data")]
-    [SerializeField] private List<AnimationDefinition> DefaultAnimations;
+    [SerializeField] private List<DefaultAnimation> DefaultAnimations;
 
     private AnimationDefinition _currentAnimation;
 
@@ -30,8 +39,8 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     private Vector3 _spriteStartPos;
     private Quaternion _spriteStartRot;
 
-    private bool hasTriggeredAnAnimation = false;
-    private fix LastTransitionTime = -1;
+    private bool _hasTriggeredAnAnimation = false;
+    private fix _lastTransitionTime = -1;
 
     protected override void Awake()
     {
@@ -43,93 +52,106 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
     protected override void OnGamePresentationUpdate()
     {
-        hasTriggeredAnAnimation = false;
+        _hasTriggeredAnAnimation = false;
 
-        List<KeyValuePair<string, object>> animationData = new List<KeyValuePair<string, object>>();
-
-        if (!hasTriggeredAnAnimation) 
+        if (!_hasTriggeredAnAnimation) 
         {
-            if (HandleGameActionAnimation(animationData))
+            if (HandleGameActionAnimation())
             {
                 return;
             }
         }
 
-        if (!hasTriggeredAnAnimation) 
+        if (!_hasTriggeredAnAnimation) 
         {
-            if (HandleDeathAnimation(animationData))
+            if (HandleDeathAnimation())
             {
                 return;
             }
         }
 
-        if (!hasTriggeredAnAnimation) 
+        if (!_hasTriggeredAnAnimation) 
         {
             if (SimWorld.TryGetComponent(SimEntity, out MoveInput input) && SimWorld.TryGetComponent(SimEntity, out MoveEnergy energy))
             {
-                if ((input.Value.lengthSquared > (fix)MinimumVelocityThreshold))
+                if (SimWorld.TryGetComponent(SimEntity, out NavAgentFootingState navAgentFootingState))
                 {
-                    if (SimWorld.TryGetComponent(SimEntity, out NavAgentFootingState navAgentFootingState))
+                    switch (navAgentFootingState.Value)
                     {
-                        switch (navAgentFootingState.Value)
-                        {
-                            case NavAgentFooting.Ground:
-                                
-                                if (energy.Value > 0)
-                                {
-                                    HandleCharacterMovementAnimation(AnimationType.Walking, animationData);
-                                }
-                                else
-                                {
-                                    HandleCharacterMovementAnimation(AnimationType.Idle, animationData);
-                                }
-                                
-                                break;
+                        case NavAgentFooting.Ground:
 
-                            case NavAgentFooting.Ladder:
+                            if (input.Value.lengthSquared > (fix)(MinimumVelocityThreshold) && energy.Value > 0)
+                            {
+                                HandleCharacterMovementAnimation(AnimationType.Walking);
+                            }
+                            else
+                            {
+                                HandleCharacterMovementAnimation(AnimationType.Idle);
+                            }
 
-                                if (input.Value.y == 0)
-                                {
-                                    HandleCharacterMovementAnimation(AnimationType.Walking, animationData);
-                                }
-                                else
-                                {
-                                    HandleCharacterMovementAnimation(AnimationType.Ladder, animationData);
-                                }
-                                
-                                break;
-                            case NavAgentFooting.AirControl:
+                            break;
 
-                                HandleCharacterMovementAnimation(AnimationType.Aiborne, animationData);
-                                break;
+                        case NavAgentFooting.Ladder:
 
-                            case NavAgentFooting.None:
-                                break;
-                            default:
-                                break;
-                        }
+                            if (input.Value.y == 0 || energy.Value <= 0)
+                            {
+                                HandleCharacterMovementAnimation(AnimationType.Idle);
+                            }
+                            else
+                            {
+                                HandleCharacterMovementAnimation(AnimationType.Ladder);
+                            }
+
+                            break;
+                        case NavAgentFooting.AirControl:
+
+                            HandleCharacterMovementAnimation(AnimationType.AirControl);
+                            break;
+
+                        case NavAgentFooting.None:
+
+                            HandleCharacterMovementAnimation(AnimationType.Jump);
+                            break;
+
+                        default:
+
+                            HandleCharacterMovementAnimation(AnimationType.Idle);
+                            break;
                     }
-                }
-                else
-                {
-                    HandleCharacterMovementAnimation(AnimationType.Idle, animationData);
+
+                    return;
                 }
             }
+
+            HandleCharacterMovementAnimation(AnimationType.Idle);
         }
     }
 
-    private bool HandleGameActionAnimation(List<KeyValuePair<string, object>> animationData)
+    private bool HandleGameActionAnimation()
     {
+        // Wait until previous Game Action Animation is done
+        bool canChangeAnimation = true;
+        if (_currentAnimation != null)
+        {
+            canChangeAnimation = SimWorld.Time.ElapsedTime >= _lastTransitionTime + (fix)_currentAnimation.Duration;
+        }
+
+        if (!canChangeAnimation)
+        {
+            return _hasTriggeredAnAnimation;
+        }
+
         SimWorld.Entities.ForEach((ref GameActionEventData gameActionEvent) =>
         {
-            if (gameActionEvent.GameActionContext.InstigatorPawn == SimEntity && gameActionEvent.GameActionContext.Item != Entity.Null)
+            if (gameActionEvent.GameActionContext.InstigatorPawn == SimEntity && gameActionEvent.GameActionContext.Item != Entity.Null && !_hasTriggeredAnAnimation)
             {
                 TriggerAnimationInteruptionOnStateChange();
 
-                hasTriggeredAnAnimation = true;
-                LastTransitionTime = SimWorld.Time.ElapsedTime;
+                _hasTriggeredAnAnimation = true;
+                _lastTransitionTime = SimWorld.Time.ElapsedTime;
 
                 // ANIMATION DATA
+                List<KeyValuePair<string, object>> animationData = new List<KeyValuePair<string, object>>();
                 animationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.GameActionContext));
                 animationData.Add(new KeyValuePair<string, object>("AttackVector", (Vector2)gameActionEvent.GameActionResult.AttackVector));
 
@@ -139,12 +161,11 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                 if (instigatorPrefab.TryGetComponent(out ItemAuth gameActionAuth))
                 {
                     _currentAnimation = gameActionAuth.Animation;
-                    if (_currentAnimation != null)
+                    if (_currentAnimation == null)
                     {
                         FindAnimation(AnimationType.GameAction).TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, animationData);
                     }
-
-                    if (gameActionAuth.PlayAnimation)
+                    else if (gameActionAuth.PlayAnimation)
                     {
                         _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, animationData);
                     }
@@ -154,10 +175,10 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             }
         });
 
-        return hasTriggeredAnAnimation;
+        return _hasTriggeredAnAnimation;
     }
 
-    private bool HandleDeathAnimation(List<KeyValuePair<string, object>> animationData) 
+    private bool HandleDeathAnimation() 
     {
         if (SimWorld.HasComponent<DeadTag>(SimEntity))
         {
@@ -165,13 +186,13 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             {
                 TriggerAnimationInteruptionOnStateChange();
 
-                hasTriggeredAnAnimation = true;
-                LastTransitionTime = SimWorld.Time.ElapsedTime;
+                _hasTriggeredAnAnimation = true;
+                _lastTransitionTime = SimWorld.Time.ElapsedTime;
 
                 AnimationDefinition anim = FindAnimation(AnimationType.Death);
                 if (anim != null)
                 {
-                    anim.TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, animationData);
+                    anim.TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, null);
                 }
 
                 _previousState = AnimationType.Death;
@@ -183,13 +204,13 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
         return false;
     }
 
-    private void HandleCharacterMovementAnimation(AnimationType animation, List<KeyValuePair<string, object>> animationData)
+    private void HandleCharacterMovementAnimation(AnimationType animation)
     {
         // Whenever previously Triggered Animation is over, we can loop in movement animation
         bool canChangeAnimation = true;
         if (_currentAnimation != null)
         {
-            canChangeAnimation = SimWorld.Time.ElapsedTime >= LastTransitionTime + (fix)_currentAnimation.Duration;
+            canChangeAnimation = SimWorld.Time.ElapsedTime >= _lastTransitionTime + (fix)_currentAnimation.Duration;
         }
 
         if (canChangeAnimation & _previousState != animation)
@@ -199,7 +220,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             _currentAnimation = FindAnimation(animation);
             if (_currentAnimation != null)
             {
-                _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, animationData);
+                _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, null);
             }
 
             _previousState = animation;
@@ -219,11 +240,11 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
     private AnimationDefinition FindAnimation(AnimationType animationType)
     {
-        foreach (AnimationDefinition defaultAnimation in DefaultAnimations)
+        foreach (DefaultAnimation defaultAnimation in DefaultAnimations)
         {
-            if (defaultAnimation.Type == animationType)
+            if (defaultAnimation.AnimationType == animationType)
             {
-                return defaultAnimation;
+                return defaultAnimation.AnimationDefinition;
             }
         }
 
