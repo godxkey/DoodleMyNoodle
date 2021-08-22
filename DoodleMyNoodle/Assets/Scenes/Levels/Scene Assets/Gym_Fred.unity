@@ -141,6 +141,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_BaseCharacter_Dummy
       objectReference: {fileID: 0}
+    - target: {fileID: 2768931431184588227, guid: 699567b0bd05ba34abe01edbffff4374,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8745217971803186365, guid: 699567b0bd05ba34abe01edbffff4374,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -361,12 +366,12 @@ PrefabInstance:
     - target: {fileID: 8745217971803186365, guid: fc8ba8f15356ad146b67261b7c63837c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.805497
+      value: 16.51
       objectReference: {fileID: 0}
     - target: {fileID: 8745217971803186365, guid: fc8ba8f15356ad146b67261b7c63837c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.2566345
+      value: 5.36
       objectReference: {fileID: 0}
     - target: {fileID: 8745217971803186365, guid: fc8ba8f15356ad146b67261b7c63837c,
         type: 3}
@@ -500,6 +505,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SE_Char_Archer_Pro
+      objectReference: {fileID: 0}
+    - target: {fileID: 936830623556381636, guid: 4a8d20d0b556b394788f4080886613a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1572655026572200680, guid: 4a8d20d0b556b394788f4080886613a5,
         type: 3}

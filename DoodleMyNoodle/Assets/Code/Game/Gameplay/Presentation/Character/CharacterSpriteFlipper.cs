@@ -31,13 +31,13 @@ public class CharacterSpriteFlipper : BindedPresentationEntityComponent
 
         if (lookDir != 0)
         {
-            Quaternion rot = _bone.rotation;
+            Quaternion rot = _bone.localRotation;
             Vector3 eulerAngles = rot.eulerAngles;
 
             eulerAngles.y = (lookDir == 1 ^ spriteLookingRight) ? 180f : 0f;
 
             rot.eulerAngles = eulerAngles;
-            _bone.rotation = rot;
+            _bone.localRotation = rot;
         }
     }
 }
