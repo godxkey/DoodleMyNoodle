@@ -74,6 +74,7 @@ MonoBehaviour:
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: b7c33e315faed834d9e2a8288123ed62, type: 3}
+  IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Inversion
   EffectDescription: "Inverse votre position avec celle de l'\xE9nemi"
   SfxOnUse: {fileID: 0}

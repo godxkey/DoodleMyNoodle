@@ -32,7 +32,9 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
             DamageOnContacts = GetComponentDataFromEntity<DamageOnContact>(isReadOnly: true),
             ExplodeOnContacts = GetComponentDataFromEntity<ExplodeOnContact>(isReadOnly: true),
             DestroyOnContacts = GetComponentDataFromEntity<DestroyOnCollisionTag>(isReadOnly: true),
+            HookDatas = GetComponentDataFromEntity<HookData>(isReadOnly: true),
 
+            OutHooks = _reactSystem.HookRequests,
             OutDamages = _reactSystem.DamagesRequests,
             OutDestroys = _reactSystem.DestroyRequests,
             OutExplosions = _reactSystem.ExplosionRequests,
@@ -49,9 +51,11 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
         [ReadOnly] public ComponentDataFromEntity<DamageOnContact> DamageOnContacts;
         [ReadOnly] public ComponentDataFromEntity<ExplodeOnContact> ExplodeOnContacts;
         [ReadOnly] public ComponentDataFromEntity<DestroyOnCollisionTag> DestroyOnContacts;
+        [ReadOnly] public ComponentDataFromEntity<HookData> HookDatas;
         [ReadOnly] public PhysicsWorld World;
 
         public NativeList<(Entity instigator, Entity target, int damage)> OutDamages;
+        public NativeList<(Entity hook, Entity other)> OutHooks;
         public NativeList<Entity> OutDestroys;
         public NativeList<(Entity instigator, fix2 pos, fix radius, int damage)> OutExplosions;
 
@@ -81,6 +85,11 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
                 OutDestroys.AddUnique(entityA);
             }
 
+            if (HookDatas.HasComponent(entityA))
+            {
+                OutHooks.AddUnique((entityA, entityB));
+            }
+
             if (ExplodeOnContacts.TryGetComponent(entityA, out ExplodeOnContact explodeOnContact))
             {
                 var details = collisionEvent.CalculateDetails(ref World);
@@ -102,13 +111,15 @@ public class ReactOnCollisionSystem : SimSystemBase
     public NativeList<(Entity instigator, Entity target, int damage)> DamagesRequests;
     public NativeList<Entity> DestroyRequests;
     public NativeList<(Entity instigator, fix2 pos, fix range, int damage)> ExplosionRequests;
+    public NativeList<(Entity hook, Entity other)> HookRequests;
 
     protected override void OnCreate()
     {
         base.OnCreate();
-        DamagesRequests = new NativeList<(Entity instigator, Entity target, int damage)>(Allocator.Persistent);
+        DamagesRequests = new NativeList<(Entity, Entity, int)>(Allocator.Persistent);
         DestroyRequests = new NativeList<Entity>(Allocator.Persistent);
-        ExplosionRequests = new NativeList<(Entity instigator, fix2 pos, fix range, int damage)>(Allocator.Persistent);
+        ExplosionRequests = new NativeList<(Entity, fix2, fix, int)>(Allocator.Persistent);
+        HookRequests = new NativeList<(Entity, Entity)>(Allocator.Persistent);
     }
 
     protected override void OnDestroy()
@@ -133,11 +144,21 @@ public class ReactOnCollisionSystem : SimSystemBase
             CommonWrites.RequestExplosion(Accessor, instigator, pos, radius, damage, true);
         }
 
+        foreach (var item in HookRequests)
+        {
+            GetSingletonBuffer<SystemRequestHookContact>().Add(new SystemRequestHookContact()
+            {
+                HookEntity = item.hook,
+                ContactEntity = item.other,
+            });
+        }
+
         // destroy
         EntityManager.DestroyEntity(DestroyRequests);
 
         DamagesRequests.Clear();
         DestroyRequests.Clear();
         ExplosionRequests.Clear();
+        HookRequests.Clear();
     }
 }

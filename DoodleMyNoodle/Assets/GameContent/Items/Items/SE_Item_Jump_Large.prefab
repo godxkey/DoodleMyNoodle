@@ -74,6 +74,7 @@ MonoBehaviour:
   HideInInventory: 0
   CanBeUsedAtAnytime: 1
   Icon: {fileID: 21300000, guid: a7c0857bee529884c801da6380546a43, type: 3}
+  IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Grand Saut
   EffectDescription: Permet de sauter loin
   SfxOnUse: {fileID: 0}

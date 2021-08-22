@@ -74,6 +74,7 @@ MonoBehaviour:
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: fe47497fd9fc5524aa403f58210b8ef1, type: 3}
+  IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Charge
   EffectDescription: "Avance rapidement dans une direction en envoyant des d\xE9gats
     aux \xE9nemis sur le chemin"

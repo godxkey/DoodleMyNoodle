@@ -24,7 +24,7 @@ public class ItemAuthEditor : Editor
     private SerializedProperty _stackableProp;
     private SerializedProperty _apCostProp;
     private SerializedProperty _iconProp;
-    private SerializedProperty _iconColor;
+    private SerializedProperty _iconTintProp;
     private SerializedProperty _nameProp;
     private SerializedProperty _effectDescriptionProp;
     private SerializedProperty _sfxProp;
@@ -43,7 +43,7 @@ public class ItemAuthEditor : Editor
         _stackableProp = serializedObject.FindProperty(nameof(ItemAuth.IsStackable));
         _apCostProp = serializedObject.FindProperty(nameof(ItemAuth.ApCost));
         _iconProp = serializedObject.FindProperty(nameof(ItemAuth.Icon));
-        _iconColor = serializedObject.FindProperty(nameof(ItemAuth.IconSpriteColorOverride));
+        _iconTintProp = serializedObject.FindProperty(nameof(ItemAuth.IconTint));
         _nameProp = serializedObject.FindProperty(nameof(ItemAuth.Name));
         _effectDescriptionProp = serializedObject.FindProperty(nameof(ItemAuth.EffectDescription));
         _sfxProp = serializedObject.FindProperty(nameof(ItemAuth.SfxOnUse));
@@ -66,7 +66,7 @@ public class ItemAuthEditor : Editor
 
         EditorGUILayout.PropertyField(_apCostProp);
         EditorGUILayout.PropertyField(_cooldownProp);
-        if(castedTarget.HasCooldown)
+        if (castedTarget.HasCooldown)
             EditorGUILayout.PropertyField(_cooldownDurationProp);
         EditorGUILayout.PropertyField(_stackableProp);
 
@@ -119,7 +119,7 @@ public class ItemAuthEditor : Editor
         DrawPrimaryTitle("Presentation");
 
         EditorGUILayout.PropertyField(_iconProp);
-        EditorGUILayout.PropertyField(_iconColor);
+        EditorGUILayout.PropertyField(_iconTintProp);
         EditorGUILayout.PropertyField(_nameProp);
         EditorGUILayout.PropertyField(_effectDescriptionProp);
         EditorGUILayout.PropertyField(_sfxProp);
@@ -163,7 +163,7 @@ public class ItemAuthEditor : Editor
         if (s_availableTypes == null)
         {
             s_availableTypes = TypeUtility.GetTypesDerivedFrom(typeof(GameAction)).ToArray();
-            s_availableTypeNames = s_availableTypes.Select(t => t.Name).ToArray();
+            s_availableTypeNames = s_availableTypes.Where(t => !t.IsAbstract).Select(t => t.Name).ToArray();
         }
 
         if (s_primaryTitleFontStyle == null)
