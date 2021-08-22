@@ -41,7 +41,7 @@ public class UpdateAIPatrolSystem : SimSystemBase
                     return;
 
                 // If no more AP => readyForNextTurn
-                if (GetComponent<MoveEnergy>(pawn).Value <= 0 && GetComponent<ActionPoints>(pawn) == 0)
+                if (GetComponent<ActionPoints>(pawn).Value <= 0)
                 {
                     readyForNextTurn.Value = true;
                     return;

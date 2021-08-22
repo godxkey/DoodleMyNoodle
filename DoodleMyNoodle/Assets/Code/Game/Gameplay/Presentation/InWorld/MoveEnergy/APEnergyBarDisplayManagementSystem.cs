@@ -7,7 +7,7 @@ using Unity.Mathematics;
 using CCC.Fix2D;
 using static fixMath;
 
-public class MoveEnergyDisplayManagementSystem : GamePresentationSystem<MoveEnergyDisplayManagementSystem>
+public class APEnergyBarDisplayManagementSystem : GamePresentationSystem<APEnergyBarDisplayManagementSystem>
 {
     public GameObject MoveEnergyDisplayPrefab;
 
@@ -15,13 +15,23 @@ public class MoveEnergyDisplayManagementSystem : GamePresentationSystem<MoveEner
     private Dictionary<Entity, fix> EntitiesEnergy = new Dictionary<Entity, fix>();
     private Dictionary<Entity, GameObject> EntitiesEnergyBar = new Dictionary<Entity, GameObject>();
 
+    public void ShowCostPreview(Entity entity, float valueAfterCost)
+    {
+        EntitiesEnergyBar[entity].GetComponentInChildren<APEnergyBarDisplay>().ShowPrevewAPEnergyCost(valueAfterCost);
+    }
+
+    public void HideCostPreview(Entity entity)
+    {
+        EntitiesEnergyBar[entity].GetComponentInChildren<APEnergyBarDisplay>().StopShowingPreview();
+    }
+
     protected override void OnGamePresentationUpdate()
     {
         int moveEnergyBarAmount = 0;
 
         Team localPlayerTeam = Cache.LocalControllerTeam;
 
-        Cache.SimWorld.Entities.ForEach((Entity pawn, ref MoveEnergy entityMoveEnergy, ref MaximumFix<MoveEnergy> entityMaximumMoveEnergy, ref FixTranslation entityTranslation) =>
+        Cache.SimWorld.Entities.ForEach((Entity pawn, ref ActionPoints entityAP, ref MaximumFix<ActionPoints> entityMaximumAP, ref FixTranslation entityTranslation) =>
         {
             Entity pawnController = CommonReads.GetPawnController(Cache.SimWorld, pawn);
 
@@ -32,20 +42,20 @@ public class MoveEnergyDisplayManagementSystem : GamePresentationSystem<MoveEner
 
             Team currentPawnTeam = Cache.SimWorld.GetComponent<Team>(pawnController);
 
-            SetOrAddMoveEnergyBar(pawn, moveEnergyBarAmount, entityTranslation.Value, (float)entityMaximumMoveEnergy.Value, (float)entityMoveEnergy.Value);
+            SetOrAddMoveEnergyBar(pawn, moveEnergyBarAmount, entityTranslation.Value, (float)entityMaximumAP.Value, (float)entityAP.Value);
 
-            if (EntitiesEnergy.ContainsKey(pawn) && EntitiesEnergy[pawn] != entityMoveEnergy.Value && EntitiesEnergyBar.ContainsKey(pawn))
+            if (EntitiesEnergy.ContainsKey(pawn) && EntitiesEnergy[pawn] != entityAP.Value && EntitiesEnergyBar.ContainsKey(pawn))
             {
-                EntitiesEnergyBar[pawn].GetComponentInChildren<MoveEnergyDisplay>().ShowFromMovement();
+                EntitiesEnergyBar[pawn].GetComponentInChildren<APEnergyBarDisplay>().ShowFromMovement();
             }
 
             if (EntitiesEnergy.ContainsKey(pawn))
             {
-                EntitiesEnergy[pawn] = entityMoveEnergy.Value;
+                EntitiesEnergy[pawn] = entityAP.Value;
             }
             else
             {
-                EntitiesEnergy.Add(pawn, entityMoveEnergy.Value);
+                EntitiesEnergy.Add(pawn, entityAP.Value);
             }
 
             moveEnergyBarAmount++;
@@ -65,12 +75,12 @@ public class MoveEnergyDisplayManagementSystem : GamePresentationSystem<MoveEner
         {
             foreach (var tileActor in Cache.PointedBodies)
             {
-                if (!SimWorld.HasComponent<MoveEnergy>(tileActor))
+                if (!SimWorld.HasComponent<ActionPoints>(tileActor))
                     continue;
 
                 if (EntitiesEnergyBar.ContainsKey(tileActor))
                 {
-                    EntitiesEnergyBar[tileActor].GetComponentInChildren<MoveEnergyDisplay>().ShowFromMouse();
+                    EntitiesEnergyBar[tileActor].GetComponentInChildren<APEnergyBarDisplay>().ShowFromMouse();
                 }
             }
         }
@@ -91,7 +101,7 @@ public class MoveEnergyDisplayManagementSystem : GamePresentationSystem<MoveEner
         }
 
         currentMoveEnergyBar.transform.position = (position + new fix3(0, (fix)(0.535f), 0)).ToUnityVec();
-        currentMoveEnergyBar.GetComponentInChildren<MoveEnergyDisplay>()?.SetMoveEnergy(moveEnergy, maxMoveEnergy);
+        currentMoveEnergyBar.GetComponentInChildren<APEnergyBarDisplay>()?.SetAPEnergy(moveEnergy, maxMoveEnergy);
         currentMoveEnergyBar.SetActive(true);
     }
 }

@@ -50,4 +50,4 @@ MonoBehaviour:
     type: 3}
   HideDelayFromMouse: 0.4
   HideDelayFromDamageOrHeal: 1
-  MaxHearthToDisplay: 0
+  MaxHearthToDisplay: 999

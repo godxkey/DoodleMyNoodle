@@ -20,7 +20,7 @@ public class ActionsPointsAuth : MonoBehaviour, IConvertGameObjectToEntity
         }
 
         dstManager.AddComponentData(entity, new ActionPoints { Value = StartValue });
-        dstManager.AddComponentData(entity, new MinimumInt<ActionPoints> { Value = 0 });
-        dstManager.AddComponentData(entity, new MaximumInt<ActionPoints> { Value = MaxValue });
+        dstManager.AddComponentData(entity, new MinimumFix<ActionPoints> { Value = 0 });
+        dstManager.AddComponentData(entity, new MaximumFix<ActionPoints> { Value = MaxValue });
     }
 }

@@ -88,12 +88,13 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         _mouseInside = true;
         UpdateBackgroundColor();
         SetTooltip(true);
+        ShowCostPreview();
     }
 
     public virtual void OnPointerExit(PointerEventData eventData)
     {
         _mouseInside = false;
-
+        HideCostPreview();
         SetTooltip(false);
     }
 
@@ -133,6 +134,19 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         {
             ItemTooltipDisplay.Instance?.DeactivateToolTipDisplay();
         }
+    }
+
+    private void ShowCostPreview()
+    {
+        if (SimWorld.TryGetComponent(_itemsOwner, out ActionPoints ap))
+        {
+            APEnergyBarDisplayManagementSystem.Instance.ShowCostPreview(_itemsOwner, (float)ap.Value - _currentItemGameActionAuth.ApCost);
+        }
+    }
+
+    private void HideCostPreview()
+    {
+        APEnergyBarDisplayManagementSystem.Instance.HideCostPreview(_itemsOwner);
     }
 
     public void ItemSlotClicked()

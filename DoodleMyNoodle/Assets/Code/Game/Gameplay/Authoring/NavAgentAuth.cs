@@ -22,10 +22,6 @@ public class NavAgentAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponentData(entity, new MoveInput { Value = fix2.zero });
         dstManager.AddComponentData(entity, new AirControl { Value = AirControl });
 
-        dstManager.AddComponentData(entity, new MoveEnergy { Value = 0 });
-        dstManager.AddComponentData(entity, new MinimumFix<MoveEnergy> { Value = 0 });
-        dstManager.AddComponentData(entity, new MaximumFix<MoveEnergy> { Value = MoveEnergyMaxValue });
-
         float normalFriction = 0.4f;
         var bodyAuth = GetComponent<PhysicsBodyAuth>();
         if (bodyAuth?.Material != null)
