@@ -101,7 +101,7 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
     // Description
     public Sprite Icon;
-    public Color IconSpriteColorOverride;
+    public Color IconTint = Color.white; // 0008FF
     public string Name;
     public string EffectDescription;
     public AudioPlayable SfxOnUse;

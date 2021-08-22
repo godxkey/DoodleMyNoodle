@@ -3,6 +3,7 @@ using DG.Tweening;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngineX;
 
 public class CharacterAnimationHandler : BindedPresentationEntityComponent
@@ -20,17 +21,18 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     }
 
     [System.Serializable]
-    public struct DefaultAnimation 
+    private struct DefaultAnimation 
     {
         public AnimationType AnimationType;
         public AnimationDefinition AnimationDefinition;
     }
 
-    [SerializeField] private Transform SpriteTransform;
-    [SerializeField] private float MinimumVelocityThreshold = 0.1f;
+    [SerializeField] private Transform _bone = null;
+    [SerializeField] private float _minimumVelocityThreshold = 0.1f;
 
     [Header("Animation Data")]
-    [SerializeField] private List<DefaultAnimation> DefaultAnimations;
+    [FormerlySerializedAs("DefaultAnimations")]
+    [SerializeField] private List<DefaultAnimation> _defaultAnimations;
 
     private AnimationDefinition _currentAnimation;
 
@@ -46,8 +48,8 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     {
         base.Awake();
 
-        _spriteStartPos = SpriteTransform.localPosition;
-        _spriteStartRot = SpriteTransform.localRotation;
+        _spriteStartPos = _bone.localPosition;
+        _spriteStartRot = _bone.localRotation;
     }
 
     protected override void OnGamePresentationUpdate()
@@ -79,8 +81,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                     switch (navAgentFootingState.Value)
                     {
                         case NavAgentFooting.Ground:
-
-                            if (input.Value.lengthSquared > (fix)(MinimumVelocityThreshold) && ap.Value > 0)
+                            if (input.Value.lengthSquared > (fix)(_minimumVelocityThreshold) && ap.Value > 0)
                             {
                                 HandleCharacterMovementAnimation(AnimationType.Walking);
                             }
@@ -163,11 +164,11 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                     _currentAnimation = gameActionAuth.Animation;
                     if (_currentAnimation == null)
                     {
-                        FindAnimation(AnimationType.GameAction).TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, animationData);
+                        FindAnimation(AnimationType.GameAction).TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationData);
                     }
                     else if (gameActionAuth.PlayAnimation)
                     {
-                        _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, animationData);
+                        _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationData);
                     }
                 }
 
@@ -192,7 +193,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                 AnimationDefinition anim = FindAnimation(AnimationType.Death);
                 if (anim != null)
                 {
-                    anim.TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, null);
+                    anim.TriggerAnimation(SimEntity, _spriteStartPos, _bone, null);
                 }
 
                 _previousState = AnimationType.Death;
@@ -220,7 +221,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             _currentAnimation = FindAnimation(animation);
             if (_currentAnimation != null)
             {
-                _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, SpriteTransform, null);
+                _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, null);
             }
 
             _previousState = animation;
@@ -234,13 +235,13 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             _currentAnimation.InteruptAnimation(SimEntity);
         }
 
-        SpriteTransform.localPosition = _spriteStartPos;
-        SpriteTransform.localRotation = _spriteStartRot;
+        _bone.localPosition = _spriteStartPos;
+        _bone.localRotation = _spriteStartRot;
     }
 
     private AnimationDefinition FindAnimation(AnimationType animationType)
     {
-        foreach (DefaultAnimation defaultAnimation in DefaultAnimations)
+        foreach (DefaultAnimation defaultAnimation in _defaultAnimations)
         {
             if (defaultAnimation.AnimationType == animationType)
             {

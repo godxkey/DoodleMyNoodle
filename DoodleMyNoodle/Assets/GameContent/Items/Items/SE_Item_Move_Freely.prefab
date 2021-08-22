@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 971858758830137585}
   - component: {fileID: 2278408862114426295}
   m_Layer: 0
-  m_Name: SE_Item_Move
+  m_Name: SE_Item_Move_Freely
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73,6 +73,7 @@ MonoBehaviour:
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 96b3c2698e8fd3f409b90140f23df342, type: 3}
+  IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Marcher
   EffectDescription: "Permet de vous d\xE9placer jusqu'a votre prochaine action"
   SfxOnUse: {fileID: 0}

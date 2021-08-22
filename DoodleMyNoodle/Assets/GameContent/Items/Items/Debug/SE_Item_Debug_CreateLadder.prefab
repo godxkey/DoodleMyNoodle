@@ -74,6 +74,7 @@ MonoBehaviour:
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 343423d85482c594ca6e9f688b07400d, type: 3}
+  IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Create Ladder
   EffectDescription: "Cr\xE9e une \xE9chelle"
   SfxOnUse: {fileID: 0}

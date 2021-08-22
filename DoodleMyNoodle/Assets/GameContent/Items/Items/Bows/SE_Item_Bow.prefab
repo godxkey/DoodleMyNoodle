@@ -74,6 +74,7 @@ MonoBehaviour:
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: c1b5006aa2c881a4b8eb04a8ed1435d5, type: 3}
+  IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Arc
   EffectDescription: "Lance une fl\xE8che"
   SfxOnUse: {fileID: 11400000, guid: 294d1b70193c2ba449c98eb807bacece, type: 2}

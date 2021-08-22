@@ -25,7 +25,7 @@ PrefabInstance:
     - target: {fileID: 1546773622014970496, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.02
+      value: -0.023
       objectReference: {fileID: 0}
     - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
@@ -41,6 +41,11 @@ PrefabInstance:
     - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
       propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_FlipX
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5202612425808145220, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
@@ -102,6 +107,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6166303341697273731, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: _baseSpriteIsLookingRight
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 950f116e90b5f1d4f9a86da78a6e1e45, type: 3}

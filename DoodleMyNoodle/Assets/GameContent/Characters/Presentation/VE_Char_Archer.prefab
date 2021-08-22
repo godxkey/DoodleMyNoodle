@@ -25,7 +25,7 @@ PrefabInstance:
     - target: {fileID: 1546773622014970496, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.033
+      value: -0.033
       objectReference: {fileID: 0}
     - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
@@ -43,10 +43,15 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2078424545621035913, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_FlipX
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5202612425808145220, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
       propertyPath: m_Name
-      value: VE_BasicCharacter_Archer
+      value: VE_Char_Archer
       objectReference: {fileID: 0}
     - target: {fileID: 5202612425808145221, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
