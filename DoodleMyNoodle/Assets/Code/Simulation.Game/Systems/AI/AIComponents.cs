@@ -83,3 +83,9 @@ public struct AIPatrolData : IComponentData
 {
     public int LastPatrolTurn;
 }
+
+public struct AIFuzzyThrowSettings : IComponentData
+{
+    public FixFuzzyValue ThrowSpeed;
+    public FixFuzzyValue ThrowAngle;
+}

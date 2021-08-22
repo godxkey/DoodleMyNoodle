@@ -49,8 +49,8 @@ MonoBehaviour:
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 0
+  _showGhost: 1
 --- !u!114 &-6236910964871357771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,4 +63,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36c09f8a9f4f4b247a6a88efcf956a5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartingTeam: 1
+  ThrowAngleFuzzy:
+    BaseValue: 0
+    DistributionPlateau: 0.5
+    Variation: 20
+  ThrowSpeedFuzzy:
+    BaseValue: 1
+    DistributionPlateau: 0.5
+    Variation: 0.4

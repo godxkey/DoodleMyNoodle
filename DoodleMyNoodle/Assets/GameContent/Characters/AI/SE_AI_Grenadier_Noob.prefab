@@ -63,4 +63,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b5e0a0193898934e96bb38124c047d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartingTeam: 1
+  ThrowAngleFuzzy:
+    BaseValue: 0
+    DistributionPlateau: 0.5
+    Variation: 30
+  ThrowSpeedFuzzy:
+    BaseValue: 1
+    DistributionPlateau: 0.5
+    Variation: 0.3
