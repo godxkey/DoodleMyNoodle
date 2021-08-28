@@ -12,9 +12,9 @@ public class ItemUsedVFXDefinition : VFXDefinition
         Sprite Sprite = GetVFXData<Sprite>("Sprite");
         Location += new Vector3(DisplacementX, DisplacementY, 0);
         GameObject newVFX = Instantiate(VFXToSpawn, Location, Quaternion.identity);
-        if (newVFX.TryGetComponent(out SpriteRenderer spriteRenderer))
+        if (newVFX.TryGetComponent(out SpriteRendererScalingFromTexture SpriteRendererScalingFromTexture))
         {
-            spriteRenderer.sprite = Sprite;
+            SpriteRendererScalingFromTexture.SetScalingFromTexture(Sprite);
         }
     }
 }
