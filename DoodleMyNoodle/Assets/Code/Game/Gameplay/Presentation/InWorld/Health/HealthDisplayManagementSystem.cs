@@ -25,19 +25,9 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
 
         Team localPlayerTeam = Cache.LocalControllerTeam;
 
-        Cache.SimWorld.Entities.ForEach((Entity pawn, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
+        Cache.SimWorld.Entities.ForEach((Entity entity, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
         {
-            Entity pawnController = CommonReads.GetPawnController(Cache.SimWorld, pawn);
-
-            // shell is empty, no healthbar
-            if (pawnController == Entity.Null)
-            {
-                return;
-            }
-
-            Team currentPawnTeam = Cache.SimWorld.GetComponent<Team>(pawnController);
-
-            SetOrAddHealthBar(pawn, healthBarAmount, entityTranslation.Value, entityMaximumHealth.Value, entityHealth.Value, localPlayerTeam.Value == currentPawnTeam.Value);
+            SetOrAddHealthBar(entity, healthBarAmount, entityTranslation.Value, entityMaximumHealth.Value, entityHealth.Value);
 
             healthBarAmount++;
         });
@@ -80,7 +70,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
         });
     }
 
-    private void SetOrAddHealthBar(Entity entity, int index, fix3 position, int maxHealth, int health, bool friendly)
+    private void SetOrAddHealthBar(Entity entity, int index, fix3 position, int maxHealth, int health)
     {
         GameObject currentHealthBar;
         if (_healthBarInstances.Count <= index)
@@ -92,6 +82,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
         else
         {
             currentHealthBar = _healthBarInstances[index];
+            EntitiesHPBar[entity] = currentHealthBar;
         }
 
         currentHealthBar.transform.position = (position + new fix3(0, fix(0.7f), 0)).ToUnityVec();

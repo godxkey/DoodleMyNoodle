@@ -591,6 +591,55 @@ public static class StaticNetSerializer_GameAction_UseParameters
         ArrayNetSerializer_GameAction_ParameterData.Deserialize(ref obj.ParameterDatas, reader);
     }
 }
+public static class StaticNetSerializer_GameActionParameterBool_Data
+{
+    public static int GetSerializedBitSize_Class(GameActionParameterBool.Data obj)
+    {
+        if (obj == null)
+            return 1;
+        return 1 + GetSerializedBitSize(obj);
+    }
+
+    public static int GetSerializedBitSize(GameActionParameterBool.Data obj)
+    {
+        int result = 0;
+        result += StaticNetSerializer_System_Boolean.GetSerializedBitSize(ref obj.Value);
+        result += StaticNetSerializer_GameAction_ParameterData.GetSerializedBitSize(obj);
+        return result;
+    }
+
+    public static void Serialize_Class(GameActionParameterBool.Data obj, BitStreamWriter writer)
+    {
+        if (obj == null)
+        {
+            writer.WriteBit(false);
+            return;
+        }
+        writer.WriteBit(true);
+        Serialize(obj, writer);
+    }
+    public static void Serialize(GameActionParameterBool.Data obj, BitStreamWriter writer)
+    {
+        StaticNetSerializer_System_Boolean.Serialize(ref obj.Value, writer);
+        StaticNetSerializer_GameAction_ParameterData.Serialize(obj, writer);
+    }
+
+    public static GameActionParameterBool.Data Deserialize_Class(BitStreamReader reader)
+    {
+        if (reader.ReadBit() == false)
+        {
+            return null;
+        }
+        GameActionParameterBool.Data obj = new GameActionParameterBool.Data();
+        Deserialize(obj, reader);
+        return obj;
+    }
+    public static void Deserialize(GameActionParameterBool.Data obj, BitStreamReader reader)
+    {
+        StaticNetSerializer_System_Boolean.Deserialize(ref obj.Value, reader);
+        StaticNetSerializer_GameAction_ParameterData.Deserialize(obj, reader);
+    }
+}
 public static class StaticNetSerializer_GameActionParameterEntity_Data
 {
     public static int GetSerializedBitSize_Class(GameActionParameterEntity.Data obj)

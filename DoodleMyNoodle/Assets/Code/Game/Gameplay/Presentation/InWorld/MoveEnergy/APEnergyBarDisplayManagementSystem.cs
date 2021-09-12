@@ -98,6 +98,7 @@ public class APEnergyBarDisplayManagementSystem : GamePresentationSystem<APEnerg
         else
         {
             currentMoveEnergyBar = _moveEnergyInstances[index];
+            EntitiesEnergyBar[entity] = currentMoveEnergyBar;
         }
 
         currentMoveEnergyBar.transform.position = (position + new fix3(0, (fix)(0.535f), 0)).ToUnityVec();

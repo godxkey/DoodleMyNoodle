@@ -45,7 +45,7 @@ public class DestroyDeadEntitiesSystem : SimSystemBase
                 EntityManager.CreateEventEntity(new EntityDeathEventData() { Entity = entity });
 
                 // Only Destroy entities that have been tagged for it
-                if (EntityManager.TryGetComponentData(entity, out DestroyOnDeath destroyOnDeath))
+                if (EntityManager.HasComponent<DestroyOnDeath>(entity))
                 {
                     _toDestroy.Add(entity);
                 }
