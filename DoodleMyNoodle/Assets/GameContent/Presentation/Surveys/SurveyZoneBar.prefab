@@ -26,10 +26,10 @@ Transform:
   m_GameObject: {fileID: 580173296349989595}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.025, y: 1.3, z: 1.05}
+  m_LocalScale: {x: 89.81431, y: 6.346247, z: 1.05}
   m_Children: []
-  m_Father: {fileID: 580173297378532407}
-  m_RootOrder: 4
+  m_Father: {fileID: 580173297287824415}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &580173296349989597
 SpriteRenderer:
@@ -141,7 +141,7 @@ Transform:
   m_LocalScale: {x: 0, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 580173297378532407}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &580173296713709018
 SpriteRenderer:
@@ -223,7 +223,7 @@ Transform:
   m_LocalScale: {x: 0, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 580173297378532407}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &580173296766194007
 SpriteRenderer:
@@ -305,6 +305,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children:
   - {fileID: 580173297378532407}
+  - {fileID: 580173296349989594}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -321,20 +322,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tooltip:
-    _string: Clique sur le plus gros chiffre
+    _string: Clique quand la boule est dans la couleur
     _useLocID: 1
     _locID: 
   LeftCircleLimit: {fileID: 580173298084315602}
   RightCircleLimit: {fileID: 580173297661533709}
+  Circle: {fileID: 580173298154001950}
+  CircleSpeed: 1
   Section: {fileID: 580173298033699285}
   LeftSectionLimit: {fileID: 580173296644183260}
   RightSectionLimit: {fileID: 580173298267479399}
   SectionLeftRandomLimit: {fileID: 580173296713709019}
   SectionRightRandomLimit: {fileID: 580173296766194004}
-  SectionSizeMin: 0.1
-  SectionSizeMax: 0.3
-  Circle: {fileID: 580173298154001950}
-  CircleSpeed: 1
+  SectionSizeAverageMax: 0.1
+  SectionSizeFailedMax: 0.25
+  SectionSizeMax: 0.4
+  SectionGrowthSpeed: 0.05
+  SectionSpriteRenderer: {fileID: 580173298033699284}
+  SuccessColor: {r: 0.05260229, g: 1, b: 0, a: 1}
+  AverageColor: {r: 0.99878615, g: 1, b: 0.042452812, a: 1}
+  FailedColor: {r: 1, g: 0, b: 0, a: 1}
   ClickButton: {fileID: 0}
 --- !u!1 &580173297378532404
 GameObject:
@@ -367,10 +374,9 @@ Transform:
   - {fileID: 580173298033699285}
   - {fileID: 580173298084315602}
   - {fileID: 580173297661533709}
-  - {fileID: 580173298154001937}
-  - {fileID: 580173296349989594}
   - {fileID: 580173296713709019}
   - {fileID: 580173296766194004}
+  - {fileID: 580173298154001937}
   m_Father: {fileID: 580173297287824415}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -532,8 +538,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 580173298033699282}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0006, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 1, z: 1}
+  m_LocalPosition: {x: -0.0242, y: 0, z: 0}
+  m_LocalScale: {x: 0.05, y: 1, z: 1}
   m_Children:
   - {fileID: 580173296644183260}
   - {fileID: 580173298267479399}
@@ -698,11 +704,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 580173298154001950}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.03971, y: 0, z: 0}
-  m_LocalScale: {x: 0.025, y: 0.5, z: 1}
+  m_LocalPosition: {x: -0.039710004, y: 0, z: 0}
+  m_LocalScale: {x: 0.025000002, y: 0.49999997, z: 1}
   m_Children: []
   m_Father: {fileID: 580173297378532407}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &580173298154001936
 SpriteRenderer:

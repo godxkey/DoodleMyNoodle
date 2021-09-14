@@ -25,33 +25,42 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         _surveyStateMachine.Blackboard = _surveySMBlackboard;
         _surveySMBlackboard.Cache = Cache;
         _surveySMBlackboard.ResultParameters.Clear();
+        _surveySMBlackboard.isDebug = false;
 
         CursorOverlayService.Instance.ResetCursorToDefault();
 
-        if (SimWorld.TryGetComponent(InputParameter.ObjectEntity, out SimAssetId objectSimAssetID))
+        if (InputParameter != null && InputParameter.ObjectEntity != Entity.Null)
         {
-            _surveySMBlackboard.GameActionAuth = PresentationHelpers.FindItemAuth(objectSimAssetID);
+            if (SimWorld.TryGetComponent(InputParameter.ObjectEntity, out SimAssetId objectSimAssetID))
+            {
+                _surveySMBlackboard.GameActionAuth = PresentationHelpers.FindItemAuth(objectSimAssetID);
+            }
+
+            if (_surveySMBlackboard.GameActionAuth == null)
+            {
+                StateMachine.TransitionTo(UIStateType.Gameplay);
+                return;
+            }
+
+            // Init process of parameter selection
+            GameActionId actionId = SimWorld.GetComponent<GameActionId>(InputParameter.ObjectEntity);
+            GameAction objectGameAction = GameActionBank.GetAction(actionId);
+
+            GameAction.UseContext useContext = new GameAction.UseContext()
+            {
+                InstigatorPawn = Cache.LocalPawn,
+                InstigatorPawnController = Cache.LocalController,
+                Item = InputParameter.ObjectEntity
+            };
+
+            _surveySMBlackboard.UseContext = useContext;
+            _surveySMBlackboard.ParametersDescriptions = objectGameAction.GetUseContract(SimWorld, useContext).ParameterTypes;
         }
-
-        if (_surveySMBlackboard.GameActionAuth == null)
+        else
         {
-            StateMachine.TransitionTo(UIStateType.Gameplay);
-            return;
+            _surveySMBlackboard.isDebug = true;
         }
-
-        // Init process of parameter selection
-        GameActionId actionId = SimWorld.GetComponent<GameActionId>(InputParameter.ObjectEntity);
-        GameAction objectGameAction = GameActionBank.GetAction(actionId);
-
-        GameAction.UseContext useContext = new GameAction.UseContext()
-        {
-            InstigatorPawn = Cache.LocalPawn,
-            InstigatorPawnController = Cache.LocalController,
-            Item = InputParameter.ObjectEntity
-        };
-
-        _surveySMBlackboard.UseContext = useContext;
-        _surveySMBlackboard.ParametersDescriptions = objectGameAction.GetUseContract(SimWorld, useContext).ParameterTypes;
+        
         _surveyStateMachine.TransitionTo(new SurveyState());
     }
 
@@ -60,6 +69,12 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         if (Input.GetMouseButtonDown(1))  // right-click cancels
         {
             StateMachine.TransitionTo(UIStateType.Gameplay);
+            return;
+        }
+
+        if (_surveySMBlackboard.isDebug)
+        {
+            _surveyStateMachine.Update();
             return;
         }
 
@@ -129,6 +144,8 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         public ItemAuth GameActionAuth;
         public GamePresentationCache Cache;
 
+        public bool isDebug;
+
         public GameAction.UseContext UseContext;
 
         // the description of parameters we must fill
@@ -150,6 +167,9 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             _doneNextFrame = false;
 
             HUDDisplay.Instance.ToggleVisibility(false);
+
+            if (Blackboard.isDebug)
+                return;
 
             // the parameter
             int remainingParamCount = Blackboard.ParametersDescriptions.Length - Blackboard.ResultParameters.Count;
