@@ -75,10 +75,7 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
         {
             if (DamageOnContacts.TryGetComponent(entityA, out DamageOnContact damageOnContact))
             {
-                if (Healths.HasComponent(entityB))
-                {
-                    OutDamages.Add((entityA, entityB, damageOnContact.Value));
-                }
+                OutDamages.Add((entityA, entityB, damageOnContact.Value));
 
                 if (damageOnContact.DestroySelf)
                 {

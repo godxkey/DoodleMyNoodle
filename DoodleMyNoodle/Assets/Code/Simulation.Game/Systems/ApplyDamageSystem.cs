@@ -128,6 +128,15 @@ public class ApplyDamageSystem : SimSystemBase
             damageHasBeenApplied = true;
         }
 
+        // Trigger Signal on Damage
+        if (HasComponent<TriggerSignalOnDamage>(target) && TryGetComponent(target, out SignalEmissionType emissionType))
+        {
+            if (emissionType.Value == ESignalEmissionType.OnClick || emissionType.Value == ESignalEmissionType.ToggleOnClick)
+            {
+                World.GetOrCreateSystem<SetSignalSystem>().EmitterClickRequests.Add(target);
+            }
+        }
+
         // Handle damaged entity for feedbacks
         if (damageHasBeenApplied)
         {

@@ -48,6 +48,7 @@ public class ClickableDisplay : BindedPresentationEntityComponent, IWorldUIPoint
                 break;
 
             case ClickAction.TriggerSignal:
+                PresentationHelpers.RequestFloatingText((Vector2)entityPosition, "Click", Color.white);
                 SimWorld.SubmitInput(new SimPlayerInputClickSignalEmitter(SimEntity));
                 break;
         }
