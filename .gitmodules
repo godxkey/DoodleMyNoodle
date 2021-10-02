@@ -17,3 +17,6 @@
 [submodule "DoodleMyNoodle/Packages/com.ccc.upaint"]
 	path = DoodleMyNoodle/Packages/com.ccc.upaint
 	url = https://github.com/CCC-Development/UPaint.git
+[submodule "DoodleMyNoodle/Packages/com.unity-x.bookmarks"]
+	path = DoodleMyNoodle/Packages/com.unity-x.bookmarks
+	url = https://github.com/Unity-X/Bookmarks.git
