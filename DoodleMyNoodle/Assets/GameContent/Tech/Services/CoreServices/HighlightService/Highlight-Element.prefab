@@ -62,6 +62,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -109,5 +110,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 634877d70da50fe4d977244b827cb6f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _saturationMode: 1
-  _intensity: 1
+  _saturationMode: 0.5
+  _intensity: 1.25

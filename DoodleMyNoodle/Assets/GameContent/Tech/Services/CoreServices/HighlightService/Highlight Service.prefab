@@ -49,5 +49,5 @@ MonoBehaviour:
   _slowLoopDuration: 1.25
   _longLoops: 6
   _shortLoops: 3
-  _normalIntensity: 0.75
-  _highIntensity: 1.5
+  _normalIntensity: 0.5
+  _highIntensity: 1
