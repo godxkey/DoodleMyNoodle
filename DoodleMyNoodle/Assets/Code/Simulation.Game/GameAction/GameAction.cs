@@ -175,7 +175,7 @@ public abstract class GameAction
                 return false;
             }
 
-            if (ap < (fix)minApCost)
+            if (ap <= (fix)0)
             {
                 debugReason?.Set($"Pawn doesn't have enough ActionPoints (has {ap.Value}, need {minApCost}).");
                 return false;
