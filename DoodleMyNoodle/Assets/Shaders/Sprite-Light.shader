@@ -27,8 +27,8 @@
             }
 
             // Render State
+            Cull Off
         Blend SrcAlpha One, One One
-            Cull Off                    // CHANGE Back -> OFF
         ZTest LEqual
         ZWrite Off
 
@@ -316,7 +316,7 @@
             }
 
             // Render State
-            Cull Back
+            Cull Off
         Blend One One, One One
         ZTest LEqual
         ZWrite On
@@ -555,7 +555,7 @@
             }
 
             // Render State
-            Cull Back
+            Cull Off
         Blend One One, One One
         ZTest LEqual
         ZWrite On
@@ -804,7 +804,7 @@
             }
 
             // Render State
-            Cull Off                     // CHANGE Back -> OFF
+            Cull Off
         Blend SrcAlpha One, One One
         ZTest LEqual
         ZWrite Off
@@ -1094,7 +1094,7 @@
             }
 
             // Render State
-            Cull Back
+            Cull Off
         Blend One One, One One
         ZTest LEqual
         ZWrite On
@@ -1334,7 +1334,7 @@
             }
 
             // Render State
-            Cull Back
+            Cull Off
         Blend One One, One One
         ZTest LEqual
         ZWrite On
