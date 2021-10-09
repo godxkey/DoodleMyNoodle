@@ -90,14 +90,14 @@ public struct SignalLogicTarget : IBufferElementData
     public static implicit operator SignalLogicTarget(Entity val) => new SignalLogicTarget() { Value = val };
 }
 
-[InternalBufferCapacity(1)] // very un-usual for more than 1 target
-public struct SignalPropagationTarget : IBufferElementData
-{
-    public Entity Value;
+//[InternalBufferCapacity(0)] // very un-usual for more than 1 target
+//public struct SignalPropagationTarget : IBufferElementData
+//{
+//    public Entity Value;
 
-    public static implicit operator Entity(SignalPropagationTarget val) => val.Value;
-    public static implicit operator SignalPropagationTarget(Entity val) => new SignalPropagationTarget() { Value = val };
-}
+//    public static implicit operator Entity(SignalPropagationTarget val) => val.Value;
+//    public static implicit operator SignalPropagationTarget(Entity val) => new SignalPropagationTarget() { Value = val };
+//}
 
 public enum ESignalEmissionFlags
 {

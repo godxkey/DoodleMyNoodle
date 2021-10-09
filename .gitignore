@@ -42,3 +42,4 @@ Logs/*
 # External Tools
 ExternalTools/MermaidRenderer/*
 !ExternalTools/MermaidRenderer/README.md
+DoodleMyNoodle/Logs/ApiUpdaterCheck.txt

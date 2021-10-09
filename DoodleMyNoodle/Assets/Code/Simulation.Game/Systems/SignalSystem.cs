@@ -231,33 +231,32 @@ public class SetSignalSystem : SimSystemBase
     }
 }
 
+//[UpdateInGroup(typeof(SignalSystemGroup))]
+//[UpdateAfter(typeof(SetSignalSystem))]
+//public class PropagateSignalSystem : SimSystemBase
+//{
+//    protected override void OnUpdate()
+//    {
+//        Entities
+//            .WithAll<Signal>()
+//            .ForEach((Entity signalEntity, DynamicBuffer<SignalPropagationTarget> targets) =>
+//        {
+//            if (!GetComponent<Signal>(signalEntity)) // skip disabled emitters
+//                return;
+
+//            for (int i = 0; i < targets.Length; i++)
+//            {
+//                if (HasComponent<Signal>(targets[i]))
+//                {
+//                    SetComponent<Signal>(targets[i], true);
+//                }
+//            }
+//        }).Schedule();
+//    }
+//}
+
 [UpdateInGroup(typeof(SignalSystemGroup))]
 [UpdateAfter(typeof(SetSignalSystem))]
-public class PropagateSignalSystem : SimSystemBase
-{
-    protected override void OnUpdate()
-    {
-        var signals = GetComponentDataFromEntity<Signal>(isReadOnly: false);
-        Entities
-            .WithAll<Signal>()
-            .ForEach((Entity signalEntity, DynamicBuffer<SignalPropagationTarget> targets) =>
-        {
-            if (!signals[signalEntity]) // skip disabled emitters
-                return;
-
-            for (int i = 0; i < targets.Length; i++)
-            {
-                if (signals.HasComponent(targets[i]))
-                {
-                    signals[targets[i]] = true;
-                }
-            }
-        }).Schedule();
-    }
-}
-
-[UpdateInGroup(typeof(SignalSystemGroup))]
-[UpdateAfter(typeof(PropagateSignalSystem))]
 public class RecordPreviousSignalsSystem : SimSystemBase
 {
     protected override void OnUpdate()
