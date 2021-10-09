@@ -10,12 +10,18 @@ using Collider = CCC.Fix2D.Collider;
 [RequireComponent(typeof(PhysicsBodyAuth))]
 public class MovingPlatformAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
-    public Vector2[] MovePoints;
+    [Serializable]
+    public class Point
+    {
+        public Vector2 Position;
+        public SignalAuth SignalEmitter;
+    }
+
+    public Point[] MovePoints;
     public float MaximumSpeed = 3f;
     public PlatformMoveMode Move = PlatformMoveMode.Yoyo;
     public bool SlowDownNearPoints = true;
     public bool PauseOnPoints = true;
-    [ShowIf(nameof(PauseOnPoints))]
     public float PauseDuration = 1f;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -30,19 +36,42 @@ public class MovingPlatformAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponentData(entity, new MovingPlatformState() { });
 
         DynamicBuffer<PathPosition> points = dstManager.AddBuffer<PathPosition>(entity);
-        points.Capacity = MovePoints.Length;
-        foreach (Vector2 item in MovePoints)
+        Vector2 positionOffset = transform.position;
+
+        if (Move == PlatformMoveMode.Signals)
         {
-            points.Add((fix2)item);
+            var signalPositions = dstManager.AddBuffer<MovingPlatformSignalPosition>(entity);
+            signalPositions.Capacity = MovePoints.Length;
+
+            foreach (var item in MovePoints)
+            {
+                if (item.SignalEmitter == null)
+                    return;
+
+                signalPositions.Add(new MovingPlatformSignalPosition()
+                {
+                    Position = (fix2)(positionOffset + item.Position),
+                    SignalEmitter = conversionSystem.GetPrimaryEntity(item.SignalEmitter)
+                });
+            }
+        }
+        else
+        {
+            points.Capacity = MovePoints.Length;
+            foreach (var item in MovePoints)
+            {
+                points.Add((fix2)(positionOffset + item.Position));
+            }
         }
     }
 
     private void OnDrawGizmosSelected()
     {
+        Vector2 positionOffset = transform.position;
         Gizmos.color = Color.magenta;
         for (int i = 1; i < MovePoints.Length; i++)
         {
-            Gizmos.DrawLine(MovePoints[i - 1], MovePoints[i]);
+            Gizmos.DrawLine(MovePoints[i - 1].Position + positionOffset, MovePoints[i].Position + positionOffset);
         }
     }
 }
