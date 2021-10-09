@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class DispenserAuth : MonoBehaviour, IConvertGameObjectToEntity
+public class DispenserAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     private enum DurationType { Seconds, Turns, Rounds }
 
@@ -67,6 +67,17 @@ public class DispenserAuth : MonoBehaviour, IConvertGameObjectToEntity
         {
             if (gameObject != null)
                 entities.Add(conversionSystem.GetPrimaryEntity(gameObject));
+        }
+    }
+
+    public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
+    {
+        foreach (var prefabs in EntitiesToSpawn)
+        {
+            if (prefabs != null)
+            {
+                referencedPrefabs.Add(prefabs);
+            }
         }
     }
 }

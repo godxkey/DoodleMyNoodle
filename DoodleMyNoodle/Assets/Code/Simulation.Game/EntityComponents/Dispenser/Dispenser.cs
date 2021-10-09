@@ -14,8 +14,10 @@ public struct Dispenser : IComponentData
 
     public int AmountSpawned;
     public int Quantity;
-    public int IndexToSpawn;
-    public int TotalAmountSpawned;
 
     public bool SpawnedRandomly;
+
+    // Dynamic Data
+    public int IndexToSpawn;
+    public int TotalAmountSpawned;
 }

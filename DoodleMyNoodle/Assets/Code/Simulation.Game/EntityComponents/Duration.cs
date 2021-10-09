@@ -6,4 +6,8 @@ public struct Duration : IComponentData
     public bool IsSeconds;
     public bool IsTurns;
     public bool IsRounds;
+
+    // Dynamic Data
+    public fix LastTimeSpawned;
+    public int TrackingCount;
 }

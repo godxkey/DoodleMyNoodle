@@ -12,7 +12,7 @@ public class DispenserSpawningEntitiesSystem : SimSystemBase
         Entities
         .WithoutBurst()
         .WithStructuralChanges()
-        .ForEach((Entity entity, ref Dispenser dispenser, in DynamicBuffer<EntitiesToSpawn> entitiesToSpawn, in Signal signal, in Duration duration, in FixTranslation translation) =>
+        .ForEach((Entity entity, ref Dispenser dispenser, ref Duration duration, in DynamicBuffer<EntitiesToSpawn> entitiesToSpawn, in Signal signal, in FixTranslation translation) =>
         {
             if (dispenser.TotalAmountSpawned < dispenser.Quantity)
             {
@@ -26,13 +26,30 @@ public class DispenserSpawningEntitiesSystem : SimSystemBase
                         {
                             if (duration.IsRounds && GetSingleton<TurnTeamCountSingletonComponent>().Value == 0)
                             {
-                                SpawnEntities(entitiesToSpawnList, ref dispenser, duration, translation);
+                                duration.TrackingCount++;
+
+                                if (duration.TrackingCount >= duration.Value)
+                                {
+                                    SpawnEntities(entitiesToSpawnList, ref dispenser, duration, translation);
+                                }
+                                
                             }
                             else if (duration.IsTurns)
                             {
-                                SpawnEntities(entitiesToSpawnList, ref dispenser, duration, translation);
+                                duration.TrackingCount++;
+
+                                if (duration.TrackingCount >= duration.Value) 
+                                {
+                                    SpawnEntities(entitiesToSpawnList, ref dispenser, duration, translation);
+                                }
                             }
                         }
+                    }
+                    else if((Time.ElapsedTime - duration.LastTimeSpawned) >= duration.Value)
+                    {
+                        duration.LastTimeSpawned = Time.ElapsedTime;
+
+                        SpawnEntities(entitiesToSpawnList, ref dispenser, duration, translation);
                     }
                 }
             }
@@ -57,7 +74,7 @@ public class DispenserSpawningEntitiesSystem : SimSystemBase
 
             if (EntityManager.TryGetComponentData(newEntity, out FixTranslation fixTranslation))
             {
-                fixTranslation.Value = translation.Value;
+                EntityManager.SetComponentData(newEntity, translation);
             }
 
             if (EntityManager.HasComponent<PhysicsVelocity>(newEntity))
