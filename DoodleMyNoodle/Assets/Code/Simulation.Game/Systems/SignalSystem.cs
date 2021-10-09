@@ -77,9 +77,9 @@ public class ResetSignalSystems : SimSystemBase
 {
     protected override void OnUpdate()
     {
-        Entities.ForEach((ref Signal signalEmission, in SignalEmissionType emissionType) =>
+        Entities.ForEach((ref Signal signalEmission, in SignalStayOnForever stayOnForever, in PreviousSignal previousSignal) =>
         {
-            signalEmission.Value = false;
+            signalEmission.Value = stayOnForever && previousSignal.Value;
         }).Schedule();
     }
 }
@@ -116,6 +116,48 @@ public class SetSignalSystem : SimSystemBase
 
         SetClickEmissions();
         SetOverlapEmissions();
+
+        // should be placed last for better responsivity
+        SetLogicEmissions();
+    }
+
+    private void SetClickEmissions()
+    {
+        var clickRequests = EmitterClickRequests;
+        Job.WithCode(() =>
+        {
+            for (int i = 0; i < clickRequests.Length; i++)
+            {
+                Entity emitter = clickRequests[i];
+
+                // NB: We need to check if entity exists here since 'EmitterClickRequests' comes from external systems we don't trust
+                if (!HasComponent<SignalEmissionType>(emitter))
+                    continue;
+
+                ESignalEmissionType type = GetComponent<SignalEmissionType>(emitter).Value;
+
+                if (type == ESignalEmissionType.OnClick)
+                {
+                    SetComponent<Signal>(emitter, true);
+                }
+                else if (type == ESignalEmissionType.ToggleOnClick)
+                {
+                    var status = GetComponent<SignalEmissionFlags>(emitter);
+                    status.ToggleClickOn = !status.ToggleClickOn;
+                    SetComponent(emitter, status);
+                }
+            }
+            clickRequests.Clear();
+        }).Schedule();
+
+        // set all signals ON for emitters with ToggleClick ON
+        Entities.ForEach((ref Signal signal, in SignalEmissionFlags flags) =>
+        {
+            if (flags.ToggleClickOn)
+            {
+                signal = true;
+            }
+        }).Schedule();
     }
 
     private void SetOverlapEmissions()
@@ -154,41 +196,36 @@ public class SetSignalSystem : SimSystemBase
         }).Schedule();
     }
 
-    private void SetClickEmissions()
+    private void SetLogicEmissions()
     {
-        var clickRequests = EmitterClickRequests;
-        Job.WithCode(() =>
+        Entities.ForEach((Entity emitter, DynamicBuffer<SignalLogicTarget> logicTargets, in SignalEmissionType type) =>
         {
-            for (int i = 0; i < clickRequests.Length; i++)
+            if (type.Value == ESignalEmissionType.AND)
             {
-                Entity emitter = clickRequests[i];
-
-                // NB: We need to check if entity exists here since 'EmitterClickRequests' comes from external systems we don't trust
-                if (!HasComponent<SignalEmissionType>(emitter))
-                    continue;
-
-                ESignalEmissionType type = GetComponent<SignalEmissionType>(emitter).Value;
-
-                if (type == ESignalEmissionType.OnClick)
+                bool on = logicTargets.Length > 0;
+                foreach (var item in logicTargets)
                 {
-                    SetComponent<Signal>(emitter, true);
+                    if (!GetComponent<Signal>(item))
+                    {
+                        on = false;
+                        break;
+                    }
                 }
-                else if (type == ESignalEmissionType.ToggleOnClick)
-                {
-                    var status = GetComponent<SignalEmissionFlags>(emitter);
-                    status.ToggleClickOn = !status.ToggleClickOn;
-                    SetComponent(emitter, status);
-                }
+
+                SetComponent<Signal>(emitter, on);
             }
-            clickRequests.Clear();
-        }).Schedule();
-
-        // set all signals ON for emitters with ToggleClick ON
-        Entities.ForEach((ref Signal signal, in SignalEmissionFlags flags) =>
-        {
-            if (flags.ToggleClickOn)
+            else if (type.Value == ESignalEmissionType.OR)
             {
-                signal = true;
+                bool on = false;
+                foreach (var item in logicTargets)
+                {
+                    if (GetComponent<Signal>(item))
+                    {
+                        on = true;
+                        break;
+                    }
+                }
+                SetComponent<Signal>(emitter, on);
             }
         }).Schedule();
     }

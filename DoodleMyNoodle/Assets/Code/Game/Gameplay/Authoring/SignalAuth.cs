@@ -1,3 +1,4 @@
+using CCC.InspectorDisplay;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -7,14 +8,20 @@ using UnityEngineX;
 [DisallowMultipleComponent]
 public class SignalAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
+    public bool StayOnForever = false;
     public ESignalEmissionType Emission = ESignalEmissionType.None;
-    public List<SignalAuth> PropagationTargets;
+    [ShowIf(nameof(EmissionIsLogic))]
+    public List<SignalAuth> LogicTargets = new List<SignalAuth>();
+    public List<SignalAuth> PropagationTargets = new List<SignalAuth>();
+
+    private bool EmissionIsLogic => Emission == ESignalEmissionType.OR || Emission == ESignalEmissionType.AND;
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponent<Signal>(entity);
         dstManager.AddComponent<PreviousSignal>(entity);
         dstManager.AddComponent<SignalEmissionFlags>(entity);
+        dstManager.AddComponentData<SignalStayOnForever>(entity, StayOnForever);
         dstManager.AddComponentData<InteractableFlag>(entity, Emission == ESignalEmissionType.OnClick || Emission == ESignalEmissionType.ToggleOnClick);
         dstManager.AddComponentData<SignalEmissionType>(entity, Emission);
         var targetsECS = dstManager.AddBuffer<SignalPropagationTarget>(entity);
@@ -23,6 +30,13 @@ public class SignalAuth : MonoBehaviour, IConvertGameObjectToEntity
         {
             if (target != null)
                 targetsECS.Add(conversionSystem.GetPrimaryEntity(target.gameObject));
+        }
+
+        var logicTargetsECS = dstManager.AddBuffer<SignalLogicTarget>(entity);
+        foreach (var target in LogicTargets)
+        {
+            if (target != null)
+                logicTargetsECS.Add(conversionSystem.GetPrimaryEntity(target.gameObject));
         }
     }
 

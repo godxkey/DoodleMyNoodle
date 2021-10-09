@@ -78,7 +78,8 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
     // Input and fluid position update
     private void Update()
     {
-        Cursor.visible = false;
+        if (!Application.isEditor)
+            Cursor.visible = false;
 
         if (_isLocked)
         {
@@ -99,7 +100,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         {
             UpdateAllPosition();
         }
-        
+
 
         if (_currentSetting != null)
         {
@@ -307,7 +308,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         }
     }
 
-    public void SetCursorLockAtPosition(Vector2 position, bool lockOnWorldPos = false) 
+    public void SetCursorLockAtPosition(Vector2 position, bool lockOnWorldPos = false)
     {
         _isLocked = true;
         _isLockedInWorldPos = lockOnWorldPos;
