@@ -24,7 +24,7 @@ public class DispenserSpawningEntitiesSystem : SimSystemBase
                     {
                         if (HasSingleton<NewTurnEventData>())
                         {
-                            if (duration.IsRounds && GetSingleton<TurnTeamCountSingletonComponent>().Value == 0)
+                            if (duration.IsRounds && GetSingleton<TurnCurrentTeamSingletonComponent>().Value == 0)
                             {
                                 duration.TrackingCount++;
 
