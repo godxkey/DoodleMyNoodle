@@ -66,7 +66,7 @@ MonoBehaviour:
   Value: GameActionBasicJump
   GameActionSettings:
   - id: 0
-  ApCost: 0
+  ApCost: 1
   IsStackable: 0
   CooldownType: 0
   CooldownDuration:

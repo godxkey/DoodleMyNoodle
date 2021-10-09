@@ -146,7 +146,10 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     private void HideCostPreview()
     {
-        APEnergyBarDisplayManagementSystem.Instance.HideCostPreview(_itemsOwner);
+        if (SimWorld.HasComponent<ActionPoints>(_itemsOwner))
+        {
+            APEnergyBarDisplayManagementSystem.Instance.HideCostPreview(_itemsOwner);
+        }
     }
 
     public void ItemSlotClicked()

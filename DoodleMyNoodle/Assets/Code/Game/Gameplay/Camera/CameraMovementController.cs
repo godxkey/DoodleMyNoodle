@@ -40,6 +40,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     private DirtyValue<Entity> _localPawn;
     private Vector3 dragOrigin;
     private Vector2 _lastMousePos;
+    private bool _cameraMovementDisable = false;
 
     [ConsoleVar("CameraLimits", "Enable/Disable the game camera move limits.", Save = ConsoleVarAttribute.SaveMode.PlayerPrefs)]
     private static bool s_enableMovementLimits = true;
@@ -136,8 +137,11 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
 
     private void UpdateMovement()
     {
+        if (_cameraMovementDisable)
+            return;
+
         if (UIStateMachineController.Instance.CurrentSate.Type == UIStateType.Drawing
-            || UIStateMachineController.Instance.CurrentSate.Type == UIStateType.BlockedGameplay)
+            || (UIStateMachineController.Instance.CurrentSate.Type == UIStateType.BlockedGameplay && Cache.LocalPawnAlive))
             return;
 
         Vector2 movement = Vector2.zero;
@@ -251,8 +255,24 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         CamPosition = CamPosition;
     }
 
+    public void ToggleCameraMovement()
+    {
+        _lastMousePos = Input.mousePosition;
+        _cameraMovementDisable = !_cameraMovementDisable;
+    }
+
     public void TeleportCameraToPosition(Vector2 newPosition)
     {
         CamPosition = newPosition;
+    }
+
+    public void SetMaxZoom()
+    {
+        CamSize = MaxZoom;
+    }
+
+    public void CenterOnPawn()
+    {
+        CamPosition = Cache.LocalPawnPositionFloat;
     }
 }

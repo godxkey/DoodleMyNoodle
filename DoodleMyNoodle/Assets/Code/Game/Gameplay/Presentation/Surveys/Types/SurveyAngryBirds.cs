@@ -47,6 +47,10 @@ public class SurveyAngryBirds : SurveyBaseController
         _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
         _vectorDesc = context.GetQueryParam<GameActionParameterVector.Description>();
 
+        CameraMovementController.Instance.SetMaxZoom();
+        CameraMovementController.Instance.CenterOnPawn();
+        CameraMovementController.Instance.ToggleCameraMovement();
+
         Update(); // force first update to avoid visual issue on first frame. We should find a more general fix
 
         // wait for drag to start
@@ -60,6 +64,8 @@ public class SurveyAngryBirds : SurveyBaseController
         {
             yield return null;
         }
+
+        CameraMovementController.Instance.ToggleCameraMovement();
 
         // submit drag vector
         result.Add(new GameActionParameterVector.Data((fix2)_releaseVector));
@@ -102,6 +108,7 @@ public class SurveyAngryBirds : SurveyBaseController
     {
         UpdateDragLogic();
         UpdateVisuals();
+        UpdateCameraPosition();
     }
 
     private void UpdateDragLogic()
@@ -187,6 +194,13 @@ public class SurveyAngryBirds : SurveyBaseController
             _trajectoryDisplay.StartPoint = (Vector2)_center.position + startOffset;
             _trajectoryDisplay.Velocity = _releaseVector;
         }
+    }
+
+    private void UpdateCameraPosition()
+    {
+        Vector3 dragVector = _center.position - _dragTarget.position;
+        Vector2 cameraPos = _center.position + dragVector;
+        CameraMovementController.Instance.TeleportCameraToPosition(Vector2.Lerp(CameraMovementController.Instance.CamPosition, cameraPos, Time.deltaTime));
     }
 
     protected override void OnEndSurvey(bool wasCompleted)
