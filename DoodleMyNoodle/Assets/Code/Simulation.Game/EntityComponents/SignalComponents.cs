@@ -19,6 +19,14 @@ public struct PreviousSignal : IComponentData
     public static implicit operator PreviousSignal(bool val) => new PreviousSignal() { Value = val };
 }
 
+public struct SignalStayOnForever : IComponentData
+{
+    public bool Value;
+
+    public static implicit operator bool(SignalStayOnForever val) => val.Value;
+    public static implicit operator SignalStayOnForever(bool val) => new SignalStayOnForever() { Value = val };
+}
+
 public enum ESignalEmissionType
 {
     /// <summary>
@@ -44,7 +52,17 @@ public enum ESignalEmissionType
     /// <summary>
     /// Signal stays ON/OFF, changes at every click. 
     /// </summary>
-    ToggleOnClick
+    ToggleOnClick,
+
+    /// <summary>
+    /// Signal ON when all targets are ON
+    /// </summary>
+    AND,
+
+    /// <summary>
+    /// Signal ON when any target is ON
+    /// </summary>
+    OR
 }
 
 //public struct SignalEmission : IComponentData
@@ -63,14 +81,23 @@ public struct SignalEmissionType : IComponentData
     public static implicit operator SignalEmissionType(ESignalEmissionType val) => new SignalEmissionType() { Value = val };
 }
 
-[InternalBufferCapacity(1)] // very un-usual for more than 1 target
-public struct SignalPropagationTarget : IBufferElementData
+[InternalBufferCapacity(0)]
+public struct SignalLogicTarget : IBufferElementData
 {
     public Entity Value;
 
-    public static implicit operator Entity(SignalPropagationTarget val) => val.Value;
-    public static implicit operator SignalPropagationTarget(Entity val) => new SignalPropagationTarget() { Value = val };
+    public static implicit operator Entity(SignalLogicTarget val) => val.Value;
+    public static implicit operator SignalLogicTarget(Entity val) => new SignalLogicTarget() { Value = val };
 }
+
+//[InternalBufferCapacity(0)] // very un-usual for more than 1 target
+//public struct SignalPropagationTarget : IBufferElementData
+//{
+//    public Entity Value;
+
+//    public static implicit operator Entity(SignalPropagationTarget val) => val.Value;
+//    public static implicit operator SignalPropagationTarget(Entity val) => new SignalPropagationTarget() { Value = val };
+//}
 
 public enum ESignalEmissionFlags
 {

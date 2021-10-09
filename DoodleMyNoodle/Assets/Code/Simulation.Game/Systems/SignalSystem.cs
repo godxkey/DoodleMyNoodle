@@ -77,9 +77,9 @@ public class ResetSignalSystems : SimSystemBase
 {
     protected override void OnUpdate()
     {
-        Entities.ForEach((ref Signal signalEmission, in SignalEmissionType emissionType) =>
+        Entities.ForEach((ref Signal signalEmission, in SignalStayOnForever stayOnForever, in PreviousSignal previousSignal) =>
         {
-            signalEmission.Value = false;
+            signalEmission.Value = stayOnForever && previousSignal.Value;
         }).Schedule();
     }
 }
@@ -116,42 +116,9 @@ public class SetSignalSystem : SimSystemBase
 
         SetClickEmissions();
         SetOverlapEmissions();
-    }
 
-    private void SetOverlapEmissions()
-    {
-        // reset 'Overlapping' flags
-        var overlaps = EmitterOverlaps;
-        Entities.ForEach((Entity emitter, ref SignalEmissionFlags flags) =>
-        {
-            if (flags.Overlapping && !overlaps.Contains(emitter))
-            {
-                flags.Overlapping = false;
-            }
-        }).Schedule();
-
-        Job.WithCode(() =>
-        {
-            for (int i = 0; i < overlaps.Length; i++)
-            {
-                Entity emitter = overlaps[i];
-
-                // NB: No need to check if entity exists here since 'EmitterOverlaps' comes from our own system we trust.
-                var type = GetComponent<SignalEmissionType>(emitter).Value;
-                var status = GetComponent<SignalEmissionFlags>(emitter);
-
-                // set emission (if type is OnEnter, only set it if we were NOT overlapping last frame)
-                if (type != ESignalEmissionType.OnEnter || !status.Overlapping)
-                {
-                    SetComponent<Signal>(emitter, true);
-                }
-
-                // update status
-                status.Overlapping = true;
-                SetComponent(emitter, status);
-            }
-            overlaps.Clear();
-        }).Schedule();
+        // should be placed last for better responsivity
+        SetLogicEmissions();
     }
 
     private void SetClickEmissions()
@@ -192,35 +159,104 @@ public class SetSignalSystem : SimSystemBase
             }
         }).Schedule();
     }
-}
 
-[UpdateInGroup(typeof(SignalSystemGroup))]
-[UpdateAfter(typeof(SetSignalSystem))]
-public class PropagateSignalSystem : SimSystemBase
-{
-    protected override void OnUpdate()
+    private void SetOverlapEmissions()
     {
-        var signals = GetComponentDataFromEntity<Signal>(isReadOnly: false);
-        Entities
-            .WithAll<Signal>()
-            .ForEach((Entity signalEntity, DynamicBuffer<SignalPropagationTarget> targets) =>
+        // reset 'Overlapping' flags
+        var overlaps = EmitterOverlaps;
+        Entities.ForEach((Entity emitter, ref SignalEmissionFlags flags) =>
         {
-            if (!signals[signalEntity]) // skip disabled emitters
-                return;
-
-            for (int i = 0; i < targets.Length; i++)
+            if (flags.Overlapping && !overlaps.Contains(emitter))
             {
-                if (signals.HasComponent(targets[i]))
+                flags.Overlapping = false;
+            }
+        }).Schedule();
+
+        Job.WithCode(() =>
+        {
+            for (int i = 0; i < overlaps.Length; i++)
+            {
+                Entity emitter = overlaps[i];
+
+                // NB: No need to check if entity exists here since 'EmitterOverlaps' comes from our own system we trust.
+                var type = GetComponent<SignalEmissionType>(emitter).Value;
+                var status = GetComponent<SignalEmissionFlags>(emitter);
+
+                // set emission (if type is OnEnter, only set it if we were NOT overlapping last frame)
+                if (type != ESignalEmissionType.OnEnter || !status.Overlapping)
                 {
-                    signals[targets[i]] = true;
+                    SetComponent<Signal>(emitter, true);
                 }
+
+                // update status
+                status.Overlapping = true;
+                SetComponent(emitter, status);
+            }
+            overlaps.Clear();
+        }).Schedule();
+    }
+
+    private void SetLogicEmissions()
+    {
+        Entities.ForEach((Entity emitter, DynamicBuffer<SignalLogicTarget> logicTargets, in SignalEmissionType type) =>
+        {
+            if (type.Value == ESignalEmissionType.AND)
+            {
+                bool on = logicTargets.Length > 0;
+                foreach (var item in logicTargets)
+                {
+                    if (!GetComponent<Signal>(item))
+                    {
+                        on = false;
+                        break;
+                    }
+                }
+
+                SetComponent<Signal>(emitter, on);
+            }
+            else if (type.Value == ESignalEmissionType.OR)
+            {
+                bool on = false;
+                foreach (var item in logicTargets)
+                {
+                    if (GetComponent<Signal>(item))
+                    {
+                        on = true;
+                        break;
+                    }
+                }
+                SetComponent<Signal>(emitter, on);
             }
         }).Schedule();
     }
 }
 
+//[UpdateInGroup(typeof(SignalSystemGroup))]
+//[UpdateAfter(typeof(SetSignalSystem))]
+//public class PropagateSignalSystem : SimSystemBase
+//{
+//    protected override void OnUpdate()
+//    {
+//        Entities
+//            .WithAll<Signal>()
+//            .ForEach((Entity signalEntity, DynamicBuffer<SignalPropagationTarget> targets) =>
+//        {
+//            if (!GetComponent<Signal>(signalEntity)) // skip disabled emitters
+//                return;
+
+//            for (int i = 0; i < targets.Length; i++)
+//            {
+//                if (HasComponent<Signal>(targets[i]))
+//                {
+//                    SetComponent<Signal>(targets[i], true);
+//                }
+//            }
+//        }).Schedule();
+//    }
+//}
+
 [UpdateInGroup(typeof(SignalSystemGroup))]
-[UpdateAfter(typeof(PropagateSignalSystem))]
+[UpdateAfter(typeof(SetSignalSystem))]
 public class RecordPreviousSignalsSystem : SimSystemBase
 {
     protected override void OnUpdate()
