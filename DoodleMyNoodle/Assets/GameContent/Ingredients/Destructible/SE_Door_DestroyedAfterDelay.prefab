@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2856864511536238991}
   - component: {fileID: -4760181140813936324}
   m_Layer: 10
-  m_Name: SE_Door _DestroyedAfterDelay
+  m_Name: SE_Door_DestroyedAfterDelay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
