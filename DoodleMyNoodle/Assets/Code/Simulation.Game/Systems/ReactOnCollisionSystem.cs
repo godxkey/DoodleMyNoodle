@@ -34,11 +34,13 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
             ExplodeOnContacts = GetComponentDataFromEntity<ExplodeOnContact>(isReadOnly: true),
             DestroyOnContacts = GetComponentDataFromEntity<DestroyOnCollisionTag>(isReadOnly: true),
             ImpulseOnContacts = GetComponentDataFromEntity<ImpulseOnContact>(isReadOnly: true),
+            StickOnCollision = GetComponentDataFromEntity<StickOnCollisionTag>(isReadOnly: true),
             HookDatas = GetComponentDataFromEntity<HookData>(isReadOnly: true),
 
             OutHooks = _reactSystem.HookRequests,
             OutDamages = _reactSystem.DamagesRequests,
             OutDestroys = _reactSystem.DestroyRequests,
+            OutStick = _reactSystem.StickRequest,
             OutImpulse = _reactSystem.ImpulseRequest,
             OutExplosions = _reactSystem.ExplosionRequests,
             World = _physicsWorldSystem.PhysicsWorld,
@@ -56,12 +58,14 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
         [ReadOnly] public ComponentDataFromEntity<ExplodeOnContact> ExplodeOnContacts;
         [ReadOnly] public ComponentDataFromEntity<DestroyOnCollisionTag> DestroyOnContacts;
         [ReadOnly] public ComponentDataFromEntity<ImpulseOnContact> ImpulseOnContacts;
+        [ReadOnly] public ComponentDataFromEntity<StickOnCollisionTag> StickOnCollision;
         [ReadOnly] public ComponentDataFromEntity<HookData> HookDatas;
         [ReadOnly] public PhysicsWorld World;
 
         public NativeList<(Entity instigator, Entity target, int damage)> OutDamages;
         public NativeList<(Entity hook, Entity other)> OutHooks;
         public NativeList<Entity> OutDestroys;
+        public NativeList<Entity> OutStick;
         public NativeList<(Entity other, fix2 strength)> OutImpulse;
         public NativeList<(Entity instigator, fix2 pos, fix radius, int damage)> OutExplosions;
 
@@ -93,7 +97,11 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
 
                     OutImpulse.AddUnique((entityB, direction * impulseOnContact.Strength));
                 }
-                    
+            }
+
+            if (StickOnCollision.HasComponent(entityA))
+            {
+                OutStick.AddUnique(entityA);
             }
 
             if (DestroyOnContacts.HasComponent(entityA))
@@ -126,6 +134,7 @@ public class ReactOnCollisionSystem : SimSystemBase
 {
     public NativeList<(Entity instigator, Entity target, int damage)> DamagesRequests;
     public NativeList<Entity> DestroyRequests;
+    public NativeList<Entity> StickRequest;
     public NativeList<(Entity other, fix2 strength)> ImpulseRequest;
     public NativeList<(Entity instigator, fix2 pos, fix range, int damage)> ExplosionRequests;
     public NativeList<(Entity hook, Entity other)> HookRequests;
@@ -135,6 +144,7 @@ public class ReactOnCollisionSystem : SimSystemBase
         base.OnCreate();
         DamagesRequests = new NativeList<(Entity, Entity, int)>(Allocator.Persistent);
         DestroyRequests = new NativeList<Entity>(Allocator.Persistent);
+        StickRequest = new NativeList<Entity>(Allocator.Persistent);
         ImpulseRequest = new NativeList<(Entity, fix2)>(Allocator.Persistent);
         ExplosionRequests = new NativeList<(Entity, fix2, fix, int)>(Allocator.Persistent);
         HookRequests = new NativeList<(Entity, Entity)>(Allocator.Persistent);
@@ -145,6 +155,7 @@ public class ReactOnCollisionSystem : SimSystemBase
         base.OnDestroy();
         DamagesRequests.Dispose();
         DestroyRequests.Dispose();
+        StickRequest.Dispose();
         ImpulseRequest.Dispose();
         ExplosionRequests.Dispose();
         HookRequests.Dispose();
@@ -170,6 +181,16 @@ public class ReactOnCollisionSystem : SimSystemBase
             CommonWrites.RequestExplosion(Accessor, instigator, pos, radius, damage, true);
         }
 
+        // Stick
+        foreach (Entity entity in StickRequest)
+        {
+            if (EntityManager.HasComponent<PhysicsVelocity>(entity))
+            {
+                EntityManager.SetComponentData(entity, new PhysicsVelocity() { Linear = new fix2() });
+                EntityManager.SetComponentData(entity, new StickOnCollisionTag() { Sticked = true });
+            }
+        }
+
         foreach (var item in HookRequests)
         {
             GetSingletonBuffer<SystemRequestHookContact>().Add(new SystemRequestHookContact()
@@ -184,6 +205,7 @@ public class ReactOnCollisionSystem : SimSystemBase
 
         DamagesRequests.Clear();
         DestroyRequests.Clear();
+        StickRequest.Clear();
         ExplosionRequests.Clear();
         HookRequests.Clear();
     }
