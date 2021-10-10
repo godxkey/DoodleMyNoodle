@@ -65,8 +65,6 @@ public class SurveyAngryBirds : SurveyBaseController
             yield return null;
         }
 
-        CameraMovementController.Instance.ToggleCameraMovement();
-
         // submit drag vector
         result.Add(new GameActionParameterVector.Data((fix2)_releaseVector));
 
@@ -205,6 +203,7 @@ public class SurveyAngryBirds : SurveyBaseController
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
+        CameraMovementController.Instance.ToggleCameraMovement();
         _dragState = DragState.Idle;
         _trajectoryDisplay.Dispose();
     }
