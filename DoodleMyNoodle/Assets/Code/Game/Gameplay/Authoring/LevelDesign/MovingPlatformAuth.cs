@@ -22,7 +22,7 @@ public class MovingPlatformAuth : MonoBehaviour, IConvertGameObjectToEntity
     public PlatformMoveMode Move = PlatformMoveMode.Yoyo;
     public bool SlowDownNearPoints = true;
     public bool PauseOnPoints = true;
-    public float PauseDuration = 1f;
+    public TimeValue PauseDuration = TimeValue.Seconds(1);
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -30,7 +30,7 @@ public class MovingPlatformAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponentData(entity, new MovingPlatformSettings()
         {
             MoveMode = Move,
-            PauseOnNodesDuration = PauseOnPoints ? (fix)PauseDuration : 0,
+            PauseOnNodesDuration = PauseOnPoints ? PauseDuration : TimeValue.Zero,
             SlowDownNearNodes = SlowDownNearPoints
         });
         dstManager.AddComponentData(entity, new MovingPlatformState() { });

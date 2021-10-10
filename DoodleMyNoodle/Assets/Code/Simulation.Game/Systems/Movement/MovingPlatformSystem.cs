@@ -19,7 +19,7 @@ public struct MovingPlatformSettings : IComponentData
 {
     public PlatformMoveMode MoveMode;
     public bool SlowDownNearNodes;
-    public fix PauseOnNodesDuration;
+    public TimeValue PauseOnNodesDuration;
 
     // when slowing down, the platform will reach this mininum speed
     public static readonly fix SLOW_DOWN_MINIMUM_SPEED = (fix)0.1f;
@@ -31,7 +31,7 @@ public struct MovingPlatformSettings : IComponentData
 public struct MovingPlatformState : IComponentData
 {
     public int NextStep;
-    public fix RemainingWaitTime;
+    public TimeValue RemainingWaitTime;
 }
 
 /// <summary>
@@ -43,7 +43,7 @@ public struct MovingPlatformSignalPosition : IBufferElementData
     public Entity SignalEmitter;
 }
 
-public class MovingPlatformSystem : SimSystemBase
+public class MovingPlatformSystem : SimGameSystemBase
 {
     private struct PathAccessor
     {
@@ -120,7 +120,7 @@ public class MovingPlatformSystem : SimSystemBase
 
     private void UpdatePlatformVelocities()
     {
-        var deltaTime = Time.DeltaTime;
+        var deltaTime = GetDeltaTime();
 
         // move along path
         Entities.ForEach(
@@ -137,10 +137,10 @@ public class MovingPlatformSystem : SimSystemBase
                     return;
                 }
 
-                if (state.RemainingWaitTime > 0)
+                if (state.RemainingWaitTime > TimeValue.Zero)
                 {
                     velocity.Linear = fix2.zero;
-                    state.RemainingWaitTime -= deltaTime;
+                    state.RemainingWaitTime -= deltaTime.GetValue(state.RemainingWaitTime.Type);
                     return;
                 }
 
@@ -160,7 +160,7 @@ public class MovingPlatformSystem : SimSystemBase
                     actualMoveSpeed = min(maximumSpeed, moveSpeed.Value);
                 }
 
-                fix moveDist = actualMoveSpeed * deltaTime;
+                fix moveDist = actualMoveSpeed * deltaTime.Seconds.Value;
 
                 fix2 a = translation.Value;
                 fix2 b = translation.Value;
@@ -191,7 +191,7 @@ public class MovingPlatformSystem : SimSystemBase
                             state.NextStep++;
                         }
 
-                        if (settings.PauseOnNodesDuration > 0)
+                        if (settings.PauseOnNodesDuration > TimeValue.Zero)
                         {
                             state.RemainingWaitTime = settings.PauseOnNodesDuration;
                         }
@@ -206,7 +206,7 @@ public class MovingPlatformSystem : SimSystemBase
 
                 fix2 dir = (vLength == 0 ? fix2(0) : (v / vLength));
                 fix2 targetPosition = a + (dir * min(moveDist, vLength));
-                fix2 targetVelocity = (targetPosition - translation.Value) / deltaTime;
+                fix2 targetVelocity = (targetPosition - translation.Value) / deltaTime.Seconds.Value;
                 velocity.Linear = targetVelocity;
             }).Run();
     }

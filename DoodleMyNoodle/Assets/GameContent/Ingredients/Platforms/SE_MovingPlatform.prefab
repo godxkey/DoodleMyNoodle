@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2918383318239624808}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.9, y: 6.26, z: -29.695839}
+  m_LocalPosition: {x: -0.9, y: 6.26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -95,4 +95,7 @@ MonoBehaviour:
   Move: 0
   SlowDownNearPoints: 1
   PauseOnPoints: 1
-  PauseDuration: 1
+  PauseDuration:
+    Type: 0
+    Value:
+      RawValue: 4294967296

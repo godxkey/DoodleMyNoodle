@@ -24,8 +24,9 @@ namespace SimulationControl
 
         public event Action WorldReplaced;
         public uint ReplaceVersion { get; private set; }
-
         public bool HasJustRepacked { get; set; }
+
+        public static Func<string, SimulationWorld> WorldInstantiationFunc = (name) => new SimulationWorld(name);
 
         protected override void OnCreate()
         {
@@ -75,7 +76,7 @@ namespace SimulationControl
 
         public SimulationWorld CreateNewReplacementWorld()
         {
-            return new SimulationWorld($"Simulation World (replace ver:{ReplaceVersion})");
+            return WorldInstantiationFunc($"Simulation World (replace ver:{ReplaceVersion})");
         }
 
         public void RequestReplaceSimWorld(SimulationWorld newWorld)
