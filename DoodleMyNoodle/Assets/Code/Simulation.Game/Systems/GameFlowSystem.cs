@@ -76,7 +76,7 @@ public class GameFlowSystem : SimSystemBase
             Entities.ForEach((in Team pawnControllerTeam, in ControlledEntity pawn) =>
             {
                 // if the team member controls a pawn with Health
-                if (HasComponent<Health>(pawn.Value))
+                if (HasComponent<Health>(pawn.Value) && GetComponent<Health>(pawn.Value) > 0)
                 {
                     if (pawnControllerTeam.Value == (int)DesignerFriendlyTeam.Baddies)
                     {
