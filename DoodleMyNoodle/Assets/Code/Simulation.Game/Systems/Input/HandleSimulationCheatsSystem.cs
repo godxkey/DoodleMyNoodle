@@ -52,12 +52,6 @@ public class SimInputCheatInfiniteAP : SimCheatInput
 }
 
 [NetSerializable]
-public class SimInputCheatInfiniteMoveEnergy : SimCheatInput
-{
-    public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
-}
-
-[NetSerializable]
 public class SimInputCheatTeleport : SimCheatInput
 {
     public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future

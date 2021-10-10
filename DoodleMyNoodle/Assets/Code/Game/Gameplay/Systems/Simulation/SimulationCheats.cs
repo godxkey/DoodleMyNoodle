@@ -157,23 +157,6 @@ public static class SimulationCheats
         });
     }
 
-    [ConsoleCommand(Description = "Give your pawn a lot of move energy", EnableGroup = LOCAL_PAWN_GROUP)]
-    public static void CheatInfiniteMoveEnergy()
-    {
-        var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
-
-        if (localPlayerInfo == null)
-        {
-            Log.Warning("No local player found");
-            return;
-        }
-
-        PresentationHelpers.SubmitInput(new SimInputCheatInfiniteMoveEnergy()
-        {
-            PlayerId = localPlayerInfo.SimPlayerId,
-        });
-    }
-
     [ConsoleCommand(Description = "Teleport your character at the current mouse location. Shortcut: C + T", EnableGroup = LOCAL_PAWN_GROUP)]
     public static void CheatTeleportAtMouse()
     {

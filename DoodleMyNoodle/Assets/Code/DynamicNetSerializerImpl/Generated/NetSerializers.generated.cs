@@ -1921,55 +1921,6 @@ public static class StaticNetSerializer_SimInputCheatInfiniteAP
         StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
     }
 }
-public static class StaticNetSerializer_SimInputCheatInfiniteMoveEnergy
-{
-    public static int GetSerializedBitSize_Class(SimInputCheatInfiniteMoveEnergy obj)
-    {
-        if (obj == null)
-            return 1;
-        return 1 + GetSerializedBitSize(obj);
-    }
-
-    public static int GetSerializedBitSize(SimInputCheatInfiniteMoveEnergy obj)
-    {
-        int result = 0;
-        result += StaticNetSerializer_PersistentId.GetSerializedBitSize(ref obj.PlayerId);
-        result += StaticNetSerializer_SimCheatInput.GetSerializedBitSize(obj);
-        return result;
-    }
-
-    public static void Serialize_Class(SimInputCheatInfiniteMoveEnergy obj, BitStreamWriter writer)
-    {
-        if (obj == null)
-        {
-            writer.WriteBit(false);
-            return;
-        }
-        writer.WriteBit(true);
-        Serialize(obj, writer);
-    }
-    public static void Serialize(SimInputCheatInfiniteMoveEnergy obj, BitStreamWriter writer)
-    {
-        StaticNetSerializer_PersistentId.Serialize(ref obj.PlayerId, writer);
-        StaticNetSerializer_SimCheatInput.Serialize(obj, writer);
-    }
-
-    public static SimInputCheatInfiniteMoveEnergy Deserialize_Class(BitStreamReader reader)
-    {
-        if (reader.ReadBit() == false)
-        {
-            return null;
-        }
-        SimInputCheatInfiniteMoveEnergy obj = new SimInputCheatInfiniteMoveEnergy();
-        Deserialize(obj, reader);
-        return obj;
-    }
-    public static void Deserialize(SimInputCheatInfiniteMoveEnergy obj, BitStreamReader reader)
-    {
-        StaticNetSerializer_PersistentId.Deserialize(ref obj.PlayerId, reader);
-        StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
-    }
-}
 public static class StaticNetSerializer_SimInputCheatKillPlayerPawn
 {
     public static int GetSerializedBitSize_Class(SimInputCheatKillPlayerPawn obj)
