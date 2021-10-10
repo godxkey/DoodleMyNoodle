@@ -2,7 +2,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using CCC.Fix2D;
 
-public struct Dispenser : IComponentData
+public struct EntitySpawnerSetting : IComponentData
 {
     public bool OnlyWhenSignalOn;
 
@@ -17,7 +17,12 @@ public struct Dispenser : IComponentData
 
     public bool SpawnedRandomly;
 
-    // Dynamic Data
+    public TimeValue SpawnPeriod;
+}
+
+public struct EntitySpawnerState : IComponentData
+{
     public int IndexToSpawn;
     public int TotalAmountSpawned;
+    public TimeValue TrackedTime;
 }

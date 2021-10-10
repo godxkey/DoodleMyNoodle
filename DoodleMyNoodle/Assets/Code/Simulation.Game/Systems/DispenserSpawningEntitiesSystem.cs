@@ -12,65 +12,69 @@ public class DispenserSpawningEntitiesSystem : SimSystemBase
         Entities
         .WithoutBurst()
         .WithStructuralChanges()
-        .ForEach((Entity entity, ref Dispenser dispenser, ref Duration duration, in DynamicBuffer<EntitiesToSpawn> entitiesToSpawn, in Signal signal, in FixTranslation translation) =>
+        .ForEach((Entity entity, ref EntitySpawnerState entitySpawnerState, in EntitySpawnerSetting entitySpawnerSetting, in DynamicBuffer<EntitiesToSpawn> entitiesToSpawn, in Signal signal, in FixTranslation translation) =>
         {
-            if (dispenser.TotalAmountSpawned < dispenser.Quantity)
+            if (entitySpawnerState.TotalAmountSpawned < entitySpawnerSetting.Quantity)
             {
-                if (!dispenser.OnlyWhenSignalOn || signal.Value)
+                if (!entitySpawnerSetting.OnlyWhenSignalOn || signal.Value)
                 {
                     NativeArray<EntitiesToSpawn> entitiesToSpawnList = entitiesToSpawn.ToNativeArray(Allocator.Temp);
 
-                    if (!duration.IsSeconds)
+                    if (!(entitySpawnerSetting.SpawnPeriod.Type == TimeValue.ValueType.Seconds))
                     {
                         if (HasSingleton<NewTurnEventData>())
                         {
-                            if (duration.IsRounds && GetSingleton<TurnCurrentTeamSingletonComponent>().Value == 0)
+                            if (entitySpawnerSetting.SpawnPeriod.Type == TimeValue.ValueType.Rounds && GetSingleton<TurnCurrentTeamSingletonComponent>().Value == 0)
                             {
-                                duration.TrackingCount++;
+                                entitySpawnerState.TrackedTime.Value++;
 
-                                if (duration.TrackingCount >= duration.Value)
+                                if (entitySpawnerState.TrackedTime.Value >= entitySpawnerSetting.SpawnPeriod.Value)
                                 {
-                                    SpawnEntities(entitiesToSpawnList, ref dispenser, duration, translation);
+                                    entitySpawnerState.TrackedTime.Value = 0;
+
+                                    SpawnEntities(entitiesToSpawnList, entitySpawnerSetting, ref entitySpawnerState, translation);
                                 }
                                 
                             }
-                            else if (duration.IsTurns)
+                            else if (entitySpawnerSetting.SpawnPeriod.Type == TimeValue.ValueType.Turns)
                             {
-                                duration.TrackingCount++;
+                                entitySpawnerState.TrackedTime.Value++;
 
-                                if (duration.TrackingCount >= duration.Value) 
+                                if (entitySpawnerState.TrackedTime.Value >= entitySpawnerSetting.SpawnPeriod.Value) 
                                 {
-                                    SpawnEntities(entitiesToSpawnList, ref dispenser, duration, translation);
+                                    entitySpawnerState.TrackedTime.Value = 0;
+
+                                    SpawnEntities(entitiesToSpawnList, entitySpawnerSetting, ref entitySpawnerState, translation);
                                 }
                             }
                         }
                     }
-                    else if((Time.ElapsedTime - duration.LastTimeSpawned) >= duration.Value)
+                    else if((Time.ElapsedTime - entitySpawnerState.TrackedTime.Value) >= entitySpawnerSetting.SpawnPeriod.Value)
                     {
-                        duration.LastTimeSpawned = Time.ElapsedTime;
+                        entitySpawnerState.TrackedTime.Value = Time.ElapsedTime;
 
-                        SpawnEntities(entitiesToSpawnList, ref dispenser, duration, translation);
+                        SpawnEntities(entitiesToSpawnList, entitySpawnerSetting, ref entitySpawnerState, translation);
                     }
                 }
             }
         }).Run();
     }
 
-    private void SpawnEntities(NativeArray<EntitiesToSpawn> entitiesToSpawnList, ref Dispenser dispenser, in Duration duration, in FixTranslation translation)
+    private void SpawnEntities(NativeArray<EntitiesToSpawn> entitiesToSpawnList, in EntitySpawnerSetting entitySpawnerSetting, ref EntitySpawnerState entitySpawnerState, in FixTranslation translation)
     {
         var random = World.Random();
 
-        for (int i = 0; i < dispenser.AmountSpawned; i++)
+        for (int i = 0; i < entitySpawnerSetting.AmountSpawned; i++)
         {
-            dispenser.IndexToSpawn = dispenser.SpawnedRandomly ? random.NextInt(0, entitiesToSpawnList.Length - 1) : dispenser.IndexToSpawn++;
-            if (dispenser.IndexToSpawn >= entitiesToSpawnList.Length)
+            entitySpawnerState.IndexToSpawn = entitySpawnerSetting.SpawnedRandomly ? random.NextInt(0, entitiesToSpawnList.Length - 1) : entitySpawnerState.IndexToSpawn++;
+            if (entitySpawnerState.IndexToSpawn >= entitiesToSpawnList.Length)
             {
-                dispenser.IndexToSpawn = 0;
+                entitySpawnerState.IndexToSpawn = 0;
             }
 
-            dispenser.TotalAmountSpawned++;
+            entitySpawnerState.TotalAmountSpawned++;
 
-            Entity newEntity = EntityManager.Instantiate(entitiesToSpawnList[dispenser.IndexToSpawn]);
+            Entity newEntity = EntityManager.Instantiate(entitiesToSpawnList[entitySpawnerState.IndexToSpawn]);
 
             if (EntityManager.TryGetComponentData(newEntity, out FixTranslation fixTranslation))
             {
@@ -81,11 +85,11 @@ public class DispenserSpawningEntitiesSystem : SimSystemBase
             {
                 fix2 impulseStrengh = new fix2() 
                 { 
-                    x = random.NextFix(dispenser.ShootDirectionMin.x, dispenser.ShootDirectionMax.x), 
-                    y = random.NextFix(dispenser.ShootDirectionMin.y, dispenser.ShootDirectionMax.y)
+                    x = random.NextFix(entitySpawnerSetting.ShootDirectionMin.x, entitySpawnerSetting.ShootDirectionMax.x), 
+                    y = random.NextFix(entitySpawnerSetting.ShootDirectionMin.y, entitySpawnerSetting.ShootDirectionMax.y)
                 };
 
-                impulseStrengh *= random.NextFix(dispenser.ShootSpeedMin, dispenser.ShootSpeedMax);
+                impulseStrengh *= random.NextFix(entitySpawnerSetting.ShootSpeedMin, entitySpawnerSetting.ShootSpeedMax);
 
                 CommonWrites.RequestImpulse(Accessor, newEntity, impulseStrengh);
             }
