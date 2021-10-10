@@ -4,15 +4,10 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class DispenserAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
+public class EntitySpawnerAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
-    private enum DurationType { Seconds, Turns, Rounds }
-
     [SerializeField]
-    private DurationType DelayType;
-
-    [SerializeField]
-    private float Delay;
+    private TimeValue Delay;
 
     [SerializeField]
     private bool SpawnOnlyWhenSignalOn = true;
@@ -40,15 +35,7 @@ public class DispenserAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new Duration() 
-        { 
-            Value = (fix)Delay, 
-            IsRounds = DelayType == DurationType.Rounds,
-            IsSeconds = DelayType == DurationType.Seconds,
-            IsTurns = DelayType == DurationType.Turns,
-        });
-
-        dstManager.AddComponentData(entity, new Dispenser()
+        dstManager.AddComponentData(entity, new EntitySpawnerSetting()
         {
             OnlyWhenSignalOn = SpawnOnlyWhenSignalOn,
             ShootSpeedMin = (fix)ShootSpeedMinimum,
@@ -58,8 +45,10 @@ public class DispenserAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
             AmountSpawned = QuantitySpawnedEachTick,
             Quantity = TotalQuantityAvailable,
             SpawnedRandomly = IsRandomAmongList,
-            IndexToSpawn = 0
+            SpawnPeriod = Delay
         });
+
+        dstManager.AddComponentData(entity, new EntitySpawnerState());
 
         var entities = dstManager.AddBuffer<EntitiesToSpawn>(entity);
 

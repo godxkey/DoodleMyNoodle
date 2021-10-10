@@ -3406,7 +3406,49 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_Dispenser
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 6184514040816270784, guid: 358562f201cfb9845bfa69d3cb913728,
+        type: 3}
+      propertyPath: ShootSpeedMaximum
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184514040816270784, guid: 358562f201cfb9845bfa69d3cb913728,
+        type: 3}
+      propertyPath: ShootSpeedMinimum
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184514040816270784, guid: 358562f201cfb9845bfa69d3cb913728,
+        type: 3}
+      propertyPath: Delay.Value.RawValue
+      value: 4294967296
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184514040816270784, guid: 358562f201cfb9845bfa69d3cb913728,
+        type: 3}
+      propertyPath: TotalQuantityAvailable
+      value: 9999
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184514040816270784, guid: 358562f201cfb9845bfa69d3cb913728,
+        type: 3}
+      propertyPath: ShootDirectionMaximum.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184514040816270784, guid: 358562f201cfb9845bfa69d3cb913728,
+        type: 3}
+      propertyPath: ShootDirectionMinimum.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184514040816270784, guid: 358562f201cfb9845bfa69d3cb913728,
+        type: 3}
+      propertyPath: EntitiesToSpawn.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184514040816270784, guid: 358562f201cfb9845bfa69d3cb913728,
+        type: 3}
+      propertyPath: EntitiesToSpawn.Array.data[0]
+      value: 
+      objectReference: {fileID: 2385346486794747607, guid: 4899e73436da28d43ba3448231f4f76d,
+        type: 3}
+    m_RemovedComponents:
+    - {fileID: -4715287616091889141, guid: 358562f201cfb9845bfa69d3cb913728, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 358562f201cfb9845bfa69d3cb913728, type: 3}
 --- !u!1001 &1147675671
 PrefabInstance:
