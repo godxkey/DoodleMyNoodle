@@ -44,9 +44,10 @@ public struct ReadyForNextTurn : IComponentData
 }
 
 
-public class ChangeTurnSystem : SimSystemBase
+[UpdateInGroup(typeof(InitializationSystemGroup))]
+public class ChangeTurnSystem : SimGameSystemBase
 {
-    EntityQuery _eventsEntityQuery;
+    private EntityQuery _eventsEntityQuery;
 
     protected override void OnCreate()
     {
@@ -68,7 +69,6 @@ public class ChangeTurnSystem : SimSystemBase
         // destroy events
         EntityManager.DestroyEntity(_eventsEntityQuery);
 
-        // NB: We do that first to make sure we don't override a changeTurnRequest when we update the turn timer
         ChangeTurnIfRequested();
 
         if (!HasSingleton<NeverEndingTurnTag>())
@@ -79,21 +79,27 @@ public class ChangeTurnSystem : SimSystemBase
 
     private void ChangeTurnIfRequested()
     {
-        if (TryGetSingleton(out RequestChangeTurnData requestData))
-        {
-            DestroySingleton<RequestChangeTurnData>();
+        // NB: We do that first to make sure we don't override a changeTurnRequest when we update the turn timer
+        ExtractChangeTurnRequest(out bool changeTurn, out bool changeRound, out int newTeamToPlay);
 
-            // wrap team if necessary
-            if (requestData.TeamToPlay >= GetSingleton<TurnTeamCountSingletonComponent>().Value)
-            {
-                requestData.TeamToPlay = 0;
-            }
+        if (changeRound)
+        {
+            World.RoundTime = new FixTimeData(World.RoundTime.ElapsedTime + 1, 1);
+        }
+        else
+        {
+            World.RoundTime = new FixTimeData(World.RoundTime.ElapsedTime, 0);
+        }
+
+        if (changeTurn)
+        {
+            World.TurnTime = new FixTimeData(World.TurnTime.ElapsedTime + 1, 1);
 
             // set new turn
-            SetSingleton(new TurnCurrentTeamSingletonComponent { Value = requestData.TeamToPlay });
+            SetSingleton(new TurnCurrentTeamSingletonComponent { Value = newTeamToPlay });
             SetSingleton(new TurnCountSingletonComponent { Value = GetSingleton<TurnCountSingletonComponent>().Value + 1 });
 
-            switch ((DesignerFriendlyTeam)requestData.TeamToPlay)
+            switch ((DesignerFriendlyTeam)newTeamToPlay)
             {
                 case DesignerFriendlyTeam.Player:
                     SetSingleton(new TurnTimerSingletonComponent { Value = GetSingleton<TurnDurationSingletonComponent>().DurationPlayer });
@@ -113,6 +119,32 @@ public class ChangeTurnSystem : SimSystemBase
 
             // fire event
             EntityManager.CreateEventEntity<NewTurnEventData>();
+        }
+        else
+        {
+            World.TurnTime = new FixTimeData(World.TurnTime.ElapsedTime, 0);
+        }
+    }
+
+    private void ExtractChangeTurnRequest(out bool changeTurn, out bool changeRound, out int newTeamToPlay)
+    {
+        changeRound = false;
+        changeTurn = false;
+        newTeamToPlay = 0;
+
+        if (TryGetSingleton(out RequestChangeTurnData requestData))
+        {
+            DestroySingleton<RequestChangeTurnData>();
+
+            changeTurn = true;
+            newTeamToPlay = requestData.TeamToPlay;
+
+            // wrap team if necessary
+            if (newTeamToPlay >= GetSingleton<TurnTeamCountSingletonComponent>().Value)
+            {
+                changeRound = true;
+                newTeamToPlay = 0;
+            }
         }
     }
 

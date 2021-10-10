@@ -15,6 +15,8 @@ public partial class SimulationController : GameSystem<SimulationController>
     {
         base.OnGameAwake();
 
+        SimulationWorldSystem.WorldInstantiationFunc = (name) => new SimulationGameWorld(name);
+
         SimSerializationOperation.BlobAssetDataCollectors[typeof(PhysicsColliderBlob)] = new BlobPhysicsColliderCollector();
         SimDeserializationOperation.BlobAssetDataDistributors[typeof(PhysicsColliderBlob)] = new BlobPhysicsColliderDistributor();
 
