@@ -70,24 +70,5 @@ public class DirectAIAlongPathSystem : SimSystemBase
 
                 moveInputLastFrame.WasAttemptingToMove = moveInput != fix2(0, 0);
             }).Schedule();
-
-        Team currentTeamTurn = CommonReads.GetTurnTeam(Accessor);
-        NativeList<Entity> aisInNeedOfEnergy = new NativeList<Entity>(Allocator.Temp);
-        Entities
-            .ForEach((Entity aiEntity, in Team team, in AIMoveInputLastFrame moveInputLastFrame, in ControlledEntity pawn) =>
-            {
-                if (moveInputLastFrame.WasAttemptingToMove && currentTeamTurn == team)
-                {
-                    if (HasComponent<ActionPoints>(pawn) && GetComponent<ActionPoints>(pawn).Value <= 0)
-                    {
-                        aisInNeedOfEnergy.Add(aiEntity);
-                    }
-                }
-            }).Run();
-
-        foreach (var ai in aisInNeedOfEnergy)
-        {
-            CommonWrites.TryInputUseItem<GameActionMoveFreely>(Accessor, ai);
-        }
     }
 }

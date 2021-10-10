@@ -15,20 +15,21 @@ public class UpdatePlaysThisFrameTokenSystem : SimSystemBase
             {
 
                 playsThisFrame.Value
-                    // Can the corresponding team play ?
+                    // Cannot play if team cannot play
                     = team.Value == currentTurnTeam
 
-                    // Have we already said 'ready for next turn' ?
+                    // Cannot play if 'ReadyForNextTurn' already done
                     && !readyForNextTurn
 
-                    // Is the ai in cooldown?
+                    // Cannot play if action in cooldown
                     && time >= actionCooldown.NoActionUntilTime
 
-                    // Was the ai attempting to move last frame?
-                    && !moveInputLastFrame.WasAttemptingToMove
+                    // Cannot play if pawn doesn't exist
+                    && HasComponent<FixTranslation>(pawn)
 
-                    // Pawn exists ?
-                    && HasComponent<FixTranslation>(pawn);
+                    // Cannot play if AI was attempting to move last frame.
+                    && (!moveInputLastFrame.WasAttemptingToMove || GetComponent<ActionPoints>(pawn).Value <= 0);
+
             }).Schedule();
     }
 }
