@@ -7,39 +7,50 @@ using CCC.Fix2D;
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class CreatePathToDestinationSystem : SimSystemBase
 {
-    NativeList<int2> _tilePath;
-
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        _tilePath = new NativeList<int2>(Allocator.Persistent);
+        RequireSingletonForUpdate<GridInfo>();
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-
-        _tilePath.Dispose();
     }
 
     protected override void OnUpdate()
     {
-        Entities.ForEach((Entity entity, in FixTranslation pos, in Destination destination) =>
+        var tileWorld = CommonReads.GetTileWorld(Accessor);
+        var pathResult = new Pathfinding.PathResult(Allocator.Temp);
+
+        Entities
+            .WithReadOnly(tileWorld)
+            .ForEach((Entity entity, in FixTranslation pos, in Destination destination, in MoveSpeed moveSpeed) =>
         {
             int2 from = Helpers.GetTile(pos);
             int2 to = Helpers.GetTile(destination.Value);
 
-            bool pathFound = Pathfinding.FindNavigablePath(Accessor, from, to, Pathfinding.MAX_PATH_LENGTH, _tilePath);
+            Entity jumpItem = CommonReads.FindFirstItemWithGameAction<GameActionBasicJump>(Accessor, entity);
+
+            var pathfindingContext = new Pathfinding.Context(tileWorld);
+            pathfindingContext.AgentCapabilities = new Pathfinding.AgentCapabilities()
+            {
+                Drop1TileCost = 0,
+                Jump1TileCost = HasComponent<GameActionSettingAPCost>(jumpItem) ? GetComponent<GameActionSettingAPCost>(jumpItem).Value : 0,
+                Walk1TileCost = moveSpeed.Value <= fix.Zero ? fix.MaxValue : fix.One / moveSpeed.Value,
+            };
+
+            bool pathFound = Pathfinding.FindNavigablePath(pathfindingContext, pos, destination, Pathfinding.AgentCapabilities.DefaultMaxCost, ref pathResult);
 
             if (pathFound)
             {
                 DynamicBuffer<PathPosition> pathBuffer = EntityManager.GetOrAddBuffer<PathPosition>(entity);
                 pathBuffer.Clear();
 
-                for (int i = 1; i < _tilePath.Length - 1; i++) // exclude last point since we add 'destination' last
+                for (int i = 1; i < pathResult.Segments.Length - 1; i++) // exclude last point since we add 'destination' last
                 {
-                    pathBuffer.Add(new PathPosition() { Position = Helpers.GetTileCenter(_tilePath[i]) });
+                    pathBuffer.Add(new PathPosition() { Position = pathResult.Segments[i].EndPosition });
                 }
 
                 pathBuffer.Add(destination.Value);

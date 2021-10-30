@@ -36,7 +36,7 @@ public class GizmoPathPositions : MonoBehaviour
             });
 
         simWorld.Entities
-            .WithAll<AIPathPosition>()
+            .WithAll<AIPathSegment>()
             .ForEach((Entity entity, ref ControlledEntity pawn) =>
             {
                 if (!simWorld.HasComponent<FixTranslation>(pawn))
@@ -44,13 +44,13 @@ public class GizmoPathPositions : MonoBehaviour
 
                 var translation = simWorld.GetComponent<FixTranslation>(pawn);
 
-                DynamicBuffer<AIPathPosition> path = simWorld.GetBufferReadOnly<AIPathPosition>(entity);
+                DynamicBuffer<AIPathSegment> path = simWorld.GetBufferReadOnly<AIPathSegment>(entity);
 
                 Vector3 p1 = translation.Value.ToUnityVec();
 
                 for (int i = 0; i < path.Length; i++)
                 {
-                    Vector3 p2 = path[i].Value.ToUnityVec();
+                    Vector3 p2 = path[i].Value.EndPosition.ToUnityVec();
                     _lines.Add((p1, p2));
                     p1 = p2;
                 }

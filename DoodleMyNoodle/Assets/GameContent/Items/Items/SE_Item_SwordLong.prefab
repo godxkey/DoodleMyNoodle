@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -8620854387768135619}
   - component: {fileID: 1874751282803664710}
   m_Layer: 0
-  m_Name: SE_Item_LongSword
+  m_Name: SE_Item_SwordLong
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

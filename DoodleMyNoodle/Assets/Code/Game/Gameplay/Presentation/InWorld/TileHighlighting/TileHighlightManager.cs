@@ -69,7 +69,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
 
         TileFinder.Context context = new TileFinder.Context()
         {
-            PawnTile = Cache.LocalPawnTile,
+            PawnPosition = Cache.LocalPawnPosition,
             PawnEntity = Cache.LocalPawn,
         };
 

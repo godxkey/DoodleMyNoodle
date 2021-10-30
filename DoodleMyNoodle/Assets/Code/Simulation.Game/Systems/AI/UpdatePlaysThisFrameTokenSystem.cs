@@ -10,11 +10,11 @@ public class UpdatePlaysThisFrameTokenSystem : SimSystemBase
         fix time = Time.ElapsedTime;
 
         Entities
-            .ForEach((ref AIPlaysThisFrameToken playsThisFrame,
+            .ForEach((ref AIThinksThisFrameToken thinksNextUpdate,
                 in ReadyForNextTurn readyForNextTurn, in AIActionCooldown actionCooldown, in Team team, in AIMoveInputLastFrame moveInputLastFrame, in ControlledEntity pawn) =>
             {
 
-                playsThisFrame.Value
+                thinksNextUpdate.Value
                     // Cannot play if team cannot play
                     = team.Value == currentTurnTeam
 

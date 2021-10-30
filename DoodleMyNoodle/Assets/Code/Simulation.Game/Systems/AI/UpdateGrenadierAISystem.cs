@@ -118,9 +118,9 @@ public class UpdateGrenadierAISystem : SimSystemBase
 
         Entities
             .ForEach((Entity controller, ref GrenadierAIData agentData, ref AIDestination aiDestination, ref ReadyForNextTurn readyForNextTurn, ref AIActionCooldown actionCooldown,
-                in AIPlaysThisFrameToken playsThisFrameToken, in ControlledEntity pawn) =>
+                in AIThinksThisFrameToken thinksThisFrame, in ControlledEntity pawn) =>
             {
-                if (!playsThisFrameToken)
+                if (!thinksThisFrame)
                     return;
 
                 AgentCache agentCache = new AgentCache()
@@ -362,9 +362,10 @@ public class UpdateGrenadierAISystem : SimSystemBase
         }
 
         // Using a flood fill, search for any position from which we can shoot a target. This will naturally return the closest tile
-        if (Pathfinding.NavigableFloodSearch(globalCache.TileWorld,
+        var pathfindingContext = new Pathfinding.Context(globalCache.TileWorld);
+        if (Pathfinding.NavigableFloodSearch(pathfindingContext,
                                              agentCache.PawnTile,
-                                             SimulationGameConstants.AISearchForPositionMaxCost,
+                                             SimulationGameConstants.AISearchForShootPositionMaxCost,
                                              globalCache.FloodSearchBuffer,
                                              ref predicate,
                                              out int2 position))

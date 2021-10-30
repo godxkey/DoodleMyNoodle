@@ -63,4 +63,40 @@ public static class NativeCollectionExtensions
     {
         return list.AsArray().Slice(start, length);
     }
+
+    public static T Last<T>(this NativeList<T> array) where T : struct => array[array.Length - 1];
+    public static T Last<T>(this NativeArray<T> array) where T : struct => array[array.Length - 1];
+    public static T LastOrDefault<T>(this NativeList<T> array) where T : struct => array.Length > 0 ? array[array.Length - 1] : default;
+    public static T LastOrDefault<T>(this NativeArray<T> array) where T : struct => array.Length > 0 ? array[array.Length - 1] : default;
+
+    public static void Swap<T>(this NativeList<T> array, int indexA, int indexB) where T : struct
+    {
+        var temp = array[indexA];
+        array[indexA] = array[indexB];
+        array[indexB] = temp;
+    }
+    public static void Swap<T>(this NativeArray<T> array, int indexA, int indexB) where T : struct
+    {
+        var temp = array[indexA];
+        array[indexA] = array[indexB];
+        array[indexB] = temp;
+    }
+    public static void Reverse<T>(this NativeArray<T> array) where T : struct
+    {
+        int halfLength = array.Length / 2;
+        int end = array.Length - 1;
+        for (int i = 0; i < halfLength; i++)
+        {
+            array.Swap(i, end - i);
+        }
+    }
+    public static void Reverse<T>(this NativeList<T> array) where T : struct
+    {
+        int halfLength = array.Length / 2;
+        int end = array.Length - 1;
+        for (int i = 0; i < halfLength; i++)
+        {
+            array.Swap(i, end - i);
+        }
+    }
 }

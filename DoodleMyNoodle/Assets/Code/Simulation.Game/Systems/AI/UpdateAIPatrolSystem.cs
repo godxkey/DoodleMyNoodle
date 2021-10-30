@@ -8,36 +8,32 @@ using static Unity.Mathematics.math;
 [UpdateAfter(typeof(SpecificAISystemGroup))]
 public class UpdateAIPatrolSystem : SimSystemBase
 {
-    private NativeList<int2> _path;
-
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        _path = new NativeList<int2>(Allocator.Persistent);
         RequireSingletonForUpdate<GridInfo>();
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-
-        _path.Dispose();
     }
 
     protected override void OnUpdate()
     {
         var tileWorld = CommonReads.GetTileWorld(Accessor);
         var turnCount = CommonReads.GetTurn(Accessor);
-        var pathBuffer = _path;
+        Pathfinding.PathResult pathBuffer = new Pathfinding.PathResult(Allocator.TempJob);
         var time = Time.ElapsedTime;
         FixRandom random = World.Random();
 
         Entities
+            .WithDisposeOnCompletion(pathBuffer)
             .ForEach((ref AIPatrolData patrolData, ref AIDestination aiDestination, ref ReadyForNextTurn readyForNextTurn, ref AIActionCooldown actionCooldown,
-                in AIPlaysThisFrameToken playsThisFrameToken, in AIState aiState, in ControlledEntity pawn) =>
+                in AIThinksThisFrameToken thinksThisFrame, in AIState aiState, in ControlledEntity pawn) =>
             {
-                if (!playsThisFrameToken || aiState.Value != AIStateEnum.Patrol)
+                if (!thinksThisFrame || aiState.Value != AIStateEnum.Patrol)
                     return;
 
                 // If no more AP => readyForNextTurn
@@ -57,6 +53,7 @@ public class UpdateAIPatrolSystem : SimSystemBase
                     // find random tile in 1 range
                     int2 agentTile = Helpers.GetTile(pawnPos);
 
+                    var pathfindingContext = new Pathfinding.Context(tileWorld);
                     int2? destination = null;
                     const int POTENTIAL_DESTINATIONS_LENGTH = 4;
                     unsafe
@@ -71,11 +68,11 @@ public class UpdateAIPatrolSystem : SimSystemBase
 
                         random.Shuffle<int2>(potentialDestinations, 4);
 
+
                         for (int i = 0; i < POTENTIAL_DESTINATIONS_LENGTH; i++)
                         {
                             var tile = potentialDestinations[i];
-                            pathBuffer.Clear();
-                            if (Pathfinding.FindNavigablePath(tileWorld, agentTile, tile, maxLength: 1, pathBuffer))
+                            if (Pathfinding.FindNavigablePath(pathfindingContext, pawnPos, Helpers.GetTileCenter(tile), maxCost: pathfindingContext.AgentCapabilities.Walk1TileCost, ref pathBuffer))
                             {
                                 destination = tile;
                                 break;
