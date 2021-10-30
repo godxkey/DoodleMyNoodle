@@ -52,22 +52,25 @@ public static class SceneShortcuts
     [MenuItem("Scene Shortcuts/Lvl_Prototype4", priority = 4014)]
     public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype4() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype4.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_SideScrollerExemple", priority = 4015)]
+    [MenuItem("Scene Shortcuts/Lvl_Prototype5", priority = 4015)]
+    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype5() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype5.unity");
+
+    [MenuItem("Scene Shortcuts/Lvl_SideScrollerExemple", priority = 4016)]
     public static void Assets_Scenes_Levels_Scene_Assets_Lvl_SideScrollerExemple() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_SideScrollerExemple.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_InGameEscape", priority = 5016)]
+    [MenuItem("Scene Shortcuts/Menu_InGameEscape", priority = 5017)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_InGameEscape() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_InGameEscape.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineClientSessionChoice", priority = 5017)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineClientSessionChoice", priority = 5018)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineClientSessionChoice() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineClientSessionChoice.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineRoleChoice", priority = 5018)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineRoleChoice", priority = 5019)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineRoleChoice() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineRoleChoice.unity");
 
-    [MenuItem("Scene Shortcuts/Menu_OnlineServerSessionCreation", priority = 5019)]
+    [MenuItem("Scene Shortcuts/Menu_OnlineServerSessionCreation", priority = 5020)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_OnlineServerSessionCreation() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_OnlineServerSessionCreation.unity");
 
-    [MenuItem("Scene Shortcuts/Misc_LoadingScreen", priority = 6020)]
+    [MenuItem("Scene Shortcuts/Misc_LoadingScreen", priority = 6021)]
     public static void Assets_Scenes_Misc_Scene_Assets_Misc_LoadingScreen() => LoadScene("Assets/Scenes/Misc/Scene Assets/Misc_LoadingScreen.unity");
 
 
