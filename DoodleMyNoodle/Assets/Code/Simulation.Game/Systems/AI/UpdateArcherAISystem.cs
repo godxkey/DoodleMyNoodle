@@ -355,7 +355,7 @@ public class UpdateArcherAISystem : SimSystemBase
             {
                 Start = (float2)(shootStartPos + dir * fix(0.7)),
                 End = (float2)(targetPos - dir * fix(0.7)),
-                Filter = SimulationGameConstants.Physics.CharactersAndTerrainFilter.Data,
+                Filter = SimulationGameConstants.Physics.CollideWithCharactersAndTerrainFilter.Data,
             };
 
             if (!physicsWorld.CastRay(input))
