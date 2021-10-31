@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2248c5c1e510c02428dad4c771e3fc53, type: 3}
+  m_Script: {fileID: 11500000, guid: 35853ace5228d364e8cd9cc4f9e840ec, type: 3}
   m_Name: Lvl_Prototype5
   m_EditorClassIdentifier: 
-  SimulationScenes:
-  - {fileID: 11400000, guid: e9ab01c507733e6488046dc81989371c, type: 2}
-  PresentationScenes:
-  - {fileID: 11400000, guid: 6231c281ac38c174fa36e612d69b6ff9, type: 2}
+  scene: {fileID: 102900000, guid: d8d5c8504c989e643af2e58ff9098d9a, type: 3}
+  sceneName: Lvl_Prototype5
+  loadMode: 1
+  allowMultiple: 0

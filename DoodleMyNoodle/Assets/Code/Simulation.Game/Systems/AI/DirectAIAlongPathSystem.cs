@@ -72,10 +72,8 @@ public class DirectAIAlongPathSystem : SimGameSystemBase
                         fix2 pawnPos = GetComponent<FixTranslation>(pawn);
                         fix moveDist = moveSpeed.Value * deltaTime;
 
-                        bool canMoveVertically =
-                            pathPositions[0].Value.TransportToReach != Pathfinding.TransportMode.Drop
-                            && (GetComponent<NavAgentFootingState>(pawn) == NavAgentFooting.Ladder
-                                || tileWorld.GetFlags(Helpers.GetTile(pawnPos)).IsLadder);
+                        bool shouldMoveVertically = GetComponent<NavAgentFootingState>(pawn) == NavAgentFooting.Ladder
+                                || (tileWorld.GetFlags(Helpers.GetTile(pawnPos)).IsLadder  && pathPositions[0].Value.TransportToReach != Pathfinding.TransportMode.Drop);
 
                         fix2 a = pawnPos;
                         fix2 b = pawnPos;
@@ -99,7 +97,7 @@ public class DirectAIAlongPathSystem : SimGameSystemBase
                             {
                                 b = pathPositions[0].Value.EndPosition;
 
-                                if (!canMoveVertically) // if pawn cannot move vertically, assume path is flat on horizontal axis
+                                if (!shouldMoveVertically) // if pawn cannot move vertically, assume path is flat on horizontal axis
                                     b.y = a.y;
                             }
 

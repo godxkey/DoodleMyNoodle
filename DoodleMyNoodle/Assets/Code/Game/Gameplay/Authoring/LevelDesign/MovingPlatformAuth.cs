@@ -1,25 +1,26 @@
-using CCC.Fix2D;
 using CCC.Fix2D.Authoring;
-using CCC.InspectorDisplay;
 using System;
+using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
-using UnityEngineX;
-using Collider = CCC.Fix2D.Collider;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(PhysicsBodyAuth))]
-public class MovingPlatformAuth : MonoBehaviour, IConvertGameObjectToEntity
+[ExecuteInEditMode]
+public class MovingPlatformAuth : MonoBehaviour, IConvertGameObjectToEntity, SignalAuth.Gizmos.ISignalListener
 {
     [Serializable]
     public class Point
     {
         public Vector2 Position;
-        public SignalAuth SignalEmitter;
+        [FormerlySerializedAs("SignalEmitter")]
+        public SignalAuth ConditionalEmitter;
     }
 
     public Point[] MovePoints;
     public float MaximumSpeed = 3f;
-    public PlatformMoveMode Move = PlatformMoveMode.Yoyo;
+    [FormerlySerializedAs("Move")]
+    public PlatformMoveMode MoveMode = PlatformMoveMode.Yoyo;
     public bool SlowDownNearPoints = true;
     public bool PauseOnPoints = true;
     public TimeValue PauseDuration = TimeValue.Seconds(1);
@@ -29,7 +30,7 @@ public class MovingPlatformAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponentData(entity, new MoveSpeed() { Value = (fix)MaximumSpeed });
         dstManager.AddComponentData(entity, new MovingPlatformSettings()
         {
-            MoveMode = Move,
+            MoveMode = MoveMode,
             PauseOnNodesDuration = PauseOnPoints ? PauseDuration : TimeValue.Zero,
             SlowDownNearNodes = SlowDownNearPoints
         });
@@ -38,20 +39,17 @@ public class MovingPlatformAuth : MonoBehaviour, IConvertGameObjectToEntity
         DynamicBuffer<PathPosition> points = dstManager.AddBuffer<PathPosition>(entity);
         Vector2 positionOffset = transform.position;
 
-        if (Move == PlatformMoveMode.Signals)
+        if (MoveMode == PlatformMoveMode.Signals)
         {
             var signalPositions = dstManager.AddBuffer<MovingPlatformSignalPosition>(entity);
             signalPositions.Capacity = MovePoints.Length;
 
             foreach (var item in MovePoints)
             {
-                if (item.SignalEmitter == null)
-                    return;
-
                 signalPositions.Add(new MovingPlatformSignalPosition()
                 {
                     Position = (fix2)(positionOffset + item.Position),
-                    SignalEmitter = conversionSystem.GetPrimaryEntity(item.SignalEmitter)
+                    ConditionalEmitter = item.ConditionalEmitter == null ? Entity.Null : conversionSystem.GetPrimaryEntity(item.ConditionalEmitter)
                 });
             }
         }
@@ -65,6 +63,16 @@ public class MovingPlatformAuth : MonoBehaviour, IConvertGameObjectToEntity
         }
     }
 
+    private void OnEnable()
+    {
+        SignalAuth.Gizmos.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        SignalAuth.Gizmos.Unregister(this);
+    }
+
     private void OnDrawGizmosSelected()
     {
         Vector2 positionOffset = transform.position;
@@ -72,6 +80,23 @@ public class MovingPlatformAuth : MonoBehaviour, IConvertGameObjectToEntity
         for (int i = 1; i < MovePoints.Length; i++)
         {
             Gizmos.DrawLine(MovePoints[i - 1].Position + positionOffset, MovePoints[i].Position + positionOffset);
+        }
+
+        if (MoveMode == PlatformMoveMode.Signals)
+        {
+            SignalAuth.Gizmos.DrawSignalGizmos(this);
+        }
+    }
+
+    void SignalAuth.Gizmos.ISignalListener.GetSignalReferences(List<SignalAuth> result)
+    {
+        if (MoveMode == PlatformMoveMode.Signals)
+        {
+            foreach (var point in MovePoints)
+            {
+                if (point.ConditionalEmitter != null)
+                    result.Add(point.ConditionalEmitter);
+            }
         }
     }
 }

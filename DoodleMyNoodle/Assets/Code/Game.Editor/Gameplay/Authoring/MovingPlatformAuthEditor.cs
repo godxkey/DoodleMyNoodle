@@ -17,7 +17,7 @@ public class MovingPlatformAuthEditor : Editor
     {
         MovePoints = serializedObject.FindProperty(nameof(MovingPlatformAuth.MovePoints));
         MaximumSpeed = serializedObject.FindProperty(nameof(MovingPlatformAuth.MaximumSpeed));
-        Move = serializedObject.FindProperty(nameof(MovingPlatformAuth.Move));
+        Move = serializedObject.FindProperty(nameof(MovingPlatformAuth.MoveMode));
         SlowDownNearPoints = serializedObject.FindProperty(nameof(MovingPlatformAuth.SlowDownNearPoints));
         PauseOnPoints = serializedObject.FindProperty(nameof(MovingPlatformAuth.PauseOnPoints));
         PauseDuration = serializedObject.FindProperty(nameof(MovingPlatformAuth.PauseDuration));
@@ -33,6 +33,27 @@ public class MovingPlatformAuthEditor : Editor
 
         MovingPlatformAuthPointDrawer.DisplaySignal = moveMode == PlatformMoveMode.Signals;
         EditorGUILayout.PropertyField(MovePoints);
+
+        if (moveMode == PlatformMoveMode.Signals)
+        {
+            bool pointsWillBeIgnored = false;
+            // If any of the points don't have an assigned signal emitter, all following points will be ignored. Display a warning
+            for (int i = 0; i < MovePoints.arraySize - 1; i++)
+            {
+                var conditionalEmitterProp = MovePoints.GetArrayElementAtIndex(i).FindPropertyRelative(nameof(MovingPlatformAuth.Point.ConditionalEmitter));
+                if (conditionalEmitterProp.objectReferenceValue == null)
+                {
+                    pointsWillBeIgnored = true;
+                    break;
+                }
+            }
+
+            if (pointsWillBeIgnored)
+            {
+                EditorGUILayout.HelpBox($"When no {nameof(MovingPlatformAuth.Point.ConditionalEmitter)} is assigned, all following points will be ignored.", MessageType.Warning);
+            }
+        }
+
         EditorGUILayout.PropertyField(MaximumSpeed);
         EditorGUILayout.PropertyField(SlowDownNearPoints);
 
@@ -61,7 +82,7 @@ public class MovingPlatformAuthPointDrawer : PropertyDrawer
         if (DisplaySignal)
         {
             position.position += Vector2.up * (position.height + EditorGUIUtility.standardVerticalSpacing);
-            EditorGUI.PropertyField(position, property.FindPropertyRelative(nameof(MovingPlatformAuth.Point.SignalEmitter)), new GUIContent("Signal"));
+            EditorGUI.PropertyField(position, property.FindPropertyRelative(nameof(MovingPlatformAuth.Point.ConditionalEmitter)), new GUIContent("Conditional Signal"));
         }
     }
 

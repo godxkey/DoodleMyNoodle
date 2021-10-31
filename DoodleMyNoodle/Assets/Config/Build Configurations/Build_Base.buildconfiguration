@@ -85,6 +85,14 @@
                 {
                     "Scene": "GlobalObjectId_V1-1-88424a4ab48a6b440a5b18e40e0bf10f-102900000-0",
                     "AutoLoad": false
+                },
+                {
+                    "Scene": "GlobalObjectId_V1-1-d8d5c8504c989e643af2e58ff9098d9a-102900000-0",
+                    "AutoLoad": false
+                },
+                {
+                    "Scene": "GlobalObjectId_V1-1-1338c8e3ea4c3d744af67ad7b33f19df-102900000-0",
+                    "AutoLoad": false
                 }
             ]
         },

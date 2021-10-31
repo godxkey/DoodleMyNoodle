@@ -114,11 +114,24 @@ public class SetSignalSystem : SimSystemBase
         JobHandle.CombineDependencies(HandlesToWaitFor.AsArray()).Complete();
         HandlesToWaitFor.Clear();
 
+        SetAlwaysOnEmissions();
         SetClickEmissions();
         SetOverlapEmissions();
 
         // should be placed last for better responsivity
         SetLogicEmissions();
+    }
+
+    private void SetAlwaysOnEmissions()
+    {
+        // set all signals ON for emitters with ToggleClick ON
+        Entities.ForEach((ref Signal signal, in SignalEmissionType emission) =>
+        {
+            if (emission.Value == ESignalEmissionType.AlwaysOn)
+            {
+                signal = true;
+            }
+        }).Schedule();
     }
 
     private void SetClickEmissions()
