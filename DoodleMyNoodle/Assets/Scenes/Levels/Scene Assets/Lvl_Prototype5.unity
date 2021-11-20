@@ -53916,7 +53916,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_ExplosiveBarrel (10)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2237468003329980275, guid: cf6535b0d57210e4b9e91afc8f7c51c6, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: cf6535b0d57210e4b9e91afc8f7c51c6, type: 3}
 --- !u!4 &1762751680 stripped
 Transform:
