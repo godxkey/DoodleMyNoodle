@@ -2,7 +2,7 @@
 
 public class GlobalItemBankUpdater : AssetPostprocessor
 {
-    static PrefabComponentAssetBankUpdater<GlobalItemBank, ItemAuth> s_assetBankUpdater = new PrefabComponentAssetBankUpdater<GlobalItemBank, ItemAuth>(
+    static AssetBankUpdaterPrefabComponent<GlobalItemBank, ItemAuth> s_assetBankUpdater = new AssetBankUpdaterPrefabComponent<GlobalItemBank, ItemAuth>(
         bankAssetPath: "Assets/Config/Generated/GlobalItemBank.asset",
         getStoredObjectsFromBankDelegate: (bank) => bank.Items);
 

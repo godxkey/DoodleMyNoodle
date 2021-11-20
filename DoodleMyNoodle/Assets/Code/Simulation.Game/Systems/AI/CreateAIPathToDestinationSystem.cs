@@ -7,14 +7,12 @@ using static fixMath;
 [UpdateInGroup(typeof(AISystemGroup))]
 public class CreateAIPathToDestinationSystem : SimSystemBase
 {
-    private NativeList<int2> _tilePath;
     private UpdateActorWorldSystem _actorWorldSystem;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        _tilePath = new NativeList<int2>(Allocator.Persistent);
         _actorWorldSystem = World.GetOrCreateSystem<UpdateActorWorldSystem>();
         RequireSingletonForUpdate<GridInfo>();
     }
@@ -22,8 +20,6 @@ public class CreateAIPathToDestinationSystem : SimSystemBase
     protected override void OnDestroy()
     {
         base.OnDestroy();
-
-        _tilePath.Dispose();
     }
 
     protected override void OnUpdate()
@@ -31,12 +27,13 @@ public class CreateAIPathToDestinationSystem : SimSystemBase
         fix time = Time.ElapsedTime;
         fix repathCooldown = SimulationGameConstants.AgentRepathCooldown;
         TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);
-        NativeList<int2> pathfindingResult = _tilePath;
+        Pathfinding.PathResult pathResult = new Pathfinding.PathResult(Allocator.TempJob);
         ActorWorld actorWorld = _actorWorldSystem.ActorWorld;
 
         Entities
+            .WithDisposeOnCompletion(pathResult)
             .WithReadOnly(tileWorld)
-            .ForEach((Entity entity, DynamicBuffer<AIPathPosition> pathBuffer, ref AIDestinationRepathData repathData, in AIDestination destination, in ControlledEntity pawn) =>
+            .ForEach((Entity entity, DynamicBuffer<AIPathSegment> pathBuffer, ref AIDestinationRepathData repathData, in AIDestination destination, in ControlledEntity pawn) =>
         {
             if (destination.HasDestination)
             {
@@ -53,26 +50,49 @@ public class CreateAIPathToDestinationSystem : SimSystemBase
 
                 ref var pawnData = ref actorWorld.GetPawn(pawnIndex);
 
-                int2 from = Helpers.GetTile(pawnData.Position);
-                int2 to = Helpers.GetTile(destination.Position);
+                var moveSpeed = GetComponent<MoveSpeed>(pawn);
+                Entity jumpItem = Entity.Null;
+                {
+                    var pawnInventory = GetBuffer<InventoryItemReference>(pawn);
+                    var meleeAttackActionId = GameActionBank.GetActionId<GameActionBasicJump>();
+                    Entity meleeAttackItem = Entity.Null;
+                    for (int i = 0; i < pawnInventory.Length; i++)
+                    {
+                        if (GetComponent<GameActionId>(pawnInventory[i].ItemEntity) == meleeAttackActionId)
+                        {
+                            jumpItem = pawnInventory[i].ItemEntity;
+                            break;
+                        }
+                    }
+                }
+                var pathfindingContext = new Pathfinding.Context(tileWorld);
+                pathfindingContext.AgentCapabilities = new Pathfinding.AgentCapabilities()
+                {
+                    Drop1TileCost = 0,
+                    Jump1TileCost = HasComponent<GameActionSettingAPCost>(jumpItem) ? GetComponent<GameActionSettingAPCost>(jumpItem).Value : 0,
+                    Walk1TileCost = moveSpeed.Value <= fix.Zero ? fix.MaxValue : fix.One / moveSpeed.Value,
+                };
 
-                bool pathFound = Pathfinding.FindNavigablePath(tileWorld, from, to, Pathfinding.MAX_PATH_LENGTH, pathfindingResult);
+                bool pathFound = Pathfinding.FindNavigablePath(pathfindingContext, pawnData.Position, destination.Position, Pathfinding.AgentCapabilities.DefaultMaxCost, ref pathResult);
 
                 if (pathFound)
                 {
                     fix2 feetOffset = fix2(0, pawnData.Radius);
 
-                    for (int i = 1; i < pathfindingResult.Length - 1; i++) // exclude last point since we add 'destination' last
+                    for (int i = 0; i < pathResult.Segments.Length - 1; i++) // exclude last point since we add 'destination' last
                     {
-                        pathBuffer.Add(Helpers.GetTileBottom(pathfindingResult[i]) + feetOffset);
+                        Pathfinding.Segment pathSegment = pathResult.Segments[i];
+                        pathSegment.EndPosition = Helpers.GetTileBottom(pathSegment.EndTile) + feetOffset;
+                        pathBuffer.Add(pathSegment);
                     }
 
-                    fix2 dest = destination.Position;
+                    var lastSegment = pathResult.Segments.Last();
+                    lastSegment.EndPosition = destination.Position;
 
-                    if (!tileWorld.GetFlags(Helpers.GetTile(dest)).IsLadder) // lower destination to ground
-                        dest.y = Helpers.GetTileBottom(destination.Position).y + feetOffset.y;
+                    if (!tileWorld.GetFlags(lastSegment.EndTile).IsLadder) // lower destination to ground
+                        lastSegment.EndPosition.y = Helpers.GetTileBottom(lastSegment.EndTile).y + feetOffset.y;
 
-                    pathBuffer.Add(dest);
+                    pathBuffer.Add(lastSegment);
                 }
 
                 repathData.PathCreatedPosition = destination.Position;

@@ -31,6 +31,11 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -46,6 +51,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -57,16 +67,6 @@ PrefabInstance:
     - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
-        type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
@@ -92,7 +92,7 @@ PrefabInstance:
     - target: {fileID: 4951368162375339519, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: m_Name
-      value: SE_BaseCharacter_Brute
+      value: SE_Char_Brute
       objectReference: {fileID: 0}
     - target: {fileID: 5072555852515810054, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
@@ -112,12 +112,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8435132431937638192, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
-      propertyPath: StartValue
+      propertyPath: MaxValue
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8435132431937638192, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
-      propertyPath: MaxValue
+      propertyPath: StartValue
       value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []

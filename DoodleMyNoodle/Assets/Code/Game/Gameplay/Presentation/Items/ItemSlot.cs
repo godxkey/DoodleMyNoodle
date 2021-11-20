@@ -138,6 +138,9 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     private void ShowCostPreview()
     {
+        if (_currentItemGameActionAuth == null)
+            return;
+
         if (SimWorld.TryGetComponent(_itemsOwner, out ActionPoints ap))
         {
             APEnergyBarDisplayManagementSystem.Instance.ShowCostPreview(_itemsOwner, (float)ap.Value - _currentItemGameActionAuth.ApCost);

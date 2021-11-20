@@ -87,7 +87,7 @@ MonoBehaviour:
       type: {class: GameActionTileExplosion/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Radius:
-          RawValue: 8589934592
+          RawValue: 3221225472
         Damage: 4
         Range:
-          RawValue: 3221225472
+          RawValue: 8589934592

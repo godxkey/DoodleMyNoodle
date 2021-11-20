@@ -87,5 +87,5 @@ MonoBehaviour:
       type: {class: GameActionMeleeAttack/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
-          RawValue: 8589934592
+          RawValue: 4724464128
         Damage: 1

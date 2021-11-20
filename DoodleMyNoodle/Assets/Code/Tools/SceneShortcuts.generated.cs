@@ -52,8 +52,8 @@ public static class SceneShortcuts
     [MenuItem("Scene Shortcuts/Lvl_Prototype4", priority = 4014)]
     public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype4() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype4.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_Prototype5_Alex", priority = 4015)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype5_Alex() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype5_Alex.unity");
+    [MenuItem("Scene Shortcuts/Lvl_Prototype5", priority = 4015)]
+    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype5() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype5.unity");
 
     [MenuItem("Scene Shortcuts/Lvl_SideScrollerExemple", priority = 4016)]
     public static void Assets_Scenes_Levels_Scene_Assets_Lvl_SideScrollerExemple() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_SideScrollerExemple.unity");

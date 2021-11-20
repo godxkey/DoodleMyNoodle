@@ -31,12 +31,12 @@ public struct AIActionCooldown : IComponentData
 /// <summary>
 /// Indicates if an AI should play this frame
 /// </summary>
-public struct AIPlaysThisFrameToken : IComponentData
+public struct AIThinksThisFrameToken : IComponentData
 {
     public bool Value;
 
-    public static implicit operator bool(AIPlaysThisFrameToken val) => val.Value;
-    public static implicit operator AIPlaysThisFrameToken(bool val) => new AIPlaysThisFrameToken() { Value = val };
+    public static implicit operator bool(AIThinksThisFrameToken val) => val.Value;
+    public static implicit operator AIThinksThisFrameToken(bool val) => new AIThinksThisFrameToken() { Value = val };
 }
 
 /// <summary>
@@ -68,12 +68,12 @@ public struct AIDestinationRepathData : IComponentData
 /// <summary>
 /// A buffer of position for AI pathing
 /// </summary>
-public struct AIPathPosition : IBufferElementData
+public struct AIPathSegment : IBufferElementData
 {
-    public fix2 Value;
+    public Pathfinding.Segment Value;
 
-    public static implicit operator fix2(AIPathPosition val) => val.Value;
-    public static implicit operator AIPathPosition(fix2 val) => new AIPathPosition() { Value = val };
+    public static implicit operator Pathfinding.Segment(AIPathSegment val) => val.Value;
+    public static implicit operator AIPathSegment(Pathfinding.Segment val) => new AIPathSegment() { Value = val };
 }
 
 /// <summary>

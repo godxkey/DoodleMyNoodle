@@ -2,6 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
+using Unity.Scenes;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -10,6 +12,17 @@ using UnityEngineX;
 
 public class Game : MonoBehaviour
 {
+    static class WorldBootstrap
+    {
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void Initialize()
+        {
+            SimulationController.Initialize();
+            DefaultWorldInitialization.Initialize("Default World", false);
+            GameObjectSceneUtility.AddGameObjectSceneReferences();
+        }
+    }
+
     public static bool PlayingAsLocal { get; private set; }
     public static bool PlayingAsClient { get; private set; }
     public static bool PlayingAsServer { get; private set; }

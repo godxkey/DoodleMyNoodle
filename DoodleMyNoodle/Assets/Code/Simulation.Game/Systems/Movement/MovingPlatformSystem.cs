@@ -40,7 +40,7 @@ public struct MovingPlatformState : IComponentData
 public struct MovingPlatformSignalPosition : IBufferElementData
 {
     public fix2 Position;
-    public Entity SignalEmitter;
+    public Entity ConditionalEmitter;
 }
 
 public class MovingPlatformSystem : SimGameSystemBase
@@ -103,7 +103,8 @@ public class MovingPlatformSystem : SimGameSystemBase
             bool hasDestination = false;
             for (int i = 0; i < signalPositions.Length; i++)
             {
-                if (HasComponent<Signal>(signalPositions[i].SignalEmitter) && GetComponent<Signal>(signalPositions[i].SignalEmitter))
+                if (signalPositions[i].ConditionalEmitter == Entity.Null 
+                    || (HasComponent<Signal>(signalPositions[i].ConditionalEmitter) && GetComponent<Signal>(signalPositions[i].ConditionalEmitter)))
                 {
                     hasDestination = true;
                     destination = signalPositions[i].Position;

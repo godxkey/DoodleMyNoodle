@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-public class PrefabComponentAssetBankUpdater<TBank, TPrefabComponent> : AssetBankUpdater<TBank, GameObject, TPrefabComponent>
+public class AssetBankUpdaterPrefabComponent<TBank, TPrefabComponent> : AssetBankUpdater<TBank, GameObject, TPrefabComponent>
     where TBank : ScriptableObject
-    where TPrefabComponent : UnityEngine.Object
+    where TPrefabComponent : Component
 {
-    public PrefabComponentAssetBankUpdater(string bankAssetPath, GetStoredObjectsFromBankDelegate getStoredObjectsFromBankDelegate)
+    public AssetBankUpdaterPrefabComponent(string bankAssetPath, GetStoredObjectsFromBankDelegate getStoredObjectsFromBankDelegate)
         : base(
             bankAssetPath: bankAssetPath,
             assetTypeFileExtension: ".prefab",
@@ -18,7 +18,7 @@ public class PrefabComponentAssetBankUpdater<TBank, TPrefabComponent> : AssetBan
     {
         if (asset == null)
         {
-            outStoredObject = null;
+            outStoredObject = default;
             return false;
         }
 

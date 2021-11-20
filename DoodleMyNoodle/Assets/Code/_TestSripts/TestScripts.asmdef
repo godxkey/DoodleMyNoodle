@@ -1,14 +1,16 @@
 {
     "name": "TestScripts",
+    "rootNamespace": "",
     "references": [
         "GUID:c886ee09f9545f74f85dd4e7b076b17c",
         "GUID:001022908a4be7c4ea043dbca2a35da9",
-        "GUID:737e1c04c3dd3e046bedb5be72aec1d7",
+        "GUID:45895409ccea25345aa40e359321a702",
         "GUID:389edd8433a26384eb01215cc0adad2a",
         "GUID:5247503e82c702442b628f2c8a2f6f51",
         "GUID:57b1a9c17326d5046ad25c424bce6793",
         "GUID:71a9cd6dc501bea45942ce8c4a356c95",
         "GUID:7a50bbf1a327d1b4392a4b0c9480cc00",
+        "GUID:a695b5a3e8c39e14fb9d86d3205fadf9",
         "GUID:f5823330910b6a446a2095347107fb53",
         "GUID:0804c0f4c04a1024f837eae455890c7e",
         "GUID:2665a8d13d1b3f18800f46e256720795",
@@ -17,7 +19,8 @@
         "GUID:d8b63aba1907145bea998dd612889d6b",
         "GUID:379c59ff3a2beb04b963661f515b2935",
         "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:7a8d7696eb7a56745b9cdb92a8a28234"
+        "GUID:7a8d7696eb7a56745b9cdb92a8a28234",
+        "GUID:737e1c04c3dd3e046bedb5be72aec1d7"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

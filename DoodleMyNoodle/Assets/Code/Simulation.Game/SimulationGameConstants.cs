@@ -25,7 +25,7 @@ public static class SimulationGameConstants
     public static readonly fix AISightDistance = 8;
     public static readonly fix AISightDistanceSq = AISightDistance * AISightDistance;
     public static readonly fix2 AIEyeOffset = new fix2(0, (fix)0.15f);
-    public static readonly fix AISearchForPositionMaxCost = (fix)10;
+    public static readonly fix AISearchForShootPositionMaxCost = (fix)10;
     public static readonly fix AgentRepathCooldown = (fix)1; // repath every 1s
     public static readonly fix AIPauseDurationAfterShoot = (fix)2;
     public static readonly fix AIGrenadierShootDistanceRatio = (fix)0.6; // attemps to shoot at 60% of the distance to target (to account for bomb bounces)
@@ -37,8 +37,18 @@ public static class SimulationGameConstants
         if (s_init)
             return;
 
-        Physics.TerrainFilter.Data = CollisionFilter.FromLayer(Physics.LAYER_TERRAIN);
-        Physics.CharactersAndTerrainFilter.Data = CollisionFilter.FromLayers(Physics.LAYER_TERRAIN, Physics.LAYER_CHARACTER);
+        // For a collision detection to happen between two filters, their 'BelongsTo' and 'CollidesWith' must mention each other
+
+        Physics.CollideWithTerrainFilter.Data = new CollisionFilter()
+        {
+            BelongsTo = ~(uint)0,
+            CollidesWith = CollisionFilter.CreateMask(Physics.LAYER_TERRAIN)
+        };
+        Physics.CollideWithCharactersAndTerrainFilter.Data = new CollisionFilter()
+        {
+            BelongsTo = ~(uint)0,
+            CollidesWith = CollisionFilter.CreateMask(Physics.LAYER_TERRAIN, Physics.LAYER_CHARACTER)
+        };
 
         s_init = true;
     }
@@ -48,10 +58,10 @@ public static class SimulationGameConstants
         public const int LAYER_TERRAIN = 8;
         public const int LAYER_CHARACTER = 9;
 
-        public static readonly SharedStatic<CollisionFilter> TerrainFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, TerrainFilterKey>();
+        public static readonly SharedStatic<CollisionFilter> CollideWithTerrainFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, TerrainFilterKey>();
         private class TerrainFilterKey { }
 
-        public static readonly SharedStatic<CollisionFilter> CharactersAndTerrainFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, CharactersAndTerrainFilterKey>();
+        public static readonly SharedStatic<CollisionFilter> CollideWithCharactersAndTerrainFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, CharactersAndTerrainFilterKey>();
         private class CharactersAndTerrainFilterKey { }
 
     }

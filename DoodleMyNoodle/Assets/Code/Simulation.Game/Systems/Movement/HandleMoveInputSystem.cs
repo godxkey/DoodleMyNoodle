@@ -12,7 +12,7 @@ public class HandleMoveInputSystem : SimSystemBase
     protected override void OnCreate()
     {
         base.OnCreate();
-        
+
         RequireSingletonForUpdate<GridInfo>();
     }
 
@@ -21,33 +21,44 @@ public class HandleMoveInputSystem : SimSystemBase
         fix deltaTime = Time.DeltaTime;
 
         // Influence velocity from moveInput when pawn is on ground or ladder
-        Entities.ForEach((ref PhysicsVelocity velocity, ref ActionPoints ap, in MoveInput moveInput, in MoveSpeed moveSpeed, in NavAgentFootingState footing) =>
+        Entities.ForEach((ref PhysicsVelocity velocity, ref ActionPoints ap, in MoveInput moveInputComp, in MoveSpeed moveSpeed, in NavAgentFootingState footing) =>
         {
+
             if (footing.Value == NavAgentFooting.Ground || footing.Value == NavAgentFooting.Ladder)
             {
-                fix2 move = moveInput.Value;
+                fix2 moveInput = moveInputComp.Value;
 
                 if (footing.Value == NavAgentFooting.Ground)
                 {
                     // NB: If we ever get slopped terrain, we might want to set the move perpendicular to the normal of the floor
-                    move.y = 0;
+                    moveInput.y = 0;
                 }
 
-                move = clampLength(move, 0, 1);
+                moveInput = clampLength(moveInput, 0, 1);
 
                 if (ap.Value == 0)
                 {
-                    move *= 0;
+                    moveInput *= 0;
                 }
 
                 // consume energy
-                if (move.x != 0 || move.y != 0)
+                if (moveInput.x != 0 || moveInput.y != 0)
                 {
                     ap.Value = max(0, ap.Value - deltaTime);
                 }
 
-                velocity.Linear = move * moveSpeed;
+                fix2 newVelocity = velocity.Linear;
+
+                newVelocity.x = moveInput.x * moveSpeed;
+
+                if (footing.Value == NavAgentFooting.Ladder)
+                {
+                    newVelocity.y = moveInput.y * moveSpeed;
+                }
+
+                velocity.Linear = newVelocity;
             }
+
         }).Run();
 
         // Influence velocity from moveInput when pawn is in air control

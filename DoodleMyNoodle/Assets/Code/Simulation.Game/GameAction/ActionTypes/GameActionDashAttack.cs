@@ -52,31 +52,37 @@ public class GameActionDashAttack : GameAction<GameActionDashAttack.Settings>
     {
         if (useData.TryGetParameter(0, out GameActionParameterTile.Data paramTile))
         {
-            int2 instigatorTile = Helpers.GetTile(accessor.GetComponent<FixTranslation>(context.InstigatorPawn));
+            fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
+            int2 instigatorTile = Helpers.GetTile(instigatorPos);
 
-            NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
-            if (!Pathfinding.FindNavigablePath(accessor, instigatorTile, paramTile.Tile, Pathfinding.MAX_PATH_LENGTH, path))
+            Pathfinding.PathResult path = new Pathfinding.PathResult(Allocator.Temp);
+
+            var pathfindingContext = new Pathfinding.Context(CommonReads.GetTileWorld(accessor));
+            pathfindingContext.AgentCapabilities.Drop1TileCost = fix.MaxValue;
+            pathfindingContext.AgentCapabilities.Jump1TileCost = fix.MaxValue;
+
+            if (!Pathfinding.FindNavigablePath(pathfindingContext, instigatorPos, Helpers.GetTileCenter(paramTile.Tile), Pathfinding.AgentCapabilities.DefaultMaxCost, ref path))
             {
                 LogGameActionInfo(context, $"Discarding: cannot find navigable path from { instigatorTile} to { paramTile.Tile}.");
                 return false;
             }
 
             // Get the last reachable point considering the user's AP
-            int lastReachablePathPointIndex = Pathfinding.GetLastPathPointReachableWithinCost(path.AsArray().Slice(), settings.Range);
+            int lastReachablePathPointIndex = path.LastReachableSegmentWithinCost(settings.Range);
 
             // Remove unreachable points
-            path.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
+            path.Segments.Resize(lastReachablePathPointIndex + 1, NativeArrayOptions.ClearMemory);
 
             NativeList<Entity> entityToDamage = new NativeList<Entity>(Allocator.Temp);
 
             fix2 min, max, center;
             fix radius = (fix)0.4;
-            for (int i = 0; i < path.Length; i++)
+            for (int i = 0; i < path.Segments.Length; i++)
             {
-                int2 pos = path[i];
-                if (!pos.Equals(instigatorTile))
+                fix2 segmentPos = path.Segments[i].EndPosition;
+                if (!Helpers.GetTile(segmentPos).Equals(instigatorTile))
                 {
-                    center = Helpers.GetTileCenter(path[i]);
+                    center = segmentPos;
                     min = center - fix2(radius, radius);
                     max = center + fix2(radius, radius);
 
@@ -86,7 +92,7 @@ public class GameActionDashAttack : GameAction<GameActionDashAttack.Settings>
             entityToDamage.RemoveDuplicates();
 
             // set destination
-            accessor.SetOrAddComponent(context.InstigatorPawn, new Destination() { Value = Helpers.GetTileCenter(path[path.Length - 1]) });
+            accessor.SetOrAddComponent(context.InstigatorPawn, new Destination() { Value = path.Segments[path.Segments.Length - 1].EndPosition });
 
             CommonWrites.RequestDamage(accessor, context.InstigatorPawn, entityToDamage.AsArray(), settings.Damage);
 

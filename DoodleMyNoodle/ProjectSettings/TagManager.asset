@@ -50,6 +50,9 @@ TagManager:
   - name: Characters
     uniqueID: 3005221959
     locked: 0
+  - name: Grid_Gameplay_InFrontOfCharacters
+    uniqueID: 3280136505
+    locked: 0
   - name: Grid_Foreground
     uniqueID: 2818352545
     locked: 0

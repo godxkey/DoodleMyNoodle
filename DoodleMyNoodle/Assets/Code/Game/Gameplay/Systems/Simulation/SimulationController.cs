@@ -11,11 +11,14 @@ public partial class SimulationController : GameSystem<SimulationController>
 {
     private TickSimulationSystem _tickSystem;
 
+    public static void Initialize()
+    {
+        SimulationWorldSystem.WorldInstantiationFunc = (name) => new SimulationGameWorld(name);
+    }
+
     public override void OnGameAwake()
     {
         base.OnGameAwake();
-
-        SimulationWorldSystem.WorldInstantiationFunc = (name) => new SimulationGameWorld(name);
 
         SimSerializationOperation.BlobAssetDataCollectors[typeof(PhysicsColliderBlob)] = new BlobPhysicsColliderCollector();
         SimDeserializationOperation.BlobAssetDataDistributors[typeof(PhysicsColliderBlob)] = new BlobPhysicsColliderDistributor();

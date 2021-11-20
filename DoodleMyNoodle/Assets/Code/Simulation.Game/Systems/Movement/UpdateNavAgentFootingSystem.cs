@@ -42,7 +42,7 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
                 {
                     OverlapPointInput detectTerrain = new OverlapPointInput()
                     {
-                        Filter = SimulationGameConstants.Physics.TerrainFilter.Data,
+                        Filter = SimulationGameConstants.Physics.CollideWithTerrainFilter.Data,
                     };
 
                     OverlapPointInput detectTerrainLeftFoot = detectTerrain;

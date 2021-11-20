@@ -62,7 +62,12 @@ public enum ESignalEmissionType
     /// <summary>
     /// Signal ON when any target is ON
     /// </summary>
-    OR
+    OR,
+
+    /// <summary>
+    /// Signal is always ON
+    /// </summary>
+    AlwaysOn
 }
 
 //public struct SignalEmission : IComponentData

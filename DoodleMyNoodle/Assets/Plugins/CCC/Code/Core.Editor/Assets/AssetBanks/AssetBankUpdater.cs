@@ -8,7 +8,6 @@ using UnityEngineX;
 public class AssetBankUpdater<TBank, TAsset, TStoredObject>
     where TBank : ScriptableObject
     where TAsset : UnityEngine.Object
-    where TStoredObject : UnityEngine.Object
 {
     int _importLoopCounter = 0;
 

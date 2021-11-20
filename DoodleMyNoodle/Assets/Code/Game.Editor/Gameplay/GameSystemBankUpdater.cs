@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameSystemBankUpdater : AssetPostprocessor
 {
-    static PrefabComponentAssetBankUpdater<GameSystemBank, GameSystem> s_assetBankUpdater = new PrefabComponentAssetBankUpdater<GameSystemBank, GameSystem>(
+    static AssetBankUpdaterPrefabComponent<GameSystemBank, GameSystem> s_assetBankUpdater = new AssetBankUpdaterPrefabComponent<GameSystemBank, GameSystem>(
         bankAssetPath: "Assets/Config/Generated/GameSystemBank.asset",
         getStoredObjectsFromBankDelegate: (bank) => bank.Prefabs);
 

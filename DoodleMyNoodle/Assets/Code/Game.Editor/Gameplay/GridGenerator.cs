@@ -9,7 +9,7 @@ using UnityEngineX;
 public class GridGenerator
 {
     private const string PATH = "Assets/GameContent/Levels/Grids";
-    private const string SETTINGS_ASSET_PATH = "Assets/Config/GridSettings.asset";
+    private const string SETTINGS_ASSET_PATH = "Assets/GameContent/Tiles/GridSettings.asset";
 
     [MenuItem("Tools/Generate Grid Files")]
     public static void Generate()

@@ -8,7 +8,8 @@ public struct TileFinder
 {
     public struct Context
     {
-        public int2 PawnTile;
+        public fix2 PawnPosition;
+        public int2 PawnTile => Helpers.GetTile(PawnPosition);
         public Entity PawnEntity;
     }
 
@@ -74,8 +75,11 @@ public struct TileFinder
         // tile reachable
         if (description.MustBeReachable)
         {
-            NativeList<int2> highlightNavigablePath = new NativeList<int2>(Allocator.Temp);
-            if (!Pathfinding.FindNavigablePath(_accessor, parameters.PawnTile, tilePosition, description.RangeFromInstigator, highlightNavigablePath))
+            var pathfindingContext = new Pathfinding.Context(CommonReads.GetTileWorld(_accessor));
+            fix maxCost = description.RangeFromInstigator * pathfindingContext.AgentCapabilities.Walk1TileCost;
+
+            Pathfinding.PathResult pathResult = new Pathfinding.PathResult(Allocator.Temp);
+            if (!Pathfinding.FindNavigablePath(pathfindingContext, parameters.PawnPosition, Helpers.GetTileCenter(tilePosition), maxCost, ref pathResult))
             {
                 return false; // tile is non-reachable
             }
