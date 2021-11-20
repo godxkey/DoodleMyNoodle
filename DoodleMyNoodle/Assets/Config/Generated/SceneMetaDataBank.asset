@@ -97,3 +97,7 @@ MonoBehaviour:
     Path: Assets/Scenes/Levels/Scene Assets/Gym_Fred.unity
     BuildIndex: 20
     AssetGuid: 88424a4ab48a6b440a5b18e40e0bf10f
+  - Name: Lvl_Prototype5_Alex
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype5_Alex.unity
+    BuildIndex: 21
+    AssetGuid: 9a7e5c597dddbca4586dbbf9b77fa7aa
