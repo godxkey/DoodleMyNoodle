@@ -85,7 +85,7 @@ public class GymSurveyController : MonoBehaviour
 
             UIStateMachine.Instance.TransitionTo(UIStateType.ParameterSelection);
 
-            SurveyManager.Instance.BeginSurvey(_focusLocation, useContext, surveyPrefab.CreateDebugQuery(), surveyPrefab, OnSurveyComplete, OnSurveyCancel);
+            SurveyManager.Instance.BeginSurvey(_focusLocation, useContext, new List<GameAction.ParameterData>(), surveyPrefab.CreateDebugQuery(), surveyPrefab, OnSurveyComplete, OnSurveyCancel);
         }
     }
 

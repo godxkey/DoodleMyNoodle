@@ -1,7 +1,9 @@
 
+using CCC.Fix2D;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using Unity.Mathematics;
 using Unity.MathematicsX;
 using UnityEngine;
@@ -29,6 +31,7 @@ public class SurveyAngryBirds : SurveyBaseController
     private Vector2 _dragStartScreenPos;
     private Vector2 _releaseVector;
     private float _releaseSpeed;
+    private Entity _originEntity;
     private TrajectoryDisplaySystem.TrajectoryHandle _trajectoryDisplay;
     private GameActionParameterVector.Description _vectorDesc;
 
@@ -46,6 +49,23 @@ public class SurveyAngryBirds : SurveyBaseController
     {
         _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
         _vectorDesc = context.GetQueryParam<GameActionParameterVector.Description>();
+
+        if (_vectorDesc.UsePreviousParameterOriginLocation && context.CurrentData.Count > 0)
+        {
+            // could fetch all previous to find a valid one
+            if (context.CurrentData[context.CurrentData.Count - 1] is GameActionParameterPosition.Data posData)
+            {
+                transform.position = posData.Position.ToUnityVec();
+            }
+            else if (context.CurrentData[context.CurrentData.Count - 1] is GameActionParameterEntity.Data entityData)
+            {
+                _originEntity = entityData.Entity;
+                if(SimWorld.TryGetComponent(_originEntity, out FixTranslation fixTranslation)) 
+                {
+                    transform.position = fixTranslation.Value.ToUnityVec();
+                }
+            }
+        }
 
         CameraMovementController.Instance.SetMaxZoom();
         CameraMovementController.Instance.CenterOnPawn();
@@ -181,10 +201,19 @@ public class SurveyAngryBirds : SurveyBaseController
         if (_trajectoryDisplay.Displayed)
         {
             Vector2 startOffset = Vector2.zero;
-            if (PresentationHelpers.Surveys.GetItemTrajectorySettings(Cache, CurrentContext.UseContext, _releaseVector.normalized, out Vector2 offset, out float radius))
+            // custom entity origin (not the item)
+            if (_vectorDesc.UsePreviousParameterOriginLocation)
             {
-                startOffset = offset;
-                _trajectoryDisplay.Radius = radius;
+                _trajectoryDisplay.Radius = (float)CommonReads.GetActorRadius(Cache.SimWorld, _originEntity);
+            }
+            else
+            {
+                // throwing from the item
+                if (PresentationHelpers.Surveys.GetItemTrajectorySettings(Cache, CurrentContext.UseContext, _releaseVector.normalized, out Vector2 offset, out float radius))
+                {
+                    startOffset = offset;
+                    _trajectoryDisplay.Radius = radius;
+                }
             }
 
             _trajectoryDisplay.GravityScale = PresentationHelpers.Surveys.GetProjectileGravityScale(Cache, CurrentContext.UseContext);

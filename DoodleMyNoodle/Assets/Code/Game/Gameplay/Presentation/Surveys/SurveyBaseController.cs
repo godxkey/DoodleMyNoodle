@@ -12,6 +12,7 @@ public abstract class SurveyBaseController : MonoBehaviour
     {
         public GameAction.UseContext UseContext;
         public GameAction.ParameterDescription[] QueryParams;
+        public List<GameAction.ParameterData> CurrentData;
 
         public Entity Item => UseContext.Item;
         public Entity Instigator => UseContext.InstigatorPawn;
@@ -51,7 +52,7 @@ public abstract class SurveyBaseController : MonoBehaviour
     [NonSerialized]
     private GameAction.ParameterDescriptionType[] _cachedExpectedQuery = null;
 
-    public void StartSurvey(Action<List<GameAction.ParameterData>> completeCallback, Action cancelCallback, GameAction.UseContext useContext, params GameAction.ParameterDescription[] parameters)
+    public void StartSurvey(Action<List<GameAction.ParameterData>> completeCallback, Action cancelCallback, GameAction.UseContext useContext, List<GameAction.ParameterData> currentResultData, params GameAction.ParameterDescription[] parameters)
     {
         Running = true;
 
@@ -60,7 +61,8 @@ public abstract class SurveyBaseController : MonoBehaviour
         var context = new Context()
         {
             QueryParams = parameters,
-            UseContext = useContext
+            UseContext = useContext,
+            CurrentData = currentResultData
         };
 
         CurrentContext = context;
@@ -107,7 +109,7 @@ public abstract class SurveyBaseController : MonoBehaviour
     }
     
     protected abstract GameAction.ParameterDescriptionType[] GetExpectedQuery();
-    protected abstract IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel);
+    protected abstract IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> currentData, Action complete, Action cancel);
     protected abstract void OnEndSurvey(bool wasCompleted);
     public virtual GameAction.ParameterDescription[] CreateDebugQuery() => new GameAction.ParameterDescription[0] { };
 }
