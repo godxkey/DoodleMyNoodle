@@ -23,6 +23,7 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
 
     public void BeginSurvey(Vector3 surveyLocation,
         GameAction.UseContext useContext,
+        List<GameAction.ParameterData> currentResultData,
         GameAction.ParameterDescription[] parameters,
         SurveyBaseController surveyPrefab,
         Action<List<GameAction.ParameterData>> onCompleteCallback,
@@ -40,7 +41,7 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
             {
                 onCompleteCallback.Invoke(resultData);
                 Destroy(surveyController.gameObject);
-            }, onCancelCallback, useContext, parameters);
+            }, onCancelCallback, useContext, currentResultData, parameters);
         }
         else
         {
@@ -52,7 +53,7 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
         }
     }
 
-    public void BeginDefaultSurvey(Vector3 requestLocation, GameAction.UseContext useContext, GameAction.ParameterDescription parameterDescription, Action<List<GameAction.ParameterData>> onCompleteCallback, Action onCancelCallback)
+    public void BeginDefaultSurvey(Vector3 requestLocation, GameAction.UseContext useContext, List<GameAction.ParameterData> currentResultData, GameAction.ParameterDescription parameterDescription, Action<List<GameAction.ParameterData>> onCompleteCallback, Action onCancelCallback)
     {
         SurveyBaseController surveyPrefab = null;
 
@@ -68,7 +69,7 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
 
         if (surveyPrefab != null)
         {
-            BeginSurvey(requestLocation, useContext, new GameAction.ParameterDescription[] { parameterDescription }, surveyPrefab, onCompleteCallback, onCancelCallback);
+            BeginSurvey(requestLocation, useContext, currentResultData, new GameAction.ParameterDescription[] { parameterDescription }, surveyPrefab, onCompleteCallback, onCancelCallback);
         }
     }
 

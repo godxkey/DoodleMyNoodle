@@ -5,6 +5,7 @@ public class GameActionParameterVector
     {
         public fix SpeedMin = 0;
         public fix SpeedMax = 99;
+        public bool UsePreviousParameterOriginLocation = false;
 
         public Description() { }
 

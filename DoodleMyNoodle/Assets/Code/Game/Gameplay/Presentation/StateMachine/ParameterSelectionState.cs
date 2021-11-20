@@ -174,7 +174,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             // the parameter
             int remainingParamCount = Blackboard.ParametersDescriptions.Length - Blackboard.ResultParameters.Count;
 
-            GameAction.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, 0, remainingParamCount);
+            GameAction.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, Blackboard.ResultParameters.Count, remainingParamCount);
 
             if(remainingParams.Length < 1)
             {
@@ -185,7 +185,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             SurveyBaseController surveyPrefab = Blackboard.GameActionAuth.FindCustomSurveyPrefabForParameters(remainingParams);
             if (surveyPrefab != null)
             {
-                SurveyManager.Instance.BeginSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, remainingParams, surveyPrefab, OnSurveyComplete, OnSurveyCancel);
+                SurveyManager.Instance.BeginSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, Blackboard.ResultParameters, remainingParams, surveyPrefab, OnSurveyComplete, OnSurveyCancel);
             }
             else
             {
@@ -193,7 +193,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
                 // For default case, we handle them one at a time with the survey corresponding to the first parameter we have
                 GameAction.ParameterDescription parameterToHandle = remainingParams[0];
-                SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, parameterToHandle, OnSurveyComplete, OnSurveyCancel);
+                SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, Blackboard.ResultParameters, parameterToHandle, OnSurveyComplete, OnSurveyCancel);
             }
         }
 

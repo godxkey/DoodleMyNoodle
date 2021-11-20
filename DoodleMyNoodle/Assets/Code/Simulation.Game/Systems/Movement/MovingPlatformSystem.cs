@@ -125,7 +125,8 @@ public class MovingPlatformSystem : SimGameSystemBase
 
         // move along path
         Entities.ForEach(
-            (DynamicBuffer<PathPosition> pathPositions,
+            (Entity entity,
+            DynamicBuffer<PathPosition> pathPositions,
             ref PhysicsVelocity velocity,
             ref FixTranslation translation,
             ref MovingPlatformState state,
@@ -136,6 +137,16 @@ public class MovingPlatformSystem : SimGameSystemBase
                 {
                     velocity.Linear = fix2.zero;
                     return;
+                }
+
+                if (HasComponent<Signal>(entity))
+                {
+                    Signal signal = GetComponent<Signal>(entity);
+                    if (!signal.Value)
+                    {
+                        velocity.Linear = fix2.zero;
+                        return;
+                    }
                 }
 
                 if (state.RemainingWaitTime > TimeValue.Zero)
