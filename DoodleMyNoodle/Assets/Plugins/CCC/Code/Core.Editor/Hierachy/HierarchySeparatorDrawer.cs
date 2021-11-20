@@ -6,8 +6,8 @@ using UnityEngine;
 [InitializeOnLoad]
 public class HierarchySeparatorDrawer
 {
-
-    static GUIStyle style;
+    static GUIStyle s_styleLabel;
+    static GUIStyle s_styleCount;
 
     //constructor
     static HierarchySeparatorDrawer()
@@ -20,12 +20,19 @@ public class HierarchySeparatorDrawer
         //get the gameObject reference using its instance ID
         GameObject go = (GameObject)EditorUtility.InstanceIDToObject(instanceID);
 
-        if (style == null)
+        if (s_styleLabel == null)
         {
-            style = new GUIStyle(EditorStyles.objectField);
-            style.fontSize = 10;
-            style.alignment = TextAnchor.LowerLeft;
-            style.fixedHeight = 14;
+            s_styleLabel = new GUIStyle(EditorStyles.objectField);
+            s_styleLabel.fontSize = 12;
+            s_styleLabel.alignment = TextAnchor.LowerLeft;
+            s_styleLabel.fixedHeight = 16;
+
+            s_styleCount = new GUIStyle(EditorStyles.label);
+            s_styleCount.padding.bottom++;
+            s_styleCount.normal.textColor = s_styleCount.normal.textColor.ChangedAlpha(0.4f);
+            s_styleCount.hover.textColor = s_styleCount.hover.textColor.ChangedAlpha(0.4f);
+            s_styleCount.focused.textColor = s_styleCount.focused.textColor.ChangedAlpha(0.4f);
+            s_styleCount.active.textColor = s_styleCount.active.textColor.ChangedAlpha(0.5f);
         }
 
         if (go != null)
@@ -35,11 +42,17 @@ public class HierarchySeparatorDrawer
                 && name[0] == '_'
                 && name[name.Length - 1] == '_')
             {
-                selectionRect.position += Vector2.up;
                 Color wasColor = GUI.color;
                 
                 GUI.color = GetBoxColor();
-                GUI.Box(selectionRect, name.Substring(1, name.Length - 2), style);
+                
+                GUIContent label = new GUIContent();
+                label.text = name.Substring(1, name.Length - 2);
+                GUI.Box(selectionRect, label, s_styleLabel);
+
+                selectionRect.xMin += s_styleLabel.CalcSize(label).x - 18;
+                GUI.Label(selectionRect, $"(x{go.transform.childCount})", s_styleCount);
+                
                 GUI.color = wasColor;
             }
         }

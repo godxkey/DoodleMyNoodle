@@ -68,9 +68,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Radius:
-    RawValue: 8589934592
+    RawValue: 6442450944
   Damage: 1
-  DestroyTiles: 0
+  DestroyTiles: 1
 --- !u!114 &-1453935231756630784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,6 +85,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxValue: 1
   StartAtMax: 1
+  DestroyOnDeath: 1
   StartValue: 10
 --- !u!114 &2856864511536238991
 MonoBehaviour:
@@ -105,8 +106,8 @@ MonoBehaviour:
   LinearDrag: 0
   AngularDrag: 0.05
   GravityScale: 1
-  FireEvents: 1
-  FreezeRotation: 1
+  FireEvents: 0
+  FreezeRotation: 0
   BoxSize: {x: 0.46, y: 0.66}
   CircleRadius: 0.5
   BoxAndCircleOffset: {x: 0, y: 0}

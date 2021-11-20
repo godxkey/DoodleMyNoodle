@@ -37,7 +37,7 @@ public class GameActionTileExplosion : GameAction<GameActionTileExplosion.Settin
         return new UseContract(
                    new GameActionParameterPosition.Description()
                    {
-                       MaxRangeFromInstigator = settings.Radius
+                       MaxRangeFromInstigator = settings.Range
                    });
     }
 
