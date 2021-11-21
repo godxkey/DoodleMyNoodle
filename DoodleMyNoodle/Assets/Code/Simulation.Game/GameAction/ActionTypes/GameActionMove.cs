@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using static fixMath;
 using CCC.Fix2D;
 using System;
+using System.Collections.Generic;
 
 public class GameActionMove : GameAction<GameActionMove.Settings>
 {
@@ -62,7 +63,7 @@ public class GameActionMove : GameAction<GameActionMove.Settings>
         return useContract;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {
         //int2 destinationTile;
         //fix2 destinationPosition;

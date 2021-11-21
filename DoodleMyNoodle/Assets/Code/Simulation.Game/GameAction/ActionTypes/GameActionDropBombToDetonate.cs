@@ -58,7 +58,7 @@ public class GameActionDropBombToDetonate : GameAction<GameActionDropBombToDeton
         return new UseContract(new GameActionParameterPosition.Description() { MaxRangeFromInstigator = settings.Range });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramTile))
         {

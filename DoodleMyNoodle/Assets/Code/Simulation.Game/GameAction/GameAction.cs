@@ -105,7 +105,20 @@ public abstract class GameAction
 
     public struct ResultData
     {
+        // temp fix because we can't use list in events
+        // for now, we can't have more than 4 consecutive game action result/animation
+        public ResultDataElement DataElement_0;
+        public ResultDataElement DataElement_1;
+        public ResultDataElement DataElement_2;
+        public ResultDataElement DataElement_3;
+        public int Count;
+    }
+
+    public struct ResultDataElement
+    {
         public fix2 AttackVector;
+        public fix2 Position;
+        public Entity Entity;
     }
 
     public class DebugReason
@@ -128,8 +141,8 @@ public abstract class GameAction
 
         BeforeActionUsed(accessor, context);
 
-        ResultData resultData = new ResultData();
-        if (Use(accessor, context, parameters, ref resultData))
+        List<ResultDataElement> resultData = new List<ResultDataElement>();
+        if (Use(accessor, context, parameters, resultData))
         {
             OnActionUsed(accessor, context, resultData);
             return true;
@@ -213,7 +226,7 @@ public abstract class GameAction
         
     }
 
-    public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context, ResultData result)
+    public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context, List<ResultDataElement> result)
     {
         // reduce consumable amount
         if (accessor.GetComponent<StackableFlag>(context.Item))
@@ -238,7 +251,30 @@ public abstract class GameAction
         }
 
         // Feedbacks
-        CommonWrites.RequestGameActionEvent(accessor, context, result);
+        ResultData resultData = new ResultData() { Count = result.Count };
+
+        for (int i = 0; i < result.Count; i++)
+        {
+            switch (i)
+            {
+                case 0:
+                    resultData.DataElement_0 = result[0];
+                    break;
+                case 1:
+                    resultData.DataElement_1 = result[1];
+                    break;
+                case 2:
+                    resultData.DataElement_2 = result[2];
+                    break;
+                case 3:
+                    resultData.DataElement_3 = result[3];
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        CommonWrites.RequestGameActionEvent(accessor, context, resultData);
     }
 
     protected virtual int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
@@ -258,7 +294,7 @@ public abstract class GameAction
         return true;
     }
 
-    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData);
+    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData);
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context);
 
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
@@ -278,10 +314,10 @@ public abstract class GameAction<TSetting> : GameAction where TSetting : struct,
         return GetUseContract(accessor, context, settings);
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData)
     {
         var settings = accessor.GetComponent<TSetting>(context.Item);
-        return Use(accessor, context, parameters, ref resultData, settings);
+        return Use(accessor, context, parameters, resultData, settings);
     }
 
     protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
@@ -291,7 +327,7 @@ public abstract class GameAction<TSetting> : GameAction where TSetting : struct,
     }
 
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, TSetting settings);
-    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, TSetting settings);
+    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, TSetting settings);
     protected virtual bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason, TSetting settings)
     {
         return true;

@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Collections;
 using CCC.Fix2D;
 using System;
+using System.Collections.Generic;
 
 public class GameActionDirectionalJump : GameAction<GameActionDirectionalJump.Settings>
 {
@@ -42,7 +43,7 @@ public class GameActionDirectionalJump : GameAction<GameActionDirectionalJump.Se
             });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
         {

@@ -43,7 +43,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         return new UseContract(tileParam);
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {
         if (useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {
@@ -56,7 +56,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
             CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, settings.Damage);
 
             fix2 attackVector = attackPosition - instigatorPos;
-            resultData.AttackVector = attackVector;
+            resultData.Add(new ResultDataElement() { AttackVector = attackVector });
 
             return true;
         }

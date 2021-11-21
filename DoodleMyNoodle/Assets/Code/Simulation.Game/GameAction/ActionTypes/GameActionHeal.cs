@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngineX;
 using Unity.Entities;
 using Unity.Collections;
+using System.Collections.Generic;
 
 public class GameActionHeal : GameAction<GameActionHeal.Settings>
 {
@@ -50,7 +51,7 @@ public class GameActionHeal : GameAction<GameActionHeal.Settings>
         return useContract;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {

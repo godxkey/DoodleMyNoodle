@@ -5,6 +5,7 @@ using Unity.Entities;
 using Unity.Collections;
 using CCC.Fix2D;
 using System;
+using System.Collections.Generic;
 
 public class GameActionSwap : GameAction<GameActionSwap.Settings>
 {
@@ -35,7 +36,7 @@ public class GameActionSwap : GameAction<GameActionSwap.Settings>
             });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {
         if (useData.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {

@@ -34,6 +34,15 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     [FormerlySerializedAs("DefaultAnimations")]
     [SerializeField] private List<DefaultAnimation> _defaultAnimations;
 
+    private class QueuedAnimation
+    {
+        public List<KeyValuePair<string, object>> Data;
+        public AnimationDefinition Definition;
+        public bool HasPlayed;
+    }
+
+    private List<QueuedAnimation> _queuedAnimations = new List<QueuedAnimation>();
+
     private AnimationDefinition _currentAnimation;
 
     private AnimationType _previousState = AnimationType.None;
@@ -151,17 +160,46 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                 _hasTriggeredAnAnimation = true;
                 _lastTransitionTime = SimWorld.Time.ElapsedTime;
 
-                // ANIMATION DATA
-                List<KeyValuePair<string, object>> animationData = new List<KeyValuePair<string, object>>();
-                animationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.GameActionContext));
-                animationData.Add(new KeyValuePair<string, object>("AttackVector", (Vector2)gameActionEvent.GameActionResult.AttackVector));
-
                 // ITEM AUTH & ANIMATION TRIGGER
                 SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Item, out SimAssetId instigatorAssetId);
                 GameObject instigatorPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
                 if (instigatorPrefab.TryGetComponent(out ItemAuth gameActionAuth))
                 {
                     _currentAnimation = gameActionAuth.Animation;
+
+                    // add additionnal animation to play in queue (skip the first we'll play)
+                    if (gameActionAuth.PlayAnimation)
+                    {
+                        for (int i = 1; i < gameActionEvent.GameActionResult.Count; i++)
+                        {
+                            // ANIMATION DATA
+                            List<KeyValuePair<string, object>> currentAnimationData = new List<KeyValuePair<string, object>>();
+                            currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.GameActionContext));
+
+                            switch (i)
+                            {
+                                case 1:
+                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_1));
+                                    break;
+                                case 2:
+                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_2));
+                                    break;
+                                case 3:
+                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_3));
+                                    break;
+                                default:
+                                    break;
+                            }
+                            
+                            _queuedAnimations.Add(new QueuedAnimation() { Data = currentAnimationData, Definition = _currentAnimation, HasPlayed = false });
+                        }
+                    }
+
+                    // ANIMATION DATA
+                    List<KeyValuePair<string, object>> animationData = new List<KeyValuePair<string, object>>();
+                    animationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.GameActionContext));
+                    animationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_0));
+
                     if (_currentAnimation == null)
                     {
                         FindAnimation(AnimationType.GameAction).TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationData);
@@ -175,6 +213,46 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                 _previousState = AnimationType.GameAction;
             }
         });
+
+        if (!_hasTriggeredAnAnimation)
+        {
+            // find queued animation to play
+            QueuedAnimation AnimationToPlay = null;
+            for (int i = 0; i < _queuedAnimations.Count; i++)
+            {
+                if (!_queuedAnimations[i].HasPlayed)
+                {
+                    AnimationToPlay = _queuedAnimations[i];
+                    _queuedAnimations[i].HasPlayed = true;
+                    break;
+                }
+            }
+
+            if (AnimationToPlay != null)
+            {
+                TriggerAnimationInteruptionOnStateChange();
+
+                _hasTriggeredAnAnimation = true;
+                _lastTransitionTime = SimWorld.Time.ElapsedTime;
+
+                _currentAnimation = AnimationToPlay.Definition;
+
+                if (_currentAnimation == null)
+                {
+                    FindAnimation(AnimationType.GameAction).TriggerAnimation(SimEntity, _spriteStartPos, _bone, AnimationToPlay.Data);
+                }
+                else
+                {
+                    _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, AnimationToPlay.Data);
+                }
+
+                _previousState = AnimationType.GameAction;
+            }
+            else
+            {
+                _queuedAnimations.Clear();
+            }
+        }
 
         return _hasTriggeredAnAnimation;
     }
