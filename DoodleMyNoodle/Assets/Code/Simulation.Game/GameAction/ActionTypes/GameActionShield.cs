@@ -65,7 +65,7 @@ public class GameActionShield : GameAction<GameActionShield.Settings>
                 return false;
             }
 
-            ShieldTarget(accessor, context.Item, settings.TurnDuration);
+            ShieldTarget(accessor, paramEntity.Entity, settings.TurnDuration);
             return true;
         }
 

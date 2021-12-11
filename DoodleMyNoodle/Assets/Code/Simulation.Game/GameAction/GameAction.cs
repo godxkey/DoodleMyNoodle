@@ -180,7 +180,7 @@ public abstract class GameAction
         }
 
         int minApCost = GetMinimumActionPointCost(accessor, context);
-        if (minApCost >= 0)
+        if (minApCost > 0)
         {
             if (!accessor.TryGetComponent(context.InstigatorPawn, out ActionPoints ap))
             {

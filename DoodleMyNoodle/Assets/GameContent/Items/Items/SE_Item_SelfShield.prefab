@@ -66,13 +66,13 @@ MonoBehaviour:
   Value: GameActionShield
   GameActionSettings:
   - id: 0
-  ApCost: 1
+  ApCost: 0
   IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
   HideInInventory: 0
-  CanBeUsedAtAnytime: 0
+  CanBeUsedAtAnytime: 1
   Icon: {fileID: 21300000, guid: 39cb0a8145a6cb242b665cc5ca767b33, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Bouclier
@@ -87,5 +87,5 @@ MonoBehaviour:
       type: {class: GameActionShield/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
-          RawValue: 9448928256
+          RawValue: 429496736
         TurnDuration: 2
