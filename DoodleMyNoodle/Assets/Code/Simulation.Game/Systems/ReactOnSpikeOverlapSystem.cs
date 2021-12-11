@@ -143,7 +143,7 @@ public class ExtractFromSpikeOverlapSystem : SimSystemBase
     }
 }
 
-[UpdateAfter(typeof(StepPhysicsWorldSystem))]
+[UpdateAfter(typeof(PhysicsSystemGroup))]
 public class ResetSpikeCooldownSystems : SimSystemBase
 {
     private NativeList<Entity> SpikeCooldownEntityToDestroy;
