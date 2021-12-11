@@ -22,7 +22,7 @@ public class #SCRIPTNAME# : {nameof(SurveyBaseController)}
         // list your expected query param types here
     }};
 
-    protected override IEnumerator SurveyRoutine({nameof(GameAction)}.{nameof(GameAction.ParameterDescription)}[] queryParams, List<{nameof(GameAction)}.{nameof(GameAction.ParameterData)}> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine({nameof(SurveyBaseController.Context)} context, List<{nameof(GameAction)}.{nameof(GameAction.ParameterData)}> result, Action complete, Action cancel)
     {{
         complete();
         yield break;

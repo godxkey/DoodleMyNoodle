@@ -40,7 +40,23 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
             surveyController.StartSurvey(delegate (List<GameAction.ParameterData> resultData)
             {
                 onCompleteCallback.Invoke(resultData);
-                Destroy(surveyController.gameObject);
+
+                if (surveyController.DelayBeforeDestruction > 0)
+                {
+                    GameObject surveyObject = surveyController.gameObject;
+                    this.DelayedCall(surveyController.DelayBeforeDestruction, () =>
+                    {
+                        if (surveyObject != null)
+                        {
+                            Destroy(surveyObject);
+                        }
+                    });
+                }
+                else
+                {
+                    Destroy(surveyController.gameObject);
+                }
+                
             }, onCancelCallback, useContext, currentResultData, parameters);
         }
         else
@@ -78,7 +94,22 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
         if (_currentSurvey != null)
         {
             _currentSurvey.Cancel();
-            Destroy(_currentSurvey.gameObject);
+
+            if (_currentSurvey.DelayBeforeDestruction > 0)
+            {
+                GameObject surveyObject = _currentSurvey.gameObject;
+                this.DelayedCall(_currentSurvey.DelayBeforeDestruction, () =>
+                {
+                    if (surveyObject != null)
+                    {
+                        Destroy(surveyObject);
+                    }
+                });
+            }
+            else
+            {
+                Destroy(_currentSurvey.gameObject);
+            }
         }
     }
 }

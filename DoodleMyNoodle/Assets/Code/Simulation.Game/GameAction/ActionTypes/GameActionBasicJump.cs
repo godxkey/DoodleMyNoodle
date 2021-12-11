@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Collections;
 using System;
 using CCC.Fix2D;
+using System.Collections.Generic;
 
 public class GameActionBasicJump : GameAction<GameActionBasicJump.Settings>
 {
@@ -34,7 +35,7 @@ public class GameActionBasicJump : GameAction<GameActionBasicJump.Settings>
         return new UseContract();
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
         accessor.SetComponent<NavAgentFootingState>(context.InstigatorPawn, NavAgentFooting.AirControl);
 

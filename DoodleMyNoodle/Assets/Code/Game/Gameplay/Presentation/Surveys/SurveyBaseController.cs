@@ -29,6 +29,7 @@ public abstract class SurveyBaseController : MonoBehaviour
     }
 
     [SerializeField] private TextData _tooltip;
+    public float DelayBeforeDestruction = 0;
 
     public GamePresentationCache Cache => GamePresentationCache.Instance;
     public ISimWorldReadAccessor SimWorld => Cache.SimWorld;
@@ -98,6 +99,11 @@ public abstract class SurveyBaseController : MonoBehaviour
         if (_currentLoop != null)
             StopCoroutine(_currentLoop);
 
+        OnComplete(completed);
+    }
+
+    private void OnComplete(bool completed)
+    {
         if (completed)
         {
             _onCompleteCallback?.Invoke(_result);

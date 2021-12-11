@@ -36,4 +36,19 @@ public abstract class AnimationDefinition : ScriptableObject
 
         return default;
     }
+
+    public GameAction.ResultDataElement GetGameActionResultData()
+    {
+        foreach (KeyValuePair<string, object> data in Data)
+        {
+            if (data.Key == "GameActionContextResult")
+            {
+                return (GameAction.ResultDataElement)data.Value;
+            }
+        }
+
+        Log.Warning($"Game Action Context Result couldn't be found in {name}");
+
+        return default;
+    }
 }

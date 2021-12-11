@@ -2,6 +2,7 @@ using static fixMath;
 using Unity.Entities;
 using Unity.Collections;
 using Unity.Mathematics;
+using System.Collections.Generic;
 
 public class GameActionTransformTile : GameAction<GameActionTransformTile.Settings>
 {
@@ -19,7 +20,7 @@ public class GameActionTransformTile : GameAction<GameActionTransformTile.Settin
                    new GameActionParameterPosition.Description() { });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {

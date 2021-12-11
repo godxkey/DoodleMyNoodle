@@ -3,11 +3,14 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-[DisallowMultipleComponent]
+[DisallowMultipleComponent, RequireComponent(typeof(SignalAuth))]
 public class EntitySpawnerAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     [SerializeField]
     private TimeValue Delay;
+
+    [SerializeField]
+    private bool ShouldStartReady = true;
 
     [SerializeField]
     private bool SpawnOnlyWhenSignalOn = true;
@@ -45,7 +48,8 @@ public class EntitySpawnerAuth : MonoBehaviour, IConvertGameObjectToEntity, IDec
             AmountSpawned = QuantitySpawnedEachTick,
             Quantity = TotalQuantityAvailable,
             SpawnedRandomly = IsRandomAmongList,
-            SpawnPeriod = Delay
+            SpawnPeriod = Delay,
+            StartsReady = ShouldStartReady
         });
 
         dstManager.AddComponentData(entity, new EntitySpawnerState());

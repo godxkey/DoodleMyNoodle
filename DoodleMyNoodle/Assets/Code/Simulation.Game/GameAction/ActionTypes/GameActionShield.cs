@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using static fixMath;
 using System;
+using System.Collections.Generic;
 
 public class GameActionShield : GameAction<GameActionShield.Settings>
 {
@@ -48,7 +49,7 @@ public class GameActionShield : GameAction<GameActionShield.Settings>
         }
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {
         if (useData.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {

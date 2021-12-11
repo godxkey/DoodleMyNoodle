@@ -5,6 +5,7 @@ using Unity.Collections;
 using CCC.Fix2D;
 using System;
 using Unity.MathematicsX;
+using System.Collections.Generic;
 
 public class GameActionComboAttack : GameAction<GameActionComboAttack.Settings>
 {
@@ -41,7 +42,7 @@ public class GameActionComboAttack : GameAction<GameActionComboAttack.Settings>
         return new UseContract(param, param);
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
         var instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
         fix attackRadius = (fix)0.1f;
@@ -52,6 +53,8 @@ public class GameActionComboAttack : GameAction<GameActionComboAttack.Settings>
             var attackPos = Helpers.ClampPositionInsideRange(firstStrikePos.Position, instigatorPos, settings.Range);
 
             CommonReads.Physics.OverlapCircle(accessor, attackPos, attackRadius, hits, ignoreEntity: context.InstigatorPawn);
+
+            resultData.Add(new ResultDataElement() { Position = attackPos });
         }
 
         if (parameters.TryGetParameter(1, out GameActionParameterPosition.Data secondStrikePos))
@@ -59,6 +62,8 @@ public class GameActionComboAttack : GameAction<GameActionComboAttack.Settings>
             var attackPos = Helpers.ClampPositionInsideRange(secondStrikePos.Position, instigatorPos, settings.Range);
 
             CommonReads.Physics.OverlapCircle(accessor, attackPos, attackRadius, hits, ignoreEntity: context.InstigatorPawn);
+
+            resultData.Add(new ResultDataElement() { Position = attackPos });
         }
 
         CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, settings.Damage);

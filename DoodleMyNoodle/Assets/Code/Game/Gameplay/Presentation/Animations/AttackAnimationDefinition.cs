@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using CCC.Fix2D;
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using Unity.Entities;
@@ -14,8 +15,22 @@ public class AttackAnimationDefinition : DOTWEENAnimationDefinition
     {
         Sequence sq = DOTween.Sequence();
 
+        GameAction.ResultDataElement resultData = GetGameActionResultData();
+
         Vector2 startPos = spriteStartPos;
-        Vector2 endPos = startPos + GetAnimationData<Vector2>("AttackVector");
+        Vector2 endPos = startPos;
+        if (resultData.AttackVector.ToUnityVec() != Vector2.zero)
+        {
+            endPos += resultData.AttackVector.ToUnityVec();
+        }
+        else if (resultData.Position.ToUnityVec() != Vector2.zero)
+        {
+            endPos = resultData.Position.ToUnityVec() - (Vector2)spriteTransform.position;
+        }
+        else if ((resultData.Entity != Entity.Null) && PresentationHelpers.GetSimulationWorld().TryGetComponent(resultData.Entity, out FixTranslation translation))
+        {
+            endPos = translation.Value.ToUnityVec() - (Vector2)spriteTransform.position;
+        }
 
         if (VFXOnTarget != null)
         {

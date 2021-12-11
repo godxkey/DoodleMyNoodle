@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Collections;
 using System;
 using CCC.Fix2D;
+using System.Collections.Generic;
 
 public class GameActionThrowNearbyEntity : GameAction<GameActionThrowNearbyEntity.Settings>
 {
@@ -60,7 +61,7 @@ public class GameActionThrowNearbyEntity : GameAction<GameActionThrowNearbyEntit
                    });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
         if (parameters.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 30145307963041148}
   - component: {fileID: 3445985624800957972}
   - component: {fileID: 6184514040816270784}
+  - component: {fileID: 6946291622690062351}
   m_Layer: 0
   m_Name: SE_Dispenser
   m_TagString: Untagged
@@ -64,6 +65,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce894c2918c200349ae8a5f8fcef5241, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Delay:
+    Type: 0
+    Value:
+      RawValue: 0
   SpawnOnlyWhenSignalOn: 1
   QuantitySpawnedEachTick: 1
   IsRandomAmongList: 0
@@ -73,3 +78,18 @@ MonoBehaviour:
   ShootDirectionMaximum: {x: 0, y: 0}
   TotalQuantityAvailable: 1
   EntitiesToSpawn: []
+--- !u!114 &6946291622690062351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30145307963041151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dceeaaf196c53b4281bc9e1ffe55bd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StayOnForever: 0
+  Emission: 0
+  LogicTargets: []

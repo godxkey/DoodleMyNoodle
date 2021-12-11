@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionDashAttack
+  Value: GameActionTeleport
   GameActionSettings:
   - id: 0
   ApCost: 1
@@ -75,9 +75,8 @@ MonoBehaviour:
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: fe47497fd9fc5524aa403f58210b8ef1, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: Charge
-  EffectDescription: "Avance rapidement dans une direction en envoyant des d\xE9gats
-    aux \xE9nemis sur le chemin"
+  Name: Blink
+  EffectDescription: "T\xE9l\xE9porte \xE0 une destination"
   SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
@@ -85,7 +84,6 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionDashAttack/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionTeleport/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range: 3
-        Damage: 2
