@@ -18,6 +18,8 @@ public struct EntitySpawnerSetting : IComponentData
     public bool SpawnedRandomly;
 
     public TimeValue SpawnPeriod;
+
+    public bool StartsReady;
 }
 
 public struct EntitySpawnerState : IComponentData

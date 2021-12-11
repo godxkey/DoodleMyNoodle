@@ -77,7 +77,14 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
         {
             currentHealthBar = Instantiate(HealthBarPrefab);
             _healthBarInstances.Add(currentHealthBar);
-            EntitiesHPBar.Add(entity, currentHealthBar);
+            if (EntitiesHPBar.ContainsKey(entity))
+            {
+                EntitiesHPBar[entity] = currentHealthBar;
+            }
+            else
+            {
+                EntitiesHPBar.Add(entity, currentHealthBar);
+            }
         }
         else
         {

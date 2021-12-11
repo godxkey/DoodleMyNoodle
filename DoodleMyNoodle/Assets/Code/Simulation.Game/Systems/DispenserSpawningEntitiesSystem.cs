@@ -22,7 +22,7 @@ public class DispenserSpawningEntitiesSystem : SimSystemBase
 
                     if (!(entitySpawnerSetting.SpawnPeriod.Type == TimeValue.ValueType.Seconds))
                     {
-                        if (HasSingleton<NewTurnEventData>())
+                        if (HasSingleton<NewTurnEventData>() || (entitySpawnerSetting.StartsReady && entitySpawnerState.TotalAmountSpawned == 0))
                         {
                             if (entitySpawnerSetting.SpawnPeriod.Type == TimeValue.ValueType.Rounds && GetSingleton<TurnCurrentTeamSingletonComponent>().Value == 0)
                             {
@@ -49,7 +49,8 @@ public class DispenserSpawningEntitiesSystem : SimSystemBase
                             }
                         }
                     }
-                    else if((Time.ElapsedTime - entitySpawnerState.TrackedTime.Value) >= entitySpawnerSetting.SpawnPeriod.Value)
+                    else if(((Time.ElapsedTime - entitySpawnerState.TrackedTime.Value) >= entitySpawnerSetting.SpawnPeriod.Value) 
+                            || (entitySpawnerSetting.StartsReady && entitySpawnerState.TotalAmountSpawned == 0))
                     {
                         entitySpawnerState.TrackedTime.Value = Time.ElapsedTime;
 
@@ -62,19 +63,37 @@ public class DispenserSpawningEntitiesSystem : SimSystemBase
 
     private void SpawnEntities(NativeArray<EntitiesToSpawn> entitiesToSpawnList, in EntitySpawnerSetting entitySpawnerSetting, ref EntitySpawnerState entitySpawnerState, in FixTranslation translation)
     {
+        if(entitiesToSpawnList.Length < 1)
+        {
+            return;
+        }
+
         var random = World.Random();
 
         for (int i = 0; i < entitySpawnerSetting.AmountSpawned; i++)
         {
-            entitySpawnerState.IndexToSpawn = entitySpawnerSetting.SpawnedRandomly ? random.NextInt(0, entitiesToSpawnList.Length - 1) : entitySpawnerState.IndexToSpawn++;
+            // if random, select a random index
+            if (entitySpawnerSetting.SpawnedRandomly)
+            {
+                entitySpawnerState.IndexToSpawn = random.NextInt(0, entitiesToSpawnList.Length - 1);
+            }
+
+            // make sure we don't overflow
             if (entitySpawnerState.IndexToSpawn >= entitiesToSpawnList.Length)
             {
                 entitySpawnerState.IndexToSpawn = 0;
             }
 
+            // track total entities spawned
             entitySpawnerState.TotalAmountSpawned++;
 
             Entity newEntity = EntityManager.Instantiate(entitiesToSpawnList[entitySpawnerState.IndexToSpawn]);
+
+            // if not random, increment the index for the next time we spawn
+            if (!entitySpawnerSetting.SpawnedRandomly)
+            {
+                entitySpawnerState.IndexToSpawn++;
+            }
 
             if (EntityManager.TryGetComponentData(newEntity, out FixTranslation fixTranslation))
             {

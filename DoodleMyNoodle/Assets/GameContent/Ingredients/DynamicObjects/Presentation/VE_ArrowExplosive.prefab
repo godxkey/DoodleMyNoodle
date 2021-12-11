@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 1375336766265012635}
   - component: {fileID: 697645371569830214}
   m_Layer: 0
-  m_Name: VE_ExplosiveArrow
+  m_Name: VE_ArrowExplosive
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

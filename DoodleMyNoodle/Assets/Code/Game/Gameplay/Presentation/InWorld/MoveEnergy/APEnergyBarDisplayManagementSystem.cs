@@ -93,7 +93,14 @@ public class APEnergyBarDisplayManagementSystem : GamePresentationSystem<APEnerg
         {
             currentMoveEnergyBar = Instantiate(MoveEnergyDisplayPrefab);
             _moveEnergyInstances.Add(currentMoveEnergyBar);
-            EntitiesEnergyBar.Add(entity, currentMoveEnergyBar);
+            if (EntitiesEnergyBar.ContainsKey(entity))
+            {
+                EntitiesEnergyBar[entity] = currentMoveEnergyBar;
+            }
+            else
+            {
+                EntitiesEnergyBar.Add(entity, currentMoveEnergyBar);
+            }
         }
         else
         {

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4494165586276411911}
   - component: {fileID: 4052962784022251078}
   m_Layer: 10
-  m_Name: SE_ExplosiveArrow
+  m_Name: SE_ArrowExplosive
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
