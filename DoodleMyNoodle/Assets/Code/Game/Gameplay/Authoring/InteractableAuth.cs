@@ -2,7 +2,7 @@ using Unity.Entities;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class InteractableTagAuth : MonoBehaviour, IConvertGameObjectToEntity
+public class InteractableAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public bool InteractableOnStart = true;
 

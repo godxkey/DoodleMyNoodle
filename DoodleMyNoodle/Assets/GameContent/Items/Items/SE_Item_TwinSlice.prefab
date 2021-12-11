@@ -87,4 +87,4 @@ MonoBehaviour:
       type: {class: GameActionComboAttack/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range: 1
-        Damage: 1
+        Damage: 2

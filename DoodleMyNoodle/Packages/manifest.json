@@ -3,6 +3,7 @@
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.2d.tilemap.extras": "https://github.com/Unity-Technologies/2d-extras.git",
+    "com.unity.animation": "0.9.0-preview.6",
     "com.unity.dots.editor": "0.12.0-preview.6",
     "com.unity.ide.visualstudio": "2.0.12",
     "com.unity.mathematics": "1.2.1",

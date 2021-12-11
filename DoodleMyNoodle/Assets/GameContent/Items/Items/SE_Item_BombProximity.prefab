@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: 8991086757953652690}
   m_Layer: 0
-  m_Name: SE_Item_BombC4
+  m_Name: SE_Item_BombProximity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,8 +75,8 @@ MonoBehaviour:
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 7b946e803c30fdd43898faa8d3d77e2f, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: C4
-  EffectDescription: "Bomb qui peut \xEAtre d\xE9ton\xE9 manuellement"
+  Name: "Mine de proximit\xE9"
+  EffectDescription: "Bombe qui d\xE9tonne lorsque quelqu'un passe pr\xE8s."
   SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 0}

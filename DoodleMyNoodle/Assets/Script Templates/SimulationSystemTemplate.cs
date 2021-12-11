@@ -14,9 +14,11 @@ public class SimulationSystemTemplate : ScriptTemplate
 
         return
 $@"using Unity.Entities;
+using Unity.Collections;
 using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
+using CCC.Fix2D;
 
 public class #SCRIPTNAME# : {typeof(SimSystemBase).GetPrettyName()}
 {{

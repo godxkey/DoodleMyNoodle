@@ -1,0 +1,201 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4083883174317194165
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4083883174317194164}
+  - component: {fileID: 4083883174317194162}
+  - component: {fileID: 4083883174317194163}
+  m_Layer: 0
+  m_Name: SE_DynamicChestFormula_Common
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4083883174317194164
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083883174317194165}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4083883174317194162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083883174317194165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 0
+  _guid: b9de6062b84911b4e8e7993c723910de
+  _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
+  _viewTechType: 0
+  _hasTransform: 0
+  _showGhost: 1
+--- !u!114 &4083883174317194163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083883174317194165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a3c77bff7a40934484e615fbbf3321e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _items:
+  - Item: {fileID: 6323485160588907889, guid: 5ec303c45ea534846b16e38711b73617, type: 3}
+    Weight: 3
+    BudgetCost: 2
+  - Item: {fileID: 8673805079156357965, guid: b85d6eb65d359cd47827a1c91a763820, type: 3}
+    Weight: 1
+    BudgetCost: 4
+  - Item: {fileID: 8779506525494639397, guid: 8fe9d6af4ffbc144ba24ba838680b00b, type: 3}
+    Weight: 1
+    BudgetCost: 2
+  - Item: {fileID: 4040381316262050192, guid: 25b4592d1e8860c43865beccfc29b2a6, type: 3}
+    Weight: 1
+    BudgetCost: 1
+  - Item: {fileID: 5122401263033079630, guid: 605fd0327d22176429bfc3496ef54d7d, type: 3}
+    Weight: 1
+    BudgetCost: 3
+  - Item: {fileID: 6160366907501951724, guid: dd26b8361948f49449226bab932fbc08, type: 3}
+    Weight: 1
+    BudgetCost: 1
+  - Item: {fileID: 5859577480117766646, guid: c5b53218d66306c46b57cb414bbd1b56, type: 3}
+    Weight: 1
+    BudgetCost: 4
+  - Item: {fileID: 665432544149252257, guid: 9baf798de8cb6b44b9a3d1ca5632da38, type: 3}
+    Weight: 1
+    BudgetCost: 4
+  - Item: {fileID: 5859577480117766646, guid: ef9bcc18dbbb4fd4ea03fbb04646d3f7, type: 3}
+    Weight: 0.5
+    BudgetCost: 2
+  - Item: {fileID: 6717802818722842865, guid: fafa3a940539e1b4daa812c324fc7bde, type: 3}
+    Weight: 0
+    BudgetCost: 2
+  - Item: {fileID: 9055538026326287129, guid: 8f11772ddaf2e2e448005076f4e04426, type: 3}
+    Weight: 1
+    BudgetCost: 1.5
+  - Item: {fileID: 2954623793759836719, guid: 6e7aacf3548575a419264c801ec2a0d9, type: 3}
+    Weight: 1
+    BudgetCost: 3
+  - Item: {fileID: 8549762061682411268, guid: 7b860ab90f956904984f188e0110cc2c, type: 3}
+    Weight: 1
+    BudgetCost: 3
+  - Item: {fileID: 5122401263033079630, guid: 06f6581d0961fa24dbd24c6841b5ea34, type: 3}
+    Weight: 1
+    BudgetCost: 1
+  - Item: {fileID: 2278408862114426295, guid: 75bc2c27660403642a7b13386ca7fb87, type: 3}
+    Weight: 3
+    BudgetCost: 1
+  - Item: {fileID: 1448392492409014109, guid: 166d88cc590b26d488bbf68259324b1c, type: 3}
+    Weight: 5
+    BudgetCost: 1
+  - Item: {fileID: 397203773403769247, guid: 1d11dde6827ac3a4bb0dfb3df87d2d6f, type: 3}
+    Weight: 0
+    BudgetCost: 1
+  - Item: {fileID: 5028192254636137201, guid: 54c4e0f268116844d846ef8cac13da7f, type: 3}
+    Weight: 0
+    BudgetCost: 1
+  - Item: {fileID: 8937879994819369566, guid: aa0538731df87df429b0362fd7f15397, type: 3}
+    Weight: 1
+    BudgetCost: 2
+  - Item: {fileID: 3648472793949699111, guid: 8fe72c48eacd0c642818eff638603c62, type: 3}
+    Weight: 3
+    BudgetCost: 1
+  - Item: {fileID: 1874751282803664710, guid: 0823a845c59badc40bf5ddb11e039af6, type: 3}
+    Weight: 2
+    BudgetCost: 2
+  - Item: {fileID: 2014573768698307162, guid: 3fa80de446fd0ed409cdb9374b921d40, type: 3}
+    Weight: 2
+    BudgetCost: 2
+  _baseBudget: 2
+  _teamHealthRatio:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 2
+      inSlope: -1.3333334
+      outSlope: -1.3333334
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.75
+      value: 1
+      inSlope: -1.6666667
+      outSlope: -1.6666667
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.5
+      inSlope: -2
+      outSlope: -2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _consumablesPerPawn:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 2
+      inSlope: -0.4
+      outSlope: -0.4
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 2.5
+      value: 1
+      inSlope: -0.3
+      outSlope: -0.3
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 5
+      value: 0.5
+      inSlope: -0.2
+      outSlope: -0.2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _minimumBudget: 1
+  _maximumBudget: 10

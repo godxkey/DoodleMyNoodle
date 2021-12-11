@@ -76,7 +76,7 @@ MonoBehaviour:
   Icon: {fileID: 21300000, guid: 541197b18e76b424996d060d64a689d6, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: "Enrag\xE9"
-  EffectDescription: Consomme de la vie pour donner des actions
+  EffectDescription: "Consomme 1 pt de vie pour redonner de l'\xE9nergie"
   SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 0}
@@ -86,4 +86,4 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionEnrage/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        HPCost: 2
+        HPCost: 1

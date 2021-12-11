@@ -1,5 +1,6 @@
 {
     "name": "Simulation.Game",
+    "rootNamespace": "",
     "references": [
         "GUID:c886ee09f9545f74f85dd4e7b076b17c",
         "GUID:001022908a4be7c4ea043dbca2a35da9",
@@ -7,6 +8,7 @@
         "GUID:737e1c04c3dd3e046bedb5be72aec1d7",
         "GUID:389edd8433a26384eb01215cc0adad2a",
         "GUID:a695b5a3e8c39e14fb9d86d3205fadf9",
+        "GUID:39174d49d2befe84d9c54bf8b8d32755",
         "GUID:2665a8d13d1b3f18800f46e256720795",
         "GUID:e0cd26848372d4e5c891c569017e11f1",
         "GUID:734d92eba21c94caba915361bd5ac177",

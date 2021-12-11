@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 30145307963041147}
   - component: {fileID: -1025191853641028646}
   - component: {fileID: 4521539991532681263}
+  - component: {fileID: 6784288066090482330}
   m_Layer: 0
   m_Name: SE_Chest
   m_TagString: Untagged
@@ -46,13 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: d0421163de1d6aa4289ff31f953949e7
+  _guid: 6d898955b4529c84bbb27b28aafc35fa
   _bindedViewPrefab: {fileID: 6426749434754870349, guid: ee20feb0f1e212946b0400a400b75c92,
     type: 3}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 1
+  _showGhost: 0
 --- !u!114 &-1025191853641028646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,8 +66,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 453c4b2c151f39243b7228f0ce379c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Capacity: 10000
-  InitialItems: []
   StartingItems: []
 --- !u!114 &4521539991532681263
 MonoBehaviour:
@@ -80,3 +79,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13492315c65cf204abfe5a85eeb96527, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InteractableOnStart: 1
+--- !u!114 &6784288066090482330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30145307963041151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 934bc610bbe4546458d2d863cd994c4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _formula: {fileID: 0}

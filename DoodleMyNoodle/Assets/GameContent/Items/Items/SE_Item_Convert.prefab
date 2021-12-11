@@ -76,7 +76,7 @@ MonoBehaviour:
   Icon: {fileID: 21300000, guid: b54f62f6c81d0834384a537b9ca18c2c, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Conversion
-  EffectDescription: "Change la cible d'\xE9quipe."
+  EffectDescription: "Change l'all\xE9gance de la cible pendant 2 tour."
   SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 0}

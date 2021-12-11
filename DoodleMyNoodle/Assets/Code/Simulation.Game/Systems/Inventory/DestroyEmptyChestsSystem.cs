@@ -4,7 +4,7 @@ using CCC.Fix2D;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class DestroyEmptyInteractableInventorySystem : SimSystemBase
+public class DestroyEmptyChestsSystem : SimSystemBase
 {
     EndSimulationEntityCommandBufferSystem _ecb;
 
@@ -20,6 +20,7 @@ public class DestroyEmptyInteractableInventorySystem : SimSystemBase
         Entities
             .WithNone<Controllable>()
             .WithNone<StartingInventoryItem>()
+            .WithNone<DynamicChestFormulaRef>()
             .ForEach((Entity chest, DynamicBuffer<InventoryItemReference> inventory) =>
             {
                 if (inventory.Length == 0)

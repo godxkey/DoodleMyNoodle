@@ -18,7 +18,7 @@ public class InitializeGameContantsSystem : SimSystemBase
 
 public static class SimulationGameConstants
 {
-
+    public static readonly fix DynamicChestTriggerRadius = (fix)2.5f;
     public static readonly fix2 Gravity = new fix2(0, (fix)(-7.45f));
     public static readonly fix InteractibleMaxDistanceManhattan = (fix)1.5;
     public static readonly fix AIShootSpeedIfNoGravity = (fix)3f;
