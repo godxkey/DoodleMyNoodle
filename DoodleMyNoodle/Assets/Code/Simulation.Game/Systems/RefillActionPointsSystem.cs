@@ -6,37 +6,28 @@ using UnityEngine;
 [UpdateInGroup(typeof(PreAISystemGroup))]
 public class RefillActionPointsSystem : SimSystemBase
 {
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-
-        RequireSingletonForUpdate<ActionRefillAmount>();
-    }
-
     protected override void OnUpdate()
     {
         if (HasSingleton<NewTurnEventData>())
         {
             int currentTeam = CommonReads.GetTurnTeam(Accessor);
-            int actionPointsToAdd = GetSingleton<ActionRefillAmount>().Value;
 
             Entities
-                .ForEach((Entity pawn, ref ActionPoints actionPoints) =>
+                .ForEach((Entity pawn, ref ActionPoints actionPoints, in Controllable controllable) =>
                 {
-                    Entity pawnController = CommonReads.GetPawnController(Accessor, pawn);
-                    if (pawnController != Entity.Null)
+                    Entity pawnController = controllable.CurrentController;
+                    if (HasComponent<Team>(pawnController))
                     {
-                        Team pawnTeam = EntityManager.GetComponentData<Team>(pawnController);
+                        Team pawnTeam = GetComponent<Team>(pawnController);
 
                         if (pawnTeam.Value != currentTeam)
                         {
                             return;
                         }
 
-                        CommonWrites.ModifyStatFix<ActionPoints>(Accessor, pawn, actionPointsToAdd);
+                        actionPoints = GetComponent<MaximumFix<ActionPoints>>(pawn).Value;
                     }
                 })
-                .WithoutBurst()
                 .Run();
         }
     }
