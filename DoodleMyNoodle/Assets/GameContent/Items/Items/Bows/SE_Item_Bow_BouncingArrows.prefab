@@ -73,7 +73,7 @@ MonoBehaviour:
     RawValue: 4294967296
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
-  Icon: {fileID: 21300000, guid: c1b5006aa2c881a4b8eb04a8ed1435d5, type: 3}
+  Icon: {fileID: 21300000, guid: e7130f8f2fe65ed4785699471c18e2e9, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: "Arc \xE0 Fl\xE8che Bondissante"
   EffectDescription: "Lance une fl\xE8che qui rebondis"

@@ -130,6 +130,15 @@ MonoBehaviour:
   - Item: {fileID: 2014573768698307162, guid: 3fa80de446fd0ed409cdb9374b921d40, type: 3}
     Weight: 2
     BudgetCost: 2
+  - Item: {fileID: 6323485160588907889, guid: b855293bb314a29499d4138e28f8204a, type: 3}
+    Weight: 3
+    BudgetCost: 2
+  - Item: {fileID: 6323485160588907889, guid: e546401deb4f4124786a774cc024eb80, type: 3}
+    Weight: 3
+    BudgetCost: 2
+  - Item: {fileID: 8991086757953652690, guid: b70e3528d4dbd394fae41702e8888d0e, type: 3}
+    Weight: 2
+    BudgetCost: 2
   _baseBudget: 2
   _teamHealthRatio:
     serializedVersion: 2

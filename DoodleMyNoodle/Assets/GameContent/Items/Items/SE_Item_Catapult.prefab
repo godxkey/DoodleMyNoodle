@@ -73,8 +73,8 @@ MonoBehaviour:
     RawValue: 0
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
-  Icon: {fileID: 21300000, guid: d65e97b28ca89744a989d602fbfa416c, type: 3}
-  IconTint: {r: 1, g: 0.51359504, b: 0, a: 1}
+  Icon: {fileID: 21300000, guid: 4ed364090bd6fe54690f7c0c5a80064d, type: 3}
+  IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Catapulte
   EffectDescription: "Lance une entit\xE9 \xE0 proximiter"
   SfxOnUse: {fileID: 0}

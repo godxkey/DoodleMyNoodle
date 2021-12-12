@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionMode: 0
   _guid: f66bbbab9d9b5d047b12619d1133adc9
-  _bindedViewPrefab: {fileID: 7824342658589397423, guid: a9ff669ed57d5a54e9773d694d2607a0,
+  _bindedViewPrefab: {fileID: 7824342658589397423, guid: 5a52176b63184524eadd7f8786391fc5,
     type: 3}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
