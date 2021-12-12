@@ -1,7 +1,9 @@
 ﻿using CCC.Fix2D;
+using System;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using UnityEngineX;
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class UpdateNavAgentFootingSystem : SimSystemBase
@@ -73,12 +75,13 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
         // When pawn is in the air, reduce friction so we don't break on walls
         Entities
             .WithReadOnly(tileWorld)
+            .WithoutBurst()
             .WithChangeFilter<NavAgentFootingState>()
-            .ForEach((ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in NonAirControlFriction nonAirControlFriction) =>
+            .ForEach((ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in NavAgentColliderRefs colliderRefs) =>
             {
-                var material = collider.Collider.Value.Material;
-                material.Friction = footing.Value == NavAgentFooting.AirControl ? 0 : (float)nonAirControlFriction.Value;
-                collider.Collider.Value.Material = material;
+                collider.Collider = footing.Value == NavAgentFooting.AirControl
+                    ? colliderRefs.AirControlCollider
+                    : colliderRefs.NormalCollider;
             }).Run();
     }
 }

@@ -5,6 +5,7 @@ using System;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
+using Collider = CCC.Fix2D.Collider;
 
 [DisallowMultipleComponent]
 public class NavAgentAuth : MonoBehaviour, IConvertGameObjectToEntity
@@ -22,11 +23,25 @@ public class NavAgentAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponentData(entity, new MoveInput { Value = fix2.zero });
         dstManager.AddComponentData(entity, new AirControl { Value = AirControl });
 
+
         float normalFriction = 0.4f;
         var bodyAuth = GetComponent<PhysicsBodyAuth>();
-        if (bodyAuth?.Material != null)
+        if (bodyAuth != null)
         {
-            normalFriction = bodyAuth.Material.Friction;
+
+            var normalCollider = dstManager.GetComponentData<PhysicsColliderBlob>(entity).Collider;
+            
+            // duplicate collider, but with alternate fricton
+            var airControllerCollider = BlobAssetReference<Collider>.Create(normalCollider.Value);
+            var mat = airControllerCollider.Value.Material;
+            mat.Friction = 0;
+            airControllerCollider.Value.Material = mat;
+
+            dstManager.AddComponentData(entity, new NavAgentColliderRefs()
+            {
+                NormalCollider = normalCollider,
+                AirControlCollider = airControllerCollider,
+            });
         }
         dstManager.AddComponentData(entity, new NonAirControlFriction { Value = (fix)normalFriction });
     }
