@@ -67,7 +67,7 @@ MonoBehaviour:
   GameActionSettings:
   - id: 0
   ApCost: 2
-  IsStackable: 0
+  IsStackable: 1
   CooldownType: 0
   CooldownDuration:
     RawValue: 0
