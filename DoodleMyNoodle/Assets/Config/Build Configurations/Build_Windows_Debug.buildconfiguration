@@ -8,6 +8,10 @@
             "$version": 1,
             "Platform": "win",
             "Configuration": 1
+        },
+        {
+            "$type": "Unity.Build.Common.OutputBuildDirectory, Unity.Build",
+            "OutputDirectory": "../Builds/Windows_Debug"
         }
     ]
 }

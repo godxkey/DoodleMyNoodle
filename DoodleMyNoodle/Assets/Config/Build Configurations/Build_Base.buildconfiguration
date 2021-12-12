@@ -101,6 +101,10 @@
             "ProductName": "Doodle My Noodle",
             "CompanyName": "No Deadlines",
             "Version": "1.0.0"
+        },
+        {
+            "$type": "Unity.Build.Common.OutputBuildDirectory, Unity.Build",
+            "OutputDirectory": "../Builds/"
         }
     ]
 }
