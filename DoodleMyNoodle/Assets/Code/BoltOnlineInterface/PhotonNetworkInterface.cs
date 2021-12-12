@@ -347,7 +347,7 @@ namespace Internals.PhotonNetworkInterface
         {
             Log.Info(LogChannel, $"[PhotonNetworkInterface] SessionConnectFailed: session:{session.Id} name:{session.HostName} reason:{errorReason}");
 
-            ConcludeOperationCallback(ref _operationCallbackSessionConnected, false, null);
+            ConcludeOperationCallback(ref _operationCallbackSessionConnected, false, errorReason.ToString());
         }
 
         public void Event_SessionCreatedOrUpdated(UdpSession session)
