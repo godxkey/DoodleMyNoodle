@@ -167,7 +167,7 @@ public class SurveyShootAiming : SurveyBaseController
         Vector3 normalizeShootingVector = (_viewShootingVector);
         normalizeShootingVector.Normalize();
         _weaponPreview.transform.position = transform.position + (normalizeShootingVector * _weaponPreviewDisplacementFactor);
-        _weaponPreview.transform.rotation = Quaternion.Euler(0, 0, math.degrees(mathX.angle2d(_viewShootingVector)) + -45);
+        _weaponPreview.transform.rotation = Quaternion.Euler(0, 0, math.degrees(mathX.angle2d(_viewShootingVector)));
     }
 
     private void SetupAimingRotationAnimation()
