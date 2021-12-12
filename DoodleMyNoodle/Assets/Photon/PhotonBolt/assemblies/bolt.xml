@@ -1263,7 +1263,7 @@
             Not really sure why these aren't just pulled from UnityObject when needed?
             </summary>
         </member>
-        <member name="M:Photon.Bolt.Entity.ExecuteCommandsFromRemote(Photon.Bolt.Command@)">
+        <member name="M:Photon.Bolt.Entity.ExecuteCommandsFromRemote(Photon.Bolt.Command@,Photon.Bolt.Collections.BoltIterator{Photon.Bolt.Command}@)">
             <summary>
             This runs the commands received from the Controller of this entity.
             </summary>

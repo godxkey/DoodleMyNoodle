@@ -26,7 +26,7 @@
             receiving/sending/treating messages using the Photon services.
             </summary>
         </member>
-        <member name="M:UdpKit.Platform.Photon.PhotonPoller.CreatePoller(UdpKit.Platform.PhotonPlatformConfig,System.Boolean)">
+        <member name="M:UdpKit.Platform.Photon.PhotonPoller.CreatePoller(UdpKit.Platform.PhotonPlatform,UdpKit.Platform.PhotonPlatformConfig,System.Boolean)">
             <summary>
             Creates the Photon Poller instance. This will populate the internal instance with one of:
             (i) If there is no instances of PhotonPoller in the scene, it will create a new one.
@@ -41,6 +41,7 @@
             }
             </code>
             </example>
+            <param name="photonPlatform">Reference to Photon Platform</param>
             <param name="config">Configuration used to setup the PhotonPoller instance.</param>
             <param name="force">If set to <c>true</c> will destroy the current main instance, in order to create a new one.</param>
         </member>
@@ -310,6 +311,12 @@
         <member name="P:UdpKit.Platform.PhotonPlatformConfig.MaxConnections">
             <summary>
             Gets the max number of connections acceptable in the room.
+            </summary>
+        </member>
+        <member name="P:UdpKit.Platform.PhotonPlatformConfig.CustomSTUNServer">
+            <summary>
+            Set a custom STUN Server to be used on the punch process.
+            Must be described as "DNS-resolvable-name:port", for example: "stun.l.google.com:19302"
             </summary>
         </member>
         <member name="F:UdpKit.Platform.PhotonPlatformConfig.BackgroundConnectionTimeout">

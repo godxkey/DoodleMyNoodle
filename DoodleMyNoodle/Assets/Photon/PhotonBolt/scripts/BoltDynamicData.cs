@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Photon.Bolt.Collections;
 using Photon.Bolt.Internal;
@@ -14,32 +13,6 @@ namespace Photon.Bolt
 	[Preserve]
 	public static class BoltDynamicData
 	{
-		private static Dictionary<string, Assembly> _assemblies;
-
-		private static List<STuple<BoltGlobalBehaviourAttribute, Type>> _globalBehaviours;
-
-		private static Dictionary<string, Assembly> GetAssemblies
-		{
-			get
-			{
-				if (_assemblies == null)
-				{
-					_assemblies = new Dictionary<string, Assembly>();
-
-					foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
-					{
-						var name = asm.GetName().Name;
-						if (_assemblies.ContainsKey(name) == false)
-						{
-							_assemblies.Add(name, asm);
-						}
-					}
-				}
-
-				return _assemblies;
-			}
-		}
-
 		public static void Setup()
 		{
 			BoltNetworkInternal.DebugDrawer = new UnityDebugDrawer();
@@ -101,43 +74,47 @@ namespace Photon.Bolt
 
 		private static List<STuple<BoltGlobalBehaviourAttribute, Type>> GetGlobalBehaviourTypes()
 		{
-			if (_globalBehaviours == null)
-			{
-				_globalBehaviours = new List<STuple<BoltGlobalBehaviourAttribute, Type>>();
-			}
-			else
-			{
-				_globalBehaviours.Clear();
-			}
+			var globalBehaviours = new List<STuple<BoltGlobalBehaviourAttribute, Type>>();
+			var asmIter = BoltAssemblies.AllAssemblies;
+			var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
 
-			try
+			while (asmIter.MoveNext())
 			{
-				var asmIter = BoltAssemblies.AllAssemblies;
-				while (asmIter.MoveNext())
+				try
 				{
-					if (GetAssemblies.TryGetValue(asmIter.Current, out var asm))
+					// Load Assembly
+					var asm = Array.Find(assemblyList, (assembly) => assembly.GetName().Name.Equals(asmIter.Current));
+
+					// Skip of not found
+					if (asm == null) { continue; }
+
+					foreach (Type type in asm.GetTypes())
 					{
-						foreach (Type type in asm.GetTypes())
+						try
 						{
 							if (typeof(MonoBehaviour).IsAssignableFrom(type))
 							{
-								var attrs = (BoltGlobalBehaviourAttribute[])type.GetCustomAttributes(typeof(BoltGlobalBehaviourAttribute), false);
+								var globalAttr = type.GetCustomAttribute<BoltGlobalBehaviourAttribute>(false);
 
-								if (attrs.Length == 1)
+								if (globalAttr != null)
 								{
-									_globalBehaviours.Add(new STuple<BoltGlobalBehaviourAttribute, Type>(attrs[0], type));
+									globalBehaviours.Add(new STuple<BoltGlobalBehaviourAttribute, Type>(globalAttr, type));
 								}
 							}
 						}
+						catch (Exception e2)
+						{
+							BoltLog.Warn(e2);
+						}
 					}
 				}
-			}
-			catch (Exception e)
-			{
-				BoltLog.Exception(e);
+				catch (Exception e)
+				{
+					BoltLog.Warn(e);
+				}
 			}
 
-			return _globalBehaviours;
+			return globalBehaviours;
 		}
 	}
 }
