@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8841453195666950856}
   - component: {fileID: 3318497168886264485}
   - component: {fileID: -3613668190769336570}
-  - component: {fileID: 4428753843697105552}
+  - component: {fileID: -5138570210582826506}
   m_Layer: 10
-  m_Name: SE_Arrow
+  m_Name: SE_BouncingArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 4899e73436da28d43ba3448231f4f76d
+  _guid: f66bbbab9d9b5d047b12619d1133adc9
   _bindedViewPrefab: {fileID: 7824342658589397423, guid: a9ff669ed57d5a54e9773d694d2607a0,
     type: 3}
   _bindedViewTile: {fileID: 0}
@@ -96,7 +96,7 @@ MonoBehaviour:
     Value:
       RawValue: 4294967296
   Damage: 1
---- !u!114 &4428753843697105552
+--- !u!114 &-5138570210582826506
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,6 +105,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2385346486794747607}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 781bb1a61d29781459cc5e4241645975, type: 3}
+  m_Script: {fileID: 11500000, guid: f30f870fbea4e6247a6d38412c96d63f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ReboundMax: 3
