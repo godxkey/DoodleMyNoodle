@@ -212,6 +212,13 @@ public class FillDynamicChestsSystem : SimSystemBase
 
         if (s_logDynamicChests)
         {
+            string chestName(Entity e)
+#if UNITY_EDITOR
+                => EntityManager.GetName(e);
+#else
+                => e.ToString();
+#endif
+
             Log.Info($"Dynamic Chest --  " +
                 $"BUDGET:{startingBudget}" +
                 $"  =  " +
@@ -227,7 +234,7 @@ public class FillDynamicChestsSystem : SimSystemBase
                 $",  " +
                 $"AverageConsumablesPerPlayer:{worldContext.AverageConsumablesPerPlayer}" +
                 $")\n\n" +
-                $"ITEMS: {string.Join(", ", pickedItems.ToArray().Select(p => $"{EntityManager.GetName(p.item)} x {p.stacks}"))}");
+                $"ITEMS: {string.Join(", ", pickedItems.ToArray().Select(p => $"{chestName(p.item)} x {p.stacks}"))}");
         }
 
         // Give items
