@@ -88,6 +88,6 @@ MonoBehaviour:
       data:
         Radius:
           RawValue: 3221225472
-        Damage: 4
+        Damage: 2
         Range:
-          RawValue: 8589934592
+          RawValue: 25769803776

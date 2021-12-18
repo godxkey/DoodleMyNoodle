@@ -21,7 +21,7 @@ public class HandleMoveInputSystem : SimSystemBase
         fix deltaTime = Time.DeltaTime;
 
         // Influence velocity from moveInput when pawn is on ground or ladder
-        Entities.ForEach((ref PhysicsVelocity velocity, ref ActionPoints ap, in MoveInput moveInputComp, in MoveSpeed moveSpeed, in NavAgentFootingState footing) =>
+        Entities.ForEach((ref PhysicsVelocity velocity, ref ActionPoints ap, in MoveInput moveInputComp, in MoveSpeed moveSpeed, in NavAgentFootingState footing, in MoveCost moveCost) =>
         {
 
             if (footing.Value == NavAgentFooting.Ground || footing.Value == NavAgentFooting.Ladder)
@@ -44,7 +44,7 @@ public class HandleMoveInputSystem : SimSystemBase
                 // consume energy
                 if (moveInput.x != 0 || moveInput.y != 0)
                 {
-                    ap.Value = max(0, ap.Value - deltaTime);
+                    ap.Value = max(0, ap.Value - (deltaTime * moveCost.Value));
                 }
 
                 fix2 newVelocity = velocity.Linear;

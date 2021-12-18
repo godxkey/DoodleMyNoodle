@@ -32,6 +32,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     [Header("Limits")]
     public float MinZoom = 1;
     public float MaxZoom;
+    public float SurveyZoom = 5;
     public float BeginZoom = 2;
 
     private Transform _transform;
@@ -269,6 +270,11 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     public void SetMaxZoom()
     {
         CamSize = MaxZoom;
+    }
+
+    public void SetSurveyZoom()
+    {
+        CamSize = SurveyZoom;
     }
 
     public void CenterOnPawn()

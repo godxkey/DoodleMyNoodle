@@ -67,7 +67,7 @@ public class SurveyAngryBirds : SurveyBaseController
             }
         }
 
-        CameraMovementController.Instance.SetMaxZoom();
+        CameraMovementController.Instance.SetSurveyZoom();
         CameraMovementController.Instance.CenterOnPawn();
         CameraMovementController.Instance.ToggleCameraMovement();
 

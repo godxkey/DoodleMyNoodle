@@ -72,6 +72,8 @@ public abstract class SurveyBaseController : MonoBehaviour
         _cancelCallback = cancelCallback;
         _result.Clear();
 
+        ShowCostPreview();
+
         _currentLoop = StartCoroutine(SurveyRoutine(context, _result, Complete, Cancel));
     }
 
@@ -93,6 +95,7 @@ public abstract class SurveyBaseController : MonoBehaviour
         Running = false;
 
         InfoTextDisplay.Instance.ForceHideText();
+        HideCostPreview();
 
         OnEndSurvey(completed);
 
@@ -118,4 +121,23 @@ public abstract class SurveyBaseController : MonoBehaviour
     protected abstract IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> currentData, Action complete, Action cancel);
     protected abstract void OnEndSurvey(bool wasCompleted);
     public virtual GameAction.ParameterDescription[] CreateDebugQuery() => new GameAction.ParameterDescription[0] { };
+
+    private void ShowCostPreview()
+    {
+        if (SimWorld.TryGetComponent(CurrentContext.Instigator, out ActionPoints ap))
+        {
+            if (SimWorld.TryGetComponent(CurrentContext.Item, out GameActionSettingAPCost apCost))
+            {
+                APEnergyBarDisplayManagementSystem.Instance.ShowCostPreview(CurrentContext.Instigator, (float)ap.Value - apCost.Value);
+            } 
+        }
+    }
+
+    private void HideCostPreview()
+    {
+        if (SimWorld.HasComponent<ActionPoints>(CurrentContext.Instigator))
+        {
+            APEnergyBarDisplayManagementSystem.Instance.HideCostPreview(CurrentContext.Instigator);
+        }
+    }
 }

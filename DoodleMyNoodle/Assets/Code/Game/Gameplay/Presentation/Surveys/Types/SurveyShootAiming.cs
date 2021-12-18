@@ -54,7 +54,7 @@ public class SurveyShootAiming : SurveyBaseController
     {
         //Setup
         _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
-        CameraMovementController.Instance.SetMaxZoom();
+        CameraMovementController.Instance.SetSurveyZoom();
         CameraMovementController.Instance.CenterOnPawn();
         CameraMovementController.Instance.ToggleCameraMovement();
 
@@ -105,6 +105,8 @@ public class SurveyShootAiming : SurveyBaseController
 
             yield return null;
         }
+
+        CameraMovementController.Instance.ToggleCameraMovement();
 
         Vector2 _finalVector = ViewToSimVector((_line.position - transform.position) * 2);
         result.Add(new GameActionParameterVector.Data((fix2)_finalVector));
