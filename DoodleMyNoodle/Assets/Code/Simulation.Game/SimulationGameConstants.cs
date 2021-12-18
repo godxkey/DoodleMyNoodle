@@ -29,6 +29,7 @@ public static class SimulationGameConstants
     public static readonly fix AgentRepathCooldown = (fix)1; // repath every 1s
     public static readonly fix AIPauseDurationAfterShoot = (fix)2;
     public static readonly fix AIGrenadierShootDistanceRatio = (fix)0.6; // attemps to shoot at 60% of the distance to target (to account for bomb bounces)
+    public static readonly fix AIThinkGlobalCooldown = (fix)0.5;
 
     private static bool s_init = false;
 
