@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using static fixMath;
@@ -30,13 +31,17 @@ public class UpdateItemCooldownSystem : SimSystemBase
 
         if (HasSingleton<NewTurnEventData>())
         {
+            NativeList<InventoryItemReference> inventoryCopy = new NativeList<InventoryItemReference>(Allocator.Temp);
+
             Team currentTeam = CommonReads.GetTurnTeam(Accessor);
             Entities
                .ForEach((Entity pawnController, ref ControlledEntity pawn, in Team team) =>
                {
                    if (team == currentTeam && EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
                    {
-                       foreach (InventoryItemReference item in inventory)
+                       inventoryCopy.CopyFrom(inventory.AsNativeArray());
+
+                       foreach (InventoryItemReference item in inventoryCopy)
                        {
                            if (TryGetComponent(item.ItemEntity, out ItemCooldownTurnCounter itemTurnCounter))
                            {
