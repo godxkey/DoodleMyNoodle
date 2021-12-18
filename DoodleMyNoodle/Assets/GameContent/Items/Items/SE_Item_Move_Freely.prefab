@@ -67,9 +67,9 @@ MonoBehaviour:
   GameActionSettings: []
   ApCost: 1
   IsStackable: 0
-  CooldownType: 0
+  CooldownType: 2
   CooldownDuration:
-    RawValue: 0
+    RawValue: 4294967296
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 96b3c2698e8fd3f409b90140f23df342, type: 3}

@@ -70,7 +70,7 @@ MonoBehaviour:
   IsStackable: 0
   CooldownType: 0
   CooldownDuration:
-    RawValue: 0
+    RawValue: 4294967296
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: d65e97b28ca89744a989d602fbfa416c, type: 3}

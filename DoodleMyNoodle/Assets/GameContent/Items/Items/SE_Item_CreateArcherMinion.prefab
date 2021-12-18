@@ -68,7 +68,7 @@ MonoBehaviour:
   - id: 0
   ApCost: 1
   IsStackable: 1
-  CooldownType: 0
+  CooldownType: 2
   CooldownDuration:
     RawValue: 0
   HideInInventory: 0
