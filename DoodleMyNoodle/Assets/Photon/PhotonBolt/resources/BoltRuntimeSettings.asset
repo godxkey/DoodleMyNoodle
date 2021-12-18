@@ -21,7 +21,7 @@ MonoBehaviour:
     maxPropertyPriority: 2048
     scopeMode: 0
     logTargets: 3
-    disableDejitterBuffer: 0
+    disableDejitterBuffer: 1
     clientSendRate: 3
     clientDejitterDelay: 6
     clientDejitterDelayMin: 3
@@ -51,11 +51,11 @@ MonoBehaviour:
   debugBuildMode: 1
   debugStartMapName: 
   debugPlayAsServer: 0
-  showDebugInfo: 1
+  showDebugInfo: 0
   overrideTimeScale: 1
   debugEditorMode: 1
-  consoleToggleKey: 9
-  consoleVisibleByDefault: 1
+  consoleToggleKey: 286
+  consoleVisibleByDefault: 0
   compilationWarnLevel: 4
   editorSkin: 4
   scopeModeHideWarningInGui: 0
