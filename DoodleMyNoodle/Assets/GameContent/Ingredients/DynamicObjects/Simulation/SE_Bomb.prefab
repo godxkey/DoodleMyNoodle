@@ -51,8 +51,8 @@ MonoBehaviour:
     type: 3}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
-  _showGhost: 1
   _hasTransform: 1
+  _showGhost: 1
 --- !u!114 &5418758607770475373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,4 +95,4 @@ MonoBehaviour:
   TurnDelay: 2
   Radius:
     RawValue: 6442450944
-  Damage: 4
+  Damage: 2

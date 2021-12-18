@@ -70,7 +70,7 @@ MonoBehaviour:
   CooldownType: 2
   CooldownDuration:
     RawValue: 4294967296
-  HideInInventory: 0
+  HideInInventory: 1
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 96b3c2698e8fd3f409b90140f23df342, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
