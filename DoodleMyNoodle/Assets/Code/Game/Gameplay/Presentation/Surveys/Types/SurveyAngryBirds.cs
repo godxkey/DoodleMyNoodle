@@ -69,7 +69,7 @@ public class SurveyAngryBirds : SurveyBaseController
 
         CameraMovementController.Instance.SetSurveyZoom();
         CameraMovementController.Instance.CenterOnPawn();
-        CameraMovementController.Instance.ToggleCameraMovement();
+        CameraMovementController.Instance.CameraMovementOff();
 
         Update(); // force first update to avoid visual issue on first frame. We should find a more general fix
 
@@ -232,7 +232,7 @@ public class SurveyAngryBirds : SurveyBaseController
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
-        CameraMovementController.Instance.ToggleCameraMovement();
+        CameraMovementController.Instance.CameraMovementOn();
         _dragState = DragState.Idle;
         _trajectoryDisplay.Dispose();
     }

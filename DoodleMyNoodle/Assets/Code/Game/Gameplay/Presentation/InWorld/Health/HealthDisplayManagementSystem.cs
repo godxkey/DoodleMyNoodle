@@ -47,14 +47,16 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
         {
             foreach (var tileActor in Cache.PointedBodies)
             {
-                if (!SimWorld.HasComponent<Health>(tileActor))
-                    continue;
-
-                if (EntitiesHPBar.ContainsKey(tileActor))
+                if (SimWorld.TryGetComponent(tileActor, out Health health))
                 {
-                    EntitiesHPBar[tileActor].GetComponent<HealthBarDisplay>().Show(HideDelayFromMouse);
+                    if (health.Value > 0)
+                    {
+                        if (EntitiesHPBar.ContainsKey(tileActor))
+                        {
+                            EntitiesHPBar[tileActor].GetComponent<HealthBarDisplay>().Show(HideDelayFromMouse);
+                        }
+                    }
                 }
-                
             }
         }
 

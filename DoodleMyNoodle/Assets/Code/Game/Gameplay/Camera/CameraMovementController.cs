@@ -256,10 +256,16 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         CamPosition = CamPosition;
     }
 
-    public void ToggleCameraMovement()
+    public void CameraMovementOff()
     {
         _lastMousePos = Input.mousePosition;
-        _cameraMovementDisable = !_cameraMovementDisable;
+        _cameraMovementDisable = true;
+    }
+
+    public void CameraMovementOn()
+    {
+        _lastMousePos = Input.mousePosition;
+        _cameraMovementDisable = false;
     }
 
     public void TeleportCameraToPosition(Vector2 newPosition)

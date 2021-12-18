@@ -56,7 +56,7 @@ public class SurveyShootAiming : SurveyBaseController
         _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
         CameraMovementController.Instance.SetSurveyZoom();
         CameraMovementController.Instance.CenterOnPawn();
-        CameraMovementController.Instance.ToggleCameraMovement();
+        CameraMovementController.Instance.CameraMovementOff();
 
         _weaponPreview.SetActive(false);
 
@@ -105,8 +105,6 @@ public class SurveyShootAiming : SurveyBaseController
 
             yield return null;
         }
-
-        CameraMovementController.Instance.ToggleCameraMovement();
 
         Vector2 _finalVector = ViewToSimVector((_line.position - transform.position) * 2);
         result.Add(new GameActionParameterVector.Data((fix2)_finalVector));
@@ -216,6 +214,7 @@ public class SurveyShootAiming : SurveyBaseController
     // Clean up
     protected override void OnEndSurvey(bool wasCompleted)
     {
+        CameraMovementController.Instance.CameraMovementOn();
         _line.gameObject.SetActive(false);
         _trajectoryDisplay.Dispose();
     }
