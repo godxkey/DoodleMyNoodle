@@ -53,7 +53,7 @@ MonoBehaviour:
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _hasTransform: 1
-  _showGhost: 0
+  _showGhost: 1
 --- !u!114 &-1025191853641028646
 MonoBehaviour:
   m_ObjectHideFlags: 0
