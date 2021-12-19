@@ -90,3 +90,4 @@ MonoBehaviour:
         NewTile: {fileID: 0}
         Radius:
           RawValue: 2147483648
+        CanChangeIndestructibleTile: 1

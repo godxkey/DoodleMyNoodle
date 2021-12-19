@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8821241209944219005}
   - component: {fileID: 2677628293349642642}
-  - component: {fileID: 8779506525494639397}
+  - component: {fileID: 6323485160588907889}
   m_Layer: 0
-  m_Name: SE_Item_Debug_CreateBedrock
+  m_Name: SE_Item_AI_Bow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,13 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 04f95a39ec7668c48ad9ec7cf8c55593
+  _guid: 202763aa86efffc4f8e3d2766ffade87
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _hasTransform: 0
   _showGhost: 1
---- !u!114 &8779506525494639397
+--- !u!114 &6323485160588907889
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,32 +63,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionTransformTile
+  Value: GameActionThrow
   GameActionSettings:
   - id: 0
-  ApCost: 0
+  ApCost: 1
   IsStackable: 0
-  CooldownType: 0
+  CooldownType: 2
   CooldownDuration:
     RawValue: 0
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
-  Icon: {fileID: 21300000, guid: 448cb793edd8dc04fb5800936c7336af, type: 3}
+  Icon: {fileID: 21300000, guid: c1b5006aa2c881a4b8eb04a8ed1435d5, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: Create Bedrock
-  EffectDescription: "Cr\xE9e une tuile de bedrock indestructible"
-  SfxOnUse: {fileID: 0}
-  PlayAnimation: 0
-  Animation: {fileID: 0}
+  Name: "Arc \xE0 Fl\xE8che"
+  EffectDescription: "Lance une fl\xE8che standard"
+  SfxOnUse: {fileID: 11400000, guid: 294d1b70193c2ba449c98eb807bacece, type: 2}
+  PlayAnimation: 1
+  Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
   CustomSurveys:
-  - {fileID: 464387511881233266, guid: 21be3624a4af0eb4ab538d096e5947b8, type: 3}
+  - {fileID: 7192197591991983227, guid: 4a9670b303e62124b8760b00d6a2245e, type: 3}
   references:
     version: 1
     00000000:
-      type: {class: GameActionTransformTileSettingsAuth, ns: , asm: Game}
+      type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        NewTile: {fileID: 3954427377480494286, guid: 4556c54ea4f809a498a57609d7c059ad,
+        SpeedMin:
+          RawValue: 0
+        SpeedMax:
+          RawValue: 42949672960
+        SpawnExtraDistance:
+          RawValue: 0
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: 4899e73436da28d43ba3448231f4f76d,
           type: 3}
-        Radius:
-          RawValue: 2147483648
-        CanChangeIndestructibleTile: 1

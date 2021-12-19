@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b90278f675940c542b4ba5d8227bc146, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartValue: 1
+  StartValue: 0.5
 --- !u!1001 &7123554878343106620
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -132,7 +132,7 @@ PrefabInstance:
     - target: {fileID: 6657921186239294675, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: MaxValue
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6657921186239294675, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}

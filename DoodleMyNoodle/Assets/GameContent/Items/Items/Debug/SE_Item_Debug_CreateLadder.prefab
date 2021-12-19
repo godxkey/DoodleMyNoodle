@@ -91,3 +91,4 @@ MonoBehaviour:
           type: 3}
         Radius:
           RawValue: 2147483648
+        CanChangeIndestructibleTile: 1

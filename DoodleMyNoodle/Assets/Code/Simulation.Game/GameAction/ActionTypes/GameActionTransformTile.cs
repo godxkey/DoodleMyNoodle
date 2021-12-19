@@ -12,6 +12,7 @@ public class GameActionTransformTile : GameAction<GameActionTransformTile.Settin
         public SimAssetId NewSimAssetId;
         public TileFlags NewTileFlags;
         public fix Radius;
+        public bool CanChangeBedrockTile;
     }
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
@@ -31,6 +32,11 @@ public class GameActionTransformTile : GameAction<GameActionTransformTile.Settin
 
             for (int i = 0; i < tiles.Length; i++)
             {
+                if(!settings.CanChangeBedrockTile && accessor.GetComponent<TileFlagComponent>(CommonReads.GetTileEntity(accessor, tiles[i])).Value == TileFlagComponent.Bedrock) 
+                {
+                    continue;
+                }
+
                 transformTileRequests.Add(new SystemRequestTransformTile()
                 {
                     ForcedNewSimAssetId = settings.SetNewSimAssetId ? (SimAssetId?)settings.NewSimAssetId : (SimAssetId?)null,

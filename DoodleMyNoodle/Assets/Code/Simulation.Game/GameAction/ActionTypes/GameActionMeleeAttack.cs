@@ -40,7 +40,9 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
             MaxRangeFromInstigator = settings.Range
         };
 
-        return new UseContract(tileParam);
+        GameActionParameterSuccessRate.Description successParam = new GameActionParameterSuccessRate.Description();
+
+        return new UseContract(tileParam, successParam);
     }
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
@@ -53,7 +55,33 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
             fix attackRadius = (fix)0.1f;
 
             var hits = CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.InstigatorPawn);
-            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, settings.Damage);
+
+            fix damageMultipler = 1;
+            if (useData.TryGetParameter(0, out GameActionParameterSuccessRate.Data successRate)) 
+            {
+                switch (successRate.SuccessRate)
+                {
+                    case SurveySuccessRating.One:
+                        damageMultipler = 0;
+                        break;
+                    case SurveySuccessRating.Two:
+                        damageMultipler = (fix)0.5f;
+                        break;
+                    case SurveySuccessRating.Three:
+                        damageMultipler = 1;
+                        break;
+                    case SurveySuccessRating.Four:
+                        damageMultipler = 2;
+                        break;
+                    case SurveySuccessRating.Five:
+                        damageMultipler = 3;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, fixMath.roundToInt(settings.Damage * damageMultipler));
 
             fix2 attackVector = attackPosition - instigatorPos;
             resultData.Add(new ResultDataElement() { AttackVector = attackVector });
