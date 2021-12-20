@@ -7,64 +7,69 @@ using static Unity.Mathematics.math;
 [UpdateInGroup(typeof(PreAISystemGroup))]
 public class UpdateItemCooldownSystem : SimSystemBase
 {
+    EntityQuery _entitiesWithCooldown;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        var queryDescription = new EntityQueryDesc()
+        {
+            Any = new ComponentType[] { typeof(ItemCooldownTimeCounter), typeof(ItemCooldownTurnCounter) }
+        };
+        _entitiesWithCooldown = GetEntityQuery(queryDescription);
+    }
+
     protected override void OnUpdate()
     {
+        var ecb = new EntityCommandBuffer(Allocator.Temp);
         var deltaTime = Time.DeltaTime;
-        bool noCooldownSingleton = HasSingleton<NoCooldownTag>();
+
+        if (HasSingleton<NoCooldownTag>())
+        {
+            EntityManager.RemoveComponent(_entitiesWithCooldown, new ComponentTypes(typeof(ItemCooldownTimeCounter), typeof(ItemCooldownTurnCounter)));
+        }
 
         Entities
             .ForEach((Entity item, ref ItemCooldownTimeCounter cooldownCounter) =>
             {
-                if (noCooldownSingleton)
+                cooldownCounter.Value -= deltaTime;
+                if (cooldownCounter.Value <= 0)
                 {
-                    EntityManager.RemoveComponent<ItemCooldownTimeCounter>(item);
+                    ecb.RemoveComponent<ItemCooldownTimeCounter>(item);
                 }
-                else
-                {
-                    cooldownCounter.Value -= deltaTime;
-                    if (cooldownCounter.Value <= 0)
-                    {
-                        EntityManager.RemoveComponent<ItemCooldownTimeCounter>(item);
-                    }
-                }
-            }).WithStructuralChanges().WithoutBurst().Run();
+            }).Run();
 
         if (HasSingleton<NewTurnEventData>())
         {
-            NativeList<InventoryItemReference> inventoryCopy = new NativeList<InventoryItemReference>(Allocator.Temp);
+            var inventoryFromEntity = GetBufferFromEntity<InventoryItemReference>(isReadOnly: true);
 
             Team currentTeam = CommonReads.GetTurnTeam(Accessor);
             Entities
                .ForEach((Entity pawnController, ref ControlledEntity pawn, in Team team) =>
                {
-                   if (team == currentTeam && EntityManager.TryGetBuffer(pawn, out DynamicBuffer<InventoryItemReference> inventory))
+                   if (team == currentTeam && inventoryFromEntity.HasComponent(pawn))
                    {
-                       inventoryCopy.CopyFrom(inventory.AsNativeArray());
-
-                       foreach (InventoryItemReference item in inventoryCopy)
+                       foreach (InventoryItemReference item in inventoryFromEntity[pawn])
                        {
-                           if (TryGetComponent(item.ItemEntity, out ItemCooldownTurnCounter itemTurnCounter))
+                           if (HasComponent<ItemCooldownTurnCounter>(item.ItemEntity))
                            {
-                               if (noCooldownSingleton)
+                               var itemTurnCounter = GetComponent<ItemCooldownTurnCounter>(item.ItemEntity);
+                               itemTurnCounter.Value -= 1;
+                               if (itemTurnCounter.Value <= 0)
                                {
-                                   EntityManager.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
+                                   ecb.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
                                }
                                else
                                {
-                                   itemTurnCounter.Value -= 1;
-                                   if (itemTurnCounter.Value <= 0)
-                                   {
-                                       EntityManager.RemoveComponent<ItemCooldownTurnCounter>(item.ItemEntity);
-                                   }
-                                   else
-                                   {
-                                       SetComponent(item.ItemEntity, new ItemCooldownTurnCounter() { Value = itemTurnCounter.Value });
-                                   }
+                                   SetComponent(item.ItemEntity, new ItemCooldownTurnCounter() { Value = itemTurnCounter.Value });
                                }
                            }
                        }
                    }
-               }).WithStructuralChanges().WithoutBurst().Run();
+               }).Run();
+
         }
+        ecb.Playback(EntityManager);
     }
 }
