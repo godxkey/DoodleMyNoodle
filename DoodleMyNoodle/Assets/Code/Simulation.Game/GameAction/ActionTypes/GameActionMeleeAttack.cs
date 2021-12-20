@@ -57,7 +57,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
             var hits = CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.InstigatorPawn);
 
             fix damageMultipler = 1;
-            if (useData.TryGetParameter(0, out GameActionParameterSuccessRate.Data successRate)) 
+            if (useData.TryGetParameter(1, out GameActionParameterSuccessRate.Data successRate, warnIfFailed: false))
             {
                 switch (successRate.SuccessRate)
                 {
