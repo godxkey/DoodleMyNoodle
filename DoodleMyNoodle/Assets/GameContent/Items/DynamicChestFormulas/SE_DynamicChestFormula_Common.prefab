@@ -73,9 +73,6 @@ MonoBehaviour:
   - Item: {fileID: 8779506525494639397, guid: 8fe9d6af4ffbc144ba24ba838680b00b, type: 3}
     Weight: 1
     BudgetCost: 2
-  - Item: {fileID: 4040381316262050192, guid: 25b4592d1e8860c43865beccfc29b2a6, type: 3}
-    Weight: 1
-    BudgetCost: 1
   - Item: {fileID: 5122401263033079630, guid: 605fd0327d22176429bfc3496ef54d7d, type: 3}
     Weight: 1
     BudgetCost: 3

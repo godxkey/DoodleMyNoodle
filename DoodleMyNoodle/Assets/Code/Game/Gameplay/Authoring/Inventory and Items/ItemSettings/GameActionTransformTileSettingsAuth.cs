@@ -8,6 +8,7 @@ public class GameActionTransformTileSettingsAuth : GameActionSettingAuthBase
     public TileAuth NewTile;
     public fix Radius = (fix)0.5;
     public bool CanChangeBedrockTile = true;
+    public fix Range = (fix)5f;
 
     public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -19,7 +20,8 @@ public class GameActionTransformTileSettingsAuth : GameActionSettingAuthBase
             SetNewSimAssetId = newTileSimAsset != null,
             NewSimAssetId = newTileSimAsset != null ? newTileSimAsset.GetSimAssetId() : default,
             Radius = Radius,
-            CanChangeBedrockTile = CanChangeBedrockTile
+            CanChangeBedrockTile = CanChangeBedrockTile,
+            Range = Range
         });
     }
 }

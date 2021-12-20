@@ -81,7 +81,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
                 }
             }
 
-            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, fixMath.roundToInt(settings.Damage * damageMultipler));
+            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, fixMath.ceilToInt(settings.Damage * damageMultipler));
 
             fix2 attackVector = attackPosition - instigatorPos;
             resultData.Add(new ResultDataElement() { AttackVector = attackVector });

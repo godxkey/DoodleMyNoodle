@@ -91,4 +91,6 @@ MonoBehaviour:
           type: 3}
         Radius:
           RawValue: 2147483648
-        CanChangeIndestructibleTile: 1
+        CanChangeBedrockTile: 1
+        Range:
+          RawValue: 4290672328704
