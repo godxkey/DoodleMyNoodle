@@ -39,6 +39,16 @@ public class UIStateMachine : StateMachine<UIStateMachine, UIState, UIStateMachi
             Cache.LocalControllerExists
             && Cache.LocalPawnAlive;
 
+        // only one player can play at a time
+        if (SimWorld.TryGetSingleton(out PlayersTurn playersTurnPlayed))
+        {
+            PlayerId playerId = PlayerHelpers.GetLocalPlayerID();
+            if (playersTurnPlayed.Value != PlayerHelpers.GetLocalPlayerID().Value)
+            {
+                couldPlay = false;
+            }
+        }
+
         UIStateType? currentType = CurrentState?.Type;
 
         if (couldPlay)

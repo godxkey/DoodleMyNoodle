@@ -24,6 +24,8 @@ public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity
 
     public List<ItemAndQuantity> StartingItems = new List<ItemAndQuantity>();
 
+    public bool LimitItemUsed = false;
+
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new InventoryCapacity() { Value = DEFAULT_CAPACITY });
@@ -48,6 +50,11 @@ public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity
                 StacksMin = Mathf.Min(itemAndQuantity.Quantity.x, itemAndQuantity.Quantity.y),
                 StacksMax = Mathf.Max(itemAndQuantity.Quantity.x, itemAndQuantity.Quantity.y),
             });
+        }
+
+        if (LimitItemUsed)
+        {
+            dstManager.AddComponentData(entity, new ItemUsedThisTurn() { Value = 0 });
         }
     }
 }

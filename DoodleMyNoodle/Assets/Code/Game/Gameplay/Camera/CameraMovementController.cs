@@ -107,6 +107,13 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
             return;
         }
 
+        if (SimWorld.TryGetSingleton(out MapSpecificCameraSettingSingleton settings))
+        {
+            CamPosition = settings.Position.ToUnityVec();
+            CamSize = (float)settings.Zoom;
+            return;
+        }
+
         CenterOnPawnIfChange();
 
         UpdateMovement();
