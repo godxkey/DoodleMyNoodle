@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2918383318239624808
+--- !u!1 &30145307963041151
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,62 +8,61 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2918383318239624809}
-  - component: {fileID: -5156845742758823084}
-  - component: {fileID: 4674371610463975169}
-  m_Layer: 11
-  m_Name: SE_FogOfWar
+  - component: {fileID: 30145307963041148}
+  - component: {fileID: 30145307963041147}
+  - component: {fileID: -8093947805622536935}
+  m_Layer: 0
+  m_Name: SE_Terrain_Grass_Corner_BottomLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2918383318239624809
+--- !u!4 &30145307963041148
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2918383318239624808}
+  m_GameObject: {fileID: 30145307963041151}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.9, y: 6.26, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-5156845742758823084
+--- !u!114 &30145307963041147
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2918383318239624808}
+  m_GameObject: {fileID: 30145307963041151}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 8113029604948144e8ef8721a14ba66a
-  _bindedViewPrefab: {fileID: 81193391851925536, guid: 6a5b148973e2ba14084fbca827f5d79d,
+  _guid: a9b7e5fbcc9ea13479d13f6bf215dd55
+  _bindedViewPrefab: {fileID: 6426749434754870349, guid: c9967fbd47de0c04d8737f153854158e,
     type: 3}
-  _bindedViewTile: {fileID: 0}
-  _viewTechType: 0
+  _bindedViewTile: {fileID: 11400000, guid: c30612c71b236e5488480e982a94f81a, type: 2}
+  _viewTechType: 1
   _hasTransform: 1
   _showGhost: 1
---- !u!114 &4674371610463975169
+--- !u!114 &-8093947805622536935
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2918383318239624808}
+  m_GameObject: {fileID: 30145307963041151}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3dceeaaf196c53b4281bc9e1ffe55bd9, type: 3}
+  m_Script: {fileID: 11500000, guid: c5e262d8f98129648ae67986145f644f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StayOnForever: 0
-  Emission: 0
-  LogicTargets: []
+  _type: 0
+  _shape: 3

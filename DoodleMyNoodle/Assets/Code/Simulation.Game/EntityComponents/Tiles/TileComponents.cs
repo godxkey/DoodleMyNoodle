@@ -51,6 +51,12 @@ public enum TileFlags : int
     Terrain = 1 << 1,
     Ladder = 1 << 2,
     Indestructible = 1 << 3,
+    Shape_Full = 1 << 4,
+    Shape_CornerTopLeft = 1 << 5,
+    Shape_CornerTopRight = 1 << 6,
+    Shape_CornerBottomLeft = 1 << 7,
+    Shape_CornerBottomRight = 1 << 8,
+    Shape_CornerAny = Shape_CornerTopLeft | Shape_CornerTopRight | Shape_CornerBottomLeft | Shape_CornerBottomRight,
 
     All = ~0
 }
@@ -64,6 +70,13 @@ public struct TileFlagComponent : IComponentData, IEquatable<TileFlagComponent>
     public bool IsLadder => (Value & TileFlags.Ladder) != 0;
     public bool IsEmpty => Value == TileFlags.InsideGrid;
     public bool IsOutOfGrid => (Value & TileFlags.InsideGrid) == 0;
+
+    public bool IsShapeFull => (Value & TileFlags.Shape_Full) != 0;
+    public bool IsShapeCornerTopLeft => (Value & TileFlags.Shape_CornerTopLeft) != 0;
+    public bool IsShapeCornerTopRight => (Value & TileFlags.Shape_CornerTopRight) != 0;
+    public bool IsShapeCornerBottomLeft => (Value & TileFlags.Shape_CornerBottomLeft) != 0;
+    public bool IsShapeCornerBottomRight => (Value & TileFlags.Shape_CornerBottomRight) != 0;
+    public bool IsShapeCornerAny => (Value & TileFlags.Shape_CornerAny) != 0;
 
     public static implicit operator TileFlags(TileFlagComponent val) => val.Value;
     public static implicit operator TileFlagComponent(TileFlags val) => new TileFlagComponent() { Value = val };
@@ -80,9 +93,9 @@ public struct TileFlagComponent : IComponentData, IEquatable<TileFlagComponent>
 
     public static TileFlagComponent OutOfGrid => default;
     public static TileFlagComponent Empty => TileFlags.InsideGrid;
-    public static TileFlagComponent Terrain => TileFlags.InsideGrid | TileFlags.Terrain;
-    public static TileFlagComponent Ladder => TileFlags.InsideGrid | TileFlags.Ladder;
-    public static TileFlagComponent Bedrock => TileFlags.InsideGrid | TileFlags.Terrain | TileFlags.Indestructible;
+    public static TileFlagComponent Terrain => TileFlags.InsideGrid | TileFlags.Terrain | TileFlags.Shape_Full;
+    public static TileFlagComponent Ladder => TileFlags.InsideGrid | TileFlags.Ladder | TileFlags.Shape_Full;
+    public static TileFlagComponent Bedrock => TileFlags.InsideGrid | TileFlags.Terrain | TileFlags.Indestructible | TileFlags.Shape_Full;
 
     public override bool Equals(object obj)
     {
