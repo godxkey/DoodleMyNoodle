@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd3d61e28790b2e49bcb28f77c1f216c, type: 3}
   m_Name: TILE_Terrain_Grass
   m_EditorClassIdentifier: Assembly-CSharp::AdvancedTerrainTile
+  _sisterTiles:
+  - {fileID: 11400000, guid: c30612c71b236e5488480e982a94f81a, type: 2}
+  - {fileID: 11400000, guid: 2b1d3cd375723854d8066842f6b6c33c, type: 2}
+  - {fileID: 11400000, guid: 843ad57385f8df347b032b482c553a4a, type: 2}
+  - {fileID: 11400000, guid: 4125a7861650b394c9035ff1683edabe, type: 2}
   SpriteDatas:
   - Sprite: {fileID: 21300000, guid: 0ac7cc386583e11409114fb683376d2b, type: 3}
     Rotation: 0

@@ -25,6 +25,18 @@ MonoBehaviour:
   - Tile: {fileID: 11400000, guid: 9fe61f904dd076340a9237f493f804be, type: 2}
     EntityPrefab: {fileID: 30145307963041151, guid: 4556c54ea4f809a498a57609d7c059ad,
       type: 3}
+  - Tile: {fileID: 11400000, guid: c30612c71b236e5488480e982a94f81a, type: 2}
+    EntityPrefab: {fileID: 30145307963041151, guid: a9b7e5fbcc9ea13479d13f6bf215dd55,
+      type: 3}
+  - Tile: {fileID: 11400000, guid: 2b1d3cd375723854d8066842f6b6c33c, type: 2}
+    EntityPrefab: {fileID: 30145307963041151, guid: 460655163b03fcf44b8017f1b21976cd,
+      type: 3}
+  - Tile: {fileID: 11400000, guid: 843ad57385f8df347b032b482c553a4a, type: 2}
+    EntityPrefab: {fileID: 30145307963041151, guid: 402315d78fe719046920d1553546161f,
+      type: 3}
+  - Tile: {fileID: 11400000, guid: 4125a7861650b394c9035ff1683edabe, type: 2}
+    EntityPrefab: {fileID: 30145307963041151, guid: 429fbb77f8867f943bd5a2709ad3f01d,
+      type: 3}
   DefaultTerrainTile: {fileID: 30145307963041147, guid: d6ddc52b73996c9498b513f70d9bbb6b,
     type: 3}
   DefaultLadderTile: {fileID: 30145307963041147, guid: c22c460c2bab90046a7326ddb6fd03b6,

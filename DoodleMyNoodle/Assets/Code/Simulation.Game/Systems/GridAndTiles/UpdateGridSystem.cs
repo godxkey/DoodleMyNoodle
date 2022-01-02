@@ -15,7 +15,8 @@ public struct SystemRequestTransformTile : ISingletonBufferElementData
 
 public class UpdateGridSystem : SimSystemBase
 {
-    private BlobAssetReference<Collider> _sharedTileCollider;
+    private BlobAssetReference<Collider> _fullTileCollider;
+    private BlobAssetReference<Collider> _cornerTileCollider;
     private EntityArchetype _tileColliderArchetype;
 
     protected override void OnCreate()
@@ -32,17 +33,27 @@ public class UpdateGridSystem : SimSystemBase
         {
             Size = float2(1, 1)
         };
+        PolygonGeometry triangleGeometry = new PolygonGeometry()
+        {
+            Vertices = new NativeArray<float2>(new float2[] {
+                new float2(-.5f, -.5f),
+                new float2(-.5f, .5f),
+                new float2(.5f, -0.5f),
+            }, Allocator.Temp)
+        };
         CollisionFilter filter = CollisionFilter.FromLayer(SimulationGameConstants.Physics.LAYER_TERRAIN);
         PhysicsMaterial material = PhysicsMaterial.Default;
 
-        _sharedTileCollider = Collider.Create(boxGeometry, filter, material);
+        _fullTileCollider = Collider.Create(boxGeometry, filter, material);
+        _cornerTileCollider = Collider.Create(triangleGeometry);
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
 
-        _sharedTileCollider.Dispose();
+        _fullTileCollider.Dispose();
+        _cornerTileCollider.Dispose();
     }
 
     protected override void OnUpdate()
@@ -89,7 +100,7 @@ public class UpdateGridSystem : SimSystemBase
                 // set new asset id, if needed
                 if (request.ForcedNewSimAssetId.HasValue)
                 {
-                    if(simAssetIds[tile] != request.ForcedNewSimAssetId.Value)
+                    if (simAssetIds[tile] != request.ForcedNewSimAssetId.Value)
                     {
                         simAssetIds[tile] = request.ForcedNewSimAssetId.Value;
                     }
@@ -108,7 +119,7 @@ public class UpdateGridSystem : SimSystemBase
                         simAssetIds[tile] = defaultTileInfos.DefaultTerrainTile;
                     }
                 }
-                else if(request.NewTileFlags.IsEmpty)
+                else if (request.NewTileFlags.IsEmpty)
                 {
                     if (!oldTileFlags.IsEmpty)
                     {
@@ -138,7 +149,7 @@ public class UpdateGridSystem : SimSystemBase
                 {
                     if (shouldHaveCollider)
                     {
-                        Entity colliderEntity = CreateTileColliderEntity(tileId);
+                        Entity colliderEntity = CreateTileColliderEntity(tileId, tileFlags);
                         colliderReference.ColliderEntity = colliderEntity;
                     }
                     else
@@ -153,7 +164,7 @@ public class UpdateGridSystem : SimSystemBase
             .Run();
     }
 
-    private Entity CreateTileColliderEntity(TileId tileId)
+    private Entity CreateTileColliderEntity(TileId tileId, TileFlagComponent tileFlag)
     {
         Entity tileCollider = EntityManager.CreateEntity(_tileColliderArchetype);
 
@@ -161,7 +172,7 @@ public class UpdateGridSystem : SimSystemBase
         EntityManager.SetName(tileCollider, $"Tile_Collider ({tileId.X}, {tileId.Y})");
 #endif
         EntityManager.SetComponentData(tileCollider, new FixTranslation() { Value = Helpers.GetTileCenter(tileId) });
-        EntityManager.SetComponentData(tileCollider, new PhysicsColliderBlob() { Collider = _sharedTileCollider });
+        EntityManager.SetComponentData(tileCollider, new PhysicsColliderBlob() { Collider = tileFlag.IsShapeCornerAny ? _cornerTileCollider : _fullTileCollider });
 
         return tileCollider;
     }

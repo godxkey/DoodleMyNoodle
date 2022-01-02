@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -8,13 +9,16 @@ using UnityEngine.Tilemaps;
 /// </summary>
 [Serializable]
 [CreateAssetMenu(fileName = "New Terrain Tile", menuName = "2D/Tiles/DMN/Advanced Terrain Tile", order = 82)]
-public class AdvancedTerrainTile : TileBase
+public class AdvancedTerrainTile : TileBase, ISerializationCallbackReceiver
 {
+    [SerializeField] private TileBase[] _sisterTiles;
+
     /// <summary>
     /// The Sprites used for defining the Terrain.
     /// </summary>
     [SerializeField]
     public SpriteData[] SpriteDatas;
+
 
     [Serializable]
     public class SpriteData
@@ -30,6 +34,8 @@ public class AdvancedTerrainTile : TileBase
             Transform = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, Rotation), new Vector3(FlipX ? -1 : 1, FlipY ? -1 : 1, 1));
         }
     }
+    
+    private HashSet<TileBase> _sisterTilesHashSet = new HashSet<TileBase>();
 
     /// <summary>
     /// This method is called when the tile is refreshed.
@@ -92,7 +98,7 @@ public class AdvancedTerrainTile : TileBase
     private bool TileValue(ITilemap tileMap, Vector3Int position)
     {
         TileBase tile = tileMap.GetTile(position);
-        return (tile != null && tile == this);
+        return tile != null && (tile == this || _sisterTilesHashSet.Contains(tile));
     }
 
     private int GetIndex(byte mask)
@@ -192,6 +198,19 @@ public class AdvancedTerrainTile : TileBase
         }
         return Matrix4x4.identity;
     }
+
+    void ISerializationCallbackReceiver.OnBeforeSerialize()
+    {
+    }
+
+    void ISerializationCallbackReceiver.OnAfterDeserialize()
+    {
+        _sisterTilesHashSet.Clear();
+        foreach (var item in _sisterTiles)
+        {
+            _sisterTilesHashSet.Add(item);
+        }
+    }
 }
 
 #if UNITY_EDITOR
@@ -200,11 +219,15 @@ public class AdvancedTerrainTileEditor : Editor
 {
     private AdvancedTerrainTile Tile { get { return (AdvancedTerrainTile)target; } }
 
+    private SerializedProperty _sisterTiles;
+
     /// <summary>
     /// OnEnable for TerrainTile.
     /// </summary>
     public void OnEnable()
     {
+        _sisterTiles = serializedObject.FindProperty("_sisterTiles");
+
         if (Tile.SpriteDatas == null || Tile.SpriteDatas.Length != 15)
         {
             Tile.SpriteDatas = new AdvancedTerrainTile.SpriteData[15];
@@ -217,6 +240,12 @@ public class AdvancedTerrainTileEditor : Editor
     /// </summary>
     public override void OnInspectorGUI()
     {
+        serializedObject.Update();
+
+        EditorGUILayout.PropertyField(_sisterTiles);
+
+        serializedObject.ApplyModifiedProperties();
+
         EditorGUILayout.LabelField("Place sprites shown based on the contents of the sprite.");
         EditorGUILayout.Space();
 
@@ -248,7 +277,7 @@ public class AdvancedTerrainTileEditor : Editor
     private void DrawSpriteSettings(int i, string name)
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        
+
         AdvancedTerrainTile.SpriteData data = Tile.SpriteDatas[i];
         data.Sprite = (Sprite)EditorGUILayout.ObjectField(name, Tile.SpriteDatas[i].Sprite, typeof(Sprite), false, null);
         data.Rotation = EditorGUILayout.FloatField("Rotation", data.Rotation);
