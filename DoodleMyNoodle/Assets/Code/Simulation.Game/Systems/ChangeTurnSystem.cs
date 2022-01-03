@@ -136,6 +136,19 @@ public class ChangeTurnSystem : SimGameSystemBase
         {
             DestroySingleton<RequestChangeTurnData>();
 
+            if (CommonReads.GetTurnTeam(Accessor).Value == (int)DesignerFriendlyTeam.Player)
+            {
+                if (CheckAllPlayersDone())
+                {
+                    SetSingleton(new PlayersTurn { Value = 1 });
+                }
+                else
+                {
+                    OnPlayerCompletedTheirTurn();
+                    return;
+                }
+            }
+
             changeTurn = true;
             newTeamToPlay = requestData.TeamToPlay;
 
@@ -161,12 +174,60 @@ public class ChangeTurnSystem : SimGameSystemBase
         fix newTimerValue = turnTimer.Value - Time.DeltaTime;
         if (newTimerValue <= 0)
         {
+            if (CommonReads.GetTurnTeam(Accessor).Value == (int)DesignerFriendlyTeam.Player)
+            {
+                OnPlayerCompletedTheirTurn();
+                return;
+            }
+
             CommonWrites.RequestNextTurn(Accessor);
         }
         else
         {
             SetSingleton(new TurnTimerSingletonComponent { Value = newTimerValue });
         }
+    }
+
+    private void OnPlayerCompletedTheirTurn()
+    {
+        if (TryGetSingleton(out PlayersTurn playersTurnPlayed))
+        {
+            if (CheckAllPlayersDone())
+            {
+                CommonWrites.RequestNextTurn(Accessor);
+                return;
+            }
+            else
+            {
+                SetSingleton(new PlayersTurn { Value = playersTurnPlayed.Value + 1 });
+            }
+        }
+
+        SetSingleton(new TurnTimerSingletonComponent { Value = GetSingleton<TurnDurationSingletonComponent>().DurationPlayer });
+    }
+
+    private bool CheckAllPlayersDone()
+    {
+        int playerCount = 0;
+        Entities
+            .WithAll<PlayerTag>()
+            .ForEach((Entity pawnController, ref ControlledEntity pawn) =>
+            {
+                if (Accessor.Exists(pawn))
+                {
+                    playerCount++;
+                }
+            }).WithoutBurst().Run();
+
+        if (TryGetSingleton(out PlayersTurn playersTurnPlayed))
+        {
+            if (playersTurnPlayed.Value >= playerCount)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 

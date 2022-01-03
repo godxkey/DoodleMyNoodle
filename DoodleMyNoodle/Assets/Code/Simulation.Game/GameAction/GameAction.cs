@@ -195,6 +195,15 @@ public abstract class GameAction
             }
         }
 
+        if (accessor.TryGetComponent(context.InstigatorPawn, out ItemUsedThisTurn itemUsed))
+        {
+            if (itemUsed.Value > 0)
+            {
+                debugReason?.Set("Item Already Used");
+                return false;
+            }
+        }
+
         if (IsInCooldown(accessor, context))
         {
             debugReason?.Set("In cooldown");
@@ -248,6 +257,12 @@ public abstract class GameAction
         else if (accessor.TryGetComponent(context.Item, out ItemTurnCooldownData itemTurnCooldownData))
         {
             accessor.SetOrAddComponent(context.Item, new ItemCooldownTurnCounter() { Value = itemTurnCooldownData.Value });
+        }
+
+        // Item Used
+        if (accessor.TryGetComponent(context.InstigatorPawn, out ItemUsedThisTurn itemUsed))
+        {
+            accessor.SetOrAddComponent(context.InstigatorPawn, new ItemUsedThisTurn() { Value = itemUsed.Value + 1 });
         }
 
         // Feedbacks

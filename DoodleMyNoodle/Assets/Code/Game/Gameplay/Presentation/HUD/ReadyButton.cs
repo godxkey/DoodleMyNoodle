@@ -88,6 +88,16 @@ public class ReadyButton : GamePresentationBehaviour
         }
         else
         {
+            // cannot interact with button when another player is playing
+            if (SimWorld.TryGetSingleton(out PlayersTurn playersTurn) && Cache.CurrentTeam.Value != -1)
+            {
+                if (playersTurn.Value != PlayerHelpers.GetLocalPlayerID().Value)
+                {
+                    _viewState.Set(TurnState.NotMyTurn);
+                    return;
+                }
+            }
+
             // if it's our turn to play
             if (SimWorld.TryGetComponent(Cache.LocalController, out ReadyForNextTurn ready) && ready.Value)
             {

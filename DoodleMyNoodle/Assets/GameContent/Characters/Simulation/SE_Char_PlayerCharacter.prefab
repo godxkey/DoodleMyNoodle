@@ -50,6 +50,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
+      propertyPath: LimitItemUsed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
+        type: 3}
       propertyPath: StartingItems.Array.size
       value: 4
       objectReference: {fileID: 0}
