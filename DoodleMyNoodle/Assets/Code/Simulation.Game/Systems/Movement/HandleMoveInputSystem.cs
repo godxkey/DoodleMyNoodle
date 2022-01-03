@@ -66,7 +66,7 @@ public class HandleMoveInputSystem : SimSystemBase
         {
             if (footing.Value == NavAgentFooting.AirControl)
             {
-                velocity.Linear.x = movetowards(
+                velocity.Linear.x = moveTowards(
                     current: velocity.Linear.x,
                     target: clamp(moveInput.Value.x, -1, 1) * moveSpeed,
                     maxDistanceDelta: airControl);
