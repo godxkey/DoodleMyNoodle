@@ -1,11 +1,9 @@
-using CCC.InspectorDisplay;
-using System.Collections.Generic;
+﻿using CCC.InspectorDisplay;
 using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class DelayedExplosionAuth : MonoBehaviour, IConvertGameObjectToEntity
+public class DelayedExplosionShieldAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public bool UseTime = true;
     [ShowIf("UseTime")]
@@ -14,19 +12,17 @@ public class DelayedExplosionAuth : MonoBehaviour, IConvertGameObjectToEntity
     public int TurnDelay = 1;
 
     public fix Radius = 1;
-    public int Damage = 1;
-    public bool DestroyTiles = true;
+    public int RoundDuration = 1;
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new DelayedExplosion() 
-        { 
+        dstManager.AddComponentData(entity, new DelayedExplosionShield()
+        {
             UseTime = UseTime,
             TimeDuration = TimeDelay,
             TurnDuration = TurnDelay,
             Radius = Radius,
-            Damage = Damage,
-            DestroyTiles = DestroyTiles
+            RoundDuration = RoundDuration
         });
     }
 }

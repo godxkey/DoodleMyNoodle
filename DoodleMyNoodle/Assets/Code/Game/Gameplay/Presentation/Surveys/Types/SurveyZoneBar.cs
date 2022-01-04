@@ -55,7 +55,7 @@ public class SurveyZoneBar : SurveyBaseController
     {
         if (_started)
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButtonDown(0))
             {
                 if (!_hasClicked)
                 {

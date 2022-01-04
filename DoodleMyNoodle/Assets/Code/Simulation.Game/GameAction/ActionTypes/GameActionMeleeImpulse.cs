@@ -15,12 +15,16 @@ public class GameActionMeleeImpulse : GameAction<GameActionMeleeImpulse.Settings
     public class SettingsAuth : GameActionSettingAuthBase
     {
         public fix Range;
+        public fix ImpulseForce;
+        public fix AngleRatio = 1;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
             dstManager.AddComponentData(entity, new Settings()
             {
                 Range = Range,
+                AngleRatio = AngleRatio,
+                ImpulseForce = ImpulseForce,
             });
         }
     }
@@ -28,6 +32,8 @@ public class GameActionMeleeImpulse : GameAction<GameActionMeleeImpulse.Settings
     public struct Settings : IComponentData
     {
         public fix Range;
+        public fix AngleRatio;
+        public fix ImpulseForce;
     }
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
@@ -59,19 +65,19 @@ public class GameActionMeleeImpulse : GameAction<GameActionMeleeImpulse.Settings
                 switch (successRate.SuccessRate)
                 {
                     case SurveySuccessRating.One:
-                        ImpulseMultipler = 1;
+                        ImpulseMultipler = (fix)0.5f;
                         break;
                     case SurveySuccessRating.Two:
-                        ImpulseMultipler = (fix)1.5f;
+                        ImpulseMultipler = (fix)0.75f;
                         break;
                     case SurveySuccessRating.Three:
-                        ImpulseMultipler = 2;
+                        ImpulseMultipler = 1;
                         break;
                     case SurveySuccessRating.Four:
-                        ImpulseMultipler = 3;
+                        ImpulseMultipler = (fix)1.5;
                         break;
                     case SurveySuccessRating.Five:
-                        ImpulseMultipler = 4;
+                        ImpulseMultipler = 2;
                         break;
                     default:
                         break;
@@ -79,11 +85,11 @@ public class GameActionMeleeImpulse : GameAction<GameActionMeleeImpulse.Settings
             }
 
             fix2 attackVector = attackPosition - instigatorPos;
-            attackVector = fixMath.rotate(attackVector, /* rotation towards up */);
+            fix2 rotatedAttackVector = fixMath.rotateTowards(attackVector, fixMath.Angle2DUp, fixMath.Angle2DUp * settings.AngleRatio);
 
             foreach (var hit in hits)
             {
-                CommonWrites.RequestImpulse(accessor, hit.Entity, attackVector * ImpulseMultipler);
+                CommonWrites.RequestImpulse(accessor, hit.Entity, rotatedAttackVector * ImpulseMultipler * settings.ImpulseForce);
             }
 
             resultData.Add(new ResultDataElement() { AttackVector = attackVector });
