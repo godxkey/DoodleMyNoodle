@@ -112,8 +112,6 @@ public class SurveyZoneBar : SurveyBaseController
             yield return null;
         }
 
-        _circleAnim.Kill();
-
         if ((Circle.transform.position.x < RightCritZoneLimit.transform.position.x) && (Circle.transform.position.x > LeftCritZoneLimit.transform.position.x))
         {
             // Critical
@@ -131,6 +129,8 @@ public class SurveyZoneBar : SurveyBaseController
             // Failed
             result.Add(new GameActionParameterSuccessRate.Data(SurveySuccessRating.One));
         }
+
+        _circleAnim.Kill();
 
         complete();
     }
