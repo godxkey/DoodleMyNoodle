@@ -17,15 +17,26 @@ public class DestroyOnOverlapWithTileSystem : SimSystemBase
         Entities
            .WithoutBurst()
            .WithStructuralChanges()
-           .ForEach((Entity entity, in DestroyOnOverlapWithTileTag destroyOnOverlapWithTileSystem, in FixTranslation fixTranslation) =>
+           .ForEach((Entity entity, in DestroyOnOverlapWithTileTag destroyOnOverlapWithTile, in FixTranslation fixTranslation) =>
            {
                Entity tileEntity = CommonReads.GetTileEntity(Accessor, Helpers.GetTile(fixTranslation));
 
                if (tileEntity != Entity.Null && EntityManager.TryGetComponentData(tileEntity, out TileFlagComponent tileFlagComponent))
                {
-                   if (!tileFlagComponent.IsEmpty && !tileFlagComponent.IsLadder)
+                   if (!tileFlagComponent.IsEmpty && !tileFlagComponent.IsLadder && destroyOnOverlapWithTile.DestroySelf)
                    {
                        _toDestroy.Add(entity);
+                   }
+
+                   if (destroyOnOverlapWithTile.DestroyTile)
+                   {
+                       var transformTileRequests = Accessor.GetSingletonBuffer<SystemRequestTransformTile>();
+                       transformTileRequests.Add(new SystemRequestTransformTile()
+                       {
+                           ForcedNewSimAssetId = default,
+                           NewTileFlags = TileFlagComponent.Empty,
+                           Tile = Helpers.GetTile(fixTranslation)
+                       });
                    }
                }
            }).Run();

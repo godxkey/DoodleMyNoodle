@@ -264,7 +264,10 @@ public abstract class GameAction
         {
             if (accessor.TryGetComponent(context.InstigatorPawn, out ItemUsedThisTurn itemUsed))
             {
-                accessor.SetOrAddComponent(context.InstigatorPawn, new ItemUsedThisTurn() { Value = itemUsed.Value + 1 });
+                if (itemUsed.Value >= 0)
+                {
+                    accessor.SetOrAddComponent(context.InstigatorPawn, new ItemUsedThisTurn() { Value = itemUsed.Value + 1 });
+                }
             }
         }
 
