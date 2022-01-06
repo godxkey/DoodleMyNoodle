@@ -259,10 +259,16 @@ public abstract class GameAction
             accessor.SetOrAddComponent(context.Item, new ItemCooldownTurnCounter() { Value = itemTurnCooldownData.Value });
         }
 
-        // Item Used
-        if (accessor.TryGetComponent(context.InstigatorPawn, out ItemUsedThisTurn itemUsed))
+        // Item Used (hard coded to no count the basic jump)
+        if (!accessor.HasComponent<GameActionBasicJump.Settings>(context.Item))
         {
-            accessor.SetOrAddComponent(context.InstigatorPawn, new ItemUsedThisTurn() { Value = itemUsed.Value + 1 });
+            if (accessor.TryGetComponent(context.InstigatorPawn, out ItemUsedThisTurn itemUsed))
+            {
+                if (itemUsed.Value >= 0)
+                {
+                    accessor.SetOrAddComponent(context.InstigatorPawn, new ItemUsedThisTurn() { Value = itemUsed.Value + 1 });
+                }
+            }
         }
 
         // Feedbacks

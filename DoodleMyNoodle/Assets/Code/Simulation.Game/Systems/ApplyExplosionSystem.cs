@@ -69,23 +69,26 @@ public class ApplyExplosionSystem : SimSystemBase
                 {
                     CommonWrites.RequestDamage(Accessor, request.Instigator, hits, request.Damage);
 
-                    // request impulses for every hit
-                    foreach (DistanceHit hit in hits)
+                    if (request.Damage > 0)
                     {
-                        if (!HasComponent<PhysicsVelocity>(hit.Entity))
+                        // request impulses for every hit
+                        foreach (DistanceHit hit in hits)
                         {
-                            continue;
-                        }
+                            if (!HasComponent<PhysicsVelocity>(hit.Entity))
+                            {
+                                continue;
+                            }
 
-                        _applyImpulseSystem.RequestImpulseRadial(new RadialImpulseRequestData()
-                        {
-                            StrengthMin = IMPULSE_MIN,
-                            StrengthMax = IMPULSE_MAX,
-                            IgnoreMass = false,
-                            Position = request.Position,
-                            Radius = request.Radius,
-                            Target = hit.Entity
-                        });
+                            _applyImpulseSystem.RequestImpulseRadial(new RadialImpulseRequestData()
+                            {
+                                StrengthMin = IMPULSE_MIN,
+                                StrengthMax = IMPULSE_MAX,
+                                IgnoreMass = false,
+                                Position = request.Position,
+                                Radius = request.Radius,
+                                Target = hit.Entity
+                            });
+                        }
                     }
                 }
 
