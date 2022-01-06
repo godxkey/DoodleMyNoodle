@@ -55,7 +55,7 @@ public class ConfigurableLogger : IDisposable
                 $"\\{Path.GetFileNameWithoutExtension(unityLogPath)}" +
                 $"({name})" +
                 $"{(Application.isEditor ? "" : Process.GetCurrentProcess().Id.ToString())}" +
-                $".txt";
+                $".log";
 
             _fileWriter = new FileWriter(_pendingLogs, path);
             Log.Internals.LogMessageReceivedThreaded += OnLogReceived;
