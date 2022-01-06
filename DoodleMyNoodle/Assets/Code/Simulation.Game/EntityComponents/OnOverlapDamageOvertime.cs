@@ -14,7 +14,6 @@ public struct OnOverlapDamageOvertimeState : IComponentData
     public TimeValue TrackedTime;
 }
 
-[Serializable]
 public struct OnOverlapDamageOvertimeDamagedEntities : IBufferElementData
 {
     public Entity Value;

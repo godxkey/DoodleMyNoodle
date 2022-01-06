@@ -6,9 +6,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using System;
 
-[UpdateInGroup(typeof(PhysicsSystemGroup))]
-[UpdateAfter(typeof(StepPhysicsWorldSystem)), UpdateBefore(typeof(EndFramePhysicsSystem))]
-public class DestroyOnOverlapWithTileSystem : SimSystemBase
+public class DestroyTileOnOverlapSystem : SimSystemBase
 {
     protected override void OnCreate()
     {
@@ -18,21 +16,15 @@ public class DestroyOnOverlapWithTileSystem : SimSystemBase
 
     protected override void OnUpdate()
     {
-        NativeList<Entity> toDestroy = new NativeList<Entity>(Allocator.Temp);
         var transformTileRequests = GetSingletonBuffer<SystemRequestTransformTile>();
         TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);
 
-        Entities.ForEach((Entity entity, in DestroyOnOverlapWithTileTag destroyOnOverlapWithTile, in FixTranslation position) =>
+        Entities.ForEach((Entity entity, in DestroyTileOnOverlapTag destroyOnOverlapWithTile, in FixTranslation position) =>
         {
             int2 tile = Helpers.GetTile(position);
             TileFlagComponent tileFlags = tileWorld.GetFlags(tile);
 
-            if (tileFlags.IsTerrain && destroyOnOverlapWithTile.DestroySelfOnTerrain)
-            {
-                toDestroy.Add(entity);
-            }
-
-            if (destroyOnOverlapWithTile.DestroyTile)
+            if (tileFlags.IsDestructible && !tileFlags.IsEmpty)
             {
                 transformTileRequests.Add(new SystemRequestTransformTile()
                 {
@@ -41,8 +33,5 @@ public class DestroyOnOverlapWithTileSystem : SimSystemBase
                 });
             }
         }).Run();
-
-        EntityManager.DestroyEntity(toDestroy);
-        toDestroy.Clear();
     }
 }
