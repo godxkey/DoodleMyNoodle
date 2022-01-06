@@ -1,7 +1,7 @@
 ﻿using CCC.Fix2D;
 using Unity.Entities;
 
-public class ClearItemUsed : SimGameSystemBase
+public class ClearItemUsedSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
@@ -9,11 +9,7 @@ public class ClearItemUsed : SimGameSystemBase
         {
             Entities.ForEach((ref ItemUsedThisTurn itemUsed) =>
             {
-                if (itemUsed.Value >= 0)
-                {
-                    itemUsed.Value = 0;
-                }
-
+                itemUsed.Value = 0;
             }).Schedule();
         }
     }
