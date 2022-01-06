@@ -38,7 +38,7 @@ public class DirectAIAlongPathSystem : SimGameSystemBase
                         fix2 agentPos = GetComponent<FixTranslation>(pawn);
                         fix2 segmentPos = pathPositions[0].Value.EndPosition;
 
-                        if (distance(agentPos.x, segmentPos.x) < 1 && distance(agentPos.y, segmentPos.y) > fix.Half)
+                        //if (distance(agentPos.x, segmentPos.x) < 1 && distance(agentPos.y, segmentPos.y) > fix.Half)
                         {
                             jumpRequests.Add(controller);
                         }

@@ -127,7 +127,7 @@ public class GamePresentationCacheUpdater : ViewSystemBase
 
         if (Cache.LocalPawn != Entity.Null)
         {
-            Cache.LocalController = CommonReads.GetPawnController(Cache.SimWorld, Cache.LocalPawn);
+            Cache.LocalController = CommonReads.TryGetPawnController(Cache.SimWorld, Cache.LocalPawn);
             if (Cache.LocalController != Entity.Null && Cache.SimWorld.TryGetComponent(Cache.LocalController, out Team controllerTeam))
             {
                 Cache.LocalControllerTeam = controllerTeam;

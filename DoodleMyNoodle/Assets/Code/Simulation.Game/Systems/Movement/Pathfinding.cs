@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using CCC.Fix2D;
+using System;
 using Unity.Collections;
-using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -98,12 +96,22 @@ public static class Pathfinding
     public struct Context
     {
         public TileWorld TileWorld;
+        public PhysicsWorld PhysicsWorld;
         public AgentCapabilities AgentCapabilities;
+        public int AgentPhysicsBodyIndex;
+        public fix MaxCost;
 
-        public Context(TileWorld tileWorld)
+        public Context(TileWorld tileWorld, PhysicsWorld physicsWorld, int agentPhysicsBodyIndex, fix maxCost)
         {
             AgentCapabilities = AgentCapabilities.Default;
             TileWorld = tileWorld;
+            PhysicsWorld = physicsWorld;
+            AgentPhysicsBodyIndex = agentPhysicsBodyIndex;
+            MaxCost = maxCost;
+        }
+
+        public Context(TileWorld tileWorld, PhysicsWorld physicsWorld, fix maxCost) : this(tileWorld, physicsWorld, -1, maxCost)
+        {
         }
     }
 
@@ -127,6 +135,7 @@ public static class Pathfinding
     {
         public int2 Position;
         public TileFlagComponent Flags;
+        public fix2 WorldCenter => Helpers.GetTileCenter(Position);
 
         public TileInfo(int2 position, ref TileWorld tileWorld)
         {
@@ -169,7 +178,7 @@ public static class Pathfinding
         }
     }
 
-    public static bool NavigableFloodSearch<T>(Context context, int2 start, fix maxCost, NativeQueue<TileCostPair> buffer, ref T stopPredicate, out int2 result) where T : ITilePredicate
+    public static bool NavigableFloodSearch<T>(Context context, int2 start, NativeQueue<TileCostPair> buffer, ref T stopPredicate, out int2 result) where T : ITilePredicate
     {
         NativeHashSet<int2> visited = new NativeHashSet<int2>(40, Allocator.Temp);
         NativeQueue<TileCostPair> toVisit = buffer;
@@ -196,7 +205,7 @@ public static class Pathfinding
             while (!toVisit.IsEmpty())
             {
                 TileCostPair x = toVisit.Dequeue();
-                if (x.ReachCost <= maxCost)
+                if (x.ReachCost <= context.MaxCost)
                 {
                     if (stopPredicate.Evaluate(x.Tile.Position))
                     {
@@ -204,7 +213,7 @@ public static class Pathfinding
                         return true;
                     }
 
-                    get_neighbors(x.Tile.Position, neighbors, ref context.TileWorld);
+                    get_neighbors(x.Tile.Position, neighbors, ref context);
 
                     for (int i = 0; i < neighbors.Length; i++)
                     {
@@ -226,7 +235,7 @@ public static class Pathfinding
         return false;
     }
 
-    public static bool FindCheapestNavigablePath(Context context, fix2 startPos, NativeSlice<fix2> goals, fix maxCost, ref PathResult result)
+    public static bool FindCheapestNavigablePath(Context context, fix2 startPos, NativeSlice<fix2> goals, fix reachDistance, ref PathResult result)
     {
         Profiler.BeginSample("Pathfinding");
         result.Reset();
@@ -327,14 +336,14 @@ public static class Pathfinding
 
             openSet.RemoveAtSwapBack(openSet.IndexOf(current));
 
-            get_neighbors(current, neighbors, ref context.TileWorld);
+            get_neighbors(current, neighbors, ref context);
             for (int i = 0; i < neighbors.Length; i++)
             {
                 // d(current,neighbor) is the weight of the edge from current to neighbor
                 // neighbor_gScore is the distance from start to the neighbor through current
                 fix cost_to_neighbor = d(ref context, new TileInfo(current, ref context.TileWorld), neighbors[i], out TransportMode transportMode);
                 fix neighbor_gScore = gScore[current] + cost_to_neighbor;
-                if (neighbor_gScore <= maxCost && (!gScore.TryGetValue(neighbors[i].Position, out fix s) || neighbor_gScore < s))
+                if (neighbor_gScore <= context.MaxCost && (!gScore.TryGetValue(neighbors[i].Position, out fix s) || neighbor_gScore < s))
                 {
                     // This path to neighbor is better than any previous one. Record it!
                     SegmentInternal segment = new SegmentInternal() { StartTile = current, TransportToNext = transportMode, CostToNext = cost_to_neighbor };
@@ -366,7 +375,7 @@ public static class Pathfinding
             int newGoalsCount = currentGoals.Length;
             for (int i = currentGoals.Length - 1; i >= 0; i--)
             {
-                if (lengthmanhattan(startPos - currentGoals[i]) > maxCost || !context.TileWorld.CanStandOn(Helpers.GetTile(currentGoals[i])))
+                if (lengthmanhattan(startPos - currentGoals[i]) > context.MaxCost || !context.TileWorld.CanStandOn(Helpers.GetTile(currentGoals[i])))
                 {
                     if (!newGoals.IsCreated)
                     {
@@ -395,10 +404,15 @@ public static class Pathfinding
         return false;
     }
 
-    public static bool FindNavigablePath(Context context, fix2 startPos, fix2 goalPos, fix maxCost, ref PathResult result)
+    public static bool FindNavigablePath(Context context, fix2 startPos, fix2 goalPos, fix reachDistance, ref PathResult result)
     {
         result.Reset();
         result.StartingPosition = startPos;
+
+        if (distance(startPos, goalPos) <= reachDistance)
+        {
+            return true;
+        }
 
         int2 start = Helpers.GetTile(startPos);
         int2 goal = Helpers.GetTile(goalPos);
@@ -410,7 +424,7 @@ public static class Pathfinding
         }
 
         // Destination cannot be reached
-        if (h(start, goal, ref context.AgentCapabilities) > maxCost || !context.TileWorld.CanStandOn(goal))
+        if (h(start, goal, ref context.AgentCapabilities) > context.MaxCost)
         {
             return false;
         }
@@ -467,7 +481,7 @@ public static class Pathfinding
         {
             // This operation could occur in O(1) time if openSet was a min-heap or a priority queue
             int2 current = node_in_openSet_having_the_lowest_fScore_value();
-            if (current.Equals(goal))
+            if (current.Equals(goal) || distance(Helpers.GetTileCenter(current), Helpers.GetTileCenter(goal)) <= reachDistance)
             {
                 result.TotalCost = gScore[current];
                 construct_result_path(ref context, cameFrom, current, startPos, ref result);
@@ -480,14 +494,14 @@ public static class Pathfinding
 
             openSet.RemoveAtSwapBack(openSet.IndexOf(current));
 
-            get_neighbors(current, neighbors, ref context.TileWorld);
+            get_neighbors(current, neighbors, ref context);
             for (int i = 0; i < neighbors.Length; i++)
             {
                 // d(current,neighbor) is the weight of the edge from current to neighbor
                 // neighbor_gScore is the distance from start to the neighbor through current
                 fix cost_to_neighbor = d(ref context, new TileInfo(current, ref context.TileWorld), neighbors[i], out TransportMode transportMode);
                 fix neighbor_gScore = gScore[current] + cost_to_neighbor;
-                if (neighbor_gScore <= maxCost && (!gScore.TryGetValue(neighbors[i].Position, out fix s) || neighbor_gScore < s))
+                if (neighbor_gScore <= context.MaxCost && (!gScore.TryGetValue(neighbors[i].Position, out fix s) || neighbor_gScore < s))
                 {
                     // This path to neighbor is better than any previous one. Record it!
                     SegmentInternal segment = new SegmentInternal() { StartTile = current, TransportToNext = transportMode, CostToNext = cost_to_neighbor };
@@ -534,7 +548,7 @@ public static class Pathfinding
                     EndPosition = new fix2(Helpers.GetTileCenter(startPos).x, startPos.y),
                     TransportToReach = TransportMode.Walk,
                 });
-                
+
                 result.TotalCost += context.AgentCapabilities.Walk1TileCost;
             }
 
@@ -543,46 +557,58 @@ public static class Pathfinding
         result.Segments.Reverse();
     }
 
-    private static void get_neighbors(int2 tile, NativeList<TileInfo> neighbors, ref TileWorld tileWorld)
+    private static void get_neighbors(int2 tile, NativeList<TileInfo> neighbors, ref Context context)
     {
+        ref TileWorld tileWorld = ref context.TileWorld;
+
         neighbors.Clear();
 
         TileInfo current = new TileInfo(tile, ref tileWorld);
         TileInfo up = new TileInfo(tile + int2(0, 1), ref tileWorld);
         TileInfo down = new TileInfo(tile + int2(0, -1), ref tileWorld);
-        TileInfo left = new TileInfo(tile + int2(-1, 0), ref tileWorld);
-        TileInfo right = new TileInfo(tile + int2(1, 0), ref tileWorld);
 
-        TileInfo topLeft = new TileInfo(tile + int2(-1, 1), ref tileWorld);
-        TileInfo topRight = new TileInfo(tile + int2(1, 1), ref tileWorld);
-        TileInfo bottomLeft = new TileInfo(tile + int2(-1, -1), ref tileWorld);
-        TileInfo bottomRight = new TileInfo(tile + int2(1, -1), ref tileWorld);
+        bool topOccupied = isOccupied(ref up, ref context);
 
-        if (canStandOn(ref up, ref current))
+        if (canStandOn(ref up, ref current) && !topOccupied)
             neighbors.Add(up);
 
-        if (canStandOn(ref left, ref bottomLeft))
-            neighbors.Add(left);
-
-        if (canStandOn(ref right, ref bottomRight))
-            neighbors.Add(right);
-
-        if (canStandOn2(ref down, ref tileWorld))
+        if (canStandOn2(ref down, ref tileWorld) && !isOccupied(ref down, ref context))
             neighbors.Add(down);
 
-        if (left.Flags.IsEmpty && canStandOn2(ref bottomLeft, ref tileWorld))
-            neighbors.Add(bottomLeft);
+        get_neighbors_side(1, ref context);
+        get_neighbors_side(-1, ref context);
 
-        if (right.Flags.IsEmpty && canStandOn2(ref bottomRight, ref tileWorld))
-            neighbors.Add(bottomRight);
-
-        if (!up.Flags.IsTerrain)
+        void get_neighbors_side(int dir, ref Context ctx)
         {
-            if (canStandOn(ref topLeft, ref left))
-                neighbors.Add(topLeft);
+            TileInfo right = new TileInfo(tile + int2(dir, 0), ref ctx.TileWorld);
+            TileInfo topRight = new TileInfo(tile + int2(dir, 1), ref ctx.TileWorld);
+            TileInfo bottomRight = new TileInfo(tile + int2(dir, -1), ref ctx.TileWorld);
 
-            if (canStandOn(ref topRight, ref right))
-                neighbors.Add(topRight);
+            if (canStandOn(ref right, ref bottomRight) && !isOccupied(ref right, ref ctx))
+                neighbors.Add(right);
+            else
+            {
+                // if the agent cannot stand on the right tile, maybe it can stand on the next one (provided there is space for jumping)
+                TileInfo rightRight = new TileInfo(tile + int2(2 * dir, 0), ref ctx.TileWorld);
+                TileInfo bottomRightRight = new TileInfo(tile + int2(2 * dir, -1), ref ctx.TileWorld);
+
+                // can be on right right?
+                if (canStandOn(ref rightRight, ref bottomRightRight) && !isOccupied(ref rightRight, ref ctx)
+                    // can jump to rightRight?
+                    && !topRight.Flags.IsTerrain && !isOccupied(ref topRight, ref ctx))
+                {
+                    neighbors.Add(rightRight);
+                }
+            }
+
+            if (right.Flags.IsEmpty && canStandOn2(ref bottomRight, ref ctx.TileWorld) && !isOccupied(ref bottomRight, ref ctx))
+                neighbors.Add(bottomRight);
+
+            if (!up.Flags.IsTerrain && !topOccupied)
+            {
+                if (canStandOn(ref topRight, ref right))
+                    neighbors.Add(topRight);
+            }
         }
 
         bool canStandOn2(ref TileInfo tile, ref TileWorld t)
@@ -595,6 +621,19 @@ public static class Pathfinding
         {
             return tile.Flags.IsLadder || (tile.Flags.IsEmpty && underTile.Flags.IsTerrain);
         }
+
+        bool isOccupied(ref TileInfo tile, ref Context ctx)
+        {
+            PointDistanceInput pointDistanceInput = new PointDistanceInput()
+            {
+                MaxDistance = 0.3f,
+                Filter = SimulationGameConstants.Physics.CollideWithCharactersFilter.Data,
+                Ignore = ctx.AgentPhysicsBodyIndex != -1 ? new IgnoreHit(ctx.AgentPhysicsBodyIndex) : default,
+                Position = (float2)tile.WorldCenter,
+            };
+
+            return ctx.PhysicsWorld.CalculateDistance(pointDistanceInput, out _);
+        }
     }
 
     // d(current,neighbor) is the weight of the edge from current to neighbor
@@ -605,11 +644,14 @@ public static class Pathfinding
 
         if (current.Position.y < neighbor.Position.y)
         {
+            // going up a ladder ?
             if (current.Flags.IsLadder && neighbor.Flags.IsLadder)
             {
                 cost += context.AgentCapabilities.Walk1TileCost;
                 transportMode = TransportMode.Walk;
             }
+
+            // jumping
             else
             {
                 cost += context.AgentCapabilities.Jump1TileCost;
@@ -618,16 +660,26 @@ public static class Pathfinding
         }
         else if (current.Position.y > neighbor.Position.y)
         {
+            // going down a ladder
             if (current.Flags.IsLadder && neighbor.Flags.IsLadder)
             {
                 cost += context.AgentCapabilities.Walk1TileCost;
                 transportMode = TransportMode.Walk;
             }
+
+            // dropping
             else
             {
                 cost += context.AgentCapabilities.Drop1TileCost;
                 transportMode = TransportMode.Drop;
             }
+        }
+
+        // destination far away, jump
+        if (abs(current.Position.x - neighbor.Position.x) > 1)
+        {
+            cost += context.AgentCapabilities.Jump1TileCost;
+            transportMode = TransportMode.Jump;
         }
 
         return cost;

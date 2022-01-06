@@ -14,17 +14,16 @@ public class RemoveFreeMovementSystem : SimSystemBase
         {
             int currentTeam = CommonReads.GetTurnTeam(Accessor);
 
-            Entities.ForEach((Entity entity, ref ActionPoints moveEnergy) =>
+            Entities.ForEach((Entity entity, ref ActionPoints moveEnergy, in Controllable controllable) =>
             {
-                Entity pawnController = CommonReads.GetPawnController(Accessor, entity);
-                if (pawnController != Entity.Null)
+                if (HasComponent<Team>(controllable.CurrentController))
                 {
-                    if (GetComponent<Team>(pawnController).Value != currentTeam)
+                    if (GetComponent<Team>(controllable.CurrentController).Value != currentTeam)
                     {
                         moveEnergy.Value = 0;
                     }
                 }
-            }).WithoutBurst().Run();
+            }).Run();
         }
     }
 }

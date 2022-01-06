@@ -8,11 +8,16 @@ using static Unity.Mathematics.math;
 [UpdateAfter(typeof(SpecificAISystemGroup))]
 public class UpdateAIPatrolSystem : SimSystemBase
 {
+    private PhysicsWorldSystem _physicsWorldSystem;
+    private UpdateActorWorldSystem _actorWorldSystem;
+
     protected override void OnCreate()
     {
         base.OnCreate();
 
         RequireSingletonForUpdate<GridInfo>();
+        _physicsWorldSystem = World.GetOrCreateSystem<PhysicsWorldSystem>();
+        _actorWorldSystem = World.GetOrCreateSystem<UpdateActorWorldSystem>();
     }
 
     protected override void OnDestroy()
@@ -27,6 +32,8 @@ public class UpdateAIPatrolSystem : SimSystemBase
         Pathfinding.PathResult pathBuffer = new Pathfinding.PathResult(Allocator.TempJob);
         var time = Time.ElapsedTime;
         FixRandom random = World.Random();
+        var physicsWorld = _physicsWorldSystem.PhysicsWorldSafe;
+        var entity2PhysicsBody = _physicsWorldSystem.EntityToPhysicsBody;
 
         Entities
             .WithDisposeOnCompletion(pathBuffer)
@@ -53,7 +60,10 @@ public class UpdateAIPatrolSystem : SimSystemBase
                     // find random tile in 1 range
                     int2 agentTile = Helpers.GetTile(pawnPos);
 
-                    var pathfindingContext = new Pathfinding.Context(tileWorld);
+                    if (!entity2PhysicsBody.Lookup.TryGetValue(pawn, out int physicsBodyIndex))
+                        physicsBodyIndex = -1;
+
+                    var pathfindingContext = new Pathfinding.Context(tileWorld, physicsWorld, physicsBodyIndex, maxCost: Pathfinding.AgentCapabilities.Default.Walk1TileCost);
                     int2? destination = null;
                     const int POTENTIAL_DESTINATIONS_LENGTH = 4;
                     unsafe
@@ -72,7 +82,12 @@ public class UpdateAIPatrolSystem : SimSystemBase
                         for (int i = 0; i < POTENTIAL_DESTINATIONS_LENGTH; i++)
                         {
                             var tile = potentialDestinations[i];
-                            if (Pathfinding.FindNavigablePath(pathfindingContext, pawnPos, Helpers.GetTileCenter(tile), maxCost: pathfindingContext.AgentCapabilities.Walk1TileCost, ref pathBuffer))
+                            if (Pathfinding.FindNavigablePath(
+                                context: pathfindingContext,
+                                startPos: pawnPos,
+                                goalPos: Helpers.GetTileCenter(tile),
+                                reachDistance: 0,
+                                result: ref pathBuffer))
                             {
                                 destination = tile;
                                 break;

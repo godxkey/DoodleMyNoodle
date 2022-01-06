@@ -20,6 +20,7 @@ public class UpdateBruteAISystem : SimSystemBase
         public ProfileMarkers ProfileMarkers;
         public TileWorld TileWorld;
         public ActorWorld ActorWorld;
+        public PhysicsWorld PhysicsWorld;
         public fix Time;
     }
 
@@ -54,6 +55,7 @@ public class UpdateBruteAISystem : SimSystemBase
     }
 
     private UpdateActorWorldSystem _updateActorWorldSystem;
+    private PhysicsWorldSystem _physicsWorldSystem;
     private ProfileMarkers _profileMarkers;
 
     public struct ProfileMarkers
@@ -72,6 +74,7 @@ public class UpdateBruteAISystem : SimSystemBase
 
         _profileMarkers = new ProfileMarkers() { };
         _updateActorWorldSystem = World.GetOrCreateSystem<UpdateActorWorldSystem>();
+        _physicsWorldSystem = World.GetOrCreateSystem<PhysicsWorldSystem>();
         RequireSingletonForUpdate<GridInfo>();
     }
 
@@ -85,6 +88,7 @@ public class UpdateBruteAISystem : SimSystemBase
             ProfileMarkers = _profileMarkers,
             TileWorld = CommonReads.GetTileWorld(Accessor),
             ActorWorld = _updateActorWorldSystem.ActorWorld,
+            PhysicsWorld = _physicsWorldSystem.PhysicsWorldSafe,
             Time = Time.ElapsedTime,
         };
 
@@ -230,7 +234,7 @@ public class UpdateBruteAISystem : SimSystemBase
         fix closestDist = fix.MaxValue;
         fix2 closestAttackPosition = default;
 
-        var pathfindingContext = new Pathfinding.Context(globalCache.TileWorld);
+        var pathfindingContext = new Pathfinding.Context(globalCache.TileWorld, globalCache.PhysicsWorld, agentCache.PawnData.BodyIndex, maxCost: Pathfinding.AgentCapabilities.DefaultMaxCost);
 
         fix attackRange = agentCache.AttackRange;
         foreach (int enemyIndex in globalBuffers.TargetBuffer)
@@ -240,7 +244,12 @@ public class UpdateBruteAISystem : SimSystemBase
             fix enemyRadius = enemy.Radius;
 
             // try find path to enemy
-            if (!Pathfinding.FindNavigablePath(pathfindingContext, agentCache.PawnPosition, enemyPos, Pathfinding.AgentCapabilities.DefaultMaxCost, ref globalBuffers.PathBuffer))
+            if (!Pathfinding.FindNavigablePath(
+                context: pathfindingContext,
+                startPos: agentCache.PawnPosition,
+                goalPos: enemyPos,
+                reachDistance: attackRange,
+                result: ref globalBuffers.PathBuffer))
             {
                 continue;
             }

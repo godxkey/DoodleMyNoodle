@@ -362,10 +362,14 @@ public class UpdateGrenadierAISystem : SimSystemBase
         }
 
         // Using a flood fill, search for any position from which we can shoot a target. This will naturally return the closest tile
-        var pathfindingContext = new Pathfinding.Context(globalCache.TileWorld);
+        var pathfindingContext = new Pathfinding.Context(
+            globalCache.TileWorld, 
+            globalCache.PhysicsWorld, 
+            agentCache.PawnData.BodyIndex, 
+            maxCost: SimulationGameConstants.AISearchForShootPositionMaxCost);
+
         if (Pathfinding.NavigableFloodSearch(pathfindingContext,
                                              agentCache.PawnTile,
-                                             SimulationGameConstants.AISearchForShootPositionMaxCost,
                                              globalCache.FloodSearchBuffer,
                                              ref predicate,
                                              out int2 position))

@@ -50,6 +50,11 @@ public static class SimulationGameConstants
             BelongsTo = ~(uint)0,
             CollidesWith = CollisionFilter.CreateMask(Physics.LAYER_TERRAIN, Physics.LAYER_CHARACTER)
         };
+        Physics.CollideWithCharactersFilter.Data = new CollisionFilter()
+        {
+            BelongsTo = ~(uint)0,
+            CollidesWith = CollisionFilter.CreateMask(Physics.LAYER_CHARACTER)
+        };
 
         s_init = true;
     }
@@ -64,6 +69,9 @@ public static class SimulationGameConstants
 
         public static readonly SharedStatic<CollisionFilter> CollideWithCharactersAndTerrainFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, CharactersAndTerrainFilterKey>();
         private class CharactersAndTerrainFilterKey { }
+
+        public static readonly SharedStatic<CollisionFilter> CollideWithCharactersFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, CollideWithCharactersFilterKey>();
+        private class CollideWithCharactersFilterKey { }
 
     }
 }

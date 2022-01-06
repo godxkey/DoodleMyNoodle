@@ -7,11 +7,14 @@ using CCC.Fix2D;
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class CreatePathToDestinationSystem : SimSystemBase
 {
+    private PhysicsWorldSystem _physicsWorldSystem;
+
     protected override void OnCreate()
     {
         base.OnCreate();
 
         RequireSingletonForUpdate<GridInfo>();
+        _physicsWorldSystem = World.GetOrCreateSystem<PhysicsWorldSystem>();
     }
 
     protected override void OnDestroy()
@@ -23,6 +26,8 @@ public class CreatePathToDestinationSystem : SimSystemBase
     {
         var tileWorld = CommonReads.GetTileWorld(Accessor);
         var pathResult = new Pathfinding.PathResult(Allocator.Temp);
+        var physicsWorld = _physicsWorldSystem.PhysicsWorldSafe;
+        var entity2PhysicsBody = _physicsWorldSystem.EntityToPhysicsBody;
 
         Entities
             .WithReadOnly(tileWorld)
@@ -33,7 +38,10 @@ public class CreatePathToDestinationSystem : SimSystemBase
 
             Entity jumpItem = CommonReads.FindFirstItemWithGameAction<GameActionBasicJump>(Accessor, entity);
 
-            var pathfindingContext = new Pathfinding.Context(tileWorld);
+            if (!entity2PhysicsBody.Lookup.TryGetValue(entity, out int physicsBodyIndex))
+                physicsBodyIndex = -1;
+            
+            var pathfindingContext = new Pathfinding.Context(tileWorld, physicsWorld, physicsBodyIndex, Pathfinding.AgentCapabilities.DefaultMaxCost);
             pathfindingContext.AgentCapabilities = new Pathfinding.AgentCapabilities()
             {
                 Drop1TileCost = 0,
@@ -41,7 +49,12 @@ public class CreatePathToDestinationSystem : SimSystemBase
                 Walk1TileCost = moveSpeed.Value <= fix.Zero ? fix.MaxValue : fix.One / moveSpeed.Value,
             };
 
-            bool pathFound = Pathfinding.FindNavigablePath(pathfindingContext, pos, destination, Pathfinding.AgentCapabilities.DefaultMaxCost, ref pathResult);
+            bool pathFound = Pathfinding.FindNavigablePath(
+                context: pathfindingContext,
+                startPos: pos,
+                goalPos: destination,
+                reachDistance: 0,
+                result: ref pathResult);
 
             if (pathFound)
             {

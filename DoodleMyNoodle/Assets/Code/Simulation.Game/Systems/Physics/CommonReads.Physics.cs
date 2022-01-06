@@ -70,11 +70,6 @@ public static partial class CommonReads
             return hit;
         }
 
-        internal static object OverlapCircle(ISimWorldReadWriteAccessor accessor, object attackPosition, fix attackRadius, Entity ignoreEntity)
-        {
-            throw new NotImplementedException();
-        }
-
         public static NativeList<Entity> OverlapAabb(ISimWorldReadWriteAccessor accessor, fix2 min, fix2 max, Entity ignoreEntity = default)
         {
             NativeList<Entity> outHits = new NativeList<Entity>(Allocator.Temp);
