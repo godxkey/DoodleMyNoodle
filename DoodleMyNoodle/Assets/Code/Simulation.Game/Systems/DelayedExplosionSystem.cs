@@ -78,7 +78,7 @@ public class DelayedExplosionSystem : SimSystemBase
                         }
 
                         // make it so it's not towards the ground
-                        force = fixMath.rotateTowards(force, fixMath.Angle2DUp, fixMath.Angle2DUp * (fix)0.3);
+                        force = rotateTowards(force, Angle2DUp, Angle2DUp * (fix)0.3);
 
                         CommonWrites.RequestImpulse(Accessor, hit.Entity, force);
                     }
@@ -121,7 +121,7 @@ public class DelayedExplosionSystem : SimSystemBase
                 {
                     if (Accessor.HasComponent<Controllable>(hit.Entity))
                     {
-                        if (Accessor.TryGetComponent(CommonReads.GetPawnController(Accessor, hit.Entity), out Team team))
+                        if (Accessor.TryGetComponent(CommonReads.TryGetPawnController(Accessor, hit.Entity), out Team team))
                         {
                             // Only Player Team (if AI need to use this item, change this to track instigator)
                             if (team.Value == (int)DesignerFriendlyTeam.Player)
