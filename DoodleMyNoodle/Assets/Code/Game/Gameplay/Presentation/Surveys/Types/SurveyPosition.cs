@@ -2,6 +2,8 @@ using CCC.Fix2D;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
+using Unity.MathematicsX;
 using UnityEngine;
 
 public class SurveyPosition : SurveyBaseController
@@ -10,6 +12,7 @@ public class SurveyPosition : SurveyBaseController
     [SerializeField] private Color _normalColor;
     [SerializeField] private Transform _rangeIndicator1;
     [SerializeField] private Transform _rangeIndicator2;
+    [SerializeField] private Transform _line;
     [SerializeField] private float _rangeIndicatorScaleDiff = 0.1f;
 
     private Vector2 _instigatorPosition;
@@ -63,6 +66,15 @@ public class SurveyPosition : SurveyBaseController
         else
         {
             CursorOverlayService.Instance.SetCursorColor(_outOfRangeColor);
+        }
+
+        // drag line
+        if (_line != null)
+        {
+            Vector2 dragVector = _instigatorPosition - Cache.PointerWorldPosition;
+            _line.position = (_instigatorPosition + Cache.PointerWorldPosition) / 2;
+            _line.localScale = new Vector3(dragVector.magnitude, 1, 1);
+            _line.rotation = Quaternion.Euler(0, 0, math.degrees(mathX.angle2d(dragVector)));
         }
 
         if (range < 1000)

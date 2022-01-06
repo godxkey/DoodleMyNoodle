@@ -9,4 +9,5 @@ public struct DelayedExplosion : IComponentData
 
     public fix Radius;
     public int Damage;
+    public bool DestroyTiles;
 }

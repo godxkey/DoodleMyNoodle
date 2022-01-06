@@ -196,6 +196,7 @@ public class HandleSimulationCheatsSystem : SimSystemBase
                 {
                     EntityManager.SetComponentData(pawn, new MaximumFix<ActionPoints>() { Value = 999 });
                     EntityManager.SetComponentData(pawn, new ActionPoints() { Value = 999 });
+                    EntityManager.SetComponentData(pawn, new ItemUsedThisTurn() { Value = -1 });
                 }
                 break;
             }

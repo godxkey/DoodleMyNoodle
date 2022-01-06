@@ -15,6 +15,7 @@ public class DelayedExplosionAuth : MonoBehaviour, IConvertGameObjectToEntity
 
     public fix Radius = 1;
     public int Damage = 1;
+    public bool DestroyTiles = true;
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -24,7 +25,8 @@ public class DelayedExplosionAuth : MonoBehaviour, IConvertGameObjectToEntity
             TimeDuration = TimeDelay,
             TurnDuration = TurnDelay,
             Radius = Radius,
-            Damage = Damage
+            Damage = Damage,
+            DestroyTiles = DestroyTiles
         });
     }
 }

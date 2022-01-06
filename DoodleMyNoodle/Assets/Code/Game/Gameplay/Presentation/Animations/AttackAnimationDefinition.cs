@@ -35,6 +35,8 @@ public class AttackAnimationDefinition : DOTWEENAnimationDefinition
         if (VFXOnTarget != null)
         {
             Data.Add(new KeyValuePair<string, object>("Transform", spriteTransform));
+            Data.Add(new KeyValuePair<string, object>("AttackVector", resultData.AttackVector));
+            Data.Add(new KeyValuePair<string, object>("InstigatorStartPosition", spriteTransform.position));
             sq.Append(spriteTransform.DOLocalMove(endPos, Duration / 2).OnComplete(() => { VFXOnTarget.TriggerVFX(Data); }));
         }
         else

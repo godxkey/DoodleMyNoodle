@@ -9,7 +9,10 @@ public class ClearItemUsed : SimGameSystemBase
         {
             Entities.ForEach((ref ItemUsedThisTurn itemUsed) =>
             {
-                itemUsed.Value = 0;
+                if (itemUsed.Value >= 0)
+                {
+                    itemUsed.Value = 0;
+                }
 
             }).Schedule();
         }

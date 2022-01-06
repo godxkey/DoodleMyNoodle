@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionMeleeAttack
+  Value: GameActionMeleeAOE
   GameActionSettings:
   - id: 0
   ApCost: 1
@@ -75,17 +75,18 @@ MonoBehaviour:
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: d2ce51beb1c830f4eaa297a9c227d6b4, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: "Longue \xC9p\xE9e"
-  EffectDescription: "Coup qui peut port\xE9 \xE0 plus longue distance"
+  Name: "Grosse \xE9p\xE9e"
+  EffectDescription: "Swing ta grosse \xE9p\xE9e pour frapper plusieurs \xE9nemis"
   SfxOnUse: {fileID: 0}
   PlayAnimation: 1
-  Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
-  CustomSurveys: []
+  Animation: {fileID: 11400000, guid: 7e6e50330777e794ba0baffa8370326d, type: 2}
+  CustomSurveys:
+  - {fileID: 464387511881233266, guid: 9a94fb87cf4ae88469593387d556f3de, type: 3}
   references:
     version: 1
     00000000:
-      type: {class: GameActionMeleeAttack/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionMeleeAOE/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
-          RawValue: 12884901888
+          RawValue: 17179869184
         Damage: 2
