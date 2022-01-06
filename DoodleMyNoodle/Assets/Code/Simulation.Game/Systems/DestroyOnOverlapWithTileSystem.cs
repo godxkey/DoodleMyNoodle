@@ -10,42 +10,39 @@ using System;
 [UpdateAfter(typeof(StepPhysicsWorldSystem)), UpdateBefore(typeof(EndFramePhysicsSystem))]
 public class DestroyOnOverlapWithTileSystem : SimSystemBase
 {
-    private List<Entity> _toDestroy = new List<Entity>();
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        RequireSingletonForUpdate<GridInfo>();
+    }
 
     protected override void OnUpdate()
     {
-        Entities
-           .WithoutBurst()
-           .WithStructuralChanges()
-           .ForEach((Entity entity, in DestroyOnOverlapWithTileTag destroyOnOverlapWithTile, in FixTranslation fixTranslation) =>
-           {
-               Entity tileEntity = CommonReads.GetTileEntity(Accessor, Helpers.GetTile(fixTranslation));
+        NativeList<Entity> toDestroy = new NativeList<Entity>(Allocator.Temp);
+        var transformTileRequests = GetSingletonBuffer<SystemRequestTransformTile>();
+        TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);
 
-               if (tileEntity != Entity.Null && EntityManager.TryGetComponentData(tileEntity, out TileFlagComponent tileFlagComponent))
-               {
-                   if (!tileFlagComponent.IsEmpty && !tileFlagComponent.IsLadder && destroyOnOverlapWithTile.DestroySelf)
-                   {
-                       _toDestroy.Add(entity);
-                   }
-
-                   if (destroyOnOverlapWithTile.DestroyTile)
-                   {
-                       var transformTileRequests = Accessor.GetSingletonBuffer<SystemRequestTransformTile>();
-                       transformTileRequests.Add(new SystemRequestTransformTile()
-                       {
-                           ForcedNewSimAssetId = default,
-                           NewTileFlags = TileFlagComponent.Empty,
-                           Tile = Helpers.GetTile(fixTranslation)
-                       });
-                   }
-               }
-           }).Run();
-
-        foreach (var entity in _toDestroy)
+        Entities.ForEach((Entity entity, in DestroyOnOverlapWithTileTag destroyOnOverlapWithTile, in FixTranslation position) =>
         {
-            EntityManager.DestroyEntity(entity);
-        }
+            int2 tile = Helpers.GetTile(position);
+            TileFlagComponent tileFlags = tileWorld.GetFlags(tile);
 
-        _toDestroy.Clear();
+            if (tileFlags.IsTerrain && destroyOnOverlapWithTile.DestroySelfOnTerrain)
+            {
+                toDestroy.Add(entity);
+            }
+
+            if (destroyOnOverlapWithTile.DestroyTile)
+            {
+                transformTileRequests.Add(new SystemRequestTransformTile()
+                {
+                    NewTileFlags = TileFlagComponent.Empty,
+                    Tile = tile
+                });
+            }
+        }).Run();
+
+        EntityManager.DestroyEntity(toDestroy);
+        toDestroy.Clear();
     }
 }
