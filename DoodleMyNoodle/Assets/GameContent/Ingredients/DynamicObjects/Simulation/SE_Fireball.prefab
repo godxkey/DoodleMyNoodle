@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 8841453195666950856}
   - component: {fileID: -1943092824245740565}
   - component: {fileID: 8277106820237187274}
-  - component: {fileID: 7294844904354324209}
+  - component: {fileID: 1805443843964168538}
+  - component: {fileID: 8618057839144830486}
   m_Layer: 10
   m_Name: SE_Fireball
   m_TagString: Untagged
@@ -91,12 +92,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0945d3b18db094459b77ce155a9248d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Delay:
+  _delay:
     Type: 0
     Value:
       RawValue: 4294967296
-  Damage: 2
---- !u!114 &7294844904354324209
+  _damage: 2
+--- !u!114 &1805443843964168538
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,8 +106,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 2385346486794747607}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c444f11211070ad4b80872050fcc2128, type: 3}
+  m_Script: {fileID: 11500000, guid: cc2723524212a6c4bb1cff265db07043, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DestroySelf: 0
-  DestroyTile: 1
+--- !u!114 &8618057839144830486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2385346486794747607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d7beb619b99e4741987516fb297d662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Lifetime:
+    RawValue: 85899345920

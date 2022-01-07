@@ -78,7 +78,7 @@ public class CreateAIPathToDestinationSystem : SimSystemBase
                     reachDistance: 0,
                     result: ref pathResult);
 
-                if (pathFound)
+                if (pathFound && !pathResult.Segments.IsEmpty)
                 {
                     fix2 feetOffset = fix2(0, pawnData.Radius);
 

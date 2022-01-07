@@ -481,7 +481,7 @@ public static class Pathfinding
         {
             // This operation could occur in O(1) time if openSet was a min-heap or a priority queue
             int2 current = node_in_openSet_having_the_lowest_fScore_value();
-            if (current.Equals(goal) || distance(Helpers.GetTileCenter(current), Helpers.GetTileCenter(goal)) <= reachDistance)
+            if (current.Equals(goal) || distance(Helpers.GetTileCenter(current), goalPos) <= reachDistance)
             {
                 result.TotalCost = gScore[current];
                 construct_result_path(ref context, cameFrom, current, startPos, ref result);
@@ -536,6 +536,7 @@ public static class Pathfinding
         }
 
         // small hack to make sure agents don't stick on walls when going up/down ladders
+        if (!result.Segments.IsEmpty)
         {
             // insert a segment at the very start of the path that re-centers the agent on the ladder
             TileInfo startTile = new TileInfo(Helpers.GetTile(startPos), ref context.TileWorld);
@@ -626,7 +627,7 @@ public static class Pathfinding
         {
             PointDistanceInput pointDistanceInput = new PointDistanceInput()
             {
-                MaxDistance = 0.3f,
+                MaxDistance = (float)max((fix)0.5 - SimulationGameConstants.CharacterRadius, 0),
                 Filter = SimulationGameConstants.Physics.CollideWithCharactersFilter.Data,
                 Ignore = ctx.AgentPhysicsBodyIndex != -1 ? new IgnoreHit(ctx.AgentPhysicsBodyIndex) : default,
                 Position = (float2)tile.WorldCenter,
