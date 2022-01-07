@@ -75,8 +75,8 @@ MonoBehaviour:
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: c1b5006aa2c881a4b8eb04a8ed1435d5, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: "Arc \xE0 Fl\xE8che"
-  EffectDescription: "Lance une fl\xE8che standard"
+  Name: "Pluie de Fl\xE8che"
+  EffectDescription: "Lance une multitude de fl\xE8che en simultan\xE9"
   SfxOnUse: {fileID: 11400000, guid: 294d1b70193c2ba449c98eb807bacece, type: 2}
   PlayAnimation: 1
   Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
@@ -95,3 +95,5 @@ MonoBehaviour:
           RawValue: 0
         ProjectilePrefab: {fileID: 2385346486794747607, guid: 4899e73436da28d43ba3448231f4f76d,
           type: 3}
+        Quantity: 3
+        SeparationFactor: 1
