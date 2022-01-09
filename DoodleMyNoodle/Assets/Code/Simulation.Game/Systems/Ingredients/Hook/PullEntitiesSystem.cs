@@ -33,7 +33,7 @@ public class PullEntitiesSystem : SimSystemBase
 
             fix deltaTime = currentTime - pullData.StartTime;
 
-            if ((dLength < (fix)0.25) || (deltaTime > dLength))
+            if ((dLength < (fix)0.25) || (deltaTime > (dLength * (fix)1.5)))
             {
                 done = true;
             }

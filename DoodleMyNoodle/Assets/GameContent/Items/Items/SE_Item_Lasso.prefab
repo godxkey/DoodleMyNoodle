@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionPullEntity
+  Value: GameActionThrow
   GameActionSettings:
   - id: 0
   ApCost: 1
@@ -76,7 +76,7 @@ MonoBehaviour:
   Icon: {fileID: 21300000, guid: 706e02d15d55c8749a985d6436671691, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Lasso
-  EffectDescription: "Attire une entit\xE9 vers toi"
+  EffectDescription: "Attire une entit\xE9 vers toi ou vous am\xE8ne \xE0 la position"
   SfxOnUse: {fileID: 0}
   PlayAnimation: 1
   Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
@@ -84,9 +84,15 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionPullEntity/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Speed:
-          RawValue: 21474836480
-        Range:
-          RawValue: 17179869184
+        SpeedMin:
+          RawValue: 0
+        SpeedMax:
+          RawValue: 42949672960
+        SpawnExtraDistance:
+          RawValue: 0
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: e281eeeeffa63ef4e82fe34d55a4eae0,
+          type: 3}
+        Quantity: 1
+        SeparationFactor: 1

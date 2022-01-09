@@ -36,8 +36,10 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
             ImpulseOnContacts = GetComponentDataFromEntity<ImpulseOnContact>(isReadOnly: true),
             StickOnCollision = GetComponentDataFromEntity<StickOnCollisionTag>(isReadOnly: true),
             HookDatas = GetComponentDataFromEntity<HookData>(isReadOnly: true),
+            LassoDatas = GetComponentDataFromEntity<LassoData>(isReadOnly: true),
 
             OutHooks = _reactSystem.HookRequests,
+            OutLassos = _reactSystem.LassoRequests,
             OutDamages = _reactSystem.DamagesRequests,
             OutDestroys = _reactSystem.DestroyRequests,
             OutStick = _reactSystem.StickRequest,
@@ -60,10 +62,12 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
         [ReadOnly] public ComponentDataFromEntity<ImpulseOnContact> ImpulseOnContacts;
         [ReadOnly] public ComponentDataFromEntity<StickOnCollisionTag> StickOnCollision;
         [ReadOnly] public ComponentDataFromEntity<HookData> HookDatas;
+        [ReadOnly] public ComponentDataFromEntity<LassoData> LassoDatas;
         [ReadOnly] public PhysicsWorld World;
 
         public NativeList<(Entity instigator, Entity target, int damage)> OutDamages;
         public NativeList<(Entity hook, Entity other)> OutHooks;
+        public NativeList<(Entity hook, Entity other, LassoData lasso)> OutLassos;
         public NativeList<Entity> OutDestroys;
         public NativeList<Entity> OutStick;
         public NativeList<(Entity other, fix2 strength)> OutImpulse;
@@ -114,6 +118,11 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
                 OutHooks.AddUnique((entityA, entityB));
             }
 
+            if (LassoDatas.HasComponent(entityA) && LassoDatas.TryGetComponent(entityA, out LassoData lassoData)) 
+            {
+                OutLassos.AddUnique((entityA, entityB, lassoData));
+            }
+
             if (ExplodeOnContacts.TryGetComponent(entityA, out ExplodeOnContact explodeOnContact))
             {
                 var details = collisionEvent.CalculateDetails(ref World);
@@ -138,6 +147,7 @@ public class ReactOnCollisionSystem : SimSystemBase
     public NativeList<(Entity other, fix2 strength)> ImpulseRequest;
     public NativeList<(Entity instigator, fix2 pos, fix range, int damage)> ExplosionRequests;
     public NativeList<(Entity hook, Entity other)> HookRequests;
+    public NativeList<(Entity lasso, Entity other, LassoData)> LassoRequests;
 
     protected override void OnCreate()
     {
@@ -148,6 +158,7 @@ public class ReactOnCollisionSystem : SimSystemBase
         ImpulseRequest = new NativeList<(Entity, fix2)>(Allocator.Persistent);
         ExplosionRequests = new NativeList<(Entity, fix2, fix, int)>(Allocator.Persistent);
         HookRequests = new NativeList<(Entity, Entity)>(Allocator.Persistent);
+        LassoRequests = new NativeList<(Entity, Entity, LassoData)>(Allocator.Persistent);
     }
 
     protected override void OnDestroy()
@@ -159,6 +170,7 @@ public class ReactOnCollisionSystem : SimSystemBase
         ImpulseRequest.Dispose();
         ExplosionRequests.Dispose();
         HookRequests.Dispose();
+        LassoRequests.Dispose();
     }
 
     protected override void OnUpdate()
@@ -200,6 +212,25 @@ public class ReactOnCollisionSystem : SimSystemBase
             });
         }
 
+        foreach ((Entity instigator, Entity target, LassoData lasso) in LassoRequests)
+        {
+            if (EntityManager.TryGetComponentData(instigator, out ProjectileInstigator projInstigator)) 
+            {
+                if (EntityManager.HasComponent<PhysicsVelocity>(target) && EntityManager.TryGetComponentData(projInstigator.Value, out FixTranslation translation))
+                {
+                    CommonWrites.RequestPull(Accessor, target, translation.Value, lasso.PullSpeed);
+                }
+                else
+                {
+                    if (EntityManager.HasComponent<PhysicsVelocity>(projInstigator.Value) && EntityManager.TryGetComponentData(instigator, out FixTranslation instTranslation))
+                    {
+                        fix2 position = instTranslation + new fix2(0, (fix)0.5);
+                        CommonWrites.RequestPull(Accessor, projInstigator.Value, position, lasso.PullSpeed);
+                    }
+                }
+            }
+        }
+
         // destroy
         EntityManager.DestroyEntity(DestroyRequests);
 
@@ -208,5 +239,6 @@ public class ReactOnCollisionSystem : SimSystemBase
         StickRequest.Clear();
         ExplosionRequests.Clear();
         HookRequests.Clear();
+        LassoRequests.Clear();
     }
 }

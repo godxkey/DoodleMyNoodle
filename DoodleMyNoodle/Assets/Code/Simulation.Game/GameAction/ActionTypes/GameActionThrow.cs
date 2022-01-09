@@ -135,6 +135,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
 
                 accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(velocity + instigatorVel));
                 accessor.SetOrAddComponent(projectileInstance, new FixTranslation(spawnPos));
+                accessor.SetOrAddComponent(projectileInstance, new ProjectileInstigator(context.InstigatorPawn));
             }
 
             return true;
