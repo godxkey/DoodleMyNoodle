@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8821241209944219005}
   - component: {fileID: 2677628293349642642}
-  - component: {fileID: 8549762061682411268}
+  - component: {fileID: 6323485160588907889}
   m_Layer: 0
-  m_Name: SE_Item_Lasso
+  m_Name: SE_Item_LaserGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,13 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: c4488db1c97eb2c4bb23df761570271a
+  _guid: 68eedd2d76092b5408155be7d6e3775d
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _hasTransform: 0
   _showGhost: 1
---- !u!114 &8549762061682411268
+--- !u!114 &6323485160588907889
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -70,17 +70,18 @@ MonoBehaviour:
   IsStackable: 0
   CooldownType: 2
   CooldownDuration:
-    RawValue: 8589934592
+    RawValue: 17179869184
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
-  Icon: {fileID: 21300000, guid: 706e02d15d55c8749a985d6436671691, type: 3}
+  Icon: {fileID: 21300000, guid: e4029e122f6d4074180d0a4e535e748b, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: Lasso
-  EffectDescription: "Attire une entit\xE9 vers toi ou vous am\xE8ne \xE0 la position"
-  SfxOnUse: {fileID: 0}
+  Name: Laser
+  EffectDescription: "Lance un projectile laser qui d\xE9truit tout sur son passage"
+  SfxOnUse: {fileID: 11400000, guid: 294d1b70193c2ba449c98eb807bacece, type: 2}
   PlayAnimation: 1
   Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
-  CustomSurveys: []
+  CustomSurveys:
+  - {fileID: 6075807751254421543, guid: 608b3f44970a7324ab091bbb7ae1585f, type: 3}
   references:
     version: 1
     00000000:
@@ -92,7 +93,7 @@ MonoBehaviour:
           RawValue: 42949672960
         SpawnExtraDistance:
           RawValue: 0
-        ProjectilePrefab: {fileID: 2385346486794747607, guid: e281eeeeffa63ef4e82fe34d55a4eae0,
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: 4200713b198953f40bfd823c79395b91,
           type: 3}
         Quantity: 1
         SeparationFactor: 1

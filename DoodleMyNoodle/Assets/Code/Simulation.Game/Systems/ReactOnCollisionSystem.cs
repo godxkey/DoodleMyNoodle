@@ -37,6 +37,7 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
             StickOnCollision = GetComponentDataFromEntity<StickOnCollisionTag>(isReadOnly: true),
             HookDatas = GetComponentDataFromEntity<HookData>(isReadOnly: true),
             LassoDatas = GetComponentDataFromEntity<LassoData>(isReadOnly: true),
+            Velocity = GetComponentDataFromEntity<PhysicsVelocity>(isReadOnly: true),
 
             OutHooks = _reactSystem.HookRequests,
             OutLassos = _reactSystem.LassoRequests,
@@ -45,6 +46,7 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
             OutStick = _reactSystem.StickRequest,
             OutImpulse = _reactSystem.ImpulseRequest,
             OutExplosions = _reactSystem.ExplosionRequests,
+            OutFallDamage = _reactSystem.FallDamageRequests,
             World = _physicsWorldSystem.PhysicsWorld,
 
         }.Schedule(_stepPhysicsWorldSystem.Simulation, ref _physicsWorldSystem.PhysicsWorld, Dependency);
@@ -63,6 +65,7 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
         [ReadOnly] public ComponentDataFromEntity<StickOnCollisionTag> StickOnCollision;
         [ReadOnly] public ComponentDataFromEntity<HookData> HookDatas;
         [ReadOnly] public ComponentDataFromEntity<LassoData> LassoDatas;
+        [ReadOnly] public ComponentDataFromEntity<PhysicsVelocity> Velocity;
         [ReadOnly] public PhysicsWorld World;
 
         public NativeList<(Entity instigator, Entity target, int damage)> OutDamages;
@@ -72,6 +75,7 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
         public NativeList<Entity> OutStick;
         public NativeList<(Entity other, fix2 strength)> OutImpulse;
         public NativeList<(Entity instigator, fix2 pos, fix radius, int damage)> OutExplosions;
+        public NativeList<(Entity instigator, Entity target, float impulse)> OutFallDamage;
 
         public void Execute(CollisionEvent collisionEvent)
         {
@@ -133,6 +137,16 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
                     radius: explodeOnContact.Radius,
                     damage: explodeOnContact.Damage));
             }
+
+            if (Velocity.HasComponent(entityA))
+            {
+                var details = collisionEvent.CalculateDetails(ref World);
+
+                OutFallDamage.Add((
+                    instigator: entityA,
+                    target: entityB,
+                    impulse: details.EstimatedImpulse));
+            }
         }
     }
 }
@@ -148,6 +162,7 @@ public class ReactOnCollisionSystem : SimSystemBase
     public NativeList<(Entity instigator, fix2 pos, fix range, int damage)> ExplosionRequests;
     public NativeList<(Entity hook, Entity other)> HookRequests;
     public NativeList<(Entity lasso, Entity other, LassoData)> LassoRequests;
+    public NativeList<(Entity instigator, Entity target, float impulse)> FallDamageRequests;
 
     protected override void OnCreate()
     {
@@ -159,6 +174,7 @@ public class ReactOnCollisionSystem : SimSystemBase
         ExplosionRequests = new NativeList<(Entity, fix2, fix, int)>(Allocator.Persistent);
         HookRequests = new NativeList<(Entity, Entity)>(Allocator.Persistent);
         LassoRequests = new NativeList<(Entity, Entity, LassoData)>(Allocator.Persistent);
+        FallDamageRequests = new NativeList<(Entity, Entity, float)>(Allocator.Persistent);
     }
 
     protected override void OnDestroy()
@@ -171,6 +187,7 @@ public class ReactOnCollisionSystem : SimSystemBase
         ExplosionRequests.Dispose();
         HookRequests.Dispose();
         LassoRequests.Dispose();
+        FallDamageRequests.Dispose();
     }
 
     protected override void OnUpdate()
@@ -191,6 +208,31 @@ public class ReactOnCollisionSystem : SimSystemBase
         foreach ((Entity instigator, fix2 pos, fix radius, int damage) in ExplosionRequests)
         {
             CommonWrites.RequestExplosion(Accessor, instigator, pos, radius, damage, true);
+        }
+
+        // fall damage
+        foreach ((Entity instigator, Entity target, float impulse) in FallDamageRequests)
+        {
+            if (Accessor.TryGetComponent(instigator, out NavAgentFootingState footing))
+            {
+                float impulseThreshold = footing.Value == NavAgentFooting.None ? SimulationGameConstants.FallingFallDamageImpulseThreshold : SimulationGameConstants.JumpingFallDamageImpulseThreshold;
+                if (impulse > impulseThreshold)
+                {
+                    CommonWrites.RequestDamage(Accessor, instigator, instigator, SimulationGameConstants.FallDamage);
+
+                    if (Accessor.HasComponent<TileColliderTag>(target) 
+                        && Accessor.TryGetComponent(target, out FixTranslation translation)
+                        && impulse > SimulationGameConstants.DestroyingTileImpulseThreshold)
+                    {
+                        int2 pos = Helpers.GetTile(translation);
+                        CommonWrites.RequestTransformTile(Accessor, pos, TileFlagComponent.Empty);
+                    }
+                    else if (Accessor.TryGetComponent(target, out Health health))
+                    {
+                        CommonWrites.RequestDamage(Accessor, instigator, target, 1);
+                    }
+                }
+            }
         }
 
         // Stick
@@ -240,5 +282,6 @@ public class ReactOnCollisionSystem : SimSystemBase
         ExplosionRequests.Clear();
         HookRequests.Clear();
         LassoRequests.Clear();
+        FallDamageRequests.Clear();
     }
 }

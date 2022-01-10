@@ -31,6 +31,11 @@ public static class SimulationGameConstants
     public static readonly fix AIGrenadierShootDistanceRatio = (fix)0.6; // attemps to shoot at 60% of the distance to target (to account for bomb bounces)
     public static readonly fix AIThinkGlobalCooldown = (fix)0.5;
 
+    public static readonly int FallDamage = 1;
+    public static readonly float JumpingFallDamageImpulseThreshold = 4;
+    public static readonly float FallingFallDamageImpulseThreshold = 3;
+    public static readonly float DestroyingTileImpulseThreshold = 5;
+
     private static bool s_init = false;
 
     public static void InitIfNeeded()

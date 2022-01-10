@@ -74,4 +74,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype5_Presentation.unity
     guid: 1338c8e3ea4c3d744af67ad7b33f19df
+  - enabled: 1
+    path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype6.unity
+    guid: 9c1fd12f454b0e54ca88cb776f6faf18
+  - enabled: 1
+    path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype6_Presentation.unity
+    guid: b4806dce33f859a449e42aa471e072af
   m_configObjects: {}

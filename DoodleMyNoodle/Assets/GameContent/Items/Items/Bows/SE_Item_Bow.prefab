@@ -66,22 +66,22 @@ MonoBehaviour:
   Value: GameActionThrow
   GameActionSettings:
   - id: 0
-  ApCost: 1
-  IsStackable: 1
-  CooldownType: 0
+  ApCost: 0
+  IsStackable: 0
+  CooldownType: 2
   CooldownDuration:
-    RawValue: 4294967296
+    RawValue: 8589934592
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: c1b5006aa2c881a4b8eb04a8ed1435d5, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: "Pluie de Fl\xE8che"
-  EffectDescription: "Lance une multitude de fl\xE8che en simultan\xE9"
+  Name: "Arc \xE0 Fl\xE8ce"
+  EffectDescription: "Lance une fl\xE8che"
   SfxOnUse: {fileID: 11400000, guid: 294d1b70193c2ba449c98eb807bacece, type: 2}
   PlayAnimation: 1
   Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
   CustomSurveys:
-  - {fileID: 7192197591991983227, guid: 4a9670b303e62124b8760b00d6a2245e, type: 3}
+  - {fileID: 6075807751254421543, guid: 608b3f44970a7324ab091bbb7ae1585f, type: 3}
   references:
     version: 1
     00000000:
@@ -95,5 +95,5 @@ MonoBehaviour:
           RawValue: 0
         ProjectilePrefab: {fileID: 2385346486794747607, guid: 4899e73436da28d43ba3448231f4f76d,
           type: 3}
-        Quantity: 3
+        Quantity: 1
         SeparationFactor: 1
