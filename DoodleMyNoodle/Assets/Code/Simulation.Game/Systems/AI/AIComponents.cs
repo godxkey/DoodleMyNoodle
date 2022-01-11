@@ -81,7 +81,7 @@ public struct AIPathSegment : IBufferElementData
 /// </summary>
 public struct AIPatrolData : IComponentData
 {
-    public int LastPatrolTurn;
+    public TimeValue LastPatrolTurn;
 }
 
 public struct AIFuzzyThrowSettings : IComponentData

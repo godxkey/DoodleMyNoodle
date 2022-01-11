@@ -12,22 +12,22 @@ public class ConvertEntitySystem : SimSystemBase
     {
         if (HasSingleton<NewTurnEventData>())
         {
-            int currentPlayingTeam = CommonReads.GetTurnTeam(Accessor);
+            var currentTurnData = CommonReads.GetCurrentTurnData(Accessor);
 
             Entities
                 .ForEach((Entity entity, ref Converted converted, ref Team team) =>
                 {
-                    // decrease duration
-                    if (team.Value != currentPlayingTeam)
-                    {
-                        converted.RemainingTurns--;
-                    }
-
                     // switch team if convert is complete
                     if (converted.RemainingTurns <= 0)
                     {
                         team.Value = team.Value == 0 ? 1 : 0;
                         EntityManager.RemoveComponent<Converted>(entity);
+                    }
+
+                    // decrease duration
+                    if (Helpers.CanControllerPlay(entity, currentTurnData))
+                    {
+                        converted.RemainingTurns--;
                     }
                 })
                 .WithStructuralChanges()

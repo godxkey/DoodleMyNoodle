@@ -21,9 +21,13 @@ public class TurnTeamDisplay : GamePresentationBehaviour
     {
         int currentTeam = -1;
 
-        if (SimWorld.TryGetSingleton(out TurnCurrentTeamSingletonComponent turnCurrentTeam))
+        foreach (var item in Cache.CurrentlyPlayingControllers)
         {
-            currentTeam = turnCurrentTeam.Value;
+            if (SimWorld.TryGetComponent(item, out Team team))
+            {
+                currentTeam = team.Value;
+                break;
+            }
         }
 
         SetCurrentTeam((DesignerFriendlyTeam)currentTeam);
@@ -33,7 +37,7 @@ public class TurnTeamDisplay : GamePresentationBehaviour
     {
         for (int i = 0; i < TeamTurnTexts.Count; i++)
         {
-            if(TeamTurnTexts[i].Team == team)
+            if (TeamTurnTexts[i].Team == team)
             {
                 TextDisplay.text = TeamTurnTexts[i].Text;
                 return;

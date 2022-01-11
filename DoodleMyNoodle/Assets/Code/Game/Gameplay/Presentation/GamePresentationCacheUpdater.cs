@@ -32,7 +32,10 @@ public class GamePresentationCache
     public Vector2 LocalPawnPositionFloat;
     public Entity LocalController;
     public Team LocalControllerTeam;
-    public Team CurrentTeam;
+    public bool CanLocalPlayerPlay;
+    public bool IsNewTurn;
+    public bool IsNewRound;
+    public List<Entity> CurrentlyPlayingControllers = new List<Entity>();
     public TileWorld TileWorld;
     public ExternalSimWorldAccessor SimWorld;
 
@@ -81,10 +84,16 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         Cache.PointedViewEntities.Clear();
         Cache.PointedColliders.Clear();
         Cache.PointedGameObjects.Clear();
+        Cache.CanLocalPlayerPlay = false;
+        Cache.IsNewRound = false;
+        Cache.IsNewTurn = false;
     }
 
     protected override void OnUpdate()
     {
+        Cache.IsNewRound = SimWorldAccessor.HasSingleton<NewRoundEventData>();
+        Cache.IsNewTurn = SimWorldAccessor.HasSingleton<NewTurnEventData>();
+
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Camera
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -108,17 +117,13 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
-        //      Current Team
+        //      Playing controllers
         ////////////////////////////////////////////////////////////////////////////////////////
-        if (Cache.SimWorld.TryGetSingleton(out TurnCurrentTeamSingletonComponent curTeam))
-        {
-            Cache.CurrentTeam = curTeam.Value;
-        }
-        else
-        {
-            Cache.CurrentTeam = -1;
-        }
-
+        var temp = new NativeList<Entity>(Allocator.Temp);
+        CommonReads.GetCurrentlyPlayingEntities(SimWorldAccessor, temp);
+        Cache.CurrentlyPlayingControllers.Clear();
+        foreach (var item in temp)
+            Cache.CurrentlyPlayingControllers.Add(item);
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Player & Pawn
@@ -144,6 +149,8 @@ public class GamePresentationCacheUpdater : ViewSystemBase
             Cache.LocalController = Entity.Null;
             Cache.LocalPawnTileEntity = Entity.Null;
         }
+        Cache.CanLocalPlayerPlay = Cache.CurrentlyPlayingControllers.Contains(Cache.LocalController);
+
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Pointer

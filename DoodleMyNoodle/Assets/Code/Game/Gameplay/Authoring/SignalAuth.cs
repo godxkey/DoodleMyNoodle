@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngineX;
+using UnityEngine.Serialization;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -12,7 +13,8 @@ using UnityEditor;
 [ExecuteInEditMode]
 public class SignalAuth : MonoBehaviour, IConvertGameObjectToEntity, SignalAuth.Gizmos.ISignalListener
 {
-    public bool StayOnForever = false;
+    [FormerlySerializedAs("StayOnForever")]
+    public bool NeverOffAfterOn = false;
     public ESignalEmissionType Emission = ESignalEmissionType.None;
     public List<SignalAuth> LogicTargets = new List<SignalAuth>();
     //public List<SignalAuth> PropagationTargets = new List<SignalAuth>();
@@ -36,7 +38,7 @@ public class SignalAuth : MonoBehaviour, IConvertGameObjectToEntity, SignalAuth.
             }
         }
 
-        dstManager.AddComponentData<SignalStayOnForever>(entity, StayOnForever);
+        dstManager.AddComponentData<SignalStayOnForever>(entity, NeverOffAfterOn);
         //var targetsECS = dstManager.AddBuffer<SignalPropagationTarget>(entity);
 
         //foreach (var target in PropagationTargets)

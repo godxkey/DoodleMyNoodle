@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
@@ -10,25 +11,20 @@ public class RefillActionPointsSystem : SimSystemBase
     {
         if (HasSingleton<NewTurnEventData>())
         {
-            int currentTeam = CommonReads.GetTurnTeam(Accessor);
+            NativeList<Entity> playingEntities = new NativeList<Entity>(Allocator.Temp);
+            CommonReads.GetCurrentlyPlayingEntities(Accessor, playingEntities);
 
-            Entities
-                .ForEach((Entity pawn, ref ActionPoints actionPoints, in Controllable controllable) =>
+            foreach (var controller in playingEntities)
+            {
+                if (TryGetComponent(controller, out ControlledEntity pawn))
                 {
-                    Entity pawnController = controllable.CurrentController;
-                    if (HasComponent<Team>(pawnController))
+                    if (HasComponent<MaximumFix<ActionPoints>>(pawn) &&
+                        HasComponent<ActionPoints>(pawn))
                     {
-                        Team pawnTeam = GetComponent<Team>(pawnController);
-
-                        if (pawnTeam.Value != currentTeam)
-                        {
-                            return;
-                        }
-
-                        actionPoints = GetComponent<MaximumFix<ActionPoints>>(pawn).Value;
+                        SetComponent<ActionPoints>(pawn, GetComponent<MaximumFix<ActionPoints>>(pawn).Value);
                     }
-                })
-                .Run();
+                }
+            }
         }
     }
 }

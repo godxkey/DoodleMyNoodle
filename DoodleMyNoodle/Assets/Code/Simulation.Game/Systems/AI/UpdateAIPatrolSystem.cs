@@ -6,7 +6,7 @@ using static Unity.Mathematics.math;
 
 [UpdateInGroup(typeof(AISystemGroup))]
 [UpdateAfter(typeof(SpecificAISystemGroup))]
-public class UpdateAIPatrolSystem : SimSystemBase
+public class UpdateAIPatrolSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {
@@ -23,7 +23,7 @@ public class UpdateAIPatrolSystem : SimSystemBase
     protected override void OnUpdate()
     {
         var tileWorld = CommonReads.GetTileWorld(Accessor);
-        var turnCount = CommonReads.GetTurn(Accessor);
+        var turnCount = GetElapsedTime(TimeValue.ValueType.Turns);
         Pathfinding.PathResult pathBuffer = new Pathfinding.PathResult(Allocator.TempJob);
         var time = Time.ElapsedTime;
         FixRandom random = World.Random();

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngineX.InspectorDisplay;
 using UnityEngineX;
 using System.Reflection;
+using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
 public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
@@ -36,7 +37,8 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
     public bool HideInInventory = false;
 
-    public bool CanBeUsedAtAnytime = false;
+    [FormerlySerializedAs("CanBeUsedAtAnytime")]
+    public bool UsableInOthersTurn = false;
 
     public bool HasCooldown => CooldownType != CooldownMode.NoCooldown;
 

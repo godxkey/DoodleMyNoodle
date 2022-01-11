@@ -11,7 +11,7 @@ public class SignalAuthEditor : Editor
 
     private void OnEnable()
     {
-        StayOnForever = serializedObject.FindProperty(nameof(SignalAuth.StayOnForever));
+        StayOnForever = serializedObject.FindProperty(nameof(SignalAuth.NeverOffAfterOn));
         Emission = serializedObject.FindProperty(nameof(SignalAuth.Emission));
         LogicTargets = serializedObject.FindProperty(nameof(SignalAuth.LogicTargets));
         //PropagationTargets = serializedObject.FindProperty(nameof(SignalAuth.PropagationTargets));

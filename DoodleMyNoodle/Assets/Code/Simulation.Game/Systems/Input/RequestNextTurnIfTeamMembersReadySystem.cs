@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Entities;
 
 [UpdateInGroup(typeof(InputSystemGroup))]
@@ -7,42 +8,28 @@ public class RequestNextTurnIfTeamMembersReadySystem : SimSystemBase
     {
         base.OnCreate();
 
-        RequireSingletonForUpdate<TurnCurrentTeamSingletonComponent>();
+        RequireSingletonForUpdate<TurnSystemDataTag>();
     }
 
     protected override void OnUpdate()
     {
-        int teamCurrentlyPlaying = GetSingleton<TurnCurrentTeamSingletonComponent>().Value;
-        //bool everyoneIsReady = true;
-        bool isSomeoneReady = false;
+        NativeList<Entity> playingEntities = new NativeList<Entity>(Allocator.Temp);
+        CommonReads.GetCurrentlyPlayingEntities(Accessor, playingEntities);
 
-        Entities.ForEach((ref ReadyForNextTurn readyForNextTurn, in Active active, in ControlledEntity pawn, in Team team) =>
+        // if any playing controller is active and ready, request next turn
+        bool isSomeoneReady = false;
+        foreach (var controller in playingEntities)
         {
-            // if a team member is ready
-            if (active && HasComponent<Controllable>(pawn) && team == teamCurrentlyPlaying && readyForNextTurn.Value)
+            if (GetComponent<Active>(controller) && GetComponent<ReadyForNextTurn>(controller))
             {
                 isSomeoneReady = true;
-                readyForNextTurn.Value = false;
+                break;
             }
-        }).Run();
+        }
 
-        if (isSomeoneReady && teamCurrentlyPlaying != -1)
+        if (isSomeoneReady)
         {
             CommonWrites.RequestNextTurn(Accessor);
         }
-
-        //Entities.ForEach((in Active active, in ControlledEntity pawn, in Team team, in ReadyForNextTurn readyForNextTurn) =>
-        //{
-        //    // if a team member is NOT ready
-        //    if (active && HasComponent<Controllable>(pawn) && team == teamCurrentlyPlaying && !readyForNextTurn.Value)
-        //    {
-        //        everyoneIsReady = false;
-        //    }
-        //}).Run();
-
-        //if (everyoneIsReady && teamCurrentlyPlaying != -1)
-        //{
-        //    CommonWrites.RequestNextTurn(Accessor);
-        //}
     }
 }

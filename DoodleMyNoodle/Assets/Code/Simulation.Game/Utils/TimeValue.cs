@@ -55,6 +55,20 @@ public struct TimeValue : IEquatable<TimeValue>
         return x.Value < y.Value;
     }
 
+    public static bool operator >=(TimeValue x, TimeValue y)
+    {
+        ErrorIfTypeMismatch(x, y);
+
+        return x.Value >= y.Value;
+    }
+
+    public static bool operator <=(TimeValue x, TimeValue y)
+    {
+        ErrorIfTypeMismatch(x, y);
+
+        return x.Value <= y.Value;
+    }
+
     public static bool operator ==(TimeValue x, TimeValue y)
     {
         ErrorIfTypeMismatch(x, y);

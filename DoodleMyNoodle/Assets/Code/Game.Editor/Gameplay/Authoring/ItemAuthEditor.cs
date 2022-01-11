@@ -51,7 +51,7 @@ public class ItemAuthEditor : Editor
         _animationProp = serializedObject.FindProperty(nameof(ItemAuth.Animation));
         _surveyProp = serializedObject.FindProperty(nameof(ItemAuth.CustomSurveys));
         _hideInInventory = serializedObject.FindProperty(nameof(ItemAuth.HideInInventory));
-        _canBeUsedAtAnytime = serializedObject.FindProperty(nameof(ItemAuth.CanBeUsedAtAnytime));
+        _canBeUsedAtAnytime = serializedObject.FindProperty(nameof(ItemAuth.UsableInOthersTurn));
 
         InitStaticData();
     }

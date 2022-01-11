@@ -31,10 +31,8 @@ public class UpdateArcherAISystem : SimSystemBase
         public NativeList<Entity> ShootingTargets;
         public NativeQueue<Pathfinding.TileCostPair> FloodSearchBuffer;
         public FixRandom Random;
-        public int TurnCount;
         public NativeList<int2> PathBuffer;
         public fix Time;
-        public Team CurrentTurnTeam;
     }
 
     public struct AgentCache
@@ -130,9 +128,7 @@ public class UpdateArcherAISystem : SimSystemBase
             FloodSearchBuffer = _floodSearchBuffer,
             ProfileMarkers = _profileMarkers,
             Random = World.Random(),
-            TurnCount = CommonReads.GetTurn(Accessor),
             PathBuffer = _path,
-            CurrentTurnTeam = CommonReads.GetTurnTeam(Accessor),
             Time = Time.ElapsedTime,
         };
 

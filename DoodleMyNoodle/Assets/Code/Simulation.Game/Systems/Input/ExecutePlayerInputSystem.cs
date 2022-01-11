@@ -99,7 +99,7 @@ public class ExecutePlayerInputSystem : SimSystemBase
             {
                 if (HasComponent<Team>(playerEntity))
                 {
-                    if (CommonReads.CanTeamPlay(Accessor, GetComponent<Team>(playerEntity)))
+                    if (Helpers.CanControllerPlay(playerEntity, CommonReads.GetCurrentTurnDataNoAlloc(Accessor)))
                     {
                         Entity pawn = GetPlayerPawn(playerEntity);
                         if (EntityManager.HasComponent<InventoryItemReference>(pawn))

@@ -13,32 +13,15 @@ public class TimerBarDisplay : GamePresentationBehaviour
 
     protected override void OnGamePresentationUpdate()
     {
-        if (SimWorld.TryGetSingleton(out TurnTimerSingletonComponent turnTimer) 
-            && SimWorld.TryGetSingleton(out TurnDurationSingletonComponent turnDuration)
-            && SimWorld.TryGetSingleton(out TurnCurrentTeamSingletonComponent turnTeam))
+        if (SimWorld.TryGetSingleton(out TurnSystemDataRemainingTurnTime remainingTurnTime) 
+            && SimWorld.TryGetSingleton(out TurnSystemDataTimerSettings timerSettings))
         {
-            if (turnTimer.Value <= TimeToStartShowing)
+            if (remainingTurnTime.Value <= TimeToStartShowing)
             {
                 BarContainer.SetActive(true);
 
-                Color color;
-                fix teamTurnDuration;
-                switch (turnTeam.Value)
-                {
-                    case (int)TurnSystemSetting.Team.AI:
-                        color = Color.red;
-                        teamTurnDuration = turnDuration.DurationAI;
-                        break;
-
-                    default:
-                    case (int)TurnSystemSetting.Team.Players:
-                        color = Color.blue;
-                        teamTurnDuration = turnDuration.DurationPlayer;
-                        break;
-                }
-
                 TimerBar.fillRect.GetComponent<Image>().color = Color.blue;
-                TimerBar.value = (float)(turnTimer.Value / fixMath.min(teamTurnDuration, TimeToStartShowing));
+                TimerBar.value = (float)(remainingTurnTime.Value / fixMath.min(timerSettings.TurnDuration, TimeToStartShowing));
             }
             else
             {

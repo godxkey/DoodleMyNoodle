@@ -81,23 +81,13 @@ public class ReadyButton : GamePresentationBehaviour
             // If we don't have a pawn
             _viewState.Set(TurnState.NotMyTurn);
         }
-        else if (Cache.CurrentTeam != Cache.LocalControllerTeam && Cache.CurrentTeam.Value != -1)
+        else if (!Cache.CanLocalPlayerPlay && SimWorld.HasSingleton<GameStartedTag>())
         {
             // if it's not our turn to play
-            _viewState.Set(SimWorld.HasSingleton<GameStartedTag>() ? TurnState.NotMyTurn : TurnState.NotReady);
+            _viewState.Set(TurnState.NotMyTurn);
         }
         else
         {
-            // cannot interact with button when another player is playing
-            if (SimWorld.TryGetSingleton(out PlayersTurn playersTurn) && Cache.CurrentTeam.Value != -1)
-            {
-                if (playersTurn.Value != PlayerHelpers.GetLocalPlayerID().Value)
-                {
-                    _viewState.Set(TurnState.NotMyTurn);
-                    return;
-                }
-            }
-
             // if it's our turn to play
             if (SimWorld.TryGetComponent(Cache.LocalController, out ReadyForNextTurn ready) && ready.Value)
             {
@@ -148,7 +138,7 @@ public class ReadyButton : GamePresentationBehaviour
         SimWorld.SubmitInput(new SimPlayerInputNextTurn(!currentlyReady));
 
         _viewState.Set(currentlyReady ? TurnState.NotReady : TurnState.Ready);
-        
+
         _updateTimer = UPDATE_DELAY; // reset timer as we're manually updating
 
         ButtonPressed?.Invoke();

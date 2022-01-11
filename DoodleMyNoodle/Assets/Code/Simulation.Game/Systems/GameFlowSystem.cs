@@ -9,7 +9,7 @@ public struct CanTriggerGameOverTag : IComponentData { }
 
 public struct GameStartedTag : IComponentData { }
 
-public class GameFlowSystem : SimSystemBase
+public class GameFlowSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
@@ -22,35 +22,34 @@ public class GameFlowSystem : SimSystemBase
         if (HasSingleton<GameStartedTag>())
             return;
 
-        int teamCurrentlyPlaying = CommonReads.GetTurnTeam(Accessor);
+        bool everyoneIsReady = true;
+        bool atLeastOnePlayerExists = false;
 
-        // if a team member is NOT ready
-        if (teamCurrentlyPlaying == -1)
+        // check if every player is ready
+        Entities
+            .WithNone<AITag>() // ignore AI
+            .ForEach((in Team team, in Active active, in ReadyForNextTurn readyForNextTurn, in ControlledEntity pawn) =>
         {
-            bool everyoneIsReady = true;
-            bool atLeastOnePlayerExists = false;
-
-            // check if every player is ready
-            Entities
-                .WithNone<AITag>() // ignore AI
-                .ForEach((in Team team, in Active active, in ReadyForNextTurn readyForNextTurn, in ControlledEntity pawn) =>
+            if (active && team == (int)DesignerFriendlyTeam.Player)
             {
-                if (active && team == (int)DesignerFriendlyTeam.Player)
+                atLeastOnePlayerExists = true;
+
+                if (!readyForNextTurn && HasComponent<Controllable>(pawn))
                 {
-                    atLeastOnePlayerExists = true;
-
-                    if (!readyForNextTurn && HasComponent<Controllable>(pawn))
-                    {
-                        everyoneIsReady = false; // if a team member is NOT ready
-                    }
+                    everyoneIsReady = false; // if a team member is NOT ready
                 }
-            }).Run();
-
-            if (atLeastOnePlayerExists && everyoneIsReady)
-            {
-                CreateSingleton<GameStartedTag>();
-                CommonWrites.RequestNextTurn(Accessor);
             }
+        }).Run();
+
+        if (atLeastOnePlayerExists && everyoneIsReady)
+        {
+            CreateSingleton<GameStartedTag>();
+            CommonWrites.RequestSetTurn(Accessor, 0);
+        }
+        else
+        {
+            if (TryGetSingleton<TurnSystemDataCurrentTurnGroupIndex>(out var index) && index != ChangeTurnSystem.NOBODY_PLAYS_TURN_GROUP_INDEX)
+                CommonWrites.RequestSetTurn(Accessor, ChangeTurnSystem.NOBODY_PLAYS_TURN_GROUP_INDEX);
         }
     }
 

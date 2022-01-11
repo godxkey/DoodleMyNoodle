@@ -43,12 +43,13 @@ public class UpdateItemCooldownSystem : SimSystemBase
         if (HasSingleton<NewTurnEventData>())
         {
             var inventoryFromEntity = GetBufferFromEntity<InventoryItemReference>(isReadOnly: true);
+            var currentTurnData = CommonReads.GetCurrentTurnData(Accessor);
 
-            Team currentTeam = CommonReads.GetTurnTeam(Accessor);
+            // decrease cooldown turn counter on all items of the currenly playing controllers
             Entities
-               .ForEach((Entity pawnController, ref ControlledEntity pawn, in Team team) =>
+               .ForEach((Entity pawnController, in ControlledEntity pawn) =>
                {
-                   if (team == currentTeam && inventoryFromEntity.HasComponent(pawn))
+                   if (Helpers.CanControllerPlay(pawnController, currentTurnData) && inventoryFromEntity.HasComponent(pawn))
                    {
                        foreach (InventoryItemReference item in inventoryFromEntity[pawn])
                        {
