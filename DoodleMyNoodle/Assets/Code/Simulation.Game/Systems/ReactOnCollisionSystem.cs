@@ -213,24 +213,26 @@ public class ReactOnCollisionSystem : SimSystemBase
         // fall damage
         foreach ((Entity instigator, Entity target, float impulse) in FallDamageRequests)
         {
+            float impulseThreshold = SimulationGameConstants.ObjectsFallDamageImpulseThreshold;
             if (Accessor.TryGetComponent(instigator, out NavAgentFootingState footing))
             {
-                float impulseThreshold = footing.Value == NavAgentFooting.None ? SimulationGameConstants.FallingFallDamageImpulseThreshold : SimulationGameConstants.JumpingFallDamageImpulseThreshold;
-                if (impulse > impulseThreshold)
-                {
-                    CommonWrites.RequestDamage(Accessor, instigator, instigator, SimulationGameConstants.FallDamage);
+                impulseThreshold = footing.Value == NavAgentFooting.None ? SimulationGameConstants.FallingFallDamageImpulseThreshold : SimulationGameConstants.JumpingFallDamageImpulseThreshold;
+            }
 
-                    if (Accessor.HasComponent<TileColliderTag>(target) 
-                        && Accessor.TryGetComponent(target, out FixTranslation translation)
-                        && impulse > SimulationGameConstants.DestroyingTileImpulseThreshold)
-                    {
-                        int2 pos = Helpers.GetTile(translation);
-                        CommonWrites.RequestTransformTile(Accessor, pos, TileFlagComponent.Empty);
-                    }
-                    else if (Accessor.TryGetComponent(target, out Health health))
-                    {
-                        CommonWrites.RequestDamage(Accessor, instigator, target, 1);
-                    }
+            if (impulse > impulseThreshold)
+            {
+                CommonWrites.RequestDamage(Accessor, instigator, instigator, SimulationGameConstants.FallDamage);
+
+                if (Accessor.HasComponent<TileColliderTag>(target)
+                    && Accessor.TryGetComponent(target, out FixTranslation translation)
+                    && impulse > SimulationGameConstants.DestroyingTileImpulseThreshold)
+                {
+                    int2 pos = Helpers.GetTile(translation);
+                    CommonWrites.RequestTransformTile(Accessor, pos, TileFlagComponent.Empty);
+                }
+                else if (Accessor.TryGetComponent(target, out Health health))
+                {
+                    CommonWrites.RequestDamage(Accessor, instigator, target, 1);
                 }
             }
         }
