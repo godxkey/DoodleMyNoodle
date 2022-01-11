@@ -195,12 +195,15 @@ public abstract class GameAction
             }
         }
 
-        if (accessor.TryGetComponent(context.InstigatorPawn, out ItemUsedThisTurn itemUsed))
+        if (!accessor.HasComponent<GameActionBasicJump.Settings>(context.Item)) 
         {
-            if (itemUsed.Value > 0)
+            if (accessor.TryGetComponent(context.InstigatorPawn, out ItemUsedThisTurn itemUsed))
             {
-                debugReason?.Set("Item Already Used");
-                return false;
+                if (itemUsed.Value > 0)
+                {
+                    debugReason?.Set("Item Already Used");
+                    return false;
+                }
             }
         }
 

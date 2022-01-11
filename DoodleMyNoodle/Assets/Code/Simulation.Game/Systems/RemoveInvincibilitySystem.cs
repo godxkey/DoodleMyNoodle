@@ -12,23 +12,15 @@ public class RemoveInvincibilitySystem : SimSystemBase
 {
     protected override void OnUpdate()
     {
-        if (HasSingleton<NewTurnEventData>())
+        if (HasSingleton<NewRoundEventData>())
         {
-            int currentTeam = CommonReads.GetTurnTeam(Accessor);
-
-            Entities.ForEach((Entity entity, ref Invincible invincible, in Controllable controller) =>
+            Entities.ForEach((Entity entity, ref Invincible invincible) =>
             {
-                if (TryGetComponent(controller, out Team team))
-                {
-                    if (team == currentTeam)
-                    {
-                        invincible.Duration--;
-                    }
+                invincible.Duration--;
 
-                    if (invincible.Duration <= 0)
-                    {
-                        EntityManager.RemoveComponent<Invincible>(entity);
-                    }
+                if (invincible.Duration <= 0)
+                {
+                    EntityManager.RemoveComponent<Invincible>(entity);
                 }
             }).WithoutBurst()
             .WithStructuralChanges()

@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 public struct MultiTimeValue
+#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
 {
     public TimeValue Seconds;
     public TimeValue Turns;
@@ -26,6 +30,24 @@ public struct MultiTimeValue
                 throw new System.Exception("Unknown time format");
         }
     }
+
+    // maybe will be useful later ?
+    //public static TimeValue operator +(MultiTimeValue x, TimeValue y) => x.GetValue(y.Type) + y;
+    //public static TimeValue operator -(MultiTimeValue x, TimeValue y) => x.GetValue(y.Type) - y;
+    //public static bool operator >(MultiTimeValue x, TimeValue y) => x.GetValue(y.Type) > y;
+    //public static bool operator <(MultiTimeValue x, TimeValue y) => x.GetValue(y.Type) < y;
+    //public static bool operator >=(MultiTimeValue x, TimeValue y) => x.GetValue(y.Type) >= y;
+    //public static bool operator <=(MultiTimeValue x, TimeValue y) => x.GetValue(y.Type) <= y;
+    //public static bool operator ==(MultiTimeValue x, TimeValue y) => x.GetValue(y.Type) == y;
+    //public static bool operator !=(MultiTimeValue x, TimeValue y) => x.GetValue(y.Type) != y;
+    //public static TimeValue operator +(TimeValue y, MultiTimeValue x) => x.GetValue(y.Type) + y;
+    //public static TimeValue operator -(TimeValue y, MultiTimeValue x) => x.GetValue(y.Type) - y;
+    //public static bool operator >(TimeValue y, MultiTimeValue x) => x.GetValue(y.Type) > y;
+    //public static bool operator <(TimeValue y, MultiTimeValue x) => x.GetValue(y.Type) < y;
+    //public static bool operator >=(TimeValue y, MultiTimeValue x) => x.GetValue(y.Type) >= y;
+    //public static bool operator <=(TimeValue y, MultiTimeValue x) => x.GetValue(y.Type) <= y;
+    //public static bool operator ==(TimeValue y, MultiTimeValue x) => x.GetValue(y.Type) == y;
+    //public static bool operator !=(TimeValue y, MultiTimeValue x) => x.GetValue(y.Type) != y;
 }
 
 public abstract class SimGameSystemBase : SimSystemBase

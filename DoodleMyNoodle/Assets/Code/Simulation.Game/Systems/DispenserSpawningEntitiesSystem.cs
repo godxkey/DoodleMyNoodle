@@ -5,112 +5,85 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class DispenserSpawningEntitiesSystem : SimSystemBase
+public class DispenserSpawningEntitiesSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
+        MultiTimeValue multiElapsedTime = GetElapsedTime();
+
         Entities
-        .WithoutBurst()
-        .WithStructuralChanges()
-        .ForEach((Entity entity, ref EntitySpawnerState entitySpawnerState, in EntitySpawnerSetting entitySpawnerSetting, in DynamicBuffer<EntitiesToSpawn> entitiesToSpawn, in Signal signal, in FixTranslation translation) =>
-        {
-            if (entitySpawnerState.TotalAmountSpawned < entitySpawnerSetting.Quantity)
+            .WithoutBurst()
+            .WithStructuralChanges()
+            .ForEach((ref EntitySpawnerState state, in EntitySpawnerSetting settings, in DynamicBuffer<EntitiesToSpawn> entitiesToSpawn, in Signal signal, in FixTranslation position) =>
             {
-                if (!entitySpawnerSetting.OnlyWhenSignalOn || signal.Value)
+                if (state.TotalAmountSpawned >= settings.Quantity)
+                    return;
+
+                if (settings.OnlyWhenSignalOn && !signal.Value)
+                    return;
+
+                TimeValue elapsedTime = multiElapsedTime.GetValue(settings.SpawnPeriod.Type);
+
+                if ((elapsedTime - state.LastSpawnTime >= settings.SpawnPeriod)
+                    || (settings.StartsReady && state.TotalAmountSpawned == 0))
                 {
-                    NativeArray<EntitiesToSpawn> entitiesToSpawnList = entitiesToSpawn.ToNativeArray(Allocator.Temp);
-
-                    if (!(entitySpawnerSetting.SpawnPeriod.Type == TimeValue.ValueType.Seconds))
-                    {
-                        if (HasSingleton<NewTurnEventData>() || (entitySpawnerSetting.StartsReady && entitySpawnerState.TotalAmountSpawned == 0))
-                        {
-                            if (entitySpawnerSetting.SpawnPeriod.Type == TimeValue.ValueType.Rounds && GetSingleton<TurnCurrentTeamSingletonComponent>().Value == 0)
-                            {
-                                entitySpawnerState.TrackedTime.Value++;
-
-                                if (entitySpawnerState.TrackedTime.Value >= entitySpawnerSetting.SpawnPeriod.Value)
-                                {
-                                    entitySpawnerState.TrackedTime.Value = 0;
-
-                                    SpawnEntities(entitiesToSpawnList, entitySpawnerSetting, ref entitySpawnerState, translation);
-                                }
-                                
-                            }
-                            else if (entitySpawnerSetting.SpawnPeriod.Type == TimeValue.ValueType.Turns)
-                            {
-                                entitySpawnerState.TrackedTime.Value++;
-
-                                if (entitySpawnerState.TrackedTime.Value >= entitySpawnerSetting.SpawnPeriod.Value) 
-                                {
-                                    entitySpawnerState.TrackedTime.Value = 0;
-
-                                    SpawnEntities(entitiesToSpawnList, entitySpawnerSetting, ref entitySpawnerState, translation);
-                                }
-                            }
-                        }
-                    }
-                    else if(((Time.ElapsedTime - entitySpawnerState.TrackedTime.Value) >= entitySpawnerSetting.SpawnPeriod.Value) 
-                            || (entitySpawnerSetting.StartsReady && entitySpawnerState.TotalAmountSpawned == 0))
-                    {
-                        entitySpawnerState.TrackedTime.Value = Time.ElapsedTime;
-
-                        SpawnEntities(entitiesToSpawnList, entitySpawnerSetting, ref entitySpawnerState, translation);
-                    }
+                    state.LastSpawnTime = elapsedTime;
+                    SpawnEntities(entitiesToSpawn.ToNativeArray(Allocator.Temp), settings, ref state, position);
                 }
-            }
-        }).Run();
+            }).Run();
     }
 
-    private void SpawnEntities(NativeArray<EntitiesToSpawn> entitiesToSpawnList, in EntitySpawnerSetting entitySpawnerSetting, ref EntitySpawnerState entitySpawnerState, in FixTranslation translation)
+    private void SpawnEntities(NativeArray<EntitiesToSpawn> entitiesToSpawnList, in EntitySpawnerSetting settings, ref EntitySpawnerState state, in FixTranslation position)
     {
-        if(entitiesToSpawnList.Length < 1)
-        {
+        if (entitiesToSpawnList.Length == 0)
             return;
-        }
 
         var random = World.Random();
 
-        for (int i = 0; i < entitySpawnerSetting.AmountSpawned; i++)
+        for (int i = 0; i < settings.AmountSpawned; i++)
         {
             // if random, select a random index
-            if (entitySpawnerSetting.SpawnedRandomly)
+            if (settings.SpawnedRandomly)
             {
-                entitySpawnerState.IndexToSpawn = random.NextInt(0, entitiesToSpawnList.Length - 1);
+                state.IndexToSpawn = random.NextInt(0, entitiesToSpawnList.Length - 1);
             }
 
             // make sure we don't overflow
-            if (entitySpawnerState.IndexToSpawn >= entitiesToSpawnList.Length)
+            if (state.IndexToSpawn >= entitiesToSpawnList.Length)
             {
-                entitySpawnerState.IndexToSpawn = 0;
+                state.IndexToSpawn = 0;
             }
 
             // track total entities spawned
-            entitySpawnerState.TotalAmountSpawned++;
+            state.TotalAmountSpawned++;
 
-            Entity newEntity = EntityManager.Instantiate(entitiesToSpawnList[entitySpawnerState.IndexToSpawn]);
+            Entity newEntity = EntityManager.Instantiate(entitiesToSpawnList[state.IndexToSpawn]);
 
             // if not random, increment the index for the next time we spawn
-            if (!entitySpawnerSetting.SpawnedRandomly)
+            if (!settings.SpawnedRandomly)
             {
-                entitySpawnerState.IndexToSpawn++;
+                state.IndexToSpawn++;
             }
 
-            if (EntityManager.TryGetComponentData(newEntity, out FixTranslation fixTranslation))
+            if (HasComponent<FixTranslation>(newEntity))
             {
-                EntityManager.SetComponentData(newEntity, translation);
+                SetComponent(newEntity, position);
             }
 
-            if (EntityManager.HasComponent<PhysicsVelocity>(newEntity))
+            if (HasComponent<PhysicsVelocity>(newEntity))
             {
-                fix2 impulseStrengh = new fix2() 
-                { 
-                    x = random.NextFix(entitySpawnerSetting.ShootDirectionMin.x, entitySpawnerSetting.ShootDirectionMax.x), 
-                    y = random.NextFix(entitySpawnerSetting.ShootDirectionMin.y, entitySpawnerSetting.ShootDirectionMax.y)
+                fix2 startingVelocity = new fix2()
+                {
+                    x = random.NextFix(settings.ShootDirectionMin.x, settings.ShootDirectionMax.x),
+                    y = random.NextFix(settings.ShootDirectionMin.y, settings.ShootDirectionMax.y)
                 };
 
-                impulseStrengh *= random.NextFix(entitySpawnerSetting.ShootSpeedMin, entitySpawnerSetting.ShootSpeedMax);
+                startingVelocity *= random.NextFix(settings.ShootSpeedMin, settings.ShootSpeedMax);
 
-                CommonWrites.RequestImpulse(Accessor, newEntity, impulseStrengh);
+                SetComponent(newEntity, new PhysicsVelocity()
+                {
+                    Linear = startingVelocity
+                });
             }
         }
     }

@@ -213,7 +213,7 @@ public class HandleSimulationCheatsSystem : SimSystemBase
                 break;
             }
 
-            case SimInputCheatRemoveAllCooldowns removeAllCooldowns:
+            case SimInputCheatRemoveAllCooldowns _:
             {
                 if (HasSingleton<NoCooldownTag>())
                 {
@@ -228,18 +228,19 @@ public class HandleSimulationCheatsSystem : SimSystemBase
                 break;
             }
 
-            case SimInputCheatNeverEndingTurns neverEndingTurns:
+            case SimInputCheatNeverEndingTurns _:
             {
-                if (HasSingleton<NeverEndingTurnTag>())
+                const int INFINITY = 99999;
+                TurnSystemDataTimerSettings timerSettings = GetSingleton<TurnSystemDataTimerSettings>();
+                if (timerSettings.TurnDuration == INFINITY)
                 {
-                    EntityManager.DestroyEntity(GetSingletonEntity<NeverEndingTurnTag>());
+                    timerSettings.TurnDuration = 30;
                 }
                 else
                 {
-                    Entity entity = EntityManager.CreateEntity();
-                    EntityManager.AddComponentData(entity, new NeverEndingTurnTag());
+                    timerSettings.TurnDuration = INFINITY;
                 }
-
+                SetSingleton(timerSettings);
                 break;
             }
 

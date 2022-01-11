@@ -5,6 +5,8 @@ using Unity.Entities;
 using Unity.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
+using UnityEngine;
 
 public class GameActionConvert : GameAction<GameActionConvert.Settings>
 {
@@ -13,6 +15,7 @@ public class GameActionConvert : GameAction<GameActionConvert.Settings>
     public class SettingsAuth : GameActionSettingAuthBase
     {
         public fix Range;
+        [Tooltip("Putting X will make the target play for the other team X times.")]
         public int TurnDuration;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

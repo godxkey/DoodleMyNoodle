@@ -40,4 +40,7 @@ public static class DynamicBufferExtensions
             }
         }
     }
+
+    public static bool IsValidIndex<T>(this DynamicBuffer<T> buffer, int index) where T : struct
+        => index >= 0 && index < buffer.Length;
 }

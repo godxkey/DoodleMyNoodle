@@ -66,11 +66,11 @@ MonoBehaviour:
   Value: GameActionThrow
   GameActionSettings:
   - id: 0
-  ApCost: 1
-  IsStackable: 1
+  ApCost: 0
+  IsStackable: 0
   CooldownType: 2
   CooldownDuration:
-    RawValue: 4294967296
+    RawValue: 8589934592
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: b70bf1cbedab764459214064a96c0dde, type: 3}
@@ -95,3 +95,5 @@ MonoBehaviour:
           RawValue: 0
         ProjectilePrefab: {fileID: 2385346486794747607, guid: 1bfb7bf799f01454bb9b8671c3b7b072,
           type: 3}
+        Quantity: 1
+        SeparationFactor: 1

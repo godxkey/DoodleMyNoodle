@@ -26,5 +26,5 @@ public struct EntitySpawnerState : IComponentData
 {
     public int IndexToSpawn;
     public int TotalAmountSpawned;
-    public TimeValue TrackedTime;
+    public TimeValue LastSpawnTime;
 }

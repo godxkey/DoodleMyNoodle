@@ -18,6 +18,9 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         public fix SpeedMax = 10;
         public fix SpawnExtraDistance = 0;
         public GameObject ProjectilePrefab;
+        public int Quantity = 1;
+        [Range(1,10)]
+        public float SeparationFactor = 1;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
@@ -26,7 +29,9 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
                 SpeedMax = SpeedMax,
                 SpeedMin = SpeedMin,
                 SpawnExtraDistance = SpawnExtraDistance,
-                ProjectilePrefab = conversionSystem.GetPrimaryEntity(ProjectilePrefab)
+                ProjectilePrefab = conversionSystem.GetPrimaryEntity(ProjectilePrefab),
+                Quantity = Quantity,
+                SeparationFactor = (fix)SeparationFactor
             });
         }
 
@@ -44,6 +49,8 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         public fix SpeedMin;
         public fix SpawnExtraDistance;
         public Entity ProjectilePrefab;
+        public int Quantity;
+        public fix SeparationFactor;
     }
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
@@ -63,55 +70,73 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
 
         if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
         {
-            // spawn projectile
-            Entity projectileInstance = accessor.Instantiate(settings.ProjectilePrefab);
-
-            // set projectile data
-            fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
-            fix2 instigatorVel = fix2.zero;
-            if (accessor.TryGetComponent(context.InstigatorPawn, out PhysicsVelocity instigatorPhysicsVelocity))
+            for (int i = 0; i < settings.Quantity; i++)
             {
-                instigatorVel = instigatorPhysicsVelocity.Linear;
-            }
+                // spawn projectile
+                Entity projectileInstance = accessor.Instantiate(settings.ProjectilePrefab);
 
-            fix2 velocity = clampLength(paramVector.Vector, settings.SpeedMin, settings.SpeedMax);
-            fix inputSpeed = length(velocity);
-            fix2 dir = inputSpeed < (fix)0.01 ? fix2(0, 1) : velocity / inputSpeed;
-
-            fix2 spawnPos;
-            fix spawnDistance = GetSpawnDistance(accessor, projectileInstance, context.InstigatorPawn, settings.SpawnExtraDistance);
-
-            // When 'orginateFromCenter' is true, we simulate the projectile spawning at the center of the pawn.
-            // We adjust the start position and the start velocity to where the projectile will exit the spawn-distance
-            if (orginateFromCenter)
-            {
-                // Find how much the projectile will be affected by gravity
-                fix2 gravity = accessor.GetExistingSystem<PhysicsWorldSystem>().PhysicsWorld.StepSettings.GravityFix;
-                if (accessor.HasComponent<PhysicsGravity>(settings.ProjectilePrefab))
+                // set projectile data
+                fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
+                fix2 instigatorVel = fix2.zero;
+                if (accessor.TryGetComponent(context.InstigatorPawn, out PhysicsVelocity instigatorPhysicsVelocity))
                 {
-                    gravity *= accessor.GetComponent<PhysicsGravity>(settings.ProjectilePrefab).ScaleFix;
+                    instigatorVel = instigatorPhysicsVelocity.Linear;
                 }
 
-                // Calculate travel time to exit 'spawn-distance' zone
-                fix travelTime = Trajectory.TravelDurationApprox(velocity, gravity, spawnDistance + (fix)0.05 /* for extra safety*/, precision: (fix)0.005);
+                fix2 velocity = clampLength(paramVector.Vector, settings.SpeedMin, settings.SpeedMax);
 
-                if (travelTime > 10) // travel time too long ? use normal spawnPos
+                if (i >= 1)
                 {
-                    spawnPos = instigatorPos + spawnDistance * dir;
+                    FixRandom rand = accessor.Random();
+                    if(rand.NextBool())
+                    {
+                        velocity = fixMath.rotateTowards(velocity, fixMath.Angle2DUp, rand.NextFix(fixMath.Angle2DUp / ( 10 / settings.SeparationFactor), fixMath.Angle2DUp / ( 20 / settings.SeparationFactor)));
+                    }
+                    else
+                    {
+                        velocity = fixMath.rotateTowards(velocity, fixMath.Angle2DDown, rand.NextFix(fixMath.Angle2DDown / ( 20 / settings.SeparationFactor), fixMath.Angle2DDown / ( 30 / settings.SeparationFactor)));
+                    }
+                }
+
+                fix inputSpeed = length(velocity);
+                fix2 dir = inputSpeed < (fix)0.01 ? fix2(0, 1) : velocity / inputSpeed;
+
+                fix2 spawnPos;
+                fix spawnDistance = GetSpawnDistance(accessor, projectileInstance, context.InstigatorPawn, settings.SpawnExtraDistance);
+
+                // When 'orginateFromCenter' is true, we simulate the projectile spawning at the center of the pawn.
+                // We adjust the start position and the start velocity to where the projectile will exit the spawn-distance
+                if (orginateFromCenter)
+                {
+                    // Find how much the projectile will be affected by gravity
+                    fix2 gravity = accessor.GetExistingSystem<PhysicsWorldSystem>().PhysicsWorld.StepSettings.GravityFix;
+                    if (accessor.HasComponent<PhysicsGravity>(settings.ProjectilePrefab))
+                    {
+                        gravity *= accessor.GetComponent<PhysicsGravity>(settings.ProjectilePrefab).ScaleFix;
+                    }
+
+                    // Calculate travel time to exit 'spawn-distance' zone
+                    fix travelTime = Trajectory.TravelDurationApprox(velocity, gravity, spawnDistance + (fix)0.05 /* for extra safety*/, precision: (fix)0.005);
+
+                    if (travelTime > 10) // travel time too long ? use normal spawnPos
+                    {
+                        spawnPos = instigatorPos + spawnDistance * dir;
+                    }
+                    else
+                    {
+                        spawnPos = Trajectory.Position(instigatorPos, velocity, gravity, travelTime);
+                        velocity = Trajectory.Velocity(velocity, gravity, travelTime);
+                    }
                 }
                 else
                 {
-                    spawnPos = Trajectory.Position(instigatorPos, velocity, gravity, travelTime);
-                    velocity = Trajectory.Velocity(velocity, gravity, travelTime);
+                    spawnPos = instigatorPos + spawnDistance * dir;
                 }
-            }
-            else
-            {
-                spawnPos = instigatorPos + spawnDistance * dir;
-            }
 
-            accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(velocity + instigatorVel));
-            accessor.SetOrAddComponent(projectileInstance, new FixTranslation(spawnPos));
+                accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(velocity + instigatorVel));
+                accessor.SetOrAddComponent(projectileInstance, new FixTranslation(spawnPos));
+                accessor.SetOrAddComponent(projectileInstance, new ProjectileInstigator(context.InstigatorPawn));
+            }
 
             return true;
         }

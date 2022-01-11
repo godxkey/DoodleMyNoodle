@@ -128,7 +128,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                         canBeUsed = itemAction != null && itemAction.CanBeUsedInContext(SimWorld, useContext);
                     }
 
-                    if (!displayedInventory[i].ItemAuth.CanBeUsedAtAnytime && !CommonReads.CanTeamPlay(SimWorld, Cache.LocalControllerTeam))
+                    if (!displayedInventory[i].ItemAuth.UsableInOthersTurn && !Cache.CanLocalPlayerPlay)
                     {
                         canBeUsed = false;
                     }

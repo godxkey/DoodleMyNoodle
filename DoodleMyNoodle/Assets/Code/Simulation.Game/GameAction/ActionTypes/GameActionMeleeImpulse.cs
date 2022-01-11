@@ -74,10 +74,10 @@ public class GameActionMeleeImpulse : GameAction<GameActionMeleeImpulse.Settings
                         ImpulseMultipler = 1;
                         break;
                     case SurveySuccessRating.Four:
-                        ImpulseMultipler = (fix)1.5;
+                        ImpulseMultipler = (fix)1.25;
                         break;
                     case SurveySuccessRating.Five:
-                        ImpulseMultipler = 2;
+                        ImpulseMultipler = (fix)1.5;
                         break;
                     default:
                         break;
@@ -89,7 +89,15 @@ public class GameActionMeleeImpulse : GameAction<GameActionMeleeImpulse.Settings
 
             foreach (var hit in hits)
             {
-                CommonWrites.RequestImpulse(accessor, hit.Entity, rotatedAttackVector * ImpulseMultipler * settings.ImpulseForce);
+                if (accessor.TryGetComponent(hit.Entity, out FixTranslation translation) && accessor.HasComponent<TileColliderTag>(hit.Entity))
+                {
+                    int2 pos = Helpers.GetTile(translation);
+                    CommonWrites.RequestTransformTile(accessor, pos, TileFlagComponent.Empty);
+                }
+                else
+                {
+                    CommonWrites.RequestImpulse(accessor, hit.Entity, rotatedAttackVector * ImpulseMultipler * settings.ImpulseForce);
+                }
             }
 
             resultData.Add(new ResultDataElement() { AttackVector = attackVector });

@@ -21,22 +21,23 @@ public class UpdateThinksThisFrameTokenSystem : SimSystemBase
             CreateSingleton<ThinksThisFrameCooldownSingleton>();
         }
 
-        int currentTurnTeam = CommonReads.GetTurnTeam(Accessor);
+
+        CurrentTurnData currentTurnData = CommonReads.GetCurrentTurnDataNoAlloc(Accessor);
         fix time = Time.ElapsedTime;
 
         bool aisInCooldown = GetSingleton<ThinksThisFrameCooldownSingleton>().NoTokenUntilTime > time;
         bool atLeastOnAIThinks = false;
 
         Entities
-            .ForEach((ref AIThinksThisFrameToken thinksNextUpdate,
-                in ReadyForNextTurn readyForNextTurn, in AIActionCooldown actionCooldown, in Team team, in AIMoveInputLastFrame moveInputLastFrame, in ControlledEntity pawn) =>
+            .ForEach((Entity aiEntity, ref AIThinksThisFrameToken thinksNextUpdate,
+                in ReadyForNextTurn readyForNextTurn, in AIActionCooldown actionCooldown, in AIMoveInputLastFrame moveInputLastFrame, in ControlledEntity pawn) =>
             {
                 thinksNextUpdate.Value
                     // global cooldown
                     = !aisInCooldown && !atLeastOnAIThinks
 
                     // Cannot play if team cannot play
-                    && team.Value == currentTurnTeam
+                    && Helpers.CanControllerPlay(aiEntity, currentTurnData)
 
                     // Cannot play if 'ReadyForNextTurn' already done
                     && !readyForNextTurn

@@ -432,7 +432,6 @@ GameObject:
   - component: {fileID: 1308979965}
   - component: {fileID: 1308979964}
   - component: {fileID: 1308979963}
-  - component: {fileID: 1308979967}
   m_Layer: 0
   m_Name: TurnDataEntity
   m_TagString: Untagged
@@ -464,10 +463,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d73d6c14328c524cb3f086d5e52c435, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AITurnDuration:
-    RawValue: 4290672328704
-  PlayerTurnDuration:
-    RawValue: 193273528320
+  TurnDuration:
+    RawValue: 128849018880
 --- !u!114 &1308979965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -495,18 +492,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1308979967
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1308979962}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c8de4620eb2a6e4596bc764d484b080, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1383137260
 GameObject:
   m_ObjectHideFlags: 0
