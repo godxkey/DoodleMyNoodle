@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: 8779506525494639397}
   m_Layer: 0
-  m_Name: SE_Item_HealingBomb
+  m_Name: SE_Item_Bomb_AI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: c588d9b61cb646f4b816f6884a18413f
+  _guid: ed2c3369e00a25049a2f3af3c7eb87eb
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -68,16 +68,15 @@ MonoBehaviour:
   - id: 0
   ApCost: 0
   IsStackable: 0
-  CooldownType: 2
+  CooldownType: 0
   CooldownDuration:
     RawValue: 8589934592
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
-  Icon: {fileID: 21300000, guid: 694da68734087ea44991dc4ed71b51b3, type: 3}
+  Icon: {fileID: 21300000, guid: a26e5a55b7321094988692e8bc22dbca, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: Bombe de vie
-  EffectDescription: "Explose apr\xE8s un d\xE9lais et redonne de la vie a tout le
-    monde"
+  Name: Bomb
+  EffectDescription: "Explose apr\xE8s un d\xE9lais"
   SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 0}
@@ -94,7 +93,7 @@ MonoBehaviour:
           RawValue: 42949672960
         SpawnExtraDistance:
           RawValue: 0
-        ProjectilePrefab: {fileID: 2385346486794747607, guid: 86eea1e6a7072f04aa78a48cba22a47b,
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: 9397ebc153b7b35489b100f7f8e04591,
           type: 3}
         Quantity: 1
         SeparationFactor: 1

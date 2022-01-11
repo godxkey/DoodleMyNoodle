@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8821241209944219005}
   - component: {fileID: 2677628293349642642}
-  - component: {fileID: 8779506525494639397}
+  - component: {fileID: 8549762061682411268}
   m_Layer: 0
-  m_Name: SE_Item_HealingBomb
+  m_Name: SE_Item_Lasso
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,13 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: c588d9b61cb646f4b816f6884a18413f
+  _guid: c4488db1c97eb2c4bb23df761570271a
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _hasTransform: 0
   _showGhost: 1
---- !u!114 &8779506525494639397
+--- !u!114 &8549762061682411268
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -73,16 +73,14 @@ MonoBehaviour:
     RawValue: 8589934592
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
-  Icon: {fileID: 21300000, guid: 694da68734087ea44991dc4ed71b51b3, type: 3}
+  Icon: {fileID: 21300000, guid: 706e02d15d55c8749a985d6436671691, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: Bombe de vie
-  EffectDescription: "Explose apr\xE8s un d\xE9lais et redonne de la vie a tout le
-    monde"
+  Name: Lasso
+  EffectDescription: "Attire une entit\xE9 vers toi ou vous am\xE8ne \xE0 la position"
   SfxOnUse: {fileID: 0}
-  PlayAnimation: 0
-  Animation: {fileID: 0}
-  CustomSurveys:
-  - {fileID: 6075807751254421543, guid: 608b3f44970a7324ab091bbb7ae1585f, type: 3}
+  PlayAnimation: 1
+  Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
+  CustomSurveys: []
   references:
     version: 1
     00000000:
@@ -94,7 +92,7 @@ MonoBehaviour:
           RawValue: 42949672960
         SpawnExtraDistance:
           RawValue: 0
-        ProjectilePrefab: {fileID: 2385346486794747607, guid: 86eea1e6a7072f04aa78a48cba22a47b,
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: e281eeeeffa63ef4e82fe34d55a4eae0,
           type: 3}
         Quantity: 1
         SeparationFactor: 1

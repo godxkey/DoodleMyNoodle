@@ -63,20 +63,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionMeleeAttack
+  Value: GameActionMeleeImpulse
   GameActionSettings:
   - id: 0
-  ApCost: 1
+  ApCost: 0
   IsStackable: 0
-  CooldownType: 0
+  CooldownType: 2
   CooldownDuration:
-    RawValue: 4294967296
+    RawValue: 8589934592
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: d65e97b28ca89744a989d602fbfa416c, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: Coup de poingt
-  EffectDescription: "Donne un coup \xE0 une entit\xE9 proche"
+  Name: Uppercut
+  EffectDescription: "Donne un coup \xE0 une entit\xE9 proche et l'envoi en l'air"
   SfxOnUse: {fileID: 0}
   PlayAnimation: 1
   Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
@@ -84,8 +84,11 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionMeleeAttack/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionMeleeImpulse/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
-          RawValue: 4724464128
-        Damage: 1
+          RawValue: 6442450944
+        ImpulseForce:
+          RawValue: 12884901888
+        AngleRatio:
+          RawValue: 4294967296

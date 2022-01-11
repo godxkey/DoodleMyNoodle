@@ -66,11 +66,11 @@ MonoBehaviour:
   Value: GameActionMeleeImpulse
   GameActionSettings:
   - id: 0
-  ApCost: 1
-  IsStackable: 1
+  ApCost: 0
+  IsStackable: 0
   CooldownType: 2
   CooldownDuration:
-    RawValue: 4294967296
+    RawValue: 8589934592
   HideInInventory: 0
   CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: 2eeb2f7813e6ab74dab54ff8d056ce70, type: 3}
@@ -89,6 +89,6 @@ MonoBehaviour:
         Range:
           RawValue: 8589934592
         ImpulseForce:
-          RawValue: 8589934592
+          RawValue: 21474836480
         AngleRatio:
           RawValue: 2147483648
