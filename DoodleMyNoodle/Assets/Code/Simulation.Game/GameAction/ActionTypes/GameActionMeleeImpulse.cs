@@ -68,16 +68,16 @@ public class GameActionMeleeImpulse : GameAction<GameActionMeleeImpulse.Settings
                         ImpulseMultipler = (fix)0.5f;
                         break;
                     case SurveySuccessRating.Two:
-                        ImpulseMultipler = (fix)0.75f;
+                        ImpulseMultipler = (fix)0.9f;
                         break;
                     case SurveySuccessRating.Three:
                         ImpulseMultipler = 1;
                         break;
                     case SurveySuccessRating.Four:
-                        ImpulseMultipler = (fix)1.25;
+                        ImpulseMultipler = (fix)1.1;
                         break;
                     case SurveySuccessRating.Five:
-                        ImpulseMultipler = (fix)1.5;
+                        ImpulseMultipler = (fix)1.2;
                         break;
                     default:
                         break;
