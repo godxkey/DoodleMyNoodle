@@ -7,6 +7,8 @@ using CCC.Fix2D;
 using System;
 using Unity.MathematicsX;
 using Unity.Entities;
+using Unity.Collections;
+using CCC.InspectorDisplay;
 
 public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
 {
@@ -14,8 +16,11 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
     [GameActionSettingAuth(typeof(Settings))]
     public class SettingsAuth : GameActionSettingAuthBase
     {
-        public fix Range;
-        public int Damage;
+        public fix Range = 1;
+        public int Damage = 1;
+        public fix ImpulseForce = 0;
+        public fix ImpulseUpAngleRatio = 1;
+        public bool HitTargetsInbetween = false;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
@@ -23,6 +28,9 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
             {
                 Range = Range,
                 Damage = Damage,
+                ImpulseUpAngleRatio = ImpulseUpAngleRatio,
+                ImpulseForce = ImpulseForce,
+                HitTargetsInbetween = HitTargetsInbetween
             });
         }
     }
@@ -31,6 +39,9 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
     {
         public fix Range;
         public int Damage;
+        public fix ImpulseUpAngleRatio;
+        public fix ImpulseForce;
+        public bool HitTargetsInbetween;
     }
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
@@ -51,29 +62,53 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         {
             fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
 
+            // make sure survey position is within range
             fix2 attackPosition = Helpers.ClampPositionInsideRange(paramPosition.Position, instigatorPos, settings.Range);
             fix attackRadius = (fix)0.1f;
 
-            var hits = CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.InstigatorPawn);
+            // find all targets hit
+            NativeList<Entity> hitTargets = new NativeList<Entity>(Allocator.Temp);
+            NativeList<DistanceHit> overlapHits = CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.InstigatorPawn);
 
+            foreach (var hit in overlapHits)
+            {
+                hitTargets.Add(hit.Entity);
+            }
+
+            if (settings.HitTargetsInbetween)
+            {
+                var rayHits = CommonReads.Physics.CastRay(accessor, instigatorPos, attackPosition, ignoreEntity: context.InstigatorPawn);
+                for (int i = 0; i < rayHits.Length; i++)
+                {
+                    hitTargets.AddUnique(rayHits[i].Entity);
+                }
+            }
+
+            // get success multipliers
             fix damageMultipler = 1;
+            fix impulseMultipler = 1;
             if (useData.TryGetParameter(1, out GameActionParameterSuccessRate.Data successRate, warnIfFailed: false))
             {
                 switch (successRate.SuccessRate)
                 {
                     case SurveySuccessRating.One:
+                        impulseMultipler = (fix)0.5f;
                         damageMultipler = 0;
                         break;
                     case SurveySuccessRating.Two:
+                        impulseMultipler = (fix)0.75f;
                         damageMultipler = (fix)0.5f;
                         break;
                     case SurveySuccessRating.Three:
+                        impulseMultipler = 1;
                         damageMultipler = 1;
                         break;
                     case SurveySuccessRating.Four:
+                        impulseMultipler = (fix)1.25;
                         damageMultipler = 2;
                         break;
                     case SurveySuccessRating.Five:
+                        impulseMultipler = (fix)1.5;
                         damageMultipler = 3;
                         break;
                     default:
@@ -81,9 +116,34 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
                 }
             }
 
-            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, fixMath.ceilToInt(settings.Damage * damageMultipler));
-
             fix2 attackVector = attackPosition - instigatorPos;
+
+            // Apply impulse (if any)
+            fix impulseMagnitude = impulseMultipler * settings.ImpulseForce;
+            if (impulseMagnitude > 0)
+            {
+                fix settingsAngle = settings.ImpulseUpAngleRatio * Angle2DUp;
+                fix impulseAngle = attackVector.x > 0 ? settingsAngle : Angle2DLeft - settingsAngle;
+                fix2 impulseVector = fix2.FromAngle(impulseAngle) * impulseMagnitude;
+
+                foreach (var hit in hitTargets)
+                {
+                    if (accessor.TryGetComponent(hit, out FixTranslation translation) && accessor.HasComponent<TileColliderTag>(hit))
+                    {
+                        int2 pos = Helpers.GetTile(translation);
+                        CommonWrites.RequestTransformTile(accessor, pos, TileFlagComponent.Empty);
+                    }
+                    else
+                    {
+                        CommonWrites.RequestImpulse(accessor, hit, impulseVector);
+                    }
+                }
+            }
+
+            // Apply damage
+            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hitTargets, ceilToInt(settings.Damage * damageMultipler));
+
+            // Export action data used in event (animations use it)
             resultData.Add(new ResultDataElement() { AttackVector = attackVector });
 
             return true;

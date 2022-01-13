@@ -195,13 +195,14 @@ public abstract class GameAction
             }
         }
 
-        if (!accessor.HasComponent<GameActionBasicJump.Settings>(context.Item)) 
+        if (!accessor.HasComponent<GameActionBasicJump.Settings>(context.Item))
         {
-            if (accessor.TryGetComponent(context.InstigatorPawn, out ItemUsedThisTurn itemUsed))
+            if (accessor.TryGetComponent(context.InstigatorPawn, out ItemUsedThisTurn itemUses) &&
+                accessor.TryGetComponent(context.InstigatorPawn, out MaxItemUsesPerTurn maxUses))
             {
-                if (itemUsed.Value > 0)
+                if (itemUses >= maxUses)
                 {
-                    debugReason?.Set("Item Already Used");
+                    debugReason?.Set($"Already used {itemUses.Value} items this turn (max:{maxUses.Value})");
                     return false;
                 }
             }
@@ -235,7 +236,7 @@ public abstract class GameAction
 
     public void BeforeActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context)
     {
-        
+
     }
 
     public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context, List<ResultDataElement> result)
@@ -265,12 +266,9 @@ public abstract class GameAction
         // Item Used (hard coded to no count the basic jump)
         if (!accessor.HasComponent<GameActionBasicJump.Settings>(context.Item))
         {
-            if (accessor.TryGetComponent(context.InstigatorPawn, out ItemUsedThisTurn itemUsed))
+            if (accessor.TryGetComponent(context.InstigatorPawn, out ItemUsedThisTurn itemUses))
             {
-                if (itemUsed.Value >= 0)
-                {
-                    accessor.SetOrAddComponent(context.InstigatorPawn, new ItemUsedThisTurn() { Value = itemUsed.Value + 1 });
-                }
+                accessor.SetComponent(context.InstigatorPawn, new ItemUsedThisTurn() { Value = itemUses + 1 });
             }
         }
 

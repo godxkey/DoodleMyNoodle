@@ -101,5 +101,28 @@ public static partial class CommonReads
 
             return outHits;
         }
+
+        public static bool CastRay(NativeList<RaycastHit> result, ISimWorldReadWriteAccessor accessor, fix2 start, fix2 end, Entity ignoreEntity = default)
+        {
+            var physicsSystem = accessor.GetExistingSystem<PhysicsWorldSystem>();
+
+            RaycastInput rayCastInput = RaycastInput.Default;
+            rayCastInput.Start = (float2)start;
+            rayCastInput.End = (float2)end;
+
+            if (ignoreEntity != Entity.Null)
+                rayCastInput.Ignore = new IgnoreHit(physicsSystem.GetPhysicsBodyIndex(ignoreEntity));
+
+            return physicsSystem.PhysicsWorld.CastRay(rayCastInput, ref result);
+        }
+
+        public static NativeList<RaycastHit> CastRay(ISimWorldReadWriteAccessor accessor, fix2 start, fix2 end, Entity ignoreEntity = default)
+        {
+            NativeList<RaycastHit> outHits = new NativeList<RaycastHit>(Allocator.Temp);
+
+            CastRay(outHits, accessor, start, end, ignoreEntity);
+
+            return outHits;
+        }
     }
 }

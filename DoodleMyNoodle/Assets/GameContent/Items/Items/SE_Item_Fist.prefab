@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 85996829317b3aa448e8ac3761770021
+  _guid: 9fc4a368ec1702742b18b45e0a025036
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionMeleeImpulse
+  Value: GameActionMeleeAttack
   GameActionSettings:
   - id: 0
   ApCost: 0
@@ -72,7 +72,7 @@ MonoBehaviour:
   CooldownDuration:
     RawValue: 8589934592
   HideInInventory: 0
-  CanBeUsedAtAnytime: 0
+  UsableInOthersTurn: 0
   Icon: {fileID: 21300000, guid: d65e97b28ca89744a989d602fbfa416c, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Uppercut
@@ -84,11 +84,13 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionMeleeImpulse/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionMeleeAttack/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
           RawValue: 6442450944
+        Damage: 1
         ImpulseForce:
-          RawValue: 12884901888
-        AngleRatio:
+          RawValue: 2319282432
+        ImpulseUpAngleRatio:
           RawValue: 4294967296
+        HitTargetsInbetween: 0

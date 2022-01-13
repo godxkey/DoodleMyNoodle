@@ -39,7 +39,7 @@ PrefabInstance:
     - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
       propertyPath: StartingItems.Array.size
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
@@ -49,18 +49,18 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
-      propertyPath: StartingItems.Array.data[3].Item
+      propertyPath: StartingItems.Array.data[1].Item
       value: 
-      objectReference: {fileID: 2784291058542494111, guid: 202763aa86efffc4f8e3d2766ffade87,
+      objectReference: {fileID: 2784291058542494111, guid: 5ec303c45ea534846b16e38711b73617,
         type: 3}
     - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
-      propertyPath: StartingItems.Array.data[3].Quantity.x
+      propertyPath: StartingItems.Array.data[1].Quantity.x
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 947375423039552990, guid: d6dc46a8018045e48ae6776580ff1d2b,
         type: 3}
-      propertyPath: StartingItems.Array.data[3].Quantity.y
+      propertyPath: StartingItems.Array.data[1].Quantity.y
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1983468408252183681, guid: d6dc46a8018045e48ae6776580ff1d2b,
