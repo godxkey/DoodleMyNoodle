@@ -140,8 +140,12 @@ public class CreatePlayerSystem : SimSystemBase
 
 public partial class CommonReads
 {
-    public static Entity GetPawnController(ISimWorldReadAccessor accessor, Entity pawn)
+    public static Entity TryGetPawnController(ISimWorldReadAccessor accessor, Entity pawn)
     {
-        return accessor.GetComponent<Controllable>(pawn).CurrentController;
+        if (accessor.TryGetComponent(pawn, out Controllable controllable))
+        {
+            return controllable.CurrentController;
+        }
+        return Entity.Null;
     }
 }

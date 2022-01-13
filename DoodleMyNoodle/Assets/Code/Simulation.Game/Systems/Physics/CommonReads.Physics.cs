@@ -70,11 +70,6 @@ public static partial class CommonReads
             return hit;
         }
 
-        internal static object OverlapCircle(ISimWorldReadWriteAccessor accessor, object attackPosition, fix attackRadius, Entity ignoreEntity)
-        {
-            throw new NotImplementedException();
-        }
-
         public static NativeList<Entity> OverlapAabb(ISimWorldReadWriteAccessor accessor, fix2 min, fix2 max, Entity ignoreEntity = default)
         {
             NativeList<Entity> outHits = new NativeList<Entity>(Allocator.Temp);
@@ -103,6 +98,29 @@ public static partial class CommonReads
             NativeList<DistanceHit> outHits = new NativeList<DistanceHit>(Allocator.Temp);
 
             OverlapCircle(accessor, position, radius, outHits, ignoreEntity);
+
+            return outHits;
+        }
+
+        public static bool CastRay(NativeList<RaycastHit> result, ISimWorldReadWriteAccessor accessor, fix2 start, fix2 end, Entity ignoreEntity = default)
+        {
+            var physicsSystem = accessor.GetExistingSystem<PhysicsWorldSystem>();
+
+            RaycastInput rayCastInput = RaycastInput.Default;
+            rayCastInput.Start = (float2)start;
+            rayCastInput.End = (float2)end;
+
+            if (ignoreEntity != Entity.Null)
+                rayCastInput.Ignore = new IgnoreHit(physicsSystem.GetPhysicsBodyIndex(ignoreEntity));
+
+            return physicsSystem.PhysicsWorld.CastRay(rayCastInput, ref result);
+        }
+
+        public static NativeList<RaycastHit> CastRay(ISimWorldReadWriteAccessor accessor, fix2 start, fix2 end, Entity ignoreEntity = default)
+        {
+            NativeList<RaycastHit> outHits = new NativeList<RaycastHit>(Allocator.Temp);
+
+            CastRay(outHits, accessor, start, end, ignoreEntity);
 
             return outHits;
         }

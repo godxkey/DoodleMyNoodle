@@ -89,13 +89,13 @@ public class OnOverlapDamageOvertimeSystem : SimGameSystemBase
             {
                 if(EntityManager.TryGetBuffer(instigator, out DynamicBuffer<OnOverlapDamageOvertimeDamagedEntities> entitiesBuffer))
                 {
-                    fix DeltaTime = GetDeltaTime(onOverlapDamageOvertimeSetting.Delay.Type).Value;
+                    var deltaTime = GetDeltaTime(onOverlapDamageOvertimeSetting.Delay.Type);
 
-                    if (DeltaTime > 0)
+                    if (deltaTime > TimeValue.Zero)
                     {
                         if (EntityManager.TryGetComponentData(instigator, out OnOverlapDamageOvertimeState onOverlapDamageOvertimeState))
                         {
-                            if ((GetElapsedTime(onOverlapDamageOvertimeState.TrackedTime.Type).Value - onOverlapDamageOvertimeState.TrackedTime.Value) >= onOverlapDamageOvertimeSetting.Delay.Value)
+                            if ((GetElapsedTime(onOverlapDamageOvertimeState.TrackedTime.Type) - onOverlapDamageOvertimeState.TrackedTime) >= onOverlapDamageOvertimeSetting.Delay)
                             {
                                 entitiesBuffer.Clear();
 

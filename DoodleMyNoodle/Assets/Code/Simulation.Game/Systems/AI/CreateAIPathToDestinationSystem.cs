@@ -8,18 +8,15 @@ using static fixMath;
 public class CreateAIPathToDestinationSystem : SimSystemBase
 {
     private UpdateActorWorldSystem _actorWorldSystem;
+    private PhysicsWorldSystem _physicsWorldSystem;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
         _actorWorldSystem = World.GetOrCreateSystem<UpdateActorWorldSystem>();
+        _physicsWorldSystem = World.GetOrCreateSystem<PhysicsWorldSystem>();
         RequireSingletonForUpdate<GridInfo>();
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
     }
 
     protected override void OnUpdate()
@@ -29,6 +26,7 @@ public class CreateAIPathToDestinationSystem : SimSystemBase
         TileWorld tileWorld = CommonReads.GetTileWorld(Accessor);
         Pathfinding.PathResult pathResult = new Pathfinding.PathResult(Allocator.TempJob);
         ActorWorld actorWorld = _actorWorldSystem.ActorWorld;
+        PhysicsWorld physicsWorld = _physicsWorldSystem.PhysicsWorldSafe;
 
         Entities
             .WithDisposeOnCompletion(pathResult)
@@ -65,7 +63,7 @@ public class CreateAIPathToDestinationSystem : SimSystemBase
                         }
                     }
                 }
-                var pathfindingContext = new Pathfinding.Context(tileWorld);
+                var pathfindingContext = new Pathfinding.Context(tileWorld, physicsWorld, pawnData.BodyIndex, maxCost: Pathfinding.AgentCapabilities.DefaultMaxCost);
                 pathfindingContext.AgentCapabilities = new Pathfinding.AgentCapabilities()
                 {
                     Drop1TileCost = 0,
@@ -73,9 +71,14 @@ public class CreateAIPathToDestinationSystem : SimSystemBase
                     Walk1TileCost = moveSpeed.Value <= fix.Zero ? fix.MaxValue : fix.One / moveSpeed.Value,
                 };
 
-                bool pathFound = Pathfinding.FindNavigablePath(pathfindingContext, pawnData.Position, destination.Position, Pathfinding.AgentCapabilities.DefaultMaxCost, ref pathResult);
+                bool pathFound = Pathfinding.FindNavigablePath(
+                    context: pathfindingContext,
+                    startPos: pawnData.Position,
+                    goalPos: destination.Position,
+                    reachDistance: 0,
+                    result: ref pathResult);
 
-                if (pathFound)
+                if (pathFound && !pathResult.Segments.IsEmpty)
                 {
                     fix2 feetOffset = fix2(0, pawnData.Radius);
 

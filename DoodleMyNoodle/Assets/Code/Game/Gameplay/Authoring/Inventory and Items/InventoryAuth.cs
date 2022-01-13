@@ -24,7 +24,7 @@ public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity
 
     public List<ItemAndQuantity> StartingItems = new List<ItemAndQuantity>();
 
-    public bool LimitItemUsed = false;
+    public int MaxItemsPerTurn = 1;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -52,9 +52,7 @@ public class InventoryAuth : MonoBehaviour, IConvertGameObjectToEntity
             });
         }
 
-        if (LimitItemUsed)
-        {
-            dstManager.AddComponentData(entity, new ItemUsedThisTurn() { Value = 0 });
-        }
+        dstManager.AddComponentData(entity, new ItemUsedThisTurn() { Value = 0 });
+        dstManager.AddComponentData(entity, new MaxItemUsesPerTurn() { Value = MaxItemsPerTurn });
     }
 }

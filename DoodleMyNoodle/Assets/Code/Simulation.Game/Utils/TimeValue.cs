@@ -6,7 +6,7 @@ using UnityEngineX;
 using System.Diagnostics;
 
 [System.Serializable]
-public struct TimeValue : IEquatable<TimeValue>
+public struct TimeValue : IEquatable<TimeValue>, IComparable<TimeValue>
 {
     public enum ValueType : Byte { Seconds, Turns, Rounds }
 
@@ -81,6 +81,13 @@ public struct TimeValue : IEquatable<TimeValue>
         ErrorIfTypeMismatch(x, y);
 
         return x.Value != y.Value;
+    }
+
+    public int CompareTo(TimeValue other)
+    {
+        ErrorIfTypeMismatch(this, other);
+
+        return Value.CompareTo(other.Value);
     }
 
     [Conditional("SAFETY")]

@@ -150,8 +150,6 @@ public class UpdateTurnGroupsSystem : SimGameSystemBase
 
     private void UpdateTurnGroups()
     {
-        Log.Method();
-
         var groups = GetBuffer<TurnSystemDataRoundSequenceElement>(GetSingletonEntity<TurnSystemDataTag>());
         var previousGroups = groups.ToNativeArray(Allocator.Temp);
         var previousActiveGroupIndex = GetSingleton<TurnSystemDataCurrentTurnGroupIndex>().Value;

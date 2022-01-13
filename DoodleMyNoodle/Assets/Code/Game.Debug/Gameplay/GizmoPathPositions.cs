@@ -7,8 +7,10 @@ using CCC.Fix2D;
 public class GizmoPathPositions : MonoBehaviour
 {
     [SerializeField] private Color _color;
+    [SerializeField] private Color _colorJump;
+    [SerializeField] private Color _colorDrop;
 
-    List<(Vector3 a, Vector3 b)> _lines = new List<(Vector3 a, Vector3 b)>();
+    List<(Vector3 a, Vector3 b, Color color)> _lines = new List<(Vector3, Vector3, Color)>();
 
     private void OnDrawGizmos()
     {
@@ -30,7 +32,7 @@ public class GizmoPathPositions : MonoBehaviour
                 for (int i = 0; i < path.Length; i++)
                 {
                     Vector3 p2 = path[i].Position.ToUnityVec();
-                    _lines.Add((p1, p2));
+                    _lines.Add((p1, p2, _color));
                     p1 = p2;
                 }
             });
@@ -51,16 +53,28 @@ public class GizmoPathPositions : MonoBehaviour
                 for (int i = 0; i < path.Length; i++)
                 {
                     Vector3 p2 = path[i].Value.EndPosition.ToUnityVec();
-                    _lines.Add((p1, p2));
+
+                    Color color = _color;
+                    switch (path[i].Value.TransportToReach)
+                    {
+                        case Pathfinding.TransportMode.Drop:
+                            color = _colorDrop;
+                            break;
+                        case Pathfinding.TransportMode.Jump:
+                            color = _colorJump;
+                            break;
+                    }
+                    
+                    _lines.Add((p1, p2, color));
                     p1 = p2;
                 }
             });
 
 
-        Gizmos.color = _color;
 
         foreach (var line in _lines)
         {
+            Gizmos.color = line.color;
             Gizmos.DrawLine(line.a, line.b);
         }
     }

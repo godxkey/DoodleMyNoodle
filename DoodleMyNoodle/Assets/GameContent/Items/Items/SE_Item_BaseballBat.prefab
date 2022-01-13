@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionMeleeImpulse
+  Value: GameActionMeleeAttack
   GameActionSettings:
   - id: 0
   ApCost: 0
@@ -72,7 +72,7 @@ MonoBehaviour:
   CooldownDuration:
     RawValue: 8589934592
   HideInInventory: 0
-  CanBeUsedAtAnytime: 0
+  UsableInOthersTurn: 0
   Icon: {fileID: 21300000, guid: 2eeb2f7813e6ab74dab54ff8d056ce70, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Batton de Baseball
@@ -84,11 +84,13 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionMeleeImpulse/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionMeleeAttack/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
           RawValue: 8589934592
+        Damage: 0
         ImpulseForce:
           RawValue: 21474836480
-        AngleRatio:
+        ImpulseUpAngleRatio:
           RawValue: 2147483648
+        HitTargetsInbetween: 0

@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Mathematics;
+using CCC.Fix2D;
 
 public class TestPathfinding : MonoBehaviour
 {
-    public Color GizmoColorWalk = new Color(1, 0, 1, 1);
-    public Color GizmoColorDrop = new Color(1, 0, 0.5f, 1);
-    public Color GizmoColorJump = new Color(0.5f, 0, 1, 1);
+    public Color GizmoColorWalk = new Color(1, 0.1f, 1, 1);
+    public Color GizmoColorDrop = new Color(1, 0.1f, 0.1f, 1);
+    public Color GizmoColorJump = new Color(0.1f, 0.1f, 1, 1);
     public Transform Start;
     public Transform Goal;
     public fix MaxSearchCost = 20;
@@ -51,12 +52,12 @@ public class TestPathfinding : MonoBehaviour
         }
         _pathsToDraw.Clear();
 
-        var pathfindingContext = new Pathfinding.Context(CommonReads.GetTileWorld(simWorld));
+        var pathfindingContext = new Pathfinding.Context(CommonReads.GetTileWorld(simWorld), simWorld.GetExistingSystem<PhysicsWorldSystem>().PhysicsWorld, MaxSearchCost);
         pathfindingContext.AgentCapabilities.Jump1TileCost = Jump1TileCost;
         pathfindingContext.AgentCapabilities.Drop1TileCost = Drop1TileCost;
         pathfindingContext.AgentCapabilities.Walk1TileCost = Walk1TileCost;
         Pathfinding.PathResult result = new Pathfinding.PathResult(Allocator.Persistent);
-        Pathfinding.FindNavigablePath(pathfindingContext, (fix2)(Vector2)Start.position, (fix2)(Vector2)Goal.position, MaxSearchCost, ref result);
+        Pathfinding.FindNavigablePath(pathfindingContext, (fix2)(Vector2)Start.position, (fix2)(Vector2)Goal.position, reachDistance: 0, ref result);
         _pathsToDraw.Add(result);
     }
 

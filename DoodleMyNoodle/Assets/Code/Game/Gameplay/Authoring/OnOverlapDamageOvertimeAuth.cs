@@ -2,25 +2,29 @@ using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
 public class OnOverlapDamageOvertimeAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
-    [SerializeField] 
-    private TimeValue Delay;
+    [SerializeField, FormerlySerializedAs("Delay")]
+    private TimeValue _delay;
 
-    [SerializeField] 
-    private int Damage;
+    [SerializeField, FormerlySerializedAs("Damage")]
+    private int _damage;
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new OnOverlapDamageOvertimeSetting()
         {
-            Delay = Delay,
-            Damage = Damage
+            Delay = _delay,
+            Damage = _damage
         });
 
-        dstManager.AddComponentData(entity, new OnOverlapDamageOvertimeState() { TrackedTime = new TimeValue() { Type = Delay.Type, Value = Delay.Type == TimeValue.ValueType.Seconds ? (fix)dstManager.World.Time.ElapsedTime : 0 } });
+        dstManager.AddComponentData(entity, new OnOverlapDamageOvertimeState()
+        {
+            TrackedTime = new TimeValue() { Type = _delay.Type, Value = 0 }
+        });
         dstManager.AddBuffer<OnOverlapDamageOvertimeDamagedEntities>(entity);
     }
 }

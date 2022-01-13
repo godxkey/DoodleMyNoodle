@@ -72,18 +72,18 @@ public struct TileFinder
             }
         }
 
-        // tile reachable
-        if (description.MustBeReachable)
-        {
-            var pathfindingContext = new Pathfinding.Context(CommonReads.GetTileWorld(_accessor));
-            fix maxCost = description.RangeFromInstigator * pathfindingContext.AgentCapabilities.Walk1TileCost;
+        //// tile reachable
+        //if (description.MustBeReachable)
+        //{
+        //    var pathfindingContext = new Pathfinding.Context(CommonReads.GetTileWorld(_accessor));
+        //    fix maxCost = description.RangeFromInstigator * pathfindingContext.AgentCapabilities.Walk1TileCost;
 
-            Pathfinding.PathResult pathResult = new Pathfinding.PathResult(Allocator.Temp);
-            if (!Pathfinding.FindNavigablePath(pathfindingContext, parameters.PawnPosition, Helpers.GetTileCenter(tilePosition), maxCost, ref pathResult))
-            {
-                return false; // tile is non-reachable
-            }
-        }
+        //    Pathfinding.PathResult pathResult = new Pathfinding.PathResult(Allocator.Temp);
+        //    if (!Pathfinding.FindNavigablePath(pathfindingContext, parameters.PawnPosition, Helpers.GetTileCenter(tilePosition), maxCost, ref pathResult))
+        //    {
+        //        return false; // tile is non-reachable
+        //    }
+        //}
 
         return true;
     }

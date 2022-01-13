@@ -17,7 +17,7 @@ public class PawnSpriteColor : GamePresentationBehaviour
     {
         if (TryGetComponent(out BindedSimEntityManaged bindedSimEntity))
         {
-            Entity pawnController = CommonReads.GetPawnController(SimWorld, bindedSimEntity.SimEntity);
+            Entity pawnController = CommonReads.TryGetPawnController(SimWorld, bindedSimEntity.SimEntity);
             if (SimWorld.TryGetComponent(pawnController, out Team pawnTeam))
             {
                 Color spriteColor = new Color();

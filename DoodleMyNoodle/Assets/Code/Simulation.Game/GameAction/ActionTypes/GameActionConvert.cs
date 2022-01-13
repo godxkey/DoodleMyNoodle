@@ -44,11 +44,9 @@ public class GameActionConvert : GameAction<GameActionConvert.Settings>
                 RequiresAttackableEntity = false,
                 CustomPredicate = (simWorld, tileActor) =>
                 {
-                    if (simWorld.HasComponent<Controllable>(tileActor))
+                    if (simWorld.TryGetComponent(tileActor, out Controllable controllable))
                     {
-                        var pawnController = CommonReads.GetPawnController(simWorld, tileActor);
-
-                        return simWorld.Exists(pawnController) && simWorld.HasComponent<Team>(pawnController);
+                        return simWorld.HasComponent<Team>(controllable.CurrentController);
                     }
                     return false;
                 }

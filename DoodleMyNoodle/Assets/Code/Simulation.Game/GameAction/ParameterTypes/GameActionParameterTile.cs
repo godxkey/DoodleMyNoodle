@@ -11,7 +11,7 @@ public class GameActionParameterTile
         public int RangeFromInstigator { get; private set; }
         public TileFlags TileFilter = TileFlags.All;
         public bool IncludeSelf = true;
-        public bool MustBeReachable = false;
+        //public bool MustBeReachable = false;
         public bool RequiresAttackableEntity = false;
 
         // If used, only tiles with a matching tile actor will be accepted

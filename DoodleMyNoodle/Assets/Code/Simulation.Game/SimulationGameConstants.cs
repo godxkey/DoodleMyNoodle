@@ -30,12 +30,31 @@ public static class SimulationGameConstants
     public static readonly fix AIPauseDurationAfterShoot = (fix)2;
     public static readonly fix AIGrenadierShootDistanceRatio = (fix)0.6; // attemps to shoot at 60% of the distance to target (to account for bomb bounces)
     public static readonly fix AIThinkGlobalCooldown = (fix)0.5;
+    public static readonly fix CharacterRadius = (fix)0.45; // do NOT use this constant unless really necessary. It needs to be removed in the future
 
     public static readonly int FallDamage = 1;
-    public static readonly float ObjectsFallDamageImpulseThreshold = 2;
-    public static readonly float JumpingFallDamageImpulseThreshold = 4;
-    public static readonly float FallingFallDamageImpulseThreshold = 3;
-    public static readonly float DestroyingTileImpulseThreshold = 5;
+
+    /// <summary>
+    /// Minimal impulse required for fall damage on entities that have this footing: NO COMPONENT
+    /// </summary>
+    public static readonly fix ImpulseThresholdFallDamageNonNavAgents = 2;
+
+    /// <summary>
+    /// Minimal impulse required for fall damage on entities that have this footing: AirControl
+    /// </summary>
+    public static readonly fix ImpulseThresholdFallDamageAirControl = 4;
+
+    /// <summary>
+    /// Minimal impulse required for fall damage on entities that have this footing: None
+    /// </summary>
+    public static readonly fix ImpulseThresholdFallDamageNoAirControl = 3;
+
+    /// <summary>
+    /// Minimal impulse required for instigator to destroy victim tile
+    /// </summary>
+    public static readonly fix ImpulseThresholdDestroyingTile = 5;
+    
+    public static readonly fix FallDamageCooldown = (fix)0.6;
 
     private static bool s_init = false;
 
@@ -56,6 +75,11 @@ public static class SimulationGameConstants
             BelongsTo = ~(uint)0,
             CollidesWith = CollisionFilter.CreateMask(Physics.LAYER_TERRAIN, Physics.LAYER_CHARACTER)
         };
+        Physics.CollideWithCharactersFilter.Data = new CollisionFilter()
+        {
+            BelongsTo = ~(uint)0,
+            CollidesWith = CollisionFilter.CreateMask(Physics.LAYER_CHARACTER)
+        };
 
         s_init = true;
     }
@@ -70,6 +94,9 @@ public static class SimulationGameConstants
 
         public static readonly SharedStatic<CollisionFilter> CollideWithCharactersAndTerrainFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, CharactersAndTerrainFilterKey>();
         private class CharactersAndTerrainFilterKey { }
+
+        public static readonly SharedStatic<CollisionFilter> CollideWithCharactersFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, CollideWithCharactersFilterKey>();
+        private class CollideWithCharactersFilterKey { }
 
     }
 }

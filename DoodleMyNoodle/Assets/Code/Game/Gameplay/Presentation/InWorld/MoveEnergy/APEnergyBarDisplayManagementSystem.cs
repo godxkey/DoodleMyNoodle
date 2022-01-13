@@ -33,7 +33,7 @@ public class APEnergyBarDisplayManagementSystem : GamePresentationSystem<APEnerg
 
         Cache.SimWorld.Entities.ForEach((Entity pawn, ref ActionPoints entityAP, ref MaximumFix<ActionPoints> entityMaximumAP, ref FixTranslation entityTranslation) =>
         {
-            Entity pawnController = CommonReads.GetPawnController(Cache.SimWorld, pawn);
+            Entity pawnController = CommonReads.TryGetPawnController(Cache.SimWorld, pawn);
 
             if (pawnController == Entity.Null)
             {

@@ -196,7 +196,7 @@ public class HandleSimulationCheatsSystem : SimSystemBase
                 {
                     EntityManager.SetComponentData(pawn, new MaximumFix<ActionPoints>() { Value = 999 });
                     EntityManager.SetComponentData(pawn, new ActionPoints() { Value = 999 });
-                    EntityManager.SetComponentData(pawn, new ItemUsedThisTurn() { Value = -1 });
+                    EntityManager.SetComponentData(pawn, new MaxItemUsesPerTurn() { Value = 99999 });
                 }
                 break;
             }
@@ -231,14 +231,14 @@ public class HandleSimulationCheatsSystem : SimSystemBase
             case SimInputCheatNeverEndingTurns _:
             {
                 const int INFINITY = 99999;
-                TurnSystemDataTimerSettings timerSettings = GetSingleton<TurnSystemDataTimerSettings>();
-                if (timerSettings.TurnDuration == INFINITY)
+                TurnSystemDataRemainingTurnTime timerSettings = GetSingleton<TurnSystemDataRemainingTurnTime>();
+                if (timerSettings.Value > INFINITY - 999)
                 {
-                    timerSettings.TurnDuration = 30;
+                    timerSettings.Value = 10;
                 }
                 else
                 {
-                    timerSettings.TurnDuration = INFINITY;
+                    timerSettings.Value = INFINITY;
                 }
                 SetSingleton(timerSettings);
                 break;

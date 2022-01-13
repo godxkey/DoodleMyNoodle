@@ -16,6 +16,15 @@ public static class EntityManagerExtensions
         return false;
     }
 
+    public static string GetNameSafe(this EntityManager entityManager, Entity entity)
+    {
+#if UNITY_EDITOR
+        return entityManager.GetName(entity);
+#else
+        return entity.ToString();
+#endif
+    }
+
     public static DynamicBuffer<T> GetOrAddBuffer<T>(this EntityManager entityManager, Entity entity)
         where T : struct, IBufferElementData
     {
