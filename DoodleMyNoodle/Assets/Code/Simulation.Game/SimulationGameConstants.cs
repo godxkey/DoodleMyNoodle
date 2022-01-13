@@ -33,10 +33,28 @@ public static class SimulationGameConstants
     public static readonly fix CharacterRadius = (fix)0.45; // do NOT use this constant unless really necessary. It needs to be removed in the future
 
     public static readonly int FallDamage = 1;
-    public static readonly float ObjectsFallDamageImpulseThreshold = 2;
-    public static readonly float JumpingFallDamageImpulseThreshold = 4;
-    public static readonly float FallingFallDamageImpulseThreshold = 3;
-    public static readonly float DestroyingTileImpulseThreshold = 5;
+
+    /// <summary>
+    /// Minimal impulse required for fall damage on entities that have this footing: NO COMPONENT
+    /// </summary>
+    public static readonly fix ImpulseThresholdFallDamageNonNavAgents = 2;
+
+    /// <summary>
+    /// Minimal impulse required for fall damage on entities that have this footing: AirControl
+    /// </summary>
+    public static readonly fix ImpulseThresholdFallDamageAirControl = 4;
+
+    /// <summary>
+    /// Minimal impulse required for fall damage on entities that have this footing: None
+    /// </summary>
+    public static readonly fix ImpulseThresholdFallDamageNoAirControl = 3;
+
+    /// <summary>
+    /// Minimal impulse required for instigator to destroy victim tile
+    /// </summary>
+    public static readonly fix ImpulseThresholdDestroyingTile = 5;
+    
+    public static readonly fix FallDamageCooldown = (fix)0.6;
 
     private static bool s_init = false;
 
