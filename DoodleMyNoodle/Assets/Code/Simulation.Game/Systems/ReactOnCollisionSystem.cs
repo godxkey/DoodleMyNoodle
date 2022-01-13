@@ -138,14 +138,17 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
                     damage: explodeOnContact.Damage));
             }
 
-            if (Velocity.HasComponent(entityA))
+            if (Velocity.TryGetComponent(entityA, out PhysicsVelocity velocity))
             {
-                var details = collisionEvent.CalculateDetails(ref World);
+                if (velocity.Linear.lengthSquared >= 1)
+                {
+                    var details = collisionEvent.CalculateDetails(ref World);
 
-                OutFallDamage.Add((
-                    instigator: entityA,
-                    target: entityB,
-                    impulse: details.EstimatedImpulse));
+                    OutFallDamage.Add((
+                        instigator: entityA,
+                        target: entityB,
+                        impulse: details.EstimatedImpulse));
+                }
             }
         }
     }
