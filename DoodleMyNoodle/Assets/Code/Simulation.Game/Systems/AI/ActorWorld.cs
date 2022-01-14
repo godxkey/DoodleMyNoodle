@@ -70,7 +70,11 @@ public class UpdateActorWorldSystem : SimSystemBase
                 fix radius = fix(0.5f);
                 if (HasComponent<PhysicsColliderBlob>(pawn))
                 {
-                    radius = (fix)GetComponent<PhysicsColliderBlob>(pawn).Collider.Value.Radius;
+                    PhysicsColliderBlob collider = GetComponent<PhysicsColliderBlob>(pawn);
+                    if (collider.Collider.IsCreated)
+                    {
+                        radius = (fix)GetComponent<PhysicsColliderBlob>(pawn).Collider.Value.Radius;
+                    }
                 }
 
                 // Create pawn element

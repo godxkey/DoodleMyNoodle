@@ -122,15 +122,10 @@ public class ApplyExplosionSystem : SimSystemBase
 
                 if (!tileFlags.IsOutOfGrid && tileFlags.IsDestructible)
                 {
-                    tileFlags.Value &= ~(TileFlags.Ladder | TileFlags.Terrain);
-                    transformTileRequests.Add(new SystemRequestTransformTile()
-                    {
-                        Tile = tiles[i],
-                        NewTileFlags = tileFlags
-                    });
+                    CommonWrites.RequestTransformTile(Accessor, tiles[i], TileFlagComponent.Empty);
                 }
             }
-        }).Run();
+        }).WithoutBurst().Run();
     }
 }
 

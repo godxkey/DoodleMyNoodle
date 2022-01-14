@@ -85,31 +85,27 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
             }
 
             // get success multipliers
-            fix damageMultipler = 1;
+            int damage = settings.Damage;
             fix impulseMultipler = 1;
             if (useData.TryGetParameter(1, out GameActionParameterSuccessRate.Data successRate, warnIfFailed: false))
             {
                 switch (successRate.SuccessRate)
                 {
                     case SurveySuccessRating.One:
-                        impulseMultipler = (fix)0.5f;
-                        damageMultipler = 0;
+                        impulseMultipler = (fix)0.75f;
                         break;
                     case SurveySuccessRating.Two:
-                        impulseMultipler = (fix)0.75f;
-                        damageMultipler = (fix)0.5f;
+                        damage += 1;
                         break;
                     case SurveySuccessRating.Three:
-                        impulseMultipler = 1;
-                        damageMultipler = 1;
+                        damage += 1;
                         break;
                     case SurveySuccessRating.Four:
-                        impulseMultipler = (fix)1.25;
-                        damageMultipler = 2;
+                        damage += 1;
                         break;
                     case SurveySuccessRating.Five:
                         impulseMultipler = (fix)1.5;
-                        damageMultipler = 3;
+                        damage *= 2;
                         break;
                     default:
                         break;
@@ -141,7 +137,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
             }
 
             // Apply damage
-            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hitTargets, ceilToInt(settings.Damage * damageMultipler));
+            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hitTargets, damage);
 
             // Export action data used in event (animations use it)
             resultData.Add(new ResultDataElement() { AttackVector = attackVector });

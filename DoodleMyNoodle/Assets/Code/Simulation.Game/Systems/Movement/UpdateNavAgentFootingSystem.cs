@@ -27,6 +27,9 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
             .WithReadOnly(physicsWorld)
             .ForEach((Entity entity, ref NavAgentFootingState footing, in FixTranslation fixTranslation, in PhysicsColliderBlob colliderRef, in PhysicsVelocity velocity) =>
             {
+                if (!colliderRef.Collider.IsCreated)
+                    return;
+
                 ref Collider collider = ref colliderRef.Collider.Value;
                 fix pawnRadius = (fix)collider.Radius;
                 fix pawnFeetXOffset = pawnRadius * (fix)0.8f;
@@ -76,12 +79,19 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
         Entities
             .WithReadOnly(tileWorld)
             .WithoutBurst()
-            .WithChangeFilter<NavAgentFootingState>()
-            .ForEach((ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in NavAgentColliderRefs colliderRefs) =>
+            .WithChangeFilter<NavAgentFootingState, Health>()
+            .ForEach((ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in NavAgentColliderRefs colliderRefs, in Health health) =>
             {
-                collider.Collider = footing.Value == NavAgentFooting.AirControl
-                    ? colliderRefs.AirControlCollider
-                    : colliderRefs.NormalCollider;
+                if (health.Value == 0)
+                {
+                    collider.Collider = colliderRefs.DeadCollider;
+                }
+                else
+                {
+                    collider.Collider = footing.Value == NavAgentFooting.AirControl
+                        ? colliderRefs.AirControlCollider
+                        : colliderRefs.NormalCollider;
+                }
             }).Run();
     }
 }
