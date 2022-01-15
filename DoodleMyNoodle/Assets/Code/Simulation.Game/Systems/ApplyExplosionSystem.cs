@@ -122,10 +122,16 @@ public class ApplyExplosionSystem : SimSystemBase
 
                 if (!tileFlags.IsOutOfGrid && tileFlags.IsDestructible)
                 {
-                    CommonWrites.RequestTransformTile(Accessor, tiles[i], TileFlagComponent.Empty);
+                    // remove ladder and terrain flags
+                    tileFlags.Value &= ~(TileFlags.Ladder | TileFlags.Terrain);
+                    transformTileRequests.Add(new SystemRequestTransformTile()
+                    {
+                        Tile = tiles[i],
+                        NewTileFlags = tileFlags
+                    });
                 }
             }
-        }).WithoutBurst().Run();
+        }).Run();
     }
 }
 
