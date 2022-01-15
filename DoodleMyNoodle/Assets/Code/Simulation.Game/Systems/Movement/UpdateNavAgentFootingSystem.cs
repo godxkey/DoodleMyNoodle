@@ -75,23 +75,34 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
                 }
             }).Run();
 
-        // When pawn is in the air, reduce friction so we don't break on walls
+        // depending on the agent's state, update the collider
         Entities
-            .WithReadOnly(tileWorld)
-            .WithoutBurst()
             .WithChangeFilter<NavAgentFootingState, Health>()
             .ForEach((ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in NavAgentColliderRefs colliderRefs, in Health health) =>
             {
-                if (health.Value == 0)
-                {
-                    collider.Collider = colliderRefs.DeadCollider;
-                }
-                else
-                {
-                    collider.Collider = footing.Value == NavAgentFooting.AirControl
-                        ? colliderRefs.AirControlCollider
-                        : colliderRefs.NormalCollider;
-                }
+                UpdateAgentCollider(ref collider, footing, colliderRefs, alive: health > 0);
             }).Run();
+        Entities
+            .WithNone<Health>()
+            .WithChangeFilter<NavAgentFootingState>()
+            .ForEach((ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in NavAgentColliderRefs colliderRefs) =>
+            {
+                UpdateAgentCollider(ref collider, footing, colliderRefs, alive: true);
+            }).Run();
+    }
+
+    private static void UpdateAgentCollider(ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in NavAgentColliderRefs colliderRefs, bool alive)
+    {
+        // When pawn is in the air, reduce friction so we don't break on walls
+        if (!alive)
+        {
+            collider.Collider = colliderRefs.DeadCollider;
+        }
+        else
+        {
+            collider.Collider = footing.Value == NavAgentFooting.AirControl
+                ? colliderRefs.AirControlCollider
+                : colliderRefs.NormalCollider;
+        }
     }
 }
