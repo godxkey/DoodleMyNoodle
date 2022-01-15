@@ -120,16 +120,17 @@ public struct ActorWorld : IDisposable
         public int BodyIndex;
     }
 
-    public struct PawnSightQueryInput
+    public struct PawnQueryInput
     {
         public TileWorld TileWorld;
         public Team? ExcludeTeam;
         public bool ExcludeDead;
+        public bool RequiresLineOfSight;
         public fix2 EyeLocation;
         public fix SightRange;
     }
 
-    public struct PawnSightQueryData
+    public struct PawnQueryData
     {
         public fix SightRangeSquared;
     }
@@ -191,9 +192,9 @@ public struct ActorWorld : IDisposable
 
     public static int GetTeamIndex(Team team) => team.Value < 0 || team.Value >= INVALID_TEAM_INDEX ? INVALID_TEAM_INDEX : team.Value;
 
-    public void FindAllPawnsInSight(PawnSightQueryInput input, NativeList<int> result)
+    public void FindPawns(PawnQueryInput input, NativeList<int> result)
     {
-        var queryData = new PawnSightQueryData();
+        var queryData = new PawnQueryData();
         queryData.SightRangeSquared = input.SightRange * input.SightRange;
 
         if (input.ExcludeTeam != null)
@@ -214,7 +215,7 @@ public struct ActorWorld : IDisposable
 
                     for (int p = 0; p < teamPawns.Length; p++)
                     {
-                        Internal_FindAllPawnsInSight_Element(ref input, ref queryData, teamPawns[p], result);
+                        Internal_FindPawns_Element(ref input, ref queryData, teamPawns[p], result);
                     }
                 }
             }
@@ -224,7 +225,7 @@ public struct ActorWorld : IDisposable
                 for (int p = 0; p < Pawns.Length; p++)
                 {
                     if (Pawns[p].Team != excludedTeam)
-                        Internal_FindAllPawnsInSight_Element(ref input, ref queryData, p, result);
+                        Internal_FindPawns_Element(ref input, ref queryData, p, result);
                 }
             }
         }
@@ -233,28 +234,30 @@ public struct ActorWorld : IDisposable
             // Loop on all pawns
             for (int p = 0; p < Pawns.Length; p++)
             {
-                Internal_FindAllPawnsInSight_Element(ref input, ref queryData, p, result);
+                Internal_FindPawns_Element(ref input, ref queryData, p, result);
             }
         }
     }
 
-    private void Internal_FindAllPawnsInSight_Element(ref PawnSightQueryInput input, ref PawnSightQueryData data, int pawnIndex, NativeList<int> result)
+    private void Internal_FindPawns_Element(ref PawnQueryInput input, ref PawnQueryData data, int pawnIndex, NativeList<int> result)
     {
         Pawn pawn = Pawns[pawnIndex];
         if (input.ExcludeDead && pawn.Dead)
             return;
 
-        if (distancesq(input.EyeLocation, pawn.Position) > data.SightRangeSquared)
-            return;
+        if (input.RequiresLineOfSight)
+        {
+            if (distancesq(input.EyeLocation, pawn.Position) > data.SightRangeSquared)
+                return;
 
-        fix sampleVerticalRange  = pawn.Radius * fix(0.5);
-        fix2 pawnFeet = pawn.Position - fix2(0, sampleVerticalRange);
-        fix2 pawnHead = pawn.Position + fix2(0, sampleVerticalRange);
+            fix sampleVerticalRange = pawn.Radius * fix(0.5);
+            fix2 pawnFeet = pawn.Position - fix2(0, sampleVerticalRange);
+            fix2 pawnHead = pawn.Position + fix2(0, sampleVerticalRange);
 
-        if (TilePhysics.RaycastTerrain(input.TileWorld, input.EyeLocation, pawnHead)
-            && TilePhysics.RaycastTerrain(input.TileWorld, input.EyeLocation, pawnFeet))
-            return;
-
+            if (TilePhysics.RaycastTerrain(input.TileWorld, input.EyeLocation, pawnHead)
+                && TilePhysics.RaycastTerrain(input.TileWorld, input.EyeLocation, pawnFeet))
+                return;
+        }
         result.Add(pawnIndex);
     }
 }

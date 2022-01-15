@@ -161,7 +161,8 @@ public class UpdateGrenadierAISystem : SimSystemBase
                         {
                             fix2 previousTargetPos = GetComponent<FixTranslation>(agentData.AttackTarget);
 
-                            if (distancesq(previousTargetPos, agentCache.PawnPosition) < SimulationGameConstants.AISightDistanceSq)
+                            // disabled now that AIs are omniscient
+                            // if (distancesq(previousTargetPos, agentCache.PawnPosition) < SimulationGameConstants.AISightDistanceSq)
                             {
                                 clearPreviousTarget = false;
                             }
@@ -312,17 +313,18 @@ public class UpdateGrenadierAISystem : SimSystemBase
         Entity previousTarget = agentData.AttackTarget;
 
         // Find all enemy pawns in sight
-        ActorWorld.PawnSightQueryInput input = new ActorWorld.PawnSightQueryInput()
+        ActorWorld.PawnQueryInput input = new ActorWorld.PawnQueryInput()
         {
             ExcludeDead = true,
             ExcludeTeam = agentCache.Team,
+            RequiresLineOfSight = false,
             EyeLocation = agentCache.PawnPosition + SimulationGameConstants.AIEyeOffset,
-            SightRange = SimulationGameConstants.AISightDistance,
+            //SightRange = SimulationGameConstants.AISightDistance,
             TileWorld = globalCache.TileWorld
         };
 
         globalCache.TargetBuffer.Clear();
-        globalCache.ActorWorld.FindAllPawnsInSight(input, globalCache.TargetBuffer);
+        globalCache.ActorWorld.FindPawns(input, globalCache.TargetBuffer);
 
         // If the archer has spotted an enemy once, it can track it through walls (compensates for lack of memory)
         {

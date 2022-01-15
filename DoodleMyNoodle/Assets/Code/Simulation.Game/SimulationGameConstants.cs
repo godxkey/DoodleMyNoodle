@@ -22,8 +22,9 @@ public static class SimulationGameConstants
     public static readonly fix2 Gravity = new fix2(0, (fix)(-7.45f));
     public static readonly fix InteractibleMaxDistanceManhattan = (fix)1.5;
     public static readonly fix AIShootSpeedIfNoGravity = (fix)3f;
-    public static readonly fix AISightDistance = 8;
-    public static readonly fix AISightDistanceSq = AISightDistance * AISightDistance;
+    // unused since AIs are omniscient
+    //public static readonly fix AISightDistance = 8;
+    //public static readonly fix AISightDistanceSq = AISightDistance * AISightDistance;
     public static readonly fix2 AIEyeOffset = new fix2(0, (fix)0.15f);
     public static readonly fix AISearchForShootPositionMaxCost = (fix)10;
     public static readonly fix AgentRepathCooldown = (fix)1; // repath every 1s

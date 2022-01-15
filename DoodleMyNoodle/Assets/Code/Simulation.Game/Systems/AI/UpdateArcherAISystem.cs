@@ -195,7 +195,8 @@ public class UpdateArcherAISystem : SimSystemBase
                         {
                             fix2 previousTargetPos = GetComponent<FixTranslation>(agentData.AttackTarget);
 
-                            if (distancesq(previousTargetPos, agentCache.PawnPosition) < SimulationGameConstants.AISightDistanceSq)
+                            // disabled now that AIs are omniscient
+                            //if (distancesq(previousTargetPos, agentCache.PawnPosition) < SimulationGameConstants.AISightDistanceSq)
                             {
                                 clearPreviousTarget = false;
                             }
@@ -281,6 +282,9 @@ public class UpdateArcherAISystem : SimSystemBase
 
     private unsafe struct CanShootAnyTargetsFromTilePredicate : ITilePredicate
     {
+        // NB: This predicate does not consider the curved trajectory of the projectile.
+        // At the moment, it only considers straight line shooting (e.g. fireball)
+
         public void* GlobalCachePtr;
         public void* AgentCachePtr;
 
@@ -373,17 +377,18 @@ public class UpdateArcherAISystem : SimSystemBase
         // Find all enemy pawns in sight
         using (globalCache.ProfileMarkers.FindPawnsInSight.Auto())
         {
-            ActorWorld.PawnSightQueryInput input = new ActorWorld.PawnSightQueryInput()
+            ActorWorld.PawnQueryInput input = new ActorWorld.PawnQueryInput()
             {
                 ExcludeDead = true,
+                RequiresLineOfSight = false,
                 ExcludeTeam = agentCache.Team,
                 EyeLocation = agentCache.PawnPosition + SimulationGameConstants.AIEyeOffset,
-                SightRange = SimulationGameConstants.AISightDistance,
+                //SightRange = SimulationGameConstants.AISightDistance,
                 TileWorld = globalCache.TileWorld
             };
 
             globalCache.TargetBuffer.Clear();
-            globalCache.ActorWorld.FindAllPawnsInSight(input, globalCache.TargetBuffer);
+            globalCache.ActorWorld.FindPawns(input, globalCache.TargetBuffer);
         }
 
         // If the archer has spotted an enemy once, it can track it through walls (compensates for lack of memory)

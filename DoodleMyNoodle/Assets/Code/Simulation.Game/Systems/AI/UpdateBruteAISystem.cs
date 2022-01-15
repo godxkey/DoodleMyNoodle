@@ -139,7 +139,8 @@ public class UpdateBruteAISystem : SimSystemBase
                         {
                             fix2 previousTargetPos = GetComponent<FixTranslation>(agentData.AttackTarget);
 
-                            if (distancesq(previousTargetPos, agentCache.PawnPosition) < SimulationGameConstants.AISightDistanceSq)
+                            // disabled now that AIs are omniscient
+                            //if (distancesq(previousTargetPos, agentCache.PawnPosition) < SimulationGameConstants.AISightDistanceSq)
                             {
                                 clearPreviousTarget = false;
                             }
@@ -177,8 +178,8 @@ public class UpdateBruteAISystem : SimSystemBase
                         // If no more AP => readyForNextTurn
                         if (GetComponent<ActionPoints>(pawn).Value <= 0)
                             readyForNextTurn.Value = true;
-                        }
                     }
+                }
                 else
                 {
                     SetComponent<AIState>(controller, AIStateEnum.Patrol);
@@ -205,17 +206,18 @@ public class UpdateBruteAISystem : SimSystemBase
 
     private static bool FindAttackTarget(ref GlobalCache globalCache, ref GlobalBuffers globalBuffers, ref AgentCache agentCache, ref BruteAIData agentData, out Entity newAttackTarget, out fix2 newAttackPosition)
     {
-        ActorWorld.PawnSightQueryInput input = new ActorWorld.PawnSightQueryInput()
+        ActorWorld.PawnQueryInput input = new ActorWorld.PawnQueryInput()
         {
             ExcludeDead = true,
             ExcludeTeam = agentCache.Team,
+            RequiresLineOfSight = false,
             EyeLocation = agentCache.PawnPosition + SimulationGameConstants.AIEyeOffset,
-            SightRange = SimulationGameConstants.AISightDistance,
+            //SightRange = SimulationGameConstants.AISightDistance,
             TileWorld = globalCache.TileWorld
         };
 
         globalBuffers.TargetBuffer.Clear();
-        globalCache.ActorWorld.FindAllPawnsInSight(input, globalBuffers.TargetBuffer);
+        globalCache.ActorWorld.FindPawns(input, globalBuffers.TargetBuffer);
 
         // If the brute has spotted an enemy once, it can track it through walls (compensates for lack of memory)
         {
