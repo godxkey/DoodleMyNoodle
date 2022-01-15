@@ -12,14 +12,12 @@ public class GameActionBasicJump : GameAction<GameActionBasicJump.Settings>
     public class SettingsAuth : GameActionSettingAuthBase
     {
         public fix JumpVelocity;
-        public fix EnergyCost;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
             dstManager.AddComponentData(entity, new Settings()
             {
                 JumpVelocity = JumpVelocity,
-                EnergyCost = EnergyCost,
             });
         }
     }
@@ -27,7 +25,6 @@ public class GameActionBasicJump : GameAction<GameActionBasicJump.Settings>
     public struct Settings : IComponentData
     {
         public fix JumpVelocity;
-        public fix EnergyCost;
     }
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
