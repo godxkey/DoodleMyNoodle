@@ -28,24 +28,22 @@ public class NavAgentAuth : MonoBehaviour, IConvertGameObjectToEntity
         var bodyAuth = GetComponent<PhysicsBodyAuth>();
         if (bodyAuth != null)
         {
-
             var normalCollider = dstManager.GetComponentData<PhysicsColliderBlob>(entity).Collider;
-            
+
+            if (!dstManager.TryGetComponentData<ActorColliderRefs>(entity, out var actorColliderRefs))
+            {
+                actorColliderRefs = new ActorColliderRefs(normalCollider);
+            }
+
             // duplicate collider, but with alternate fricton
             var airControllerCollider = BlobAssetReference<Collider>.Create(normalCollider.Value);
             var mat = airControllerCollider.Value.Material;
             mat.Friction = 0;
             airControllerCollider.Value.Material = mat;
 
-            var deadCollider = BlobAssetReference<Collider>.Create(normalCollider.Value);
-            deadCollider.Value.Filter = CollisionFilter.FromLayer(SimulationGameConstants.Physics.LAYER_CONTACT_WITH_TERRAIN_ONLY);
+            actorColliderRefs.AirControlCollider = airControllerCollider;
 
-            dstManager.AddComponentData(entity, new NavAgentColliderRefs()
-            {
-                NormalCollider = normalCollider,
-                AirControlCollider = airControllerCollider,
-                DeadCollider = deadCollider,
-            });
+            dstManager.SetOrAddComponentData(entity, actorColliderRefs);
         }
         dstManager.AddComponentData(entity, new NonAirControlFriction { Value = (fix)normalFriction });
     }
