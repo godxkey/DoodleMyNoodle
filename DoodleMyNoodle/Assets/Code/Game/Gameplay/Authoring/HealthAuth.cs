@@ -30,7 +30,7 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
         if (DestroyOnDeath)
             dstManager.AddComponent<DestroyOnDeath>(entity);
 
-        if (HasPhysicsBody)
+        if (HasPhysicsBody && TerrainOnlyColliderIfDead)
         {
             var normalCollider = dstManager.GetComponentData<PhysicsColliderBlob>(entity).Collider;
 
