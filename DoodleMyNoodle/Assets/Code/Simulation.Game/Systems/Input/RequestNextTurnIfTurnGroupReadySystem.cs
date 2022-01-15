@@ -2,7 +2,7 @@ using Unity.Collections;
 using Unity.Entities;
 
 [UpdateInGroup(typeof(InputSystemGroup))]
-public class RequestNextTurnIfTeamMembersReadySystem : SimSystemBase
+public class RequestNextTurnIfTurnGroupReadySystem : SimSystemBase
 {
     protected override void OnCreate()
     {
@@ -17,19 +17,22 @@ public class RequestNextTurnIfTeamMembersReadySystem : SimSystemBase
         CommonReads.GetCurrentlyPlayingEntities(Accessor, playingEntities);
 
         // if any playing controller is active and ready, request next turn
-        bool isSomeoneReady = false;
-        foreach (var controller in playingEntities)
+        if (playingEntities.Length > 0)
         {
-            if (GetComponent<Active>(controller) && GetComponent<ReadyForNextTurn>(controller))
+            bool everybodyReady = true;
+            foreach (var controller in playingEntities)
             {
-                isSomeoneReady = true;
-                break;
+                if (!GetComponent<ReadyForNextTurn>(controller))
+                {
+                    everybodyReady = false;
+                    break;
+                }
             }
-        }
 
-        if (isSomeoneReady)
-        {
-            CommonWrites.RequestNextTurn(Accessor);
+            if (everybodyReady)
+            {
+                CommonWrites.RequestNextTurn(Accessor);
+            }
         }
     }
 }
