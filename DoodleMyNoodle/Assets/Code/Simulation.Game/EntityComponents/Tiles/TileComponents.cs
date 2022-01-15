@@ -65,11 +65,11 @@ public struct TileFlagComponent : IComponentData, IEquatable<TileFlagComponent>
 {
     public TileFlags Value;
 
-    public bool IsDestructible => (Value & TileFlags.Indestructible) == 0;
-    public bool IsTerrain => (Value & TileFlags.Terrain) != 0;
-    public bool IsLadder => (Value & TileFlags.Ladder) != 0;
-    public bool IsEmpty => Value == TileFlags.InsideGrid;
-    public bool IsOutOfGrid => (Value & TileFlags.InsideGrid) == 0;
+    public bool IsDestructible => (Value & TileFlags.Indestructible) == 0; // has Indestructible flags
+    public bool IsTerrain => (Value & TileFlags.Terrain) != 0; // has Terrain flags
+    public bool IsLadder => (Value & TileFlags.Ladder) != 0; // has Ladder flags
+    public bool IsEmpty => (Value & (TileFlags.Ladder | TileFlags.Terrain)) == 0; // has NO Terrain or Ladder flags
+    public bool IsOutOfGrid => (Value & TileFlags.InsideGrid) == 0; // has InsideGrid
 
     public bool IsShapeFull => (Value & TileFlags.Shape_Full) != 0;
     public bool IsShapeCornerTopLeft => (Value & TileFlags.Shape_CornerTopLeft) != 0;
