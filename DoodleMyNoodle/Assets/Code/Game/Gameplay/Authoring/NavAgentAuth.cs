@@ -38,7 +38,7 @@ public class NavAgentAuth : MonoBehaviour, IConvertGameObjectToEntity
             airControllerCollider.Value.Material = mat;
 
             var deadCollider = BlobAssetReference<Collider>.Create(normalCollider.Value);
-            deadCollider.Value.Filter = CollisionFilter.FromLayer(13);
+            deadCollider.Value.Filter = CollisionFilter.FromLayer(SimulationGameConstants.Physics.LAYER_CONTACT_WITH_TERRAIN_ONLY);
 
             dstManager.AddComponentData(entity, new NavAgentColliderRefs()
             {
