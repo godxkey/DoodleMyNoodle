@@ -247,8 +247,8 @@ public class UpdateArcherAISystem : SimSystemBase
                             aiDestination.HasDestination = true;
                             aiDestination.Position = newShootPosition;
 
-                            // If no more AP => readyForNextTurn
-                            if (GetComponent<ActionPoints>(pawn).Value <= 0)
+                            // If no more AP => readyForNextTurn    (except if in AirControl, because we can move while having 0 ap)
+                            if (GetComponent<ActionPoints>(pawn).Value <= 0 && GetComponent<NavAgentFootingState>(pawn).Value != NavAgentFooting.AirControl)
                                 readyForNextTurn.Value = true;
                         }
                     }
