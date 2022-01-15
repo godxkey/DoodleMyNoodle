@@ -241,6 +241,16 @@ public static class Pathfinding
         result.Reset();
         result.StartingPosition = startPos;
 
+        fix reachDistanceSq = reachDistance * reachDistance;
+
+        for (int i = 0; i < goals.Length; i++)
+        {
+            if (distancesq(startPos, goals[i]) <= reachDistanceSq)
+            {
+                return true;
+            }
+        }
+
         int2 start = Helpers.GetTile(startPos);
 
         if (goals.Length == 0)
@@ -317,7 +327,7 @@ public static class Pathfinding
 
             for (int i = 0; i < goals.Length; i++)
             {
-                if (current.Equals(Helpers.GetTile(goals[i])))
+                if (current.Equals(Helpers.GetTile(goals[i])) || distancesq(Helpers.GetTileCenter(current), goals[i]) <= reachDistanceSq)
                 {
                     result.TotalCost = gScore[current];
                     construct_result_path(ref context, cameFrom, current, startPos, ref result);
@@ -408,8 +418,9 @@ public static class Pathfinding
     {
         result.Reset();
         result.StartingPosition = startPos;
+        fix reachDistanceSq = reachDistance * reachDistance;
 
-        if (distance(startPos, goalPos) <= reachDistance)
+        if (distancesq(startPos, goalPos) <= reachDistanceSq)
         {
             return true;
         }
@@ -481,7 +492,7 @@ public static class Pathfinding
         {
             // This operation could occur in O(1) time if openSet was a min-heap or a priority queue
             int2 current = node_in_openSet_having_the_lowest_fScore_value();
-            if (current.Equals(goal) || distance(Helpers.GetTileCenter(current), goalPos) <= reachDistance)
+            if (current.Equals(goal) || distancesq(Helpers.GetTileCenter(current), goalPos) <= reachDistanceSq)
             {
                 result.TotalCost = gScore[current];
                 construct_result_path(ref context, cameFrom, current, startPos, ref result);
