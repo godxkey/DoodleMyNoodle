@@ -7,6 +7,7 @@ using UnityEngine;
 using CCC.Fix2D;
 using System;
 using System.Collections.Generic;
+using UnityEngineX.InspectorDisplay;
 
 public class GameActionThrow : GameAction<GameActionThrow.Settings>
 {
@@ -19,8 +20,8 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         public fix SpawnExtraDistance = 0;
         public GameObject ProjectilePrefab;
         public int Quantity = 1;
-        [Range(1,10)]
-        public float SeparationFactor = 1;
+        [Suffix("Degrees")]
+        public float VolleyAngle = 0;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
@@ -31,7 +32,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
                 SpawnExtraDistance = SpawnExtraDistance,
                 ProjectilePrefab = conversionSystem.GetPrimaryEntity(ProjectilePrefab),
                 Quantity = Quantity,
-                SeparationFactor = (fix)SeparationFactor
+                VolleyAngle = radians((fix)VolleyAngle)
             });
         }
 
@@ -50,7 +51,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         public fix SpawnExtraDistance;
         public Entity ProjectilePrefab;
         public int Quantity;
-        public fix SeparationFactor;
+        public fix VolleyAngle; // in radian
     }
 
     public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
@@ -65,11 +66,21 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
 
     public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
-        bool orginateFromCenter = parameters.TryGetParameter(1, out GameActionParameterBool.Data paramOriginateFromCenter, warnIfFailed: false)
+        bool originateFromCenter = parameters.TryGetParameter(1, out GameActionParameterBool.Data paramOriginateFromCenter, warnIfFailed: false)
             && paramOriginateFromCenter.Value;
 
         if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
         {
+            if (settings.Quantity <= 1)
+            {
+                settings.VolleyAngle = 0;
+            }
+
+            fix throwSpeed = clamp(length(paramVector.Vector), settings.SpeedMin, settings.SpeedMax);
+            fix throwAngle = throwSpeed < (fix)0.01 ? 0 : angle2d(paramVector.Vector);
+            fix throwAngleMin = throwAngle - (settings.VolleyAngle / 2);
+            fix throwAngleIncrement = settings.Quantity == 1 ? 0 : settings.VolleyAngle / (settings.Quantity - 1);
+
             for (int i = 0; i < settings.Quantity; i++)
             {
                 // spawn projectile
@@ -83,30 +94,16 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
                     instigatorVel = instigatorPhysicsVelocity.Linear;
                 }
 
-                fix2 velocity = clampLength(paramVector.Vector, settings.SpeedMin, settings.SpeedMax);
-
-                if (i >= 1)
-                {
-                    FixRandom rand = accessor.Random();
-                    if(rand.NextBool())
-                    {
-                        velocity = fixMath.rotateTowards(velocity, fixMath.Angle2DUp, rand.NextFix(fixMath.Angle2DUp / ( 10 / settings.SeparationFactor), fixMath.Angle2DUp / ( 20 / settings.SeparationFactor)));
-                    }
-                    else
-                    {
-                        velocity = fixMath.rotateTowards(velocity, fixMath.Angle2DDown, rand.NextFix(fixMath.Angle2DDown / ( 20 / settings.SeparationFactor), fixMath.Angle2DDown / ( 30 / settings.SeparationFactor)));
-                    }
-                }
-
-                fix inputSpeed = length(velocity);
-                fix2 dir = inputSpeed < (fix)0.01 ? fix2(0, 1) : velocity / inputSpeed;
-
                 fix2 spawnPos;
                 fix spawnDistance = GetSpawnDistance(accessor, projectileInstance, context.InstigatorPawn, settings.SpawnExtraDistance);
 
-                // When 'orginateFromCenter' is true, we simulate the projectile spawning at the center of the pawn.
+                fix itemThrowAngle = throwAngleMin + (i * throwAngleIncrement);
+                fix2 itemThrowDir = fix2.FromAngle(itemThrowAngle);
+                fix2 itemThrowVelocity = itemThrowDir * throwSpeed;
+
+                // When 'originateFromCenter' is true, we simulate the projectile spawning at the center of the pawn.
                 // We adjust the start position and the start velocity to where the projectile will exit the spawn-distance
-                if (orginateFromCenter)
+                if (originateFromCenter)
                 {
                     // Find how much the projectile will be affected by gravity
                     fix2 gravity = accessor.GetExistingSystem<PhysicsWorldSystem>().PhysicsWorld.StepSettings.GravityFix;
@@ -116,24 +113,24 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
                     }
 
                     // Calculate travel time to exit 'spawn-distance' zone
-                    fix travelTime = Trajectory.TravelDurationApprox(velocity, gravity, spawnDistance + (fix)0.05 /* for extra safety*/, precision: (fix)0.005);
+                    fix travelTime = Trajectory.TravelDurationApprox(itemThrowVelocity, gravity, spawnDistance + (fix)0.05 /* for extra safety*/, precision: (fix)0.005);
 
                     if (travelTime > 10) // travel time too long ? use normal spawnPos
                     {
-                        spawnPos = instigatorPos + spawnDistance * dir;
+                        spawnPos = instigatorPos + spawnDistance * itemThrowDir;
                     }
                     else
                     {
-                        spawnPos = Trajectory.Position(instigatorPos, velocity, gravity, travelTime);
-                        velocity = Trajectory.Velocity(velocity, gravity, travelTime);
+                        spawnPos = Trajectory.Position(instigatorPos, itemThrowVelocity, gravity, travelTime);
+                        itemThrowVelocity = Trajectory.Velocity(itemThrowVelocity, gravity, travelTime);
                     }
                 }
                 else
                 {
-                    spawnPos = instigatorPos + spawnDistance * dir;
+                    spawnPos = instigatorPos + spawnDistance * itemThrowDir;
                 }
 
-                accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(velocity + instigatorVel));
+                accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(itemThrowVelocity + instigatorVel));
                 accessor.SetOrAddComponent(projectileInstance, new FixTranslation(spawnPos));
                 accessor.SetOrAddComponent(projectileInstance, new ProjectileInstigator(context.InstigatorPawn));
             }

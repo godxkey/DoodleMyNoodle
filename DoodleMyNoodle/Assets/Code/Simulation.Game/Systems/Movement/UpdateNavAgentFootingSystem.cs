@@ -35,6 +35,7 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
                 fix pawnFeetXOffset = pawnRadius * (fix)0.8f;
                 fix2 belowLeftFoot = new fix2(fixTranslation.Value.x - pawnFeetXOffset, fixTranslation.Value.y - pawnRadius - (fix)0.05);
                 fix2 belowRightFoot = new fix2(fixTranslation.Value.x + pawnFeetXOffset, fixTranslation.Value.y - pawnRadius - (fix)0.05);
+                fix2 belowLongDick = new fix2(fixTranslation.Value.x, fixTranslation.Value.y - pawnRadius - (fix)0.05);
 
 
                 // GOTO Ladder IF on ladder && (already has footing on ladder || already has footing on ground)
@@ -47,16 +48,18 @@ public class UpdateNavAgentFootingSystem : SimSystemBase
                 {
                     OverlapPointInput detectTerrain = new OverlapPointInput()
                     {
-                        Filter = SimulationGameConstants.Physics.CollideWithTerrainFilter.Data,
+                        Filter = SimulationGameConstants.Physics.CharacterFilter.Data,
                     };
 
                     OverlapPointInput detectTerrainLeftFoot = detectTerrain;
                     detectTerrainLeftFoot.Position = (float2)belowLeftFoot;
+                    OverlapPointInput detectTerrainLongDick = detectTerrain;
+                    detectTerrainLongDick.Position = (float2)belowLongDick;
                     OverlapPointInput detectTerrainRightFoot = detectTerrain;
                     detectTerrainRightFoot.Position = (float2)belowRightFoot;
 
                     // GOTO Ground IF above terrain && (previously grounded || previously ladder || previously airControl and not jumping || velocity is low)
-                    if ((physicsWorld.OverlapPoint(detectTerrainLeftFoot) || physicsWorld.OverlapPoint(detectTerrainRightFoot))
+                    if ((physicsWorld.OverlapPoint(detectTerrainLeftFoot) || physicsWorld.OverlapPoint(detectTerrainLongDick) || physicsWorld.OverlapPoint(detectTerrainRightFoot))
                       && (footing.Value == NavAgentFooting.Ground
                           || footing.Value == NavAgentFooting.Ladder
                           || (footing.Value == NavAgentFooting.AirControl && velocity.Linear.y <= (fix)0.5)

@@ -66,6 +66,8 @@ public static class SimulationGameConstants
 
         // For a collision detection to happen between two filters, their 'BelongsTo' and 'CollidesWith' must mention each other
 
+        Physics.CharacterFilter.Data = CollisionFilter.FromLayer(Physics.LAYER_CHARACTER);
+
         Physics.CollideWithTerrainFilter.Data = new CollisionFilter()
         {
             BelongsTo = ~(uint)0,
@@ -91,11 +93,14 @@ public static class SimulationGameConstants
         public const int LAYER_CHARACTER = 9;
         public const int LAYER_CONTACT_WITH_TERRAIN_ONLY = 13;
 
-        public static readonly SharedStatic<CollisionFilter> CollideWithTerrainFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, TerrainFilterKey>();
-        private class TerrainFilterKey { }
+        public static readonly SharedStatic<CollisionFilter> CharacterFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, CharacterFilterKey>();
+        private class CharacterFilterKey { }
 
-        public static readonly SharedStatic<CollisionFilter> CollideWithCharactersAndTerrainFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, CharactersAndTerrainFilterKey>();
-        private class CharactersAndTerrainFilterKey { }
+        public static readonly SharedStatic<CollisionFilter> CollideWithTerrainFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, ColliderWithTerrainFilterKey>();
+        private class ColliderWithTerrainFilterKey { }
+
+        public static readonly SharedStatic<CollisionFilter> CollideWithCharactersAndTerrainFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, CollideWithCharactersAndTerrainFilterKey>();
+        private class CollideWithCharactersAndTerrainFilterKey { }
 
         public static readonly SharedStatic<CollisionFilter> CollideWithCharactersFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, CollideWithCharactersFilterKey>();
         private class CollideWithCharactersFilterKey { }
