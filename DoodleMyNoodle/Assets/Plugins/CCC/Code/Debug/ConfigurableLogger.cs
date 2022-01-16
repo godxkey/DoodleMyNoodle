@@ -49,6 +49,8 @@ public class ConfigurableLogger : IDisposable
         if (Log.Enabled)
         {
             string unityLogPath = Application.consoleLogPath;
+            
+            UnityEngine.Debug.LogError($"path: '{unityLogPath}'   hash:{unityLogPath.GetHashCode()}");
 
             string path =
                 $"{Path.GetDirectoryName(unityLogPath)}" +
