@@ -44,28 +44,11 @@ public class ConfigurableLogger : IDisposable
     public RuleSet FallbackRuleSet { get; set; } = RuleSet.Default;
     public Dictionary<LogType, RuleSet> Rules { get; } = new Dictionary<LogType, RuleSet>();
 
-    public ConfigurableLogger(string name)
+    public ConfigurableLogger(string outputPath)
     {
         if (Log.Enabled)
         {
-            string unityLogPath = Application.consoleLogPath;
-
-            string s = "";
-            for (int i = 0; i < unityLogPath.Length; i++)
-            {
-                s += $"char {i}: '{unityLogPath[i]}'   value:{Convert.ToUInt64(unityLogPath[i])} | ";
-            }
-
-            UnityEngine.Debug.LogError($"path: '{unityLogPath}'   hash:{unityLogPath.GetHashCode()}\n\n" + s);
-
-            string path =
-                $"{Path.GetDirectoryName(unityLogPath)}" +
-                $"\\{Path.GetFileNameWithoutExtension(unityLogPath)}" +
-                $"({name})" +
-                $"{(Application.isEditor ? "" : Process.GetCurrentProcess().Id.ToString())}" +
-                $".log";
-
-            _fileWriter = new FileWriter(_pendingLogs, path);
+            _fileWriter = new FileWriter(_pendingLogs, outputPath);
             Log.Internals.LogMessageReceivedThreaded += OnLogReceived;
 
             StartUpdateIfNeeded();
