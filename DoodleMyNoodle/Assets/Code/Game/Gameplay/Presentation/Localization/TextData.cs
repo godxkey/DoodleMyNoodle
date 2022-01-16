@@ -19,19 +19,21 @@ public struct TextData
 
     public static TextData FromLocId(string locId, string failedLocText = null)
     {
-        TextData newTextData = new TextData();
-        newTextData._locID = locId;
-        newTextData._string = failedLocText;
-        newTextData._useLocID = true;
-        return newTextData;
+        return new TextData()
+        {
+            _locID = locId,
+            _string = failedLocText,
+            _useLocID = true
+        };
     }
 
     public static TextData FromRawString(string text)
     {
-        TextData newLocalizedTextData = new TextData();
-        newLocalizedTextData._string = text;
-        newLocalizedTextData._useLocID = false;
-        return newLocalizedTextData;
+        return new TextData()
+        {
+            _string = text,
+            _useLocID = false
+        };
     }
 
     public static TextData Empty => FromRawString(string.Empty);
@@ -47,13 +49,13 @@ public struct TextData
 
     public override string ToString()
     {
-        string outputString = null;
+        string outputString;
         if (_useLocID)
         {
             if (!LocalizationManager.Instance.GetLocalizedText(_locID, out outputString))
             {
-                outputString = "#" + _string;
-                Log.Info(LogChannel, $"No Localized Text Found for ID {_locID}, using failedLocText");
+                //outputString = "#" + _string;
+                //Log.Info(LogChannel, $"No Localized Text Found for ID {_locID}, using failedLocText");
             }
         }
         else
