@@ -17,7 +17,7 @@ public class WhySoManyErrors : MonoBehaviour
     private void Application_logMessageReceived(string condition, string stackTrace, LogType type)
     {
         if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert)
-            TextField.text = $"{condition}\n\n{stackTrace}";
+            TextField.text += $"{condition}\n\n{stackTrace}\n\n";
     }
 
     // Update is called once per frame

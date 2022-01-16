@@ -208,6 +208,11 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
 
     private void UpdateAllPosition()
     {
+        if (_tooltipPrefab == null || _cursorPrefab == null)
+        {
+            return;
+        }
+
         if (_currentTooltip == null)
         {
             _currentTooltip = Instantiate(_tooltipPrefab);
@@ -226,13 +231,13 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         displacementRatioX *= Screen.width;
         displacementRatioY *= Screen.height;
 
-        Transform tooltipTransform = _currentTooltip.transform.GetComponentInChildren<Image>().transform;
+        Transform tooltipTransform = _currentTooltip.transform.GetComponentInChildren<Image>()?.transform;
         if (tooltipTransform != null)
         {
             tooltipTransform.position = Input.mousePosition + new Vector3(displacementRatioX, displacementRatioY, 0);
         }
 
-        if (_currentCursor != null)
+        if (_currentCursor != null && _currentSetting != null)
         {
             _currentCursor.SetCursorsPosition(Input.mousePosition + new Vector3(_currentSetting.Displacement.x, _currentSetting.Displacement.y, 0));
         }
