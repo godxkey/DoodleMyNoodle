@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3df22515569416b44b170dc5273bafc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TextField: {fileID: 0}
+  TextField: {fileID: 2084680210}
 --- !u!114 &28944408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -424,7 +424,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: toto
 --- !u!222 &2084680211
 CanvasRenderer:
   m_ObjectHideFlags: 0
