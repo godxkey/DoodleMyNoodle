@@ -53,7 +53,7 @@ public class ConfigurableLogger : IDisposable
             string s = "";
             for (int i = 0; i < unityLogPath.Length; i++)
             {
-                s += $"char {i}: '{unityLogPath[i]}'   value:{Convert.ToUInt64(unityLogPath[i])}\n\n";
+                s += $"char {i}: '{unityLogPath[i]}'   value:{Convert.ToUInt64(unityLogPath[i])} | ";
             }
 
             UnityEngine.Debug.LogError($"path: '{unityLogPath}'   hash:{unityLogPath.GetHashCode()}\n\n" + s);
