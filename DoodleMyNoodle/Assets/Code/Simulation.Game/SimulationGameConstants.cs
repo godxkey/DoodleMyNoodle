@@ -33,6 +33,8 @@ public static class SimulationGameConstants
     public static readonly fix AIThinkGlobalCooldown = (fix)0.5;
     public static readonly fix CharacterRadius = (fix)0.45; // do NOT use this constant unless really necessary. It needs to be removed in the future
 
+    public static readonly fix SameEffectGroupDamageCooldown = (fix)1; // do NOT use this constant unless really necessary. It needs to be removed in the future
+
     public static readonly int FallDamage = 1;
 
     /// <summary>

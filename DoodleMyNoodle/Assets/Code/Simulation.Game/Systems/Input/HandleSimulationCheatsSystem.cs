@@ -136,11 +136,11 @@ public class HandleSimulationCheatsSystem : SimSystemBase
                 {
                     if (damagePlayer.Damage > 0)
                     {
-                        CommonWrites.RequestDamage(Accessor, pawn, pawn, damagePlayer.Damage);
+                        CommonWrites.RequestDamage(Accessor, pawn, damagePlayer.Damage);
                     }
                     else
                     {
-                        CommonWrites.RequestHeal(Accessor, pawn, pawn, -damagePlayer.Damage);
+                        CommonWrites.RequestHeal(Accessor, pawn, -damagePlayer.Damage);
                     }
                 }
                 break;

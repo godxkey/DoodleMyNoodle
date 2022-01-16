@@ -81,6 +81,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
             fix throwAngleMin = throwAngle - (settings.VolleyAngle / 2);
             fix throwAngleIncrement = settings.Quantity == 1 ? 0 : settings.VolleyAngle / (settings.Quantity - 1);
 
+            uint projectileGroupID = accessor.MakeUniquePersistentId().Value;
             for (int i = 0; i < settings.Quantity; i++)
             {
                 // spawn projectile
@@ -133,6 +134,11 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
                 accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(itemThrowVelocity + instigatorVel));
                 accessor.SetOrAddComponent(projectileInstance, new FixTranslation(spawnPos));
                 accessor.SetOrAddComponent(projectileInstance, new ProjectileInstigator(context.InstigatorPawn));
+
+                if (settings.Quantity > 1)
+                {
+                    accessor.SetOrAddComponent(projectileInstance, new EffectGroupComponent() { ID = projectileGroupID });
+                }
             }
 
             return true;

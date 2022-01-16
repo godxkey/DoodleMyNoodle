@@ -60,4 +60,18 @@ public static class PersistentIdExtensions
 
         return nextPersistentId.NextId;
     }
+
+    public static PersistentId MakeUniquePersistentId(this ISimWorldReadWriteAccessor accessor)
+    {
+        // we assume next persisten id exist
+        NextPersistentId nextPersistentId = accessor.GetSingleton<NextPersistentId>();
+        nextPersistentId.NextId.Value++;
+
+        if (nextPersistentId.NextId == PersistentId.Invalid)
+            nextPersistentId.NextId.Value++;
+
+        accessor.SetOrCreateSingleton(nextPersistentId);
+
+        return nextPersistentId.NextId;
+    }
 }

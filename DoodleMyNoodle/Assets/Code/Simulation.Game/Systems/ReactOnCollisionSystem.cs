@@ -170,6 +170,8 @@ public class ReactOnCollisionSystem : SimSystemBase
 {
     public static LogChannel FallDamageLogChannel = Log.CreateChannel("Fall Damage", activeByDefault: false);
 
+    EndSimulationEntityCommandBufferSystem m_EndSimulationEcbSystem;
+
     public NativeList<(Entity instigator, Entity target, int damage)> DamagesRequests;
     public NativeList<Entity> DestroyRequests;
     public NativeList<Entity> StickRequest;
@@ -191,7 +193,9 @@ public class ReactOnCollisionSystem : SimSystemBase
         LassoRequests = new NativeList<(Entity, Entity, LassoData)>(Allocator.Persistent);
         FallDamageRequests = new NativeList<(Entity, Entity, fix)>(Allocator.Persistent);
 
-        RequireSingletonForUpdate<GridInfo>();
+        m_EndSimulationEcbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+
+       RequireSingletonForUpdate<GridInfo>();
     }
 
     protected override void OnDestroy()
@@ -212,7 +216,14 @@ public class ReactOnCollisionSystem : SimSystemBase
         // damage
         foreach ((Entity instigator, Entity target, int damage) in DamagesRequests)
         {
-            CommonWrites.RequestDamage(Accessor, instigator, target, damage);
+            if (TryGetComponent(instigator, out EffectGroupComponent effectGroupComponent))
+            {
+                CommonWrites.RequestDamage(Accessor, target, damage, effectGroupComponent.ID);
+            }
+            else
+            {
+                CommonWrites.RequestDamage(Accessor, target, damage);
+            }
         }
 
         // impulse
@@ -268,7 +279,10 @@ public class ReactOnCollisionSystem : SimSystemBase
         }
 
         // destroy
-        EntityManager.DestroyEntity(DestroyRequests);
+        foreach (var item in DestroyRequests)
+        {
+            m_EndSimulationEcbSystem.CreateCommandBuffer().DestroyEntity(item);
+        }
 
         DamagesRequests.Clear();
         DestroyRequests.Clear();
@@ -326,7 +340,7 @@ public class ReactOnCollisionSystem : SimSystemBase
 
                 if (impulse > damageImpulseThreshold)
                 {
-                    CommonWrites.RequestDamage(Accessor, instigator, target, SimulationGameConstants.FallDamage);
+                    CommonWrites.RequestDamage(Accessor, target, SimulationGameConstants.FallDamage);
                     damage = true;
                     blacklistedEntities.Add(new FallDamageBlacklistedEntity() { Entity = target, BlacklistTime = Time.ElapsedTime });
                 }

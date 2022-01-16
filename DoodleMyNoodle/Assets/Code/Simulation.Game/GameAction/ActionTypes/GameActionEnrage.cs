@@ -53,11 +53,11 @@ public class GameActionEnrage : GameAction<GameActionEnrage.Settings>
     {
         if (settings.HPCost > 0)
         {
-            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, context.InstigatorPawn, settings.HPCost);
+            CommonWrites.RequestDamage(accessor, context.InstigatorPawn, settings.HPCost);
         }
         else
         {
-            CommonWrites.RequestHeal(accessor, context.InstigatorPawn, context.InstigatorPawn, -1 * settings.HPCost);
+            CommonWrites.RequestHeal(accessor, context.InstigatorPawn, -1 * settings.HPCost);
         }
 
         return true;
