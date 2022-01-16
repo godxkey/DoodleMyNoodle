@@ -9,7 +9,7 @@ public static class CoreServiceManagerBootstrap
     {
         if (CoreServiceManager.instance == null)
         {
-            new CoreServiceManager();
+            //new CoreServiceManager();
         }
     }
 }

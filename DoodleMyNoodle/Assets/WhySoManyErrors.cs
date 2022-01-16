@@ -7,22 +7,27 @@ public class WhySoManyErrors : MonoBehaviour
 {
     public Text TextField;
 
+    static public string ErrorText;
 
-
-    void Start()
+    [RuntimeInitializeOnLoadMethod]
+    static void OnRuntimeMethodLoad() // Executed after scene is loaded and game is running
     {
         Application.logMessageReceived += Application_logMessageReceived;
+
+        if (CoreServiceManager.instance == null)
+        {
+            new CoreServiceManager();
+        }
     }
 
-    private void Application_logMessageReceived(string condition, string stackTrace, LogType type)
-    {
-        if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert)
-            TextField.text += $"{condition}\n\n{stackTrace}\n\n";
-    }
-
-    // Update is called once per frame
     void Update()
     {
+        TextField.text = ErrorText;
+    }
 
+    static private void Application_logMessageReceived(string condition, string stackTrace, LogType type)
+    {
+        if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert)
+            ErrorText += $"{condition}\n\n{stackTrace}\n\n";
     }
 }
