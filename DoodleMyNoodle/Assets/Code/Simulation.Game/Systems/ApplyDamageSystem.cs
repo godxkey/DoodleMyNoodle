@@ -27,9 +27,9 @@ public struct DamageRequestSingletonTag : IComponentData
 
 public struct DamageRequestData : IBufferElementData
 {
-    public Entity InstigatorPawn;
     public int Amount;
-    public Entity TargetPawn;
+    public Entity Target;
+    public uint EffectGroupID;
 }
 
 [AlwaysUpdateSystem]
@@ -76,11 +76,11 @@ public class ApplyDamageSystem : SimSystemBase
         {
             if (damageData.Amount > 0)
             {
-                ProcessDamage(damageData.InstigatorPawn, damageData.TargetPawn, damageData.Amount, _newDamageEvents);
+                ProcessDamage(damageData.Target, damageData.Amount, damageData.EffectGroupID, _newDamageEvents);
             }
             else if (damageData.Amount < 0)
             {
-                ProcessHeal(damageData.InstigatorPawn, damageData.TargetPawn, abs(damageData.Amount), _newHealEvents);
+                ProcessHeal(damageData.Target, abs(damageData.Amount), _newHealEvents);
             }
         }
 
@@ -101,10 +101,27 @@ public class ApplyDamageSystem : SimSystemBase
         _newHealEvents.Clear();
     }
 
-    private void ProcessDamage(Entity instigator, Entity target, int amount, List<DamageEventData> outDamageEvents)
+    private void ProcessDamage(Entity target, int amount, uint effectGroupID, List<DamageEventData> outDamageEvents)
     {
         int remainingDamage = amount;
         bool damageHasBeenApplied = false;
+
+        // prevents too many damage instance from the same source/group
+        if (effectGroupID != uint.MaxValue)
+        {
+            DynamicBuffer<EffectGroupBufferSingleton> effectGroupBufferSingleton = GetSingletonBuffer<EffectGroupBufferSingleton>();
+            for (int i = 0; i < effectGroupBufferSingleton.Length; i++)
+            {
+                if (effectGroupBufferSingleton[i].ID == effectGroupID && effectGroupBufferSingleton[i].Entity == target)
+                {
+                    // can't take damage when we already took damage from a same id effect Group
+                    return;
+                }
+            }
+
+            // hard coded cooldown for effect group 0.1 for now
+            effectGroupBufferSingleton.Add(new EffectGroupBufferSingleton() { ID = effectGroupID, Entity = target, TimeStamp = Time.ElapsedTime, Delay = SimulationGameConstants.SameEffectGroupDamageCooldown });
+        }
 
         // Invincible
         if (HasComponent<Invincible>(target))
@@ -149,7 +166,7 @@ public class ApplyDamageSystem : SimSystemBase
         }
     }
 
-    private void ProcessHeal(Entity instigator, Entity target, int amount, List<HealEventData> outHealEvents)
+    private void ProcessHeal(Entity target, int amount, List<HealEventData> outHealEvents)
     {
         if (HasComponent<Health>(target))
         {
@@ -167,42 +184,42 @@ public class ApplyDamageSystem : SimSystemBase
 
 internal static partial class CommonWrites
 {
-    public static void RequestDamage(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, NativeArray<DistanceHit> hits, int damage)
+    public static void RequestDamage(ISimWorldReadWriteAccessor accessor, NativeArray<DistanceHit> hits, int damage, uint effectGroupID = uint.MaxValue)
     {
         var sys = accessor.GetExistingSystem<ApplyDamageSystem>();
 
         for (int i = 0; i < hits.Length; i++)
         {
-            var request = new DamageRequestData() { Amount = damage, InstigatorPawn = instigatorPawn, TargetPawn = hits[i].Entity };
+            var request = new DamageRequestData() { Amount = damage, Target = hits[i].Entity, EffectGroupID = effectGroupID };
             sys.RequestDamage(request);
         }
     }
-    public static void RequestDamage(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, NativeArray<Entity> targetPawns, int amount)
+    public static void RequestDamage(ISimWorldReadWriteAccessor accessor, NativeArray<Entity> targets, int amount, uint effectGroupID = uint.MaxValue)
     {
         var sys = accessor.GetExistingSystem<ApplyDamageSystem>();
 
-        for (int i = 0; i < targetPawns.Length; i++)
+        for (int i = 0; i < targets.Length; i++)
         {
-            var request = new DamageRequestData() { Amount = amount, InstigatorPawn = instigatorPawn, TargetPawn = targetPawns[i] };
+            var request = new DamageRequestData() { Amount = amount, Target = targets[i], EffectGroupID = effectGroupID };
             sys.RequestDamage(request);
         }
     }
 
-    public static void RequestDamage(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, Entity targetPawn, int amount)
+    public static void RequestDamage(ISimWorldReadWriteAccessor accessor, Entity target, int amount, uint effectGroupID = uint.MaxValue)
     {
-        var request = new DamageRequestData() { Amount = amount, InstigatorPawn = instigatorPawn, TargetPawn = targetPawn };
+        var request = new DamageRequestData() { Amount = amount, Target = target, EffectGroupID = effectGroupID };
         accessor.GetExistingSystem<ApplyDamageSystem>().RequestDamage(request);
     }
 
-    public static void RequestHeal(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, NativeArray<Entity> targetPawns, int amount)
+    public static void RequestHeal(ISimWorldReadWriteAccessor accessor, NativeArray<Entity> targets, int amount, uint effectGroupID = uint.MaxValue)
     {
         // for now a heal request is a negative damage request
-        RequestDamage(accessor, instigatorPawn, targetPawns, -amount);
+        RequestDamage(accessor, targets, -amount, effectGroupID);
     }
 
-    public static void RequestHeal(ISimWorldReadWriteAccessor accessor, Entity instigatorPawn, Entity targetPawn, int amount)
+    public static void RequestHeal(ISimWorldReadWriteAccessor accessor, Entity target, int amount, uint effectGroupID = uint.MaxValue)
     {
         // for now a heal request is a negative damage request
-        RequestDamage(accessor, instigatorPawn, targetPawn, -amount);
+        RequestDamage(accessor, target, -amount, effectGroupID);
     }
 }

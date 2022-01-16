@@ -229,7 +229,7 @@ public class ReactOnSpikeOverlapSystem : SimSystemBase
             SetComponent(newSpikeCooldownEntity, new SpikeDamageCooldown() { Cooldown = 1, ElapsedTimeWhenCreated = Time.ElapsedTime, EntityLinkedTo = target });
             SpikeCooldowns.Add(EntityManager.GetComponentData<SpikeDamageCooldown>(newSpikeCooldownEntity));
 
-            CommonWrites.RequestDamage(Accessor, instigator, target, damage);
+            CommonWrites.RequestDamage(Accessor, target, damage);
         }
 
         // destroy

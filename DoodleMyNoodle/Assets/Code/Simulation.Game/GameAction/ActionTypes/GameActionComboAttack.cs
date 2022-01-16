@@ -66,7 +66,7 @@ public class GameActionComboAttack : GameAction<GameActionComboAttack.Settings>
             resultData.Add(new ResultDataElement() { Position = attackPos });
         }
 
-        CommonWrites.RequestDamage(accessor, context.InstigatorPawn, hits, settings.Damage);
+        CommonWrites.RequestDamage(accessor, hits, settings.Damage);
 
         return true;
     }

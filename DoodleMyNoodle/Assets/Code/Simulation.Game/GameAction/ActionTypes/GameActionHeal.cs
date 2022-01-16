@@ -78,7 +78,7 @@ public class GameActionHeal : GameAction<GameActionHeal.Settings>
             fix healPowerRatio = 1 - ((fix)currentHP / maxHP); // 0 -> min heal   1 -> max heal
             int heal = roundToInt(lerp(settings.MinHeal, settings.MaxHeal, healPowerRatio));
 
-            CommonWrites.RequestHeal(accessor, context.InstigatorPawn, paramEntity.Entity, heal);
+            CommonWrites.RequestHeal(accessor, paramEntity.Entity, heal);
 
             return true;
         }
