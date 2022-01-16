@@ -14,6 +14,8 @@ public class WhySoManyErrors : MonoBehaviour
     {
         Application.logMessageReceived += Application_logMessageReceived;
 
+        ErrorText = Application.consoleLogPath + "\n\n";
+
         if (CoreServiceManager.instance == null)
         {
             new CoreServiceManager();
