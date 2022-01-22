@@ -464,7 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TurnDuration:
-    RawValue: 128849018880
+    RawValue: 4294963001032704
 --- !u!114 &1308979965
 MonoBehaviour:
   m_ObjectHideFlags: 0
