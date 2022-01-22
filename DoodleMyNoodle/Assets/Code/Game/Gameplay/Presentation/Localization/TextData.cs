@@ -54,7 +54,7 @@ public struct TextData
         {
             if (!LocalizationManager.Instance.GetLocalizedText(_locID, out outputString))
             {
-                //outputString = "#" + _string;
+                outputString = _string;
                 //Log.Info(LogChannel, $"No Localized Text Found for ID {_locID}, using failedLocText");
             }
         }
