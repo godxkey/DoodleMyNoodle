@@ -188,7 +188,7 @@ GameObject:
   - component: {fileID: 450543263}
   - component: {fileID: 450543262}
   m_Layer: 0
-  m_Name: InventoryContainerPrefabReference
+  m_Name: DEPRECATED_InventoryContainerPrefabReference
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -433,7 +433,7 @@ GameObject:
   - component: {fileID: 1308979964}
   - component: {fileID: 1308979963}
   m_Layer: 0
-  m_Name: TurnDataEntity
+  m_Name: DEPRECATED_TurnDataEntity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

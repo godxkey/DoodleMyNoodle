@@ -21,7 +21,7 @@ public class TurnTeamDisplay : GamePresentationBehaviour
     {
         int currentTeam = -1;
 
-        foreach (var item in Cache.CurrentlyPlayingControllers)
+        foreach (var item in Cache.DEPRECATED_CurrentlyPlayingControllers)
         {
             if (SimWorld.TryGetComponent(item, out Team team))
             {

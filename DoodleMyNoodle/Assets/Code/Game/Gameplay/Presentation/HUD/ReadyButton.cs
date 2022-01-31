@@ -81,7 +81,7 @@ public class ReadyButton : GamePresentationBehaviour
             // If we don't have a pawn
             _viewState.Set(TurnState.NotMyTurn);
         }
-        else if (!Cache.CanLocalPlayerPlay && SimWorld.HasSingleton<GameStartedTag>())
+        else if (!Cache.DEPRECATED_CanLocalPlayerPlay && SimWorld.HasSingleton<GameStartedTag>())
         {
             // if it's not our turn to play
             _viewState.Set(TurnState.NotMyTurn);

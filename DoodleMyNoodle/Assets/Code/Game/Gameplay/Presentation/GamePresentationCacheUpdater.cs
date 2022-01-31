@@ -25,23 +25,23 @@ public class GamePresentationCache
     public List<GameObject> PointedGameObjects = new List<GameObject>();
 
     public Entity LocalPawn;
-    public int LocalPawnHealth;
     public fix2 LocalPawnPosition;
-    public int2 LocalPawnTile;
-    public Entity LocalPawnTileEntity;
     public Vector2 LocalPawnPositionFloat;
     public Entity LocalController;
-    public Team LocalControllerTeam;
-    public bool CanLocalPlayerPlay;
-    public bool IsNewTurn;
-    public bool IsNewRound;
-    public List<Entity> CurrentlyPlayingControllers = new List<Entity>();
-    public TileWorld TileWorld;
+    public int DEPRECATED_LocalPawnHealth;
+    public int2 DEPRECATED_LocalPawnTile;
+    public Entity DEPRECATED_LocalPawnTileEntity;
+    public Team DEPRECATED_LocalControllerTeam = 1;
+    public bool DEPRECATED_CanLocalPlayerPlay = true;
+    public bool DEPRECATED_IsNewTurn = false;
+    public bool DEPRECATED_IsNewRound = false;
+    public List<Entity> DEPRECATED_CurrentlyPlayingControllers = new List<Entity>();
+    public TileWorld DEPRECATED_TileWorld;
     public ExternalSimWorldAccessor SimWorld;
 
     public bool LocalPawnExists => LocalPawn != Entity.Null;
     public bool LocalControllerExists => LocalController != Entity.Null;
-    public bool LocalPawnAlive => LocalPawnExists && LocalPawnHealth > 0;
+    public bool LocalPawnAlive => LocalPawnExists && DEPRECATED_LocalPawnHealth > 0;
 }
 
 // should we change this to a component system ?
@@ -78,22 +78,14 @@ public class GamePresentationCacheUpdater : ViewSystemBase
     {
         Cache.LocalController = Entity.Null;
         Cache.LocalPawn = Entity.Null;
-        Cache.LocalPawnTileEntity = Entity.Null;
-        Cache.TileWorld = default;
         Cache.PointedBodies.Clear();
         Cache.PointedViewEntities.Clear();
         Cache.PointedColliders.Clear();
         Cache.PointedGameObjects.Clear();
-        Cache.CanLocalPlayerPlay = false;
-        Cache.IsNewRound = false;
-        Cache.IsNewTurn = false;
     }
 
     protected override void OnUpdate()
     {
-        Cache.IsNewRound = SimWorldAccessor.HasSingleton<NewRoundEventData>();
-        Cache.IsNewTurn = SimWorldAccessor.HasSingleton<NewTurnEventData>();
-
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Camera
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -104,28 +96,6 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
-        //      Tile World
-        ////////////////////////////////////////////////////////////////////////////////////////
-        CreateTileWorldSystem createTileWorldSystem = Cache.SimWorld.GetExistingSystem<CreateTileWorldSystem>();
-        if (createTileWorldSystem.HasSingleton<GridInfo>())
-        {
-            Cache.TileWorld = createTileWorldSystem.GetTileWorld();
-        }
-        else
-        {
-            Cache.TileWorld = default;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        //      Playing controllers
-        ////////////////////////////////////////////////////////////////////////////////////////
-        var temp = new NativeList<Entity>(Allocator.Temp);
-        CommonReads.GetCurrentlyPlayingEntities(SimWorldAccessor, temp);
-        Cache.CurrentlyPlayingControllers.Clear();
-        foreach (var item in temp)
-            Cache.CurrentlyPlayingControllers.Add(item);
-
-        ////////////////////////////////////////////////////////////////////////////////////////
         //      Player & Pawn
         ////////////////////////////////////////////////////////////////////////////////////////
         Cache.LocalPawn = PlayerHelpers.GetLocalSimPawnEntity(Cache.SimWorld);
@@ -133,23 +103,13 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         if (Cache.LocalPawn != Entity.Null)
         {
             Cache.LocalController = CommonReads.TryGetPawnController(Cache.SimWorld, Cache.LocalPawn);
-            if (Cache.LocalController != Entity.Null && Cache.SimWorld.TryGetComponent(Cache.LocalController, out Team controllerTeam))
-            {
-                Cache.LocalControllerTeam = controllerTeam;
-            }
-
             Cache.LocalPawnPosition = Cache.SimWorld.GetComponent<FixTranslation>(Cache.LocalPawn).Value;
-            Cache.LocalPawnHealth = Cache.SimWorld.GetComponent<Health>(Cache.LocalPawn).Value;
             Cache.LocalPawnPositionFloat = Cache.LocalPawnPosition.ToUnityVec();
-            Cache.LocalPawnTile = Helpers.GetTile(Cache.LocalPawnPosition);
-            Cache.LocalPawnTileEntity = Cache.TileWorld.IsCreated ? Cache.TileWorld.GetEntity(Cache.LocalPawnTile) : Entity.Null;
         }
         else
         {
             Cache.LocalController = Entity.Null;
-            Cache.LocalPawnTileEntity = Entity.Null;
         }
-        Cache.CanLocalPlayerPlay = Cache.CurrentlyPlayingControllers.Contains(Cache.LocalController);
 
 
         ////////////////////////////////////////////////////////////////////////////////////////

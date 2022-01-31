@@ -37,7 +37,7 @@ public class UIStateMachine : StateMachine<UIStateMachine, UIState, UIStateMachi
         bool couldPlay =
             Cache.LocalControllerExists
             && Cache.LocalPawnAlive
-            && Cache.CanLocalPlayerPlay;
+            && Cache.DEPRECATED_CanLocalPlayerPlay;
 
         UIStateType? currentType = CurrentState?.Type;
 

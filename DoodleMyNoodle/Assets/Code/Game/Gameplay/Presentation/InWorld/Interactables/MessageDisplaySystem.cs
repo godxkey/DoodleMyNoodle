@@ -28,7 +28,7 @@ public class MessageDisplaySystem : GamePresentationSystem<MessageDisplaySystem>
         _displayedMessage.Set(null);
         if (Cache.PointerInWorld &&  Cache.LocalPawn != Entity.Null)
         {
-            if (distance(Cache.LocalPawnTile, Cache.PointedTile) <= _readRange)
+            if (distance(Cache.DEPRECATED_LocalPawnTile, Cache.PointedTile) <= _readRange)
             {
                 foreach (var tileActor in Cache.PointedBodies)
                 {

@@ -9,7 +9,7 @@ public class YourTurnDisplaySystem : GamePresentationSystem<YourTurnDisplaySyste
 
     protected override void OnGamePresentationUpdate()
     {
-        if (Cache.IsNewTurn && Cache.CanLocalPlayerPlay)
+        if (Cache.DEPRECATED_IsNewTurn && Cache.DEPRECATED_CanLocalPlayerPlay)
         {
             DebugScreenMessage.DisplayMessage(_yourTurnMessage.ToString());
             DefaultAudioSourceService.Instance.PlayStaticSFX(_yourTurnSFX);

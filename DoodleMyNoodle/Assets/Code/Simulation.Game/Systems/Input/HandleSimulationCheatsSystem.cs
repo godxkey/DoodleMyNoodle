@@ -6,19 +6,13 @@ using static fixMath;
 using static Unity.Mathematics.math;
 
 [NetSerializable]
-public class SimInputCheatKillPlayerPawn : SimCheatInput
-{
-    public PersistentId PlayerId;
-}
-
-[NetSerializable]
 public class SimInputCheatToggleInvincible : SimCheatInput
 {
     public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
 }
 
 [NetSerializable]
-public class SimInputCheatDamagePlayer : SimCheatInput
+public class SimInputCheatDamageSelf : SimCheatInput
 {
     public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
     public int Damage;
@@ -31,24 +25,8 @@ public class SimInputCheatAddAllItems : SimCheatInput
 }
 
 [NetSerializable]
-public class SimInputCheatNextTurn : SimCheatInput
-{
-}
-
-[NetSerializable]
 public class SimInputCheatRemoveAllCooldowns : SimCheatInput
 {
-}
-
-[NetSerializable]
-public class SimInputCheatNeverEndingTurns : SimCheatInput
-{
-}
-
-[NetSerializable]
-public class SimInputCheatInfiniteAP : SimCheatInput
-{
-    public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
 }
 
 [NetSerializable]
@@ -94,20 +72,6 @@ public class HandleSimulationCheatsSystem : SimSystemBase
     {
         switch (cheat)
         {
-            case SimInputCheatKillPlayerPawn killPlayerPawn:
-            {
-                Entity player = CommonReads.FindPlayerEntity(Accessor, killPlayerPawn.PlayerId);
-
-                if (EntityManager.Exists(player) &&
-                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn) &&
-                    EntityManager.HasComponent<Health>(pawn.Value))
-                {
-                    CommonWrites.SetStatInt(Accessor, pawn.Value, new Health() { Value = 0 });
-                }
-
-                break;
-            }
-
             case SimInputCheatToggleInvincible toggleInvicible:
             {
                 Entity player = CommonReads.FindPlayerEntity(Accessor, toggleInvicible.PlayerId);
@@ -127,7 +91,7 @@ public class HandleSimulationCheatsSystem : SimSystemBase
                 break;
             }
 
-            case SimInputCheatDamagePlayer damagePlayer:
+            case SimInputCheatDamageSelf damagePlayer:
             {
                 Entity player = CommonReads.FindPlayerEntity(Accessor, damagePlayer.PlayerId);
 
@@ -181,26 +145,6 @@ public class HandleSimulationCheatsSystem : SimSystemBase
                 break;
             }
 
-            case SimInputCheatNextTurn nextTurn:
-            {
-                CommonWrites.RequestNextTurn(Accessor);
-                break;
-            }
-
-            case SimInputCheatInfiniteAP infiniteAP:
-            {
-                Entity player = CommonReads.FindPlayerEntity(Accessor, infiniteAP.PlayerId);
-
-                if (EntityManager.Exists(player) &&
-                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
-                {
-                    EntityManager.SetComponentData(pawn, new MaximumFix<ActionPoints>() { Value = 999 });
-                    EntityManager.SetComponentData(pawn, new ActionPoints() { Value = 999 });
-                    EntityManager.SetComponentData(pawn, new MaxItemUsesPerTurn() { Value = 99999 });
-                }
-                break;
-            }
-
             case SimInputCheatTeleport teleport:
             {
                 Entity player = CommonReads.FindPlayerEntity(Accessor, teleport.PlayerId);
@@ -225,22 +169,6 @@ public class HandleSimulationCheatsSystem : SimSystemBase
                     EntityManager.AddComponentData(entity, new NoCooldownTag());
                 }
 
-                break;
-            }
-
-            case SimInputCheatNeverEndingTurns _:
-            {
-                const int INFINITY = 99999;
-                TurnSystemDataRemainingTurnTime timerSettings = GetSingleton<TurnSystemDataRemainingTurnTime>();
-                if (timerSettings.Value > INFINITY - 999)
-                {
-                    timerSettings.Value = 10;
-                }
-                else
-                {
-                    timerSettings.Value = INFINITY;
-                }
-                SetSingleton(timerSettings);
                 break;
             }
 

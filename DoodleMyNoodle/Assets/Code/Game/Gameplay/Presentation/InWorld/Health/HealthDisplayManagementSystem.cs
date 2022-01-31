@@ -23,7 +23,7 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
     {
         int healthBarAmount = 0;
 
-        Team localPlayerTeam = Cache.LocalControllerTeam;
+        Team localPlayerTeam = Cache.DEPRECATED_LocalControllerTeam;
 
         Cache.SimWorld.Entities.ForEach((Entity entity, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
         {

@@ -128,7 +128,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                         canBeUsed = itemAction != null && itemAction.CanBeUsedInContext(SimWorld, useContext);
                     }
 
-                    if (!displayedInventory[i].ItemAuth.UsableInOthersTurn && !Cache.CanLocalPlayerPlay)
+                    if (!displayedInventory[i].ItemAuth.UsableInOthersTurn && !Cache.DEPRECATED_CanLocalPlayerPlay)
                     {
                         canBeUsed = false;
                     }

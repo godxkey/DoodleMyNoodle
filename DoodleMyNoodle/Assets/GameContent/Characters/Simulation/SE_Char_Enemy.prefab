@@ -10,14 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1983468408252183681}
   - component: {fileID: -7961090127367493644}
-  - component: {fileID: 5072555852515810054}
   - component: {fileID: -6450381012629423667}
-  - component: {fileID: 8435132431937638192}
-  - component: {fileID: 6657921186239294675}
-  - component: {fileID: 947375423039552990}
   - component: {fileID: 2401102004981749674}
   m_Layer: 9
-  m_Name: SE_Char
+  m_Name: SE_Char_Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,27 +46,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: d6dc46a8018045e48ae6776580ff1d2b
+  _guid: 33cce8540695adf4d9728cbe3d59c0a9
   _bindedViewPrefab: {fileID: 5202612425808145220, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
     type: 3}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _hasTransform: 1
   _showGhost: 1
---- !u!114 &5072555852515810054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4951368162375339519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 163fb4195b8908b4e92639b05057568a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DefaultAIPrefab: {fileID: 0}
-  StartingTeam: 1
 --- !u!114 &-6450381012629423667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,53 +78,6 @@ MonoBehaviour:
   CircleRadius: 0.45
   BoxAndCircleOffset: {x: 0, y: 0}
   PolygonPoints: []
---- !u!114 &8435132431937638192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4951368162375339519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a89527d159470b84f86b6f252684cff2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MaxValue: 10
-  StartAtMax: 1
-  DestroyOnDeath: 0
-  StartValue: 10
---- !u!114 &6657921186239294675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4951368162375339519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f84166a4094a674e86797424865573c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MaxValue: 20
-  StartGameAtMaxValue: 1
-  StartValue: 20
---- !u!114 &947375423039552990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4951368162375339519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 453c4b2c151f39243b7228f0ce379c93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartingItems:
-  - Item: {fileID: 5742253346417087641, guid: 189b26f3fa7a7ef48a9f45c1e247f696, type: 3}
-    Quantity: {x: 1, y: 1}
-  LimitItemUsed: 1
 --- !u!114 &2401102004981749674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,9 +90,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e1bbed0578679845bbf57b4794a56ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MoveDirection: 1
   MoveSpeed:
     RawValue: 8589934592
-  AirControl:
-    RawValue: 1288490240
-  MoveEnergyMaxValue:
-    RawValue: 25769803776

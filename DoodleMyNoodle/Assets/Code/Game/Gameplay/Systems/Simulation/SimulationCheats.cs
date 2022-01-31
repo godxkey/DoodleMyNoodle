@@ -46,24 +46,6 @@ public static class SimulationCheats
         }
     }
 
-
-    [ConsoleCommand(Description = "Kill the local player pawn", EnableGroup = LOCAL_PAWN_GROUP)]
-    public static void CheatSuicide()
-    {
-        var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
-
-        if (localPlayerInfo == null)
-        {
-            Log.Warning("No local player found");
-            return;
-        }
-
-        PresentationHelpers.SubmitInput(new SimInputCheatKillPlayerPawn()
-        {
-            PlayerId = localPlayerInfo.SimPlayerId
-        });
-    }
-
     [ConsoleCommand(Description = "Render your local pawn immune to damage", EnableGroup = LOCAL_PAWN_GROUP)]
     public static void CheatInvicible()
     {
@@ -92,7 +74,7 @@ public static class SimulationCheats
             return;
         }
 
-        PresentationHelpers.SubmitInput(new SimInputCheatDamagePlayer()
+        PresentationHelpers.SubmitInput(new SimInputCheatDamageSelf()
         {
             PlayerId = localPlayerInfo.SimPlayerId,
             Damage = amount
@@ -110,7 +92,7 @@ public static class SimulationCheats
             return;
         }
 
-        PresentationHelpers.SubmitInput(new SimInputCheatDamagePlayer()
+        PresentationHelpers.SubmitInput(new SimInputCheatDamageSelf()
         {
             PlayerId = localPlayerInfo.SimPlayerId,
             Damage = -amount
@@ -129,29 +111,6 @@ public static class SimulationCheats
         }
 
         PresentationHelpers.SubmitInput(new SimInputCheatAddAllItems()
-        {
-            PlayerId = localPlayerInfo.SimPlayerId,
-        });
-    }
-
-    [ConsoleCommand(Description = "Next Turn", EnableGroup = GLOBAL_GROUP)]
-    public static void CheatNextTurn()
-    {
-        PresentationHelpers.SubmitInput(new SimInputCheatNextTurn());
-    }
-
-    [ConsoleCommand(Description = "Give your pawn infinit action points", EnableGroup = LOCAL_PAWN_GROUP)]
-    public static void CheatInfinitAP()
-    {
-        var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
-
-        if (localPlayerInfo == null)
-        {
-            Log.Warning("No local player found");
-            return;
-        }
-
-        PresentationHelpers.SubmitInput(new SimInputCheatInfiniteAP()
         {
             PlayerId = localPlayerInfo.SimPlayerId,
         });
@@ -181,12 +140,6 @@ public static class SimulationCheats
     public static void CheatRemoveAllCooldowns()
     {
         PresentationHelpers.SubmitInput(new SimInputCheatRemoveAllCooldowns());
-    }
-
-    [ConsoleCommand(Description = "Turn will never end", EnableGroup = LOCAL_PAWN_GROUP)]
-    public static void CheatNeverEndingTurns()
-    {
-        PresentationHelpers.SubmitInput(new SimInputCheatNeverEndingTurns());
     }
 
     [ConsoleCommand(Description = "Add impulse to your local pawn", EnableGroup = LOCAL_PAWN_GROUP)]

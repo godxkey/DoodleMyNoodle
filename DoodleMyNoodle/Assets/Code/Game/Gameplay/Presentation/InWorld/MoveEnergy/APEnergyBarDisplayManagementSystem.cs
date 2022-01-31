@@ -29,7 +29,7 @@ public class APEnergyBarDisplayManagementSystem : GamePresentationSystem<APEnerg
     {
         int moveEnergyBarAmount = 0;
 
-        Team localPlayerTeam = Cache.LocalControllerTeam;
+        Team localPlayerTeam = Cache.DEPRECATED_LocalControllerTeam;
 
         Cache.SimWorld.Entities.ForEach((Entity pawn, ref ActionPoints entityAP, ref MaximumFix<ActionPoints> entityMaximumAP, ref FixTranslation entityTranslation) =>
         {

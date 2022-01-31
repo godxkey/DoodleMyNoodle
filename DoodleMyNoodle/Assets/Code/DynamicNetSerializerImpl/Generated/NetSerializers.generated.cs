@@ -1768,16 +1768,16 @@ public static class StaticNetSerializer_SimInputCheatAddAllItems
         StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
     }
 }
-public static class StaticNetSerializer_SimInputCheatDamagePlayer
+public static class StaticNetSerializer_SimInputCheatDamageSelf
 {
-    public static int GetSerializedBitSize_Class(SimInputCheatDamagePlayer obj)
+    public static int GetSerializedBitSize_Class(SimInputCheatDamageSelf obj)
     {
         if (obj == null)
             return 1;
         return 1 + GetSerializedBitSize(obj);
     }
 
-    public static int GetSerializedBitSize(SimInputCheatDamagePlayer obj)
+    public static int GetSerializedBitSize(SimInputCheatDamageSelf obj)
     {
         int result = 0;
         result += StaticNetSerializer_PersistentId.GetSerializedBitSize(ref obj.PlayerId);
@@ -1786,7 +1786,7 @@ public static class StaticNetSerializer_SimInputCheatDamagePlayer
         return result;
     }
 
-    public static void Serialize_Class(SimInputCheatDamagePlayer obj, BitStreamWriter writer)
+    public static void Serialize_Class(SimInputCheatDamageSelf obj, BitStreamWriter writer)
     {
         if (obj == null)
         {
@@ -1796,24 +1796,24 @@ public static class StaticNetSerializer_SimInputCheatDamagePlayer
         writer.WriteBit(true);
         Serialize(obj, writer);
     }
-    public static void Serialize(SimInputCheatDamagePlayer obj, BitStreamWriter writer)
+    public static void Serialize(SimInputCheatDamageSelf obj, BitStreamWriter writer)
     {
         StaticNetSerializer_PersistentId.Serialize(ref obj.PlayerId, writer);
         StaticNetSerializer_System_Int32.Serialize(ref obj.Damage, writer);
         StaticNetSerializer_SimCheatInput.Serialize(obj, writer);
     }
 
-    public static SimInputCheatDamagePlayer Deserialize_Class(BitStreamReader reader)
+    public static SimInputCheatDamageSelf Deserialize_Class(BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
             return null;
         }
-        SimInputCheatDamagePlayer obj = new SimInputCheatDamagePlayer();
+        SimInputCheatDamageSelf obj = new SimInputCheatDamageSelf();
         Deserialize(obj, reader);
         return obj;
     }
-    public static void Deserialize(SimInputCheatDamagePlayer obj, BitStreamReader reader)
+    public static void Deserialize(SimInputCheatDamageSelf obj, BitStreamReader reader)
     {
         StaticNetSerializer_PersistentId.Deserialize(ref obj.PlayerId, reader);
         StaticNetSerializer_System_Int32.Deserialize(ref obj.Damage, reader);
@@ -1869,196 +1869,6 @@ public static class StaticNetSerializer_SimInputCheatImpulseSelf
     {
         StaticNetSerializer_PersistentId.Deserialize(ref obj.PlayerId, reader);
         StaticNetSerializer_fix2.Deserialize(ref obj.ImpulseValue, reader);
-        StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
-    }
-}
-public static class StaticNetSerializer_SimInputCheatInfiniteAP
-{
-    public static int GetSerializedBitSize_Class(SimInputCheatInfiniteAP obj)
-    {
-        if (obj == null)
-            return 1;
-        return 1 + GetSerializedBitSize(obj);
-    }
-
-    public static int GetSerializedBitSize(SimInputCheatInfiniteAP obj)
-    {
-        int result = 0;
-        result += StaticNetSerializer_PersistentId.GetSerializedBitSize(ref obj.PlayerId);
-        result += StaticNetSerializer_SimCheatInput.GetSerializedBitSize(obj);
-        return result;
-    }
-
-    public static void Serialize_Class(SimInputCheatInfiniteAP obj, BitStreamWriter writer)
-    {
-        if (obj == null)
-        {
-            writer.WriteBit(false);
-            return;
-        }
-        writer.WriteBit(true);
-        Serialize(obj, writer);
-    }
-    public static void Serialize(SimInputCheatInfiniteAP obj, BitStreamWriter writer)
-    {
-        StaticNetSerializer_PersistentId.Serialize(ref obj.PlayerId, writer);
-        StaticNetSerializer_SimCheatInput.Serialize(obj, writer);
-    }
-
-    public static SimInputCheatInfiniteAP Deserialize_Class(BitStreamReader reader)
-    {
-        if (reader.ReadBit() == false)
-        {
-            return null;
-        }
-        SimInputCheatInfiniteAP obj = new SimInputCheatInfiniteAP();
-        Deserialize(obj, reader);
-        return obj;
-    }
-    public static void Deserialize(SimInputCheatInfiniteAP obj, BitStreamReader reader)
-    {
-        StaticNetSerializer_PersistentId.Deserialize(ref obj.PlayerId, reader);
-        StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
-    }
-}
-public static class StaticNetSerializer_SimInputCheatKillPlayerPawn
-{
-    public static int GetSerializedBitSize_Class(SimInputCheatKillPlayerPawn obj)
-    {
-        if (obj == null)
-            return 1;
-        return 1 + GetSerializedBitSize(obj);
-    }
-
-    public static int GetSerializedBitSize(SimInputCheatKillPlayerPawn obj)
-    {
-        int result = 0;
-        result += StaticNetSerializer_PersistentId.GetSerializedBitSize(ref obj.PlayerId);
-        result += StaticNetSerializer_SimCheatInput.GetSerializedBitSize(obj);
-        return result;
-    }
-
-    public static void Serialize_Class(SimInputCheatKillPlayerPawn obj, BitStreamWriter writer)
-    {
-        if (obj == null)
-        {
-            writer.WriteBit(false);
-            return;
-        }
-        writer.WriteBit(true);
-        Serialize(obj, writer);
-    }
-    public static void Serialize(SimInputCheatKillPlayerPawn obj, BitStreamWriter writer)
-    {
-        StaticNetSerializer_PersistentId.Serialize(ref obj.PlayerId, writer);
-        StaticNetSerializer_SimCheatInput.Serialize(obj, writer);
-    }
-
-    public static SimInputCheatKillPlayerPawn Deserialize_Class(BitStreamReader reader)
-    {
-        if (reader.ReadBit() == false)
-        {
-            return null;
-        }
-        SimInputCheatKillPlayerPawn obj = new SimInputCheatKillPlayerPawn();
-        Deserialize(obj, reader);
-        return obj;
-    }
-    public static void Deserialize(SimInputCheatKillPlayerPawn obj, BitStreamReader reader)
-    {
-        StaticNetSerializer_PersistentId.Deserialize(ref obj.PlayerId, reader);
-        StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
-    }
-}
-public static class StaticNetSerializer_SimInputCheatNeverEndingTurns
-{
-    public static int GetSerializedBitSize_Class(SimInputCheatNeverEndingTurns obj)
-    {
-        if (obj == null)
-            return 1;
-        return 1 + GetSerializedBitSize(obj);
-    }
-
-    public static int GetSerializedBitSize(SimInputCheatNeverEndingTurns obj)
-    {
-        int result = 0;
-        result += StaticNetSerializer_SimCheatInput.GetSerializedBitSize(obj);
-        return result;
-    }
-
-    public static void Serialize_Class(SimInputCheatNeverEndingTurns obj, BitStreamWriter writer)
-    {
-        if (obj == null)
-        {
-            writer.WriteBit(false);
-            return;
-        }
-        writer.WriteBit(true);
-        Serialize(obj, writer);
-    }
-    public static void Serialize(SimInputCheatNeverEndingTurns obj, BitStreamWriter writer)
-    {
-        StaticNetSerializer_SimCheatInput.Serialize(obj, writer);
-    }
-
-    public static SimInputCheatNeverEndingTurns Deserialize_Class(BitStreamReader reader)
-    {
-        if (reader.ReadBit() == false)
-        {
-            return null;
-        }
-        SimInputCheatNeverEndingTurns obj = new SimInputCheatNeverEndingTurns();
-        Deserialize(obj, reader);
-        return obj;
-    }
-    public static void Deserialize(SimInputCheatNeverEndingTurns obj, BitStreamReader reader)
-    {
-        StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
-    }
-}
-public static class StaticNetSerializer_SimInputCheatNextTurn
-{
-    public static int GetSerializedBitSize_Class(SimInputCheatNextTurn obj)
-    {
-        if (obj == null)
-            return 1;
-        return 1 + GetSerializedBitSize(obj);
-    }
-
-    public static int GetSerializedBitSize(SimInputCheatNextTurn obj)
-    {
-        int result = 0;
-        result += StaticNetSerializer_SimCheatInput.GetSerializedBitSize(obj);
-        return result;
-    }
-
-    public static void Serialize_Class(SimInputCheatNextTurn obj, BitStreamWriter writer)
-    {
-        if (obj == null)
-        {
-            writer.WriteBit(false);
-            return;
-        }
-        writer.WriteBit(true);
-        Serialize(obj, writer);
-    }
-    public static void Serialize(SimInputCheatNextTurn obj, BitStreamWriter writer)
-    {
-        StaticNetSerializer_SimCheatInput.Serialize(obj, writer);
-    }
-
-    public static SimInputCheatNextTurn Deserialize_Class(BitStreamReader reader)
-    {
-        if (reader.ReadBit() == false)
-        {
-            return null;
-        }
-        SimInputCheatNextTurn obj = new SimInputCheatNextTurn();
-        Deserialize(obj, reader);
-        return obj;
-    }
-    public static void Deserialize(SimInputCheatNextTurn obj, BitStreamReader reader)
-    {
         StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
     }
 }
