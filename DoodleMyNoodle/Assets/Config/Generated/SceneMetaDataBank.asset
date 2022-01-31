@@ -113,3 +113,11 @@ MonoBehaviour:
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype6_Presentation.unity
     BuildIndex: 24
     AssetGuid: b4806dce33f859a449e42aa471e072af
+  - Name: Lvl_Prototype7
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7.unity
+    BuildIndex: 25
+    AssetGuid: d827cac612b8a4a4e9c0a8663f80eda3
+  - Name: Lvl_Prototype7_Presentation
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Presentation.unity
+    BuildIndex: 26
+    AssetGuid: 662c14a2f0f0d834998cd7b34b522100
