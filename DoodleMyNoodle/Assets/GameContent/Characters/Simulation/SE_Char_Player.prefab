@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 7273703445427583969}
   - component: {fileID: 7994828363091830932}
   - component: {fileID: 6416631223567136429}
-  - component: {fileID: 6784036434392127690}
   - component: {fileID: 4112496816369620070}
   - component: {fileID: 8237664610038018750}
   - component: {fileID: 5968595014659768486}
+  - component: {fileID: 7702613220151262411}
   m_Layer: 9
   m_Name: SE_Char_Player
   m_TagString: Untagged
@@ -81,21 +81,6 @@ MonoBehaviour:
   CircleRadius: 0.45
   BoxAndCircleOffset: {x: 0, y: 0}
   PolygonPoints: []
---- !u!114 &6784036434392127690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305753096738685599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e1bbed0578679845bbf57b4794a56ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MoveDirection: 0
-  MoveSpeed:
-    RawValue: 8589934592
 --- !u!114 &4112496816369620070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,3 +122,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0db5f6c49e9b0f94fa840f35fbffca26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7702613220151262411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305753096738685599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b4ebe2769277948ab6f6280a229dff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Index: 0

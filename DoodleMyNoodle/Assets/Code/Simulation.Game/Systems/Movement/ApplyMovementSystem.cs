@@ -13,5 +13,12 @@ public class ApplyMovementSystem : SimGameSystemBase
         {
             velocity.Linear.x = canMove ? moveSpeed.Value : 0;
         }).Schedule();
+
+        fix deltaTime = Time.DeltaTime;
+
+        Entities.WithNone<PhysicsVelocity>().ForEach((ref FixTranslation position, in MoveSpeed moveSpeed, in CanMove canMove) =>
+        {
+            position.Value.x += canMove ? moveSpeed.Value * deltaTime : 0;
+        }).Schedule();
     }
 }

@@ -161,8 +161,9 @@ MonoBehaviour:
   DragSpeed: 0.05
   DragMaxSpeed: 0.06
   followSmoothSpeed: 0.05
-  MinZoom: 1
-  MaxZoom: 10
+  MinZoom: 7
+  MaxZoom: 7
+  SurveyZoom: 5
   BeginZoom: 2
 --- !u!1 &5449155864576093604
 GameObject:
