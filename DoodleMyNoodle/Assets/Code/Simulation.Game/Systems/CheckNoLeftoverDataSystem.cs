@@ -5,7 +5,7 @@ using Unity.Entities;
 using UnityEngineX;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public class CheckNoLeftoverDataSystem : SimSystemBase
+public class CheckNoLeftoverDataSystem : SimGameSystemBase
 {
     private SetSignalSystem _emitSignalSystem;
     private ExecutePawnControllerInputSystem _executeSys;

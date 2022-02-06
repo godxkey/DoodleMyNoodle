@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class NextLevelPortalSystem : SimSystemBase
+public class NextLevelPortalSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

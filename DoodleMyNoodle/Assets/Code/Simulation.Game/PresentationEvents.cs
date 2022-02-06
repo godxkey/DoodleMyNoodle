@@ -3,6 +3,14 @@ using System;
 using System.Collections.Generic;
 using Unity.Entities;
 
+public struct SimLogEvent
+{
+    public string Text;
+
+    public static implicit operator string(SimLogEvent val) => val.Text;
+    public static implicit operator SimLogEvent(string val) => new SimLogEvent() { Text = val };
+}
+
 public class PresentationEvents : IDisposable
 {
     protected uint _latestTickId;
@@ -10,9 +18,10 @@ public class PresentationEvents : IDisposable
     ////////////////////////////////////////////////////////////////////////////////////////
     //      ADD HERE
     ////////////////////////////////////////////////////////////////////////////////////////
-    protected List<PresentationEventData<ActionUsedEventData>> _gameActionEvents = new List<PresentationEventData<ActionUsedEventData>>();
-
-    internal PresentationEventWriter<ActionUsedEventData> ActionEvents => new PresentationEventWriter<ActionUsedEventData>(_gameActionEvents, _latestTickId);
+    protected List<PresentationEventData<GameActionUsedEventData>> _gameActionEvents = new List<PresentationEventData<GameActionUsedEventData>>();
+    internal PresentationEventWriter<GameActionUsedEventData> GameActionEvents => new PresentationEventWriter<GameActionUsedEventData>(_gameActionEvents, _latestTickId);
+    protected List<PresentationEventData<SimLogEvent>> _logEvents = new List<PresentationEventData<SimLogEvent>>();
+    internal PresentationEventWriter<SimLogEvent> LogEvents => new PresentationEventWriter<SimLogEvent>(_logEvents, _latestTickId);
 
     public void Dispose()
     {
@@ -21,6 +30,8 @@ public class PresentationEvents : IDisposable
 
 public class PresentationEventsWithReadAccess : PresentationEvents
 {
+    public static bool ShouldUseSinceLastTick = false;
+
     internal uint LatestTickId
     {
         get => _latestTickId;
@@ -30,7 +41,8 @@ public class PresentationEventsWithReadAccess : PresentationEvents
     ////////////////////////////////////////////////////////////////////////////////////////
     //      ADD HERE
     ////////////////////////////////////////////////////////////////////////////////////////
-    public new PresentationEventReader<ActionUsedEventData> GameActionEvents => new PresentationEventReader<ActionUsedEventData>(_gameActionEvents);
+    public new PresentationEventReader<GameActionUsedEventData> GameActionEvents => new PresentationEventReader<GameActionUsedEventData>(_gameActionEvents, LatestTickId);
+    public new PresentationEventReader<SimLogEvent> LogEvents => new PresentationEventReader<SimLogEvent>(_logEvents, LatestTickId);
 
     public void Clear()
     {
@@ -38,6 +50,7 @@ public class PresentationEventsWithReadAccess : PresentationEvents
         //      ADD HERE
         ////////////////////////////////////////////////////////////////////////////////////////
         _gameActionEvents.Clear();
+        _logEvents.Clear();
     }
 }
 
@@ -66,14 +79,77 @@ public struct PresentationEventWriter<T>
 
 public struct PresentationEventReader<T>
 {
-    private List<PresentationEventData<T>> _eventDatas;
 
-    public PresentationEventReader(List<PresentationEventData<T>> eventDatas)
+    private readonly List<PresentationEventData<T>> _eventDatas;
+    private readonly uint _lastTickId;
+
+    public PresentationEventReader(List<PresentationEventData<T>> eventDatas, uint lastTickId)
     {
         _eventDatas = eventDatas;
+        _lastTickId = lastTickId;
     }
 
-    public List<PresentationEventData<T>>.Enumerator GetEnumerator() => _eventDatas.GetEnumerator();
+    public Enumerator SinceLastSimTick
+    {
+        get
+        {
+            if (!PresentationEventsWithReadAccess.ShouldUseSinceLastTick)
+                throw new Exception("When you are in Update() or GamePresentationUpdate(), please use SinceLastPresUpdate instead.");
+            return new Enumerator(_eventDatas, _lastTickId);
+        }
+    }
+
+    public Enumerator SinceLastPresUpdate
+    {
+        get
+        {
+            if (PresentationEventsWithReadAccess.ShouldUseSinceLastTick)
+                throw new Exception("When you are in OnPostSimulationTick(), please use SinceLastSimTick instead.");
+            return new Enumerator(_eventDatas, 0); // this assumes the events are cleared after every pres update
+        }
+    }
+
+    public struct Enumerator
+    {
+        private readonly List<PresentationEventData<T>> _event;
+        private readonly uint _minimumTickId;
+        private int _i;
+        private int _count;
+
+        public Enumerator(List<PresentationEventData<T>> entities, uint minimumTickId)
+        {
+            _event = entities;
+            _minimumTickId = minimumTickId;
+            _count = _event.Count;
+            _i = -1;
+
+            if (_minimumTickId != 0)
+            {
+                // find the first event we should process
+                for (int i = _event.Count - 1; i >= 0; i--)
+                {
+                    if (_event[i].TickId < _minimumTickId)
+                    {
+                        _i = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public Enumerator GetEnumerator() => this;
+
+        public PresentationEventData<T> Current => _event[_i];
+
+        public int RemainingCount => _count - 1 - _i;
+        public bool AnyRemaining => RemainingCount > 0;
+
+        public bool MoveNext()
+        {
+            ++_i;
+            return _i < _count;
+        }
+    }
 }
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]

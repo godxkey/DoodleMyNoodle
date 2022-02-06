@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class OnStickedRemoveVelocitySystem : SimSystemBase
+public class OnStickedRemoveVelocitySystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

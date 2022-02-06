@@ -37,13 +37,11 @@ public class GamePresentationCache
     public bool DEPRECATED_IsNewRound = false;
     public List<Entity> DEPRECATED_CurrentlyPlayingControllers = new List<Entity>();
     public TileWorld DEPRECATED_TileWorld;
-    public ExternalSimWorldAccessor SimWorld;
+    public ExternalSimGameWorldAccessor SimWorld;
 
     public bool LocalPawnExists => LocalPawn != Entity.Null;
     public bool LocalControllerExists => LocalController != Entity.Null;
     public bool LocalPawnAlive => LocalPawnExists && DEPRECATED_LocalPawnHealth > 0;
-
-    public PresentationEventsWithReadAccess PresentationEvents { get; private set; } = new PresentationEventsWithReadAccess(); // todo: bind that shit!
 }
 
 // should we change this to a component system ?
@@ -62,7 +60,7 @@ public class GamePresentationCacheUpdater : ViewSystemBase
 
         ResetCache();
         Cache.Ready = true;
-        Cache.SimWorld = SimWorldAccessor;
+        Cache.SimWorld = (ExternalSimGameWorldAccessor)SimWorldAccessor;
     }
 
     protected override void OnDestroy()

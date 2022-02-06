@@ -1,6 +1,6 @@
 ﻿public class ItemPassiveEffectHealthIncreaseMultiplier : ItemPassiveEffect
 {
-    public override void Equip(ISimWorldReadWriteAccessor accessor, ItemContext context)
+    public override void Equip(ISimGameWorldReadWriteAccessor accessor, ItemContext context)
     {
         if (accessor.TryGetComponent(context.ItemEntity, out ItemPassiveEffectHealthIncreaseMultiplierData healthIncreaseBoostData))
         {
@@ -15,7 +15,7 @@
         }
     }
 
-    public override void Unequip(ISimWorldReadWriteAccessor accessor, ItemContext context)
+    public override void Unequip(ISimGameWorldReadWriteAccessor accessor, ItemContext context)
     {
         if (accessor.TryGetComponent(context.ItemEntity, out ItemPassiveEffectHealthIncreaseMultiplierData healthIncreaseBoostData))
         {

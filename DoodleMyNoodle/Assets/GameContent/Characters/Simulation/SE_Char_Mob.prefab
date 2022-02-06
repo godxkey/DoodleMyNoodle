@@ -12,8 +12,10 @@ GameObject:
   - component: {fileID: -7961090127367493644}
   - component: {fileID: -6450381012629423667}
   - component: {fileID: 2401102004981749674}
+  - component: {fileID: 5635049573386359071}
+  - component: {fileID: 8689866959615521493}
   m_Layer: 9
-  m_Name: SE_Char_Enemy
+  m_Name: SE_Char_Mob
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,3 +95,29 @@ MonoBehaviour:
   MoveDirection: 1
   MoveSpeed:
     RawValue: 8589934592
+--- !u!114 &5635049573386359071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951368162375339519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 722e71c09a9b4fe4387330ab52d80215, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackRate: 1
+--- !u!114 &8689866959615521493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951368162375339519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3333e8f8a92d1c42b929775b3bae079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Mode: 0

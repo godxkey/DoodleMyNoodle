@@ -588,7 +588,7 @@ public static partial class CommonReads
 
 internal static partial class CommonWrites
 {
-    public static void RequestNextTurn(ISimWorldReadWriteAccessor accessor)
+    public static void RequestNextTurn(ISimGameWorldReadWriteAccessor accessor)
     {
         var currentGroupIndex = accessor.GetSingleton<TurnSystemDataCurrentTurnGroupIndex>();
 
@@ -597,7 +597,7 @@ internal static partial class CommonWrites
         RequestSetTurn(accessor, newGroupIndex);
     }
 
-    public static void RequestSetTurn(ISimWorldReadWriteAccessor accessor, int turnGroupIndex)
+    public static void RequestSetTurn(ISimGameWorldReadWriteAccessor accessor, int turnGroupIndex)
     {
         Log.Info(UpdateTurnGroupsSystem.TurnSystemChannel, $"Request New Turn: group={turnGroupIndex}");
         accessor.SetOrCreateSingleton(new RequestChangeTurnData()

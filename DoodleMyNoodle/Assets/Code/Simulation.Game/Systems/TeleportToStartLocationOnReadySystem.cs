@@ -7,7 +7,7 @@ using static Unity.Mathematics.math;
 using CCC.Fix2D;
 using Unity.Collections;
 
-public class TeleportToStartLocationOnReadySystem : SimSystemBase
+public class TeleportToStartLocationOnReadySystem : SimGameSystemBase
 {
     private NativeList<Entity> _players;
 

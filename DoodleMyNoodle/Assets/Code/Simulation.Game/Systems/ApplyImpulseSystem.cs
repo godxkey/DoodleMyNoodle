@@ -24,7 +24,7 @@ public struct RadialImpulseRequestData : IBufferElementData
 }
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class ApplyImpulseSystem : SimSystemBase
+public class ApplyImpulseSystem : SimGameSystemBase
 {
     public void RequestImpulseRadial(RadialImpulseRequestData request)
     {
@@ -128,7 +128,7 @@ public class ApplyImpulseSystem : SimSystemBase
 
 internal static partial class CommonWrites
 {
-    public static void RequestRadialImpulse(ISimWorldReadWriteAccessor accessor, Entity target, fix strengthMin, fix strengthMax, fix radius, fix2 position, bool ignoreMass = false)
+    public static void RequestRadialImpulse(ISimGameWorldReadWriteAccessor accessor, Entity target, fix strengthMin, fix strengthMax, fix radius, fix2 position, bool ignoreMass = false)
     {
         RadialImpulseRequestData request = new RadialImpulseRequestData()
         {
@@ -143,7 +143,7 @@ internal static partial class CommonWrites
         accessor.GetExistingSystem<ApplyImpulseSystem>().RequestImpulseRadial(request);
     }
 
-    public static void RequestImpulse(ISimWorldReadWriteAccessor accessor, Entity target, fix2 strength, bool ignoreMass = false)
+    public static void RequestImpulse(ISimGameWorldReadWriteAccessor accessor, Entity target, fix2 strength, bool ignoreMass = false)
     {
         DirectImpulseRequestData request = new DirectImpulseRequestData()
         {

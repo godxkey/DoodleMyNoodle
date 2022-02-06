@@ -8,13 +8,13 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
 
     [SerializeField] private AudioPlayable _damageSound; // global for now but can be per character/ennemy
 
-    public override void OnPostSimulationTick()
+    protected override void OnGamePresentationUpdate()
     {
         if (_audioSource == null)
             return;
 
         // Item sounds
-        foreach (var gameActionEvent in PresentationEvents.GameActionEvents)
+        foreach (var gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
             SimWorld.TryGetComponent(gameActionEvent.Value.ActionContext.ActionPrefab, out SimAssetId entitySimAssetID);
 
@@ -38,6 +38,4 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
             }
         });
     }
-
-    protected override void OnGamePresentationUpdate() { }
 }

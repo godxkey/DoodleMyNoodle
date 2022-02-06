@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &7894414105741718463
+--- !u!1001 &3205954644756447789
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,12 +10,7 @@ PrefabInstance:
     - target: {fileID: -7961090127367493644, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: _guid
-      value: d12abd9d914009646ba31316ead81d63
-      objectReference: {fileID: 0}
-    - target: {fileID: -6450381012629423667, guid: 33cce8540695adf4d9728cbe3d59c0a9,
-        type: 3}
-      propertyPath: GravityScale
-      value: 0
+      value: 987a47d4012e6fc4c8365e6a618abff0
       objectReference: {fileID: 0}
     - target: {fileID: 1983468408252183681, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
@@ -75,7 +70,12 @@ PrefabInstance:
     - target: {fileID: 4951368162375339519, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: m_Name
-      value: SE_Char_Enemy_Bird
+      value: SE_Char_Mob_Brute
+      objectReference: {fileID: 0}
+    - target: {fileID: 8689866959615521493, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: Mode
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33cce8540695adf4d9728cbe3d59c0a9, type: 3}

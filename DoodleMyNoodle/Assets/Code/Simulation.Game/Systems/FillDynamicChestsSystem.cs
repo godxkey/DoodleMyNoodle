@@ -9,7 +9,7 @@ using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class FillDynamicChestsSystem : SimSystemBase
+public class FillDynamicChestsSystem : SimGameSystemBase
 {
     private struct WorldContext
     {

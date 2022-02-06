@@ -279,7 +279,6 @@ public class Game : MonoBehaviour
                     Log.Error(e.Message + " - stack:\n " + e.StackTrace);
                 }
 #endif
-
             }
         }
     }

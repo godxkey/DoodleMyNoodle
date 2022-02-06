@@ -8,7 +8,7 @@ using Unity.Entities;
 
 // ce system devrait être retiré lorsqu'on aura un system de buff/debuff avec durée
 
-public class RemoveInvincibilitySystem : SimSystemBase
+public class RemoveInvincibilitySystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

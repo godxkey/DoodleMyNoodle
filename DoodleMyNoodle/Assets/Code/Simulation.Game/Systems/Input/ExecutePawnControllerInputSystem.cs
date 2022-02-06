@@ -22,7 +22,7 @@ public abstract class PawnControllerInputBase
 /// This system executes the queued inputs
 /// </summary>
 [UpdateInGroup(typeof(InputSystemGroup))]
-public class ExecutePawnControllerInputSystem : SimSystemBase
+public class ExecutePawnControllerInputSystem : SimGameSystemBase
 {
     public readonly List<PawnControllerInputBase> Inputs = new List<PawnControllerInputBase>();
 

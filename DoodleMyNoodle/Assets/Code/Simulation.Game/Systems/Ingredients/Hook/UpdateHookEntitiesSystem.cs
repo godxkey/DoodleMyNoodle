@@ -11,7 +11,7 @@ public struct SystemRequestHookContact : ISingletonBufferElementData
     public Entity ContactEntity;
 }
 
-public class UpdateHookEntitiesSystem : SimSystemBase
+public class UpdateHookEntitiesSystem : SimGameSystemBase
 {
     private EntityCommandBufferSystem _ecbSytem;
 

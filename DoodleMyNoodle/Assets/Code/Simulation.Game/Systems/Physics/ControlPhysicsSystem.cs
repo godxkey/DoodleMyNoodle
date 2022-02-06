@@ -9,7 +9,7 @@ using static Unity.Mathematics.math;
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
 [UpdateBefore(typeof(PhysicsWorldSystem))]
 [AlwaysUpdateSystem]
-public class ControlPhysicsSystem : SimSystemBase
+public class ControlPhysicsSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

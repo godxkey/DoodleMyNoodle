@@ -4,7 +4,7 @@ using CCC.Fix2D;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class DestroyEmptyChestsSystem : SimSystemBase
+public class DestroyEmptyChestsSystem : SimGameSystemBase
 {
     EndSimulationEntityCommandBufferSystem _ecb;
 

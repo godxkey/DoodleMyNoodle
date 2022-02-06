@@ -22,7 +22,7 @@ public struct SystemRequestExplosion : ISingletonBufferElementData
     public bool DestroyTiles;
 }
 
-public class ApplyExplosionSystem : SimSystemBase
+public class ApplyExplosionSystem : SimGameSystemBase
 {
     private const int IMPULSE_MAX = 4;
     private const int IMPULSE_MIN = 2;
@@ -137,7 +137,7 @@ public class ApplyExplosionSystem : SimSystemBase
 
 internal static partial class CommonWrites
 {
-    public static void RequestExplosion(ISimWorldReadWriteAccessor accessor, Entity instigator, fix2 position, fix radius, int damage, bool destroyTiles)
+    public static void RequestExplosion(ISimGameWorldReadWriteAccessor accessor, Entity instigator, fix2 position, fix radius, int damage, bool destroyTiles)
     {
         SystemRequestExplosion request = new SystemRequestExplosion()
         {

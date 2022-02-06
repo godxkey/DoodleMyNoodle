@@ -68,7 +68,7 @@ public class GameActionThrow : Action<GameActionThrow.Settings>
             });
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
+    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
         bool originateFromCenter = parameters.TryGetParameter(1, out GameActionParameterBool.Data paramOriginateFromCenter, warnIfFailed: false)
             && paramOriginateFromCenter.Value;

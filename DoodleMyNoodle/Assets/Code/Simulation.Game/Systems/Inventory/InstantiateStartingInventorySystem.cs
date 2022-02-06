@@ -5,7 +5,7 @@ using Unity.Collections;
 using Unity.Entities;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public class InstantiateStartingInventorySystem : SimSystemBase
+public class InstantiateStartingInventorySystem : SimGameSystemBase
 {
     private GlobalItemBankSystem _itemBankSystem;
 

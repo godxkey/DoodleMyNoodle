@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using UnityEngineX;
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class UpdateNavAgentFootingSystem : SimSystemBase
+public class UpdateNavAgentFootingSystem : SimGameSystemBase
 {
     private PhysicsWorldSystem _physicsWorldSystem;
 

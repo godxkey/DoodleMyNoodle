@@ -45,7 +45,7 @@ public class UpdateCanMoveSystem : SimGameSystemBase
 
                 foreach (var bodyIndex in touchedbodies)
                 {
-                    var body = physicsWorld.AllBodies[touchedbodies[bodyIndex]];
+                    var body = physicsWorld.AllBodies[bodyIndex];
                     if (HasComponent<CanMove>(body.Entity))
                     {
                         SetComponent<CanMove>(body.Entity, false);

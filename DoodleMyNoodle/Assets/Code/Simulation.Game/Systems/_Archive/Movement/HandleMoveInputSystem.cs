@@ -6,7 +6,7 @@ using static fixMath;
 using static Unity.Mathematics.math;
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class HandleMoveInputSystem : SimSystemBase
+public class HandleMoveInputSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {

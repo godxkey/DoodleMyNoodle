@@ -51,7 +51,7 @@ public struct MaximumFix<T> : IComponentData
 
 internal static partial class CommonWrites
 {
-    public static void ModifyStatInt<T>(ISimWorldReadWriteAccessor accessor, Entity entity, int value)
+    public static void ModifyStatInt<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, int value)
         where T : struct, IComponentData, IStatInt
     {
         int currentValue = accessor.GetComponent<T>(entity).Value;
@@ -60,7 +60,7 @@ internal static partial class CommonWrites
         SetStatInt(accessor, entity, new T { Value = newValue });
     }
 
-    public static void ModifyStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, fix value)
+    public static void ModifyStatFix<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, fix value)
         where T : struct, IComponentData, IStatFix
     {
         fix currentValue = accessor.GetComponent<T>(entity).Value;
@@ -69,7 +69,7 @@ internal static partial class CommonWrites
         SetStatFix(accessor, entity, new T { Value = newValue });
     }
 
-    public static void SetStatInt<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T compData)
+    public static void SetStatInt<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, T compData)
         where T : struct, IComponentData, IStatInt
     {
         if (accessor.TryGetComponent(entity, out MinimumInt<T> minimum))
@@ -87,7 +87,7 @@ internal static partial class CommonWrites
         OnIntStatChanged(accessor, entity, compData);
     }
 
-    public static void SetStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T compData)
+    public static void SetStatFix<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, T compData)
         where T : struct, IComponentData, IStatFix
     {
         if (accessor.TryGetComponent(entity, out MinimumFix<T> minimum))
@@ -105,7 +105,7 @@ internal static partial class CommonWrites
         OnFixStatChanged(accessor, entity, compData);
     }
 
-    public static void AddStatFix<T>(ISimWorldReadWriteAccessor accessor, Entity entity, fix value)
+    public static void AddStatFix<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, fix value)
     where T : struct, IComponentData, IStatFix
     {
         if (!accessor.HasComponent<T>(entity))
@@ -114,7 +114,7 @@ internal static partial class CommonWrites
         }
     }
 
-    public static void AddStatInt<T>(ISimWorldReadWriteAccessor accessor, Entity entity, int value)
+    public static void AddStatInt<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, int value)
     where T : struct, IComponentData, IStatInt
     {
         if (!accessor.HasComponent<T>(entity))
@@ -123,7 +123,7 @@ internal static partial class CommonWrites
         }
     }
 
-    public static void OnFixStatChanged<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T ChangedStat)
+    public static void OnFixStatChanged<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, T ChangedStat)
     where T : struct, IComponentData, IStatFix
     {
         // if we added a stat to a pawn, notify its items of the change if he has any
@@ -155,7 +155,7 @@ internal static partial class CommonWrites
         }
     }
 
-    public static void OnIntStatChanged<T>(ISimWorldReadWriteAccessor accessor, Entity entity, T ChangedStat)
+    public static void OnIntStatChanged<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, T ChangedStat)
     where T : struct, IComponentData, IStatInt
     {
         // if we added a stat to a pawn, notify its items of the change if he has any

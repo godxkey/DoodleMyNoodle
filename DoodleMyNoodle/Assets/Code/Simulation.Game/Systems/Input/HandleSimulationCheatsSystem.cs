@@ -53,7 +53,7 @@ public struct CheatsAllItemElement : IBufferElementData
 
 [UpdateInGroup(typeof(InputSystemGroup))]
 [AlwaysUpdateSystem]
-public class HandleSimulationCheatsSystem : SimSystemBase
+public class HandleSimulationCheatsSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

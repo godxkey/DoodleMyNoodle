@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class PortalTeleportationSystem : SimSystemBase
+public class PortalTeleportationSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

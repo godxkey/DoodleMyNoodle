@@ -10,7 +10,7 @@ public struct EntityDeathEventData : IComponentData
     public Entity Entity;
 }
 
-public class DestroyDeadEntitiesSystem : SimSystemBase
+public class DestroyDeadEntitiesSystem : SimGameSystemBase
 {
     private EntityQuery _eventsGroup;
     private List<Entity> _toDestroy = new List<Entity>();

@@ -7,6 +7,11 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
+public class ExternalSimGameWorldAccessor : ExternalSimWorldAccessor
+{
+    public PresentationEventsWithReadAccess PresentationEvents => (PresentationEventsWithReadAccess)((InternalSimGameWorldAccessor)((SimulationGameWorld)GetSimWorld()).GetInternalAccessor()).PresentationEvents;
+}
+
 public partial class SimulationController : GameSystem<SimulationController>
 {
     private TickSimulationSystem _tickSystem;
@@ -14,6 +19,7 @@ public partial class SimulationController : GameSystem<SimulationController>
     public static void Initialize()
     {
         SimulationWorldSystem.WorldInstantiationFunc = (name) => new SimulationGameWorld(name);
+        SimulationWorldSystem.ExternalSimWorldAccessorInstantiationFunc = () => new ExternalSimGameWorldAccessor();
     }
 
     public override void OnGameAwake()
@@ -43,6 +49,7 @@ public partial class SimulationController : GameSystem<SimulationController>
 
     private void OnSimulationTicked(SimTickData tickData)
     {
+        PresentationEventsWithReadAccess.ShouldUseSinceLastTick = true;
         foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
         {
 #if DEBUG
@@ -59,6 +66,7 @@ public partial class SimulationController : GameSystem<SimulationController>
             }
 #endif
         }
+        PresentationEventsWithReadAccess.ShouldUseSinceLastTick = false;
     }
 
     private bool ValidateSimInput(SimInput input, INetworkInterfaceConnection instigator)

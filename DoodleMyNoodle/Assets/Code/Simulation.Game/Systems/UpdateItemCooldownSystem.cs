@@ -5,7 +5,7 @@ using static fixMath;
 using static Unity.Mathematics.math;
 
 [UpdateInGroup(typeof(PreAISystemGroup))]
-public class UpdateItemCooldownSystem : SimSystemBase
+public class UpdateItemCooldownSystem : SimGameSystemBase
 {
     EntityQuery _entitiesWithCooldown;
 

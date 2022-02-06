@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngineX;
 using Unity.Entities;
 
-public class ConvertEntitySystem : SimSystemBase
+public class ConvertEntitySystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

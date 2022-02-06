@@ -5,7 +5,7 @@ using Unity.Entities;
 using UnityEngine;
 
 [UpdateInGroup(typeof(PreAISystemGroup))]
-public class RefillActionPointsSystem : SimSystemBase
+public class RefillActionPointsSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

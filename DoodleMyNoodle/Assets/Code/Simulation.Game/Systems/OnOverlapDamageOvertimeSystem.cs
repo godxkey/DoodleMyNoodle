@@ -8,7 +8,7 @@ using System;
 
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
 [UpdateAfter(typeof(StepPhysicsWorldSystem)), UpdateBefore(typeof(EndFramePhysicsSystem))]
-public class ExtractOnOverlapDamageOvertimeSystem : SimSystemBase
+public class ExtractOnOverlapDamageOvertimeSystem : SimGameSystemBase
 {
     private StepPhysicsWorldSystem _stepPhysicsWorldSystem;
     private PhysicsWorldSystem _physicsWorldSystem;
