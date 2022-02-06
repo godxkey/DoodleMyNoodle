@@ -42,6 +42,10 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
     public bool HasCooldown => CooldownType != CooldownMode.NoCooldown;
 
+    public bool IsAutoUse = false;
+    public fix PassiveUsageTimeInterval = 1;
+    public GameAction.UseParameters DefaultParamaters = new GameAction.UseParameters();
+
     private bool _hasUpdatedListOfGameActionSettings = false;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
