@@ -151,8 +151,10 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             return _hasTriggeredAnAnimation;
         }
 
-        SimWorld.Entities.ForEach((ref GameActionEventData gameActionEvent) =>
+        foreach (PresentationEventData<GameActionUsedEventData> evtData in PresentationEvents.GameActionEvents)
         {
+            GameActionUsedEventData gameActionEvent = evtData.Value;
+
             if (gameActionEvent.GameActionContext.InstigatorPawn == SimEntity && gameActionEvent.GameActionContext.Item != Entity.Null && !_hasTriggeredAnAnimation)
             {
                 TriggerAnimationInteruptionOnStateChange();
@@ -212,38 +214,38 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
                 _previousState = AnimationType.GameAction;
             }
-        });
+        }
 
         if (!_hasTriggeredAnAnimation)
         {
             // find queued animation to play
-            QueuedAnimation AnimationToPlay = null;
+            QueuedAnimation animationToPlay = null;
             for (int i = 0; i < _queuedAnimations.Count; i++)
             {
                 if (!_queuedAnimations[i].HasPlayed)
                 {
-                    AnimationToPlay = _queuedAnimations[i];
+                    animationToPlay = _queuedAnimations[i];
                     _queuedAnimations[i].HasPlayed = true;
                     break;
                 }
             }
 
-            if (AnimationToPlay != null)
+            if (animationToPlay != null)
             {
                 TriggerAnimationInteruptionOnStateChange();
 
                 _hasTriggeredAnAnimation = true;
                 _lastTransitionTime = SimWorld.Time.ElapsedTime;
 
-                _currentAnimation = AnimationToPlay.Definition;
+                _currentAnimation = animationToPlay.Definition;
 
                 if (_currentAnimation == null)
                 {
-                    FindAnimation(AnimationType.GameAction).TriggerAnimation(SimEntity, _spriteStartPos, _bone, AnimationToPlay.Data);
+                    FindAnimation(AnimationType.GameAction).TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationToPlay.Data);
                 }
                 else
                 {
-                    _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, AnimationToPlay.Data);
+                    _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationToPlay.Data);
                 }
 
                 _previousState = AnimationType.GameAction;

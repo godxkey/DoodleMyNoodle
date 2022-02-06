@@ -414,7 +414,13 @@ internal partial class CommonWrites
 
         // check item can be used
         var gameAction = GameActionBank.GetAction<T>();
-        if (gameAction == null || !gameAction.CanBeUsedInContext(accessor, new GameAction.UseContext(entityController, pawn, item)))
+        var useContext = new GameAction.UseContext()
+        {
+            InstigatorPawnController = entityController,
+            InstigatorPawn = pawn,
+            Item = item
+        };
+        if (gameAction == null || !gameAction.CanBeUsedInContext(accessor, useContext))
             return false;
 
         // create game action's use data

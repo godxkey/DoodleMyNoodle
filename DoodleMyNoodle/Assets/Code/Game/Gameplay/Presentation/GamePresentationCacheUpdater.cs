@@ -42,6 +42,8 @@ public class GamePresentationCache
     public bool LocalPawnExists => LocalPawn != Entity.Null;
     public bool LocalControllerExists => LocalController != Entity.Null;
     public bool LocalPawnAlive => LocalPawnExists && DEPRECATED_LocalPawnHealth > 0;
+
+    public PresentationEventsWithReadAccess PresentationEvents { get; private set; } = new PresentationEventsWithReadAccess(); // todo: bind that shit!
 }
 
 // should we change this to a component system ?

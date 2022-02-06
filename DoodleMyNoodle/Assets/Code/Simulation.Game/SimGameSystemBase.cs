@@ -53,6 +53,7 @@ public struct MultiTimeValue
 public abstract class SimGameSystemBase : SimSystemBase
 {
     public new SimulationGameWorld World => (SimulationGameWorld)base.World;
+    public PresentationEvents PresentationEvents => World.PresentationEvents;
 
     public MultiTimeValue GetElapsedTime()
     {
