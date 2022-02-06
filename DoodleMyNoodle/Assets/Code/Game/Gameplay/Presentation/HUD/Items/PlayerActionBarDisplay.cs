@@ -117,9 +117,9 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                     bool canBeUsed = false;
                     if (SimWorld.TryGetComponent(item, out ItemAction itemAction))
                     {
-                        if (SimWorld.TryGetComponent(itemAction.ActionPrefab, out ActionId itemActionId))
+                        if (SimWorld.TryGetComponent(itemAction.ActionPrefab, out GameActionId itemActionId))
                         {
-                            Action action = ActionBank.GetAction(itemActionId);
+                            GameAction action = GameActionBank.GetAction(itemActionId);
                             canBeUsed = action != null && action.CanBeUsedInContext(SimWorld, CommonReads.GetActionContext(SimWorld, item, itemAction.ActionPrefab));
                         }
                     }

@@ -128,17 +128,17 @@ public class ExecutePawnControllerInputSystem : SimGameSystemBase
 
         if (EntityManager.TryGetComponentData(item, out ItemAction itemAction))
         {
-            Action gameAction = GetGameActionFromEntity(itemAction.ActionPrefab);
+            GameAction gameAction = GetGameActionFromEntity(itemAction.ActionPrefab);
 
-            CommonWrites.ExecuteAction(Accessor, item, itemAction.ActionPrefab);
+            CommonWrites.ExecuteGameAction(Accessor, item, itemAction.ActionPrefab);
         }
     }
 
-    private Action GetGameActionFromEntity(Entity entity)
+    private GameAction GetGameActionFromEntity(Entity entity)
     {
-        if (TryGetComponent(entity, out ActionId gameActionId) && gameActionId.IsValid)
+        if (TryGetComponent(entity, out GameActionId gameActionId) && gameActionId.IsValid)
         {
-            return ActionBank.GetAction(gameActionId);
+            return GameActionBank.GetAction(gameActionId);
         }
 
         return null;

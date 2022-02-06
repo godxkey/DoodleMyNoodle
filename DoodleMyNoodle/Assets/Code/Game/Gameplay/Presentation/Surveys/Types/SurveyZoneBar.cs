@@ -41,14 +41,14 @@ public class SurveyZoneBar : SurveyBaseController
     private SurveySuccessRating _currentSuccessRate = SurveySuccessRating.Five;
     private bool _started = false; 
 
-    protected override Action.ParameterDescriptionType[] GetExpectedQuery() => new Action.ParameterDescriptionType[]
+    protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
-        Action.ParameterDescriptionType.SuccessRating
+        GameAction.ParameterDescriptionType.SuccessRating
     };
 
-    public override Action.ParameterDescription[] CreateDebugQuery()
+    public override GameAction.ParameterDescription[] CreateDebugQuery()
     {
-        return new Action.ParameterDescription[] { new GameActionParameterSuccessRate.Description() {  } };
+        return new GameAction.ParameterDescription[] { new GameActionParameterSuccessRate.Description() {  } };
     }
 
     private void Update()
@@ -72,7 +72,7 @@ public class SurveyZoneBar : SurveyBaseController
         }
     }
 
-    protected override IEnumerator SurveyRoutine(Context context, List<Action.ParameterData> result, System.Action complete, System.Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, System.Action complete, System.Action cancel)
     {
         _hasClicked = false;
         _started = false;

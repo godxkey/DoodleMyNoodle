@@ -101,7 +101,7 @@ public class ItemAuthEditor : Editor
     {
         if (s_availableTypes == null)
         {
-            s_availableTypes = TypeUtility.GetTypesDerivedFrom(typeof(Action)).ToArray();
+            s_availableTypes = TypeUtility.GetTypesDerivedFrom(typeof(GameAction)).ToArray();
             s_availableTypeNames = s_availableTypes.Where(t => !t.IsAbstract).Select(t => t.Name).ToArray();
         }
 

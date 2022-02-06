@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngineX.InspectorDisplay;
 
-public class GameActionThrow : Action<GameActionThrow.Settings>
+public class GameActionThrow : GameAction<GameActionThrow.Settings>
 {
     [Serializable]
     [GameActionSettingAuth(typeof(Settings))]

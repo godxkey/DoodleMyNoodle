@@ -44,8 +44,8 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             }
 
             // Init process of parameter selection
-            ActionId actionId = SimWorld.GetComponent<ActionId>(InputParameter.ActionPrefab);
-            Action objectGameAction = ActionBank.GetAction(actionId);
+            GameActionId actionId = SimWorld.GetComponent<GameActionId>(InputParameter.ActionPrefab);
+            GameAction objectGameAction = GameActionBank.GetAction(actionId);
 
             _surveySMBlackboard.UseContext = CommonReads.GetActionContext(SimWorld, InputParameter.ActionInstigator, InputParameter.ActionPrefab);
             _surveySMBlackboard.ParametersDescriptions = objectGameAction.GetUseContract(SimWorld, InputParameter.ActionPrefab).ParameterTypes;
@@ -128,18 +128,18 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
     private class SurveyBlackboard
     {
-        public ActionAuth ActionAuth;
+        public GameActionAuth ActionAuth;
         public GamePresentationCache Cache;
 
         public bool isDebug;
 
-        public Action.UseContext UseContext;
+        public GameAction.UseContext UseContext;
 
         // the description of parameters we must fill
-        public Action.ParameterDescription[] ParametersDescriptions;
+        public GameAction.ParameterDescription[] ParametersDescriptions;
 
         // the resulting param data
-        public List<Action.ParameterData> ResultParameters = new List<Action.ParameterData>();
+        public List<GameAction.ParameterData> ResultParameters = new List<GameAction.ParameterData>();
     }
 
     private class SurveyState : State<SurveyBlackboard>
@@ -161,7 +161,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             // the parameter
             int remainingParamCount = Blackboard.ParametersDescriptions.Length - Blackboard.ResultParameters.Count;
 
-            Action.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, Blackboard.ResultParameters.Count, remainingParamCount);
+            GameAction.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, Blackboard.ResultParameters.Count, remainingParamCount);
 
             if(remainingParams.Length < 1)
             {
@@ -179,7 +179,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
                 // Default Case
 
                 // For default case, we handle them one at a time with the survey corresponding to the first parameter we have
-                Action.ParameterDescription parameterToHandle = remainingParams[0];
+                GameAction.ParameterDescription parameterToHandle = remainingParams[0];
                 SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, Blackboard.ResultParameters, parameterToHandle, OnSurveyComplete, OnSurveyCancel);
             }
         }
@@ -189,7 +189,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             _doneNextFrame = true;
         }
 
-        private void OnSurveyComplete(List<Action.ParameterData> results)
+        private void OnSurveyComplete(List<GameAction.ParameterData> results)
         {
             // add param to results
             Blackboard.ResultParameters.AddRange(results);

@@ -8,19 +8,19 @@ using Unity.Collections;
 
 public partial class CommonReads
 {
-    public static Action.UseContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionEntity, Entity actionPrefab)
+    public static GameAction.UseContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionEntity, Entity actionPrefab)
     {
         return GetActionContext(accessor, actionEntity, actionPrefab, targets : default);
     }
 
-    public static Action.UseContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionEntity, Entity actionPrefab, Entity target)
+    public static GameAction.UseContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionEntity, Entity actionPrefab, Entity target)
     {
         var targets = new NativeArray<Entity>(1, Allocator.Temp);
         targets[0] = target;
         return GetActionContext(accessor, actionEntity, actionPrefab, targets);
     }
 
-    public static Action.UseContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionEntity, Entity actionPrefab, NativeArray<Entity> targets)
+    public static GameAction.UseContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionEntity, Entity actionPrefab, NativeArray<Entity> targets)
     {
         Entity instigatorPawn = Entity.Null;
         if (accessor.TryGetComponent(actionEntity, out OwnerPawn ownerPawn))
@@ -28,7 +28,7 @@ public partial class CommonReads
             instigatorPawn = ownerPawn.Value;
         }
 
-        Action.UseContext useContext = new Action.UseContext()
+        GameAction.UseContext useContext = new GameAction.UseContext()
         {
             ActionPrefab = actionPrefab,
             InstigatorPawn = instigatorPawn,
@@ -42,40 +42,43 @@ public partial class CommonReads
 
 internal partial class CommonWrites
 {
-    public static void ExecuteAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, Action.UseParameters parameters = null)
+    public static void ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, GameAction.UseParameters parameters = null)
     {
-        ExecuteAction(accessor, instigator, action, targets: default, parameters);
+        ExecuteGameAction(accessor, instigator, action, targets: default, parameters);
     }
 
-    public static void ExecuteAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, Entity target, Action.UseParameters parameters = null)
+    public static void ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, Entity target, GameAction.UseParameters parameters = null)
     {
         var targets = new NativeArray<Entity>(1, Allocator.Temp);
         targets[0] = target;
-        ExecuteAction(accessor, instigator, action, targets, parameters);
+        ExecuteGameAction(accessor, instigator, action, targets, parameters);
     }
 
-    public static void ExecuteAction(ISimGameWorldReadWriteAccessor accessor, Entity actionEntity, Entity actionPrefab, NativeArray<Entity> targets, Action.UseParameters parameters = null)
+    public static void ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionEntity, Entity actionPrefab, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
     {
-        if (!accessor.TryGetComponent(actionPrefab, out ActionId actionId) && actionId.IsValid)
+        if (!accessor.TryGetComponent(actionPrefab, out GameActionId actionId) && actionId.IsValid)
             return;
 
-        Action action = ActionBank.GetAction(actionId);
+        GameAction gameAction = GameActionBank.GetAction(actionId);
 
-        if (!action.TryUse(accessor, CommonReads.GetActionContext(accessor, actionEntity, actionPrefab, targets), parameters, out string debugReason))
+        if (gameAction == null)
+            return; // error is already logged in 'GetAction' method
+
+        if (!gameAction.TryUse(accessor, CommonReads.GetActionContext(accessor, actionEntity, actionPrefab, targets), parameters, out string debugReason))
         {
-            Log.Info($"Can't Trigger {action} because: {debugReason}");
+            Log.Info($"Can't Trigger {gameAction} because: {debugReason}");
             return;
         }
     }
 }
 
-public struct ActionUsedEventData
+public struct GameActionUsedEventData
 {
-    public Action.UseContext ActionContext;
-    public Action.ResultData ActionResult;
+    public GameAction.UseContext GameActionContext;
+    public GameAction.ResultData GameActionResult;
 }
 
-public abstract class Action
+public abstract class GameAction
 {
     public static LogChannel LogChannel = Log.CreateChannel("Actions", activeByDefault: true);
 
@@ -293,7 +296,7 @@ public abstract class Action
         }
 
         // reduce instigator AP
-        if (accessor.TryGetComponent(context.InstigatorPawn, out ActionSettingAPCost itemActionPointCost))
+        if (accessor.TryGetComponent(context.InstigatorPawn, out GameActionSettingAPCost itemActionPointCost))
         {
             CommonWrites.ModifyStatFix<ActionPoints>(accessor, context.ActionInstigator, -itemActionPointCost.Value);
         }
@@ -332,16 +335,16 @@ public abstract class Action
             }
         }
 
-        accessor.GetOrCreateSystem<PresentationEventSystem>().PresentationEvents.ActionEvents.Push(new ActionUsedEventData()
+        accessor.GetOrCreateSystem<PresentationEventSystem>().PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
         {
-            ActionContext = context,// todo: copy array and dispose in presentation
-            ActionResult = resultData
+            GameActionContext = context,// todo: copy array and dispose in presentation
+            GameActionResult = resultData
         });
     }
 
     protected virtual int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
     {
-        if (accessor.TryGetComponent(context.ActionInstigator, out ActionSettingAPCost apCost))
+        if (accessor.TryGetComponent(context.ActionInstigator, out GameActionSettingAPCost apCost))
         {
             return apCost.Value;
         }
@@ -366,7 +369,7 @@ public abstract class Action
     }
 }
 
-public abstract class Action<TSetting> : Action where TSetting : struct, IComponentData
+public abstract class GameAction<TSetting> : GameAction where TSetting : struct, IComponentData
 {
     public override Type[] GetRequiredSettingTypes() => new[] { typeof(TSetting) };
 

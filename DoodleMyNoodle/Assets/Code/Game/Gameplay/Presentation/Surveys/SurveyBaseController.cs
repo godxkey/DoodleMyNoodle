@@ -10,14 +10,14 @@ public abstract class SurveyBaseController : MonoBehaviour
 {
     public struct Context
     {
-        public Action.UseContext UseContext;
-        public Action.ParameterDescription[] QueryParams;
-        public List<Action.ParameterData> CurrentData;
+        public GameAction.UseContext UseContext;
+        public GameAction.ParameterDescription[] QueryParams;
+        public List<GameAction.ParameterData> CurrentData;
 
         public Entity ActionPrefab => UseContext.ActionPrefab;
         public Entity Instigator => UseContext.ActionInstigator;
 
-        public T GetQueryParam<T>() where T : Action.ParameterDescription
+        public T GetQueryParam<T>() where T : GameAction.ParameterDescription
         {
             for (int i = 0; i < QueryParams.Length; i++)
             {
@@ -36,7 +36,7 @@ public abstract class SurveyBaseController : MonoBehaviour
 
     public bool Running { get; private set; }
     public Context CurrentContext { get; private set; }
-    public Action.ParameterDescriptionType[] ExpectedQuery
+    public GameAction.ParameterDescriptionType[] ExpectedQuery
     {
         get
         {
@@ -46,14 +46,14 @@ public abstract class SurveyBaseController : MonoBehaviour
         }
     }
 
-    private List<Action.ParameterData> _result = new List<Action.ParameterData>();
-    private System.Action<List<Action.ParameterData>> _onCompleteCallback;
+    private List<GameAction.ParameterData> _result = new List<GameAction.ParameterData>();
+    private System.Action<List<GameAction.ParameterData>> _onCompleteCallback;
     private System.Action _cancelCallback;
     private Coroutine _currentLoop;
     [NonSerialized]
-    private Action.ParameterDescriptionType[] _cachedExpectedQuery = null;
+    private GameAction.ParameterDescriptionType[] _cachedExpectedQuery = null;
 
-    public void StartSurvey(System.Action<List<Action.ParameterData>> completeCallback, System.Action cancelCallback, Action.UseContext useContext, List<Action.ParameterData> currentResultData, params Action.ParameterDescription[] parameters)
+    public void StartSurvey(System.Action<List<GameAction.ParameterData>> completeCallback, System.Action cancelCallback, GameAction.UseContext useContext, List<GameAction.ParameterData> currentResultData, params GameAction.ParameterDescription[] parameters)
     {
         Running = true;
 
@@ -117,16 +117,16 @@ public abstract class SurveyBaseController : MonoBehaviour
         }
     }
     
-    protected abstract Action.ParameterDescriptionType[] GetExpectedQuery();
-    protected abstract IEnumerator SurveyRoutine(Context context, List<Action.ParameterData> currentData, System.Action complete, System.Action cancel);
+    protected abstract GameAction.ParameterDescriptionType[] GetExpectedQuery();
+    protected abstract IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> currentData, System.Action complete, System.Action cancel);
     protected abstract void OnEndSurvey(bool wasCompleted);
-    public virtual Action.ParameterDescription[] CreateDebugQuery() => new Action.ParameterDescription[0] { };
+    public virtual GameAction.ParameterDescription[] CreateDebugQuery() => new GameAction.ParameterDescription[0] { };
 
     private void ShowCostPreview()
     {
         if (SimWorld.TryGetComponent(CurrentContext.Instigator, out ActionPoints ap))
         {
-            if (SimWorld.TryGetComponent(CurrentContext.ActionPrefab, out ActionSettingAPCost apCost))
+            if (SimWorld.TryGetComponent(CurrentContext.ActionPrefab, out GameActionSettingAPCost apCost))
             {
                 APEnergyBarDisplayManagementSystem.Instance.ShowCostPreview(CurrentContext.Instigator, (float)ap.Value - apCost.Value);
             } 

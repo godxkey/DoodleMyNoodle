@@ -1,18 +1,18 @@
 ﻿
 public class GameActionParameterSuccessRate
 {
-    public class Description : Action.ParameterDescription
+    public class Description : GameAction.ParameterDescription
     {
         public Description() { }
 
-        public override Action.ParameterDescriptionType GetParameterDescriptionType()
+        public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
         {
-            return Action.ParameterDescriptionType.SuccessRating;
+            return GameAction.ParameterDescriptionType.SuccessRating;
         }
     }
 
     [NetSerializable]
-    public class Data : Action.ParameterData
+    public class Data : GameAction.ParameterData
     {
         public SurveySuccessRating SuccessRate;
 

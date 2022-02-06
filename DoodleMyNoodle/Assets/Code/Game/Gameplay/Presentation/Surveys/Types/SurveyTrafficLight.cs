@@ -61,12 +61,12 @@ public class SurveyTrafficLight : SurveyBaseController
         _complete = false;
     }
 
-    protected override Action.ParameterDescriptionType[] GetExpectedQuery() => new Action.ParameterDescriptionType[]
+    protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
-        Action.ParameterDescriptionType.SuccessRating,
+        GameAction.ParameterDescriptionType.SuccessRating,
     };
 
-    protected override IEnumerator SurveyRoutine(Context context, List<Action.ParameterData> result, System.Action complete, System.Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, System.Action complete, System.Action cancel)
     {
         Container.SetActive(true);
 

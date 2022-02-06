@@ -1,7 +1,7 @@
 ﻿
 public class GameActionParameterVector
 {
-    public class Description : Action.ParameterDescription
+    public class Description : GameAction.ParameterDescription
     {
         public fix SpeedMin = 0;
         public fix SpeedMax = 99;
@@ -9,14 +9,14 @@ public class GameActionParameterVector
 
         public Description() { }
 
-        public override Action.ParameterDescriptionType GetParameterDescriptionType()
+        public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
         {
-            return Action.ParameterDescriptionType.Vector;
+            return GameAction.ParameterDescriptionType.Vector;
         }
     }
 
     [NetSerializable]
-    public class Data : Action.ParameterData
+    public class Data : GameAction.ParameterData
     {
         public fix2 Vector;
 

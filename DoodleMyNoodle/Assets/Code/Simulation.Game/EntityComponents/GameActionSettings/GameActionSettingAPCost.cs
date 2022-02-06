@@ -1,7 +1,7 @@
 using Unity.Entities;
 using UnityEngine;
 
-public struct ActionSettingAPCost : IComponentData, IStatInt
+public struct GameActionSettingAPCost : IComponentData, IStatInt
 {
     public int Value;
 

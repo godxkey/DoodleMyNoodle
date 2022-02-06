@@ -45,12 +45,12 @@ public static class PresentationHelpers
         return null;
     }
 
-    public static ActionAuth FindActionAuth(SimAssetId itemID)
+    public static GameActionAuth FindActionAuth(SimAssetId itemID)
     {
         GameObject itemPrefab = FindSimAssetPrefab(itemID);
         if (itemPrefab != null)
         {
-            return itemPrefab.GetComponent<ActionAuth>();
+            return itemPrefab.GetComponent<GameActionAuth>();
         }
         return null;
     }
@@ -140,7 +140,7 @@ public static class PresentationHelpers
 
     public static class Surveys
     {
-        public static Action GetGameAction(ISimWorldReadAccessor simWorld, Entity item)
+        public static GameAction GetGameAction(ISimWorldReadAccessor simWorld, Entity item)
         {
             if (simWorld == null)
                 return null;
@@ -148,18 +148,18 @@ public static class PresentationHelpers
             if (!simWorld.Exists(item))
                 return null;
 
-            if (!simWorld.TryGetComponent(item, out ActionId gameActionId))
+            if (!simWorld.TryGetComponent(item, out GameActionId gameActionId))
                 return null;
 
-            return ActionBank.GetAction(gameActionId);
+            return GameActionBank.GetAction(gameActionId);
         }
 
-        public static T GetGameAction<T>(ISimWorldReadAccessor simWorld, Entity item) where T : Action
+        public static T GetGameAction<T>(ISimWorldReadAccessor simWorld, Entity item) where T : GameAction
         {
             return GetGameAction(simWorld, item) as T;
         }
 
-        public static bool GetItemTrajectorySettings(GamePresentationCache cache, Action.UseContext useContext, Vector2 direction,
+        public static bool GetItemTrajectorySettings(GamePresentationCache cache, GameAction.UseContext useContext, Vector2 direction,
             out Vector2 spawnOffset,
             out float radius)
         {
@@ -181,7 +181,7 @@ public static class PresentationHelpers
             return false;
         }
 
-        public static float GetProjectileGravityScale(GamePresentationCache cache, Action.UseContext useContext)
+        public static float GetProjectileGravityScale(GamePresentationCache cache, GameAction.UseContext useContext)
         {
             if (cache.SimWorld == null)
                 return 1;

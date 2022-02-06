@@ -14,14 +14,14 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
             return;
 
         // Item sounds
-        foreach (var gameActionEvent in PresentationEvents.ActionEvents.SinceLastPresUpdate)
+        foreach (var gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            SimWorld.TryGetComponent(gameActionEvent.Value.ActionContext.ActionPrefab, out SimAssetId entitySimAssetID);
+            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.ActionPrefab, out SimAssetId entitySimAssetID);
 
             GameObject entityPrefab = PresentationHelpers.FindSimAssetPrefab(entitySimAssetID);
             if (entityPrefab != null)
             {
-                var sfx = entityPrefab.GetComponent<ActionAuth>()?.SfxOnUse;
+                var sfx = entityPrefab.GetComponent<GameActionAuth>()?.SfxOnUse;
                 if (sfx != null)
                 {
                     sfx.PlayOn(_audioSource);

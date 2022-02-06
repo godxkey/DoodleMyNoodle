@@ -19,12 +19,12 @@ public class SurveyClickTiming : SurveyBaseController, IWorldUIPointerClickHandl
     private DirtyValue<int> _currentNumber;
     private float _changeTimer = 0;
 
-    protected override Action.ParameterDescriptionType[] GetExpectedQuery() => new Action.ParameterDescriptionType[]
+    protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
     {
-        Action.ParameterDescriptionType.SuccessRating,
+        GameAction.ParameterDescriptionType.SuccessRating,
     };
 
-    protected override IEnumerator SurveyRoutine(Context context, List<Action.ParameterData> result, System.Action complete, System.Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, System.Action complete, System.Action cancel)
     {
         _currentNumber.Set(0);
 

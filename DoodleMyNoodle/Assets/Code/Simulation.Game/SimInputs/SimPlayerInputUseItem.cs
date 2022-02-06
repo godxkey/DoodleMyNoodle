@@ -6,26 +6,26 @@ using UnityEngine;
 public class SimPlayerInputUseItem : SimPlayerInput
 {
     public int ItemIndex;
-    public Action.UseParameters UseData;
+    public GameAction.UseParameters UseData;
 
     public SimPlayerInputUseItem() {}
 
-    public SimPlayerInputUseItem(int itemIndex, Action.UseParameters useData)
+    public SimPlayerInputUseItem(int itemIndex, GameAction.UseParameters useData)
     {
         ItemIndex = itemIndex;
         UseData = useData;
     }
 
-    public SimPlayerInputUseItem(int itemIndex, Action.ParameterData[] useData)
+    public SimPlayerInputUseItem(int itemIndex, GameAction.ParameterData[] useData)
     {
         ItemIndex = itemIndex;
-        UseData = Action.UseParameters.Create(useData);
+        UseData = GameAction.UseParameters.Create(useData);
     }
 
-    public SimPlayerInputUseItem(int itemIndex, List<Action.ParameterData> useData)
+    public SimPlayerInputUseItem(int itemIndex, List<GameAction.ParameterData> useData)
     {
         ItemIndex = itemIndex;
-        UseData = Action.UseParameters.Create(useData.ToArray());
+        UseData = GameAction.UseParameters.Create(useData.ToArray());
     }
 
     public override string ToString()

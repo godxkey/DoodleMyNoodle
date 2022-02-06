@@ -40,7 +40,7 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
     public bool IsAutoUse = false;
     public fix PassiveUsageTimeInterval = 1;
-    public Action.UseParameters DefaultParamaters = new Action.UseParameters();
+    public GameAction.UseParameters DefaultParamaters = new GameAction.UseParameters();
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -55,7 +55,7 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
             dstManager.AddComponentData(entity, new ItemTurnCooldownData() { Value = fixMath.roundToInt(CooldownDuration) });
         }
 
-        dstManager.AddComponentData(entity, new ActionSettingAPCost() { Value = ApCost });
+        dstManager.AddComponentData(entity, new GameActionSettingAPCost() { Value = ApCost });
         dstManager.AddComponentData(entity, new StackableFlag() { Value = IsStackable });
     }
 

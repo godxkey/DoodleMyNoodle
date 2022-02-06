@@ -14,7 +14,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
     [SerializeField] private GameObject _highlightPrefab;
 
     private List<GameObject> _highlights = new List<GameObject>();
-    private System.Action<Action.ParameterData> _currentTileSelectionCallback;
+    private System.Action<GameAction.ParameterData> _currentTileSelectionCallback;
 
     protected override void OnGamePresentationUpdate() { }
 
@@ -61,7 +61,7 @@ public class TileHighlightManager : GamePresentationSystem<TileHighlightManager>
 
     // TILE PROMPT
 
-    public void AskForSingleTileSelectionAroundPlayer(GameActionParameterTile.Description description, System.Action<Action.ParameterData> onSelectCallback)
+    public void AskForSingleTileSelectionAroundPlayer(GameActionParameterTile.Description description, System.Action<GameAction.ParameterData> onSelectCallback)
     {
         _currentTileSelectionCallback = onSelectCallback;
 

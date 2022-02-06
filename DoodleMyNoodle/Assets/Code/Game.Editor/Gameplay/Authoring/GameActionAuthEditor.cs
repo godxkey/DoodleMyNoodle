@@ -8,8 +8,8 @@ using UnityEditorX;
 using UnityEngine;
 using UnityEngineX;
 
-[CustomEditor(typeof(ActionAuth))]
-public class ActionAuthEditor : Editor
+[CustomEditor(typeof(GameActionAuth))]
+public class GameActionAuthEditor : Editor
 {
     private static string[] s_availableTypeNames;
     private static Type[] s_availableTypes;
@@ -27,20 +27,20 @@ public class ActionAuthEditor : Editor
 
     private void OnEnable()
     {
-        _gameActionProp = serializedObject.FindProperty(nameof(ActionAuth.Value));
-        _gameActionSettingsProp = serializedObject.FindProperty(nameof(ActionAuth.GameActionSettings));
+        _gameActionProp = serializedObject.FindProperty(nameof(GameActionAuth.Value));
+        _gameActionSettingsProp = serializedObject.FindProperty(nameof(GameActionAuth.GameActionSettings));
         
-        _sfxProp = serializedObject.FindProperty(nameof(ActionAuth.SfxOnUse));
-        _animationConditionProp = serializedObject.FindProperty(nameof(ActionAuth.PlayAnimation));
-        _animationProp = serializedObject.FindProperty(nameof(ActionAuth.Animation));
-        _surveyProp = serializedObject.FindProperty(nameof(ActionAuth.CustomSurveys));
+        _sfxProp = serializedObject.FindProperty(nameof(GameActionAuth.SfxOnUse));
+        _animationConditionProp = serializedObject.FindProperty(nameof(GameActionAuth.PlayAnimation));
+        _animationProp = serializedObject.FindProperty(nameof(GameActionAuth.Animation));
+        _surveyProp = serializedObject.FindProperty(nameof(GameActionAuth.CustomSurveys));
 
         InitStaticData();
     }
 
     public override void OnInspectorGUI()
     {
-        var castedTarget = (ActionAuth)target;
+        var castedTarget = (GameActionAuth)target;
 
         EditorGUI.BeginChangeCheck();
 
@@ -132,7 +132,7 @@ public class ActionAuthEditor : Editor
     {
         if (s_availableTypes == null)
         {
-            s_availableTypes = TypeUtility.GetTypesDerivedFrom(typeof(Action)).ToArray();
+            s_availableTypes = TypeUtility.GetTypesDerivedFrom(typeof(GameAction)).ToArray();
             s_availableTypeNames = s_availableTypes.Where(t => !t.IsAbstract).Select(t => t.Name).ToArray();
         }
 

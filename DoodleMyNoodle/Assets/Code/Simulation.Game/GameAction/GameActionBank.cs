@@ -4,7 +4,7 @@ using Unity.Burst;
 using UnityEngine;
 using UnityEngineX;
 
-public static class ActionBank
+public static class GameActionBank
 {
     private sealed class GameActionBankKeyContext
     {
@@ -22,8 +22,8 @@ public static class ActionBank
         public static readonly SharedStatic<ushort> Ref = SharedStatic<ushort>.GetOrCreate<GameActionBankKeyContext, TGameAction>();
     }
 
-    private static Dictionary<ushort, Action> s_idToGameAction = new Dictionary<ushort, Action>();
-    private static Dictionary<string, Action> s_nameToGameAction = new Dictionary<string, Action>();
+    private static Dictionary<ushort, GameAction> s_idToGameAction = new Dictionary<ushort, GameAction>();
+    private static Dictionary<string, GameAction> s_nameToGameAction = new Dictionary<string, GameAction>();
 
     private static bool s_initialized = false;
 
@@ -34,7 +34,7 @@ public static class ActionBank
             return;
         s_initialized = true;
 
-        IEnumerable<Type> gameActionTypes = TypeUtility.GetTypesDerivedFrom(typeof(Action));
+        IEnumerable<Type> gameActionTypes = TypeUtility.GetTypesDerivedFrom(typeof(GameAction));
 
         ushort id = 1; // 0 is invalid
         foreach (Type gameActionType in gameActionTypes)
@@ -42,7 +42,7 @@ public static class ActionBank
             if (gameActionType.IsAbstract)
                 continue;
 
-            Action instance = (Action)Activator.CreateInstance(gameActionType);
+            GameAction instance = (GameAction)Activator.CreateInstance(gameActionType);
 
             TypeId.Get(gameActionType) = id;
 
@@ -53,39 +53,39 @@ public static class ActionBank
         }
     }
 
-    public static ActionId GetActionId(string gameActionTypeName)
+    public static GameActionId GetActionId(string gameActionTypeName)
     {
         return GetActionId(GetAction(gameActionTypeName));
     }
 
-    public static ActionId GetActionId<T>() where T : Action
+    public static GameActionId GetActionId<T>() where T : GameAction
     {
-        return new ActionId { Value = TypeId<T>.Ref.Data };
+        return new GameActionId { Value = TypeId<T>.Ref.Data };
     }
 
-    public static ActionId GetActionId(Type gameActionType)
+    public static GameActionId GetActionId(Type gameActionType)
     {
-        return new ActionId { Value = TypeId.Get(gameActionType) };
+        return new GameActionId { Value = TypeId.Get(gameActionType) };
     }
 
-    public static ActionId GetActionId(Action gameAction)
+    public static GameActionId GetActionId(GameAction gameAction)
     {
         return GetActionId(gameAction.GetType());
     }
 
-    public static Action GetAction(ActionId id)
+    public static GameAction GetAction(GameActionId id)
     {
         return GetAction(id.Value);
     }
 
-    public static Action GetAction<T>() where T : Action
+    public static GameAction GetAction<T>() where T : GameAction
     {
         return (T)GetAction(GetActionId<T>());
     }
 
-    public static Action GetAction(ushort id)
+    public static GameAction GetAction(ushort id)
     {
-        if (s_idToGameAction.TryGetValue(id, out Action result))
+        if (s_idToGameAction.TryGetValue(id, out GameAction result))
         {
             return result;
         }
@@ -95,9 +95,9 @@ public static class ActionBank
         return null;
     }
 
-    public static Action GetAction(string typeName)
+    public static GameAction GetAction(string typeName)
     {
-        if (s_nameToGameAction.TryGetValue(typeName, out Action result))
+        if (s_nameToGameAction.TryGetValue(typeName, out GameAction result))
         {
             return result;
         }

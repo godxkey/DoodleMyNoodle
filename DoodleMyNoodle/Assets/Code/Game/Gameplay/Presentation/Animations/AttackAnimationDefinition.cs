@@ -15,7 +15,7 @@ public class AttackAnimationDefinition : DOTWEENAnimationDefinition
     {
         Sequence sq = DOTween.Sequence();
 
-        Action.ResultDataElement resultData = GetGameActionResultData();
+        GameAction.ResultDataElement resultData = GetGameActionResultData();
 
         Vector2 startPos = spriteStartPos;
         Vector2 endPos = startPos;

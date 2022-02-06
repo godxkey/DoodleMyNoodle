@@ -10,7 +10,7 @@ using Unity.Entities;
 using Unity.Collections;
 using CCC.InspectorDisplay;
 
-public class GameActionMeleeAttack : Action<GameActionMeleeAttack.Settings>
+public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
 {
     [Serializable]
     [GameActionSettingAuth(typeof(Settings))]

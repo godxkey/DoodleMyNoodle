@@ -10,7 +10,7 @@ using System.Reflection;
 using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
-public class ActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
+public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     // SIMULATION
 
@@ -25,7 +25,7 @@ public class ActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRef
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, ActionBank.GetActionId(Value));
+        dstManager.AddComponentData(entity, GameActionBank.GetActionId(Value));
 
         // Update list of GameActionSettingAuth by adding any missing instances and removing any extra
         UpdateGameActionSettingsList();
@@ -53,7 +53,7 @@ public class ActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRef
         if (_hasUpdatedListOfGameActionSettings)
             return;
 
-        var gameAction = ActionBank.GetAction(Value);
+        var gameAction = GameActionBank.GetAction(Value);
         var requiredSettingAuths = GameActionSettingAuthBase.GetRequiredSettingAuthTypes(gameAction.GetType());
         GameActionSettings.RemoveAll(authInstance => authInstance == null || !requiredSettingAuths.Contains(authInstance.GetType()));
         foreach (var authType in requiredSettingAuths)
@@ -76,7 +76,7 @@ public class ActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRef
     // Surveys
     public List<SurveyBaseController> CustomSurveys;
 
-    public SurveyBaseController FindCustomSurveyPrefabForParameters(params Action.ParameterDescription[] parameters)
+    public SurveyBaseController FindCustomSurveyPrefabForParameters(params GameAction.ParameterDescription[] parameters)
     {
         if (parameters.Length == 0)
         {
@@ -100,7 +100,7 @@ public class ActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRef
         return result;
     }
 
-    private SurveyBaseController TryFindCustomSurveyPrefabForParametersSubset(Action.ParameterDescription[] parameters, int paramCount)
+    private SurveyBaseController TryFindCustomSurveyPrefabForParametersSubset(GameAction.ParameterDescription[] parameters, int paramCount)
     {
         foreach (SurveyBaseController survey in CustomSurveys)
         {
