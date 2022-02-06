@@ -27,8 +27,6 @@ internal partial class CommonWrites
 
         GameAction gameAction = GameActionBank.GetAction(gameActionId);
 
-        accessor.PresentationEvents.LogEvents.Push("hello!");
-
         if (gameAction == null)
             return; // error is already logged in 'GetAction' method
 
