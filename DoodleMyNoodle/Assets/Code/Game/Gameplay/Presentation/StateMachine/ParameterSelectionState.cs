@@ -10,7 +10,8 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 {
     public class InputParam
     {
-        public Entity ObjectEntity;
+        public Entity ActionInstigator;
+        public Entity ActionPrefab;
         public bool IsItem;
         public int ItemIndex;
     }
@@ -29,32 +30,25 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
         CursorOverlayService.Instance.ResetCursorToDefault();
 
-        if (InputParameter != null && InputParameter.ObjectEntity != Entity.Null)
+        if (InputParameter != null && InputParameter.ActionInstigator != Entity.Null && InputParameter.ActionPrefab != Entity.Null)
         {
-            if (SimWorld.TryGetComponent(InputParameter.ObjectEntity, out SimAssetId objectSimAssetID))
+            if (SimWorld.TryGetComponent(InputParameter.ActionPrefab, out SimAssetId objectSimAssetID))
             {
-                _surveySMBlackboard.GameActionAuth = PresentationHelpers.FindItemAuth(objectSimAssetID);
+                _surveySMBlackboard.ActionAuth = PresentationHelpers.FindActionAuth(objectSimAssetID);
             }
 
-            if (_surveySMBlackboard.GameActionAuth == null)
+            if (_surveySMBlackboard.ActionAuth == null)
             {
                 StateMachine.TransitionTo(UIStateType.Gameplay);
                 return;
             }
 
             // Init process of parameter selection
-            GameActionId actionId = SimWorld.GetComponent<GameActionId>(InputParameter.ObjectEntity);
-            GameAction objectGameAction = GameActionBank.GetAction(actionId);
+            ActionId actionId = SimWorld.GetComponent<ActionId>(InputParameter.ActionPrefab);
+            Action objectGameAction = ActionBank.GetAction(actionId);
 
-            GameAction.UseContext useContext = new GameAction.UseContext()
-            {
-                InstigatorPawn = Cache.LocalPawn,
-                InstigatorPawnController = Cache.LocalController,
-                Item = InputParameter.ObjectEntity
-            };
-
-            _surveySMBlackboard.UseContext = useContext;
-            _surveySMBlackboard.ParametersDescriptions = objectGameAction.GetUseContract(SimWorld, useContext).ParameterTypes;
+            _surveySMBlackboard.UseContext = CommonReads.GetActionContext(SimWorld, InputParameter.ActionInstigator, InputParameter.ActionPrefab);
+            _surveySMBlackboard.ParametersDescriptions = objectGameAction.GetUseContract(SimWorld, InputParameter.ActionPrefab).ParameterTypes;
         }
         else
         {
@@ -78,7 +72,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             return;
         }
 
-        if (!SimWorld.Exists(InputParameter.ObjectEntity)) // target item no longer exists, exit
+        if (!SimWorld.Exists(InputParameter.ActionInstigator)) // target item no longer exists, exit
         {
             StateMachine.TransitionTo(UIStateType.Gameplay);
             return;
@@ -127,13 +121,6 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             SimPlayerInputUseItem simInput = new SimPlayerInputUseItem(InputParameter.ItemIndex, _surveySMBlackboard.ResultParameters);
             SimWorld.SubmitInput(simInput);
         }
-        else
-        {
-            fix2 entityPosition = SimWorld.GetComponent<FixTranslation>(InputParameter.ObjectEntity);
-
-            SimPlayerInputUseObjectGameAction simInput = new SimPlayerInputUseObjectGameAction(entityPosition, _surveySMBlackboard.ResultParameters);
-            SimWorld.SubmitInput(simInput);
-        }
 
         StateMachine.TransitionTo(UIStateType.Gameplay);
     }
@@ -141,18 +128,18 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
     private class SurveyBlackboard
     {
-        public ItemAuth GameActionAuth;
+        public ActionAuth ActionAuth;
         public GamePresentationCache Cache;
 
         public bool isDebug;
 
-        public GameAction.UseContext UseContext;
+        public Action.UseContext UseContext;
 
         // the description of parameters we must fill
-        public GameAction.ParameterDescription[] ParametersDescriptions;
+        public Action.ParameterDescription[] ParametersDescriptions;
 
         // the resulting param data
-        public List<GameAction.ParameterData> ResultParameters = new List<GameAction.ParameterData>();
+        public List<Action.ParameterData> ResultParameters = new List<Action.ParameterData>();
     }
 
     private class SurveyState : State<SurveyBlackboard>
@@ -174,7 +161,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             // the parameter
             int remainingParamCount = Blackboard.ParametersDescriptions.Length - Blackboard.ResultParameters.Count;
 
-            GameAction.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, Blackboard.ResultParameters.Count, remainingParamCount);
+            Action.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, Blackboard.ResultParameters.Count, remainingParamCount);
 
             if(remainingParams.Length < 1)
             {
@@ -182,7 +169,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
                 return;
             }
 
-            SurveyBaseController surveyPrefab = Blackboard.GameActionAuth.FindCustomSurveyPrefabForParameters(remainingParams);
+            SurveyBaseController surveyPrefab = Blackboard.ActionAuth.FindCustomSurveyPrefabForParameters(remainingParams);
             if (surveyPrefab != null)
             {
                 SurveyManager.Instance.BeginSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, Blackboard.ResultParameters, remainingParams, surveyPrefab, OnSurveyComplete, OnSurveyCancel);
@@ -192,7 +179,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
                 // Default Case
 
                 // For default case, we handle them one at a time with the survey corresponding to the first parameter we have
-                GameAction.ParameterDescription parameterToHandle = remainingParams[0];
+                Action.ParameterDescription parameterToHandle = remainingParams[0];
                 SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, Blackboard.ResultParameters, parameterToHandle, OnSurveyComplete, OnSurveyCancel);
             }
         }
@@ -202,7 +189,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             _doneNextFrame = true;
         }
 
-        private void OnSurveyComplete(List<GameAction.ParameterData> results)
+        private void OnSurveyComplete(List<Action.ParameterData> results)
         {
             // add param to results
             Blackboard.ResultParameters.AddRange(results);

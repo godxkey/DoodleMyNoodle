@@ -27,7 +27,6 @@ public class GameFlowSystem : SimGameSystemBase
 
         // check if every player is ready
         Entities
-            .WithNone<AITag>() // ignore AI
             .ForEach((in Team team, in Active active, in ReadyForNextTurn readyForNextTurn, in ControlledEntity pawn) =>
         {
             if (active && team == (int)DesignerFriendlyTeam.Player)

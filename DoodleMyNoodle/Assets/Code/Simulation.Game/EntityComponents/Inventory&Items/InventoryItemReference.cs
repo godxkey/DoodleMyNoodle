@@ -33,28 +33,28 @@ public struct StackableFlag : IComponentData
 public partial class CommonReads
 {
     public static Entity FindFirstItemWithGameAction<T>(ISimWorldReadAccessor accessor, Entity pawn)
-        where T : GameAction
+        where T : Action
     {
-        return FindFirstItemWithGameAction(accessor, pawn, GameActionBank.GetActionId<T>(), out _);
+        return FindFirstItemWithGameAction(accessor, pawn, ActionBank.GetActionId<T>(), out _);
     }
     public static Entity FindFirstItemWithGameAction<T>(ISimWorldReadAccessor accessor, Entity pawn, out int itemIndex)
-        where T : GameAction
+        where T : Action
     {
-        return FindFirstItemWithGameAction(accessor, pawn, GameActionBank.GetActionId<T>(), out itemIndex);
+        return FindFirstItemWithGameAction(accessor, pawn, ActionBank.GetActionId<T>(), out itemIndex);
     }
 
-    public static Entity FindFirstItemWithGameAction(ISimWorldReadAccessor accessor, Entity pawn, GameActionId gameActionId)
+    public static Entity FindFirstItemWithGameAction(ISimWorldReadAccessor accessor, Entity pawn, ActionId gameActionId)
     {
         return FindFirstItemWithGameAction(accessor, pawn, gameActionId, out _);
     }
 
-    public static Entity FindFirstItemWithGameAction(ISimWorldReadAccessor accessor, Entity pawn, GameActionId gameActionId, out int itemIndex)
+    public static Entity FindFirstItemWithGameAction(ISimWorldReadAccessor accessor, Entity pawn, ActionId gameActionId, out int itemIndex)
     {
         if (accessor.TryGetBufferReadOnly(pawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
             for (int i = 0; i < inventory.Length; i++)
             {
-                if (accessor.TryGetComponent(inventory[i].ItemEntity, out GameActionId candidateGameActionId))
+                if (accessor.TryGetComponent(inventory[i].ItemEntity, out ActionId candidateGameActionId))
                 {
                     if (candidateGameActionId.Equals(gameActionId))
                     {

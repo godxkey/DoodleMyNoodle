@@ -20,12 +20,12 @@ public class SurveyEntity : SurveyBaseController
     private DirtyRef<BindedSimEntityManaged> _hoveredEntity = default;
     private Vector2 _instigatorPosition;
 
-    protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
+    protected override Action.ParameterDescriptionType[] GetExpectedQuery() => new Action.ParameterDescriptionType[]
     {
-        GameAction.ParameterDescriptionType.Entity
+        Action.ParameterDescriptionType.Entity
     };
 
-    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<Action.ParameterData> result, System.Action complete, System.Action cancel)
     {
         CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Target);
 
@@ -167,9 +167,9 @@ public class SurveyEntity : SurveyBaseController
         _selectedEntity = null;
     }
 
-    public override GameAction.ParameterDescription[] CreateDebugQuery()
+    public override Action.ParameterDescription[] CreateDebugQuery()
     {
-        return new GameAction.ParameterDescription[]
+        return new Action.ParameterDescription[]
         {
             new GameActionParameterEntity.Description() { RangeFromInstigator = 5 }
         };

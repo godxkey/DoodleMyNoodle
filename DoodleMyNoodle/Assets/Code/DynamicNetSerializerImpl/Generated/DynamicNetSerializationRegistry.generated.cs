@@ -46,7 +46,7 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(fixQuaternion)
         ,
-        typeof(GameAction.UseParameters)
+        typeof(Action.UseParameters)
         ,
         typeof(GameActionParameterBool.Data)
         ,
@@ -287,9 +287,9 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_fixQuaternion.GetSerializedBitSize(ref castedObj);
         }
         ,
-        [typeof(GameAction.UseParameters)] = (obj) =>
+        [typeof(Action.UseParameters)] = (obj) =>
         {
-            GameAction.UseParameters castedObj = (GameAction.UseParameters)obj;
+            Action.UseParameters castedObj = (Action.UseParameters)obj;
             return StaticNetSerializer_GameAction_UseParameters.GetSerializedBitSize(castedObj);
         }
         ,
@@ -788,9 +788,9 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_fixQuaternion.Serialize(ref castedObj, writer);
         }
         ,
-        [typeof(GameAction.UseParameters)] = (obj, writer) =>
+        [typeof(Action.UseParameters)] = (obj, writer) =>
         {
-            GameAction.UseParameters castedObj = (GameAction.UseParameters)obj;
+            Action.UseParameters castedObj = (Action.UseParameters)obj;
             StaticNetSerializer_GameAction_UseParameters.Serialize(castedObj, writer);
         }
         ,
@@ -1309,7 +1309,7 @@ public static class DynamicNetSerializationRegistry
         ,
         [18] = (reader) =>
         {
-            GameAction.UseParameters obj = new GameAction.UseParameters();
+            Action.UseParameters obj = new Action.UseParameters();
             StaticNetSerializer_GameAction_UseParameters.Deserialize(obj, reader);
             return obj;
         }

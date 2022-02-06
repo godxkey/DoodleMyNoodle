@@ -7,7 +7,7 @@ public class GameSavesManager : MonoCoreService<GameSavesManager>
 {
     [SerializeField, HideInInspector] private DataSaver[] dataSavers = new DataSaver[Enum.GetValues(typeof(GameSaveCategory)).Length];
 
-    public override void Initialize(Action<ICoreService> onComplete)
+    public override void Initialize(System.Action<ICoreService> onComplete)
     {
         VerifyArrayIntegrity();
 

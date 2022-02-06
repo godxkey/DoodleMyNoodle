@@ -5,26 +5,26 @@ using Unity.Mathematics;
 public class SimPlayerInputUseObjectGameAction : SimPlayerInput
 {
     public fix2 ObjectPosition;
-    public GameAction.UseParameters UseData;
+    public Action.UseParameters UseData;
 
     public SimPlayerInputUseObjectGameAction() { }
 
-    public SimPlayerInputUseObjectGameAction(fix2 objectPosition, GameAction.UseParameters useData)
+    public SimPlayerInputUseObjectGameAction(fix2 objectPosition, Action.UseParameters useData)
     {
         ObjectPosition = objectPosition;
         UseData = useData;
     }
 
-    public SimPlayerInputUseObjectGameAction(fix2 objectPosition, GameAction.ParameterData[] useData)
+    public SimPlayerInputUseObjectGameAction(fix2 objectPosition, Action.ParameterData[] useData)
     {
         ObjectPosition = objectPosition;
-        UseData = GameAction.UseParameters.Create(useData);
+        UseData = Action.UseParameters.Create(useData);
     }
 
-    public SimPlayerInputUseObjectGameAction(fix2 objectPosition, List<GameAction.ParameterData> useData)
+    public SimPlayerInputUseObjectGameAction(fix2 objectPosition, List<Action.ParameterData> useData)
     {
         ObjectPosition = objectPosition;
-        UseData = GameAction.UseParameters.Create(useData.ToArray());
+        UseData = Action.UseParameters.Create(useData.ToArray());
     }
 
     public override string ToString()

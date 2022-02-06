@@ -22,8 +22,8 @@ public class PlayerActionBarSlot : ItemSlot
     private PlayerActionBarSlotInfo _info;
     private int _currentItemIndex;
 
-    private Action<int> _onItemPrimaryActionUsed;
-    private Action<int> _onItemSecondaryActionUsed;
+    private System.Action<int> _onItemPrimaryActionUsed;
+    private System.Action<int> _onItemSecondaryActionUsed;
 
     private bool _actionBarSlotUnavailable = false;
 
@@ -31,8 +31,8 @@ public class PlayerActionBarSlot : ItemSlot
         ItemAuth gameActionAuth,
         int itemIndex,
         PlayerActionBarSlotInfo slotInfo,
-        Action<int> onItemPrimaryActionUsed,
-        Action<int> onItemSecondaryActionUsed,
+        System.Action<int> onItemPrimaryActionUsed,
+        System.Action<int> onItemSecondaryActionUsed,
         int stacks = -1)
     {
         _actionBarSlotUnavailable = false;

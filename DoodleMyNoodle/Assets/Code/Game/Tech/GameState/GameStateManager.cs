@@ -29,7 +29,7 @@ public abstract class GameStateManager : MonoCoreService<GameStateManager>
 
     protected abstract GameStateFactory CreateFactory();
 
-    public override void Initialize(Action<ICoreService> onComplete)
+    public override void Initialize(System.Action<ICoreService> onComplete)
     {
         onComplete(this);
 

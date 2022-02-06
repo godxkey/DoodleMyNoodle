@@ -17,12 +17,12 @@ using System.Collections.Generic;
 
 public class #SCRIPTNAME# : {nameof(SurveyBaseController)}
 {{
-    protected override {nameof(GameAction)}.{nameof(GameAction.ParameterDescriptionType)}[] GetExpectedQuery() => new {nameof(GameAction)}.{nameof(GameAction.ParameterDescriptionType)}[]
+    protected override {nameof(Action)}.{nameof(Action.ParameterDescriptionType)}[] GetExpectedQuery() => new {nameof(Action)}.{nameof(Action.ParameterDescriptionType)}[]
     {{
         // list your expected query param types here
     }};
 
-    protected override IEnumerator SurveyRoutine({nameof(SurveyBaseController.Context)} context, List<{nameof(GameAction)}.{nameof(GameAction.ParameterData)}> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine({nameof(SurveyBaseController.Context)} context, List<{nameof(Action)}.{nameof(Action.ParameterData)}> result, Action complete, Action cancel)
     {{
         complete();
         yield break;

@@ -16,7 +16,7 @@ public class ItemContextMenuDisplaySystem : GamePresentationSystem<ItemContextMe
     [SerializeField] private float _displacementY = 0;
 
     private List<ContextMenuActionDisplay> _actionElements = new List<ContextMenuActionDisplay>();
-    private Action<int?> _callback;
+    private System.Action<int?> _callback;
 
     protected override void Awake()
     {
@@ -33,7 +33,7 @@ public class ItemContextMenuDisplaySystem : GamePresentationSystem<ItemContextMe
         SetContextMenuActive(false);
     }
 
-    public void ActivateContextMenuDisplay(Action<int?> actionSelected, params string[] actionsName)
+    public void ActivateContextMenuDisplay(System.Action<int?> actionSelected, params string[] actionsName)
     {
         _callback = actionSelected;
 

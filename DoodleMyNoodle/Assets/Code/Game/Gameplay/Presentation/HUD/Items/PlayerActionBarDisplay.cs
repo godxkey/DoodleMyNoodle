@@ -115,17 +115,13 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                                                                stacks);
 
                     bool canBeUsed = false;
-                    if (SimWorld.TryGetComponent(item, out GameActionId itemActionId))
+                    if (SimWorld.TryGetComponent(item, out ItemAction itemAction))
                     {
-                        GameAction.UseContext useContext = new GameAction.UseContext()
+                        if (SimWorld.TryGetComponent(itemAction.ActionPrefab, out ActionId itemActionId))
                         {
-                            InstigatorPawn = Cache.LocalPawn,
-                            InstigatorPawnController = Cache.LocalController,
-                            Item = item
-                        };
-
-                        GameAction itemAction = GameActionBank.GetAction(itemActionId);
-                        canBeUsed = itemAction != null && itemAction.CanBeUsedInContext(SimWorld, useContext);
+                            Action action = ActionBank.GetAction(itemActionId);
+                            canBeUsed = action != null && action.CanBeUsedInContext(SimWorld, CommonReads.GetActionContext(SimWorld, item, itemAction.ActionPrefab));
+                        }
                     }
 
                     if (!displayedInventory[i].ItemAuth.UsableInOthersTurn && !Cache.DEPRECATED_CanLocalPlayerPlay)
@@ -184,12 +180,16 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                 {
                     Entity itemEntity = item.ItemEntity;
 
-                    UIStateMachine.Instance.TransitionTo(UIStateType.ParameterSelection, new ParameterSelectionState.InputParam()
+                    if (SimWorld.TryGetComponent(itemEntity, out ItemAction itemAction))
                     {
-                        ObjectEntity = itemEntity,
-                        IsItem = true,
-                        ItemIndex = ItemIndex
-                    });
+                        UIStateMachine.Instance.TransitionTo(UIStateType.ParameterSelection, new ParameterSelectionState.InputParam()
+                        {
+                            ActionInstigator = itemEntity,
+                            ActionPrefab = itemAction.ActionPrefab,
+                            IsItem = true,
+                            ItemIndex = ItemIndex
+                        });
+                    }
                 }
             }
         }

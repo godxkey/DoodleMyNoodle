@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class SurveyTile : SurveyBaseController
 {
-    protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
+    protected override Action.ParameterDescriptionType[] GetExpectedQuery() => new Action.ParameterDescriptionType[]
     {
-        GameAction.ParameterDescriptionType.Tile
+        Action.ParameterDescriptionType.Tile
     };
 
-    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<Action.ParameterData> result, System.Action complete, System.Action cancel)
     {
         var paramTile = context.GetQueryParam<GameActionParameterTile.Description>();
 
-        TileHighlightManager.Instance.AskForSingleTileSelectionAroundPlayer(paramTile, (GameAction.ParameterData selection) =>
+        TileHighlightManager.Instance.AskForSingleTileSelectionAroundPlayer(paramTile, (Action.ParameterData selection) =>
         {
             result.Add(selection);
             complete();
@@ -28,9 +28,9 @@ public class SurveyTile : SurveyBaseController
         TileHighlightManager.Instance?.InterruptTileSelectionProcess();
     }
 
-    public override GameAction.ParameterDescription[] CreateDebugQuery()
+    public override Action.ParameterDescription[] CreateDebugQuery()
     {
-        return new GameAction.ParameterDescription[]
+        return new Action.ParameterDescription[]
         {
             new GameActionParameterTile.Description(rangeFromInstigator: 5)
         };

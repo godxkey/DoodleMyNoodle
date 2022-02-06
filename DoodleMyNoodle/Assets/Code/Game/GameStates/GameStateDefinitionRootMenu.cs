@@ -11,7 +11,7 @@ public class GameStateDefinitionRootMenu : GameStateDefinition
     public GameStateDefinition gameStateIfServer;
     public GameStateDefinition gameStateIfLocal;
 
-    public override void DeclareLinks(Action<GameStateDefinition> declare)
+    public override void DeclareLinks(System.Action<GameStateDefinition> declare)
     {
         declare(gameStateIfClient);
         declare(gameStateIfServer);

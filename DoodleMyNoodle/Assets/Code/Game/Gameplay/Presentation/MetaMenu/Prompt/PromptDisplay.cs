@@ -29,7 +29,7 @@ public class PromptDisplay : GameSystem<PromptDisplay>
         gameObject.SetActive(false);
     }
 
-    public void Ask(string question, Action<int> onAnswerSelected, params string[] answers)
+    public void Ask(string question, System.Action<int> onAnswerSelected, params string[] answers)
     {
         ClearAnswers();
 
@@ -56,7 +56,7 @@ public class PromptDisplay : GameSystem<PromptDisplay>
         }
     }
 
-    public void AskString(string question, Action<string> onAnswerSelected)
+    public void AskString(string question, System.Action<string> onAnswerSelected)
     {
         ClearAnswers();
 

@@ -10,9 +10,9 @@ public class PresentationEvents : IDisposable
     ////////////////////////////////////////////////////////////////////////////////////////
     //      ADD HERE
     ////////////////////////////////////////////////////////////////////////////////////////
-    protected List<PresentationEventData<GameActionUsedEventData>> _gameActionEvents = new List<PresentationEventData<GameActionUsedEventData>>();
+    protected List<PresentationEventData<ActionUsedEventData>> _gameActionEvents = new List<PresentationEventData<ActionUsedEventData>>();
 
-    internal PresentationEventWriter<GameActionUsedEventData> GameActionEvents => new PresentationEventWriter<GameActionUsedEventData>(_gameActionEvents, _latestTickId);
+    internal PresentationEventWriter<ActionUsedEventData> ActionEvents => new PresentationEventWriter<ActionUsedEventData>(_gameActionEvents, _latestTickId);
 
     public void Dispose()
     {
@@ -30,7 +30,7 @@ public class PresentationEventsWithReadAccess : PresentationEvents
     ////////////////////////////////////////////////////////////////////////////////////////
     //      ADD HERE
     ////////////////////////////////////////////////////////////////////////////////////////
-    public new PresentationEventReader<GameActionUsedEventData> GameActionEvents => new PresentationEventReader<GameActionUsedEventData>(_gameActionEvents);
+    public new PresentationEventReader<ActionUsedEventData> GameActionEvents => new PresentationEventReader<ActionUsedEventData>(_gameActionEvents);
 
     public void Clear()
     {

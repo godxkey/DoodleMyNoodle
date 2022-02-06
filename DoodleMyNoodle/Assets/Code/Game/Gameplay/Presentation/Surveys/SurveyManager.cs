@@ -9,7 +9,7 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
     [System.Serializable]
     public struct DefaultSurveyReference
     {
-        public GameAction.ParameterDescriptionType ParameterType;
+        public Action.ParameterDescriptionType ParameterType;
         public GameObject Survey;
     }
 
@@ -22,12 +22,12 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
     public bool IsSurveyRunning => _currentSurvey != null && _currentSurvey.Running;
 
     public void BeginSurvey(Vector3 surveyLocation,
-        GameAction.UseContext useContext,
-        List<GameAction.ParameterData> currentResultData,
-        GameAction.ParameterDescription[] parameters,
+        Action.UseContext useContext,
+        List<Action.ParameterData> currentResultData,
+        Action.ParameterDescription[] parameters,
         SurveyBaseController surveyPrefab,
-        Action<List<GameAction.ParameterData>> onCompleteCallback,
-        Action onCancelCallback)
+        System.Action<List<Action.ParameterData>> onCompleteCallback,
+        System.Action onCancelCallback)
     {
         GameObject surveyInstance = Instantiate(surveyPrefab.gameObject, surveyLocation, Quaternion.identity, _surveyContainer);
 
@@ -37,7 +37,7 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
         {
             _currentSurvey = surveyController;
 
-            surveyController.StartSurvey(delegate (List<GameAction.ParameterData> resultData)
+            surveyController.StartSurvey(delegate (List<Action.ParameterData> resultData)
             {
                 onCompleteCallback.Invoke(resultData);
 
@@ -64,12 +64,12 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
             Debug.LogError("Skipping request because it couldn't start");
 
             // can't start mini-game, complete it immediatly
-            List<GameAction.ParameterData> DefaultResults = new List<GameAction.ParameterData>();
+            List<Action.ParameterData> DefaultResults = new List<Action.ParameterData>();
             onCompleteCallback.Invoke(DefaultResults);
         }
     }
 
-    public void BeginDefaultSurvey(Vector3 requestLocation, GameAction.UseContext useContext, List<GameAction.ParameterData> currentResultData, GameAction.ParameterDescription parameterDescription, Action<List<GameAction.ParameterData>> onCompleteCallback, Action onCancelCallback)
+    public void BeginDefaultSurvey(Vector3 requestLocation, Action.UseContext useContext, List<Action.ParameterData> currentResultData, Action.ParameterDescription parameterDescription, System.Action<List<Action.ParameterData>> onCompleteCallback, System.Action onCancelCallback)
     {
         SurveyBaseController surveyPrefab = null;
 
@@ -85,7 +85,7 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
 
         if (surveyPrefab != null)
         {
-            BeginSurvey(requestLocation, useContext, currentResultData, new GameAction.ParameterDescription[] { parameterDescription }, surveyPrefab, onCompleteCallback, onCancelCallback);
+            BeginSurvey(requestLocation, useContext, currentResultData, new Action.ParameterDescription[] { parameterDescription }, surveyPrefab, onCompleteCallback, onCancelCallback);
         }
     }
 

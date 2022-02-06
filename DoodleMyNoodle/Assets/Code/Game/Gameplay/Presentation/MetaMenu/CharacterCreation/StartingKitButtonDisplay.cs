@@ -24,7 +24,7 @@ public class StartingKitButtonDisplay : GamePresentationBehaviour
 
     [HideInInspector]
     public int CurrentKitNumber;
-    private Action<int> _currentKitSelectedCallback;
+    private System.Action<int> _currentKitSelectedCallback;
 
     protected override void OnGamePresentationUpdate() { }
 
@@ -35,7 +35,7 @@ public class StartingKitButtonDisplay : GamePresentationBehaviour
         _kitButton.onClick.AddListener(KitButtonClicked);
     }
 
-    public void InitDisplayKit(Action<int> selectedKitCallback, int kitNumber, NativeArray<InventoryItemPrefabReference> items, Entity startingKit)
+    public void InitDisplayKit(System.Action<int> selectedKitCallback, int kitNumber, NativeArray<InventoryItemPrefabReference> items, Entity startingKit)
     {
         _currentKitSelectedCallback = selectedKitCallback;
         CurrentKitNumber = kitNumber;

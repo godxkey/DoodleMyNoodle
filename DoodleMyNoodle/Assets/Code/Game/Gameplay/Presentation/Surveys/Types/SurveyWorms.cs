@@ -36,12 +36,12 @@ public class SurveyWorms : SurveyBaseController
         _transform = transform;
     }
 
-    protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
+    protected override Action.ParameterDescriptionType[] GetExpectedQuery() => new Action.ParameterDescriptionType[]
     {
-        GameAction.ParameterDescriptionType.Vector
+        Action.ParameterDescriptionType.Vector
     };
 
-    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<Action.ParameterData> result, System.Action complete, System.Action cancel)
     {
         var desc = context.GetQueryParam<GameActionParameterVector.Description>();
 
@@ -119,9 +119,9 @@ public class SurveyWorms : SurveyBaseController
         _trajectoryDisplay.Dispose();
     }
 
-    public override GameAction.ParameterDescription[] CreateDebugQuery()
+    public override Action.ParameterDescription[] CreateDebugQuery()
     {
-        return new GameAction.ParameterDescription[]
+        return new Action.ParameterDescription[]
         {
             new GameActionParameterVector.Description()
             {

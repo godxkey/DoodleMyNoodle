@@ -6,7 +6,7 @@ using UnityEngineX;
 
 public class GameActionParameterEntity
 {
-    public class Description : GameAction.ParameterDescription
+    public class Description : Action.ParameterDescription
     {
         public fix RangeFromInstigator = new fix(9999);
         public bool IncludeSelf = true;
@@ -15,14 +15,14 @@ public class GameActionParameterEntity
 
         public Description() { }
 
-        public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
+        public override Action.ParameterDescriptionType GetParameterDescriptionType()
         {
-            return GameAction.ParameterDescriptionType.Entity;
+            return Action.ParameterDescriptionType.Entity;
         }
     }
 
     [NetSerializable]
-    public class Data : GameAction.ParameterData
+    public class Data : Action.ParameterData
     {
         public Entity Entity;
 

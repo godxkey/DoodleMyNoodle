@@ -1,18 +1,18 @@
 ﻿
 public class GameActionParameterBool
 {
-    public class Description : GameAction.ParameterDescription
+    public class Description : Action.ParameterDescription
     {
         public Description() { }
 
-        public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
+        public override Action.ParameterDescriptionType GetParameterDescriptionType()
         {
-            return GameAction.ParameterDescriptionType.Bool;
+            return Action.ParameterDescriptionType.Bool;
         }
     }
 
     [NetSerializable]
-    public class Data : GameAction.ParameterData
+    public class Data : Action.ParameterData
     {
         public bool Value;
 

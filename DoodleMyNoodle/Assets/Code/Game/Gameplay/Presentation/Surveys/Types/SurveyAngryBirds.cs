@@ -35,17 +35,17 @@ public class SurveyAngryBirds : SurveyBaseController
     private TrajectoryDisplaySystem.TrajectoryHandle _trajectoryDisplay;
     private GameActionParameterVector.Description _vectorDesc;
 
-    public override GameAction.ParameterDescription[] CreateDebugQuery()
+    public override Action.ParameterDescription[] CreateDebugQuery()
     {
-        return new GameAction.ParameterDescription[] { new GameActionParameterVector.Description() { SpeedMax = 10, SpeedMin = 0 } };
+        return new Action.ParameterDescription[] { new GameActionParameterVector.Description() { SpeedMax = 10, SpeedMin = 0 } };
     }
 
-    protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
+    protected override Action.ParameterDescriptionType[] GetExpectedQuery() => new Action.ParameterDescriptionType[]
     {
-        GameAction.ParameterDescriptionType.Vector
+        Action.ParameterDescriptionType.Vector
     };
 
-    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<Action.ParameterData> result, System.Action complete, System.Action cancel)
     {
         _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
         _vectorDesc = context.GetQueryParam<GameActionParameterVector.Description>();

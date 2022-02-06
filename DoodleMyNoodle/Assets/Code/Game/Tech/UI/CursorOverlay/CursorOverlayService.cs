@@ -66,7 +66,7 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
     private bool _isLockedInWorldPos = false;
     private Vector2 _lockedPosition;
 
-    public override void Initialize(Action<ICoreService> onComplete)
+    public override void Initialize(System.Action<ICoreService> onComplete)
     {
         this.DelayedCall(_tooltipUpdateDelay, UpdateOverlay, true);
 

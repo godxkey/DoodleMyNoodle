@@ -4,9 +4,9 @@ using Unity.Entities;
 public class PawnControllerInputUseItem : PawnControllerInputBase
 {
     public int ItemIndex;
-    public GameAction.UseParameters GameActionData;
+    public Action.UseParameters GameActionData;
 
-    public PawnControllerInputUseItem(Entity pawnController, int itemIndex, GameAction.UseParameters gameActionData)
+    public PawnControllerInputUseItem(Entity pawnController, int itemIndex, Action.UseParameters gameActionData)
         : base(pawnController)
     {
         ItemIndex = itemIndex;

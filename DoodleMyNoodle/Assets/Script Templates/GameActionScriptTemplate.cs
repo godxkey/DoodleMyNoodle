@@ -16,7 +16,7 @@ using Unity.Entities;
 using Unity.Collections;
 using System;
 
-public class #SCRIPTNAME# : {nameof(GameAction)}<#SCRIPTNAME#.Settings>
+public class #SCRIPTNAME# : {nameof(Action)}<#SCRIPTNAME#.Settings>
 {{
     [Serializable]
     [GameActionSettingAuth(typeof(Settings))]

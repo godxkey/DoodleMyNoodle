@@ -37,13 +37,13 @@ public abstract class AnimationDefinition : ScriptableObject
         return default;
     }
 
-    public GameAction.ResultDataElement GetGameActionResultData()
+    public Action.ResultDataElement GetGameActionResultData()
     {
         foreach (KeyValuePair<string, object> data in Data)
         {
             if (data.Key == "GameActionContextResult")
             {
-                return (GameAction.ResultDataElement)data.Value;
+                return (Action.ResultDataElement)data.Value;
             }
         }
 

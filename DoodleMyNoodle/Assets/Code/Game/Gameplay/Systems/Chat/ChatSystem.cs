@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class ChatSystem : GameSystem<ChatSystem>
 {
-    public event Action<ChatLine> OnNewLine;
+    public event System.Action<ChatLine> OnNewLine;
 
     public override void OnGameAwake()
     {

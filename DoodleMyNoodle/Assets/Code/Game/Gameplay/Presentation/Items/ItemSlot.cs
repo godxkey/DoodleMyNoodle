@@ -18,8 +18,8 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     private Color _startBackgroundColor;
     private ItemAuth _currentItemGameActionAuth;
-    private Action _onItemLeftClicked; // index of item in list, not used here
-    private Action _onItemRightClicked; // index of item in list, not used here
+    private System.Action _onItemLeftClicked; // index of item in list, not used here
+    private System.Action _onItemRightClicked; // index of item in list, not used here
 
     private bool _mouseInside = false;
 
@@ -45,7 +45,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         }
     }
 
-    public virtual void UpdateCurrentItemSlot(ItemAuth itemAuth, Action onItemLeftClicked, Action onItemRightClicked, Entity owner, int stacks = -1)
+    public virtual void UpdateCurrentItemSlot(ItemAuth itemAuth, System.Action onItemLeftClicked, System.Action onItemRightClicked, Entity owner, int stacks = -1)
     {
         InitIfNeeded();
 

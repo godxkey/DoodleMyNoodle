@@ -7,7 +7,7 @@ public class PlayerDoodleAsset : PlayerAsset
 {
     public Texture2D Texture { get; private set; }
     public Sprite Sprite { get; private set; }
-    public event Action<Sprite> SpriteUpdated;
+    public event System.Action<Sprite> SpriteUpdated;
 
     public override string FileExtension => ".png";
 

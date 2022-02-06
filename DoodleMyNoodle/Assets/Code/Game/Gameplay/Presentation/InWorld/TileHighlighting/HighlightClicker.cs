@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public class HighlightClicker : GamePresentationBehaviour
 {
-    public Action<Vector2> OnClicked;
+    public System.Action<Vector2> OnClicked;
 
     private Transform _tr;
 

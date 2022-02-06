@@ -12,8 +12,8 @@ public class HighlightElement : MonoBehaviour
 
     [NonSerialized]
     public SpriteRenderer Target;
-    public Action<HighlightElement> OnDestroyAction;
-    public Action<HighlightElement> OnCompleteAction;
+    public System.Action<HighlightElement> OnDestroyAction;
+    public System.Action<HighlightElement> OnCompleteAction;
 
     public void SetSprite(Sprite sprite, bool flipX, bool flipY)
     {

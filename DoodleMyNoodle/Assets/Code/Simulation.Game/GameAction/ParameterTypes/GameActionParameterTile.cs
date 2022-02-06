@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 public class GameActionParameterTile
 {
-    public class Description : GameAction.ParameterDescription
+    public class Description : Action.ParameterDescription
     {
         // NB: default parameters should match to 'all tiles'
 
@@ -28,14 +28,14 @@ public class GameActionParameterTile
         }
         public Description(fix rangeFromInstigator) : this((int)rangeFromInstigator) { }
 
-        public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
+        public override Action.ParameterDescriptionType GetParameterDescriptionType()
         {
-            return GameAction.ParameterDescriptionType.Tile;
+            return Action.ParameterDescriptionType.Tile;
         }
     }
 
     [NetSerializable]
-    public class Data : GameAction.ParameterData
+    public class Data : Action.ParameterData
     {
         public int2 Tile;
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class WaitSpinnerService : MonoCoreService<WaitSpinnerService>
 {
-    public override void Initialize(Action<ICoreService> onComplete) => onComplete(this);
+    public override void Initialize(System.Action<ICoreService> onComplete) => onComplete(this);
 
     /// <summary>
     /// If the key already exists, calling this method will not do anything 

@@ -15,11 +15,7 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
     // SIMULATION
 
     // Game Action
-    public string Value;
-
-    [SerializeReference]
-    [AlwaysExpand]
-    public List<GameActionSettingAuthBase> GameActionSettings = new List<GameActionSettingAuthBase>();
+    public GameObject GameActionEntityPrefab;
 
     public int ApCost = 1;
 
@@ -44,23 +40,11 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
     public bool IsAutoUse = false;
     public fix PassiveUsageTimeInterval = 1;
-    public GameAction.UseParameters DefaultParamaters = new GameAction.UseParameters();
-
-    private bool _hasUpdatedListOfGameActionSettings = false;
+    public Action.UseParameters DefaultParamaters = new Action.UseParameters();
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, GameActionBank.GetActionId(Value));
-
-        // Update list of GameActionSettingAuth by adding any missing instances and removing any extra
-        UpdateGameActionSettingsList();
-
-        // Convert all GameActionSettingAuths
-        foreach (GameActionSettingAuthBase setting in GameActionSettings)
-        {
-            setting.Context = gameObject;
-            setting.Convert(entity, dstManager, conversionSystem);
-        }
+        dstManager.AddComponentData(entity, new ItemAction() { ActionPrefab = conversionSystem.GetPrimaryEntity(GameActionEntityPrefab) });
 
         if (CooldownType == CooldownMode.Seconds)
         {
@@ -71,36 +55,13 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
             dstManager.AddComponentData(entity, new ItemTurnCooldownData() { Value = fixMath.roundToInt(CooldownDuration) });
         }
 
-        dstManager.AddComponentData(entity, new GameActionSettingAPCost() { Value = ApCost });
+        dstManager.AddComponentData(entity, new ActionSettingAPCost() { Value = ApCost });
         dstManager.AddComponentData(entity, new StackableFlag() { Value = IsStackable });
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
-        UpdateGameActionSettingsList();
-
-        foreach (GameActionSettingAuthBase settings in GameActionSettings)
-        {
-            settings.DeclareReferencedPrefabs(referencedPrefabs);
-        }
-    }
-
-    private void UpdateGameActionSettingsList()
-    {
-        if (_hasUpdatedListOfGameActionSettings)
-            return;
-
-        var gameAction = GameActionBank.GetAction(Value);
-        var requiredSettingAuths = GameActionSettingAuthBase.GetRequiredSettingAuthTypes(gameAction.GetType());
-        GameActionSettings.RemoveAll(authInstance => authInstance == null || !requiredSettingAuths.Contains(authInstance.GetType()));
-        foreach (var authType in requiredSettingAuths)
-        {
-            if (!GameActionSettings.Any(x => x.GetType() == authType))
-            {
-                GameActionSettings.Add(Activator.CreateInstance(authType) as GameActionSettingAuthBase);
-            }
-        }
-        _hasUpdatedListOfGameActionSettings = true;
+        referencedPrefabs.Add(GameActionEntityPrefab);
     }
 
     // PRESENTATION
@@ -110,63 +71,4 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
     public Color IconTint = Color.white; // 0008FF
     public string Name;
     public string EffectDescription;
-    public AudioPlayable SfxOnUse;
-
-    public bool PlayAnimation = false;
-    public AnimationDefinition Animation;
-
-    // Surveys
-    public List<SurveyBaseController> CustomSurveys;
-
-    public SurveyBaseController FindCustomSurveyPrefabForParameters(params GameAction.ParameterDescription[] parameters)
-    {
-        if (parameters.Length == 0)
-        {
-            return null;
-        }
-
-        // example: 3 parameters
-        // try find survey for all 3 params
-        // then try find survey for 2 params
-        // then try find survey for 1 params
-        // return null
-
-        SurveyBaseController result = null;
-        for (int i = parameters.Length; i > 0; i--)
-        {
-            result = TryFindCustomSurveyPrefabForParametersSubset(parameters, i);
-            if (result != null)
-                break;
-        }
-
-        return result;
-    }
-
-    private SurveyBaseController TryFindCustomSurveyPrefabForParametersSubset(GameAction.ParameterDescription[] parameters, int paramCount)
-    {
-        foreach (SurveyBaseController survey in CustomSurveys)
-        {
-            bool hasAllTypes = false;
-
-            for (int i = 0; i < paramCount; i++)
-            {
-                if (Array.IndexOf(survey.ExpectedQuery, parameters[i].GetParameterDescriptionType()) != -1)
-                {
-                    hasAllTypes = true;
-                }
-                else
-                {
-                    hasAllTypes = false;
-                    break;
-                }
-            }
-
-            if (hasAllTypes)
-            {
-                return survey;
-            }
-        }
-
-        return null;
-    }
 }

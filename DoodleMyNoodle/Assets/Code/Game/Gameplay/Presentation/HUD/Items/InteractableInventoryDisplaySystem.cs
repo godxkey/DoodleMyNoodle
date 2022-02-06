@@ -79,7 +79,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                     int itemIndex = i;
                     ItemAuth itemAuth = PresentationHelpers.FindItemAuth(itemIDComponent);
 
-                    Action onClick = () =>
+                    System.Action onClick = () =>
                     {
                         // when clicking on Take Item, we send a sim input
                         SimPlayerInputEquipItem simInputEquipItem = new SimPlayerInputEquipItem(itemIndex, _lastInventoryEntity);

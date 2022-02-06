@@ -40,28 +40,12 @@ public class ExecutePlayerInputSystem : SimSystemBase
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputSetPawnName(playerEntity, setNameInput.Name));
                 break;
 
-            case SimPlayerInputNextTurn nextTurnInput:
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputNextTurn(playerEntity, nextTurnInput.ReadyForNextTurn));
-                break;
-
             case SimPlayerInputUseItem useItemInput:
             {
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, useItemInput.ItemIndex, useItemInput.UseData));
                 break;
             }
 
-            case SimPlayerInputClickSignalEmitter clickSignalEmitter:
-            {
-                Entity emitter = clickSignalEmitter.Emitter;
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputClickSignalEmitter(playerEntity, emitter));
-                break;
-            }
-
-            case SimPlayerInputUseObjectGameAction useGameActionInput:
-            {
-                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseObjectGameAction(playerEntity, useGameActionInput.ObjectPosition, useGameActionInput.UseData));
-                break;
-            }
             case SimPlayerInputSetPawnDoodle setPawnDoodleInput:
             {
                 Entity pawn = GetPlayerPawn(playerEntity);
@@ -72,16 +56,19 @@ public class ExecutePlayerInputSystem : SimSystemBase
                 }
                 break;
             }
+
             case SimPlayerInputEquipItem equipItemInput:
             {
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputEquipItem(playerEntity, equipItemInput.ItemIndex, equipItemInput.ChestEntity));
                 break;
             }
+
             case SimPlayerInputDropItem dropItemInput:
             {
                 pawnControllerInputSystem.Inputs.Add(new PawnControllerInputDropItem(playerEntity, dropItemInput.ItemIndex));
                 break;
             }
+
             case SimPlayerInputMove moveInput:
             {
                 if (HasComponent<Team>(playerEntity))
@@ -95,28 +82,6 @@ public class ExecutePlayerInputSystem : SimSystemBase
 
                 break;
             }
-            case SimPlayerInputJump jumpInput:
-            {
-                if (HasComponent<Team>(playerEntity))
-                {
-                    if (Helpers.CanControllerPlay(playerEntity, CommonReads.GetCurrentTurnDataNoAlloc(Accessor)))
-                    {
-                        Entity pawn = GetPlayerPawn(playerEntity);
-                        if (EntityManager.HasComponent<InventoryItemReference>(pawn))
-                        {
-                            CommonReads.FindFirstItemWithGameAction<GameActionBasicJump>(Accessor, pawn, out int itemIndex);
-
-                            if (itemIndex != -1)
-                            {
-                                pawnControllerInputSystem.Inputs.Add(new PawnControllerInputUseItem(playerEntity, itemIndex, new GameAction.UseParameters()));
-                            }
-                        }
-                    }
-                }
-
-                break;
-            }
-
         }
     }
 

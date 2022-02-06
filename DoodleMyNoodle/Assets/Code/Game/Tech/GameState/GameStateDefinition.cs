@@ -15,5 +15,5 @@ public abstract class GameStateDefinition : ScriptableObject
     bool SceneToLoadOnEnterIsNull() => SceneToLoadOnEnter == null;
 
 
-    public virtual void DeclareLinks(Action<GameStateDefinition> declare) { }
+    public virtual void DeclareLinks(System.Action<GameStateDefinition> declare) { }
 }

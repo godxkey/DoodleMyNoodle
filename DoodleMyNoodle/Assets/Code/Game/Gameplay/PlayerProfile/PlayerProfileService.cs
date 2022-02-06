@@ -21,7 +21,7 @@ public class PlayerProfileService : MonoCoreService<PlayerProfileService>
 
     public PlayerProfileReadOnly currentProfile => _currentProfile;
     public string playerName => _currentProfile.playerName;
-    public event Action onChangeProfile;
+    public event System.Action onChangeProfile;
 
     public void SetPlayerProfile(int localId)
     {
@@ -29,7 +29,7 @@ public class PlayerProfileService : MonoCoreService<PlayerProfileService>
         onChangeProfile?.Invoke();
     }
 
-    public override void Initialize(Action<ICoreService> onComplete)
+    public override void Initialize(System.Action<ICoreService> onComplete)
     {
         _currentProfile = hardcodedProfiles[0];
 

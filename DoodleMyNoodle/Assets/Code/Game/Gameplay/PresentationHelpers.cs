@@ -45,6 +45,16 @@ public static class PresentationHelpers
         return null;
     }
 
+    public static ActionAuth FindActionAuth(SimAssetId itemID)
+    {
+        GameObject itemPrefab = FindSimAssetPrefab(itemID);
+        if (itemPrefab != null)
+        {
+            return itemPrefab.GetComponent<ActionAuth>();
+        }
+        return null;
+    }
+
     public static GameObject FindBindedView(Entity simEntity)
     {
         if (BindedSimEntityManaged.InstancesMap.TryGetValue(simEntity, out GameObject result))
@@ -69,7 +79,7 @@ public static class PresentationHelpers
         FloatingTextSystem.Instance.RequestText(position, text, color);
     }
 
-    public static void ResizeGameObjectList(List<GameObject> gameObjectList, int count, GameObject prefab, Transform container, Action<GameObject> onCreate = null, Action<GameObject> onDestroy = null)
+    public static void ResizeGameObjectList(List<GameObject> gameObjectList, int count, GameObject prefab, Transform container, System.Action<GameObject> onCreate = null, System.Action<GameObject> onDestroy = null)
     {
         while (gameObjectList.Count < count)
         {
@@ -87,7 +97,7 @@ public static class PresentationHelpers
         }
     }
 
-    public static void ResizeGameObjectList<T>(List<T> componentList, int count, T prefab, Transform container, Action<T> onCreate = null, Action<T> onDestroy = null) where T : UnityEngine.Component
+    public static void ResizeGameObjectList<T>(List<T> componentList, int count, T prefab, Transform container, System.Action<T> onCreate = null, System.Action<T> onDestroy = null) where T : UnityEngine.Component
     {
         while (componentList.Count < count)
         {
@@ -105,7 +115,7 @@ public static class PresentationHelpers
         }
     }
 
-    public static void UpdateGameObjectList<T, U>(List<T> componentList, List<U> data, T prefab, Transform container, Action<T, U> onCreate = null, Action<T, U> onUpdate = null, Action<T> onDeactivate = null) where T : UnityEngine.Component
+    public static void UpdateGameObjectList<T, U>(List<T> componentList, List<U> data, T prefab, Transform container, Action<T, U> onCreate = null, Action<T, U> onUpdate = null, System.Action<T> onDeactivate = null) where T : UnityEngine.Component
     {
         int i = 0;
         for (; i < data.Count; i++)
@@ -130,7 +140,7 @@ public static class PresentationHelpers
 
     public static class Surveys
     {
-        public static GameAction GetGameAction(ISimWorldReadAccessor simWorld, Entity item)
+        public static Action GetGameAction(ISimWorldReadAccessor simWorld, Entity item)
         {
             if (simWorld == null)
                 return null;
@@ -138,56 +148,53 @@ public static class PresentationHelpers
             if (!simWorld.Exists(item))
                 return null;
 
-            if (!simWorld.TryGetComponent(item, out GameActionId gameActionId))
+            if (!simWorld.TryGetComponent(item, out ActionId gameActionId))
                 return null;
 
-            return GameActionBank.GetAction(gameActionId);
+            return ActionBank.GetAction(gameActionId);
         }
 
-        public static T GetGameAction<T>(ISimWorldReadAccessor simWorld, Entity item) where T : GameAction
+        public static T GetGameAction<T>(ISimWorldReadAccessor simWorld, Entity item) where T : Action
         {
             return GetGameAction(simWorld, item) as T;
         }
 
-        public static bool GetItemTrajectorySettings(GamePresentationCache cache, GameAction.UseContext useContext, Vector2 direction,
+        public static bool GetItemTrajectorySettings(GamePresentationCache cache, Action.UseContext useContext, Vector2 direction,
             out Vector2 spawnOffset,
             out float radius)
         {
             spawnOffset = Vector2.zero;
             radius = 0.05f;
 
-            GameActionThrow throwAction = GetGameAction<GameActionThrow>(cache.SimWorld, useContext.Item);
-
-            if (throwAction != null)
+            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigator, out ItemAction itemAction))
             {
-                spawnOffset = (Vector2)throwAction.GetSpawnPosOffset(cache.SimWorld, useContext, (fix2)direction);
-                radius = (float)throwAction.GetProjectileRadius(cache.SimWorld, useContext);
-                return true;
-            }
+                GameActionThrow throwAction = GetGameAction<GameActionThrow>(cache.SimWorld, itemAction.ActionPrefab);
 
-            GameActionDirectionalJump jumpAction = GetGameAction<GameActionDirectionalJump>(cache.SimWorld, useContext.Item);
-
-            if (jumpAction != null)
-            {
-                spawnOffset = Vector2.zero;
-                radius = (float)CommonReads.GetActorRadius(cache.SimWorld, useContext.InstigatorPawn);
-                return true;
+                if (throwAction != null)
+                {
+                    spawnOffset = (Vector2)throwAction.GetSpawnPosOffset(cache.SimWorld, useContext, itemAction.ActionPrefab,(fix2)direction);
+                    radius = (float)throwAction.GetProjectileRadius(cache.SimWorld, itemAction.ActionPrefab);
+                    return true;
+                }
             }
 
             return false;
         }
 
-        public static float GetProjectileGravityScale(GamePresentationCache cache, GameAction.UseContext useContext)
+        public static float GetProjectileGravityScale(GamePresentationCache cache, Action.UseContext useContext)
         {
             if (cache.SimWorld == null)
                 return 1;
 
-            if (!cache.SimWorld.Exists(useContext.Item))
+            if (!cache.SimWorld.Exists(useContext.ActionInstigator))
                 return 1;
 
-            if (cache.SimWorld.TryGetComponent(useContext.Item, out GameActionThrow.Settings throwSettings))
+            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigator, out ItemAction itemAction))
             {
-                return GetEntityGravScale(throwSettings.ProjectilePrefab);
+                if (cache.SimWorld.TryGetComponent(itemAction.ActionPrefab, out GameActionThrow.Settings throwSettings))
+                {
+                    return GetEntityGravScale(throwSettings.ProjectilePrefab);
+                }
             }
 
             return 1;

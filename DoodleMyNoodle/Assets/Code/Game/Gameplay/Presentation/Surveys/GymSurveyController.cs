@@ -81,11 +81,11 @@ public class GymSurveyController : MonoBehaviour
 
         if (surveyPrefab != null)
         {
-            var useContext = new GameAction.UseContext();
+            var useContext = new Action.UseContext();
 
             UIStateMachine.Instance.TransitionTo(UIStateType.ParameterSelection);
 
-            SurveyManager.Instance.BeginSurvey(_focusLocation, useContext, new List<GameAction.ParameterData>(), surveyPrefab.CreateDebugQuery(), surveyPrefab, OnSurveyComplete, OnSurveyCancel);
+            SurveyManager.Instance.BeginSurvey(_focusLocation, useContext, new List<Action.ParameterData>(), surveyPrefab.CreateDebugQuery(), surveyPrefab, this.OnSurveyComplete, this.OnSurveyCancel);
         }
     }
 
@@ -97,7 +97,7 @@ public class GymSurveyController : MonoBehaviour
         UIStateMachine.Instance.TransitionTo(UIStateType.Gameplay);
     }
 
-    private void OnSurveyComplete(List<GameAction.ParameterData> obj)
+    private void OnSurveyComplete(List<Action.ParameterData> obj)
     {
         Log.Info("---------------------- Survey Result ----------------------");
         foreach (var item in obj)

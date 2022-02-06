@@ -63,7 +63,7 @@ public class HighlightService : MonoCoreService<HighlightService>
     private List<HighlightElement> _activeHighlights = new List<HighlightElement>();
     private List<HighlightElement> _cachedList = new List<HighlightElement>();
 
-    public override void Initialize(Action<ICoreService> onComplete) => onComplete(this);
+    public override void Initialize(System.Action<ICoreService> onComplete) => onComplete(this);
 
     protected override void OnDestroy()
     {

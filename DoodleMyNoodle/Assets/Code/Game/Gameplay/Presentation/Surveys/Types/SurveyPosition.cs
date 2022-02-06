@@ -17,17 +17,17 @@ public class SurveyPosition : SurveyBaseController
 
     private Vector2 _instigatorPosition;
 
-    protected override GameAction.ParameterDescriptionType[] GetExpectedQuery() => new GameAction.ParameterDescriptionType[]
+    protected override Action.ParameterDescriptionType[] GetExpectedQuery() => new Action.ParameterDescriptionType[]
     {
-        GameAction.ParameterDescriptionType.Position
+        Action.ParameterDescriptionType.Position
     };
 
-    public override GameAction.ParameterDescription[] CreateDebugQuery()
+    public override Action.ParameterDescription[] CreateDebugQuery()
     {
-        return new GameAction.ParameterDescription[] { new GameActionParameterPosition.Description() { MaxRangeFromInstigator = 5 } };
+        return new Action.ParameterDescription[] { new GameActionParameterPosition.Description() { MaxRangeFromInstigator = 5 } };
     }
 
-    protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, Action complete, Action cancel)
+    protected override IEnumerator SurveyRoutine(Context context, List<Action.ParameterData> result, System.Action complete, System.Action cancel)
     {
         CursorOverlayService.Instance.SetCursorType(CursorOverlayService.CursorType.Target);
 

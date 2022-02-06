@@ -33,7 +33,7 @@ public class ReadyButton : GamePresentationBehaviour
 
     public TurnState GetState() { return _viewState.Get(); }
 
-    public event Action ButtonPressed;
+    public event System.Action ButtonPressed;
 
     protected override void Awake()
     {

@@ -506,20 +506,20 @@ public static class StaticNetSerializer_fixQuaternion
 }
 public static class StaticNetSerializer_GameAction_ParameterData
 {
-    public static int GetSerializedBitSize_Class(GameAction.ParameterData obj)
+    public static int GetSerializedBitSize_Class(Action.ParameterData obj)
     {
         if (obj == null)
             return 1;
         return 1 + NetSerializer.GetSerializedBitSize(obj);
     }
 
-    public static int GetSerializedBitSize(GameAction.ParameterData obj)
+    public static int GetSerializedBitSize(Action.ParameterData obj)
     {
         int result = 0;
         return result;
     }
 
-    public static void Serialize_Class(GameAction.ParameterData obj, BitStreamWriter writer)
+    public static void Serialize_Class(Action.ParameterData obj, BitStreamWriter writer)
     {
         if (obj == null)
         {
@@ -529,39 +529,39 @@ public static class StaticNetSerializer_GameAction_ParameterData
         writer.WriteBit(true);
         NetSerializer.Serialize(obj, writer);
     }
-    public static void Serialize(GameAction.ParameterData obj, BitStreamWriter writer)
+    public static void Serialize(Action.ParameterData obj, BitStreamWriter writer)
     {
     }
 
-    public static GameAction.ParameterData Deserialize_Class(BitStreamReader reader)
+    public static Action.ParameterData Deserialize_Class(BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
             return null;
         }
-        return (GameAction.ParameterData)NetSerializer.Deserialize(reader);
+        return (Action.ParameterData)NetSerializer.Deserialize(reader);
     }
-    public static void Deserialize(GameAction.ParameterData obj, BitStreamReader reader)
+    public static void Deserialize(Action.ParameterData obj, BitStreamReader reader)
     {
     }
 }
 public static class StaticNetSerializer_GameAction_UseParameters
 {
-    public static int GetSerializedBitSize_Class(GameAction.UseParameters obj)
+    public static int GetSerializedBitSize_Class(Action.UseParameters obj)
     {
         if (obj == null)
             return 1;
         return 1 + GetSerializedBitSize(obj);
     }
 
-    public static int GetSerializedBitSize(GameAction.UseParameters obj)
+    public static int GetSerializedBitSize(Action.UseParameters obj)
     {
         int result = 0;
         result += ArrayNetSerializer_GameAction_ParameterData.GetSerializedBitSize(ref obj.ParameterDatas);
         return result;
     }
 
-    public static void Serialize_Class(GameAction.UseParameters obj, BitStreamWriter writer)
+    public static void Serialize_Class(Action.UseParameters obj, BitStreamWriter writer)
     {
         if (obj == null)
         {
@@ -571,22 +571,22 @@ public static class StaticNetSerializer_GameAction_UseParameters
         writer.WriteBit(true);
         Serialize(obj, writer);
     }
-    public static void Serialize(GameAction.UseParameters obj, BitStreamWriter writer)
+    public static void Serialize(Action.UseParameters obj, BitStreamWriter writer)
     {
         ArrayNetSerializer_GameAction_ParameterData.Serialize(ref obj.ParameterDatas, writer);
     }
 
-    public static GameAction.UseParameters Deserialize_Class(BitStreamReader reader)
+    public static Action.UseParameters Deserialize_Class(BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
             return null;
         }
-        GameAction.UseParameters obj = new GameAction.UseParameters();
+        Action.UseParameters obj = new Action.UseParameters();
         Deserialize(obj, reader);
         return obj;
     }
-    public static void Deserialize(GameAction.UseParameters obj, BitStreamReader reader)
+    public static void Deserialize(Action.UseParameters obj, BitStreamReader reader)
     {
         ArrayNetSerializer_GameAction_ParameterData.Deserialize(ref obj.ParameterDatas, reader);
     }
@@ -3253,7 +3253,7 @@ public static class ArrayNetSerializer_System_Byte
 
 public static class ArrayNetSerializer_GameAction_ParameterData
 {
-    public static int GetSerializedBitSize(ref GameAction.ParameterData[] obj)
+    public static int GetSerializedBitSize(ref Action.ParameterData[] obj)
     {
         if (obj == null)
             return 1;
@@ -3265,7 +3265,7 @@ public static class ArrayNetSerializer_GameAction_ParameterData
         return result;
     }
 
-    public static void Serialize(ref GameAction.ParameterData[] obj, BitStreamWriter writer)
+    public static void Serialize(ref Action.ParameterData[] obj, BitStreamWriter writer)
     {
         if (obj == null)
         {
@@ -3280,14 +3280,14 @@ public static class ArrayNetSerializer_GameAction_ParameterData
         }
     }
 
-    public static void Deserialize(ref GameAction.ParameterData[] obj, BitStreamReader reader)
+    public static void Deserialize(ref Action.ParameterData[] obj, BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
             obj = null;
             return;
         }
-        obj = new GameAction.ParameterData[reader.ReadInt32()];
+        obj = new Action.ParameterData[reader.ReadInt32()];
         for (int i = 0; i < obj.Length; i++)
         {
             obj[i] = StaticNetSerializer_GameAction_ParameterData.Deserialize_Class(reader);

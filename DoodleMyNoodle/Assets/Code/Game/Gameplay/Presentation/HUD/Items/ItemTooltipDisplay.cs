@@ -145,34 +145,25 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
         return Entity.Null;
     }
 
-    private void UpdateTooltipDescription(Entity item, ItemAuth gameActionAuth)
+    private void UpdateTooltipDescription(Entity item, ItemAuth itemAuth)
     {
         _descriptionData.Clear();
         if (item != Entity.Null)
         {
             // General Description
-            _descriptionData.Add(new DescriptionData(gameActionAuth.EffectDescription, Color.white, true));
+            _descriptionData.Add(new DescriptionData(itemAuth.EffectDescription, Color.white, true));
 
             // AP Cost
-            _descriptionData.Add(new DescriptionData("Coût AP : " + gameActionAuth.ApCost, Color.white, true));
-
-            // Game Action Settings
-            foreach (GameActionSettingAuthBase gameActionSetting in gameActionAuth.GameActionSettings)
-            {
-                if (gameActionSetting is IItemSettingDescription)
-                {
-                    _descriptionData.Add(new DescriptionData(((IItemSettingDescription)gameActionSetting).GetDescription(), Color.white, true));
-                }
-            }
+            _descriptionData.Add(new DescriptionData("Coût AP : " + itemAuth.ApCost, Color.white, true));
 
             // Item Specific Settings
-            if (gameActionAuth.CooldownType == ItemAuth.CooldownMode.Seconds)
+            if (itemAuth.CooldownType == ItemAuth.CooldownMode.Seconds)
             {
-                _descriptionData.Add(new DescriptionData($"Cooldown (time) : {gameActionAuth.CooldownDuration}", Color.white, true));
+                _descriptionData.Add(new DescriptionData($"Cooldown (time) : {itemAuth.CooldownDuration}", Color.white, true));
             }
-            else if (gameActionAuth.CooldownType == ItemAuth.CooldownMode.Turns)
+            else if (itemAuth.CooldownType == ItemAuth.CooldownMode.Turns)
             {
-                _descriptionData.Add(new DescriptionData($"Cooldown (turns) : {gameActionAuth.CooldownDuration}", Color.white, true));
+                _descriptionData.Add(new DescriptionData($"Cooldown (turns) : {itemAuth.CooldownDuration}", Color.white, true));
             }
         }
 

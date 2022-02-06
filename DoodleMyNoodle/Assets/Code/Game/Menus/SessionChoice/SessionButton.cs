@@ -13,7 +13,7 @@ namespace Internals.MenuSessionChoice
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Public                                 
         ////////////////////////////////////////////////////////////////////////////////////////
-        public event Action<SessionButton> onClick;
+        public event System.Action<SessionButton> onClick;
         public bool selected
         {
             get { return _selected; }

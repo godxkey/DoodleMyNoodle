@@ -17,8 +17,6 @@ public class ItemAuthEditor : Editor
     private static GUIStyle s_primaryTitleFontStyle = null;
     private static GUIStyle s_secondaryTitleFontStyle = null;
 
-    private SerializedProperty _gameActionProp;
-    private SerializedProperty _gameActionSettingsProp;
     private SerializedProperty _cooldownProp;
     private SerializedProperty _cooldownDurationProp;
     private SerializedProperty _stackableProp;
@@ -27,17 +25,11 @@ public class ItemAuthEditor : Editor
     private SerializedProperty _iconTintProp;
     private SerializedProperty _nameProp;
     private SerializedProperty _effectDescriptionProp;
-    private SerializedProperty _sfxProp;
-    private SerializedProperty _animationConditionProp;
-    private SerializedProperty _animationProp;
-    private SerializedProperty _surveyProp;
     private SerializedProperty _hideInInventory;
     private SerializedProperty _canBeUsedAtAnytime;
 
     private void OnEnable()
     {
-        _gameActionProp = serializedObject.FindProperty(nameof(ItemAuth.Value));
-        _gameActionSettingsProp = serializedObject.FindProperty(nameof(ItemAuth.GameActionSettings));
         _cooldownProp = serializedObject.FindProperty(nameof(ItemAuth.CooldownType));
         _cooldownDurationProp = serializedObject.FindProperty(nameof(ItemAuth.CooldownDuration));
         _stackableProp = serializedObject.FindProperty(nameof(ItemAuth.IsStackable));
@@ -46,10 +38,6 @@ public class ItemAuthEditor : Editor
         _iconTintProp = serializedObject.FindProperty(nameof(ItemAuth.IconTint));
         _nameProp = serializedObject.FindProperty(nameof(ItemAuth.Name));
         _effectDescriptionProp = serializedObject.FindProperty(nameof(ItemAuth.EffectDescription));
-        _sfxProp = serializedObject.FindProperty(nameof(ItemAuth.SfxOnUse));
-        _animationConditionProp = serializedObject.FindProperty(nameof(ItemAuth.PlayAnimation));
-        _animationProp = serializedObject.FindProperty(nameof(ItemAuth.Animation));
-        _surveyProp = serializedObject.FindProperty(nameof(ItemAuth.CustomSurveys));
         _hideInInventory = serializedObject.FindProperty(nameof(ItemAuth.HideInInventory));
         _canBeUsedAtAnytime = serializedObject.FindProperty(nameof(ItemAuth.UsableInOthersTurn));
 
@@ -70,50 +58,6 @@ public class ItemAuthEditor : Editor
             EditorGUILayout.PropertyField(_cooldownDurationProp);
         EditorGUILayout.PropertyField(_stackableProp);
 
-        GUIContent label = EditorGUIUtilityX.TempContent("Game Action Type");
-        EditorGUILayoutX.SearchablePopupString(_gameActionProp, label, s_availableTypeNames);
-
-        if (_gameActionProp.stringValue != "")
-        {
-            Type gameActionType = TypeUtility.FindType(_gameActionProp.stringValue, false);
-            if (gameActionType != null)
-            {
-                Type[] settingAuthTypes = GameActionSettingAuthBase.GetRequiredSettingAuthTypes(gameActionType);
-
-                // Remove extra setting in property list
-                for (int i = _gameActionSettingsProp.arraySize - 1; i >= 0; i--)
-                {
-                    if (castedTarget.GameActionSettings[i] == null || !settingAuthTypes.Contains(castedTarget.GameActionSettings[i].GetType()))
-                    {
-                        _gameActionSettingsProp.DeleteArrayElementAtIndex(i);
-                        castedTarget.GameActionSettings.RemoveAt(i);
-                    }
-                }
-
-                // Add missing setting to property list
-                for (int i = 0; i < settingAuthTypes.Length; i++)
-                {
-                    Type currentAuthSettingType = settingAuthTypes[i];
-                    if (currentAuthSettingType == null)
-                        continue;
-
-                    if (!castedTarget.GameActionSettings.Any((x) => x.GetType() == currentAuthSettingType))
-                    {
-                        _gameActionSettingsProp.InsertArrayElementAtIndex(_gameActionSettingsProp.arraySize);
-                        SerializedProperty currentGameActionSetting = _gameActionSettingsProp.GetArrayElementAtIndex(_gameActionSettingsProp.arraySize - 1);
-                        var newAuthSetting = Activator.CreateInstance(currentAuthSettingType);
-                        currentGameActionSetting.managedReferenceValue = newAuthSetting;
-                        castedTarget.GameActionSettings.Add((GameActionSettingAuthBase)newAuthSetting);
-                    }
-                }
-
-                for (int i = 0; i < _gameActionSettingsProp.arraySize; i++)
-                {
-                    EditorGUILayout.PropertyField(_gameActionSettingsProp.GetArrayElementAtIndex(i));
-                }
-            }
-        }
-
         DrawLine(10);
 
         DrawPrimaryTitle("Presentation");
@@ -122,11 +66,6 @@ public class ItemAuthEditor : Editor
         EditorGUILayout.PropertyField(_iconTintProp);
         EditorGUILayout.PropertyField(_nameProp);
         EditorGUILayout.PropertyField(_effectDescriptionProp);
-        EditorGUILayout.PropertyField(_sfxProp);
-        EditorGUILayout.PropertyField(_animationConditionProp);
-        if (_animationConditionProp.boolValue)
-            EditorGUILayout.PropertyField(_animationProp);
-        EditorGUILayout.PropertyField(_surveyProp);
         EditorGUILayout.PropertyField(_hideInInventory);
         EditorGUILayout.PropertyField(_canBeUsedAtAnytime);
 
@@ -162,7 +101,7 @@ public class ItemAuthEditor : Editor
     {
         if (s_availableTypes == null)
         {
-            s_availableTypes = TypeUtility.GetTypesDerivedFrom(typeof(GameAction)).ToArray();
+            s_availableTypes = TypeUtility.GetTypesDerivedFrom(typeof(Action)).ToArray();
             s_availableTypeNames = s_availableTypes.Where(t => !t.IsAbstract).Select(t => t.Name).ToArray();
         }
 

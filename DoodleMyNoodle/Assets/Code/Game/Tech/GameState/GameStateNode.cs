@@ -17,7 +17,7 @@ public class GameStateNode
 
     public void PopulateNeighbors(Func<GameStateDefinition, GameStateNode> getNeighborInstance)
     {
-        Action<GameStateDefinition> declarationMethod = (definition) =>
+        System.Action<GameStateDefinition> declarationMethod = (definition) =>
         {
             if(definition != null)
             {

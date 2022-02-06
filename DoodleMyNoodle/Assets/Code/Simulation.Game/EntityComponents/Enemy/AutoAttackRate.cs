@@ -82,7 +82,7 @@ public class PerformAutoAttackSystem : SimGameSystemBase
                     continue;
 
                 var attackAction = GetComponent<AutoAttackAction>(request.Instigator);
-                CommonWrites.ExecuteGameAction(Accessor, request.Instigator, attackAction);
+                CommonWrites.ExecuteAction(Accessor, request.Instigator, attackAction);
             }
         }
     }

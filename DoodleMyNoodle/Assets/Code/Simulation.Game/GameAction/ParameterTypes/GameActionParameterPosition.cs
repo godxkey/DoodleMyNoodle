@@ -4,18 +4,18 @@ using UnityEngineX;
 
 public class GameActionParameterPosition
 {
-    public class Description : GameAction.ParameterDescription
+    public class Description : Action.ParameterDescription
     {
         public fix MaxRangeFromInstigator = fix.MaxValue;
 
-        public override GameAction.ParameterDescriptionType GetParameterDescriptionType()
+        public override Action.ParameterDescriptionType GetParameterDescriptionType()
         {
-            return GameAction.ParameterDescriptionType.Position;
+            return Action.ParameterDescriptionType.Position;
         }
     }
 
     [NetSerializable]
-    public class Data : GameAction.ParameterData
+    public class Data : Action.ParameterData
     {
         public fix2 Position;
 

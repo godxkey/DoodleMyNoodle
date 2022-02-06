@@ -35,7 +35,7 @@ public abstract class GameActionSettingAuthBase : IDeclareReferencedPrefabs
     {
         if (!s_gameAction2AuthTypes.TryGetValue(gameActionType, out Type[] result))
         {
-            GameAction gameAction = (GameAction)Activator.CreateInstance(gameActionType);
+            Action gameAction = (Action)Activator.CreateInstance(gameActionType);
             var allSettingAuths = GetGameActionSettingAuthTypes();
 
             result = gameAction.GetRequiredSettingTypes().Select((simType) =>

@@ -9,7 +9,7 @@ public class ContextMenuActionDisplay : MonoBehaviour
     [SerializeField] private Button _button;
     [SerializeField] private TextMeshProUGUI _text;
     
-    private Action _onClickCallback;
+    private System.Action _onClickCallback;
 
     private void Awake()
     {
@@ -21,7 +21,7 @@ public class ContextMenuActionDisplay : MonoBehaviour
         _onClickCallback.Invoke();
     }
 
-    public void Init(string text, Action onClickCallback)
+    public void Init(string text, System.Action onClickCallback)
     {
         _onClickCallback = onClickCallback;
         _text.text = text;
