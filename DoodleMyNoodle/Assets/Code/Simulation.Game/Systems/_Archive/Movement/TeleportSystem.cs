@@ -17,7 +17,7 @@ public struct TeleportEventData : IComponentData
 }
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class TeleportSystem : SimSystemBase
+public class TeleportSystem : SimGameSystemBase
 {
     private EntityQuery _singletonQuery;
     private EntityQuery _eventGroup;
@@ -96,7 +96,7 @@ public class TeleportSystem : SimSystemBase
 
 internal partial class CommonWrites
 {
-    public static void RequestTeleport(ISimWorldReadWriteAccessor accessor, Entity entity, fix2 destination)
+    public static void RequestTeleport(ISimGameWorldReadWriteAccessor accessor, Entity entity, fix2 destination)
     {
         var requests = accessor.GetExistingSystem<TeleportSystem>().GetRequestBuffer();
         requests.Add(new TeleportRequestSingletonBufferElement()

@@ -13,7 +13,7 @@ public struct BruteAIData : IComponentData
 }
 
 [UpdateInGroup(typeof(SpecificAISystemGroup))]
-public class UpdateBruteAISystem : SimSystemBase
+public class UpdateBruteAISystem : SimGameSystemBase
 {
     public struct GlobalCache
     {

@@ -2,7 +2,7 @@ using Unity.Collections;
 using Unity.Entities;
 
 [UpdateInGroup(typeof(InputSystemGroup))]
-public class RequestNextTurnIfTurnGroupReadySystem : SimSystemBase
+public class RequestNextTurnIfTurnGroupReadySystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {

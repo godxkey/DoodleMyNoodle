@@ -19,11 +19,11 @@ public abstract class ItemPassiveEffect
         }
     }
 
-    public abstract void Equip(ISimWorldReadWriteAccessor accessor, ItemContext context);
-    public abstract void Unequip(ISimWorldReadWriteAccessor accessor, ItemContext context);
-    public virtual void Use(ISimWorldReadWriteAccessor accessor, ItemContext context) { }
-    public virtual void OnPawnIntStatChanged(ISimWorldReadWriteAccessor accessor, ItemContext context, IStatInt Stat) { }
-    public virtual void OnPawnFixStatChanged(ISimWorldReadWriteAccessor accessor, ItemContext context, IStatFix Stat) { }
+    public abstract void Equip(ISimGameWorldReadWriteAccessor accessor, ItemContext context);
+    public abstract void Unequip(ISimGameWorldReadWriteAccessor accessor, ItemContext context);
+    public virtual void Use(ISimGameWorldReadWriteAccessor accessor, ItemContext context) { }
+    public virtual void OnPawnIntStatChanged(ISimGameWorldReadWriteAccessor accessor, ItemContext context, IStatInt Stat) { }
+    public virtual void OnPawnFixStatChanged(ISimGameWorldReadWriteAccessor accessor, ItemContext context, IStatFix Stat) { }
 
     // Other events like new turn, etc.
 

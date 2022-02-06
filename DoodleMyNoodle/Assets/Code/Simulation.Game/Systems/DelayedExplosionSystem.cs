@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class DelayedExplosionSystem : SimSystemBase
+public class DelayedExplosionSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

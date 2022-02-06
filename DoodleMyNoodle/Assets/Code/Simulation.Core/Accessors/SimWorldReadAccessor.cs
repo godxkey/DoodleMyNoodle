@@ -9,6 +9,8 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     public EntityManager EntityManager;
     internal SimPreInitializationSystemGroup SomeSimSystem;
 
+    protected SimulationWorld GetSimWorld() => SimWorld;
+
     public bool IsWorldCreated => SimWorld != null && SimWorld.IsCreated;
 
     public string Name

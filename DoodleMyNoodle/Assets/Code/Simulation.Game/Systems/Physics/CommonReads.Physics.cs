@@ -8,7 +8,7 @@ public static partial class CommonReads
 {
     public static class Physics
     {
-        public static Entity FindFirstEntityWithComponentAtPosition<T>(ISimWorldReadWriteAccessor accessor, fix2 position, Entity ignoreEntity = default) where T : struct
+        public static Entity FindFirstEntityWithComponentAtPosition<T>(ISimGameWorldReadWriteAccessor accessor, fix2 position, Entity ignoreEntity = default) where T : struct
         {
             Entity closestEntity = Entity.Null;
             fix closestDistanceSq = 9999;
@@ -27,7 +27,7 @@ public static partial class CommonReads
             return closestEntity;
         }
 
-        public static NativeList<OverlapPointHit> OverlapPoint(ISimWorldReadWriteAccessor accessor, fix2 position, Entity ignoreEntity = default)
+        public static NativeList<OverlapPointHit> OverlapPoint(ISimGameWorldReadWriteAccessor accessor, fix2 position, Entity ignoreEntity = default)
         {
             NativeList<OverlapPointHit> outHits = new NativeList<OverlapPointHit>(Allocator.Temp);
 
@@ -36,7 +36,7 @@ public static partial class CommonReads
             return outHits;
         }
 
-        public static bool OverlapPoint(ISimWorldReadWriteAccessor accessor, fix2 position, NativeList<OverlapPointHit> outHits, Entity ignoreEntity = default)
+        public static bool OverlapPoint(ISimGameWorldReadWriteAccessor accessor, fix2 position, NativeList<OverlapPointHit> outHits, Entity ignoreEntity = default)
         {
             var physicsSystem = accessor.GetExistingSystem<PhysicsWorldSystem>();
 
@@ -49,7 +49,7 @@ public static partial class CommonReads
             return physicsSystem.PhysicsWorld.OverlapPoint(pointDistanceInput, ref outHits);
         }
 
-        public static bool OverlapAabb(ISimWorldReadWriteAccessor accessor, fix2 min, fix2 max, NativeList<Entity> outEntities, Entity ignoreEntity = default)
+        public static bool OverlapAabb(ISimGameWorldReadWriteAccessor accessor, fix2 min, fix2 max, NativeList<Entity> outEntities, Entity ignoreEntity = default)
         {
             var physicsSystem = accessor.GetExistingSystem<PhysicsWorldSystem>();
 
@@ -70,7 +70,7 @@ public static partial class CommonReads
             return hit;
         }
 
-        public static NativeList<Entity> OverlapAabb(ISimWorldReadWriteAccessor accessor, fix2 min, fix2 max, Entity ignoreEntity = default)
+        public static NativeList<Entity> OverlapAabb(ISimGameWorldReadWriteAccessor accessor, fix2 min, fix2 max, Entity ignoreEntity = default)
         {
             NativeList<Entity> outHits = new NativeList<Entity>(Allocator.Temp);
 
@@ -79,7 +79,7 @@ public static partial class CommonReads
             return outHits;
         }
 
-        public static bool OverlapCircle(ISimWorldReadWriteAccessor accessor, fix2 position, fix radius, NativeList<DistanceHit> outHits, Entity ignoreEntity = default)
+        public static bool OverlapCircle(ISimGameWorldReadWriteAccessor accessor, fix2 position, fix radius, NativeList<DistanceHit> outHits, Entity ignoreEntity = default)
         {
             var physicsSystem = accessor.GetExistingSystem<PhysicsWorldSystem>();
 
@@ -93,7 +93,7 @@ public static partial class CommonReads
             return physicsSystem.PhysicsWorld.CalculateDistance(pointDistanceInput, ref outHits);
         }
 
-        public static NativeList<DistanceHit> OverlapCircle(ISimWorldReadWriteAccessor accessor, fix2 position, fix radius, Entity ignoreEntity = default)
+        public static NativeList<DistanceHit> OverlapCircle(ISimGameWorldReadWriteAccessor accessor, fix2 position, fix radius, Entity ignoreEntity = default)
         {
             NativeList<DistanceHit> outHits = new NativeList<DistanceHit>(Allocator.Temp);
 
@@ -102,7 +102,7 @@ public static partial class CommonReads
             return outHits;
         }
 
-        public static bool CastRay(NativeList<RaycastHit> result, ISimWorldReadWriteAccessor accessor, fix2 start, fix2 end, Entity ignoreEntity = default)
+        public static bool CastRay(NativeList<RaycastHit> result, ISimGameWorldReadWriteAccessor accessor, fix2 start, fix2 end, Entity ignoreEntity = default)
         {
             var physicsSystem = accessor.GetExistingSystem<PhysicsWorldSystem>();
 
@@ -116,7 +116,7 @@ public static partial class CommonReads
             return physicsSystem.PhysicsWorld.CastRay(rayCastInput, ref result);
         }
 
-        public static NativeList<RaycastHit> CastRay(ISimWorldReadWriteAccessor accessor, fix2 start, fix2 end, Entity ignoreEntity = default)
+        public static NativeList<RaycastHit> CastRay(ISimGameWorldReadWriteAccessor accessor, fix2 start, fix2 end, Entity ignoreEntity = default)
         {
             NativeList<RaycastHit> outHits = new NativeList<RaycastHit>(Allocator.Temp);
 

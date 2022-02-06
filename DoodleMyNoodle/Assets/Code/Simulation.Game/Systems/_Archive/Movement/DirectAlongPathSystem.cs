@@ -6,7 +6,7 @@ using Unity.Mathematics;
 
 [UpdateAfter(typeof(CreatePathToDestinationSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class DirectAlongPathSystem : SimSystemBase
+public class DirectAlongPathSystem : SimGameSystemBase
 {
     EntityCommandBufferSystem _endSimECB;
 

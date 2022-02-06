@@ -8,7 +8,7 @@ using System;
 
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
 [UpdateAfter(typeof(StepPhysicsWorldSystem)), UpdateBefore(typeof(EndFramePhysicsSystem))]
-public class ExtractFromSpikeOverlapSystem : SimSystemBase
+public class ExtractFromSpikeOverlapSystem : SimGameSystemBase
 {
     private StepPhysicsWorldSystem _stepPhysicsWorldSystem;
     private PhysicsWorldSystem _physicsWorldSystem;
@@ -144,7 +144,7 @@ public class ExtractFromSpikeOverlapSystem : SimSystemBase
 }
 
 [UpdateAfter(typeof(PhysicsSystemGroup))]
-public class ResetSpikeCooldownSystems : SimSystemBase
+public class ResetSpikeCooldownSystems : SimGameSystemBase
 {
     private NativeList<Entity> SpikeCooldownEntityToDestroy;
     private ReactOnSpikeOverlapSystem _reactOnSpikeOverlapSystem;
@@ -194,7 +194,7 @@ public class ResetSpikeCooldownSystems : SimSystemBase
 
 [UpdateInGroup(typeof(PostPhysicsSystemGroup))]
 [AlwaysUpdateSystem]
-public class ReactOnSpikeOverlapSystem : SimSystemBase
+public class ReactOnSpikeOverlapSystem : SimGameSystemBase
 {
     public NativeList<(Entity instigator, Entity target, int damage)> OutSpikeDamages;
     public NativeList<Entity> OutSpikeDestroys;

@@ -49,7 +49,7 @@ public class GameActionShield : GameAction<GameActionShield.Settings>
         }
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
+    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {
         if (useData.TryGetParameter(0, out GameActionParameterEntity.Data paramEntity))
         {
@@ -74,7 +74,7 @@ public class GameActionShield : GameAction<GameActionShield.Settings>
         return false;
     }
 
-    private void ShieldTarget(ISimWorldReadWriteAccessor accessor, Entity pawn, int duration)
+    private void ShieldTarget(ISimGameWorldReadWriteAccessor accessor, Entity pawn, int duration)
     {
         if (accessor.TryGetComponent(pawn, out Invincible invincible))
         {

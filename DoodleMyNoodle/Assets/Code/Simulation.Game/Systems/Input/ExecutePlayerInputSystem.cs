@@ -15,7 +15,7 @@ public abstract class SimPlayerInput : SimInput
 
 [UpdateBefore(typeof(ExecutePawnControllerInputSystem))]
 [UpdateInGroup(typeof(InputSystemGroup))]
-public class ExecutePlayerInputSystem : SimSystemBase
+public class ExecutePlayerInputSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

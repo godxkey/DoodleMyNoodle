@@ -3,7 +3,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class ActivateProximityExplosionOnStickedSystem : SimSystemBase
+public class ActivateProximityExplosionOnStickedSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

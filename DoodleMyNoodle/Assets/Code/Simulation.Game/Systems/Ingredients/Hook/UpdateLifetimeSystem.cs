@@ -9,7 +9,7 @@ public struct RemainingLifetime : IComponentData
     public static implicit operator RemainingLifetime(fix val) => new RemainingLifetime() { Value = val };
 }
 
-public class UpdateLifetimeSystem : SimSystemBase
+public class UpdateLifetimeSystem : SimGameSystemBase
 {
     private EntityCommandBufferSystem _ecbSytem;
 

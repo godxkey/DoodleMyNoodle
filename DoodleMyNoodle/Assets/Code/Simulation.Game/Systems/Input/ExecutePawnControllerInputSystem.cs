@@ -23,7 +23,7 @@ public abstract class PawnControllerInputBase
 /// This system executes the queued inputs
 /// </summary>
 [UpdateInGroup(typeof(InputSystemGroup))]
-public class ExecutePawnControllerInputSystem : SimSystemBase
+public class ExecutePawnControllerInputSystem : SimGameSystemBase
 {
     public readonly List<PawnControllerInputBase> Inputs = new List<PawnControllerInputBase>();
 
@@ -376,30 +376,30 @@ public class ExecutePawnControllerInputSystem : SimSystemBase
 
 internal partial class CommonWrites
 {
-    public static void QueuePawnControllerInput(ISimWorldReadWriteAccessor accessor, PawnControllerInputBase input, Entity pawnController)
+    public static void QueuePawnControllerInput(ISimGameWorldReadWriteAccessor accessor, PawnControllerInputBase input, Entity pawnController)
     {
         input.PawnController = pawnController;
         QueuePawnControllerInput(accessor, input);
     }
 
-    public static void QueuePawnControllerInput(ISimWorldReadWriteAccessor accessor, PawnControllerInputBase input)
+    public static void QueuePawnControllerInput(ISimGameWorldReadWriteAccessor accessor, PawnControllerInputBase input)
     {
         ExecutePawnControllerInputSystem system = accessor.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
 
         system.Inputs.Add(input);
     }
 
-    public static bool TryInputUseItem<T>(ISimWorldReadWriteAccessor accessor, Entity entityController, int2 tile) where T : GameAction
+    public static bool TryInputUseItem<T>(ISimGameWorldReadWriteAccessor accessor, Entity entityController, int2 tile) where T : GameAction
     {
         return TryInputUseItem<T>(accessor, entityController, new GameActionParameterTile.Data(tile));
     }
 
-    public static bool TryInputUseItem<T>(ISimWorldReadWriteAccessor accessor, Entity entityController, fix2 pos) where T : GameAction
+    public static bool TryInputUseItem<T>(ISimGameWorldReadWriteAccessor accessor, Entity entityController, fix2 pos) where T : GameAction
     {
         return TryInputUseItem<T>(accessor, entityController, new GameActionParameterPosition.Data(pos));
     }
 
-    public static bool TryInputUseItem<T>(ISimWorldReadWriteAccessor accessor, Entity entityController, params GameAction.ParameterData[] arguments) where T : GameAction
+    public static bool TryInputUseItem<T>(ISimGameWorldReadWriteAccessor accessor, Entity entityController, params GameAction.ParameterData[] arguments) where T : GameAction
     {
         if (!accessor.TryGetComponent(entityController, out ControlledEntity pawn))
             return false;

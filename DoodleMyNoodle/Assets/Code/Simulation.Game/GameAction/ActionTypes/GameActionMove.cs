@@ -63,7 +63,7 @@ public class GameActionMove : GameAction<GameActionMove.Settings>
         return useContract;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
+    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {
         //int2 destinationTile;
         //fix2 destinationPosition;

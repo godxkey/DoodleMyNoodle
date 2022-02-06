@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class ExplodeOnProximitySystem : SimSystemBase
+public class ExplodeOnProximitySystem : SimGameSystemBase
 {
     private List<Entity> _toDestroy = new List<Entity>();
 

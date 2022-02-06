@@ -12,7 +12,7 @@ public class SimInputPlayerCreate : SimMasterInput
 }
 
 [AlwaysUpdateSystem]
-public class CreatePlayerSystem : SimSystemBase
+public class CreatePlayerSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

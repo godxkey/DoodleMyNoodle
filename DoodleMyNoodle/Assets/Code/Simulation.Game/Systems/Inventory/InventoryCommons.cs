@@ -55,7 +55,7 @@ public struct ItemTransactionResult
 
 internal partial class CommonWrites
 {
-    public static ItemTransactionResult DecrementItem(ISimWorldReadWriteAccessor accessor, Entity item, Entity source, int stacks = 1)
+    public static ItemTransactionResult DecrementItem(ISimGameWorldReadWriteAccessor accessor, Entity item, Entity source, int stacks = 1)
     {
         ItemTransation transaction = new ItemTransation()
         {
@@ -68,7 +68,7 @@ internal partial class CommonWrites
         return ExecuteItemTransaction(accessor, transaction);
     }
 
-    public static ItemTransactionResult IncrementItem(ISimWorldReadWriteAccessor accessor, Entity item, Entity destination, int stacks = 1)
+    public static ItemTransactionResult IncrementItem(ISimGameWorldReadWriteAccessor accessor, Entity item, Entity destination, int stacks = 1)
     {
         ItemTransation transaction = new ItemTransation()
         {
@@ -81,12 +81,12 @@ internal partial class CommonWrites
         return ExecuteItemTransaction(accessor, transaction);
     }
 
-    public static ItemTransactionResult MoveItemAll(ISimWorldReadWriteAccessor accessor, Entity item, Entity source, Entity destination)
+    public static ItemTransactionResult MoveItemAll(ISimGameWorldReadWriteAccessor accessor, Entity item, Entity source, Entity destination)
     {
         return MoveItem(accessor, item, source, destination, int.MaxValue);
     }
 
-    public static ItemTransactionResult MoveItem(ISimWorldReadWriteAccessor accessor, Entity item, Entity source, Entity destination, int stacks = 1)
+    public static ItemTransactionResult MoveItem(ISimGameWorldReadWriteAccessor accessor, Entity item, Entity source, Entity destination, int stacks = 1)
     {
         ItemTransation transaction = new ItemTransation()
         {
@@ -99,7 +99,7 @@ internal partial class CommonWrites
         return ExecuteItemTransaction(accessor, transaction);
     }
 
-    public static void ExecuteItemTransaction(ISimWorldReadWriteAccessor accessor, ItemTransationBatch transaction)
+    public static void ExecuteItemTransaction(ISimGameWorldReadWriteAccessor accessor, ItemTransationBatch transaction)
     {
         int destinationCap, sourceCap;
         DynamicBuffer<InventoryItemReference>? sourceBuffer, destinationBuffer;
@@ -123,7 +123,7 @@ internal partial class CommonWrites
         }
     }
 
-    public static ItemTransactionResult ExecuteItemTransaction(ISimWorldReadWriteAccessor accessor, ItemTransation transaction)
+    public static ItemTransactionResult ExecuteItemTransaction(ISimGameWorldReadWriteAccessor accessor, ItemTransation transaction)
     {
         int destinationCap, sourceCap;
         DynamicBuffer<InventoryItemReference>? sourceBuffer, destinationBuffer;
@@ -139,7 +139,7 @@ internal partial class CommonWrites
             destinationCapacity: destinationCap);
     }
 
-    private static void GetTransationInfo(ISimWorldReadWriteAccessor accessor, Entity? sourceOrDestination, out int cap, out DynamicBuffer<InventoryItemReference>? buffer)
+    private static void GetTransationInfo(ISimGameWorldReadWriteAccessor accessor, Entity? sourceOrDestination, out int cap, out DynamicBuffer<InventoryItemReference>? buffer)
     {
         cap = accessor.HasComponent<InventoryCapacity>(sourceOrDestination.GetValueOrDefault())
             ? accessor.GetComponent<InventoryCapacity>(sourceOrDestination.Value) : default;
@@ -154,7 +154,7 @@ internal partial class CommonWrites
     /// <param name="destination">The destination inventory</param>
     /// <param name="stacks">How many stacks to move. Use -1 to specify 'all' stacks</param>
     /// <param name="destinationCapacity">The capacity of the destination inventory</param>
-    private static ItemTransactionResult ExecuteItemTransaction_Internal(ISimWorldReadWriteAccessor accessor
+    private static ItemTransactionResult ExecuteItemTransaction_Internal(ISimGameWorldReadWriteAccessor accessor
         , Entity item
         , DynamicBuffer<InventoryItemReference>? source
         , DynamicBuffer<InventoryItemReference>? destination

@@ -7,7 +7,7 @@ using static Unity.Mathematics.math;
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
 [UpdateBefore(typeof(StickToLadderSystem))]
-public class HandleMoveInputSystem : SimSystemBase
+public class HandleMoveInputSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {

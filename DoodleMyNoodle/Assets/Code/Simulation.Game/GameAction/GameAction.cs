@@ -8,24 +8,29 @@ using Unity.Collections;
 
 internal partial class CommonWrites
 {
-    public static void ExecuteGameAction(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity action, GameAction.UseParameters parameters = null)
+    public static void ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, GameAction.UseParameters parameters = null)
     {
         ExecuteGameAction(accessor, instigator, action, targets: default, parameters);
     }
 
-    public static void ExecuteGameAction(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity action, Entity target, GameAction.UseParameters parameters = null)
+    public static void ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, Entity target, GameAction.UseParameters parameters = null)
     {
         var targets = new NativeArray<Entity>(1, Allocator.Temp);
         targets[0] = target;
         ExecuteGameAction(accessor, instigator, action, targets, parameters);
     }
 
-    public static void ExecuteGameAction(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity action, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
+    public static void ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
     {
         if (!accessor.TryGetComponent(action, out GameActionId gameActionId) && gameActionId.IsValid)
             return;
 
         GameAction gameAction = GameActionBank.GetAction(gameActionId);
+
+        accessor.PresentationEvents.LogEvents.Push("hello!");
+
+        if (gameAction == null)
+            return; // error is already logged in 'GetAction' method
 
         GameAction.UseContext useContext = new GameAction.UseContext()
         {
@@ -169,7 +174,7 @@ public abstract class GameAction
 
     private static Pool<DebugReason> s_debugReasonPool = new Pool<DebugReason>();
 
-    public bool TryUse(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, out string debugReason)
+    public bool TryUse(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, out string debugReason)
     {
         if (!CanBeUsedInContext(accessor, context, out debugReason))
         {
@@ -271,12 +276,12 @@ public abstract class GameAction
         return false;
     }
 
-    public void BeforeActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context)
+    public void BeforeActionUsed(ISimGameWorldReadWriteAccessor accessor, in UseContext context)
     {
 
     }
 
-    public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context, List<ResultDataElement> result)
+    public void OnActionUsed(ISimGameWorldReadWriteAccessor accessor, in UseContext context, List<ResultDataElement> result)
     {
         // reduce consumable amount
         if (accessor.GetComponent<StackableFlag>(context.Item))
@@ -357,7 +362,7 @@ public abstract class GameAction
         return true;
     }
 
-    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData);
+    public abstract bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData);
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context);
 
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
@@ -377,7 +382,7 @@ public abstract class GameAction<TSetting> : GameAction where TSetting : struct,
         return GetUseContract(accessor, context, settings);
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData)
+    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData)
     {
         var settings = accessor.GetComponent<TSetting>(context.Item);
         return Use(accessor, context, parameters, resultData, settings);
@@ -390,7 +395,7 @@ public abstract class GameAction<TSetting> : GameAction where TSetting : struct,
     }
 
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, TSetting settings);
-    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, TSetting settings);
+    public abstract bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, TSetting settings);
     protected virtual bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason, TSetting settings)
     {
         return true;

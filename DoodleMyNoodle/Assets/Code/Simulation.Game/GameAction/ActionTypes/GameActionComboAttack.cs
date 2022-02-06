@@ -42,7 +42,7 @@ public class GameActionComboAttack : GameAction<GameActionComboAttack.Settings>
         return new UseContract(param, param);
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
+    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
         var instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
         fix attackRadius = (fix)0.1f;

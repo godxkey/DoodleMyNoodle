@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class PullEntitiesSystem : SimSystemBase
+public class PullEntitiesSystem : SimGameSystemBase
 {
     private EntityCommandBufferSystem _ecbSytem;
 
@@ -56,7 +56,7 @@ public class PullEntitiesSystem : SimSystemBase
 
 internal static partial class CommonWrites
 {
-    public static void RequestPull(ISimWorldReadWriteAccessor accessor, Entity entity, fix2 Destination, fix Speed)
+    public static void RequestPull(ISimGameWorldReadWriteAccessor accessor, Entity entity, fix2 Destination, fix Speed)
     {
         accessor.SetOrAddComponent(entity, new PullData() 
         {

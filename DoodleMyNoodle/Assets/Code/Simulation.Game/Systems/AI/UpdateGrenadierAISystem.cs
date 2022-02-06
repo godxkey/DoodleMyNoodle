@@ -25,7 +25,7 @@ public enum GrenadierAIState
 }
 
 [UpdateInGroup(typeof(SpecificAISystemGroup))]
-public class UpdateGrenadierAISystem : SimSystemBase
+public class UpdateGrenadierAISystem : SimGameSystemBase
 {
     public struct GlobalCache
     {

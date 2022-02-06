@@ -27,12 +27,13 @@ namespace SimulationControl
         public bool HasJustRepacked { get; set; }
 
         public static Func<string, SimulationWorld> WorldInstantiationFunc = (name) => new SimulationWorld(name);
+        public static Func<ExternalSimWorldAccessor> ExternalSimWorldAccessorInstantiationFunc = () => new ExternalSimWorldAccessor();
 
         protected override void OnCreate()
         {
             base.OnCreate();
 
-            SimWorldAccessor = new ExternalSimWorldAccessor();
+            SimWorldAccessor = ExternalSimWorldAccessorInstantiationFunc();
             World.GetOrCreateSystem<LoadSimulationSceneSystem>();
             _tickSystem = World.GetOrCreateSystem<TickSimulationSystem>();
 

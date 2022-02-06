@@ -8,7 +8,7 @@ using static Unity.Mathematics.math;
 // [UpdateBefore(typeof(PhysicsSystemGroup))]  // implicit
 [UpdateBefore(typeof(DirectAlongPathSystem))]
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class StickToLadderSystem : SimSystemBase
+public class StickToLadderSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

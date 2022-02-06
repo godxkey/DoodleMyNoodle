@@ -49,7 +49,7 @@ public class GameActionEnrage : GameAction<GameActionEnrage.Settings>
         return 0;
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
+    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
         if (settings.HPCost > 0)
         {

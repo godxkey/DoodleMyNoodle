@@ -6,7 +6,7 @@ using Unity.Entities;
 using UnityEngine;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public class InitializeGameContantsSystem : SimSystemBase
+public class InitializeGameContantsSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {

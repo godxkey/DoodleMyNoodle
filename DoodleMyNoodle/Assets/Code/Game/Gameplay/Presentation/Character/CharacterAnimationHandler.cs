@@ -151,7 +151,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             return _hasTriggeredAnAnimation;
         }
 
-        foreach (PresentationEventData<GameActionUsedEventData> evtData in PresentationEvents.GameActionEvents)
+        foreach (PresentationEventData<GameActionUsedEventData> evtData in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
             GameActionUsedEventData gameActionEvent = evtData.Value;
 

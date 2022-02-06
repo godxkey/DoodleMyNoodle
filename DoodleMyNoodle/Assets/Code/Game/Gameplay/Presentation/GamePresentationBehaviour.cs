@@ -13,9 +13,9 @@ public interface IPostSimulationTick
 public abstract class GamePresentationSystem<T> : GameSystem<T>, IPostSimulationTick where T : GamePresentationSystem<T>
 {
     public GamePresentationCache Cache => GamePresentationCache.Instance;
-    public ExternalSimWorldAccessor SimWorld => Cache.SimWorld;
+    public ExternalSimGameWorldAccessor SimWorld => Cache.SimWorld;
     public Unity.Entities.World PresWorld => PresentationHelpers.PresentationWorld;
-    public PresentationEventsWithReadAccess PresentationEvents => Cache.PresentationEvents;
+    public PresentationEventsWithReadAccess PresentationEvents => SimWorld.PresentationEvents;
 
     public override void OnGameLateUpdate()
     {
@@ -35,9 +35,9 @@ public abstract class GamePresentationSystem<T> : GameSystem<T>, IPostSimulation
 public abstract class GamePresentationBehaviour : GameMonoBehaviour, IPostSimulationTick
 {
     public GamePresentationCache Cache => GamePresentationCache.Instance;
-    public ExternalSimWorldAccessor SimWorld => Cache.SimWorld;
+    public ExternalSimGameWorldAccessor SimWorld => Cache.SimWorld;
     public Unity.Entities.World PresWorld => PresentationHelpers.PresentationWorld;
-    public PresentationEventsWithReadAccess PresentationEvents => Cache.PresentationEvents;
+    public PresentationEventsWithReadAccess PresentationEvents => SimWorld.PresentationEvents;
 
     public override void OnGameLateUpdate()
     {

@@ -17,7 +17,7 @@ public struct ArcherAIData : IComponentData
 }
 
 [UpdateInGroup(typeof(SpecificAISystemGroup))]
-public class UpdateArcherAISystem : SimSystemBase
+public class UpdateArcherAISystem : SimGameSystemBase
 {
     public struct GlobalCache
     {

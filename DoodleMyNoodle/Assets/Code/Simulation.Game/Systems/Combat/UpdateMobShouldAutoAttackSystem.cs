@@ -4,7 +4,7 @@ using CCC.Fix2D;
 public struct MeleeAttackerTag : IComponentData { }
 public struct DropAttackerTag : IComponentData { }
 
-public class UpdateEnemyShouldAutoAttackSystem : SimGameSystemBase
+public class UpdateMobShouldAutoAttackSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {

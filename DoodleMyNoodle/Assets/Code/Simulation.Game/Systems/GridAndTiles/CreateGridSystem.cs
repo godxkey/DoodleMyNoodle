@@ -10,7 +10,7 @@ using UnityEngineX;
 using CCC.Fix2D;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public class CreateGridSystem : SimSystemBase
+public class CreateGridSystem : SimGameSystemBase
 {
     public EntityArchetype TileArchetype { get; private set; }
 

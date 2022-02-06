@@ -8,8 +8,18 @@ public class SimulationGameWorld : SimulationWorld
     public FixTimeData TurnTime;
     public FixTimeData RoundTime;
 
-    private PresentationEventsWithReadAccess _cachedPresentationEvents;
-    public PresentationEventsWithReadAccess PresentationEvents => _cachedPresentationEvents ??= GetOrCreateSystem<PresentationEventSystem>().PresentationEventsInstance;
+    protected override InternalSimWorldAccessor CreateInternalSimWorldAccessor() => new InternalSimGameWorldAccessor();
 
     public SimulationGameWorld(string name) : base(name) { }
+}
+
+public class InternalSimGameWorldAccessor : InternalSimWorldAccessor, ISimGameWorldReadWriteAccessor
+{
+    private PresentationEventsWithReadAccess _cachedPresentationEvents;
+    public PresentationEvents PresentationEvents => _cachedPresentationEvents ??= GetSimWorld().GetOrCreateSystem<PresentationEventSystem>().PresentationEventsInstance;
+}
+
+public interface ISimGameWorldReadWriteAccessor : ISimWorldReadWriteAccessor
+{
+    PresentationEvents PresentationEvents { get; }
 }

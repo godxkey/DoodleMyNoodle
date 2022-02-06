@@ -12,7 +12,7 @@ using System;
 using Unity.Jobs;
 
 [UpdateInGroup(typeof(PreAISystemGroup))]
-public class UpdateActorWorldSystem : SimSystemBase
+public class UpdateActorWorldSystem : SimGameSystemBase
 {
     private PhysicsWorldSystem _physicsSystemGroup;
     private EntityQuery _pawnsGroup;

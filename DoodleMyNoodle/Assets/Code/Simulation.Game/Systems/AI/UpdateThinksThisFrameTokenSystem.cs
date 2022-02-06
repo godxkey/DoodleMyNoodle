@@ -7,7 +7,7 @@ public struct ThinksThisFrameCooldownSingleton : IComponentData
 }
 
 [UpdateInGroup(typeof(AISystemGroup))]
-public class UpdateThinksThisFrameTokenSystem : SimSystemBase
+public class UpdateThinksThisFrameTokenSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {

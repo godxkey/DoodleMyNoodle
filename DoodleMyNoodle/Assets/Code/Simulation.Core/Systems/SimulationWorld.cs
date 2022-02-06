@@ -41,7 +41,7 @@ public class SimulationWorld : World, IOwnedWorld
     {
         if (_internalAccessor == null)
         {
-            _internalAccessor = new InternalSimWorldAccessor();
+            _internalAccessor = CreateInternalSimWorldAccessor();
             _internalAccessor.SimWorld = this;
             _internalAccessor.EntityManager = EntityManager;
             _internalAccessor.SomeSimSystem = GetOrCreateSystem<SimPreInitializationSystemGroup>();
@@ -49,6 +49,8 @@ public class SimulationWorld : World, IOwnedWorld
 
         return _internalAccessor;
     }
+
+    protected virtual InternalSimWorldAccessor CreateInternalSimWorldAccessor() => new InternalSimWorldAccessor();
 
     private EntityQuery _tickSingletonQuery;
     internal uint GetLastTickIdFromEntity()

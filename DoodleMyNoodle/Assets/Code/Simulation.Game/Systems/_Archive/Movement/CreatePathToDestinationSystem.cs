@@ -5,7 +5,7 @@ using Unity.Collections;
 using CCC.Fix2D;
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class CreatePathToDestinationSystem : SimSystemBase
+public class CreatePathToDestinationSystem : SimGameSystemBase
 {
     private PhysicsWorldSystem _physicsWorldSystem;
 

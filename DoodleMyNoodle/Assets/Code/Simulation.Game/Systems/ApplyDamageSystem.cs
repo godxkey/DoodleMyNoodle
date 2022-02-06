@@ -33,7 +33,7 @@ public struct DamageRequestData : IBufferElementData
 }
 
 [AlwaysUpdateSystem]
-public class ApplyDamageSystem : SimSystemBase
+public class ApplyDamageSystem : SimGameSystemBase
 {
     private EntityQuery _damageEvents;
     private EntityQuery _healingEvents;
@@ -184,7 +184,7 @@ public class ApplyDamageSystem : SimSystemBase
 
 internal static partial class CommonWrites
 {
-    public static void RequestDamage(ISimWorldReadWriteAccessor accessor, NativeArray<DistanceHit> hits, int damage, uint effectGroupID = uint.MaxValue)
+    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, NativeArray<DistanceHit> hits, int damage, uint effectGroupID = uint.MaxValue)
     {
         var sys = accessor.GetExistingSystem<ApplyDamageSystem>();
 
@@ -194,7 +194,7 @@ internal static partial class CommonWrites
             sys.RequestDamage(request);
         }
     }
-    public static void RequestDamage(ISimWorldReadWriteAccessor accessor, NativeArray<Entity> targets, int amount, uint effectGroupID = uint.MaxValue)
+    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, NativeArray<Entity> targets, int amount, uint effectGroupID = uint.MaxValue)
     {
         var sys = accessor.GetExistingSystem<ApplyDamageSystem>();
 
@@ -205,19 +205,19 @@ internal static partial class CommonWrites
         }
     }
 
-    public static void RequestDamage(ISimWorldReadWriteAccessor accessor, Entity target, int amount, uint effectGroupID = uint.MaxValue)
+    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity target, int amount, uint effectGroupID = uint.MaxValue)
     {
         var request = new DamageRequestData() { Amount = amount, Target = target, EffectGroupID = effectGroupID };
         accessor.GetExistingSystem<ApplyDamageSystem>().RequestDamage(request);
     }
 
-    public static void RequestHeal(ISimWorldReadWriteAccessor accessor, NativeArray<Entity> targets, int amount, uint effectGroupID = uint.MaxValue)
+    public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, NativeArray<Entity> targets, int amount, uint effectGroupID = uint.MaxValue)
     {
         // for now a heal request is a negative damage request
         RequestDamage(accessor, targets, -amount, effectGroupID);
     }
 
-    public static void RequestHeal(ISimWorldReadWriteAccessor accessor, Entity target, int amount, uint effectGroupID = uint.MaxValue)
+    public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, Entity target, int amount, uint effectGroupID = uint.MaxValue)
     {
         // for now a heal request is a negative damage request
         RequestDamage(accessor, target, -amount, effectGroupID);

@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using static fixMath;
 
 [UpdateInGroup(typeof(AISystemGroup))]
-public class CreateAIPathToDestinationSystem : SimSystemBase
+public class CreateAIPathToDestinationSystem : SimGameSystemBase
 {
     private UpdateActorWorldSystem _actorWorldSystem;
     private PhysicsWorldSystem _physicsWorldSystem;

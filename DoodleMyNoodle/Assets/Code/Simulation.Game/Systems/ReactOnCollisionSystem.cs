@@ -14,7 +14,7 @@ public struct FallDamageBlacklistedEntity : ISingletonBufferElementData
 
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
 [UpdateAfter(typeof(StepPhysicsWorldSystem)), UpdateBefore(typeof(EndFramePhysicsSystem))]
-public class ExtractCollisionReactionsSystem : SimSystemBase
+public class ExtractCollisionReactionsSystem : SimGameSystemBase
 {
     private StepPhysicsWorldSystem _stepPhysicsWorldSystem;
     private PhysicsWorldSystem _physicsWorldSystem;
@@ -166,7 +166,7 @@ public class ExtractCollisionReactionsSystem : SimSystemBase
 }
 
 [UpdateInGroup(typeof(PostPhysicsSystemGroup))]
-public class ReactOnCollisionSystem : SimSystemBase
+public class ReactOnCollisionSystem : SimGameSystemBase
 {
     public static LogChannel FallDamageLogChannel = Log.CreateChannel("Fall Damage", activeByDefault: false);
 

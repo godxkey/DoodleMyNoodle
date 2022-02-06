@@ -9,7 +9,7 @@ using static Unity.Mathematics.math;
 /// <summary>
 /// This system instantiates controllable entities' DefaultControllerPrefab when needed
 /// </summary>
-public class InstantiateDefaultControllerSystem : SimSystemBase
+public class InstantiateDefaultControllerSystem : SimGameSystemBase
 {
     private struct SpawnRequest
     {

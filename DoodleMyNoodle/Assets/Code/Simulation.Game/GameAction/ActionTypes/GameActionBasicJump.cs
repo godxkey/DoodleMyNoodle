@@ -32,7 +32,7 @@ public class GameActionBasicJump : GameAction<GameActionBasicJump.Settings>
         return new UseContract();
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
+    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
         accessor.SetComponent<NavAgentFootingState>(context.InstigatorPawn, NavAgentFooting.AirControl);
 

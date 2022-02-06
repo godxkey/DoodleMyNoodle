@@ -4,7 +4,7 @@ using UnityEngineX;
 
 public class ItemPassiveEffectHealthIncrease : ItemPassiveEffect
 {
-    public override void Equip(ISimWorldReadWriteAccessor accessor, ItemContext context)
+    public override void Equip(ISimGameWorldReadWriteAccessor accessor, ItemContext context)
     {
         if (accessor.TryGetComponent(context.ItemEntity, out ItemPassiveEffectHealthIncreaseData healthIncreaseData))
         {
@@ -21,7 +21,7 @@ public class ItemPassiveEffectHealthIncrease : ItemPassiveEffect
         }
     }
 
-    public override void Unequip(ISimWorldReadWriteAccessor accessor, ItemContext context)
+    public override void Unequip(ISimGameWorldReadWriteAccessor accessor, ItemContext context)
     {
         if (accessor.TryGetComponent(context.ItemEntity, out ItemPassiveEffectHealthIncreaseData healthIncreaseData))
         {
@@ -38,7 +38,7 @@ public class ItemPassiveEffectHealthIncrease : ItemPassiveEffect
         }
     }
 
-    public override void OnPawnIntStatChanged(ISimWorldReadWriteAccessor accessor, ItemContext context, IStatInt Stat) 
+    public override void OnPawnIntStatChanged(ISimGameWorldReadWriteAccessor accessor, ItemContext context, IStatInt Stat) 
     {
         // if HealthIncreaseMultiplier is changed or removed, update the amount of health that is increased
         if (Stat is HealthIncreaseMultiplier)

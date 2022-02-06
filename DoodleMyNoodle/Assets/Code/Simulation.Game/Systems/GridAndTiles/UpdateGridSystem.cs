@@ -13,7 +13,7 @@ public struct SystemRequestTransformTile : ISingletonBufferElementData
     public SimAssetId? ForcedNewSimAssetId; // leave null to let system pick sim asset id itself
 }
 
-public class UpdateGridSystem : SimSystemBase
+public class UpdateGridSystem : SimGameSystemBase
 {
     private BlobAssetReference<Collider> _fullTileCollider;
     private BlobAssetReference<Collider> _cornerTileCollider;
@@ -180,7 +180,7 @@ public class UpdateGridSystem : SimSystemBase
 
 internal static partial class CommonWrites
 {
-    public static void RequestTransformTile(ISimWorldReadWriteAccessor accessor, int2 tile, TileFlagComponent newTileFlags)
+    public static void RequestTransformTile(ISimGameWorldReadWriteAccessor accessor, int2 tile, TileFlagComponent newTileFlags)
     {
         SystemRequestTransformTile request = new SystemRequestTransformTile()
         {

@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-public class ReviveEntitySystem : SimSystemBase
+public class ReviveEntitySystem : SimGameSystemBase
 {
     private EndSimulationEntityCommandBufferSystem _ecbSystem;
 

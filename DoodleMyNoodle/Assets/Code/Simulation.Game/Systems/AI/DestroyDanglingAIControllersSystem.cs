@@ -2,7 +2,7 @@
 using Unity.Entities;
 
 [UpdateInGroup(typeof(PreAISystemGroup))]
-public class DestroyDanglingAIControllersSystem : SimSystemBase
+public class DestroyDanglingAIControllersSystem : SimGameSystemBase
 {
     NativeList<Entity> _toDestroy;
 
@@ -41,7 +41,7 @@ public class DestroyDanglingAIControllersSystem : SimSystemBase
 
 [UpdateInGroup(typeof(PreAISystemGroup))]
 [UpdateBefore(typeof(DestroyDanglingAIControllersSystem))]
-public class UnbindAIFromDeathPawnsSystem : SimSystemBase
+public class UnbindAIFromDeathPawnsSystem : SimGameSystemBase
 {
     struct UnbindPair
     {

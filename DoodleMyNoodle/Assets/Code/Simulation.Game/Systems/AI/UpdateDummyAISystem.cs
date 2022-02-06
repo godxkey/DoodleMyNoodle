@@ -5,7 +5,7 @@ using static Unity.Mathematics.math;
 
 public struct DummyAITag : IComponentData { }
 
-public class UpdateDummyAISystem : SimSystemBase
+public class UpdateDummyAISystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
