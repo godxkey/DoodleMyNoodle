@@ -42,19 +42,19 @@ public partial class CommonReads
 
 internal partial class CommonWrites
 {
-    public static void ExecuteAction(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity action, Action.UseParameters parameters = null)
+    public static void ExecuteAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, Action.UseParameters parameters = null)
     {
         ExecuteAction(accessor, instigator, action, targets: default, parameters);
     }
 
-    public static void ExecuteAction(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity action, Entity target, Action.UseParameters parameters = null)
+    public static void ExecuteAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, Entity target, Action.UseParameters parameters = null)
     {
         var targets = new NativeArray<Entity>(1, Allocator.Temp);
         targets[0] = target;
         ExecuteAction(accessor, instigator, action, targets, parameters);
     }
 
-    public static void ExecuteAction(ISimWorldReadWriteAccessor accessor, Entity actionEntity, Entity actionPrefab, NativeArray<Entity> targets, Action.UseParameters parameters = null)
+    public static void ExecuteAction(ISimGameWorldReadWriteAccessor accessor, Entity actionEntity, Entity actionPrefab, NativeArray<Entity> targets, Action.UseParameters parameters = null)
     {
         if (!accessor.TryGetComponent(actionPrefab, out ActionId actionId) && actionId.IsValid)
             return;
@@ -196,7 +196,7 @@ public abstract class Action
 
     private static Pool<DebugReason> s_debugReasonPool = new Pool<DebugReason>();
 
-    public bool TryUse(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, out string debugReason)
+    public bool TryUse(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, out string debugReason)
     {
         if (!CanBeUsedInContext(accessor, context, out debugReason))
         {
@@ -279,12 +279,12 @@ public abstract class Action
         return false;
     }
 
-    public void BeforeActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context)
+    public void BeforeActionUsed(ISimGameWorldReadWriteAccessor accessor, in UseContext context)
     {
 
     }
 
-    public void OnActionUsed(ISimWorldReadWriteAccessor accessor, in UseContext context, List<ResultDataElement> result)
+    public void OnActionUsed(ISimGameWorldReadWriteAccessor accessor, in UseContext context, List<ResultDataElement> result)
     {
         // reduce consumable amount
         if (accessor.GetComponent<StackableFlag>(context.ActionInstigator))
@@ -356,7 +356,7 @@ public abstract class Action
         return true;
     }
 
-    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData);
+    public abstract bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData);
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity actionPrefab);
 
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
@@ -376,7 +376,7 @@ public abstract class Action<TSetting> : Action where TSetting : struct, ICompon
         return GetUseContract(accessor, settings);
     }
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData)
+    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData)
     {
         var settings = accessor.GetComponent<TSetting>(context.ActionPrefab);
         return Use(accessor, context, parameters, resultData, settings);
@@ -389,7 +389,7 @@ public abstract class Action<TSetting> : Action where TSetting : struct, ICompon
     }
 
     public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, TSetting settings);
-    public abstract bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, TSetting settings);
+    public abstract bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, TSetting settings);
     protected virtual bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason, TSetting settings)
     {
         return true;

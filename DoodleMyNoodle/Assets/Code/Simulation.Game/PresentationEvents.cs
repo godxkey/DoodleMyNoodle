@@ -18,8 +18,8 @@ public class PresentationEvents : IDisposable
     ////////////////////////////////////////////////////////////////////////////////////////
     //      ADD HERE
     ////////////////////////////////////////////////////////////////////////////////////////
-    protected List<PresentationEventData<GameActionUsedEventData>> _gameActionEvents = new List<PresentationEventData<GameActionUsedEventData>>();
-    internal PresentationEventWriter<GameActionUsedEventData> GameActionEvents => new PresentationEventWriter<GameActionUsedEventData>(_gameActionEvents, _latestTickId);
+    protected List<PresentationEventData<ActionUsedEventData>> _actionEvents = new List<PresentationEventData<ActionUsedEventData>>();
+    internal PresentationEventWriter<ActionUsedEventData> ActionEvents => new PresentationEventWriter<ActionUsedEventData>(_actionEvents, _latestTickId);
     protected List<PresentationEventData<SimLogEvent>> _logEvents = new List<PresentationEventData<SimLogEvent>>();
     internal PresentationEventWriter<SimLogEvent> LogEvents => new PresentationEventWriter<SimLogEvent>(_logEvents, _latestTickId);
 
@@ -41,7 +41,7 @@ public class PresentationEventsWithReadAccess : PresentationEvents
     ////////////////////////////////////////////////////////////////////////////////////////
     //      ADD HERE
     ////////////////////////////////////////////////////////////////////////////////////////
-    public new PresentationEventReader<GameActionUsedEventData> GameActionEvents => new PresentationEventReader<GameActionUsedEventData>(_gameActionEvents, LatestTickId);
+    public new PresentationEventReader<ActionUsedEventData> ActionEvents => new PresentationEventReader<ActionUsedEventData>(_actionEvents, LatestTickId);
     public new PresentationEventReader<SimLogEvent> LogEvents => new PresentationEventReader<SimLogEvent>(_logEvents, LatestTickId);
 
     public void Clear()
@@ -49,7 +49,7 @@ public class PresentationEventsWithReadAccess : PresentationEvents
         ////////////////////////////////////////////////////////////////////////////////////////
         //      ADD HERE
         ////////////////////////////////////////////////////////////////////////////////////////
-        _gameActionEvents.Clear();
+        _actionEvents.Clear();
         _logEvents.Clear();
     }
 }

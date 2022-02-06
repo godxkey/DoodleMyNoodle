@@ -10,7 +10,7 @@ public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
 
     protected override void OnGamePresentationUpdate()
     {
-        foreach (var gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
+        foreach (var gameActionEvent in PresentationEvents.ActionEvents.SinceLastPresUpdate)
         {
             // ACTION AUTH & ANIMATION TRIGGER
             SimWorld.TryGetComponent(gameActionEvent.Value.ActionContext.ActionInstigator, out SimAssetId instigatorAssetId);
