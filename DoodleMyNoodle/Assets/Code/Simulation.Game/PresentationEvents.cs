@@ -139,7 +139,7 @@ public struct PresentationEventReader<T>
 
         public Enumerator GetEnumerator() => this;
 
-        public PresentationEventData<T> Current => _event[_i];
+        public T Current => _event[_i].Value;
 
         public int RemainingCount => _count - 1 - _i;
         public bool AnyRemaining => RemainingCount > 0;

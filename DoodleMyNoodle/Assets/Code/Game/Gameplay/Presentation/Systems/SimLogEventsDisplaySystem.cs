@@ -8,7 +8,7 @@ public class SimLogEventsDisplaySystem : GamePresentationSystem<SimLogEventsDisp
     {
         foreach (var item in PresentationEvents.LogEvents.SinceLastPresUpdate)
         {
-            Log.Info(item.Value.Text);
+            Log.Info(item.Text);
         }
     }
 }

@@ -151,10 +151,8 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             return _hasTriggeredAnAnimation;
         }
 
-        foreach (PresentationEventData<GameActionUsedEventData> evtData in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
+        foreach (GameActionUsedEventData gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            GameActionUsedEventData gameActionEvent = evtData.Value;
-
             if (gameActionEvent.GameActionContext.InstigatorPawn == SimEntity && gameActionEvent.GameActionContext.Item != Entity.Null && !_hasTriggeredAnAnimation)
             {
                 TriggerAnimationInteruptionOnStateChange();
