@@ -136,6 +136,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SE_Char_Enemy_Bird
       objectReference: {fileID: 0}
+    - target: {fileID: 2970226009990692416, guid: d12abd9d914009646ba31316ead81d63,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8505089470155310910, guid: d12abd9d914009646ba31316ead81d63,
         type: 3}
       propertyPath: m_RootOrder
@@ -47743,6 +47748,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083706433129272114, guid: 987a47d4012e6fc4c8365e6a618abff0,
+        type: 3}
+      propertyPath: AttackRate
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7551162044909047762, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
