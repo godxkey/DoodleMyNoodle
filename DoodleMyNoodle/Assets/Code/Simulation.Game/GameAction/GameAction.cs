@@ -338,7 +338,7 @@ public abstract class GameAction
             }
         }
 
-        accessor.GetOrCreateSystem<PresentationEventSystem>().PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
+        accessor.PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
         {
             GameActionContext = context,// todo: copy array and dispose in presentation
             GameActionResult = resultData
