@@ -10,11 +10,11 @@ public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
 
     protected override void OnGamePresentationUpdate()
     {
-        foreach (var gameActionEvent in PresentationEvents.ActionEvents.SinceLastPresUpdate)
+        foreach (var gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            // ACTION AUTH & ANIMATION TRIGGER
-            SimWorld.TryGetComponent(gameActionEvent.Value.ActionContext.ActionInstigator, out SimAssetId instigatorAssetId);
-            SimWorld.TryGetComponent(gameActionEvent.Value.ActionContext.ActionInstigator, out FixTranslation translation);
+            // ITEM AUTH & ANIMATION TRIGGER
+            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Item, out SimAssetId instigatorAssetId);
+            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.InstigatorPawn, out FixTranslation translation);
             GameObject instigatorPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
             if (instigatorPrefab.TryGetComponent(out ItemAuth gameActionAuth))
             {

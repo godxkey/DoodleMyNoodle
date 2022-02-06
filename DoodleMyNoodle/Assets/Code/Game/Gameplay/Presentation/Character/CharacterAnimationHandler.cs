@@ -151,43 +151,41 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             return _hasTriggeredAnAnimation;
         }
 
-        foreach (PresentationEventData<ActionUsedEventData> evtData in PresentationEvents.ActionEvents.SinceLastPresUpdate)
+        foreach (GameActionUsedEventData gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            ActionUsedEventData gameActionEvent = evtData.Value;
-
-            if (gameActionEvent.ActionContext.ActionInstigator == SimEntity && gameActionEvent.ActionContext.ActionPrefab != Entity.Null && !_hasTriggeredAnAnimation)
+            if (gameActionEvent.GameActionContext.InstigatorPawn == SimEntity && gameActionEvent.GameActionContext.Item != Entity.Null && !_hasTriggeredAnAnimation)
             {
                 TriggerAnimationInteruptionOnStateChange();
 
                 _hasTriggeredAnAnimation = true;
                 _lastTransitionTime = SimWorld.Time.ElapsedTime;
 
-                // ACTION AUTH & ANIMATION TRIGGER
-                SimWorld.TryGetComponent(gameActionEvent.ActionContext.ActionPrefab, out SimAssetId instigatorAssetId);
+                // ITEM AUTH & ANIMATION TRIGGER
+                SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Item, out SimAssetId instigatorAssetId);
                 GameObject instigatorPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
-                if (instigatorPrefab.TryGetComponent(out ActionAuth actionAuth))
+                if (instigatorPrefab.TryGetComponent(out ItemAuth gameActionAuth))
                 {
-                    _currentAnimation = actionAuth.Animation;
+                    _currentAnimation = gameActionAuth.Animation;
 
                     // add additionnal animation to play in queue (skip the first we'll play)
-                    if (actionAuth.PlayAnimation)
+                    if (gameActionAuth.PlayAnimation)
                     {
-                        for (int i = 1; i < gameActionEvent.ActionResult.Count; i++)
+                        for (int i = 1; i < gameActionEvent.GameActionResult.Count; i++)
                         {
                             // ANIMATION DATA
                             List<KeyValuePair<string, object>> currentAnimationData = new List<KeyValuePair<string, object>>();
-                            currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.ActionContext));
+                            currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.GameActionContext));
 
                             switch (i)
                             {
                                 case 1:
-                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.ActionResult.DataElement_1));
+                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_1));
                                     break;
                                 case 2:
-                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.ActionResult.DataElement_2));
+                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_2));
                                     break;
                                 case 3:
-                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.ActionResult.DataElement_3));
+                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_3));
                                     break;
                                 default:
                                     break;
@@ -199,14 +197,14 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
                     // ANIMATION DATA
                     List<KeyValuePair<string, object>> animationData = new List<KeyValuePair<string, object>>();
-                    animationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.ActionContext));
-                    animationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.ActionResult.DataElement_0));
+                    animationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.GameActionContext));
+                    animationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_0));
 
                     if (_currentAnimation == null)
                     {
                         FindAnimation(AnimationType.GameAction).TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationData);
                     }
-                    else if (actionAuth.PlayAnimation)
+                    else if (gameActionAuth.PlayAnimation)
                     {
                         _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationData);
                     }
