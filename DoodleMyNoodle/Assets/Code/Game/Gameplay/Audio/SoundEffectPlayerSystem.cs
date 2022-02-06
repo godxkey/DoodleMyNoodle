@@ -14,9 +14,9 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
             return;
 
         // Item sounds
-        Cache.SimWorld.Entities.ForEach((ref GameActionEventData gameActionEvent) =>
+        foreach (var gameActionEvent in PresentationEvents.GameActionEvents)
         {
-            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Item, out SimAssetId entitySimAssetID);
+            SimWorld.TryGetComponent(gameActionEvent.Value.GameActionContext.Item, out SimAssetId entitySimAssetID);
 
             GameObject entityPrefab = PresentationHelpers.FindSimAssetPrefab(entitySimAssetID);
             if (entityPrefab != null)
@@ -27,7 +27,7 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
                     sfx.PlayOn(_audioSource);
                 }
             }
-        });
+        }
 
         // Damage sounds
         Cache.SimWorld.Entities.ForEach((ref DamageEventData gameActionEvent) =>

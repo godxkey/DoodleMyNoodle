@@ -4,6 +4,49 @@ using System.Diagnostics;
 using Unity.Entities;
 using CCC.Fix2D;
 using UnityEngineX;
+using Unity.Collections;
+
+internal partial class CommonWrites
+{
+    public static void ExecuteGameAction(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity action, GameAction.UseParameters parameters = null)
+    {
+        ExecuteGameAction(accessor, instigator, action, targets: default, parameters);
+    }
+
+    public static void ExecuteGameAction(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity action, Entity target, GameAction.UseParameters parameters = null)
+    {
+        var targets = new NativeArray<Entity>(1, Allocator.Temp);
+        targets[0] = target;
+        ExecuteGameAction(accessor, instigator, action, targets, parameters);
+    }
+
+    public static void ExecuteGameAction(ISimWorldReadWriteAccessor accessor, Entity instigator, Entity action, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
+    {
+        if (!accessor.TryGetComponent(action, out GameActionId gameActionId) && gameActionId.IsValid)
+            return;
+
+        GameAction gameAction = GameActionBank.GetAction(gameActionId);
+
+        GameAction.UseContext useContext = new GameAction.UseContext()
+        {
+            InstigatorPawn = instigator,
+            Item = action,
+            Targets = targets
+        };
+
+        if (!gameAction.TryUse(accessor, useContext, null, out string debugReason))
+        {
+            Log.Info($"Can't Trigger {gameAction} because: {debugReason}");
+            return;
+        }
+    }
+}
+
+public struct GameActionUsedEventData
+{
+    public GameAction.UseContext GameActionContext;
+    public GameAction.ResultData GameActionResult;
+}
 
 public abstract class GameAction
 {
@@ -91,16 +134,10 @@ public abstract class GameAction
 
     public struct UseContext
     {
-        public Entity InstigatorPawnController;
+        public Entity InstigatorPawnController; // we can probably remove that later
         public Entity InstigatorPawn;
         public Entity Item;
-
-        public UseContext(Entity instigatorPawnController, Entity instigatorPawn, Entity item)
-        {
-            InstigatorPawnController = instigatorPawnController;
-            InstigatorPawn = instigatorPawn;
-            Item = item;
-        }
+        public NativeArray<Entity> Targets; // currently unused, but it should be!
     }
 
     public struct ResultData
@@ -296,7 +333,11 @@ public abstract class GameAction
             }
         }
 
-        CommonWrites.RequestGameActionEvent(accessor, context, resultData);
+        accessor.GetOrCreateSystem<PresentationEventSystem>().PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
+        {
+            GameActionContext = context,// todo: copy array and dispose in presentation
+            GameActionResult = resultData
+        });
     }
 
     protected virtual int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)

@@ -15,6 +15,7 @@ public abstract class GamePresentationSystem<T> : GameSystem<T>, IPostSimulation
     public GamePresentationCache Cache => GamePresentationCache.Instance;
     public ExternalSimWorldAccessor SimWorld => Cache.SimWorld;
     public Unity.Entities.World PresWorld => PresentationHelpers.PresentationWorld;
+    public PresentationEventsWithReadAccess PresentationEvents => Cache.PresentationEvents;
 
     public override void OnGameLateUpdate()
     {
@@ -36,6 +37,7 @@ public abstract class GamePresentationBehaviour : GameMonoBehaviour, IPostSimula
     public GamePresentationCache Cache => GamePresentationCache.Instance;
     public ExternalSimWorldAccessor SimWorld => Cache.SimWorld;
     public Unity.Entities.World PresWorld => PresentationHelpers.PresentationWorld;
+    public PresentationEventsWithReadAccess PresentationEvents => Cache.PresentationEvents;
 
     public override void OnGameLateUpdate()
     {
