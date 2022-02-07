@@ -134,7 +134,7 @@ PrefabInstance:
     - target: {fileID: 2970226009990692416, guid: d12abd9d914009646ba31316ead81d63,
         type: 3}
       propertyPath: m_Name
-      value: SE_Char_Enemy_Bird
+      value: SE_Char_Mob_Bird
       objectReference: {fileID: 0}
     - target: {fileID: 2970226009990692416, guid: d12abd9d914009646ba31316ead81d63,
         type: 3}
@@ -47752,7 +47752,12 @@ PrefabInstance:
     - target: {fileID: 7551162044909047762, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_Name
-      value: SE_Char_Enemy_Brute
+      value: SE_Char_Mob_Brute
+      objectReference: {fileID: 0}
+    - target: {fileID: 7551162044909047762, guid: 987a47d4012e6fc4c8365e6a618abff0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 987a47d4012e6fc4c8365e6a618abff0, type: 3}
@@ -47872,7 +47877,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveDirection: 0
   MoveSpeed:
-    RawValue: 8589934592
+    RawValue: 4294967296
 --- !u!114 &1766440193
 MonoBehaviour:
   m_ObjectHideFlags: 0

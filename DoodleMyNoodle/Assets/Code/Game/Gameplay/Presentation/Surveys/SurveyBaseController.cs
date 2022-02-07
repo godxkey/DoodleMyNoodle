@@ -10,12 +10,12 @@ public abstract class SurveyBaseController : MonoBehaviour
 {
     public struct Context
     {
-        public GameAction.UseContext UseContext;
+        public GameAction.ExecutionContext UseContext;
         public GameAction.ParameterDescription[] QueryParams;
         public List<GameAction.ParameterData> CurrentData;
 
-        public Entity ActionPrefab => UseContext.ActionPrefab;
-        public Entity Instigator => UseContext.ActionInstigator;
+        public Entity ActionPrefab => UseContext.Action;
+        public Entity Instigator => UseContext.ActionInstigatorActor;
 
         public T GetQueryParam<T>() where T : GameAction.ParameterDescription
         {
@@ -53,7 +53,7 @@ public abstract class SurveyBaseController : MonoBehaviour
     [NonSerialized]
     private GameAction.ParameterDescriptionType[] _cachedExpectedQuery = null;
 
-    public void StartSurvey(System.Action<List<GameAction.ParameterData>> completeCallback, System.Action cancelCallback, GameAction.UseContext useContext, List<GameAction.ParameterData> currentResultData, params GameAction.ParameterDescription[] parameters)
+    public void StartSurvey(System.Action<List<GameAction.ParameterData>> completeCallback, System.Action cancelCallback, GameAction.ExecutionContext useContext, List<GameAction.ParameterData> currentResultData, params GameAction.ParameterDescription[] parameters)
     {
         Running = true;
 
@@ -126,7 +126,7 @@ public abstract class SurveyBaseController : MonoBehaviour
     {
         if (SimWorld.TryGetComponent(CurrentContext.Instigator, out ActionPoints ap))
         {
-            if (SimWorld.TryGetComponent(CurrentContext.ActionPrefab, out GameActionSettingAPCost apCost))
+            if (SimWorld.TryGetComponent(CurrentContext.ActionPrefab, out ItemSettingAPCost apCost))
             {
                 APEnergyBarDisplayManagementSystem.Instance.ShowCostPreview(CurrentContext.Instigator, (float)ap.Value - apCost.Value);
             } 

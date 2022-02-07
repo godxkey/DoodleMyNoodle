@@ -48,21 +48,12 @@ public class ReadyButton : GamePresentationBehaviour
 
     protected override void OnGamePresentationUpdate()
     {
-        if (SimWorld.HasSingleton<NewTurnEventData>())
+        _updateTimer -= Time.deltaTime;
+        if (_updateTimer <= 0)
         {
-            _updateTimer = UPDATE_DELAY; // reset timer as we're manually updating
+            _updateTimer = UPDATE_DELAY;
 
             UpdateState();
-        }
-        else
-        {
-            _updateTimer -= Time.deltaTime;
-            if (_updateTimer <= 0)
-            {
-                _updateTimer = UPDATE_DELAY;
-
-                UpdateState();
-            }
         }
 
         UpdateView();
@@ -89,7 +80,7 @@ public class ReadyButton : GamePresentationBehaviour
         else
         {
             // if it's our turn to play
-            if (SimWorld.TryGetComponent(Cache.LocalController, out ReadyForNextTurn ready) && ready.Value)
+            if (SimWorld.TryGetComponent(Cache.LocalController, out ReadyToPlay ready) && ready.Value)
             {
                 _viewState.Set(TurnState.Ready);
             }
@@ -135,7 +126,7 @@ public class ReadyButton : GamePresentationBehaviour
 
         bool currentlyReady = _viewState.Get() == TurnState.Ready;
 
-        SimWorld.SubmitInput(new SimPlayerInputNextTurn(!currentlyReady));
+        SimWorld.SubmitInput(new SimPlayerInputReady(!currentlyReady));
 
         _viewState.Set(currentlyReady ? TurnState.NotReady : TurnState.Ready);
 

@@ -52,32 +52,20 @@ public class PlayerActionBarSlot : ItemSlot
 
     public void UpdateDisplayAsUnavailable(Entity itemEntity)
     {
-        if (SimWorld.TryGetComponent(itemEntity, out ItemCooldownTimeCounter timerCounter))
+        if (SimWorld.TryGetComponent(itemEntity, out ItemCooldownTimeCounter timerCounter) && timerCounter.Value != 0)
         {
-            if (timerCounter.Value != 0)
-            {
-                UnavailableSpriteObject.SetActive(true);
-                UnavailableTimerText.gameObject.SetActive(true);
-                UnavailableTimerText.text = fix.RoundToInt(timerCounter.Value).ToString();
-                return;
-            }
+            UnavailableSpriteObject.SetActive(true);
+            UnavailableTimerText.gameObject.SetActive(true);
+            UnavailableTimerText.text = fix.RoundToInt(timerCounter.Value).ToString();
+        }
+        else
+        {
+            UnavailableSpriteObject.SetActive(true);
+            UnavailableTimerText.gameObject.SetActive(false);
+
+            _actionBarSlotUnavailable = true;
         }
 
-        if (SimWorld.TryGetComponent(itemEntity, out ItemCooldownTurnCounter turnCounter))
-        {
-            if (turnCounter.Value != 0)
-            {
-                UnavailableSpriteObject.SetActive(true);
-                UnavailableTimerText.gameObject.SetActive(true);
-                UnavailableTimerText.text = fix.RoundToInt(turnCounter.Value).ToString();
-                return;
-            }
-        }
-
-        UnavailableTimerText.gameObject.SetActive(false);
-        UnavailableSpriteObject.SetActive(true);
-
-        _actionBarSlotUnavailable = true;
     }
 
     private string GetPrettyName(KeyCode keyCode)

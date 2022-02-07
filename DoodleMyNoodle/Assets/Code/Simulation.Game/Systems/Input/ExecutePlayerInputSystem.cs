@@ -46,6 +46,12 @@ public class ExecutePlayerInputSystem : SimGameSystemBase
                 break;
             }
 
+            case SimPlayerInputReady readyInput:
+            {
+                EntityManager.SetOrAddComponentData(playerEntity, new ReadyToPlay() { Value = readyInput.IsReady });
+                break;
+            }
+
             case SimPlayerInputSetPawnDoodle setPawnDoodleInput:
             {
                 Entity pawn = GetPlayerPawn(playerEntity);

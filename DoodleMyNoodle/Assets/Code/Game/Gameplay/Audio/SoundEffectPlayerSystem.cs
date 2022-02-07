@@ -16,7 +16,7 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
         // Item sounds
         foreach (var gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.ActionPrefab, out SimAssetId entitySimAssetID);
+            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Action, out SimAssetId entitySimAssetID);
 
             GameObject entityPrefab = PresentationHelpers.FindSimAssetPrefab(entitySimAssetID);
             if (entityPrefab != null)

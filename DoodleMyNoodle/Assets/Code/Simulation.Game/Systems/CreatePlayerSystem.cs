@@ -26,7 +26,7 @@ public class CreatePlayerSystem : SimGameSystemBase
                     typeof(Name),
                     typeof(ControlledEntity),
                     typeof(Team),
-                    typeof(ReadyForNextTurn),
+                    typeof(ReadyToPlay),
                     typeof(Active));
 
                 // set persistent id
@@ -58,7 +58,7 @@ public class CreatePlayerSystem : SimGameSystemBase
                 SetComponent(newPlayerEntity, new Team() { Value = 0 });
 
                 // set 'not ready for next turn'
-                SetComponent(newPlayerEntity, new ReadyForNextTurn() { Value = false });
+                SetComponent(newPlayerEntity, new ReadyToPlay() { Value = false });
 
                 // set new player controller as currently active
                 SetComponent(newPlayerEntity, new Active() { Value = true });

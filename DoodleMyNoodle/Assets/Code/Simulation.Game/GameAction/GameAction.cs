@@ -8,31 +8,31 @@ using Unity.Collections;
 
 public partial class CommonReads
 {
-    public static GameAction.UseContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionEntity, Entity actionPrefab)
+    public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity instigator, Entity actionPrefab)
     {
-        return GetActionContext(accessor, actionEntity, actionPrefab, targets : default);
+        return GetActionContext(accessor, instigator, actionPrefab, targets: default);
     }
 
-    public static GameAction.UseContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionEntity, Entity actionPrefab, Entity target)
+    public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity instigator, Entity actionPrefab, Entity target)
     {
         var targets = new NativeArray<Entity>(1, Allocator.Temp);
         targets[0] = target;
-        return GetActionContext(accessor, actionEntity, actionPrefab, targets);
+        return GetActionContext(accessor, instigator, actionPrefab, targets);
     }
 
-    public static GameAction.UseContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionEntity, Entity actionPrefab, NativeArray<Entity> targets)
+    public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity instigator, Entity actionPrefab, NativeArray<Entity> targets)
     {
-        Entity instigatorPawn = Entity.Null;
-        if (accessor.TryGetComponent(actionEntity, out OwnerPawn ownerPawn))
+        Entity firstInstigator = instigator;
+        if (accessor.TryGetComponent(instigator, out FirstInstigator firstInstigatorComponent))
         {
-            instigatorPawn = ownerPawn.Value;
+            firstInstigator = firstInstigatorComponent.Value;
         }
 
-        GameAction.UseContext useContext = new GameAction.UseContext()
+        GameAction.ExecutionContext useContext = new GameAction.ExecutionContext()
         {
-            ActionPrefab = actionPrefab,
-            InstigatorPawn = instigatorPawn,
-            ActionInstigator = actionEntity,
+            Action = actionPrefab,
+            FirstInstigatorActor = firstInstigator,
+            ActionInstigatorActor = instigator,
             Targets = targets
         };
 
@@ -42,39 +42,41 @@ public partial class CommonReads
 
 internal partial class CommonWrites
 {
-    public static void ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, GameAction.UseParameters parameters = null)
+    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, GameAction.UseParameters parameters = null)
     {
-        ExecuteGameAction(accessor, instigator, action, targets: default, parameters);
+        return ExecuteGameAction(accessor, instigator, action, targets: default, parameters);
     }
 
-    public static void ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, Entity target, GameAction.UseParameters parameters = null)
+    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, Entity target, GameAction.UseParameters parameters = null)
     {
         var targets = new NativeArray<Entity>(1, Allocator.Temp);
         targets[0] = target;
-        ExecuteGameAction(accessor, instigator, action, targets, parameters);
+        return ExecuteGameAction(accessor, instigator, action, targets, parameters);
     }
 
-    public static void ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionEntity, Entity actionPrefab, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
+    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionEntity, Entity actionPrefab, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
     {
         if (!accessor.TryGetComponent(actionPrefab, out GameActionId actionId) && actionId.IsValid)
-            return;
+            return false;
 
         GameAction gameAction = GameActionBank.GetAction(actionId);
 
         if (gameAction == null)
-            return; // error is already logged in 'GetAction' method
+            return false; // error is already logged in 'GetAction' method
 
-        if (!gameAction.TryUse(accessor, CommonReads.GetActionContext(accessor, actionEntity, actionPrefab, targets), parameters, out string debugReason))
+        if (!gameAction.TryExecute(accessor, CommonReads.GetActionContext(accessor, actionEntity, actionPrefab, targets), parameters))
         {
-            Log.Info($"Can't Trigger {gameAction} because: {debugReason}");
-            return;
+            Log.Info($"Couldn't use {gameAction}.");
+            return false;
         }
+
+        return true;
     }
 }
 
 public struct GameActionUsedEventData
 {
-    public GameAction.UseContext GameActionContext;
+    public GameAction.ExecutionContext GameActionContext;
     public GameAction.ResultData GameActionResult;
 }
 
@@ -106,11 +108,11 @@ public abstract class GameAction
         public ParameterData() { }
     }
 
-    public sealed class UseContract
+    public sealed class ExecutionContract
     {
         public ParameterDescription[] ParameterTypes;
 
-        public UseContract(params ParameterDescription[] parameterTypes)
+        public ExecutionContract(params ParameterDescription[] parameterTypes)
         {
             ParameterTypes = parameterTypes ?? throw new ArgumentNullException(nameof(parameterTypes));
         }
@@ -162,12 +164,28 @@ public abstract class GameAction
         }
     }
 
-    public struct UseContext
+    public struct ExecutionContext
     {
-        public Entity ActionPrefab; // Prefab that contains the action and its informations
-        public Entity InstigatorPawn; // origin pawn that owns this action
-        public Entity ActionInstigator; // the entity triggering the action
-        public NativeArray<Entity> Targets; // all the target for the action execution
+        /// <summary>
+        /// Prefab that contains the action and its informations
+        /// </summary>
+        public Entity Action;
+
+        /// <summary>
+        /// Very first instigator in chain of action. This is generally the pawn that used the first action. 
+        /// (e.g. A pawn throws a poison arrow, and the arrow poisons a target. The arrow is the action instigator, but the pawn is the 'first instigator')
+        /// </summary>
+        public Entity FirstInstigatorActor;
+
+        /// <summary>
+        /// The actor triggering the action, should never be null. 
+        /// </summary>
+        public Entity ActionInstigatorActor;
+
+        /// <summary>
+        /// All the target for the action execution, could be empty or uncreated
+        /// </summary>
+        public NativeArray<Entity> Targets;
     }
 
     public struct ResultData
@@ -188,30 +206,41 @@ public abstract class GameAction
         public Entity Entity;
     }
 
-    public class DebugReason
+    public bool TryExecute(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters parameters)
     {
-        private string _reason = null;
-
-        [Conditional("DEBUG")]
-        public void Set(string reason) { _reason = reason; }
-        public string Get() { return _reason; }
-    }
-
-    private static Pool<DebugReason> s_debugReasonPool = new Pool<DebugReason>();
-
-    public bool TryUse(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, out string debugReason)
-    {
-        if (!CanBeUsedInContext(accessor, context, out debugReason))
+        List<ResultDataElement> result = new List<ResultDataElement>();
+        if (Execute(accessor, context, parameters, result))
         {
-            return false;
-        }
+            // Feedbacks
+            ResultData resultData = new ResultData() { Count = result.Count };
 
-        BeforeActionUsed(accessor, context);
+            for (int i = 0; i < result.Count; i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        resultData.DataElement_0 = result[0];
+                        break;
+                    case 1:
+                        resultData.DataElement_1 = result[1];
+                        break;
+                    case 2:
+                        resultData.DataElement_2 = result[2];
+                        break;
+                    case 3:
+                        resultData.DataElement_3 = result[3];
+                        break;
+                    default:
+                        break;
+                }
+            }
 
-        List<ResultDataElement> resultData = new List<ResultDataElement>();
-        if (Use(accessor, context, parameters, resultData))
-        {
-            OnActionUsed(accessor, context, resultData);
+            accessor.GetOrCreateSystem<PresentationEventSystem>().PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
+            {
+                GameActionContext = context,// todo: copy array and dispose in presentation
+                GameActionResult = resultData
+            });
+
             return true;
         }
         else
@@ -220,152 +249,13 @@ public abstract class GameAction
         }
     }
 
-    public bool CanBeUsedInContext(ISimWorldReadAccessor accessor, in UseContext context)
-    {
-        return CanBeUsedInContextInternal(accessor, context, null);
-    }
-
-    public bool CanBeUsedInContext(ISimWorldReadAccessor accessor, in UseContext context, out string debugReason)
-    {
-        DebugReason reason = s_debugReasonPool.Take();
-
-        bool result = CanBeUsedInContextInternal(accessor, context, reason);
-
-        debugReason = reason.Get();
-
-        s_debugReasonPool.Release(reason);
-
-        return result;
-    }
-
-    private bool CanBeUsedInContextInternal(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {
-        int minApCost = GetMinimumActionPointCost(accessor, context);
-        if (minApCost > 0)
-        {
-            if (!accessor.TryGetComponent(context.InstigatorPawn, out ActionPoints ap))
-            {
-                debugReason?.Set("Pawn has no ActionPoints component.");
-                return false;
-            }
-
-            if (ap <= (fix)0)
-            {
-                debugReason?.Set($"Pawn doesn't have enough ActionPoints (has {ap.Value}, need {minApCost}).");
-                return false;
-            }
-        }
-
-        if (IsInCooldown(accessor, context))
-        {
-            debugReason?.Set("In cooldown");
-            return false;
-        }
-
-        return CanBeUsedInContextSpecific(accessor, context, debugReason);
-    }
-
-    public bool IsInCooldown(ISimWorldReadAccessor accessor, in UseContext context)
-    {
-        if (accessor.TryGetComponent(context.ActionInstigator, out ItemCooldownTimeCounter timeCooldown) &&
-            timeCooldown.Value > 0)
-        {
-            return true;
-        }
-
-        if (accessor.TryGetComponent(context.ActionInstigator, out ItemCooldownTurnCounter turnCooldown) &&
-            turnCooldown.Value > 0)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public void BeforeActionUsed(ISimGameWorldReadWriteAccessor accessor, in UseContext context)
-    {
-
-    }
-
-    public void OnActionUsed(ISimGameWorldReadWriteAccessor accessor, in UseContext context, List<ResultDataElement> result)
-    {
-        // reduce consumable amount
-        if (accessor.GetComponent<StackableFlag>(context.ActionInstigator))
-        {
-            CommonWrites.DecrementItem(accessor, context.ActionInstigator, context.ActionInstigator);
-        }
-
-        // reduce instigator AP
-        if (accessor.TryGetComponent(context.InstigatorPawn, out GameActionSettingAPCost itemActionPointCost))
-        {
-            CommonWrites.ModifyStatFix<ActionPoints>(accessor, context.ActionInstigator, -itemActionPointCost.Value);
-        }
-
-        // Cooldown
-        if (accessor.TryGetComponent(context.ActionInstigator, out ItemTimeCooldownData itemTimeCooldownData))
-        {
-            accessor.SetOrAddComponent(context.ActionInstigator, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
-        }
-        else if (accessor.TryGetComponent(context.ActionInstigator, out ItemTurnCooldownData itemTurnCooldownData))
-        {
-            accessor.SetOrAddComponent(context.ActionInstigator, new ItemCooldownTurnCounter() { Value = itemTurnCooldownData.Value });
-        }
-
-        // Feedbacks
-        ResultData resultData = new ResultData() { Count = result.Count };
-
-        for (int i = 0; i < result.Count; i++)
-        {
-            switch (i)
-            {
-                case 0:
-                    resultData.DataElement_0 = result[0];
-                    break;
-                case 1:
-                    resultData.DataElement_1 = result[1];
-                    break;
-                case 2:
-                    resultData.DataElement_2 = result[2];
-                    break;
-                case 3:
-                    resultData.DataElement_3 = result[3];
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        accessor.GetOrCreateSystem<PresentationEventSystem>().PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
-        {
-            GameActionContext = context,// todo: copy array and dispose in presentation
-            GameActionResult = resultData
-        });
-    }
-
-    protected virtual int GetMinimumActionPointCost(ISimWorldReadAccessor accessor, in UseContext context)
-    {
-        if (accessor.TryGetComponent(context.ActionInstigator, out GameActionSettingAPCost apCost))
-        {
-            return apCost.Value;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-
-    protected virtual bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {
-        return true;
-    }
-
-    public abstract bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData);
-    public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity actionPrefab);
+    public abstract bool Execute(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters parameters, List<ResultDataElement> resultData);
+    public abstract ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Entity actionPrefab);
 
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
-    protected void LogActionInfo(UseContext context, string message)
+    protected void LogActionInfo(ExecutionContext context, string message)
     {
-        Log.Info(LogChannel, $"{message} - {GetType().Name} - context(actionEntity: {context.ActionInstigator}, instigator: {context.InstigatorPawn})");
+        Log.Info(LogChannel, $"{message} - {GetType().Name} - context(actionEntity: {context.ActionInstigatorActor}, instigator: {context.FirstInstigatorActor})");
     }
 }
 
@@ -373,28 +263,18 @@ public abstract class GameAction<TSetting> : GameAction where TSetting : struct,
 {
     public override Type[] GetRequiredSettingTypes() => new[] { typeof(TSetting) };
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Entity actionPrefab)
+    public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Entity actionPrefab)
     {
         var settings = accessor.GetComponent<TSetting>(actionPrefab);
-        return GetUseContract(accessor, settings);
+        return GetExecutionContract(accessor, settings);
     }
 
-    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData)
+    public override bool Execute(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters parameters, List<ResultDataElement> resultData)
     {
-        var settings = accessor.GetComponent<TSetting>(context.ActionPrefab);
+        var settings = accessor.GetComponent<TSetting>(context.Action);
         return Use(accessor, context, parameters, resultData, settings);
     }
 
-    protected override bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason)
-    {
-        var settings = accessor.GetComponent<TSetting>(context.ActionPrefab);
-        return CanBeUsedInContextSpecific(accessor, context, debugReason, settings);
-    }
-
-    public abstract UseContract GetUseContract(ISimWorldReadAccessor accessor, TSetting settings);
-    public abstract bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, TSetting settings);
-    protected virtual bool CanBeUsedInContextSpecific(ISimWorldReadAccessor accessor, in UseContext context, DebugReason debugReason, TSetting settings)
-    {
-        return true;
-    }
+    public abstract ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, TSetting settings);
+    public abstract bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters parameters, List<ResultDataElement> resultData, TSetting settings);
 }

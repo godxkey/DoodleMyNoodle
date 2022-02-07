@@ -81,7 +81,7 @@ public class GymSurveyController : MonoBehaviour
 
         if (surveyPrefab != null)
         {
-            var useContext = new GameAction.UseContext();
+            var useContext = new GameAction.ExecutionContext();
 
             UIStateMachine.Instance.TransitionTo(UIStateType.ParameterSelection);
 

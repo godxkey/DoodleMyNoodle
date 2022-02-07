@@ -22,7 +22,7 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
     public bool IsSurveyRunning => _currentSurvey != null && _currentSurvey.Running;
 
     public void BeginSurvey(Vector3 surveyLocation,
-        GameAction.UseContext useContext,
+        GameAction.ExecutionContext useContext,
         List<GameAction.ParameterData> currentResultData,
         GameAction.ParameterDescription[] parameters,
         SurveyBaseController surveyPrefab,
@@ -69,7 +69,7 @@ public class SurveyManager : GamePresentationSystem<SurveyManager>
         }
     }
 
-    public void BeginDefaultSurvey(Vector3 requestLocation, GameAction.UseContext useContext, List<GameAction.ParameterData> currentResultData, GameAction.ParameterDescription parameterDescription, System.Action<List<GameAction.ParameterData>> onCompleteCallback, System.Action onCancelCallback)
+    public void BeginDefaultSurvey(Vector3 requestLocation, GameAction.ExecutionContext useContext, List<GameAction.ParameterData> currentResultData, GameAction.ParameterDescription parameterDescription, System.Action<List<GameAction.ParameterData>> onCompleteCallback, System.Action onCancelCallback)
     {
         SurveyBaseController surveyPrefab = null;
 

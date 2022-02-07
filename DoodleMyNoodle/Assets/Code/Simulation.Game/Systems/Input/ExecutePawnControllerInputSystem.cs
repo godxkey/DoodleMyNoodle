@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngineX;
@@ -128,9 +127,9 @@ public class ExecutePawnControllerInputSystem : SimGameSystemBase
 
         if (EntityManager.TryGetComponentData(item, out ItemAction itemAction))
         {
-            GameAction gameAction = GetGameActionFromEntity(itemAction.ActionPrefab);
+            GameAction gameAction = GetGameActionFromEntity(itemAction.Value);
 
-            CommonWrites.ExecuteGameAction(Accessor, item, itemAction.ActionPrefab);
+            CommonWrites.ExecuteGameAction(Accessor, item, itemAction.Value);
         }
     }
 

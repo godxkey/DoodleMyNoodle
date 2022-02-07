@@ -2494,23 +2494,23 @@ public static class StaticNetSerializer_SimPlayerInputMove
 }
 public static class StaticNetSerializer_SimPlayerInputNextTurn
 {
-    public static int GetSerializedBitSize_Class(SimPlayerInputNextTurn obj)
+    public static int GetSerializedBitSize_Class(SimPlayerInputReady obj)
     {
         if (obj == null)
             return 1;
         return 1 + GetSerializedBitSize(obj);
     }
 
-    public static int GetSerializedBitSize(SimPlayerInputNextTurn obj)
+    public static int GetSerializedBitSize(SimPlayerInputReady obj)
     {
         int result = 0;
-        result += StaticNetSerializer_System_Boolean.GetSerializedBitSize(ref obj.ReadyForNextTurn);
+        result += StaticNetSerializer_System_Boolean.GetSerializedBitSize(ref obj.IsReady);
         result += StaticNetSerializer_PersistentId.GetSerializedBitSize(ref obj.SimPlayerId);
         result += StaticNetSerializer_SimPlayerInput.GetSerializedBitSize(obj);
         return result;
     }
 
-    public static void Serialize_Class(SimPlayerInputNextTurn obj, BitStreamWriter writer)
+    public static void Serialize_Class(SimPlayerInputReady obj, BitStreamWriter writer)
     {
         if (obj == null)
         {
@@ -2520,26 +2520,26 @@ public static class StaticNetSerializer_SimPlayerInputNextTurn
         writer.WriteBit(true);
         Serialize(obj, writer);
     }
-    public static void Serialize(SimPlayerInputNextTurn obj, BitStreamWriter writer)
+    public static void Serialize(SimPlayerInputReady obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_System_Boolean.Serialize(ref obj.ReadyForNextTurn, writer);
+        StaticNetSerializer_System_Boolean.Serialize(ref obj.IsReady, writer);
         StaticNetSerializer_PersistentId.Serialize(ref obj.SimPlayerId, writer);
         StaticNetSerializer_SimPlayerInput.Serialize(obj, writer);
     }
 
-    public static SimPlayerInputNextTurn Deserialize_Class(BitStreamReader reader)
+    public static SimPlayerInputReady Deserialize_Class(BitStreamReader reader)
     {
         if (reader.ReadBit() == false)
         {
             return null;
         }
-        SimPlayerInputNextTurn obj = new SimPlayerInputNextTurn();
+        SimPlayerInputReady obj = new SimPlayerInputReady();
         Deserialize(obj, reader);
         return obj;
     }
-    public static void Deserialize(SimPlayerInputNextTurn obj, BitStreamReader reader)
+    public static void Deserialize(SimPlayerInputReady obj, BitStreamReader reader)
     {
-        StaticNetSerializer_System_Boolean.Deserialize(ref obj.ReadyForNextTurn, reader);
+        StaticNetSerializer_System_Boolean.Deserialize(ref obj.IsReady, reader);
         StaticNetSerializer_PersistentId.Deserialize(ref obj.SimPlayerId, reader);
         StaticNetSerializer_SimPlayerInput.Deserialize(obj, reader);
     }

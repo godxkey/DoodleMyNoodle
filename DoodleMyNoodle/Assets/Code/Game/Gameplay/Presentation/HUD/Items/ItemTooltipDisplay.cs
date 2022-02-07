@@ -161,10 +161,6 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
             {
                 _descriptionData.Add(new DescriptionData($"Cooldown (time) : {itemAuth.CooldownDuration}", Color.white, true));
             }
-            else if (itemAuth.CooldownType == ItemAuth.CooldownMode.Turns)
-            {
-                _descriptionData.Add(new DescriptionData($"Cooldown (turns) : {itemAuth.CooldownDuration}", Color.white, true));
-            }
         }
 
         PresentationHelpers.UpdateGameObjectList(_descriptionElements, _descriptionData, _itemDescriptionPrefab, _itemDescriptionContainer,

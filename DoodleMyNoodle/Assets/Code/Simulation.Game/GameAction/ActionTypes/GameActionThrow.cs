@@ -35,7 +35,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
                 ProjectilePrefab = conversionSystem.GetPrimaryEntity(ProjectilePrefab),
                 Quantity = Quantity,
                 VolleyAngle = radians((fix)VolleyAngle),
-                ShootVector = new fix2((fix)ShootVector.x, (fix)ShootVector.y) 
+                ShootVector = new fix2((fix)ShootVector.x, (fix)ShootVector.y)
             });
         }
 
@@ -58,9 +58,9 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         public fix2 ShootVector;
     }
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Settings settings)
+    public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Settings settings)
     {
-        return new UseContract(
+        return new ExecutionContract(
             new GameActionParameterVector.Description()
             {
                 SpeedMin = settings.SpeedMin,
@@ -68,28 +68,19 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
             });
     }
 
-    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
+    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
     {
-        bool originateFromCenter = parameters.TryGetParameter(1, out GameActionParameterBool.Data paramOriginateFromCenter, warnIfFailed: false)
-            && paramOriginateFromCenter.Value;
-
-        fix2 shootVector;
-        if (parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
-        {
-            shootVector = paramVector.Vector;
-        }
-        else
-        {
-            shootVector = settings.ShootVector;
-        }
+        fix2 shootVector = parameters != null && parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector)
+            ? paramVector.Vector
+            : settings.ShootVector;
 
         if (settings.Quantity <= 1)
         {
             settings.VolleyAngle = 0;
         }
 
-        fix throwSpeed = clamp(length(paramVector.Vector), settings.SpeedMin, settings.SpeedMax);
-        fix throwAngle = throwSpeed < (fix)0.01 ? 0 : angle2d(paramVector.Vector);
+        fix throwSpeed = clamp(length(shootVector), settings.SpeedMin, settings.SpeedMax);
+        fix throwAngle = throwSpeed < (fix)0.01 ? 0 : angle2d(shootVector);
         fix throwAngleMin = throwAngle - (settings.VolleyAngle / 2);
         fix throwAngleIncrement = settings.Quantity == 1 ? 0 : settings.VolleyAngle / (settings.Quantity - 1);
 
@@ -100,15 +91,15 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
             Entity projectileInstance = accessor.Instantiate(settings.ProjectilePrefab);
 
             // set projectile data
-            fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
+            fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.FirstInstigatorActor);
             fix2 instigatorVel = fix2.zero;
-            if (accessor.TryGetComponent(context.InstigatorPawn, out PhysicsVelocity instigatorPhysicsVelocity))
+            if (accessor.TryGetComponent(context.FirstInstigatorActor, out PhysicsVelocity instigatorPhysicsVelocity))
             {
                 instigatorVel = instigatorPhysicsVelocity.Linear;
             }
 
             fix2 spawnPos;
-            fix spawnDistance = GetSpawnDistance(accessor, projectileInstance, context.InstigatorPawn, settings.SpawnExtraDistance);
+            fix spawnDistance = GetSpawnDistance(accessor, projectileInstance, context.FirstInstigatorActor, settings.SpawnExtraDistance);
 
             fix itemThrowAngle = throwAngleMin + (i * throwAngleIncrement);
             fix2 itemThrowDir = fix2.FromAngle(itemThrowAngle);
@@ -116,6 +107,9 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
 
             // When 'originateFromCenter' is true, we simulate the projectile spawning at the center of the pawn.
             // We adjust the start position and the start velocity to where the projectile will exit the spawn-distance
+            bool originateFromCenter = parameters != null && parameters.TryGetParameter(1, out GameActionParameterBool.Data paramOriginateFromCenter, warnIfFailed: false)
+                && paramOriginateFromCenter.Value;
+
             if (originateFromCenter)
             {
                 // Find how much the projectile will be affected by gravity
@@ -145,7 +139,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
 
             accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(itemThrowVelocity + instigatorVel));
             accessor.SetOrAddComponent(projectileInstance, new FixTranslation(spawnPos));
-            accessor.SetOrAddComponent(projectileInstance, new OwnerPawn(context.InstigatorPawn));
+            accessor.SetOrAddComponent(projectileInstance, new FirstInstigator() { Value = context.FirstInstigatorActor });
 
             if (settings.Quantity > 1)
             {
@@ -166,11 +160,11 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
 
     #region Used by presentation
     // used by presentation
-    public fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, UseContext context, Entity actionPrefab, fix2 direction)
+    public fix2 GetSpawnPosOffset(ISimWorldReadAccessor accessor, ExecutionContext context, Entity actionPrefab, fix2 direction)
     {
         Settings settings = accessor.GetComponent<Settings>(actionPrefab);
 
-        return direction * GetSpawnDistance(accessor, settings.ProjectilePrefab, context.InstigatorPawn, settings.SpawnExtraDistance);
+        return direction * GetSpawnDistance(accessor, settings.ProjectilePrefab, context.FirstInstigatorActor, settings.SpawnExtraDistance);
     }
 
     // used by presentation

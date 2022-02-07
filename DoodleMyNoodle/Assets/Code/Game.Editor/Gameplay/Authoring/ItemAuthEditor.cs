@@ -11,8 +11,6 @@ using UnityEngineX;
 [CustomEditor(typeof(ItemAuth))]
 public class ItemAuthEditor : Editor
 {
-    private static string[] s_availableTypeNames;
-    private static Type[] s_availableTypes;
     // key : setting type / value : auth type
     private static GUIStyle s_primaryTitleFontStyle = null;
     private static GUIStyle s_secondaryTitleFontStyle = null;
@@ -26,6 +24,7 @@ public class ItemAuthEditor : Editor
     private SerializedProperty _nameProp;
     private SerializedProperty _effectDescriptionProp;
     private SerializedProperty _hideInInventory;
+    private SerializedProperty _actionPrefab;
     private SerializedProperty _canBeUsedAtAnytime;
 
     private void OnEnable()
@@ -39,7 +38,7 @@ public class ItemAuthEditor : Editor
         _nameProp = serializedObject.FindProperty(nameof(ItemAuth.Name));
         _effectDescriptionProp = serializedObject.FindProperty(nameof(ItemAuth.EffectDescription));
         _hideInInventory = serializedObject.FindProperty(nameof(ItemAuth.HideInInventory));
-        _canBeUsedAtAnytime = serializedObject.FindProperty(nameof(ItemAuth.UsableInOthersTurn));
+        _actionPrefab = serializedObject.FindProperty(nameof(ItemAuth.ActionPrefab));
 
         InitStaticData();
     }
@@ -52,6 +51,7 @@ public class ItemAuthEditor : Editor
 
         DrawPrimaryTitle("Simulation");
 
+        EditorGUILayout.PropertyField(_actionPrefab);
         EditorGUILayout.PropertyField(_apCostProp);
         EditorGUILayout.PropertyField(_cooldownProp);
         if (castedTarget.HasCooldown)
@@ -99,12 +99,6 @@ public class ItemAuthEditor : Editor
 
     private static void InitStaticData()
     {
-        if (s_availableTypes == null)
-        {
-            s_availableTypes = TypeUtility.GetTypesDerivedFrom(typeof(GameAction)).ToArray();
-            s_availableTypeNames = s_availableTypes.Where(t => !t.IsAbstract).Select(t => t.Name).ToArray();
-        }
-
         if (s_primaryTitleFontStyle == null)
         {
             s_primaryTitleFontStyle = new GUIStyle();

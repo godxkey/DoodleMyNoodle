@@ -153,7 +153,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
         foreach (GameActionUsedEventData gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            if (gameActionEvent.GameActionContext.InstigatorPawn == SimEntity && gameActionEvent.GameActionContext.ActionPrefab != Entity.Null && !_hasTriggeredAnAnimation)
+            if (gameActionEvent.GameActionContext.FirstInstigatorActor == SimEntity && gameActionEvent.GameActionContext.Action != Entity.Null && !_hasTriggeredAnAnimation)
             {
                 TriggerAnimationInteruptionOnStateChange();
 
@@ -161,7 +161,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                 _lastTransitionTime = SimWorld.Time.ElapsedTime;
 
                 // GAME ACTION AUTH & ANIMATION TRIGGER
-                SimWorld.TryGetComponent(gameActionEvent.GameActionContext.ActionPrefab, out SimAssetId instigatorAssetId);
+                SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Action, out SimAssetId instigatorAssetId);
                 GameObject instigatorPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
                 if (instigatorPrefab.TryGetComponent(out GameActionAuth gameActionAuth))
                 {

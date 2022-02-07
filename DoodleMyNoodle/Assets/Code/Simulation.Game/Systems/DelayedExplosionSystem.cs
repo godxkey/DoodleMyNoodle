@@ -13,25 +13,9 @@ public class DelayedExplosionSystem : SimGameSystemBase
 
         Entities.ForEach((Entity entity, ref DelayedExplosion delayedExplosion) =>
         {
-            bool readyToExplode = false;
+            delayedExplosion.TimeDuration -= deltaTime;
 
-            if (delayedExplosion.UseTime)
-            {
-                delayedExplosion.TimeDuration -= deltaTime;
-
-                readyToExplode = delayedExplosion.TimeDuration <= 0;
-            }
-            else
-            {
-                if (HasSingleton<NewTurnEventData>())
-                {
-                    delayedExplosion.TurnDuration--;
-
-                    readyToExplode = delayedExplosion.TurnDuration <= 0;
-                }
-            }
-
-            if (readyToExplode)
+            if (delayedExplosion.TimeDuration <= 0)
             {
                 var entityTilePos = EntityManager.GetComponentData<FixTranslation>(entity);
                 CommonWrites.RequestExplosion(Accessor, entity, entityTilePos, delayedExplosion.Radius, delayedExplosion.Damage, delayedExplosion.DestroyTiles);
@@ -44,25 +28,9 @@ public class DelayedExplosionSystem : SimGameSystemBase
 
         Entities.ForEach((Entity entity, ref DelayedExplosionBlackHole delayedExplosionBlackHole, ref FixTranslation translation) =>
         {
-            bool readyToExplode = false;
+            delayedExplosionBlackHole.TimeDuration -= deltaTime;
 
-            if (delayedExplosionBlackHole.UseTime)
-            {
-                delayedExplosionBlackHole.TimeDuration -= deltaTime;
-
-                readyToExplode = delayedExplosionBlackHole.TimeDuration <= 0;
-            }
-            else
-            {
-                if (HasSingleton<NewTurnEventData>())
-                {
-                    delayedExplosionBlackHole.TurnDuration--;
-
-                    readyToExplode = delayedExplosionBlackHole.TurnDuration <= 0;
-                }
-            }
-
-            if (readyToExplode)
+            if (delayedExplosionBlackHole.TimeDuration <= 0)
             {
                 var hits = CommonReads.Physics.OverlapCircle(Accessor, translation.Value, delayedExplosionBlackHole.Radius, ignoreEntity: entity);
 
@@ -95,25 +63,9 @@ public class DelayedExplosionSystem : SimGameSystemBase
 
         Entities.ForEach((Entity entity, ref DelayedExplosionShield delayedExplosionShield, ref FixTranslation translation) =>
         {
-            bool readyToExplode = false;
+            delayedExplosionShield.TimeDuration -= deltaTime;
 
-            if (delayedExplosionShield.UseTime)
-            {
-                delayedExplosionShield.TimeDuration -= deltaTime;
-
-                readyToExplode = delayedExplosionShield.TimeDuration <= 0;
-            }
-            else
-            {
-                if (HasSingleton<NewTurnEventData>())
-                {
-                    delayedExplosionShield.TurnDuration--;
-
-                    readyToExplode = delayedExplosionShield.TurnDuration <= 0;
-                }
-            }
-
-            if (readyToExplode)
+            if (delayedExplosionShield.TimeDuration <= 0)
             {
                 var hits = CommonReads.Physics.OverlapCircle(Accessor, translation.Value, delayedExplosionShield.Radius, ignoreEntity: entity);
 
@@ -128,11 +80,11 @@ public class DelayedExplosionSystem : SimGameSystemBase
                             {
                                 if (Accessor.TryGetComponent(hit.Entity, out Invincible invincible))
                                 {
-                                    Accessor.AddComponent(hit.Entity, new Invincible() { Duration = max(delayedExplosionShield.RoundDuration, invincible.Duration) });
+                                    Accessor.AddComponent(hit.Entity, new Invincible() { Duration = max(delayedExplosionShield.ShieldDuration, invincible.Duration) });
                                 }
                                 else
                                 {
-                                    Accessor.AddComponent(hit.Entity, new Invincible() { Duration = delayedExplosionShield.RoundDuration });
+                                    Accessor.AddComponent(hit.Entity, new Invincible() { Duration = delayedExplosionShield.ShieldDuration });
                                 }
                             }
                         }

@@ -114,22 +114,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                                                                OnIntentionToUseSecondaryActionOnItem,
                                                                stacks);
 
-                    bool canBeUsed = false;
-                    if (SimWorld.TryGetComponent(item, out ItemAction itemAction))
-                    {
-                        if (SimWorld.TryGetComponent(itemAction.ActionPrefab, out GameActionId itemActionId))
-                        {
-                            GameAction action = GameActionBank.GetAction(itemActionId);
-                            canBeUsed = action != null && action.CanBeUsedInContext(SimWorld, CommonReads.GetActionContext(SimWorld, item, itemAction.ActionPrefab));
-                        }
-                    }
-
-                    if (!displayedInventory[i].ItemAuth.UsableInOthersTurn && !Cache.DEPRECATED_CanLocalPlayerPlay)
-                    {
-                        canBeUsed = false;
-                    }
-
-                    if (!canBeUsed)
+                    if (!CommonReads.CanUseItem(SimWorld, Cache.LocalPawn, item))
                     {
                         _slotVisuals[i].UpdateDisplayAsUnavailable(item);
                     }
@@ -185,7 +170,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                         UIStateMachine.Instance.TransitionTo(UIStateType.ParameterSelection, new ParameterSelectionState.InputParam()
                         {
                             ActionInstigator = itemEntity,
-                            ActionPrefab = itemAction.ActionPrefab,
+                            ActionPrefab = itemAction.Value,
                             IsItem = true,
                             ItemIndex = ItemIndex
                         });

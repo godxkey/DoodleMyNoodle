@@ -12,6 +12,12 @@ PrefabInstance:
       propertyPath: _guid
       value: d12abd9d914009646ba31316ead81d63
       objectReference: {fileID: 0}
+    - target: {fileID: -7961090127367493644, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 4876621640926341173, guid: ec913c9267d314247bf90d263369c9f9,
+        type: 3}
     - target: {fileID: -6450381012629423667, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: GravityScale
@@ -76,6 +82,27 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SE_Char_Mob_Bird
+      objectReference: {fileID: 0}
+    - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: AttackLimit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: AttackAction
+      value: 
+      objectReference: {fileID: 7587137633723008080, guid: 74e4f079c452ed94c9b555f38af41c38,
+        type: 3}
+    - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: FirstAttackPreloaded
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: PrepareAttackInAdvance
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8689866959615521493, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}

@@ -12,6 +12,12 @@ PrefabInstance:
       propertyPath: _guid
       value: 987a47d4012e6fc4c8365e6a618abff0
       objectReference: {fileID: 0}
+    - target: {fileID: -7961090127367493644, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: _bindedViewPrefab
+      value: 
+      objectReference: {fileID: 4876621640926341173, guid: 097b9b05f1c47604b84c82016f617fdd,
+        type: 3}
     - target: {fileID: 1983468408252183681, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: m_RootOrder

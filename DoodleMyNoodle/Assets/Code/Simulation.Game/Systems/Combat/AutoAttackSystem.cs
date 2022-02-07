@@ -12,6 +12,22 @@ public struct AutoAttackRate : IComponentData
     public static implicit operator AutoAttackRate(fix val) => new AutoAttackRate() { Value = val };
 }
 
+public struct RemainingAutoAttackCount : IComponentData
+{
+    public int Value;
+
+    public static implicit operator int(RemainingAutoAttackCount val) => val.Value;
+    public static implicit operator RemainingAutoAttackCount(int val) => new RemainingAutoAttackCount() { Value = val };
+}
+
+public struct ProgressAutoAttackInAdvance : IComponentData
+{
+    public bool Value;
+
+    public static implicit operator bool(ProgressAutoAttackInAdvance val) => val.Value;
+    public static implicit operator ProgressAutoAttackInAdvance(bool val) => new ProgressAutoAttackInAdvance() { Value = val };
+}
+
 public struct AutoAttackProgress : IComponentData
 {
     public fix Value;
@@ -43,19 +59,32 @@ public class UpdateAutoAttackSystem : SimGameSystemBase
         var attackingEntities = GetSingletonBuffer<SystemRequestAutoAttack>();
         fix deltaTime = Time.DeltaTime;
         Entities
-            .ForEach((Entity entity, ref AutoAttackProgress attackProgress, in AutoAttackRate attackRate, in ShouldAutoAttack shouldAttack) =>
+            .ForEach((Entity entity, ref AutoAttackProgress attackProgress, ref RemainingAutoAttackCount remainingAttacks,
+                in AutoAttackRate attackRate, in ShouldAutoAttack shouldAttack, in ProgressAutoAttackInAdvance progressAutoAttackInAdvance) =>
             {
-                attackProgress.Value = shouldAttack
+                bool canAutoAttack = shouldAttack && (remainingAttacks > 0 || remainingAttacks == -1);
+
+                attackProgress.Value = (progressAutoAttackInAdvance || canAutoAttack)
                     ? attackProgress.Value + attackRate * deltaTime
                     : 0;
 
                 if (attackProgress.Value >= 1)
                 {
-                    attackingEntities.Add(new SystemRequestAutoAttack()
+                    if (canAutoAttack)
                     {
-                        Instigator = entity
-                    });
-                    attackProgress.Value--;
+                        attackingEntities.Add(new SystemRequestAutoAttack()
+                        {
+                            Instigator = entity
+                        });
+                        attackProgress.Value--;
+
+                        if (remainingAttacks != -1)
+                            remainingAttacks.Value--;
+                    }
+                    else
+                    {
+                        attackProgress.Value = 1; // cap at 1
+                    }
                 }
             }).Run();
     }

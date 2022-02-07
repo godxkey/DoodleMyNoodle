@@ -94,7 +94,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveDirection: 1
   MoveSpeed:
-    RawValue: 8589934592
+    RawValue: 4294967296
 --- !u!114 &5635049573386359071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,6 +108,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AttackRate: 1
+  AttackAction: {fileID: 0}
+  FirstAttackPreloaded: 0
+  AttackLimit: -1
 --- !u!114 &8689866959615521493
 MonoBehaviour:
   m_ObjectHideFlags: 0

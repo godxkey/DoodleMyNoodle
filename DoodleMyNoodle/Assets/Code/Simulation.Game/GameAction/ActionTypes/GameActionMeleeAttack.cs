@@ -48,7 +48,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         public fix2 DisplacementVectorToAttackPosition;
     }
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, Settings settings)
+    public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Settings settings)
     {
         GameActionParameterPosition.Description tileParam = new GameActionParameterPosition.Description()
         {
@@ -57,12 +57,12 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
 
         GameActionParameterSuccessRate.Description successParam = new GameActionParameterSuccessRate.Description();
 
-        return new UseContract(tileParam, successParam);
+        return new ExecutionContract(tileParam, successParam);
     }
 
-    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in UseContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
+    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {
-        fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.InstigatorPawn);
+        fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.ActionInstigatorActor);
 
         fix2 position;
         if (useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
@@ -80,7 +80,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
 
         // find all targets hit
         NativeList<Entity> hitTargets = new NativeList<Entity>(Allocator.Temp);
-        NativeList<DistanceHit> overlapHits = CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.InstigatorPawn);
+        NativeList<DistanceHit> overlapHits = CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.FirstInstigatorActor);
 
         foreach (var hit in overlapHits)
         {
@@ -89,7 +89,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
 
         if (settings.HitTargetsInbetween)
         {
-            var rayHits = CommonReads.Physics.CastRay(accessor, instigatorPos, attackPosition, ignoreEntity: context.InstigatorPawn);
+            var rayHits = CommonReads.Physics.CastRay(accessor, instigatorPos, attackPosition, ignoreEntity: context.FirstInstigatorActor);
             for (int i = 0; i < rayHits.Length; i++)
             {
                 hitTargets.AddUnique(rayHits[i].Entity);

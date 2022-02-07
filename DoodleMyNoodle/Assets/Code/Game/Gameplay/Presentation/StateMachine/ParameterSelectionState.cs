@@ -48,7 +48,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             GameAction objectGameAction = GameActionBank.GetAction(actionId);
 
             _surveySMBlackboard.UseContext = CommonReads.GetActionContext(SimWorld, InputParameter.ActionInstigator, InputParameter.ActionPrefab);
-            _surveySMBlackboard.ParametersDescriptions = objectGameAction.GetUseContract(SimWorld, InputParameter.ActionPrefab).ParameterTypes;
+            _surveySMBlackboard.ParametersDescriptions = objectGameAction.GetExecutionContract(SimWorld, InputParameter.ActionPrefab).ParameterTypes;
         }
         else
         {
@@ -133,7 +133,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
         public bool isDebug;
 
-        public GameAction.UseContext UseContext;
+        public GameAction.ExecutionContext UseContext;
 
         // the description of parameters we must fill
         public GameAction.ParameterDescription[] ParametersDescriptions;

@@ -15,7 +15,7 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
     // SIMULATION
 
     // Game Action
-    public GameObject GameActionEntityPrefab;
+    public GameActionAuth ActionPrefab;
 
     public int ApCost = 1;
 
@@ -25,50 +25,39 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
     {
         NoCooldown,
         Seconds,
-        Turns
     }
 
     public CooldownMode CooldownType = CooldownMode.NoCooldown;
-    public fix CooldownDuration = 1;
+    public float CooldownDuration = 1;
 
     public bool HideInInventory = false;
 
-    [FormerlySerializedAs("CanBeUsedAtAnytime")]
-    public bool UsableInOthersTurn = false;
-
     public bool HasCooldown => CooldownType != CooldownMode.NoCooldown;
-
-    public bool IsAutoUse = false;
-    public fix PassiveUsageTimeInterval = 1;
-    public GameAction.UseParameters DefaultParamaters = new GameAction.UseParameters();
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new ItemAction() { ActionPrefab = conversionSystem.GetPrimaryEntity(GameActionEntityPrefab) });
+        dstManager.AddComponentData<ItemAction>(entity, ActionPrefab != null ? conversionSystem.GetPrimaryEntity(ActionPrefab.gameObject) : default);
 
         if (CooldownType == CooldownMode.Seconds)
         {
-            dstManager.AddComponentData(entity, new ItemTimeCooldownData() { Value = CooldownDuration });
-        }
-        else if (CooldownType == CooldownMode.Turns)
-        {
-            dstManager.AddComponentData(entity, new ItemTurnCooldownData() { Value = fixMath.roundToInt(CooldownDuration) });
+            dstManager.AddComponentData(entity, new ItemTimeCooldownData() { Value = (fix)CooldownDuration });
         }
 
-        dstManager.AddComponentData(entity, new GameActionSettingAPCost() { Value = ApCost });
+        dstManager.AddComponentData(entity, new ItemSettingAPCost() { Value = ApCost });
         dstManager.AddComponentData(entity, new StackableFlag() { Value = IsStackable });
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
-        referencedPrefabs.Add(GameActionEntityPrefab);
+        if (ActionPrefab != null)
+            referencedPrefabs.Add(ActionPrefab.gameObject);
     }
 
     // PRESENTATION
 
     // Description
     public Sprite Icon;
-    public Color IconTint = Color.white; // 0008FF
+    public Color IconTint = Color.white;
     public string Name;
     public string EffectDescription;
 }

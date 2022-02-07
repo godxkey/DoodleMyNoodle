@@ -159,21 +159,21 @@ public static class PresentationHelpers
             return GetGameAction(simWorld, item) as T;
         }
 
-        public static bool GetItemTrajectorySettings(GamePresentationCache cache, GameAction.UseContext useContext, Vector2 direction,
+        public static bool GetItemTrajectorySettings(GamePresentationCache cache, GameAction.ExecutionContext useContext, Vector2 direction,
             out Vector2 spawnOffset,
             out float radius)
         {
             spawnOffset = Vector2.zero;
             radius = 0.05f;
 
-            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigator, out ItemAction itemAction))
+            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigatorActor, out ItemAction itemAction))
             {
-                GameActionThrow throwAction = GetGameAction<GameActionThrow>(cache.SimWorld, itemAction.ActionPrefab);
+                GameActionThrow throwAction = GetGameAction<GameActionThrow>(cache.SimWorld, itemAction.Value);
 
                 if (throwAction != null)
                 {
-                    spawnOffset = (Vector2)throwAction.GetSpawnPosOffset(cache.SimWorld, useContext, itemAction.ActionPrefab,(fix2)direction);
-                    radius = (float)throwAction.GetProjectileRadius(cache.SimWorld, itemAction.ActionPrefab);
+                    spawnOffset = (Vector2)throwAction.GetSpawnPosOffset(cache.SimWorld, useContext, itemAction.Value,(fix2)direction);
+                    radius = (float)throwAction.GetProjectileRadius(cache.SimWorld, itemAction.Value);
                     return true;
                 }
             }
@@ -181,17 +181,17 @@ public static class PresentationHelpers
             return false;
         }
 
-        public static float GetProjectileGravityScale(GamePresentationCache cache, GameAction.UseContext useContext)
+        public static float GetProjectileGravityScale(GamePresentationCache cache, GameAction.ExecutionContext useContext)
         {
             if (cache.SimWorld == null)
                 return 1;
 
-            if (!cache.SimWorld.Exists(useContext.ActionInstigator))
+            if (!cache.SimWorld.Exists(useContext.ActionInstigatorActor))
                 return 1;
 
-            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigator, out ItemAction itemAction))
+            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigatorActor, out ItemAction itemAction))
             {
-                if (cache.SimWorld.TryGetComponent(itemAction.ActionPrefab, out GameActionThrow.Settings throwSettings))
+                if (cache.SimWorld.TryGetComponent(itemAction.Value, out GameActionThrow.Settings throwSettings))
                 {
                     return GetEntityGravScale(throwSettings.ProjectilePrefab);
                 }
