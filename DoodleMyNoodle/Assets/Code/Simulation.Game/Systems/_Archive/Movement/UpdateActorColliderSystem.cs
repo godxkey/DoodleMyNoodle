@@ -29,7 +29,7 @@ public class UpdateActorColliderSystem : SimGameSystemBase
             .WithChangeFilter<NavAgentFootingState, Health>()
             .ForEach((ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in ActorColliderRefs colliderRefs, in Health health) =>
             {
-                UpdateActorCollider(ref collider, footing, colliderRefs, alive: health > 0);
+                UpdateActorCollider(ref collider, footing, colliderRefs, alive: health > fix.Zero);
             }).Run();
 
         // with health only
@@ -38,7 +38,7 @@ public class UpdateActorColliderSystem : SimGameSystemBase
             .WithChangeFilter<Health>()
             .ForEach((ref PhysicsColliderBlob collider, in Health health, in ActorColliderRefs colliderRefs) =>
             {
-                UpdateActorCollider(ref collider, footing: NavAgentFooting.Ground, colliderRefs, alive: health > 0);
+                UpdateActorCollider(ref collider, footing: NavAgentFooting.Ground, colliderRefs, alive: health > fix.Zero);
             }).Run();
 
         // with navagent only

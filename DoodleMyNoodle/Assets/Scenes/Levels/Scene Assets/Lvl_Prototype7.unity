@@ -47842,6 +47842,7 @@ GameObject:
   - component: {fileID: 1766440193}
   - component: {fileID: 1766440192}
   - component: {fileID: 1766440194}
+  - component: {fileID: 1766440195}
   m_Layer: 0
   m_Name: PlayerGroupHeader
   m_TagString: Untagged
@@ -47911,6 +47912,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MemberSpacing: 1
   StopTriggerSize: {x: 0.3, y: 0.5}
+--- !u!114 &1766440195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766440190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a89527d159470b84f86b6f252684cff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxValue: 10
+  StartAtMax: 1
+  DestroyOnDeath: 0
+  StartValue: 10
+  TerrainOnlyColliderIfDead: 1
 --- !u!1 &2091116005
 GameObject:
   m_ObjectHideFlags: 0

@@ -83,8 +83,6 @@ internal static partial class CommonWrites
         }
 
         accessor.SetComponent(entity, compData);
-
-        OnIntStatChanged(accessor, entity, compData);
     }
 
     public static void SetStatFix<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, T compData)
@@ -101,8 +99,6 @@ internal static partial class CommonWrites
         }
 
         accessor.SetComponent(entity, compData);
-
-        OnFixStatChanged(accessor, entity, compData);
     }
 
     public static void AddStatFix<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, fix value)
@@ -120,70 +116,6 @@ internal static partial class CommonWrites
         if (!accessor.HasComponent<T>(entity))
         {
             accessor.AddComponent(entity, new T { Value = value });
-        }
-    }
-
-    public static void OnFixStatChanged<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, T ChangedStat)
-    where T : struct, IComponentData, IStatFix
-    {
-        // if we added a stat to a pawn, notify its items of the change if he has any
-        if (accessor.TryGetComponent(entity, out Controllable pawn))
-        {
-            if (accessor.TryGetBufferReadOnly(entity, out DynamicBuffer<InventoryItemReference> inventory))
-            {
-                foreach (InventoryItemReference ItemReference in inventory)
-                {
-                    if (accessor.TryGetBufferReadOnly(ItemReference.ItemEntity, out DynamicBuffer<ItemPassiveEffectId> itemPassiveEffectIds))
-                    {
-                        ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
-                        {
-                            InstigatorPawn = entity,
-                            ItemEntity = ItemReference.ItemEntity
-                        };
-
-                        foreach (ItemPassiveEffectId itemPassiveEffectId in itemPassiveEffectIds)
-                        {
-                            ItemPassiveEffect itemPassiveEffect = ItemPassiveEffectBank.GetItemPassiveEffect(itemPassiveEffectId);
-                            if (itemPassiveEffect != null)
-                            {
-                                itemPassiveEffect.OnPawnFixStatChanged(accessor, itemContext, ChangedStat);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public static void OnIntStatChanged<T>(ISimGameWorldReadWriteAccessor accessor, Entity entity, T ChangedStat)
-    where T : struct, IComponentData, IStatInt
-    {
-        // if we added a stat to a pawn, notify its items of the change if he has any
-        if (accessor.TryGetComponent(entity, out Controllable pawn))
-        {
-            if (accessor.TryGetBufferReadOnly(entity, out DynamicBuffer<InventoryItemReference> inventory))
-            {
-                foreach (InventoryItemReference ItemReference in inventory)
-                {
-                    if (accessor.TryGetBufferReadOnly(ItemReference.ItemEntity, out DynamicBuffer<ItemPassiveEffectId> itemPassiveEffectIds))
-                    {
-                        ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
-                        {
-                            InstigatorPawn = entity,
-                            ItemEntity = ItemReference.ItemEntity
-                        };
-
-                        foreach (ItemPassiveEffectId itemPassiveEffectId in itemPassiveEffectIds)
-                        {
-                            ItemPassiveEffect itemPassiveEffect = ItemPassiveEffectBank.GetItemPassiveEffect(itemPassiveEffectId);
-                            if (itemPassiveEffect != null)
-                            {
-                                itemPassiveEffect.OnPawnIntStatChanged(accessor, itemContext, ChangedStat);
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }

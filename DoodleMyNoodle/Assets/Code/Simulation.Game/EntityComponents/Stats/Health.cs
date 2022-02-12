@@ -1,14 +1,14 @@
 ﻿using Unity.Entities;
 
-[assembly: RegisterGenericComponentType(typeof(MaximumInt<Health>))]
-[assembly: RegisterGenericComponentType(typeof(MinimumInt<Health>))]
+[assembly: RegisterGenericComponentType(typeof(MaximumFix<Health>))]
+[assembly: RegisterGenericComponentType(typeof(MinimumFix<Health>))]
 
-public struct Health : IComponentData, IStatInt
+public struct Health : IComponentData, IStatFix
 {
-    public int Value;
+    public fix Value;
 
-    int IStatInt.Value { get => Value; set => Value = value; }
+    fix IStatFix.Value { get => Value; set => Value = value; }
 
-    public static implicit operator int(Health val) => val.Value;
-    public static implicit operator Health(int val) => new Health() { Value = val };
+    public static implicit operator fix(Health val) => val.Value;
+    public static implicit operator Health(fix val) => new Health() { Value = val };
 }

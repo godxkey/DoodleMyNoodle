@@ -44,28 +44,6 @@ public class InstantiateStartingInventorySystem : SimGameSystemBase
 
                 CommonWrites.ExecuteItemTransaction(Accessor, itemTransationBatch);
 
-                // Passive stuff
-                foreach (var item in GetBuffer<InventoryItemReference>(entity))
-                {
-                    ItemPassiveEffect.ItemContext itemContext = new ItemPassiveEffect.ItemContext()
-                    {
-                        InstigatorPawn = entity,
-                        ItemEntity = item.ItemEntity
-                    };
-
-                    if (EntityManager.TryGetBuffer(item.ItemEntity, out DynamicBuffer<ItemPassiveEffectId> itemPassiveEffectIds))
-                    {
-                        foreach (ItemPassiveEffectId itemPassiveEffectId in itemPassiveEffectIds)
-                        {
-                            ItemPassiveEffect itemPassiveEffect = ItemPassiveEffectBank.GetItemPassiveEffect(itemPassiveEffectId);
-                            if (itemPassiveEffect != null)
-                            {
-                                itemPassiveEffect.Equip(Accessor, itemContext);
-                            }
-                        }
-                    }
-                }
-
                 // Remove starting inventory buffer
                 EntityManager.RemoveComponent<StartingInventoryItem>(entity);
             })

@@ -25,7 +25,6 @@ public class ItemAuthEditor : Editor
     private SerializedProperty _effectDescriptionProp;
     private SerializedProperty _hideInInventory;
     private SerializedProperty _actionPrefab;
-    private SerializedProperty _canBeUsedAtAnytime;
 
     private void OnEnable()
     {
@@ -67,7 +66,6 @@ public class ItemAuthEditor : Editor
         EditorGUILayout.PropertyField(_nameProp);
         EditorGUILayout.PropertyField(_effectDescriptionProp);
         EditorGUILayout.PropertyField(_hideInInventory);
-        EditorGUILayout.PropertyField(_canBeUsedAtAnytime);
 
         if (EditorGUI.EndChangeCheck())
         {

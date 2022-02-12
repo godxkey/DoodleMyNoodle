@@ -24,8 +24,8 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new Health { Value = StartAtMax ? MaxValue : StartValue });
-        dstManager.AddComponentData(entity, new MinimumInt<Health> { Value = 0 });
-        dstManager.AddComponentData(entity, new MaximumInt<Health> { Value = MaxValue });
+        dstManager.AddComponentData(entity, new MinimumFix<Health> { Value = 0 });
+        dstManager.AddComponentData(entity, new MaximumFix<Health> { Value = MaxValue });
 
         if (DestroyOnDeath)
             dstManager.AddComponent<DestroyOnDeath>(entity);

@@ -100,6 +100,7 @@ public class PerformAutoAttackSystem : SimGameSystemBase
     protected override void OnUpdate()
     {
         var attackingEntitiesBuffer = GetSingletonBuffer<SystemRequestAutoAttack>();
+        var playerGroup = GetSingletonEntity<PlayerGroupDataTag>();
         if (attackingEntitiesBuffer.Length > 0)
         {
             NativeArray<SystemRequestAutoAttack> attackingEntities = attackingEntitiesBuffer.ToNativeArray(Allocator.Temp);
@@ -111,7 +112,7 @@ public class PerformAutoAttackSystem : SimGameSystemBase
                     continue;
 
                 var attackAction = GetComponent<AutoAttackAction>(request.Instigator);
-                CommonWrites.ExecuteGameAction(Accessor, request.Instigator, attackAction);
+                CommonWrites.ExecuteGameAction(Accessor, request.Instigator, attackAction, playerGroup);
             }
         }
     }

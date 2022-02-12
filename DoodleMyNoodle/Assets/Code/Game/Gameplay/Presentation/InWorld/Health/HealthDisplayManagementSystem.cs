@@ -25,9 +25,9 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
 
         Team localPlayerTeam = Cache.DEPRECATED_LocalControllerTeam;
 
-        Cache.SimWorld.Entities.ForEach((Entity entity, ref Health entityHealth, ref MaximumInt<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
+        Cache.SimWorld.Entities.ForEach((Entity entity, ref Health entityHealth, ref MaximumFix<Health> entityMaximumHealth, ref FixTranslation entityTranslation) =>
         {
-            SetOrAddHealthBar(entity, healthBarAmount, entityTranslation.Value, entityMaximumHealth.Value, entityHealth.Value);
+            SetOrAddHealthBar(entity, healthBarAmount, entityTranslation.Value, fix.RoundToInt(entityMaximumHealth.Value), fix.RoundToInt(entityHealth.Value));
 
             healthBarAmount++;
         });
@@ -43,33 +43,10 @@ public class HealthDisplayManagementSystem : GamePresentationSystem<HealthDispla
 
     private void UpdateHealthDisplay()
     {
-        if (Cache.PointerInWorld && Cache.LocalPawn != Entity.Null)
+        foreach (KeyValuePair<Entity, GameObject> keyValuePair in EntitiesHPBar)
         {
-            foreach (var tileActor in Cache.PointedBodies)
-            {
-                if (SimWorld.TryGetComponent(tileActor, out Health health))
-                {
-                    if (health.Value > 0)
-                    {
-                        if (EntitiesHPBar.ContainsKey(tileActor))
-                        {
-                            EntitiesHPBar[tileActor].GetComponent<HealthBarDisplay>().Show(HideDelayFromMouse);
-                        }
-                    }
-                }
-            }
+            keyValuePair.Value?.GetComponent<HealthBarDisplay>().Show(HideDelayFromMouse);
         }
-
-        Cache.SimWorld.Entities.ForEach((ref DamageEventData damageEvent) =>
-        {
-            if (SimWorld.TryGetComponent(damageEvent.EntityDamaged, out FixTranslation position))
-            {
-                if (EntitiesHPBar.ContainsKey(damageEvent.EntityDamaged))
-                {
-                    EntitiesHPBar[damageEvent.EntityDamaged].GetComponent<HealthBarDisplay>().Show(HideDelayFromDamageOrHeal);
-                }
-            }
-        });
     }
 
     private void SetOrAddHealthBar(Entity entity, int index, fix3 position, int maxHealth, int health)

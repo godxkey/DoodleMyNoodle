@@ -13,8 +13,8 @@ public class GameActionScriptTemplate : ScriptTemplate
         return
 $@"using static fixMath;
 using Unity.Entities;
-using Unity.Collections;
 using System;
+using System.Collections.Generic;
 
 public class #SCRIPTNAME# : {nameof(GameAction)}<#SCRIPTNAME#.Settings>
 {{
@@ -28,6 +28,7 @@ public class #SCRIPTNAME# : {nameof(GameAction)}<#SCRIPTNAME#.Settings>
         {{
             dstManager.AddComponentData(entity, new Settings()
             {{
+                Range = Range,
             }});
         }}
     }}
@@ -37,18 +38,18 @@ public class #SCRIPTNAME# : {nameof(GameAction)}<#SCRIPTNAME#.Settings>
         public fix Range;
     }}
 
-    public override UseContract GetUseContract(ISimWorldReadAccessor accessor, in UseContext context, Settings settings)
+    public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Settings settings)
     {{
-        return new UseContract(
+        return new ExecutionContract(
                    new GameActionParameterPosition.Description()
                    {{
                        MaxRangeFromInstigator = settings.Range
                    }});
     }}
 
-    public override bool Use(ISimWorldReadWriteAccessor accessor, in UseContext context, UseParameters parameters, ref ResultData resultData, Settings settings)
+    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {{
-        if (parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
+        if (useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {{
             return true;
         }}

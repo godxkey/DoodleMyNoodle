@@ -95,9 +95,9 @@ public class FillDynamicChestsSystem : SimGameSystemBase
             Entities.WithAll<PlayerTag>()
                 .ForEach((in ControlledEntity pawn, in Active active) =>
                 {
-                    if (active && HasComponent<Health>(pawn) && HasComponent<MaximumInt<Health>>(pawn))
+                    if (active && HasComponent<Health>(pawn) && HasComponent<MaximumFix<Health>>(pawn))
                     {
-                        totalHealthRatios += (fix)GetComponent<Health>(pawn).Value / GetComponent<MaximumInt<Health>>(pawn).Value;
+                        totalHealthRatios += (fix)GetComponent<Health>(pawn).Value / GetComponent<MaximumFix<Health>>(pawn).Value;
                         playerCount++;
                     }
                 }).Run();
