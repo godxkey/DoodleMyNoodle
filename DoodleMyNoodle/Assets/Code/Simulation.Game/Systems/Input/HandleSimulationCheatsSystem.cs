@@ -123,7 +123,7 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                     }
 
                     var itemBankSystem = Accessor.GetExistingSystem<GlobalItemBankSystem>();
-                    var allItems = itemBankSystem.GetAllItemInstances();
+                    var allItems = itemBankSystem.GetAllItemPrefabs();
 
                     NativeArray<(Entity item, int stack)> itemTransfers = new NativeArray<(Entity item, int stack)>(allItems.Length, Allocator.Temp);
 

@@ -30,8 +30,8 @@ public class InstantiateStartingInventorySystem : SimGameSystemBase
 
                 for (int i = 0; i < startingInventory.Length; i++)
                 {
-                    var itemInstance = _itemBankSystem.GetItemInstance(startingInventory[i].ItemAssetId);
-                    itemTransfers[i] = (itemInstance, random.NextInt(startingInventory[i].StacksMin, startingInventory[i].StacksMax));
+                    var itemPrefab = _itemBankSystem.GetItemPrefab(startingInventory[i].ItemAssetId);
+                    itemTransfers[i] = (itemPrefab, random.NextInt(startingInventory[i].StacksMin, startingInventory[i].StacksMax));
                 }
 
                 ItemTransationBatch itemTransationBatch = new ItemTransationBatch()
