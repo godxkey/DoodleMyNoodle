@@ -100,19 +100,21 @@ public class PerformAutoAttackSystem : SimGameSystemBase
     protected override void OnUpdate()
     {
         var attackingEntitiesBuffer = GetSingletonBuffer<SystemRequestAutoAttack>();
-        var playerGroup = GetSingletonEntity<PlayerGroupDataTag>();
-        if (attackingEntitiesBuffer.Length > 0)
+        if (TryGetSingletonEntity<PlayerGroupDataTag>(out Entity playerGroup))
         {
-            NativeArray<SystemRequestAutoAttack> attackingEntities = attackingEntitiesBuffer.ToNativeArray(Allocator.Temp);
-            attackingEntitiesBuffer.Clear();
-
-            foreach (SystemRequestAutoAttack request in attackingEntities)
+            if (attackingEntitiesBuffer.Length > 0)
             {
-                if (!HasComponent<AutoAttackAction>(request.Instigator))
-                    continue;
+                NativeArray<SystemRequestAutoAttack> attackingEntities = attackingEntitiesBuffer.ToNativeArray(Allocator.Temp);
+                attackingEntitiesBuffer.Clear();
 
-                var attackAction = GetComponent<AutoAttackAction>(request.Instigator);
-                CommonWrites.ExecuteGameAction(Accessor, request.Instigator, attackAction, playerGroup);
+                foreach (SystemRequestAutoAttack request in attackingEntities)
+                {
+                    if (!HasComponent<AutoAttackAction>(request.Instigator))
+                        continue;
+
+                    var attackAction = GetComponent<AutoAttackAction>(request.Instigator);
+                    CommonWrites.ExecuteGameAction(Accessor, request.Instigator, attackAction, playerGroup);
+                }
             }
         }
     }
