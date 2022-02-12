@@ -4,7 +4,7 @@ using CCC.Fix2D;
 public struct MeleeAttackerTag : IComponentData { }
 public struct DropAttackerTag : IComponentData { }
 
-public class UpdateMobShouldAutoAttackSystem : SimGameSystemBase
+public class UpdateShouldAutoAttackSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {
@@ -15,6 +15,14 @@ public class UpdateMobShouldAutoAttackSystem : SimGameSystemBase
 
     protected override void OnUpdate()
     {
+        // _________________________________________ Player Attacker _________________________________________ //
+        Entities
+            .WithAll<PlayerGroupMemberTag>()
+            .ForEach((ref ShouldAutoAttack shouldAttack) =>
+            {
+                shouldAttack = true;
+            }).Schedule();
+
         // _________________________________________ Melee Attacker _________________________________________ //
         Entities
             .WithAll<MeleeAttackerTag>()
