@@ -12,7 +12,7 @@ public abstract class DOTWEENAnimationDefinition : AnimationDefinition
     {
         if (_sequences.ContainsKey(entity))
         {
-            _sequences[entity].Kill(true);
+            _sequences[entity].Complete();
             _sequences.Remove(entity);
         }
     }

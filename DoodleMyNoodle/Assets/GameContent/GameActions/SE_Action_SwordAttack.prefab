@@ -76,11 +76,11 @@ MonoBehaviour:
       type: {class: GameActionMeleeAttack/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
-          RawValue: 4294967296
+          RawValue: 21474836480
         Damage: 1
         ImpulseForce:
           RawValue: 0
         ImpulseUpAngleRatio:
           RawValue: 4294967296
-        HitTargetsInbetween: 0
-        DisplacementVectorToAttackPosition: {x: 0, y: 2}
+        HitTargetsInbetween: 1
+        DisplacementVectorToAttackPosition: {x: 2, y: 0}

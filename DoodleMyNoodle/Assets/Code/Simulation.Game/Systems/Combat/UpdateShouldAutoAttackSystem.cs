@@ -17,7 +17,7 @@ public class UpdateShouldAutoAttackSystem : SimGameSystemBase
     {
         // _________________________________________ Player Attacker _________________________________________ //
         Entities
-            .WithAll<PlayerGroupMemberTag>()
+            .WithAll<ItemTag>()
             .ForEach((ref ShouldAutoAttack shouldAttack) =>
             {
                 shouldAttack = true;
