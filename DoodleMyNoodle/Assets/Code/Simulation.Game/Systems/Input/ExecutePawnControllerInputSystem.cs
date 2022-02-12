@@ -124,22 +124,6 @@ public class ExecutePawnControllerInputSystem : SimGameSystemBase
         }
 
         Entity item = inventory[inputUseItem.ItemIndex].ItemEntity;
-
-        if (EntityManager.TryGetComponentData(item, out ItemAction itemAction))
-        {
-            GameAction gameAction = GetGameActionFromEntity(itemAction.Value);
-
-            CommonWrites.ExecuteGameAction(Accessor, item, itemAction.Value);
-        }
-    }
-
-    private GameAction GetGameActionFromEntity(Entity entity)
-    {
-        if (TryGetComponent(entity, out GameActionId gameActionId) && gameActionId.IsValid)
-        {
-            return GameActionBank.GetAction(gameActionId);
-        }
-
-        return null;
+        CommonWrites.UseItem(Accessor, pawn, item, inputUseItem.GameActionData);
     }
 }

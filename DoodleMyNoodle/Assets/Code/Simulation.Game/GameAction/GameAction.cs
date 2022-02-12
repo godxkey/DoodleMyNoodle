@@ -8,31 +8,31 @@ using Unity.Collections;
 
 public partial class CommonReads
 {
-    public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity instigator, Entity actionPrefab)
+    public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionInstigator, Entity actionEntity)
     {
-        return GetActionContext(accessor, instigator, actionPrefab, targets: default);
+        return GetActionContext(accessor, actionInstigator, actionEntity, targets: default);
     }
 
-    public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity instigator, Entity actionPrefab, Entity target)
+    public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionInstigator, Entity actionEntity, Entity target)
     {
         var targets = new NativeArray<Entity>(1, Allocator.Temp);
         targets[0] = target;
-        return GetActionContext(accessor, instigator, actionPrefab, targets);
+        return GetActionContext(accessor, actionInstigator, actionEntity, targets);
     }
 
-    public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity instigator, Entity actionPrefab, NativeArray<Entity> targets)
+    public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionInstigator, Entity actionEntity, NativeArray<Entity> targets)
     {
-        Entity firstInstigator = instigator;
-        if (accessor.TryGetComponent(instigator, out FirstInstigator firstInstigatorComponent))
+        Entity firstInstigator = actionInstigator;
+        if (accessor.TryGetComponent(actionInstigator, out FirstInstigator firstInstigatorComponent))
         {
             firstInstigator = firstInstigatorComponent.Value;
         }
 
         GameAction.ExecutionContext useContext = new GameAction.ExecutionContext()
         {
-            Action = actionPrefab,
+            Action = actionEntity,
             FirstInstigatorActor = firstInstigator,
-            ActionInstigatorActor = instigator,
+            ActionInstigatorActor = actionInstigator,
             Targets = targets
         };
 
@@ -42,21 +42,21 @@ public partial class CommonReads
 
 internal partial class CommonWrites
 {
-    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, GameAction.UseParameters parameters = null)
+    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, GameAction.UseParameters parameters = null)
     {
-        return ExecuteGameAction(accessor, instigator, action, targets: default, parameters);
+        return ExecuteGameAction(accessor, actionInstigator, actionEntity, targets: default, parameters);
     }
 
-    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity instigator, Entity action, Entity target, GameAction.UseParameters parameters = null)
+    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, Entity target, GameAction.UseParameters parameters = null)
     {
         var targets = new NativeArray<Entity>(1, Allocator.Temp);
         targets[0] = target;
-        return ExecuteGameAction(accessor, instigator, action, targets, parameters);
+        return ExecuteGameAction(accessor, actionInstigator, actionEntity, targets, parameters);
     }
 
-    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionEntity, Entity actionPrefab, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
+    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
     {
-        if (!accessor.TryGetComponent(actionPrefab, out GameActionId actionId) && actionId.IsValid)
+        if (!accessor.TryGetComponent(actionEntity, out GameActionId actionId) && actionId.IsValid)
             return false;
 
         GameAction gameAction = GameActionBank.GetAction(actionId);
@@ -64,7 +64,7 @@ internal partial class CommonWrites
         if (gameAction == null)
             return false; // error is already logged in 'GetAction' method
 
-        if (!gameAction.TryExecute(accessor, CommonReads.GetActionContext(accessor, actionEntity, actionPrefab, targets), parameters))
+        if (!gameAction.TryExecute(accessor, CommonReads.GetActionContext(accessor, actionInstigator, actionEntity, targets), parameters))
         {
             Log.Info($"Couldn't use {gameAction}.");
             return false;
