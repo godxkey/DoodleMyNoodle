@@ -30,12 +30,12 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
         }
 
         // Damage sounds
-        Cache.SimWorld.Entities.ForEach((ref DamageEventData gameActionEvent) =>
+        foreach (var hpDeltaEvent in PresentationEvents.HealthDeltaEvents.SinceLastPresUpdate)
         {
             if (_damageSound != null)
             {
                 _damageSound.PlayOn(_audioSource);
             }
-        });
+        }
     }
 }

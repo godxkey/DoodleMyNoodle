@@ -7,25 +7,35 @@ using static Unity.Mathematics.math;
 using CCC.Fix2D;
 using Unity.Collections;
 
-public struct DamageEventData : IComponentData
+public struct HealthDeltaEventData
 {
-    public Entity EntityDamaged;
-    public int DamageApplied;
+    public Entity AffectedEntity;
+    /// <summary>
+    /// Value will be negative when the entity is damaged
+    /// </summary>
+    public fix TotalUncappedDelta;
+    /// <summary>
+    /// Value will be negative when the entity is damaged
+    /// </summary>
+    public fix TotalCappedDelta => ShieldDelta + HPDelta;
+    /// <summary>
+    /// Value will be negative when the entity is damaged
+    /// </summary>
+    public fix ShieldDelta;
+    /// <summary>
+    /// Value will be negative when the entity is damaged
+    /// </summary>
+    public fix HPDelta;
     public fix2 Position;
-}
-
-public struct HealEventData : IComponentData
-{
-    public Entity EntityHealed;
-    public int HealApplied;
-    public fix2 Position;
+    public bool IsHeal => TotalUncappedDelta > 0;
+    public bool IsDamage => !IsHeal;
 }
 
 public struct DamageRequestSingletonTag : IComponentData
 {
 }
 
-public struct DamageRequestData : IBufferElementData
+public struct HealthChangeRequestData : IBufferElementData
 {
     public fix Amount;
     public Entity Target;
@@ -35,75 +45,38 @@ public struct DamageRequestData : IBufferElementData
 [AlwaysUpdateSystem]
 public class ApplyDamageSystem : SimGameSystemBase
 {
-    private EntityQuery _damageEvents;
-    private EntityQuery _healingEvents;
-
-    private List<DamageEventData> _newDamageEvents = new List<DamageEventData>();
-    private List<HealEventData> _newHealEvents = new List<HealEventData>();
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-
-        _damageEvents = GetEntityQuery(typeof(DamageEventData));
-        _healingEvents = GetEntityQuery(typeof(HealEventData));
-    }
-
-    public void RequestDamage(DamageRequestData damageRequestData)
+    public void RequestHealthChange(HealthChangeRequestData damageRequestData)
     {
         GetDamageRequestBuffer().Add(damageRequestData);
     }
 
-    private DynamicBuffer<DamageRequestData> GetDamageRequestBuffer()
+    private DynamicBuffer<HealthChangeRequestData> GetDamageRequestBuffer()
     {
         if (!HasSingleton<DamageRequestSingletonTag>())
         {
-            EntityManager.CreateEntity(typeof(DamageRequestSingletonTag), typeof(DamageRequestData));
+            EntityManager.CreateEntity(typeof(DamageRequestSingletonTag), typeof(HealthChangeRequestData));
         }
 
-        return GetBuffer<DamageRequestData>(GetSingletonEntity<DamageRequestSingletonTag>());
+        return GetBuffer<HealthChangeRequestData>(GetSingletonEntity<DamageRequestSingletonTag>());
     }
 
     protected override void OnUpdate()
     {
-        // Clear Damage Applied Events
-        EntityManager.DestroyEntity(_damageEvents);
-        EntityManager.DestroyEntity(_healingEvents);
+        DynamicBuffer<HealthChangeRequestData> damageRequests = GetDamageRequestBuffer();
 
-        DynamicBuffer<DamageRequestData> damageRequests = GetDamageRequestBuffer();
-
-        foreach (DamageRequestData damageData in damageRequests)
+        foreach (HealthChangeRequestData healthChangeData in damageRequests)
         {
-            if (damageData.Amount > 0)
-            {
-                ProcessDamage(damageData.Target, damageData.Amount, damageData.EffectGroupID, _newDamageEvents);
-            }
-            else if (damageData.Amount < 0)
-            {
-                ProcessHeal(damageData.Target, abs(damageData.Amount), _newHealEvents);
-            }
+            ProcessHealthChange(healthChangeData.Target, healthChangeData.Amount, healthChangeData.EffectGroupID);
         }
 
         damageRequests.Clear();
-
-        // We save entities damaged and do this here because we need to clear the buffer and it's a simulation changed
-        foreach (DamageEventData damageAppliedEventData in _newDamageEvents)
-        {
-            EntityManager.CreateEventEntity(damageAppliedEventData);
-        }
-
-        foreach (HealEventData healAppliedEventData in _newHealEvents)
-        {
-            EntityManager.CreateEventEntity(healAppliedEventData);
-        }
-
-        _newDamageEvents.Clear();
-        _newHealEvents.Clear();
     }
 
-    private void ProcessDamage(Entity target, fix amount, uint effectGroupID, List<DamageEventData> outDamageEvents)
+    private void ProcessHealthChange(Entity target, fix amount, uint effectGroupID)
     {
-        fix remainingDamage = fixMath.round(amount);
+        fix shieldDelta = 0;
+        fix hpDelta = 0;
+        fix remainingDelta = amount;
 
         // prevents too many damage instance from the same source/group
         if (effectGroupID != uint.MaxValue)
@@ -125,40 +98,28 @@ public class ApplyDamageSystem : SimGameSystemBase
         // Invincible
         if (HasComponent<Invincible>(target))
         {
-            remainingDamage = 0;
+            remainingDelta = min(remainingDelta, 0);
         }
 
-        if (TryGetComponent(target, out Shield shield))
+        if (remainingDelta != 0 && TryGetComponent(target, out Shield previousShield))
         {
-            if (shield.Value > 0)
-            {
-                int shieldVariation = 0;
-
-                shieldVariation = (int)shield.Value;
-                CommonWrites.ModifyStatFix<Shield>(Accessor, target, -remainingDamage);
-                shieldVariation -= (int)shield.Value;
-
-                if (shieldVariation > 0)
-                {
-                    // todo : event here
-                }
-
-                // hard coded that if damage was taken by the shield, no HP will be removed
-                return;
-            }
+            Shield newShield = clamp(previousShield + remainingDelta, 0, GetComponent<MaximumFix<Shield>>(target).Value);
+            shieldDelta = newShield.Value - previousShield.Value;
+            SetComponent(target, newShield);
+            remainingDelta -= shieldDelta;
         }
 
         // Health
-        int healthVariation = 0;
-        if (remainingDamage > 0 && TryGetComponent(target, out Health health))
+        if (remainingDelta != 0 && TryGetComponent(target, out Health previousHP))
         {
-            healthVariation = (int)health.Value;
-            CommonWrites.ModifyStatFix<Health>(Accessor, target, -remainingDamage);
-            healthVariation -= (int)health.Value;
+            Health newHP = clamp(previousHP + remainingDelta, 0, GetComponent<MaximumFix<Health>>(target).Value);
+            hpDelta = newHP.Value - previousHP.Value;
+            SetComponent(target, newHP);
+            remainingDelta -= hpDelta;
         }
 
         // Trigger Signal on Damage
-        if (HasComponent<TriggerSignalOnDamage>(target) && TryGetComponent(target, out SignalEmissionType emissionType))
+        if (hpDelta < 0 && shieldDelta < 0 && HasComponent<TriggerSignalOnDamage>(target) && TryGetComponent(target, out SignalEmissionType emissionType))
         {
             if (emissionType.Value == ESignalEmissionType.OnClick || emissionType.Value == ESignalEmissionType.ToggleOnClick)
             {
@@ -167,48 +128,30 @@ public class ApplyDamageSystem : SimGameSystemBase
         }
 
         // Handle damaged entity for feedbacks
-        if (healthVariation > 0)
+        if (hpDelta != 0 || shieldDelta != 0)
         {
-            outDamageEvents.Add(new DamageEventData()
+            PresentationEvents.HealthDeltaEvents.Push(new HealthDeltaEventData()
             {
-                EntityDamaged = target,
-                DamageApplied = healthVariation,
+                AffectedEntity = target,
+                TotalUncappedDelta = amount,
+                HPDelta = hpDelta,
+                ShieldDelta = shieldDelta,
                 Position = GetComponent<FixTranslation>(target)
             });
-        }
-    }
-
-    private void ProcessHeal(Entity target, fix amount, List<HealEventData> outHealEvents)
-    {
-        if (TryGetComponent(target, out Health health))
-        {
-            int healthVariation = (int)health.Value;
-            CommonWrites.ModifyStatFix<Health>(Accessor, target, amount);
-            healthVariation -= (int)health.Value;
-
-            if (healthVariation > 0)
-            {
-                outHealEvents.Add(new HealEventData()
-                {
-                    EntityHealed = target,
-                    HealApplied = healthVariation,
-                    Position = GetComponent<FixTranslation>(target)
-                });
-            }
         }
     }
 }
 
 internal static partial class CommonWrites
 {
-    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, NativeArray<DistanceHit> hits, fix damage, uint effectGroupID = uint.MaxValue)
+    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, NativeArray<DistanceHit> hits, fix amount, uint effectGroupID = uint.MaxValue)
     {
         var sys = accessor.GetExistingSystem<ApplyDamageSystem>();
 
         for (int i = 0; i < hits.Length; i++)
         {
-            var request = new DamageRequestData() { Amount = damage, Target = hits[i].Entity, EffectGroupID = effectGroupID };
-            sys.RequestDamage(request);
+            var request = new HealthChangeRequestData() { Amount = -amount, Target = hits[i].Entity, EffectGroupID = effectGroupID };
+            sys.RequestHealthChange(request);
         }
     }
     public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, NativeArray<Entity> targets, fix amount, uint effectGroupID = uint.MaxValue)
@@ -217,15 +160,15 @@ internal static partial class CommonWrites
 
         for (int i = 0; i < targets.Length; i++)
         {
-            var request = new DamageRequestData() { Amount = amount, Target = targets[i], EffectGroupID = effectGroupID };
-            sys.RequestDamage(request);
+            var request = new HealthChangeRequestData() { Amount = -amount, Target = targets[i], EffectGroupID = effectGroupID };
+            sys.RequestHealthChange(request);
         }
     }
 
     public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity target, fix amount, uint effectGroupID = uint.MaxValue)
     {
-        var request = new DamageRequestData() { Amount = amount, Target = target, EffectGroupID = effectGroupID };
-        accessor.GetExistingSystem<ApplyDamageSystem>().RequestDamage(request);
+        var request = new HealthChangeRequestData() { Amount = -amount, Target = target, EffectGroupID = effectGroupID };
+        accessor.GetExistingSystem<ApplyDamageSystem>().RequestHealthChange(request);
     }
 
     public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, NativeArray<Entity> targets, fix amount, uint effectGroupID = uint.MaxValue)

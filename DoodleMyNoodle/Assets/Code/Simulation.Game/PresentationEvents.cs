@@ -22,6 +22,8 @@ public class PresentationEvents : IDisposable
     internal PresentationEventWriter<GameActionUsedEventData> GameActionEvents => new PresentationEventWriter<GameActionUsedEventData>(_gameActionEvents, _latestTickId);
     protected List<PresentationEventData<SimLogEvent>> _logEvents = new List<PresentationEventData<SimLogEvent>>();
     internal PresentationEventWriter<SimLogEvent> LogEvents => new PresentationEventWriter<SimLogEvent>(_logEvents, _latestTickId);
+    protected List<PresentationEventData<HealthDeltaEventData>> _healthDeltaEvents = new List<PresentationEventData<HealthDeltaEventData>>();
+    internal PresentationEventWriter<HealthDeltaEventData> HealthDeltaEvents => new PresentationEventWriter<HealthDeltaEventData>(_healthDeltaEvents, _latestTickId);
 
     public void Dispose()
     {
@@ -43,6 +45,7 @@ public class PresentationEventsWithReadAccess : PresentationEvents
     ////////////////////////////////////////////////////////////////////////////////////////
     public new PresentationEventReader<GameActionUsedEventData> GameActionEvents => new PresentationEventReader<GameActionUsedEventData>(_gameActionEvents, LatestTickId);
     public new PresentationEventReader<SimLogEvent> LogEvents => new PresentationEventReader<SimLogEvent>(_logEvents, LatestTickId);
+    public new PresentationEventReader<HealthDeltaEventData> HealthDeltaEvents => new PresentationEventReader<HealthDeltaEventData>(_healthDeltaEvents, LatestTickId);
 
     public void Clear()
     {
@@ -51,6 +54,7 @@ public class PresentationEventsWithReadAccess : PresentationEvents
         ////////////////////////////////////////////////////////////////////////////////////////
         _gameActionEvents.Clear();
         _logEvents.Clear();
+        _healthDeltaEvents.Clear();
     }
 }
 
@@ -79,7 +83,6 @@ public struct PresentationEventWriter<T>
 
 public struct PresentationEventReader<T>
 {
-
     private readonly List<PresentationEventData<T>> _eventDatas;
     private readonly uint _lastTickId;
 
