@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngineX;
+using static fixMath;
 
 public class FloatingTextSystem : GamePresentationSystem<FloatingTextSystem>
 {
@@ -15,21 +16,9 @@ public class FloatingTextSystem : GamePresentationSystem<FloatingTextSystem>
 
     public GameObject FloatingNumberPrefab;
 
-    public override void OnPostSimulationTick()
+    protected override void OnGamePresentationUpdate()
     {
-        Cache.SimWorld.Entities.ForEach((ref DamageEventData damageData) =>
-        {
-            Vector2 pos = damageData.Position.ToUnityVec();
-            pos += new Vector2(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
-            RequestText(pos, damageData.DamageApplied.ToString(), Color.red);
-        });
-
-        Cache.SimWorld.Entities.ForEach((ref HealEventData healingData) =>
-        {
-            Vector2 pos = healingData.Position.ToUnityVec();
-            pos += new Vector2(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
-            RequestText(pos, healingData.HealApplied.ToString(), Color.green);
-        });
+        CreateRequestsFromHPDeltaEvents();
 
         foreach (Request request in _requests)
         {
@@ -40,7 +29,31 @@ public class FloatingTextSystem : GamePresentationSystem<FloatingTextSystem>
         _requests.Clear();
     }
 
-    protected override void OnGamePresentationUpdate() { }
+    private void CreateRequestsFromHPDeltaEvents()
+    {
+        foreach (var healthDeltaEvent in PresentationEvents.HealthDeltaEvents.SinceLastPresUpdate)
+        {
+            Vector2 pos = healthDeltaEvent.Position.ToUnityVec();
+            pos += new Vector2(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
+
+            fix displayedValue;
+            Color color;
+
+            if (healthDeltaEvent.IsHeal)
+            {
+                // Heal
+                displayedValue = min(1, round(healthDeltaEvent.TotalUncappedDelta));
+                color = Color.green;
+            }
+            else
+            {
+                // Damage
+                displayedValue = min(1, round(-healthDeltaEvent.TotalUncappedDelta));
+                color = Color.red;
+            }
+            RequestText(pos, displayedValue.ToString(), color);
+        }
+    }
 
     public void RequestText(Vector2 position, string text, Color color)
     {

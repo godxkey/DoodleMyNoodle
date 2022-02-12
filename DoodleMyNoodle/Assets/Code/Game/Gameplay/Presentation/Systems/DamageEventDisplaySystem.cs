@@ -5,11 +5,13 @@ using System.Collections.Generic;
 
 public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDisplaySystem>
 {
-    public override void OnPostSimulationTick()
+    protected override void OnGamePresentationUpdate()
     {
-        Cache.SimWorld.Entities.ForEach((ref DamageEventData damageApplyData) =>
+        foreach (var hpDeltaEvent in PresentationEvents.HealthDeltaEvents.SinceLastPresUpdate)
         {
-            if (BindedSimEntityManaged.InstancesMap.TryGetValue(damageApplyData.EntityDamaged, out GameObject presentationEntity) && presentationEntity)
+            if (hpDeltaEvent.IsDamage
+                && BindedSimEntityManaged.InstancesMap.TryGetValue(hpDeltaEvent.AffectedEntity, out GameObject presentationEntity)
+                && presentationEntity)
             {
                 DoodleDisplay playerCharacterDoodleDisplay = presentationEntity.GetComponent<DoodleDisplay>();
                 SpriteRenderer entityRenderer = null;
@@ -35,8 +37,6 @@ public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDispla
                 sq.AppendInterval(0.1f);
                 sq.SetLoops(6);
             }
-        });
+        }
     }
-
-    protected override void OnGamePresentationUpdate() { }
 }
