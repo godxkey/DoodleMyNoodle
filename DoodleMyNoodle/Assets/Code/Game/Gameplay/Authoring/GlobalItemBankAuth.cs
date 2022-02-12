@@ -12,7 +12,6 @@ public class GlobalItemBankAuth : MonoBehaviour, IConvertGameObjectToEntity, IDe
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new GlobalItemBankTag());
-        dstManager.AddBuffer<GlobalItemBankInstanceElement>(entity);
         dstManager.AddBuffer<GlobalItemBankSimAssetIdElement>(entity);
 
         var prefabBuffer = dstManager.AddBuffer<GlobalItemBankPrefabElement>(entity);

@@ -45,6 +45,7 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
         dstManager.AddComponentData(entity, new ItemSettingAPCost() { Value = ApCost });
         dstManager.AddComponentData(entity, new StackableFlag() { Value = IsStackable });
+        dstManager.AddComponent<FirstInstigator>(entity);
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
