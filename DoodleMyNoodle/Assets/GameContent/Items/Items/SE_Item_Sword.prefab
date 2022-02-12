@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5742253346417087588}
   - component: {fileID: -8620854387768135619}
   - component: {fileID: 3648472793949699111}
+  - component: {fileID: 8393902726152106391}
   m_Layer: 0
   m_Name: SE_Item_Sword
   m_TagString: Untagged
@@ -63,29 +64,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionMeleeAttack
-  GameActionSettings:
-  - id: 0
+  ActionPrefab: {fileID: -4801357984810749253, guid: b3a4360667098244a823fdb69dc48aeb,
+    type: 3}
   ApCost: 1
   IsStackable: 1
-  CooldownType: 2
-  CooldownDuration:
-    RawValue: 4294967296
+  CooldownType: 1
+  CooldownDuration: 1
   HideInInventory: 0
-  CanBeUsedAtAnytime: 0
   Icon: {fileID: 21300000, guid: f60bb367ece611d429d90e53a56b4f4b, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: "\xC9p\xE9e"
   EffectDescription: "Envoie de plus grand d\xE9gats \xE0 une cible \xE0 proximiter"
-  SfxOnUse: {fileID: 0}
-  PlayAnimation: 1
-  Animation: {fileID: 11400000, guid: 8960135fd5d1ae74eb624a5f929e8b84, type: 2}
-  CustomSurveys: []
-  references:
-    version: 1
-    00000000:
-      type: {class: GameActionMeleeAttack/SettingsAuth, ns: , asm: Simulation.Game}
-      data:
-        Range:
-          RawValue: 4724464128
-        Damage: 2
+--- !u!114 &8393902726152106391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 722e71c09a9b4fe4387330ab52d80215, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackRate: 1
+  AttackAction: {fileID: 0}
+  PrepareAttackInAdvance: 0
+  AttackLimit: -1

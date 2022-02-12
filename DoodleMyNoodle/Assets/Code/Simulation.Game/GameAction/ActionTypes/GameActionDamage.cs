@@ -2,6 +2,7 @@ using static fixMath;
 using Unity.Entities;
 using System;
 using System.Collections.Generic;
+using CCC.Fix2D;
 
 public class GameActionDamage : GameAction<GameActionDamage.Settings>
 {
@@ -33,9 +34,21 @@ public class GameActionDamage : GameAction<GameActionDamage.Settings>
 
     public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {
+        var instigatorTranslation = accessor.GetComponent<FixTranslation>(context.ActionInstigatorActor);
+
         foreach (Entity target in context.Targets)
         {
             CommonWrites.RequestDamage(accessor, target, settings.Damage);
+
+            if (accessor.TryGetComponent(target, out FixTranslation targetTranslation))
+            {
+                resultData.Add(new ResultDataElement()
+                {
+                    AttackVector = targetTranslation.Value - instigatorTranslation.Value,
+                    Position = targetTranslation.Value,
+                    Entity = target
+                });;
+            }
         }
 
         return true;
