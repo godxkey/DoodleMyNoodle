@@ -154,17 +154,9 @@ MonoBehaviour:
     OnlineFlags: -1
   _wallpaper: {fileID: 2508691285438419769}
   _wallpaperVerticalSize: 10
-  ScreenEdgeBorderThickness: 20
   Cam: {fileID: 4685809662094148431}
-  Speed: 3
-  ZoomSpeed: 0.25
-  DragSpeed: 0.05
-  DragMaxSpeed: 0.06
-  followSmoothSpeed: 0.05
-  MinZoom: 7
-  MaxZoom: 7
-  SurveyZoom: 5
-  BeginZoom: 2
+  desiredWidth: 9.5
+  offsetFromGroupPosition: {x: 5, y: 2}
 --- !u!1 &5449155864576093604
 GameObject:
   m_ObjectHideFlags: 0

@@ -67,10 +67,6 @@ public class SurveyAngryBirds : SurveyBaseController
             }
         }
 
-        CameraMovementController.Instance.SetSurveyZoom();
-        CameraMovementController.Instance.CenterOnPawn();
-        CameraMovementController.Instance.CameraMovementOff();
-
         Update(); // force first update to avoid visual issue on first frame. We should find a more general fix
 
         // wait for drag to start
@@ -227,12 +223,10 @@ public class SurveyAngryBirds : SurveyBaseController
     {
         Vector3 dragVector = _center.position - _dragTarget.position;
         Vector2 cameraPos = _center.position + dragVector;
-        CameraMovementController.Instance.TeleportCameraToPosition(Vector2.Lerp(CameraMovementController.Instance.CamPosition, cameraPos, Time.deltaTime));
     }
 
     protected override void OnEndSurvey(bool wasCompleted)
     {
-        CameraMovementController.Instance.CameraMovementOn();
         _dragState = DragState.Idle;
         _trajectoryDisplay.Dispose();
     }

@@ -29,7 +29,12 @@ public class GamePresentationCache
     public Vector2 LocalPawnPositionFloat;
     public Entity LocalController;
     public fix GroupHealth;
+    public fix GroupMaxHealth;
     public fix GroupShield;
+    public fix GroupMaxShield;
+    public fix PlayerAP;
+    public fix PlayerMaxAP;
+    public fix2 GroupPosition;
     public ExternalSimGameWorldAccessor SimWorld;
 
     public bool LocalPawnExists => LocalPawn != Entity.Null;
@@ -91,10 +96,10 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Camera
         ////////////////////////////////////////////////////////////////////////////////////////
-        if (CameraMovementController.Instance != null)
+        if (CameraController.Instance != null)
         {
-            Cache.CameraPosition = CameraMovementController.Instance.CamPosition;
-            Cache.CameraSize = CameraMovementController.Instance.CamSize;
+            Cache.CameraPosition = CameraController.Instance.CamPosition;
+            Cache.CameraSize = CameraController.Instance.CamSize;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -107,6 +112,9 @@ public class GamePresentationCacheUpdater : ViewSystemBase
             Cache.LocalController = CommonReads.TryGetPawnController(Cache.SimWorld, Cache.LocalPawn);
             Cache.LocalPawnPosition = Cache.SimWorld.GetComponent<FixTranslation>(Cache.LocalPawn).Value;
             Cache.LocalPawnPositionFloat = Cache.LocalPawnPosition.ToUnityVec();
+
+            Cache.PlayerAP = Cache.SimWorld.GetComponent<ActionPoints>(Cache.LocalPawn).Value;
+            Cache.PlayerMaxAP = Cache.SimWorld.GetComponent<MaximumFix<ActionPoints>>(Cache.LocalPawn).Value;
         }
         else
         {
@@ -120,7 +128,10 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         {
             var playerGroupEntity = Cache.SimWorld.GetSingletonEntity<PlayerGroupDataTag>();
             Cache.GroupHealth = Cache.SimWorld.GetComponent<Health>(playerGroupEntity);
+            Cache.GroupMaxHealth = Cache.SimWorld.GetComponent<MaximumFix<Health>>(playerGroupEntity).Value;
             Cache.GroupShield = Cache.SimWorld.GetComponent<Shield>(playerGroupEntity);
+            Cache.GroupMaxShield = Cache.SimWorld.GetComponent<MaximumFix<Shield>>(playerGroupEntity).Value;
+            Cache.GroupPosition = Cache.SimWorld.GetComponent<FixTranslation>(playerGroupEntity).Value;
         }
 
 

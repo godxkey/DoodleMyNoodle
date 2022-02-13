@@ -143,7 +143,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
         if (SimWorld.TryGetComponent(_itemsOwner, out ActionPoints ap))
         {
-            APEnergyBarDisplayManagementSystem.Instance.ShowCostPreview(_itemsOwner, (float)ap.Value - _currentItemGameActionAuth.ApCost);
+            HUDDisplay.Instance.APEnergyBarDisplay.ShowPrevewAPEnergyCost((float)ap.Value - _currentItemGameActionAuth.ApCost);
         }
     }
 
@@ -151,7 +151,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
     {
         if (SimWorld.HasComponent<ActionPoints>(_itemsOwner))
         {
-            APEnergyBarDisplayManagementSystem.Instance.HideCostPreview(_itemsOwner);
+            HUDDisplay.Instance.APEnergyBarDisplay.StopShowingPreview();
         }
     }
 

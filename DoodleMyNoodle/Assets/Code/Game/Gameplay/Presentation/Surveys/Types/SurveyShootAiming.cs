@@ -54,9 +54,6 @@ public class SurveyShootAiming : SurveyBaseController
     {
         //Setup
         _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
-        CameraMovementController.Instance.SetSurveyZoom();
-        CameraMovementController.Instance.CenterOnPawn();
-        CameraMovementController.Instance.CameraMovementOff();
 
         _weaponPreview.SetActive(false);
 
@@ -214,7 +211,6 @@ public class SurveyShootAiming : SurveyBaseController
     // Clean up
     protected override void OnEndSurvey(bool wasCompleted)
     {
-        CameraMovementController.Instance.CameraMovementOn();
         _line.gameObject.SetActive(false);
         _trajectoryDisplay.Dispose();
     }

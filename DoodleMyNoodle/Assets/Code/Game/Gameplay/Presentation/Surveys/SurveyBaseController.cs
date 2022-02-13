@@ -128,7 +128,7 @@ public abstract class SurveyBaseController : MonoBehaviour
         {
             if (SimWorld.TryGetComponent(CurrentContext.ActionPrefab, out ItemSettingAPCost apCost))
             {
-                APEnergyBarDisplayManagementSystem.Instance.ShowCostPreview(CurrentContext.Instigator, (float)ap.Value - apCost.Value);
+                HUDDisplay.Instance.APEnergyBarDisplay.ShowPrevewAPEnergyCost((float)ap.Value - apCost.Value);
             } 
         }
     }
@@ -137,7 +137,7 @@ public abstract class SurveyBaseController : MonoBehaviour
     {
         if (SimWorld.HasComponent<ActionPoints>(CurrentContext.Instigator))
         {
-            APEnergyBarDisplayManagementSystem.Instance.HideCostPreview(CurrentContext.Instigator);
+            HUDDisplay.Instance.APEnergyBarDisplay.StopShowingPreview();
         }
     }
 }
