@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8237664610038018750}
   - component: {fileID: 5968595014659768486}
   - component: {fileID: 7702613220151262411}
+  - component: {fileID: 2028282551505110434}
   m_Layer: 9
   m_Name: SE_Char_Player
   m_TagString: Untagged
@@ -135,3 +136,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Index: 0
+--- !u!114 &2028282551505110434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305753096738685599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a89527d159470b84f86b6f252684cff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Proxy: {fileID: 0}
+  MaxValue: 10
+  StartAtMax: 1
+  DestroyOnDeath: 0
+  StartValue: 10
+  TerrainOnlyColliderIfDead: 1

@@ -78,6 +78,16 @@ public class ApplyDamageSystem : SimGameSystemBase
         fix hpDelta = 0;
         fix remainingDelta = amount;
 
+        // find who should be really targetted if there is a HealthProxy component. This is notably used by players since they all share the same health pool
+        while (HasComponent<HealthProxy>(target))
+        {
+            var newTarget = GetComponent<HealthProxy>(target);
+            if (newTarget == Entity.Null)
+                break;
+
+            target = newTarget;
+        }
+
         // prevents too many damage instance from the same source/group
         if (effectGroupID != uint.MaxValue)
         {
