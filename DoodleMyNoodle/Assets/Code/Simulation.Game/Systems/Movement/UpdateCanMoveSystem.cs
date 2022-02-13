@@ -16,8 +16,16 @@ public class UpdateCanMoveSystem : SimGameSystemBase
 
     protected override void OnUpdate()
     {
-        // by default, everyone can move
-        Entities.ForEach((ref CanMove canMove) =>
+        // by default, everyone alive can move
+        Entities
+            .ForEach((ref CanMove canMove, in Health hp) =>
+            {
+                canMove = hp.Value > 0;
+            }).Run();
+
+        Entities
+            .WithNone<Health>()
+            .ForEach((ref CanMove canMove) =>
         {
             canMove = true;
         }).Run();
@@ -51,10 +59,6 @@ public class UpdateCanMoveSystem : SimGameSystemBase
                         SetComponent<CanMove>(body.Entity, false);
                     }
                 }
-            }
-            else
-            {
-                SetComponent<CanMove>(playerGroupEntity, true);
             }
         }
     }

@@ -26,18 +26,18 @@ public class UpdateShouldAutoAttackSystem : SimGameSystemBase
         // _________________________________________ Melee Attacker _________________________________________ //
         Entities
             .WithAll<MeleeAttackerTag>()
-            .ForEach((ref ShouldAutoAttack shouldAttack, in CanMove canMove) =>
+            .ForEach((ref ShouldAutoAttack shouldAttack, in CanMove canMove, in Health hp) =>
         {
-            shouldAttack = !canMove;
+            shouldAttack = !canMove && hp.Value > 0;
         }).Schedule();
 
         // _________________________________________ Drop Attacker _________________________________________ //
         fix2 playerGroupPosition = GetComponent<FixTranslation>(GetSingletonEntity<PlayerGroupDataTag>());
         Entities
             .WithAll<DropAttackerTag>()
-            .ForEach((ref ShouldAutoAttack shouldAttack, in FixTranslation position) =>
+            .ForEach((ref ShouldAutoAttack shouldAttack, in FixTranslation position, in Health hp) =>
             {
-                shouldAttack = position.Value.x < playerGroupPosition.x;
+                shouldAttack = position.Value.x < playerGroupPosition.x && hp.Value > 0;
             }).Schedule();
     }
 }

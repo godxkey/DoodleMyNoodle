@@ -81,6 +81,6 @@ MonoBehaviour:
         ImpulseForce:
           RawValue: 0
         ImpulseUpAngleRatio:
-          RawValue: 4294967296
+          RawValue: 2147483648
         HitTargetsInbetween: 1
         DisplacementVectorToAttackPosition: {x: 2, y: 0}
