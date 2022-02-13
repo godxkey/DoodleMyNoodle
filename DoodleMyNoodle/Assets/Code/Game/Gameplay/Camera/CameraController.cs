@@ -7,7 +7,7 @@ using CCC.Fix2D;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class CameraMovementController : GamePresentationSystem<CameraMovementController>
+public class CameraController : GamePresentationSystem<CameraController>
 {
     [SerializeField] private Transform _wallpaper;
     [SerializeField] private float _wallpaperVerticalSize = 10f;

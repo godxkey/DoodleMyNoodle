@@ -96,10 +96,10 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Camera
         ////////////////////////////////////////////////////////////////////////////////////////
-        if (CameraMovementController.Instance != null)
+        if (CameraController.Instance != null)
         {
-            Cache.CameraPosition = CameraMovementController.Instance.CamPosition;
-            Cache.CameraSize = CameraMovementController.Instance.CamSize;
+            Cache.CameraPosition = CameraController.Instance.CamPosition;
+            Cache.CameraSize = CameraController.Instance.CamSize;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////
