@@ -66,10 +66,10 @@ MonoBehaviour:
   Value: GameActionMeleeAttack
   GameActionSettings:
   - id: 0
-  SfxOnUse: {fileID: 11400000, guid: 7e6f8459caf32904087343d0990d76d8, type: 2}
+  SfxOnUse: {fileID: 11400000, guid: 2c70dd4912b456641948a9052ea2da1f, type: 2}
   PlayAnimation: 1
   Animation: {fileID: 11400000, guid: 8960135fd5d1ae74eb624a5f929e8b84, type: 2}
-  CustomSurveys: []
+  Surveys: []
   references:
     version: 1
     00000000:
