@@ -10,16 +10,16 @@ using UnityEngine;
 public class CameraController : GamePresentationSystem<CameraController>
 {
     [SerializeField] private Transform _wallpaper;
-    [SerializeField] private float _wallpaperVerticalSize = 10f;
+    [SerializeField] private Vector2 _wallpaperSize = new Vector2(17.778f, 10);
 
     [Header("Camera Reference")]
     public Camera Cam;
 
     [Header("Zoom")]
-    public float desiredWidth = 1;
+    public float DesiredWidth = 9.5f;
 
     [Header("Position")]
-    public Vector2 offsetFromGroupPosition = new Vector2(0,0);
+    public Vector2 OffsetFromGroupPosition = new Vector2(5, 2);
 
     private Transform _transform;
 
@@ -37,7 +37,11 @@ public class CameraController : GamePresentationSystem<CameraController>
             Cam.orthographicSize = value;
 
             if (_wallpaper != null)
-                _wallpaper.localScale = Vector3.one * (value / (_wallpaperVerticalSize / 2));
+            {
+                float2 camSize = new float2(value * Screen.width / Screen.height, value);
+                float2 minWallpaperScale = camSize / ((float2)_wallpaperSize / 2f);
+                _wallpaper.localScale = Vector3.one * max(minWallpaperScale.x, minWallpaperScale.y);
+            }
         }
     }
 
@@ -46,16 +50,16 @@ public class CameraController : GamePresentationSystem<CameraController>
         base.Awake();
 
         _transform = transform;
-        CamSize = desiredWidth * Screen.height / Screen.width;
     }
 
     private void LateUpdate()
     {
+        CamSize = DesiredWidth * Screen.height / Screen.width;
         UpdatePosition();
     }
 
     private void UpdatePosition()
     {
-        CamPosition = Cache.GroupPosition.ToUnityVec() + offsetFromGroupPosition;
+        CamPosition = Cache.GroupPosition.ToUnityVec() + OffsetFromGroupPosition;
     }
 }
