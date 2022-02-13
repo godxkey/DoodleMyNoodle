@@ -53,6 +53,13 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
             {
                 var lookup = SimAssetBankInstance.GetLookup();
                 _runtimeId = lookup.GetRuntimeSimAssetId(Guid);
+
+                if (_runtimeId == SimAssetId.Invalid)
+                {
+                    Debug.LogError($"[{nameof(SimAssetBank)}] Could not find runtime id for guid {Guid} and name {gameObject.name}. " +
+                    $"Stop playing and try forcing an update with \"Tools > Data Management > Force Update SimAssetIds\"");
+                }
+
                 _runtimeIdAssigned = true; 
             }
             else

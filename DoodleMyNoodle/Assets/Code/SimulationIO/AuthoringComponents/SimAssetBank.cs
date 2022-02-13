@@ -69,8 +69,6 @@ public class SimAssetBank : ScriptableObject
                 return runtimeValue;
             }
 
-            Debug.LogError($"[{nameof(SimAssetBank)}] Could not find runtime id for guid {guid}. " +
-                $"Stop playing and try forcing an update with \"Tools > Data Management > Force Update SimAssetIds\"");
             return SimAssetId.Invalid;
         }
 

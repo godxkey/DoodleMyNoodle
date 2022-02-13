@@ -140,16 +140,16 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     private bool HandleGameActionAnimation()
     {
         // Wait until previous Game Action Animation is done
-        bool canChangeAnimation = true;
-        if (_currentAnimation != null)
-        {
-            canChangeAnimation = SimWorld.Time.ElapsedTime >= _lastTransitionTime + (fix)_currentAnimation.Duration;
-        }
+        //bool canChangeAnimation = true;
+        //if (_currentAnimation != null)
+        //{
+        //    canChangeAnimation = SimWorld.Time.ElapsedTime >= _lastTransitionTime + (fix)_currentAnimation.Duration;
+        //}
 
-        if (!canChangeAnimation)
-        {
-            return _hasTriggeredAnAnimation;
-        }
+        //if (!canChangeAnimation)
+        //{
+        //    return _hasTriggeredAnAnimation;
+        //}
 
         foreach (GameActionUsedEventData gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {

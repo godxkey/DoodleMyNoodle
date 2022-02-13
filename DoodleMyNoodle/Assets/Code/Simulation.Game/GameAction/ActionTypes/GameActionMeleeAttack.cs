@@ -62,16 +62,16 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
 
     public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {
-        fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.ActionInstigatorActor);
+        fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.FirstInstigatorActor);
 
         fix2 position;
-        if (useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
+        if (useData != null && useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {
             position = paramPosition.Position;
         }
         else
         {
-            position = settings.DisplacementVectorToAttackPosition;
+            position = instigatorPos + settings.DisplacementVectorToAttackPosition;
         }
 
         // make sure survey position is within range
@@ -99,7 +99,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         // get success multipliers
         int damage = settings.Damage;
         fix impulseMultipler = 1;
-        if (useData.TryGetParameter(1, out GameActionParameterSuccessRate.Data successRate, warnIfFailed: false))
+        if (useData != null && useData.TryGetParameter(1, out GameActionParameterSuccessRate.Data successRate, warnIfFailed: false))
         {
             switch (successRate.SuccessRate)
             {
