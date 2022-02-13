@@ -33,7 +33,7 @@ public class GameActionAuthEditor : Editor
         _sfxProp = serializedObject.FindProperty(nameof(GameActionAuth.SfxOnUse));
         _animationConditionProp = serializedObject.FindProperty(nameof(GameActionAuth.PlayAnimation));
         _animationProp = serializedObject.FindProperty(nameof(GameActionAuth.Animation));
-        _surveyProp = serializedObject.FindProperty(nameof(GameActionAuth.CustomSurveys));
+        _surveyProp = serializedObject.FindProperty(nameof(GameActionAuth.Surveys));
 
         InitStaticData();
     }

@@ -56,7 +56,7 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
 
                 // duplicate collider, but with alternate layer
                 var deadCollider = BlobAssetReference<Collider>.Create(normalCollider.Value);
-                deadCollider.Value.Filter = CollisionFilter.FromLayer(SimulationGameConstants.Physics.LAYER_CONTACT_WITH_TERRAIN_ONLY);
+                deadCollider.Value.Filter = CollisionFilter.FromLayer(SimulationGameConstants.Physics.LAYER_CORPSES);
 
                 actorColliderRefs.DeadCollider = deadCollider;
 

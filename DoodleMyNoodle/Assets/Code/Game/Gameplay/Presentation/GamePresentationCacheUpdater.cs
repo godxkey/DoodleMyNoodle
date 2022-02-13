@@ -28,7 +28,14 @@ public class GamePresentationCache
     public fix2 LocalPawnPosition;
     public Vector2 LocalPawnPositionFloat;
     public Entity LocalController;
-    public int DEPRECATED_LocalPawnHealth;
+    public fix GroupHealth;
+    public fix GroupShield;
+    public ExternalSimGameWorldAccessor SimWorld;
+
+    public bool LocalPawnExists => LocalPawn != Entity.Null;
+    public bool LocalControllerExists => LocalController != Entity.Null;
+    public bool LocalPawnAlive => LocalPawnExists && GroupHealth > 0;
+
     public int2 DEPRECATED_LocalPawnTile;
     public Entity DEPRECATED_LocalPawnTileEntity;
     public Team DEPRECATED_LocalControllerTeam = 1;
@@ -37,11 +44,6 @@ public class GamePresentationCache
     public bool DEPRECATED_IsNewRound = false;
     public List<Entity> DEPRECATED_CurrentlyPlayingControllers = new List<Entity>();
     public TileWorld DEPRECATED_TileWorld;
-    public ExternalSimGameWorldAccessor SimWorld;
-
-    public bool LocalPawnExists => LocalPawn != Entity.Null;
-    public bool LocalControllerExists => LocalController != Entity.Null;
-    public bool LocalPawnAlive => LocalPawnExists && DEPRECATED_LocalPawnHealth > 0;
 }
 
 // should we change this to a component system ?
@@ -109,6 +111,16 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         else
         {
             Cache.LocalController = Entity.Null;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Player Group
+        ////////////////////////////////////////////////////////////////////////////////////////
+        if (Cache.SimWorld.HasSingleton<PlayerGroupDataTag>())
+        {
+            var playerGroupEntity = Cache.SimWorld.GetSingletonEntity<PlayerGroupDataTag>();
+            Cache.GroupHealth = Cache.SimWorld.GetComponent<Health>(playerGroupEntity);
+            Cache.GroupShield = Cache.SimWorld.GetComponent<Shield>(playerGroupEntity);
         }
 
 

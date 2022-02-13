@@ -93,7 +93,7 @@ public static class SimulationGameConstants
     {
         public const int LAYER_TERRAIN = 8;
         public const int LAYER_CHARACTER = 9;
-        public const int LAYER_CONTACT_WITH_TERRAIN_ONLY = 13;
+        public const int LAYER_CORPSES = 13;
 
         public static readonly SharedStatic<CollisionFilter> CharacterFilter = SharedStatic<CollisionFilter>.GetOrCreate<Physics, CharacterFilterKey>();
         private class CharacterFilterKey { }

@@ -11,7 +11,10 @@ public class ApplyMovementSystem : SimGameSystemBase
     {
         Entities.ForEach((ref PhysicsVelocity velocity, in MoveSpeed moveSpeed, in CanMove canMove) =>
         {
-            velocity.Linear.x = canMove ? moveSpeed.Value : 0;
+            if (canMove)
+            {
+                velocity.Linear.x = moveSpeed.Value;
+            }
         }).Schedule();
 
         fix deltaTime = Time.DeltaTime;

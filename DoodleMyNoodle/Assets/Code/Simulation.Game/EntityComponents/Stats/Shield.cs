@@ -1,7 +1,7 @@
 using Unity.Entities;
 
 [assembly: RegisterGenericComponentType(typeof(MaximumFix<Shield>))]
-[assembly: RegisterGenericComponentType(typeof(MaximumFix<Shield>))]
+[assembly: RegisterGenericComponentType(typeof(MinimumFix<Shield>))]
 
 public struct Shield : IComponentData, IStatFix
 {

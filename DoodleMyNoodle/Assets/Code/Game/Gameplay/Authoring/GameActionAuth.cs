@@ -74,7 +74,7 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     public AnimationDefinition Animation;
 
     // Surveys
-    public List<SurveyBaseController> CustomSurveys;
+    public List<SurveyBaseController> Surveys;
 
     public SurveyBaseController FindCustomSurveyPrefabForParameters(params GameAction.ParameterDescription[] parameters)
     {
@@ -102,7 +102,7 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
 
     private SurveyBaseController TryFindCustomSurveyPrefabForParametersSubset(GameAction.ParameterDescription[] parameters, int paramCount)
     {
-        foreach (SurveyBaseController survey in CustomSurveys)
+        foreach (SurveyBaseController survey in Surveys)
         {
             bool hasAllTypes = false;
 

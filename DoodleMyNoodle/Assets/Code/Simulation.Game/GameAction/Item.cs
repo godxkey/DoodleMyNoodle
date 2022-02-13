@@ -18,7 +18,7 @@ public partial class CommonReads
     public static bool CanUseItem(ISimWorldReadAccessor accessor, Entity actor, Entity item, out ItemUnavailablityReason debugReason)
     {
         int apCost = 0;
-        if (accessor.TryGetComponent(actor, out ItemSettingAPCost apCostComponent))
+        if (accessor.TryGetComponent(item, out ItemSettingAPCost apCostComponent))
         {
             apCost = apCostComponent.Value;
         }

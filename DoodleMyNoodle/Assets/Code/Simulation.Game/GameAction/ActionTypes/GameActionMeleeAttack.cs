@@ -20,9 +20,9 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         public int Damage = 1;
         public fix ImpulseForce = 0;
         public fix ImpulseUpAngleRatio = 1;
-        public bool HitTargetsInbetween = false;
+        public int MaxTargetHit = 1;
         [Header("Default Parameter")]
-        public Vector2 DisplacementVectorToAttackPosition;
+        public Vector2 AttackVector = Vector2.right * 2;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
@@ -32,8 +32,8 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
                 Damage = Damage,
                 ImpulseUpAngleRatio = ImpulseUpAngleRatio,
                 ImpulseForce = ImpulseForce,
-                HitTargetsInbetween = HitTargetsInbetween,
-                DisplacementVectorToAttackPosition = new fix2((fix)DisplacementVectorToAttackPosition.x, (fix)DisplacementVectorToAttackPosition.y)
+                MaxTargetHit = MaxTargetHit,
+                AttackVector = (fix2)AttackVector
             });
         }
     }
@@ -44,8 +44,8 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         public int Damage;
         public fix ImpulseUpAngleRatio;
         public fix ImpulseForce;
-        public bool HitTargetsInbetween;
-        public fix2 DisplacementVectorToAttackPosition;
+        public int MaxTargetHit;
+        public fix2 AttackVector;
     }
 
     public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Settings settings)
@@ -71,29 +71,21 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         }
         else
         {
-            position = instigatorPos + settings.DisplacementVectorToAttackPosition;
+            position = instigatorPos + settings.AttackVector;
         }
 
         // make sure survey position is within range
         fix2 attackPosition = Helpers.ClampPositionInsideRange(position, instigatorPos, settings.Range);
-        fix attackRadius = (fix)0.1f;
 
         // find all targets hit
         NativeList<Entity> hitTargets = new NativeList<Entity>(Allocator.Temp);
-        NativeList<DistanceHit> overlapHits = CommonReads.Physics.OverlapCircle(accessor, attackPosition, attackRadius, ignoreEntity: context.FirstInstigatorActor);
 
-        foreach (var hit in overlapHits)
+        var rayHits = CommonReads.Physics.CastRay(accessor, instigatorPos, attackPosition, ignoreEntity: context.FirstInstigatorActor);
+        for (int i = 0; i < rayHits.Length; i++)
         {
-            hitTargets.Add(hit.Entity);
-        }
-
-        if (settings.HitTargetsInbetween)
-        {
-            var rayHits = CommonReads.Physics.CastRay(accessor, instigatorPos, attackPosition, ignoreEntity: context.FirstInstigatorActor);
-            for (int i = 0; i < rayHits.Length; i++)
-            {
-                hitTargets.AddUnique(rayHits[i].Entity);
-            }
+            if (hitTargets.Length >= settings.MaxTargetHit)
+                break;
+            hitTargets.AddUnique(rayHits[i].Entity);
         }
 
         // get success multipliers
