@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 462959840056812340}
   - component: {fileID: 8841453195666950856}
   - component: {fileID: -1943092824245740565}
-  - component: {fileID: 8277106820237187274}
-  - component: {fileID: 1805443843964168538}
   - component: {fileID: 8618057839144830486}
+  - component: {fileID: -3633410193276317362}
   m_Layer: 10
   m_Name: SE_Fireball
   m_TagString: Untagged
@@ -70,7 +69,7 @@ MonoBehaviour:
   Type: 2
   Shape: 0
   Material: {fileID: 11400000, guid: f12656138a7b18546a992bf9c5083561, type: 2}
-  IsTrigger: 1
+  IsTrigger: 0
   LinearDrag: 0
   AngularDrag: 0.05
   GravityScale: 0
@@ -80,35 +79,6 @@ MonoBehaviour:
   CircleRadius: 0.15
   BoxAndCircleOffset: {x: 0, y: 0}
   PolygonPoints: []
---- !u!114 &8277106820237187274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2385346486794747607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0945d3b18db094459b77ce155a9248d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _delay:
-    Type: 0
-    Value:
-      RawValue: 4294967296
-  _damage: 2
---- !u!114 &1805443843964168538
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2385346486794747607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc2723524212a6c4bb1cff265db07043, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8618057839144830486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,3 +93,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Lifetime:
     RawValue: 85899345920
+--- !u!114 &-3633410193276317362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2385346486794747607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9644d3b337aa5204694190807d6722c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: 1
+  DestroySelf: 1

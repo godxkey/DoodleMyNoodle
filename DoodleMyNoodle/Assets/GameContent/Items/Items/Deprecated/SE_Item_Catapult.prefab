@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5742253346417087641
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5742253346417087588}
+  - component: {fileID: -8620854387768135619}
+  - component: {fileID: 4040381316262050192}
+  m_Layer: 0
+  m_Name: SE_Item_Catapult
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5742253346417087588
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-8620854387768135619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 0
+  _guid: 25b4592d1e8860c43865beccfc29b2a6
+  _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
+  _viewTechType: 0
+  _hasTransform: 0
+  _showGhost: 1
+--- !u!114 &4040381316262050192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742253346417087641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: GameActionThrowNearbyEntity
+  GameActionSettings:
+  - id: 0
+  ApCost: 0
+  IsStackable: 0
+  CooldownType: 2
+  CooldownDuration:
+    RawValue: 17179869184
+  HideInInventory: 0
+  CanBeUsedAtAnytime: 0
+  Icon: {fileID: 21300000, guid: 4ed364090bd6fe54690f7c0c5a80064d, type: 3}
+  IconTint: {r: 1, g: 1, b: 1, a: 1}
+  Name: Catapulte
+  EffectDescription: "Lance une entit\xE9 \xE0 proximiter"
+  SfxOnUse: {fileID: 0}
+  PlayAnimation: 1
+  Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
+  CustomSurveys: []
+  references:
+    version: 1
+    00000000:
+      type: {class: GameActionThrowNearbyEntity/SettingsAuth, ns: , asm: Simulation.Game}
+      data:
+        Range:
+          RawValue: 4294967296
+        SpeedMin:
+          RawValue: 0
+        SpeedMax:
+          RawValue: 21474836480
+        SpawnExtraDistance:
+          RawValue: 0

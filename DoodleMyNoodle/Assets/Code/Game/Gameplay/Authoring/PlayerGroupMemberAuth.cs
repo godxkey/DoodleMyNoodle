@@ -13,5 +13,6 @@ public class PlayerGroupMemberAuth : MonoBehaviour, IConvertGameObjectToEntity
     {
         dstManager.AddComponent<PlayerGroupMemberTag>(entity);
         dstManager.AddComponentData<PlayerGroupMemberIndex>(entity, Index);
+        dstManager.AddComponentData(entity, new Team() { Value = (int)DesignerFriendlyTeam.Player });
     }
 }
