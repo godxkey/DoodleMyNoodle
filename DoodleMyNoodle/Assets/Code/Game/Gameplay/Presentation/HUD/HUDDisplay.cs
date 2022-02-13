@@ -8,8 +8,8 @@ public class HUDDisplay : GamePresentationSystem<HUDDisplay>
 
     protected override void OnGamePresentationUpdate() { }
 
-    public void ToggleVisibility(bool IsVisible)
+    public void ToggleVisibility(bool isVisible)
     {
-        _hudContainer.SetActive(IsVisible);
+        _hudContainer.SetActive(isVisible);
     }
 }

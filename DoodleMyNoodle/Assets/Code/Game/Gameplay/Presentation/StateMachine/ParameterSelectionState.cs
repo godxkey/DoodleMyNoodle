@@ -26,7 +26,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         _surveyStateMachine.Blackboard = _surveySMBlackboard;
         _surveySMBlackboard.Cache = Cache;
         _surveySMBlackboard.ResultParameters.Clear();
-        _surveySMBlackboard.isDebug = false;
+        _surveySMBlackboard.IsDebug = false;
 
         CursorOverlayService.Instance.ResetCursorToDefault();
 
@@ -52,9 +52,9 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         }
         else
         {
-            _surveySMBlackboard.isDebug = true;
+            _surveySMBlackboard.IsDebug = true;
         }
-        
+
         _surveyStateMachine.TransitionTo(new SurveyState());
     }
 
@@ -66,7 +66,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             return;
         }
 
-        if (_surveySMBlackboard.isDebug)
+        if (_surveySMBlackboard.IsDebug)
         {
             _surveyStateMachine.Update();
             return;
@@ -118,6 +118,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         // process completed, we have all info let's use the game action
         if (InputParameter.IsItem)
         {
+            _surveySMBlackboard.ResultParameters.RemoveNulls();
             SimPlayerInputUseItem simInput = new SimPlayerInputUseItem(InputParameter.ItemIndex, _surveySMBlackboard.ResultParameters);
             SimWorld.SubmitInput(simInput);
         }
@@ -131,7 +132,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         public GameActionAuth ActionAuth;
         public GamePresentationCache Cache;
 
-        public bool isDebug;
+        public bool IsDebug;
 
         public GameAction.ExecutionContext UseContext;
 
@@ -155,7 +156,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
             HUDDisplay.Instance.ToggleVisibility(false);
 
-            if (Blackboard.isDebug)
+            if (Blackboard.IsDebug)
                 return;
 
             // the parameter
@@ -163,7 +164,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
             GameAction.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, Blackboard.ResultParameters.Count, remainingParamCount);
 
-            if(remainingParams.Length < 1)
+            if (remainingParams.Length < 1)
             {
                 OnSurveyCancel();
                 return;
@@ -176,11 +177,12 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             }
             else
             {
-                // Default Case
+                // default case
+                Blackboard.ResultParameters.Add(null);
+                _doneNextFrame = true;
 
-                // For default case, we handle them one at a time with the survey corresponding to the first parameter we have
-                GameAction.ParameterDescription parameterToHandle = remainingParams[0];
-                SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, Blackboard.ResultParameters, parameterToHandle, OnSurveyComplete, OnSurveyCancel);
+                //GameAction.ParameterDescription parameterToHandle = remainingParams[0];
+                //SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, Blackboard.ResultParameters, parameterToHandle, OnSurveyComplete, OnSurveyCancel);
             }
         }
 

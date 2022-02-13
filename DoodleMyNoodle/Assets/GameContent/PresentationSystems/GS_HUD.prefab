@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 5383613742091577452}
   - component: {fileID: 1370532780328028526}
   m_Layer: 5
-  m_Name: GS_PlayerActionBar
+  m_Name: GS_HUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
