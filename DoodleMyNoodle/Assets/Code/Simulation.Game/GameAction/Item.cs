@@ -72,7 +72,7 @@ internal partial class CommonWrites
             }
 
             // reduce instigator AP
-            if (accessor.TryGetComponent(item, out ItemSettingAPCost itemActionPointCost))
+            if (accessor.TryGetComponent(item, out ItemSettingAPCost itemActionPointCost) && itemActionPointCost.Value != 0)
             {
                 CommonWrites.ModifyStatFix<ActionPoints>(accessor, actor, -itemActionPointCost.Value);
             }

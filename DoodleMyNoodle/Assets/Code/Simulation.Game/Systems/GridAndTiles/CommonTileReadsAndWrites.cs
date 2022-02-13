@@ -42,7 +42,7 @@ public partial class CommonReads
     }
 }
 
-public partial class Helpers
+public partial struct Helpers
 {
     public static int2 GetTile(FixTranslation translation) => floorToInt(translation.Value).xy;
     public static int2 GetTile(fix2 worldPosition) => floorToInt(worldPosition).xy;

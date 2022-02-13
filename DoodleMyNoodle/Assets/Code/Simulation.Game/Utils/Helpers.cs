@@ -6,7 +6,7 @@ using static fixMath;
 using Unity.Entities;
 using Unity.Mathematics;
 
-public static partial class Helpers
+public partial struct Helpers
 {
     public static fix2 ClampPositionInsideRange(fix2 position, fix2 centerPoint, fix range)
     {

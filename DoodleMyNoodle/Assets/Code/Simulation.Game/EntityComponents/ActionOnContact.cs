@@ -2,16 +2,23 @@ using Unity.Entities;
 using Unity.Mathematics;
 using CCC.Fix2D;
 
-public struct ActionOnContact : IBufferElementData
+public struct ActionOnContactBaseData
 {
-    public enum Filter : byte
-    {
-        None = 0,
-        Allies = 1 << 0,
-        Enemies = 1 << 1,
-        Terrain = 1 << 2
-    }
-
-    public Filter ActionFilter;
+    public byte Id; // unique id in the buffer
+    public ActorFilter ActionFilter;
     public Entity ActionEntity;
+    public fix SameTargetCooldown;
+}
+
+public struct ActionOnColliderContact : IBufferElementData
+{
+    public ActionOnContactBaseData Data;
+}
+
+public struct ActionOnOverlap : IBufferElementData
+{
+    public ActionOnContactBaseData Data;
+    public uint OverlapFilter;
+    public fix OverlapRadius;
+    public fix Cooldown;
 }
