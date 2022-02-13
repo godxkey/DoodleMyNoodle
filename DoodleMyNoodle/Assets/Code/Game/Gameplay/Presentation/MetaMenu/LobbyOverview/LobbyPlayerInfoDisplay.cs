@@ -21,13 +21,5 @@ public class LobbyPlayerInfoDisplay : GamePresentationBehaviour
         _currentPlayer = pawnReference;
     }
 
-    public void OnPlayerInfoClicked()
-    {
-        if (SimWorld.TryGetComponent(_currentPlayer, out FixTranslation translation))
-        {
-            CameraMovementController.Instance.TeleportCameraToPosition(translation.Value.ToUnityVec());
-        }
-    }
-
     protected override void OnGamePresentationUpdate() { }
 }
