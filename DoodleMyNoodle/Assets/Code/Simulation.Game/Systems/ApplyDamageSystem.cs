@@ -111,6 +111,7 @@ public class ApplyDamageSystem : SimGameSystemBase
             remainingDelta = min(remainingDelta, 0);
         }
 
+        // Shield
         if (remainingDelta != 0 && TryGetComponent(target, out Shield previousShield))
         {
             Shield newShield = clamp(previousShield + remainingDelta, 0, GetComponent<MaximumFix<Shield>>(target).Value);

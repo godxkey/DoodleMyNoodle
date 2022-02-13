@@ -16,7 +16,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
     public Camera Cam;
 
     [Header("Zoom")]
-    public float Zoom = 1;
+    public float desiredWidth = 1;
 
     [Header("Position")]
     public Vector2 offsetFromGroupPosition = new Vector2(0,0);
@@ -46,7 +46,7 @@ public class CameraMovementController : GamePresentationSystem<CameraMovementCon
         base.Awake();
 
         _transform = transform;
-        CamSize = Zoom;
+        CamSize = desiredWidth * Screen.height / Screen.width;
     }
 
     private void LateUpdate()
