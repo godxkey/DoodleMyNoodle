@@ -23,6 +23,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         public int MaxTargetHit = 1;
         [Header("Default Parameter")]
         public Vector2 AttackVector = Vector2.right * 2;
+        public ActorFilter TargetFilter = ActorFilter.Enemies;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
@@ -33,7 +34,8 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
                 ImpulseUpAngleRatio = ImpulseUpAngleRatio,
                 ImpulseForce = ImpulseForce,
                 MaxTargetHit = MaxTargetHit,
-                AttackVector = (fix2)AttackVector
+                AttackVector = (fix2)AttackVector,
+                TargetFilter = TargetFilter,
             });
         }
     }
@@ -46,6 +48,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         public fix ImpulseForce;
         public int MaxTargetHit;
         public fix2 AttackVector;
+        public ActorFilter TargetFilter;
     }
 
     public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Settings settings)
@@ -80,12 +83,20 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         // find all targets hit
         NativeList<Entity> hitTargets = new NativeList<Entity>(Allocator.Temp);
 
+        var instigatorFilterInfo = CommonReads.GetActorFilterInfo(accessor, context.ActionInstigatorActor);
+
         var rayHits = CommonReads.Physics.CastRay(accessor, instigatorPos, attackPosition, ignoreEntity: context.FirstInstigatorActor);
         for (int i = 0; i < rayHits.Length; i++)
         {
             if (hitTargets.Length >= settings.MaxTargetHit)
                 break;
-            hitTargets.AddUnique(rayHits[i].Entity);
+
+            var targetFilterInfo = CommonReads.GetActorFilterInfo(accessor, rayHits[i].Entity);
+
+            if (Helpers.ActorFilterMatches(instigatorFilterInfo, targetFilterInfo, settings.TargetFilter))
+            {
+                hitTargets.AddUnique(rayHits[i].Entity);
+            }
         }
 
         // get success multipliers
