@@ -288,13 +288,12 @@ public class ReactOnContactSystem : SimGameSystemBase
 
         if (ActionRequests.Length > 0)
         {
-            var mutedActions = GetSingletonBuffer<MutedContactActionElement>();
             foreach (var request in ActionRequests)
             {
                 CommonWrites.ExecuteGameAction(Accessor, request.Instigator, request.ActionData.ActionEntity, request.Target);
                 if (request.ActionData.SameTargetCooldown > 0)
                 {
-                    mutedActions.Add(new MutedContactActionElement()
+                    GetSingletonBuffer<MutedContactActionElement>().Add(new MutedContactActionElement()
                     {
                         Instigator = request.Instigator,
                         ContactActionBufferId = request.ActionData.Id,

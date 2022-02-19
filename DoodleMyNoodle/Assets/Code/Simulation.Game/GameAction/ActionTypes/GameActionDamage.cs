@@ -34,8 +34,6 @@ public class GameActionDamage : GameAction<GameActionDamage.Settings>
 
     public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {
-        var instigatorTranslation = accessor.GetComponent<FixTranslation>(context.ActionInstigatorActor);
-
         foreach (Entity target in context.Targets)
         {
             CommonWrites.RequestDamage(accessor, target, settings.Damage);
@@ -44,10 +42,9 @@ public class GameActionDamage : GameAction<GameActionDamage.Settings>
             {
                 resultData.Add(new ResultDataElement()
                 {
-                    AttackVector = targetTranslation.Value - instigatorTranslation.Value,
                     Position = targetTranslation.Value,
                     Entity = target
-                });;
+                });
             }
         }
 
