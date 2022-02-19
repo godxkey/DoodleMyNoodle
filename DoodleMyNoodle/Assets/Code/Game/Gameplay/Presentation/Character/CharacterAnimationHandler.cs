@@ -139,18 +139,6 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
     private bool HandleGameActionAnimation()
     {
-        // Wait until previous Game Action Animation is done
-        //bool canChangeAnimation = true;
-        //if (_currentAnimation != null)
-        //{
-        //    canChangeAnimation = SimWorld.Time.ElapsedTime >= _lastTransitionTime + (fix)_currentAnimation.Duration;
-        //}
-
-        //if (!canChangeAnimation)
-        //{
-        //    return _hasTriggeredAnAnimation;
-        //}
-
         foreach (GameActionUsedEventData gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
             if (gameActionEvent.GameActionContext.FirstInstigatorActor == SimEntity && gameActionEvent.GameActionContext.Action != Entity.Null && !_hasTriggeredAnAnimation)
@@ -193,19 +181,12 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                             
                             _queuedAnimations.Add(new QueuedAnimation() { Data = currentAnimationData, Definition = _currentAnimation, HasPlayed = false });
                         }
-                    }
 
-                    // ANIMATION DATA
-                    List<KeyValuePair<string, object>> animationData = new List<KeyValuePair<string, object>>();
-                    animationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.GameActionContext));
-                    animationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_0));
+                        // ANIMATION DATA
+                        List<KeyValuePair<string, object>> animationData = new List<KeyValuePair<string, object>>();
+                        animationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.GameActionContext));
+                        animationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_0));
 
-                    if (_currentAnimation == null)
-                    {
-                        FindAnimation(AnimationType.GameAction).TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationData);
-                    }
-                    else if (gameActionAuth.PlayAnimation)
-                    {
                         _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationData);
                     }
                 }
