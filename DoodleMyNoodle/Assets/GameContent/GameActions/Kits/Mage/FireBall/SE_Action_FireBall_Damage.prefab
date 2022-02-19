@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: a290ad7f5687a36438ef6d617aea0123
+  _guid: a5972b21b65653043a4dd9d77a6459ea
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -69,7 +69,7 @@ MonoBehaviour:
   SfxOnUse: {fileID: 0}
   PlayAnimation: 0
   Animation: {fileID: 0}
-  CustomSurveys: []
+  Surveys: []
   references:
     version: 1
     00000000:

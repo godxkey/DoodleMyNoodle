@@ -159,4 +159,22 @@ public static class SimulationCheats
             ImpulseValue = new fix2((fix)x, (fix)y)
         });
     }
+
+    [ConsoleCommand(Description = "Possess a specific player and prevent the others from attacking.", EnableGroup = LOCAL_PAWN_GROUP)]
+    public static void CheatSoloPlay(int playerIndex)
+    {
+        var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
+
+        if (localPlayerInfo == null)
+        {
+            Log.Warning("No local player found");
+            return;
+        }
+
+        PresentationHelpers.SubmitInput(new SimInputCheatSoloPlay()
+        {
+            PlayerId = localPlayerInfo.SimPlayerId,
+            PawnIndex =  playerIndex
+        });
+    }
 }

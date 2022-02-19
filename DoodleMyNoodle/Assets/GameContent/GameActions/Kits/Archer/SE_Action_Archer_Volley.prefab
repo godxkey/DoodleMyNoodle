@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: b3a4360667098244a823fdb69dc48aeb
+  _guid: 6de193073b9cecc47a3f3e95fca6827d
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -84,3 +84,4 @@ MonoBehaviour:
           RawValue: 2147483648
         MaxTargetHit: 1
         AttackVector: {x: 2, y: 0}
+        TargetFilter: 2
