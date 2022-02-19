@@ -65,7 +65,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
 
     public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
     {
-        fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.FirstInstigatorActor);
+        fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.LastPhysicalInstigator);
 
         fix2 position;
         if (useData != null && useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
@@ -85,7 +85,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
 
         var instigatorFilterInfo = CommonReads.GetActorFilterInfo(accessor, context.ActionInstigatorActor);
 
-        var rayHits = CommonReads.Physics.CastRay(accessor, instigatorPos, attackPosition, ignoreEntity: context.FirstInstigatorActor);
+        var rayHits = CommonReads.Physics.CastRay(accessor, instigatorPos, attackPosition, ignoreEntity: context.FirstPhysicalInstigator);
         for (int i = 0; i < rayHits.Length; i++)
         {
             if (hitTargets.Length >= settings.MaxTargetHit)

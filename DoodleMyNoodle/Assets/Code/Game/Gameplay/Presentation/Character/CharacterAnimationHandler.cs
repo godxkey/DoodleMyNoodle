@@ -141,7 +141,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     {
         foreach (GameActionUsedEventData gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            if (gameActionEvent.GameActionContext.FirstInstigatorActor == SimEntity && gameActionEvent.GameActionContext.Action != Entity.Null && !_hasTriggeredAnAnimation)
+            if (gameActionEvent.GameActionContext.LastPhysicalInstigator == SimEntity && gameActionEvent.GameActionContext.Action != Entity.Null && !_hasTriggeredAnAnimation)
             {
                 TriggerAnimationInteruptionOnStateChange();
 
@@ -156,7 +156,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                     _currentAnimation = gameActionAuth.Animation;
 
                     // add additionnal animation to play in queue (skip the first we'll play)
-                    if (gameActionAuth.PlayAnimation)
+                    if (gameActionAuth.Animation != null)
                     {
                         for (int i = 1; i < gameActionEvent.GameActionResult.Count; i++)
                         {
