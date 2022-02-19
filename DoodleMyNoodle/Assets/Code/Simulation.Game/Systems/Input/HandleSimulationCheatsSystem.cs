@@ -232,17 +232,25 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
 
                 // _________________________________________ Disable Auto Attack on Others _________________________________________ //
                 Entities.WithAll<PlayerGroupMemberIndex>()
-                    .ForEach((Entity entity) =>
+                    .ForEach((Entity entity, DynamicBuffer<InventoryItemReference> inventory) =>
                 {
+                    // implementation note: Keep 'EntityManager.HasComponent', otherwise it will cause an "invalidated by a structural change" exception
+                    var items = inventory.ToNativeArray(Allocator.Temp);
                     if (entity != newPawn)
                     {
-                        if (HasComponent<AutoAttackProgress>(entity))
-                            EntityManager.RemoveComponent<AutoAttackProgress>(entity);
+                        foreach (var item in items)
+                        {
+                            if (EntityManager.HasComponent<AutoAttackProgress>(item.ItemEntity))
+                                EntityManager.RemoveComponent<AutoAttackProgress>(item.ItemEntity);
+                        }
                     }
                     else
                     {
-                        if (!HasComponent<AutoAttackProgress>(entity))
-                            EntityManager.AddComponent<AutoAttackProgress>(entity);
+                        foreach (var item in items)
+                        {
+                            if (!EntityManager.HasComponent<AutoAttackProgress>(item.ItemEntity) && EntityManager.HasComponent<ShouldAutoAttack>(item.ItemEntity))
+                                EntityManager.AddComponent<AutoAttackProgress>(item.ItemEntity);
+                        }
                     }
                 }).WithoutBurst()
                 .WithStructuralChanges()

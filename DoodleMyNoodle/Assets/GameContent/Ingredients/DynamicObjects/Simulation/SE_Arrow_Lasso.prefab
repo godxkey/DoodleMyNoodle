@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8841453195666950856}
   - component: {fileID: 3318497168886264485}
   - component: {fileID: 4435591473517438205}
-  - component: {fileID: -1040405201474535986}
   m_Layer: 10
   m_Name: SE_Arrow_Lasso
   m_TagString: Untagged
@@ -93,15 +92,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PullSpeed:
     RawValue: 21474836480
---- !u!114 &-1040405201474535986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2385346486794747607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 781bb1a61d29781459cc5e4241645975, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

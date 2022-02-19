@@ -128,19 +128,6 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
                 }
             }
         }
-        else if (SimWorld.TryGetBufferReadOnly(itemOwner, out DynamicBuffer<InventoryItemPrefabReference> bundle))
-        {
-            foreach (InventoryItemPrefabReference item in bundle)
-            {
-                if (SimWorld.TryGetComponent(item.ItemEntityPrefab, out SimAssetId itemID))
-                {
-                    if (itemID.Value == ID.Value)
-                    {
-                        return item.ItemEntityPrefab;
-                    }
-                }
-            }
-        }
 
         return Entity.Null;
     }

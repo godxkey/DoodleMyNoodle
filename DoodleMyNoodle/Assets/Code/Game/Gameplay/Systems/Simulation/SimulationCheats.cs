@@ -32,7 +32,7 @@ public static class SimulationCheats
 
         var cache = GamePresentationCache.Instance;
 
-        s_globalGroupEnabled.Set(cache?.SimWorld != null);
+        s_globalGroupEnabled.Set(cache?.SimWorld != null && cache.SimWorld.HasSingleton<GridInfo>());
         s_localPawnGroupEnabled.Set(s_globalGroupEnabled && cache.SimWorld.Exists(GamePresentationCache.Instance.LocalPawn));
 
         if (s_globalGroupEnabled.ClearDirty())
@@ -160,7 +160,7 @@ public static class SimulationCheats
         });
     }
 
-    [ConsoleCommand(Description = "Possess a specific player and prevent the others from attacking.", EnableGroup = LOCAL_PAWN_GROUP)]
+    [ConsoleCommand(Description = "Possess a specific player and prevent the others from attacking.", EnableGroup = GLOBAL_GROUP)]
     public static void CheatSoloPlay(int playerIndex)
     {
         var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
