@@ -10,6 +10,11 @@ public static class SimulationCheats
     /// These cheats can only be used when the player has a local pawn.
     /// </summary>
     public const string LOCAL_PAWN_GROUP = "sim-cheats-local-pawn";
+    
+    /// <summary>
+    /// These cheats can only be used when the player is created
+    /// </summary>
+    public const string LOCAL_PLAYER_GROUP = "sim-cheats-local-player";
 
     /// <summary>
     /// These cheats can be used anytime
@@ -18,6 +23,7 @@ public static class SimulationCheats
 
     private static DirtyValue<bool> s_globalGroupEnabled;
     private static DirtyValue<bool> s_localPawnGroupEnabled;
+    private static DirtyValue<bool> s_localPlayerGroupEnabled;
 
     [Updater.StaticUpdateMethod(UpdateType.Update)]
     public static void Update()
@@ -34,6 +40,7 @@ public static class SimulationCheats
 
         s_globalGroupEnabled.Set(cache?.SimWorld != null && cache.SimWorld.HasSingleton<GridInfo>());
         s_localPawnGroupEnabled.Set(s_globalGroupEnabled && cache.SimWorld.Exists(GamePresentationCache.Instance.LocalPawn));
+        s_localPlayerGroupEnabled.Set(s_globalGroupEnabled && GamePresentationCache.Instance.LocalControllerExists);
 
         if (s_globalGroupEnabled.ClearDirty())
         {
@@ -43,6 +50,11 @@ public static class SimulationCheats
         if (s_localPawnGroupEnabled.ClearDirty())
         {
             GameConsole.SetGroupEnabled(LOCAL_PAWN_GROUP, s_localPawnGroupEnabled);
+        }
+
+        if (s_localPlayerGroupEnabled.ClearDirty())
+        {
+            GameConsole.SetGroupEnabled(LOCAL_PLAYER_GROUP, s_localPlayerGroupEnabled);
         }
     }
 
@@ -160,7 +172,7 @@ public static class SimulationCheats
         });
     }
 
-    [ConsoleCommand(Description = "Possess a specific player and prevent the others from attacking.", EnableGroup = GLOBAL_GROUP)]
+    [ConsoleCommand(Description = "Possess a specific player and prevent the others from attacking.", EnableGroup = LOCAL_PLAYER_GROUP)]
     public static void CheatSoloPlay(int playerIndex)
     {
         var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();

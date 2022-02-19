@@ -211,12 +211,12 @@ public class GameConsole
             s_database.InvokablesMap.Add(invokable.Name, invokable);
         }
 
+        s_database.Invokables.Sort((a, b) => a.DisplayName.CompareTo(b.DisplayName));
 
         foreach (GameConsoleInvokable invokable in s_database.Invokables)
         {
             invokable.Init();
         }
-
 
         bool conflictsWithAnyInvokable(GameConsoleInvokable inv)
         {
