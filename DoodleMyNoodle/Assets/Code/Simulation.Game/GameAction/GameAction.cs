@@ -22,18 +22,25 @@ public partial class CommonReads
 
     public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionInstigator, Entity actionEntity, NativeArray<Entity> targets)
     {
-        Entity firstInstigator = actionInstigator;
+        Entity firstPhysicalInstigator = actionInstigator;
         if (accessor.TryGetComponent(actionInstigator, out FirstInstigator firstInstigatorComponent))
         {
-            firstInstigator = firstInstigatorComponent.Value;
+            firstPhysicalInstigator = firstInstigatorComponent.Value;
+        }
+
+        Entity lastPhysicalInstigator = firstPhysicalInstigator;
+        if (lastPhysicalInstigator != actionInstigator && accessor.HasComponent<FixTranslation>(actionInstigator))
+        {
+            lastPhysicalInstigator = actionInstigator;
         }
 
         GameAction.ExecutionContext useContext = new GameAction.ExecutionContext()
         {
             Action = actionEntity,
-            FirstInstigatorActor = firstInstigator,
+            FirstPhysicalInstigator = firstPhysicalInstigator,
+            LastPhysicalInstigator = lastPhysicalInstigator,
             ActionInstigatorActor = actionInstigator,
-            Targets = targets
+            Targets = targets,
         };
 
         return useContext;
@@ -172,13 +179,18 @@ public abstract class GameAction
         public Entity Action;
 
         /// <summary>
-        /// Very first instigator in chain of action. This is generally the pawn that used the first action. 
+        /// Very first instigator in chain of action with a physical location component (FixTranslation). This is generally the pawn that used the first action. Should never be null.
         /// (e.g. A pawn throws a poison arrow, and the arrow poisons a target. The arrow is the action instigator, but the pawn is the 'first instigator')
         /// </summary>
-        public Entity FirstInstigatorActor;
+        public Entity FirstPhysicalInstigator;
 
         /// <summary>
-        /// The actor triggering the action, should never be null. 
+        /// The last actor with a physical location component (FixTranslation). Should never be null.
+        /// </summary>
+        public Entity LastPhysicalInstigator;
+
+        /// <summary>
+        /// The actor triggering the action, should never be null. This could be a pawn, an item, a projectile, etc.
         /// </summary>
         public Entity ActionInstigatorActor;
 
@@ -255,7 +267,7 @@ public abstract class GameAction
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
     protected void LogActionInfo(ExecutionContext context, string message)
     {
-        Log.Info(LogChannel, $"{message} - {GetType().Name} - context(actionEntity: {context.ActionInstigatorActor}, instigator: {context.FirstInstigatorActor})");
+        Log.Info(LogChannel, $"{message} - {GetType().Name} - context(actionEntity: {context.ActionInstigatorActor}, instigator: {context.FirstPhysicalInstigator})");
     }
 }
 

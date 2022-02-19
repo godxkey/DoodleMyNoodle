@@ -21,7 +21,6 @@ public class GameActionAuthEditor : Editor
     private SerializedProperty _gameActionSettingsProp;
 
     private SerializedProperty _sfxProp;
-    private SerializedProperty _animationConditionProp;
     private SerializedProperty _animationProp;
     private SerializedProperty _surveyProp;
 
@@ -29,9 +28,8 @@ public class GameActionAuthEditor : Editor
     {
         _gameActionProp = serializedObject.FindProperty(nameof(GameActionAuth.Value));
         _gameActionSettingsProp = serializedObject.FindProperty(nameof(GameActionAuth.GameActionSettings));
-        
+
         _sfxProp = serializedObject.FindProperty(nameof(GameActionAuth.SfxOnUse));
-        _animationConditionProp = serializedObject.FindProperty(nameof(GameActionAuth.PlayAnimation));
         _animationProp = serializedObject.FindProperty(nameof(GameActionAuth.Animation));
         _surveyProp = serializedObject.FindProperty(nameof(GameActionAuth.Surveys));
 
@@ -95,9 +93,7 @@ public class GameActionAuthEditor : Editor
         DrawPrimaryTitle("Presentation");
 
         EditorGUILayout.PropertyField(_sfxProp);
-        EditorGUILayout.PropertyField(_animationConditionProp);
-        if (_animationConditionProp.boolValue)
-            EditorGUILayout.PropertyField(_animationProp);
+        EditorGUILayout.PropertyField(_animationProp);
         EditorGUILayout.PropertyField(_surveyProp);
 
         if (EditorGUI.EndChangeCheck())

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngineX.InspectorDisplay;
 
+
 public class GameActionThrow : GameAction<GameActionThrow.Settings>
 {
     [Serializable]
@@ -83,24 +84,21 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         fix throwAngle = throwSpeed < (fix)0.01 ? 0 : angle2d(shootVector);
         fix throwAngleMin = throwAngle - (settings.VolleyAngle / 2);
         fix throwAngleIncrement = settings.Quantity == 1 ? 0 : settings.VolleyAngle / (settings.Quantity - 1);
-
+        fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.LastPhysicalInstigator);
+        fix2 instigatorVel = fix2.zero;
+        if (accessor.TryGetComponent(context.LastPhysicalInstigator, out PhysicsVelocity instigatorPhysicsVelocity))
+        {
+            instigatorVel = instigatorPhysicsVelocity.Linear;
+        }
         uint projectileGroupID = accessor.MakeUniquePersistentId().Value;
+
         for (int i = 0; i < settings.Quantity; i++)
         {
-            // spawn projectile
+            // _________________________________________ Spawn Projectile _________________________________________ //
             Entity projectileInstance = accessor.Instantiate(settings.ProjectilePrefab);
 
-            // set projectile data
-            fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.FirstInstigatorActor);
-            fix2 instigatorVel = fix2.zero;
-            if (accessor.TryGetComponent(context.FirstInstigatorActor, out PhysicsVelocity instigatorPhysicsVelocity))
-            {
-                instigatorVel = instigatorPhysicsVelocity.Linear;
-            }
-
-            fix2 spawnPos;
-            fix spawnDistance = GetSpawnDistance(accessor, projectileInstance, context.FirstInstigatorActor, settings.SpawnExtraDistance);
-
+            // _________________________________________ Calculate Component Details _________________________________________ //
+            fix spawnDistance = GetSpawnDistance(accessor, projectileInstance, context.LastPhysicalInstigator, settings.SpawnExtraDistance);
             fix itemThrowAngle = throwAngleMin + (i * throwAngleIncrement);
             fix2 itemThrowDir = fix2.FromAngle(itemThrowAngle);
             fix2 itemThrowVelocity = itemThrowDir * throwSpeed;
@@ -110,6 +108,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
             bool originateFromCenter = parameters != null && parameters.TryGetParameter(1, out GameActionParameterBool.Data paramOriginateFromCenter, warnIfFailed: false)
                 && paramOriginateFromCenter.Value;
 
+            fix2 spawnPos;
             if (originateFromCenter)
             {
                 // Find how much the projectile will be affected by gravity
@@ -137,9 +136,10 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
                 spawnPos = instigatorPos + spawnDistance * itemThrowDir;
             }
 
+            // _________________________________________ Set Projectile Data _________________________________________ //
             accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(itemThrowVelocity + instigatorVel));
             accessor.SetOrAddComponent(projectileInstance, new FixTranslation(spawnPos));
-            accessor.SetOrAddComponent(projectileInstance, new FirstInstigator() { Value = context.FirstInstigatorActor });
+            accessor.SetOrAddComponent(projectileInstance, new FirstInstigator() { Value = context.FirstPhysicalInstigator });
 
             if (settings.Quantity > 1)
             {
@@ -164,7 +164,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
     {
         Settings settings = accessor.GetComponent<Settings>(actionPrefab);
 
-        return direction * GetSpawnDistance(accessor, settings.ProjectilePrefab, context.FirstInstigatorActor, settings.SpawnExtraDistance);
+        return direction * GetSpawnDistance(accessor, settings.ProjectilePrefab, context.LastPhysicalInstigator, settings.SpawnExtraDistance);
     }
 
     // used by presentation

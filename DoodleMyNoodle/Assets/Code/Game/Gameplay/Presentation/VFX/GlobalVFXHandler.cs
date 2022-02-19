@@ -14,7 +14,7 @@ public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
         {
             // ITEM AUTH & ANIMATION TRIGGER
             SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Action, out SimAssetId instigatorAssetId);
-            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.FirstInstigatorActor, out FixTranslation translation);
+            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.LastPhysicalInstigator, out FixTranslation translation);
             GameObject instigatorPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
             if (instigatorPrefab.TryGetComponent(out ItemAuth gameActionAuth))
             {

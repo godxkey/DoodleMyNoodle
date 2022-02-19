@@ -70,7 +70,6 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
 
     // Description
     public AudioPlayable SfxOnUse;
-    public bool PlayAnimation = false;
     public AnimationDefinition Animation;
 
     // Surveys
