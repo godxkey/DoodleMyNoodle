@@ -67,7 +67,6 @@ MonoBehaviour:
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
-  PlayAnimation: 0
   Animation: {fileID: 0}
   Surveys: []
   references:
@@ -83,6 +82,6 @@ MonoBehaviour:
           RawValue: 0
         ProjectilePrefab: {fileID: 2385346486794747607, guid: 448f0a9069ae51e4d9c2772ff6a5fbed,
           type: 3}
-        Quantity: 6
-        VolleyAngle: 5
+        Quantity: 4
+        VolleyAngle: 15
         ShootVector: {x: 10, y: 10}

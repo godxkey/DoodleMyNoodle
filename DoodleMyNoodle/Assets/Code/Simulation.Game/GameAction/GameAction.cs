@@ -247,9 +247,22 @@ public abstract class GameAction
                 }
             }
 
+            // copy native array to make sure its persisten
+            NativeArray<Entity> persistentTargets = new NativeArray<Entity>(context.Targets.Length, Allocator.Persistent);
+            context.Targets.CopyTo(persistentTargets);
+
+            ExecutionContext persitentContext = new ExecutionContext()
+            {
+                Action = context.Action,
+                FirstPhysicalInstigator = context.FirstPhysicalInstigator,
+                LastPhysicalInstigator = context.LastPhysicalInstigator,
+                ActionInstigatorActor = context.ActionInstigatorActor,
+                Targets = persistentTargets
+            };
+
             accessor.GetOrCreateSystem<PresentationEventSystem>().PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
             {
-                GameActionContext = context,// todo: copy array and dispose in presentation
+                GameActionContext = persitentContext,
                 GameActionResult = resultData
             });
 

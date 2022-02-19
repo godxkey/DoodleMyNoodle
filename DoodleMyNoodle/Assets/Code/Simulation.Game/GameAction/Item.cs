@@ -63,7 +63,7 @@ internal partial class CommonWrites
 
         accessor.TryGetComponent(item, out ItemAction itemAction);
 
-        if (CommonWrites.ExecuteGameAction(accessor, actor, itemAction, parameters))
+        if (CommonWrites.ExecuteGameAction(accessor, item, itemAction, parameters))
         {
             // reduce consumable amount
             if (accessor.GetComponent<StackableFlag>(item))

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Dovakin_AxeThrow
+  m_Name: SE_Action_Dovakin_IceBreath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 1b1b30dc5bf1176489d03b5b7c9a2944
+  _guid: 0142fb56fb858754588a2e60872bf4c3
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -66,9 +66,10 @@ MonoBehaviour:
   Value: GameActionMeleeAttack
   GameActionSettings:
   - id: 0
-  SfxOnUse: {fileID: 11400000, guid: 1ac30f168ae9d9e46a57865f5b686a7f, type: 2}
-  PlayAnimation: 1
-  Animation: {fileID: 11400000, guid: 8960135fd5d1ae74eb624a5f929e8b84, type: 2}
+  SfxOnUse: {fileID: 0}
+  Animation: {fileID: 0}
+  InstigatorVFX: {fileID: 0}
+  TargetsVFX: {fileID: 11400000, guid: 2d4aca74b983ffc48b1ed14c2adbea72, type: 2}
   Surveys: []
   references:
     version: 1
