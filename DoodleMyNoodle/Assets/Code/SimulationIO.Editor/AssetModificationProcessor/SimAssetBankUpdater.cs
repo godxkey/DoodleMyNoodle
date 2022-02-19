@@ -77,6 +77,7 @@ public class SimAssetBankUpdater : AssetPostprocessor
             if (prefab.Guid != guid)
             {
                 prefab.Editor_SetGuid(guid);
+                EditorUtility.SetDirty(prefab);
                 DebugEditor.LogAssetIntegrity($"[{nameof(SimAssetBankUpdater)}] Updated {prefab.name}'s assetId to: {guid}");
                 PrefabUtility.RecordPrefabInstancePropertyModifications(prefab);
                 return true;

@@ -43,6 +43,13 @@ public class SimInputCheatImpulseSelf : SimCheatInput
     public fix2 ImpulseValue;
 }
 
+[NetSerializable]
+public class SimInputCheatSoloPlay : SimCheatInput
+{
+    public PersistentId PlayerId;
+    public int PawnIndex;
+}
+
 public struct CheatsAllItemElement : IBufferElementData
 {
     public Entity ItemPrefab;
@@ -181,13 +188,68 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 {
                     PhysicsVelocity vel = EntityManager.GetComponentData<PhysicsVelocity>(pawn);
                     vel.Linear += impulseSelf.ImpulseValue;
-                    EntityManager.SetComponentData<PhysicsVelocity>(pawn, vel);
+                    SetComponent<PhysicsVelocity>(pawn, vel);
                 }
                 break;
             }
 
-            default:
+            case SimInputCheatSoloPlay soloPlay:
+            {
+                Entity player = CommonReads.FindPlayerEntity(Accessor, soloPlay.PlayerId);
+
+                if (!HasComponent<ControlledEntity>(player))
+                    return;
+
+                // _________________________________________ Find Pawns _________________________________________ //
+                Entity currentPawn = Entity.Null;
+                Entity newPawn = Entity.Null;
+                int newPawnIndex = soloPlay.PawnIndex;
+
+                if (EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
+                    currentPawn = pawn;
+
+                Entities.ForEach((Entity entity, in PlayerGroupMemberIndex memberIndex) =>
+                {
+                    if (memberIndex == newPawnIndex)
+                    {
+                        newPawn = entity;
+                    }
+                }).Run();
+
+
+                // _________________________________________ Update Possession _________________________________________ //
+                if (currentPawn != Entity.Null)
+                {
+                    SetComponent<Controllable>(currentPawn, default);
+                }
+
+                if (newPawn != Entity.Null)
+                {
+                    SetComponent<Controllable>(newPawn, player);
+                }
+
+                SetComponent<ControlledEntity>(player, newPawn);
+
+                // _________________________________________ Disable Auto Attack on Others _________________________________________ //
+                Entities.WithAll<PlayerGroupMemberIndex>()
+                    .ForEach((Entity entity) =>
+                {
+                    if (entity != newPawn)
+                    {
+                        if (HasComponent<AutoAttackProgress>(entity))
+                            EntityManager.RemoveComponent<AutoAttackProgress>(entity);
+                    }
+                    else
+                    {
+                        if (!HasComponent<AutoAttackProgress>(entity))
+                            EntityManager.AddComponent<AutoAttackProgress>(entity);
+                    }
+                }).WithoutBurst()
+                .WithStructuralChanges()
+                .Run();
+
                 break;
+            }
         }
     }
 }
