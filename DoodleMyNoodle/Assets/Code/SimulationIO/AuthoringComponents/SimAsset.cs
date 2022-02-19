@@ -49,22 +49,30 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
     {
         if (!_runtimeIdAssigned)
         {
-            if (SimAssetBankInstance.Ready)
+            if (string.IsNullOrEmpty(Guid)) // not a prefab
             {
-                var lookup = SimAssetBankInstance.GetLookup();
-                _runtimeId = lookup.GetRuntimeSimAssetId(Guid);
-
-                if (_runtimeId == SimAssetId.Invalid)
-                {
-                    Debug.LogError($"[{nameof(SimAssetBank)}] Could not find runtime id for guid {Guid} and name {gameObject.name}. " +
-                    $"Stop playing and try forcing an update with \"Tools > Data Management > Force Update SimAssetIds\"");
-                }
-
-                _runtimeIdAssigned = true; 
+                _runtimeId = SimAssetId.Invalid;
+                _runtimeIdAssigned = true;
             }
             else
             {
-                Debug.LogError($"{nameof(SimAssetBankInstance)} is null. The converted SimAssetId will be invalid.");
+                if (SimAssetBankInstance.Ready)
+                {
+                    var lookup = SimAssetBankInstance.GetLookup();
+                    _runtimeId = lookup.GetRuntimeSimAssetId(Guid);
+
+                    if (_runtimeId == SimAssetId.Invalid)
+                    {
+                        Debug.LogError($"[{nameof(SimAssetBank)}] Could not find runtime id for guid {Guid} and name {gameObject.name}. " +
+                            $"Stop playing and try forcing an update with \"Tools > Data Management > Force Update SimAssetIds\"");
+                    }
+
+                    _runtimeIdAssigned = true;
+                }
+                else
+                {
+                    Debug.LogError($"{nameof(SimAssetBankInstance)} is null. The converted SimAssetId will be invalid.");
+                }
             }
         }
 
