@@ -1,11 +1,10 @@
+using CCC.Fix2D;
 using System;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
-
-public struct CanTriggerGameOverTag : IComponentData { }
 
 public struct GameStartedTag : IComponentData { }
 
@@ -56,57 +55,40 @@ public class GameFlowSystem : SimGameSystemBase
 
     private void EndGameIfNeeded()
     {
-        // TODO: REDO THIS
+        // Upon new turn, check if a team is empty
+        if (HasSingleton<GameStartedTag>())
+        {
+            if (TryGetSingletonEntity<PlayerGroupDataTag>(out Entity playerGroup))
+            {
+                // Team HP is empty, they're dead = they lost :(
+                if (TryGetComponent(playerGroup, out Health health))
+                {
+                    if (health.Value <= 0)
+                    {
+                        // Ennemy win !
+                        if (!HasSingleton<WinningTeam>())
+                        {
+                            CreateSingleton(new WinningTeam { Value = (int)DesignerFriendlyTeam.Baddies });
+                        }
+                    }
+                }
 
-        //// We cannot trigger the 'Game Over' until the two teams have at least had 1 member.
-        //// Otherwise, entering a game with no enemy triggers GameOver instantly.
-        //if (!HasSingleton<CanTriggerGameOverTag>())
-        //{
-        //    if (CommonReads.GetEntitiesFromTeam(Accessor, (int)DesignerFriendlyTeam.Baddies).Length > 0 &&
-        //        CommonReads.GetEntitiesFromTeam(Accessor, (int)DesignerFriendlyTeam.Player).Length > 0)
-        //    {
-        //        CreateSingleton<CanTriggerGameOverTag>();
-        //    }
-        //}
-
-        //// Upon new turn, check if a team is empty
-        //if (HasSingleton<CanTriggerGameOverTag>())
-        //{
-        //    int playerAlive = 0;
-        //    int aiAlive = 0;
-
-        //    Entities.ForEach((in Team pawnControllerTeam, in ControlledEntity pawn) =>
-        //    {
-        //        // if the team member controls a pawn with Health
-        //        if (HasComponent<Health>(pawn.Value) && GetComponent<Health>(pawn.Value) > 0)
-        //        {
-        //            if (pawnControllerTeam.Value == (int)DesignerFriendlyTeam.Baddies)
-        //            {
-        //                aiAlive++;
-        //            }
-        //            else if (pawnControllerTeam.Value == (int)DesignerFriendlyTeam.Player)
-        //            {
-        //                playerAlive++;
-        //            }
-        //        }
-        //    }).Run();
-
-        //    if (aiAlive <= 0)
-        //    {
-        //        // Player wins !
-        //        if (!HasSingleton<WinningTeam>())
-        //        {
-        //            CreateSingleton(new WinningTeam { Value = (int)DesignerFriendlyTeam.Player });
-        //        }
-        //    }
-        //    else if (playerAlive <= 0)
-        //    {
-        //        // AI wins !
-        //        if (!HasSingleton<WinningTeam>())
-        //        {
-        //            CreateSingleton(new WinningTeam { Value = (int)DesignerFriendlyTeam.Baddies });
-        //        }
-        //    }
-        //}
+                // Team reached their destination for this level = they win !
+                if (TryGetComponent(playerGroup, out FixTranslation translation))
+                {
+                    if(TryGetSingleton(out GameOverDestinationToReachSingleton gameOverDestinationToReachSingleton)) 
+                    {
+                        if (translation.Value.x >= gameOverDestinationToReachSingleton.XPosition)
+                        {
+                            // Player wins !
+                            if (!HasSingleton<WinningTeam>())
+                            {
+                                CreateSingleton(new WinningTeam { Value = (int)DesignerFriendlyTeam.Player });
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
