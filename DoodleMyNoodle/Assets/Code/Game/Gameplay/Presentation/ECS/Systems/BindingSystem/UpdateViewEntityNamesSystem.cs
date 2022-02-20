@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngineX;
 
 public class UpdateViewEntityNamesSystem : ViewSystemBase
-{    
+{
 
     protected override void OnUpdate()
     {
@@ -15,7 +15,7 @@ public class UpdateViewEntityNamesSystem : ViewSystemBase
             .WithChangeFilter<BindedSimEntity>()
             .ForEach((Entity viewEntity, in BindedSimEntity simEntity) =>
             {
-                if (SimWorldAccessor.Exists(simEntity))
+                if (simEntity.Index < SimWorldAccessor.EntityCapacity && SimWorldAccessor.Exists(simEntity))
                 {
                     EntityManager.SetName(viewEntity, $"View_{SimWorldAccessor.GetName(simEntity)}");
                 }

@@ -764,6 +764,20 @@ public interface ISimWorldReadAccessor
     EntityQueryBuilder Entities { get; }
 
     /// <summary>
+    /// The capacity of the internal entities array.
+    /// </summary>
+    /// <value>The number of entities the array can hold before it must be resized.</value>
+    /// <remarks>
+    /// The entities array automatically resizes itself when the entity count approaches the capacity.
+    /// You should rarely need to set this value directly.
+    ///
+    /// **Important:** when you set this value (or when the array automatically resizes), the EntityManager
+    /// first ensures that all Jobs finish. This can prevent the Job scheduler from utilizing available CPU
+    /// cores and threads, resulting in a temporary performance drop.
+    /// </remarks>
+    int EntityCapacity { get; }
+
+    /// <summary>
     /// Gets an array-like container containing all components of type T, indexed by Entity.
     /// </summary>
     /// <param name="isReadOnly">Whether the data is only read, not written. Access data as
