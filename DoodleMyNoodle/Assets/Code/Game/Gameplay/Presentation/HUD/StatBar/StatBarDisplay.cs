@@ -13,8 +13,8 @@ public class StatBarDisplay : GamePresentationBehaviour
         StatBar.maxValue = maxValue;
         StatBar.value = value;
 
-        CurrentValueText.text = value.ToString();
-        MaxValueText.text = maxValue.ToString();
+        CurrentValueText.text = Mathf.Ceil(value).ToString();
+        MaxValueText.text = Mathf.Ceil(maxValue).ToString();
     }
 
     protected override void OnGamePresentationUpdate()

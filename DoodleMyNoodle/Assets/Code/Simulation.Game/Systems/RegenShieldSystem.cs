@@ -9,17 +9,17 @@ public class RegenShieldSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
-        var elapseTime = Time.ElapsedTime;
+        var time = Time.ElapsedTime;
+        var deltaTime = Time.DeltaTime;
 
         Entities
-            .ForEach((Entity entity, ref Shield shield, ref ShieldRechargeRate shieldRechargeRate, ref ShieldRechargeCooldown shieldRechargeCooldown, ref ShieldLastHitTime shieldLastHitTime) =>
+            .ForEach((Entity entity, ref Shield shield, in ShieldRechargeCooldown cooldown, in ShieldRechargeRate rechargeRate, in ShieldLastHitTime lastHitTime) =>
             {
-                fix deltaTime = elapseTime - shieldLastHitTime.Value;
-                if (deltaTime > shieldRechargeCooldown.Value)
+                fix elapsedTimeSinceLastHit = time - lastHitTime.Value;
+                if (elapsedTimeSinceLastHit > cooldown.Value)
                 {
-                    CommonWrites.ModifyStatFix<Shield>(Accessor, entity, shieldRechargeRate);
-                    shieldLastHitTime = elapseTime;
+                    shield.Value = min(GetComponent<MaximumFix<Shield>>(entity), shield.Value + (rechargeRate * deltaTime));
                 }
-            }).WithoutBurst().Run();
+            }).Run();
     }
 }

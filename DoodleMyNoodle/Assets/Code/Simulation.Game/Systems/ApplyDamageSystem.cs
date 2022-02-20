@@ -118,6 +118,11 @@ public class ApplyDamageSystem : SimGameSystemBase
             shieldDelta = newShield.Value - previousShield.Value;
             SetComponent(target, newShield);
             remainingDelta -= shieldDelta;
+
+            if (HasComponent<ShieldLastHitTime>(target))
+            {
+                SetComponent<ShieldLastHitTime>(target, Time.ElapsedTime);
+            }
         }
 
         // Health
