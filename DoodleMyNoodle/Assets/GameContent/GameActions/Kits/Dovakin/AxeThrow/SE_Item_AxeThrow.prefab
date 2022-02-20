@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8821241209944219005}
   - component: {fileID: 2677628293349642642}
   - component: {fileID: 6323485160588907889}
+  - component: {fileID: -4532363482470906874}
   m_Layer: 0
   m_Name: SE_Item_AxeThrow
   m_TagString: Untagged
@@ -73,3 +74,20 @@ MonoBehaviour:
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: "Lanc\xE9 de hache"
   EffectDescription: Lance une hache, duh.
+--- !u!114 &-4532363482470906874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 722e71c09a9b4fe4387330ab52d80215, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackRate: 1
+  AttackAction: {fileID: -4801357984810749253, guid: 1b1b30dc5bf1176489d03b5b7c9a2944,
+    type: 3}
+  PrepareAttackInAdvance: 0
+  AttackLimit: -1

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6516141508588561186}
   - component: {fileID: 7379920081520119636}
   - component: {fileID: 6166303341697273731}
+  - component: {fileID: -6560128938997655890}
   m_Layer: 0
   m_Name: VE_Char
   m_TagString: Untagged
@@ -100,6 +101,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bone: {fileID: 2766127205702443274}
   _spriteLookingRight: 1
+--- !u!114 &-6560128938997655890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5202612425808145220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d14f1c48814421e4a8caec83d6ccb8aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpriteRenderer: {fileID: 2078424545621035913}
+  frozenColor: {r: 0.002501011, g: 0, b: 1, a: 1}
 --- !u!1 &5519758926812518161
 GameObject:
   m_ObjectHideFlags: 0
@@ -169,7 +184,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1289745337
-  m_SortingLayer: -4
+  m_SortingLayer: -6
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 94da83634ef632240af61bb24390d5a5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

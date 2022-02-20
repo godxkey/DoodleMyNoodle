@@ -52,19 +52,19 @@ public class PlayerActionBarSlot : ItemSlot
 
     public void UpdateDisplayAsUnavailable(Entity itemEntity)
     {
+        UnavailableSpriteObject.SetActive(true);
+
         if (SimWorld.TryGetComponent(itemEntity, out ItemCooldownTimeCounter timerCounter) && timerCounter.Value != 0)
         {
-            UnavailableSpriteObject.SetActive(true);
             UnavailableTimerText.gameObject.SetActive(true);
             UnavailableTimerText.text = fix.RoundToInt(timerCounter.Value).ToString();
         }
         else
         {
-            UnavailableSpriteObject.SetActive(true);
             UnavailableTimerText.gameObject.SetActive(false);
-
-            _actionBarSlotUnavailable = true;
         }
+
+        _actionBarSlotUnavailable = true;
 
     }
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Dovakin_IceBreath
+  m_Name: SE_Action_IceBreath_Freeze
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 0142fb56fb858754588a2e60872bf4c3
+  _guid: 70e448ee90513b24ba78b7774d6f326b
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionSpawn
+  Value: GameActionFreeze
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -74,8 +74,7 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSpawn/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionFreeze/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        PawnOffset: {x: 4, y: 0.5}
-        Prefab: {fileID: 2385346486794747607, guid: d9608b2e983f0a04ba4211376be7b635,
-          type: 3}
+        Duration:
+          RawValue: 17179869184

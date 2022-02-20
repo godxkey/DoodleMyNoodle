@@ -39,5 +39,13 @@ public class UpdateShouldAutoAttackSystem : SimGameSystemBase
             {
                 shouldAttack = position.Value.x < playerGroupPosition.x && hp.Value > 0;
             }).Schedule();
+
+        // _________________________________________ Frozen _________________________________________ //
+        Entities
+            .WithAll<Frozen>()
+            .ForEach((ref ShouldAutoAttack shouldAttack) =>
+            {
+                shouldAttack = false;
+            }).Schedule();
     }
 }
