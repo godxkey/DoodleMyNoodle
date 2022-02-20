@@ -127,9 +127,14 @@ public class LaunchCommandsWindow : ToolsWindowBase
 
             if (item.Active)
             {
-                commandTexts.Add($"-{item.GameConsoleInvokable.DisplayName}");
-                if (item.Parameters != null)
-                    commandTexts.AddRange(item.Parameters);
+                if (item.Parameters != null && item.Parameters.Length > 0)
+                {
+                    commandTexts.Add($"-{item.GameConsoleInvokable.DisplayName} {string.Join(" ", item.Parameters)}");
+                }
+                else
+                {
+                    commandTexts.Add($"-{item.GameConsoleInvokable.DisplayName}");
+                }
             }
         }
         string json = JsonConvert.SerializeObject(new CommandSaveDataContainer() { CommandSaveDatas = saveData });

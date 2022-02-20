@@ -100,7 +100,7 @@ public class GameConsole
     {
         if (Application.isPlaying)
         {
-            ExecuteCommandLineStyleInvokables(CommandLine.Arguments.ToArray());
+            ExecuteCommandLineStyleInvokables(CommandLine.GroupedArguments.ToArray());
 #if UNITY_EDITOR
             ExecuteCommandLineStyleInvokables(EditorPlayCommands);
 #endif
@@ -115,53 +115,31 @@ public class GameConsole
             return s_database.Invokables.AsReadOnlyNoAlloc().DynamicCast<IGameConsoleInvokable>();
         }
     }
-    
+
     public static void ExecuteCommandLineStyleInvokables(string args)
     {
-        ExecuteCommandLineStyleInvokables(CommandLine.SplitCommandLine(args).ToArray());
+        ExecuteCommandLineStyleInvokables(CommandLine.SplitCommandLineInGroups(args).ToArray());
     }
 
     public static void ExecuteCommandLineStyleInvokables(string[] args)
     {
         InitIfNeeded();
-        Debug.Log($"Executing commands: {string.Join(" ", args)}");
+        Debug.Log($"Executing commands: {string.Join(", ", args)}");
         for (int i = 0; i < args.Length; i++)
         {
             if (args[i].StartsWith("-"))
             {
-                string invokableName = args[i].Substring(1, args[i].Length - 1);
+                string commandAndParam = args[i].Substring(1, args[i].Length - 1);
+
+                int paramStart = commandAndParam.IndexOf(" ");
+
+                string invokableName = paramStart == -1
+                    ? commandAndParam
+                    : commandAndParam.Substring(0, paramStart);
 
                 if (s_database.InvokablesMap.TryGetValue(invokableName.ToLower(), out GameConsoleInvokable invokable))
                 {
-                    int minParam = invokable.MandatoryParameterCount;
-                    int maxParam = invokable.InvokeParameters.Count;
-
-                    int paramStart = i + 1;
-                    int paramEnd = paramStart;
-                    while (paramEnd < args.Length)
-                    {
-                        if (args[paramEnd].StartsWith("-") || args[paramEnd].StartsWith("+"))
-                        {
-                            break;
-                        }
-                        paramEnd++;
-                    }
-                    int paramCount = paramEnd - paramStart;
-                    if (paramCount < minParam || paramCount > maxParam)
-                    {
-                        Log.Warning($"Could not execute launch command line {invokable.DisplayName} with {paramCount} parameter(s). " +
-                            $"It requires between {minParam} and {maxParam} parameters (inclusive).");
-                        continue;
-                    }
-
-                    string concat = invokableName;
-
-                    for (int p = paramStart; p < paramEnd; p++)
-                    {
-                        concat += " " + args[p];
-                    }
-
-                    EnqueueCommandNoHistory(concat);
+                    EnqueueCommandNoHistory(commandAndParam);
                 }
             }
         }

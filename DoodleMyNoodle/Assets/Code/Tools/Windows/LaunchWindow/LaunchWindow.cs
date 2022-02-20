@@ -176,7 +176,7 @@ public class LaunchWindow : ToolsWindowBase
             element.RegisterValueChangedCallback(
                 (ChangeEvent<string> changeEvent) =>
                 {
-                    GameConsole.EditorPlayCommands = CommandLine.SplitCommandLine(changeEvent.newValue).ToArray();
+                    GameConsole.EditorPlayCommands = CommandLine.SplitCommandLineInGroups(changeEvent.newValue).ToArray();
                     EditorLaunchData.extraArguments = changeEvent.newValue;
                 });
         }
