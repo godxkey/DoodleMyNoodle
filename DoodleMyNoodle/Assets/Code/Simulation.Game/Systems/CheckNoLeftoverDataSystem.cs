@@ -5,11 +5,13 @@ using Unity.Entities;
 using UnityEngineX;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
+[AlwaysUpdateSystem]
 public class CheckNoLeftoverDataSystem : SimGameSystemBase
 {
     private SetSignalSystem _emitSignalSystem;
     private ExecutePawnControllerInputSystem _executeSys;
     private PhysicsWorldSystem _physicsWorldSystem;
+    private ExecuteGameActionSystem _executeGameActionSystem;
 
     protected override void OnCreate()
     {
@@ -18,6 +20,7 @@ public class CheckNoLeftoverDataSystem : SimGameSystemBase
         _emitSignalSystem = World.GetOrCreateSystem<SetSignalSystem>();
         _executeSys = World.GetOrCreateSystem<ExecutePawnControllerInputSystem>();
         _physicsWorldSystem = World.GetOrCreateSystem<PhysicsWorldSystem>();
+        _executeGameActionSystem = World.GetOrCreateSystem<ExecuteGameActionSystem>();
     }
 
     protected override void OnUpdate()
@@ -25,6 +28,9 @@ public class CheckNoLeftoverDataSystem : SimGameSystemBase
         ScreamIfNotEmpty(_emitSignalSystem.EmitterClickRequests, nameof(SetSignalSystem.EmitterClickRequests), nameof(SetSignalSystem));
         ScreamIfNotEmpty(_emitSignalSystem.EmitterOverlaps, nameof(SetSignalSystem.EmitterOverlaps), nameof(SetSignalSystem));
         ScreamIfNotEmpty(_executeSys.Inputs, nameof(ExecutePawnControllerInputSystem.Inputs), nameof(ExecutePawnControllerInputSystem));
+        ScreamIfNotEmpty(_executeGameActionSystem.HandlesToWaitFor, nameof(ExecuteGameActionSystem.HandlesToWaitFor), nameof(ExecuteGameActionSystem));
+        ScreamIfNotEmpty(_executeGameActionSystem.ActionRequests, nameof(ExecuteGameActionSystem.ActionRequests), nameof(ExecuteGameActionSystem));
+        ScreamIfNotEmpty(_executeGameActionSystem.ActionRequestsManaged, nameof(ExecuteGameActionSystem.ActionRequestsManaged), nameof(ExecuteGameActionSystem));
 
         _physicsWorldSystem.PhysicsWorldFullyUpdated = false;
     }

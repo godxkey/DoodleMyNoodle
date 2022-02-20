@@ -49,35 +49,29 @@ public partial class CommonReads
 
 internal partial class CommonWrites
 {
-    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, GameAction.UseParameters parameters = null)
+    public static void RequestExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, GameAction.UseParameters parameters = null)
     {
-        return ExecuteGameAction(accessor, actionInstigator, actionEntity, targets: default, parameters);
+        RequestExecuteGameAction(accessor, actionInstigator, actionEntity, targets: default, parameters);
     }
 
-    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, Entity target, GameAction.UseParameters parameters = null)
+    public static void RequestExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, Entity target, GameAction.UseParameters parameters = null)
     {
         var targets = new NativeArray<Entity>(1, Allocator.Temp);
         targets[0] = target;
-        return ExecuteGameAction(accessor, actionInstigator, actionEntity, targets, parameters);
+        RequestExecuteGameAction(accessor, actionInstigator, actionEntity, targets, parameters);
     }
 
-    public static bool ExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
+    public static void RequestExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
     {
-        if (!accessor.TryGetComponent(actionEntity, out GameActionId actionId) && actionId.IsValid)
-            return false;
+        var system = accessor.GetExistingSystem<ExecuteGameActionSystem>();
 
-        GameAction gameAction = GameActionBank.GetAction(actionId);
-
-        if (gameAction == null)
-            return false; // error is already logged in 'GetAction' method
-
-        if (!gameAction.TryExecute(accessor, CommonReads.GetActionContext(accessor, actionInstigator, actionEntity, targets), parameters))
+        system.ActionRequestsManaged.Add(new ExecuteGameActionSystem.ActionRequestManaged()
         {
-            Log.Info($"Couldn't use {gameAction}.");
-            return false;
-        }
-
-        return true;
+            ActionEntity = actionEntity,
+            Instigator = actionInstigator,
+            Parameters = parameters,
+            Targets = targets
+        });
     }
 }
 
@@ -218,50 +212,32 @@ public abstract class GameAction
         public Entity Entity;
     }
 
-    public bool TryExecute(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters parameters)
+    public interface IExecuteAccessor
     {
-        List<ResultDataElement> result = new List<ResultDataElement>();
-        if (Execute(accessor, context, parameters, result))
+        bool ExecuteGameAction(Entity actionInstigator, Entity actionEntity, Entity target);
+        bool ExecuteGameAction(Entity actionInstigator, Entity actionEntity, NativeArray<Entity> targets);
+    }
+
+    public readonly struct ExecInputs
+    {
+        public readonly ISimGameWorldReadWriteAccessor Accessor;
+        public readonly ExecutionContext Context;
+        public readonly UseParameters Parameters;
+
+        public ExecInputs(ISimGameWorldReadWriteAccessor accessor, ExecutionContext context, UseParameters parameters)
         {
-            // Feedbacks
-            ResultData resultData = new ResultData() { Count = result.Count };
-
-            for (int i = 0; i < result.Count; i++)
-            {
-                switch (i)
-                {
-                    case 0:
-                        resultData.DataElement_0 = result[0];
-                        break;
-                    case 1:
-                        resultData.DataElement_1 = result[1];
-                        break;
-                    case 2:
-                        resultData.DataElement_2 = result[2];
-                        break;
-                    case 3:
-                        resultData.DataElement_3 = result[3];
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            accessor.GetOrCreateSystem<PresentationEventSystem>().PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
-            {
-                GameActionContext = context,// todo: copy array and dispose in presentation
-                GameActionResult = resultData
-            });
-
-            return true;
-        }
-        else
-        {
-            return false;
+            Accessor = accessor;
+            Context = context;
+            Parameters = parameters;
         }
     }
 
-    public abstract bool Execute(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters parameters, List<ResultDataElement> resultData);
+    public ref struct ExecOutput
+    {
+        public List<ResultDataElement> ResultData;
+    }
+
+    public abstract bool Execute(in ExecInputs input, ref ExecOutput output);
     public abstract ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Entity actionPrefab);
 
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
@@ -278,15 +254,15 @@ public abstract class GameAction<TSetting> : GameAction where TSetting : struct,
     public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Entity actionPrefab)
     {
         var settings = accessor.GetComponent<TSetting>(actionPrefab);
-        return GetExecutionContract(accessor, settings);
+        return GetExecutionContract(accessor, ref settings);
     }
 
-    public override bool Execute(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters parameters, List<ResultDataElement> resultData)
+    public override bool Execute(in ExecInputs input, ref ExecOutput output)
     {
-        var settings = accessor.GetComponent<TSetting>(context.Action);
-        return Use(accessor, context, parameters, resultData, settings);
+        var settings = input.Accessor.GetComponent<TSetting>(input.Context.Action);
+        return Execute(in input, ref output, ref settings);
     }
 
-    public abstract ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, TSetting settings);
-    public abstract bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters parameters, List<ResultDataElement> resultData, TSetting settings);
+    protected abstract ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref TSetting settings);
+    protected abstract bool Execute(in ExecInputs input, ref ExecOutput output, ref TSetting settings);
 }

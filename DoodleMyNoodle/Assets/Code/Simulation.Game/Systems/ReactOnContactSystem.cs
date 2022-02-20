@@ -7,6 +7,7 @@ using CCC.Fix2D;
 using UnityEngineX;
 using Unity.Jobs;
 
+
 public struct MutedContactActionElement : ISingletonBufferElementData
 {
     public Entity Instigator;
@@ -36,7 +37,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
     private StepPhysicsWorldSystem _stepPhysicsWorldSystem;
     private PhysicsWorldSystem _physicsWorldSystem;
     private EndFramePhysicsSystem _endFramePhysicsSystem;
-    private ReactOnContactSystem _reactSystem;
+    private ExecuteGameActionSystem _gameActionSystem;
 
     protected override void OnCreate()
     {
@@ -45,7 +46,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
         _stepPhysicsWorldSystem = World.GetOrCreateSystem<StepPhysicsWorldSystem>();
         _physicsWorldSystem = World.GetOrCreateSystem<PhysicsWorldSystem>();
         _endFramePhysicsSystem = World.GetOrCreateSystem<EndFramePhysicsSystem>();
-        _reactSystem = World.GetOrCreateSystem<ReactOnContactSystem>();
+        _gameActionSystem = World.GetOrCreateSystem<ExecuteGameActionSystem>();
     }
 
     protected override void OnUpdate()
@@ -53,7 +54,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
         ExtractFromCollisionOrTrigger jobProcessor = new ExtractFromCollisionOrTrigger()
         {
             World = _physicsWorldSystem.PhysicsWorld,
-            OutActions = _reactSystem.ActionRequests,
+            OutActions = _gameActionSystem.ActionRequests,
             ActionOnContacts = GetBufferFromEntity<ActionOnColliderContact>(isReadOnly: true),
             Teams = GetComponentDataFromEntity<Team>(isReadOnly: true),
             FirstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true),
@@ -101,9 +102,9 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
         [ReadOnly] public ComponentDataFromEntity<FirstInstigator> FirstInstigators;
         [ReadOnly] public ComponentDataFromEntity<TileColliderTag> TileColliderTags;
         [ReadOnly] public PhysicsWorld World;
-        [ReadOnly] public DynamicBuffer<MutedContactActionElement> MutedActions;
 
-        public NativeList<ReactOnContactSystem.ActionRequest> OutActions;
+        public DynamicBuffer<MutedContactActionElement> MutedActions;
+        public NativeList<ExecuteGameActionSystem.ActionRequest> OutActions;
 
         private struct EntityInfo
         {
@@ -140,12 +141,23 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
 
                     if (Helpers.ActorFilterMatches(entityAInfo, entityBInfo, actionOnContact.Data.ActionFilter))
                     {
-                        OutActions.Add(new ReactOnContactSystem.ActionRequest()
+                        OutActions.Add(new ExecuteGameActionSystem.ActionRequest()
                         {
                             Instigator = entityA,
                             Target = entityB,
-                            ActionData = actionOnContact.Data,
+                            ActionEntity = actionOnContact.Data.ActionEntity,
                         });
+
+                        if (actionOnContact.Data.SameTargetCooldown > 0)
+                        {
+                            MutedActions.Add(new MutedContactActionElement()
+                            {
+                                Instigator = entityA,
+                                ContactActionBufferId = actionOnContact.Data.Id,
+                                ExpirationTime = actionOnContact.Data.SameTargetCooldown,
+                                Target = entityB
+                            });
+                        }
                     }
                 }
             }
@@ -154,18 +166,17 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
 }
 
 [UpdateInGroup(typeof(PostPhysicsSystemGroup))]
-[UpdateBefore(typeof(ReactOnContactSystem))]
 public class ExtractOverlapReactionsSystem : SimGameSystemBase
 {
     private PhysicsWorldSystem _physicsWorldSystem;
-    private ReactOnContactSystem _reactSystem;
+    private ExecuteGameActionSystem _gameActionSystem;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
         _physicsWorldSystem = World.GetOrCreateSystem<PhysicsWorldSystem>();
-        _reactSystem = World.GetOrCreateSystem<ReactOnContactSystem>();
+        _gameActionSystem = World.GetOrCreateSystem<ExecuteGameActionSystem>();
     }
 
     protected override void OnUpdate()
@@ -173,14 +184,13 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
         var physicsWorld = _physicsWorldSystem.PhysicsWorld;
         var physicsBodiesMap = _physicsWorldSystem.EntityToPhysicsBody;
         var hits = new NativeList<DistanceHit>(Allocator.TempJob);
-        var outActions = _reactSystem.ActionRequests;
+        var outActions = _gameActionSystem.ActionRequests;
         var teams = GetComponentDataFromEntity<Team>(isReadOnly: true);
         var firstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true);
         var tileColliderTags = GetComponentDataFromEntity<TileColliderTag>(isReadOnly: true);
         var mutedActions = GetSingletonBuffer<MutedContactActionElement>();
 
         Entities
-            .WithReadOnly(mutedActions)
             .WithReadOnly(physicsWorld)
             .WithReadOnly(physicsBodiesMap)
             .WithReadOnly(teams)
@@ -194,7 +204,6 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
             for (int i = 0; i < actionsOnOverlap.Length; i++)
             {
                 var actionOnContact = actionsOnOverlap[i];
-
 
                 PointDistanceInput pointDistance = new PointDistanceInput()
                 {
@@ -217,12 +226,23 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
 
                         if (Helpers.ActorFilterMatches(entityAInfo, entityBInfo, actionOnContact.Data.ActionFilter))
                         {
-                            outActions.Add(new ReactOnContactSystem.ActionRequest()
+                            outActions.Add(new ExecuteGameActionSystem.ActionRequest()
                             {
                                 Instigator = entity,
                                 Target = hit.Entity,
-                                ActionData = actionOnContact.Data,
+                                ActionEntity = actionOnContact.Data.ActionEntity,
                             });
+
+                            if (actionOnContact.Data.SameTargetCooldown > 0)
+                            {
+                                mutedActions.Add(new MutedContactActionElement()
+                                {
+                                    Instigator = entity,
+                                    ContactActionBufferId = actionOnContact.Data.Id,
+                                    ExpirationTime = actionOnContact.Data.SameTargetCooldown,
+                                    Target = hit.Entity
+                                });
+                            }
                         }
                     }
 
@@ -232,7 +252,7 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
         }).WithDisposeOnCompletion(hits)
         .Schedule();
 
-        _reactSystem.HandlesToWaitFor.Add(Dependency);
+        _gameActionSystem.HandlesToWaitFor.Add(Dependency);
     }
 }
 
@@ -248,61 +268,6 @@ public class UpdateMutedContactActionSystem : SimGameSystemBase
             {
                 mutedActions.RemoveAt(i);
             }
-        }
-    }
-}
-
-[UpdateInGroup(typeof(PostPhysicsSystemGroup))]
-public class ReactOnContactSystem : SimGameSystemBase
-{
-    public struct ActionRequest
-    {
-        public Entity Instigator;
-        public Entity Target;
-        public ActionOnContactBaseData ActionData;
-    }
-
-    public NativeList<ActionRequest> ActionRequests;
-    public NativeList<JobHandle> HandlesToWaitFor;
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-        ActionRequests = new NativeList<ActionRequest>(Allocator.Persistent);
-        HandlesToWaitFor = new NativeList<JobHandle>(Allocator.Persistent);
-
-        RequireSingletonForUpdate<GridInfo>();
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        ActionRequests.Dispose();
-        HandlesToWaitFor.Dispose();
-    }
-
-    protected override void OnUpdate()
-    {
-        JobHandle.CombineDependencies(HandlesToWaitFor.AsArray()).Complete();
-        HandlesToWaitFor.Clear();
-
-        if (ActionRequests.Length > 0)
-        {
-            foreach (var request in ActionRequests)
-            {
-                CommonWrites.ExecuteGameAction(Accessor, request.Instigator, request.ActionData.ActionEntity, request.Target);
-                if (request.ActionData.SameTargetCooldown > 0)
-                {
-                    GetSingletonBuffer<MutedContactActionElement>().Add(new MutedContactActionElement()
-                    {
-                        Instigator = request.Instigator,
-                        ContactActionBufferId = request.ActionData.Id,
-                        ExpirationTime = request.ActionData.SameTargetCooldown,
-                        Target = request.Target
-                    });
-                }
-            }
-            ActionRequests.Clear();
         }
     }
 }

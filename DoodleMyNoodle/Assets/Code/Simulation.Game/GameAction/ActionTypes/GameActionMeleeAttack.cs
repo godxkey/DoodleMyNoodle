@@ -51,7 +51,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         public ActorFilter TargetFilter;
     }
 
-    public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Settings settings)
+    protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
     {
         GameActionParameterPosition.Description tileParam = new GameActionParameterPosition.Description()
         {
@@ -63,12 +63,12 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         return new ExecutionContract(tileParam, successParam);
     }
 
-    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
+    protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        fix2 instigatorPos = accessor.GetComponent<FixTranslation>(context.LastPhysicalInstigator);
+        fix2 instigatorPos = input.Accessor.GetComponent<FixTranslation>(input.Context.LastPhysicalInstigator);
 
         fix2 position;
-        if (useData != null && useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
+        if (input.Parameters != null && input.Parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
         {
             position = paramPosition.Position;
         }
@@ -83,15 +83,15 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         // find all targets hit
         NativeList<Entity> hitTargets = new NativeList<Entity>(Allocator.Temp);
 
-        var instigatorFilterInfo = CommonReads.GetActorFilterInfo(accessor, context.ActionInstigatorActor);
+        var instigatorFilterInfo = CommonReads.GetActorFilterInfo(input.Accessor, input.Context.ActionInstigatorActor);
 
-        var rayHits = CommonReads.Physics.CastRay(accessor, instigatorPos, attackPosition, ignoreEntity: context.FirstPhysicalInstigator);
+        var rayHits = CommonReads.Physics.CastRay(input.Accessor, instigatorPos, attackPosition, ignoreEntity: input.Context.FirstPhysicalInstigator);
         for (int i = 0; i < rayHits.Length; i++)
         {
             if (hitTargets.Length >= settings.MaxTargetHit)
                 break;
 
-            var targetFilterInfo = CommonReads.GetActorFilterInfo(accessor, rayHits[i].Entity);
+            var targetFilterInfo = CommonReads.GetActorFilterInfo(input.Accessor, rayHits[i].Entity);
 
             if (Helpers.ActorFilterMatches(instigatorFilterInfo, targetFilterInfo, settings.TargetFilter))
             {
@@ -102,7 +102,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         // get success multipliers
         int damage = settings.Damage;
         fix impulseMultipler = 1;
-        if (useData != null && useData.TryGetParameter(1, out GameActionParameterSuccessRate.Data successRate, warnIfFailed: false))
+        if (input.Parameters != null && input.Parameters.TryGetParameter(1, out GameActionParameterSuccessRate.Data successRate, warnIfFailed: false))
         {
             switch (successRate.SuccessRate)
             {
@@ -139,23 +139,23 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
 
             foreach (var hit in hitTargets)
             {
-                if (accessor.TryGetComponent(hit, out FixTranslation translation) && accessor.HasComponent<TileColliderTag>(hit))
+                if (input.Accessor.TryGetComponent(hit, out FixTranslation translation) && input.Accessor.HasComponent<TileColliderTag>(hit))
                 {
                     int2 pos = Helpers.GetTile(translation);
-                    CommonWrites.RequestTransformTile(accessor, pos, TileFlagComponent.Empty);
+                    CommonWrites.RequestTransformTile(input.Accessor, pos, TileFlagComponent.Empty);
                 }
                 else
                 {
-                    CommonWrites.RequestImpulse(accessor, hit, impulseVector);
+                    CommonWrites.RequestImpulse(input.Accessor, hit, impulseVector);
                 }
             }
         }
 
         // Apply damage
-        CommonWrites.RequestDamage(accessor, hitTargets, damage);
+        CommonWrites.RequestDamage(input.Accessor, hitTargets, damage);
 
         // Export action data used in event (animations use it)
-        resultData.Add(new ResultDataElement() { AttackVector = attackVector });
+        output.ResultData.Add(new ResultDataElement() { AttackVector = attackVector });
 
         return true;
     }

@@ -19,6 +19,10 @@ public static class EntityManagerExtensions
     public static string GetNameSafe(this EntityManager entityManager, Entity entity)
     {
 #if UNITY_EDITOR
+        if (entity == Entity.Null)
+            return "Entity.Null";
+        if (!entityManager.Exists(entity))
+            return $"{entity}(destroyed)";
         return entityManager.GetName(entity);
 #else
         return entity.ToString();
@@ -50,7 +54,7 @@ public static class EntityManagerExtensions
         componentData = default;
         return false;
     }
-    
+
     public static void SetOrAddComponentData<T>(this EntityManager entityManager, Entity entity, T componentData)
          where T : struct, IComponentData
     {

@@ -21,14 +21,14 @@ public class GameActionDestroySelf : GameAction<GameActionDestroySelf.Settings>
         public bool DeleteMeWhenYouAddOtherStuff; // this is needed to avoid 'Zero sized component' exception
     }
 
-    public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Settings settings)
+    protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
     {
         return new ExecutionContract();
     }
 
-    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
+    protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        accessor.DestroyEntity(context.ActionInstigatorActor);
+        input.Accessor.DestroyEntity(input.Context.ActionInstigatorActor);
 
         return true;
     }

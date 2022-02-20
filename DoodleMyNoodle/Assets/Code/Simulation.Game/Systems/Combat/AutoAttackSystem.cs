@@ -52,15 +52,25 @@ public struct AutoAttackAction : IComponentData
     public static implicit operator AutoAttackAction(Entity val) => new AutoAttackAction() { Value = val };
 }
 
+[UpdateBefore(typeof(ExecuteGameActionSystem))]
 public class UpdateAutoAttackSystem : SimGameSystemBase
 {
+    private ExecuteGameActionSystem _executeGameActionSystem;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        _executeGameActionSystem = World.GetOrCreateSystem<ExecuteGameActionSystem>();
+    }
+
     protected override void OnUpdate()
     {
-        var attackingEntities = GetSingletonBuffer<SystemRequestAutoAttack>();
+        var attackingEntities = _executeGameActionSystem.ActionRequests;
         fix deltaTime = Time.DeltaTime;
         Entities
             .ForEach((Entity entity, ref AutoAttackProgress attackProgress, ref RemainingAutoAttackCount remainingAttacks,
-                in AutoAttackRate attackRate, in ShouldAutoAttack shouldAttack, in ProgressAutoAttackInAdvance progressAutoAttackInAdvance) =>
+                in AutoAttackRate attackRate, in ShouldAutoAttack shouldAttack, in ProgressAutoAttackInAdvance progressAutoAttackInAdvance, in AutoAttackAction autoAttackAction) =>
             {
                 bool canAutoAttack = shouldAttack && (remainingAttacks > 0 || remainingAttacks == -1);
 
@@ -72,8 +82,10 @@ public class UpdateAutoAttackSystem : SimGameSystemBase
                 {
                     if (canAutoAttack)
                     {
-                        attackingEntities.Add(new SystemRequestAutoAttack()
+                        attackingEntities.Add(new  ExecuteGameActionSystem.ActionRequest()
                         {
+                            ActionEntity = autoAttackAction.Value,
+                            Target = Entity.Null,
                             Instigator = entity
                         });
                         attackProgress.Value--;
@@ -87,35 +99,5 @@ public class UpdateAutoAttackSystem : SimGameSystemBase
                     }
                 }
             }).Run();
-    }
-}
-
-public struct SystemRequestAutoAttack : ISingletonBufferElementData
-{
-    public Entity Instigator;
-}
-
-public class PerformAutoAttackSystem : SimGameSystemBase
-{
-    protected override void OnUpdate()
-    {
-        var attackingEntitiesBuffer = GetSingletonBuffer<SystemRequestAutoAttack>();
-        if (TryGetSingletonEntity<PlayerGroupDataTag>(out Entity playerGroup))
-        {
-            if (attackingEntitiesBuffer.Length > 0)
-            {
-                NativeArray<SystemRequestAutoAttack> attackingEntities = attackingEntitiesBuffer.ToNativeArray(Allocator.Temp);
-                attackingEntitiesBuffer.Clear();
-
-                foreach (SystemRequestAutoAttack request in attackingEntities)
-                {
-                    if (!HasComponent<AutoAttackAction>(request.Instigator))
-                        continue;
-
-                    var attackAction = GetComponent<AutoAttackAction>(request.Instigator);
-                    CommonWrites.ExecuteGameAction(Accessor, request.Instigator, attackAction, playerGroup);
-                }
-            }
-        }
     }
 }

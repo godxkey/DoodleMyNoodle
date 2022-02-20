@@ -36,7 +36,7 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
         public fix2 PawnOffset;
     }
 
-    public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Settings settings)
+    protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
     {
         return new ExecutionContract(
             new GameActionParameterPosition.Description()
@@ -45,20 +45,20 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
             });
     }
 
-    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters parameters, List<ResultDataElement> resultData, Settings settings)
+    protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        fix2 spawnPosition = accessor.GetComponent<FixTranslation>(context.LastPhysicalInstigator) + settings.PawnOffset;
+        fix2 spawnPosition = input.Accessor.GetComponent<FixTranslation>(input.Context.LastPhysicalInstigator) + settings.PawnOffset;
 
-        if (parameters != null && parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPos))
+        if (input.Parameters != null && input.Parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPos))
         {
             spawnPosition = paramPos.Position;
         }
 
         // spawn
-        Entity instance = accessor.Instantiate(settings.Prefab);
+        Entity instance = input.Accessor.Instantiate(settings.Prefab);
 
-        accessor.SetOrAddComponent(instance, new FixTranslation(spawnPosition));
-        accessor.SetOrAddComponent(instance, new FirstInstigator() { Value = context.FirstPhysicalInstigator });
+        input.Accessor.SetOrAddComponent(instance, new FixTranslation(spawnPosition));
+        input.Accessor.SetOrAddComponent(instance, new FirstInstigator() { Value = input.Context.FirstPhysicalInstigator });
 
         return true;
     }

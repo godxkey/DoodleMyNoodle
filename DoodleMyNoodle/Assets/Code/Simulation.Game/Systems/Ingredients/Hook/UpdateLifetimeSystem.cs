@@ -9,6 +9,14 @@ public struct RemainingLifetime : IComponentData
     public static implicit operator RemainingLifetime(fix val) => new RemainingLifetime() { Value = val };
 }
 
+public struct Lifetime : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(Lifetime val) => val.Value;
+    public static implicit operator Lifetime(fix val) => new Lifetime() { Value = val };
+}
+
 public class UpdateLifetimeSystem : SimGameSystemBase
 {
     private EntityCommandBufferSystem _ecbSytem;
@@ -23,8 +31,13 @@ public class UpdateLifetimeSystem : SimGameSystemBase
     protected override void OnUpdate()
     {
         fix deltaTime = Time.DeltaTime;
-        var ecb = _ecbSytem.CreateCommandBuffer();
 
+        Entities.ForEach((ref Lifetime lifetime) =>
+        {
+            lifetime.Value += deltaTime;
+        }).Schedule();
+
+        var ecb = _ecbSytem.CreateCommandBuffer();
         Entities.ForEach((Entity entity, ref RemainingLifetime remainingLifetime) =>
         {
             remainingLifetime.Value -= deltaTime;
@@ -33,7 +46,6 @@ public class UpdateLifetimeSystem : SimGameSystemBase
                 ecb.DestroyEntity(entity);
             }
         }).Schedule();
-
         _ecbSytem.AddJobHandleForProducer(Dependency);
     }
 }

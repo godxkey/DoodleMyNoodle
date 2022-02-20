@@ -124,6 +124,6 @@ public class ExecutePawnControllerInputSystem : SimGameSystemBase
         }
 
         Entity item = inventory[inputUseItem.ItemIndex].ItemEntity;
-        CommonWrites.UseItem(Accessor, pawn, item, inputUseItem.GameActionData);
+        CommonWrites.RequestUseItem(Accessor, pawn, item, inputUseItem.GameActionData);
     }
 }

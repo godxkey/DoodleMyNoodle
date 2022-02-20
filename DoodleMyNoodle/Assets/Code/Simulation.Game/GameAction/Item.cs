@@ -53,7 +53,7 @@ public partial class CommonReads
 
 internal partial class CommonWrites
 {
-    public static bool UseItem(ISimGameWorldReadWriteAccessor accessor, Entity actor, Entity item, GameAction.UseParameters parameters = null)
+    public static bool RequestUseItem(ISimGameWorldReadWriteAccessor accessor, Entity actor, Entity item, GameAction.UseParameters parameters = null)
     {
         if (!CommonReads.CanUseItem(accessor, actor, item, out ItemUnavailablityReason unavailabilityReason))
         {
@@ -63,31 +63,26 @@ internal partial class CommonWrites
 
         accessor.TryGetComponent(item, out ItemAction itemAction);
 
-        if (CommonWrites.ExecuteGameAction(accessor, actor, itemAction, parameters))
+        CommonWrites.RequestExecuteGameAction(accessor, item, itemAction, parameters);
+
+        // reduce consumable amount
+        if (accessor.GetComponent<StackableFlag>(item))
         {
-            // reduce consumable amount
-            if (accessor.GetComponent<StackableFlag>(item))
-            {
-                CommonWrites.DecrementItem(accessor, item, actor);
-            }
-
-            // reduce instigator AP
-            if (accessor.TryGetComponent(item, out ItemSettingAPCost itemActionPointCost) && itemActionPointCost.Value != 0)
-            {
-                CommonWrites.ModifyStatFix<ActionPoints>(accessor, actor, -itemActionPointCost.Value);
-            }
-
-            // Cooldown
-            if (accessor.TryGetComponent(item, out ItemTimeCooldownData itemTimeCooldownData))
-            {
-                accessor.SetOrAddComponent(item, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
-            }
-
-            return true;
+            CommonWrites.DecrementItem(accessor, item, actor);
         }
-        else
+
+        // reduce instigator AP
+        if (accessor.TryGetComponent(item, out ItemSettingAPCost itemActionPointCost) && itemActionPointCost.Value != 0)
         {
-            return false;
+            CommonWrites.ModifyStatFix<ActionPoints>(accessor, actor, -itemActionPointCost.Value);
         }
+
+        // Cooldown
+        if (accessor.TryGetComponent(item, out ItemTimeCooldownData itemTimeCooldownData))
+        {
+            accessor.SetOrAddComponent(item, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
+        }
+
+        return true;
     }
 }

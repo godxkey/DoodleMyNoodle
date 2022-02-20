@@ -26,21 +26,21 @@ public class GameActionDamage : GameAction<GameActionDamage.Settings>
         public fix Damage;
     }
 
-    public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Settings settings)
+    protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
     {
         return new ExecutionContract();
         // n.b. maybe entity or position in the future ?
     }
 
-    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
+    protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        foreach (Entity target in context.Targets)
+        foreach (Entity target in input.Context.Targets)
         {
-            CommonWrites.RequestDamage(accessor, target, settings.Damage);
+            CommonWrites.RequestDamage(input.Accessor, target, settings.Damage);
 
-            if (accessor.TryGetComponent(target, out FixTranslation targetTranslation))
+            if (input.Accessor.TryGetComponent(target, out FixTranslation targetTranslation))
             {
-                resultData.Add(new ResultDataElement()
+                output.ResultData.Add(new ResultDataElement()
                 {
                     Position = targetTranslation.Value,
                     Entity = target
