@@ -143,9 +143,17 @@ public class ExecuteGameActionSystem : SimGameSystemBase
                 }
             }
 
+
+            // copy native array to make sure its persisten
+            NativeArray<Entity> persistentTargets = new NativeArray<Entity>(input.Context.Targets.Length, Allocator.Persistent);
+            input.Context.Targets.CopyTo(persistentTargets);
+
+            var persistentContext = input.Context;
+            persistentContext.Targets = persistentTargets;
+
             PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
             {
-                GameActionContext = input.Context,// todo: copy array and dispose in presentation
+                GameActionContext = persistentContext,
                 GameActionResult = resultData
             });
 

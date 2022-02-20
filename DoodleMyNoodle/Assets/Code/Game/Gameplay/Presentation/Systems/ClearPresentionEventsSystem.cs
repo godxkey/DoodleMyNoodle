@@ -6,6 +6,12 @@ public class ClearPresentionEventsSystem : GamePresentationSystem<ClearPresentio
 {
     private void LateUpdate()
     {
+        // Dispose Persistent Native Array Entity
+        foreach (var gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
+        {
+            gameActionEvent.GameActionContext.Targets.Dispose();
+        }
+
         PresentationEvents.Clear();
     }
 }

@@ -23,6 +23,8 @@ public class GameActionAuthEditor : Editor
     private SerializedProperty _sfxProp;
     private SerializedProperty _animationProp;
     private SerializedProperty _surveyProp;
+    private SerializedProperty _instigatorVFXProp;
+    private SerializedProperty _targetsVFXProp;
 
     private void OnEnable()
     {
@@ -32,6 +34,9 @@ public class GameActionAuthEditor : Editor
         _sfxProp = serializedObject.FindProperty(nameof(GameActionAuth.SfxOnUse));
         _animationProp = serializedObject.FindProperty(nameof(GameActionAuth.Animation));
         _surveyProp = serializedObject.FindProperty(nameof(GameActionAuth.Surveys));
+
+        _instigatorVFXProp = serializedObject.FindProperty(nameof(GameActionAuth.InstigatorVFX));
+        _targetsVFXProp = serializedObject.FindProperty(nameof(GameActionAuth.TargetsVFX));
 
         InitStaticData();
     }
@@ -95,6 +100,9 @@ public class GameActionAuthEditor : Editor
         EditorGUILayout.PropertyField(_sfxProp);
         EditorGUILayout.PropertyField(_animationProp);
         EditorGUILayout.PropertyField(_surveyProp);
+
+        EditorGUILayout.PropertyField(_instigatorVFXProp);
+        EditorGUILayout.PropertyField(_targetsVFXProp);
 
         if (EditorGUI.EndChangeCheck())
         {

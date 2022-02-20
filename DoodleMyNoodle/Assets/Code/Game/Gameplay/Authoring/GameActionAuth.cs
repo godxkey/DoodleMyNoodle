@@ -72,6 +72,9 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     public AudioPlayable SfxOnUse;
     public AnimationDefinition Animation;
 
+    public VFXDefinition InstigatorVFX;
+    public VFXDefinition TargetsVFX;
+
     // Surveys
     public List<SurveyBaseController> Surveys;
 

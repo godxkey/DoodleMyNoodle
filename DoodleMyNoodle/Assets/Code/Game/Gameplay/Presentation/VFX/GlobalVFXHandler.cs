@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngineX;
 using System.Collections.Generic;
 using CCC.Fix2D;
+using Unity.Entities;
 
 public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
 {
@@ -12,16 +13,48 @@ public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
     {
         foreach (var gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            // ITEM AUTH & ANIMATION TRIGGER
-            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Action, out SimAssetId instigatorAssetId);
-            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.LastPhysicalInstigator, out FixTranslation translation);
-            GameObject instigatorPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
-            if (instigatorPrefab.TryGetComponent(out ItemAuth gameActionAuth))
+            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.LastPhysicalInstigator, out FixTranslation lastPhysicalInstigatorTranslation);
+
+            // ITEM USED VFX
+            // only do the vfx if not an auto attack
+            if (!SimWorld.HasComponent<AutoAttackAction>(gameActionEvent.GameActionContext.ActionInstigatorActor) || 
+                (SimWorld.TryGetComponent(gameActionEvent.GameActionContext.ActionInstigatorActor, out AutoAttackAction autoAttack) && autoAttack.Value != gameActionEvent.GameActionContext.Action))
             {
-                if (gameActionAuth.Icon != null && ItemUsedVFX != null)
+                SimWorld.TryGetComponent(gameActionEvent.GameActionContext.ActionInstigatorActor, out SimAssetId instigatorAssetId);
+                GameObject itemPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
+                if (itemPrefab != null &&
+                    itemPrefab.TryGetComponent(out ItemAuth itemAuth))
                 {
-                    ItemUsedVFX.TriggerVFX(new KeyValuePair<string, object>("Location", translation.Value.ToUnityVec())
-                                         , new KeyValuePair<string, object>("Sprite", gameActionAuth.Icon));
+                    if (itemAuth.Icon != null && ItemUsedVFX != null)
+                    {
+                        ItemUsedVFX.TriggerVFX(new KeyValuePair<string, object>("Location", lastPhysicalInstigatorTranslation.Value.ToUnityVec())
+                                             , new KeyValuePair<string, object>("Sprite", itemAuth.Icon));
+                    }
+                }
+            }
+
+            // GAME ACTION USED VFX
+            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Action, out SimAssetId gameActionAssetId);
+            GameObject gameActionPrefab = PresentationHelpers.FindSimAssetPrefab(gameActionAssetId);
+            if (gameActionPrefab != null && gameActionPrefab.TryGetComponent(out GameActionAuth gameActionAuth))
+            {
+                VFXDefinition InstigatorVFX = gameActionAuth.InstigatorVFX;
+                if (InstigatorVFX != null)
+                {
+                    InstigatorVFX.TriggerVFX(new KeyValuePair<string, object>("Location", lastPhysicalInstigatorTranslation.Value.ToUnityVec()));
+                }
+
+                VFXDefinition TargetsVFX = gameActionAuth.TargetsVFX;
+                if (TargetsVFX != null)
+                {
+                    foreach (Entity target in gameActionEvent.GameActionContext.Targets)
+                    {
+                        if (SimWorld.TryGetComponent(target, out FixTranslation targetLocation))
+                        {
+                            TargetsVFX.TriggerVFX(new KeyValuePair<string, object>("Location", targetLocation.Value.ToUnityVec()));
+                        }
+                        
+                    }
                 }
             }
         }
