@@ -15,7 +15,14 @@ public class UpdateViewEntityNamesSystem : ViewSystemBase
             .WithChangeFilter<BindedSimEntity>()
             .ForEach((Entity viewEntity, in BindedSimEntity simEntity) =>
             {
-                EntityManager.SetName(viewEntity, $"View_{SimWorldAccessor.GetName(simEntity)}");
+                if (SimWorldAccessor.Exists(simEntity))
+                {
+                    EntityManager.SetName(viewEntity, $"View_{SimWorldAccessor.GetName(simEntity)}");
+                }
+                else
+                {
+                    EntityManager.SetName(viewEntity, $"View_{(Entity)simEntity}(destroyed)");
+                }
             }).Run();
     }
 }
