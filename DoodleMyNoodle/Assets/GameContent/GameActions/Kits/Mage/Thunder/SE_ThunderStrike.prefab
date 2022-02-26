@@ -67,7 +67,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Lifetime:
-    RawValue: 3221225472
+    RawValue: 2147483648
 --- !u!114 &2850142967481275926
 MonoBehaviour:
   m_ObjectHideFlags: 0
