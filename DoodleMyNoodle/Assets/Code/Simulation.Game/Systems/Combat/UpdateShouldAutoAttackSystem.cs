@@ -15,6 +15,16 @@ public class UpdateShouldAutoAttackSystem : SimGameSystemBase
 
     protected override void OnUpdate()
     {
+        if (!HasSingleton<GameStartedTag>())
+        {
+            Entities
+                .ForEach((ref ShouldAutoAttack shouldAttack) =>
+                {
+                    shouldAttack = false;
+                }).Run();
+            return;
+        }
+
         // _________________________________________ Player Attacker _________________________________________ //
         Entities
             .WithAll<ItemTag>()

@@ -77,4 +77,4 @@ MonoBehaviour:
       type: {class: GameActionDamage/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Damage:
-          RawValue: 8589934592
+          RawValue: 425201762304

@@ -16,6 +16,16 @@ public class UpdateCanMoveSystem : SimGameSystemBase
 
     protected override void OnUpdate()
     {
+        if (!HasSingleton<GameStartedTag>())
+        {
+            Entities
+                .ForEach((ref CanMove canMove) =>
+                {
+                    canMove = false;
+                }).Run();
+            return;
+        }
+
         // by default, everyone alive can move
         Entities
             .ForEach((ref CanMove canMove, in Health hp) =>
