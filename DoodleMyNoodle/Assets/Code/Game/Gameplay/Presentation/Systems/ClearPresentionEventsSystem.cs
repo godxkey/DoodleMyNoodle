@@ -9,7 +9,8 @@ public class ClearPresentionEventsSystem : GamePresentationSystem<ClearPresentio
         // Dispose Persistent Native Array Entity
         foreach (var gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            gameActionEvent.GameActionContext.Targets.Dispose();
+            if (gameActionEvent.GameActionContext.Targets.IsCreated)
+                gameActionEvent.GameActionContext.Targets.Dispose();
         }
 
         PresentationEvents.Clear();

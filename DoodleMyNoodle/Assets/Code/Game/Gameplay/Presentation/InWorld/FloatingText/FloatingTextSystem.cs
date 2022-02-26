@@ -42,13 +42,13 @@ public class FloatingTextSystem : GamePresentationSystem<FloatingTextSystem>
             if (healthDeltaEvent.IsHeal)
             {
                 // Heal
-                displayedValue = min(1, round(healthDeltaEvent.TotalUncappedDelta));
+                displayedValue = max(1, round(healthDeltaEvent.TotalUncappedDelta));
                 color = Color.green;
             }
             else
             {
                 // Damage
-                displayedValue = min(1, round(-healthDeltaEvent.TotalUncappedDelta));
+                displayedValue = max(1, round(-healthDeltaEvent.TotalUncappedDelta));
                 color = Color.red;
             }
             RequestText(pos, displayedValue.ToString(), color);

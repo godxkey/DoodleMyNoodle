@@ -17,7 +17,7 @@ public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
 
             // ITEM USED VFX
             // only do the vfx if not an auto attack
-            if (!SimWorld.HasComponent<AutoAttackAction>(gameActionEvent.GameActionContext.ActionInstigatorActor) || 
+            if (!SimWorld.HasComponent<AutoAttackAction>(gameActionEvent.GameActionContext.ActionInstigatorActor) ||
                 (SimWorld.TryGetComponent(gameActionEvent.GameActionContext.ActionInstigatorActor, out AutoAttackAction autoAttack) && autoAttack.Value != gameActionEvent.GameActionContext.Action))
             {
                 SimWorld.TryGetComponent(gameActionEvent.GameActionContext.ActionInstigatorActor, out SimAssetId instigatorAssetId);
@@ -45,7 +45,7 @@ public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
                 }
 
                 VFXDefinition TargetsVFX = gameActionAuth.TargetsVFX;
-                if (TargetsVFX != null)
+                if (TargetsVFX != null && gameActionEvent.GameActionContext.Targets.IsCreated)
                 {
                     foreach (Entity target in gameActionEvent.GameActionContext.Targets)
                     {
@@ -53,7 +53,7 @@ public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
                         {
                             TargetsVFX.TriggerVFX(new KeyValuePair<string, object>("Location", targetLocation.Value.ToUnityVec()));
                         }
-                        
+
                     }
                 }
             }
