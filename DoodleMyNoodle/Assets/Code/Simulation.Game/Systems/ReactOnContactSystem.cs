@@ -54,7 +54,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
         ExtractFromCollisionOrTrigger jobProcessor = new ExtractFromCollisionOrTrigger()
         {
             World = _physicsWorldSystem.PhysicsWorld,
-            OutActions = _gameActionSystem.ActionRequests,
+            OutActions = _gameActionSystem.CreateRequestBuffer(),
             ActionOnContacts = GetBufferFromEntity<ActionOnColliderContact>(isReadOnly: true),
             Teams = GetComponentDataFromEntity<Team>(isReadOnly: true),
             FirstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true),
@@ -104,7 +104,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
         [ReadOnly] public PhysicsWorld World;
 
         public DynamicBuffer<MutedContactActionElement> MutedActions;
-        public NativeList<ExecuteGameActionSystem.ActionRequest> OutActions;
+        public NativeList<GameActionRequest> OutActions;
 
         private struct EntityInfo
         {
@@ -141,7 +141,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
 
                     if (Helpers.ActorFilterMatches(entityAInfo, entityBInfo, actionOnContact.Data.ActionFilter))
                     {
-                        OutActions.Add(new ExecuteGameActionSystem.ActionRequest()
+                        OutActions.Add(new GameActionRequest()
                         {
                             Instigator = entityA,
                             Target = entityB,
@@ -184,7 +184,7 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
         var physicsWorld = _physicsWorldSystem.PhysicsWorld;
         var physicsBodiesMap = _physicsWorldSystem.EntityToPhysicsBody;
         var hits = new NativeList<DistanceHit>(Allocator.TempJob);
-        var outActions = _gameActionSystem.ActionRequests;
+        var outActions = _gameActionSystem.CreateRequestBuffer();
         var teams = GetComponentDataFromEntity<Team>(isReadOnly: true);
         var firstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true);
         var tileColliderTags = GetComponentDataFromEntity<TileColliderTag>(isReadOnly: true);
@@ -226,7 +226,7 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
 
                         if (Helpers.ActorFilterMatches(entityAInfo, entityBInfo, actionOnContact.Data.ActionFilter))
                         {
-                            outActions.Add(new ExecuteGameActionSystem.ActionRequest()
+                            outActions.Add(new GameActionRequest()
                             {
                                 Instigator = entity,
                                 Target = hit.Entity,

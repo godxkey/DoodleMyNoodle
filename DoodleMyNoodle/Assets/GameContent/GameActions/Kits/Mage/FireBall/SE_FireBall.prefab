@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93e46ee13bcdb224bb3a8c3df684bc12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 2
+  Type: 1
   Shape: 0
   Material: {fileID: 11400000, guid: f12656138a7b18546a992bf9c5083561, type: 2}
   IsTrigger: 1

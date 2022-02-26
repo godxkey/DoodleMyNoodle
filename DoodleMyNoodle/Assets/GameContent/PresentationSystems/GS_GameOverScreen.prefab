@@ -159,7 +159,7 @@ MonoBehaviour:
   - Team: 0
     Text: VICTOIRE !
   - Team: 1
-    Text: "D\xC9FAITES..."
+    Text: "D\xC9FAITE..."
 --- !u!1 &5416284024199593675
 GameObject:
   m_ObjectHideFlags: 0

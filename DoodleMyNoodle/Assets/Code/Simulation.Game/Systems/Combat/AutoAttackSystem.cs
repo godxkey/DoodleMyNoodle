@@ -66,7 +66,7 @@ public class UpdateAutoAttackSystem : SimGameSystemBase
 
     protected override void OnUpdate()
     {
-        var attackingEntities = _executeGameActionSystem.ActionRequests;
+        var attackingEntities = _executeGameActionSystem.CreateRequestBuffer();
         fix deltaTime = Time.DeltaTime;
         Entities
             .ForEach((Entity entity, ref AutoAttackProgress attackProgress, ref RemainingAutoAttackCount remainingAttacks,
@@ -82,7 +82,7 @@ public class UpdateAutoAttackSystem : SimGameSystemBase
                 {
                     if (canAutoAttack)
                     {
-                        attackingEntities.Add(new  ExecuteGameActionSystem.ActionRequest()
+                        attackingEntities.Add(new GameActionRequest()
                         {
                             ActionEntity = autoAttackAction.Value,
                             Target = Entity.Null,

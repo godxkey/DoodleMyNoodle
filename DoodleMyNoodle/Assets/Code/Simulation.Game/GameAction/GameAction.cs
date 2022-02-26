@@ -65,7 +65,7 @@ internal partial class CommonWrites
     {
         var system = accessor.GetExistingSystem<ExecuteGameActionSystem>();
 
-        system.ActionRequestsManaged.Add(new ExecuteGameActionSystem.ActionRequestManaged()
+        system.ActionRequestsManaged.Add(new GameActionRequestManaged()
         {
             ActionEntity = actionEntity,
             Instigator = actionInstigator,

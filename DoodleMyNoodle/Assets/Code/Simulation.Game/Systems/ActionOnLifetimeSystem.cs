@@ -9,27 +9,38 @@ public struct ActionOnLifetime : IBufferElementData
     public fix Lifetime;
 }
 
-
+[UpdateBefore(typeof(ExecuteGameActionSystem))]
 public class ExecuteActionOnLifetimeSystem : SimGameSystemBase
 {
-    private struct ActionRequest
-    {
+    private ExecuteGameActionSystem _gameActionSystem;
 
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        _gameActionSystem = World.GetOrCreateSystem<ExecuteGameActionSystem>();
     }
 
     protected override void OnUpdate()
     {
-        //NativeList<(Entity instigator, Entity )>
+        var gameActionRequets = _gameActionSystem.CreateRequestBuffer();
 
-        //Entities.ForEach((DynamicBuffer<ActionOnLifetime> actionOnLifetimes, in Lifetime lifetime) =>
-        //{
-        //    for (int i = actionOnLifetimes.Length - 1; i >= 0; i--)
-        //    {
-        //        if (actionOnLifetimes[i].Lifetime < lifetime)
-        //        {
+        Entities.ForEach((Entity instigator, DynamicBuffer<ActionOnLifetime> actionOnLifetimes, in Lifetime lifetime) =>
+        {
+            for (int i = actionOnLifetimes.Length - 1; i >= 0; i--)
+            {
+                var entry = actionOnLifetimes[i];
+                if (entry.Lifetime < lifetime)
+                {
+                    gameActionRequets.Add(new GameActionRequest()
+                    {
+                        ActionEntity = entry.Action,
+                        Instigator = instigator,
+                        Target = Entity.Null
+                    });
+                }
+            }
+        }).Schedule();
 
-        //        }
-        //    }
-        //}).Run();
+        _gameActionSystem.HandlesToWaitFor.Add(Dependency);
     }
 }

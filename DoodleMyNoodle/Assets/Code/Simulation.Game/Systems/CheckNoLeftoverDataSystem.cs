@@ -29,7 +29,7 @@ public class CheckNoLeftoverDataSystem : SimGameSystemBase
         ScreamIfNotEmpty(_emitSignalSystem.EmitterOverlaps, nameof(SetSignalSystem.EmitterOverlaps), nameof(SetSignalSystem));
         ScreamIfNotEmpty(_executeSys.Inputs, nameof(ExecutePawnControllerInputSystem.Inputs), nameof(ExecutePawnControllerInputSystem));
         ScreamIfNotEmpty(_executeGameActionSystem.HandlesToWaitFor, nameof(ExecuteGameActionSystem.HandlesToWaitFor), nameof(ExecuteGameActionSystem));
-        ScreamIfNotEmpty(_executeGameActionSystem.ActionRequests, nameof(ExecuteGameActionSystem.ActionRequests), nameof(ExecuteGameActionSystem));
+        ScreamIfNotEmpty(_executeGameActionSystem.InternalGetRequestBufferList, nameof(ExecuteGameActionSystem.InternalGetRequestBufferList), nameof(ExecuteGameActionSystem));
         ScreamIfNotEmpty(_executeGameActionSystem.ActionRequestsManaged, nameof(ExecuteGameActionSystem.ActionRequestsManaged), nameof(ExecuteGameActionSystem));
 
         _physicsWorldSystem.PhysicsWorldFullyUpdated = false;

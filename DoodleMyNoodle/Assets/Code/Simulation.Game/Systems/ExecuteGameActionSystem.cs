@@ -4,80 +4,95 @@ using Unity.Entities;
 using Unity.Jobs;
 using UnityEngineX;
 
+public struct GameActionRequest
+{
+    public Entity Instigator;
+    public Entity ActionEntity;
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    public Entity Target;
+}
+
+public struct GameActionRequestManaged
+{
+    public Entity Instigator;
+    public Entity ActionEntity;
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    public NativeArray<Entity> Targets;
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    public GameAction.UseParameters Parameters;
+}
+
 [UpdateAfter(typeof(InputSystemGroup))]
 [AlwaysUpdateSystem]
 public class ExecuteGameActionSystem : SimGameSystemBase
 {
-    public struct ActionRequest
+    private List<NativeList<GameActionRequest>> _actionRequests = new List<NativeList<GameActionRequest>>();
+    private List<GameActionRequestManaged> _actionRequestsManaged = new List<GameActionRequestManaged>();
+    private NativeList<JobHandle> _handlesToWaitFor;
+    private NativeList<GameActionRequest> _processingRequests;
+    private List<GameActionRequestManaged> _processingRequestsManaged = new List<GameActionRequestManaged>();
+
+    public List<GameActionRequestManaged> ActionRequestsManaged => _actionRequestsManaged;
+    public NativeList<JobHandle> HandlesToWaitFor => _handlesToWaitFor;
+    public List<NativeList<GameActionRequest>> InternalGetRequestBufferList => _actionRequests;
+
+    public NativeList<GameActionRequest> CreateRequestBuffer()
     {
-        public Entity Instigator;
-        public Entity ActionEntity;
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        public Entity Target;
+        var result = new NativeList<GameActionRequest>(Allocator.TempJob);
+        _actionRequests.Add(result);
+        return result;
     }
-
-    public struct ActionRequestManaged
-    {
-        public Entity Instigator;
-        public Entity ActionEntity;
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        public NativeArray<Entity> Targets;
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        public GameAction.UseParameters Parameters;
-    }
-
-    public NativeList<ActionRequest> ActionRequests;
-    public List<ActionRequestManaged> ActionRequestsManaged = new List<ActionRequestManaged>();
-    public NativeList<JobHandle> HandlesToWaitFor;
-
-    private NativeList<ActionRequest> _tmpActionRequests;
-    private List<ActionRequestManaged> _tmpActionRequestsManaged = new List<ActionRequestManaged>();
 
     protected override void OnCreate()
     {
         base.OnCreate();
-        ActionRequests = new NativeList<ActionRequest>(Allocator.Persistent);
-        HandlesToWaitFor = new NativeList<JobHandle>(Allocator.Persistent);
-        _tmpActionRequests = new NativeList<ActionRequest>(Allocator.Persistent);
+        _handlesToWaitFor = new NativeList<JobHandle>(Allocator.Persistent);
+        _processingRequests = new NativeList<GameActionRequest>(Allocator.Persistent);
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        ActionRequests.Dispose();
-        HandlesToWaitFor.Dispose();
-        _tmpActionRequests.Dispose();
+        _handlesToWaitFor.Dispose();
+        _processingRequests.Dispose();
     }
 
     protected override void OnUpdate()
     {
-        JobHandle.CombineDependencies(HandlesToWaitFor.AsArray()).Complete();
-        HandlesToWaitFor.Clear();
+        JobHandle.CombineDependencies(_handlesToWaitFor.AsArray()).Complete();
+        _handlesToWaitFor.Clear();
 
         bool isGameReadyForGameActions = HasSingleton<GridInfo>();
 
-        while (ActionRequests.Length > 0 || ActionRequestsManaged.Count > 0)
+        while (_actionRequests.Count > 0 || _actionRequestsManaged.Count > 0)
         {
-            _tmpActionRequests.CopyFrom(ActionRequests);
-            _tmpActionRequestsManaged.Clear();
-            _tmpActionRequestsManaged.AddRange(ActionRequestsManaged);
-            ActionRequests.Clear();
-            ActionRequestsManaged.Clear();
+            _processingRequests.Clear();
+            for (int i = 0; i < _actionRequests.Count; i++)
+            {
+                _processingRequests.AddRange(_actionRequests[i]);
+                _actionRequests[i].Dispose();
+            }
+            _actionRequests.Clear();
+
+            _processingRequestsManaged.Clear();
+            _processingRequestsManaged.AddRange(_actionRequestsManaged);
+            _actionRequestsManaged.Clear();
+
 
             if (isGameReadyForGameActions)
             {
-                if (_tmpActionRequests.Length > 0)
+                if (_processingRequests.Length > 0)
                 {
-                    foreach (var request in _tmpActionRequests)
+                    foreach (var request in _processingRequests)
                     {
                         var targets = new NativeArray<Entity>(1, Allocator.Temp);
                         targets[0] = request.Target;
@@ -85,9 +100,9 @@ public class ExecuteGameActionSystem : SimGameSystemBase
                     }
                 }
 
-                if (_tmpActionRequestsManaged.Count > 0)
+                if (_processingRequestsManaged.Count > 0)
                 {
-                    foreach (var request in _tmpActionRequestsManaged)
+                    foreach (var request in _processingRequestsManaged)
                     {
                         ExecuteGameAction(request.Instigator, request.ActionEntity, request.Targets, request.Parameters);
                         if (request.Targets.IsCreated)
