@@ -5,61 +5,31 @@ using static fixMath;
 using System.Collections.Generic;
 using CCC.Fix2D;
 
-public struct EntityDeathEventData : IComponentData
-{
-    public Entity Entity;
-}
 
 public class DestroyDeadEntitiesSystem : SimGameSystemBase
 {
-    private EntityQuery _eventsGroup;
-    private List<Entity> _toDestroy = new List<Entity>();
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-
-        _eventsGroup = EntityManager.CreateEntityQuery(typeof(EntityDeathEventData));
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-
-        _eventsGroup.Dispose();
-    }
-
     protected override void OnUpdate()
     {
-        // destroy events
-        EntityManager.DestroyEntity(_eventsGroup);
-
         Entities
-            .WithoutBurst()
+            .WithNone<DeadTag>()
             .WithStructuralChanges()
-            .ForEach((Entity entity, ref Health health, ref FixTranslation translation) =>
-        {
-            if (health.Value <= 0)
+            .ForEach((Entity entity, ref Health health) =>
             {
-                // Create Event
-                EntityManager.CreateEventEntity(new EntityDeathEventData() { Entity = entity });
-
-                // Only Destroy entities that have been tagged for it
-                if (EntityManager.HasComponent<DestroyOnDeath>(entity))
+                if (health.Value <= 0)
                 {
-                    _toDestroy.Add(entity);
+                    if (EntityManager.HasComponent<DestroyOnDeath>(entity))
+                    {
+                        EntityManager.DestroyEntity(entity);
+                    }
+                    else
+                    {
+                        if (EntityManager.HasComponent<PhysicsGravity>(entity))
+                        {
+                            EntityManager.SetComponentData(entity, new PhysicsGravity() { Scale = 1 });
+                        }
+                        EntityManager.AddComponentData(entity, new DeadTag());
+                    }
                 }
-                else
-                {
-                    EntityManager.AddComponentData(entity, new DeadTag());
-                }
-            }
-        }).Run();
-
-        foreach (var entity in _toDestroy)
-        {
-            EntityManager.DestroyEntity(entity);
-        }
-        _toDestroy.Clear();
+            }).Run();
     }
 }
