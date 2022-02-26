@@ -134,47 +134,47 @@ public class ExecuteGameActionSystem : SimGameSystemBase
 
         if (!gameAction.Execute(in input, ref output))
         {
-            // Feedbacks
-            GameAction.ResultData resultData = new GameAction.ResultData() { Count = output.ResultData.Count };
-
-            for (int i = 0; i < output.ResultData.Count; i++)
-            {
-                switch (i)
-                {
-                    case 0:
-                        resultData.DataElement_0 = output.ResultData[0];
-                        break;
-                    case 1:
-                        resultData.DataElement_1 = output.ResultData[1];
-                        break;
-                    case 2:
-                        resultData.DataElement_2 = output.ResultData[2];
-                        break;
-                    case 3:
-                        resultData.DataElement_3 = output.ResultData[3];
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-
-            // copy native array to make sure its persisten
-            NativeArray<Entity> persistentTargets = new NativeArray<Entity>(input.Context.Targets.Length, Allocator.Persistent);
-            input.Context.Targets.CopyTo(persistentTargets);
-
-            var persistentContext = input.Context;
-            persistentContext.Targets = persistentTargets;
-
-            PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
-            {
-                GameActionContext = persistentContext,
-                GameActionResult = resultData
-            });
-
             Log.Info($"Couldn't use {gameAction}.");
             return false;
         }
+
+        // Feedbacks
+        GameAction.ResultData resultData = new GameAction.ResultData() { Count = output.ResultData.Count };
+
+        for (int i = 0; i < output.ResultData.Count; i++)
+        {
+            switch (i)
+            {
+                case 0:
+                    resultData.DataElement_0 = output.ResultData[0];
+                    break;
+                case 1:
+                    resultData.DataElement_1 = output.ResultData[1];
+                    break;
+                case 2:
+                    resultData.DataElement_2 = output.ResultData[2];
+                    break;
+                case 3:
+                    resultData.DataElement_3 = output.ResultData[3];
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+        // copy native array to make sure its persisten
+        NativeArray<Entity> persistentTargets = new NativeArray<Entity>(input.Context.Targets.Length, Allocator.Persistent);
+        input.Context.Targets.CopyTo(persistentTargets);
+
+        var persistentContext = input.Context;
+        persistentContext.Targets = persistentTargets;
+
+        PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
+        {
+            GameActionContext = persistentContext,
+            GameActionResult = resultData
+        });
 
         return true;
     }
