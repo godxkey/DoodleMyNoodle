@@ -1,16 +1,22 @@
 ﻿using UnityEngine;
 using System;
 using CCC.InspectorDisplay;
+using UnityEngine.Serialization;
 
 public class BackupCamera : MonoBehaviour
 {
-    [AutoFetch, SerializeField] private Camera cameraComponent;
-    [AutoFetch, SerializeField] private AudioListener audioListener;
-    [SerializeField] private CameraSet.DeactivateMode deactivateMode = CameraSet.DeactivateMode.DisableGameObject;
+    [FormerlySerializedAs("cameraComponent")]
+    [AutoFetch, SerializeField] private Camera _cameraComponent;
+
+    [FormerlySerializedAs("audioListener")]
+    [AutoFetch, SerializeField] private AudioListener _audioListener;
+
+    [FormerlySerializedAs("deactivateMode")]
+    [SerializeField] private CameraSet.DeactivateMode _deactivateMode = CameraSet.DeactivateMode.DisableGameObject;
 
     public CameraSet CameraSet { get; private set; }
-    public Camera Camera { get { return cameraComponent; } }
-    public AudioListener AudioListener { get { return audioListener; } }
+    public Camera Camera { get { return _cameraComponent; } }
+    public AudioListener AudioListener { get { return _audioListener; } }
 
     static public BackupCamera Instance { get; set; }
 
@@ -25,7 +31,7 @@ public class BackupCamera : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            CameraSet = new CameraSet(cameraComponent, audioListener, deactivateMode);
+            CameraSet = new CameraSet(_cameraComponent, _audioListener, _deactivateMode);
         }
     }
 
@@ -56,14 +62,14 @@ public class BackupCamera : MonoBehaviour
         if (movement != Vector2.zero)
         {
             movement.Normalize();
-            Vector2 displacement = movement * cameraComponent.orthographicSize * Time.deltaTime;
+            Vector2 displacement = movement * _cameraComponent.orthographicSize * Time.deltaTime;
             transform.position += new Vector3(displacement.x, displacement.y, 0);
         }
     }
 
     void OnDestroy()
     {
-        if(ReferenceEquals(Instance, this))
+        if (ReferenceEquals(Instance, this))
         {
             Instance = null;
         }

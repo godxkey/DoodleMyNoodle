@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Entities.Serialization;
+using UnityEngine;
 using UnityEngineX;
 using UnityX.EntitiesX.SerializationX;
 
@@ -17,6 +18,13 @@ namespace Sim.Operations
     {
         internal static SimSerializationOperation s_CachedSerializationOp;
         internal static uint s_CachedSerializationTickId = uint.MaxValue;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void StaticReset()
+        {
+            s_CachedSerializationOp = null;
+            s_CachedSerializationTickId = uint.MaxValue;
+        }
 
         public byte[] SerializationData;
 
@@ -60,6 +68,12 @@ namespace Sim.Operations
         }
 
         public static Dictionary<Type, IPtrObjectCollector> BlobAssetDataCollectors = new Dictionary<Type, IPtrObjectCollector>();
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void StaticReset()
+        {
+            BlobAssetDataCollectors.Clear();
+        }
 
         public byte[] SerializationData;
 

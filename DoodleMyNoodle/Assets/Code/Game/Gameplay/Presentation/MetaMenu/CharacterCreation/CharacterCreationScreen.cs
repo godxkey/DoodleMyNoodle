@@ -98,6 +98,12 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
     #region Skip Character Creation
     private static bool s_consoleSkipCharacterCreation = false;
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        s_consoleSkipCharacterCreation = false;
+    }
+
     [ConsoleCommand]
     public static bool SkipCharacterCreation() => s_consoleSkipCharacterCreation = true;
     #endregion

@@ -5,12 +5,18 @@ using TMPro;
 
 public class LoadingScreenUIController : MonoBehaviour
 {
-    public static string displayedStatus;
+    public static string DisplayedStatus;
 
     [SerializeField] TextMeshProUGUI _text;
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        DisplayedStatus = null;
+    }
+
     void Update()
     {
-        _text.text = displayedStatus;
+        _text.text = DisplayedStatus;
     }
 }

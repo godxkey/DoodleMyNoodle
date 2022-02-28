@@ -40,7 +40,7 @@ public class GameSystem : GameMonoBehaviour
     [AlwaysExpand]
     public Settings SystemSettings;
 
-    public static List<GameSystem> s_unreadySystems = new List<GameSystem>();
+    public static List<GameSystem> UnreadySystems = new List<GameSystem>();
 
     public virtual bool SystemReady { get; } = true;
 
@@ -50,14 +50,14 @@ public class GameSystem : GameMonoBehaviour
 
         if (SystemReady == false)
         {
-            s_unreadySystems.Add(this);
+            UnreadySystems.Add(this);
         }
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        s_unreadySystems.Remove(this);
+        UnreadySystems.Remove(this);
     }
 
 }

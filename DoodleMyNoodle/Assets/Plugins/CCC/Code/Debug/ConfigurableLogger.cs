@@ -44,6 +44,12 @@ public class ConfigurableLogger : IDisposable
     public RuleSet FallbackRuleSet { get; set; } = RuleSet.Default;
     public Dictionary<LogType, RuleSet> Rules { get; } = new Dictionary<LogType, RuleSet>();
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        s_nextNowTime = -1;
+    }
+
     public ConfigurableLogger(string outputPath)
     {
         if (Log.Enabled)

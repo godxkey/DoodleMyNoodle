@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public class ApplicationUtilityService : MonoCoreService<ApplicationUtilityService>
 {
@@ -8,5 +9,11 @@ public class ApplicationUtilityService : MonoCoreService<ApplicationUtilityServi
     void OnApplicationQuit()
     {
         ApplicationIsQuitting = true;
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        ApplicationIsQuitting = false;
     }
 }

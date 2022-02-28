@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngineX;
 
 namespace CCC.Online
@@ -17,6 +18,16 @@ namespace CCC.Online
 
         internal static List<SyncedValueContainer> s_Containers = new List<SyncedValueContainer>();
         internal static Dictionary<Type, SyncedValueContainer> s_TypeToContainers = new Dictionary<Type, SyncedValueContainer>();
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void StaticReset()
+        {
+            s_Containers.Clear();
+            s_TypeToContainers.Clear();
+            s_DriverInstance = null;
+            TotalEventListenerCount = 0;
+            CanWriteValues = false;
+        }
 
         public static int TotalEventListenerCount { get; private set; } // can be looked at for safety debugging
         public static bool CanWriteValues { get; internal set; }

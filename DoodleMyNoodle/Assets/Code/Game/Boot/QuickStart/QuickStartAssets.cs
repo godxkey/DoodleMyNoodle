@@ -9,17 +9,23 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "DoodleMyNoodle/QuickStart Assets")]
 public class QuickStartAssets : ScriptableObject
 {
-    public static QuickStartAssets instance
+    public static QuickStartAssets Instance
     {
         get
         {
-            if (_instance == null)
-                _instance = (QuickStartAssets)Resources.Load("QuickStartAssets");
+            if (s_instance == null)
+                s_instance = (QuickStartAssets)Resources.Load("QuickStartAssets");
 
-            return _instance;
+            return s_instance;
         }
     }
-    static QuickStartAssets _instance;
+    static QuickStartAssets s_instance;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        s_instance = null;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

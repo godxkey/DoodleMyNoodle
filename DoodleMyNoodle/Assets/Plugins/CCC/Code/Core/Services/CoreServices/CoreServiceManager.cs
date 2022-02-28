@@ -8,33 +8,40 @@ public class CoreServiceManager
 {
     class ServiceInitJoin : AsyncOperationJoin<ICoreService>
     {
-        CoreServiceManager owner;
+        CoreServiceManager _owner;
         public ServiceInitJoin(CoreServiceManager owner, Action onJoin) : base(onJoin)
         {
-            this.owner = owner;
+            this._owner = owner;
         }
 
         protected override void OnCompleteAnyInit(ICoreService obj)
         {
-            owner.OnAnyServiceInitComplete(obj);
+            _owner.OnAnyServiceInitComplete(obj);
             base.OnCompleteAnyInit(obj);
         }
     }
 
     class InitEvent
     {
-        public SafeEvent callbacks = new SafeEvent();
-        public bool callbacksHaveBeenSent = false;
+        public SafeEvent Callbacks = new SafeEvent();
+        public bool CallbacksHaveBeenSent = false;
     }
 
-    Dictionary<Type, ICoreService> services = new Dictionary<Type, ICoreService>();
+    Dictionary<Type, ICoreService> _services = new Dictionary<Type, ICoreService>();
 
-    public static bool initializationComplete { get; private set; } = false;
+    static public bool InitializationComplete { get; private set; } = false;
+    static public CoreServiceManager Instance { get; private set; }
+    static InitEvent s_onAllInitComplete = new InitEvent();
+    static Dictionary<Type, InitEvent> s_initializationCallbackMap = new Dictionary<Type, InitEvent>();
 
-    static public CoreServiceManager instance { get; private set; }
-
-    static InitEvent onAllInitComplete = new InitEvent();
-    static Dictionary<Type, InitEvent> initializationCallbackMap = new Dictionary<Type, InitEvent>();
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        s_onAllInitComplete = new InitEvent();
+        s_initializationCallbackMap = new Dictionary<Type, InitEvent>();
+        InitializationComplete = false;
+        Instance = null;
+    }
 
 
     static public void AddInitializationCallback<T>(Action onComplete) where T : ICoreService
@@ -45,41 +52,41 @@ public class CoreServiceManager
             return;
         }
 
-        if (initializationComplete)
+        if (InitializationComplete)
         {
             onComplete();
         }
         else
         {
             InitEvent initEvent;
-            initializationCallbackMap.TryGetValue(typeof(T), out initEvent);
+            s_initializationCallbackMap.TryGetValue(typeof(T), out initEvent);
 
             if (initEvent == null) // The even is null ? Create a new one for type 'T'
             {
                 initEvent = new InitEvent();
-                initializationCallbackMap.Add(typeof(T), initEvent);
+                s_initializationCallbackMap.Add(typeof(T), initEvent);
             }
 
-            if (initEvent.callbacksHaveBeenSent) // if callbacks have already been sent, dont add it to the list
+            if (initEvent.CallbacksHaveBeenSent) // if callbacks have already been sent, dont add it to the list
             {
                 onComplete();
             }
             else
             {
-                initEvent.callbacks += onComplete;
+                initEvent.Callbacks += onComplete;
             }
         }
     }
     static public void RemoveInitializationCallback<T>(Action onComplete) where T : ICoreService
     {
-        if(initializationComplete == false)
+        if (InitializationComplete == false)
         {
             InitEvent safeEvent;
-            if (initializationCallbackMap.TryGetValue(typeof(T), out safeEvent))
+            if (s_initializationCallbackMap.TryGetValue(typeof(T), out safeEvent))
             {
-                if (safeEvent.callbacksHaveBeenSent == false) // there's no point in removing the callback if they've already been sent
+                if (safeEvent.CallbacksHaveBeenSent == false) // there's no point in removing the callback if they've already been sent
                 {
-                    safeEvent.callbacks.RemoveAction(onComplete);
+                    safeEvent.Callbacks.RemoveAction(onComplete);
                 }
             }
         }
@@ -93,27 +100,27 @@ public class CoreServiceManager
             return;
         }
 
-        if (initializationComplete)
+        if (InitializationComplete)
         {
             onComplete();
         }
         else
         {
-            onAllInitComplete.callbacks += onComplete;
+            s_onAllInitComplete.Callbacks += onComplete;
         }
     }
     static public void RemoveInitializationCallback(Action onComplete)
     {
-        if(onAllInitComplete != null && onAllInitComplete.callbacksHaveBeenSent == false)
+        if (s_onAllInitComplete != null && s_onAllInitComplete.CallbacksHaveBeenSent == false)
         {
-            onAllInitComplete.callbacks -= onComplete;
+            s_onAllInitComplete.Callbacks -= onComplete;
         }
     }
 
     public CoreServiceManager()
     {
-        Debug.Assert(instance == null);
-        instance = this;
+        Debug.Assert(Instance == null);
+        Instance = this;
 
         CoreServiceBank bank = CoreServiceBank.LoadBank();
 
@@ -122,12 +129,12 @@ public class CoreServiceManager
         foreach (ICoreService service in unofficialServiceList)
         {
             ICoreService officialInstance = service.ProvideOfficialInstance();
-            services.Add(officialInstance.GetType(), officialInstance);
+            _services.Add(officialInstance.GetType(), officialInstance);
         }
 
         // Initialize them all
         ServiceInitJoin join = new ServiceInitJoin(this, OnInitializationComplete);
-        foreach (KeyValuePair<Type, ICoreService> servicePair in services)
+        foreach (KeyValuePair<Type, ICoreService> servicePair in _services)
         {
             servicePair.Value.Initialize(join.RegisterOperation());
         }
@@ -136,29 +143,29 @@ public class CoreServiceManager
 
     public T GetCoreService<T>() where T : ICoreService
     {
-        return (T)services[typeof(T)];
+        return (T)_services[typeof(T)];
     }
 
     void OnAnyServiceInitComplete(ICoreService service)
     {
         // Execute the 'on init complete' event related to THAT service
         InitEvent initEvent;
-        if (initializationCallbackMap.TryGetValue(service.GetType(), out initEvent))
+        if (s_initializationCallbackMap.TryGetValue(service.GetType(), out initEvent))
         {
-            initEvent.callbacks.SafeInvoke();
-            initEvent.callbacksHaveBeenSent = true;
+            initEvent.Callbacks.SafeInvoke();
+            initEvent.CallbacksHaveBeenSent = true;
         }
     }
 
     void OnInitializationComplete()
     {
-        initializationComplete = true;
+        InitializationComplete = true;
 
-        onAllInitComplete.callbacks.SafeInvoke();
-        onAllInitComplete.callbacksHaveBeenSent = true;
+        s_onAllInitComplete.Callbacks.SafeInvoke();
+        s_onAllInitComplete.CallbacksHaveBeenSent = true;
 
         //clean up
-        onAllInitComplete = null;
-        initializationCallbackMap = null;
+        s_onAllInitComplete = null;
+        s_initializationCallbackMap = null;
     }
 }

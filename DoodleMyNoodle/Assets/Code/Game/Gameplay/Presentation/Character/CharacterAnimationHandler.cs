@@ -21,7 +21,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     }
 
     [System.Serializable]
-    private struct DefaultAnimation 
+    private struct DefaultAnimation
     {
         public AnimationType AnimationType;
         public AnimationDefinition AnimationDefinition;
@@ -61,11 +61,20 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
         _spriteStartRot = _bone.localRotation;
     }
 
+    private void OnDisable()
+    {
+        if (_currentAnimation != null)
+        {
+            _currentAnimation.StopAnimation(SimEntity);
+            _currentAnimation = null;
+        }
+    }
+
     protected override void OnGamePresentationUpdate()
     {
         _hasTriggeredAnAnimation = false;
 
-        if (!_hasTriggeredAnAnimation) 
+        if (!_hasTriggeredAnAnimation)
         {
             if (HandleGameActionAnimation())
             {
@@ -73,7 +82,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             }
         }
 
-        if (!_hasTriggeredAnAnimation) 
+        if (!_hasTriggeredAnAnimation)
         {
             if (HandleDeathAnimation())
             {
@@ -81,7 +90,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             }
         }
 
-        if (!_hasTriggeredAnAnimation) 
+        if (!_hasTriggeredAnAnimation)
         {
             if (SimWorld.TryGetComponent(SimEntity, out MoveInput input) && SimWorld.TryGetComponent(SimEntity, out ActionPoints ap))
             {
@@ -178,7 +187,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                                 default:
                                     break;
                             }
-                            
+
                             _queuedAnimations.Add(new QueuedAnimation() { Data = currentAnimationData, Definition = _currentAnimation, HasPlayed = false });
                         }
 
@@ -216,16 +225,8 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                 _hasTriggeredAnAnimation = true;
                 _lastTransitionTime = SimWorld.Time.ElapsedTime;
 
-                _currentAnimation = animationToPlay.Definition;
-
-                if (_currentAnimation == null)
-                {
-                    FindAnimation(AnimationType.GameAction).TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationToPlay.Data);
-                }
-                else
-                {
-                    _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationToPlay.Data);
-                }
+                _currentAnimation = animationToPlay.Definition ?? FindAnimation(AnimationType.GameAction);
+                _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationToPlay.Data);
 
                 _previousState = AnimationType.GameAction;
             }
@@ -238,7 +239,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
         return _hasTriggeredAnAnimation;
     }
 
-    private bool HandleDeathAnimation() 
+    private bool HandleDeathAnimation()
     {
         if (SimWorld.HasComponent<DeadTag>(SimEntity))
         {
@@ -291,7 +292,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     {
         if (_currentAnimation != null)
         {
-            _currentAnimation.InteruptAnimation(SimEntity);
+            _currentAnimation.FinishAnimation(SimEntity);
         }
 
         _bone.localPosition = _spriteStartPos;

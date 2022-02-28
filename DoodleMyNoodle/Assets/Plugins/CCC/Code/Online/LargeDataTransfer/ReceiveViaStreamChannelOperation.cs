@@ -9,6 +9,13 @@ namespace CCC.Online.DataTransfer
     public class ReceiveViaStreamChannelOperation : OnlineTransferCoroutineOperation
     {
         static Dictionary<INetworkInterfaceConnection, CoroutineOperation> s_ongoingOperations = new Dictionary<INetworkInterfaceConnection, CoroutineOperation>();
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void StaticReset()
+        {
+            s_ongoingOperations.Clear();
+        }
+
         private bool _streamDataReceived;
 
         public byte[] ReceivedData { get; private set; }

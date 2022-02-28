@@ -5,18 +5,18 @@ public abstract class MonoCoreService<T> : MonoBehaviour, ICoreService where T :
 {
     static public T Instance
     {
-        get { return instance; }
+        get { return s_instance; }
         protected set
         {
-            instance = value;
-            if(instance != null)
+            s_instance = value;
+            if(s_instance != null)
             {
-                DontDestroyOnLoad(instance.gameObject);
+                DontDestroyOnLoad(s_instance.gameObject);
             }
         }
     }
 
-    static private T instance;
+    static private T s_instance;
 
     protected virtual void OnDestroy()
     {

@@ -69,15 +69,14 @@ public class GameConsole
     {
         s_consoleUI?.Shutdown();
         s_consoleUI = consoleUI;
+        s_historyIndex = 0;
+
+        Log.Internals.LogMessageReceivedThreaded -= OnLogMessageReceivedThreaded;
 
         if (s_consoleUI != null)
         {
             Log.Internals.LogMessageReceivedThreaded += OnLogMessageReceivedThreaded;
             s_consoleUI.Init(s_database);
-        }
-        else
-        {
-            Log.Internals.LogMessageReceivedThreaded -= OnLogMessageReceivedThreaded;
         }
 
         InitIfNeeded();

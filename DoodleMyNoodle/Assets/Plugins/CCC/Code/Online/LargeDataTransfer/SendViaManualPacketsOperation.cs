@@ -30,6 +30,14 @@ namespace CCC.Online.DataTransfer
         public int DataSize => _data.Length;
         public float Progress => 1 - ((float)_remainingUnacknowledgedPackets / _packetStates.Length);
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void StaticReset()
+        {
+            s_packetsSentThisFrame = 0;
+            s_currentUnityFrame = default;
+            s_cachedPacketData = new byte[Transfers.PAQUET_BYTE_ARRAY_SIZE];
+        }
+
         /// <summary>
         /// DO NOT MODIFY THE BYTE[] DATA WILL THE TRANSFER IS ONGOING
         /// </summary>

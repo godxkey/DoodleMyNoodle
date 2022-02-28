@@ -7,10 +7,15 @@ using UnityEngineX;
 public static class QuickStart
 {
     public static bool HasEverQuickStarted { get; private set; } = false;
-
-    static QuickStartAssets Assets => QuickStartAssets.instance;
-
+    static QuickStartAssets Assets => QuickStartAssets.Instance;
     static Coroutine s_currentRoutine;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        HasEverQuickStarted = false;
+        s_currentRoutine = null;
+    }
 
     public static void Start(QuickStartSettings settings)
     {
@@ -40,7 +45,7 @@ public static class QuickStart
         if (s_currentRoutine != null)
         {
             SceneService.UnloadAsync(Assets.emptyScene);
-            CoroutineLauncherService.Instance.StopCoroutine(s_currentRoutine);
+            CoroutineLauncherService.Instance?.StopCoroutine(s_currentRoutine);
         }
     }
 
@@ -72,7 +77,7 @@ public static class QuickStart
 
     static IEnumerator StartLocal(QuickStartSettings settings)
     {
-        LoadingScreenUIController.displayedStatus = "Loading...";
+        LoadingScreenUIController.DisplayedStatus = "Loading...";
 
         OnlineService.SetTargetRole(OnlineRole.None);
         while (OnlineService.IsChangingRole
@@ -87,7 +92,7 @@ public static class QuickStart
 
     static IEnumerator StartClient(QuickStartSettings settings)
     {
-        LoadingScreenUIController.displayedStatus = "Waiting for online services...";
+        LoadingScreenUIController.DisplayedStatus = "Waiting for online services...";
 
         OnlineService.SetTargetRole(OnlineRole.Client);
         while (OnlineService.IsChangingRole
@@ -99,12 +104,12 @@ public static class QuickStart
 
         if (string.IsNullOrEmpty(settings.serverName))
         {
-            LoadingScreenUIController.displayedStatus = "Loading...";
+            LoadingScreenUIController.DisplayedStatus = "Loading...";
             GameStateManager.TransitionToState(Assets.lobbyClient);
         }
         else
         {
-            LoadingScreenUIController.displayedStatus = "Looking for server [" + settings.serverName + "] ...";
+            LoadingScreenUIController.DisplayedStatus = "Looking for server [" + settings.serverName + "] ...";
 
             INetworkInterfaceSession foundSession = null;
 
@@ -139,7 +144,7 @@ public static class QuickStart
             }
             else
             {
-                LoadingScreenUIController.displayedStatus = "Connecting to server [" + settings.serverName + "] ...";
+                LoadingScreenUIController.DisplayedStatus = "Connecting to server [" + settings.serverName + "] ...";
 
                 int success = -1; // -1 -> waiting for result    0 -> failure        1 -> success
                 OnlineService.ClientInterface.ConnectToSession(foundSession, (bool r, string message) =>
@@ -167,7 +172,7 @@ public static class QuickStart
                 else
                 {
                     // success!
-                    LoadingScreenUIController.displayedStatus = "Loading...";
+                    LoadingScreenUIController.DisplayedStatus = "Loading...";
                     GameStateManager.TransitionToState(Assets.inGameClient);
                 }
             }
@@ -177,7 +182,7 @@ public static class QuickStart
 
     static IEnumerator StartServer(QuickStartSettings settings)
     {
-        LoadingScreenUIController.displayedStatus = "Waiting for online services...";
+        LoadingScreenUIController.DisplayedStatus = "Waiting for online services...";
 
         OnlineService.SetTargetRole(OnlineRole.Server);
         while (OnlineService.IsChangingRole
@@ -189,7 +194,7 @@ public static class QuickStart
 
         if (string.IsNullOrEmpty(settings.serverName))
         {
-            LoadingScreenUIController.displayedStatus = "Loading...";
+            LoadingScreenUIController.DisplayedStatus = "Loading...";
             GameStateManager.TransitionToState(Assets.lobbyServer);
         }
         else
@@ -198,7 +203,7 @@ public static class QuickStart
 
             int success = -1; // -1 -> waiting for result    0 -> failure        1 -> success
 
-            LoadingScreenUIController.displayedStatus = "Creating session ...";
+            LoadingScreenUIController.DisplayedStatus = "Creating session ...";
             OnlineService.ServerInterface.CreateSession(settings.serverName, (bool r, string message) =>
             {
                 if (r)
@@ -224,7 +229,7 @@ public static class QuickStart
             else
             {
                 // success!
-                LoadingScreenUIController.displayedStatus = "Loading ...";
+                LoadingScreenUIController.DisplayedStatus = "Loading ...";
                 GameStateManager.TransitionToState(Assets.inGameServer, new GameStateParamLevelName(settings.level));
             }
         }

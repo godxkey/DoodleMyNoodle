@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Entities.Serialization;
+using UnityEngine;
 using UnityEngineX;
 using UnityX.EntitiesX.SerializationX;
 
@@ -20,6 +21,12 @@ namespace Sim.Operations
         }
 
         public static Dictionary<Type, IPtrObjectDistributor> BlobAssetDataDistributors = new Dictionary<Type, IPtrObjectDistributor>();
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void StaticReset()
+        {
+            BlobAssetDataDistributors.Clear();
+        }
 
         public bool PartialSuccess;
 

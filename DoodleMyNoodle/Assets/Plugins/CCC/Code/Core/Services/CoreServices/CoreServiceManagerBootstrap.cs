@@ -7,9 +7,9 @@ public static class CoreServiceManagerBootstrap
     [RuntimeInitializeOnLoadMethod]
     static void OnRuntimeMethodLoad() // Executed after scene is loaded and game is running
     {
-        if (CoreServiceManager.instance == null)
+        if (CoreServiceManager.Instance == null)
         {
-            //new CoreServiceManager();
+            new CoreServiceManager();
         }
     }
 }

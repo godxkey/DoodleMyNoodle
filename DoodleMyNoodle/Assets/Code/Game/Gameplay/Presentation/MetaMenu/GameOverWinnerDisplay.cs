@@ -31,7 +31,7 @@ public class GameOverWinnerDisplay : GamePresentationSystem<GameOverWinnerDispla
 
             this.DelayedCall(5, () =>
             {
-                GameStateManager.TransitionToState(QuickStartAssets.instance.rootMenu);
+                GameStateManager.TransitionToState(QuickStartAssets.Instance.rootMenu);
             });
         }
         else

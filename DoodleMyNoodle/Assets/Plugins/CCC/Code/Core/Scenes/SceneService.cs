@@ -55,6 +55,12 @@ public class SceneService : MonoCoreService<SceneService>
     // useful to know if we're the first scene in the game
     public static int TotalSceneLoadCount { get; private set; }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        TotalSceneLoadCount = 0;
+    }
+
     public override void Initialize(Action<ICoreService> onComplete)
     {
         SceneManager.sceneLoaded += OnSceneLoaded;

@@ -5,39 +5,40 @@ using UnityEngineX;
 
 public class MainThreadService : MonoCoreService<MainThreadService>
 {
-    private static Queue<Action> mainThreadCallbacks = new Queue<Action>();
+    private static Queue<Action> s_mainThreadCallbacks = new Queue<Action>();
 
     static public int MainThreadId
     {
         get
         {
-            if (mainThreadIdSet == false)
+            if (s_mainThreadIdSet == false)
             {
                 Debug.LogError("The main thread Id has not been set yet. Please create an instance of " + nameof(MainThreadService) + " first.");
             }
-            return mainThreadId;
+            return s_mainThreadId;
         }
         set
         {
-            mainThreadId = value;
-            mainThreadIdSet = true;
+            s_mainThreadId = value;
+            s_mainThreadIdSet = true;
         }
     }
 
-    static private bool mainThreadIdSet = false;
-    static private int mainThreadId;
+    static private bool s_mainThreadIdSet = false;
+    static private int s_mainThreadId;
 
     public override void Initialize(Action<ICoreService> onComplete)
     {
+        s_mainThreadCallbacks.Clear();
         MainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
         onComplete(this);
     }
 
     void Update()
     {
-        while (mainThreadCallbacks.Count > 0)
+        while (s_mainThreadCallbacks.Count > 0)
         {
-            mainThreadCallbacks.Dequeue().InvokeCatchExceptionInEditor();
+            s_mainThreadCallbacks.Dequeue().InvokeCatchExceptionInEditor();
         }
     }
 
@@ -54,7 +55,7 @@ public class MainThreadService : MonoCoreService<MainThreadService>
 
         lock (Instance)
         {
-            mainThreadCallbacks.Enqueue(action);
+            s_mainThreadCallbacks.Enqueue(action);
         }
     }
 }

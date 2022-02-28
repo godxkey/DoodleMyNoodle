@@ -8,6 +8,6 @@ internal static class VariousCommandLines
     [ConsoleCommand(Description = "Go to menu")]
     static void Menu()
     {
-        GameStateManager.TransitionToState(QuickStartAssets.instance.rootMenu);
+        GameStateManager.TransitionToState(QuickStartAssets.Instance.rootMenu);
     }
 }

@@ -7,6 +7,12 @@ public class DebugPanelController
 {
     static bool s_panelVisible;
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        s_panelVisible = false;
+    }
+
     [Updater.StaticUpdateMethod(UpdateType.Update)]
     static void OnUpdate()
     {

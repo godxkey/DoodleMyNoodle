@@ -27,7 +27,7 @@ public class LaunchProfileElement : ToolsVisualElementBase
     bool MyEditorIsRunning
         => Application.isPlaying
         && PlayerProfileService.Instance != null
-        && PlayerProfileService.Instance.currentProfile == PlayerProfile;
+        && PlayerProfileService.Instance.CurrentProfile == PlayerProfile;
 
     public override string UxmlGuid => "04ab12ab6d1ce71409dfafb6e7178471";
     public override string UssGuid => "ca3898a92df42194d969b1f0347a0c6c";
@@ -73,14 +73,14 @@ public class LaunchProfileElement : ToolsVisualElementBase
 
     void OnEditorGameLaunch()
     {
-        if (CoreServiceManager.instance == null)
+        if (CoreServiceManager.Instance == null)
             return;
 
         UpdateContent();
 
         if (PlayerProfileService.Instance != null)
         {
-            PlayerProfileService.Instance.onChangeProfile += UpdateContent;
+            PlayerProfileService.Instance.OnChangeProfile += UpdateContent;
         }
     }
 
@@ -104,7 +104,7 @@ public class LaunchProfileElement : ToolsVisualElementBase
 
         if (PlayerProfileService.Instance != null)
         {
-            PlayerProfileService.Instance.onChangeProfile -= UpdateContent;
+            PlayerProfileService.Instance.OnChangeProfile -= UpdateContent;
         }
     }
 

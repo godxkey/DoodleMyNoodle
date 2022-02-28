@@ -6,10 +6,6 @@ using System.Linq;
 using System;
 using UnityEngine.Serialization;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 public class QuickStartEditorComponent : MonoBehaviour
 {
     public string ExtraCommands;

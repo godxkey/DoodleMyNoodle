@@ -7,6 +7,12 @@ namespace CCC.Online.DataTransfer
 {
     public class Transfers
     {
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void StaticReset()
+        {
+            s_NextTransferId = 0;
+        }
+
         internal static ushort s_NextTransferId = 0;
 
         public const int MAX_SENT_PAQUETS_PER_FRAME = 1;

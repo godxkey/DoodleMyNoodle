@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace CCC.Online
 {
@@ -23,6 +24,13 @@ namespace CCC.Online
     {
         internal static SyncedValues.DataChangeDelegate<T> s_ValueUpdated;
         internal static SyncedValues.DataDestroyDelegate s_ValueDestroyed;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void StaticReset()
+        {
+            s_ValueUpdated = null;
+            s_ValueDestroyed = null;
+        }
 
         internal DirtyValue<T> Value;
 

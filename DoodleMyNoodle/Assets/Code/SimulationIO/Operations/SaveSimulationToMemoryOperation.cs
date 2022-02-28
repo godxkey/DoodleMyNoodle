@@ -3,6 +3,7 @@ using Sim.Operations;
 using System;
 using System.Collections;
 using Unity.Entities;
+using UnityEngine;
 
 /// <summary>
 /// This operation should be used for debugging purposes only
@@ -12,6 +13,12 @@ public class SaveSimulationToMemoryOperation : CoroutineOperation
     public static byte[] s_SerializedSimulation;
 
     World _simulationWorld;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        s_SerializedSimulation = null;
+    }
 
     public SaveSimulationToMemoryOperation(World simulationWorld)
     {

@@ -65,6 +65,12 @@ namespace Internals.PhotonNetworkInterface
 
         internal static PhotonNetworkInterface Instance { get; private set; }
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void StaticReset()
+        {
+            Instance = null;
+        }
+
         public override event Action OnDisconnectedFromSession;
         public override event Action OnShutdownBegin;
         public override event Action<INetworkInterfaceConnection> OnDisconnect;

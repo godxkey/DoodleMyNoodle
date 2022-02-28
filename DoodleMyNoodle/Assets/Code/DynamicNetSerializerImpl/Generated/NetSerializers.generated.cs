@@ -890,18 +890,18 @@ public static class StaticNetSerializer_InputSubmissionId
     public static int GetSerializedBitSize(ref InputSubmissionId obj)
     {
         int result = 0;
-        result += StaticNetSerializer_System_Byte.GetSerializedBitSize(ref obj.value);
+        result += StaticNetSerializer_System_Byte.GetSerializedBitSize(ref obj.Value);
         return result;
     }
 
     public static void Serialize(ref InputSubmissionId obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_System_Byte.Serialize(ref obj.value, writer);
+        StaticNetSerializer_System_Byte.Serialize(ref obj.Value, writer);
     }
 
     public static void Deserialize(ref InputSubmissionId obj, BitStreamReader reader)
     {
-        StaticNetSerializer_System_Byte.Deserialize(ref obj.value, reader);
+        StaticNetSerializer_System_Byte.Deserialize(ref obj.Value, reader);
     }
 }
 public static class StaticNetSerializer_NetMessageAcceptSimSync

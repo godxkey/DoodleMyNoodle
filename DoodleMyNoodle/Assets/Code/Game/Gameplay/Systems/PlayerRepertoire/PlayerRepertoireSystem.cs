@@ -59,7 +59,7 @@ public abstract class PlayerRepertoireSystem : GameSystem<PlayerRepertoireSystem
     public override void OnGameAwake()
     {
 #if UNITY_EDITOR
-        _localPlayerInfo.PlayerName = PlayerProfileService.Instance.playerName;
+        _localPlayerInfo.PlayerName = PlayerProfileService.Instance.PlayerName;
 #else
         _localPlayerInfo.PlayerName = SystemInfo.deviceName;
 #endif

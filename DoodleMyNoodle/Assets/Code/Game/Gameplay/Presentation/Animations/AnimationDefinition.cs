@@ -9,22 +9,24 @@ public abstract class AnimationDefinition : ScriptableObject
 {
     public float Duration;
 
-    protected List<KeyValuePair<string, object>> Data;
+    protected List<KeyValuePair<string, object>> _data;
 
     public void TriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform, List<KeyValuePair<string, object>> animationData)
     {
-        Data = animationData;
+        _data = animationData;
 
+        Log.Info("animate");
         OnTriggerAnimation(entity, spriteStartPos, spriteTransform);
     }
 
     protected abstract void OnTriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform);
 
-    public abstract void InteruptAnimation(Entity entity);
+    public abstract void FinishAnimation(Entity entity);
+    public abstract void StopAnimation(Entity entity);
 
     public T GetAnimationData<T>(string dataTypeID)
     {
-        foreach (KeyValuePair<string, object> data in Data)
+        foreach (KeyValuePair<string, object> data in _data)
         {
             if (data.Key == dataTypeID)
             {
@@ -39,7 +41,7 @@ public abstract class AnimationDefinition : ScriptableObject
 
     public GameAction.ResultDataElement GetGameActionResultData()
     {
-        foreach (KeyValuePair<string, object> data in Data)
+        foreach (KeyValuePair<string, object> data in _data)
         {
             if (data.Key == "GameActionContextResult")
             {

@@ -7,20 +7,20 @@ using UnityEngineX;
 
 internal class ProcessHandleManager
 {
-    static List<ProcessHandle> _handles = new List<ProcessHandle>();
-    public static ReadOnlyList<ProcessHandle> Handles => _handles.AsReadOnlyNoAlloc();
+    static List<ProcessHandle> s_handles = new List<ProcessHandle>();
+    public static ReadOnlyList<ProcessHandle> Handles => s_handles.AsReadOnlyNoAlloc();
 
-    static bool _updateRegistered = false;
-    static int _updateIterator;
+    static bool s_updateRegistered = false;
+    static int s_updateIterator;
 
     public static void RegisterHandle(ProcessHandle handle)
     {
-        _handles.Add(handle);
+        s_handles.Add(handle);
 
-        if (_updateRegistered == false)
+        if (s_updateRegistered == false)
         {
             EditorApplication.update += EditorUpdate;
-            _updateRegistered = true;
+            s_updateRegistered = true;
         }
 
         Save();
@@ -28,13 +28,13 @@ internal class ProcessHandleManager
 
     public static void UnregisterHandle(ProcessHandle handle)
     {
-        _handles.RemoveWithLastSwap(handle);
-        _updateIterator--;
+        s_handles.RemoveWithLastSwap(handle);
+        s_updateIterator--;
 
-        if (_handles.Count == 0 && _updateRegistered)
+        if (s_handles.Count == 0 && s_updateRegistered)
         {
             EditorApplication.update -= EditorUpdate;
-            _updateRegistered = false;
+            s_updateRegistered = false;
         }
 
         Save();
@@ -42,9 +42,9 @@ internal class ProcessHandleManager
 
     static void EditorUpdate()
     {
-        for (_updateIterator = 0; _updateIterator < _handles.Count; _updateIterator++)
+        for (s_updateIterator = 0; s_updateIterator < s_handles.Count; s_updateIterator++)
         {
-            ProcessHandle handle = _handles[_updateIterator];
+            ProcessHandle handle = s_handles[s_updateIterator];
 
             if (handle.HasExited)
             {
@@ -75,11 +75,11 @@ internal class ProcessHandleManager
 
     static void Save()
     {
-        EditorPrefs.SetInt("ProcessHandleCount", _handles.Count);
-        for (int i = 0; i < _handles.Count; i++)
+        EditorPrefs.SetInt("ProcessHandleCount", s_handles.Count);
+        for (int i = 0; i < s_handles.Count; i++)
         {
-            EditorPrefs.SetInt($"ProcessHandleProcessId-{i}", _handles[i].Process.Id);
-            EditorPrefs.SetInt($"ProcessHandleCustomId-{i}", _handles[i].CustomId);
+            EditorPrefs.SetInt($"ProcessHandleProcessId-{i}", s_handles[i].Process.Id);
+            EditorPrefs.SetInt($"ProcessHandleCustomId-{i}", s_handles[i].CustomId);
             //UnityEngine.Debug.Log($"Saved:  ProcessHandleProcessId-{i}: {handles[i].process.Id} |   ProcessHandleCustomId-{i}: {handles[i].customId}");
         }
     }

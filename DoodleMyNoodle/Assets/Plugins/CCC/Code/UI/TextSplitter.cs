@@ -7,7 +7,8 @@ namespace CCC.Utility
 {
     public class TextSplitter : MonoBehaviour
     {
-        static char separator = '.';
+        const char SEPARATOR = '.';
+
         public static List<string> Split(string text, Text textUI, Vector2 area, char forceSeparation = '\0')
         {
             List<string> texts = new List<string>();
@@ -51,7 +52,7 @@ namespace CCC.Utility
                     if (info.advance * 2 > area.x) { Debug.LogError("Area is too small for the font size."); return null; }
 
                     if (character == ' ') lastSpace = i;
-                    else if (character == separator || character == forceSeparation) lastPotentialSeparator = i;
+                    else if (character == SEPARATOR || character == forceSeparation) lastPotentialSeparator = i;
                     else hasMetALetter = true;
 
                     currentX += info.advance;

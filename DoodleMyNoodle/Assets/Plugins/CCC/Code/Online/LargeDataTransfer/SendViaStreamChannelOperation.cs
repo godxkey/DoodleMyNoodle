@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngineX;
 
 namespace CCC.Online.DataTransfer
@@ -9,6 +10,12 @@ namespace CCC.Online.DataTransfer
     public class SendViaStreamChannelOperation : OnlineTransferCoroutineOperation
     {
         static Dictionary<INetworkInterfaceConnection, CoroutineOperation> s_ongoingOperations = new Dictionary<INetworkInterfaceConnection, CoroutineOperation>();
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void StaticReset()
+        {
+            s_ongoingOperations.Clear();
+        }
 
         public enum TransferState
         {

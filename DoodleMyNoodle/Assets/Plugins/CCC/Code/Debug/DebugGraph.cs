@@ -5,29 +5,6 @@ using UnityEngine;
 
 public class DebugGraph
 {
-    private static bool s_init = false;
-    [RuntimeInitializeOnLoadMethod()]
-    static void OnRuntimeMethodLoad() // Executed after scene is loaded and game is running
-    {
-        if (!s_init)
-        {
-            s_init = true;
-            Init();
-        }
-    }
-
-    private static readonly Color[] s_colors = new Color[]
-    {
-        Color.magenta,
-        Color.red,
-        Color.blue,
-        Color.green,
-        Color.cyan,
-        Color.white,
-        Color.black,
-        Color.grey,
-    };
-
     const float TIME_RANGE = 5;
     private static GraphDrawer s_graphDrawer = new GraphDrawer();
     private static bool s_displayGraph = false;
@@ -49,10 +26,14 @@ public class DebugGraph
     private static List<LoggedTime> s_loggedTimes = new List<LoggedTime>();
     private static List<GraphDrawer.Curve> s_curveCache = new List<GraphDrawer.Curve>();
 
-    private static void Init()
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
     {
         s_graphDrawer.AutoZoomVertical = true;
         s_graphDrawer.AutoZoomHorizontal = false;
+        s_loggedCurves.Clear();
+        s_loggedTimes.Clear();
+        s_curveCache.Clear();
     }
 
     //[Updater.StaticUpdateMethod(UpdateType.Update)]

@@ -163,16 +163,16 @@ public class Game : MonoBehaviour
         // Wait for all SystemReady
         while (true)
         {
-            for (int i = 0; i < GameSystem.s_unreadySystems.Count; i++)
+            for (int i = 0; i < GameSystem.UnreadySystems.Count; i++)
             {
-                if (GameSystem.s_unreadySystems[i].SystemReady)
+                if (GameSystem.UnreadySystems[i].SystemReady)
                 {
-                    GameSystem.s_unreadySystems.RemoveAt(i);
+                    GameSystem.UnreadySystems.RemoveAt(i);
                     i--;
                 }
             }
 
-            if (GameSystem.s_unreadySystems.Count == 0)
+            if (GameSystem.UnreadySystems.Count == 0)
             {
                 break;
             }

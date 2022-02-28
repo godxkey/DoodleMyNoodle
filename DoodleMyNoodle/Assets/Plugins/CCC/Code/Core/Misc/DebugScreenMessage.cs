@@ -4,39 +4,46 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections.Generic;
 using System;
+using UnityEngine.Serialization;
 
 public class DebugScreenMessage : MonoCoreService<DebugScreenMessage>
 {
-    [SerializeField, Header("Links")]
-    private Text text;
-    [SerializeField]
-    private Image bgImage;
+    [SerializeField, Header("Links"), FormerlySerializedAs("text")]
+    private Text _text;
+    [SerializeField, FormerlySerializedAs("bgImage")]
+    private Image _bgImage;
 
-    [SerializeField, Header("Animation Settings")]
-    private float openDuration = 0.35f;
-    [SerializeField]
-    private Ease openEase = Ease.OutQuad;
-    [SerializeField]
-    private float startHorizontal = 0.5f;
+    [SerializeField, Header("Animation Settings"), FormerlySerializedAs("openDuration")]
+    private float _openDuration = 0.35f;
+    [SerializeField, FormerlySerializedAs("openEase")]
+    private Ease _openEase = Ease.OutQuad;
+    [SerializeField, FormerlySerializedAs("startHorizontal")]
+    private float _startHorizontal = 0.5f;
 
-    [SerializeField]
-    private float hideDuration = 0.35f;
-    [SerializeField]
-    private Ease hideEase = Ease.InSine;
+    [SerializeField, FormerlySerializedAs("hideDuration")]
+    private float _hideDuration = 0.35f;
+    [SerializeField, FormerlySerializedAs("hideEase")]
+    private Ease _hideEase = Ease.InSine;
 
-    private float bgNormalAlpha;
+    private float _bgNormalAlpha;
 
     const float BASE_DURATION = 0.5f;
     const float EXTRA_DURATION_PER_CHARACTER = 0.05f;
 
-    static Queue<string> queuedMessages = new Queue<string>();
-    static bool isDisplayingMessages = false;
+    static Queue<string> s_queuedMessages = new Queue<string>();
+    static bool s_isDisplayingMessages = false;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        s_queuedMessages.Clear();
+    }
 
     public static void DisplayMessage(string message)
     {
-        queuedMessages.Enqueue(message);
+        s_queuedMessages.Enqueue(message);
 
-        if (Instance != null && isDisplayingMessages == false)
+        if (Instance != null && s_isDisplayingMessages == false)
         {
             Instance.ProcessPendingMessages();
         }
@@ -49,53 +56,62 @@ public class DebugScreenMessage : MonoCoreService<DebugScreenMessage>
 
     void ProcessPendingMessages()
     {
-        isDisplayingMessages = true;
+        s_isDisplayingMessages = true;
 
         // show message
-        DisplayText(queuedMessages.Dequeue(), () =>
+        DisplayText(s_queuedMessages.Dequeue(), () =>
         {
             // repeat ?
-            if (queuedMessages.Count > 0)
+            if (s_queuedMessages.Count > 0)
             {
                 ProcessPendingMessages();
             }
             else
             {
-                isDisplayingMessages = false;
+                s_isDisplayingMessages = false;
             }
         });
     }
 
     private void Awake()
     {
-        RectTransform imageRT = bgImage.rectTransform;
-
-        bgNormalAlpha = bgImage.color.a;
+        _bgNormalAlpha = _bgImage.color.a;
 
         gameObject.SetActive(false);
 
-        if (isDisplayingMessages == false && queuedMessages.Count > 0)
+        if (s_isDisplayingMessages == false && s_queuedMessages.Count > 0)
         {
             ProcessPendingMessages();
         }
+    }
+
+    public override void Initialize(Action<ICoreService> onComplete)
+    {
+        onComplete(this);
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        s_isDisplayingMessages = false;
     }
 
     void DisplayText(string message, Action onComplete)
     {
         gameObject.SetActive(true);
 
-        text.text = message;
-        text.color = text.color.ChangedAlpha(0);
-        bgImage.rectTransform.localScale = new Vector3(startHorizontal, 0, 1);
+        _text.text = message;
+        _text.color = _text.color.ChangedAlpha(0);
+        _bgImage.rectTransform.localScale = new Vector3(_startHorizontal, 0, 1);
 
         Sequence sq = DOTween.Sequence();
 
         //Bg appear
-        sq.Append(bgImage.rectTransform.DOScale(1, openDuration).SetEase(openEase));
-        sq.Join(bgImage.DOFade(bgNormalAlpha, openDuration));
+        sq.Append(_bgImage.rectTransform.DOScale(1, _openDuration).SetEase(_openEase));
+        sq.Join(_bgImage.DOFade(_bgNormalAlpha, _openDuration));
 
         //Text fade in
-        sq.Insert(openDuration * 0.6f, text.DOFade(1, openDuration * 0.4f));
+        sq.Insert(_openDuration * 0.6f, _text.DOFade(1, _openDuration * 0.4f));
 
 
         //Pause
@@ -103,10 +119,10 @@ public class DebugScreenMessage : MonoCoreService<DebugScreenMessage>
 
 
         //Bg disappear;
-        sq.Append(bgImage.DOFade(0, hideDuration).SetEase(hideEase));
+        sq.Append(_bgImage.DOFade(0, _hideDuration).SetEase(_hideEase));
 
         //Text disappear;
-        sq.Join(text.DOFade(0, hideDuration).SetEase(hideEase));
+        sq.Join(_text.DOFade(0, _hideDuration).SetEase(_hideEase));
 
 
         sq.OnComplete(() =>
@@ -114,10 +130,5 @@ public class DebugScreenMessage : MonoCoreService<DebugScreenMessage>
             gameObject.SetActive(false);
             onComplete();
         });
-    }
-
-    public override void Initialize(Action<ICoreService> onComplete)
-    {
-        onComplete(this);
     }
 }

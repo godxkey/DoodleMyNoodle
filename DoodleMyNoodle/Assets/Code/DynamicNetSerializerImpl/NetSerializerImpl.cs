@@ -36,7 +36,7 @@ namespace Internals.OnlineServiceImpl
                 return;
             s_init = true;
 
-            OnlineServicePhoton.factoryCreator = () => new NetSerializerImpl();
+            OnlineServicePhoton.FactoryCreator = () => new NetSerializerImpl();
         }
 
 

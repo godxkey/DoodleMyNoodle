@@ -7,7 +7,7 @@ using UnityEngineX;
 
 public class PlayerProfileService : MonoCoreService<PlayerProfileService>
 {
-    static PlayerProfile[] hardcodedProfiles = new PlayerProfile[]
+    static PlayerProfile[] s_hardcodedProfiles = new PlayerProfile[]
     {
         new PlayerProfile() { playerName = "John Pogo", localId = 0}
         , new PlayerProfile() { playerName = "Gadget Garcon", localId = 1}
@@ -15,30 +15,30 @@ public class PlayerProfileService : MonoCoreService<PlayerProfileService>
     };
 
     PlayerProfile _currentProfile;
-    static string profileSavePath => Application.persistentDataPath + "/PlayerProfiles";
+    static string ProfileSavePath => Application.persistentDataPath + "/PlayerProfiles";
 
 
 
-    public PlayerProfileReadOnly currentProfile => _currentProfile;
-    public string playerName => _currentProfile.playerName;
-    public event System.Action onChangeProfile;
+    public PlayerProfileReadOnly CurrentProfile => _currentProfile;
+    public string PlayerName => _currentProfile.playerName;
+    public event System.Action OnChangeProfile;
 
     public void SetPlayerProfile(int localId)
     {
-        _currentProfile = hardcodedProfiles[localId];
-        onChangeProfile?.Invoke();
+        _currentProfile = s_hardcodedProfiles[localId];
+        OnChangeProfile?.Invoke();
     }
 
     public override void Initialize(System.Action<ICoreService> onComplete)
     {
-        _currentProfile = hardcodedProfiles[0];
+        _currentProfile = s_hardcodedProfiles[0];
 
         onComplete(this);
     }
 
     public static List<PlayerProfile> LoadProfilesOnDisk()
     {
-        return new List<PlayerProfile>(hardcodedProfiles);
+        return new List<PlayerProfile>(s_hardcodedProfiles);
         /*
         if (Directory.Exists(profileSavePath))
         {
@@ -83,7 +83,7 @@ public class PlayerProfileService : MonoCoreService<PlayerProfileService>
 
     private static void SaveProfileToDisk(PlayerProfile playerProfile)
     {
-        string filePath = profileSavePath + '/' + playerProfile.GenerateFileName();
+        string filePath = ProfileSavePath + '/' + playerProfile.GenerateFileName();
 
         //File.WriteAllText(filePath, JsonConvert.SerializeObject(playerProfile));
 

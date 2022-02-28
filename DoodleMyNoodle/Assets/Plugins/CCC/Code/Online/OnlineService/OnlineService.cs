@@ -39,6 +39,12 @@ public abstract class OnlineService : MonoCoreService<OnlineService>
         }
     }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void StaticReset()
+    {
+        TargetRole = OnlineRole.None;
+    }
+
     public override void Initialize(Action<ICoreService> onComplete)
     {
         _networkInterface = CreateNetworkInterface();
