@@ -71,7 +71,6 @@ public static class SimulationCheats
 
         PresentationHelpers.SubmitInput(new SimInputCheatToggleInvincible()
         {
-            PlayerId = localPlayerInfo.SimPlayerId
         });
     }
 

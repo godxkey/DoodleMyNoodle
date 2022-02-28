@@ -8,7 +8,6 @@ using static Unity.Mathematics.math;
 [NetSerializable]
 public class SimInputCheatToggleInvincible : SimCheatInput
 {
-    public PersistentId PlayerId; // this should be an "Entity Pawn;" in the future
 }
 
 [NetSerializable]
@@ -81,18 +80,17 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
         {
             case SimInputCheatToggleInvincible toggleInvicible:
             {
-                Entity player = CommonReads.FindPlayerEntity(Accessor, toggleInvicible.PlayerId);
+                Entity groupHeader = GetSingletonEntity<PlayerGroupDataTag>();
 
-                if (EntityManager.Exists(player) &&
-                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
+                if (EntityManager.Exists(groupHeader))
                 {
-                    if (EntityManager.HasComponent<Invincible>(pawn))
+                    if (EntityManager.HasComponent<Invincible>(groupHeader))
                     {
-                        EntityManager.RemoveComponent<Invincible>(pawn);
+                        EntityManager.RemoveComponent<Invincible>(groupHeader);
                     }
                     else
                     {
-                        EntityManager.AddComponentData(pawn, new Invincible() { Duration = 99999 });
+                        EntityManager.AddComponentData(groupHeader, new Invincible() { Duration = 99999 });
                     }
                 }
                 break;

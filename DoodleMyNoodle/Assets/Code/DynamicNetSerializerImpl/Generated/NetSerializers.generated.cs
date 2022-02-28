@@ -2034,7 +2034,6 @@ public static class StaticNetSerializer_SimInputCheatToggleInvincible
     public static int GetSerializedBitSize(SimInputCheatToggleInvincible obj)
     {
         int result = 0;
-        result += StaticNetSerializer_PersistentId.GetSerializedBitSize(ref obj.PlayerId);
         result += StaticNetSerializer_SimCheatInput.GetSerializedBitSize(obj);
         return result;
     }
@@ -2051,7 +2050,6 @@ public static class StaticNetSerializer_SimInputCheatToggleInvincible
     }
     public static void Serialize(SimInputCheatToggleInvincible obj, BitStreamWriter writer)
     {
-        StaticNetSerializer_PersistentId.Serialize(ref obj.PlayerId, writer);
         StaticNetSerializer_SimCheatInput.Serialize(obj, writer);
     }
 
@@ -2067,7 +2065,6 @@ public static class StaticNetSerializer_SimInputCheatToggleInvincible
     }
     public static void Deserialize(SimInputCheatToggleInvincible obj, BitStreamReader reader)
     {
-        StaticNetSerializer_PersistentId.Deserialize(ref obj.PlayerId, reader);
         StaticNetSerializer_SimCheatInput.Deserialize(obj, reader);
     }
 }

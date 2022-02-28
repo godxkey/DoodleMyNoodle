@@ -105,10 +105,10 @@ public class ApplyDamageSystem : SimGameSystemBase
             effectGroupBufferSingleton.Add(new EffectGroupBufferSingleton() { ID = effectGroupID, Entity = target, TimeStamp = Time.ElapsedTime, Delay = SimulationGameConstants.SameEffectGroupDamageCooldown });
         }
 
-        // Invincible
-        if (HasComponent<Invincible>(target))
+        // If delta is negative (damage), check for invincible
+        if (remainingDelta < 0 && HasComponent<Invincible>(target))
         {
-            remainingDelta = min(remainingDelta, 0);
+            remainingDelta = max(remainingDelta, 0);
         }
 
         // Shield
