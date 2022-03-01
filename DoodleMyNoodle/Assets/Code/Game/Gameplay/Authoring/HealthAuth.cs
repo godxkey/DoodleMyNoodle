@@ -20,6 +20,12 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
     [HideIf(nameof(HasProxy))]
     public bool DestroyOnDeath = false;
 
+    [HideIf(nameof(HasProxy))]
+    public float RechargeRate = 0;
+
+    [HideIf(nameof(HasProxy))]
+    public float RechargeCooldown = 4;
+
     [ShowIf(nameof(ShowStartValue))]
     public int StartValue = 10;
 
@@ -38,9 +44,12 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
         }
         else
         {
-            dstManager.AddComponentData(entity, new Health { Value = StartAtMax ? MaxValue : StartValue });
-            dstManager.AddComponentData(entity, new MinimumFix<Health> { Value = 0 });
-            dstManager.AddComponentData(entity, new MaximumFix<Health> { Value = MaxValue });
+            dstManager.AddComponentData<Health>(entity, (fix)(StartAtMax ? MaxValue : StartValue));
+            dstManager.AddComponentData<MinimumFix<Health>>(entity, (fix)0);
+            dstManager.AddComponentData<MaximumFix<Health>>(entity, (fix)MaxValue);
+            dstManager.AddComponentData<HealthRechargeRate>(entity, (fix)RechargeRate);
+            dstManager.AddComponentData<HealthRechargeCooldown>(entity, (fix)RechargeCooldown);
+            dstManager.AddComponentData<HealthLastHitTime>(entity, fix.MinValue);
 
             if (DestroyOnDeath)
                 dstManager.AddComponent<DestroyOnDeath>(entity);
@@ -62,6 +71,7 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
 
                 dstManager.SetOrAddComponentData(entity, actorColliderRefs);
             }
+
         }
     }
 }

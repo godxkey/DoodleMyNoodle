@@ -14,6 +14,7 @@ public class PlayerGroupAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponent<PlayerGroupDataTag>(entity);
         dstManager.AddComponentData(entity, new PlayerGroupSpacing() { Value = (fix)MemberSpacing });
         dstManager.AddComponentData(entity, new PlayerGroupStopTriggerSize() { Value = (fix2)StopTriggerSize });
+        dstManager.AddComponentData<Team>(entity, (int)DesignerFriendlyTeam.Player);
     }
 
     private void OnDrawGizmosSelected()

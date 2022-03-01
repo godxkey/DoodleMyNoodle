@@ -24,10 +24,12 @@ public class GamePresentationCache
     public List<Collider2D> PointedColliders = new List<Collider2D>();
     public List<GameObject> PointedGameObjects = new List<GameObject>();
 
+    public Entity PlayerGroupEntity;
     public Entity LocalPawn;
     public fix2 LocalPawnPosition;
     public Vector2 LocalPawnPositionFloat;
     public Entity LocalController;
+    public int GroupLifePoints;
     public fix GroupHealth;
     public fix GroupMaxHealth;
     public fix GroupShield;
@@ -126,12 +128,13 @@ public class GamePresentationCacheUpdater : ViewSystemBase
         ////////////////////////////////////////////////////////////////////////////////////////
         if (Cache.SimWorld.HasSingleton<PlayerGroupDataTag>())
         {
-            var playerGroupEntity = Cache.SimWorld.GetSingletonEntity<PlayerGroupDataTag>();
-            Cache.GroupHealth = Cache.SimWorld.GetComponent<Health>(playerGroupEntity);
-            Cache.GroupMaxHealth = Cache.SimWorld.GetComponent<MaximumFix<Health>>(playerGroupEntity).Value;
-            Cache.GroupShield = Cache.SimWorld.GetComponent<Shield>(playerGroupEntity);
-            Cache.GroupMaxShield = Cache.SimWorld.GetComponent<MaximumFix<Shield>>(playerGroupEntity).Value;
-            Cache.GroupPosition = Cache.SimWorld.GetComponent<FixTranslation>(playerGroupEntity).Value;
+            Cache.PlayerGroupEntity = Cache.SimWorld.GetSingletonEntity<PlayerGroupDataTag>();
+            Cache.GroupLifePoints = Cache.SimWorld.GetComponent<LifePoints>(Cache.PlayerGroupEntity);
+            Cache.GroupHealth = Cache.SimWorld.GetComponent<Health>(Cache.PlayerGroupEntity);
+            Cache.GroupMaxHealth = Cache.SimWorld.GetComponent<MaximumFix<Health>>(Cache.PlayerGroupEntity).Value;
+            Cache.GroupShield = Cache.SimWorld.GetComponent<Shield>(Cache.PlayerGroupEntity);
+            Cache.GroupMaxShield = Cache.SimWorld.GetComponent<MaximumFix<Shield>>(Cache.PlayerGroupEntity).Value;
+            Cache.GroupPosition = Cache.SimWorld.GetComponent<FixTranslation>(Cache.PlayerGroupEntity).Value;
         }
 
 

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c7f2b7ec340a684f9178f9ea45e4d38, type: 3}
+  m_Name: VFX_HeartExplosion
+  m_EditorClassIdentifier: 
+  Duration: 2.1
+  VFXToSpawn: {fileID: 5707008572908855834, guid: 2cb9d6cd716b52744b3b44761c64326f,
+    type: 3}

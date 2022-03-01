@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1027429363063879524
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1027429363063879523}
+  - component: {fileID: 1027429363063879521}
+  - component: {fileID: 1027429363063879522}
+  m_Layer: 0
+  m_Name: SE_Action_PlayerGroup_LPLoss_Invincible
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1027429363063879523
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027429363063879524}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1027429363063879521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027429363063879524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 0
+  _guid: 94552ba02d1a7a04e99b5ce1bc0fc5ae
+  _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
+  _viewTechType: 0
+  _hasTransform: 0
+  _showGhost: 1
+--- !u!114 &1027429363063879522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027429363063879524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: 
+  GameActionSettings: []
+  SfxOnUse: {fileID: 0}
+  Animation: {fileID: 0}
+  InstigatorVFX: {fileID: 0}
+  TargetsVFX: {fileID: 0}
+  Surveys: []
+  references:
+    version: 1

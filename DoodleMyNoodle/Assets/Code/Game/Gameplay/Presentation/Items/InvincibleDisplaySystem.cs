@@ -16,11 +16,13 @@ public class InvincibleDisplaySystem : GamePresentationSystem<InvincibleDisplayS
     protected override void OnGamePresentationUpdate()
     {
         int invincibleBubbleAmount = 0;
-        Cache.SimWorld.Entities.ForEach((ref Invincible entityHealth, ref FixTranslation entityTranslation) =>
+        Cache.SimWorld.Entities.ForEach((ref InvincibleUntilTime invincibleUntilTime, ref FixTranslation pos) =>
         {
-            SetOrAddInvincibleBubble(invincibleBubbleAmount, entityTranslation.Value);
-
-            invincibleBubbleAmount++;
+            if (Cache.SimWorld.Time.ElapsedTime < invincibleUntilTime.Time)
+            {
+                SetOrAddInvincibleBubble(invincibleBubbleAmount, pos.Value);
+                invincibleBubbleAmount++;
+            }
         });
 
         // Deactivate extra Invincible Bubble

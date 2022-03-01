@@ -10,6 +10,7 @@ using System.Reflection;
 using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
+[RequireComponent(typeof(SimAsset))]
 public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     // SIMULATION

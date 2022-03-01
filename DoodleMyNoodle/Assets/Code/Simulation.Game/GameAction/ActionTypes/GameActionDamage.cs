@@ -1,7 +1,6 @@
 using static fixMath;
 using Unity.Entities;
 using System;
-using System.Collections.Generic;
 using CCC.Fix2D;
 
 public class GameActionDamage : GameAction<GameActionDamage.Settings>
@@ -34,8 +33,9 @@ public class GameActionDamage : GameAction<GameActionDamage.Settings>
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        foreach (Entity target in input.Context.Targets)
+        for (int i = 0; i < input.Context.Targets.Length; i++)
         {
+            var target = input.Context.Targets[i];
             CommonWrites.RequestDamage(input.Accessor, target, settings.Damage);
 
             if (input.Accessor.TryGetComponent(target, out FixTranslation targetTranslation))

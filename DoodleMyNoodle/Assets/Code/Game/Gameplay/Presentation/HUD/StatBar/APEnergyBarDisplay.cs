@@ -7,9 +7,9 @@ using DG.Tweening;
 
 public class APEnergyBarDisplay : StatBarDisplay
 {
-    [SerializeField] private Slider PreviewEnergyBar = null;
-    [SerializeField] private Image EnergyBarSprite = null;
-    [SerializeField] private float PreviewFadeDuration = 1;
+    [SerializeField] private Slider _previewEnergyBar = null;
+    [SerializeField] private Image _energyBarSprite = null;
+    [SerializeField] private float _previewFadeDuration = 1;
 
     private Sequence _sq;
     private Color _startColor;
@@ -19,38 +19,45 @@ public class APEnergyBarDisplay : StatBarDisplay
 
     public override void OnGameAwake() 
     {
-        _startColor = EnergyBarSprite.color;
+        _startColor = _energyBarSprite.color;
+        _previewEnergyBar.gameObject.SetActive(false);
+    }
+
+    protected override void OnDestroy()
+    {
+        _sq?.KillIfActive();
+        base.OnDestroy();
     }
 
     public override void SetStatBar(float value, float maxValue)
     {
         base.SetStatBar(value, maxValue);
 
-        PreviewEnergyBar.maxValue = maxValue;
+        _previewEnergyBar.maxValue = maxValue;
     }
 
     public void ShowPrevewAPEnergyCost(float value)
     {
-        if (PreviewEnergyBar == null)
+        if (_previewEnergyBar == null)
             return;
 
         StopShowingPreview();
 
-        PreviewEnergyBar.value = value;
-        EnergyBarSprite.color = Color.red;
-        PreviewEnergyBar.gameObject.SetActive(true);
+        _previewEnergyBar.value = value;
+        _energyBarSprite.color = Color.red;
+        _previewEnergyBar.gameObject.SetActive(true);
 
         _sq = DOTween.Sequence();
-        _sq.Join(EnergyBarSprite.DOFade(0, PreviewFadeDuration/2));
-        _sq.Append(EnergyBarSprite.DOFade(1, PreviewFadeDuration/2));
+        _sq.Join(_energyBarSprite.DOFade(0, _previewFadeDuration/2));
+        _sq.Append(_energyBarSprite.DOFade(1, _previewFadeDuration/2));
         _sq.SetLoops(-1, LoopType.Yoyo);
     }
 
     public void StopShowingPreview()
     {
-        EnergyBarSprite.color = _startColor;
-        EnergyBarSprite.SetAlpha(1);
+        _energyBarSprite.color = _startColor;
+        _energyBarSprite.SetAlpha(1);
         _sq.Kill();
-        PreviewEnergyBar.gameObject.SetActive(false);
+        _previewEnergyBar.gameObject.SetActive(false);
     }
 }

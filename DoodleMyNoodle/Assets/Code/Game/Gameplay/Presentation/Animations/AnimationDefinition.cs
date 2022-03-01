@@ -15,7 +15,6 @@ public abstract class AnimationDefinition : ScriptableObject
     {
         _data = animationData;
 
-        Log.Info("animate");
         OnTriggerAnimation(entity, spriteStartPos, spriteTransform);
     }
 

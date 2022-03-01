@@ -48,6 +48,11 @@ public class SpriteLight : MonoBehaviour
     }
 #endif
 
+    void OnDidApplyAnimationProperties()
+    {
+        UpdateRenderer();
+    }
+
     public void UpdateRenderer()
     {
         if (_propertyBlock == null)

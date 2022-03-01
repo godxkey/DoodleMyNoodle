@@ -38,22 +38,23 @@ public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
             GameObject gameActionPrefab = PresentationHelpers.FindSimAssetPrefab(gameActionAssetId);
             if (gameActionPrefab != null && gameActionPrefab.TryGetComponent(out GameActionAuth gameActionAuth))
             {
-                VFXDefinition InstigatorVFX = gameActionAuth.InstigatorVFX;
-                if (InstigatorVFX != null)
+                VFXDefinition instigatorVFX = gameActionAuth.InstigatorVFX;
+
+                if (instigatorVFX != null)
                 {
-                    InstigatorVFX.TriggerVFX(new KeyValuePair<string, object>("Location", lastPhysicalInstigatorTranslation.Value.ToUnityVec()));
+                    instigatorVFX.TriggerVFX(new KeyValuePair<string, object>("Location", lastPhysicalInstigatorTranslation.Value.ToUnityVec()));
                 }
 
-                VFXDefinition TargetsVFX = gameActionAuth.TargetsVFX;
-                if (TargetsVFX != null && gameActionEvent.GameActionContext.Targets.IsCreated)
+                VFXDefinition targetsVFX = gameActionAuth.TargetsVFX;
+                if (targetsVFX != null && gameActionEvent.GameActionContext.Targets.IsCreated)
                 {
-                    foreach (Entity target in gameActionEvent.GameActionContext.Targets)
+                    for (int i = 0; i < gameActionEvent.GameActionContext.Targets.Length; i++)
                     {
+                        Entity target = gameActionEvent.GameActionContext.Targets[i];
                         if (SimWorld.TryGetComponent(target, out FixTranslation targetLocation))
                         {
-                            TargetsVFX.TriggerVFX(new KeyValuePair<string, object>("Location", targetLocation.Value.ToUnityVec()));
+                            targetsVFX.TriggerVFX(new KeyValuePair<string, object>("Location", targetLocation.Value.ToUnityVec()));
                         }
-
                     }
                 }
             }

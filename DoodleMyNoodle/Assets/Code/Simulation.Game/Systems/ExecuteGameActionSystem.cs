@@ -105,8 +105,6 @@ public class ExecuteGameActionSystem : SimGameSystemBase
                     foreach (var request in _processingRequestsManaged)
                     {
                         ExecuteGameAction(request.Instigator, request.ActionEntity, request.Targets, request.Parameters);
-                        if (request.Targets.IsCreated)
-                            request.Targets.Dispose();
                     }
                 }
             }

@@ -34,8 +34,10 @@ public class GameActionFreeze : GameAction<GameActionFreeze.Settings>
     {
         TimeValue elapsedTimeSeconds = TimeValue.Seconds(input.Accessor.Time.ElapsedTime);
 
-        foreach (Entity target in input.Context.Targets)
+        for (int i = 0; i < input.Context.Targets.Length; i++)
         {
+            var target = input.Context.Targets[i];
+
             input.Accessor.SetOrAddComponent(target, new Frozen()
             {
                 AppliedTime = elapsedTimeSeconds,

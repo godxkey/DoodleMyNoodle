@@ -43,33 +43,36 @@ public struct HealthChangeRequestData : IBufferElementData
 }
 
 [AlwaysUpdateSystem]
+[UpdateBefore(typeof(ExecuteGameActionSystem))]
 public class ApplyDamageSystem : SimGameSystemBase
 {
-    public void RequestHealthChange(HealthChangeRequestData damageRequestData)
+    private ExecuteGameActionSystem _gameActionSystem;
+    private NativeList<HealthChangeRequestData> _processingHealthChanges;
+
+    protected override void OnCreate()
     {
-        GetDamageRequestBuffer().Add(damageRequestData);
+        base.OnCreate();
+
+        _gameActionSystem = World.GetOrCreateSystem<ExecuteGameActionSystem>();
+        _processingHealthChanges = new NativeList<HealthChangeRequestData>(Allocator.Persistent);
     }
 
-    private DynamicBuffer<HealthChangeRequestData> GetDamageRequestBuffer()
+    protected override void OnDestroy()
     {
-        if (!HasSingleton<DamageRequestSingletonTag>())
-        {
-            EntityManager.CreateEntity(typeof(DamageRequestSingletonTag), typeof(HealthChangeRequestData));
-        }
-
-        return GetBuffer<HealthChangeRequestData>(GetSingletonEntity<DamageRequestSingletonTag>());
+        base.OnDestroy();
+        _processingHealthChanges.Dispose();
     }
 
     protected override void OnUpdate()
     {
         DynamicBuffer<HealthChangeRequestData> damageRequests = GetDamageRequestBuffer();
+        _processingHealthChanges.CopyFrom(damageRequests.AsNativeArray());
+        damageRequests.Clear();
 
-        foreach (HealthChangeRequestData healthChangeData in damageRequests)
+        foreach (HealthChangeRequestData healthChangeData in _processingHealthChanges)
         {
             ProcessHealthChange(healthChangeData.Target, healthChangeData.Amount, healthChangeData.EffectGroupID);
         }
-
-        damageRequests.Clear();
     }
 
     private void ProcessHealthChange(Entity target, fix amount, uint effectGroupID)
@@ -106,7 +109,7 @@ public class ApplyDamageSystem : SimGameSystemBase
         }
 
         // If delta is negative (damage), check for invincible
-        if (remainingDelta < 0 && HasComponent<Invincible>(target))
+        if (remainingDelta < 0 && TryGetComponent(target, out InvincibleUntilTime invincibleUntilTime) && invincibleUntilTime.Time > Time.ElapsedTime)
         {
             remainingDelta = max(remainingDelta, 0);
         }
@@ -132,6 +135,41 @@ public class ApplyDamageSystem : SimGameSystemBase
             hpDelta = newHP.Value - previousHP.Value;
             SetComponent(target, newHP);
             remainingDelta -= hpDelta;
+
+            if (HasComponent<HealthLastHitTime>(target))
+            {
+                SetComponent<HealthLastHitTime>(target, Time.ElapsedTime);
+            }
+
+            // If target is dead but has life points, regenerate all values and request special action
+            if (newHP.Value == 0 && TryGetComponent(target, out LifePoints lifePoints) && lifePoints.Value > 0)
+            {
+                // recharge HP & shield
+                if (HasComponent<Health>(target))
+                    SetComponent<Health>(target, GetComponent<MaximumFix<Health>>(target).Value);
+                if (HasComponent<Shield>(target))
+                    SetComponent<Shield>(target, GetComponent<MaximumFix<Shield>>(target).Value);
+
+                // decrement life points
+                SetComponent<LifePoints>(target, lifePoints.Value - 1);
+
+                if (EntityManager.TryGetBuffer(target, out DynamicBuffer<LifePointLostAction> lossActions))
+                {
+                    foreach (var item in lossActions)
+                    {
+                        _gameActionSystem.ActionRequestsManaged.Add(new GameActionRequestManaged()
+                        {
+                            ActionEntity = item.Value,
+                            Instigator = target,
+                        });
+                    }
+                }
+
+                // set invincible for a minimum of 0.5 seconds
+                TryGetComponent(target, out InvincibleUntilTime invincible);
+                invincible.Time = max(invincible.Time, Time.ElapsedTime + (fix)0.5);
+                EntityManager.AddComponentData(target, invincible);
+            }
         }
 
         // Trigger Signal on Damage
@@ -155,6 +193,21 @@ public class ApplyDamageSystem : SimGameSystemBase
                 Position = GetComponent<FixTranslation>(target)
             });
         }
+    }
+
+    public void RequestHealthChange(HealthChangeRequestData damageRequestData)
+    {
+        GetDamageRequestBuffer().Add(damageRequestData);
+    }
+
+    private DynamicBuffer<HealthChangeRequestData> GetDamageRequestBuffer()
+    {
+        if (!HasSingleton<DamageRequestSingletonTag>())
+        {
+            EntityManager.CreateEntity(typeof(DamageRequestSingletonTag), typeof(HealthChangeRequestData));
+        }
+
+        return GetBuffer<HealthChangeRequestData>(GetSingletonEntity<DamageRequestSingletonTag>());
     }
 }
 

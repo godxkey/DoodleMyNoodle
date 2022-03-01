@@ -84,13 +84,14 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
 
                 if (EntityManager.Exists(groupHeader))
                 {
-                    if (EntityManager.HasComponent<Invincible>(groupHeader))
+                    const int DISTANT_FUTURE = 9999999;
+                    if (TryGetComponent(groupHeader, out InvincibleUntilTime invincibleUntilTime))
                     {
-                        EntityManager.RemoveComponent<Invincible>(groupHeader);
+                        EntityManager.AddComponentData(groupHeader, new InvincibleUntilTime() { Time = invincibleUntilTime.Time == DISTANT_FUTURE ? 0 : DISTANT_FUTURE });
                     }
                     else
                     {
-                        EntityManager.AddComponentData(groupHeader, new Invincible() { Duration = 99999 });
+                        EntityManager.AddComponentData(groupHeader, new InvincibleUntilTime() { Time = DISTANT_FUTURE });
                     }
                 }
                 break;

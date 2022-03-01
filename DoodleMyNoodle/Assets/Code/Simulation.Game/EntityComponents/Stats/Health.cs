@@ -20,3 +20,27 @@ public struct HealthProxy : IComponentData
     public static implicit operator Entity(HealthProxy val) => val.Value;
     public static implicit operator HealthProxy(Entity val) => new HealthProxy() { Value = val };
 }
+
+public struct HealthRechargeRate : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(HealthRechargeRate val) => val.Value;
+    public static implicit operator HealthRechargeRate(fix val) => new HealthRechargeRate() { Value = val };
+}
+
+public struct HealthRechargeCooldown : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(HealthRechargeCooldown val) => val.Value;
+    public static implicit operator HealthRechargeCooldown(fix val) => new HealthRechargeCooldown() { Value = val };
+}
+
+public struct HealthLastHitTime : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(HealthLastHitTime val) => val.Value;
+    public static implicit operator HealthLastHitTime(fix val) => new HealthLastHitTime() { Value = val };
+}
