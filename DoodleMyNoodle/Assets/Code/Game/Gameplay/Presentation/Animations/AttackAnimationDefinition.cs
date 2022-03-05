@@ -11,13 +11,13 @@ public class AttackAnimationDefinition : DOTWEENAnimationDefinition
 {
     public VFXDefinition VFXOnTarget = null;
 
-    public override Tween GetDOTWEENAnimationSequence(Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
+    public override Tween GetDOTWEENAnimationSequence(TriggerInput input)
     {
         Sequence sq = DOTween.Sequence();
 
-        GameAction.ResultDataElement resultData = GetGameActionResultData();
+        GameAction.ResultDataElement resultData = input.GetGameActionResultData();
 
-        Vector2 startPos = spriteStartPos;
+        Vector2 startPos = Vector2.zero;
         Vector2 endPos = startPos;
         if (resultData.AttackVector.ToUnityVec() != Vector2.zero)
         {
@@ -25,26 +25,30 @@ public class AttackAnimationDefinition : DOTWEENAnimationDefinition
         }
         else if (resultData.Position.ToUnityVec() != Vector2.zero)
         {
-            endPos = resultData.Position.ToUnityVec() - (Vector2)spriteTransform.position;
+            endPos = resultData.Position.ToUnityVec() - (Vector2)input.PresentationTarget.Bone.position;
         }
         else if ((resultData.Entity != Entity.Null) && PresentationHelpers.GetSimulationWorld().TryGetComponent(resultData.Entity, out FixTranslation translation))
         {
-            endPos = translation.Value.ToUnityVec() - (Vector2)spriteTransform.position;
+            endPos = translation.Value.ToUnityVec() - (Vector2)input.PresentationTarget.Bone.position;
         }
 
         if (VFXOnTarget != null)
         {
-            _data.Add(new KeyValuePair<string, object>("Transform", spriteTransform));
-            _data.Add(new KeyValuePair<string, object>("AttackVector", resultData.AttackVector));
-            _data.Add(new KeyValuePair<string, object>("InstigatorStartPosition", spriteTransform.position));
-            sq.Append(spriteTransform.DOLocalMove(endPos, Duration / 2).OnComplete(() => { VFXOnTarget.TriggerVFX(_data); }));
+            var vfxParams = new KeyValuePair<string, object>[]
+            {
+                new KeyValuePair<string, object>("Transform", input.PresentationTarget.Bone),
+                new KeyValuePair<string, object>("AttackVector", resultData.AttackVector),
+                new KeyValuePair<string, object>("InstigatorStartPosition", input.PresentationTarget.Bone.position),
+            };
+            sq.Append(input.PresentationTarget.Bone.DOLocalMove(endPos, _duration / 2)
+                .OnComplete(() => VFXOnTarget.TriggerVFX(vfxParams)));
         }
         else
         {
-            sq.Append(spriteTransform.DOLocalMove(endPos, Duration / 2));
+            sq.Append(input.PresentationTarget.Bone.DOLocalMove(endPos, _duration / 2));
         }
 
-        sq.Append(spriteTransform.DOLocalMove(startPos, Duration / 2));
+        sq.Append(input.PresentationTarget.Bone.DOLocalMove(startPos, _duration / 2));
 
         return sq;
     }

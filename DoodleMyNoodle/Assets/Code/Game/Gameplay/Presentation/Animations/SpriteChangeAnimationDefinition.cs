@@ -2,43 +2,32 @@
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngineX;
 
-[CreateAssetMenu(menuName = "DoodleMyNoodle/Animations/Sprite Animation")]
+[CreateAssetMenu(menuName = "DoodleMyNoodle/Animations/Sprite Change Animation")]
 public class SpriteChangeAnimationDefinition : AnimationDefinition
 {
-    public Sprite InitialSprite;
-    public Sprite NewSprite;
+    [FormerlySerializedAs("NewSprite")]
+    [SerializeField] private Sprite _newSprite;
+    [SerializeField] private float _duration = 0.5f;
 
-    public override void FinishAnimation(Entity entity, Transform spriteTransform)
+    private Dictionary<int, Sprite> _initialSprites = new Dictionary<int, Sprite>();
+
+    public override void TriggerAnimation(TriggerInput input, ref TriggerOuput ouput)
     {
-        SpriteRenderer spriteRenderer = GetSpriteRenderer(spriteTransform);
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.sprite = InitialSprite;
-        }
+        // remember the old sprite
+        _initialSprites[input.TriggerId] = input.PresentationTarget.SpriteRenderer.sprite;
+
+        // set new sprite
+        input.PresentationTarget.SpriteRenderer.sprite = _newSprite;
+
+        ouput.Duration = _duration;
     }
 
-    public override void StopAnimation(Entity entity, Transform spriteTransform)
+    public override void StopAnimation(StopInput input)
     {
-        SpriteRenderer spriteRenderer = GetSpriteRenderer(spriteTransform);
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.sprite = InitialSprite;
-        }
-    }
-
-    protected override void OnTriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
-    {
-        SpriteRenderer spriteRenderer = GetSpriteRenderer(spriteTransform);
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.sprite = NewSprite;
-        }
-    }
-
-    private SpriteRenderer GetSpriteRenderer(Transform spriteTransform) 
-    {
-        return spriteTransform.gameObject.GetComponentInChildren<SpriteRenderer>();
+        input.PresentationTarget.SpriteRenderer.sprite = _initialSprites[input.TriggerId];
+        _initialSprites.Remove(input.TriggerId);
     }
 }

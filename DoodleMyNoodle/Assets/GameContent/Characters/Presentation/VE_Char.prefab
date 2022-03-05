@@ -64,7 +64,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bone: {fileID: 7590767523090447578}
-  _minimumVelocityThreshold: 0.1
+  _spriteRenderer: {fileID: 2078424545621035913}
+  _animator: {fileID: 0}
   _defaultAnimations:
   - AnimationType: 1
     AnimationDefinition: {fileID: 11400000, guid: f9005890481c8a64699b8b0c0415e24a,

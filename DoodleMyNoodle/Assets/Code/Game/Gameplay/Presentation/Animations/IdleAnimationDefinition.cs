@@ -9,17 +9,17 @@ public class IdleAnimationDefinition : DOTWEENAnimationDefinition
 {
     public float IdleHeight = 0.05f;
 
-    public override Tween GetDOTWEENAnimationSequence(Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
+    public override Tween GetDOTWEENAnimationSequence(TriggerInput input)
     {
         Sequence sq = DOTween.Sequence();
 
-        float idleStartY = spriteStartPos.y;
+        float idleStartY = 0;
         float idleEndY = idleStartY + IdleHeight;
 
-        sq.Append(spriteTransform.DOLocalMoveY(idleEndY, Duration / 2).SetEase(Ease.InOutQuad));
-        sq.Append(spriteTransform.DOLocalMoveY(idleStartY, Duration / 2).SetEase(Ease.InOutQuad));
+        sq.Append(input.PresentationTarget.Bone.DOLocalMoveY(idleEndY, _duration / 2).SetEase(Ease.InOutQuad));
+        sq.Append(input.PresentationTarget.Bone.DOLocalMoveY(idleStartY, _duration / 2).SetEase(Ease.InOutQuad));
         sq.SetLoops(-1);
-        sq.Goto(UnityEngine.Random.value * sq.Duration(includeLoops: false), andPlay: true);
+        sq.Goto(Random.value * sq.Duration(includeLoops: false), andPlay: true);
         return sq;
     }
 }

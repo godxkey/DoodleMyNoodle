@@ -67,7 +67,7 @@ MonoBehaviour:
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
-  Animation: {fileID: 11400000, guid: 4b7b5e66f539d45469a1aef6ea8af3ed, type: 2}
+  Animation: {fileID: 11400000, guid: 049ed980c3634254abe891ff1fc8766e, type: 2}
   InstigatorVFX: {fileID: 0}
   TargetsVFX: {fileID: 0}
   Surveys: []

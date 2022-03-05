@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ab7b8734d0decc4ea450f111d1b6e15, type: 3}
-  m_Name: DefaultAirborneAnimation
+  m_Script: {fileID: 11500000, guid: 7bd733b45488e5644abddea70f89ac0e, type: 3}
+  m_Name: ANIM_BigSwordAttack
   m_EditorClassIdentifier: 
-  Duration: 0
+  Duration: 0.5
+  VFXOnTarget: {fileID: 11400000, guid: 788756da095bbd748aa0c3ea5d628c33, type: 2}

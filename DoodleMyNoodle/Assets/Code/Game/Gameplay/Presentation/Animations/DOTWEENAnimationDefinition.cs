@@ -2,34 +2,30 @@
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngineX;
 
 public abstract class DOTWEENAnimationDefinition : AnimationDefinition
 {
-    private Dictionary<Entity, Tween> _sequences = new Dictionary<Entity, Tween>();
+    [FormerlySerializedAs("Duration")]
+    [SerializeField] protected float _duration;
 
-    public override void FinishAnimation(Entity entity, Transform spriteTransform)
+    private Dictionary<int, Tween> _sequences = new Dictionary<int, Tween>();
+    
+    public override void StopAnimation(StopInput input)
     {
-        if (_sequences.TryGetValue(entity, out Tween tween))
-        {
-            tween.Kill(complete: true);
-            _sequences.Remove(entity);
-        }
-    }
-
-    public override void StopAnimation(Entity entity, Transform spriteTransform)
-    {
-        if (_sequences.TryGetValue(entity, out Tween tween))
+        if (_sequences.TryGetValue(input.TriggerId, out Tween tween))
         {
             tween.KillIfActive();
-            _sequences.Remove(entity);
+            _sequences.Remove(input.TriggerId);
         }
     }
 
-    protected override void OnTriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform)
+    public override void TriggerAnimation(TriggerInput input, ref TriggerOuput output)
     {
-        _sequences[entity] = GetDOTWEENAnimationSequence(entity, spriteStartPos, spriteTransform);
+        output.Duration = _duration;
+        _sequences[input.TriggerId] = GetDOTWEENAnimationSequence(input);
     }
 
-    public abstract Tween GetDOTWEENAnimationSequence(Entity entity, Vector3 spriteStartPos, Transform spriteTransform);
+    public abstract Tween GetDOTWEENAnimationSequence(TriggerInput input);
 }

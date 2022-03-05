@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngineX;
 
-public class FrozenDoodleSpriteChange : BindedPresentationEntityComponent
+public class FrozenSpriteChange : BindedPresentationEntityComponent
 {
     public SpriteRenderer SpriteRenderer;
     public Color frozenColor;

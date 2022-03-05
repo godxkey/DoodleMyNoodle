@@ -4,52 +4,102 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
-[System.Serializable]
 public abstract class AnimationDefinition : ScriptableObject
 {
-    public float Duration;
-
-    protected List<KeyValuePair<string, object>> _data;
-
-    public void TriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform, List<KeyValuePair<string, object>> animationData)
+    public struct PresentationTarget
     {
-        _data = animationData;
+        public Transform Bone;
+        public SpriteRenderer SpriteRenderer;
+        public GameObject Root;
 
-        OnTriggerAnimation(entity, spriteStartPos, spriteTransform);
+        public PresentationTarget(GameObject root, Transform bone, SpriteRenderer spriteRenderer)
+        {
+            Root = root;
+            Bone = bone;
+            SpriteRenderer = spriteRenderer;
+        }
     }
 
-    protected abstract void OnTriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform);
-
-    public abstract void FinishAnimation(Entity entity, Transform spriteTransform);
-    public abstract void StopAnimation(Entity entity, Transform spriteTransform);
-
-    public T GetAnimationData<T>(string dataTypeID)
+    public struct TriggerInput
     {
-        foreach (KeyValuePair<string, object> data in _data)
+        public Entity SimulationTarget;
+        public PresentationTarget PresentationTarget;
+        public Dictionary<string, object> Parameters;
+
+        /// <summary>
+        /// The unique ID for the trigger of animation
+        /// </summary>
+        public int TriggerId;
+
+        public TriggerInput(Entity simulationTarget, PresentationTarget presentationTarget, Dictionary<string, object> parameters, int triggerId)
         {
-            if (data.Key == dataTypeID)
-            {
-                return (T)data.Value;
-            }
+            SimulationTarget = simulationTarget;
+            PresentationTarget = presentationTarget;
+            Parameters = parameters;
+            TriggerId = triggerId;
         }
 
-        Log.Warning($"Animation Data ({dataTypeID}) couldn't be found in {name}");
-
-        return default;
-    }
-
-    public GameAction.ResultDataElement GetGameActionResultData()
-    {
-        foreach (KeyValuePair<string, object> data in _data)
+        public T GetAnimationData<T>(string dataTypeID)
         {
-            if (data.Key == "GameActionContextResult")
+            T result = default;
+            bool success = false;
+            if (Parameters != null && Parameters.TryGetValue(dataTypeID, out object obj))
             {
-                return (GameAction.ResultDataElement)data.Value;
+                if (obj is T castedObj)
+                {
+                    result = castedObj;
+                    success = true;
+                }
+
             }
+
+            if (!success)
+                Log.Warning($"Animation Data {dataTypeID} of type {typeof(T).Name} couldn't be found.");
+
+            return result;
         }
 
-        Log.Warning($"Game Action Context Result couldn't be found in {name}");
-
-        return default;
+        public GameAction.ResultDataElement GetGameActionResultData()
+        {
+            return GetAnimationData<GameAction.ResultDataElement>("GameActionContextResult");
+        }
     }
+
+    public struct TriggerOuput
+    {
+        public float Duration;
+    }
+
+    public struct FinishInput
+    {
+        /// <summary>
+        /// The unique ID for the trigger of animation
+        /// </summary>
+        public int TriggerId;
+        public PresentationTarget PresentationTarget;
+
+        public FinishInput(int triggerId, PresentationTarget presentationTarget)
+        {
+            TriggerId = triggerId;
+            PresentationTarget = presentationTarget;
+        }
+    }
+
+    public struct StopInput
+    {
+        /// <summary>
+        /// The unique ID for the trigger of animation
+        /// </summary>
+        public int TriggerId;
+        public PresentationTarget PresentationTarget;
+
+        public StopInput(int triggerId, PresentationTarget presentationTarget)
+        {
+            TriggerId = triggerId;
+            PresentationTarget = presentationTarget;
+        }
+    }
+
+    public abstract void TriggerAnimation(TriggerInput input, ref TriggerOuput output);
+    public abstract void StopAnimation(StopInput input);
 }

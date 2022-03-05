@@ -28,215 +28,69 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     }
 
     [SerializeField] private Transform _bone = null;
-    [SerializeField] private float _minimumVelocityThreshold = 0.1f;
+    [SerializeField] private SpriteRenderer _spriteRenderer = null;
 
     [Header("Animation Data")]
     [FormerlySerializedAs("DefaultAnimations")]
     [SerializeField] private List<DefaultAnimation> _defaultAnimations;
 
-    private class QueuedAnimation
-    {
-        public List<KeyValuePair<string, object>> Data;
-        public AnimationDefinition Definition;
-        public bool HasPlayed;
-    }
-
-    private List<QueuedAnimation> _queuedAnimations = new List<QueuedAnimation>();
-
-    private AnimationDefinition _currentAnimation;
+    private readonly static int s_emptyAnimStateHash = Animator.StringToHash("Empty");
 
     private AnimationType _previousState = AnimationType.None;
+    private float _currentAnimationFinishTime = -1;
+    private AnimationDefinition _currentAnimation;
+    private int _currentAnimationTriggerId = -1;
+    private AnimationDefinition.PresentationTarget _presentationTarget;
 
-    private Vector3 _spriteStartPos;
-    private Quaternion _spriteStartRot;
-
-    private bool _hasTriggeredAnAnimation = false;
-    private fix _lastTransitionTime = -1;
+    private static int s_nextAnimationTriggerId = 0;
 
     protected override void Awake()
     {
         base.Awake();
 
-        _spriteStartPos = _bone.localPosition;
-        _spriteStartRot = _bone.localRotation;
+        _presentationTarget = new AnimationDefinition.PresentationTarget(gameObject, _bone, _spriteRenderer);
+
     }
 
     private void OnDisable()
     {
-        if (_currentAnimation != null)
-        {
-            _currentAnimation.StopAnimation(SimEntity, _bone);
-            _currentAnimation = null;
-        }
+        SetAnimation(null, null);
     }
 
     protected override void OnGamePresentationUpdate()
     {
-        _hasTriggeredAnAnimation = false;
+        if (HandleGameActionAnimation())
+            return;
 
-        if (!_hasTriggeredAnAnimation)
-        {
-            if (HandleGameActionAnimation())
-            {
-                return;
-            }
-        }
+        if (HandleDeathAnimation())
+            return;
 
-        if (!_hasTriggeredAnAnimation)
-        {
-            if (HandleDeathAnimation())
-            {
-                return;
-            }
-        }
-
-        if (!_hasTriggeredAnAnimation)
-        {
-            if (SimWorld.TryGetComponent(SimEntity, out MoveInput input) && SimWorld.TryGetComponent(SimEntity, out ActionPoints ap))
-            {
-                if (SimWorld.TryGetComponent(SimEntity, out NavAgentFootingState navAgentFootingState))
-                {
-                    switch (navAgentFootingState.Value)
-                    {
-                        case NavAgentFooting.Ground:
-                            if (input.Value.lengthSquared > (fix)(_minimumVelocityThreshold) && ap.Value > 0)
-                            {
-                                HandleCharacterMovementAnimation(AnimationType.Walking);
-                            }
-                            else
-                            {
-                                HandleCharacterMovementAnimation(AnimationType.Idle);
-                            }
-
-                            break;
-
-                        case NavAgentFooting.Ladder:
-
-                            if (input.Value.y == 0 || ap.Value <= 0)
-                            {
-                                HandleCharacterMovementAnimation(AnimationType.Idle);
-                            }
-                            else
-                            {
-                                HandleCharacterMovementAnimation(AnimationType.Ladder);
-                            }
-
-                            break;
-                        case NavAgentFooting.AirControl:
-
-                            HandleCharacterMovementAnimation(AnimationType.AirControl);
-                            break;
-
-                        case NavAgentFooting.None:
-
-                            HandleCharacterMovementAnimation(AnimationType.Jump);
-                            break;
-
-                        default:
-
-                            HandleCharacterMovementAnimation(AnimationType.Idle);
-                            break;
-                    }
-
-                    return;
-                }
-            }
-
-            HandleCharacterMovementAnimation(AnimationType.Idle);
-        }
+        HandleCharacterMovementAnimation(AnimationType.Idle);
     }
 
     private bool HandleGameActionAnimation()
     {
         foreach (GameActionUsedEventData gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            if (gameActionEvent.GameActionContext.LastPhysicalInstigator == SimEntity && gameActionEvent.GameActionContext.Action != Entity.Null && !_hasTriggeredAnAnimation)
+            if (gameActionEvent.GameActionContext.LastPhysicalInstigator == SimEntity && gameActionEvent.GameActionContext.Action != Entity.Null)
             {
-                TriggerAnimationInteruptionOnStateChange();
-
-                _hasTriggeredAnAnimation = true;
-                _lastTransitionTime = SimWorld.Time.ElapsedTime;
-
                 // GAME ACTION AUTH & ANIMATION TRIGGER
                 SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Action, out SimAssetId instigatorAssetId);
                 GameObject instigatorPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
-                if (instigatorPrefab.TryGetComponent(out GameActionAuth gameActionAuth))
+
+                if (instigatorPrefab.TryGetComponent(out GameActionAuth gameActionAuth) && gameActionAuth.Animation != null)
                 {
-                    _currentAnimation = gameActionAuth.Animation;
-
-                    // add additionnal animation to play in queue (skip the first we'll play)
-                    if (gameActionAuth.Animation != null)
-                    {
-                        for (int i = 1; i < gameActionEvent.GameActionResult.Count; i++)
-                        {
-                            // ANIMATION DATA
-                            List<KeyValuePair<string, object>> currentAnimationData = new List<KeyValuePair<string, object>>();
-                            currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.GameActionContext));
-
-                            switch (i)
-                            {
-                                case 1:
-                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_1));
-                                    break;
-                                case 2:
-                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_2));
-                                    break;
-                                case 3:
-                                    currentAnimationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_3));
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            _queuedAnimations.Add(new QueuedAnimation() { Data = currentAnimationData, Definition = _currentAnimation, HasPlayed = false });
-                        }
-
-                        // ANIMATION DATA
-                        List<KeyValuePair<string, object>> animationData = new List<KeyValuePair<string, object>>();
-                        animationData.Add(new KeyValuePair<string, object>("GameActionContext", gameActionEvent.GameActionContext));
-                        animationData.Add(new KeyValuePair<string, object>("GameActionContextResult", gameActionEvent.GameActionResult.DataElement_0));
-
-                        _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationData);
-                    }
-                }
-
-                _previousState = AnimationType.GameAction;
-            }
-        }
-
-        if (!_hasTriggeredAnAnimation)
-        {
-            // find queued animation to play
-            QueuedAnimation animationToPlay = null;
-            for (int i = 0; i < _queuedAnimations.Count; i++)
-            {
-                if (!_queuedAnimations[i].HasPlayed)
-                {
-                    animationToPlay = _queuedAnimations[i];
-                    _queuedAnimations[i].HasPlayed = true;
-                    break;
+                    var anim = gameActionAuth.Animation;
+                    var parameters = new Dictionary<string, object>();
+                    parameters["GameActionContext"] = gameActionEvent.GameActionContext;
+                    parameters["GameActionContextResult"] = gameActionEvent.GameActionResult.DataElement_0;
+                    _previousState = AnimationType.GameAction;
+                    SetAnimation(anim, parameters);
+                    return true;
                 }
             }
-
-            if (animationToPlay != null)
-            {
-                TriggerAnimationInteruptionOnStateChange();
-
-                _hasTriggeredAnAnimation = true;
-                _lastTransitionTime = SimWorld.Time.ElapsedTime;
-
-                _currentAnimation = animationToPlay.Definition ?? FindAnimation(AnimationType.GameAction);
-                _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, animationToPlay.Data);
-
-                _previousState = AnimationType.GameAction;
-            }
-            else
-            {
-                _queuedAnimations.Clear();
-            }
         }
-
-        return _hasTriggeredAnAnimation;
+        return false;
     }
 
     private bool HandleDeathAnimation()
@@ -245,16 +99,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
         {
             if (_previousState != AnimationType.Death)
             {
-                TriggerAnimationInteruptionOnStateChange();
-
-                _hasTriggeredAnAnimation = true;
-                _lastTransitionTime = SimWorld.Time.ElapsedTime;
-
-                AnimationDefinition anim = FindAnimation(AnimationType.Death);
-                if (anim != null)
-                {
-                    anim.TriggerAnimation(SimEntity, _spriteStartPos, _bone, null);
-                }
+                SetAnimation(FindAnimation(AnimationType.Death), parameters: null);
 
                 _previousState = AnimationType.Death;
             }
@@ -268,35 +113,14 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     private void HandleCharacterMovementAnimation(AnimationType animation)
     {
         // Whenever previously Triggered Animation is over, we can loop in movement animation
-        bool canChangeAnimation = true;
-        if (_currentAnimation != null)
-        {
-            canChangeAnimation = SimWorld.Time.ElapsedTime >= _lastTransitionTime + (fix)_currentAnimation.Duration;
-        }
+        bool canChangeAnimation = Time.time >= _currentAnimationFinishTime;
 
         if (canChangeAnimation & _previousState != animation)
         {
-            TriggerAnimationInteruptionOnStateChange();
-
-            _currentAnimation = FindAnimation(animation);
-            if (_currentAnimation != null)
-            {
-                _currentAnimation.TriggerAnimation(SimEntity, _spriteStartPos, _bone, null);
-            }
+            SetAnimation(FindAnimation(animation), parameters: null);
 
             _previousState = animation;
         }
-    }
-
-    private void TriggerAnimationInteruptionOnStateChange()
-    {
-        if (_currentAnimation != null)
-        {
-            _currentAnimation.FinishAnimation(SimEntity, _bone);
-        }
-
-        _bone.localPosition = _spriteStartPos;
-        _bone.localRotation = _spriteStartRot;
     }
 
     private AnimationDefinition FindAnimation(AnimationType animationType)
@@ -310,5 +134,38 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
         }
 
         return null;
+    }
+
+    private void SetAnimation(AnimationDefinition newAnim, Dictionary<string, object> parameters)
+    {
+        // stop current
+        if (_currentAnimation != null)
+        {
+            _currentAnimation.StopAnimation(new AnimationDefinition.StopInput(_currentAnimationTriggerId, _presentationTarget));
+            _currentAnimation = null;
+            _currentAnimationFinishTime = -1;
+            _currentAnimationTriggerId = -1;
+
+            if (_animator.GetCurrentAnimatorStateInfo(0).shortNameHash != s_emptyAnimStateHash)
+            {
+                _animator.Play(s_emptyAnimStateHash, 0);
+            }
+        }
+
+        // reset state
+        _bone.localPosition = Vector3.zero;
+        _bone.localRotation = Quaternion.identity;
+
+        // Start new anim 
+        if (newAnim != null)
+        {
+            AnimationDefinition.TriggerOuput output = default;
+            AnimationDefinition.TriggerInput input = new AnimationDefinition.TriggerInput(SimEntity, _presentationTarget, parameters, s_nextAnimationTriggerId++);
+            newAnim.TriggerAnimation(input, ref output);
+
+            _currentAnimationTriggerId = input.TriggerId;
+            _currentAnimation = newAnim;
+            _currentAnimationFinishTime = Time.time + output.Duration;
+        }
     }
 }

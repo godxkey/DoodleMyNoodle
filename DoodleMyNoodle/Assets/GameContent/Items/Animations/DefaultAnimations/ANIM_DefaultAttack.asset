@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 417c789b0a7d24a4e842125bde45cf83, type: 3}
-  m_Name: DefaultLadderAnimation
+  m_Script: {fileID: 11500000, guid: 7bd733b45488e5644abddea70f89ac0e, type: 3}
+  m_Name: ANIM_DefaultAttack
   m_EditorClassIdentifier: 
   Duration: 0.5
-  Type: 3
+  Type: 6
+  VFXOnTarget: {fileID: 0}
