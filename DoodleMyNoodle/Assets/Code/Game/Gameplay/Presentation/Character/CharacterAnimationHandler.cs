@@ -145,11 +145,6 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             _currentAnimation = null;
             _currentAnimationFinishTime = -1;
             _currentAnimationTriggerId = -1;
-
-            if (_animator.GetCurrentAnimatorStateInfo(0).shortNameHash != s_emptyAnimStateHash)
-            {
-                _animator.Play(s_emptyAnimStateHash, 0);
-            }
         }
 
         // reset state
