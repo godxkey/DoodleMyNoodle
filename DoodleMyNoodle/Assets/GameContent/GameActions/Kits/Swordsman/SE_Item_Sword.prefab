@@ -87,8 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 722e71c09a9b4fe4387330ab52d80215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AttackRate: 1
-  AttackAction: {fileID: -4801357984810749253, guid: b3a4360667098244a823fdb69dc48aeb,
-    type: 3}
-  PrepareAttackInAdvance: 0
-  AttackLimit: -1
+  ActEvery: 1
+  Action: {fileID: -4801357984810749253, guid: b3a4360667098244a823fdb69dc48aeb, type: 3}
+  PrepareInAdvance: 0
+  Limit: -1

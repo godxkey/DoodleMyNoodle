@@ -18,9 +18,9 @@ public class UpdateShouldAutoAttackSystem : SimGameSystemBase
         if (!HasSingleton<GameStartedTag>())
         {
             Entities
-                .ForEach((ref ShouldAutoAttack shouldAttack) =>
+                .ForEach((ref PeriodicActionEnabled periodicEnabled) =>
                 {
-                    shouldAttack = false;
+                    periodicEnabled = false;
                 }).Run();
             return;
         }
@@ -28,34 +28,34 @@ public class UpdateShouldAutoAttackSystem : SimGameSystemBase
         // _________________________________________ Player Attacker _________________________________________ //
         Entities
             .WithAll<ItemTag>()
-            .ForEach((ref ShouldAutoAttack shouldAttack) =>
+            .ForEach((ref PeriodicActionEnabled periodicEnabled) =>
             {
-                shouldAttack = true;
+                periodicEnabled = true;
             }).Schedule();
 
         // _________________________________________ Melee Attacker _________________________________________ //
         Entities
             .WithAll<MeleeAttackerTag>()
-            .ForEach((ref ShouldAutoAttack shouldAttack, in CanMove canMove, in Health hp) =>
+            .ForEach((ref PeriodicActionEnabled periodicEnabled, in CanMove canMove, in Health hp) =>
         {
-            shouldAttack = !canMove && hp.Value > 0;
+            periodicEnabled = !canMove && hp.Value > 0;
         }).Schedule();
 
         // _________________________________________ Drop Attacker _________________________________________ //
         fix2 playerGroupPosition = GetComponent<FixTranslation>(GetSingletonEntity<PlayerGroupDataTag>());
         Entities
             .WithAll<DropAttackerTag>()
-            .ForEach((ref ShouldAutoAttack shouldAttack, in FixTranslation position, in Health hp) =>
+            .ForEach((ref PeriodicActionEnabled periodicEnabled, in FixTranslation position, in Health hp) =>
             {
-                shouldAttack = position.Value.x < playerGroupPosition.x && hp.Value > 0;
+                periodicEnabled = position.Value.x < playerGroupPosition.x && hp.Value > 0;
             }).Schedule();
 
         // _________________________________________ Frozen _________________________________________ //
         Entities
             .WithAll<Frozen>()
-            .ForEach((ref ShouldAutoAttack shouldAttack) =>
+            .ForEach((ref PeriodicActionEnabled periodicEnabled) =>
             {
-                shouldAttack = false;
+                periodicEnabled = false;
             }).Schedule();
     }
 }

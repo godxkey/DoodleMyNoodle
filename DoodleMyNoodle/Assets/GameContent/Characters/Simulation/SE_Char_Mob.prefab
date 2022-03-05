@@ -109,10 +109,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 722e71c09a9b4fe4387330ab52d80215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AttackRate: 1
-  AttackAction: {fileID: 0}
-  PrepareAttackInAdvance: 0
-  AttackLimit: -1
+  ActEvery: 1
+  Action: {fileID: 0}
+  PrepareInAdvance: 0
+  Limit: -1
 --- !u!114 &8689866959615521493
 MonoBehaviour:
   m_ObjectHideFlags: 0

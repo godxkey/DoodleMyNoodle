@@ -239,16 +239,16 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                     {
                         foreach (var item in items)
                         {
-                            if (EntityManager.HasComponent<AutoAttackProgress>(item.ItemEntity))
-                                EntityManager.RemoveComponent<AutoAttackProgress>(item.ItemEntity);
+                            if (EntityManager.HasComponent<PeriodicActionProgress>(item.ItemEntity))
+                                EntityManager.RemoveComponent<PeriodicActionProgress>(item.ItemEntity);
                         }
                     }
                     else
                     {
                         foreach (var item in items)
                         {
-                            if (!EntityManager.HasComponent<AutoAttackProgress>(item.ItemEntity) && EntityManager.HasComponent<ShouldAutoAttack>(item.ItemEntity))
-                                EntityManager.AddComponent<AutoAttackProgress>(item.ItemEntity);
+                            if (!EntityManager.HasComponent<PeriodicActionProgress>(item.ItemEntity) && EntityManager.HasComponent<PeriodicActionEnabled>(item.ItemEntity))
+                                EntityManager.AddComponent<PeriodicActionProgress>(item.ItemEntity);
                         }
                     }
                 }).WithoutBurst()

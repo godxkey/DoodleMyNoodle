@@ -17,8 +17,8 @@ public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
 
             // ITEM USED VFX
             // only do the vfx if not an auto attack
-            if (!SimWorld.HasComponent<AutoAttackAction>(gameActionEvent.GameActionContext.ActionInstigatorActor) ||
-                (SimWorld.TryGetComponent(gameActionEvent.GameActionContext.ActionInstigatorActor, out AutoAttackAction autoAttack) && autoAttack.Value != gameActionEvent.GameActionContext.Action))
+            if (!SimWorld.HasComponent<PeriodicAction>(gameActionEvent.GameActionContext.ActionInstigatorActor) ||
+                (SimWorld.TryGetComponent(gameActionEvent.GameActionContext.ActionInstigatorActor, out PeriodicAction autoAttack) && autoAttack.Value != gameActionEvent.GameActionContext.Action))
             {
                 SimWorld.TryGetComponent(gameActionEvent.GameActionContext.ActionInstigatorActor, out SimAssetId instigatorAssetId);
                 GameObject itemPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
