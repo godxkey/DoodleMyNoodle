@@ -20,8 +20,8 @@ public abstract class AnimationDefinition : ScriptableObject
 
     protected abstract void OnTriggerAnimation(Entity entity, Vector3 spriteStartPos, Transform spriteTransform);
 
-    public abstract void FinishAnimation(Entity entity);
-    public abstract void StopAnimation(Entity entity);
+    public abstract void FinishAnimation(Entity entity, Transform spriteTransform);
+    public abstract void StopAnimation(Entity entity, Transform spriteTransform);
 
     public T GetAnimationData<T>(string dataTypeID)
     {

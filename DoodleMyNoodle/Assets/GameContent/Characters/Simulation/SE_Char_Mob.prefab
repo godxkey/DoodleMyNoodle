@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5635049573386359071}
   - component: {fileID: 8689866959615521493}
   - component: {fileID: -1374508264804467834}
+  - component: {fileID: 2678156252502307406}
   m_Layer: 9
   m_Name: SE_Char_Mob
   m_TagString: Untagged
@@ -137,8 +138,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a89527d159470b84f86b6f252684cff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Proxy: {fileID: 0}
   MaxValue: 1
   StartAtMax: 1
   DestroyOnDeath: 0
+  RechargeRate: 0
+  RechargeCooldown: 4
   StartValue: 10
   TerrainOnlyColliderIfDead: 1
+--- !u!114 &2678156252502307406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951368162375339519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 453c4b2c151f39243b7228f0ce379c93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartingItems: []

@@ -8,7 +8,7 @@ public abstract class DOTWEENAnimationDefinition : AnimationDefinition
 {
     private Dictionary<Entity, Tween> _sequences = new Dictionary<Entity, Tween>();
 
-    public override void FinishAnimation(Entity entity)
+    public override void FinishAnimation(Entity entity, Transform spriteTransform)
     {
         if (_sequences.TryGetValue(entity, out Tween tween))
         {
@@ -17,7 +17,7 @@ public abstract class DOTWEENAnimationDefinition : AnimationDefinition
         }
     }
 
-    public override void StopAnimation(Entity entity)
+    public override void StopAnimation(Entity entity, Transform spriteTransform)
     {
         if (_sequences.TryGetValue(entity, out Tween tween))
         {

@@ -65,7 +65,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     {
         if (_currentAnimation != null)
         {
-            _currentAnimation.StopAnimation(SimEntity);
+            _currentAnimation.StopAnimation(SimEntity, _bone);
             _currentAnimation = null;
         }
     }
@@ -292,7 +292,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     {
         if (_currentAnimation != null)
         {
-            _currentAnimation.FinishAnimation(SimEntity);
+            _currentAnimation.FinishAnimation(SimEntity, _bone);
         }
 
         _bone.localPosition = _spriteStartPos;

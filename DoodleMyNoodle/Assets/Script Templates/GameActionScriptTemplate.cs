@@ -38,22 +38,13 @@ public class #SCRIPTNAME# : {nameof(GameAction)}<#SCRIPTNAME#.Settings>
         public fix Range;
     }}
 
-    public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Settings settings)
+    protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
     {{
-        return new ExecutionContract(
-                   new GameActionParameterPosition.Description()
-                   {{
-                       MaxRangeFromInstigator = settings.Range
-                   }});
+        return new ExecutionContract();
     }}
 
-    public override bool Use(ISimGameWorldReadWriteAccessor accessor, in ExecutionContext context, UseParameters useData, List<ResultDataElement> resultData, Settings settings)
+    protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {{
-        if (useData.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
-        {{
-            return true;
-        }}
-
         return false;
     }}
 }}";
