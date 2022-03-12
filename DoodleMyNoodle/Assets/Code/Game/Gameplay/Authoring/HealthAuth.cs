@@ -46,6 +46,7 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
         {
             dstManager.AddComponentData<Health>(entity, (fix)(StartAtMax ? MaxValue : StartValue));
             dstManager.AddComponentData<MinimumFix<Health>>(entity, (fix)0);
+            dstManager.AddComponentData<BaseMaxHealth>(entity, (fix)MaxValue);
             dstManager.AddComponentData<MaximumFix<Health>>(entity, (fix)MaxValue);
             dstManager.AddComponentData<HealthRechargeRate>(entity, (fix)RechargeRate);
             dstManager.AddComponentData<HealthRechargeCooldown>(entity, (fix)RechargeCooldown);

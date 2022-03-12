@@ -25,7 +25,15 @@ public partial class CommonReads
 
         if (apCost > 0)
         {
-            if (!accessor.TryGetComponent(actor, out ActionPoints ap))
+            if (accessor.TryGetComponent(actor, out ActionPoints ap))
+            {
+                if (apCost > ap.Value)
+                {
+                    debugReason = ItemUnavailablityReason.NotEnoughtAP;
+                    return false;
+                }
+            }
+            else
             {
                 debugReason = ItemUnavailablityReason.NotEnoughtAP;
                 return false;

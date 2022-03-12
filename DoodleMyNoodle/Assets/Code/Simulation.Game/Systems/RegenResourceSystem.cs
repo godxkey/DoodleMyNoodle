@@ -5,7 +5,7 @@ using static fixMath;
 using static Unity.Mathematics.math;
 using CCC.Fix2D;
 
-public class RegenHealthAndShieldSystem : SimGameSystemBase
+public class RegenResourceSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
@@ -31,6 +31,17 @@ public class RegenHealthAndShieldSystem : SimGameSystemBase
                 if (elapsedTimeSinceLastHit > cooldown.Value && rechargeRate.Value > 0)
                 {
                     shield.Value = min(GetComponent<MaximumFix<Shield>>(entity), shield.Value + (rechargeRate * deltaTime));
+                }
+            }).Run();
+
+        Entities
+            .WithNone<DeadTag>()
+            .ForEach((Entity entity, ref ActionPoints ap, in ActionPointsRechargeCooldown cooldown, in ActionPointsRechargeRate rechargeRate) =>
+            {
+                fix elapsedTimeSinceLastHit = time - cooldown.LastTime;
+                if (elapsedTimeSinceLastHit > cooldown.Value && rechargeRate.Value > 0)
+                {
+                    ap.Value = min(GetComponent<MaximumFix<ActionPoints>>(entity), ap.Value + (rechargeRate * deltaTime));
                 }
             }).Run();
     }

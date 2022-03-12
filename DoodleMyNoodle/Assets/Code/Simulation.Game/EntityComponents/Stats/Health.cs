@@ -3,6 +3,14 @@
 [assembly: RegisterGenericComponentType(typeof(MaximumFix<Health>))]
 [assembly: RegisterGenericComponentType(typeof(MinimumFix<Health>))]
 
+public struct BaseMaxHealth : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(BaseMaxHealth val) => val.Value;
+    public static implicit operator BaseMaxHealth(fix val) => new BaseMaxHealth() { Value = val };
+}
+
 public struct Health : IComponentData, IStatFix
 {
     public fix Value;

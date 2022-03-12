@@ -152,7 +152,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
         }
 
         // Apply damage
-        CommonWrites.RequestDamage(input.Accessor, hitTargets, damage);
+        CommonWrites.RequestDamage(input.Accessor, input.Context.LastPhysicalInstigator, hitTargets, damage);
 
         // Export action data used in event (animations use it)
         output.ResultData.Add(new ResultDataElement() { AttackVector = attackVector });
