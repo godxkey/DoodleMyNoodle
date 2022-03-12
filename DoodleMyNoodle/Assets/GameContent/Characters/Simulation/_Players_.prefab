@@ -364,8 +364,7 @@ PrefabInstance:
       propertyPath: StartingItems.Array.data[1].Quantity.y
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4112496816369620070, guid: cb83e6f1204539c46b9405c2d555310a, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cb83e6f1204539c46b9405c2d555310a, type: 3}
 --- !u!4 &3841449097766978368 stripped
 Transform:
@@ -876,8 +875,7 @@ PrefabInstance:
       propertyPath: StartingItems.Array.data[1].Quantity.y
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4112496816369620070, guid: cb83e6f1204539c46b9405c2d555310a, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cb83e6f1204539c46b9405c2d555310a, type: 3}
 --- !u!4 &3841449095675645410 stripped
 Transform:
