@@ -40,15 +40,6 @@ public class UpdateCanMoveSystem : SimGameSystemBase
             canMove = true;
         }).Run();
 
-        // frozen ennemies cannot move
-        Entities
-            .WithAll<Frozen>()
-        .ForEach((ref CanMove canMove, ref PhysicsVelocity velocity) =>
-        {
-            canMove = false;
-            velocity.Linear = fix2.zero;
-        }).Run();
-
         // If there is a player group, stop all entities that touch the trigger zone
         if (HasSingleton<PlayerGroupDataTag>())
         {

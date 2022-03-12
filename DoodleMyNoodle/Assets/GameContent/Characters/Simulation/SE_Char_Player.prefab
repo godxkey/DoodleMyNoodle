@@ -17,6 +17,8 @@ GameObject:
   - component: {fileID: 7702613220151262411}
   - component: {fileID: 2028282551505110434}
   - component: {fileID: 2518419642120257037}
+  - component: {fileID: 8682441413767755336}
+  - component: {fileID: 1633518455670688980}
   m_Layer: 9
   m_Name: SE_Char_Player
   m_TagString: Untagged
@@ -151,6 +153,8 @@ MonoBehaviour:
   MaxValue: 10
   StartAtMax: 1
   DestroyOnDeath: 0
+  RechargeRate: 0
+  RechargeCooldown: 4
   StartValue: 10
   TerrainOnlyColliderIfDead: 1
 --- !u!114 &2518419642120257037
@@ -167,4 +171,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxValue: 4
   StartGameAtMaxValue: 1
+  RechargeRate: 1
+  RechargeDelay: 1
   StartValue: 4
+--- !u!114 &8682441413767755336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305753096738685599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 681ba3497cec4f646aa22e788d6e2e93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartingStatusEffects: []
+--- !u!114 &1633518455670688980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305753096738685599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60baf0c5aa469494e81d5e436f9e57b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DefaultDamageMultiplier:
+    RawValue: 4294967296
