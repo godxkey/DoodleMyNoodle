@@ -39,6 +39,8 @@ public struct HealthChangeRequestData : IBufferElementData
 {
     public fix Amount;
     public Entity Target;
+    public Entity LastPhysicalInstigator;
+    public Entity FirstPhysicalInstigator;
     public uint EffectGroupID;
 }
 
@@ -71,11 +73,11 @@ public class ApplyDamageSystem : SimGameSystemBase
 
         foreach (HealthChangeRequestData healthChangeData in _processingHealthChanges)
         {
-            ProcessHealthChange(healthChangeData.Target, healthChangeData.Amount, healthChangeData.EffectGroupID);
+            ProcessHealthChange(healthChangeData.Target, healthChangeData.LastPhysicalInstigator, healthChangeData.FirstPhysicalInstigator, healthChangeData.Amount, healthChangeData.EffectGroupID);
         }
     }
 
-    private void ProcessHealthChange(Entity target, fix amount, uint effectGroupID)
+    private void ProcessHealthChange(Entity target, Entity lastPhysicalInstigator, Entity firstPhyisicalInstigator, fix amount, uint effectGroupID)
     {
         fix shieldDelta = 0;
         fix hpDelta = 0;
@@ -112,6 +114,17 @@ public class ApplyDamageSystem : SimGameSystemBase
         if (remainingDelta < 0 && TryGetComponent(target, out InvincibleUntilTime invincibleUntilTime) && invincibleUntilTime.Time > Time.ElapsedTime)
         {
             remainingDelta = max(remainingDelta, 0);
+        }
+
+        // Damage multipliers for both the instigator that started the attack and the entity applying the attack (ex: pawn shooting arrow)
+        if (lastPhysicalInstigator != Entity.Null && remainingDelta < 0 && TryGetComponent(lastPhysicalInstigator, out DamageMultiplier lastDamageMultiplier))
+        {
+            remainingDelta *= lastDamageMultiplier.Value;
+        }
+
+        if (firstPhyisicalInstigator != Entity.Null && remainingDelta < 0 && TryGetComponent(firstPhyisicalInstigator, out DamageMultiplier firstDamageMultiplier))
+        {
+            remainingDelta *= firstDamageMultiplier.Value;
         }
 
         // Shield
@@ -213,42 +226,60 @@ public class ApplyDamageSystem : SimGameSystemBase
 
 internal static partial class CommonWrites
 {
-    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, NativeArray<DistanceHit> hits, fix amount, uint effectGroupID = uint.MaxValue)
+    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity LastPhysicalInstigator, NativeArray<DistanceHit> hits, fix amount, uint effectGroupID = uint.MaxValue)
     {
         var sys = accessor.GetExistingSystem<ApplyDamageSystem>();
+
+        Entity firstPhysicalInstigator = Entity.Null;
+        if (accessor.TryGetComponent(LastPhysicalInstigator, out FirstInstigator firstInstigatorComponent))
+        {
+            firstPhysicalInstigator = firstInstigatorComponent.Value;
+        }
 
         for (int i = 0; i < hits.Length; i++)
         {
-            var request = new HealthChangeRequestData() { Amount = -amount, Target = hits[i].Entity, EffectGroupID = effectGroupID };
+            var request = new HealthChangeRequestData() { LastPhysicalInstigator = LastPhysicalInstigator, FirstPhysicalInstigator = firstPhysicalInstigator, Amount = -amount, Target = hits[i].Entity, EffectGroupID = effectGroupID };
             sys.RequestHealthChange(request);
         }
     }
-    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, NativeArray<Entity> targets, fix amount, uint effectGroupID = uint.MaxValue)
+    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity LastPhysicalInstigator, NativeArray<Entity> targets, fix amount, uint effectGroupID = uint.MaxValue)
     {
         var sys = accessor.GetExistingSystem<ApplyDamageSystem>();
 
+        Entity firstPhysicalInstigator = Entity.Null;
+        if (accessor.TryGetComponent(LastPhysicalInstigator, out FirstInstigator firstInstigatorComponent))
+        {
+            firstPhysicalInstigator = firstInstigatorComponent.Value;
+        }
+
         for (int i = 0; i < targets.Length; i++)
         {
-            var request = new HealthChangeRequestData() { Amount = -amount, Target = targets[i], EffectGroupID = effectGroupID };
+            var request = new HealthChangeRequestData() { LastPhysicalInstigator = LastPhysicalInstigator, FirstPhysicalInstigator = firstPhysicalInstigator, Amount = -amount, Target = targets[i], EffectGroupID = effectGroupID };
             sys.RequestHealthChange(request);
         }
     }
 
-    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity target, fix amount, uint effectGroupID = uint.MaxValue)
+    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity LastPhysicalInstigator, Entity target, fix amount, uint effectGroupID = uint.MaxValue)
     {
-        var request = new HealthChangeRequestData() { Amount = -amount, Target = target, EffectGroupID = effectGroupID };
+        Entity firstPhysicalInstigator = Entity.Null;
+        if (accessor.TryGetComponent(LastPhysicalInstigator, out FirstInstigator firstInstigatorComponent))
+        {
+            firstPhysicalInstigator = firstInstigatorComponent.Value;
+        }
+
+        var request = new HealthChangeRequestData() { LastPhysicalInstigator = LastPhysicalInstigator, FirstPhysicalInstigator = firstPhysicalInstigator, Amount = -amount, Target = target, EffectGroupID = effectGroupID };
         accessor.GetExistingSystem<ApplyDamageSystem>().RequestHealthChange(request);
     }
 
-    public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, NativeArray<Entity> targets, fix amount, uint effectGroupID = uint.MaxValue)
+    public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, Entity LastPhysicalInstigator, NativeArray<Entity> targets, fix amount, uint effectGroupID = uint.MaxValue)
     {
         // for now a heal request is a negative damage request
-        RequestDamage(accessor, targets, -amount, effectGroupID);
+        RequestDamage(accessor, LastPhysicalInstigator, targets, -amount, effectGroupID);
     }
 
-    public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, Entity target, fix amount, uint effectGroupID = uint.MaxValue)
+    public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, Entity LastPhysicalInstigator, Entity target, fix amount, uint effectGroupID = uint.MaxValue)
     {
         // for now a heal request is a negative damage request
-        RequestDamage(accessor, target, -amount, effectGroupID);
+        RequestDamage(accessor, LastPhysicalInstigator, target, -amount, effectGroupID);
     }
 }

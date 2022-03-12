@@ -36,7 +36,7 @@ public class GameActionDamage : GameAction<GameActionDamage.Settings>
         for (int i = 0; i < input.Context.Targets.Length; i++)
         {
             var target = input.Context.Targets[i];
-            CommonWrites.RequestDamage(input.Accessor, target, settings.Damage);
+            CommonWrites.RequestDamage(input.Accessor, input.Context.LastPhysicalInstigator, target, settings.Damage);
 
             if (input.Accessor.TryGetComponent(target, out FixTranslation targetTranslation))
             {

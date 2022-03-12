@@ -15,7 +15,7 @@ public struct EventExplosion : ISingletonBufferElementData
 
 public struct SystemRequestExplosion : ISingletonBufferElementData
 {
-    public Entity Instigator;
+    public Entity LastInstigator;
     public fix2 Position;
     public fix Radius;
     public int Damage;
@@ -67,7 +67,7 @@ public class ApplyExplosionSystem : SimGameSystemBase
 
                 if (CommonReads.Physics.OverlapCircle(Accessor, request.Position, request.Radius, hits))
                 {
-                    CommonWrites.RequestDamage(Accessor, hits, request.Damage);
+                    CommonWrites.RequestDamage(Accessor, request.LastInstigator, hits, request.Damage);
 
                     if (request.Damage > 0)
                     {
@@ -143,7 +143,7 @@ internal static partial class CommonWrites
         {
             Damage = damage,
             Radius = radius,
-            Instigator = instigator,
+            LastInstigator = instigator,
             Position = position,
             DestroyTiles = destroyTiles
         };

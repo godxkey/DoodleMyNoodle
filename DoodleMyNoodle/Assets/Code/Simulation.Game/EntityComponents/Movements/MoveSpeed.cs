@@ -1,5 +1,14 @@
 ﻿using Unity.Entities;
 
+public struct BaseMoveSpeed : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(BaseMoveSpeed val) => val.Value;
+    public static implicit operator BaseMoveSpeed(fix val) => new BaseMoveSpeed() { Value = val };
+}
+
+
 public struct MoveSpeed : IComponentData
 {
     public fix Value;

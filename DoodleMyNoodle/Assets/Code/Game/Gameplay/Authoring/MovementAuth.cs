@@ -20,6 +20,12 @@ public class MovementAuth : MonoBehaviour, IConvertGameObjectToEntity
         {
             Value = MoveDirection == EMoveDirection.Left ? -MoveSpeed : MoveSpeed
         });
+
+        dstManager.AddComponentData(entity, new BaseMoveSpeed
+        {
+            Value = MoveDirection == EMoveDirection.Left ? -MoveSpeed : MoveSpeed
+        });
+
         dstManager.AddComponent<CanMove>(entity);
     }
 }
