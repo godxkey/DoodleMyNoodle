@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionFreeze
+  Value: GameActionStatusEffect
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -74,7 +74,8 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionFreeze/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionStatusEffect/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Duration:
-          RawValue: 17179869184
+        Type: 0
+        StackAmount: 1
+        OnSelf: 0

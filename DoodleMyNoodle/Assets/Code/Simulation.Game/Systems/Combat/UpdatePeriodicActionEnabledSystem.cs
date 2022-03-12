@@ -49,13 +49,5 @@ public class UpdateShouldAutoAttackSystem : SimGameSystemBase
             {
                 periodicEnabled = position.Value.x < playerGroupPosition.x && hp.Value > 0;
             }).Schedule();
-
-        // _________________________________________ Frozen _________________________________________ //
-        Entities
-            .WithAll<Frozen>()
-            .ForEach((ref PeriodicActionEnabled periodicEnabled) =>
-            {
-                periodicEnabled = false;
-            }).Schedule();
     }
 }

@@ -132,9 +132,11 @@ public class StatusEffectSystem : SimGameSystemBase
                         Target = entity,
                         Instigator = statusEffect.Instigator
                     });
+
+                    statusEffect.RemainingTime += setting.Duration;
                 }
 
-                statusEffect.RemainingTime += setting.Duration;
+                statusEffects[i] = statusEffect;
             }
         }).WithoutBurst().Run();
     }

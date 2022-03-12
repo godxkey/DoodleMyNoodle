@@ -82,6 +82,7 @@ public class ApplyDamageSystem : SimGameSystemBase
         fix shieldDelta = 0;
         fix hpDelta = 0;
         fix remainingDelta = amount;
+        fix totalAmountUncapped = amount;
 
         // find who should be really targetted if there is a HealthProxy component. This is notably used by players since they all share the same health pool
         while (HasComponent<HealthProxy>(target))
@@ -120,11 +121,13 @@ public class ApplyDamageSystem : SimGameSystemBase
         if (lastPhysicalInstigator != Entity.Null && remainingDelta < 0 && TryGetComponent(lastPhysicalInstigator, out DamageMultiplier lastDamageMultiplier))
         {
             remainingDelta *= lastDamageMultiplier.Value;
+            totalAmountUncapped *= lastDamageMultiplier.Value;
         }
 
         if (firstPhyisicalInstigator != Entity.Null && remainingDelta < 0 && TryGetComponent(firstPhyisicalInstigator, out DamageMultiplier firstDamageMultiplier))
         {
             remainingDelta *= firstDamageMultiplier.Value;
+            totalAmountUncapped *= firstDamageMultiplier.Value;
         }
 
         // Shield
@@ -200,7 +203,7 @@ public class ApplyDamageSystem : SimGameSystemBase
             PresentationEvents.HealthDeltaEvents.Push(new HealthDeltaEventData()
             {
                 AffectedEntity = target,
-                TotalUncappedDelta = amount,
+                TotalUncappedDelta = totalAmountUncapped,
                 HPDelta = hpDelta,
                 ShieldDelta = shieldDelta,
                 Position = GetComponent<FixTranslation>(target)
