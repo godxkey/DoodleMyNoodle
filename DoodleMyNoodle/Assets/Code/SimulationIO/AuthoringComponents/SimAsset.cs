@@ -43,16 +43,21 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
     public bool HasTransform { get => _hasTransform; set => _hasTransform = value; }
 
     [NonSerialized] private SimAssetId _runtimeId;
-    [NonSerialized] private bool _runtimeIdAssigned = false;
+    [NonSerialized] private int _runtimeIdAssignedAtResetCounter;
+
+
+    private static int s_staticResetCounter = 0;
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void StaticReset() => s_staticResetCounter++;
 
     public SimAssetId GetSimAssetId()
     {
-        if (!_runtimeIdAssigned)
+        if (_runtimeIdAssignedAtResetCounter != s_staticResetCounter)
         {
             if (string.IsNullOrEmpty(Guid)) // not a prefab
             {
                 _runtimeId = SimAssetId.Invalid;
-                _runtimeIdAssigned = true;
+                _runtimeIdAssignedAtResetCounter = s_staticResetCounter;
             }
             else
             {
@@ -67,7 +72,7 @@ public class SimAsset : ConvertToEntityMultiWorld, IConvertGameObjectToEntity
                             $"Stop playing and try forcing an update with \"Tools > Data Management > Force Update SimAssetIds\"");
                     }
 
-                    _runtimeIdAssigned = true;
+                    _runtimeIdAssignedAtResetCounter = s_staticResetCounter;
                 }
                 else
                 {

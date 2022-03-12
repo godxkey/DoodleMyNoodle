@@ -22,10 +22,9 @@ public class GameConsole
     }
 
     static IGameConsoleUI s_consoleUI;
-    static GameConsoleDatabase s_database = new GameConsoleDatabase();
+    static GameConsoleDatabase s_database;
     static int s_historyIndex = 0;
     static ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)> s_queuedLogs = new ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)>();
-    private static bool s_init;
 
 #if UNITY_EDITOR
     public static string[] EditorPlayCommands
@@ -78,25 +77,17 @@ public class GameConsole
             Log.Internals.LogMessageReceivedThreaded += OnLogMessageReceivedThreaded;
             s_consoleUI.Init(s_database);
         }
-
-        InitIfNeeded();
-    }
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)] // initializes in build & playmode
-    public static void InitIfNeeded()
-    {
-        if (s_init)
-            return;
-        s_init = true;
-
-        PopulateAllInvokables();
-
-        Write("Console ready", LineColor.Normal);
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] // initializes in build & playmode
-    private static void BeforeSceneLoad()
+    private static void Initialize()
     {
+        s_database = new GameConsoleDatabase();
+        PopulateAllInvokables();
+
+        Write("Console ready", LineColor.Normal);
+
+
         if (Application.isPlaying)
         {
             ExecuteCommandLineStyleInvokables(CommandLine.GroupedArguments.ToArray());
@@ -110,7 +101,6 @@ public class GameConsole
     {
         get
         {
-            InitIfNeeded();
             return s_database.Invokables.AsReadOnlyNoAlloc().DynamicCast<IGameConsoleInvokable>();
         }
     }
@@ -122,7 +112,6 @@ public class GameConsole
 
     public static void ExecuteCommandLineStyleInvokables(string[] args)
     {
-        InitIfNeeded();
         Debug.Log($"Executing commands: {string.Join(", ", args)}");
         for (int i = 0; i < args.Length; i++)
         {
@@ -229,7 +218,6 @@ public class GameConsole
 
     public static void Write(string msg, LineColor lineColor)
     {
-        InitIfNeeded();
         OutputString(msg, lineColor);
     }
 
@@ -245,7 +233,6 @@ public class GameConsole
 
     public static void ConsoleUpdate()
     {
-        InitIfNeeded();
         ProcessQueuedLogs();
         s_consoleUI?.ConsoleUpdate();
 
@@ -260,7 +247,6 @@ public class GameConsole
 
     public static void ConsoleLateUpdate()
     {
-        InitIfNeeded();
         ProcessQueuedLogs();
 
         s_consoleUI?.ConsoleLateUpdate();
@@ -342,13 +328,11 @@ public class GameConsole
 
     public static void EnqueueCommandNoHistory(string command)
     {
-        InitIfNeeded();
         s_database.PendingInvokes.Add(command);
     }
 
     public static void EnqueueCommand(string command)
     {
-        InitIfNeeded();
         s_database.PushInHistory(command);
         s_historyIndex = -1;
 
@@ -357,7 +341,6 @@ public class GameConsole
 
     public static string TabComplete(string prefix)
     {
-        InitIfNeeded();
         // Look for possible tab completions
         List<string> matches = new List<string>();
 
@@ -418,19 +401,16 @@ public class GameConsole
 
     public static string HistoryUp()
     {
-        InitIfNeeded();
         return HistoryMove(1);
     }
 
     public static string HistoryDown()
     {
-        InitIfNeeded();
         return HistoryMove(-1);
     }
 
     public static string HistoryDownCompletely()
     {
-        InitIfNeeded();
         return HistoryMove(-s_database.History.Count);
     }
 
@@ -448,8 +428,6 @@ public class GameConsole
 
     public static void SetCommandOrVarEnabled(string command, bool enabled)
     {
-        InitIfNeeded();
-
         if (s_database.InvokablesMap.TryGetValue(command.ToLower(), out GameConsoleInvokable c))
         {
             c.EnabledSelf = enabled;
@@ -467,8 +445,6 @@ public class GameConsole
 
     public static void SetGroupEnabled(string group, bool enabled)
     {
-        InitIfNeeded();
-
         group = group.ToLower();
 
         if (enabled)
