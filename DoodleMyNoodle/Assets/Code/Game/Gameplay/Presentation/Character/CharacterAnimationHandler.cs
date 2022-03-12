@@ -75,10 +75,10 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
             if (gameActionEvent.GameActionContext.LastPhysicalInstigator == SimEntity && gameActionEvent.GameActionContext.Action != Entity.Null)
             {
                 // GAME ACTION AUTH & ANIMATION TRIGGER
-                SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Action, out SimAssetId instigatorAssetId);
-                GameObject instigatorPrefab = PresentationHelpers.FindSimAssetPrefab(instigatorAssetId);
+                SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Action, out SimAssetId actionAssetId);
+                GameObject actionPrefab = PresentationHelpers.FindSimAssetPrefab(actionAssetId);
 
-                if (instigatorPrefab.TryGetComponent(out GameActionAuth gameActionAuth) && gameActionAuth.Animation != null)
+                if (actionPrefab != null && actionPrefab.TryGetComponent(out GameActionAuth gameActionAuth) && gameActionAuth.Animation != null)
                 {
                     var anim = gameActionAuth.Animation;
                     var parameters = new Dictionary<string, object>();

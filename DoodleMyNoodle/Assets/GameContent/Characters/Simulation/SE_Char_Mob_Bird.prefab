@@ -95,6 +95,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
+      propertyPath: Action
+      value: 
+      objectReference: {fileID: 7587137633723008080, guid: 74e4f079c452ed94c9b555f38af41c38,
+        type: 3}
+    - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
       propertyPath: AttackLimit
       value: 1
       objectReference: {fileID: 0}
