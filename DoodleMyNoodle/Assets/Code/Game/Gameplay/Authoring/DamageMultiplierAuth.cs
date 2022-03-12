@@ -6,7 +6,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class DamageMultiplierAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
-    public fix DefaultDamageMultiplier;
+    public fix DefaultDamageMultiplier = 1;
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {

@@ -8,14 +8,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class StatusEffectsAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
-    [Serializable]
-    public class StatusEffectDefinition
-    {
-        public StatusEffectType Type;
-        public float Duration;
-    }
-
-    public List<StatusEffectDefinition> StartingStatusEffects = new List<StatusEffectDefinition>();
+    public List<StatusEffectType> StartingStatusEffects = new List<StatusEffectType>();
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -25,7 +18,7 @@ public class StatusEffectsAuth : MonoBehaviour, IConvertGameObjectToEntity
 
         foreach (var statusEffect in StartingStatusEffects)
         {
-            entities.Add(new StartingStatusEffect() { Type = statusEffect.Type });
+            entities.Add(new StartingStatusEffect() { Type = statusEffect });
         }
     }
 }
