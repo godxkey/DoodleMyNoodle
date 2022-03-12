@@ -78,6 +78,11 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
                 SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Action, out SimAssetId actionAssetId);
                 GameObject actionPrefab = PresentationHelpers.FindSimAssetPrefab(actionAssetId);
 
+                if (actionPrefab == null)
+                {
+                    Log.Warning($"No action prefab found for sim asset id {actionAssetId.Value}. First instigator: {gameActionEvent.GameActionContext.FirstPhysicalInstigator}");
+                }
+
                 if (actionPrefab != null && actionPrefab.TryGetComponent(out GameActionAuth gameActionAuth) && gameActionAuth.Animation != null)
                 {
                     var anim = gameActionAuth.Animation;
