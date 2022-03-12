@@ -23,8 +23,9 @@ public class GameConsole
 
     static IGameConsoleUI s_consoleUI;
     static GameConsoleDatabase s_database;
-    static int s_historyIndex = 0;
-    static ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)> s_queuedLogs = new ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)>();
+    static int s_historyIndex;
+    static ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)> s_queuedLogs;
+    static bool s_initialized;
 
 #if UNITY_EDITOR
     public static string[] EditorPlayCommands
@@ -79,17 +80,21 @@ public class GameConsole
         }
     }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] // initializes in build & playmode
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void Initialize()
     {
+        // Important: This method should support being called more than once.
+
+        s_initialized = true;
         s_database = new GameConsoleDatabase();
+        s_historyIndex = 0;
+        s_queuedLogs = new ConcurrentQueue<(int channelId, string condition, string stackTrace, LogType logType)>();
         PopulateAllInvokables();
-
-        Write("Console ready", LineColor.Normal);
-
 
         if (Application.isPlaying)
         {
+            Write("Console ready", LineColor.Normal);
+
             ExecuteCommandLineStyleInvokables(CommandLine.GroupedArguments.ToArray());
 #if UNITY_EDITOR
             ExecuteCommandLineStyleInvokables(EditorPlayCommands);
@@ -97,10 +102,17 @@ public class GameConsole
         }
     }
 
+    private static void InitializeIfNeededInStoppedEditor()
+    {
+        if (!Application.isPlaying && !s_initialized)
+            Initialize();
+    }
+
     public static ReadOnlyListDynamic<IGameConsoleInvokable> Invokables
     {
         get
         {
+            InitializeIfNeededInStoppedEditor();
             return s_database.Invokables.AsReadOnlyNoAlloc().DynamicCast<IGameConsoleInvokable>();
         }
     }
