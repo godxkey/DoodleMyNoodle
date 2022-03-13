@@ -186,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 681ba3497cec4f646aa22e788d6e2e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartingStatusEffects: []
+  StartingStatusEffects: 
 --- !u!114 &1633518455670688980
 MonoBehaviour:
   m_ObjectHideFlags: 0

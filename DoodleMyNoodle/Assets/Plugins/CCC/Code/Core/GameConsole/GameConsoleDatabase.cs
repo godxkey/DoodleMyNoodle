@@ -3,10 +3,11 @@ using UnityEngineX;
 
 internal class GameConsoleDatabase
 {
-    public List<string> PendingInvokes = new List<string>();
     public Dictionary<string, GameConsoleInvokable> InvokablesMap = new Dictionary<string, GameConsoleInvokable>();
     public List<GameConsoleInvokable> Invokables = new List<GameConsoleInvokable>();
+    
     public List<string> EnabledGroups = new List<string>();
+    public List<string> PendingInvokes = new List<string>();
     public List<(GameConsoleInvokable invokable, string invoke)> BufferedInvokables = new List<(GameConsoleInvokable, string)>();
 
 
