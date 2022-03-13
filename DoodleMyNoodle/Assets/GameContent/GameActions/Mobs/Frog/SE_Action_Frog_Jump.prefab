@@ -82,4 +82,4 @@ MonoBehaviour:
           y:
             RawValue: 4294967296
         Force:
-          RawValue: 8589934592
+          RawValue: 10737418240
