@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6635589309703108705}
   - component: {fileID: 4927122388077845320}
   m_Layer: 0
-  m_Name: SE_Action_BruteMeleeAttack
+  m_Name: SE_Action_Brute_Boss_MeleeAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 21aabd55c5a13a44db4436c738489cc8
+  _guid: d01d6b33471796c47a6902e0ca159bae
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -77,12 +77,12 @@ MonoBehaviour:
       type: {class: GameActionMeleeAttack/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
-          RawValue: 4294967296
+          RawValue: 10737418240
         Damage: 1
         ImpulseForce:
           RawValue: 0
         ImpulseUpAngleRatio:
           RawValue: 4294967296
         MaxTargetHit: 1
-        AttackVector: {x: -2, y: 0}
+        AttackVector: {x: -2, y: -1}
         TargetFilter: 2

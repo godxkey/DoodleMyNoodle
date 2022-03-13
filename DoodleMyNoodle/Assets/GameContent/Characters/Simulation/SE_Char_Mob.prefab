@@ -97,8 +97,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveDirection: 1
-  MoveSpeed:
-    RawValue: 4294967296
+  MoveSpeed: 0.5
+  StopAtCertainDistance: 1
+  DistanceFromFrontTarget: 0.62
 --- !u!114 &5635049573386359071
 MonoBehaviour:
   m_ObjectHideFlags: 0

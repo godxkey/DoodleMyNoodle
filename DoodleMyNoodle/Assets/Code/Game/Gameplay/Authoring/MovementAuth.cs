@@ -5,27 +5,49 @@ using System;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
-using Collider = CCC.Fix2D.Collider;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [DisallowMultipleComponent]
 public class MovementAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public enum EMoveDirection { Right, Left }
     public EMoveDirection MoveDirection = EMoveDirection.Left;
-    public fix MoveSpeed;
+    public float MoveSpeed = 1;
+    public bool StopAtCertainDistance = true;
+
+    [ShowIf(nameof(StopAtCertainDistance))]
+    public float DistanceFromFrontTarget = 1;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, new MoveSpeed
         {
-            Value = MoveDirection == EMoveDirection.Left ? -MoveSpeed : MoveSpeed
+            Value = (fix)(MoveDirection == EMoveDirection.Left ? -MoveSpeed : MoveSpeed)
         });
 
         dstManager.AddComponentData(entity, new BaseMoveSpeed
         {
-            Value = MoveDirection == EMoveDirection.Left ? -MoveSpeed : MoveSpeed
+            Value = (fix)(MoveDirection == EMoveDirection.Left ? -MoveSpeed : MoveSpeed)
         });
 
         dstManager.AddComponent<CanMove>(entity);
+        dstManager.AddComponent<DistanceFromTarget>(entity);
+        dstManager.AddComponentData<StopMoveFromTargetDistance>(entity, (fix)(StopAtCertainDistance ? DistanceFromFrontTarget : -100000));
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (StopAtCertainDistance)
+        {
+            float charRadius = (float)SimulationGameConstants.CharacterRadius;
+            Gizmos.color = Color.red;
+            float horizontalOffset = DistanceFromFrontTarget + charRadius;
+            if (MoveDirection == EMoveDirection.Left)
+                horizontalOffset *= -1;
+            Gizmos.DrawWireSphere(transform.position + new Vector3(horizontalOffset, 0), charRadius);
+        }
     }
 }

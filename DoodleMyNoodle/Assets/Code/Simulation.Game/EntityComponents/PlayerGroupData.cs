@@ -16,14 +16,6 @@ public struct PlayerGroupSpacing : IComponentData
     public static implicit operator PlayerGroupSpacing(fix val) => new PlayerGroupSpacing() { Value = val };
 }
 
-public struct PlayerGroupStopTriggerSize : IComponentData
-{
-    public fix2 Value;
-
-    public static implicit operator fix2(PlayerGroupStopTriggerSize val) => val.Value;
-    public static implicit operator PlayerGroupStopTriggerSize(fix2 val) => new PlayerGroupStopTriggerSize() { Value = val };
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////
 //      Per Member
 ////////////////////////////////////////////////////////////////////////////////////////
