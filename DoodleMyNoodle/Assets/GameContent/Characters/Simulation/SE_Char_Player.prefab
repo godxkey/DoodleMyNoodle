@@ -19,8 +19,6 @@ GameObject:
   - component: {fileID: 2518419642120257037}
   - component: {fileID: 8682441413767755336}
   - component: {fileID: 1633518455670688980}
-  - component: {fileID: -2812041163839029895}
-  - component: {fileID: -5744371483086012951}
   m_Layer: 9
   m_Name: SE_Char_Player
   m_TagString: Untagged
@@ -36,7 +34,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4305753096738685599}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 420, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -173,8 +171,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxValue: 4
   StartGameAtMaxValue: 1
-  RechargaaeRate: 1
-  RewdchargeDelay: 1
+  RechargeRate: 1
+  RechargeDelay: 1
   StartValue: 4
 --- !u!114 &8682441413767755336
 MonoBehaviour:
@@ -203,34 +201,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DefaultDamageMultiplier:
     RawValue: 4294967296
---- !u!95 &-2812041163839029895
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305753096738685599}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &-5744371483086012951
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305753096738685599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4f1b455d71b7ae48beab4259b15c0e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
