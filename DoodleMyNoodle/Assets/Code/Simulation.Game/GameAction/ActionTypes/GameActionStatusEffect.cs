@@ -11,6 +11,7 @@ public class GameActionStatusEffect : GameAction<GameActionStatusEffect.Settings
         public StatusEffectType Type;
         public int StackAmount;
         public bool OnSelf;
+        public bool Remove;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
@@ -18,7 +19,8 @@ public class GameActionStatusEffect : GameAction<GameActionStatusEffect.Settings
             {
                 Type = Type,
                 StackAmount = StackAmount,
-                OnSelf = OnSelf
+                OnSelf = OnSelf,
+                Remove = Remove
             });
         }
     }
@@ -28,6 +30,7 @@ public class GameActionStatusEffect : GameAction<GameActionStatusEffect.Settings
         public StatusEffectType Type;
         public int StackAmount;
         public bool OnSelf;
+        public bool Remove;
     }
 
     protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
@@ -39,11 +42,25 @@ public class GameActionStatusEffect : GameAction<GameActionStatusEffect.Settings
     {
         if (settings.OnSelf) 
         {
-            CommonWrites.AddStatusEffect(input.Accessor, new AddStatusEffectRequest() { Target = input.Context.LastPhysicalInstigator, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+            if (settings.Remove)
+            {
+                CommonWrites.RemoveStatusEffect(input.Accessor, new RemoveStatusEffectRequest() { Target = input.Context.LastPhysicalInstigator, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+            }
+            else
+            {
+                CommonWrites.AddStatusEffect(input.Accessor, new AddStatusEffectRequest() { Target = input.Context.LastPhysicalInstigator, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+            }
 
             if (input.Accessor.TryGetComponent(input.Context.LastPhysicalInstigator, out FirstInstigator firstInstigator))
             {
-                CommonWrites.AddStatusEffect(input.Accessor, new AddStatusEffectRequest() { Target = firstInstigator, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+                if (settings.Remove)
+                {
+                    CommonWrites.RemoveStatusEffect(input.Accessor, new RemoveStatusEffectRequest() { Target = firstInstigator, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+                }
+                else
+                {
+                    CommonWrites.AddStatusEffect(input.Accessor, new AddStatusEffectRequest() { Target = firstInstigator, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+                }
             }
         }
 
@@ -51,7 +68,14 @@ public class GameActionStatusEffect : GameAction<GameActionStatusEffect.Settings
         {
             var target = input.Context.Targets[i];
 
-            CommonWrites.AddStatusEffect(input.Accessor, new AddStatusEffectRequest() { Target = target, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+            if (settings.Remove)
+            {
+                CommonWrites.RemoveStatusEffect(input.Accessor, new RemoveStatusEffectRequest() { Target = target, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+            }
+            else
+            {
+                CommonWrites.AddStatusEffect(input.Accessor, new AddStatusEffectRequest() { Target = target, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+            }
 
             if (input.Accessor.TryGetComponent(target, out FixTranslation targetTranslation))
             {

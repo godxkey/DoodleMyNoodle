@@ -130,6 +130,19 @@ public class ApplyDamageSystem : SimGameSystemBase
             totalAmountUncapped *= firstDamageMultiplier.Value;
         }
 
+        // Armored
+        if (EntityManager.TryGetBuffer(target, out DynamicBuffer<StatusEffect> StatusEffects))
+        {
+            foreach (var statusEffect in StatusEffects)
+            {
+                if (statusEffect.Type == StatusEffectType.Armored)
+                {
+                    remainingDelta *= (fix)0.75;
+                    break;
+                }
+            }
+        }
+
         // Shield
         if (remainingDelta != 0 && TryGetComponent(target, out Shield previousShield))
         {
