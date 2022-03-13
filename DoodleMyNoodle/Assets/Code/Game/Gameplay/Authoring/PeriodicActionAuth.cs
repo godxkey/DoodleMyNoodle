@@ -1,3 +1,4 @@
+using CCC.InspectorDisplay;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -19,6 +20,13 @@ public class PeriodicActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDe
     [Tooltip("Set to -1 for no limit")]
     public int Limit = -1;
 
+    public bool OnlyAtSpecificDistance;
+
+    [ShowIf(nameof(OnlyAtSpecificDistance))]
+    public float MinDistanceFromTarget = -10;
+    [ShowIf(nameof(OnlyAtSpecificDistance))]
+    public float MaxDistanceFromTarget = 10;
+
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -28,6 +36,8 @@ public class PeriodicActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDe
         dstManager.AddComponentData<ProgressPeriodicActionInAdvance>(entity, PrepareInAdvance);
         dstManager.AddComponentData<RemainingPeriodicActionCount>(entity, Limit);
         dstManager.AddComponentData<PeriodicAction>(entity, Action != null ? conversionSystem.GetPrimaryEntity(Action.gameObject) : default);
+        dstManager.AddComponentData<PeriodicActionDistanceMin>(entity, (fix)(OnlyAtSpecificDistance ? MinDistanceFromTarget : -100000));
+        dstManager.AddComponentData<PeriodicActionDistanceMax>(entity, (fix)(OnlyAtSpecificDistance ? MaxDistanceFromTarget : 100000));
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)

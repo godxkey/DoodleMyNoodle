@@ -1,8 +1,21 @@
 ﻿using Unity.Entities;
 using CCC.Fix2D;
 
-public struct MeleeAttackerTag : IComponentData { }
-public struct DropAttackerTag : IComponentData { }
+public struct PeriodicActionDistanceMin : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(PeriodicActionDistanceMin val) => val.Value;
+    public static implicit operator PeriodicActionDistanceMin(fix val) => new PeriodicActionDistanceMin() { Value = val };
+}
+
+public struct PeriodicActionDistanceMax : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(PeriodicActionDistanceMax val) => val.Value;
+    public static implicit operator PeriodicActionDistanceMax(fix val) => new PeriodicActionDistanceMax() { Value = val };
+}
 
 public class UpdateShouldAutoAttackSystem : SimGameSystemBase
 {
@@ -25,29 +38,36 @@ public class UpdateShouldAutoAttackSystem : SimGameSystemBase
             return;
         }
 
-        // _________________________________________ Player Attacker _________________________________________ //
+        // _________________________________________ Items _________________________________________ //
+        var healths = GetComponentDataFromEntity<Health>(isReadOnly: true);
+        var distancesFromTargets = GetComponentDataFromEntity<DistanceFromTarget>(isReadOnly: true);
         Entities
+            .WithReadOnly(healths)
+            .WithReadOnly(distancesFromTargets)
             .WithAll<ItemTag>()
-            .ForEach((ref PeriodicActionEnabled periodicEnabled) =>
+            .ForEach((ref PeriodicActionEnabled periodicEnabled,
+                      in FirstInstigator owner,
+                      in PeriodicActionDistanceMin distMin,
+                      in PeriodicActionDistanceMax distMax) =>
             {
-                periodicEnabled = true;
+                bool ownerHPOk = !healths.TryGetComponent(owner, out var hp) || hp.Value > 0;
+                bool ownerDistanceOk = !distancesFromTargets.TryGetComponent(owner, out var distanceFromTarget)
+                    || (distMin <= distanceFromTarget.Value && distanceFromTarget.Value <= distMax);
+
+                periodicEnabled = ownerHPOk && ownerDistanceOk;
             }).Schedule();
 
-        // _________________________________________ Melee Attacker _________________________________________ //
+        // _________________________________________ Mobs _________________________________________ //
         Entities
-            .WithAll<MeleeAttackerTag>()
-            .ForEach((ref PeriodicActionEnabled periodicEnabled, in CanMove canMove, in Health hp) =>
+            .ForEach((ref PeriodicActionEnabled periodicEnabled,
+                      in DistanceFromTarget distanceFromTarget,
+                      in Health hp,
+                      in PeriodicActionDistanceMin distMin,
+                      in PeriodicActionDistanceMax distMax) =>
         {
-            periodicEnabled = !canMove && hp.Value > 0;
+            periodicEnabled = hp.Value > 0
+                && distanceFromTarget.Value >= distMin
+                && distanceFromTarget.Value <= distMax;
         }).Schedule();
-
-        // _________________________________________ Drop Attacker _________________________________________ //
-        fix2 playerGroupPosition = GetComponent<FixTranslation>(GetSingletonEntity<PlayerGroupDataTag>());
-        Entities
-            .WithAll<DropAttackerTag>()
-            .ForEach((ref PeriodicActionEnabled periodicEnabled, in FixTranslation position, in Health hp) =>
-            {
-                periodicEnabled = position.Value.x < playerGroupPosition.x && hp.Value > 0;
-            }).Schedule();
     }
 }

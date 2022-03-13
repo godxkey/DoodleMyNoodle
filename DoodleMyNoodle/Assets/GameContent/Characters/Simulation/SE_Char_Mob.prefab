@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: -6450381012629423667}
   - component: {fileID: 2401102004981749674}
   - component: {fileID: 5635049573386359071}
-  - component: {fileID: 8689866959615521493}
   - component: {fileID: -1374508264804467834}
   - component: {fileID: 2678156252502307406}
   - component: {fileID: 3987223315045021521}
@@ -99,7 +98,7 @@ MonoBehaviour:
   MoveDirection: 1
   MoveSpeed: 0.5
   StopAtCertainDistance: 1
-  DistanceFromFrontTarget: 0.62
+  DistanceFromFrontTarget: 0.6
 --- !u!114 &5635049573386359071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,19 +115,9 @@ MonoBehaviour:
   Action: {fileID: 0}
   PrepareInAdvance: 0
   Limit: -1
---- !u!114 &8689866959615521493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4951368162375339519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3333e8f8a92d1c42b929775b3bae079, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Mode: 0
+  OnlyAtSpecificDistance: 1
+  MinDistanceFromTarget: -10
+  MaxDistanceFromTarget: 0.6
 --- !u!114 &-1374508264804467834
 MonoBehaviour:
   m_ObjectHideFlags: 0
