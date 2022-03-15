@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ANIM_Bird_Idle
   m_EditorClassIdentifier: 
   _duration: 1
-  IdleHeight: 0.25
+  IdleHeight: 0.1
