@@ -16,7 +16,14 @@ namespace CCC.InspectorDisplay
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (Evaluate(property) == IsShownIfMemberTrue)
+            {
+                bool indentProperty = ((HideShowBaseAttribute)attribute).IndentProperty;
+                if (indentProperty)
+                    EditorGUI.indentLevel++;
                 EditorGUI.PropertyField(position, property, label, true);
+                if (indentProperty)
+                    EditorGUI.indentLevel--;
+            }
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)

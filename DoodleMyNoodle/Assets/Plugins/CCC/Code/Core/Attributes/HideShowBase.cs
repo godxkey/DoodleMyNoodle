@@ -7,10 +7,12 @@ namespace CCC.InspectorDisplay
     public abstract class HideShowBaseAttribute : PropertyAttribute
     {
         public readonly string ConditionalMemberName;
+        public readonly bool IndentProperty;
 
-        public HideShowBaseAttribute(string conditionalMemberName)
+        public HideShowBaseAttribute(string conditionalMemberName, bool indent)
         {
-            this.ConditionalMemberName = conditionalMemberName;
+            ConditionalMemberName = conditionalMemberName;
+            IndentProperty = indent;
         }
     }
 }

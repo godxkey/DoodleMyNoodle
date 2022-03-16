@@ -26,10 +26,10 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
     [HideIf(nameof(HasProxy))]
     public float RechargeCooldown = 4;
 
-    [ShowIf(nameof(ShowStartValue))]
+    [ShowIf(nameof(ShowStartValue), indent: false)]
     public int StartValue = 10;
 
-    [ShowIf(nameof(ShowTerrainOnlyColliderIfDead))]
+    [ShowIf(nameof(ShowTerrainOnlyColliderIfDead), indent: false)]
     public bool TerrainOnlyColliderIfDead = true;
 
     private bool ShowStartValue => !StartAtMax && !HasProxy;
