@@ -69,7 +69,7 @@ MonoBehaviour:
   IsStackable: 0
   CooldownType: 2
   CooldownDuration: 1
-  HideInInventory: 1
+  HideInInventory: 0
   Icon: {fileID: 21300000, guid: 9536487c4b8ae844d94e4e3d0b7379f7, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: "Lanc\xE9 de hache"
@@ -90,3 +90,6 @@ MonoBehaviour:
   Action: {fileID: -4801357984810749253, guid: 1b1b30dc5bf1176489d03b5b7c9a2944, type: 3}
   PrepareInAdvance: 0
   Limit: -1
+  OnlyAtSpecificDistance: 0
+  MinDistanceFromTarget: -10
+  MaxDistanceFromTarget: 10

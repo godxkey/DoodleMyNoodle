@@ -140,13 +140,16 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
             // General Description
             _descriptionData.Add(new DescriptionData(itemAuth.EffectDescription, Color.white, true));
 
-            // AP Cost
-            _descriptionData.Add(new DescriptionData("Coût AP : " + itemAuth.ApCost, Color.white, true));
-
-            // Item Specific Settings
-            if (itemAuth.CooldownType == ItemAuth.CooldownMode.Seconds)
+            if (itemAuth.ActionPrefab != null)
             {
-                _descriptionData.Add(new DescriptionData($"Cooldown (time) : {itemAuth.CooldownDuration}", Color.white, true));
+                // AP Cost
+                _descriptionData.Add(new DescriptionData("Coût AP : " + itemAuth.ApCost, Color.white, true));
+
+                // Item Specific Settings
+                if (itemAuth.CooldownType == ItemAuth.CooldownMode.Seconds)
+                {
+                    _descriptionData.Add(new DescriptionData($"Cooldown (time) : {itemAuth.CooldownDuration}", Color.white, true));
+                }
             }
         }
 
