@@ -7,7 +7,10 @@ public enum StatusEffectType
     Fast,
     Tanky,
     Brutal,
-    Armored
+    Armored,
+    AttackSpeedBoost,
+    Poison,
+    BonusDamage,
 }
 
 public struct StatusEffectSetting
@@ -90,7 +93,44 @@ static public class StatusEffectSettings
                 Stackable = false,
                 Unique = true
             }
-        }
+        },
+
+        {
+            StatusEffectType.AttackSpeedBoost,
+            new StatusEffectSetting()
+            {
+                Type = StatusEffectType.AttackSpeedBoost,
+                UseDuration = true,
+                Duration = 4,
+                Stackable = false,
+                Unique = false
+            }
+        },
+
+        {
+            StatusEffectType.Poison,
+            new StatusEffectSetting()
+            {
+                Type = StatusEffectType.Poison,
+                UseDuration = true,
+                Duration = 2,
+                RefreshExistingUniqueInstanceDuration = true,
+                Stackable = false,
+                Unique = true
+            }
+        },
+
+        {
+            StatusEffectType.BonusDamage,
+            new StatusEffectSetting()
+            {
+                Type = StatusEffectType.BonusDamage,
+                UseDuration = true,
+                Duration = 4,
+                Stackable = false,
+                Unique = false
+            }
+        },
     };
 }
 

@@ -81,4 +81,6 @@ MonoBehaviour:
         BoxSize: {x: 1, y: 1}
         CircleRadius: 2
         InstigatorOffset: {x: 0, y: 0}
-        Actions: []
+        Actions:
+        - {fileID: 2784291058542494111, guid: 395c4a0add0f61645a7cb7292d0112a1, type: 3}
+        - {fileID: 2784291058542494111, guid: a449ce6c3e41ee548a2b57fc6052c65d, type: 3}

@@ -97,9 +97,30 @@ public class StatusEffectSystem : SimGameSystemBase
                     {
                         newDamageMultiplier *= (fix)2;
                     }
+
+                    if (statusEffect.Type == StatusEffectType.BonusDamage)
+                    {
+                        newDamageMultiplier *= (fix)1.5;
+                    }
                 }
                 
                 SetComponent(entity, new DamageMultiplier() { Value = newDamageMultiplier });
+            }
+
+            // ATTACK SPEED
+            if (TryGetComponent(entity, out BaseAttackSpeed baseAttackSpeed))
+            {
+                fix newAttackSpeed = baseAttackSpeed.Value;
+
+                foreach (var statusEffect in statusEffects)
+                {
+                    if (statusEffect.Type == StatusEffectType.AttackSpeedBoost)
+                    {
+                        newAttackSpeed *= (fix)1.5;
+                    }
+                }
+
+                SetComponent(entity, new AttackSpeed() { Value = newAttackSpeed });
             }
         }
 

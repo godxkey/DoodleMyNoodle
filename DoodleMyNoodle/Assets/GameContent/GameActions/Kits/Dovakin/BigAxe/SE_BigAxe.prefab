@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8618057839144830486}
   - component: {fileID: 2302789254329102844}
   m_Layer: 10
-  m_Name: SE_IceBreath
+  m_Name: SE_BigAxe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: d9608b2e983f0a04ba4211376be7b635
-  _bindedViewPrefab: {fileID: 7824342658589397423, guid: c0184dc16fddb9a44a6c90e42efa6190,
+  _guid: 79636a82bd8d4344baf45ddb438f80a2
+  _bindedViewPrefab: {fileID: 7824342658589397423, guid: a0fd3b7e34647274ab791b6a5a40183c,
     type: 3}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -67,15 +67,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 2
-  Shape: 1
-  Material: {fileID: 11400000, guid: f12656138a7b18546a992bf9c5083561, type: 2}
+  Shape: 0
+  Material: {fileID: 11400000, guid: 41f8bde84fa940547b142a511cb188e0, type: 2}
   IsTrigger: 1
   LinearDrag: 0
   AngularDrag: 0.05
-  GravityScale: 0
+  GravityScale: 1
   FireEvents: 1
   FreezeRotation: 0
-  BoxSize: {x: 7.46, y: 3.55}
+  BoxSize: {x: 1, y: 1}
   CircleRadius: 0.15
   BoxAndCircleOffset: {x: 0, y: 0}
   PolygonPoints: []
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Lifetime:
-    RawValue: 3221225472
+    RawValue: 25769803776
 --- !u!114 &2302789254329102844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Actions:
-  - ActionPrefab: {fileID: -4801357984810749253, guid: 70e448ee90513b24ba78b7774d6f326b,
+  - ActionPrefab: {fileID: -4801357984810749253, guid: ee54959cbff763043816a14b24f91187,
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 1
@@ -115,7 +115,7 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 512
     OverlapRadius: 0.5
-  - ActionPrefab: {fileID: -4801357984810749253, guid: 322b87eb5dcf1bc4087af7fb27d1e111,
+  - ActionPrefab: {fileID: -4801357984810749253, guid: 9c027882d9e473f4396f11c5a4c0352f,
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 1

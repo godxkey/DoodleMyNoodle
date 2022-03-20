@@ -145,7 +145,7 @@ public class ApplyDamageSystem : SimGameSystemBase
             totalAmountUncapped *= damageReceivedMultiplier;
         }
 
-        // Armored
+        // Armored & Poison
         if (EntityManager.TryGetBuffer(target, out DynamicBuffer<StatusEffect> StatusEffects))
         {
             foreach (var statusEffect in StatusEffects)
@@ -153,6 +153,12 @@ public class ApplyDamageSystem : SimGameSystemBase
                 if (statusEffect.Type == StatusEffectType.Armored)
                 {
                     remainingDelta *= (fix)0.75;
+                    break;
+                }
+
+                if (statusEffect.Type == StatusEffectType.Poison)
+                {
+                    remainingDelta *= (fix)2;
                     break;
                 }
             }
