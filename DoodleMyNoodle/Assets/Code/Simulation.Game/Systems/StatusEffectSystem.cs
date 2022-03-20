@@ -86,7 +86,7 @@ public class StatusEffectSystem : SimGameSystemBase
                 SetComponent(entity, new MoveSpeed() { Value = newMoveSpeed });
             }
 
-            // DAMAGE
+            // DAMAGE DONE
             if (EntityManager.TryGetComponent(entity, out BaseDamageMultiplier baseDamageMultiplier))
             {
                 fix newDamageMultiplier = baseDamageMultiplier.Value;
@@ -105,6 +105,27 @@ public class StatusEffectSystem : SimGameSystemBase
                 }
                 
                 SetComponent(entity, new DamageMultiplier() { Value = newDamageMultiplier });
+            }
+
+            // DAMAGE RECEIVED
+            if (EntityManager.TryGetComponent(entity, out BaseDamageReceivedMultiplier baseDamageReceivedMultiplier))
+            {
+                fix newDamageReceivedMultiplier = baseDamageReceivedMultiplier.Value;
+
+                foreach (var statusEffect in statusEffects)
+                {
+                    if (statusEffect.Type == StatusEffectType.Armored)
+                    {
+                        newDamageReceivedMultiplier *= (fix)0.75;
+                    }
+
+                    if (statusEffect.Type == StatusEffectType.Poison)
+                    {
+                        newDamageReceivedMultiplier *= (fix)2;
+                    }
+                }
+
+                SetComponent(entity, new DamageReceivedMultiplier() { Value = newDamageReceivedMultiplier });
             }
 
             // ATTACK SPEED
