@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -1943092824245740565}
   - component: {fileID: 8618057839144830486}
   - component: {fileID: 2302789254329102844}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: SE_Axe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ MonoBehaviour:
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 1
-    ContactMode: 0
+    ContactMode: 1
     OverlapLayerMask:
       serializedVersion: 2
       m_Bits: 512
