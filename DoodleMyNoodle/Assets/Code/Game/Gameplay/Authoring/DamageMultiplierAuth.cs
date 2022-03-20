@@ -6,14 +6,14 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class DamageMultiplierAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
-    public fix DefaultDamageMultiplier = 1;
-    public fix DefaultDamageReceivedMultiplier = 1;
+    public float BaseDamageMultiplier = 1;
+    public float BaseDamageReceivedMultiplier = 1;
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new BaseDamageMultiplier() { Value = DefaultDamageMultiplier });
-        dstManager.AddComponentData(entity, new DamageMultiplier() { Value = DefaultDamageMultiplier });
-        dstManager.AddComponentData(entity, new BaseDamageReceivedMultiplier() { Value = DefaultDamageReceivedMultiplier });
-        dstManager.AddComponentData(entity, new DamageReceivedMultiplier() { Value = DefaultDamageReceivedMultiplier });
+        dstManager.AddComponentData(entity, new BaseDamageMultiplier() { Value = (fix)BaseDamageMultiplier });
+        dstManager.AddComponentData(entity, new DamageMultiplier() { Value = (fix)BaseDamageMultiplier });
+        dstManager.AddComponentData(entity, new BaseDamageReceivedMultiplier() { Value = (fix)BaseDamageReceivedMultiplier });
+        dstManager.AddComponentData(entity, new DamageReceivedMultiplier() { Value = (fix)BaseDamageReceivedMultiplier });
     }
 }
