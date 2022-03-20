@@ -72,8 +72,8 @@ MonoBehaviour:
   HideInInventory: 0
   Icon: {fileID: 21300000, guid: e4029e122f6d4074180d0a4e535e748b, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: 
-  EffectDescription: 
+  Name: Boule de feu
+  EffectDescription: Endommage les ennemis au contact
 --- !u!114 &398414692720594519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,3 +93,4 @@ MonoBehaviour:
   OnlyAtSpecificDistance: 0
   MinDistanceFromTarget: -10
   MaxDistanceFromTarget: 10
+  FirstInstigatorAttackSpeedAffectMe: 1

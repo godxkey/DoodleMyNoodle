@@ -79,3 +79,4 @@ MonoBehaviour:
         GameActionPrefabs:
         - {fileID: 2784291058542494111, guid: d52d2a7a86487b54da16d418adcc5e0c, type: 3}
         - {fileID: 2784291058542494111, guid: 93e9910ebf11bf5408d0913962d5185f, type: 3}
+        - {fileID: 2784291058542494111, guid: 2bfd1e11ce8bb374589791c8f26ae45b, type: 3}
