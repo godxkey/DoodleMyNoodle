@@ -48,11 +48,11 @@ public class GameActionOnSelf : GameAction<GameActionOnSelf.Settings>
     {
         CommonWrites.RequestExecuteGameAction(input.Accessor, input.Context.LastPhysicalInstigator, settings.ActionEntity, input.Context.LastPhysicalInstigator, input.Parameters);
 
-        if (settings.OnFirstInstigator)
+        if (settings.OnFirstInstigator && input.Context.LastPhysicalInstigator != input.Context.FirstPhysicalInstigator)
         {
             CommonWrites.RequestExecuteGameAction(input.Accessor, input.Context.LastPhysicalInstigator, settings.ActionEntity, input.Context.FirstPhysicalInstigator, input.Parameters);
         }
 
-        return false;
+        return true;
     }
 }

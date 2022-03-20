@@ -44,7 +44,10 @@ public class GameActionExecuteMultiple : GameAction<GameActionExecuteMultiple.Se
         }
     }
 
-    public struct Settings : IComponentData { }
+    public struct Settings : IComponentData 
+    {
+        public bool uselessVariable; // to prevent Settings emtpy bug
+    }
 
     protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
     {

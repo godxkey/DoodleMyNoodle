@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionMode: 0
   _guid: 79636a82bd8d4344baf45ddb438f80a2
-  _bindedViewPrefab: {fileID: 7824342658589397423, guid: a0fd3b7e34647274ab791b6a5a40183c,
+  _bindedViewPrefab: {fileID: 7824342658589397423, guid: c146748129fb4784b94df2b2b03ffa1e,
     type: 3}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -68,8 +68,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 2
   Shape: 0
-  Material: {fileID: 11400000, guid: 41f8bde84fa940547b142a511cb188e0, type: 2}
-  IsTrigger: 1
+  Material: {fileID: 11400000, guid: fba26a34b4d66644b945e9bed14f9caa, type: 2}
+  IsTrigger: 0
   LinearDrag: 0
   AngularDrag: 0.05
   GravityScale: 1

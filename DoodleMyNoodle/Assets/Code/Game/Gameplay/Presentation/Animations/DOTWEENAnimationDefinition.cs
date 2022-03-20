@@ -16,6 +16,7 @@ public abstract class DOTWEENAnimationDefinition : AnimationDefinition
     {
         if (_sequences.TryGetValue(input.TriggerId, out Tween tween))
         {
+            tween.Complete();
             tween.KillIfActive();
             _sequences.Remove(input.TriggerId);
         }

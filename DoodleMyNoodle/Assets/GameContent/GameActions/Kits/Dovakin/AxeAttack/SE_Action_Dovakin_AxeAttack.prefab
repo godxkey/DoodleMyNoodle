@@ -77,13 +77,13 @@ MonoBehaviour:
       type: {class: GameActionMelee/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
-          RawValue: 17179869184
+          RawValue: 21474836480
         OnHitGameActionPrefab: {fileID: 2784291058542494111, guid: 95d5dbac36580bb419734bbd3c579044,
           type: 3}
         ImpulseForce:
           RawValue: 0
         ImpulseUpAngleRatio:
           RawValue: 4294967296
-        MaxTargetHit: 1
-        AttackVector: {x: 4, y: 0}
+        MaxTargetHit: 999
+        AttackVector: {x: 5, y: 0}
         TargetFilter: 2

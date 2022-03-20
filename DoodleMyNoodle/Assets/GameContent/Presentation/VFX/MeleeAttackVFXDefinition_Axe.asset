@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MeleeAttackVFXDefinition_Axe
   m_EditorClassIdentifier: 
   Duration: 0.3
-  VFXToSpawn: {fileID: 3402276424378556173, guid: 5fd1d90cb53f5714e9c2b02ae59b6a95,
+  VFXToSpawn: {fileID: 3402276424378556173, guid: 8e97d30b1d59a504d8bf970220fcff52,
     type: 3}
   WeaponSprite: {fileID: 21300000, guid: fb65b2bed4954d54586a760ea7620ef9, type: 3}
   DisplacementTowardsTarget: -0.5

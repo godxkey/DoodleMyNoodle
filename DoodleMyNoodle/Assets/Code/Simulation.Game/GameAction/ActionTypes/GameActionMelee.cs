@@ -30,7 +30,7 @@ public class GameActionMelee : GameAction<GameActionMelee.Settings>
             dstManager.AddComponentData(entity, new Settings()
             {
                 Range = Range,
-                OnHitActionEntity = conversionSystem.GetPrimaryEntity(OnHitGameActionPrefab),
+                OnHitActionEntity = OnHitGameActionPrefab == null ? Entity.Null : conversionSystem.GetPrimaryEntity(OnHitGameActionPrefab),
                 ImpulseUpAngleRatio = ImpulseUpAngleRatio,
                 ImpulseForce = ImpulseForce,
                 MaxTargetHit = MaxTargetHit,
@@ -131,7 +131,10 @@ public class GameActionMelee : GameAction<GameActionMelee.Settings>
         }
 
         // Apply On Hit effect
-        CommonWrites.RequestExecuteGameAction(input.Accessor, input.Context.LastPhysicalInstigator, settings.OnHitActionEntity, hitTargets, input.Parameters);
+        if (settings.OnHitActionEntity != Entity.Null)
+        {
+            CommonWrites.RequestExecuteGameAction(input.Accessor, input.Context.LastPhysicalInstigator, settings.OnHitActionEntity, hitTargets, input.Parameters);
+        }
 
         // Export action data used in event (animations use it)
         output.ResultData.Add(new ResultDataElement() { AttackVector = attackVector });

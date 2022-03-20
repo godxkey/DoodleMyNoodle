@@ -82,8 +82,8 @@ MonoBehaviour:
           RawValue: 42949672960
         SpawnExtraDistance:
           RawValue: 0
-        ProjectilePrefab: {fileID: 2385346486794747607, guid: 448f0a9069ae51e4d9c2772ff6a5fbed,
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: 832849494d47bc1468e92c6d8e314870,
           type: 3}
-        Quantity: 4
-        VolleyAngle: 15
-        ShootVector: {x: 10, y: 10}
+        Quantity: 1
+        VolleyAngle: 0
+        ShootVector: {x: 4, y: 4}
