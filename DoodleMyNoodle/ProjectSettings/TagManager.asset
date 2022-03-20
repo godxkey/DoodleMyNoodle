@@ -15,11 +15,11 @@ TagManager:
   - 
   - Terrain
   - Characters
-  - Arrow-likes
+  - Projectiles
   - TriggerOnCharacters
   - NoCollision
   - Corpses
-  - 
+  - ContactWithTerrainOnly
   - 
   - 
   - 

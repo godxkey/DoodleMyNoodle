@@ -34,8 +34,6 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
         // Convert all GameActionSettingAuths
         foreach (GameActionSettingAuthBase setting in GameActionSettings)
         {
-            if (setting == null)
-                continue;
             setting.Context = gameObject;
             setting.Convert(entity, dstManager, conversionSystem);
         }
@@ -45,11 +43,9 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     {
         UpdateGameActionSettingsList();
 
-        foreach (GameActionSettingAuthBase setting in GameActionSettings)
+        foreach (GameActionSettingAuthBase settings in GameActionSettings)
         {
-            if (setting == null)
-                continue;
-            setting.DeclareReferencedPrefabs(referencedPrefabs);
+            settings.DeclareReferencedPrefabs(referencedPrefabs);
         }
     }
 
@@ -59,8 +55,11 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
             return;
 
         var gameAction = GameActionBank.GetAction(Value);
-        if (gameAction == null) // this means that there was an error
+        if (gameAction == null)
+        {
+            Log.Error($"Failed to find action '{Value}' in {gameObject.name}");
             return;
+        }
 
         var requiredSettingAuths = GameActionSettingAuthBase.GetRequiredSettingAuthTypes(gameAction.GetType());
         GameActionSettings.RemoveAll(authInstance => authInstance == null || !requiredSettingAuths.Contains(authInstance.GetType()));

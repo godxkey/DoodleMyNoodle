@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionMeleeAttack
+  Value: GameActionStatusEffect
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 11400000, guid: 2c70dd4912b456641948a9052ea2da1f, type: 2}
@@ -74,15 +74,8 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionMeleeAttack/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionStatusEffect/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Range:
-          RawValue: 21474836480
-        Damage: 3
-        ImpulseForce:
-          RawValue: 21474836480
-        ImpulseUpAngleRatio:
-          RawValue: 2147483648
-        MaxTargetHit: 999999
-        AttackVector: {x: 5, y: 0}
-        TargetFilter: 2
+        Type: 2
+        StackAmount: 1
+        Remove: 0
