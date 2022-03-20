@@ -26,7 +26,6 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         _surveyStateMachine.Blackboard = _surveySMBlackboard;
         _surveySMBlackboard.Cache = Cache;
         _surveySMBlackboard.ResultParameters.Clear();
-        _surveySMBlackboard.IsDebug = false;
 
         CursorOverlayService.Instance.ResetCursorToDefault();
 
@@ -37,12 +36,6 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
                 _surveySMBlackboard.ActionAuth = PresentationHelpers.FindActionAuth(objectSimAssetID);
             }
 
-            if (_surveySMBlackboard.ActionAuth == null)
-            {
-                StateMachine.TransitionTo(UIStateType.Gameplay);
-                return;
-            }
-
             // Init process of parameter selection
             GameActionId actionId = SimWorld.GetComponent<GameActionId>(InputParameter.ActionPrefab);
             GameAction objectGameAction = GameActionBank.GetAction(actionId);
@@ -50,9 +43,11 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             _surveySMBlackboard.UseContext = CommonReads.GetActionContext(SimWorld, InputParameter.ActionInstigator, InputParameter.ActionPrefab);
             _surveySMBlackboard.ParametersDescriptions = objectGameAction.GetExecutionContract(SimWorld, InputParameter.ActionPrefab).ParameterTypes;
         }
-        else
+
+        if (_surveySMBlackboard.ActionAuth == null)
         {
-            _surveySMBlackboard.IsDebug = true;
+            StateMachine.TransitionTo(UIStateType.Gameplay);
+            return;
         }
 
         _surveyStateMachine.TransitionTo(new SurveyState());
@@ -63,12 +58,6 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         if (Input.GetMouseButtonDown(1))  // right-click cancels
         {
             StateMachine.TransitionTo(UIStateType.Gameplay);
-            return;
-        }
-
-        if (_surveySMBlackboard.IsDebug)
-        {
-            _surveyStateMachine.Update();
             return;
         }
 
@@ -131,9 +120,6 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
     {
         public GameActionAuth ActionAuth;
         public GamePresentationCache Cache;
-
-        public bool IsDebug;
-
         public GameAction.ExecutionContext UseContext;
 
         // the description of parameters we must fill
@@ -155,9 +141,6 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             _doneNextFrame = false;
 
             HUDDisplay.Instance.ToggleVisibility(false);
-
-            if (Blackboard.IsDebug)
-                return;
 
             // the parameter
             int remainingParamCount = Blackboard.ParametersDescriptions.Length - Blackboard.ResultParameters.Count;

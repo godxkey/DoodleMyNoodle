@@ -34,6 +34,8 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
         // Convert all GameActionSettingAuths
         foreach (GameActionSettingAuthBase setting in GameActionSettings)
         {
+            if (setting == null)
+                continue;
             setting.Context = gameObject;
             setting.Convert(entity, dstManager, conversionSystem);
         }
@@ -43,9 +45,11 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     {
         UpdateGameActionSettingsList();
 
-        foreach (GameActionSettingAuthBase settings in GameActionSettings)
+        foreach (GameActionSettingAuthBase setting in GameActionSettings)
         {
-            settings.DeclareReferencedPrefabs(referencedPrefabs);
+            if (setting == null)
+                continue;
+            setting.DeclareReferencedPrefabs(referencedPrefabs);
         }
     }
 
@@ -55,6 +59,9 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
             return;
 
         var gameAction = GameActionBank.GetAction(Value);
+        if (gameAction == null) // this means that there was an error
+            return;
+
         var requiredSettingAuths = GameActionSettingAuthBase.GetRequiredSettingAuthTypes(gameAction.GetType());
         GameActionSettings.RemoveAll(authInstance => authInstance == null || !requiredSettingAuths.Contains(authInstance.GetType()));
         foreach (var authType in requiredSettingAuths)

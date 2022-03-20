@@ -65,12 +65,14 @@ public static class GameActionBank
 
     public static GameActionId GetActionId(Type gameActionType)
     {
+        if (gameActionType == null)
+            return GameActionId.Invalid;
         return new GameActionId { Value = TypeId.Get(gameActionType) };
     }
 
     public static GameActionId GetActionId(GameAction gameAction)
     {
-        return GetActionId(gameAction.GetType());
+        return GetActionId(gameAction?.GetType());
     }
 
     public static GameAction GetAction(GameActionId id)
