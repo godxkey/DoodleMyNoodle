@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_ThunderStrike
+  m_Name: SE_Action_Swordsman_Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 9c5d4e4146c71bd44a3d76a6063bec7a
+  _guid: b3a4360667098244a823fdb69dc48aeb
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,20 +63,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionHealthChange
+  Value: GameActionMelee
   GameActionSettings:
   - id: 0
-  SfxOnUse: {fileID: 0}
-  Animation: {fileID: 0}
+  SfxOnUse: {fileID: 11400000, guid: 1ac30f168ae9d9e46a57865f5b686a7f, type: 2}
+  Animation: {fileID: 11400000, guid: 8960135fd5d1ae74eb624a5f929e8b84, type: 2}
   InstigatorVFX: {fileID: 0}
   TargetsVFX: {fileID: 0}
   Surveys: []
   references:
     version: 1
     00000000:
-      type: {class: GameActionHealthChange/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionMelee/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Damage:
-          RawValue: 42949672960
-        OnHealthChangedGameActionPrefab: {fileID: 0}
-        OnExtremeReachedGameActionPrefab: {fileID: 0}
+        Range:
+          RawValue: 4294967296
+        OnHitGameActionPrefab: {fileID: 2784291058542494111, guid: ce02e778b0748e047968c192a94ffcef,
+          type: 3}
+        ImpulseForce:
+          RawValue: 0
+        ImpulseUpAngleRatio:
+          RawValue: 4294967296
+        MaxTargetHit: 1
+        AttackVector: {x: 2, y: 0}
+        TargetFilter: 2

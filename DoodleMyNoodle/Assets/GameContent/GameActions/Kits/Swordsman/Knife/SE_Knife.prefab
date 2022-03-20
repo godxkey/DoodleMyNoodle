@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Actions:
-  - ActionPrefab: {fileID: -4801357984810749253, guid: a5972b21b65653043a4dd9d77a6459ea,
+  - ActionPrefab: {fileID: -4801357984810749253, guid: ee24347837f759f48b61023f3aa418c1,
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 1

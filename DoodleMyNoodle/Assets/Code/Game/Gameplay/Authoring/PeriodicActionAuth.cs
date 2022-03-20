@@ -27,10 +27,11 @@ public class PeriodicActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDe
     [ShowIf(nameof(OnlyAtSpecificDistance))]
     public float MaxDistanceFromTarget = 10;
 
+    public bool FirstInstigatorAttackSpeedAffectMe = true;
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData<PeriodicActionRate>(entity, (fix)(1 / Mathf.Max(ActEvery, 0.0001f)));
+        dstManager.AddComponentData(entity, new PeriodicActionRate() { Value = (fix)(1 / Mathf.Max(ActEvery, 0.0001f)), FirstInstigatorAttackSpeedAffectMe = FirstInstigatorAttackSpeedAffectMe });
         dstManager.AddComponentData<PeriodicActionProgress>(entity, (fix)(PrepareInAdvance ? 1 : 0));
         dstManager.AddComponentData<PeriodicActionEnabled>(entity, default);
         dstManager.AddComponentData<ProgressPeriodicActionInAdvance>(entity, PrepareInAdvance);

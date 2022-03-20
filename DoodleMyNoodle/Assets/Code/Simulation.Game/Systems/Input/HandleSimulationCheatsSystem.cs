@@ -106,11 +106,11 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 {
                     if (damagePlayer.Damage > 0)
                     {
-                        CommonWrites.RequestDamage(Accessor, Entity.Null, pawn, damagePlayer.Damage);
+                        CommonWrites.RequestDamage(Accessor, Entity.Null, pawn, damagePlayer.Damage, Entity.Null, Entity.Null);
                     }
                     else
                     {
-                        CommonWrites.RequestHeal(Accessor, Entity.Null, pawn, -damagePlayer.Damage);
+                        CommonWrites.RequestHeal(Accessor, Entity.Null, pawn, -damagePlayer.Damage, Entity.Null, Entity.Null);
                     }
                 }
                 break;

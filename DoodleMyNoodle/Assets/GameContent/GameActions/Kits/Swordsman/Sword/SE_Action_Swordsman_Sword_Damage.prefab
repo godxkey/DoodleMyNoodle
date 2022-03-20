@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_ThunderStrike
+  m_Name: SE_Action_Swordsman_Sword_Damage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 9c5d4e4146c71bd44a3d76a6063bec7a
+  _guid: ce02e778b0748e047968c192a94ffcef
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -77,6 +77,6 @@ MonoBehaviour:
       type: {class: GameActionHealthChange/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Damage:
-          RawValue: 42949672960
+          RawValue: 4294967296
         OnHealthChangedGameActionPrefab: {fileID: 0}
         OnExtremeReachedGameActionPrefab: {fileID: 0}

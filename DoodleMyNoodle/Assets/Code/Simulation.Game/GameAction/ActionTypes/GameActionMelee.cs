@@ -10,14 +10,14 @@ using Unity.Entities;
 using Unity.Collections;
 using CCC.InspectorDisplay;
 
-public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
+public class GameActionMelee : GameAction<GameActionMelee.Settings>
 {
     [Serializable]
     [GameActionSettingAuth(typeof(Settings))]
     public class SettingsAuth : GameActionSettingAuthBase
     {
         public fix Range = 1;
-        public int Damage = 1;
+        public GameObject OnHitGameActionPrefab;
         public fix ImpulseForce = 0;
         public fix ImpulseUpAngleRatio = 1;
         public int MaxTargetHit = 1;
@@ -30,7 +30,7 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
             dstManager.AddComponentData(entity, new Settings()
             {
                 Range = Range,
-                Damage = Damage,
+                OnHitActionEntity = conversionSystem.GetPrimaryEntity(OnHitGameActionPrefab),
                 ImpulseUpAngleRatio = ImpulseUpAngleRatio,
                 ImpulseForce = ImpulseForce,
                 MaxTargetHit = MaxTargetHit,
@@ -38,12 +38,19 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
                 TargetFilter = TargetFilter,
             });
         }
+
+        public override void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
+        {
+            referencedPrefabs.Add(OnHitGameActionPrefab);
+
+            base.DeclareReferencedPrefabs(referencedPrefabs);
+        }
     }
 
     public struct Settings : IComponentData
     {
         public fix Range;
-        public int Damage;
+        public Entity OnHitActionEntity;
         public fix ImpulseUpAngleRatio;
         public fix ImpulseForce;
         public int MaxTargetHit;
@@ -99,38 +106,10 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
             }
         }
 
-        // get success multipliers
-        int damage = settings.Damage;
-        fix impulseMultipler = 1;
-        if (input.Parameters != null && input.Parameters.TryGetParameter(1, out GameActionParameterSuccessRate.Data successRate, warnIfFailed: false))
-        {
-            switch (successRate.SuccessRate)
-            {
-                case SurveySuccessRating.One:
-                    impulseMultipler = (fix)0.75f;
-                    break;
-                case SurveySuccessRating.Two:
-                    damage += 1;
-                    break;
-                case SurveySuccessRating.Three:
-                    damage += 1;
-                    break;
-                case SurveySuccessRating.Four:
-                    damage += 1;
-                    break;
-                case SurveySuccessRating.Five:
-                    impulseMultipler = (fix)1.5;
-                    damage *= 2;
-                    break;
-                default:
-                    break;
-            }
-        }
-
         fix2 attackVector = attackPosition - instigatorPos;
 
         // Apply impulse (if any)
-        fix impulseMagnitude = impulseMultipler * settings.ImpulseForce;
+        fix impulseMagnitude = settings.ImpulseForce;
         if (impulseMagnitude > 0)
         {
             fix settingsAngle = settings.ImpulseUpAngleRatio * Angle2DUp;
@@ -151,8 +130,8 @@ public class GameActionMeleeAttack : GameAction<GameActionMeleeAttack.Settings>
             }
         }
 
-        // Apply damage
-        CommonWrites.RequestDamage(input.Accessor, input.Context.LastPhysicalInstigator, hitTargets, damage);
+        // Apply On Hit effect
+        CommonWrites.RequestExecuteGameAction(input.Accessor, input.Context.LastPhysicalInstigator, settings.OnHitActionEntity, hitTargets, input.Parameters);
 
         // Export action data used in event (animations use it)
         output.ResultData.Add(new ResultDataElement() { AttackVector = attackVector });

@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionDamage
+  Value: GameActionHealthChange
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -74,7 +74,9 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionDamage/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionHealthChange/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Damage:
           RawValue: 4294967296
+        OnHealthChangedGameActionPrefab: {fileID: 0}
+        OnExtremeReachedGameActionPrefab: {fileID: 0}

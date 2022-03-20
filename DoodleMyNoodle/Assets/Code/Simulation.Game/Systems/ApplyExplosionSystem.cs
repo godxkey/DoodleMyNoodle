@@ -67,7 +67,7 @@ public class ApplyExplosionSystem : SimGameSystemBase
 
                 if (CommonReads.Physics.OverlapCircle(Accessor, request.Position, request.Radius, hits))
                 {
-                    CommonWrites.RequestDamage(Accessor, request.LastInstigator, hits, request.Damage);
+                    CommonWrites.RequestDamage(Accessor, request.LastInstigator, hits, request.Damage, Entity.Null, Entity.Null);
 
                     if (request.Damage > 0)
                     {

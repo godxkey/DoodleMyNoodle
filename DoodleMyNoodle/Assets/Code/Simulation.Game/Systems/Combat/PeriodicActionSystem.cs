@@ -7,6 +7,7 @@ using UnityEngineX;
 public struct PeriodicActionRate : IComponentData
 {
     public fix Value;
+    public bool FirstInstigatorAttackSpeedAffectMe;
 
     public static implicit operator fix(PeriodicActionRate val) => val.Value;
     public static implicit operator PeriodicActionRate(fix val) => new PeriodicActionRate() { Value = val };
@@ -74,8 +75,23 @@ public class UpdatePeriodicActionSystem : SimGameSystemBase
             {
                 bool canProgress = progressEnabled && (remainingCount > 0 || remainingCount == -1);
 
+                // ATTACK SPEED
+                fix totalRate = rate;
+                if (TryGetComponent(entity, out AttackSpeed attackSpeed))
+                {
+                    totalRate *= attackSpeed.Value;
+                }
+
+                if (rate.FirstInstigatorAttackSpeedAffectMe && TryGetComponent(entity, out FirstInstigator firstInstigator))
+                {
+                    if (TryGetComponent(firstInstigator.Value, out AttackSpeed firstInstigatorAttackSpeed))
+                    {
+                        totalRate *= firstInstigatorAttackSpeed.Value;
+                    }
+                }
+
                 progress.Value = (progressInAdvance || canProgress)
-                    ? progress.Value + rate * deltaTime
+                    ? progress.Value + totalRate * deltaTime
                     : 0;
 
                 if (progress.Value >= 1)
@@ -98,6 +114,6 @@ public class UpdatePeriodicActionSystem : SimGameSystemBase
                         progress.Value = 1; // cap at 1
                     }
                 }
-            }).Run();
+            }).WithoutBurst().Run();
     }
 }

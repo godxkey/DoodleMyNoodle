@@ -2,27 +2,44 @@ using static fixMath;
 using Unity.Entities;
 using System;
 using CCC.Fix2D;
+using CCC.InspectorDisplay;
+using UnityEngine;
+using System.Collections.Generic;
 
-public class GameActionDamage : GameAction<GameActionDamage.Settings>
+public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings>
 {
     [Serializable]
     [GameActionSettingAuth(typeof(Settings))]
     public class SettingsAuth : GameActionSettingAuthBase
     {
         public fix Damage;
+        public GameObject OnHealthChangedGameActionPrefab;
+        public GameObject OnExtremeReachedGameActionPrefab;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
             dstManager.AddComponentData(entity, new Settings()
             {
-                Damage = Damage
+                Damage = Damage,
+                OnHealthChangedActionEntity = conversionSystem.GetPrimaryEntity(OnHealthChangedGameActionPrefab),
+                OnExtremeReachedActionEntity = conversionSystem.GetPrimaryEntity(OnExtremeReachedGameActionPrefab),
             });
+        }
+
+        public override void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
+        {
+            referencedPrefabs.Add(OnHealthChangedGameActionPrefab);
+            referencedPrefabs.Add(OnExtremeReachedGameActionPrefab);
+
+            base.DeclareReferencedPrefabs(referencedPrefabs);
         }
     }
 
     public struct Settings : IComponentData
     {
         public fix Damage;
+        public Entity OnHealthChangedActionEntity;
+        public Entity OnExtremeReachedActionEntity;
     }
 
     protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
@@ -36,7 +53,7 @@ public class GameActionDamage : GameAction<GameActionDamage.Settings>
         for (int i = 0; i < input.Context.Targets.Length; i++)
         {
             var target = input.Context.Targets[i];
-            CommonWrites.RequestDamage(input.Accessor, input.Context.LastPhysicalInstigator, target, settings.Damage);
+            CommonWrites.RequestDamage(input.Accessor, input.Context.LastPhysicalInstigator, target, settings.Damage, settings.OnHealthChangedActionEntity, settings.OnExtremeReachedActionEntity);
 
             if (input.Accessor.TryGetComponent(target, out FixTranslation targetTranslation))
             {
