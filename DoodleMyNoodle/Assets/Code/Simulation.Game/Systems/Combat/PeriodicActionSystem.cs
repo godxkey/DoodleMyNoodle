@@ -77,16 +77,17 @@ public class UpdatePeriodicActionSystem : SimGameSystemBase
 
                 // ATTACK SPEED
                 fix totalRate = rate;
-                if (TryGetComponent(entity, out AttackSpeed attackSpeed))
+                if (HasComponent<AttackSpeed>(entity))
                 {
-                    totalRate *= attackSpeed.Value;
+                    totalRate *= GetComponent<AttackSpeed>(entity).Value;
                 }
 
-                if (rate.FirstInstigatorAttackSpeedAffectMe && TryGetComponent(entity, out FirstInstigator firstInstigator))
+                if (rate.FirstInstigatorAttackSpeedAffectMe && HasComponent<FirstInstigator>(entity))
                 {
-                    if (TryGetComponent(firstInstigator.Value, out AttackSpeed firstInstigatorAttackSpeed))
+                    var firstInstigator = GetComponent<FirstInstigator>(entity);
+                    if (HasComponent<AttackSpeed>(firstInstigator))
                     {
-                        totalRate *= firstInstigatorAttackSpeed.Value;
+                        totalRate *= GetComponent<AttackSpeed>(firstInstigator).Value;
                     }
                 }
 
@@ -114,6 +115,6 @@ public class UpdatePeriodicActionSystem : SimGameSystemBase
                         progress.Value = 1; // cap at 1
                     }
                 }
-            }).WithoutBurst().Run();
+            }).Run();
     }
 }

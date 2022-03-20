@@ -50,7 +50,7 @@ public class StatusEffectSystem : SimGameSystemBase
             DynamicBuffer<StatusEffect> statusEffects = GetBuffer<StatusEffect>(entity);
 
             // MAXIMUM HEALTH STAT
-            if (TryGetComponent(entity, out BaseMaxHealth baseMaxHealth))
+            if (EntityManager.TryGetComponent(entity, out BaseMaxHealth baseMaxHealth))
             {
                 fix newMaxHealth = baseMaxHealth.Value;
 
@@ -66,7 +66,7 @@ public class StatusEffectSystem : SimGameSystemBase
             }
 
             // SPEED STAT
-            if (TryGetComponent(entity, out BaseMoveSpeed baseMoveSpeed))
+            if (EntityManager.TryGetComponent(entity, out BaseMoveSpeed baseMoveSpeed))
             {
                 fix newMoveSpeed = baseMoveSpeed.Value;
 
@@ -87,7 +87,7 @@ public class StatusEffectSystem : SimGameSystemBase
             }
 
             // DAMAGE
-            if (TryGetComponent(entity, out BaseDamageMultiplier baseDamageMultiplier))
+            if (EntityManager.TryGetComponent(entity, out BaseDamageMultiplier baseDamageMultiplier))
             {
                 fix newDamageMultiplier = baseDamageMultiplier.Value;
 
@@ -108,7 +108,7 @@ public class StatusEffectSystem : SimGameSystemBase
             }
 
             // ATTACK SPEED
-            if (TryGetComponent(entity, out BaseAttackSpeed baseAttackSpeed))
+            if (EntityManager.TryGetComponent(entity, out BaseAttackSpeed baseAttackSpeed))
             {
                 fix newAttackSpeed = baseAttackSpeed.Value;
 
@@ -168,15 +168,15 @@ public class StatusEffectSystem : SimGameSystemBase
         {
             StatusEffectSetting setting = StatusEffectSettings.Settings[removeRequest.Type];
 
-            if (!EntityManager.TryGetBuffer(removeRequest.Target, out DynamicBuffer<StatusEffect> StatusEffects))
+            if (!EntityManager.TryGetBuffer(removeRequest.Target, out DynamicBuffer<StatusEffect> statusEffects))
                 continue;
 
             EntityStatsToUpdate.Add(removeRequest.Target);
 
             int index = -1;
-            for (int i = 0; i < StatusEffects.Length; i++)
+            for (int i = 0; i < statusEffects.Length; i++)
             {
-                StatusEffect currentStatusEffect = StatusEffects[i];
+                StatusEffect currentStatusEffect = statusEffects[i];
                 if (currentStatusEffect.Type == removeRequest.Type && currentStatusEffect.Instigator == removeRequest.Instigator)
                 {
                     index = i;
@@ -187,7 +187,7 @@ public class StatusEffectSystem : SimGameSystemBase
             if (index == -1)
                 continue;
 
-            StatusEffect statusEffect = StatusEffects[index];
+            StatusEffect statusEffect = statusEffects[index];
             if (setting.Stackable)
             {
                 statusEffect.Stacks = max(0, statusEffect.Stacks - max(1, removeRequest.StackAmount));
@@ -197,11 +197,11 @@ public class StatusEffectSystem : SimGameSystemBase
                 statusEffect.Stacks = 0;
             }
 
-            StatusEffects[index] = statusEffect;
+            statusEffects[index] = statusEffect;
 
             if (statusEffect.Stacks == 0)
             {
-                StatusEffects.RemoveAt(index);
+                statusEffects.RemoveAt(index);
             }
         }
     }
@@ -212,7 +212,7 @@ public class StatusEffectSystem : SimGameSystemBase
         {
             StatusEffectSetting setting = StatusEffectSettings.Settings[addRequest.Type];
 
-            if (!EntityManager.TryGetBuffer(addRequest.Target, out DynamicBuffer<StatusEffect> StatusEffects))
+            if (!EntityManager.TryGetBuffer(addRequest.Target, out DynamicBuffer<StatusEffect> statusEffects))
                 continue;
 
             EntityStatsToUpdate.Add(addRequest.Target);
@@ -222,9 +222,9 @@ public class StatusEffectSystem : SimGameSystemBase
             if (setting.Unique)
             {
                 int index = -1;
-                for (int i = 0; i < StatusEffects.Length; i++)
+                for (int i = 0; i < statusEffects.Length; i++)
                 {
-                    if (StatusEffects[i].Type == addRequest.Type)
+                    if (statusEffects[i].Type == addRequest.Type)
                     {
                         index = i;
                         break;
@@ -233,7 +233,7 @@ public class StatusEffectSystem : SimGameSystemBase
 
                 if (index != -1)
                 {
-                    StatusEffect statusEffect = StatusEffects[index];
+                    StatusEffect statusEffect = statusEffects[index];
 
                     if (setting.RefreshExistingUniqueInstanceDuration)
                     {
@@ -245,7 +245,7 @@ public class StatusEffectSystem : SimGameSystemBase
                         statusEffect.Stacks += max(1, addRequest.StackAmount);
                     }
 
-                    StatusEffects[index] = statusEffect;
+                    statusEffects[index] = statusEffect;
 
                     addNew = false;
                 }
@@ -253,7 +253,7 @@ public class StatusEffectSystem : SimGameSystemBase
 
             if (addNew)
             {
-                StatusEffects.Add(new StatusEffect()
+                statusEffects.Add(new StatusEffect()
                 {
                     Type = setting.Type,
                     RemainingTime = setting.UseDuration ? setting.Duration : fix.MinValue,

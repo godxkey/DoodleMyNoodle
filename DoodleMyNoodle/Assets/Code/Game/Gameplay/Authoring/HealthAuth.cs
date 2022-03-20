@@ -59,7 +59,7 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
             {
                 var normalCollider = dstManager.GetComponentData<PhysicsColliderBlob>(entity).Collider;
 
-                if (!dstManager.TryGetComponentData<ActorColliderRefs>(entity, out var actorColliderRefs))
+                if (!dstManager.TryGetComponent<ActorColliderRefs>(entity, out var actorColliderRefs))
                 {
                     actorColliderRefs = new ActorColliderRefs(normalCollider);
                 }
@@ -70,7 +70,7 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
 
                 actorColliderRefs.DeadCollider = deadCollider;
 
-                dstManager.SetOrAddComponentData(entity, actorColliderRefs);
+                dstManager.SetOrAddComponent(entity, actorColliderRefs);
             }
 
         }

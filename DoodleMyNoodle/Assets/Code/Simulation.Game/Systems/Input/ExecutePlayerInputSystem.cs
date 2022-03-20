@@ -48,7 +48,7 @@ public class ExecutePlayerInputSystem : SimGameSystemBase
 
             case SimPlayerInputReady readyInput:
             {
-                EntityManager.SetOrAddComponentData(playerEntity, new ReadyToPlay() { Value = readyInput.IsReady });
+                EntityManager.SetOrAddComponent(playerEntity, new ReadyToPlay() { Value = readyInput.IsReady });
                 break;
             }
 
@@ -57,8 +57,8 @@ public class ExecutePlayerInputSystem : SimGameSystemBase
                 Entity pawn = GetPlayerPawn(playerEntity);
                 if (pawn != Entity.Null)
                 {
-                    EntityManager.SetOrAddComponentData(pawn, new DoodleId() { Guid = setPawnDoodleInput.DoodleId });
-                    EntityManager.SetOrAddComponentData(pawn, new DoodleStartDirection() { IsLookingRight = setPawnDoodleInput.DoodleDirectionIsLookingRight });
+                    EntityManager.SetOrAddComponent(pawn, new DoodleId() { Guid = setPawnDoodleInput.DoodleId });
+                    EntityManager.SetOrAddComponent(pawn, new DoodleStartDirection() { IsLookingRight = setPawnDoodleInput.DoodleDirectionIsLookingRight });
                 }
                 break;
             }
@@ -93,7 +93,7 @@ public class ExecutePlayerInputSystem : SimGameSystemBase
 
     private Entity GetPlayerPawn(Entity playerEntity)
     {
-        if (EntityManager.TryGetComponentData(playerEntity, out ControlledEntity controlledEntity))
+        if (EntityManager.TryGetComponent(playerEntity, out ControlledEntity controlledEntity))
         {
             Entity pawn = controlledEntity.Value;
 

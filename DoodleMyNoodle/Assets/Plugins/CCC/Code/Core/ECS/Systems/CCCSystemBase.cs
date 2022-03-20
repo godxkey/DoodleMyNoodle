@@ -66,18 +66,4 @@ public abstract class CCCSystemBase : SystemBase
         Entity e = GetSingletonEntity<T>();
         EntityManager.DestroyEntity(e);
     }
-
-    public bool TryGetComponent<T>(Entity entity, out T value) where T : struct, IComponentData
-    {
-        if (HasComponent<T>(entity))
-        {
-            value = GetComponent<T>(entity);
-            return true;
-        }
-        else
-        {
-            value = default;
-            return false;
-        }
-    }
 }

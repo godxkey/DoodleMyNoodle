@@ -81,7 +81,7 @@ public class UpdateHookEntitiesSystem : SimGameSystemBase
 
         foreach (var item in hookContacts)
         {
-            if (TryGetComponent(item.HookEntity, out HookData hookData))
+            if (EntityManager.TryGetComponent(item.HookEntity, out HookData hookData))
             {
                 if (hookData.State == HookData.EState.TravelingForward)
                 {
