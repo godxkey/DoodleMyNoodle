@@ -55,6 +55,11 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
             return;
 
         var gameAction = GameActionBank.GetAction(Value);
+        if (gameAction == null)
+        {
+            Log.Error($"Failed to find action in {gameObject.name}");
+        }
+
         var requiredSettingAuths = GameActionSettingAuthBase.GetRequiredSettingAuthTypes(gameAction.GetType());
         GameActionSettings.RemoveAll(authInstance => authInstance == null || !requiredSettingAuths.Contains(authInstance.GetType()));
         foreach (var authType in requiredSettingAuths)
