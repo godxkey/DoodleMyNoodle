@@ -85,7 +85,7 @@ public class OnOverlapDamageOvertimeSystem : SimGameSystemBase
         // damage
         foreach ((Entity instigator, Entity target, int damage) in OutDamage)
         {
-            if (EntityManager.TryGetComponentData(instigator, out OnOverlapDamageOvertimeSetting onOverlapDamageOvertimeSetting))
+            if (EntityManager.TryGetComponent(instigator, out OnOverlapDamageOvertimeSetting onOverlapDamageOvertimeSetting))
             {
                 if(EntityManager.TryGetBuffer(instigator, out DynamicBuffer<OnOverlapDamageOvertimeDamagedEntities> entitiesBuffer))
                 {
@@ -93,7 +93,7 @@ public class OnOverlapDamageOvertimeSystem : SimGameSystemBase
 
                     if (deltaTime > TimeValue.Zero)
                     {
-                        if (EntityManager.TryGetComponentData(instigator, out OnOverlapDamageOvertimeState onOverlapDamageOvertimeState))
+                        if (EntityManager.TryGetComponent(instigator, out OnOverlapDamageOvertimeState onOverlapDamageOvertimeState))
                         {
                             if ((GetElapsedTime(onOverlapDamageOvertimeState.TrackedTime.Type) - onOverlapDamageOvertimeState.TrackedTime) >= onOverlapDamageOvertimeSetting.Delay)
                             {

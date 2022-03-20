@@ -27,7 +27,7 @@ public class ReboundOnOverlapWithTileSystem : SimGameSystemBase
                    fix2 tilePos = Helpers.GetTileCenter(EntityManager.GetComponentData<TileId>(tileEntity));
                    if (tilePos != reboundOnOverlapWithTileState.PreviousTile || ((GetElapsedTime(TimeValue.ValueType.Seconds).Value - reboundOnOverlapWithTileState.LastCollisionTime.Value) >= fix.Half))
                    {
-                       if (EntityManager.TryGetComponentData(tileEntity, out TileFlagComponent tileFlagComponent))
+                       if (EntityManager.TryGetComponent(tileEntity, out TileFlagComponent tileFlagComponent))
                        {
                            if (!tileFlagComponent.IsEmpty && !tileFlagComponent.IsLadder)
                            {

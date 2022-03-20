@@ -104,7 +104,7 @@ public class ExecuteGameActionSystem : SimGameSystemBase
                 {
                     foreach (var request in _processingRequestsManaged)
                     {
-                        ExecuteGameAction(request.Instigator, request.ActionEntity, request.Targets, request.Parameters);
+                       ExecuteGameAction(request.Instigator, request.ActionEntity, request.Targets, request.Parameters);
                     }
                 }
             }
@@ -113,7 +113,7 @@ public class ExecuteGameActionSystem : SimGameSystemBase
 
     private bool ExecuteGameAction(Entity actionInstigator, Entity actionEntity, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
     {
-        if (!TryGetComponent(actionEntity, out GameActionId actionId) || !actionId.IsValid)
+        if (!EntityManager.TryGetComponent(actionEntity, out GameActionId actionId) || !actionId.IsValid)
         {
             Log.Error($"Could not find valid game action id on action {EntityManager.GetNameSafe(actionEntity)}. Action instigator: {EntityManager.GetNameSafe(actionInstigator)}");
             return false;

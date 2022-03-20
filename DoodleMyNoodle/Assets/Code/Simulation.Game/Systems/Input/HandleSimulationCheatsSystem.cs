@@ -85,7 +85,7 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 if (EntityManager.Exists(groupHeader))
                 {
                     const int DISTANT_FUTURE = 9999999;
-                    if (TryGetComponent(groupHeader, out InvincibleUntilTime invincibleUntilTime))
+                    if (EntityManager.TryGetComponent(groupHeader, out InvincibleUntilTime invincibleUntilTime))
                     {
                         EntityManager.AddComponentData(groupHeader, new InvincibleUntilTime() { Time = invincibleUntilTime.Time == DISTANT_FUTURE ? 0 : DISTANT_FUTURE });
                     }
@@ -102,7 +102,7 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 Entity player = CommonReads.FindPlayerEntity(Accessor, damagePlayer.PlayerId);
 
                 if (EntityManager.Exists(player) &&
-                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
+                    EntityManager.TryGetComponent(player, out ControlledEntity pawn))
                 {
                     if (damagePlayer.Damage > 0)
                     {
@@ -121,7 +121,7 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 Entity player = CommonReads.FindPlayerEntity(Accessor, addAllItems.PlayerId);
 
                 if (EntityManager.Exists(player) &&
-                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
+                    EntityManager.TryGetComponent(player, out ControlledEntity pawn))
                 {
                     if (HasComponent<InventoryCapacity>(pawn))
                     {
@@ -156,7 +156,7 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 Entity player = CommonReads.FindPlayerEntity(Accessor, teleport.PlayerId);
 
                 if (EntityManager.Exists(player) &&
-                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
+                    EntityManager.TryGetComponent(player, out ControlledEntity pawn))
                 {
                     CommonWrites.RequestTeleport(Accessor, pawn, teleport.Destination);
                 }
@@ -183,7 +183,7 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 Entity player = CommonReads.FindPlayerEntity(Accessor, impulseSelf.PlayerId);
 
                 if (EntityManager.Exists(player) &&
-                    EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
+                    EntityManager.TryGetComponent(player, out ControlledEntity pawn))
                 {
                     PhysicsVelocity vel = EntityManager.GetComponentData<PhysicsVelocity>(pawn);
                     vel.Linear += impulseSelf.ImpulseValue;
@@ -204,7 +204,7 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 Entity newPawn = Entity.Null;
                 int newPawnIndex = soloPlay.PawnIndex;
 
-                if (EntityManager.TryGetComponentData(player, out ControlledEntity pawn))
+                if (EntityManager.TryGetComponent(player, out ControlledEntity pawn))
                     currentPawn = pawn;
 
                 Entities.ForEach((Entity entity, in PlayerGroupMemberIndex memberIndex) =>

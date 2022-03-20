@@ -61,7 +61,7 @@ public class GameFlowSystem : SimGameSystemBase
             if (TryGetSingletonEntity<PlayerGroupDataTag>(out Entity playerGroup))
             {
                 // Team HP is empty, they're dead = they lost :(
-                if (TryGetComponent(playerGroup, out Health health))
+                if (EntityManager.TryGetComponent(playerGroup, out Health health))
                 {
                     if (health.Value <= 0)
                     {
@@ -74,7 +74,7 @@ public class GameFlowSystem : SimGameSystemBase
                 }
 
                 // Team reached their destination for this level = they win !
-                if (TryGetComponent(playerGroup, out FixTranslation translation))
+                if (EntityManager.TryGetComponent(playerGroup, out FixTranslation translation))
                 {
                     if(TryGetSingleton(out GameOverDestinationToReachSingleton gameOverDestinationToReachSingleton)) 
                     {

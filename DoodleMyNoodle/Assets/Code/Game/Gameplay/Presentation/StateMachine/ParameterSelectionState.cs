@@ -24,8 +24,8 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
     public override void OnEnter()
     {
         _surveyStateMachine.Blackboard = _surveySMBlackboard;
+        _surveySMBlackboard.Reset();
         _surveySMBlackboard.Cache = Cache;
-        _surveySMBlackboard.ResultParameters.Clear();
 
         CursorOverlayService.Instance.ResetCursorToDefault();
 
@@ -46,6 +46,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
         if (_surveySMBlackboard.ActionAuth == null)
         {
+            Log.Warning($"No action auth found for item. Returning to UI state gameplay.");
             StateMachine.TransitionTo(UIStateType.Gameplay);
             return;
         }
@@ -127,6 +128,15 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
         // the resulting param data
         public List<GameAction.ParameterData> ResultParameters = new List<GameAction.ParameterData>();
+
+        public void Reset()
+        {
+            Cache = null;
+            ResultParameters.Clear();
+            ActionAuth = null;
+            UseContext = default;
+            ParametersDescriptions = default;
+        }
     }
 
     private class SurveyState : State<SurveyBlackboard>

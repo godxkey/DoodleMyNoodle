@@ -42,7 +42,7 @@ public static class EntityManagerExtensions
         }
     }
 
-    public static bool TryGetComponentData<T>(this EntityManager entityManager, Entity entity, out T componentData)
+    public static bool TryGetComponent<T>(this EntityManager entityManager, Entity entity, out T componentData)
          where T : struct, IComponentData
     {
         if (entityManager.HasComponent<T>(entity))
@@ -55,7 +55,7 @@ public static class EntityManagerExtensions
         return false;
     }
 
-    public static void SetOrAddComponentData<T>(this EntityManager entityManager, Entity entity, T componentData)
+    public static void SetOrAddComponent<T>(this EntityManager entityManager, Entity entity, T componentData)
          where T : struct, IComponentData
     {
         if (entityManager.HasComponent<T>(entity))

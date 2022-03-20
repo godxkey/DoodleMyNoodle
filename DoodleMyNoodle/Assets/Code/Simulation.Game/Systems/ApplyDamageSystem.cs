@@ -120,35 +120,35 @@ public class ApplyDamageSystem : SimGameSystemBase
         }
 
         // If delta is negative (damage), check for invincible
-        if (remainingDelta < 0 && TryGetComponent(target, out InvincibleUntilTime invincibleUntilTime) && invincibleUntilTime.Time > Time.ElapsedTime)
+        if (remainingDelta < 0 && EntityManager.TryGetComponent(target, out InvincibleUntilTime invincibleUntilTime) && invincibleUntilTime.Time > Time.ElapsedTime)
         {
             remainingDelta = max(remainingDelta, 0);
         }
 
         // Damage multipliers for both the instigator that started the attack and the entity applying the attack (ex: pawn shooting arrow)
-        if (lastPhysicalInstigator != Entity.Null && remainingDelta < 0 && TryGetComponent(lastPhysicalInstigator, out DamageMultiplier lastDamageMultiplier))
+        if (lastPhysicalInstigator != Entity.Null && remainingDelta < 0 && EntityManager.TryGetComponent(lastPhysicalInstigator, out DamageMultiplier lastDamageMultiplier))
         {
             remainingDelta *= lastDamageMultiplier.Value;
             totalAmountUncapped *= lastDamageMultiplier.Value;
         }
 
-        if (firstPhyisicalInstigator != Entity.Null && remainingDelta < 0 && TryGetComponent(firstPhyisicalInstigator, out DamageMultiplier firstDamageMultiplier))
+        if (firstPhyisicalInstigator != Entity.Null && remainingDelta < 0 && EntityManager.TryGetComponent(firstPhyisicalInstigator, out DamageMultiplier firstDamageMultiplier))
         {
             remainingDelta *= firstDamageMultiplier.Value;
             totalAmountUncapped *= firstDamageMultiplier.Value;
         }
 
         // target might have an effect that increase it's damage taken
-        if (remainingDelta < 0 && TryGetComponent(target, out DamageReceivedMultiplier damageReceivedMultiplier))
+        if (remainingDelta < 0 && EntityManager.TryGetComponent(target, out DamageReceivedMultiplier damageReceivedMultiplier))
         {
             remainingDelta *= damageReceivedMultiplier;
             totalAmountUncapped *= damageReceivedMultiplier;
         }
 
         // Armored & Poison
-        if (EntityManager.TryGetBuffer(target, out DynamicBuffer<StatusEffect> StatusEffects))
+        if (EntityManager.TryGetBuffer(target, out DynamicBuffer<StatusEffect> statusEffects))
         {
-            foreach (var statusEffect in StatusEffects)
+            foreach (var statusEffect in statusEffects)
             {
                 if (statusEffect.Type == StatusEffectType.Armored)
                 {
@@ -165,7 +165,7 @@ public class ApplyDamageSystem : SimGameSystemBase
         }
 
         // Shield
-        if (remainingDelta != 0 && TryGetComponent(target, out Shield previousShield))
+        if (remainingDelta != 0 && EntityManager.TryGetComponent(target, out Shield previousShield))
         {
             Shield newShield = clamp(previousShield + remainingDelta, 0, GetComponent<MaximumFix<Shield>>(target).Value);
             shieldDelta = newShield.Value - previousShield.Value;
@@ -179,7 +179,7 @@ public class ApplyDamageSystem : SimGameSystemBase
         }
 
         // Health
-        if (remainingDelta != 0 && TryGetComponent(target, out Health previousHP))
+        if (remainingDelta != 0 && EntityManager.TryGetComponent(target, out Health previousHP))
         {
             Health newHP = clamp(previousHP + remainingDelta, 0, GetComponent<MaximumFix<Health>>(target).Value);
             hpDelta = newHP.Value - previousHP.Value;
@@ -192,7 +192,7 @@ public class ApplyDamageSystem : SimGameSystemBase
             }
 
             // If target is dead but has life points, regenerate all values and request special action
-            if (newHP.Value == 0 && TryGetComponent(target, out LifePoints lifePoints) && lifePoints.Value > 0)
+            if (newHP.Value == 0 && EntityManager.TryGetComponent(target, out LifePoints lifePoints) && lifePoints.Value > 0)
             {
                 // recharge HP & shield
                 if (HasComponent<Health>(target))
@@ -216,7 +216,7 @@ public class ApplyDamageSystem : SimGameSystemBase
                 }
 
                 // set invincible for a minimum of 0.5 seconds
-                TryGetComponent(target, out InvincibleUntilTime invincible);
+                EntityManager.TryGetComponent(target, out InvincibleUntilTime invincible);
                 invincible.Time = max(invincible.Time, Time.ElapsedTime + (fix)0.5);
                 EntityManager.AddComponentData(target, invincible);
             }
@@ -236,7 +236,7 @@ public class ApplyDamageSystem : SimGameSystemBase
         }
 
         // Trigger Signal on Damage
-        if (hpDelta < 0 && shieldDelta < 0 && HasComponent<TriggerSignalOnDamage>(target) && TryGetComponent(target, out SignalEmissionType emissionType))
+        if (hpDelta < 0 && shieldDelta < 0 && HasComponent<TriggerSignalOnDamage>(target) && EntityManager.TryGetComponent(target, out SignalEmissionType emissionType))
         {
             if (emissionType.Value == ESignalEmissionType.OnClick || emissionType.Value == ESignalEmissionType.ToggleOnClick)
             {

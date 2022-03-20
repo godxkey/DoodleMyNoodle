@@ -38,7 +38,7 @@ public class ExecutePawnControllerInputSystem : SimGameSystemBase
     {
         // Getting the Pawn from the input
         Entity pawn = Entity.Null;
-        if (TryGetComponent(input.PawnController, out ControlledEntity controlledEntity))
+        if (EntityManager.TryGetComponent(input.PawnController, out ControlledEntity controlledEntity))
         {
             pawn = controlledEntity.Value;
 
@@ -52,7 +52,7 @@ public class ExecutePawnControllerInputSystem : SimGameSystemBase
             case PawnControllerInputSetPawnName nameInput:
                 if (pawn != Entity.Null)
                 {
-                    EntityManager.SetOrAddComponentData(pawn, new Name() { Value = nameInput.Name });
+                    EntityManager.SetOrAddComponent(pawn, new Name() { Value = nameInput.Name });
                 }
 
                 break;

@@ -64,7 +64,7 @@ public class MaintainBindedViewTilesSystem : ViewSystemBase
             .WithStructuralChanges()
             .ForEach((Entity entity) =>
             {
-                if (EntityManager.TryGetComponentData(entity, out BindedTile tile))
+                if (EntityManager.TryGetComponent(entity, out BindedTile tile))
                 {
                     outTileChanges.Add((new Vector3Int(tile.Value.X, tile.Value.Y, 0), null));
 

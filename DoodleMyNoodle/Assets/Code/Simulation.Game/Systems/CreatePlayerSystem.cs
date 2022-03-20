@@ -132,7 +132,7 @@ public class CreatePlayerSystem : SimGameSystemBase
 
         Entity pawn = EntityManager.Instantiate(playerPawnPrefab.Prefab);
 
-        EntityManager.SetOrAddComponentData(pawn, new FixTranslation() { Value = spawnPosition });
+        EntityManager.SetOrAddComponent(pawn, new FixTranslation() { Value = spawnPosition });
 
         return pawn;
     }
