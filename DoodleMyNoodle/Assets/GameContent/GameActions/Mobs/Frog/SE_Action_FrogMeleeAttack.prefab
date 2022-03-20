@@ -85,5 +85,5 @@ MonoBehaviour:
         ImpulseUpAngleRatio:
           RawValue: 4294967296
         MaxTargetHit: 1
-        AttackVector: {x: 2, y: 0}
+        AttackVector: {x: -2, y: 0}
         TargetFilter: 2
