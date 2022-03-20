@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 2678156252502307406}
   - component: {fileID: 3987223315045021521}
   - component: {fileID: 1010462444947004000}
+  - component: {fileID: 8395647274067371062}
   m_Layer: 9
   m_Name: SE_Char_Mob
   m_TagString: Untagged
@@ -115,9 +116,11 @@ MonoBehaviour:
   Action: {fileID: 0}
   PrepareInAdvance: 0
   Limit: -1
+  IsEnableByDefault: 1
   OnlyAtSpecificDistance: 1
   MinDistanceFromTarget: -10
   MaxDistanceFromTarget: 0.6
+  FirstInstigatorAttackSpeedAffectMe: 1
 --- !u!114 &-1374508264804467834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,6 +168,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DefaultDamageMultiplier:
     RawValue: 4294967296
+  DefaultDamageReceivedMultiplier:
+    RawValue: 4294967296
 --- !u!114 &1010462444947004000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,3 +183,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartingStatusEffects: 
+--- !u!114 &8395647274067371062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951368162375339519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fff32ef55530034b85a632bbfd26db7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DefaultAttackSpeed:
+    RawValue: 4294967296
