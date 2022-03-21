@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 462959840056812340}
   - component: {fileID: 8841453195666950856}
   - component: {fileID: -1943092824245740565}
-  - component: {fileID: 8618057839144830486}
-  - component: {fileID: -4600672762853723233}
-  m_Layer: 10
+  - component: {fileID: 1320516758862472843}
+  - component: {fileID: 1623917740869191825}
+  m_Layer: 14
   m_Name: SE_Grenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,7 @@ MonoBehaviour:
   Type: 2
   Shape: 0
   Material: {fileID: 11400000, guid: 41f8bde84fa940547b142a511cb188e0, type: 2}
-  IsTrigger: 1
+  IsTrigger: 0
   LinearDrag: 0
   AngularDrag: 0.05
   GravityScale: 1
@@ -79,7 +79,20 @@ MonoBehaviour:
   CircleRadius: 0.15
   BoxAndCircleOffset: {x: 0, y: 0}
   PolygonPoints: []
---- !u!114 &8618057839144830486
+--- !u!114 &1320516758862472843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2385346486794747607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07961ffee0da65e4daa96b88fad5ddf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Entries: []
+--- !u!114 &1623917740869191825
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,20 +105,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Lifetime:
-    RawValue: 21474836480
---- !u!114 &-4600672762853723233
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2385346486794747607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07961ffee0da65e4daa96b88fad5ddf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Entries:
-  - Action: {fileID: -4801357984810749253, guid: 6edcf0c4ba365f04e8c0e60c6df4fe88,
-      type: 3}
-    AtLifetime: 3
+    RawValue: 12884901888

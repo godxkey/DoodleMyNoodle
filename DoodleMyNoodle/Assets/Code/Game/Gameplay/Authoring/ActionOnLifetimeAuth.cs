@@ -17,6 +17,8 @@ public class ActionOnLifetimeAuth : MonoBehaviour, IConvertGameObjectToEntity, I
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
+        dstManager.AddComponentData(entity, new Lifetime() { Value = 0 });
+
         var buffer = dstManager.AddBuffer<ActionOnLifetime>(entity);
 
         foreach (var item in Entries)

@@ -76,6 +76,6 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionSpawn/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        PawnOffset: {x: 1.5, y: 0}
+        PawnOffset: {x: 1.5, y: 1.75}
         Prefab: {fileID: 2385346486794747607, guid: d461b1e00a4519a4ba5c4a5a3eeaf848,
           type: 3}

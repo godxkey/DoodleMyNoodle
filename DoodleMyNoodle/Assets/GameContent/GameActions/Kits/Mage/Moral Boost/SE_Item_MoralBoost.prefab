@@ -63,7 +63,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPrefab: {fileID: 0}
+  ActionPrefab: {fileID: -4801357984810749253, guid: fa855456124b3c94bb9c19d8771396ab,
+    type: 3}
   ApCost: 0
   IsStackable: 0
   CooldownType: 1

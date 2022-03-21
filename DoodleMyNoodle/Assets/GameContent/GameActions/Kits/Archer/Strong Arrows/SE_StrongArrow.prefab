@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8618057839144830486}
   - component: {fileID: 2302789254329102844}
   m_Layer: 10
-  m_Name: SE_IceBall
+  m_Name: SE_StrongArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 32efa980a07e61d46942b854589b063c
-  _bindedViewPrefab: {fileID: 7824342658589397423, guid: 950227825e52b4d41921d7f2ab8791c3,
+  _guid: 5d5326b184834f5498348e0dffa13269
+  _bindedViewPrefab: {fileID: 7824342658589397423, guid: 8d66026df755a3945a908b6f05d3b4fb,
     type: 3}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -66,13 +66,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93e46ee13bcdb224bb3a8c3df684bc12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 1
+  Type: 2
   Shape: 0
   Material: {fileID: 11400000, guid: f12656138a7b18546a992bf9c5083561, type: 2}
   IsTrigger: 1
   LinearDrag: 0
   AngularDrag: 0.05
-  GravityScale: 0
+  GravityScale: 1
   FireEvents: 1
   FreezeRotation: 0
   BoxSize: {x: 1, y: 1}
@@ -106,19 +106,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Actions:
-  - ActionPrefab: {fileID: -4801357984810749253, guid: 0789e7c70db2834408afa452cf0f1979,
+  - ActionPrefab: {fileID: -4801357984810749253, guid: 69a46c6d84b068e4eaec2e54f44b8deb,
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 1
-    ContactMode: 0
-    OverlapLayerMask:
-      serializedVersion: 2
-      m_Bits: 512
-    OverlapRadius: 0.5
-  - ActionPrefab: {fileID: -4801357984810749253, guid: cff55586b8ab41c4a9806cdfa4b2cbb5,
-      type: 3}
-    TargetFilter: 2
-    SameTargetCooldown: 0
     ContactMode: 0
     OverlapLayerMask:
       serializedVersion: 2
