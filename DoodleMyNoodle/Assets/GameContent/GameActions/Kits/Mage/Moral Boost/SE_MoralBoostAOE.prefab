@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -1943092824245740565}
   - component: {fileID: 8618057839144830486}
   - component: {fileID: 2302789254329102844}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: SE_MoralBoostAOE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ MonoBehaviour:
   GravityScale: 0
   FireEvents: 1
   FreezeRotation: 0
-  BoxSize: {x: 7.46, y: 1}
+  BoxSize: {x: 7.46, y: 4.35}
   CircleRadius: 0.15
   BoxAndCircleOffset: {x: 0, y: 0}
   PolygonPoints: []
