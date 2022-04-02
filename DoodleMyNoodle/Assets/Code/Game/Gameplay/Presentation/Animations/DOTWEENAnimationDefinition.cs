@@ -11,12 +11,13 @@ public abstract class DOTWEENAnimationDefinition : AnimationDefinition
     [SerializeField] protected float _duration;
 
     private Dictionary<int, Tween> _sequences = new Dictionary<int, Tween>();
-    
+
     public override void StopAnimation(StopInput input)
     {
         if (_sequences.TryGetValue(input.TriggerId, out Tween tween))
         {
-            tween.Complete();
+            if (!ApplicationUtilityService.ApplicationIsQuitting)
+                tween.Complete();
             tween.KillIfActive();
             _sequences.Remove(input.TriggerId);
         }
