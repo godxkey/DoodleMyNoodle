@@ -54,7 +54,7 @@ public class CameraController : GamePresentationSystem<CameraController>
 
     private void LateUpdate()
     {
-        CamSize = DesiredWidth * Screen.height / Screen.width;
+        CamSize = DesiredWidth * Screen.height / Screen.width / 2f;
         UpdatePosition();
     }
 
