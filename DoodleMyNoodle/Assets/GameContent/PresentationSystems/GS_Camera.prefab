@@ -101,6 +101,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -153,10 +154,10 @@ MonoBehaviour:
     Type: 1
     OnlineFlags: -1
   _wallpaper: {fileID: 2508691285438419769}
-  _wallpaperVerticalSize: 10
+  _wallpaperSize: {x: 17.778, y: 10}
   Cam: {fileID: 4685809662094148431}
-  desiredWidth: 9.5
-  offsetFromGroupPosition: {x: 5, y: 2}
+  DesiredWidth: 19
+  OffsetFromGroupPosition: {x: 5, y: 2}
 --- !u!1 &5449155864576093604
 GameObject:
   m_ObjectHideFlags: 0

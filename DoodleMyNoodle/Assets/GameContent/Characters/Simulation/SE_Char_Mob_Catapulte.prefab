@@ -16,7 +16,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _bindedViewPrefab
       value: 
-      objectReference: {fileID: 4876621640926341173, guid: 5bebbef6fd5b0cb4998ff6135df9d201,
+      objectReference: {fileID: 4876621640926341173, guid: c852cee00f84e6e41a8367ae843cdfe4,
         type: 3}
     - target: {fileID: -6450381012629423667, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
@@ -36,12 +36,12 @@ PrefabInstance:
     - target: {fileID: 1983468408252183681, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 10.65
       objectReference: {fileID: 0}
     - target: {fileID: 1983468408252183681, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.75
       objectReference: {fileID: 0}
     - target: {fileID: 1983468408252183681, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
@@ -56,17 +56,17 @@ PrefabInstance:
     - target: {fileID: 1983468408252183681, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1983468408252183681, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1983468408252183681, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1983468408252183681, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
@@ -86,12 +86,12 @@ PrefabInstance:
     - target: {fileID: 2401102004981749674, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: DistanceFromFrontTarget
-      value: 8
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 2678156252502307406, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: StartingItems.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2678156252502307406, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
@@ -118,14 +118,29 @@ PrefabInstance:
         type: 3}
       propertyPath: Action
       value: 
-      objectReference: {fileID: 4927122388077845320, guid: fba0739fe83d04f4b9aaed2b34569e6d,
+      objectReference: {fileID: -4801357984810749253, guid: cb2d84b38a33bb849b85f60606d83a3f,
         type: 3}
+    - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: ActEvery
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: AttackAction
       value: 
       objectReference: {fileID: 4927122388077845320, guid: 21aabd55c5a13a44db4436c738489cc8,
         type: 3}
+    - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: PrepareInAdvance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: MaxDistanceFromTarget
+      value: 11.1
+      objectReference: {fileID: 0}
     - target: {fileID: 8689866959615521493, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: Mode
