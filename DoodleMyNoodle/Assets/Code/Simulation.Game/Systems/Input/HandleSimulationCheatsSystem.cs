@@ -49,6 +49,12 @@ public class SimInputCheatSoloPlay : SimCheatInput
     public int PawnIndex;
 }
 
+[NetSerializable]
+public class SimInputCheatPlayerSpeed : SimCheatInput
+{
+    public fix PlayerGroupSpeed;
+}
+
 public struct CheatsAllItemElement : IBufferElementData
 {
     public Entity ItemPrefab;
@@ -255,6 +261,12 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 .WithStructuralChanges()
                 .Run();
 
+                break;
+            }
+
+            case SimInputCheatPlayerSpeed playerSpeed:
+            {
+                SetComponent<MoveSpeed>(GetSingletonEntity<PlayerGroupDataTag>(), playerSpeed.PlayerGroupSpeed);
                 break;
             }
         }

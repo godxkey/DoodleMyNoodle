@@ -187,5 +187,14 @@ public static class SimulationCheats
             PlayerId = localPlayerInfo.SimPlayerId,
             PawnIndex =  playerIndex
         });
+
+    }
+    [ConsoleCommand(Description = "Set the player group speed", EnableGroup = LOCAL_PLAYER_GROUP)]
+    public static void CheatPlayerSpeed(float playerSpeed)
+    {
+        PresentationHelpers.SubmitInput(new SimInputCheatPlayerSpeed()
+        {
+            PlayerGroupSpeed = (fix)playerSpeed
+        });
     }
 }
