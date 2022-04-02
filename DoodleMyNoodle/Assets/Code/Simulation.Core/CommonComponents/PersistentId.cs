@@ -64,7 +64,7 @@ public static class PersistentIdExtensions
     public static PersistentId MakeUniquePersistentId(this ISimWorldReadWriteAccessor accessor)
     {
         // we assume next persisten id exist
-        NextPersistentId nextPersistentId = accessor.GetSingleton<NextPersistentId>();
+        NextPersistentId nextPersistentId = accessor.GetOrCreateSingleton<NextPersistentId>();
         nextPersistentId.NextId.Value++;
 
         if (nextPersistentId.NextId == PersistentId.Invalid)

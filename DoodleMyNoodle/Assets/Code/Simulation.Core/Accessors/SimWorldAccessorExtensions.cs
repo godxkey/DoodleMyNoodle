@@ -91,6 +91,17 @@ public static class SimWorldAccessorExtensions
         accessor.SetSingleton(componentData);
     }
 
+    public static T GetOrCreateSingleton<T>(this ISimWorldReadWriteAccessor accessor)
+        where T : struct, IComponentData
+    {
+        if (!accessor.HasSingleton<T>())
+        {
+            accessor.CreateNamedSingleton<T>();
+        }
+
+        return accessor.GetSingleton<T>();
+    }
+
     private static Entity CreateNamedSingleton<T>(this ISimWorldWriteAccessor accessor)
         where T : struct, IComponentData
     {
