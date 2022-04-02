@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Archer_Grenade_Explosion
+  m_Name: SE_Action_Archer_Grenade_Explosion_AoE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: b3c0319d86fe74549847a5c632230de6
+  _guid: a79a5e268b22337498f2afa9f5d2265b
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionExecuteMultiple
+  Value: GameActionAOE
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -74,8 +74,12 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionExecuteMultiple/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionAOE/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        GameActionPrefabs:
-        - {fileID: 2784291058542494111, guid: 5f77c7787f84b2948a8881fd740ba051, type: 3}
-        - {fileID: 2784291058542494111, guid: a79a5e268b22337498f2afa9f5d2265b, type: 3}
+        ActorFilter: 2
+        Shape: 0
+        BoxSize: {x: 1, y: 1}
+        CircleRadius: 2
+        InstigatorOffset: {x: 0, y: 0}
+        Actions:
+        - {fileID: 2784291058542494111, guid: 0f78fe240ab748b40b8fa7ea5bb71bfe, type: 3}
