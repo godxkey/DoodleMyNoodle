@@ -18,7 +18,7 @@ public struct SystemRequestExplosion : ISingletonBufferElementData
     public Entity LastInstigator;
     public fix2 Position;
     public fix Radius;
-    public int Damage;
+    public fix Damage;
     public bool DestroyTiles;
 }
 
@@ -137,7 +137,7 @@ public class ApplyExplosionSystem : SimGameSystemBase
 
 internal static partial class CommonWrites
 {
-    public static void RequestExplosion(ISimGameWorldReadWriteAccessor accessor, Entity instigator, fix2 position, fix radius, int damage, bool destroyTiles)
+    public static void RequestExplosion(ISimGameWorldReadWriteAccessor accessor, Entity instigator, fix2 position, fix radius, fix damage, bool destroyTiles)
     {
         SystemRequestExplosion request = new SystemRequestExplosion()
         {

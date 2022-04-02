@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8841453195666950856}
   - component: {fileID: -1943092824245740565}
   - component: {fileID: 1320516758862472843}
-  - component: {fileID: 1623917740869191825}
+  - component: {fileID: 3963825375573164001}
   m_Layer: 14
   m_Name: SE_Grenade
   m_TagString: Untagged
@@ -91,8 +91,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07961ffee0da65e4daa96b88fad5ddf7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Entries: []
---- !u!114 &1623917740869191825
+  Entries:
+  - Action: {fileID: -4801357984810749253, guid: b3c0319d86fe74549847a5c632230de6,
+      type: 3}
+    AtLifetime: 3
+--- !u!114 &3963825375573164001
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
