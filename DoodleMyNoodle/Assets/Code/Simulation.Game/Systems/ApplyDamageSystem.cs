@@ -44,6 +44,7 @@ public struct HealthChangeRequestData : IBufferElementData
     public Entity ActionOnHealthChanged;
     public Entity ActionOnExtremeReached;
     public uint EffectGroupID;
+    public bool IsAutoAttack;
 }
 
 [AlwaysUpdateSystem]
@@ -81,11 +82,12 @@ public class ApplyDamageSystem : SimGameSystemBase
                 healthChangeData.Amount, 
                 healthChangeData.EffectGroupID,
                 healthChangeData.ActionOnHealthChanged,
-                healthChangeData.ActionOnExtremeReached);
+                healthChangeData.ActionOnExtremeReached,
+                healthChangeData.IsAutoAttack);
         }
     }
 
-    private void ProcessHealthChange(Entity target, Entity lastPhysicalInstigator, Entity firstPhyisicalInstigator, fix amount, uint effectGroupID, Entity actionOnHealthChanged, Entity actionOnExtremeReached)
+    private void ProcessHealthChange(Entity target, Entity lastPhysicalInstigator, Entity firstPhyisicalInstigator, fix amount, uint effectGroupID, Entity actionOnHealthChanged, Entity actionOnExtremeReached, bool IsAutoAttack)
     {
         fix shieldDelta = 0;
         fix hpDelta = 0;
@@ -203,7 +205,6 @@ public class ApplyDamageSystem : SimGameSystemBase
             }
 
             // Game Action to trigger on damaged done
-
             if (hpDelta > 0)
             {
                 CommonWrites.RequestExecuteGameAction(Accessor, lastPhysicalInstigator, actionOnHealthChanged, target);
@@ -330,6 +331,11 @@ internal static partial class CommonWrites
         };
 
         accessor.GetExistingSystem<ApplyDamageSystem>().RequestHealthChange(request);
+    }
+
+    public static void RequestHealthChange(ISimGameWorldReadWriteAccessor accessor, HealthChangeRequestData healthChangeRequest) 
+    {
+        accessor.GetExistingSystem<ApplyDamageSystem>().RequestHealthChange(healthChangeRequest);
     }
 
     public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, Entity LastPhysicalInstigator, NativeArray<Entity> targets, fix amount, Entity actionOnHealthChanged, Entity actionOnExtremeReached, uint effectGroupID = uint.MaxValue)
