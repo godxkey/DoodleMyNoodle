@@ -13,6 +13,7 @@ public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings
     public class SettingsAuth : GameActionSettingAuthBase
     {
         public fix Damage;
+        public bool IsAutoAttack = false;
         public GameObject OnHealthChangedGameActionPrefab;
         public GameObject OnExtremeReachedGameActionPrefab;
 
@@ -21,6 +22,7 @@ public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings
             dstManager.AddComponentData(entity, new Settings()
             {
                 Damage = Damage,
+                IsAutoAttack = IsAutoAttack,
                 OnHealthChangedActionEntity = conversionSystem.GetPrimaryEntity(OnHealthChangedGameActionPrefab),
                 OnExtremeReachedActionEntity = conversionSystem.GetPrimaryEntity(OnExtremeReachedGameActionPrefab),
             });
@@ -38,6 +40,7 @@ public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings
     public struct Settings : IComponentData
     {
         public fix Damage;
+        public bool IsAutoAttack;
         public Entity OnHealthChangedActionEntity;
         public Entity OnExtremeReachedActionEntity;
     }
@@ -53,7 +56,19 @@ public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings
         for (int i = 0; i < input.Context.Targets.Length; i++)
         {
             var target = input.Context.Targets[i];
-            CommonWrites.RequestDamage(input.Accessor, input.Context.LastPhysicalInstigator, target, settings.Damage, settings.OnHealthChangedActionEntity, settings.OnExtremeReachedActionEntity);
+
+            HealthChangeRequestData healthChangeRequestData = new HealthChangeRequestData()
+            {
+                LastPhysicalInstigator = input.Context.LastPhysicalInstigator,
+                FirstPhysicalInstigator = input.Context.FirstPhysicalInstigator,
+                Target = target,
+                Amount = settings.Damage,
+                ActionOnHealthChanged = settings.OnHealthChangedActionEntity,
+                ActionOnExtremeReached = settings.OnExtremeReachedActionEntity,
+                IsAutoAttack = settings.IsAutoAttack
+            };
+
+            CommonWrites.RequestHealthChange(input.Accessor, healthChangeRequestData);
 
             if (input.Accessor.TryGetComponent(target, out FixTranslation targetTranslation))
             {
