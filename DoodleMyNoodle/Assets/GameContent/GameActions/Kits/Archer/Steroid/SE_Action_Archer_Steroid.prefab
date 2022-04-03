@@ -64,6 +64,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionExecuteMultiple
+  ExecuteOnSelf: 0
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -78,4 +81,4 @@ MonoBehaviour:
       data:
         GameActionPrefabs:
         - {fileID: 2784291058542494111, guid: 6b619160431c3bb4596a318c6cde13f8, type: 3}
-        - {fileID: 2784291058542494111, guid: b40d1fdc6eec5324a97c63dd453dcdae, type: 3}
+        - {fileID: 2784291058542494111, guid: d0895fa2f7ba0554a8b26782cf2a2711, type: 3}

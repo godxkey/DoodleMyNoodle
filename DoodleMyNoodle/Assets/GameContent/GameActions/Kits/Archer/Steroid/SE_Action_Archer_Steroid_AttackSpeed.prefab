@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Archer_Steroid_Self_AttackSpeed
+  m_Name: SE_Action_Archer_Steroid_AttackSpeed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -64,6 +64,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionStatusEffect
+  ExecuteOnSelf: 1
+  ExecuteOnFirstInstigator: 1
+  ExecuteOnLastInstigator: 0
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}

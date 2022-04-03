@@ -18,6 +18,10 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     // Game Action
     public string Value;
 
+    public bool ExecuteOnSelf = false;
+    public bool ExecuteOnFirstInstigator = false;
+    public bool ExecuteOnLastInstigator = false;
+
     [SerializeReference]
     [AlwaysExpand]
     public List<GameActionSettingAuthBase> GameActionSettings = new List<GameActionSettingAuthBase>();
@@ -27,6 +31,9 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData(entity, GameActionBank.GetActionId(Value));
+
+        if (ExecuteOnSelf)
+            dstManager.AddComponentData(entity, new GameActionSettingOnSelf() { ExecuteOnFirstInstigator = ExecuteOnFirstInstigator, ExecuteOnLastInstigator = ExecuteOnLastInstigator });
 
         // Update list of GameActionSettingAuth by adding any missing instances and removing any extra
         UpdateGameActionSettingsList();
