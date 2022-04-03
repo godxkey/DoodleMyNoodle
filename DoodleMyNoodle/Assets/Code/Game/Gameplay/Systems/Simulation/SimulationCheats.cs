@@ -197,4 +197,22 @@ public static class SimulationCheats
             PlayerGroupSpeed = (fix)playerSpeed
         });
     }
+
+    [ConsoleCommand(Description = "Fred's test", EnableGroup = LOCAL_PLAYER_GROUP)]
+    public static void CheatTestFred()
+    {
+        var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
+
+        if (localPlayerInfo == null)
+        {
+            Log.Warning("No local player found");
+            return;
+        }
+
+        PresentationHelpers.SubmitInput(new SimInputCheatTestFred()
+        {
+            PlayerId = localPlayerInfo.SimPlayerId,
+        });
+
+    }
 }

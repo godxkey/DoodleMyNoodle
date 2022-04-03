@@ -55,6 +55,12 @@ public class SimInputCheatPlayerSpeed : SimCheatInput
     public fix PlayerGroupSpeed;
 }
 
+[NetSerializable]
+public class SimInputCheatTestFred : SimCheatInput
+{
+    public PersistentId PlayerId;
+}
+
 public struct CheatsAllItemElement : IBufferElementData
 {
     public Entity ItemPrefab;
@@ -269,6 +275,27 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 SetComponent<MoveSpeed>(GetSingletonEntity<PlayerGroupDataTag>(), playerSpeed.PlayerGroupSpeed);
                 break;
             }
+
+            case SimInputCheatTestFred testFred:
+            {
+                Entity player = CommonReads.FindPlayerEntity(Accessor, testFred.PlayerId);
+
+                if (EntityManager.Exists(player) &&
+                    EntityManager.TryGetComponent(player, out ControlledEntity pawn))
+                {
+                    EntityManager.AddComponentData(pawn, new DamageProcessor()
+                    {
+                        FunctionId = GameFunctions.GetId(DamageProcessorTest)
+                    });
+                }
+                break;
+            }
         }
     }
+
+    [RegisterGameFunction]
+    public static readonly GameFunction<GameFunctionDamageProcessorArg> DamageProcessorTest = (ref GameFunctionDamageProcessorArg arg) =>
+    {
+        arg.RemainingDamage = 0;
+    };
 }

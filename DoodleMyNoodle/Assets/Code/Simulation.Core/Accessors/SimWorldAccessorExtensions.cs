@@ -11,7 +11,7 @@ public static class SimWorldAccessorExtensions
         }
         else
         {
-            accessor.AddComponent<T>(entity, componentData);
+            accessor.AddComponentData<T>(entity, componentData);
         }
     }
 

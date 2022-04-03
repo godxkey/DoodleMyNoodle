@@ -463,7 +463,7 @@ public interface ISimWorldWriteAccessor
     /// <param name="componentData">The data to set.</param>
     /// <typeparam name="T">The type of component.</typeparam>
     /// <returns></returns>
-    bool AddComponent<T>(Entity entity, T componentData) where T : struct, IComponentData;
+    bool AddComponentData<T>(Entity entity, T componentData) where T : struct, IComponentData;
 
     /// <summary>
     /// Removes a chunk component from the specified entity. Returns false if the entity did not have the component.

@@ -12,7 +12,14 @@ public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings
     [GameActionSettingAuth(typeof(Settings))]
     public class SettingsAuth : GameActionSettingAuthBase
     {
-        public fix Damage;
+        public enum Type
+        {
+            Heal,
+            Damage
+        }
+
+        public Type ChangeType = Type.Damage;
+        public float Amount = 1;
         public bool IsAutoAttack = false;
         public GameObject OnHealthChangedGameActionPrefab;
         public GameObject OnExtremeReachedGameActionPrefab;
@@ -21,7 +28,7 @@ public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings
         {
             dstManager.AddComponentData(entity, new Settings()
             {
-                Damage = Damage,
+                Delta = (fix)(ChangeType == Type.Damage ? -Amount : Amount),
                 IsAutoAttack = IsAutoAttack,
                 OnHealthChangedActionEntity = conversionSystem.GetPrimaryEntity(OnHealthChangedGameActionPrefab),
                 OnExtremeReachedActionEntity = conversionSystem.GetPrimaryEntity(OnExtremeReachedGameActionPrefab),
@@ -39,17 +46,13 @@ public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings
 
     public struct Settings : IComponentData
     {
-        public fix Damage;
+        public fix Delta;
         public bool IsAutoAttack;
         public Entity OnHealthChangedActionEntity;
         public Entity OnExtremeReachedActionEntity;
     }
 
-    protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
-    {
-        return new ExecutionContract();
-        // n.b. maybe entity or position in the future ?
-    }
+    protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings) => null;
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
@@ -62,7 +65,7 @@ public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings
                 LastPhysicalInstigator = input.Context.LastPhysicalInstigator,
                 FirstPhysicalInstigator = input.Context.FirstPhysicalInstigator,
                 Target = target,
-                Amount = settings.Damage,
+                Amount = settings.Delta,
                 ActionOnHealthChanged = settings.OnHealthChangedActionEntity,
                 ActionOnExtremeReached = settings.OnExtremeReachedActionEntity,
                 IsAutoAttack = settings.IsAutoAttack

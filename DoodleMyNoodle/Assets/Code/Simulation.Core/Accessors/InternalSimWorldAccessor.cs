@@ -33,7 +33,7 @@ public class InternalSimWorldAccessor : SimWorldReadAccessor, ISimWorldReadWrite
     void ISimWorldWriteAccessor.AddComponentData<T>(EntityQuery entityQuery, NativeArray<T> componentArray)
         => EntityManager.AddComponentData<T>(entityQuery, componentArray);
 
-    bool ISimWorldWriteAccessor.AddComponent<T>(Entity entity, T componentData)
+    bool ISimWorldWriteAccessor.AddComponentData<T>(Entity entity, T componentData)
         => EntityManager.AddComponentData<T>(entity, componentData);
 
     void ISimWorldWriteAccessor.AddComponentObject(Entity entity, object componentData)

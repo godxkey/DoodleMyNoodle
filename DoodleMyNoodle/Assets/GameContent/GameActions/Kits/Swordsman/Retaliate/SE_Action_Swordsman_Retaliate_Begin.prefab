@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Swordsman_Protect
+  m_Name: SE_Action_Swordsman_Retaliate_Begin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionStatusEffect
+  Value: GameActionRetaliateBegin
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 11400000, guid: 2c70dd4912b456641948a9052ea2da1f, type: 2}

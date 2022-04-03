@@ -106,7 +106,7 @@ internal static partial class CommonWrites
     {
         if (!accessor.HasComponent<T>(entity))
         {
-            accessor.AddComponent(entity, new T { Value = value });
+            accessor.AddComponentData(entity, new T { Value = value });
         }
     }
 
@@ -115,7 +115,7 @@ internal static partial class CommonWrites
     {
         if (!accessor.HasComponent<T>(entity))
         {
-            accessor.AddComponent(entity, new T { Value = value });
+            accessor.AddComponentData(entity, new T { Value = value });
         }
     }
 }

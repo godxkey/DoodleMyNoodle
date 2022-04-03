@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -8620854387768135619}
   - component: {fileID: 3648472793949699111}
   m_Layer: 0
-  m_Name: SE_Item_Shield
+  m_Name: SE_Item_Retaliate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

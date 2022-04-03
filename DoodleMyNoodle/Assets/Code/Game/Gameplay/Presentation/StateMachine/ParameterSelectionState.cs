@@ -51,6 +51,12 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             return;
         }
 
+        if (_surveySMBlackboard.ParametersDescriptions == null)
+        {
+            StateMachine.TransitionTo(UIStateType.Gameplay);
+            return;
+        }
+
         _surveyStateMachine.TransitionTo(new SurveyState());
     }
 
