@@ -260,6 +260,20 @@ public abstract class GameAction<TSetting> : GameAction where TSetting : struct,
     public override bool Execute(in ExecInputs input, ref ExecOutput output)
     {
         var settings = input.Accessor.GetComponent<TSetting>(input.Context.Action);
+
+        if (input.Accessor.TryGetComponent(input.Context.Action, out GameActionSettingOnSelf gameActionSettingOnSelf))
+        {
+            var targets = new NativeArray<Entity>(2, Allocator.Temp);
+
+            targets[0] = gameActionSettingOnSelf.ExecuteOnFirstInstigator ? input.Context.FirstPhysicalInstigator : Entity.Null;
+            targets[1] = gameActionSettingOnSelf.ExecuteOnLastInstigator ? input.Context.LastPhysicalInstigator : Entity.Null;
+
+            ExecInputs onSelfInput = new ExecInputs(input.Accessor, CommonReads.GetActionContext(input.Accessor, input.Context.ActionInstigatorActor, input.Context.Action, targets), input.Parameters);
+
+            return Execute(in onSelfInput, ref output, ref settings);
+        }
+        
+
         return Execute(in input, ref output, ref settings);
     }
 

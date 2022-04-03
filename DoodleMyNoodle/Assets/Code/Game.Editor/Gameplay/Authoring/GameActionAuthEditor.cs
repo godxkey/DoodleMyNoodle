@@ -20,6 +20,10 @@ public class GameActionAuthEditor : Editor
     private SerializedProperty _gameActionProp;
     private SerializedProperty _gameActionSettingsProp;
 
+    private SerializedProperty _gameActionSettingsExecuteOnSelf;
+    private SerializedProperty _gameActionSettingsExecuteOnFirstInstigator;
+    private SerializedProperty _gameActionSettingsExecuteOnLastInstigator;
+
     private SerializedProperty _sfxProp;
     private SerializedProperty _animationProp;
     private SerializedProperty _surveyProp;
@@ -30,6 +34,10 @@ public class GameActionAuthEditor : Editor
     {
         _gameActionProp = serializedObject.FindProperty(nameof(GameActionAuth.Value));
         _gameActionSettingsProp = serializedObject.FindProperty(nameof(GameActionAuth.GameActionSettings));
+
+        _gameActionSettingsExecuteOnSelf = serializedObject.FindProperty(nameof(GameActionAuth.ExecuteOnSelf));
+        _gameActionSettingsExecuteOnFirstInstigator = serializedObject.FindProperty(nameof(GameActionAuth.ExecuteOnFirstInstigator));
+        _gameActionSettingsExecuteOnLastInstigator = serializedObject.FindProperty(nameof(GameActionAuth.ExecuteOnLastInstigator));
 
         _sfxProp = serializedObject.FindProperty(nameof(GameActionAuth.SfxOnUse));
         _animationProp = serializedObject.FindProperty(nameof(GameActionAuth.Animation));
@@ -91,6 +99,13 @@ public class GameActionAuthEditor : Editor
                     EditorGUILayout.PropertyField(_gameActionSettingsProp.GetArrayElementAtIndex(i));
                 }
             }
+        }
+
+        EditorGUILayout.PropertyField(_gameActionSettingsExecuteOnSelf);
+        if (_gameActionSettingsExecuteOnSelf.boolValue)
+        {
+            EditorGUILayout.PropertyField(_gameActionSettingsExecuteOnFirstInstigator);
+            EditorGUILayout.PropertyField(_gameActionSettingsExecuteOnLastInstigator);
         }
 
         DrawLine(10);
