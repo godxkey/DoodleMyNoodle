@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 8682441413767755336}
   - component: {fileID: 1633518455670688980}
   - component: {fileID: 8719610248637448263}
+  - component: {fileID: 6217250990186759839}
   m_Layer: 9
   m_Name: SE_Char_Player
   m_TagString: Untagged
@@ -200,10 +201,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60baf0c5aa469494e81d5e436f9e57b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultDamageMultiplier:
-    RawValue: 4294967296
-  DefaultDamageReceivedMultiplier:
-    RawValue: 4294967296
+  BaseDamageMultiplier: 1
+  BaseDamageReceivedMultiplier: 1
 --- !u!114 &8719610248637448263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,3 +217,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DefaultAttackSpeed:
     RawValue: 4294967296
+--- !u!114 &6217250990186759839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305753096738685599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5de2e26949e354f4496959ef22a3d991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
