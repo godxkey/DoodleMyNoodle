@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Swordsman_Retaliate_End
+  m_Name: SE_Action_Swordsman_Retaliate_Projectile_Damage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 50b211561a40e9340995b779e974f157
+  _guid: a8acb6681987bed46af32366f40e92a8
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,13 +63,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameEffectRetaliate+GameActionEnd
+  Value: GameEffectRetaliate+GameActionShieldDamage
   UseInstigatorAsTarget: 0
   ExecuteOnFirstInstigator: 0
   ExecuteOnLastInstigator: 0
   InstigatorAsTargetType: 1
-  GameActionSettings:
-  - id: 0
+  GameActionSettings: []
   SfxOnUse: {fileID: 0}
   Animation: {fileID: 0}
   InstigatorVFX: {fileID: 0}
@@ -77,13 +76,3 @@ MonoBehaviour:
   Surveys: []
   references:
     version: 1
-    00000000:
-      type: {class: GameEffectRetaliate/GameActionEnd/SettingsAuth, ns: , asm: Simulation.Game}
-      data:
-        ProjectilePrefab: {fileID: 2979635307066548861, guid: 8fbfacb875aaa3b47a2cbde6039a2b7b,
-          type: 3}
-        ThrowVelocity: {x: 8, y: 0}
-        SpawnOffset: {x: 0, y: 0.55}
-        MinDamage: 1
-        MaxDamage: 15
-        DamagePerMitigatedDamage: 1

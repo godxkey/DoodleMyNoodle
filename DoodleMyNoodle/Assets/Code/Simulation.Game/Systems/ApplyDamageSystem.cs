@@ -316,7 +316,7 @@ public class ApplyDamageSystem : SimGameSystemBase
 
 internal static partial class CommonWrites
 {
-    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity lastPhysicalInstigator, NativeArray<DistanceHit> hits, fix amount, Entity actionOnHealthChanged, Entity actionOnExtremeReached, uint effectGroupID = 0)
+    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity lastPhysicalInstigator, NativeArray<DistanceHit> hits, fix amount, Entity actionOnHealthChanged = default, Entity actionOnExtremeReached = default, uint effectGroupID = 0)
     {
         var sys = accessor.GetExistingSystem<ApplyDamageSystem>();
 
@@ -342,7 +342,7 @@ internal static partial class CommonWrites
             sys.RequestHealthChange(request);
         }
     }
-    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity lastPhysicalInstigator, NativeArray<Entity> targets, fix amount, Entity actionOnHealthChanged, Entity actionOnExtremeReached, uint effectGroupID = 0)
+    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity lastPhysicalInstigator, NativeArray<Entity> targets, fix amount, Entity actionOnHealthChanged = default, Entity actionOnExtremeReached = default, uint effectGroupID = 0)
     {
         var sys = accessor.GetExistingSystem<ApplyDamageSystem>();
 
@@ -369,7 +369,7 @@ internal static partial class CommonWrites
         }
     }
 
-    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity lastPhysicalInstigator, Entity target, fix amount, Entity actionOnHealthChanged, Entity actionOnExtremeReached, uint effectGroupID = 0)
+    public static void RequestDamage(ISimGameWorldReadWriteAccessor accessor, Entity lastPhysicalInstigator, Entity target, fix amount, Entity actionOnHealthChanged = default, Entity actionOnExtremeReached = default, uint effectGroupID = 0)
     {
         Entity firstPhysicalInstigator = Entity.Null;
         if (accessor.TryGetComponent(lastPhysicalInstigator, out FirstInstigator firstInstigatorComponent))
@@ -396,13 +396,13 @@ internal static partial class CommonWrites
         accessor.GetExistingSystem<ApplyDamageSystem>().RequestHealthChange(healthChangeRequest);
     }
 
-    public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, Entity lastPhysicalInstigator, NativeArray<Entity> targets, fix amount, Entity actionOnHealthChanged, Entity actionOnExtremeReached, uint effectGroupID = 0)
+    public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, Entity lastPhysicalInstigator, NativeArray<Entity> targets, fix amount, Entity actionOnHealthChanged = default, Entity actionOnExtremeReached = default, uint effectGroupID = 0)
     {
         // for now a heal request is a negative damage request
         RequestDamage(accessor, lastPhysicalInstigator, targets, -amount, actionOnHealthChanged, actionOnExtremeReached, effectGroupID);
     }
 
-    public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, Entity lastPhysicalInstigator, Entity target, fix amount, Entity actionOnHealthChanged, Entity actionOnExtremeReached, uint effectGroupID = 0)
+    public static void RequestHeal(ISimGameWorldReadWriteAccessor accessor, Entity lastPhysicalInstigator, Entity target, fix amount, Entity actionOnHealthChanged = default, Entity actionOnExtremeReached = default, uint effectGroupID = 0)
     {
         // for now a heal request is a negative damage request
         RequestDamage(accessor, lastPhysicalInstigator, target, -amount, actionOnHealthChanged, actionOnExtremeReached, effectGroupID);
