@@ -8,11 +8,14 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class GameEffectAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
+    [Header("Simulation")]
     public float Duration;
-
     public GameObject GameActionOnBegin;
     public GameObject GameActionOnTick;
     public GameObject GameActionOnEnd;
+    
+    [Header("Presentation")]
+    public GameObject CharacterVFXPrefab;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
