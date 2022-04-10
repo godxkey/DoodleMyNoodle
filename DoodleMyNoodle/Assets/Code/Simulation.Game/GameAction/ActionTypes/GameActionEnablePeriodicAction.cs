@@ -38,6 +38,6 @@ public class GameActionEnablePeriodicAction : GameAction<GameActionEnablePeriodi
             input.Accessor.SetComponent<RemainingPeriodicActionCount>(input.Context.ActionInstigatorActor, settings.UsageCount);
         }
 
-        return false;
+        return true;
     }
 }
