@@ -63,7 +63,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionStatusEffect
+  Value: GameActionGameEffect
+  UseInstigatorAsTarget: 0
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -74,8 +78,7 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionStatusEffect/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionGameEffect/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Type: 7
-        StackAmount: 1
-        Remove: 0
+        GameEffect: {fileID: 2784291058542494111, guid: 8f3209c30ec42604e9d6c2b68188368e,
+          type: 3}
