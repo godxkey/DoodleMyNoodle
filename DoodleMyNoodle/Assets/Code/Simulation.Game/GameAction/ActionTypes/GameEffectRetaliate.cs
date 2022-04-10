@@ -90,13 +90,19 @@ public class GameEffectRetaliate
 
         protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
         {
-            var fireSettings = FireProjectileSettings.Default;
-            fireSettings.SpawnOffset = settings.SpawnOffset;
-            Entity projectile = CommonWrites.FireProjectile(input.Accessor, input.Context.InstigatorSet, settings.ProjectilePrefab, settings.ThrowVelocity, fireSettings);
             fix mitigatedDamage = input.Accessor.GetComponent<EffectRetaliateDamageCounter>(input.Context.ActionInstigatorActor).MitigatedDamage;
-            fix totalDamage = clamp(mitigatedDamage * settings.DamagePerMitigatedDamage, settings.MinDamage, settings.MaxDamage);
 
-            input.Accessor.AddComponentData<ShieldDamage>(projectile, totalDamage);
+            if (mitigatedDamage > 0)
+            {
+                fix totalDamage = clamp(mitigatedDamage * settings.DamagePerMitigatedDamage, settings.MinDamage, settings.MaxDamage);
+
+                var fireSettings = FireProjectileSettings.Default;
+                fireSettings.SpawnOffset = settings.SpawnOffset;
+                Entity projectile = CommonWrites.FireProjectile(input.Accessor, input.Context.InstigatorSet, settings.ProjectilePrefab, settings.ThrowVelocity, fireSettings);
+
+                input.Accessor.AddComponentData<ShieldDamage>(projectile, totalDamage);
+            }
+
 
             return true;
         }
