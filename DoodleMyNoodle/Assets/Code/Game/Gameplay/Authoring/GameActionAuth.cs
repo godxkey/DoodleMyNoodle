@@ -18,9 +18,11 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     // Game Action
     public string Value;
 
-    public bool ExecuteOnSelf = false;
+    [FormerlySerializedAs("ExecuteOnSelf")]
+    public bool UseInstigatorAsTarget = false;
     public bool ExecuteOnFirstInstigator = false;
     public bool ExecuteOnLastInstigator = false;
+    public GameActionSettingUseInstigatorAsTarget.EType InstigatorAsTargetType = GameActionSettingUseInstigatorAsTarget.EType.FirstPhysicalInstigator;
 
     [SerializeReference]
     [AlwaysExpand]
@@ -32,8 +34,8 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     {
         dstManager.AddComponentData(entity, GameActionBank.GetActionId(Value));
 
-        if (ExecuteOnSelf)
-            dstManager.AddComponentData(entity, new GameActionSettingOnSelf() { ExecuteOnFirstInstigator = ExecuteOnFirstInstigator, ExecuteOnLastInstigator = ExecuteOnLastInstigator });
+        if (UseInstigatorAsTarget)
+            dstManager.AddComponentData(entity, new GameActionSettingUseInstigatorAsTarget() { Type = InstigatorAsTargetType });
 
         // Update list of GameActionSettingAuth by adding any missing instances and removing any extra
         UpdateGameActionSettingsList();

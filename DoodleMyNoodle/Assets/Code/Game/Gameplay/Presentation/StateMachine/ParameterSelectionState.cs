@@ -41,7 +41,8 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             GameAction objectGameAction = GameActionBank.GetAction(actionId);
 
             _surveySMBlackboard.UseContext = CommonReads.GetActionContext(SimWorld, InputParameter.ActionInstigator, InputParameter.ActionPrefab);
-            _surveySMBlackboard.ParametersDescriptions = objectGameAction.GetExecutionContract(SimWorld, InputParameter.ActionPrefab).ParameterTypes;
+            var execContract = objectGameAction.GetExecutionContract(SimWorld, InputParameter.ActionPrefab);
+            _surveySMBlackboard.ParametersDescriptions = execContract?.ParameterTypes;
         }
 
         if (_surveySMBlackboard.ActionAuth == null)
@@ -53,7 +54,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 
         if (_surveySMBlackboard.ParametersDescriptions == null)
         {
-            StateMachine.TransitionTo(UIStateType.Gameplay);
+            FinishAndSendSimInput();
             return;
         }
 

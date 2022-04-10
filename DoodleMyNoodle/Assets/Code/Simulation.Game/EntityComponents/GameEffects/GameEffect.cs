@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
-public struct GameEffect : IComponentData
+public struct GameEffectRemainingDuration : IComponentData
 {
     public fix RemainingTime;
 }
@@ -30,11 +30,6 @@ public struct GameEffectOnTickGameAction : IComponentData
 }
 
 public struct GameEffectOnEndGameAction : IComponentData
-{
-    public Entity Action;
-}
-
-public struct GameEffectOnInteruptGameAction : IComponentData
 {
     public Entity Action;
 }

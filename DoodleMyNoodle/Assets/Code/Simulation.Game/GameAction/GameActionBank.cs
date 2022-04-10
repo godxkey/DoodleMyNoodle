@@ -47,7 +47,7 @@ public static class GameActionBank
             TypeId.Get(gameActionType) = id;
 
             s_idToGameAction.Add(id, instance);
-            s_nameToGameAction.Add(gameActionType.Name, instance);
+            s_nameToGameAction.Add(gameActionType.FullName, instance);
 
             id++;
         }

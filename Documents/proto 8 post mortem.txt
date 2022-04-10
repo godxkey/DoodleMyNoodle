@@ -1,0 +1,2 @@
+- C'était dure de codé le retaliate. Principalement la partie où le swordsman doit faire une attaque melee de X damage, X étant le dégat encaissé.
+- HealthChangeRequestData.ActionOnExtremeReached me semble dure à codé avec. Peut-être qu'on devrait ajouter des OnKillAction component sur les items/effects

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 public struct AddGameEffectRequest : ISingletonBufferElementData
 {
-    public Entity GameEffect;
+    public Entity GameEffectPrefab;
     public Entity Target;
     public Entity Instigator;
 }
@@ -18,7 +18,7 @@ public struct AddGameEffectRequest : ISingletonBufferElementData
 [UpdateBefore(typeof(ExecuteGameActionSystem))]
 public class GameEffectSystem : SimGameSystemBase
 {
-    List<Entity> EntitiesGameEffectToUpdate = new List<Entity>();
+    List<Entity> _entitiesGameEffectToUpdate = new List<Entity>();
 
     protected override void OnUpdate()
     {
@@ -36,13 +36,13 @@ public class GameEffectSystem : SimGameSystemBase
     {
         fix deltaTime = Time.DeltaTime;
 
-        Entities.ForEach((Entity entity, ref GameEffect effect) =>
+        Entities.ForEach((Entity entity, ref GameEffectRemainingDuration effect) =>
         {
             effect.RemainingTime -= deltaTime;
 
             if (effect.RemainingTime < 0)
             {
-                EntitiesGameEffectToUpdate.Remove(entity);
+                _entitiesGameEffectToUpdate.Remove(entity);
 
                 if (EntityManager.TryGetComponent(entity, out GameEffectOnEndGameAction gameEffectOnEndGameAction))
                 {
@@ -61,15 +61,16 @@ public class GameEffectSystem : SimGameSystemBase
 
         foreach (AddGameEffectRequest addRequest in addGameEffectRequests)
         {
-            EntitiesGameEffectToUpdate.Add(addRequest.Target);
+            _entitiesGameEffectToUpdate.Add(addRequest.Target);
 
-            Entity newGameEffectEntity = EntityManager.Instantiate(addRequest.GameEffect);
+            Entity newGameEffectEntity = EntityManager.Instantiate(addRequest.GameEffectPrefab);
 
             EntityManager.AddComponentData(newGameEffectEntity, new GameEffectInfo()
             {
                 Instigator = addRequest.Instigator,
                 Owner = addRequest.Target
             });
+            EntityManager.AddComponentData(newGameEffectEntity, new FirstInstigator() { Value = addRequest.Target });
 
             if (EntityManager.TryGetComponent(newGameEffectEntity, out GameEffectOnBeginGameAction gameEffectOnBeginGameAction))
             {

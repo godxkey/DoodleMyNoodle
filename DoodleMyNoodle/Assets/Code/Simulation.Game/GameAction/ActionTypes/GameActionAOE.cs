@@ -105,8 +105,7 @@ public class GameActionAOE : GameAction<GameActionAOE.Settings>
             case Shape.Circle:
             {
                 NativeList<DistanceHit> hits = CommonReads.Physics.OverlapCircle(input.Accessor, aoeCenter, settings.Dimensions.x);
-                for (int i = 0; i < hits.Length; i++)
-                    newTargets.Add(hits[i].Entity);
+                hits.CopyToEntityList(newTargets);
                 break;
             }
 
@@ -121,14 +120,7 @@ public class GameActionAOE : GameAction<GameActionAOE.Settings>
                 throw new NotImplementedException();
         }
 
-        for (int i = newTargets.Length - 1; i >= 0; i--)
-        {
-            var filterInfo = CommonReads.GetActorFilterInfo(input.Accessor, newTargets[i]);
-            if (!Helpers.ActorFilterMatches(instigatorFilterInfo, filterInfo, settings.ActorFilter))
-            {
-                newTargets.RemoveAt(i);
-            }
-        }
+        CommonReads.FilterActors(input.Accessor, newTargets, instigatorFilterInfo, settings.ActorFilter);
 
         var gameActionSystem = input.Accessor.GetExistingSystem<ExecuteGameActionSystem>();
         var actions = input.Accessor.GetBuffer<SettingsAction>(input.Context.Action);

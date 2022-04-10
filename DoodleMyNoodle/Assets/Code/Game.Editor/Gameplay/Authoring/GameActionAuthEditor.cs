@@ -12,39 +12,38 @@ using UnityEngineX;
 public class GameActionAuthEditor : Editor
 {
     private static string[] s_availableTypeNames;
+    private static string[] s_availableTypeDisplayNames;
     private static Type[] s_availableTypes;
     // key : setting type / value : auth type
     private static GUIStyle s_primaryTitleFontStyle = null;
     private static GUIStyle s_secondaryTitleFontStyle = null;
 
-    private SerializedProperty _gameActionProp;
-    private SerializedProperty _gameActionSettingsProp;
+    private SerializedProperty _propGameAction;
+    private SerializedProperty _propGameActionSettings;
 
-    private SerializedProperty _gameActionSettingsExecuteOnSelf;
-    private SerializedProperty _gameActionSettingsExecuteOnFirstInstigator;
-    private SerializedProperty _gameActionSettingsExecuteOnLastInstigator;
+    private SerializedProperty _propUseInstigatorAsTarget;
+    private SerializedProperty _propInstigatorAsTargetType;
 
-    private SerializedProperty _sfxProp;
-    private SerializedProperty _animationProp;
-    private SerializedProperty _surveyProp;
-    private SerializedProperty _instigatorVFXProp;
-    private SerializedProperty _targetsVFXProp;
+    private SerializedProperty _propSfxOnUse;
+    private SerializedProperty _propAnimation;
+    private SerializedProperty _propSurveys;
+    private SerializedProperty _propInstigatorVFX;
+    private SerializedProperty _propTargetsVFXProp;
 
     private void OnEnable()
     {
-        _gameActionProp = serializedObject.FindProperty(nameof(GameActionAuth.Value));
-        _gameActionSettingsProp = serializedObject.FindProperty(nameof(GameActionAuth.GameActionSettings));
+        _propGameAction = serializedObject.FindProperty(nameof(GameActionAuth.Value));
+        _propGameActionSettings = serializedObject.FindProperty(nameof(GameActionAuth.GameActionSettings));
 
-        _gameActionSettingsExecuteOnSelf = serializedObject.FindProperty(nameof(GameActionAuth.ExecuteOnSelf));
-        _gameActionSettingsExecuteOnFirstInstigator = serializedObject.FindProperty(nameof(GameActionAuth.ExecuteOnFirstInstigator));
-        _gameActionSettingsExecuteOnLastInstigator = serializedObject.FindProperty(nameof(GameActionAuth.ExecuteOnLastInstigator));
+        _propUseInstigatorAsTarget = serializedObject.FindProperty(nameof(GameActionAuth.UseInstigatorAsTarget));
+        _propInstigatorAsTargetType = serializedObject.FindProperty(nameof(GameActionAuth.InstigatorAsTargetType));
 
-        _sfxProp = serializedObject.FindProperty(nameof(GameActionAuth.SfxOnUse));
-        _animationProp = serializedObject.FindProperty(nameof(GameActionAuth.Animation));
-        _surveyProp = serializedObject.FindProperty(nameof(GameActionAuth.Surveys));
+        _propSfxOnUse = serializedObject.FindProperty(nameof(GameActionAuth.SfxOnUse));
+        _propAnimation = serializedObject.FindProperty(nameof(GameActionAuth.Animation));
+        _propSurveys = serializedObject.FindProperty(nameof(GameActionAuth.Surveys));
 
-        _instigatorVFXProp = serializedObject.FindProperty(nameof(GameActionAuth.InstigatorVFX));
-        _targetsVFXProp = serializedObject.FindProperty(nameof(GameActionAuth.TargetsVFX));
+        _propInstigatorVFX = serializedObject.FindProperty(nameof(GameActionAuth.InstigatorVFX));
+        _propTargetsVFXProp = serializedObject.FindProperty(nameof(GameActionAuth.TargetsVFX));
 
         InitStaticData();
     }
@@ -58,21 +57,22 @@ public class GameActionAuthEditor : Editor
         DrawPrimaryTitle("Simulation");
 
         GUIContent label = EditorGUIUtilityX.TempContent("Game Action Type");
-        EditorGUILayoutX.SearchablePopupString(_gameActionProp, label, s_availableTypeNames);
+        int newIndex = EditorGUILayoutX.SearchablePopup(label, Array.IndexOf(s_availableTypeNames, _propGameAction.stringValue), s_availableTypeDisplayNames);
+        _propGameAction.stringValue = s_availableTypeNames.IsValidIndex(newIndex) ? s_availableTypeNames[newIndex] : "";
 
-        if (_gameActionProp.stringValue != "")
+        if (_propGameAction.stringValue != "")
         {
-            Type gameActionType = TypeUtility.FindType(_gameActionProp.stringValue, false);
+            Type gameActionType = TypeUtility.FindType(_propGameAction.stringValue, false);
             if (gameActionType != null)
             {
                 Type[] settingAuthTypes = GameActionSettingAuthBase.GetRequiredSettingAuthTypes(gameActionType);
 
                 // Remove extra setting in property list
-                for (int i = _gameActionSettingsProp.arraySize - 1; i >= 0; i--)
+                for (int i = _propGameActionSettings.arraySize - 1; i >= 0; i--)
                 {
                     if (castedTarget.GameActionSettings[i] == null || !settingAuthTypes.Contains(castedTarget.GameActionSettings[i].GetType()))
                     {
-                        _gameActionSettingsProp.DeleteArrayElementAtIndex(i);
+                        _propGameActionSettings.DeleteArrayElementAtIndex(i);
                         castedTarget.GameActionSettings.RemoveAt(i);
                     }
                 }
@@ -86,38 +86,37 @@ public class GameActionAuthEditor : Editor
 
                     if (!castedTarget.GameActionSettings.Any((x) => x.GetType() == currentAuthSettingType))
                     {
-                        _gameActionSettingsProp.InsertArrayElementAtIndex(_gameActionSettingsProp.arraySize);
-                        SerializedProperty currentGameActionSetting = _gameActionSettingsProp.GetArrayElementAtIndex(_gameActionSettingsProp.arraySize - 1);
+                        _propGameActionSettings.InsertArrayElementAtIndex(_propGameActionSettings.arraySize);
+                        SerializedProperty currentGameActionSetting = _propGameActionSettings.GetArrayElementAtIndex(_propGameActionSettings.arraySize - 1);
                         var newAuthSetting = Activator.CreateInstance(currentAuthSettingType);
                         currentGameActionSetting.managedReferenceValue = newAuthSetting;
                         castedTarget.GameActionSettings.Add((GameActionSettingAuthBase)newAuthSetting);
                     }
                 }
 
-                for (int i = 0; i < _gameActionSettingsProp.arraySize; i++)
+                for (int i = 0; i < _propGameActionSettings.arraySize; i++)
                 {
-                    EditorGUILayout.PropertyField(_gameActionSettingsProp.GetArrayElementAtIndex(i));
+                    EditorGUILayout.PropertyField(_propGameActionSettings.GetArrayElementAtIndex(i));
                 }
             }
         }
 
-        EditorGUILayout.PropertyField(_gameActionSettingsExecuteOnSelf);
-        if (_gameActionSettingsExecuteOnSelf.boolValue)
+        EditorGUILayout.PropertyField(_propUseInstigatorAsTarget);
+        if (_propUseInstigatorAsTarget.boolValue)
         {
-            EditorGUILayout.PropertyField(_gameActionSettingsExecuteOnFirstInstigator);
-            EditorGUILayout.PropertyField(_gameActionSettingsExecuteOnLastInstigator);
+            EditorGUILayout.PropertyField(_propInstigatorAsTargetType);
         }
 
         DrawLine(10);
 
         DrawPrimaryTitle("Presentation");
 
-        EditorGUILayout.PropertyField(_sfxProp);
-        EditorGUILayout.PropertyField(_animationProp);
-        EditorGUILayout.PropertyField(_surveyProp);
+        EditorGUILayout.PropertyField(_propSfxOnUse);
+        EditorGUILayout.PropertyField(_propAnimation);
+        EditorGUILayout.PropertyField(_propSurveys);
 
-        EditorGUILayout.PropertyField(_instigatorVFXProp);
-        EditorGUILayout.PropertyField(_targetsVFXProp);
+        EditorGUILayout.PropertyField(_propInstigatorVFX);
+        EditorGUILayout.PropertyField(_propTargetsVFXProp);
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -152,7 +151,8 @@ public class GameActionAuthEditor : Editor
         if (s_availableTypes == null)
         {
             s_availableTypes = TypeUtility.GetTypesDerivedFrom(typeof(GameAction)).ToArray();
-            s_availableTypeNames = s_availableTypes.Where(t => !t.IsAbstract).Select(t => t.Name).ToArray();
+            s_availableTypeNames = s_availableTypes.Where(t => !t.IsAbstract).Select(t => t.FullName).ToArray();
+            s_availableTypeDisplayNames = s_availableTypeNames.Select(n => n.Replace('+', '.')).ToArray();
         }
 
         if (s_primaryTitleFontStyle == null)

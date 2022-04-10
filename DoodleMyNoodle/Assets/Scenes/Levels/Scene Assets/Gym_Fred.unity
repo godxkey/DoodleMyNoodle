@@ -83882,7 +83882,7 @@ PrefabInstance:
     - target: {fileID: 7551162044909047762, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 987a47d4012e6fc4c8365e6a618abff0, type: 3}
@@ -83958,6 +83958,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SE_Char_Mob_Catapulte
+      objectReference: {fileID: 0}
+    - target: {fileID: 7551162044909047762, guid: 5f98758a031f4ec40800d055b6045ab2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f98758a031f4ec40800d055b6045ab2, type: 3}
@@ -84182,15 +84187,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4652520508204874155, guid: 987a47d4012e6fc4c8365e6a618abff0,
+        type: 3}
+      propertyPath: MaxValue
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 7551162044909047762, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_Name
       value: SE_Char_Mob_Brute
-      objectReference: {fileID: 0}
-    - target: {fileID: 7551162044909047762, guid: 987a47d4012e6fc4c8365e6a618abff0,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 987a47d4012e6fc4c8365e6a618abff0, type: 3}
@@ -84393,7 +84398,7 @@ PrefabInstance:
     - target: {fileID: 7551162044909047762, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 987a47d4012e6fc4c8365e6a618abff0, type: 3}
@@ -84555,6 +84560,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2588693983092512257, guid: 097810b178c4f86449cb0a071a8d1397,
+        type: 3}
+      propertyPath: StartingItems.Array.data[0].Item
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2588693983092512257, guid: 097810b178c4f86449cb0a071a8d1397,
+        type: 3}
+      propertyPath: StartingItems.Array.data[1].Item
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5890412712909477684, guid: 097810b178c4f86449cb0a071a8d1397,
         type: 3}
       propertyPath: m_RootOrder
@@ -84613,7 +84628,7 @@ PrefabInstance:
     - target: {fileID: 5890412712909477687, guid: 097810b178c4f86449cb0a071a8d1397,
         type: 3}
       propertyPath: m_Name
-      value: _Players_
+      value: Players
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 097810b178c4f86449cb0a071a8d1397, type: 3}

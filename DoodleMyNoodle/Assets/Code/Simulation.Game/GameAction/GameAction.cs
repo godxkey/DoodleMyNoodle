@@ -5,7 +5,6 @@ using Unity.Entities;
 using CCC.Fix2D;
 using UnityEngineX;
 using Unity.Collections;
-
 public partial class CommonReads
 {
     public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionInstigator, Entity actionEntity)
@@ -32,6 +31,26 @@ public partial class CommonReads
         if (lastPhysicalInstigator != actionInstigator && accessor.HasComponent<FixTranslation>(actionInstigator))
         {
             lastPhysicalInstigator = actionInstigator;
+        }
+
+        // adjust target if action specifies so
+        if (accessor.TryGetComponent(actionEntity, out GameActionSettingUseInstigatorAsTarget gameActionSettingOnSelf))
+        {
+            if (!targets.IsCreated || targets.Length != 1)
+                targets = new NativeArray<Entity>(1, Allocator.Temp);
+
+            switch (gameActionSettingOnSelf.Type)
+            {
+                case GameActionSettingUseInstigatorAsTarget.EType.FirstPhysicalInstigator:
+                    targets[0] = firstPhysicalInstigator;
+                    break;
+                case GameActionSettingUseInstigatorAsTarget.EType.LastPhysicalInstigator:
+                    targets[0] = lastPhysicalInstigator;
+                    break;
+                case GameActionSettingUseInstigatorAsTarget.EType.ActionInstigator:
+                    targets[0] = actionInstigator;
+                    break;
+            }
         }
 
         GameAction.ExecutionContext useContext = new GameAction.ExecutionContext()
@@ -184,7 +203,7 @@ public abstract class GameAction
         public Entity LastPhysicalInstigator;
 
         /// <summary>
-        /// The actor triggering the action, should never be null. This could be a pawn, an item, a projectile, etc.
+        /// The actor triggering the action, should never be null. This could be a pawn, an item, a projectile, an effect, etc.
         /// </summary>
         public Entity ActionInstigatorActor;
 
@@ -260,20 +279,6 @@ public abstract class GameAction<TSetting> : GameAction where TSetting : struct,
     public override bool Execute(in ExecInputs input, ref ExecOutput output)
     {
         var settings = input.Accessor.GetComponent<TSetting>(input.Context.Action);
-
-        if (input.Accessor.TryGetComponent(input.Context.Action, out GameActionSettingOnSelf gameActionSettingOnSelf))
-        {
-            var targets = new NativeArray<Entity>(2, Allocator.Temp);
-
-            targets[0] = gameActionSettingOnSelf.ExecuteOnFirstInstigator ? input.Context.FirstPhysicalInstigator : Entity.Null;
-            targets[1] = gameActionSettingOnSelf.ExecuteOnLastInstigator ? input.Context.LastPhysicalInstigator : Entity.Null;
-
-            ExecInputs onSelfInput = new ExecInputs(input.Accessor, CommonReads.GetActionContext(input.Accessor, input.Context.ActionInstigatorActor, input.Context.Action, targets), input.Parameters);
-
-            return Execute(in onSelfInput, ref output, ref settings);
-        }
-        
-
         return Execute(in input, ref output, ref settings);
     }
 

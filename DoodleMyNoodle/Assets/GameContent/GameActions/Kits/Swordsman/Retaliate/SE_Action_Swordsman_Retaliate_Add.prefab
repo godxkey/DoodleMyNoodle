@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Swordsman_Retaliate_Begin
+  m_Name: SE_Action_Swordsman_Retaliate_Add
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: abdc7c13067737443b021bcc18b48964
+  _guid: 45b6aeded1670fb4aadebfe147cafa76
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,12 +63,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameEffectRetaliate+GameActionBegin
-  UseInstigatorAsTarget: 0
+  Value: GameActionGameEffect
+  UseInstigatorAsTarget: 1
   ExecuteOnFirstInstigator: 0
   ExecuteOnLastInstigator: 0
   InstigatorAsTargetType: 0
-  GameActionSettings: []
+  GameActionSettings:
+  - id: 0
   SfxOnUse: {fileID: 0}
   Animation: {fileID: 0}
   InstigatorVFX: {fileID: 0}
@@ -76,3 +77,8 @@ MonoBehaviour:
   Surveys: []
   references:
     version: 1
+    00000000:
+      type: {class: GameActionGameEffect/SettingsAuth, ns: , asm: Simulation.Game}
+      data:
+        GameEffect: {fileID: 4532434487726659822, guid: 450703604bd86294b90b9dd2c01aed78,
+          type: 3}

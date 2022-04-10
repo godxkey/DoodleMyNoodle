@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using Unity.Collections;
+using Unity.Entities;
 
 [System.Flags]
 public enum ActorFilter : byte
@@ -81,5 +82,17 @@ public partial class CommonReads
         result.IsTerrain = accessor.HasComponent<TileColliderTag>(entity);
 
         return result;
+    }
+
+    public static void FilterActors(ISimGameWorldReadAccessor accessor, NativeList<Entity> targets, ActorFilterInfo instigatorFilterInfo, ActorFilter filter)
+    {
+        for (int i = targets.Length - 1; i >= 0; i--)
+        {
+            var filterInfo = CommonReads.GetActorFilterInfo(accessor, targets[i]);
+            if (!Helpers.ActorFilterMatches(instigatorFilterInfo, filterInfo, filter))
+            {
+                targets.RemoveAt(i);
+            }
+        }
     }
 }
