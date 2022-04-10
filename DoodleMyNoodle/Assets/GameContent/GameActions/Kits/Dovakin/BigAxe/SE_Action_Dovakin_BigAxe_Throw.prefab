@@ -64,6 +64,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionThrow
+  UseInstigatorAsTarget: 0
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -86,4 +90,4 @@ MonoBehaviour:
           type: 3}
         Quantity: 1
         VolleyAngle: 0
-        ShootVector: {x: 2, y: 2}
+        ShootVector: {x: 3, y: 5}
