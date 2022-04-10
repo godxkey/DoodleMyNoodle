@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6889742282630064236
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 240337615622812814}
+  - component: {fileID: 6635589309703108705}
+  - component: {fileID: 4927122388077845320}
+  m_Layer: 0
+  m_Name: SE_Action_ChickenMeleeAttack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &240337615622812814
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6889742282630064236}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6635589309703108705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6889742282630064236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 0
+  _guid: 0a6b82af19b0c2145980ff8476a30da2
+  _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
+  _viewTechType: 0
+  _hasTransform: 0
+  _showGhost: 1
+--- !u!114 &4927122388077845320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6889742282630064236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: GameActionMelee
+  UseInstigatorAsTarget: 0
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
+  GameActionSettings:
+  - id: 0
+  SfxOnUse: {fileID: 0}
+  Animation: {fileID: 11400000, guid: 7fd95345e2b22714e8db54d7f40ba453, type: 2}
+  InstigatorVFX: {fileID: 0}
+  TargetsVFX: {fileID: 0}
+  Surveys: []
+  references:
+    version: 1
+    00000000:
+      type: {class: GameActionMelee/SettingsAuth, ns: , asm: Simulation.Game}
+      data:
+        Range:
+          RawValue: 4294967296
+        OnHitGameActionPrefab: {fileID: 6889742282630064236, guid: 3e8b9fff1f580ba42af812d3e158fb2b,
+          type: 3}
+        ImpulseForce:
+          RawValue: 0
+        ImpulseUpAngleRatio:
+          RawValue: 4294967296
+        MaxTargetHit: 1
+        AttackVector: {x: -2, y: 0}
+        TargetFilter: 2

@@ -90,6 +90,8 @@ MonoBehaviour:
   Action: {fileID: -4801357984810749253, guid: 99d53d2dfb3794d4483856e615c887ed, type: 3}
   PrepareInAdvance: 0
   Limit: -1
+  IsEnableByDefault: 1
   OnlyAtSpecificDistance: 1
-  MinDistanceFromTarget: 1
+  MinDistanceFromTarget: 2
   MaxDistanceFromTarget: 99999
+  FirstInstigatorAttackSpeedAffectMe: 1
