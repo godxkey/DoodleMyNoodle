@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Archer_Grenade_Explosion_AoE_RemoveArmored
+  m_Name: SE_Action_Boumerang_Damage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 0f78fe240ab748b40b8fa7ea5bb71bfe
+  _guid: 29daa0550b672864f8363ea32633f9c4
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionStatModifier
+  Value: GameActionHealthChange
   UseInstigatorAsTarget: 0
   ExecuteOnFirstInstigator: 0
   ExecuteOnLastInstigator: 0
@@ -78,8 +78,10 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionStatModifier/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionHealthChange/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Type: 4
-        StackAmount: 1
-        Remove: 1
+        ChangeType: 1
+        Amount: 1
+        IsAutoAttack: 0
+        OnHealthChangedGameActionPrefab: {fileID: 0}
+        OnExtremeReachedGameActionPrefab: {fileID: 0}

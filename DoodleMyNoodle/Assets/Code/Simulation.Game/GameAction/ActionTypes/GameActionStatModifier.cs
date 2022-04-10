@@ -2,13 +2,13 @@
 using System;
 using CCC.Fix2D;
 
-public class GameActionStatusEffect : GameAction<GameActionStatusEffect.Settings>
+public class GameActionStatModifier : GameAction<GameActionStatModifier.Settings>
 {
     [Serializable]
     [GameActionSettingAuth(typeof(Settings))]
     public class SettingsAuth : GameActionSettingAuthBase
     {
-        public StatusEffectType Type;
+        public StatModifierType Type;
         public int StackAmount;
         public bool Remove;
 
@@ -25,7 +25,7 @@ public class GameActionStatusEffect : GameAction<GameActionStatusEffect.Settings
 
     public struct Settings : IComponentData
     {
-        public StatusEffectType Type;
+        public StatModifierType Type;
         public int StackAmount;
         public bool Remove;
     }
@@ -43,11 +43,11 @@ public class GameActionStatusEffect : GameAction<GameActionStatusEffect.Settings
 
             if (settings.Remove)
             {
-                CommonWrites.RemoveStatusEffect(input.Accessor, new RemoveStatusEffectRequest() { Target = target, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+                CommonWrites.RemoveStatusEffect(input.Accessor, new RemoveStatModifierRequest() { Target = target, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
             }
             else
             {
-                CommonWrites.AddStatusEffect(input.Accessor, new AddStatusEffectRequest() { Target = target, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+                CommonWrites.AddStatusEffect(input.Accessor, new AddStatModifierRequest() { Target = target, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
             }
 
             if (input.Accessor.TryGetComponent(target, out FixTranslation targetTranslation))

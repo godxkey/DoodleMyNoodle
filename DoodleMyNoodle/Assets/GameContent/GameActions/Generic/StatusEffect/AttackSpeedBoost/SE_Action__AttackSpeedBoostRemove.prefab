@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Archer_Grenade_Explosion_AoE_RemoveArmored
+  m_Name: SE_Action__AttackSpeedBoostRemove
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 0f78fe240ab748b40b8fa7ea5bb71bfe
+  _guid: 45643008298c6734c8a3b77f007d691e
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -64,7 +64,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionStatModifier
-  UseInstigatorAsTarget: 0
+  UseInstigatorAsTarget: 1
   ExecuteOnFirstInstigator: 0
   ExecuteOnLastInstigator: 0
   InstigatorAsTargetType: 0
@@ -80,6 +80,6 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionStatModifier/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Type: 4
+        Type: 5
         StackAmount: 1
         Remove: 1
