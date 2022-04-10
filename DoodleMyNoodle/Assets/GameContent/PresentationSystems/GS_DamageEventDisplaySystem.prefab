@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4932749724925498486
 Transform:
   m_ObjectHideFlags: 0
@@ -46,4 +46,3 @@ MonoBehaviour:
   SystemSettings:
     Type: 1
     OnlineFlags: -1
-  DamageImpactVFX: {fileID: 0}

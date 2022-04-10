@@ -64,6 +64,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionMelee
+  UseInstigatorAsTarget: 0
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -77,7 +81,7 @@ MonoBehaviour:
       type: {class: GameActionMelee/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         Range:
-          RawValue: 4294967296
+          RawValue: 8589934592
         OnHitGameActionPrefab: {fileID: 6889742282630064236, guid: acd1ed682eecbb24e9441fc759fd242f,
           type: 3}
         ImpulseForce:
@@ -85,5 +89,5 @@ MonoBehaviour:
         ImpulseUpAngleRatio:
           RawValue: 4294967296
         MaxTargetHit: 1
-        AttackVector: {x: -2, y: 0}
+        AttackVector: {x: -1.5, y: -0.5}
         TargetFilter: 2

@@ -73,7 +73,7 @@ MonoBehaviour:
   LinearDrag: 0
   AngularDrag: 0.05
   GravityScale: 1
-  FireEvents: 1
+  FireEvents: 0
   FreezeRotation: 0
   BoxSize: {x: 1, y: 1}
   CircleRadius: 0.15
