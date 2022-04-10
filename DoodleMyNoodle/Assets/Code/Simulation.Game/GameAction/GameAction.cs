@@ -56,9 +56,12 @@ public partial class CommonReads
         GameAction.ExecutionContext useContext = new GameAction.ExecutionContext()
         {
             Action = actionEntity,
-            FirstPhysicalInstigator = firstPhysicalInstigator,
-            LastPhysicalInstigator = lastPhysicalInstigator,
-            ActionInstigatorActor = actionInstigator,
+            InstigatorSet = new InstigatorSet()
+            {
+                FirstPhysicalInstigator = firstPhysicalInstigator,
+                LastPhysicalInstigator = lastPhysicalInstigator,
+                LastInstigator = actionInstigator,
+            },
             Targets = targets,
         };
 
@@ -191,21 +194,23 @@ public abstract class GameAction
         /// </summary>
         public Entity Action;
 
+        public InstigatorSet InstigatorSet;
+
         /// <summary>
         /// Very first instigator in chain of action with a physical location component (FixTranslation). This is generally the pawn that used the first action. Should never be null.
         /// (e.g. A pawn throws a poison arrow, and the arrow poisons a target. The arrow is the action instigator, but the pawn is the 'first instigator')
         /// </summary>
-        public Entity FirstPhysicalInstigator;
+        public Entity FirstPhysicalInstigator => InstigatorSet.FirstPhysicalInstigator;
 
         /// <summary>
         /// The last actor with a physical location component (FixTranslation). Should never be null.
         /// </summary>
-        public Entity LastPhysicalInstigator;
+        public Entity LastPhysicalInstigator => InstigatorSet.LastPhysicalInstigator;
 
         /// <summary>
         /// The actor triggering the action, should never be null. This could be a pawn, an item, a projectile, an effect, etc.
         /// </summary>
-        public Entity ActionInstigatorActor;
+        public Entity ActionInstigatorActor => InstigatorSet.LastInstigator;
 
         /// <summary>
         /// All the target for the action execution, could be empty or uncreated

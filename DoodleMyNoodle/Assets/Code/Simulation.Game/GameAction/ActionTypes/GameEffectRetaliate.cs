@@ -49,7 +49,9 @@ public class GameEffectRetaliate
         [GameActionSettingAuth(typeof(Settings))]
         public class SettingsAuth : GameActionSettingAuthBase
         {
-            public float DamageRadius = 3;
+            public GameObject ProjectilePrefab;
+            public Vector2 ThrowVelocity;
+            public Vector2 SpawnOffset;
             public float MinDamage = 1;
             public float MaxDamage = 15;
             public float DamagePerMitigatedDamage = 1;
@@ -58,17 +60,27 @@ public class GameEffectRetaliate
             {
                 dstManager.AddComponentData(entity, new Settings()
                 {
-                    DamageRadius = (fix)DamageRadius,
                     MinDamage = (fix)MinDamage,
                     MaxDamage = (fix)MaxDamage,
                     DamagePerMitigatedDamage = (fix)DamagePerMitigatedDamage,
+                    ProjectilePrefab = conversionSystem.GetPrimaryEntity(ProjectilePrefab),
+                    ThrowVelocity = (fix2)ThrowVelocity,
+                    SpawnOffset = (fix2)SpawnOffset,
                 });
+            }
+
+            public override void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
+            {
+                base.DeclareReferencedPrefabs(referencedPrefabs);
+                referencedPrefabs.Add(ProjectilePrefab);
             }
         }
 
         public struct Settings : IComponentData
         {
-            public fix DamageRadius;
+            public Entity ProjectilePrefab;
+            public fix2 ThrowVelocity;
+            public fix2 SpawnOffset;
             public fix MinDamage;
             public fix MaxDamage;
             public fix DamagePerMitigatedDamage;
@@ -78,20 +90,34 @@ public class GameEffectRetaliate
 
         protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
         {
-            // add effect
-            ActorFilterInfo instigatorFilterInfo = CommonReads.GetActorFilterInfo(input.Accessor, input.Context.FirstPhysicalInstigator);
-            fix2 instigatorPos = input.Accessor.GetComponent<FixTranslation>(input.Context.LastPhysicalInstigator);
-            NativeList<Entity> actorsInRange = CommonReads.Physics.OverlapCircle(input.Accessor, instigatorPos, settings.DamageRadius).ToEntityList();
-
-            CommonReads.FilterActors(input.Accessor, actorsInRange, instigatorFilterInfo, ActorFilter.Enemies);
-
+            var fireSettings = FireProjectileSettings.Default;
+            fireSettings.SpawnOffset = settings.SpawnOffset;
+            Entity projectile = CommonWrites.FireProjectile(input.Accessor, input.Context.InstigatorSet, settings.ProjectilePrefab, settings.ThrowVelocity, fireSettings);
             fix mitigatedDamage = input.Accessor.GetComponent<EffectRetaliateDamageCounter>(input.Context.ActionInstigatorActor).MitigatedDamage;
             fix totalDamage = clamp(mitigatedDamage * settings.DamagePerMitigatedDamage, settings.MinDamage, settings.MaxDamage);
 
-            foreach (var target in actorsInRange)
-            {
-                CommonWrites.RequestDamage(input.Accessor, input.Context.LastPhysicalInstigator, target, totalDamage, Entity.Null, Entity.Null);
-            }
+            input.Accessor.AddComponentData<ShieldDamage>(projectile, totalDamage);
+
+            return true;
+        }
+    }
+
+    public struct ShieldDamage : IComponentData
+    {
+        public fix Value;
+
+        public static implicit operator fix(ShieldDamage val) => val.Value;
+        public static implicit operator ShieldDamage(fix val) => new ShieldDamage() { Value = val };
+    }
+
+    public class GameActionShieldDamage : GameAction
+    {
+        public override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, Entity entity) => null;
+
+        public override bool Execute(in ExecInputs input, ref ExecOutput output)
+        {
+            fix damage = input.Accessor.GetComponent<ShieldDamage>(input.Context.LastPhysicalInstigator);
+            CommonWrites.RequestDamage(input.Accessor, input.Context.LastPhysicalInstigator, input.Context.Targets, damage);
             return true;
         }
     }
