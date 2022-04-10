@@ -81,7 +81,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _bindedViewPrefab
       value: 
-      objectReference: {fileID: 4876621640926341173, guid: ef1b1a21571c49d40b631708f4ac7d55,
+      objectReference: {fileID: 190414444353629717, guid: 9741ba3c4e08e224ab28f8f006895ed2,
         type: 3}
     - target: {fileID: 4652520508204874155, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}

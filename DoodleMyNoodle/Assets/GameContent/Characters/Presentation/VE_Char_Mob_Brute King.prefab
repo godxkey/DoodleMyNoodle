@@ -89,6 +89,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1677122438993250552, guid: 097b9b05f1c47604b84c82016f617fdd,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2227425351554025969, guid: 097b9b05f1c47604b84c82016f617fdd,
         type: 3}
       propertyPath: m_LocalScale.x

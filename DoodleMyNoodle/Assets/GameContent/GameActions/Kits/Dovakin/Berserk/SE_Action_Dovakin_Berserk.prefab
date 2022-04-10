@@ -64,6 +64,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionEnablePeriodicAction
+  UseInstigatorAsTarget: 1
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 2
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}

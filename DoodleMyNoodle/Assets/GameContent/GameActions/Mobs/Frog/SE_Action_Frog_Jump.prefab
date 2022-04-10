@@ -63,7 +63,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionThrow
+  Value: GameActionJump
+  UseInstigatorAsTarget: 1
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -74,15 +78,12 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionJump/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        SpeedMin:
-          RawValue: 0
-        SpeedMax:
-          RawValue: 429492434632704
-        SpawnExtraDistance:
-          RawValue: 0
-        ProjectilePrefab: {fileID: 0}
-        Quantity: 1
-        VolleyAngle: 0
-        ShootVector: {x: 0, y: 0}
+        Direction:
+          x:
+            RawValue: 4294967296
+          y:
+            RawValue: 4294967296
+        Force:
+          RawValue: 12884901888
