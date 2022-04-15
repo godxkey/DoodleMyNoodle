@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3634617741564166543}
-  - component: {fileID: 3634617741564166536}
+  - component: {fileID: 7323348334016134826}
   m_Layer: 0
-  m_Name: GS_FloatingTextSystem
+  m_Name: GS_DamageImpactDisplaySystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3634617741564166536
+--- !u!114 &7323348334016134826
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,14 +40,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3634617741564166537}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3dea6b7609e42b940a14681416505be4, type: 3}
+  m_Script: {fileID: 11500000, guid: a2c8b6ee7e4da27478b9adb922de0323, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SystemSettings:
     Type: 1
     OnlineFlags: -1
-  FloatingNumberPrefab: {fileID: 7535625413278842595, guid: 4d9705bfe05489040bcf46b50c1b1e28,
+  DamageImpactPrefab: {fileID: 1355893371305833656, guid: aabfbc0518e905d43b228c7137d26425,
     type: 3}
-  ScaleValueForLocalPlayer: 1.25
-  ScaleValueForAllies: 0.8
-  AlphaValueForAllies: 1

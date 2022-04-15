@@ -10,11 +10,16 @@ public class FloatingTextSystem : GamePresentationSystem<FloatingTextSystem>
         public string Text;
         public Color Color;
         public Vector2 Position;
+        public Vector2 Scale;
     }
 
     private List<Request> _requests = new List<Request>();
 
     public GameObject FloatingNumberPrefab;
+
+    public float ScaleValueForLocalPlayer = 1.25f;
+    public float ScaleValueForAllies = 0.5f;
+    public float AlphaValueForAllies = 0.75f;
 
     protected override void OnGamePresentationUpdate()
     {
@@ -24,6 +29,7 @@ public class FloatingTextSystem : GamePresentationSystem<FloatingTextSystem>
         {
             // TODO : Do a pool system
             GameObject newFloatingNumber = Instantiate(FloatingNumberPrefab, request.Position, Quaternion.identity);
+            newFloatingNumber.transform.localScale = request.Scale;
             newFloatingNumber.GetComponent<FloatingTextDisplay>()?.Display(request.Text, request.Color);
         }
         _requests.Clear();
@@ -38,6 +44,7 @@ public class FloatingTextSystem : GamePresentationSystem<FloatingTextSystem>
 
             fix displayedValue;
             Color color;
+            Vector2 scale;
 
             if (healthDeltaEvent.IsHeal)
             {
@@ -49,19 +56,32 @@ public class FloatingTextSystem : GamePresentationSystem<FloatingTextSystem>
             {
                 // Damage
                 displayedValue = max(1, round(-healthDeltaEvent.TotalUncappedDelta));
-                color = Color.red;
+                color = Color.white;
             }
-            RequestText(pos, displayedValue.ToString(), color);
+
+            if(healthDeltaEvent.InstigatorSet.FirstPhysicalInstigator == PlayerHelpers.GetLocalSimPawnEntity(SimWorld)) 
+            {
+                scale = new Vector2(ScaleValueForLocalPlayer, ScaleValueForLocalPlayer);
+            }
+            else
+            {
+                scale = new Vector2(ScaleValueForAllies, ScaleValueForAllies);
+
+                color.a = healthDeltaEvent.IsAutoAttack ? 0 : AlphaValueForAllies;
+            }
+
+            RequestText(pos, scale, displayedValue.ToString(), color);
         }
     }
 
-    public void RequestText(Vector2 position, string text, Color color)
+    public void RequestText(Vector2 position, Vector2 scale, string text, Color color)
     {
         _requests.Add(new Request()
         {
             Color = color,
             Position = position,
-            Text = text
+            Text = text,
+            Scale = scale
         });
     }
 }

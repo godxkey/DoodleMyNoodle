@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveDirection: 1
-  MoveSpeed: 0.5
+  MoveSpeed: 1
   StopAtCertainDistance: 1
   DistanceFromFrontTarget: 0.6
 --- !u!114 &5635049573386359071
@@ -166,10 +166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60baf0c5aa469494e81d5e436f9e57b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultDamageMultiplier:
-    RawValue: 4294967296
-  DefaultDamageReceivedMultiplier:
-    RawValue: 4294967296
+  BaseDamageMultiplier: 1
+  BaseDamageReceivedMultiplier: 1
 --- !u!114 &1010462444947004000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,7 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 681ba3497cec4f646aa22e788d6e2e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartingStatusEffects: 
+  StartingStatModifiers: 
 --- !u!114 &8395647274067371062
 MonoBehaviour:
   m_ObjectHideFlags: 0

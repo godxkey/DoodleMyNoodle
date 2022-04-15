@@ -119,7 +119,7 @@ public class SurveyZoneBar : SurveyBaseController
             // Critical
             result.Add(new GameActionParameterSuccessRate.Data(SurveySuccessRating.Five));
 
-            FloatingTextSystem.Instance.RequestText(Circle.transform.position, "Crit", Color.white);
+            FloatingTextSystem.Instance.RequestText(Circle.transform.position, new Vector2(1,1), "Crit", Color.white);
         }
         else if ((Circle.transform.position.x < RightSectionLimit.transform.position.x) && (Circle.transform.position.x > LeftSectionLimit.transform.position.x))
         {

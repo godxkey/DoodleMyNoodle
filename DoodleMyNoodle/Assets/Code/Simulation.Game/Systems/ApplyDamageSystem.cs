@@ -10,6 +10,7 @@ using Unity.Collections;
 public struct HealthDeltaEventData
 {
     public Entity AffectedEntity;
+    public InstigatorSet InstigatorSet;
     /// <summary>
     /// Value will be negative when the entity is damaged
     /// </summary>
@@ -29,6 +30,7 @@ public struct HealthDeltaEventData
     public fix2 Position;
     public bool IsHeal => TotalUncappedDelta > 0;
     public bool IsDamage => !IsHeal;
+    public bool IsAutoAttack;
 }
 
 public struct DamageRequestSingletonTag : IComponentData
@@ -275,10 +277,16 @@ public class ApplyDamageSystem : SimGameSystemBase
             PresentationEvents.HealthDeltaEvents.Push(new HealthDeltaEventData()
             {
                 AffectedEntity = target,
+                InstigatorSet = new InstigatorSet() 
+                {
+                    FirstPhysicalInstigator = firstPhyisicalInstigator,
+                    LastPhysicalInstigator = lastPhysicalInstigator,
+                },
                 TotalUncappedDelta = totalAmountUncapped,
                 HPDelta = hpDelta,
                 ShieldDelta = shieldDelta,
-                Position = GetComponent<FixTranslation>(target)
+                Position = GetComponent<FixTranslation>(target),
+                IsAutoAttack = isAutoAttack
             });
         }
 

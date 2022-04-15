@@ -16,7 +16,7 @@ public class LifetimeDisplay : BindedPresentationEntityComponent
             if (displayedRemaining != _previousDisplayedRemaining && displayedRemaining <= _maximumLifetimeForDisplay)
             {
                 _previousDisplayedRemaining = displayedRemaining;
-                FloatingTextSystem.Instance.RequestText(fixTranslation.Value.ToUnityVec(), displayedRemaining.ToString(), Color.white);
+                FloatingTextSystem.Instance.RequestText(fixTranslation.Value.ToUnityVec(), new Vector2(1,1), displayedRemaining.ToString(), Color.white);
             }
         }
     }

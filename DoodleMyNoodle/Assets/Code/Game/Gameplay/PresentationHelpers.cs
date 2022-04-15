@@ -76,7 +76,7 @@ public static class PresentationHelpers
 
     public static void RequestFloatingText(Vector2 position, string text, Color color)
     {
-        FloatingTextSystem.Instance.RequestText(position, text, color);
+        FloatingTextSystem.Instance.RequestText(position, new Vector2(1,1), text, color);
     }
 
     public static void ResizeGameObjectList(List<GameObject> gameObjectList, int count, GameObject prefab, Transform container, System.Action<GameObject> onCreate = null, System.Action<GameObject> onDestroy = null)

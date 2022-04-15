@@ -18,14 +18,8 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
     [SerializeField] private Transform _itemDescriptionContainer;
     [SerializeField] private TooltipItemDescription _itemDescriptionPrefab;
 
-    [SerializeField] private float _screenEdgeToolTipLimit = 200.0f;
+    [SerializeField] private float _tooltipScreenRatioPlacement = 7.0f;
     [SerializeField] private float _displayDelay = 2.0f;
-
-    [Range(0.0f, 1.0f)]
-    [SerializeField] private float _displacementRatioX = 0;
-
-    [Range(0.0f, 1.0f)]
-    [SerializeField] private float _displacementRatioY = 0;
 
     struct DescriptionData
     {
@@ -165,15 +159,6 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
 
     private void UpdateTooltipPosition()
     {
-        bool exitTop = Input.mousePosition.y >= (Screen.height - _screenEdgeToolTipLimit);
-        bool exitRight = Input.mousePosition.x >= (Screen.width - _screenEdgeToolTipLimit);
-
-        float displacementRatioX = exitRight ? -1 * _displacementRatioX : _displacementRatioX;
-        float displacementRatioY = exitTop ? -1 * _displacementRatioY : _displacementRatioY;
-
-        displacementRatioX *= Screen.width;
-        displacementRatioY *= Screen.height;
-
-        _tooltipDisplay.transform.position = Input.mousePosition + new Vector3(displacementRatioX, displacementRatioY, 0);
+        _tooltipDisplay.transform.position = new Vector3(Screen.width - (Screen.width / _tooltipScreenRatioPlacement), Screen.height / _tooltipScreenRatioPlacement, 0);
     }
 }

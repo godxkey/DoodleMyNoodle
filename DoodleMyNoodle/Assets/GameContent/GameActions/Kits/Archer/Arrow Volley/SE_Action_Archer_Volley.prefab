@@ -64,10 +64,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionThrow
+  UseInstigatorAsTarget: 0
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
   Animation: {fileID: 0}
+  InstigatorVFX: {fileID: 0}
+  TargetsVFX: {fileID: 0}
   Surveys: []
   references:
     version: 1
@@ -84,4 +90,4 @@ MonoBehaviour:
           type: 3}
         Quantity: 4
         VolleyAngle: 15
-        ShootVector: {x: 10, y: 10}
+        ShootVector: {x: 7, y: 7}

@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _number: {fileID: 7535625413278842594}
-  AnimDuration: 3
+  AnimDuration: 1.25
   DisplacementAnimOffset: 1
 --- !u!114 &7535625413278842594
 MonoBehaviour:
@@ -184,5 +184,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 7535625413278842590}
   m_maskType: 0
+  _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 0
