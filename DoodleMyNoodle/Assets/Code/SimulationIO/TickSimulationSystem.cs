@@ -48,6 +48,7 @@ namespace SimulationControl
             && _inPlayerLoop;
 
         public event Action<SimTickData> SimulationTicked;
+        public event Action UpdateFinished;
 
         private DisablableValue _playSimulation = new DisablableValue();
 
@@ -229,6 +230,8 @@ namespace SimulationControl
                 // this ensures our previously scheduled view jobs are done (we might want to find a more performant alternative)
                 World.EntityManager.CompleteAllJobs();
             }
+
+            UpdateFinished?.Invoke();
         }
 
         private bool UpdateWorldRepack(SimTickData tick)

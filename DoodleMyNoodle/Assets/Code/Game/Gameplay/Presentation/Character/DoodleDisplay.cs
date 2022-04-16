@@ -46,7 +46,7 @@ public class DoodleDisplay : BindedPresentationEntityComponent
         }
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (SimWorld.TryGetComponent(SimEntity, out DoodleId doodleId))
         {

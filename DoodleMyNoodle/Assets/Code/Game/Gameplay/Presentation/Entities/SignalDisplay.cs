@@ -21,15 +21,15 @@ public class SignalDisplay : BindedPresentationEntityComponent
         _emitterClicker = GetComponent<ClickableDisplay>();
     }
 
-    public override void OnPostSimulationTick()
+    public override void PresentationPostSimulationTick()
     {
-        base.OnPostSimulationTick();
+        base.PresentationPostSimulationTick();
 
         _isOn = SimWorld.TryGetComponent(SimEntity, out Signal signal) && signal;
         _wasOn |= _isOn;
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         _visuallyOn.Set(_isOn || (_wasOn && _onTimer < MinOnDuration) || (_visuallyOn && _onTimer < MinOnDuration));
         _wasOn = false;

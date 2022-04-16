@@ -116,16 +116,16 @@ public class GameActionMelee : GameAction<GameActionMelee.Settings>
             fix impulseAngle = attackVector.x > 0 ? settingsAngle : Angle2DLeft - settingsAngle;
             fix2 impulseVector = fix2.FromAngle(impulseAngle) * impulseMagnitude;
 
-            foreach (var hit in hitTargets)
+            for (int i = 0; i < hitTargets.Length; i++)
             {
-                if (input.Accessor.TryGetComponent(hit, out FixTranslation translation) && input.Accessor.HasComponent<TileColliderTag>(hit))
+                if (input.Accessor.TryGetComponent(hitTargets[i], out FixTranslation translation) && input.Accessor.HasComponent<TileColliderTag>(hitTargets[i]))
                 {
                     int2 pos = Helpers.GetTile(translation);
                     CommonWrites.RequestTransformTile(input.Accessor, pos, TileFlagComponent.Empty);
                 }
                 else
                 {
-                    CommonWrites.RequestImpulse(input.Accessor, hit, impulseVector);
+                    CommonWrites.RequestImpulse(input.Accessor, hitTargets[i], impulseVector);
                 }
             }
         }

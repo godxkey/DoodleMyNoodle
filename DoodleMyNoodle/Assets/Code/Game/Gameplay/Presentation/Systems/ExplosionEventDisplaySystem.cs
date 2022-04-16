@@ -6,7 +6,7 @@ public class ExplosionEventDisplaySystem : GamePresentationSystem<ExplosionEvent
 {
     public GameObject ExplosionPrefab;
 
-    public override void OnPostSimulationTick()
+    public override void PresentationPostSimulationTick()
     {
         var explosions = Cache.SimWorld.GetSingletonBufferReadOnly<EventExplosion>();
 
@@ -18,6 +18,4 @@ public class ExplosionEventDisplaySystem : GamePresentationSystem<ExplosionEvent
             explosionVfx.transform.localScale = Vector3.one * ((float)explosionEvent.Radius * 2f);
         }
     }
-
-    protected override void OnGamePresentationUpdate() { }
 }

@@ -16,7 +16,7 @@ public class ChestAppearanceDisplay : BindedPresentationEntityComponent
     private Tween _currentAnimation;
     private bool _appearanceChanged = false;
 
-    protected override void OnGamePresentationUpdate() 
+    public override void PresentationUpdate()
     {
         if (SimWorld.TryGetBufferReadOnly(SimEntity, out DynamicBuffer<InventoryItemReference> items))
         {

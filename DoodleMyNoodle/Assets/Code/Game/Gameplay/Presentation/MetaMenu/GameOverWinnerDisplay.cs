@@ -22,7 +22,7 @@ public class GameOverWinnerDisplay : GamePresentationSystem<GameOverWinnerDispla
 
     public List<WinningTeamText> WinTeamTexts = new List<WinningTeamText>();
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (SimWorld.TryGetSingleton(out WinningTeam currentWinner))
         {

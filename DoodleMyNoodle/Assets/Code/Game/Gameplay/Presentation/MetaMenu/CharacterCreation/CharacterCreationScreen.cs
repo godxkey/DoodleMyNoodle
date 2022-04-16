@@ -43,7 +43,7 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
         base.OnDestroy();
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (_doodelDraw.IsLastDoodleLoaded)
         {

@@ -67,7 +67,7 @@ public class WorldUIEventSystem : GamePresentationSystem<WorldUIEventSystem>
         _mouseInWorld.Set(false);
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         _mouseWorldPosition.Set(Cache.PointerWorldPosition);
 

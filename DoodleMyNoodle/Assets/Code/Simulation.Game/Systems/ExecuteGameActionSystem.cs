@@ -21,9 +21,9 @@ public struct GameActionRequestManaged
     public Entity ActionEntity;
 
     /// <summary>
-    /// Optional
+    /// Optional. TODO: Change this to NativeArray later when nativeCollections is upgraded
     /// </summary>
-    public NativeArray<Entity> Targets;
+    public NativeList<Entity> Targets;
 
     /// <summary>
     /// Optional
@@ -94,8 +94,8 @@ public class ExecuteGameActionSystem : SimGameSystemBase
                 {
                     foreach (var request in _processingRequests)
                     {
-                        var targets = new NativeArray<Entity>(1, Allocator.Temp);
-                        targets[0] = request.Target;
+                        var targets = new NativeList<Entity>(1, Allocator.Temp);
+                        targets.Add(request.Target);
                         ExecuteGameAction(request.Instigator, request.ActionEntity, targets);
                     }
                 }
@@ -111,7 +111,7 @@ public class ExecuteGameActionSystem : SimGameSystemBase
         }
     }
 
-    private bool ExecuteGameAction(Entity actionInstigator, Entity actionEntity, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
+    private bool ExecuteGameAction(Entity actionInstigator, Entity actionEntity, NativeList<Entity> targets, GameAction.UseParameters parameters = null)
     {
         if (!EntityManager.TryGetComponent(actionEntity, out GameActionId actionId) || !actionId.IsValid)
         {
@@ -130,11 +130,23 @@ public class ExecuteGameActionSystem : SimGameSystemBase
             ResultData = new List<GameAction.ResultDataElement>()
         };
 
-        if (!gameAction.Execute(in input, ref output))
+#if SAFETY
+        try
         {
-            Log.Info($"Couldn't use {gameAction}.");
+#endif
+            if (!gameAction.Execute(in input, ref output))
+            {
+                Log.Info($"Couldn't use {gameAction}.");
+                return false;
+            }
+#if SAFETY
+        }
+        catch (System.Exception e)
+        {
+            Log.Error($"Error in GameAction {gameAction.GetType()}   actionInstigator:{EntityManager.GetNameSafe(actionInstigator)}   actionEntity:{EntityManager.GetNameSafe(actionEntity)}   nextTick:{World.ExpectedNewTickId}: {e.Message}\n{e.StackTrace}");
             return false;
         }
+#endif
 
         // Feedbacks
         GameAction.ResultData resultData = new GameAction.ResultData() { Count = output.ResultData.Count };
@@ -166,8 +178,8 @@ public class ExecuteGameActionSystem : SimGameSystemBase
 
         if (input.Context.Targets.IsCreated)
         {
-            persistentContext.Targets = new NativeArray<Entity>(input.Context.Targets.Length, Allocator.Persistent);
-            input.Context.Targets.CopyTo(persistentContext.Targets);
+            persistentContext.Targets = new NativeList<Entity>(input.Context.Targets.Length, Allocator.Persistent);
+            persistentContext.Targets.AddRange(input.Context.Targets);
         }
 
         PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()

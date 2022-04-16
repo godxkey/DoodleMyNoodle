@@ -17,7 +17,7 @@ public class StatBarDisplay : GamePresentationBehaviour
         MaxValueText.text = Mathf.Ceil(maxValue).ToString();
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         SetStatBar(GetStatBarValue(), GetStatBarMaxValue());
     }

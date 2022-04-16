@@ -36,8 +36,10 @@ public partial class SimulationController : GameSystem<SimulationController>
             .Initialize(OnlineService.OnlineInterface?.SessionInterface, ValidateSimInput);
 
         _tickSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<TickSimulationSystem>();
+        _tickSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<TickSimulationSystem>();
         _tickSystem.PauseSimulation("game-not-ready");
         _tickSystem.SimulationTicked += OnSimulationTicked;
+        _tickSystem.UpdateFinished += OnTickUpdateFinished;
     }
 
     public override void OnGameStart()
@@ -56,8 +58,8 @@ public partial class SimulationController : GameSystem<SimulationController>
             try
             {
 #endif
-                if (b is IPostSimulationTick p)
-                    p.OnPostSimulationTick();
+                if (b is IPresentationPostSimTick p)
+                    p.PresentationPostSimulationTick();
 #if DEBUG
             }
             catch (Exception e)
@@ -67,6 +69,29 @@ public partial class SimulationController : GameSystem<SimulationController>
 #endif
         }
         PresentationEventsWithReadAccess.ShouldUseSinceLastTick = false;
+    }
+
+    private void OnTickUpdateFinished()
+    {
+        if (!GamePresentationCache.Instance.Ready)
+            return;
+
+        foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
+        {
+#if DEBUG
+            try
+            {
+#endif
+                if (b is IPresentationUpdate p)
+                    p.PresentationUpdate();
+#if DEBUG
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message + " - stack:\n " + e.StackTrace);
+            }
+#endif
+        }
     }
 
     private bool ValidateSimInput(SimInput input, INetworkInterfaceConnection instigator)
@@ -102,6 +127,7 @@ public partial class SimulationController : GameSystem<SimulationController>
         if (World.DefaultGameObjectInjectionWorld?.GetExistingSystem<TickSimulationSystem>() != null)
         {
             World.DefaultGameObjectInjectionWorld.GetExistingSystem<TickSimulationSystem>().SimulationTicked -= OnSimulationTicked;
+            World.DefaultGameObjectInjectionWorld.GetExistingSystem<TickSimulationSystem>().UpdateFinished -= OnTickUpdateFinished;
         }
 
         World.DefaultGameObjectInjectionWorld?.GetExistingSystem<SimulationControlSystemGroup>()?.Shutdown();

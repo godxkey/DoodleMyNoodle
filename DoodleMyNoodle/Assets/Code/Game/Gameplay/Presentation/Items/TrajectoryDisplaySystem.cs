@@ -211,7 +211,7 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
         _lineManager = new LineManager(_lineRendererPrefab, _pointContainer);
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         Vector2 gravity = Vector2.down * 9.8f;
 

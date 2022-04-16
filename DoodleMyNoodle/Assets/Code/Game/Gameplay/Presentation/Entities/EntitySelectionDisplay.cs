@@ -27,6 +27,4 @@ public class EntitySelectionDisplay : BindedPresentationEntityComponent
             HighlightService.StopHighlight(_spriteRenderer);
         }
     }
-
-    protected override void OnGamePresentationUpdate() { }
 }

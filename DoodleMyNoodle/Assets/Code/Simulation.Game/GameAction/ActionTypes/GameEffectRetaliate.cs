@@ -123,7 +123,15 @@ public class GameEffectRetaliate
         public override bool Execute(in ExecInputs input, ref ExecOutput output)
         {
             fix damage = input.Accessor.GetComponent<ShieldDamage>(input.Context.LastPhysicalInstigator);
-            CommonWrites.RequestDamage(input.Accessor, input.Context.LastPhysicalInstigator, input.Context.Targets, damage);
+
+            DamageRequestSettings damageRequest = new DamageRequestSettings()
+            {
+                DamageAmount = damage,
+                InstigatorSet = input.Context.InstigatorSet,
+                IsAutoAttack = false,
+            };
+
+            CommonWrites.RequestDamage(input.Accessor, damageRequest, input.Context.Targets);
             return true;
         }
     }

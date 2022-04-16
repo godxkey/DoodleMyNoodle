@@ -21,7 +21,7 @@ public class AlignWithVelocity : BindedPresentationEntityComponent
         _tr = transform;
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (SimWorld.TryGetComponent(SimEntity, out PhysicsVelocity velocity))
         {

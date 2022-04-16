@@ -18,7 +18,7 @@ using {nameof(UnityEngineX)};
 
 public class #SCRIPTNAME# : {nameof(GamePresentationBehaviour)}
 {{
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {{
         
     }}

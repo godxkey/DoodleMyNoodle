@@ -10,7 +10,7 @@ public class GameEffectDisplay : BindedPresentationEntityComponent
 
     private Dictionary<SimAssetId, GameObject> _currentEffects = new Dictionary<SimAssetId, GameObject>();
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         UpdateCurrentEffects();
     }
@@ -48,7 +48,7 @@ public class GameEffectDisplay : BindedPresentationEntityComponent
             GameObject effectView = null;
 
             var effectPrefab = PresentationHelpers.FindSimAssetPrefab(simAsset);
-            if (effectPrefab != null && effectPrefab.TryGetComponent(out GameEffectAuth gameEffectAuth))
+            if (effectPrefab != null && effectPrefab.TryGetComponent(out GameEffectAuth gameEffectAuth) && gameEffectAuth.CharacterVFXPrefab != null)
             {
                 effectView = Instantiate(gameEffectAuth.CharacterVFXPrefab, _container);
                 var transform = effectView.GetComponent<Transform>();

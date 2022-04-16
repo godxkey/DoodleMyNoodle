@@ -84132,6 +84132,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1235270543}
     m_Modifications:
+    - target: {fileID: 1956990757270271356, guid: 987a47d4012e6fc4c8365e6a618abff0,
+        type: 3}
+      propertyPath: BaseDamageMultiplier
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_RootOrder
@@ -84140,7 +84145,7 @@ PrefabInstance:
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.27
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
@@ -84196,6 +84201,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SE_Char_Mob_Brute
+      objectReference: {fileID: 0}
+    - target: {fileID: 7551162044909047762, guid: 987a47d4012e6fc4c8365e6a618abff0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 987a47d4012e6fc4c8365e6a618abff0, type: 3}
@@ -84560,16 +84570,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2588693983092512257, guid: 097810b178c4f86449cb0a071a8d1397,
-        type: 3}
-      propertyPath: StartingItems.Array.data[0].Item
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2588693983092512257, guid: 097810b178c4f86449cb0a071a8d1397,
-        type: 3}
-      propertyPath: StartingItems.Array.data[1].Item
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 5890412712909477684, guid: 097810b178c4f86449cb0a071a8d1397,
         type: 3}
       propertyPath: m_RootOrder

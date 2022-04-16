@@ -118,11 +118,24 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 {
                     if (damagePlayer.Damage > 0)
                     {
-                        CommonWrites.RequestDamage(Accessor, Entity.Null, pawn, damagePlayer.Damage, Entity.Null, Entity.Null);
+                        DamageRequestSettings damageRequest = new DamageRequestSettings()
+                        {
+                            DamageAmount = damagePlayer.Damage,
+                            InstigatorSet = default,
+                            IsAutoAttack = false,
+                        };
+
+                        CommonWrites.RequestDamage(Accessor, damageRequest, pawn);
                     }
                     else
                     {
-                        CommonWrites.RequestHeal(Accessor, Entity.Null, pawn, -damagePlayer.Damage, Entity.Null, Entity.Null);
+                        HealRequestSettings healRequest = new HealRequestSettings()
+                        {
+                            HealAmount = -damagePlayer.Damage,
+                            InstigatorSet = default,
+                            IsAutoAttack = false,
+                        };
+                        CommonWrites.RequestHeal(Accessor, healRequest, pawn);
                     }
                 }
                 break;

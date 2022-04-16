@@ -13,7 +13,7 @@ public class PawnSpriteColor : GamePresentationBehaviour
 
     public bool IsElite = false;
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (TryGetComponent(out BindedSimEntityManaged bindedSimEntity))
         {

@@ -5,51 +5,36 @@ using System;
 using UnityEngine;
 using UnityEngineX;
 
-public interface IPostSimulationTick
+public interface IPresentationPostSimTick
 {
-    void OnPostSimulationTick();
+    void PresentationPostSimulationTick();
 }
 
-public abstract class GamePresentationSystem<T> : GameSystem<T>, IPostSimulationTick where T : GamePresentationSystem<T>
+public interface IPresentationUpdate
+{
+    void PresentationUpdate();
+}
+
+public abstract class GamePresentationSystem<T> : GameSystem<T>, IPresentationPostSimTick, IPresentationUpdate
+    where T : GamePresentationSystem<T>
 {
     public GamePresentationCache Cache => GamePresentationCache.Instance;
     public ExternalSimGameWorldAccessor SimWorld => Cache.SimWorld;
     public Unity.Entities.World PresWorld => PresentationHelpers.PresentationWorld;
     public PresentationEventsWithReadAccess PresentationEvents => SimWorld.PresentationEvents;
 
-    public override void OnGameLateUpdate()
-    {
-        base.OnGameLateUpdate();
-
-        if (Cache.Ready)
-        {
-            OnGamePresentationUpdate();
-        }
-    }
-
-    public virtual void OnPostSimulationTick() { }
-    protected virtual void OnGamePresentationUpdate() { }
+    public virtual void PresentationPostSimulationTick() { }
+    public virtual void PresentationUpdate() { }
 }
 
 
-public abstract class GamePresentationBehaviour : GameMonoBehaviour, IPostSimulationTick
+public abstract class GamePresentationBehaviour : GameMonoBehaviour, IPresentationPostSimTick, IPresentationUpdate
 {
     public GamePresentationCache Cache => GamePresentationCache.Instance;
     public ExternalSimGameWorldAccessor SimWorld => Cache.SimWorld;
     public Unity.Entities.World PresWorld => PresentationHelpers.PresentationWorld;
     public PresentationEventsWithReadAccess PresentationEvents => SimWorld.PresentationEvents;
 
-    public override void OnGameLateUpdate()
-    {
-        base.OnGameLateUpdate();
-
-        if (Cache.Ready)
-        {
-            OnGamePresentationUpdate();
-        }
-    }
-
-    public virtual void OnPostSimulationTick() { }
-
-    protected abstract void OnGamePresentationUpdate();
+    public virtual void PresentationPostSimulationTick() { }
+    public virtual void PresentationUpdate() { }
 }

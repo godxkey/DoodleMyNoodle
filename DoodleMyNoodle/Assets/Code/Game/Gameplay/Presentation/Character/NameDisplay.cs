@@ -15,7 +15,7 @@ public class NameDisplay : BindedPresentationEntityComponent
 
     [SerializeField] private float fadeSpeed = 4;
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (SimEntity != Entity.Null && SimWorld.TryGetComponent(SimEntity, out Name name))
         {

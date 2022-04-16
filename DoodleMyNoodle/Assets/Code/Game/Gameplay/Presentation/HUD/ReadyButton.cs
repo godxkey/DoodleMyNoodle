@@ -46,7 +46,7 @@ public class ReadyButton : GamePresentationBehaviour
         base.Awake();
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         _updateTimer -= Time.deltaTime;
         if (_updateTimer <= 0)

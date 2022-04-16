@@ -8,8 +8,6 @@ public class MeleeAttackVFX : GamePresentationBehaviour
     public Transform VFXTransform;
     public SpriteRenderer SpriteRenderer;
 
-    protected override void OnGamePresentationUpdate() { }
-
     public void StartMeleeAttackVFX(Sprite weaponSprite, float Duration, float Direction)
     {
         SpriteRenderer.sprite = weaponSprite;

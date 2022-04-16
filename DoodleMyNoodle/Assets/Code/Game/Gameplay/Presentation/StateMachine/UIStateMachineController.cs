@@ -8,7 +8,7 @@ public class UIStateMachineController : GamePresentationSystem<UIStateMachineCon
     public UIState CurrentSate => StateMachine.CurrentState;
     public UIStateMachine StateMachine { get; private set; } = new UIStateMachine();
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         StateMachine.Blackboard.SimWorld = SimWorld;
         StateMachine.Blackboard.Cache = Cache;

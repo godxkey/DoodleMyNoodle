@@ -13,15 +13,13 @@ public class GameLightingSystem : GamePresentationSystem<GameLightingSystem>
         gameObject.SetActive(false);
     }
 
-    public override void OnPostSimulationTick()
+    public override void PresentationPostSimulationTick()
     {
-        base.OnPostSimulationTick();
+        base.PresentationPostSimulationTick();
         if (_activate)
         {
             gameObject.SetActive(true);
             _activate = false;
         }
     }
-
-    protected override void OnGamePresentationUpdate() { }
 }

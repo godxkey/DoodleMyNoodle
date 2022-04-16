@@ -37,7 +37,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         _itemSlotButton.onClick.AddListener(ItemSlotClicked);
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (Input.GetKeyDown(KeyCode.Mouse1) && _currentItemGameActionAuth != null && _mouseInside)
         {

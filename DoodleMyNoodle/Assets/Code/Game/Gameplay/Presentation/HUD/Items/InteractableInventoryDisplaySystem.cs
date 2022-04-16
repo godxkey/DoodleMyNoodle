@@ -28,7 +28,7 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
         _closeButton.onClick.AddListener(CloseDisplay);
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         UpdateData();
         UpdateView();

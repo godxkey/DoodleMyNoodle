@@ -49,7 +49,7 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
         _itemDescriptionContainer.GetComponentsInChildren(_descriptionElements);
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         _tooltipDisplay.SetActive(_shouldBeDisplayed);
 

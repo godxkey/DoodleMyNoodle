@@ -10,8 +10,6 @@ public class SpriteMaskAnimation : GamePresentationBehaviour
     public float AnimationDuration = 1;
     public GameObject SpriteMaskToMove;
 
-    protected override void OnGamePresentationUpdate() { }
-
     private void Start()
     {
         if (SpriteMaskToMove != null)

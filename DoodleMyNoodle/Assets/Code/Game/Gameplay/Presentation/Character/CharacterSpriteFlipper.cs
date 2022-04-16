@@ -8,7 +8,7 @@ public class CharacterSpriteFlipper : BindedPresentationEntityComponent
     [SerializeField] private Transform _bone = null;
     [SerializeField] private bool _spriteLookingRight = true;
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         PhysicsVelocity velocity = SimWorld.GetComponent<PhysicsVelocity>(SimEntity);
 

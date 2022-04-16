@@ -9,7 +9,7 @@ public class LifePointsDisplay : GamePresentationBehaviour
 
     private DirtyValue<int> _lifePoints;
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         _lifePoints.Set(Cache.GroupLifePoints);
 

@@ -14,12 +14,12 @@ public partial class CommonReads
 
     public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionInstigator, Entity actionEntity, Entity target)
     {
-        var targets = new NativeArray<Entity>(1, Allocator.Temp);
-        targets[0] = target;
+        var targets = new NativeList<Entity>(1, Allocator.Temp);
+        targets.Add(target);
         return GetActionContext(accessor, actionInstigator, actionEntity, targets);
     }
 
-    public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionInstigator, Entity actionEntity, NativeArray<Entity> targets)
+    public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionInstigator, Entity actionEntity, NativeList<Entity> targets)
     {
         Entity firstPhysicalInstigator = actionInstigator;
         if (accessor.TryGetComponent(actionInstigator, out FirstInstigator firstInstigatorComponent))
@@ -37,7 +37,10 @@ public partial class CommonReads
         if (accessor.TryGetComponent(actionEntity, out GameActionSettingUseInstigatorAsTarget gameActionSettingOnSelf))
         {
             if (!targets.IsCreated || targets.Length != 1)
-                targets = new NativeArray<Entity>(1, Allocator.Temp);
+            {
+                targets = new NativeList<Entity>(1, Allocator.Temp);
+                targets.Add(Entity.Null);
+            }
 
             switch (gameActionSettingOnSelf.Type)
             {
@@ -78,12 +81,12 @@ internal partial class CommonWrites
 
     public static void RequestExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, Entity target, GameAction.UseParameters parameters = null)
     {
-        var targets = new NativeArray<Entity>(1, Allocator.Temp);
-        targets[0] = target;
+        var targets = new NativeList<Entity>(1, Allocator.Temp);
+        targets.Add(target);
         RequestExecuteGameAction(accessor, actionInstigator, actionEntity, targets, parameters);
     }
 
-    public static void RequestExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, NativeArray<Entity> targets, GameAction.UseParameters parameters = null)
+    public static void RequestExecuteGameAction(ISimGameWorldReadWriteAccessor accessor, Entity actionInstigator, Entity actionEntity, NativeList<Entity> targets, GameAction.UseParameters parameters = null)
     {
         var system = accessor.GetExistingSystem<ExecuteGameActionSystem>();
 
@@ -215,7 +218,7 @@ public abstract class GameAction
         /// <summary>
         /// All the target for the action execution, could be empty or uncreated
         /// </summary>
-        public NativeArray<Entity> Targets;
+        public NativeList<Entity> Targets;
     }
 
     public struct ResultData

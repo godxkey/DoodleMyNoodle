@@ -48,6 +48,3 @@ MonoBehaviour:
     OnlineFlags: -1
   FloatingNumberPrefab: {fileID: 7535625413278842595, guid: 4d9705bfe05489040bcf46b50c1b1e28,
     type: 3}
-  ScaleValueForLocalPlayer: 1.25
-  ScaleValueForAllies: 0.8
-  AlphaValueForAllies: 1

@@ -13,7 +13,7 @@ public class InvincibleDisplaySystem : GamePresentationSystem<InvincibleDisplayS
 
     private List<GameObject> _invincibleInstances = new List<GameObject>();
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         int invincibleBubbleAmount = 0;
         Cache.SimWorld.Entities.ForEach((ref InvincibleUntilTime invincibleUntilTime, ref FixTranslation pos) =>

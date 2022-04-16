@@ -67,7 +67,14 @@ public class ApplyExplosionSystem : SimGameSystemBase
 
                 if (CommonReads.Physics.OverlapCircle(Accessor, request.Position, request.Radius, hits))
                 {
-                    CommonWrites.RequestDamage(Accessor, request.LastInstigator, hits, request.Damage, Entity.Null, Entity.Null);
+                    DamageRequestSettings damageRequest = new DamageRequestSettings()
+                    {
+                        DamageAmount = request.Damage,
+                        InstigatorSet = CommonReads.GetInstigatorSetFromLastPhysicalInstigator(Accessor, request.LastInstigator),
+                        IsAutoAttack = false,
+                    };
+
+                    CommonWrites.RequestDamage(Accessor, damageRequest, hits);
 
                     if (request.Damage > 0)
                     {

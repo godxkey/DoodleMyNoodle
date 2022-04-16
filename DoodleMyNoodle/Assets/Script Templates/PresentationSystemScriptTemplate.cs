@@ -17,7 +17,7 @@ using UnityEngineX;
 
 public class #SCRIPTNAME# : GamePresentationSystem<#SCRIPTNAME#>
 {{
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {{
         
     }}

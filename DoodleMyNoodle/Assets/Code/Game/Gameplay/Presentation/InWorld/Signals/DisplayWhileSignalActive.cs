@@ -6,7 +6,7 @@ public class DisplayWhileSignalActive : BindedPresentationEntityComponent
 {
     public GameObject ContainerToDisplay;
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if(SimWorld.TryGetComponent(SimEntity, out Signal signal)) 
         {

@@ -26,7 +26,7 @@ public class StatModifierVisualChanges : BindedPresentationEntityComponent
         }
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if(SimWorld.TryGetBufferReadOnly(SimEntity, out DynamicBuffer<StatModifier> StatModifiers)) 
         {

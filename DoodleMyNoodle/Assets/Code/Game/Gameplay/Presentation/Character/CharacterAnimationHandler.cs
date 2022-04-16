@@ -57,7 +57,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
         SetAnimation(null, null);
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (HandleGameActionAnimation())
             return;

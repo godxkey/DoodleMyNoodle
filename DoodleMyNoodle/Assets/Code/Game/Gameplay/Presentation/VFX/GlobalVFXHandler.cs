@@ -9,7 +9,7 @@ public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
 {
     public ItemUsedVFXDefinition ItemUsedVFX;
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         foreach (var gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {

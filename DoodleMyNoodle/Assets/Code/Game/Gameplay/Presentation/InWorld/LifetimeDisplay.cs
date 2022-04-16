@@ -8,7 +8,7 @@ public class LifetimeDisplay : BindedPresentationEntityComponent
     [SerializeField] private int _maximumLifetimeForDisplay = 5;
     private int _previousDisplayedRemaining = 0;
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (SimWorld.TryGetComponent(SimEntity, out RemainingLifetime remainingLifetime) && SimWorld.TryGetComponent(SimEntity, out FixTranslation fixTranslation))
         {

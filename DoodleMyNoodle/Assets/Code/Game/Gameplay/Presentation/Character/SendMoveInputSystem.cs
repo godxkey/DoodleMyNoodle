@@ -10,7 +10,7 @@ public class SendMoveInputSystem : GamePresentationSystem<SendMoveInputSystem>
     private bool _muteVerticalInputUntilRelease;
     private DirtyValue<fix2> _moveInput;
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (!Cache.LocalPawnExists)
             return;

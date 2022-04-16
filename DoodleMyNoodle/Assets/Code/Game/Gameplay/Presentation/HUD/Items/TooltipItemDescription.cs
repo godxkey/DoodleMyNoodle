@@ -9,7 +9,7 @@ public class TooltipItemDescription : GamePresentationBehaviour
     [SerializeField] private TextMeshProUGUI _descriptionText;
     [SerializeField] private GameObject _background;
 
-    protected override void OnGamePresentationUpdate() { }
+    public override void PresentationUpdate() { }
 
     public void UpdateDescription(string text, Color color, bool addBG = false)
     {

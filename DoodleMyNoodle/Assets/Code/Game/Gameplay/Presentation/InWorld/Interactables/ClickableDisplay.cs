@@ -14,8 +14,6 @@ public class ClickableDisplay : BindedPresentationEntityComponent, IWorldUIPoint
 
     private bool _highlighted = false;
 
-    protected override void OnGamePresentationUpdate() { }
-
     void IWorldUIPointerEnterHandler.OnPointerEnter()
     {
         SetHighlighted(true);

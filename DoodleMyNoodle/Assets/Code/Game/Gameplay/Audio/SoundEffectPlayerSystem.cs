@@ -8,7 +8,7 @@ public class SoundEffectPlayerSystem : GamePresentationSystem<SoundEffectPlayerS
 
     [SerializeField] private AudioPlayable _damageSound; // global for now but can be per character/ennemy
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (_audioSource == null)
             return;

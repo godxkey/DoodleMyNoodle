@@ -5,9 +5,9 @@ public class LocalPawnHighlightController : GamePresentationSystem<LocalPawnHigh
 {
     [SerializeField] private Color _newTurnHighlightColor = Color.white;
 
-    public override void OnPostSimulationTick()
+    public override void PresentationPostSimulationTick()
     {
-        base.OnPostSimulationTick();
+        base.PresentationPostSimulationTick();
 
         // On player's new turn
         if (Cache.DEPRECATED_IsNewTurn && Cache.DEPRECATED_CanLocalPlayerPlay) 
@@ -28,6 +28,4 @@ public class LocalPawnHighlightController : GamePresentationSystem<LocalPawnHigh
             }
         }
     }
-
-    protected override void OnGamePresentationUpdate() { }
 }

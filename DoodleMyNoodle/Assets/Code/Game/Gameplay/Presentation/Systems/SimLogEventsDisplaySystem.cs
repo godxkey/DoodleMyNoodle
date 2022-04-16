@@ -4,7 +4,7 @@ using UnityEngineX;
 
 public class SimLogEventsDisplaySystem : GamePresentationSystem<SimLogEventsDisplaySystem>
 {
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         foreach (var item in PresentationEvents.LogEvents.SinceLastPresUpdate)
         {

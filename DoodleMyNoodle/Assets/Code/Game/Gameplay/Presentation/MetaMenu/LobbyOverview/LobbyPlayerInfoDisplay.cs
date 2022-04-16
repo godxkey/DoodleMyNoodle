@@ -20,6 +20,4 @@ public class LobbyPlayerInfoDisplay : GamePresentationBehaviour
 
         _currentPlayer = pawnReference;
     }
-
-    protected override void OnGamePresentationUpdate() { }
 }

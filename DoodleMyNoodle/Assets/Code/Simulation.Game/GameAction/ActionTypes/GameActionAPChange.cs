@@ -32,9 +32,9 @@ public class GameActionAPChange : GameAction<GameActionAPChange.Settings>
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        foreach (Entity entity in input.Context.Targets)
+        for (int i = 0; i < input.Context.Targets.Length; i++)
         {
-            CommonWrites.ModifyStatFix<ActionPoints>(input.Accessor, entity, settings.ToGive);
+            CommonWrites.ModifyStatFix<ActionPoints>(input.Accessor, input.Context.Targets[i], settings.ToGive);
         }
 
         return true;

@@ -41,7 +41,7 @@ public class LobbyOverviewDisplay : GamePresentationSystem<LobbyOverviewDisplay>
         _tween?.Kill();
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         bool shouldBeVisible = Input.GetKey(KeyCode.Tab) && !GameConsole.IsOpen();
 

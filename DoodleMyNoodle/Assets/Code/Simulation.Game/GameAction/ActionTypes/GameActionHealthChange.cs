@@ -56,22 +56,36 @@ public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
+        if (settings.Delta > 0)
+        {
+            HealRequestSettings healSettings = new HealRequestSettings()
+            {
+                InstigatorSet = input.Context.InstigatorSet,
+                HealAmount = settings.Delta,
+                ActionOnHealthChanged = settings.OnHealthChangedActionEntity,
+                ActionOnExtremeReached = settings.OnExtremeReachedActionEntity,
+                IsAutoAttack = settings.IsAutoAttack,
+            };
+
+            CommonWrites.RequestHeal(input.Accessor, healSettings, input.Context.Targets);
+        }
+        else
+        {
+            DamageRequestSettings damageSettings = new DamageRequestSettings()
+            {
+                InstigatorSet = input.Context.InstigatorSet,
+                DamageAmount = -settings.Delta,
+                ActionOnHealthChanged = settings.OnHealthChangedActionEntity,
+                ActionOnExtremeReached = settings.OnExtremeReachedActionEntity,
+                IsAutoAttack = settings.IsAutoAttack,
+            };
+
+            CommonWrites.RequestDamage(input.Accessor, damageSettings, input.Context.Targets);
+        }
+
         for (int i = 0; i < input.Context.Targets.Length; i++)
         {
             var target = input.Context.Targets[i];
-
-            HealthChangeRequestData healthChangeRequestData = new HealthChangeRequestData()
-            {
-                LastPhysicalInstigator = input.Context.LastPhysicalInstigator,
-                FirstPhysicalInstigator = input.Context.FirstPhysicalInstigator,
-                Target = target,
-                Amount = settings.Delta,
-                ActionOnHealthChanged = settings.OnHealthChangedActionEntity,
-                ActionOnExtremeReached = settings.OnExtremeReachedActionEntity,
-                IsAutoAttack = settings.IsAutoAttack
-            };
-
-            CommonWrites.RequestHealthChange(input.Accessor, healthChangeRequestData);
 
             if (input.Accessor.TryGetComponent(target, out FixTranslation targetTranslation))
             {

@@ -39,7 +39,7 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
         _slotsContainer.GetComponentsInChildren(_slotVisuals);
     }
 
-    protected override void OnGamePresentationUpdate()
+    public override void PresentationUpdate()
     {
         if (Cache.LocalPawn != Entity.Null && Cache.LocalController != Entity.Null)
         {

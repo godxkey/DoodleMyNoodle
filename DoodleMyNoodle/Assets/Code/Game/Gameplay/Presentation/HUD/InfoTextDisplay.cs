@@ -5,12 +5,7 @@ using UnityEngineX;
 
 public class InfoTextDisplay : GamePresentationSystem<InfoTextDisplay>
 {
-    [SerializeField] private TextMeshProUGUI _textObject; 
-
-    protected override void OnGamePresentationUpdate()
-    {
-        
-    }
+    [SerializeField] private TextMeshProUGUI _textObject;
 
     // TODO : add possibility to format (color, bold, etc.)
     public void SetText(TextData infoText, float duration = 1)

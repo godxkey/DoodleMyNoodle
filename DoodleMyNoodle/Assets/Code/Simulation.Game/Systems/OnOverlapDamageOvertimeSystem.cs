@@ -119,7 +119,14 @@ public class OnOverlapDamageOvertimeSystem : SimGameSystemBase
                     if (!entityHasAlreadyBeenHandled)
                     {
                         entitiesBuffer.Add(new OnOverlapDamageOvertimeDamagedEntities() { Value = target });
-                        CommonWrites.RequestDamage(Accessor, instigator, target, damage, Entity.Null, Entity.Null);
+
+                        DamageRequestSettings damageRequest = new DamageRequestSettings()
+                        {
+                            DamageAmount = damage,
+                            InstigatorSet = CommonReads.GetInstigatorSetFromLastPhysicalInstigator(Accessor, instigator),
+                            IsAutoAttack = false,
+                        };
+                        CommonWrites.RequestDamage(Accessor, damageRequest, target);
                     }
                 }
             }
