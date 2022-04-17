@@ -5,7 +5,8 @@ public enum ItemUnavailablityReason
 {
     None,
     NotEnoughtAP,
-    InCooldown
+    InCooldown,
+    NoAction
 }
 
 public partial class CommonReads
@@ -51,6 +52,12 @@ public partial class CommonReads
             timeCooldown.Value > 0)
         {
             debugReason = ItemUnavailablityReason.InCooldown;
+            return false;
+        }
+
+        if (accessor.TryGetComponent(item, out ItemAction action) && action.Value == Entity.Null)
+        {
+            debugReason = ItemUnavailablityReason.NoAction;
             return false;
         }
 
