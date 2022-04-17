@@ -17,9 +17,6 @@ public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDispla
     public float NumberScaleForLocalPlayer = 1.25f;
     public float NumberScaleForAllies = 0.8f;
     public float NumberAlphaForAllies = 1f;
-    [Tooltip("The impact position of the damage/heal is often at the edge of the collider. We usually want to move the vfx a bit closer to the character center." +
-        " This value will affect the distance we move the VFX position. 0 means we don't move the VFX at all. 1 means we will move the VFX up to 1 unit towards the center.")]
-    public float NumberInsetDistanceFromImpact = 0.2f;
     [Tooltip("The radius of the random used for the final position of the number + impact VFX")]
     public float NumberPositionRandomRadius = 0.1f;
 
@@ -38,12 +35,31 @@ public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDispla
         {
             victimPos = (Vector2)victimLatestTranslation.Value;
         }
-        float targetRadius = (float)CommonReads.GetActorRadius(SimWorld, eventData.Victim);
-        // clamp impact vector to victim's radius (+ threshold)
-        Vector2 victimImpactOffset = Vector2.ClampMagnitude((Vector2)eventData.ImpactVector, maxLength: targetRadius - NumberInsetDistanceFromImpact);
-        victimImpactOffset += new Vector2(Random.Range(-NumberPositionRandomRadius, NumberPositionRandomRadius), Random.Range(-NumberPositionRandomRadius, NumberPositionRandomRadius));
 
-        Vector2 displayedImpactPos = victimPos + victimImpactOffset;
+        Vector2 displayedImpactPos;
+        var victimView = PresentationHelpers.FindBindedView(eventData.Victim);
+        if (victimView != null && victimView.TryGetComponent(out Collider2D viewCollider2D))
+        {
+            Vector2 viewPos = (Vector2)victimView.transform.position;
+            Vector2 potentialImpactPos = viewPos + (Vector2)eventData.ImpactVector;
+            if (!viewCollider2D.OverlapPoint(potentialImpactPos))
+            {
+                displayedImpactPos = viewCollider2D.ClosestPoint(potentialImpactPos);
+            }
+            else
+            {
+                displayedImpactPos = potentialImpactPos;
+            }
+        }
+        else
+        {
+            // clamp impact vector to victim's radius (+ threshold)
+            float targetRadius = (float)CommonReads.GetActorRadius(SimWorld, eventData.Victim);
+            Vector2 victimImpactOffset = Vector2.ClampMagnitude((Vector2)eventData.ImpactVector, maxLength: targetRadius);
+            displayedImpactPos = victimPos + victimImpactOffset;
+        }
+
+        displayedImpactPos += new Vector2(Random.Range(-NumberPositionRandomRadius, NumberPositionRandomRadius), Random.Range(-NumberPositionRandomRadius, NumberPositionRandomRadius));
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Request Number

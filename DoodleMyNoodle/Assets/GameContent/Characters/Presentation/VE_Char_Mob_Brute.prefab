@@ -238,6 +238,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6516141508588561186, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.40280065
+      objectReference: {fileID: 0}
+    - target: {fileID: 6516141508588561186, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.92992586
+      objectReference: {fileID: 0}
+    - target: {fileID: 6516141508588561186, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_Offset.x
+      value: 0.007911543
+      objectReference: {fileID: 0}
+    - target: {fileID: 6516141508588561186, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
+        type: 3}
+      propertyPath: m_Offset.y
+      value: -0.021474402
+      objectReference: {fileID: 0}
     - target: {fileID: 7379920081520119636, guid: 950f116e90b5f1d4f9a86da78a6e1e45,
         type: 3}
       propertyPath: _defaultAnimations.Array.data[0].AnimationDefinition

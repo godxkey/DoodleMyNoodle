@@ -61,12 +61,26 @@ public class SimInputCheatTestFred : SimCheatInput
     public PersistentId PlayerId;
 }
 
+[NetSerializable]
+public class SimInputCheatPlayerAutoAttackEnabled : SimCheatInput
+{
+    public bool Enabled;
+}
+
 public struct CheatsAllItemElement : IBufferElementData
 {
     public Entity ItemPrefab;
 
     public static implicit operator Entity(CheatsAllItemElement val) => val.ItemPrefab;
     public static implicit operator CheatsAllItemElement(Entity val) => new CheatsAllItemElement() { ItemPrefab = val };
+}
+
+public struct SingletonCheatPlayState : IComponentData
+{
+    public bool UseSoloPlay;
+    public PersistentId SoloPlayPlayerId;
+    public int SoloPlayPawnIndex;
+    public bool DisableAutoAttacks;
 }
 
 [UpdateInGroup(typeof(InputSystemGroup))]
@@ -219,67 +233,12 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
 
             case SimInputCheatSoloPlay soloPlay:
             {
-                Entity player = CommonReads.FindPlayerEntity(Accessor, soloPlay.PlayerId);
-
-                if (!HasComponent<ControlledEntity>(player))
-                    return;
-
-                // _________________________________________ Find Pawns _________________________________________ //
-                Entity currentPawn = Entity.Null;
-                Entity newPawn = Entity.Null;
-                int newPawnIndex = soloPlay.PawnIndex;
-
-                if (EntityManager.TryGetComponent(player, out ControlledEntity pawn))
-                    currentPawn = pawn;
-
-                Entities.ForEach((Entity entity, in PlayerGroupMemberIndex memberIndex) =>
-                {
-                    if (memberIndex == newPawnIndex)
-                    {
-                        newPawn = entity;
-                    }
-                }).Run();
-
-
-                // _________________________________________ Update Possession _________________________________________ //
-                if (currentPawn != Entity.Null)
-                {
-                    SetComponent<Controllable>(currentPawn, default);
-                }
-
-                if (newPawn != Entity.Null)
-                {
-                    SetComponent<Controllable>(newPawn, player);
-                }
-
-                SetComponent<ControlledEntity>(player, newPawn);
-
-                // _________________________________________ Disable Auto Attack on Others _________________________________________ //
-                Entities.WithAll<PlayerGroupMemberIndex>()
-                    .ForEach((Entity entity, DynamicBuffer<InventoryItemReference> inventory) =>
-                {
-                    // implementation note: Keep 'EntityManager.HasComponent', otherwise it will cause an "invalidated by a structural change" exception
-                    var items = inventory.ToNativeArray(Allocator.Temp);
-                    if (entity != newPawn)
-                    {
-                        foreach (var item in items)
-                        {
-                            if (EntityManager.HasComponent<PeriodicActionProgress>(item.ItemEntity))
-                                EntityManager.RemoveComponent<PeriodicActionProgress>(item.ItemEntity);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var item in items)
-                        {
-                            if (!EntityManager.HasComponent<PeriodicActionProgress>(item.ItemEntity) && EntityManager.HasComponent<PeriodicActionEnabled>(item.ItemEntity))
-                                EntityManager.AddComponent<PeriodicActionProgress>(item.ItemEntity);
-                        }
-                    }
-                }).WithoutBurst()
-                .WithStructuralChanges()
-                .Run();
-
+                var cheatPlayState = GetOrCreateSingleton<SingletonCheatPlayState>();
+                cheatPlayState.UseSoloPlay = true;
+                cheatPlayState.SoloPlayPlayerId = soloPlay.PlayerId;
+                cheatPlayState.SoloPlayPawnIndex = soloPlay.PawnIndex;
+                SetSingleton(cheatPlayState);
+                ApplyCheatPlayState();
                 break;
             }
 
@@ -303,7 +262,89 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 }
                 break;
             }
+
+            case SimInputCheatPlayerAutoAttackEnabled enablePlayerAutoAttacks:
+            {
+                var cheatPlayState = GetOrCreateSingleton<SingletonCheatPlayState>();
+                cheatPlayState.DisableAutoAttacks = !enablePlayerAutoAttacks.Enabled;
+                SetSingleton(cheatPlayState);
+                ApplyCheatPlayState();
+                break;
+            }
         }
+    }
+
+    private void ApplyCheatPlayState()
+    {
+        SingletonCheatPlayState playState = GetSingleton<SingletonCheatPlayState>();
+        Entity soloPlayPawn = Entity.Null;
+
+        if (playState.UseSoloPlay)
+        {
+            Entity player = CommonReads.FindPlayerEntity(Accessor, playState.SoloPlayPlayerId);
+
+            if (HasComponent<ControlledEntity>(player))
+            {
+                // _________________________________________ Find Pawns _________________________________________ //
+                Entity currentPawn = Entity.Null;
+                int newPawnIndex = playState.SoloPlayPawnIndex;
+
+                if (EntityManager.TryGetComponent(player, out ControlledEntity pawn))
+                    currentPawn = pawn;
+
+                Entity soloPlayPawn2 = Entity.Null; // this fixes a bad code-gen where 'soloPlayPawn' doesn't get set ...
+                Entities.ForEach((Entity entity, in PlayerGroupMemberIndex memberIndex) =>
+                {
+                    if (memberIndex == newPawnIndex)
+                    {
+                        soloPlayPawn2 = entity;
+                    }
+                }).Run();
+                soloPlayPawn = soloPlayPawn2;
+
+
+                // _________________________________________ Update Possession _________________________________________ //
+                if (currentPawn != Entity.Null)
+                {
+                    SetComponent<Controllable>(currentPawn, default);
+                }
+
+                if (soloPlayPawn != Entity.Null)
+                {
+                    SetComponent<Controllable>(soloPlayPawn, player);
+                }
+
+                SetComponent<ControlledEntity>(player, soloPlayPawn);
+            }
+        }
+
+        // _________________________________________ Disable Auto Attack on Others _________________________________________ //
+        Entities.WithAll<PlayerGroupMemberIndex>()
+            .ForEach((Entity entity, DynamicBuffer<InventoryItemReference> inventory) =>
+            {
+                var items = inventory.ToNativeArray(Allocator.Temp);
+                foreach (var item in items)
+                {
+                    // implementation note: Keep 'EntityManager.HasComponent', otherwise it will cause an "invalidated by a structural change" exception
+                    if (EntityManager.HasComponent<PeriodicActionEnabled>(item.ItemEntity))
+                    {
+                        bool shouldAutoAttack = !playState.DisableAutoAttacks && (!playState.UseSoloPlay || entity == soloPlayPawn);
+
+                        if (shouldAutoAttack)
+                        {
+                            if (!EntityManager.HasComponent<PeriodicActionProgress>(item.ItemEntity))
+                                EntityManager.AddComponent<PeriodicActionProgress>(item.ItemEntity);
+                        }
+                        else
+                        {
+                            if (EntityManager.HasComponent<PeriodicActionProgress>(item.ItemEntity))
+                                EntityManager.RemoveComponent<PeriodicActionProgress>(item.ItemEntity);
+                        }
+                    }
+                }
+            }).WithoutBurst()
+        .WithStructuralChanges()
+        .Run();
     }
 
     [RegisterGameFunction]
