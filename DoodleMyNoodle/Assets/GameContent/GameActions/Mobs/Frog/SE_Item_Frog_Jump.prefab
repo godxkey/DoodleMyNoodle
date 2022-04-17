@@ -92,6 +92,6 @@ MonoBehaviour:
   Limit: -1
   IsEnableByDefault: 1
   OnlyAtSpecificDistance: 1
-  MinDistanceFromTarget: 2
+  MinDistanceFromTarget: 4
   MaxDistanceFromTarget: 99999
   FirstInstigatorAttackSpeedAffectMe: 1

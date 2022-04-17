@@ -118,15 +118,7 @@ public class GameActionMelee : GameAction<GameActionMelee.Settings>
 
             for (int i = 0; i < hitTargets.Length; i++)
             {
-                if (input.Accessor.TryGetComponent(hitTargets[i], out FixTranslation translation) && input.Accessor.HasComponent<TileColliderTag>(hitTargets[i]))
-                {
-                    int2 pos = Helpers.GetTile(translation);
-                    CommonWrites.RequestTransformTile(input.Accessor, pos, TileFlagComponent.Empty);
-                }
-                else
-                {
-                    CommonWrites.RequestImpulse(input.Accessor, hitTargets[i], impulseVector);
-                }
+                CommonWrites.RequestImpulse(input.Accessor, hitTargets[i], impulseVector, ignoreMass: true);
             }
         }
 

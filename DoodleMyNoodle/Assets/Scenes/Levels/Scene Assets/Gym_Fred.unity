@@ -84115,7 +84115,7 @@ PrefabInstance:
     - target: {fileID: 5013376147941651234, guid: 79ebf1b88333f2643b34d0b44df3ee3a,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79ebf1b88333f2643b34d0b44df3ee3a, type: 3}
@@ -84132,11 +84132,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1235270543}
     m_Modifications:
-    - target: {fileID: 1956990757270271356, guid: 987a47d4012e6fc4c8365e6a618abff0,
-        type: 3}
-      propertyPath: BaseDamageMultiplier
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_RootOrder
@@ -84145,12 +84140,12 @@ PrefabInstance:
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.25
+      value: 1.43
       objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5717055
+      value: 0.76
       objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
@@ -84196,6 +84191,11 @@ PrefabInstance:
         type: 3}
       propertyPath: MaxValue
       value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083706433129272114, guid: 987a47d4012e6fc4c8365e6a618abff0,
+        type: 3}
+      propertyPath: ActEvery
+      value: 9999
       objectReference: {fileID: 0}
     - target: {fileID: 7551162044909047762, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}

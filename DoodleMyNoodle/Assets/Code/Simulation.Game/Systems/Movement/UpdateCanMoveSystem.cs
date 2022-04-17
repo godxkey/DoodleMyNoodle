@@ -18,6 +18,19 @@ public class UpdateCanMoveSystem : SimGameSystemBase
         }
 
         Entities
+            .ForEach((ref CanMove canMove, in DistanceFromTarget distanceFromTarget, in StopMoveFromTargetDistance stopMoveFromTargetDistance, in Health hp, in Grounded grounded) =>
+            {
+                canMove = distanceFromTarget.Value > stopMoveFromTargetDistance.Value
+
+                    // entities need to be alive to move
+                    && hp.Value > 0
+
+                    // entities need to be grounded (nb: flying entities do not have the component)
+                    && grounded;
+            }).Schedule();
+
+        Entities
+            .WithNone<Grounded>()
             .ForEach((ref CanMove canMove, in DistanceFromTarget distanceFromTarget, in StopMoveFromTargetDistance stopMoveFromTargetDistance, in Health hp) =>
             {
                 canMove = distanceFromTarget.Value > stopMoveFromTargetDistance.Value

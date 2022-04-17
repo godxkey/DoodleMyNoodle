@@ -33,6 +33,17 @@ public class MovementAuth : MonoBehaviour, IConvertGameObjectToEntity
             Value = (fix)(MoveDirection == EMoveDirection.Left ? -MoveSpeed : MoveSpeed)
         });
 
+        if (TryGetComponent(out PhysicsBodyAuth physicsBodyAuth))
+        {
+            if (physicsBodyAuth.GravityScale != 0)
+            {
+                dstManager.AddComponent<Grounded>(entity);
+                if (!physicsBodyAuth.FireEvents)
+                {
+                    Log.Error($"Entity {gameObject.name} should have PhysicsBodyAuth events enabled. Otherwise, 'Grounded' will not update correctly in game.");
+                }
+            }
+        }
         dstManager.AddComponent<CanMove>(entity);
         dstManager.AddComponent<DistanceFromTarget>(entity);
         dstManager.AddComponentData<StopMoveFromTargetDistance>(entity, (fix)(StopAtCertainDistance ? DistanceFromFrontTarget : -100000));
