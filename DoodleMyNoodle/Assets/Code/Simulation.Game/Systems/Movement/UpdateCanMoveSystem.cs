@@ -3,6 +3,8 @@ using CCC.Fix2D;
 using Unity.Mathematics;
 using Unity.Collections;
 
+[UpdateInGroup(typeof(MovementSystemGroup))]
+[UpdateBefore(typeof(ApplyMovementSystem))]
 public class UpdateCanMoveSystem : SimGameSystemBase
 {
     protected override void OnUpdate()

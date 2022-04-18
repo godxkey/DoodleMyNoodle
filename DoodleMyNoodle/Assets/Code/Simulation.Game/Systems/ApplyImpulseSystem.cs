@@ -24,6 +24,7 @@ public struct RadialImpulseRequestData : IBufferElementData
 }
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
+[UpdateBefore(typeof(UpdateCanMoveSystem))]
 public class ApplyImpulseSystem : SimGameSystemBase
 {
     public void RequestImpulseRadial(RadialImpulseRequestData request)
@@ -118,6 +119,11 @@ public class ApplyImpulseSystem : SimGameSystemBase
                 if (HasComponent<NavAgentFootingState>(request.Target))
                 {
                     SetComponent(request.Target, new NavAgentFootingState() { Value = NavAgentFooting.None });
+                }
+
+                if (HasComponent<Grounded>(request.Target))
+                {
+                    SetComponent<Grounded>(request.Target, false);
                 }
             }
 

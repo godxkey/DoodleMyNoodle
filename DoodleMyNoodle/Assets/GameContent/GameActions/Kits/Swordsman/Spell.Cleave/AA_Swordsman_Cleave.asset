@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fb56a52725678140903fb092c65b82e, type: 3}
-  m_Name: AA_Sword_Cleave
+  m_Name: AA_Swordsman_Cleave
   m_EditorClassIdentifier: 
   cooldown: -1
   clip: {fileID: 8300000, guid: 187a17f9f016c5e4581c3dfd3bb553bc, type: 3}
