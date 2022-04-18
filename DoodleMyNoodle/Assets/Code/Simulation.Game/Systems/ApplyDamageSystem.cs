@@ -11,7 +11,14 @@ using System.Diagnostics;
 
 public struct HealthDeltaEventData
 {
-    public Entity Victim;
+    /// <summary>
+    /// When HealthProxy is used, this is the entity that receives a health change.
+    /// </summary>
+    public Entity FinalVictim;
+    /// <summary>
+    /// When HealthProxy is used, this is the original target.
+    /// </summary>
+    public Entity OriginalVictim;
     public fix2 VictimPosition;
 
     /// <summary>
@@ -328,7 +335,8 @@ public class ApplyDamageSystem : SimGameSystemBase
 
             PresentationEvents.HealthDeltaEvents.Push(new HealthDeltaEventData()
             {
-                Victim = target,
+                FinalVictim = target,
+                OriginalVictim = request.Target,
                 VictimPosition = targetPosition.Value,
                 ImpactVector = request.Target2InstigationVector,
                 InstigatorSet = new InstigatorSet()

@@ -31,13 +31,13 @@ public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDispla
     private void ProcessEvent(HealthDeltaEventData eventData)
     {
         Vector2 victimPos = eventData.VictimPosition.ToUnityVec();
-        if (SimWorld.TryGetComponent(eventData.Victim, out FixTranslation victimLatestTranslation))
+        if (SimWorld.TryGetComponent(eventData.OriginalVictim, out FixTranslation victimLatestTranslation))
         {
             victimPos = (Vector2)victimLatestTranslation.Value;
         }
 
         Vector2 displayedImpactPos;
-        var victimView = PresentationHelpers.FindBindedView(eventData.Victim);
+        var victimView = PresentationHelpers.FindBindedView(eventData.OriginalVictim);
         if (victimView != null && victimView.TryGetComponent(out Collider2D viewCollider2D))
         {
             Vector2 viewPos = (Vector2)victimView.transform.position;
@@ -54,7 +54,7 @@ public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDispla
         else
         {
             // clamp impact vector to victim's radius (+ threshold)
-            float targetRadius = (float)CommonReads.GetActorRadius(SimWorld, eventData.Victim);
+            float targetRadius = (float)CommonReads.GetActorRadius(SimWorld, eventData.OriginalVictim);
             Vector2 victimImpactOffset = Vector2.ClampMagnitude((Vector2)eventData.ImpactVector, maxLength: targetRadius);
             displayedImpactPos = victimPos + victimImpactOffset;
         }
