@@ -132,7 +132,6 @@ public struct StatModifier : IBufferElementData
     public fix Value;
     public StatModifierBlendmode Blendmode;
     public int Stacks;
-    public Entity Instigator;
 }
 
 public struct StartingStatModifier : IBufferElementData

@@ -144,7 +144,7 @@ public class StatModifierSystem : SimGameSystemBase
             for (int i = 0; i < statModifiers.Length; i++)
             {
                 StatModifier currentStatusEffect = statModifiers[i];
-                if (currentStatusEffect.Type == removeRequest.Type && currentStatusEffect.Instigator == removeRequest.Instigator)
+                if (currentStatusEffect.Type == removeRequest.Type)
                 {
                     index = i;
                     break;
@@ -201,7 +201,6 @@ public class StatModifierSystem : SimGameSystemBase
                     Value = setting.Value,
                     Blendmode = setting.Blendmode,
                     Stacks = addRequest.StackAmount,
-                    Instigator = addRequest.Instigator
                 });
             }
         }

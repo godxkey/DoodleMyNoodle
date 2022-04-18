@@ -9,14 +9,8 @@ public class SimpleVFXAnimationDefinition : AnimationDefinition
 
     public override void TriggerAnimation(TriggerInput input, ref TriggerOuput ouput)
     {
-        if (_attachToInstigator)
-        {
-            Instantiate(_vfxPrefab, _instigatorOffset, Quaternion.identity, input.PresentationTarget.Root.transform);
-        }
-        else
-        {
-            Instantiate(_vfxPrefab, (Vector2)input.PresentationTarget.Root.transform.position + _instigatorOffset, Quaternion.identity);
-        }
+        var position = (Vector2)input.PresentationTarget.Root.transform.position + _instigatorOffset;
+        Instantiate(_vfxPrefab, position, Quaternion.identity, _attachToInstigator ? input.PresentationTarget.Root.transform : null);
     }
 
     public override void StopAnimation(StopInput input) { }

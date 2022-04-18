@@ -82,7 +82,7 @@ MonoBehaviour:
       data:
         Direction:
           x:
-            RawValue: 4294967296
+            RawValue: 0
           y:
             RawValue: 4294967296
         Force:
