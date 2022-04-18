@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2302789254329102844}
   - component: {fileID: 4278529840919149744}
   m_Layer: 10
-  m_Name: SE_Boumerang
+  m_Name: SE_Actor_Dovakin_Boomerang
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -110,7 +110,7 @@ MonoBehaviour:
   - ActionPrefab: {fileID: -4801357984810749253, guid: 29daa0550b672864f8363ea32633f9c4,
       type: 3}
     TargetFilter: 2
-    SameTargetCooldown: 1
+    SameTargetCooldown: 0.2
     ContactMode: 0
     OverlapLayerMask:
       serializedVersion: 2
