@@ -20,8 +20,8 @@ public partial struct Helpers
 {
     public static bool ActorFilterMatches(ActorFilterInfo actorA, ActorFilterInfo actorB, ActorFilter filter)
     {
-        return ((filter & ActorFilter.Allies) != 0 && actorA.Team == actorB.Team)
-            || ((filter & ActorFilter.Enemies) != 0 && actorA.Team != actorB.Team)
+        return ((filter & ActorFilter.Allies) != 0 && actorA.Team == actorB.Team && actorB.Team != -1)
+            || ((filter & ActorFilter.Enemies) != 0 && actorA.Team != actorB.Team && actorB.Team != -1)
             || ((filter & ActorFilter.Terrain) != 0 && actorB.IsTerrain);
     }
 

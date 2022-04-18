@@ -15,7 +15,7 @@ public abstract class SurveyBaseController : MonoBehaviour
         public List<GameAction.ParameterData> CurrentData;
 
         public Entity ActionPrefab => UseContext.Action;
-        public Entity Instigator => UseContext.ActionInstigatorActor;
+        public Entity Instigator => UseContext.ActionActor;
 
         public T GetQueryParam<T>() where T : GameAction.ParameterDescription
         {

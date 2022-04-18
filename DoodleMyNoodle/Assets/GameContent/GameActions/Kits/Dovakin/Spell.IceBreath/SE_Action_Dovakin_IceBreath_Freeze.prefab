@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Mage_IceBall_Freeze
+  m_Name: SE_Action_Dovakin_IceBreath_Freeze
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: cff55586b8ab41c4a9806cdfa4b2cbb5
+  _guid: 70e448ee90513b24ba78b7774d6f326b
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -80,5 +80,5 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionGameEffect/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        GameEffect: {fileID: 2784291058542494111, guid: ef21fea553bab11449b0ccba68f4f15e,
+        GameEffect: {fileID: 2784291058542494111, guid: f89b9587bb1145f48b0d4a9925394c2a,
           type: 3}

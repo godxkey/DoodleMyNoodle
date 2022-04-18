@@ -84190,12 +84190,7 @@ PrefabInstance:
     - target: {fileID: 4652520508204874155, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: MaxValue
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 7083706433129272114, guid: 987a47d4012e6fc4c8365e6a618abff0,
-        type: 3}
-      propertyPath: ActEvery
-      value: 9999
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 7551162044909047762, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}

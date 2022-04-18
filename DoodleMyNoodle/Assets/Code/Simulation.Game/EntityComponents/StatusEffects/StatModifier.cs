@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using Unity.Entities;
 
+// TODO : refaire ce système en étant agnostique du design.
+// Les StatModifier type devrait être genre "attack speed, health, damage, resistance, etc." et non "armored, poisoned"
+
 public enum StatModifierType
 {
     Slow,
@@ -11,6 +14,7 @@ public enum StatModifierType
     AttackSpeedBoost,
     Poison,
     BonusDamage,
+    Stunned,
 }
 
 public enum StatModifierBlendmode
@@ -106,6 +110,16 @@ static public class StatModifierSettings
             {
                 Type = StatModifierType.BonusDamage,
                 Value = (fix)1.5,
+                Blendmode = StatModifierBlendmode.Multiplier
+            }
+        },
+
+        {
+            StatModifierType.Stunned,
+            new StatModifierSetting()
+            {
+                Type = StatModifierType.Stunned,
+                Value = (fix)0,
                 Blendmode = StatModifierBlendmode.Multiplier
             }
         },

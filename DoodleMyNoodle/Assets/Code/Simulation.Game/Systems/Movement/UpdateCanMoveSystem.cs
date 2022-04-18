@@ -1,7 +1,6 @@
 ﻿using Unity.Entities;
 using CCC.Fix2D;
 using Unity.Mathematics;
-using Unity.Collections;
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
 [UpdateBefore(typeof(ApplyMovementSystem))]

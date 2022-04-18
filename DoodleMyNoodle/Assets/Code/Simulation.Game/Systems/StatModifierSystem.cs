@@ -26,7 +26,7 @@ public struct RemoveStatModifierRequest : ISingletonBufferElementData
 [AlwaysUpdateSystem]
 public class StatModifierSystem : SimGameSystemBase
 {
-    List<Entity> EntityStatsToUpdate = new List<Entity>();
+    List<Entity> _entityStatsToUpdate = new List<Entity>();
 
     protected override void OnUpdate()
     {
@@ -43,7 +43,7 @@ public class StatModifierSystem : SimGameSystemBase
 
     private void UpdateStats()
     {
-        foreach (Entity entity in EntityStatsToUpdate)
+        foreach (Entity entity in _entityStatsToUpdate)
         {
             DynamicBuffer<StatModifier> statModifiers = GetBuffer<StatModifier>(entity);
 
@@ -70,7 +70,7 @@ public class StatModifierSystem : SimGameSystemBase
 
                 foreach (var statModifier in statModifiers)
                 {
-                    if (statModifier.Type == StatModifierType.Fast || statModifier.Type == StatModifierType.Slow)
+                    if (statModifier.Type == StatModifierType.Fast || statModifier.Type == StatModifierType.Slow || statModifier.Type == StatModifierType.Stunned)
                     {
                         newMoveSpeed *= statModifier.Value;
                     }
@@ -91,7 +91,7 @@ public class StatModifierSystem : SimGameSystemBase
                         newDamageMultiplier *= statModifier.Value;
                     }
                 }
-                
+
                 SetComponent(entity, new DamageMultiplier() { Value = newDamageMultiplier });
             }
 
@@ -118,7 +118,7 @@ public class StatModifierSystem : SimGameSystemBase
 
                 foreach (var statModifier in statModifiers)
                 {
-                    if (statModifier.Type == StatModifierType.AttackSpeedBoost)
+                    if (statModifier.Type == StatModifierType.AttackSpeedBoost || statModifier.Type == StatModifierType.Stunned)
                     {
                         newAttackSpeed *= statModifier.Value;
                     }
@@ -128,7 +128,7 @@ public class StatModifierSystem : SimGameSystemBase
             }
         }
 
-        EntityStatsToUpdate.Clear();
+        _entityStatsToUpdate.Clear();
     }
 
     private void ProcessRemoveRequests(DynamicBuffer<RemoveStatModifierRequest> removeStatusEffectRequests)
@@ -138,7 +138,7 @@ public class StatModifierSystem : SimGameSystemBase
             if (!EntityManager.TryGetBuffer(removeRequest.Target, out DynamicBuffer<StatModifier> statModifiers))
                 continue;
 
-            EntityStatsToUpdate.Add(removeRequest.Target);
+            _entityStatsToUpdate.Add(removeRequest.Target);
 
             int index = -1;
             for (int i = 0; i < statModifiers.Length; i++)
@@ -175,7 +175,7 @@ public class StatModifierSystem : SimGameSystemBase
             if (!EntityManager.TryGetBuffer(addRequest.Target, out DynamicBuffer<StatModifier> statModifiers))
                 continue;
 
-            EntityStatsToUpdate.Add(addRequest.Target);
+            _entityStatsToUpdate.Add(addRequest.Target);
 
             int index = -1;
             for (int i = 0; i < statModifiers.Length; i++)

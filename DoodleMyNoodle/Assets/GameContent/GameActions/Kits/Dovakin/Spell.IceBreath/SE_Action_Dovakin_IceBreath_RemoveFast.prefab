@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Mage_IceBall_Freeze
+  m_Name: SE_Action_Dovakin_IceBreath_RemoveFast
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: cff55586b8ab41c4a9806cdfa4b2cbb5
+  _guid: 322b87eb5dcf1bc4087af7fb27d1e111
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionGameEffect
+  Value: GameActionStatModifier
   UseInstigatorAsTarget: 0
   ExecuteOnFirstInstigator: 0
   ExecuteOnLastInstigator: 0
@@ -78,7 +78,8 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionGameEffect/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionStatModifier/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        GameEffect: {fileID: 2784291058542494111, guid: ef21fea553bab11449b0ccba68f4f15e,
-          type: 3}
+        Type: 1
+        StackAmount: 1
+        Remove: 1

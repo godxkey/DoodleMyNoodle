@@ -90,7 +90,7 @@ public class GameActionMelee : GameAction<GameActionMelee.Settings>
         // find all targets hit
         NativeList<Entity> hitTargets = new NativeList<Entity>(Allocator.Temp);
 
-        var instigatorFilterInfo = CommonReads.GetActorFilterInfo(input.Accessor, input.Context.ActionInstigatorActor);
+        var instigatorFilterInfo = CommonReads.GetActorFilterInfo(input.Accessor, input.Context.ActionActor);
 
         var rayHits = CommonReads.Physics.CastRay(input.Accessor, instigatorPos, attackPosition, ignoreEntity: input.Context.FirstPhysicalInstigator);
         for (int i = 0; i < rayHits.Length; i++)

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action__SlowApply
+  m_Name: SE_Action_AttackSpeedBoost_Apply
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 6431ad0cc5e89e542aefa90715a7a965
+  _guid: 810af39ef0187574c87b8efc7de8584c
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -80,6 +80,6 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionStatModifier/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Type: 0
+        Type: 5
         StackAmount: 1
         Remove: 0
