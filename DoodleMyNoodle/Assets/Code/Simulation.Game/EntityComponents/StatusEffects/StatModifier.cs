@@ -39,7 +39,7 @@ static public class StatModifierSettings
             new StatModifierSetting()
             {
                 Type = StatModifierType.Slow,
-                Value = (fix)0.5,
+                Value = (fix)0.15,
                 Blendmode = StatModifierBlendmode.Multiplier
             }
         },
@@ -49,7 +49,7 @@ static public class StatModifierSettings
             new StatModifierSetting()
             {
                 Type = StatModifierType.Fast,
-                Value = (fix)2,
+                Value = (fix)3,
                 Blendmode = StatModifierBlendmode.Multiplier
             }
         },

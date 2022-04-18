@@ -63,7 +63,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionSpawn
+  Value: GameActionThrow
+  UseInstigatorAsTarget: 0
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -74,8 +78,17 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionSpawn/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        PawnOffset: {x: 4, y: 0.5}
-        Prefab: {fileID: 2385346486794747607, guid: d9608b2e983f0a04ba4211376be7b635,
+        SpeedMin:
+          RawValue: 0
+        SpeedMax:
+          RawValue: 42949672960
+        SpawnExtraDistance:
+          RawValue: 0
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: d9608b2e983f0a04ba4211376be7b635,
           type: 3}
+        Quantity: 1
+        VolleyAngle: 0
+        ShootVector: {x: 15, y: 0}
+        SpawnOffset: {x: 0, y: 1}
