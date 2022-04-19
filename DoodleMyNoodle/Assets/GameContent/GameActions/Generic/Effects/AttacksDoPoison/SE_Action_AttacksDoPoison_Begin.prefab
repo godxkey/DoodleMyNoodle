@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Archer_Steroid_Poison
+  m_Name: SE_Action_AttacksDoPoison_Begin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 6b619160431c3bb4596a318c6cde13f8
+  _guid: 6c08d8e44f5c93f44ad16cfd500d526f
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,8 +63,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionGameEffect
-  UseInstigatorAsTarget: 1
+  Value: GameEffectAddGameEffectOnDamageDealt+GameActionBegin
+  UseInstigatorAsTarget: 0
   ExecuteOnFirstInstigator: 0
   ExecuteOnLastInstigator: 0
   InstigatorAsTargetType: 0
@@ -78,7 +78,8 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionGameEffect/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameEffectAddGameEffectOnDamageDealt/GameActionBegin/SettingsAuth,
+        ns: , asm: Simulation.Game}
       data:
-        GameEffect: {fileID: 2784291058542494111, guid: f2dbf530675faab46883a5fe02e8050f,
+        GameEffect: {fileID: 2784291058542494111, guid: 6428d4d3bb465324eb400f8e3a303541,
           type: 3}

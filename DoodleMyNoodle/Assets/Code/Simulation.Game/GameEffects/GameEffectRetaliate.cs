@@ -16,7 +16,7 @@ public class GameEffectRetaliate
         public override bool Execute(in ExecInputs input, ref ExecOutput output)
         {
             // Add damage processor onto effect
-            input.Accessor.AddComponentData(input.Context.ActionActor, new DamageProcessor()
+            input.Accessor.AddComponentData(input.Context.ActionActor, new DamageReceivedProcessor()
             {
                 FunctionId = GameFunctions.GetId(DamageProcessor)
             });
@@ -31,7 +31,7 @@ public class GameEffectRetaliate
     }
 
     [RegisterGameFunction]
-    public static readonly GameFunction<GameFunctionDamageProcessorArg> DamageProcessor = (ref GameFunctionDamageProcessorArg arg) =>
+    public static readonly GameFunction<GameFunctionDamageReceivedProcessorArg> DamageProcessor = (ref GameFunctionDamageReceivedProcessorArg arg) =>
     {
         var counter = arg.Accessor.GetComponent<EffectRetaliateDamageCounter>(arg.EffectEntity);
 

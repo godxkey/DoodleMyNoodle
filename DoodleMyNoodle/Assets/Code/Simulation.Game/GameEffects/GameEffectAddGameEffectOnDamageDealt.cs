@@ -42,13 +42,13 @@ public class GameEffectAddGameEffectOnDamageDealt
         protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
         {
             // Add damage processor onto effect
-            input.Accessor.AddComponentData(input.Context.ActionInstigatorActor, new DamageDealtProcessor()
+            input.Accessor.AddComponentData(input.Context.ActionActor, new DamageDealtProcessor()
             {
                 FunctionId = GameFunctions.GetId(DamageDealtProcessor)
             });
 
             // add game effect reference to add on damage dealt
-            input.Accessor.AddComponentData(input.Context.ActionInstigatorActor, new GameEffectOnDamageDealtToApply()
+            input.Accessor.AddComponentData(input.Context.ActionActor, new GameEffectOnDamageDealtToApply()
             {
                 GameEffectPrefab = settings.GameEffect
             });
