@@ -60,6 +60,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
             FirstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true),
             TileColliderTags = GetComponentDataFromEntity<TileColliderTag>(isReadOnly: true),
             MutedActions = GetSingletonBuffer<MutedContactActionElement>(),
+            Time = Time.ElapsedTime
         };
 
         Dependency = new ExtractFromTriggerEventsJob()
@@ -102,6 +103,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
         [ReadOnly] public ComponentDataFromEntity<FirstInstigator> FirstInstigators;
         [ReadOnly] public ComponentDataFromEntity<TileColliderTag> TileColliderTags;
         [ReadOnly] public PhysicsWorld World;
+        [ReadOnly] public fix Time;
 
         public DynamicBuffer<MutedContactActionElement> MutedActions;
         public NativeList<GameActionRequest> OutActions;
@@ -154,7 +156,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
                             {
                                 Instigator = entityA,
                                 ContactActionBufferId = actionOnContact.Data.Id,
-                                ExpirationTime = actionOnContact.Data.SameTargetCooldown,
+                                ExpirationTime = Time + actionOnContact.Data.SameTargetCooldown,
                                 Target = entityB
                             });
                         }
@@ -189,6 +191,7 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
         var firstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true);
         var tileColliderTags = GetComponentDataFromEntity<TileColliderTag>(isReadOnly: true);
         var mutedActions = GetSingletonBuffer<MutedContactActionElement>();
+        var time = Time.ElapsedTime;
 
         Entities
             .WithReadOnly(physicsWorld)
@@ -239,7 +242,7 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
                                 {
                                     Instigator = entity,
                                     ContactActionBufferId = actionOnContact.Data.Id,
-                                    ExpirationTime = actionOnContact.Data.SameTargetCooldown,
+                                    ExpirationTime = time + actionOnContact.Data.SameTargetCooldown,
                                     Target = hit.Entity
                                 });
                             }
@@ -264,7 +267,7 @@ public class UpdateMutedContactActionSystem : SimGameSystemBase
         var mutedActions = GetSingletonBuffer<MutedContactActionElement>();
         for (int i = mutedActions.Length - 1; i >= 0; i--)
         {
-            if (mutedActions[i].ExpirationTime >= time)
+            if (time >= mutedActions[i].ExpirationTime)
             {
                 mutedActions.RemoveAt(i);
             }

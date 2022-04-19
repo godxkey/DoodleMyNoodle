@@ -19,7 +19,7 @@ public class GameEffectAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new GameEffectRemainingDuration() { RemainingTime = (fix)Duration });
+        dstManager.AddComponentData(entity, new GameEffectRemainingDuration() { Value = (fix)Duration });
 
         if (GameActionOnBegin)
             dstManager.AddComponentData(entity, new GameEffectOnBeginGameAction() { Action = conversionSystem.GetPrimaryEntity(GameActionOnBegin.gameObject) });

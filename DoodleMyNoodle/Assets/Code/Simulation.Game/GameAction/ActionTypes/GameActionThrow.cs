@@ -25,6 +25,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         public float VolleyAngle = 0;
         [Header("Default Parameter")]
         public Vector2 ShootVector;
+        public Vector2 SpawnOffset;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
@@ -36,7 +37,8 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
                 ProjectilePrefab = conversionSystem.GetPrimaryEntity(ProjectilePrefab),
                 Quantity = Quantity,
                 VolleyAngle = radians((fix)VolleyAngle),
-                ShootVector = new fix2((fix)ShootVector.x, (fix)ShootVector.y)
+                ShootVector = new fix2((fix)ShootVector.x, (fix)ShootVector.y),
+                SpawnOffset = (fix2)SpawnOffset,
             });
         }
 
@@ -57,6 +59,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         public int Quantity;
         public fix VolleyAngle; // in radian
         public fix2 ShootVector;
+        public fix2 SpawnOffset;
     }
 
     protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
@@ -84,7 +87,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         {
             InheritInstigatorVelocity = true,
             SimulateSpawnFromInstigatorCenter = originateFromCenter,
-            SpawnOffset = default,
+            SpawnOffset = settings.SpawnOffset,
         };
 
         CommonWrites.FireProjectile(input.Accessor,
@@ -103,7 +106,8 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
     {
         Settings settings = accessor.GetComponent<Settings>(actionPrefab);
 
-        return direction * CommonReads.GetThrowSpawnDistance(accessor, settings.ProjectilePrefab, context.LastPhysicalInstigator, settings.SpawnExtraDistance);
+        return (direction * CommonReads.GetThrowSpawnDistance(accessor, settings.ProjectilePrefab, context.LastPhysicalInstigator, settings.SpawnExtraDistance)) 
+            + settings.SpawnOffset;
     }
 
     // used by presentation

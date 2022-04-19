@@ -8,13 +8,13 @@ public class ItemUsedVFXDefinition : VFXDefinition
 
     protected override void OnTriggerVFX()
     {
-        Vector3 Location = GetVFXData<Vector2>("Location");
-        Sprite Sprite = GetVFXData<Sprite>("Sprite");
-        Location += new Vector3(DisplacementX, DisplacementY, 0);
-        GameObject newVFX = Instantiate(VFXToSpawn, Location, Quaternion.identity);
-        if (newVFX.TryGetComponent(out SpriteRendererScalingFromTexture SpriteRendererScalingFromTexture))
+        Vector3 location = GetVFXData<Vector2>("Location");
+        Sprite sprite = GetVFXData<Sprite>("Sprite");
+        location += new Vector3(DisplacementX, DisplacementY, 0);
+        GameObject newVFX = Instantiate(VFXToSpawn, location, Quaternion.identity);
+        if (newVFX.TryGetComponent(out SpriteRendererScalingFromTexture spriteRendererScalingFromTexture))
         {
-            SpriteRendererScalingFromTexture.SetScalingFromTexture(Sprite);
+            spriteRendererScalingFromTexture.SetScalingFromTexture(sprite);
         }
     }
 }

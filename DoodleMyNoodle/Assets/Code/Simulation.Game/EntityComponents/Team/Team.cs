@@ -11,7 +11,7 @@ public enum DesignerFriendlyTeam
 [Serializable]
 public struct Team : IComponentData, IEquatable<Team>
 {
-    public int Value;
+    public short Value;
 
     public bool Equals(Team other)
     {
@@ -38,8 +38,8 @@ public struct Team : IComponentData, IEquatable<Team>
         return !(left == right);
     }
 
-    public static implicit operator int(Team val) => val.Value;
-    public static implicit operator Team(int val) => new Team() { Value = val };
+    public static implicit operator short(Team val) => val.Value;
+    public static implicit operator Team(short val) => new Team() { Value = val };
 
     public static Team None => new Team() { Value = -1 };
     public static Team Null => new Team() { Value = -2 };

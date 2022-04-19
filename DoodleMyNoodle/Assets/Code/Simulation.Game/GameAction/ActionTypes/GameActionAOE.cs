@@ -45,7 +45,8 @@ public class GameActionAOE : GameAction<GameActionAOE.Settings>
                     Shape.Box => (fix2)BoxSize,
                     Shape.Circle => new fix2((fix)CircleRadius),
                     _ => throw new NotImplementedException()
-                }
+                },
+                InstigatorOffset = (fix2)InstigatorOffset,
             });
 
             var actions = dstManager.AddBuffer<SettingsAction>(entity);

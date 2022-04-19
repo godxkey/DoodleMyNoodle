@@ -6,6 +6,7 @@ using static Unity.Mathematics.math;
 using CCC.Fix2D;
 using System;
 using System.Collections.Generic;
+using UnityEngineX;
 
 public struct AddGameEffectRequest : ISingletonBufferElementData
 {
@@ -18,8 +19,6 @@ public struct AddGameEffectRequest : ISingletonBufferElementData
 [UpdateBefore(typeof(ExecuteGameActionSystem))]
 public class GameEffectSystem : SimGameSystemBase
 {
-    List<Entity> _entitiesGameEffectToUpdate = new List<Entity>();
-
     protected override void OnUpdate()
     {
         UpdateDurations();
@@ -29,69 +28,70 @@ public class GameEffectSystem : SimGameSystemBase
         addGameEffectRequests.Clear();
 
         ProcessAddRequests(effectRequests);
-        effectRequests.Dispose();
     }
 
     private void UpdateDurations()
     {
         fix deltaTime = Time.DeltaTime;
 
-        Entities.ForEach((Entity entity, ref GameEffectRemainingDuration effect) =>
+        NativeList<Entity> endingEffects = new NativeList<Entity>(Allocator.Temp);
+
+        Entities.ForEach((Entity effect, ref GameEffectRemainingDuration remainingDuration) =>
         {
-            effect.RemainingTime -= deltaTime;
+            remainingDuration.Value -= deltaTime;
 
-            if (effect.RemainingTime < 0)
+            if (remainingDuration.Value < 0)
             {
-                _entitiesGameEffectToUpdate.Remove(entity);
-
-                if (EntityManager.TryGetComponent(entity, out GameEffectOnEndGameAction gameEffectOnEndGameAction))
-                {
-                    CommonWrites.RequestExecuteGameAction(Accessor, entity, gameEffectOnEndGameAction.Action);
-                }
-
-                CommonWrites.DestroyEndOfTick(Accessor, entity);
+                endingEffects.Add(effect);
             }
-        }).WithoutBurst().Run();
+
+        }).Run();
+
+        foreach (var effect in endingEffects)
+        {
+            if (EntityManager.TryGetComponent(effect, out GameEffectOnEndGameAction gameEffectOnEndGameAction))
+            {
+                CommonWrites.RequestExecuteGameAction(Accessor, effect, gameEffectOnEndGameAction.Action, GetComponent<GameEffectInfo>(effect).Owner);
+            }
+
+            CommonWrites.DestroyEndOfTick(Accessor, effect);
+        }
     }
 
-    private void ProcessAddRequests(NativeArray<AddGameEffectRequest> addGameEffectRequests)
+    private void ProcessAddRequests(NativeArray<AddGameEffectRequest> addRequests)
     {
-        // Spawn new game effect entity
-        List<Entity> newEntities = new List<Entity>();
-
-        foreach (AddGameEffectRequest addRequest in addGameEffectRequests)
+        foreach (AddGameEffectRequest addRequest in addRequests)
         {
-            _entitiesGameEffectToUpdate.Add(addRequest.Target);
+            // check that target has a buffer for it. This will also check if the target has been destroyed
+            if (!EntityManager.HasComponent<GameEffectBufferElement>(addRequest.Target))
+                continue;
 
-            Entity newGameEffectEntity = EntityManager.Instantiate(addRequest.GameEffectPrefab);
+            // _________________________________________ Create Effect _________________________________________ //
+            Entity newEffect = EntityManager.Instantiate(addRequest.GameEffectPrefab);
 
-            EntityManager.AddComponentData(newGameEffectEntity, new GameEffectInfo()
+            EntityManager.AddComponentData(newEffect, new GameEffectInfo()
             {
                 Instigator = addRequest.Instigator,
-                Owner = addRequest.Target
+                Owner = addRequest.Target,
             });
-            EntityManager.AddComponentData(newGameEffectEntity, new FirstInstigator() { Value = addRequest.Target });
 
-            if (EntityManager.TryGetComponent(newGameEffectEntity, out GameEffectOnBeginGameAction gameEffectOnBeginGameAction))
+            // FRED: Pas sur que ça devrait être la target. Me semble que l'instigateur devrait être la personne qui a mis l'effect. E.g. si j'met qq1 en feu et que 
+            // ça fait du dots, ça devrait checker mon 'bonus-fire-damage' ?
+            EntityManager.AddComponentData(newEffect, new FirstInstigator() { Value = addRequest.Target });
+
+
+            // _________________________________________ Add to owner _________________________________________ //
+            DynamicBuffer<GameEffectBufferElement> effects = EntityManager.GetBuffer<GameEffectBufferElement>(addRequest.Target);
+
+            effects.Add(new GameEffectBufferElement()
             {
-                CommonWrites.RequestExecuteGameAction(Accessor, newGameEffectEntity, gameEffectOnBeginGameAction.Action);
-            }
+                EffectEntity = newEffect
+            });
 
-            newEntities.Add(newGameEffectEntity);
-        }
-
-        // setup game effect entity reference
-        foreach (Entity entity in newEntities)
-        {
-            if (EntityManager.TryGetComponent(entity, out GameEffectInfo gameEffectInfo))
+            // _________________________________________ Execute GameAction _________________________________________ //
+            if (EntityManager.TryGetComponent(newEffect, out GameEffectOnBeginGameAction beginAction))
             {
-                if (EntityManager.TryGetBuffer(gameEffectInfo.Owner, out DynamicBuffer<GameEffectBufferElement> effects))
-                {
-                    effects.Add(new GameEffectBufferElement()
-                    {
-                        EffectEntity = entity
-                    });
-                }
+                CommonWrites.RequestExecuteGameAction(Accessor, newEffect, beginAction.Action, addRequest.Target);
             }
         }
     }

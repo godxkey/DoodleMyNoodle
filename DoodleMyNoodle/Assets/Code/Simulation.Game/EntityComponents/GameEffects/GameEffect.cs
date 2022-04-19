@@ -5,7 +5,10 @@ using UnityEngine;
 
 public struct GameEffectRemainingDuration : IComponentData
 {
-    public fix RemainingTime;
+    public fix Value;
+
+    public static implicit operator fix(GameEffectRemainingDuration val) => val.Value;
+    public static implicit operator GameEffectRemainingDuration(fix val) => new GameEffectRemainingDuration() { Value = val };
 }
 
 public struct GameEffectInfo : IComponentData
