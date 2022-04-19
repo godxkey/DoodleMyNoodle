@@ -11,7 +11,7 @@ public struct GameEffectRemainingDuration : IComponentData
 public struct GameEffectInfo : IComponentData
 {
     public Entity Owner;
-    public Entity Instigator;
+    public InstigatorSet Instigator;
 }
 
 public struct GameEffectBufferElement : IBufferElementData

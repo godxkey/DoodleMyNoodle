@@ -11,7 +11,7 @@ public struct AddGameEffectRequest : ISingletonBufferElementData
 {
     public Entity GameEffectPrefab;
     public Entity Target;
-    public Entity Instigator;
+    public InstigatorSet Instigator;
 }
 
 [AlwaysUpdateSystem]

@@ -98,12 +98,25 @@ public struct HealRequestSettings
     public bool IsAutoAttack;
 }
 
-public struct DamageProcessor : IComponentData
+public struct DamageReceivedProcessor : IComponentData
 {
     public GameFunctionId FunctionId;
 }
 
-public struct GameFunctionDamageProcessorArg
+public struct GameFunctionDamageReceivedProcessorArg
+{
+    public ISimGameWorldReadWriteAccessor Accessor;
+    public Entity EffectEntity;
+    public HealthChangeRequestData RequestData;
+    public fix RemainingDamage;
+}
+
+public struct DamageDealtProcessor : IComponentData
+{
+    public GameFunctionId FunctionId;
+}
+
+public struct GameFunctionDamageDealtProcessorArg
 {
     public ISimGameWorldReadWriteAccessor Accessor;
     public Entity EffectEntity;
@@ -146,7 +159,9 @@ public class ApplyDamageSystem : SimGameSystemBase
 
     private void ProcessHealthChange(HealthChangeRequestData request)
     {
-        NativeList<(DamageProcessor dmgProcessor, Entity effectEntity)> dmgProcessors = new NativeList<(DamageProcessor, Entity)>(Allocator.Temp);
+        NativeList<(DamageReceivedProcessor dmgProcessor, Entity effectEntity)> dmgReceivedProcessors = new NativeList<(DamageReceivedProcessor, Entity)>(Allocator.Temp);
+        NativeList<(DamageDealtProcessor dmgProcessor, Entity effectEntity)> dmgDealtProcessors = new NativeList<(DamageDealtProcessor, Entity)>(Allocator.Temp);
+
         Entity target = request.Target;
         Entity lastPhysicalInstigator = request.InstigatorSet.LastPhysicalInstigator;
         Entity firstPhyisicalInstigator = request.InstigatorSet.FirstPhysicalInstigator;
@@ -219,23 +234,45 @@ public class ApplyDamageSystem : SimGameSystemBase
             totalAmountUncapped *= damageReceivedMultiplier;
         }
 
-        // execute damage processors (if any)
-        if (dmgProcessors.Length > 0 && remainingDelta < 0)
+        // execute damage dealt processors (if any)
+        if (dmgDealtProcessors.Length > 0 && remainingDelta < 0)
         {
-            GameFunctionDamageProcessorArg arg = new GameFunctionDamageProcessorArg()
+            GameFunctionDamageDealtProcessorArg arg = new GameFunctionDamageDealtProcessorArg()
             {
                 Accessor = Accessor,
                 RequestData = request,
                 RemainingDamage = -remainingDelta
             };
 
-            for (int i = 0; i < dmgProcessors.Length; i++)
+            for (int i = 0; i < dmgDealtProcessors.Length; i++)
             {
                 if (arg.RemainingDamage <= 0)
                     break;
 
-                arg.EffectEntity = dmgProcessors[i].effectEntity;
-                GameFunctions.Execute(dmgProcessors[i].dmgProcessor.FunctionId, ref arg);
+                arg.EffectEntity = dmgDealtProcessors[i].effectEntity;
+                GameFunctions.Execute(dmgDealtProcessors[i].dmgProcessor.FunctionId, ref arg);
+            }
+
+            remainingDelta = -arg.RemainingDamage;
+        }
+
+        // execute damage received processors (if any)
+        if (dmgReceivedProcessors.Length > 0 && remainingDelta < 0)
+        {
+            GameFunctionDamageReceivedProcessorArg arg = new GameFunctionDamageReceivedProcessorArg()
+            {
+                Accessor = Accessor,
+                RequestData = request,
+                RemainingDamage = -remainingDelta
+            };
+
+            for (int i = 0; i < dmgReceivedProcessors.Length; i++)
+            {
+                if (arg.RemainingDamage <= 0)
+                    break;
+
+                arg.EffectEntity = dmgReceivedProcessors[i].effectEntity;
+                GameFunctions.Execute(dmgReceivedProcessors[i].dmgProcessor.FunctionId, ref arg);
             }
 
             remainingDelta = -arg.RemainingDamage;
@@ -350,9 +387,14 @@ public class ApplyDamageSystem : SimGameSystemBase
             {
                 foreach (var effect in effects)
                 {
-                    if (HasComponent<DamageProcessor>(effect.EffectEntity))
+                    if (HasComponent<DamageReceivedProcessor>(effect.EffectEntity))
                     {
-                        dmgProcessors.Add((GetComponent<DamageProcessor>(effect.EffectEntity), effect.EffectEntity));
+                        dmgReceivedProcessors.Add((GetComponent<DamageReceivedProcessor>(effect.EffectEntity), effect.EffectEntity));
+                    }
+
+                    if (HasComponent<DamageDealtProcessor>(effect.EffectEntity))
+                    {
+                        dmgDealtProcessors.Add((GetComponent<DamageDealtProcessor>(effect.EffectEntity), effect.EffectEntity));
                     }
                 }
             }

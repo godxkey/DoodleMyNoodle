@@ -47,7 +47,7 @@ public class GameActionGameEffect : GameAction<GameActionGameEffect.Settings>
             {
                 GameEffectPrefab = settings.GameEffect,
                 Target = target,
-                Instigator = input.Context.LastPhysicalInstigator
+                Instigator = input.Context.InstigatorSet
             });
 
             if (input.Accessor.TryGetComponent(target, out FixTranslation targetTranslation))

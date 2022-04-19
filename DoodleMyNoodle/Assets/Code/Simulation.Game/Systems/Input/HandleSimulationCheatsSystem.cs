@@ -255,7 +255,7 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 if (EntityManager.Exists(player) &&
                     EntityManager.TryGetComponent(player, out ControlledEntity pawn))
                 {
-                    EntityManager.AddComponentData(pawn, new DamageProcessor()
+                    EntityManager.AddComponentData(pawn, new DamageReceivedProcessor()
                     {
                         FunctionId = GameFunctions.GetId(DamageProcessorTest)
                     });
@@ -348,7 +348,7 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
     }
 
     [RegisterGameFunction]
-    public static readonly GameFunction<GameFunctionDamageProcessorArg> DamageProcessorTest = (ref GameFunctionDamageProcessorArg arg) =>
+    public static readonly GameFunction<GameFunctionDamageReceivedProcessorArg> DamageProcessorTest = (ref GameFunctionDamageReceivedProcessorArg arg) =>
     {
         arg.RemainingDamage = 0;
     };
