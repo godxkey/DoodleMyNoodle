@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8821241209944219005}
   - component: {fileID: 2677628293349642642}
-  - component: {fileID: 6323485160588907889}
+  - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Item_Meteor
+  m_Name: SE_Action_Archer_Airstrike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,13 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 63926cd1ef3c9a34d964ff3a29b2580c
+  _guid: 9183a7696bf7c314689852085faca662
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _hasTransform: 0
   _showGhost: 1
---- !u!114 &6323485160588907889
+--- !u!114 &-4801357984810749253
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -60,17 +60,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 2784291058542494111}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
+  m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPrefab: {fileID: -4801357984810749253, guid: fd9c66df4bad7b345abc422e47508300,
-    type: 3}
-  ApCost: 4
-  IsStackable: 0
-  CooldownType: 1
-  CooldownDuration: 10
-  HideInInventory: 0
-  Icon: {fileID: 21300000, guid: 6b9b7b5c50d576d43a664233a135f4b1, type: 3}
-  IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: Meteor
-  EffectDescription: "Lance un gigantesque met\xE9orite qui explosera"
+  Value: GameActionThrow
+  UseInstigatorAsTarget: 0
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
+  GameActionSettings:
+  - id: 0
+  SfxOnUse: {fileID: 0}
+  Animation: {fileID: 0}
+  InstigatorVFX: {fileID: 0}
+  TargetsVFX: {fileID: 0}
+  Surveys: []
+  references:
+    version: 1
+    00000000:
+      type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
+      data:
+        SpeedMin:
+          RawValue: 0
+        SpeedMax:
+          RawValue: 85899345920
+        SpawnExtraDistance:
+          RawValue: 0
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: 448f0a9069ae51e4d9c2772ff6a5fbed,
+          type: 3}
+        Quantity: 30
+        VolleyAngle: 80
+        ShootVector: {x: 9, y: -1}
+        SpawnOffset: {x: -2, y: 10}
