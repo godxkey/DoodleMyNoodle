@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 462959840056812340}
   - component: {fileID: 8841453195666950856}
   - component: {fileID: -1943092824245740565}
-  - component: {fileID: 1320516758862472843}
-  - component: {fileID: 3963825375573164001}
+  - component: {fileID: 4407360272268474410}
+  - component: {fileID: 7256353398788661768}
   m_Layer: 14
-  m_Name: SE_Grenade
+  m_Name: SE_Actor_Archer_Molotov_Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 832849494d47bc1468e92c6d8e314870
-  _bindedViewPrefab: {fileID: 7824342658589397423, guid: efda0ca0617b13a45989fb4ada0b7df3,
+  _guid: d08b0647a2efc0041be94344c9c3d3d4
+  _bindedViewPrefab: {fileID: 7824342658589397423, guid: 7c608e47a7adff748a2039984392efed,
     type: 3}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -67,19 +67,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 2
-  Shape: 0
-  Material: {fileID: 11400000, guid: 41f8bde84fa940547b142a511cb188e0, type: 2}
+  Shape: 1
+  Material: {fileID: 11400000, guid: f12656138a7b18546a992bf9c5083561, type: 2}
   IsTrigger: 0
   LinearDrag: 0
   AngularDrag: 0.05
   GravityScale: 1
-  FireEvents: 1
+  FireEvents: 0
   FreezeRotation: 0
-  BoxSize: {x: 1, y: 1}
-  CircleRadius: 0.15
+  BoxSize: {x: 1.5, y: 0.41}
+  CircleRadius: 0.75
   BoxAndCircleOffset: {x: 0, y: 0}
   PolygonPoints: []
---- !u!114 &1320516758862472843
+--- !u!114 &4407360272268474410
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -88,14 +88,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 2385346486794747607}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07961ffee0da65e4daa96b88fad5ddf7, type: 3}
+  m_Script: {fileID: 11500000, guid: 2718cabf9b28f424785e0b09d963c40e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Entries:
-  - Action: {fileID: -4801357984810749253, guid: b3c0319d86fe74549847a5c632230de6,
+  Actions:
+  - ActionPrefab: {fileID: -4801357984810749253, guid: 5f77c7787f84b2948a8881fd740ba051,
       type: 3}
-    AtLifetime: 3
---- !u!114 &3963825375573164001
+    TargetFilter: 2
+    SameTargetCooldown: 0.5
+    GeneralCooldown: 0
+    ContactMode: 1
+    OverlapLayerMask:
+      serializedVersion: 2
+      m_Bits: 512
+    OverlapRadius: 0.75
+  - ActionPrefab: {fileID: -4801357984810749253, guid: 9c027882d9e473f4396f11c5a4c0352f,
+      type: 3}
+    TargetFilter: 2
+    SameTargetCooldown: 0.5
+    GeneralCooldown: 0
+    ContactMode: 1
+    OverlapLayerMask:
+      serializedVersion: 2
+      m_Bits: 768
+    OverlapRadius: 0.75
+--- !u!114 &7256353398788661768
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,4 +125,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Lifetime:
-    RawValue: 12884901888
+    RawValue: 21474836480

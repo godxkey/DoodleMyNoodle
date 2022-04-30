@@ -9,7 +9,7 @@ using Unity.Collections;
 
 public class GameEffectAddGameEffectOnDamageDealt
 {
-    public class GameActionBegin : GameAction<GameActionBegin.Settings>
+    public class Begin : GameAction<Begin.Settings>
     {
         [Serializable]
         [GameActionSettingAuth(typeof(Settings))]
@@ -48,7 +48,7 @@ public class GameEffectAddGameEffectOnDamageDealt
             });
 
             // add game effect reference to add on damage dealt
-            input.Accessor.AddComponentData(input.Context.ActionActor, new GameEffectOnDamageDealtToApply()
+            input.Accessor.AddComponentData(input.Context.ActionActor, new GameEffectAddGameEffectOnDamageDealt.Settings()
             {
                 GameEffectPrefab = settings.GameEffect
             });
@@ -57,7 +57,7 @@ public class GameEffectAddGameEffectOnDamageDealt
         }
     }
 
-    public struct GameEffectOnDamageDealtToApply : IComponentData
+    public struct Settings : IComponentData
     {
         public Entity GameEffectPrefab;
     }
@@ -65,14 +65,14 @@ public class GameEffectAddGameEffectOnDamageDealt
     [RegisterGameFunction]
     public static readonly GameFunction<GameFunctionDamageDealtProcessorArg> DamageDealtProcessor = (ref GameFunctionDamageDealtProcessorArg arg) =>
     {
-        if(arg.Accessor.TryGetComponent(arg.EffectEntity, out GameEffectOnDamageDealtToApply gameEffectOnDamageDealtToApply)) 
+        if (arg.Accessor.TryGetComponent(arg.EffectEntity, out Settings settings))
         {
             var effectRequests = arg.Accessor.GetSingletonBuffer<AddGameEffectRequest>();
 
             effectRequests.Add(new AddGameEffectRequest()
             {
-                GameEffectPrefab = gameEffectOnDamageDealtToApply.GameEffectPrefab,
-                Target = arg.EffectEntity,
+                GameEffectPrefab = settings.GameEffectPrefab,
+                Target = arg.RequestData.Target,
                 Instigator = arg.RequestData.InstigatorSet
             });
         }

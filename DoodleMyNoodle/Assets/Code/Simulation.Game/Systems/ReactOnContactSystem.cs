@@ -23,7 +23,7 @@ static class MutedContactActionElementExtensions
         for (int i = 0; i < buffer.Length; i++)
         {
             var data = buffer[i];
-            if (data.Instigator == entity && data.Target == target && data.ContactActionBufferId == actionId)
+            if (data.Instigator == entity && (data.Target == target || data.Target == Entity.Null) && data.ContactActionBufferId == actionId)
                 return true;
         }
         return false;
@@ -235,6 +235,17 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
                                 Target = hit.Entity,
                                 ActionEntity = actionOnContact.Data.ActionEntity,
                             });
+
+                            if (actionOnContact.Data.GeneralCooldown > 0)
+                            {
+                                mutedActions.Add(new MutedContactActionElement()
+                                {
+                                    Instigator = entity,
+                                    ContactActionBufferId = actionOnContact.Data.Id,
+                                    ExpirationTime = time + actionOnContact.Data.GeneralCooldown,
+                                    Target = Entity.Null
+                                });
+                            }
 
                             if (actionOnContact.Data.SameTargetCooldown > 0)
                             {

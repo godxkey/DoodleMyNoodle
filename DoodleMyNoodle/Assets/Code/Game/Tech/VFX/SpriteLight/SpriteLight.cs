@@ -41,6 +41,11 @@ public class SpriteLight : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        UpdateRenderer();
+    }
+
 #if UNITY_EDITOR
     private void OnValidate()
     {
@@ -53,7 +58,7 @@ public class SpriteLight : MonoBehaviour
         UpdateRenderer();
     }
 
-    public void UpdateRenderer()
+    private void UpdateRenderer()
     {
         if (_propertyBlock == null)
             _propertyBlock = new MaterialPropertyBlock();

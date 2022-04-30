@@ -20,6 +20,7 @@ public class ActionOnContactAuth : MonoBehaviour, IConvertGameObjectToEntity, ID
         public GameActionAuth ActionPrefab = null;
         public ActorFilter TargetFilter = ActorFilter.Enemies;
         public float SameTargetCooldown = 0f;
+        public float GeneralCooldown = 0f;
         public ContactMode ContactMode = ContactMode.OnColliderContact;
 
         [ShowIf(nameof(IsContactModeOverlap))]
@@ -46,6 +47,7 @@ public class ActionOnContactAuth : MonoBehaviour, IConvertGameObjectToEntity, ID
                 ActionFilter = item.TargetFilter,
                 Id = (byte)i,
                 SameTargetCooldown = (fix)item.SameTargetCooldown,
+                GeneralCooldown = (fix)item.GeneralCooldown,
             };
 
             switch (item.ContactMode)

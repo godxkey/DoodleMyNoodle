@@ -3,6 +3,7 @@ using UnityEngine;
 using CCC.Fix2D;
 using System;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
 {
@@ -10,7 +11,8 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
     [GameActionSettingAuth(typeof(Settings))]
     public class SettingsAuth : GameActionSettingAuthBase
     {
-        public Vector2 PawnOffset;
+        [FormerlySerializedAs("PawnOffset")]
+        public Vector2 InstigatorOffset;
         public GameObject Prefab;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -18,7 +20,7 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
             dstManager.AddComponentData(entity, new Settings()
             {
                 Prefab = conversionSystem.GetPrimaryEntity(Prefab),
-                PawnOffset = (fix2)PawnOffset
+                InstigatorOffset = (fix2)InstigatorOffset
             });
         }
 
@@ -33,7 +35,7 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
     public struct Settings : IComponentData
     {
         public Entity Prefab;
-        public fix2 PawnOffset;
+        public fix2 InstigatorOffset;
     }
 
     protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
@@ -47,7 +49,7 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        fix2 spawnPosition = input.Accessor.GetComponent<FixTranslation>(input.Context.LastPhysicalInstigator) + settings.PawnOffset;
+        fix2 spawnPosition = input.Accessor.GetComponent<FixTranslation>(input.Context.LastPhysicalInstigator) + settings.InstigatorOffset;
 
         if (input.Parameters != null && input.Parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPos))
         {

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Archer_Grenade_Explosion_Damage
+  m_Name: SE_Action_Poison_End
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 5f77c7787f84b2948a8881fd740ba051
+  _guid: 68775fbcbd3a0df47b6e842eb4f746f3
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,7 +63,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionExplosion
+  Value: GameActionStatModifier
+  UseInstigatorAsTarget: 1
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -74,9 +78,8 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionExplosion/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionStatModifier/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Damage:
-          RawValue: 8589934592
-        Radius:
-          RawValue: 8589934592
+        Type: 6
+        StackAmount: 1
+        Remove: 1

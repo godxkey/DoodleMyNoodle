@@ -8,6 +8,7 @@ public struct ActionOnContactBaseData
     public ActorFilter ActionFilter;
     public Entity ActionEntity;
     public fix SameTargetCooldown;
+    public fix GeneralCooldown;
 }
 
 public struct ActionOnColliderContact : IBufferElementData

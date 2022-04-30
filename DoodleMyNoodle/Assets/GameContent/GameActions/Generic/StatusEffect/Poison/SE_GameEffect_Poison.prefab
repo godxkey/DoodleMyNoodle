@@ -67,5 +67,6 @@ MonoBehaviour:
   GameActionOnBegin: {fileID: 2784291058542494111, guid: 1c12830f635994d44a743818ab9e6e06,
     type: 3}
   GameActionOnTick: {fileID: 0}
-  GameActionOnEnd: {fileID: 0}
+  GameActionOnEnd: {fileID: 2784291058542494111, guid: 68775fbcbd3a0df47b6e842eb4f746f3,
+    type: 3}
   CharacterVFXPrefab: {fileID: 0}

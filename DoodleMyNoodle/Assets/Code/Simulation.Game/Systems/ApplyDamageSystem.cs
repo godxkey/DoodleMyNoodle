@@ -184,7 +184,8 @@ public class ApplyDamageSystem : SimGameSystemBase
         fix totalAmountUncapped = amount;
 
         // collect
-        CollectTargetEffects();
+        CollectTargetEffects(target);
+        CollectInstigatorEffects(firstPhyisicalInstigator);
 
         // find who should be really targetted if there is a HealthProxy component. This is notably used by players since they all share the same health pool
         while (HasComponent<HealthProxy>(target))
@@ -195,7 +196,7 @@ public class ApplyDamageSystem : SimGameSystemBase
 
             target = newTarget;
 
-            CollectTargetEffects();
+            CollectTargetEffects(target);
         }
 
         // prevents too many damage instance from the same source/group
@@ -389,9 +390,9 @@ public class ApplyDamageSystem : SimGameSystemBase
         }
 
         // LOCAL FUNCTIONS
-        void CollectTargetEffects()
+        void CollectTargetEffects(Entity entity)
         {
-            if (EntityManager.TryGetBuffer(target, out DynamicBuffer<GameEffectBufferElement> effects))
+            if (EntityManager.TryGetBuffer(entity, out DynamicBuffer<GameEffectBufferElement> effects))
             {
                 foreach (var effect in effects)
                 {
@@ -399,7 +400,16 @@ public class ApplyDamageSystem : SimGameSystemBase
                     {
                         dmgReceivedProcessors.Add((GetComponent<DamageReceivedProcessor>(effect.EffectEntity), effect.EffectEntity));
                     }
+                }
+            }
+        }
 
+        void CollectInstigatorEffects(Entity entity)
+        {
+            if (EntityManager.TryGetBuffer(entity, out DynamicBuffer<GameEffectBufferElement> effects))
+            {
+                foreach (var effect in effects)
+                {
                     if (HasComponent<DamageDealtProcessor>(effect.EffectEntity))
                     {
                         dmgDealtProcessors.Add((GetComponent<DamageDealtProcessor>(effect.EffectEntity), effect.EffectEntity));
