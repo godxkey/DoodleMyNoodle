@@ -123,7 +123,7 @@ public class GameActionMelee : GameAction<GameActionMelee.Settings>
         }
 
         // Apply On Hit effect
-        if (settings.OnHitActionEntity != Entity.Null)
+        if (settings.OnHitActionEntity != Entity.Null && hitTargets.Length > 0)
         {
             CommonWrites.RequestExecuteGameAction(input.Accessor, input.Context.LastPhysicalInstigator, settings.OnHitActionEntity, hitTargets, input.Parameters);
         }
