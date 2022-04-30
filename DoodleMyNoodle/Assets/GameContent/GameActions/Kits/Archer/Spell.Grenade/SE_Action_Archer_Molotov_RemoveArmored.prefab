@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Dovaking_BigAxe_RemoveArmored
+  m_Name: SE_Action_Archer_Molotov_RemoveArmored
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
