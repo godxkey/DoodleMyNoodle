@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Archer_Airstrike
+  m_Name: SE_Action_AirstrikeArrow_Damage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 9183a7696bf7c314689852085faca662
+  _guid: f091447b1670e5a42ab1b292cc1c0d9a
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,14 +63,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionThrow
+  Value: GameActionHealthChange
   UseInstigatorAsTarget: 0
   ExecuteOnFirstInstigator: 0
   ExecuteOnLastInstigator: 0
   InstigatorAsTargetType: 0
   GameActionSettings:
   - id: 0
-  SfxOnUse: {fileID: 11400000, guid: 324c33ad5f5172f4da5cc0381dc5f1fd, type: 2}
+  SfxOnUse: {fileID: 0}
   Animation: {fileID: 0}
   InstigatorVFX: {fileID: 0}
   TargetsVFX: {fileID: 0}
@@ -78,17 +78,10 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
+      type: {class: GameActionHealthChange/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        SpeedMin:
-          RawValue: 0
-        SpeedMax:
-          RawValue: 85899345920
-        SpawnExtraDistance:
-          RawValue: 0
-        ProjectilePrefab: {fileID: 2385346486794747607, guid: efa7208b11959fe488a22f88bed029bc,
-          type: 3}
-        Quantity: 30
-        VolleyAngle: 90
-        ShootVector: {x: 5, y: -5}
-        SpawnOffset: {x: 2, y: 10}
+        ChangeType: 1
+        Amount: 1
+        IsAutoAttack: 0
+        OnHealthChangedGameActionPrefab: {fileID: 0}
+        OnExtremeReachedGameActionPrefab: {fileID: 0}
