@@ -90,4 +90,5 @@ MonoBehaviour:
           type: 3}
         Quantity: 1
         VolleyAngle: 0
-        ShootVector: {x: 7, y: 7}
+        ShootVector: {x: 6.5, y: 6.5}
+        SpawnOffset: {x: 0, y: 0}

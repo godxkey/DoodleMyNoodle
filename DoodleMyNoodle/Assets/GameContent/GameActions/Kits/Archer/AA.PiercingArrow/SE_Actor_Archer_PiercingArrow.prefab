@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8618057839144830486}
   - component: {fileID: 2302789254329102844}
   m_Layer: 10
-  m_Name: SE_StrongArrow
+  m_Name: SE_Actor_Archer_PiercingArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Lifetime:
-    RawValue: 85899345920
+    RawValue: 30064771072
 --- !u!114 &2302789254329102844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,15 +110,6 @@ MonoBehaviour:
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 1
-    ContactMode: 0
-    OverlapLayerMask:
-      serializedVersion: 2
-      m_Bits: 512
-    OverlapRadius: 0.5
-  - ActionPrefab: {fileID: -4801357984810749253, guid: 5ca2f741dff4e294ba6510e8fed91cc1,
-      type: 3}
-    TargetFilter: 2
-    SameTargetCooldown: 0
     ContactMode: 0
     OverlapLayerMask:
       serializedVersion: 2

@@ -10,10 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8821241209944219005}
   - component: {fileID: 2677628293349642642}
-  - component: {fileID: 6323485160588907889}
-  - component: {fileID: 2373036378376905328}
+  - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Item_StrongArrows
+  m_Name: SE_Action_Archer_PiercingArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,13 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 9f9fb488d4fd04e46a5fe36b4f34e270
+  _guid: 481d4e438fb20e143b83aaf18260d5c6
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _hasTransform: 0
   _showGhost: 1
---- !u!114 &6323485160588907889
+--- !u!114 &-4801357984810749253
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -61,37 +60,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 2784291058542494111}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
+  m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPrefab: {fileID: 0}
-  ApCost: 0
-  IsStackable: 0
-  CooldownType: 1
-  CooldownDuration: 0
-  HideInInventory: 0
-  Icon: {fileID: 21300000, guid: f58e2d1233a04f64d9ae59922a02b486, type: 3}
-  IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: "Fl\xE8che Puissante"
-  EffectDescription: "Lance une fl\xE8che plus puissante"
---- !u!114 &2373036378376905328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 722e71c09a9b4fe4387330ab52d80215, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ActEvery: 3.14
-  Action: {fileID: -4801357984810749253, guid: 481d4e438fb20e143b83aaf18260d5c6, type: 3}
-  PrepareInAdvance: 0
-  Limit: -1
-  IsEnableByDefault: 1
-  OnlyAtSpecificDistance: 0
-  MinDistanceFromTarget: -10
-  MaxDistanceFromTarget: 10
-  FirstInstigatorAttackSpeedAffectMe: 1
+  Value: GameActionThrow
+  UseInstigatorAsTarget: 0
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
+  GameActionSettings:
+  - id: 0
+  SfxOnUse: {fileID: 0}
+  Animation: {fileID: 0}
+  InstigatorVFX: {fileID: 0}
+  TargetsVFX: {fileID: 0}
+  Surveys: []
+  references:
+    version: 1
+    00000000:
+      type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
+      data:
+        SpeedMin:
+          RawValue: 0
+        SpeedMax:
+          RawValue: 42949672960
+        SpawnExtraDistance:
+          RawValue: 0
+        ProjectilePrefab: {fileID: 2385346486794747607, guid: 5d5326b184834f5498348e0dffa13269,
+          type: 3}
+        Quantity: 1
+        VolleyAngle: 0
+        ShootVector: {x: 9, y: 4}
+        SpawnOffset: {x: 0, y: 0}
