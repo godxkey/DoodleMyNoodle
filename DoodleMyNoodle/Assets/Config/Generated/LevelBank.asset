@@ -13,15 +13,8 @@ MonoBehaviour:
   m_Name: LevelBank
   m_EditorClassIdentifier: 
   Levels:
-  - {fileID: 11400000, guid: f85061023f8c69547983cdbe3d683216, type: 2}
   - {fileID: 11400000, guid: 58102641f9be86a458b8518420672548, type: 2}
   - {fileID: 11400000, guid: 0b5ca7d5c04ab924aa6de5699a788dc6, type: 2}
   - {fileID: 11400000, guid: e7ed25d094a78f64681d7798b581a536, type: 2}
   - {fileID: 11400000, guid: cac8fcfc4e254cc419750526f5866845, type: 2}
-  - {fileID: 11400000, guid: 2b02f8bad3bae9c48b42a830d96abd2b, type: 2}
-  - {fileID: 11400000, guid: 792765016754e9e49a1b719fbff650c3, type: 2}
-  - {fileID: 11400000, guid: dda0d1be0acd5844c9175ed22e064ddc, type: 2}
-  - {fileID: 11400000, guid: 6ca0c1d7f4c7f5b40945aa52bf5556fc, type: 2}
-  - {fileID: 11400000, guid: 855f239a70fa0fa45b87ada7e9937f76, type: 2}
-  - {fileID: 11400000, guid: 943b57388433df54ea76335007900ddc, type: 2}
   - {fileID: 11400000, guid: 355d886076e91b743be89bbf06466abc, type: 2}

@@ -64,6 +64,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: GameActionHealthChange
+  UseInstigatorAsTarget: 0
+  ExecuteOnFirstInstigator: 0
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
   GameActionSettings:
   - id: 0
   SfxOnUse: {fileID: 0}
@@ -76,7 +80,8 @@ MonoBehaviour:
     00000000:
       type: {class: GameActionHealthChange/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        Damage:
-          RawValue: 8589934592
+        ChangeType: 1
+        Amount: 8
+        IsAutoAttack: 0
         OnHealthChangedGameActionPrefab: {fileID: 0}
         OnExtremeReachedGameActionPrefab: {fileID: 0}

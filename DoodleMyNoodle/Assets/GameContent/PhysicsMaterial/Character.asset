@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MassDensity: 1
   Bounciness: 0
-  Friction: 0.8
+  Friction: 30
