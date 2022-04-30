@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6323485160588907889}
   - component: {fileID: -6315241710247060761}
   m_Layer: 0
-  m_Name: SE_Item_Bow
+  m_Name: SE_Item_Archer_Bow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

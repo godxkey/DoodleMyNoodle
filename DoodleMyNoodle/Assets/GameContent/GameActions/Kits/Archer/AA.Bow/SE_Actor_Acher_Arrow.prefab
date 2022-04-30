@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8618057839144830486}
   - component: {fileID: 2302789254329102844}
   m_Layer: 10
-  m_Name: SE_Arrow
+  m_Name: SE_Actor_Acher_Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
