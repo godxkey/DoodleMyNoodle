@@ -89,7 +89,7 @@ static public class StatModifierSettings
             new StatModifierSetting()
             {
                 Type = StatModifierType.AttackSpeedBoost,
-                Value = (fix)1.5,
+                Value = (fix)1.75,
                 Blendmode = StatModifierBlendmode.Multiplier
             }
         },

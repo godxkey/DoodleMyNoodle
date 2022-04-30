@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fb56a52725678140903fb092c65b82e, type: 3}
-  m_Name: AA_Dovakin_Berserk
+  m_Name: AA_Dovakin_WarCry
   m_EditorClassIdentifier: 
   cooldown: -1
-  clip: {fileID: 8300000, guid: 62a4b5041216c45429193b258891a617, type: 3}
-  volume: 0.5
+  clip: {fileID: 8300000, guid: 0d05908f676ea534aaa74bf53669f1c2, type: 3}
+  volume: 1
