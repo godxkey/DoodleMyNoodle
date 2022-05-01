@@ -110,6 +110,7 @@ MonoBehaviour:
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 1
+    GeneralCooldown: 0
     ContactMode: 1
     OverlapLayerMask:
       serializedVersion: 2
