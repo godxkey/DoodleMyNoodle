@@ -56,7 +56,7 @@ public struct HealthChangeRequestData : ISingletonBufferElementData
     public Entity ActionOnExtremeReached;
     public uint EffectGroupID;
     public bool IsAutoAttack;
-    
+
     public fix2 Target2InstigationVector; // used for impact point display
 }
 
@@ -131,6 +131,18 @@ public struct GameFunctionDamageDealtProcessorArg
     public fix RemainingDamage;
 }
 
+public struct OnDeathProcessor : IComponentData
+{
+    public GameFunctionId FunctionId;
+}
+
+public struct GameFunctionOnDeathProcessorArg
+{
+    public ISimGameWorldReadWriteAccessor Accessor;
+    public Entity EffectEntity;
+    public HealthChangeRequestData RequestData;
+}
+
 [AlwaysUpdateSystem]
 [UpdateBefore(typeof(ExecuteGameActionSystem))]
 public class ApplyDamageSystem : SimGameSystemBase
@@ -184,8 +196,8 @@ public class ApplyDamageSystem : SimGameSystemBase
         fix totalAmountUncapped = amount;
 
         // collect
-        CollectTargetEffects(target);
-        CollectInstigatorEffects(firstPhyisicalInstigator);
+        CollectEffectComponents(target, dmgReceivedProcessors);
+        CollectEffectComponents(firstPhyisicalInstigator, dmgDealtProcessors);
 
         // find who should be really targetted if there is a HealthProxy component. This is notably used by players since they all share the same health pool
         while (HasComponent<HealthProxy>(target))
@@ -196,7 +208,7 @@ public class ApplyDamageSystem : SimGameSystemBase
 
             target = newTarget;
 
-            CollectTargetEffects(target);
+            CollectEffectComponents(target, dmgReceivedProcessors);
         }
 
         // prevents too many damage instance from the same source/group
@@ -303,7 +315,8 @@ public class ApplyDamageSystem : SimGameSystemBase
         // Health
         if (remainingDelta != 0 && EntityManager.TryGetComponent(target, out Health previousHP))
         {
-            Health newHP = clamp(previousHP + remainingDelta, 0, GetComponent<MaximumFix<Health>>(target).Value);
+            fix maxHP = GetComponent<MaximumFix<Health>>(target).Value;
+            Health newHP = clamp(previousHP + remainingDelta, 0, maxHP);
             hpDelta = newHP.Value - previousHP.Value;
             SetComponent(target, newHP);
             remainingDelta -= hpDelta;
@@ -318,7 +331,7 @@ public class ApplyDamageSystem : SimGameSystemBase
             {
                 // recharge HP & shield
                 if (HasComponent<Health>(target))
-                    SetComponent<Health>(target, GetComponent<MaximumFix<Health>>(target).Value);
+                    SetComponent<Health>(target, maxHP);
                 if (HasComponent<Shield>(target))
                     SetComponent<Shield>(target, GetComponent<MaximumFix<Shield>>(target).Value);
 
@@ -344,14 +357,35 @@ public class ApplyDamageSystem : SimGameSystemBase
             }
 
             // Game Action to trigger on damaged done
-            if (hpDelta > 0)
+            if (hpDelta != 0)
             {
-                CommonWrites.RequestExecuteGameAction(Accessor, lastPhysicalInstigator, actionOnHealthChanged, target);
+                if (actionOnHealthChanged != Entity.Null)
+                    CommonWrites.RequestExecuteGameAction(Accessor, lastPhysicalInstigator, actionOnHealthChanged, target);
 
                 // Extreme (if we dealt damage, it's an death game action / if we healed, it's a full hp reached game action)
-                if (newHP.Value == 0 || newHP.Value == GetComponent<MaximumFix<Health>>(target).Value)
-                {
+                if ((newHP.Value == 0 || newHP.Value == maxHP) && actionOnExtremeReached != Entity.Null)
                     CommonWrites.RequestExecuteGameAction(Accessor, lastPhysicalInstigator, actionOnExtremeReached, target);
+            }
+
+            // Process Death
+            if (newHP.Value == 0 && !HasComponent<DeadTag>(target))
+            {
+                if (HasComponent<PhysicsGravity>(target))
+                    SetComponent(target, new PhysicsGravity() { Scale = 1 });
+                EntityManager.AddComponentData(target, new DeadTag());
+
+                NativeList<(OnDeathProcessor dmgProcessor, Entity effectEntity)> onDeathProcessors = new NativeList<(OnDeathProcessor, Entity)>(Allocator.Temp);
+                CollectEffectComponents(target, onDeathProcessors);
+
+                GameFunctionOnDeathProcessorArg arg = new GameFunctionOnDeathProcessorArg()
+                {
+                    Accessor = Accessor,
+                    RequestData = request
+                };
+                foreach (var onDeathProcessor in onDeathProcessors)
+                {
+                    arg.EffectEntity = onDeathProcessor.effectEntity;
+                    GameFunctions.Execute(onDeathProcessor.dmgProcessor.FunctionId, ref arg);
                 }
             }
         }
@@ -388,32 +422,17 @@ public class ApplyDamageSystem : SimGameSystemBase
                 IsAutoAttack = isAutoAttack
             });
         }
+    }
 
-        // LOCAL FUNCTIONS
-        void CollectTargetEffects(Entity entity)
+    private void CollectEffectComponents<T>(Entity entity, NativeList<(T, Entity effectEntity)> processors) where T : struct, IComponentData
+    {
+        if (EntityManager.TryGetBuffer(entity, out DynamicBuffer<GameEffectBufferElement> effects))
         {
-            if (EntityManager.TryGetBuffer(entity, out DynamicBuffer<GameEffectBufferElement> effects))
+            foreach (var effect in effects)
             {
-                foreach (var effect in effects)
+                if (HasComponent<T>(effect.EffectEntity))
                 {
-                    if (HasComponent<DamageReceivedProcessor>(effect.EffectEntity))
-                    {
-                        dmgReceivedProcessors.Add((GetComponent<DamageReceivedProcessor>(effect.EffectEntity), effect.EffectEntity));
-                    }
-                }
-            }
-        }
-
-        void CollectInstigatorEffects(Entity entity)
-        {
-            if (EntityManager.TryGetBuffer(entity, out DynamicBuffer<GameEffectBufferElement> effects))
-            {
-                foreach (var effect in effects)
-                {
-                    if (HasComponent<DamageDealtProcessor>(effect.EffectEntity))
-                    {
-                        dmgDealtProcessors.Add((GetComponent<DamageDealtProcessor>(effect.EffectEntity), effect.EffectEntity));
-                    }
+                    processors.Add((GetComponent<T>(effect.EffectEntity), effect.EffectEntity));
                 }
             }
         }
@@ -481,7 +500,7 @@ internal static partial class CommonWrites
         for (int i = 0; i < targets.Length; i++)
         {
             fix2 target2Instigator = default;
-            if (accessor.TryGetComponent(args.InstigatorSet.LastPhysicalInstigator, out FixTranslation instigatorPos) 
+            if (accessor.TryGetComponent(args.InstigatorSet.LastPhysicalInstigator, out FixTranslation instigatorPos)
                 && accessor.TryGetComponent(targets[i], out FixTranslation targetPos))
             {
                 target2Instigator = instigatorPos.Value - targetPos.Value;

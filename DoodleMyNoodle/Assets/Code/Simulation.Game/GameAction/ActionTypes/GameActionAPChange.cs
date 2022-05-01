@@ -34,7 +34,8 @@ public class GameActionAPChange : GameAction<GameActionAPChange.Settings>
     {
         for (int i = 0; i < input.Context.Targets.Length; i++)
         {
-            CommonWrites.ModifyStatFix<ActionPoints>(input.Accessor, input.Context.Targets[i], settings.ToGive);
+            if (input.Accessor.HasComponent<ActionPoints>(input.Context.Targets[i]))
+                CommonWrites.ModifyStatFix<ActionPoints>(input.Accessor, input.Context.Targets[i], settings.ToGive);
         }
 
         return true;

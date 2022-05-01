@@ -42,7 +42,14 @@ public class GameFunctions
     {
         if (s_id2Function.TryGetValue(functionId, out Delegate uncastedFunction))
         {
-            (uncastedFunction as GameFunction<T>).Invoke(ref argument);
+            if (uncastedFunction is GameFunction<T> function)
+            {
+                function.Invoke(ref argument);
+            }
+            else
+            {
+                Log.Error($"GameFunction {uncastedFunction.GetType().GetPrettyName()} is not of expected type {typeof(GameFunction<T>).GetPrettyName()}.");
+            }
         }
         else
         {

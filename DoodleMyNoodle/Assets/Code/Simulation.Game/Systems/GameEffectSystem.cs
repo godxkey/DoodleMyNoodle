@@ -66,6 +66,12 @@ public class GameEffectSystem : SimGameSystemBase
             if (!EntityManager.HasComponent<GameEffectBufferElement>(addRequest.Target))
                 continue;
 
+            if (addRequest.GameEffectPrefab == Entity.Null)
+            {
+                Log.Warning("Trying to add a GameEffect with a null prefab. Request skipped.");
+                continue;
+            }
+
             // _________________________________________ Create Effect _________________________________________ //
             Entity newEffect = EntityManager.Instantiate(addRequest.GameEffectPrefab);
 
