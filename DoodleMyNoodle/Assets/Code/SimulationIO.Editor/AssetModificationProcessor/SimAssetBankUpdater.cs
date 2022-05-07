@@ -36,6 +36,7 @@ public class SimAssetBankUpdater : AssetPostprocessor
                    {
                        saveAsset = true;
                        bank.EditorSimAssets.Add(prefab);
+                       bank.EditorSimAssets.Sort(SortComparison);
 
                        DebugEditor.LogAssetIntegrity($"Added {prefab.gameObject.name} to {nameof(SimAssetBank)}.");
                    }
@@ -64,11 +65,15 @@ public class SimAssetBankUpdater : AssetPostprocessor
             bank.EditorSimAssets.Add(prefab);
         }
 
+        bank.EditorSimAssets.Sort(SortComparison);
+
         DebugEditor.LogAssetIntegrity($"[{nameof(SimAssetBankUpdater)}] Updated {typeof(SimAssetBank)}");
 
         EditorUtility.SetDirty(bank);
         AssetDatabase.SaveAssets();
     }
+
+    static int SortComparison(SimAsset a, SimAsset b) => string.Compare(a.Guid, b.Guid);
 
     static bool ValidateSimAssetIdForPrefab(SimAsset prefab)
     {
