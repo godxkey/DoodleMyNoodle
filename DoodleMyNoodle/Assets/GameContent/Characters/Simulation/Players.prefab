@@ -360,7 +360,7 @@ PrefabInstance:
         type: 3}
       propertyPath: StartingItems.Array.data[4].Item
       value: 
-      objectReference: {fileID: 2784291058542494111, guid: 7e9da938d0f80ef40957a674ae506552,
+      objectReference: {fileID: 2784291058542494111, guid: 227d6716d886e4f479d8d6e2b1a0a73a,
         type: 3}
     - target: {fileID: 8237664610038018750, guid: cb83e6f1204539c46b9405c2d555310a,
         type: 3}

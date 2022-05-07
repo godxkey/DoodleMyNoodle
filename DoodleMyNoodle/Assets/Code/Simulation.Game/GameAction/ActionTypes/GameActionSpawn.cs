@@ -14,13 +14,15 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
         [FormerlySerializedAs("PawnOffset")]
         public Vector2 InstigatorOffset;
         public GameObject Prefab;
+        public bool SpawnOnGround = false;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
             dstManager.AddComponentData(entity, new Settings()
             {
                 Prefab = conversionSystem.GetPrimaryEntity(Prefab),
-                InstigatorOffset = (fix2)InstigatorOffset
+                InstigatorOffset = (fix2)InstigatorOffset,
+                SpawnOnGround = SpawnOnGround
             });
         }
 
@@ -36,6 +38,7 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
     {
         public Entity Prefab;
         public fix2 InstigatorOffset;
+        public bool SpawnOnGround;
     }
 
     protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
@@ -54,6 +57,11 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
         if (input.Parameters != null && input.Parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPos))
         {
             spawnPosition = paramPos.Position;
+        }
+
+        if (settings.SpawnOnGround)
+        {
+            spawnPosition.y = (fix)0.5f;
         }
 
         // spawn
