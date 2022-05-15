@@ -75,7 +75,7 @@ MonoBehaviour:
   GravityScale: 0
   FireEvents: 1
   FreezeRotation: 0
-  BoxSize: {x: 7.46, y: 4.35}
+  BoxSize: {x: 4, y: 2}
   CircleRadius: 0.15
   BoxAndCircleOffset: {x: 0, y: 0}
   PolygonPoints: []

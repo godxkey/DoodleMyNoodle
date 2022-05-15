@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngineX;
 using CCC.Fix2D;
 using Unity.Collections;
+using UnityEngine.Serialization;
 
 public class GameEffectRetaliate
 {
@@ -27,7 +28,7 @@ public class GameEffectRetaliate
 
     public struct EffectRetaliateDamageCounter : IComponentData
     {
-        public fix MitigatedDamage;
+        public fix HighestMitigatedDamage;
     }
 
     [RegisterGameFunction]
@@ -37,7 +38,7 @@ public class GameEffectRetaliate
 
         if (arg.RemainingDamage > 0)
         {
-            counter.MitigatedDamage += arg.RemainingDamage;
+            counter.HighestMitigatedDamage = max(arg.RemainingDamage, counter.HighestMitigatedDamage);
             arg.RemainingDamage = 0;
             arg.Accessor.SetComponent(arg.EffectEntity, counter);
         }
@@ -54,7 +55,8 @@ public class GameEffectRetaliate
             public Vector2 SpawnOffset;
             public float MinDamage = 1;
             public float MaxDamage = 15;
-            public float DamagePerMitigatedDamage = 1;
+            [FormerlySerializedAs("DamagePerMitigatedDamage")]
+            public float DamageMultiplier = 1;
 
             public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
             {
@@ -62,7 +64,7 @@ public class GameEffectRetaliate
                 {
                     MinDamage = (fix)MinDamage,
                     MaxDamage = (fix)MaxDamage,
-                    DamagePerMitigatedDamage = (fix)DamagePerMitigatedDamage,
+                    DamageMultiplier = (fix)DamageMultiplier,
                     ProjectilePrefab = conversionSystem.GetPrimaryEntity(ProjectilePrefab),
                     ThrowVelocity = (fix2)ThrowVelocity,
                     SpawnOffset = (fix2)SpawnOffset,
@@ -83,18 +85,18 @@ public class GameEffectRetaliate
             public fix2 SpawnOffset;
             public fix MinDamage;
             public fix MaxDamage;
-            public fix DamagePerMitigatedDamage;
+            public fix DamageMultiplier;
         }
 
         protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings) => null;
 
         protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
         {
-            fix mitigatedDamage = input.Accessor.GetComponent<EffectRetaliateDamageCounter>(input.Context.ActionInstigator).MitigatedDamage;
+            fix highestMitigatedDamage = input.Accessor.GetComponent<EffectRetaliateDamageCounter>(input.Context.ActionInstigator).HighestMitigatedDamage;
 
-            if (mitigatedDamage > 0)
+            if (highestMitigatedDamage > 0)
             {
-                fix totalDamage = clamp(mitigatedDamage * settings.DamagePerMitigatedDamage, settings.MinDamage, settings.MaxDamage);
+                fix totalDamage = clamp(highestMitigatedDamage * settings.DamageMultiplier, settings.MinDamage, settings.MaxDamage);
 
                 var fireSettings = FireProjectileSettings.Default;
                 fireSettings.SpawnOffset = settings.SpawnOffset;

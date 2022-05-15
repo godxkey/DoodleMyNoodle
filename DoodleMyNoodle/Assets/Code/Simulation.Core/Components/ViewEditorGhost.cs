@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngineX;
@@ -16,7 +17,7 @@ public static class ViewEditorGhostEditorBehaviour
 
     //private static bool s_init = false;
     //private static Texture s_ghostIcon;
-    private static GameObject s_redirectSelectionTo;
+    private static GameObject[] s_redirectSelectionTo;
 
     static ViewEditorGhostEditorBehaviour()
     {
@@ -28,26 +29,39 @@ public static class ViewEditorGhostEditorBehaviour
     private static void OnUpdate()
     {
         if (s_redirectSelectionTo != null)
-            Selection.activeGameObject = s_redirectSelectionTo;
+            Selection.objects = s_redirectSelectionTo;
         s_redirectSelectionTo = null;
     }
 
     private static void OnSelectionChanged()
     {
         GameObject[] selections = Selection.gameObjects;
-        if (selections != null && selections.Length == 1)
+        if (selections != null)
         {
-            Transform tr = selections[0].transform;
-            while (tr)
+            List<GameObject> newSelection = new List<GameObject>(selections.Length);
+            bool triggerRedirection = false;
+            foreach (var item in selections)
             {
-                if (tr.TryGetComponent(out ViewEditorGhost ghost))
-                {
-                    s_redirectSelectionTo = ghost.BindedSimGameObject;
-                    //EditorApplication.QueuePlayerLoopUpdate();
-                    return;
-                }
+                newSelection.Add(item);
 
-                tr = tr.parent;
+                Transform tr = item.transform;
+                while (tr)
+                {
+                    if (tr.TryGetComponent(out ViewEditorGhost ghost))
+                    {
+                        newSelection[newSelection.Count - 1] = ghost.BindedSimGameObject;
+                        triggerRedirection = true;
+                        //EditorApplication.QueuePlayerLoopUpdate();
+                        break;
+                    }
+
+                    tr = tr.parent;
+                }
+            }
+
+            if (triggerRedirection)
+            {
+                s_redirectSelectionTo = newSelection.ToArray();
             }
         }
     }

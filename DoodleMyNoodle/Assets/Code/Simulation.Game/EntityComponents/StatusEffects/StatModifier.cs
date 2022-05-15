@@ -79,7 +79,7 @@ static public class StatModifierSettings
             new StatModifierSetting()
             {
                 Type = StatModifierType.Armored,
-                Value = (fix)0.75,
+                Value = (fix)0.50,
                 Blendmode = StatModifierBlendmode.Multiplier
             }
         },

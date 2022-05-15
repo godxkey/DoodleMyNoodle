@@ -10,12 +10,17 @@ PrefabInstance:
     - target: {fileID: 722390574580415456, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: CircleRadius
-      value: 1
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 950183991067186567, guid: 987a47d4012e6fc4c8365e6a618abff0,
+        type: 3}
+      propertyPath: MoveSpeed
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 950183991067186567, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: DistanceFromFrontTarget
-      value: 0.95
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
@@ -25,12 +30,12 @@ PrefabInstance:
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 13.41
       objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.73
       objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
@@ -45,17 +50,17 @@ PrefabInstance:
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
@@ -97,7 +102,7 @@ PrefabInstance:
     - target: {fileID: 7083706433129272114, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: MaxDistanceFromTarget
-      value: 0.95
+      value: 1.72
       objectReference: {fileID: 0}
     - target: {fileID: 7551162044909047762, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
