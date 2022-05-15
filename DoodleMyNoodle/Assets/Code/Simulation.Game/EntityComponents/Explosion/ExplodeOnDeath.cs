@@ -6,4 +6,5 @@ public struct ExplodeOnDeath : IComponentData
     public fix Radius;
     public int Damage;
     public bool DestroyTiles;
+    public bool HasExploded;
 }
