@@ -8,7 +8,6 @@ using CCC.Fix2D;
 using Unity.Collections;
 
 
-
 public class GameEffectAddGameEffectOnDamageDealt
 {
     public class Begin : GameAction<Begin.Settings>
@@ -44,13 +43,13 @@ public class GameEffectAddGameEffectOnDamageDealt
         protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
         {
             // Add damage processor onto effect
-            input.Accessor.AddComponentData(input.Context.ActionActor, new DamageDealtProcessor()
+            input.Accessor.AddComponentData(input.Context.ActionInstigator, new DamageDealtProcessor()
             {
                 FunctionId = GameFunctions.GetId(DamageDealtProcessor)
             });
 
             // add game effect reference to add on damage dealt
-            input.Accessor.AddComponentData(input.Context.ActionActor, new GameEffectAddGameEffectOnDamageDealt.Settings()
+            input.Accessor.AddComponentData(input.Context.ActionInstigator, new GameEffectAddGameEffectOnDamageDealt.Settings()
             {
                 GameEffectPrefab = settings.GameEffect
             });

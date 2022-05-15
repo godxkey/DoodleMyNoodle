@@ -10,7 +10,7 @@ public class GameEffectStun
             {
                 CommonWrites.AddStatusEffect(input.Accessor, new AddStatModifierRequest()
                 {
-                    Instigator = input.Context.ActionActor,
+                    Instigator = input.Context.ActionInstigator,
                     StackAmount = 1,
                     Target = input.Context.Targets[i],
                     Type = StatModifierType.Stunned,
@@ -31,7 +31,7 @@ public class GameEffectStun
             {
                 CommonWrites.RemoveStatusEffect(input.Accessor, new RemoveStatModifierRequest()
                 {
-                    Instigator = input.Context.ActionActor,
+                    Instigator = input.Context.ActionInstigator,
                     StackAmount = 1,
                     Target = input.Context.Targets[i],
                     Type = StatModifierType.Stunned,

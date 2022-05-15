@@ -166,7 +166,7 @@ public static class PresentationHelpers
             spawnOffset = Vector2.zero;
             radius = 0.05f;
 
-            if (cache.SimWorld.TryGetComponent(useContext.ActionActor, out ItemAction itemAction))
+            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigator, out ItemAction itemAction))
             {
                 GameActionThrow throwAction = GetGameAction<GameActionThrow>(cache.SimWorld, itemAction.Value);
 
@@ -186,10 +186,10 @@ public static class PresentationHelpers
             if (cache.SimWorld == null)
                 return 1;
 
-            if (!cache.SimWorld.Exists(useContext.ActionActor))
+            if (!cache.SimWorld.Exists(useContext.ActionInstigator))
                 return 1;
 
-            if (cache.SimWorld.TryGetComponent(useContext.ActionActor, out ItemAction itemAction))
+            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigator, out ItemAction itemAction))
             {
                 if (cache.SimWorld.TryGetComponent(itemAction.Value, out GameActionThrow.Settings throwSettings))
                 {

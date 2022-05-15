@@ -32,10 +32,10 @@ public class GameActionEnablePeriodicAction : GameAction<GameActionEnablePeriodi
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        if (input.Accessor.HasComponent<PeriodicActionEnabled>(input.Context.ActionActor))
+        if (input.Accessor.HasComponent<PeriodicActionEnabled>(input.Context.ActionInstigator))
         {
-            input.Accessor.SetComponent<PeriodicActionEnabled>(input.Context.ActionActor, true);
-            input.Accessor.SetComponent<RemainingPeriodicActionCount>(input.Context.ActionActor, settings.UsageCount);
+            input.Accessor.SetComponent<PeriodicActionEnabled>(input.Context.ActionInstigator, true);
+            input.Accessor.SetComponent<RemainingPeriodicActionCount>(input.Context.ActionInstigator, settings.UsageCount);
         }
 
         return true;

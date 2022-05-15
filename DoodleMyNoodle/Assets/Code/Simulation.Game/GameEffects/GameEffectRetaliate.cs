@@ -16,11 +16,11 @@ public class GameEffectRetaliate
         public override bool Execute(in ExecInputs input, ref ExecOutput output)
         {
             // Add damage processor onto effect
-            input.Accessor.AddComponentData(input.Context.ActionActor, new DamageReceivedProcessor()
+            input.Accessor.AddComponentData(input.Context.ActionInstigator, new DamageReceivedProcessor()
             {
                 FunctionId = GameFunctions.GetId(DamageProcessor)
             });
-            input.Accessor.AddComponentData(input.Context.ActionActor, new EffectRetaliateDamageCounter());
+            input.Accessor.AddComponentData(input.Context.ActionInstigator, new EffectRetaliateDamageCounter());
             return true;
         }
     }
@@ -90,7 +90,7 @@ public class GameEffectRetaliate
 
         protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
         {
-            fix mitigatedDamage = input.Accessor.GetComponent<EffectRetaliateDamageCounter>(input.Context.ActionActor).MitigatedDamage;
+            fix mitigatedDamage = input.Accessor.GetComponent<EffectRetaliateDamageCounter>(input.Context.ActionInstigator).MitigatedDamage;
 
             if (mitigatedDamage > 0)
             {

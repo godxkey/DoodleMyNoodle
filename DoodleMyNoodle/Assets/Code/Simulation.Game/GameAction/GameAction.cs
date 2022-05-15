@@ -213,7 +213,7 @@ public abstract class GameAction
         /// <summary>
         /// The actor triggering the action, should never be null. This could be a pawn, an item, a projectile, an effect, etc.
         /// </summary>
-        public Entity ActionActor => InstigatorSet.LastInstigator;
+        public Entity ActionInstigator => InstigatorSet.LastInstigator;
 
         /// <summary>
         /// All the target for the action execution, could be empty or uncreated
@@ -270,7 +270,7 @@ public abstract class GameAction
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
     protected void LogActionInfo(ExecutionContext context, string message)
     {
-        Log.Info(LogChannel, $"{message} - {GetType().Name} - context(actionEntity: {context.ActionActor}, instigator: {context.FirstPhysicalInstigator})");
+        Log.Info(LogChannel, $"{message} - {GetType().Name} - context(actionEntity: {context.ActionInstigator}, instigator: {context.FirstPhysicalInstigator})");
     }
 }
 

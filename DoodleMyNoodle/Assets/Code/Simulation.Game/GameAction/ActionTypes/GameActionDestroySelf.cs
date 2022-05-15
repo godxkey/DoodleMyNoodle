@@ -29,7 +29,7 @@ public class GameActionDestroySelf : GameAction<GameActionDestroySelf.Settings>
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
         var endSimECMB = input.Accessor.GetExistingSystem<EndSimulationEntityCommandBufferSystem>();
-        endSimECMB.CreateCommandBuffer().DestroyEntity(input.Context.ActionActor);
+        endSimECMB.CreateCommandBuffer().DestroyEntity(input.Context.ActionInstigator);
 
         return true;
     }

@@ -64,8 +64,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Duration: 4
-  GameActionOnBegin: {fileID: 2784291058542494111, guid: 6431ad0cc5e89e542aefa90715a7a965,
+  GameActionOnBegin: {fileID: 2784291058542494111, guid: b78a19af8df1e0346afb29bba7f88889,
     type: 3}
   GameActionOnTick: {fileID: 0}
-  GameActionOnEnd: {fileID: 2784291058542494111, guid: 25951c91982c2f3418236e917d751fc2,
+  GameActionOnEnd: {fileID: 0}
+  CharacterVFXPrefab: {fileID: 1564597506089244600, guid: 447f3d0863c1f6848a41a88344bd7bf9,
     type: 3}
