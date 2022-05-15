@@ -49,13 +49,13 @@ public class GameEffectOnDeathAction
         protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
         {
             // Add damage processor onto effect
-            input.Accessor.AddComponentData(input.Context.ActionActor, new OnDeathProcessor()
+            input.Accessor.AddComponentData(input.Context.ActionInstigator, new OnDeathProcessor()
             {
                 FunctionId = GameFunctions.GetId(DamageDealtProcessor)
             });
 
             // add game effect reference to add on damage dealt
-            input.Accessor.AddComponentData(input.Context.ActionActor, new GameEffectOnDeathAction.Settings()
+            input.Accessor.AddComponentData(input.Context.ActionInstigator, new GameEffectOnDeathAction.Settings()
             {
                 OnDeathAction = settings.OnDeathAction,
                 TargetType = settings.TargetType,

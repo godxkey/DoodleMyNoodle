@@ -19,6 +19,15 @@ public struct AddGameEffectRequest : ISingletonBufferElementData
 [UpdateBefore(typeof(ExecuteGameActionSystem))]
 public class GameEffectSystem : SimGameSystemBase
 {
+    private RemoveFinishedGameEffectsSystem _removeFinishedGameEffectsSystem;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        _removeFinishedGameEffectsSystem = World.GetOrCreateSystem<RemoveFinishedGameEffectsSystem>();
+    }
+
     protected override void OnUpdate()
     {
         UpdateDurations();
@@ -49,10 +58,14 @@ public class GameEffectSystem : SimGameSystemBase
 
         foreach (var effect in endingEffects)
         {
+            var effectInfo = GetComponent<GameEffectInfo>(effect);
+
             if (EntityManager.TryGetComponent(effect, out GameEffectOnEndGameAction gameEffectOnEndGameAction))
             {
-                CommonWrites.RequestExecuteGameAction(Accessor, effect, gameEffectOnEndGameAction.Action, GetComponent<GameEffectInfo>(effect).Owner);
+                CommonWrites.RequestExecuteGameAction(Accessor, effect, gameEffectOnEndGameAction.Action, effectInfo.Owner);
             }
+
+            _removeFinishedGameEffectsSystem.ToRemove.Add((effectInfo.Owner, effect));
 
             CommonWrites.DestroyEndOfTick(Accessor, effect);
         }
@@ -100,6 +113,32 @@ public class GameEffectSystem : SimGameSystemBase
                 CommonWrites.RequestExecuteGameAction(Accessor, newEffect, beginAction.Action, addRequest.Target);
             }
         }
+    }
+}
+
+
+[AlwaysUpdateSystem]
+[UpdateAfter(typeof(ExecuteGameActionSystem))]
+public class RemoveFinishedGameEffectsSystem : SimGameSystemBase
+{
+    public List<(Entity owner, Entity effect)> ToRemove = new List<(Entity owner, Entity effect)>();
+
+    protected override void OnUpdate()
+    {
+        foreach ((Entity owner, Entity effect) in ToRemove)
+        {
+            var buffer = GetBuffer<GameEffectBufferElement>(owner);
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                if (buffer[i].EffectEntity == effect)
+                {
+                    buffer.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+
+        ToRemove.Clear();
     }
 }
 
