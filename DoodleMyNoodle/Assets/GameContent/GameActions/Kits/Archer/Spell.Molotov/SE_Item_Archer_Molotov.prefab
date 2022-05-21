@@ -65,7 +65,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionPrefab: {fileID: -4801357984810749253, guid: 5ce334608fece1e438240a33257423ba,
     type: 3}
-  ApCost: 1
+  ApCost: 8
   IsStackable: 0
   CooldownType: 1
   CooldownDuration: 4

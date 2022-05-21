@@ -81,7 +81,7 @@ MonoBehaviour:
       type: {class: GameActionHealthChange/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         ChangeType: 1
-        Amount: 4
+        Amount: 7
         IsAutoAttack: 0
         OnHealthChangedGameActionPrefab: {fileID: 0}
         OnExtremeReachedGameActionPrefab: {fileID: 0}

@@ -86,10 +86,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 722e71c09a9b4fe4387330ab52d80215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActEvery: 1.5
+  ActEvery: 1
   Action: {fileID: -4801357984810749253, guid: ee24347837f759f48b61023f3aa418c1, type: 3}
   PrepareInAdvance: 0
   Limit: -1
+  IsEnableByDefault: 1
   OnlyAtSpecificDistance: 0
   MinDistanceFromTarget: -10
   MaxDistanceFromTarget: 10
+  FirstInstigatorAttackSpeedAffectMe: 1

@@ -65,10 +65,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionPrefab: {fileID: -4801357984810749253, guid: 1af7e6349013b3d4b85ef5314f8dd799,
     type: 3}
-  ApCost: 2
+  ApCost: 8
   IsStackable: 0
   CooldownType: 1
-  CooldownDuration: 4
+  CooldownDuration: 12
   HideInInventory: 0
   Icon: {fileID: 21300000, guid: 541197b18e76b424996d060d64a689d6, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}

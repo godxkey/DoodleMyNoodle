@@ -172,7 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f84166a4094a674e86797424865573c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxValue: 4
+  MaxValue: 12
   StartGameAtMaxValue: 1
   RechargeRate: 1
   RechargeDelay: 1

@@ -85,5 +85,5 @@ MonoBehaviour:
         ThrowVelocity: {x: 8, y: 0}
         SpawnOffset: {x: 0, y: 0.55}
         MinDamage: 1
-        MaxDamage: 15
-        DamagePerMitigatedDamage: 1
+        MaxDamage: 10
+        DamageMultiplier: 1

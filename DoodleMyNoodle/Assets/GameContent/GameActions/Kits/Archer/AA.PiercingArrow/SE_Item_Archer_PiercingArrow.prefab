@@ -86,7 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 722e71c09a9b4fe4387330ab52d80215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActEvery: 3.14
+  ActEvery: 3
   Action: {fileID: -4801357984810749253, guid: 481d4e438fb20e143b83aaf18260d5c6, type: 3}
   PrepareInAdvance: 0
   Limit: -1
