@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Lifetime:
-    RawValue: 85899345920
+    RawValue: 5798205952
 --- !u!114 &2302789254329102844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,6 +110,7 @@ MonoBehaviour:
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 1
+    GeneralCooldown: 0
     ContactMode: 0
     OverlapLayerMask:
       serializedVersion: 2
@@ -119,6 +120,7 @@ MonoBehaviour:
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 0
+    GeneralCooldown: 0
     ContactMode: 0
     OverlapLayerMask:
       serializedVersion: 2
