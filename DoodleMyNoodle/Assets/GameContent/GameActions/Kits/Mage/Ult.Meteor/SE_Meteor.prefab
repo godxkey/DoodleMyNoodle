@@ -68,7 +68,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 2
   Shape: 0
-  Material: {fileID: 11400000, guid: 9705fa77e59bed24cad3ce4dffa5f2f3, type: 2}
+  Material: {fileID: 11400000, guid: d5093d52293b9a04289ae1db6a2ae005, type: 2}
   IsTrigger: 0
   LinearDrag: 0
   AngularDrag: 0.05
