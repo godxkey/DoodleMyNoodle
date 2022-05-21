@@ -136,7 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Proxy: {fileID: 0}
-  MaxValue: 1
+  MaxValue: 20
   StartAtMax: 1
   DestroyOnDeath: 0
   RechargeRate: 0
