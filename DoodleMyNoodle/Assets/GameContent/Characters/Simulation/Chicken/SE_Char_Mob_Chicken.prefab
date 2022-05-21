@@ -121,5 +121,29 @@ PrefabInstance:
       propertyPath: Mode
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 33cce8540695adf4d9728cbe3d59c0a9, type: 3}
+--- !u!1 &7551162044909047762 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4951368162375339519, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+    type: 3}
+  m_PrefabInstance: {fileID: 3205954644756447789}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-7743242471837161796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7551162044909047762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a85faf4efef19e447ab49d0559cbdeb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Radius:
+    RawValue: 4294967296
+  Damage: 1
+  DestroyTiles: 0
+  HasExploded: 0
