@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8618057839144830486}
   - component: {fileID: 2302789254329102844}
   m_Layer: 10
-  m_Name: SE_BirdDrop_Rock
+  m_Name: SE_Bird_Rock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -106,10 +106,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Actions:
-  - ActionPrefab: {fileID: -4801357984810749253, guid: 89b108cf3672a854b9a8f44c7cb44c6d,
+  - ActionPrefab: {fileID: -4801357984810749253, guid: eaeee1deeecfed043bf4e6d985395bdb,
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 1
+    GeneralCooldown: 0
     ContactMode: 0
     OverlapLayerMask:
       serializedVersion: 2
@@ -119,6 +120,7 @@ MonoBehaviour:
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 0
+    GeneralCooldown: 0
     ContactMode: 0
     OverlapLayerMask:
       serializedVersion: 2
