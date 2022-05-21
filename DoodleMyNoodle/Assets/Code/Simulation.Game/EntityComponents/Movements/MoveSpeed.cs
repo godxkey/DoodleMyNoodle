@@ -24,10 +24,10 @@ public struct CanMove : IComponentData
     public static implicit operator CanMove(bool val) => new CanMove() { Value = val };
 }
 
-public struct StopMoveFromTargetDistance : IComponentData
+public struct DesiredRangeFromTarget : IComponentData
 {
-    public fix Value;
+    public FixRange Value;
 
-    public static implicit operator fix(StopMoveFromTargetDistance val) => val.Value;
-    public static implicit operator StopMoveFromTargetDistance(fix val) => new StopMoveFromTargetDistance() { Value = val };
+    public static implicit operator FixRange(DesiredRangeFromTarget val) => val.Value;
+    public static implicit operator DesiredRangeFromTarget(FixRange val) => new DesiredRangeFromTarget() { Value = val };
 }

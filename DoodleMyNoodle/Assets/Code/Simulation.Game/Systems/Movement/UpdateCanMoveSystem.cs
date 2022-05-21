@@ -1,9 +1,10 @@
 ﻿using Unity.Entities;
 using CCC.Fix2D;
 using Unity.Mathematics;
+using static fixMath;
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
-[UpdateBefore(typeof(ApplyMovementSystem))]
+[UpdateBefore(typeof(UpdateMovementSystem))]
 public class UpdateCanMoveSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
@@ -19,12 +20,11 @@ public class UpdateCanMoveSystem : SimGameSystemBase
         }
 
         Entities
-            .ForEach((ref CanMove canMove, in DistanceFromTarget distanceFromTarget, in StopMoveFromTargetDistance stopMoveFromTargetDistance, in Health hp, in Grounded grounded) =>
+            .ForEach((ref CanMove canMove, in Health hp, in Grounded grounded) =>
             {
-                canMove = distanceFromTarget.Value > stopMoveFromTargetDistance.Value
-
+                canMove =
                     // entities need to be alive to move
-                    && hp.Value > 0
+                    hp.Value > 0
 
                     // entities need to be grounded (nb: flying entities do not have the component)
                     && grounded;
@@ -32,12 +32,11 @@ public class UpdateCanMoveSystem : SimGameSystemBase
 
         Entities
             .WithNone<Grounded>()
-            .ForEach((ref CanMove canMove, in DistanceFromTarget distanceFromTarget, in StopMoveFromTargetDistance stopMoveFromTargetDistance, in Health hp) =>
+            .ForEach((ref CanMove canMove, in Health hp) =>
             {
-                canMove = distanceFromTarget.Value > stopMoveFromTargetDistance.Value
-
+                canMove =
                     // entities need to be alive to move
-                    && hp.Value > 0;
+                    hp.Value > 0;
             }).Schedule();
     }
 }

@@ -5,10 +5,8 @@ using System;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using UnityEngine.Serialization;
+using Collider = CCC.Fix2D.Collider;
 
 [DisallowMultipleComponent]
 public class MovementAuth : MonoBehaviour, IConvertGameObjectToEntity
@@ -19,7 +17,10 @@ public class MovementAuth : MonoBehaviour, IConvertGameObjectToEntity
     public bool StopAtCertainDistance = true;
 
     [ShowIf(nameof(StopAtCertainDistance))]
-    public float DistanceFromFrontTarget = 1;
+    public float DistanceFromFrontTargetMin = 0;
+    [ShowIf(nameof(StopAtCertainDistance))]
+    [FormerlySerializedAs("DistanceFromFrontTarget")]
+    public float DistanceFromFrontTargetMax = 1;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -45,8 +46,30 @@ public class MovementAuth : MonoBehaviour, IConvertGameObjectToEntity
             }
         }
         dstManager.AddComponent<CanMove>(entity);
-        dstManager.AddComponent<DistanceFromTarget>(entity);
-        dstManager.AddComponentData<StopMoveFromTargetDistance>(entity, (fix)(StopAtCertainDistance ? DistanceFromFrontTarget : -100000));
+        dstManager.AddComponent<OffsetFromTarget>(entity);
+        dstManager.AddComponentData<DesiredRangeFromTarget>(entity,
+            StopAtCertainDistance ? new FixRange((fix)DistanceFromFrontTargetMin, (fix)DistanceFromFrontTargetMax) : FixRange.Invalid);
+
+        //// add ungrounded collider
+        //if (dstManager.TryGetComponent(entity, out PhysicsColliderBlob colliderBlob))
+        //{
+        //    var normalCollider = colliderBlob.Collider;
+
+        //    if (!dstManager.TryGetComponent<ActorColliderRefs>(entity, out var actorColliderRefs))
+        //    {
+        //        actorColliderRefs = new ActorColliderRefs(normalCollider);
+        //    }
+
+        //    var normalMaterial = normalCollider.Value.Material;
+
+        //    // duplicate collider, and remove friction from normal collider
+        //    actorColliderRefs.UngroundedCollider = BlobAssetReference<Collider>.Create(normalCollider.Value);
+
+        //    normalMaterial.Friction = 0;
+        //    normalCollider.Value.Material = normalMaterial;
+
+        //    dstManager.AddComponentData(entity, actorColliderRefs);
+        //}
     }
 
     private void OnDrawGizmosSelected()
@@ -55,10 +78,16 @@ public class MovementAuth : MonoBehaviour, IConvertGameObjectToEntity
         {
             float charRadius = (float)SimulationGameConstants.CharacterRadius;
             Gizmos.color = Color.red;
-            float horizontalOffset = DistanceFromFrontTarget + charRadius;
-            if (MoveDirection == EMoveDirection.Left)
-                horizontalOffset *= -1;
-            Gizmos.DrawWireSphere(transform.position + new Vector3(horizontalOffset, 0), charRadius);
+            float dir = MoveDirection == EMoveDirection.Right ? 1 : -1;
+            float offsetMax = (DistanceFromFrontTargetMax + charRadius) * dir;
+            float offsetMin = DistanceFromFrontTargetMin * dir;
+            Vector3 rangeBegin = transform.position + new Vector3(offsetMax, 0);
+            Vector3 rangeEnd = transform.position + new Vector3(offsetMin, 0);
+            Gizmos.DrawWireSphere(rangeBegin, charRadius);
+            Gizmos.DrawLine(rangeBegin + Vector3.up * charRadius, rangeEnd + Vector3.up * charRadius);
+            Gizmos.DrawLine(rangeBegin + Vector3.down * charRadius, rangeEnd + Vector3.down * charRadius);
+            if (DistanceFromFrontTargetMin > 0)
+                Gizmos.DrawWireSphere(rangeEnd, charRadius);
         }
     }
 }

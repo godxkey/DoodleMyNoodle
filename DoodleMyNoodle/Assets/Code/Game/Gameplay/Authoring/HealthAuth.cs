@@ -70,7 +70,7 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
 
                 actorColliderRefs.DeadCollider = deadCollider;
 
-                dstManager.SetOrAddComponent(entity, actorColliderRefs);
+                dstManager.AddComponentData(entity, actorColliderRefs);
             }
 
         }

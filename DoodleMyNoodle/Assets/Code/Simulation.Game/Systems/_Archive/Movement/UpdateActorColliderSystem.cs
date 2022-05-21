@@ -4,14 +4,14 @@ using Unity.Jobs;
 
 public struct ActorColliderRefs : IComponentData
 {
-    public BlobAssetReference<Collider> NormalCollider;
-    public BlobAssetReference<Collider> AirControlCollider;
+    public BlobAssetReference<Collider> GroundedCollider;
+    public BlobAssetReference<Collider> UngroundedCollider;
     public BlobAssetReference<Collider> DeadCollider;
 
     public ActorColliderRefs(BlobAssetReference<Collider> normalCollider)
     {
-        NormalCollider = normalCollider;
-        AirControlCollider = normalCollider;
+        GroundedCollider = normalCollider;
+        UngroundedCollider = normalCollider;
         DeadCollider = normalCollider;
     }
 }
@@ -41,6 +41,15 @@ public class UpdateActorColliderSystem : SimGameSystemBase
                 UpdateActorCollider(ref collider, footing: NavAgentFooting.Ground, colliderRefs, alive: health > fix.Zero);
             }).Run();
 
+        // with health + grounded
+        Entities
+            .WithNone<NavAgentFootingState>()
+            .WithChangeFilter<Health, Grounded>()
+            .ForEach((ref PhysicsColliderBlob collider, in Health health, in Grounded grounded, in ActorColliderRefs colliderRefs) =>
+            {
+                UpdateActorCollider(ref collider, footing: grounded ? NavAgentFooting.Ground : NavAgentFooting.None, colliderRefs, alive: health > fix.Zero);
+            }).Run();
+
         // with navagent only
         Entities
             .WithNone<Health>()
@@ -61,8 +70,8 @@ public class UpdateActorColliderSystem : SimGameSystemBase
         else
         {
             collider.Collider = footing.Value == NavAgentFooting.AirControl
-                ? colliderRefs.AirControlCollider
-                : colliderRefs.NormalCollider;
+                ? colliderRefs.UngroundedCollider
+                : colliderRefs.GroundedCollider;
         }
     }
 }

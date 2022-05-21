@@ -6,16 +6,20 @@ using static Unity.Mathematics.math;
 using CCC.Fix2D;
 
 /// <summary>
-/// The horizontal distance between the entity and its attack target
+/// The horizontal position between the entity and its attack target
 /// </summary>
-public struct DistanceFromTarget : IComponentData
+public struct OffsetFromTarget : IComponentData
 {
     public fix Value;
 
-    public static implicit operator fix(DistanceFromTarget val) => val.Value;
-    public static implicit operator DistanceFromTarget(fix val) => new DistanceFromTarget() { Value = val };
+    public fix Distance => abs(Value);
+
+    public static implicit operator fix(OffsetFromTarget val) => val.Value;
+    public static implicit operator OffsetFromTarget(fix val) => new OffsetFromTarget() { Value = val };
 }
 
+[UpdateInGroup(typeof(MovementSystemGroup))]
+[UpdateBefore(typeof(UpdateMovementSystem))]
 public class UpdateTargetRelativePositionSystem : SimGameSystemBase
 {
     private PhysicsWorldSystem _physicsWorldSystem;
@@ -33,9 +37,9 @@ public class UpdateTargetRelativePositionSystem : SimGameSystemBase
         if (!HasSingleton<PlayerGroupDataTag>())
         {
             Entities
-                .ForEach((ref DistanceFromTarget distance) =>
+                .ForEach((ref OffsetFromTarget offset) =>
                 {
-                    distance.Value = 1000;
+                    offset.Value = 1000;
                 }).Run();
             return;
         }
@@ -46,9 +50,9 @@ public class UpdateTargetRelativePositionSystem : SimGameSystemBase
         fix playerGroupFront = playerGroupPosition.x + SimulationGameConstants.CharacterRadius;
 
         Entities
-            .ForEach((ref DistanceFromTarget distance, in FixTranslation position) =>
+            .ForEach((ref OffsetFromTarget offset, in FixTranslation position) =>
             {
-                distance.Value = position.Value.x - playerGroupFront;
+                offset.Value = position.Value.x - playerGroupFront;
             }).Run();
 
 
@@ -59,7 +63,7 @@ public class UpdateTargetRelativePositionSystem : SimGameSystemBase
         // If we add allied mobs, we'll need to code something better than this. We can probably just find the left-most enemy using a few raycasts.
         // We just have to think about what this means for flying mobs, do we ignore them?
         {
-            fix2 triggerSize = fix2(GetComponent<StopMoveFromTargetDistance>(playerGroupEntity), (fix)0.5);
+            fix2 triggerSize = fix2(GetComponent<DesiredRangeFromTarget>(playerGroupEntity).Value.Max, (fix)0.5);
             fix2 min = playerGroupPosition - new fix2(0, triggerSize.y / 2);
             fix2 max = min + triggerSize;
 
@@ -74,8 +78,8 @@ public class UpdateTargetRelativePositionSystem : SimGameSystemBase
             PhysicsWorld physicsWorld = _physicsWorldSystem.PhysicsWorld;
 
             // a dumb way to stop the player. Maybe revisit this later if we need actual distance
-            fix distanceFromTarget = (fix)(physicsWorld.OverlapAabb(overlapAabbInput, touchedbodies) ? 0f : 99f);
-            SetComponent<DistanceFromTarget>(playerGroupEntity, distanceFromTarget);
+            fix offsetFromTarget = (fix)(physicsWorld.OverlapAabb(overlapAabbInput, touchedbodies) ? 0f : -99f);
+            SetComponent<OffsetFromTarget>(playerGroupEntity, offsetFromTarget);
         }
     }
 }

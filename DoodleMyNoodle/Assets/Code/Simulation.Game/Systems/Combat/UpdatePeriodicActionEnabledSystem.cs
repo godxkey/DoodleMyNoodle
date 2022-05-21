@@ -1,23 +1,16 @@
 ﻿using Unity.Entities;
 using CCC.Fix2D;
 
-public struct PeriodicActionDistanceMin : IComponentData
+public struct PeriodicActionRange : IComponentData
 {
-    public fix Value;
+    public FixRange Value;
 
-    public static implicit operator fix(PeriodicActionDistanceMin val) => val.Value;
-    public static implicit operator PeriodicActionDistanceMin(fix val) => new PeriodicActionDistanceMin() { Value = val };
+    public static implicit operator FixRange(PeriodicActionRange val) => val.Value;
+    public static implicit operator PeriodicActionRange(FixRange val) => new PeriodicActionRange() { Value = val };
 }
 
-public struct PeriodicActionDistanceMax : IComponentData
-{
-    public fix Value;
-
-    public static implicit operator fix(PeriodicActionDistanceMax val) => val.Value;
-    public static implicit operator PeriodicActionDistanceMax(fix val) => new PeriodicActionDistanceMax() { Value = val };
-}
-
-public class UpdateShouldAutoAttackSystem : SimGameSystemBase
+[UpdateAfter(typeof(MovementSystemGroup))]
+public class UpdatePeriodicActionEnabledSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {
@@ -40,19 +33,18 @@ public class UpdateShouldAutoAttackSystem : SimGameSystemBase
 
         // _________________________________________ Items _________________________________________ //
         var healths = GetComponentDataFromEntity<Health>(isReadOnly: true);
-        var distancesFromTargets = GetComponentDataFromEntity<DistanceFromTarget>(isReadOnly: true);
+        var offsetFromTargets = GetComponentDataFromEntity<OffsetFromTarget>(isReadOnly: true);
         Entities
             .WithReadOnly(healths)
-            .WithReadOnly(distancesFromTargets)
+            .WithReadOnly(offsetFromTargets)
             .WithAll<ItemTag>()
             .ForEach((ref PeriodicActionEnabled periodicEnabled,
                       in FirstInstigator owner,
-                      in PeriodicActionDistanceMin distMin,
-                      in PeriodicActionDistanceMax distMax) =>
+                      in PeriodicActionRange range) =>
             {
                 bool ownerHPOk = !healths.TryGetComponent(owner, out var hp) || hp.Value > 0;
-                bool ownerDistanceOk = !distancesFromTargets.TryGetComponent(owner, out var distanceFromTarget)
-                    || (distMin <= distanceFromTarget.Value && distanceFromTarget.Value <= distMax);
+                bool ownerDistanceOk = !offsetFromTargets.TryGetComponent(owner, out var offsetFromTarget)
+                    || range.Value.Contains(offsetFromTarget.Distance, epsilon: (fix)0.01f);
 
                 periodicEnabled = ownerHPOk && ownerDistanceOk;
             }).Schedule();
@@ -60,14 +52,13 @@ public class UpdateShouldAutoAttackSystem : SimGameSystemBase
         // _________________________________________ Mobs _________________________________________ //
         Entities
             .ForEach((ref PeriodicActionEnabled periodicEnabled,
-                      in DistanceFromTarget distanceFromTarget,
+                      in OffsetFromTarget offsetFromTarget,
                       in Health hp,
-                      in PeriodicActionDistanceMin distMin,
-                      in PeriodicActionDistanceMax distMax) =>
+                      in PeriodicActionRange distMin,
+                      in PeriodicActionRange range) =>
         {
             periodicEnabled = hp.Value > 0
-                && distanceFromTarget.Value >= distMin
-                && distanceFromTarget.Value <= distMax;
+                && range.Value.Contains(offsetFromTarget.Distance, epsilon: (fix)0.01f);
         }).Schedule();
     }
 }
