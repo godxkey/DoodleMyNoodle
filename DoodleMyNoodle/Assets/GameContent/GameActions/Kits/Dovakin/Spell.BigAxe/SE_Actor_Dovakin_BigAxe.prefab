@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8618057839144830486}
   - component: {fileID: 2302789254329102844}
   m_Layer: 14
-  m_Name: SE_BigAxe
+  m_Name: SE_Actor_Dovakin_BigAxe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -106,10 +106,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Actions:
-  - ActionPrefab: {fileID: -4801357984810749253, guid: ee54959cbff763043816a14b24f91187,
+  - ActionPrefab: {fileID: -4801357984810749253, guid: a2a38699eabdcea439b6ceb19d88cf14,
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 1
+    GeneralCooldown: 0
     ContactMode: 1
     OverlapLayerMask:
       serializedVersion: 2

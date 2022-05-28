@@ -57,7 +57,7 @@ public class PlayerActionBarSlot : ItemSlot
         if (SimWorld.TryGetComponent(itemEntity, out ItemCooldownTimeCounter timerCounter) && timerCounter.Value != 0)
         {
             UnavailableTimerText.gameObject.SetActive(true);
-            UnavailableTimerText.text = fix.RoundToInt(timerCounter.Value).ToString();
+            UnavailableTimerText.text = fix.CeilingToInt(timerCounter.Value).ToString();
         }
         else
         {

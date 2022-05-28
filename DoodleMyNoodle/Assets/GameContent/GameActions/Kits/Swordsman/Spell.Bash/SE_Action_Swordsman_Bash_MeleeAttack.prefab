@@ -85,7 +85,7 @@ MonoBehaviour:
         OnHitGameActionPrefab: {fileID: 2784291058542494111, guid: 2a7be6ee31d8db541a80066aff87198c,
           type: 3}
         ImpulseForce:
-          RawValue: 42949672960
+          RawValue: 36507222016
         ImpulseUpAngleRatio:
           RawValue: 2147483648
         MaxTargetHit: 99
