@@ -88,6 +88,16 @@ PrefabInstance:
       propertyPath: DistanceFromFrontTarget
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 2401102004981749674, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: DistanceFromFrontTargetMax
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2401102004981749674, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: DistanceFromFrontTargetMin
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2678156252502307406, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: StartingItems.Array.size
@@ -112,7 +122,7 @@ PrefabInstance:
     - target: {fileID: 4951368162375339519, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: m_Name
-      value: SE_Char_Mob_Catapulte
+      value: SE_Char_Mob_Archer
       objectReference: {fileID: 0}
     - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
