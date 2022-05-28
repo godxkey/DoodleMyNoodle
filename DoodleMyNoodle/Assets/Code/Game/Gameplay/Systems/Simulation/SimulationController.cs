@@ -5,6 +5,7 @@ using SimulationControl;
 using System;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngineX;
 
 public class ExternalSimGameWorldAccessor : ExternalSimWorldAccessor
@@ -52,14 +53,19 @@ public partial class SimulationController : GameSystem<SimulationController>
     private void OnSimulationTicked(SimTickData tickData)
     {
         PresentationEventsWithReadAccess.ShouldUseSinceLastTick = true;
+        Profiler.BeginSample("SimulationController.PostSimulationTick It");
         foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
         {
 #if DEBUG
             try
             {
 #endif
-                if (b is IPresentationPostSimTick p)
+                if (b is IPresentationPostSimTick p && b.isActiveAndEnabled)
+                {
+                    Profiler.BeginSample(b.ProfilingMarkerPostSimTick);
                     p.PresentationPostSimulationTick();
+                    Profiler.EndSample();
+                }
 #if DEBUG
             }
             catch (Exception e)
@@ -68,6 +74,7 @@ public partial class SimulationController : GameSystem<SimulationController>
             }
 #endif
         }
+        Profiler.EndSample();
         PresentationEventsWithReadAccess.ShouldUseSinceLastTick = false;
     }
 
@@ -76,14 +83,19 @@ public partial class SimulationController : GameSystem<SimulationController>
         if (!GamePresentationCache.Instance.Ready)
             return;
 
+        Profiler.BeginSample("SimulationController.PresentationUpdate It");
         foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
         {
 #if DEBUG
             try
             {
 #endif
-                if (b is IPresentationUpdate p)
+                if (b is IPresentationUpdate p && b.isActiveAndEnabled)
+                {
+                    Profiler.BeginSample(b.ProfilingMarkerPresentationUpdate);
                     p.PresentationUpdate();
+                    Profiler.EndSample();
+                }
 #if DEBUG
             }
             catch (Exception e)
@@ -92,6 +104,7 @@ public partial class SimulationController : GameSystem<SimulationController>
             }
 #endif
         }
+        Profiler.EndSample();
     }
 
     private bool ValidateSimInput(SimInput input, INetworkInterfaceConnection instigator)

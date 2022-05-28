@@ -4,13 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngineX;
 
-public struct TeleportRequestSingletonBufferElement : IBufferElementData
-{
-    public Entity Entity;
-    public fix2 Destination;
-}
-
-public struct TeleportEventData : IComponentData
+public struct TeleportRequestSingletonBufferElement : ISingletonBufferElementData
 {
     public Entity Entity;
     public fix2 Destination;
@@ -19,41 +13,10 @@ public struct TeleportEventData : IComponentData
 [UpdateInGroup(typeof(MovementSystemGroup))]
 public class TeleportSystem : SimGameSystemBase
 {
-    private EntityQuery _singletonQuery;
-    private EntityQuery _eventGroup;
-
-    public DynamicBuffer<TeleportRequestSingletonBufferElement> GetRequestBuffer()
-    {
-        // create singleton if necessary
-        if (_singletonQuery.IsEmptyIgnoreFilter)
-        {
-            EntityManager.CreateEntity(typeof(TeleportRequestSingletonBufferElement));
-        }
-
-        return EntityManager.GetBuffer<TeleportRequestSingletonBufferElement>(_singletonQuery.GetSingletonEntity());
-    }
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-        _singletonQuery = EntityManager.CreateEntityQuery(typeof(TeleportRequestSingletonBufferElement));
-        _eventGroup = EntityManager.CreateEntityQuery(typeof(TeleportEventData));
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        _singletonQuery.Dispose();
-        _eventGroup.Dispose();
-    }
-
     protected override void OnUpdate()
     {
-        // clear previous events
-        EntityManager.DestroyEntity(_eventGroup);
-
         // process requests
-        var requestBuffer = GetRequestBuffer();
+        var requestBuffer = GetSingletonBuffer< TeleportRequestSingletonBufferElement>();
 
         if (requestBuffer.Length > 0)
         {
@@ -85,12 +48,6 @@ public class TeleportSystem : SimGameSystemBase
         }
 
         SetComponent<FixTranslation>(request.Entity, request.Destination);
-
-        EntityManager.CreateEventEntity(new TeleportEventData()
-        {
-            Entity = request.Entity,
-            Destination = request.Destination
-        });
     }
 }
 
@@ -98,7 +55,7 @@ internal partial class CommonWrites
 {
     public static void RequestTeleport(ISimGameWorldReadWriteAccessor accessor, Entity entity, fix2 destination)
     {
-        var requests = accessor.GetExistingSystem<TeleportSystem>().GetRequestBuffer();
+        var requests = accessor.GetSingletonBuffer<TeleportRequestSingletonBufferElement>();
         requests.Add(new TeleportRequestSingletonBufferElement()
         {
             Entity = entity,

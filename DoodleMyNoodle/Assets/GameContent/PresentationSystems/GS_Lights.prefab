@@ -47,6 +47,7 @@ MonoBehaviour:
   SystemSettings:
     Type: 1
     OnlineFlags: -1
+  _activatableLight: {fileID: 4698121202893584425}
 --- !u!1 &4698121202893584425
 GameObject:
   m_ObjectHideFlags: 0

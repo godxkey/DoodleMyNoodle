@@ -13,22 +13,39 @@ MonoBehaviour:
   m_Name: ScriptDefineSymbolManagerSettings
   m_EditorClassIdentifier: 
   Profiles:
-  - Name: Debug
+  - Name: Standalone_Debug
+    Symbols:
+    - DEBUG
+    - BOLT_CLOUD
+    - SAFETY
+    - BOLT_1_3_OR_NEWER
+    - UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
+    - UNITY_X_LOG_ASSERT
+    - UNITY_X_LOG_ERROR
+    - UNITY_X_LOG_INFO
+    - UNITY_X_LOG_EXCEPTION
+    - UNITY_X_LOG_WARNING
+    - UNITY_X_LOG_METHOD
+  - Name: Editor
     Symbols:
     - DEBUG
     - UNITY_X_LOG_INFO
     - UNITY_X_LOG_EXCEPTION
     - UNITY_X_LOG_WARNING
-    - BOLT_CLOUD
     - UNITY_X_LOG_ASSERT
     - UNITY_X_LOG_ERROR
     - UNITY_X_LOG_METHOD
     - SAFETY
-  - Name: Release
+    - BOLT_1_3_OR_NEWER
+    - UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
+    - BOLT_CLOUD
+  - Name: Standalone_Release
     Symbols:
     - UNITY_X_LOG_ERROR
     - UNITY_X_LOG_EXCEPTION
     - BOLT_CLOUD
+    - BOLT_1_3_OR_NEWER
+    - UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
   Symbols:
   - Name: DEBUG
     Description: "Enables various debugging features such as \n* GameConsole\n* Ingame
@@ -37,3 +54,7 @@ MonoBehaviour:
     Description: 
   - Name: SAFETY
     Description: Enables various safety checks
+  - Name: BOLT_1_3_OR_NEWER
+    Description: From Bolt plugin
+  - Name: UNITY_DISABLE_AUTOMATIC_SYSTEM_BOOTSTRAP
+    Description: Disable ECS system bootstrap

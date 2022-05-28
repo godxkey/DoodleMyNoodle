@@ -21,7 +21,7 @@ public class RegenResourceSystem : SimGameSystemBase
                 {
                     health.Value = min(GetComponent<MaximumFix<Health>>(entity), health.Value + (rechargeRate * deltaTime));
                 }
-            }).Run();
+            }).Schedule();
 
         Entities
             .WithNone<DeadTag>()
@@ -32,7 +32,7 @@ public class RegenResourceSystem : SimGameSystemBase
                 {
                     shield.Value = min(GetComponent<MaximumFix<Shield>>(entity), shield.Value + (rechargeRate * deltaTime));
                 }
-            }).Run();
+            }).Schedule();
 
         Entities
             .WithNone<DeadTag>()
@@ -43,6 +43,6 @@ public class RegenResourceSystem : SimGameSystemBase
                 {
                     ap.Value = min(GetComponent<MaximumFix<ActionPoints>>(entity), ap.Value + (rechargeRate * deltaTime));
                 }
-            }).Run();
+            }).Schedule();
     }
 }

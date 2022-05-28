@@ -4,13 +4,14 @@ using UnityEngineX;
 
 public class GameLightingSystem : GamePresentationSystem<GameLightingSystem>
 {
+    [SerializeField] private GameObject _activatableLight = null;
     private bool _activate = true;
 
     protected override void Awake()
     {
         base.Awake();
 
-        gameObject.SetActive(false);
+        _activatableLight.SetActive(false);
     }
 
     public override void PresentationPostSimulationTick()
@@ -18,7 +19,7 @@ public class GameLightingSystem : GamePresentationSystem<GameLightingSystem>
         base.PresentationPostSimulationTick();
         if (_activate)
         {
-            gameObject.SetActive(true);
+            _activatableLight.SetActive(true);
             _activate = false;
         }
     }

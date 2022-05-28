@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngineX;
+using UnityEngine.Profiling;
 
 public class Game : MonoBehaviour
 {
@@ -104,7 +105,7 @@ public class Game : MonoBehaviour
         Log.Info("Loading dynamic game scenes...");
         var contentSceneLoad = SceneManager.LoadSceneAsync("Game Content (dynamic)", LoadSceneMode.Additive);
         var systemSceneLoad = SceneManager.LoadSceneAsync("Game Systems (dynamic)", LoadSceneMode.Additive);
-        
+
         while (!contentSceneLoad.isDone || !systemSceneLoad.isDone)
         {
             yield return null;
@@ -193,10 +194,14 @@ public class Game : MonoBehaviour
             _fireOnGameAwake = false;
             _ready = true;
 
+            Profiler.BeginSample("Game.Awake It");
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
+                Profiler.BeginSample(b.ProfilingMarkerAwake);
                 b.OnGameAwake();
+                Profiler.EndSample();
             }
+            Profiler.EndSample();
         }
 
         if (_fireOnGameStart)
@@ -205,10 +210,14 @@ public class Game : MonoBehaviour
             _started = true;
             _callingOnGameStart = true;
 
+            Profiler.BeginSample("Game.Start It");
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
+                Profiler.BeginSample(b.ProfilingMarkerStart);
                 b.OnGameStart();
+                Profiler.EndSample();
             }
+            Profiler.EndSample();
 
             _callingOnGameStart = false;
         }
@@ -217,6 +226,7 @@ public class Game : MonoBehaviour
         {
             ExecuteLateStarter();
 
+            Profiler.BeginSample("Game.Update It");
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
 #if SAFETY
@@ -224,7 +234,11 @@ public class Game : MonoBehaviour
                 {
 #endif
                     if (b.isActiveAndEnabled)
+                    {
+                        Profiler.BeginSample(b.ProfilingMarkerUpdate);
                         b.OnGameUpdate();
+                        Profiler.EndSample();
+                    }
 #if SAFETY
                 }
                 catch (Exception e)
@@ -233,6 +247,7 @@ public class Game : MonoBehaviour
                 }
 #endif
             }
+            Profiler.EndSample();
         }
     }
 
@@ -240,6 +255,7 @@ public class Game : MonoBehaviour
     {
         if (_started)
         {
+            Profiler.BeginSample("Game.FixedUpdate It");
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
 #if SAFETY
@@ -247,7 +263,11 @@ public class Game : MonoBehaviour
                 {
 #endif
                     if (b.isActiveAndEnabled)
+                    {
+                        Profiler.BeginSample(b.ProfilingMarkerFixedUpdate);
                         b.OnGameFixedUpdate();
+                        Profiler.EndSample();
+                    }
 #if SAFETY
                 }
                 catch (Exception e)
@@ -255,8 +275,8 @@ public class Game : MonoBehaviour
                     Log.Error(e.Message + " - stack:\n " + e.StackTrace);
                 }
 #endif
-
             }
+            Profiler.EndSample();
         }
     }
 
@@ -264,6 +284,7 @@ public class Game : MonoBehaviour
     {
         if (_started)
         {
+            Profiler.BeginSample("Game.LateUpdate It");
             foreach (GameMonoBehaviour b in GameMonoBehaviour.RegisteredBehaviours)
             {
 #if SAFETY
@@ -271,7 +292,11 @@ public class Game : MonoBehaviour
                 {
 #endif
                     if (b.isActiveAndEnabled)
+                    {
+                        Profiler.BeginSample(b.ProfilingMarkerLateUpdate);
                         b.OnGameLateUpdate();
+                        Profiler.EndSample();
+                    }
 #if SAFETY
                 }
                 catch (Exception e)
@@ -280,6 +305,7 @@ public class Game : MonoBehaviour
                 }
 #endif
             }
+            Profiler.EndSample();
         }
     }
 

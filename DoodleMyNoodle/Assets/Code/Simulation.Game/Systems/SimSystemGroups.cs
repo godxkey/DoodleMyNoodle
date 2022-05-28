@@ -22,12 +22,7 @@ public class PostPhysicsSystemGroup : SimComponentSystemGroup
     }
 }
 
-[UpdateAfter(typeof(PostPhysicsSystemGroup))] public class PreAISystemGroup : SimComponentSystemGroup { }
-
-[UpdateAfter(typeof(PreAISystemGroup))] public class AISystemGroup : SimComponentSystemGroup { }
-[UpdateInGroup(typeof(AISystemGroup))] public class SpecificAISystemGroup : SimComponentSystemGroup { }
-
-[UpdateAfter(typeof(AISystemGroup))] public class InputSystemGroup : SimComponentSystemGroup { }
+[UpdateAfter(typeof(PostPhysicsSystemGroup))] public class InputSystemGroup : SimComponentSystemGroup { }
 
 [UpdateAfter(typeof(InputSystemGroup))] public class SignalSystemGroup : SimComponentSystemGroup { }
 [UpdateAfter(typeof(InputSystemGroup))] public class MovementSystemGroup : SimComponentSystemGroup { }

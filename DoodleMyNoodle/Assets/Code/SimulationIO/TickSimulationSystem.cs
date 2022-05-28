@@ -126,7 +126,9 @@ namespace SimulationControl
             _simPostPresGroup = simWorld.CreateSystem<SimPostPresentationSystemGroup>();
 
             // pre init group (not visible in EntityDebugger for some reason ...)
+#if SAFETY
             _simPreInitGroup.AddSystemToUpdateList(simWorld.CreateSystem<ChangeDetectionSystemEnd>());
+#endif
             _simPreInitGroup.AddSystemToUpdateList(simWorld.CreateSystem<UpdateSimulationTimeSystem>());
             _simPreInitGroup.AddSystemToUpdateList(simWorld.CreateSystem<InitializeRandomSeedSystem>());
 
@@ -143,8 +145,9 @@ namespace SimulationControl
             _simPresGroup.AddSystemToUpdateList(simWorld.CreateSystem<BeginPresentationEntityCommandBufferSystem>());
 
             // post pres
+#if SAFETY
             _simPostPresGroup.AddSystemToUpdateList(simWorld.CreateSystem<ChangeDetectionSystemBegin>());
-
+#endif
             AddSystemsToRootLevelSystemGroups(simWorld, AllSimSystemTypes);
 
             _addToPlayerLoop = true;
