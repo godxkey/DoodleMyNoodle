@@ -15,11 +15,16 @@ PrefabInstance:
     - target: {fileID: 950183991067186567, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: MoveSpeed
-      value: 0.5
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 950183991067186567, guid: 987a47d4012e6fc4c8365e6a618abff0,
         type: 3}
       propertyPath: DistanceFromFrontTarget
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 950183991067186567, guid: 987a47d4012e6fc4c8365e6a618abff0,
+        type: 3}
+      propertyPath: DistanceFromFrontTargetMax
       value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 4033928672937014956, guid: 987a47d4012e6fc4c8365e6a618abff0,

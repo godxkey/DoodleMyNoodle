@@ -99,9 +99,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveDirection: 1
-  MoveSpeed: 1
+  MoveSpeed: 0.6
   StopAtCertainDistance: 1
-  DistanceFromFrontTarget: 0.6
+  DistanceFromFrontTargetMin: 0
+  DistanceFromFrontTargetMax: 0.6
 --- !u!114 &5635049573386359071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,7 +119,6 @@ MonoBehaviour:
   Action: {fileID: 0}
   PrepareInAdvance: 0
   Limit: -1
-  IsEnableByDefault: 1
   OnlyAtSpecificDistance: 1
   MinDistanceFromTarget: -10
   MaxDistanceFromTarget: 0.6
