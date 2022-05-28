@@ -68,4 +68,5 @@ MonoBehaviour:
     type: 3}
   GameActionOnTick: {fileID: 0}
   GameActionOnEnd: {fileID: 0}
-  CharacterVFXPrefab: {fileID: 0}
+  CharacterVFXPrefab: {fileID: 3102157873802970393, guid: c6b5a9b998e4ccf4991fb3a13bccadb8,
+    type: 3}
