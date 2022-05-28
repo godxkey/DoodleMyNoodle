@@ -508,8 +508,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 190ca1ff0c02d1543a141988a630b066, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DrawStaticColliders: 1
-  DrawDynamicColliders: 1
+  DrawStaticColliders: 0
+  DrawDynamicColliders: 0
   StaticColliderColor: {r: 0, g: 0.5, b: 0, a: 0.5}
   DynamicColliderColor: {r: 0, g: 1, b: 0, a: 1}
   DrawColliderAabbs: 0
