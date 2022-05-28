@@ -44,7 +44,7 @@ public class UpdatePeriodicActionEnabledSystem : SimGameSystemBase
             {
                 bool ownerHPOk = !healths.TryGetComponent(owner, out var hp) || hp.Value > 0;
                 bool ownerDistanceOk = !offsetFromTargets.TryGetComponent(owner, out var offsetFromTarget)
-                    || range.Value.Contains(offsetFromTarget.Distance, epsilon: (fix)0.01f);
+                    || range.Value.Contains(offsetFromTarget, epsilon: (fix)0.01f);
 
                 periodicEnabled = ownerHPOk && ownerDistanceOk;
             }).Schedule();
@@ -54,11 +54,10 @@ public class UpdatePeriodicActionEnabledSystem : SimGameSystemBase
             .ForEach((ref PeriodicActionEnabled periodicEnabled,
                       in OffsetFromTarget offsetFromTarget,
                       in Health hp,
-                      in PeriodicActionRange distMin,
                       in PeriodicActionRange range) =>
         {
             periodicEnabled = hp.Value > 0
-                && range.Value.Contains(offsetFromTarget.Distance, epsilon: (fix)0.01f);
+                && range.Value.Contains(offsetFromTarget, epsilon: (fix)0.01f);
         }).Schedule();
     }
 }
