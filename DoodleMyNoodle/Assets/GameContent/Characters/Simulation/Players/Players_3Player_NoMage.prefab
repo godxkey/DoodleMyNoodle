@@ -7,21 +7,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3841449095675645410, guid: 097810b178c4f86449cb0a071a8d1397,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -3.979
-      objectReference: {fileID: 0}
-    - target: {fileID: 3841449097249300318, guid: 097810b178c4f86449cb0a071a8d1397,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -3.107
-      objectReference: {fileID: 0}
-    - target: {fileID: 3841449097288058921, guid: 097810b178c4f86449cb0a071a8d1397,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -4.785
-      objectReference: {fileID: 0}
     - target: {fileID: 5890412712909477684, guid: 097810b178c4f86449cb0a071a8d1397,
         type: 3}
       propertyPath: m_RootOrder
@@ -81,21 +66,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Players_3Player_NoMage
-      objectReference: {fileID: 0}
-    - target: {fileID: 5896878600208101783, guid: 097810b178c4f86449cb0a071a8d1397,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -3.087
-      objectReference: {fileID: 0}
-    - target: {fileID: 5896878600845255772, guid: 097810b178c4f86449cb0a071a8d1397,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -4.814
-      objectReference: {fileID: 0}
-    - target: {fileID: 5896878601112846067, guid: 097810b178c4f86449cb0a071a8d1397,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -3.971
       objectReference: {fileID: 0}
     - target: {fileID: 5896878602002931835, guid: 097810b178c4f86449cb0a071a8d1397,
         type: 3}
