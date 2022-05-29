@@ -88,11 +88,20 @@ public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDispla
             }
             else
             {
-                scale = Vector2.one * NumberScaleForAllies;
-                color.a = eventData.IsAutoAttack ? 0 : NumberAlphaForAllies;
+                if (eventData.IsAutoAttack)
+                {
+                    scale = Vector2.zero;
+                }
+                else
+                {
+
+                    scale = Vector2.one * NumberScaleForAllies;
+                    color.a = eventData.IsAutoAttack ? 0 : NumberAlphaForAllies;
+                }
             }
 
-            GameSystem<FloatingTextSystem>.Instance.RequestText(displayedImpactPos, scale, displayedValue.ToString(), color);
+            if (scale != Vector2.zero)
+                GameSystem<FloatingTextSystem>.Instance.RequestText(displayedImpactPos, scale, displayedValue.ToString(), color);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////

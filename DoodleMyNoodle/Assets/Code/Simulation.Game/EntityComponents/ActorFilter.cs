@@ -1,4 +1,5 @@
-﻿using Unity.Collections;
+﻿using CCC.Fix2D;
+using Unity.Collections;
 using Unity.Entities;
 
 [System.Flags]
@@ -29,7 +30,7 @@ public partial struct Helpers
         Entity entity,
         ComponentDataFromEntity<Team> Teams,
         ComponentDataFromEntity<FirstInstigator> FirstInstigators,
-        ComponentDataFromEntity<TileColliderTag> TileColliderTags)
+        ComponentDataFromEntity<PhysicsColliderBlob> Colliders)
     {
         ActorFilterInfo result = new ActorFilterInfo()
         {
@@ -50,7 +51,10 @@ public partial struct Helpers
             }
         }
 
-        result.IsTerrain = TileColliderTags.HasComponent(entity);
+
+        result.IsTerrain = Colliders.TryGetComponent(entity, out var colliderRef)
+            && colliderRef.Collider.IsCreated 
+            && Helpers.BelongsToTerrain(colliderRef.Collider.Value.Filter);
 
         return result;
     }

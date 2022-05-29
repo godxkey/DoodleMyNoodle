@@ -56,7 +56,7 @@ public static class SimulationGameConstants
     /// Minimal impulse required for instigator to destroy victim tile
     /// </summary>
     public static readonly fix ImpulseThresholdDestroyingTile = 5;
-    
+
     public static readonly fix FallDamageCooldown = (fix)0.6;
 
     private static bool s_init = false;
@@ -108,4 +108,10 @@ public static class SimulationGameConstants
         private class CollideWithCharactersFilterKey { }
 
     }
+}
+
+public partial struct Helpers
+{
+    public static bool BelongsToTerrain(CollisionFilter colliderFilter) 
+        => (colliderFilter.BelongsTo & (1 << SimulationGameConstants.Physics.LAYER_TERRAIN)) != 0;
 }

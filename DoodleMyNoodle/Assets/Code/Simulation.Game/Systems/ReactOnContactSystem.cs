@@ -58,7 +58,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
             ActionOnContacts = GetBufferFromEntity<ActionOnColliderContact>(isReadOnly: true),
             Teams = GetComponentDataFromEntity<Team>(isReadOnly: true),
             FirstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true),
-            TileColliderTags = GetComponentDataFromEntity<TileColliderTag>(isReadOnly: true),
+            Colliders = GetComponentDataFromEntity<PhysicsColliderBlob>(isReadOnly: true),
             MutedActions = GetSingletonBuffer<MutedContactActionElement>(),
             Time = Time.ElapsedTime
         };
@@ -101,7 +101,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
         [ReadOnly] public BufferFromEntity<ActionOnColliderContact> ActionOnContacts;
         [ReadOnly] public ComponentDataFromEntity<Team> Teams;
         [ReadOnly] public ComponentDataFromEntity<FirstInstigator> FirstInstigators;
-        [ReadOnly] public ComponentDataFromEntity<TileColliderTag> TileColliderTags;
+        [ReadOnly] public ComponentDataFromEntity<PhysicsColliderBlob> Colliders;
         [ReadOnly] public PhysicsWorld World;
         [ReadOnly] public fix Time;
 
@@ -131,8 +131,8 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
             if (ActionOnContacts.HasComponent(entityA))
             {
                 DynamicBuffer<ActionOnColliderContact> actions = ActionOnContacts[entityA];
-                ActorFilterInfo entityAInfo = Helpers.GetActorFilterInfo(entityA, Teams, FirstInstigators, TileColliderTags);
-                ActorFilterInfo entityBInfo = Helpers.GetActorFilterInfo(entityB, Teams, FirstInstigators, TileColliderTags);
+                ActorFilterInfo entityAInfo = Helpers.GetActorFilterInfo(entityA, Teams, FirstInstigators, Colliders);
+                ActorFilterInfo entityBInfo = Helpers.GetActorFilterInfo(entityB, Teams, FirstInstigators, Colliders);
 
                 for (int i = 0; i < actions.Length; i++)
                 {
@@ -189,7 +189,7 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
         var outActions = _gameActionSystem.CreateRequestBuffer();
         var teams = GetComponentDataFromEntity<Team>(isReadOnly: true);
         var firstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true);
-        var tileColliderTags = GetComponentDataFromEntity<TileColliderTag>(isReadOnly: true);
+        var colliders = GetComponentDataFromEntity<PhysicsColliderBlob>(isReadOnly: true);
         var mutedActions = GetSingletonBuffer<MutedContactActionElement>();
         var time = Time.ElapsedTime;
 
@@ -198,11 +198,11 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
             .WithReadOnly(physicsBodiesMap)
             .WithReadOnly(teams)
             .WithReadOnly(firstInstigators)
-            .WithReadOnly(tileColliderTags)
+            .WithReadOnly(colliders)
             .ForEach((Entity entity, DynamicBuffer<ActionOnOverlap> actionsOnOverlap, in FixTranslation position) =>
         {
             bool ignoreLocalEntity = physicsBodiesMap.Lookup.TryGetValue(entity, out int physicsBody);
-            ActorFilterInfo entityAInfo = Helpers.GetActorFilterInfo(entity, teams, firstInstigators, tileColliderTags);
+            ActorFilterInfo entityAInfo = Helpers.GetActorFilterInfo(entity, teams, firstInstigators, colliders);
 
             for (int i = 0; i < actionsOnOverlap.Length; i++)
             {
@@ -225,7 +225,7 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
                         if (mutedActions.IsMuted(entity, hit.Entity, actionOnContact.Data.Id))
                             continue;
 
-                        ActorFilterInfo entityBInfo = Helpers.GetActorFilterInfo(hit.Entity, teams, firstInstigators, tileColliderTags);
+                        ActorFilterInfo entityBInfo = Helpers.GetActorFilterInfo(hit.Entity, teams, firstInstigators, colliders);
 
                         if (Helpers.ActorFilterMatches(entityAInfo, entityBInfo, actionOnContact.Data.ActionFilter))
                         {

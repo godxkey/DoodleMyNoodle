@@ -82,6 +82,6 @@ MonoBehaviour:
       data:
         ChangeType: 1
         Amount: 4
-        IsAutoAttack: 0
+        IsAutoAttack: 1
         OnHealthChangedGameActionPrefab: {fileID: 0}
         OnExtremeReachedGameActionPrefab: {fileID: 0}
