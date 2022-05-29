@@ -27,17 +27,17 @@ public class AudioMixerService : MonoCoreService<AudioMixerService>
     }
 
     [ConsoleCommand(Description = "Change Volume of the Music")]
-    static public void SetMusicVolume(float Volume)
+    static public void VolumeSetMusic(float dbGain)
     {
         if (Instance == null)
             return;
 
-        Instance.mixerSaver.SetVolume(AudioMixerSaver.ChannelType.Music, Volume);
+        Instance.mixerSaver.SetVolume(AudioMixerSaver.ChannelType.Music, dbGain);
         Instance.mixerSaver.Save();
     }
 
     [ConsoleCommand(Description = "Toggle Mute Music Volume")]
-    static public void ToggleMuteMusicVolume()
+    static public void VolumeToggleMusic()
     {
         if (Instance == null)
             return;
@@ -47,17 +47,17 @@ public class AudioMixerService : MonoCoreService<AudioMixerService>
     }
 
     [ConsoleCommand(Description = "Change Volume of the SFX")]
-    static public void SetSFXVolume(float Volume)
+    static public void VolumeSetSFX(float dbGain)
     {
         if (Instance == null)
             return;
 
-        Instance.mixerSaver.SetVolume(AudioMixerSaver.ChannelType.Music, Volume);
+        Instance.mixerSaver.SetVolume(AudioMixerSaver.ChannelType.Music, dbGain);
         Instance.mixerSaver.Save();
     }
 
     [ConsoleCommand(Description = "Toggle Mute SFX Volume")]
-    static public void ToggleMuteSFXVolume()
+    static public void VolumeToggleSFX()
     {
         if (Instance == null)
             return;
@@ -67,17 +67,17 @@ public class AudioMixerService : MonoCoreService<AudioMixerService>
     }
 
     [ConsoleCommand(Description = "Set All Volume (Master)")]
-    static public void SetAllVolume(float Volume)
+    static public void VolumeSetAll(float dbGain)
     {
         if (Instance == null)
             return;
 
-        Instance.mixerSaver.SetVolume(AudioMixerSaver.ChannelType.Master, Volume);
+        Instance.mixerSaver.SetVolume(AudioMixerSaver.ChannelType.Master, dbGain);
         Instance.mixerSaver.Save();
     }
 
     [ConsoleCommand(Description = "Toggle Mute All Volume (Master)")]
-    static public void ToggleMuteAll()
+    static public void VolumeToggleAll()
     {
         if (Instance == null)
             return;
