@@ -26,6 +26,7 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
         public Vector2 Velocity { get => _trajectory.Velocity; set => _trajectory.Velocity = value; }
         public float Length { get => _trajectory.Length; set => _trajectory.Length = value; }
         public float Radius { get => _trajectory.Radius; set => _trajectory.Radius = value; }
+        public bool DisplayPoints { get => _trajectory.DisplayPoints; set => _trajectory.DisplayPoints = value; }
 
         public void Dispose()
         {
@@ -43,6 +44,7 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
         public bool Displayed { get; set; }
         public float GravityScale { get; set; }
         public float Radius { get; set; }
+        public bool DisplayPoints { get; set; }
 
         public Trajectory()
         {
@@ -57,6 +59,7 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
             Displayed = true;
             GravityScale = 1;
             Radius = 1;
+            DisplayPoints = true;
         }
 
         public float CalculateTravelDuration(float traveledDistance, Vector2 gravity)
@@ -236,7 +239,8 @@ public class TrajectoryDisplaySystem : GamePresentationSystem<TrajectoryDisplayS
             {
                 Vector2 pointPosition = trajectory.CalculatePosition(p / frequency, gravity);
                 float alpha = math.min(pCount - p, 1);
-                _pointManager.SetPoint(pointPosition, alpha * _basePointAlpha);
+                if (trajectory.DisplayPoints)
+                    _pointManager.SetPoint(pointPosition, alpha * _basePointAlpha);
                 _lineManager.SetSegment(pointPosition);
             }
 

@@ -23,12 +23,15 @@ public class SurveyWorms : SurveyBaseController
     [SerializeField] private float _strengthVisualScale = 3f;
     [SerializeField] private float _trajectoryLength;
     [SerializeField] private bool _yoyo = true;
+    [SerializeField] private bool _displayMinMax = true;
 
     private Transform _transform;
     private State _state;
     private float _strength;
     private Vector2 _dir;
     private TrajectoryDisplaySystem.TrajectoryHandle _trajectoryDisplay;
+    private TrajectoryDisplaySystem.TrajectoryHandle _trajectoryDisplayMax;
+    private TrajectoryDisplaySystem.TrajectoryHandle _trajectoryDisplayMin;
 
     private void Awake()
     {
@@ -52,6 +55,17 @@ public class SurveyWorms : SurveyBaseController
         }
 
         _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
+        if (_displayMinMax)
+        {
+            _trajectoryDisplayMax = TrajectoryDisplaySystem.Instance.CreateTrajectory();
+            _trajectoryDisplayMin = TrajectoryDisplaySystem.Instance.CreateTrajectory();
+            _trajectoryDisplayMin.DisplayPoints = false;
+            _trajectoryDisplayMax.DisplayPoints = false;
+            _trajectoryDisplayMin.Velocity = _dir * (float)desc.SpeedMin;
+            _trajectoryDisplayMax.Velocity = _dir * (float)desc.SpeedMax;
+            _trajectoryDisplayMin.Radius = 0.1f;
+            _trajectoryDisplayMax.Radius = 0.1f;
+        }
 
         // Poll strength
         _state = State.PollingStrength;
@@ -80,6 +94,8 @@ public class SurveyWorms : SurveyBaseController
     protected override void OnEndSurvey(bool wasCompleted)
     {
         _trajectoryDisplay.Dispose();
+        _trajectoryDisplayMax.Dispose();
+        _trajectoryDisplayMin.Dispose();
     }
 
     public override GameAction.ParameterDescription[] CreateDebugQuery()
@@ -115,10 +131,24 @@ public class SurveyWorms : SurveyBaseController
                 _trajectoryDisplay.Radius = radius;
             }
 
+
             _trajectoryDisplay.GravityScale = PresentationHelpers.Surveys.GetProjectileGravityScale(Cache, CurrentContext.UseContext);
             _trajectoryDisplay.Length = _trajectoryLength;
             _trajectoryDisplay.StartPoint = (Vector2)_transform.position + startOffset;
             _trajectoryDisplay.Velocity = _dir * _strength;
+
+            if (_trajectoryDisplayMin.IsValid)
+            {
+                _trajectoryDisplayMin.GravityScale = _trajectoryDisplay.GravityScale;
+                _trajectoryDisplayMin.Length = _trajectoryDisplay.Length;
+                _trajectoryDisplayMin.StartPoint = _trajectoryDisplay.StartPoint;
+            }
+            if (_trajectoryDisplayMax.IsValid)
+            {
+                _trajectoryDisplayMax.GravityScale = _trajectoryDisplay.GravityScale;
+                _trajectoryDisplayMax.Length = _trajectoryDisplay.Length;
+                _trajectoryDisplayMax.StartPoint = _trajectoryDisplay.StartPoint;
+            }
         }
     }
 }
