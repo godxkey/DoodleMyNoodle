@@ -81,9 +81,9 @@ MonoBehaviour:
       type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         SpeedMin:
-          RawValue: 0
+          RawValue: 17179869184
         SpeedMax:
-          RawValue: 42949672960
+          RawValue: 45097156608
         SpawnExtraDistance:
           RawValue: 0
         ProjectilePrefab: {fileID: 2385346486794747607, guid: 448f0a9069ae51e4d9c2772ff6a5fbed,

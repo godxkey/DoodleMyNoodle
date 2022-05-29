@@ -74,16 +74,17 @@ MonoBehaviour:
   Animation: {fileID: 0}
   InstigatorVFX: {fileID: 0}
   TargetsVFX: {fileID: 0}
-  Surveys: []
+  Surveys:
+  - {fileID: 6075807751254421543, guid: 608b3f44970a7324ab091bbb7ae1585f, type: 3}
   references:
     version: 1
     00000000:
       type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         SpeedMin:
-          RawValue: 0
+          RawValue: 12884901888
         SpeedMax:
-          RawValue: 42949672960
+          RawValue: 38654705664
         SpawnExtraDistance:
           RawValue: 0
         ProjectilePrefab: {fileID: 2385346486794747607, guid: 832849494d47bc1468e92c6d8e314870,

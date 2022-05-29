@@ -194,6 +194,7 @@ MonoBehaviour:
     _string: Appuye plus longtemps pour lancer plus loin
     _useLocID: 1
     _locID: 
+  DelayBeforeDestruction: 0
   _rotator: {fileID: 6075807751254421536}
   _arrowContainer: {fileID: 6075807749962798163}
   _textTransform: {fileID: 6075807751334587645}
@@ -201,7 +202,8 @@ MonoBehaviour:
   _arrow: {fileID: 6075807749962798162}
   _growSpeed: 5
   _strengthVisualScale: 0.33333334
-  _trajectoryLength: 6
+  _trajectoryLength: 8
+  _yoyo: 1
 --- !u!1 &6075807751334587644
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,6 +372,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 6075807751334587647}
   m_maskType: 0
+  _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 0
 --- !u!1 &6075807751381028894
