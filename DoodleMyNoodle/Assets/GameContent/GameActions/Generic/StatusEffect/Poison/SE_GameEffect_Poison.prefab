@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe241a4632d9d14bae3da965e474680, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Duration: 5
+  Duration: 6
   GameActionOnBegin: {fileID: 2784291058542494111, guid: 1c12830f635994d44a743818ab9e6e06,
     type: 3}
   GameActionOnTick: {fileID: 0}

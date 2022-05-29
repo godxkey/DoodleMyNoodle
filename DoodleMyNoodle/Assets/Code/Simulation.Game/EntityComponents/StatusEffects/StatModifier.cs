@@ -99,7 +99,7 @@ static public class StatModifierSettings
             new StatModifierSetting()
             {
                 Type = StatModifierType.Poison,
-                Value = (fix)2,
+                Value = (fix)1.75f,
                 Blendmode = StatModifierBlendmode.Multiplier
             }
         },
