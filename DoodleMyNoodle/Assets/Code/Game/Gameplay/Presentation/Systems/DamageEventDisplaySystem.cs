@@ -9,16 +9,39 @@ using CCC.Fix2D;
 
 public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDisplaySystem>
 {
+    [System.Serializable]
+    public class NumberSetting
+    {
+        public float Scale = 1;
+        public Color Color = Color.white;
+    }
+
     [Header("VFX")]
     public GameObject DamageImpactVFX;
     public GameObject HealImpactVFX;
 
     [Header("Number Settings")]
-    public float NumberScaleForLocalPlayer = 1.25f;
-    public float NumberScaleForAllies = 0.8f;
-    public float NumberAlphaForAllies = 1f;
+    public NumberSetting SettingLocalAA;
+    public NumberSetting SettingLocalSpell;
+    public NumberSetting SettingAllyAA;
+    public NumberSetting SettingAllySpell;
+    public NumberSetting SettingGroupHealthLoss;
+    public NumberSetting SettingGroupHealthGain;
     [Tooltip("The radius of the random used for the final position of the number + impact VFX")]
     public float NumberPositionRandomRadius = 0.1f;
+
+    private enum Source
+    {
+        Enemy,
+        Ally,
+        LocalPlayer
+    }
+
+    private enum Type
+    {
+        Heal,
+        Damage,
+    }
 
     public override void PresentationUpdate()
     {
@@ -65,43 +88,28 @@ public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDispla
         //      Request Number
         ////////////////////////////////////////////////////////////////////////////////////////
         {
-            fix displayedValue;
-            Color color;
-            Vector2 scale;
+            NumberSetting numberSetting;
+            fix displayedValue = eventData.IsHeal ? eventData.TotalUncappedDelta : -eventData.TotalUncappedDelta;
+            displayedValue = max(1, round(displayedValue));
 
-            if (eventData.IsHeal)
+            if (eventData.FinalVictim == Cache.PlayerGroupEntity)
             {
-                // Heal
-                displayedValue = max(1, round(eventData.TotalUncappedDelta));
-                color = Color.green;
+                numberSetting = eventData.IsHeal ? SettingGroupHealthGain : SettingGroupHealthLoss;
             }
             else
             {
-                // Damage
-                displayedValue = max(1, round(-eventData.TotalUncappedDelta));
-                color = Color.white;
-            }
-
-            if (eventData.InstigatorSet.FirstPhysicalInstigator == PlayerHelpers.GetLocalSimPawnEntity(SimWorld))
-            {
-                scale = Vector2.one * NumberScaleForLocalPlayer;
-            }
-            else
-            {
-                if (eventData.IsAutoAttack)
+                if (eventData.InstigatorSet.FirstPhysicalInstigator == PlayerHelpers.GetLocalSimPawnEntity(SimWorld))
                 {
-                    scale = Vector2.zero;
+                    numberSetting = eventData.IsAutoAttack ? SettingLocalAA : SettingLocalSpell;
                 }
                 else
                 {
-
-                    scale = Vector2.one * NumberScaleForAllies;
-                    color.a = eventData.IsAutoAttack ? 0 : NumberAlphaForAllies;
+                    numberSetting = eventData.IsAutoAttack ? SettingAllyAA : SettingAllySpell;
                 }
             }
 
-            if (scale != Vector2.zero)
-                GameSystem<FloatingTextSystem>.Instance.RequestText(displayedImpactPos, scale, displayedValue.ToString(), color);
+            if (numberSetting != null && numberSetting.Scale != 0 && numberSetting.Color.a > 0)
+                GameSystem<FloatingTextSystem>.Instance.RequestText(displayedImpactPos, numberSetting.Scale * Vector2.one, displayedValue.ToString(), numberSetting.Color);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////

@@ -49,8 +49,22 @@ MonoBehaviour:
   DamageImpactVFX: {fileID: 1355893371305833656, guid: aabfbc0518e905d43b228c7137d26425,
     type: 3}
   HealImpactVFX: {fileID: 0}
-  NumberScaleForLocalPlayer: 1.25
-  NumberScaleForAllies: 0.8
-  NumberAlphaForAllies: 1
-  NumberInsetDistanceFromImpact: 0
+  SettingLocalAA:
+    Scale: 0.9
+    Color: {r: 1, g: 1, b: 1, a: 1}
+  SettingLocalSpell:
+    Scale: 1.1
+    Color: {r: 1, g: 1, b: 1, a: 1}
+  SettingAllyAA:
+    Scale: 0
+    Color: {r: 1, g: 1, b: 1, a: 1}
+  SettingAllySpell:
+    Scale: 0.5
+    Color: {r: 1, g: 1, b: 1, a: 0.5803922}
+  SettingGroupHealthLoss:
+    Scale: 3
+    Color: {r: 1, g: 0, b: 0, a: 1}
+  SettingGroupHealthGain:
+    Scale: 3
+    Color: {r: 0.2637477, g: 1, b: 0, a: 1}
   NumberPositionRandomRadius: 0
