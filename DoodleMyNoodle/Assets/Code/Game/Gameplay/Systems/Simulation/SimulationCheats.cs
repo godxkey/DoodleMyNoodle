@@ -10,7 +10,7 @@ public static class SimulationCheats
     /// These cheats can only be used when the player has a local pawn.
     /// </summary>
     public const string LOCAL_PAWN_GROUP = "sim-cheats-local-pawn";
-    
+
     /// <summary>
     /// These cheats can only be used when the player is created
     /// </summary>
@@ -185,7 +185,7 @@ public static class SimulationCheats
         PresentationHelpers.SubmitInput(new SimInputCheatSoloPlay()
         {
             PlayerId = localPlayerInfo.SimPlayerId,
-            PawnIndex =  playerIndex
+            PawnIndex = playerIndex
         });
 
     }
@@ -222,6 +222,23 @@ public static class SimulationCheats
         PresentationHelpers.SubmitInput(new SimInputCheatPlayerAutoAttackEnabled()
         {
             Enabled = enabled
+        });
+    }
+
+    [ConsoleCommand(Description = "Enable or disable the ability for player characters to auto-attack.", EnableGroup = LOCAL_PAWN_GROUP)]
+    public static void CheatPossessPawn(int index)
+    {
+        var localPlayerInfo = PlayerHelpers.GetLocalPlayerInfo();
+
+        if (localPlayerInfo == null)
+        {
+            Log.Warning("No local player found");
+            return;
+        }
+        PresentationHelpers.SubmitInput(new SimInputCheatPossessPawn()
+        {
+            PawnIndex = index,
+            PlayerId = localPlayerInfo.SimPlayerId,
         });
     }
 }

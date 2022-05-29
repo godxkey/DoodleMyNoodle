@@ -67,6 +67,13 @@ public class SimInputCheatPlayerAutoAttackEnabled : SimCheatInput
     public bool Enabled;
 }
 
+[NetSerializable]
+public class SimInputCheatPossessPawn : SimCheatInput
+{
+    public PersistentId PlayerId;
+    public int PawnIndex;
+}
+
 public struct CheatsAllItemElement : IBufferElementData
 {
     public Entity ItemPrefab;
@@ -269,6 +276,56 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 cheatPlayState.DisableAutoAttacks = !enablePlayerAutoAttacks.Enabled;
                 SetSingleton(cheatPlayState);
                 ApplyCheatPlayState();
+                break;
+            }
+
+            case SimInputCheatPossessPawn possessPawn:
+            {
+                var cheatPlayState = GetOrCreateSingleton<SingletonCheatPlayState>();
+                if (cheatPlayState.UseSoloPlay)
+                {
+                    cheatPlayState.SoloPlayPlayerId = possessPawn.PlayerId;
+                    cheatPlayState.SoloPlayPawnIndex = possessPawn.PawnIndex;
+                    SetSingleton(cheatPlayState);
+                    ApplyCheatPlayState();
+                }
+                else
+                {
+                    Entity player = CommonReads.FindPlayerEntity(Accessor, possessPawn.PlayerId);
+
+                    if (HasComponent<ControlledEntity>(player))
+                    {
+                        // _________________________________________ Find Pawns _________________________________________ //
+                        Entity oldPawn = Entity.Null;
+                        int newPawnIndex = possessPawn.PawnIndex;
+
+                        if (EntityManager.TryGetComponent(player, out ControlledEntity pawn))
+                            oldPawn = pawn;
+
+                        Entity newPawn2 = Entity.Null; // this fixes a bad code-gen where 'soloPlayPawn' doesn't get set ...
+                        Entities.ForEach((Entity entity, in PlayerGroupMemberIndex memberIndex) =>
+                        {
+                            if (memberIndex == newPawnIndex)
+                            {
+                                newPawn2 = entity;
+                            }
+                        }).Run();
+                        var newPawn = newPawn2;
+
+                        // _________________________________________ Update Possession _________________________________________ //
+                        if (oldPawn != Entity.Null)
+                        {
+                            SetComponent<Controllable>(oldPawn, default);
+                        }
+
+                        if (newPawn != Entity.Null)
+                        {
+                            SetComponent<Controllable>(newPawn, player);
+                        }
+
+                        SetComponent<ControlledEntity>(player, newPawn);
+                    }
+                }
                 break;
             }
         }

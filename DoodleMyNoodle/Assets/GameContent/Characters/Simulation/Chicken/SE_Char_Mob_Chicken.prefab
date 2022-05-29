@@ -21,7 +21,7 @@ PrefabInstance:
     - target: {fileID: -6450381012629423667, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: CircleRadius
-      value: 0.2
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: -1374508264804467834, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}

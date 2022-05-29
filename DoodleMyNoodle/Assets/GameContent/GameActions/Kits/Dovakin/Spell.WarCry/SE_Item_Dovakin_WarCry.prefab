@@ -73,4 +73,5 @@ MonoBehaviour:
   Icon: {fileID: 21300000, guid: 541197b18e76b424996d060d64a689d6, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Cri de Guerre
-  EffectDescription: "Augmente la vitesse d'attaque de toi et ton \xE9quipe de 75%"
+  EffectDescription: "Augmente la vitesse d'attaque de toi et ton \xE9quipe de 150%
+    pendant 5s"

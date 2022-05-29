@@ -79,7 +79,7 @@ static public class StatModifierSettings
             new StatModifierSetting()
             {
                 Type = StatModifierType.Armored,
-                Value = (fix)0.50,
+                Value = (fix)0.66f,
                 Blendmode = StatModifierBlendmode.Multiplier
             }
         },
@@ -89,7 +89,7 @@ static public class StatModifierSettings
             new StatModifierSetting()
             {
                 Type = StatModifierType.AttackSpeedBoost,
-                Value = (fix)1.75,
+                Value = (fix)2.5,
                 Blendmode = StatModifierBlendmode.Multiplier
             }
         },

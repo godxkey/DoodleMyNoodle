@@ -84,4 +84,4 @@ MonoBehaviour:
         GameAction: {fileID: 2784291058542494111, guid: 8607ab8d067d0434fb7c5d50c5e2a75d,
           type: 3}
         TargetType: 0
-        OnlyHitsFromEffectInstigator: 1
+        OnlyHitsFromEffectInstigator: 0
