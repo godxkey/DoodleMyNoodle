@@ -70,7 +70,7 @@ MonoBehaviour:
   CooldownType: 1
   CooldownDuration: 13
   HideInInventory: 0
-  Icon: {fileID: 21300000, guid: e7130f8f2fe65ed4785699471c18e2e9, type: 3}
+  Icon: {fileID: 21300000, guid: 5a7196aad7b0c9440834ad44ea1a2bf5, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Poison
-  EffectDescription: Empoisonne vos attaques pendant 5s
+  EffectDescription: Empoisonne vos attaques pendant 6s
