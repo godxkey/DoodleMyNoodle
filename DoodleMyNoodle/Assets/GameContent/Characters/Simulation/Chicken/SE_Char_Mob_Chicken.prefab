@@ -23,6 +23,11 @@ PrefabInstance:
       propertyPath: CircleRadius
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: -1374508264804467834, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: MaxValue
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 1983468408252183681, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: m_RootOrder
@@ -144,6 +149,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Radius:
     RawValue: 4294967296
-  Damage: 1
+  Damage: 4
   DestroyTiles: 0
   HasExploded: 0
