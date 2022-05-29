@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngineX;
 using UnityEngine.Serialization;
+using System.Linq;
 
 [DisallowMultipleComponent]
 public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
@@ -30,7 +31,8 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
             tm.CompressBounds();
 
         // find tile map size
-        FindGridMinMax(_grid, tileMaps, out int2 minCoord, out int2 maxCoord);
+        Tilemap[] gameplayTilemaps = tileMaps.Where(t => t.GetComponent<TilemapRenderer>().sortingLayerName == GameConstants.LAYER_GRID_SIMULATION).ToArray();
+        FindGridMinMax(gameplayTilemaps, out int2 minCoord, out int2 maxCoord);
 
         dstManager.AddComponentData(entity, new GridInfo()
         {
@@ -50,38 +52,35 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
         DynamicBuffer<StartingTileActorElement> startingEntities = dstManager.GetBuffer<StartingTileActorElement>(entity);
         DynamicBuffer<StartingTileElement> startingTiles = dstManager.GetBuffer<StartingTileElement>(entity);
 
-        foreach (Tilemap tileMap in tileMaps)
+        foreach (Tilemap tilemap in gameplayTilemaps)
         {
             // VE is already done in grid generator
-            if (tileMap.GetComponent<TilemapRenderer>().sortingLayerName == GameConstants.LAYER_GRID_SIMULATION)
+            for (int y = minCoord.y; y <= maxCoord.y; y++)
             {
-                for (int y = minCoord.y; y <= maxCoord.y; y++)
+                for (int x = minCoord.x; x <= maxCoord.x; x++)
                 {
-                    for (int x = minCoord.x; x <= maxCoord.x; x++)
+                    Vector3 worldPos = new Vector3(x, y, 0);
+                    Vector3Int gridCell = _grid.WorldToCell(worldPos);
+
+                    GameObject simEntityPrefab = _globalGridSettings.GetSimEntityPrefabFromTile(tilemap.GetTile(gridCell));
+
+                    if (simEntityPrefab != null)
                     {
-                        Vector3 worldPos = new Vector3(x, y, 0);
-                        Vector3Int gridCell = _grid.WorldToCell(worldPos);
-
-                        GameObject simEntityPrefab = _globalGridSettings.GetSimEntityPrefabFromTile(tileMap.GetTile(gridCell));
-
-                        if (simEntityPrefab != null)
+                        int2 tilePos = int2((int)worldPos.x, (int)worldPos.y);
+                        if (simEntityPrefab.TryGetComponent(out TileAuth tileActorAuth))
                         {
-                            int2 tilePos = int2((int)worldPos.x, (int)worldPos.y);
-                            if (simEntityPrefab.TryGetComponent(out TileAuth tileActorAuth))
+                            var simAssetId = simEntityPrefab.GetComponent<SimAsset>();
+                            startingTiles.Add(new StartingTileElement()
                             {
-                                var simAssetId = simEntityPrefab.GetComponent<SimAsset>();
-                                startingTiles.Add(new StartingTileElement()
-                                {
-                                    AssetId = simAssetId != null ? simAssetId.GetSimAssetId() : SimAssetId.Invalid,
-                                    Position = tilePos,
-                                    TileFlags = tileActorAuth.GetTileFlags()
-                                });
-                            }
-                            else
-                            {
-                                Entity tileActorPrefab = conversionSystem.GetPrimaryEntity(simEntityPrefab);
-                                startingEntities.Add(new StartingTileActorElement() { Prefab = tileActorPrefab, Position = tilePos });
-                            }
+                                AssetId = simAssetId != null ? simAssetId.GetSimAssetId() : SimAssetId.Invalid,
+                                Position = tilePos,
+                                TileFlags = tileActorAuth.GetTileFlags()
+                            });
+                        }
+                        else
+                        {
+                            Entity tileActorPrefab = conversionSystem.GetPrimaryEntity(simEntityPrefab);
+                            startingEntities.Add(new StartingTileActorElement() { Prefab = tileActorPrefab, Position = tilePos });
                         }
                     }
                 }
@@ -91,7 +90,7 @@ public class LevelGridAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclare
         dstManager.AddComponentData(entity, _prefabSimAsset.GetSimAssetId());
     }
 
-    private static void FindGridMinMax(Grid grid, Tilemap[] tileMaps, out int2 minCoord, out int2 maxCoord)
+    private static void FindGridMinMax(Tilemap[] tileMaps, out int2 minCoord, out int2 maxCoord)
     {
         if (tileMaps.Length > 0)
         {
