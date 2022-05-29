@@ -22,8 +22,7 @@ public class SurveyWorms : SurveyBaseController
     [SerializeField] private float _growSpeed = 5f;
     [SerializeField] private float _strengthVisualScale = 3f;
     [SerializeField] private float _trajectoryLength;
-
-    [SerializeField] private bool _useSpaceInputInsted = false;
+    [SerializeField] private bool _yoyo = true;
 
     private Transform _transform;
     private State _state;
@@ -44,73 +43,37 @@ public class SurveyWorms : SurveyBaseController
     protected override IEnumerator SurveyRoutine(Context context, List<GameAction.ParameterData> result, System.Action complete, System.Action cancel)
     {
         var desc = context.GetQueryParam<GameActionParameterVector.Description>();
-
-        if (_useSpaceInputInsted)
+        // Poll angle
+        _state = State.PollingDirection;
+        while (!Input.GetMouseButtonDown(0))
         {
-            _state = State.PollingStrength;
-            _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
-            _strength = (float)desc.SpeedMin;
-
-            bool _reverseStrength = false;
-            while (Input.GetKey(KeyCode.Space))
-            {
-                _dir = (Cache.PointerWorldPosition - (Vector2)_transform.position).normalized;
-
-                if (_reverseStrength)
-                {
-                    _strength = Mathf.MoveTowards(_strength, (float)desc.SpeedMin, _growSpeed * Time.deltaTime);
-                }
-                else
-                {
-                    _strength = Mathf.MoveTowards(_strength, (float)desc.SpeedMax, _growSpeed * Time.deltaTime);
-                }
-
-                if (_strength >= (float)desc.SpeedMax)
-                    _reverseStrength = true;
-
-                if (_strength <= (float)desc.SpeedMin)
-                    _reverseStrength = false;
-
-                yield return null;
-            }
-
-            _state = State.Released;
-
-            Vector2 resultVector = _dir * _strength;
-
-            result.Add(new GameActionParameterVector.Data((fix2)resultVector));
-            complete();
-            yield break;
+            _dir = (Cache.PointerWorldPosition - (Vector2)_transform.position).normalized;
+            yield return null;
         }
-        else
+
+        _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
+
+        // Poll strength
+        _state = State.PollingStrength;
+        _strength = (float)desc.SpeedMin; // start at minimum
+        bool grow = true;
+        while (Input.GetMouseButton(0))
         {
-            // Poll angle
-            _state = State.PollingDirection;
-            while (!Input.GetMouseButtonDown(0))
+            _strength = Mathf.MoveTowards(_strength, grow ? (float)desc.SpeedMax : (float)desc.SpeedMin, _growSpeed * Time.deltaTime);
+            if (_yoyo && (_strength == (float)desc.SpeedMax || _strength == (float)desc.SpeedMin))
             {
-                _dir = (Cache.PointerWorldPosition - (Vector2)_transform.position).normalized;
-                yield return null;
+                grow = !grow;
             }
-
-            _trajectoryDisplay = TrajectoryDisplaySystem.Instance.CreateTrajectory();
-
-            // Poll strength
-            _state = State.PollingStrength;
-            _strength = (float)desc.SpeedMin; // start at minimum
-            while (Input.GetMouseButton(0))
-            {
-                _strength = Mathf.MoveTowards(_strength, (float)desc.SpeedMax, _growSpeed * Time.deltaTime);
-                yield return null;
-            }
-
-            _state = State.Released;
-
-            Vector2 resultVector = _dir * _strength;
-
-            result.Add(new GameActionParameterVector.Data((fix2)resultVector));
-            complete();
-            yield break;
+            yield return null;
         }
+
+        _state = State.Released;
+
+        Vector2 resultVector = _dir * _strength;
+
+        result.Add(new GameActionParameterVector.Data((fix2)resultVector));
+        complete();
+        yield break;
     }
 
     // Clean up

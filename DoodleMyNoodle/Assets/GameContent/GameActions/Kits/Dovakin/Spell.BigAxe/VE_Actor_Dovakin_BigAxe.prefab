@@ -110,9 +110,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1375336766265012635}
-  - component: {fileID: 697645371569830214}
   m_Layer: 0
-  m_Name: VE_BigAxe
+  m_Name: VE_Actor_Dovakin_BigAxe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133,16 +132,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &697645371569830214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7824342658589397423}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a97d2bbab81584458209371ec5e2701, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _offset: 0
