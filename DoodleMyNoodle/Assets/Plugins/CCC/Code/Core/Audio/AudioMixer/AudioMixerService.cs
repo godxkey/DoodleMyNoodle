@@ -25,4 +25,64 @@ public class AudioMixerService : MonoCoreService<AudioMixerService>
             mixerSaver.Load(() => onComplete(this));
         }
     }
+
+    [ConsoleCommand(Description = "Change Volume of the Music")]
+    static public void SetMusicVolume(float Volume)
+    {
+        if (Instance == null)
+            return;
+
+        Instance.mixerSaver.SetVolume(AudioMixerSaver.ChannelType.Music, Volume);
+        Instance.mixerSaver.Save();
+    }
+
+    [ConsoleCommand(Description = "Toggle Mute Music Volume")]
+    static public void ToggleMuteMusicVolume()
+    {
+        if (Instance == null)
+            return;
+
+        Instance.mixerSaver.SetMuted(AudioMixerSaver.ChannelType.Music, !Instance.mixerSaver.GetMuted(AudioMixerSaver.ChannelType.Music));
+        Instance.mixerSaver.Save();
+    }
+
+    [ConsoleCommand(Description = "Change Volume of the SFX")]
+    static public void SetSFXVolume(float Volume)
+    {
+        if (Instance == null)
+            return;
+
+        Instance.mixerSaver.SetVolume(AudioMixerSaver.ChannelType.Music, Volume);
+        Instance.mixerSaver.Save();
+    }
+
+    [ConsoleCommand(Description = "Toggle Mute SFX Volume")]
+    static public void ToggleMuteSFXVolume()
+    {
+        if (Instance == null)
+            return;
+
+        Instance.mixerSaver.SetMuted(AudioMixerSaver.ChannelType.SFX, !Instance.mixerSaver.GetMuted(AudioMixerSaver.ChannelType.SFX));
+        Instance.mixerSaver.Save();
+    }
+
+    [ConsoleCommand(Description = "Set All Volume (Master)")]
+    static public void SetAllVolume(float Volume)
+    {
+        if (Instance == null)
+            return;
+
+        Instance.mixerSaver.SetVolume(AudioMixerSaver.ChannelType.Master, Volume);
+        Instance.mixerSaver.Save();
+    }
+
+    [ConsoleCommand(Description = "Toggle Mute All Volume (Master)")]
+    static public void ToggleMuteAll()
+    {
+        if (Instance == null)
+            return;
+
+        Instance.mixerSaver.SetMuted(AudioMixerSaver.ChannelType.Master, !Instance.mixerSaver.GetMuted(AudioMixerSaver.ChannelType.Master));
+        Instance.mixerSaver.Save();
+    }
 }
