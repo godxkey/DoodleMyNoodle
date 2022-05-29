@@ -86,11 +86,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 722e71c09a9b4fe4387330ab52d80215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActEvery: 1.11
+  ActEvery: 1.3875
   Action: {fileID: -4801357984810749253, guid: 1b1b30dc5bf1176489d03b5b7c9a2944, type: 3}
   PrepareInAdvance: 0
   Limit: -1
-  IsEnableByDefault: 1
   OnlyAtSpecificDistance: 0
   MinDistanceFromTarget: -10
   MaxDistanceFromTarget: 10

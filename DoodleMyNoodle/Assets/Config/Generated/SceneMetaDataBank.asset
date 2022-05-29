@@ -57,20 +57,20 @@ MonoBehaviour:
     Path: Assets/Scenes/EmptyScene.unity
     BuildIndex: 10
     AssetGuid: 15380d7d3d5178b40abcc7edd37c1d78
-  - Name: Lvl_SideScrollerExemple
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_SideScrollerExemple.unity
+  - Name: 
+    Path: 
     BuildIndex: 11
     AssetGuid: 338675daabe37b244b3e80a4f0d73201
-  - Name: Lvl_Prototype3
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype3.unity
+  - Name: 
+    Path: 
     BuildIndex: 12
     AssetGuid: 01ea5267214d63a479a17157f03d0d1d
   - Name: Gym_Physics
     Path: Assets/Scenes/Levels/Scene Assets/Gym_Physics.unity
     BuildIndex: 13
     AssetGuid: 22c6279033e4e434d8fd305a9fb702f8
-  - Name: Gym_AI
-    Path: Assets/Scenes/Levels/Scene Assets/Gym_AI.unity
+  - Name: 
+    Path: 
     BuildIndex: 14
     AssetGuid: 693976433442b15479d8332069d5cafd
   - Name: Game Content (dynamic)
@@ -89,28 +89,28 @@ MonoBehaviour:
     Path: Assets/Scenes/Levels/Scene Assets/Gym_Surveys.unity
     BuildIndex: 18
     AssetGuid: 21959199b973fbd42853114d789a70ac
-  - Name: Lvl_Prototype4
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype4.unity
+  - Name: 
+    Path: 
     BuildIndex: 19
     AssetGuid: de112d99d442a5342ba101a7fa9d56fa
   - Name: Gym_Fred
     Path: Assets/Scenes/Levels/Scene Assets/Gym_Fred.unity
     BuildIndex: 20
     AssetGuid: 88424a4ab48a6b440a5b18e40e0bf10f
-  - Name: Lvl_Prototype5
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype5.unity
+  - Name: 
+    Path: 
     BuildIndex: 21
     AssetGuid: d8d5c8504c989e643af2e58ff9098d9a
-  - Name: Lvl_Prototype5_Presentation
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype5_Presentation.unity
+  - Name: 
+    Path: 
     BuildIndex: 22
     AssetGuid: 1338c8e3ea4c3d744af67ad7b33f19df
-  - Name: Lvl_Prototype6
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype6.unity
+  - Name: 
+    Path: 
     BuildIndex: 23
     AssetGuid: 9c1fd12f454b0e54ca88cb776f6faf18
-  - Name: Lvl_Prototype6_Presentation
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype6_Presentation.unity
+  - Name: 
+    Path: 
     BuildIndex: 24
     AssetGuid: b4806dce33f859a449e42aa471e072af
   - Name: Lvl_Prototype7
@@ -121,3 +121,11 @@ MonoBehaviour:
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Presentation.unity
     BuildIndex: 26
     AssetGuid: 662c14a2f0f0d834998cd7b34b522100
+  - Name: Lvl_EmptyLevel
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_EmptyLevel.unity
+    BuildIndex: 27
+    AssetGuid: f809e74dcf90b6c4d8a06a0e02344794
+  - Name: Lvl_EmptyLevel_Presentation
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_EmptyLevel_Presentation.unity
+    BuildIndex: 28
+    AssetGuid: b9129e627c423e64f8efe8264d33170e
