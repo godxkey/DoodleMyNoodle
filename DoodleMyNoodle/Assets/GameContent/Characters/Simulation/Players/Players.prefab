@@ -98,10 +98,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Proxy: {fileID: 0}
-  MaxValue: 10
+  MaxValue: 40
   StartAtMax: 1
   DestroyOnDeath: 0
-  RechargeRate: 1
+  RechargeRate: 0
   RechargeCooldown: 1
   StartValue: 10
   TerrainOnlyColliderIfDead: 1
