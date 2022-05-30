@@ -17,7 +17,8 @@ public class ItemAuthEditor : Editor
 
     private SerializedProperty _cooldownProp;
     private SerializedProperty _cooldownDurationProp;
-    private SerializedProperty _stackableProp;
+    private SerializedProperty _hasCharges;
+    private SerializedProperty _chargeCount;
     private SerializedProperty _apCostProp;
     private SerializedProperty _iconProp;
     private SerializedProperty _iconTintProp;
@@ -30,7 +31,8 @@ public class ItemAuthEditor : Editor
     {
         _cooldownProp = serializedObject.FindProperty(nameof(ItemAuth.CooldownType));
         _cooldownDurationProp = serializedObject.FindProperty(nameof(ItemAuth.CooldownDuration));
-        _stackableProp = serializedObject.FindProperty(nameof(ItemAuth.IsStackable));
+        _hasCharges = serializedObject.FindProperty(nameof(ItemAuth.HasCharges));
+        _chargeCount = serializedObject.FindProperty(nameof(ItemAuth.ChargeCount));
         _apCostProp = serializedObject.FindProperty(nameof(ItemAuth.ApCost));
         _iconProp = serializedObject.FindProperty(nameof(ItemAuth.Icon));
         _iconTintProp = serializedObject.FindProperty(nameof(ItemAuth.IconTint));
@@ -55,7 +57,9 @@ public class ItemAuthEditor : Editor
         EditorGUILayout.PropertyField(_cooldownProp);
         if (castedTarget.HasCooldown)
             EditorGUILayout.PropertyField(_cooldownDurationProp);
-        EditorGUILayout.PropertyField(_stackableProp);
+        EditorGUILayout.PropertyField(_hasCharges);
+        if (_hasCharges.boolValue)
+            EditorGUILayout.PropertyField(_chargeCount);
 
         DrawLine(10);
 

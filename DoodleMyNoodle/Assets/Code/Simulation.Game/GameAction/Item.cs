@@ -6,7 +6,50 @@ public enum ItemUnavailablityReason
     None,
     NotEnoughtAP,
     InCooldown,
-    NoAction
+    NoAction,
+    NoChargesLeft,
+}
+
+public struct ItemTag : IComponentData
+{
+}
+
+public struct ItemSettingAPCost : IComponentData, IStatInt
+{
+    public int Value;
+
+    int IStatInt.Value { get => Value; set => Value = value; }
+}
+
+public struct ItemTimeCooldownData : IComponentData, IStatFix
+{
+    public fix Value;
+
+    fix IStatFix.Value { get => Value; set => Value = value; }
+}
+
+public struct ItemCooldownTimeCounter : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(ItemCooldownTimeCounter val) => val.Value;
+    public static implicit operator ItemCooldownTimeCounter(fix val) => new ItemCooldownTimeCounter() { Value = val };
+}
+
+public struct ItemAction : IComponentData
+{
+    public Entity Value;
+
+    public static implicit operator Entity(ItemAction val) => val.Value;
+    public static implicit operator ItemAction(Entity val) => new ItemAction() { Value = val };
+}
+
+public struct ItemCharges : IComponentData
+{
+    public int Value;
+
+    public static implicit operator int(ItemCharges val) => val.Value;
+    public static implicit operator ItemCharges(int val) => new ItemCharges() { Value = val };
 }
 
 public partial class CommonReads
@@ -18,6 +61,12 @@ public partial class CommonReads
 
     public static bool CanUseItem(ISimWorldReadAccessor accessor, Entity actor, Entity item, out ItemUnavailablityReason debugReason)
     {
+        if (accessor.TryGetComponent(item, out ItemCharges charges) && charges == 0)
+        {
+            debugReason = ItemUnavailablityReason.NoChargesLeft;
+            return false;
+        }
+
         int apCost = 0;
         if (accessor.TryGetComponent(item, out ItemSettingAPCost apCostComponent))
         {
@@ -96,6 +145,13 @@ internal partial class CommonWrites
         if (accessor.TryGetComponent(item, out ItemTimeCooldownData itemTimeCooldownData))
         {
             accessor.SetOrAddComponent(item, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
+        }
+
+        // reduce charges
+        if (accessor.TryGetComponent(item, out ItemCharges charges))
+        {
+            charges.Value--;
+            accessor.SetComponent(item, charges);
         }
 
         return true;

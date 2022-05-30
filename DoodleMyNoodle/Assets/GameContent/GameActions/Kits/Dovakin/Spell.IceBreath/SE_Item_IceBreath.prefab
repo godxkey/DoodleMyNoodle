@@ -66,7 +66,8 @@ MonoBehaviour:
   ActionPrefab: {fileID: -4801357984810749253, guid: 0142fb56fb858754588a2e60872bf4c3,
     type: 3}
   ApCost: 4
-  IsStackable: 0
+  HasCharges: 1
+  ChargeCount: 5
   CooldownType: 1
   CooldownDuration: 6
   HideInInventory: 0

@@ -66,7 +66,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionPrefab: {fileID: 0}
   ApCost: 0
-  IsStackable: 0
+  HasCharges: 0
+  ChargeCount: 10
   CooldownType: 2
   CooldownDuration: 1
   HideInInventory: 0

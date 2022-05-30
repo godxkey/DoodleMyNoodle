@@ -14,6 +14,6 @@ public class PawnControllerInputClickSignalEmitter : PawnControllerInputBase
 
     public override string ToString()
     {
-        return $"PawnControllerInputUseItem(pawnControlled: {PawnController}, emitterPosition: {Emitter})";
+        return $"PawnControllerInputClickSignalEmitter(pawnControlled: {PawnController}, emitterPosition: {Emitter})";
     }
 }

@@ -86,9 +86,14 @@ public class InteractableInventoryDisplaySystem : GamePresentationSystem<Interac
                         SimWorld.SubmitInput(simInputEquipItem);
                     };
 
-                    int stacks = _itemData[i].stack;
-                    if (stacks == 1 && !SimWorld.GetComponent<StackableFlag>(item))
-                        stacks = -1;
+                    // fbessette: rework stacks into charges. Stacks could be removed
+                    //int stacks = _itemData[i].stack;
+                    //if (stacks == 1 && !SimWorld.GetComponent<StackableFlag>(item))
+                    //    stacks = -1;
+
+                    int stacks = -1;
+                    if (SimWorld.TryGetComponent<ItemCharges>(item, out var itemCharges))
+                        stacks = itemCharges;
 
                     _currentItemSlots[i].UpdateCurrentItemSlot(itemAuth, onClick, null, _lastInventoryEntity, stacks);
                 }

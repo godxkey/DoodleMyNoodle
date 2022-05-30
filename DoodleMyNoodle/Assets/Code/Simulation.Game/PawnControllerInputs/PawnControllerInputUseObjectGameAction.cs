@@ -14,6 +14,6 @@ public class PawnControllerInputUseObjectGameAction : PawnControllerInputBase
 
     public override string ToString()
     {
-        return $"PawnControllerInputUseItem(pawnControlled: {PawnController}, objectPosition: {ObjectPosition})";
+        return $"PawnControllerInputUseObjectGameAction(pawnControlled: {PawnController}, objectPosition: {ObjectPosition})";
     }
 }

@@ -19,7 +19,8 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
 
     public int ApCost = 1;
 
-    public bool IsStackable = true;
+    public bool HasCharges = true;
+    public int ChargeCount = 10;
 
     public enum CooldownMode
     {
@@ -44,7 +45,9 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
         }
 
         dstManager.AddComponentData(entity, new ItemSettingAPCost() { Value = ApCost });
-        dstManager.AddComponentData(entity, new StackableFlag() { Value = IsStackable });
+        dstManager.AddComponentData(entity, new StackableFlag() { Value = false });
+        if (HasCharges)
+            dstManager.AddComponentData(entity, new ItemCharges() { Value = ChargeCount });
         dstManager.AddComponent<FirstInstigator>(entity);
         dstManager.AddComponent<ItemTag>(entity);
     }

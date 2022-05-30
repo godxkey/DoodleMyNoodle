@@ -24,7 +24,7 @@ public class UpdateItemCooldownSystem : SimGameSystemBase
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         var deltaTime = Time.DeltaTime;
 
-        if (HasSingleton<NoCooldownTag>())
+        if (HasSingleton<NoCooldownSingletonTag>())
         {
             EntityManager.RemoveComponent(_entitiesWithCooldown, new ComponentTypes(typeof(ItemCooldownTimeCounter)));
         }

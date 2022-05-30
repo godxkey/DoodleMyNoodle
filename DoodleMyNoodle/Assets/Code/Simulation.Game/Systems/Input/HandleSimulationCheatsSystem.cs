@@ -211,14 +211,14 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
 
             case SimInputCheatRemoveAllCooldowns _:
             {
-                if (HasSingleton<NoCooldownTag>())
+                if (HasSingleton<NoCooldownSingletonTag>())
                 {
-                    EntityManager.DestroyEntity(GetSingletonEntity<NoCooldownTag>());
+                    EntityManager.DestroyEntity(GetSingletonEntity<NoCooldownSingletonTag>());
                 }
                 else
                 {
                     Entity entity = EntityManager.CreateEntity();
-                    EntityManager.AddComponentData(entity, new NoCooldownTag());
+                    EntityManager.AddComponentData(entity, new NoCooldownSingletonTag());
                 }
 
                 break;

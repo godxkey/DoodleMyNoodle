@@ -67,7 +67,8 @@ MonoBehaviour:
   ActionPrefab: {fileID: -4801357984810749253, guid: e818cde09d1d99c4182f5dea6ec2d1f3,
     type: 3}
   ApCost: 3
-  IsStackable: 0
+  HasCharges: 1
+  ChargeCount: 1
   CooldownType: 1
   CooldownDuration: 9999
   HideInInventory: 0
@@ -92,7 +93,6 @@ MonoBehaviour:
   Action: {fileID: -4801357984810749253, guid: 4f5818dcf260b424c80220e3e9ba789e, type: 3}
   PrepareInAdvance: 0
   Limit: 0
-  IsEnableByDefault: 1
   OnlyAtSpecificDistance: 0
   MinDistanceFromTarget: -10
   MaxDistanceFromTarget: 10

@@ -1248,6 +1248,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI_APEnergyBar
       objectReference: {fileID: 0}
+    - target: {fileID: 3059093700623319388, guid: b21419a03d265b646aef4da735f4e83a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3116546402241359199, guid: b21419a03d265b646aef4da735f4e83a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1326,12 +1331,12 @@ PrefabInstance:
     - target: {fileID: 8726685513801981076, guid: b21419a03d265b646aef4da735f4e83a,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 8726685513801981076, guid: b21419a03d265b646aef4da735f4e83a,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b21419a03d265b646aef4da735f4e83a, type: 3}

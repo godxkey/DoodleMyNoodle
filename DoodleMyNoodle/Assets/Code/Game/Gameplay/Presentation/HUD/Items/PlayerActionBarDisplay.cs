@@ -102,17 +102,28 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                 if (i < displayedInventory.Count)
                 {
                     Entity item = displayedInventory[i].ItemRef.ItemEntity;
-                    int stacks = displayedInventory[i].ItemRef.Stacks;
+                    //int stacks = displayedInventory[i].ItemRef.Stacks;
 
-                    if (stacks == 1 && !SimWorld.GetComponent<StackableFlag>(item))
-                        stacks = -1; // used in display to hide stacks
+                    //if (stacks == 1 && !SimWorld.GetComponent<StackableFlag>(item))
+                    //    stacks = -1; // used in display to hide stacks
+
+
+                    // fbessette: rework stacks into charges. Stacks could be removed
+                    //int stacks = _itemData[i].stack;
+                    //if (stacks == 1 && !SimWorld.GetComponent<StackableFlag>(item))
+                    //    stacks = -1;
+
+                    int charges = -1;
+                    if (SimWorld.TryGetComponent<ItemCharges>(item, out var itemCharges))
+                        charges = itemCharges;
+
 
                     _slotVisuals[i].UpdateCurrentInventorySlot(displayedInventory[i].ItemAuth,
                                                                displayedInventory[i].Index,
                                                                GetSlotShotcut(i),
                                                                OnIntentionToUsePrimaryActionOnItem,
                                                                OnIntentionToUseSecondaryActionOnItem,
-                                                               stacks);
+                                                               stacks: charges);
 
                     if (!CommonReads.CanUseItem(SimWorld, Cache.LocalPawn, item))
                     {
