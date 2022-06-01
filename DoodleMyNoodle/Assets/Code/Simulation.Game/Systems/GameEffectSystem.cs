@@ -98,6 +98,8 @@ public class GameEffectSystem : SimGameSystemBase
             // ça fait du dots, ça devrait checker mon 'bonus-fire-damage' ?
             EntityManager.AddComponentData(newEffect, new FirstInstigator() { Value = addRequest.Target });
 
+            // Tracking the spell that triggered this whole chain
+            EntityManager.AddComponentData(newEffect, new SpellInstigator() { Value = addRequest.Instigator.LastSpellInstigator });
 
             // _________________________________________ Add to owner _________________________________________ //
             DynamicBuffer<GameEffectBufferElement> effects = EntityManager.GetBuffer<GameEffectBufferElement>(addRequest.Target);

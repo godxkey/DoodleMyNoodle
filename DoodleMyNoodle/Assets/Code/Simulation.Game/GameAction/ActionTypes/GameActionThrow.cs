@@ -133,6 +133,11 @@ public struct InstigatorSet
     public Entity LastPhysicalInstigator;
 
     /// <summary>
+    /// Can be an item/spell.
+    /// </summary>
+    public Entity LastSpellInstigator;
+
+    /// <summary>
     /// Can be a character, a projectile, an item or an effect.
     /// </summary>
     public Entity LastInstigator;
@@ -293,6 +298,7 @@ internal partial class CommonWrites
             accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(itemThrowVelocity + instigatorVel));
             accessor.SetOrAddComponent(projectileInstance, new FixTranslation(spawnPos));
             accessor.SetOrAddComponent(projectileInstance, new FirstInstigator() { Value = instigatorSet.FirstPhysicalInstigator });
+            accessor.SetOrAddComponent(projectileInstance, new SpellInstigator() { Value = instigatorSet.LastSpellInstigator });
 
             if (quantity > 1)
             {

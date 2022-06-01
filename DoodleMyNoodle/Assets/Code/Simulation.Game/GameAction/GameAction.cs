@@ -33,6 +33,18 @@ public partial class CommonReads
             lastPhysicalInstigator = actionInstigator;
         }
 
+        Entity spellInstigator = actionInstigator;
+        // instigator has saved the spell from previous iteration
+        if (accessor.TryGetComponent(actionInstigator, out SpellInstigator spellInstigatorComponent))
+        {
+            spellInstigator = spellInstigatorComponent.Value;
+        }
+        // probably the spell itself
+        else if(accessor.TryGetComponent(actionEntity, out SpellInstigator spellFirstInstigatorComponent))
+        {
+            spellInstigator = spellFirstInstigatorComponent.Value;
+        }
+
         // adjust target if action specifies so
         if (accessor.TryGetComponent(actionEntity, out GameActionSettingUseInstigatorAsTarget gameActionSettingOnSelf))
         {
@@ -63,6 +75,7 @@ public partial class CommonReads
             {
                 FirstPhysicalInstigator = firstPhysicalInstigator,
                 LastPhysicalInstigator = lastPhysicalInstigator,
+                LastSpellInstigator = spellInstigator, 
                 LastInstigator = actionInstigator,
             },
             Targets = targets,

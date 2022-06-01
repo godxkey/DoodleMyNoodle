@@ -69,6 +69,7 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
 
         input.Accessor.SetOrAddComponent(instance, new FixTranslation(spawnPosition));
         input.Accessor.SetOrAddComponent(instance, new FirstInstigator() { Value = input.Context.FirstPhysicalInstigator });
+        input.Accessor.SetOrAddComponent(instance, new SpellInstigator() { Value = input.Context.InstigatorSet.LastSpellInstigator });
 
         return true;
     }

@@ -61,4 +61,33 @@ public partial class CommonReads
         itemIndex = -1;
         return Entity.Null;
     }
+
+    public static int FindItemIndex(ISimWorldReadAccessor accessor, Entity pawn, Entity itemEntity)
+    {
+        if (accessor.TryGetBufferReadOnly(pawn, out DynamicBuffer<InventoryItemReference> inventory))
+        {
+            for (int i = 0; i < inventory.Length; i++)
+            {
+                if (inventory[i].ItemEntity == itemEntity)
+                {
+                    return i;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    public static Entity FindItemByIndex(ISimWorldReadAccessor accessor, Entity pawn, int itemIndex)
+    {
+        if (accessor.TryGetBufferReadOnly(pawn, out DynamicBuffer<InventoryItemReference> inventory))
+        {
+            if (itemIndex >= 0 && itemIndex <= inventory.Length - 1)
+            {
+                return inventory[itemIndex].ItemEntity;
+            }
+        }
+
+        return Entity.Null;
+    }
 }
