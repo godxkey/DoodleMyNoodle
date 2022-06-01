@@ -133,7 +133,7 @@ PrefabInstance:
     - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: ActEvery
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
@@ -144,7 +144,7 @@ PrefabInstance:
     - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: PrepareInAdvance
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5635049573386359071, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}

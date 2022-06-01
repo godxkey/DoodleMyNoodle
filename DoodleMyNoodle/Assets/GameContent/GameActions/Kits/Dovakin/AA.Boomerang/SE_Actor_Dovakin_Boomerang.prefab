@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Lifetime:
-    RawValue: 8589934592
+    RawValue: 6012954112
 --- !u!114 &2302789254329102844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,6 +111,7 @@ MonoBehaviour:
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 0.2
+    GeneralCooldown: 0
     ContactMode: 0
     OverlapLayerMask:
       serializedVersion: 2
@@ -128,5 +129,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 125532fec11dc494fa8688abccce7e57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LifeTime: 1
+  LifeTime: 0.7
   VelocityMultipler: {x: -1, y: 0}

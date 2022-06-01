@@ -241,4 +241,13 @@ public static class SimulationCheats
             PlayerId = localPlayerInfo.SimPlayerId,
         });
     }
+
+    [ConsoleCommand(Description = "Enable or disable the ability for player characters to auto-attack.", EnableGroup = GLOBAL_GROUP)]
+    public static void CheatMultiplyModHP(float multiplier)
+    {
+        PresentationHelpers.SubmitInput(new SimInputCheatMultiplyMobHP()
+        {
+            Multiplier = (fix)multiplier
+        });
+    }
 }

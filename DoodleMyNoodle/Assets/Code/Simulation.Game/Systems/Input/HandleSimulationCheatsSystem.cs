@@ -74,6 +74,12 @@ public class SimInputCheatPossessPawn : SimCheatInput
     public int PawnIndex;
 }
 
+[NetSerializable]
+public class SimInputCheatMultiplyMobHP : SimCheatInput
+{
+    public fix Multiplier;
+}
+
 public struct CheatsAllItemElement : IBufferElementData
 {
     public Entity ItemPrefab;
@@ -326,6 +332,25 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                         SetComponent<ControlledEntity>(player, newPawn);
                     }
                 }
+                break;
+            }
+
+
+            case SimInputCheatMultiplyMobHP multiplyMobHP:
+            {
+                var multiplier = multiplyMobHP.Multiplier;
+                Entities
+                    .WithNone<Controllable>()
+                    .ForEach((Entity entity, ref Health hp) =>
+                {
+                    hp.Value *= multiplier;
+                    if (HasComponent<MaximumFix<Health>>(entity))
+                    {
+                        var maxHP = GetComponent<MaximumFix<Health>>(entity);
+                        maxHP.Value *= multiplier;
+                        SetComponent(entity, maxHP);
+                    }
+                }).Run();
                 break;
             }
         }
