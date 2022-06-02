@@ -69,9 +69,9 @@ MonoBehaviour:
   HasCharges: 1
   ChargeCount: 6
   CooldownType: 1
-  CooldownDuration: 1
+  CooldownDuration: 0
   HideInInventory: 0
   Icon: {fileID: 21300000, guid: 1abf0ef6bcd6f4d33852c878c3400bc4, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Grosse foudre
-  EffectDescription: La foudre tombe du ciel
+  EffectDescription: "La foudre tombe du ciel et fait d'\xE9norme d\xE9gats"

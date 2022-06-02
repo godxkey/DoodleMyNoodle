@@ -69,9 +69,10 @@ MonoBehaviour:
   HasCharges: 1
   ChargeCount: 1
   CooldownType: 1
-  CooldownDuration: 9999
+  CooldownDuration: 0
   HideInInventory: 0
   Icon: {fileID: 21300000, guid: 6b9b7b5c50d576d43a664233a135f4b1, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: Meteor
-  EffectDescription: "Lance un gigantesque met\xE9orite qui explosera"
+  EffectDescription: "Lance un gigantesque met\xE9orite qui frappera tout se qui
+    se trouve au sol"

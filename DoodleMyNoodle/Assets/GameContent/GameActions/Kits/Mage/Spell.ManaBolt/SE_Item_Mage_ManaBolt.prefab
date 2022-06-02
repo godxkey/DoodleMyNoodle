@@ -69,10 +69,10 @@ MonoBehaviour:
   HasCharges: 1
   ChargeCount: 4
   CooldownType: 1
-  CooldownDuration: 10
+  CooldownDuration: 0
   HideInInventory: 0
   Icon: {fileID: 21300000, guid: c13edc17957eedd44b9e327b2886669b, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
   Name: "Boule d'\xE9nergie"
-  EffectDescription: "Lance une boule d'\xE9nergie qui frappe les ennemies. Si ceux
-    ci sont tu\xE9s dans les 3s suivante, ils vous redonnent de l'\xE9nergie."
+  EffectDescription: "Lance une boule d'\xE9nergie qui frappe les ennemies. S'ils
+    sont tu\xE9s, donne 1 charge \xE0 l'item \xE0 gauche"
