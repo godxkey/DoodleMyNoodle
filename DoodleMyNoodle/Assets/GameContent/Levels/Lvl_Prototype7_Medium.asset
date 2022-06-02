@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2248c5c1e510c02428dad4c771e3fc53, type: 3}
-  m_Name: Lvl_Prototype7
+  m_Name: Lvl_Prototype7_Medium
   m_EditorClassIdentifier: 
   SimulationScenes:
-  - {fileID: 11400000, guid: 05131e120b42b7042b6bbb5e421e26da, type: 2}
+  - {fileID: 11400000, guid: 4baf8c1e998e55c44a252642ee712599, type: 2}
   PresentationScenes:
-  - {fileID: 11400000, guid: 813c197b4c4501a439bf9e2d110e8213, type: 2}
+  - {fileID: 11400000, guid: 8f13666e4423a2544836c6d264e12fb3, type: 2}

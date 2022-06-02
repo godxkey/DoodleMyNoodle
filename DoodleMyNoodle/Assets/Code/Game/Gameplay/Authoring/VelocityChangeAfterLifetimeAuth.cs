@@ -11,6 +11,12 @@ public class VelocityChangeAfterLifetimeAuth : MonoBehaviour, IConvertGameObject
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new VelocityChangeAfterLifeTime() { LifeTimeToTrigger = (fix)LifeTime, VelocityMultiplier = VelocityMultipler.ToFixVec(), Applied = false });
+        dstManager.AddComponentData(entity, new VelocityChangeAfterLifeTime()
+        {
+            LifeTimeToTrigger = (fix)LifeTime,
+            VelocityMultiplier = VelocityMultipler.ToFixVec(),
+            Applied = false
+        });
+        dstManager.AddComponentData(entity, new Lifetime());
     }
 }

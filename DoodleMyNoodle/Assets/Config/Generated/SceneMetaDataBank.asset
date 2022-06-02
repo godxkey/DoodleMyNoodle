@@ -113,12 +113,12 @@ MonoBehaviour:
     Path: 
     BuildIndex: 24
     AssetGuid: b4806dce33f859a449e42aa471e072af
-  - Name: Lvl_Prototype7
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7.unity
+  - Name: Lvl_Prototype7_Easy
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Easy.unity
     BuildIndex: 25
     AssetGuid: d827cac612b8a4a4e9c0a8663f80eda3
-  - Name: Lvl_Prototype7_Presentation
-    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Presentation.unity
+  - Name: Lvl_Prototype7_Easy_Presentation
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Easy_Presentation.unity
     BuildIndex: 26
     AssetGuid: 662c14a2f0f0d834998cd7b34b522100
   - Name: Lvl_EmptyLevel
@@ -129,3 +129,19 @@ MonoBehaviour:
     Path: Assets/Scenes/Levels/Scene Assets/Lvl_EmptyLevel_Presentation.unity
     BuildIndex: 28
     AssetGuid: b9129e627c423e64f8efe8264d33170e
+  - Name: Lvl_Prototype7_Medium
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Medium.unity
+    BuildIndex: 29
+    AssetGuid: c7d285f3a8a65da47be43e247c004568
+  - Name: Lvl_Prototype7_Medium_Presentation
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Medium_Presentation.unity
+    BuildIndex: 30
+    AssetGuid: 9478ccbd32bf23440b28985a925252c2
+  - Name: Lvl_Prototype7_Hard
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Hard.unity
+    BuildIndex: 31
+    AssetGuid: e3e26752fc210f64dad7b5f1a3a88e27
+  - Name: Lvl_Prototype7_Hard_Presentation
+    Path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Hard_Presentation.unity
+    BuildIndex: 32
+    AssetGuid: e412f4896245a6c41a69c79ded9e3fad

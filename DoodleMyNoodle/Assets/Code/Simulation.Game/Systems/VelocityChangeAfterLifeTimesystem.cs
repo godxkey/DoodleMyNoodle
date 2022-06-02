@@ -13,9 +13,9 @@ public class VelocityChangeAfterLifeTimeSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
-        Entities.ForEach((Entity instigator, ref PhysicsVelocity velocity, ref VelocityChangeAfterLifeTime velocityChangeAfterLifeTime, in RemainingLifetime lifetime) =>
+        Entities.ForEach((Entity instigator, ref PhysicsVelocity velocity, ref VelocityChangeAfterLifeTime velocityChangeAfterLifeTime, in Lifetime lifetime) =>
         {
-            if (!velocityChangeAfterLifeTime.Applied && lifetime.Value <= velocityChangeAfterLifeTime.LifeTimeToTrigger)
+            if (!velocityChangeAfterLifeTime.Applied && lifetime.Value >= velocityChangeAfterLifeTime.LifeTimeToTrigger)
             {
                 velocity.Linear *= velocityChangeAfterLifeTime.VelocityMultiplier;
                 velocityChangeAfterLifeTime.Applied = true;
