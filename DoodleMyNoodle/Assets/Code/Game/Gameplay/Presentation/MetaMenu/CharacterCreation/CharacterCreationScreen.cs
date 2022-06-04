@@ -83,14 +83,14 @@ public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationS
             if (!s_consoleSkipCharacterCreation)
             {
                 // record pawn name for future use
-                PromptDisplay.Instance.AskString("Enter your character name here :", (string characterName) =>
-                {
-                    // Set name
-                    SimPlayerInputSetPawnName startNameInput = new SimPlayerInputSetPawnName(characterName);
-                    SimWorld.SubmitInput(startNameInput);
+                //PromptDisplay.Instance.AskString("Enter your character name here :", (string characterName) =>
+                //{
+                //    // Set name
+                //    SimPlayerInputSetPawnName startNameInput = new SimPlayerInputSetPawnName(characterName);
+                //    SimWorld.SubmitInput(startNameInput);
 
-                    _settingsApplied = false;
-                });
+                //    _settingsApplied = false;
+                //});
             }
         }
     }
