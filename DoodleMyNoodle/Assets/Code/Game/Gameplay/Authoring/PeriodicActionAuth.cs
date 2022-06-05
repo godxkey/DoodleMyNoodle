@@ -36,6 +36,7 @@ public class PeriodicActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDe
         dstManager.AddComponentData<PeriodicActionEnabled>(entity, false);
         dstManager.AddComponentData<ProgressPeriodicActionInAdvance>(entity, PrepareInAdvance);
         dstManager.AddComponentData<RemainingPeriodicActionCount>(entity, Limit);
+        dstManager.AddComponentData<PeriodicActionCount>(entity, Limit);
         dstManager.AddComponentData<PeriodicAction>(entity, Action != null ? conversionSystem.GetPrimaryEntity(Action.gameObject) : default);
         dstManager.AddComponentData<PeriodicActionRange>(entity, OnlyAtSpecificDistance ? new FixRange((fix)MinDistanceFromTarget, (fix)MaxDistanceFromTarget) : FixRange.Infinite);
     }

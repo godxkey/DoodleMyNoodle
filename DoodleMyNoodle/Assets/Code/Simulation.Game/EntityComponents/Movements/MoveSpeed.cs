@@ -31,3 +31,5 @@ public struct DesiredRangeFromTarget : IComponentData
     public static implicit operator FixRange(DesiredRangeFromTarget val) => val.Value;
     public static implicit operator DesiredRangeFromTarget(FixRange val) => new DesiredRangeFromTarget() { Value = val };
 }
+
+public struct KeepWalkingAfterPeriodicAction : IComponentData { }
