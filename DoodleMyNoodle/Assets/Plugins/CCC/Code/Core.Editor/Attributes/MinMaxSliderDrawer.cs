@@ -20,12 +20,12 @@ namespace CCC.InspectorDisplay
 
             MinMaxSliderAttribute attr = attribute as MinMaxSliderAttribute;
 
-            const float dataWidth = 40;
-            const float spacing = 5;
+            const float DATA_WIDTH = 40;
+            const float SPACING = 5;
+
             Rect leftHandSide = position;
-            leftHandSide.max = leftHandSide.max - Vector2.right * (dataWidth * 2 + spacing * 2);
-            Rect minRegion = new Rect(leftHandSide.xMax + spacing - 30, leftHandSide.y, dataWidth + 30, leftHandSide.height);
-            Rect maxRegion = new Rect(minRegion.xMax + spacing - 30, leftHandSide.y, dataWidth + 30, leftHandSide.height);
+            if (attr.DisplayValues)
+                leftHandSide.max = leftHandSide.max - Vector2.right * (DATA_WIDTH * 2 + SPACING * 2);
 
             float min = 0;
             float max = 0;
@@ -61,8 +61,14 @@ namespace CCC.InspectorDisplay
 
             EditorGUI.BeginChangeCheck();
 
-            min = EditorGUI.FloatField(minRegion, GUIContent.none, min);
-            max = EditorGUI.FloatField(maxRegion, GUIContent.none, max);
+            if (attr.DisplayValues)
+            {
+                Rect minRegion = new Rect(leftHandSide.xMax + SPACING - 30, leftHandSide.y, DATA_WIDTH + 30, leftHandSide.height);
+                Rect maxRegion = new Rect(minRegion.xMax + SPACING - 30, leftHandSide.y, DATA_WIDTH + 30, leftHandSide.height);
+                min = EditorGUI.FloatField(minRegion, GUIContent.none, min);
+                max = EditorGUI.FloatField(maxRegion, GUIContent.none, max);
+            }
+
             if (EditorGUI.EndChangeCheck())
             {
                 if (property.propertyType == SerializedPropertyType.Vector2)

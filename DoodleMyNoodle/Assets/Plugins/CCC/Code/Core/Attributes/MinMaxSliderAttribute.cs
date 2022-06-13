@@ -7,11 +7,13 @@ namespace CCC.InspectorDisplay
     {
         public readonly float Max;
         public readonly float Min;
+        public readonly bool DisplayValues;
 
-        public MinMaxSliderAttribute(float min, float max)
+        public MinMaxSliderAttribute(float min, float max, bool displayValues = true)
         {
             this.Min = min;
             this.Max = max;
+            DisplayValues = displayValues;
         }
     }
 }
