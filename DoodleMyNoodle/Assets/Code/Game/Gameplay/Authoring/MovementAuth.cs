@@ -21,6 +21,7 @@ public class MovementAuth : MonoBehaviour, IConvertGameObjectToEntity
     [ShowIf(nameof(StopAtCertainDistance))]
     [FormerlySerializedAs("DistanceFromFrontTarget")]
     public float DistanceFromFrontTargetMax = 1;
+    public bool KeepWalkingAfterPeriodicAction = false;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -49,6 +50,9 @@ public class MovementAuth : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponent<OffsetFromTarget>(entity);
         dstManager.AddComponentData<DesiredRangeFromTarget>(entity,
             StopAtCertainDistance ? new FixRange((fix)DistanceFromFrontTargetMin, (fix)DistanceFromFrontTargetMax) : FixRange.Invalid);
+
+        if (KeepWalkingAfterPeriodicAction)
+            dstManager.AddComponent<KeepWalkingAfterPeriodicAction>(entity);
 
         //// add ungrounded collider
         //if (dstManager.TryGetComponent(entity, out PhysicsColliderBlob colliderBlob))

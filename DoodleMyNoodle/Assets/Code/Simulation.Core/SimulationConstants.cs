@@ -32,4 +32,7 @@ public static class SimulationConstants
     // The longest realistic interval between two packets. 
     // Beyond that, we consider it a server lag spike and cap the interval to prevent over-adjustment of the buffer duration.
     public static readonly double CLIENT_SIM_TICK_QUEUE_DURATION_MAX_CONSIDERED_INTERVAL = 0.4d;
+
+    public static readonly fix OUT_OF_BOUNDS_LEFT_DISTANCE_FROM_PLAYERGROUP = 5;
+    public static readonly fix OUT_OF_BOUNDS_RIGHT_DISTANCE_FROM_PLAYERGROUP = 15;
 }

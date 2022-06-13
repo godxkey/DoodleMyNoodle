@@ -13,6 +13,14 @@ public struct PeriodicActionRate : IComponentData
     public static implicit operator PeriodicActionRate(fix val) => new PeriodicActionRate() { Value = val };
 }
 
+public struct PeriodicActionCount : IComponentData
+{
+    public int Value;
+
+    public static implicit operator int(PeriodicActionCount val) => val.Value;
+    public static implicit operator PeriodicActionCount(int val) => new PeriodicActionCount() { Value = val };
+}
+
 public struct RemainingPeriodicActionCount : IComponentData
 {
     public int Value;
