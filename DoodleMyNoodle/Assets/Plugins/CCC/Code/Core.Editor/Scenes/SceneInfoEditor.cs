@@ -6,11 +6,13 @@ using UnityEngine;
 [CustomEditor(typeof(SceneInfo))]
 public class SceneInfoEditor : Editor
 {
-    public SceneInfo targetSceneInfo;
+    private SceneInfo TargetSceneInfo => target as SceneInfo;
 
-    private void OnEnable()
+    private enum BuildState
     {
-        targetSceneInfo = target as SceneInfo;
+        NotInBuild,
+        DisabledInBuild,
+        EnabledInBuild
     }
 
     private static void AddToBuild(string assetPath)
@@ -77,9 +79,9 @@ public class SceneInfoEditor : Editor
     /// <summary>
     ///  -1 -> not in build   0 -> disabled in build   2 -> enabled in build
     /// </summary>
-    private int GetBuildState(out string assetPath, out int indexInBuild)
+    private BuildState GetBuildState(out string assetPath, out int indexInBuild)
     {
-        SceneAsset sceneAsset = targetSceneInfo.Editor_GetScene();
+        SceneAsset sceneAsset = TargetSceneInfo.Editor_GetScene();
         assetPath = AssetDatabase.GetAssetOrScenePath(sceneAsset);
         EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
         for (int i = 0; i < scenes.Length; i++)
@@ -88,20 +90,20 @@ public class SceneInfoEditor : Editor
             {
                 indexInBuild = i;
                 if (scenes[i].enabled)
-                    return 1;
+                    return BuildState.EnabledInBuild;
                 else
-                    return 0;
+                    return BuildState.DisabledInBuild;
             }
         }
 
         indexInBuild = -1;
-        return -1;
+        return BuildState.NotInBuild;
     }
 
     public override void OnInspectorGUI()
     {
         Color guiColor = GUI.color;
-        SceneAsset sceneAsset = targetSceneInfo.Editor_GetScene();
+        SceneAsset sceneAsset = TargetSceneInfo.Editor_GetScene();
 
         if (sceneAsset != null)
         {
@@ -109,9 +111,9 @@ public class SceneInfoEditor : Editor
             int indexInBuild;
 
             // -1 -> not in build   0 -> disabled in build   2 -> enabled in build
-            int buildState = GetBuildState(out assetPath, out indexInBuild);
+            BuildState buildState = GetBuildState(out assetPath, out indexInBuild);
 
-            if (buildState == -1)
+            if (buildState ==  BuildState.NotInBuild)
             {
                 GUI.color = new Color(0.6f, 1, 0.6f);
                 if (GUILayout.Button("ADD TO BUILD SETTINGS"))
@@ -130,9 +132,9 @@ public class SceneInfoEditor : Editor
 
                 GUI.color = guiColor;
                 EditorGUILayout.BeginHorizontal();
-                if (EditorGUILayout.Toggle("Included in build", buildState == 1) != (buildState == 1))
+                if (EditorGUILayout.Toggle("Included in build", buildState ==  BuildState.EnabledInBuild) != (buildState == BuildState.EnabledInBuild))
                 {
-                    if (buildState == 1)
+                    if (buildState ==  BuildState.EnabledInBuild)
                         DisableInBuild(indexInBuild);
                     else
                         EnableInBuild(indexInBuild);
@@ -150,7 +152,7 @@ public class SceneInfoEditor : Editor
             }
         }
 
-        if (sceneAsset != null && sceneAsset.name != targetSceneInfo.SceneName)
+        if (sceneAsset != null && sceneAsset.name != TargetSceneInfo.SceneName)
         {
             GUI.color = new Color(0.6f, 1, 0.6f);
         }
@@ -161,8 +163,8 @@ public class SceneInfoEditor : Editor
 
         if (GUILayout.Button("Refresh Name"))
         {
-            targetSceneInfo.Editor_RefreshSceneName();
-            EditorUtility.SetDirty(targetSceneInfo);
+            TargetSceneInfo.Editor_RefreshSceneName();
+            EditorUtility.SetDirty(TargetSceneInfo);
         }
 
         GUI.enabled = true;

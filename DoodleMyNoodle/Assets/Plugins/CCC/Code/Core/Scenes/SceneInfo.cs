@@ -26,15 +26,7 @@ public class SceneInfo : ScriptableObject
     [SerializeField, ReadOnlyAlways]
     private string sceneName;
 
-    [SerializeField, Header("Default Loading Options")]
-    private LoadSceneMode loadMode = LoadSceneMode.Additive;
-
-    [SerializeField]
-    private bool allowMultiple = false;
-
     public string SceneName { get { return sceneName; } }
-    public bool AllowMultiple { get { return allowMultiple; } }
-    public LoadSceneMode LoadMode { get { return loadMode; } }
 
 #if UNITY_EDITOR
     [OnOpenAsset(1)]

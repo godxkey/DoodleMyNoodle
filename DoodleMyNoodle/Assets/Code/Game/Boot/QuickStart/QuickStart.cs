@@ -57,17 +57,17 @@ public static class QuickStart
 
         yield return null; // wait for scene load
 
-        PlayerProfileService.Instance.SetPlayerProfile(settings.localProfileId);
+        PlayerProfileService.Instance.SetPlayerProfile(settings.LocalProfileId);
 
-        switch (settings.playMode)
+        switch (settings.PlayMode)
         {
-            case QuickStartSettings.PlayMode.Local:
+            case QuickStartSettings.EPlayMode.Local:
                 yield return StartLocal(settings);
                 break;
-            case QuickStartSettings.PlayMode.OnlineClient:
+            case QuickStartSettings.EPlayMode.OnlineClient:
                 yield return StartClient(settings);
                 break;
-            case QuickStartSettings.PlayMode.OnlineServer:
+            case QuickStartSettings.EPlayMode.OnlineServer:
                 yield return StartServer(settings);
                 break;
         }
@@ -86,7 +86,7 @@ public static class QuickStart
             yield return null;
         }
 
-        GameStateManager.TransitionToState(Assets.inGameLocal, new GameStateParamLevelName(settings.level));
+        GameStateManager.TransitionToState(Assets.inGameLocal, new GameStateParamMapName(settings.Map));
     }
 
 
@@ -102,14 +102,14 @@ public static class QuickStart
             yield return null;
         }
 
-        if (string.IsNullOrEmpty(settings.serverName))
+        if (string.IsNullOrEmpty(settings.ServerName))
         {
             LoadingScreenUIController.DisplayedStatus = "Loading...";
             GameStateManager.TransitionToState(Assets.lobbyClient);
         }
         else
         {
-            LoadingScreenUIController.DisplayedStatus = "Looking for server [" + settings.serverName + "] ...";
+            LoadingScreenUIController.DisplayedStatus = "Looking for server [" + settings.ServerName + "] ...";
 
             INetworkInterfaceSession foundSession = null;
 
@@ -122,7 +122,7 @@ public static class QuickStart
                 {
                     foreach (INetworkInterfaceSession session in OnlineService.ClientInterface.AvailableSessions)
                     {
-                        if (session.HostName == settings.serverName)
+                        if (session.HostName == settings.ServerName)
                         {
                             foundSession = session;
                             break;
@@ -137,14 +137,14 @@ public static class QuickStart
 
             if (foundSession == null)
             {
-                string message = "Failed client quickstart. Could not find server with name [" + settings.serverName + "] in time.";
+                string message = "Failed client quickstart. Could not find server with name [" + settings.ServerName + "] in time.";
                 DebugScreenMessage.DisplayMessage(message);
                 Log.Warning(message);
                 GameStateManager.TransitionToState(Assets.rootMenu);
             }
             else
             {
-                LoadingScreenUIController.DisplayedStatus = "Connecting to server [" + settings.serverName + "] ...";
+                LoadingScreenUIController.DisplayedStatus = "Connecting to server [" + settings.ServerName + "] ...";
 
                 int success = -1; // -1 -> waiting for result    0 -> failure        1 -> success
                 OnlineService.ClientInterface.ConnectToSession(foundSession, (bool r, string message) =>
@@ -163,7 +163,7 @@ public static class QuickStart
 
                 if (success == 0)
                 {
-                    string message = "Failed client quickstart. Could not connect to server [" + settings.serverName + "].";
+                    string message = "Failed client quickstart. Could not connect to server [" + settings.ServerName + "].";
                     DebugScreenMessage.DisplayMessage(message);
                     Log.Error(message);
 
@@ -192,7 +192,7 @@ public static class QuickStart
             yield return null;
         }
 
-        if (string.IsNullOrEmpty(settings.serverName))
+        if (string.IsNullOrEmpty(settings.ServerName))
         {
             LoadingScreenUIController.DisplayedStatus = "Loading...";
             GameStateManager.TransitionToState(Assets.lobbyServer);
@@ -204,7 +204,7 @@ public static class QuickStart
             int success = -1; // -1 -> waiting for result    0 -> failure        1 -> success
 
             LoadingScreenUIController.DisplayedStatus = "Creating session ...";
-            OnlineService.ServerInterface.CreateSession(settings.serverName, (bool r, string message) =>
+            OnlineService.ServerInterface.CreateSession(settings.ServerName, (bool r, string message) =>
             {
                 if (r)
                     success = 1;
@@ -221,7 +221,7 @@ public static class QuickStart
 
             if (success == 0)
             {
-                string message = "Failed server quickstart. Could not create session [" + settings.serverName + "].";
+                string message = "Failed server quickstart. Could not create session [" + settings.ServerName + "].";
                 DebugScreenMessage.DisplayMessage(message);
                 Log.Error(message);
                 GameStateManager.TransitionToState(Assets.rootMenu);
@@ -230,7 +230,7 @@ public static class QuickStart
             {
                 // success!
                 LoadingScreenUIController.DisplayedStatus = "Loading ...";
-                GameStateManager.TransitionToState(Assets.inGameServer, new GameStateParamLevelName(settings.level));
+                GameStateManager.TransitionToState(Assets.inGameServer, new GameStateParamMapName(settings.Map));
             }
         }
     }

@@ -19,7 +19,7 @@ public class LaunchWindow : ToolsWindowBase
     private List<PlayerProfile> _localPlayerProfiles;
     private List<LaunchProfileElement> _profileElements = new List<LaunchProfileElement>();
     private string[] _localPlayerProfileNames;
-    private PopupField<string> _elementLevel;
+    private PopupField<string> _elementMap;
 
     protected override string UssGuid => "d13a97c21d8810b44af913ddbff4af18";
     protected override string UxmlGuid => "56f189421eb1e05429a4f0281d7300c9";
@@ -75,56 +75,56 @@ public class LaunchWindow : ToolsWindowBase
             var element = root.Q<Toggle>(name: "fromScratch");
             var childrenContainer = root.Q<VisualElement>(name: "startingPointContainer");
 
-            element.value = EditorLaunchData.playFromScratch;
+            element.value = EditorLaunchData.PlayFromScratch;
             childrenContainer.EnableInClassList("hidden", element.value);
 
             element.RegisterValueChangedCallback(
                 (ChangeEvent<bool> changeEvent) =>
                 {
-                    EditorLaunchData.playFromScratch = changeEvent.newValue;
+                    EditorLaunchData.PlayFromScratch = changeEvent.newValue;
                     childrenContainer.EnableInClassList("hidden", changeEvent.newValue);
                 });
         }
 
         {
             var container = root.Q<VisualElement>(name: "startingPointContainer");
-            var levelBank = AssetDatabaseX.LoadAssetsOfType<LevelBank>().FirstOrDefault();
+            var mapBank = AssetDatabaseX.LoadAssetsOfType<MapBank>().FirstOrDefault();
 
-            List<string> levels = new List<string>();
-            levels.Add(""); // the 'none' option
+            List<string> maps = new List<string>();
+            maps.Add(""); // the 'none' option
 
-            if (levelBank != null)
+            if (mapBank != null)
             {
-                foreach (var item in levelBank.Levels)
+                foreach (var item in mapBank.Maps)
                 {
-                    levels.Add(item.name);
+                    maps.Add(item.name);
                 }
 
-                levels.Sort();
+                maps.Sort();
             }
 
-            string levelToDisplayName(string level)
+            string mapToDisplayName(string map)
             {
-                if (string.IsNullOrEmpty(level))
+                if (string.IsNullOrEmpty(map))
                     return "- None -";
-                return level;
+                return map;
             }
 
-            _elementLevel = new PopupField<string>("Level", levels, 0,
-                formatSelectedValueCallback: levelToDisplayName,
-                formatListItemCallback: levelToDisplayName);
+            _elementMap = new PopupField<string>("Map", maps, 0,
+                formatSelectedValueCallback: mapToDisplayName,
+                formatListItemCallback: mapToDisplayName);
 
-            container.Insert(0, _elementLevel);
+            container.Insert(0, _elementMap);
 
-            if (levels.Contains(EditorLaunchData.level))
+            if (maps.Contains(EditorLaunchData.Map))
             {
-                _elementLevel.value = EditorLaunchData.level;
+                _elementMap.value = EditorLaunchData.Map;
             }
 
-            _elementLevel.RegisterValueChangedCallback(
+            _elementMap.RegisterValueChangedCallback(
                 (ChangeEvent<string> changeEvent) =>
                 {
-                    EditorLaunchData.level = changeEvent.newValue;
+                    EditorLaunchData.Map = changeEvent.newValue;
                 });
         }
 
@@ -132,18 +132,18 @@ public class LaunchWindow : ToolsWindowBase
             var elementPlayOnline = root.Q<Toggle>(name: "online");
             var elementServerName = root.Q<TextField>(name: "serverName");
 
-            elementServerName.value = EditorLaunchData.serverName;
+            elementServerName.value = EditorLaunchData.ServerName;
             elementServerName.RegisterValueChangedCallback(
                 (ChangeEvent<string> changeEvent) =>
                 {
-                    EditorLaunchData.serverName = changeEvent.newValue;
+                    EditorLaunchData.ServerName = changeEvent.newValue;
                 });
 
-            elementPlayOnline.value = EditorLaunchData.playOnline;
+            elementPlayOnline.value = EditorLaunchData.PlayOnline;
             elementPlayOnline.RegisterValueChangedCallback(
                 (ChangeEvent<bool> changeEvent) =>
                 {
-                    EditorLaunchData.playOnline = changeEvent.newValue;
+                    EditorLaunchData.PlayOnline = changeEvent.newValue;
 
                     for (int i = 0; i < _profileElements.Count; i++)
                         _profileElements[i].UpdateContent();
@@ -162,22 +162,22 @@ public class LaunchWindow : ToolsWindowBase
 
         {
             var element = root.Q<Toggle>(name: "headless");
-            element.value = EditorLaunchData.serverIsHeadless;
+            element.value = EditorLaunchData.ServerIsHeadless;
             element.RegisterValueChangedCallback(
                 (ChangeEvent<bool> changeEvent) =>
                 {
-                    EditorLaunchData.serverIsHeadless = changeEvent.newValue;
+                    EditorLaunchData.ServerIsHeadless = changeEvent.newValue;
                 });
         }
 
         {
             var element = root.Q<TextField>(name: "extraArgs");
-            element.value = EditorLaunchData.extraArguments;
+            element.value = EditorLaunchData.ExtraArguments;
             element.RegisterValueChangedCallback(
                 (ChangeEvent<string> changeEvent) =>
                 {
                     GameConsole.EditorPlayCommands = CommandLine.SplitCommandLineInGroups(changeEvent.newValue).ToArray();
-                    EditorLaunchData.extraArguments = changeEvent.newValue;
+                    EditorLaunchData.ExtraArguments = changeEvent.newValue;
                 });
         }
 
@@ -185,52 +185,52 @@ public class LaunchWindow : ToolsWindowBase
             var element = root.Q<Toggle>(name: "overrideScreen");
             var childrenContainer = root.Q<VisualElement>(name: "overrideScreenContainer");
 
-            element.value = EditorLaunchData.launchOverrideScreen;
+            element.value = EditorLaunchData.LaunchOverrideScreen;
             childrenContainer.EnableInClassList("hidden", !element.value);
 
             element.RegisterValueChangedCallback(
                 (ChangeEvent<bool> changeEvent) =>
                 {
-                    EditorLaunchData.launchOverrideScreen = changeEvent.newValue;
+                    EditorLaunchData.LaunchOverrideScreen = changeEvent.newValue;
                     childrenContainer.EnableInClassList("hidden", !changeEvent.newValue);
                 });
         }
 
         {
             var element = root.Q<Toggle>(name: "fullscreen");
-            element.value = EditorLaunchData.launchFullscreen;
+            element.value = EditorLaunchData.LaunchFullscreen;
             element.RegisterValueChangedCallback(
                 (ChangeEvent<bool> changeEvent) =>
                 {
-                    EditorLaunchData.launchFullscreen = changeEvent.newValue;
+                    EditorLaunchData.LaunchFullscreen = changeEvent.newValue;
                 });
         }
 
         {
             var element = root.Q<IntegerField>(name: "screenWidth");
-            element.value = EditorLaunchData.launchScreenWidth;
+            element.value = EditorLaunchData.LaunchScreenWidth;
             element.RegisterValueChangedCallback(
                 (ChangeEvent<int> changeEvent) =>
                 {
-                    EditorLaunchData.launchScreenWidth = changeEvent.newValue;
+                    EditorLaunchData.LaunchScreenWidth = changeEvent.newValue;
                 });
         }
 
         {
             var element = root.Q<IntegerField>(name: "screenHeight");
-            element.value = EditorLaunchData.launchScreenHeight;
+            element.value = EditorLaunchData.LaunchScreenHeight;
             element.RegisterValueChangedCallback(
                 (ChangeEvent<int> changeEvent) =>
                 {
-                    EditorLaunchData.launchScreenHeight = changeEvent.newValue;
+                    EditorLaunchData.LaunchScreenHeight = changeEvent.newValue;
                 });
         }
 
         {
             var element = root.Q<VisualElement>(name: "profilesContainer");
 
-            int whoIsServer = EditorLaunchData.whoIsServerId;
-            int whoIsEditor = EditorLaunchData.whoIsEditorId;
+            int whoIsServer = EditorLaunchData.WhoIsServerId;
+            int whoIsEditor = EditorLaunchData.WhoIsEditorId;
             for (int i = 0; i < _localPlayerProfiles.Count; i++)
             {
                 PlayerProfile profile = _localPlayerProfiles[i];
@@ -295,24 +295,24 @@ public class LaunchWindow : ToolsWindowBase
                 break;
         }
 
-        if (quickStart != null && quickStart.OverrideLevel)
+        if (quickStart != null && quickStart.OverrideMap)
         {
-            _elementLevel.SetEnabled(!quickStart.OverrideLevel);
-            _elementLevel.label = "Level (set by scene)";
-            _elementLevel.value = quickStart.Level.name;
-            EditorLaunchData.level = quickStart.Level.name;
+            _elementMap.SetEnabled(!quickStart.OverrideMap);
+            _elementMap.label = "Map (set by scene)";
+            _elementMap.value = quickStart.Map.name;
+            EditorLaunchData.Map = quickStart.Map.name;
         }
         else
         {
-            _elementLevel.SetEnabled(true);
-            _elementLevel.label = "Level";
+            _elementMap.SetEnabled(true);
+            _elementMap.label = "Map";
         }
     }
 
     void SetAsServer(LaunchProfileElement newServer)
     {
         int newId = newServer != null ? newServer.PlayerProfile.localId : -1;
-        EditorLaunchData.whoIsServerId = newId;
+        EditorLaunchData.WhoIsServerId = newId;
         foreach (LaunchProfileElement launchProfileElement in _profileElements)
         {
             launchProfileElement.IsMarkedAsServer = (launchProfileElement.PlayerProfile.localId == newId);
@@ -322,7 +322,7 @@ public class LaunchWindow : ToolsWindowBase
     void SetAsEditor(LaunchProfileElement newEditor)
     {
         int newId = newEditor != null ? newEditor.PlayerProfile.localId : -1;
-        EditorLaunchData.whoIsEditorId = newId;
+        EditorLaunchData.WhoIsEditorId = newId;
         foreach (LaunchProfileElement launchProfileElement in _profileElements)
         {
             launchProfileElement.IsMarkedAsEditor = (launchProfileElement.PlayerProfile.localId == newId);

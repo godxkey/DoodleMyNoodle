@@ -3,37 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Serialization;
 
 // fbessette: this script is temporary
 
 public class StartSimUI : GameMonoBehaviour
 {
     public SceneInfo SimManagersScene;
-    public TMP_Dropdown levelToLoadField;
-    public Button startSimButton;
-
-    public LevelBank LevelBank;
+    
+    [FormerlySerializedAs("levelToLoadField")]
+    public TMP_Dropdown MapToLoadField;
+    
+    [FormerlySerializedAs("startSimButton")]
+    public Button StartSimButton;
+    
+    [FormerlySerializedAs("LevelBank")]
+    public MapBank MapBank;
 
     public override void OnGameStart()
     {
         base.OnGameStart();
 
-        startSimButton.onClick.AddListener(OnStartClick);
+        StartSimButton.onClick.AddListener(OnStartClick);
 
-        levelToLoadField.ClearOptions();
-        List<string> levelOptions = new List<string>();
-        foreach (Level level in LevelBank.Levels)
+        MapToLoadField.ClearOptions();
+        List<string> mapOptions = new List<string>();
+        foreach (Map map in MapBank.Maps)
         {
-            levelOptions.Add(level.name);
+            mapOptions.Add(map.name);
         }
-        levelToLoadField.AddOptions(levelOptions);
+        MapToLoadField.AddOptions(mapOptions);
     }
 
     public override void OnGameUpdate()
     {
         base.OnGameUpdate();
 
-        if (LevelManager.Instance.IsLevelStarted)
+        if (MapManager.Instance.IsMapStarted)
         {
             gameObject.SetActive(false);
         }
@@ -41,9 +47,9 @@ public class StartSimUI : GameMonoBehaviour
 
     void OnStartClick()
     {
-        string levelName = levelToLoadField.options[levelToLoadField.value].text;
-        PlayerPrefs.SetString("startLevel", levelName);
+        string mapName = MapToLoadField.options[MapToLoadField.value].text;
+        PlayerPrefs.SetString("startMap", mapName);
         PlayerPrefs.Save();
-        LevelManager.Instance.StartLevel(levelName);
+        MapManager.Instance.StartMap(mapName);
     }
 }

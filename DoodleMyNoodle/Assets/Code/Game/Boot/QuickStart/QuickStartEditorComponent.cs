@@ -19,7 +19,7 @@ public class QuickStartEditorComponent : MonoBehaviour
     
     [ShowIf(nameof(CanShowPlayMode))]
     [FormerlySerializedAs("playMode")]
-    public QuickStartSettings.PlayMode PlayMode;
+    public QuickStartSettings.EPlayMode PlayMode;
     bool CanShowPlayMode => !StartFromScratch && OverridePlayMode;
 
     [HideIf(nameof(StartFromScratch))]
@@ -32,13 +32,13 @@ public class QuickStartEditorComponent : MonoBehaviour
     bool CanShowServerName => !StartFromScratch && OverrideServerName;
 
     [HideIf(nameof(StartFromScratch))]
-    [FormerlySerializedAs("overrideLevel")]
-    public bool OverrideLevel;
+    [FormerlySerializedAs("OverrideLevel")]
+    public bool OverrideMap;
 
-    [ShowIf(nameof(CanShowLevel))]
-    [FormerlySerializedAs("level")]
-    public Level Level;
-    bool CanShowLevel => !StartFromScratch && OverrideLevel;
+    [ShowIf(nameof(CanShowMap))]
+    [FormerlySerializedAs("Level")]
+    public Map Map;
+    bool CanShowMap => !StartFromScratch && OverrideMap;
 
 #if UNITY_EDITOR
     void Awake()
@@ -64,38 +64,38 @@ public class QuickStartEditorComponent : MonoBehaviour
 
         if (QuickStart.HasEverQuickStarted == false)
         {
-            if (StartFromScratch || EditorLaunchData.playFromScratch)
+            if (StartFromScratch || EditorLaunchData.PlayFromScratch)
             {
-                QuickStart.StartFromScratch(EditorLaunchData.profileLocalId);
+                QuickStart.StartFromScratch(EditorLaunchData.ProfileLocalId);
             }
             else
             {
                 QuickStartSettings settings = new QuickStartSettings()
                 {
-                    localProfileId = EditorLaunchData.profileLocalId,
-                    level = EditorLaunchData.level,
-                    serverName = EditorLaunchData.serverName
+                    LocalProfileId = EditorLaunchData.ProfileLocalId,
+                    Map = EditorLaunchData.Map,
+                    ServerName = EditorLaunchData.ServerName
                 };
 
-                if (EditorLaunchData.playOnline)
+                if (EditorLaunchData.PlayOnline)
                 {
-                    settings.playMode = EditorLaunchData.whoIsServerId == EditorLaunchData.profileLocalId ?
-                        QuickStartSettings.PlayMode.OnlineServer :
-                        QuickStartSettings.PlayMode.OnlineClient;
+                    settings.PlayMode = EditorLaunchData.WhoIsServerId == EditorLaunchData.ProfileLocalId ?
+                        QuickStartSettings.EPlayMode.OnlineServer :
+                        QuickStartSettings.EPlayMode.OnlineClient;
                 }
                 else
                 {
-                    settings.playMode = QuickStartSettings.PlayMode.Local;
+                    settings.PlayMode = QuickStartSettings.EPlayMode.Local;
                 }
 
                 if (OverridePlayMode)
-                    settings.playMode = PlayMode;
+                    settings.PlayMode = PlayMode;
 
                 if (OverrideServerName)
-                    settings.serverName = ServerName;
+                    settings.ServerName = ServerName;
 
-                if (OverrideLevel)
-                    settings.level = Level ? Level.name : "";
+                if (OverrideMap)
+                    settings.Map = Map ? Map.name : "";
 
                 QuickStart.Start(settings);
             }
