@@ -31,6 +31,8 @@ public class CreateRequestSingletonSystem : SimSystemBase
             }
         }
 
+        types.Sort((a, b) => a.GetManagedType().Name.CompareTo(b.GetManagedType().Name));
+
         _singletonArchetype = EntityManager.CreateArchetype(types.ToArray());
     }
 
@@ -39,7 +41,10 @@ public class CreateRequestSingletonSystem : SimSystemBase
         if (!HasSingleton<SingletonBuffersTag>())
         {
             // create singleton
-            EntityManager.CreateEntity(_singletonArchetype);
+            var entity = EntityManager.CreateEntity(_singletonArchetype);
+#if UNITY_EDITOR
+            EntityManager.SetName(entity, "Singleton Data");
+#endif
         }
         else if (_singletonArchetype.ChunkCount == 0)
         {

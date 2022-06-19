@@ -18,9 +18,6 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
     public bool StartAtMax = true;
 
     [HideIf(nameof(HasProxy))]
-    public bool DestroyOnDeath = false;
-
-    [HideIf(nameof(HasProxy))]
     public float RechargeRate = 0;
 
     [HideIf(nameof(HasProxy))]
@@ -51,9 +48,6 @@ public class HealthAuth : MonoBehaviour, IConvertGameObjectToEntity
             dstManager.AddComponentData<HealthRechargeRate>(entity, (fix)RechargeRate);
             dstManager.AddComponentData<HealthRechargeCooldown>(entity, (fix)RechargeCooldown);
             dstManager.AddComponentData<HealthLastHitTime>(entity, fix.MinValue);
-
-            if (DestroyOnDeath)
-                dstManager.AddComponent<DestroyOnDeath>(entity);
 
             if (ShowTerrainOnlyColliderIfDead && TerrainOnlyColliderIfDead)
             {

@@ -8,16 +8,6 @@ using UnityEngine;
 using UnityEngineX;
 using UnityEngineX.InspectorDisplay;
 
-[Flags]
-public enum MobModifierFlags
-{
-    None = 0,
-    Armored = 1 << 0,
-    Brutal = 1 << 1,
-    Fast = 1 << 2,
-    Explosive = 1 << 3,
-}
-
 public class LevelDefinition : MonoBehaviour
 {
     public enum GroupDensity
@@ -49,7 +39,7 @@ public class LevelDefinition : MonoBehaviour
     public class MobArchetype
     {
         public MobPrefab Type = MobPrefab.Brute;
-        public MobModifierFlags Modifiers = MobModifierFlags.None;
+        public MobSpawmModifierFlags Modifiers = MobSpawmModifierFlags.None;
     }
 
     [System.Serializable]
@@ -99,6 +89,7 @@ public class LevelDefinition : MonoBehaviour
     {
         LastGenerationError = null;
         LevelData result = new LevelData();
+        result.DebugName = name;
 
         float availableMobCount = TotalEnemies;
 

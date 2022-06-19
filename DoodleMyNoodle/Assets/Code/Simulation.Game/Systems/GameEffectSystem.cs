@@ -129,13 +129,15 @@ public class RemoveFinishedGameEffectsSystem : SimGameSystemBase
     {
         foreach ((Entity owner, Entity effect) in ToRemove)
         {
-            var buffer = GetBuffer<GameEffectBufferElement>(owner);
-            for (int i = 0; i < buffer.Length; i++)
+            if (EntityManager.TryGetBuffer<GameEffectBufferElement>(owner, out var buffer))
             {
-                if (buffer[i].EffectEntity == effect)
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    buffer.RemoveAt(i);
-                    break;
+                    if (buffer[i].EffectEntity == effect)
+                    {
+                        buffer.RemoveAt(i);
+                        break;
+                    }
                 }
             }
         }

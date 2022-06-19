@@ -48,11 +48,16 @@ MonoBehaviour:
   Waves:
   - WaveSize: 1
     Groups:
-    - Range: {x: 0, y: 1}
+    - Range: {x: 0.26210827, y: 1}
       Density: 2
       Mob:
         Type: 2
         Modifiers: 0
+    - Range: {x: 0, y: 0.14529914}
+      Density: 2
+      Mob:
+        Type: 2
+        Modifiers: 1
   - WaveSize: 1
     Groups:
     - Range: {x: 0.72873425, y: 1}

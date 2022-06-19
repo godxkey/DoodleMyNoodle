@@ -10,6 +10,6 @@ public class MobAuth : MonoBehaviour, IConvertGameObjectToEntity
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
+        dstManager.AddComponent<MobEnemyTag>(entity);
     }
-
 }

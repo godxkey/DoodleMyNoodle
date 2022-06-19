@@ -373,6 +373,7 @@ public class ApplyDamageSystem : SimGameSystemBase
                 if (HasComponent<PhysicsGravity>(target))
                     SetComponent(target, new PhysicsGravity() { Scale = 1 });
                 EntityManager.AddComponentData(target, new DeadTag());
+                EntityManager.AddComponentData(target, new DeadTimestamp() { TimeOfDeath = Time.ElapsedTime });
 
                 NativeList<(OnDeathProcessor dmgProcessor, Entity effectEntity)> onDeathProcessors = new NativeList<(OnDeathProcessor, Entity)>(Allocator.Temp);
                 CollectEffectComponents(target, onDeathProcessors);

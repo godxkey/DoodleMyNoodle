@@ -58,6 +58,10 @@ public static class SimulationGameConstants
     public static readonly fix ImpulseThresholdDestroyingTile = 5;
 
     public static readonly fix FallDamageCooldown = (fix)0.6;
+    public static readonly fix OutOfBoundsLeftDistanceFromPlayerGroup = 5;
+    public static readonly fix OutOfBoundsRightDistanceFromPlayerGroup = 15;
+    public static readonly fix EnemySpawnDistanceFromPlayerGroup = 15;
+    public static readonly fix DeadEntityDestroyDelay = 3;
 
     private static bool s_init = false;
 

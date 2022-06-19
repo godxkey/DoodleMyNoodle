@@ -28,44 +28,44 @@ public static class SceneShortcuts
     [MenuItem("Scene Shortcuts/Game_SimulationInitData", priority = 3006)]
     public static void Assets_Scenes_Game_Scene_Assets_Game_SimulationInitData() => LoadScene("Assets/Scenes/Game/Scene Assets/Game_SimulationInitData.unity");
 
-    [MenuItem("Scene Shortcuts/Gym_Art", priority = 4007)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Gym_Art() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_Art.unity");
+    [MenuItem("Scene Shortcuts/MAP_EmptyLevel", priority = 4007)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_EmptyLevel() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_EmptyLevel.unity");
 
-    [MenuItem("Scene Shortcuts/Gym_Fred", priority = 4008)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Gym_Fred() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_Fred.unity");
+    [MenuItem("Scene Shortcuts/MAP_EmptyLevel_Presentation", priority = 4008)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_EmptyLevel_Presentation() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_EmptyLevel_Presentation.unity");
 
-    [MenuItem("Scene Shortcuts/Gym_Interactables", priority = 4009)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Gym_Interactables() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_Interactables.unity");
+    [MenuItem("Scene Shortcuts/MAP_Gym_Art", priority = 4009)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Gym_Art() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Gym_Art.unity");
 
-    [MenuItem("Scene Shortcuts/Gym_Physics", priority = 4010)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Gym_Physics() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_Physics.unity");
+    [MenuItem("Scene Shortcuts/MAP_Gym_Fred", priority = 4010)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Gym_Fred() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Gym_Fred.unity");
 
-    [MenuItem("Scene Shortcuts/Gym_Surveys", priority = 4011)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Gym_Surveys() => LoadScene("Assets/Scenes/Levels/Scene Assets/Gym_Surveys.unity");
+    [MenuItem("Scene Shortcuts/MAP_Gym_Interactables", priority = 4011)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Gym_Interactables() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Gym_Interactables.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_EmptyLevel", priority = 4012)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_EmptyLevel() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_EmptyLevel.unity");
+    [MenuItem("Scene Shortcuts/MAP_Gym_Physics", priority = 4012)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Gym_Physics() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Gym_Physics.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_EmptyLevel_Presentation", priority = 4013)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_EmptyLevel_Presentation() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_EmptyLevel_Presentation.unity");
+    [MenuItem("Scene Shortcuts/MAP_Gym_Surveys", priority = 4013)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Gym_Surveys() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Gym_Surveys.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_Prototype7_Easy", priority = 4014)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype7_Easy() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Easy.unity");
+    [MenuItem("Scene Shortcuts/MAP_Prototype7_Easy", priority = 4014)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Prototype7_Easy() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Easy.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_Prototype7_Easy_Presentation", priority = 4015)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype7_Easy_Presentation() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Easy_Presentation.unity");
+    [MenuItem("Scene Shortcuts/MAP_Prototype7_Easy_Presentation", priority = 4015)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Prototype7_Easy_Presentation() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Easy_Presentation.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_Prototype7_Hard", priority = 4016)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype7_Hard() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Hard.unity");
+    [MenuItem("Scene Shortcuts/MAP_Prototype7_Hard", priority = 4016)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Prototype7_Hard() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Hard.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_Prototype7_Hard_Presentation", priority = 4017)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype7_Hard_Presentation() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Hard_Presentation.unity");
+    [MenuItem("Scene Shortcuts/MAP_Prototype7_Hard_Presentation", priority = 4017)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Prototype7_Hard_Presentation() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Hard_Presentation.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_Prototype7_Medium", priority = 4018)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype7_Medium() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Medium.unity");
+    [MenuItem("Scene Shortcuts/MAP_Prototype7_Medium", priority = 4018)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Prototype7_Medium() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Medium.unity");
 
-    [MenuItem("Scene Shortcuts/Lvl_Prototype7_Medium_Presentation", priority = 4019)]
-    public static void Assets_Scenes_Levels_Scene_Assets_Lvl_Prototype7_Medium_Presentation() => LoadScene("Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Medium_Presentation.unity");
+    [MenuItem("Scene Shortcuts/MAP_Prototype7_Medium_Presentation", priority = 4019)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Prototype7_Medium_Presentation() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Medium_Presentation.unity");
 
     [MenuItem("Scene Shortcuts/Menu_InGameEscape", priority = 5020)]
     public static void Assets_Scenes_Menu_Scene_Assets_Menu_InGameEscape() => LoadScene("Assets/Scenes/Menu/Scene Assets/Menu_InGameEscape.unity");
