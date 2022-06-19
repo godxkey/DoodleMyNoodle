@@ -340,7 +340,7 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
             {
                 var multiplier = multiplyMobHP.Multiplier;
                 Entities
-                    .WithNone<Controllable>()
+                    .WithAll<MobEnemyTag>()
                     .ForEach((Entity entity, ref Health hp) =>
                 {
                     hp.Value *= multiplier;
