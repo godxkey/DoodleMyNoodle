@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 
 public class LevelDefinitionPreviewMobGizmos : MonoBehaviour
 {
@@ -34,3 +35,4 @@ public class LevelDefinitionPreviewMobGizmos : MonoBehaviour
         }
     }
 }
+#endif

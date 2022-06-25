@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -78,3 +79,4 @@ public class LevelDefinitionPreviewer : MonoBehaviour
         }
     }
 }
+#endif
