@@ -97,7 +97,8 @@ public class LaunchWindow : ToolsWindowBase
             {
                 foreach (var item in mapBank.Maps)
                 {
-                    maps.Add(item.name);
+                    if (item != null)
+                        maps.Add(item.name);
                 }
 
                 maps.Sort();

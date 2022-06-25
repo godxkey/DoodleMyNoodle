@@ -185,7 +185,7 @@ public class LevelDefinition : MonoBehaviour
             waveLengths[w] = wavesLengthWeights[w] * waveLengthPerWeight;
         }
 
-        float waveStartingPos = 10f;
+        float waveStartingPos = (float)SimulationGameConstants.EnemySpawnDistanceFromPlayerGroup;
         for (int w = 0; w < Waves.Count; w++)
         {
             MobWave wave = Waves[w];

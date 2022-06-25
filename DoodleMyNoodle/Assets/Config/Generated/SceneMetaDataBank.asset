@@ -145,3 +145,7 @@ MonoBehaviour:
     Path: Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Hard_Presentation.unity
     BuildIndex: 32
     AssetGuid: e412f4896245a6c41a69c79ded9e3fad
+  - Name: MAP_Proto8
+    Path: Assets/Scenes/Levels/Scene Assets/MAP_Proto8.unity
+    BuildIndex: 33
+    AssetGuid: 9103cc200b48dce479391a9810c0b8bb

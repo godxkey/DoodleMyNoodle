@@ -40,14 +40,14 @@ public static class SceneShortcuts
     [MenuItem("Scene Shortcuts/MAP_Gym_Fred", priority = 4010)]
     public static void Assets_Scenes_Levels_Scene_Assets_MAP_Gym_Fred() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Gym_Fred.unity");
 
-    [MenuItem("Scene Shortcuts/MAP_Gym_Interactables", priority = 4011)]
-    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Gym_Interactables() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Gym_Interactables.unity");
-
-    [MenuItem("Scene Shortcuts/MAP_Gym_Physics", priority = 4012)]
+    [MenuItem("Scene Shortcuts/MAP_Gym_Physics", priority = 4011)]
     public static void Assets_Scenes_Levels_Scene_Assets_MAP_Gym_Physics() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Gym_Physics.unity");
 
-    [MenuItem("Scene Shortcuts/MAP_Gym_Surveys", priority = 4013)]
+    [MenuItem("Scene Shortcuts/MAP_Gym_Surveys", priority = 4012)]
     public static void Assets_Scenes_Levels_Scene_Assets_MAP_Gym_Surveys() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Gym_Surveys.unity");
+
+    [MenuItem("Scene Shortcuts/MAP_Proto8", priority = 4013)]
+    public static void Assets_Scenes_Levels_Scene_Assets_MAP_Proto8() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Proto8.unity");
 
     [MenuItem("Scene Shortcuts/MAP_Prototype7_Easy", priority = 4014)]
     public static void Assets_Scenes_Levels_Scene_Assets_MAP_Prototype7_Easy() => LoadScene("Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Easy.unity");
