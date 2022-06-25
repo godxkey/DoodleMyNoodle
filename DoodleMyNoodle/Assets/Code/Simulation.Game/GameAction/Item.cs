@@ -52,6 +52,14 @@ public struct ItemCharges : IComponentData
     public static implicit operator ItemCharges(int val) => new ItemCharges() { Value = val };
 }
 
+public struct ItemStatingCharges : IComponentData
+{
+    public int Value;
+
+    public static implicit operator int(ItemStatingCharges val) => val.Value;
+    public static implicit operator ItemStatingCharges(int val) => new ItemStatingCharges() { Value = val };
+}
+
 public partial class CommonReads
 {
     public static bool CanUseItem(ISimWorldReadAccessor accessor, Entity actor, Entity item)

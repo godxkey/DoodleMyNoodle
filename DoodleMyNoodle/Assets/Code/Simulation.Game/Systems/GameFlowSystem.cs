@@ -174,6 +174,22 @@ public class GameFlowSystem : SimGameSystemBase
             SetComponent<FixTranslation>(playerGroup, fix2(0, playerGroupPos.Value.y));
         }
 
+        // restore hp
+        {
+            var maxHP = GetComponent<MaximumFix<Health>>(playerGroup);
+            SetComponent<Health>(playerGroup, maxHP.Value);
+        }
+
+        // restore item charges
+        {
+            Entities.ForEach((ref ItemCharges charges, in ItemStatingCharges startingCharges) =>
+            {
+                charges.Value = startingCharges;
+            }).Run();
+        }
+
+        // fbessette: should we remove game effects ? What about game effects that need to stay across levels like passives?
+
         // Set mob spawns
         {
             var remainingLevelSpawns = GetSingletonBuffer<RemainingLevelMobSpawnPoint>();

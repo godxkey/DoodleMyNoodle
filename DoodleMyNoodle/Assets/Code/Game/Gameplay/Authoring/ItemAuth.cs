@@ -47,7 +47,10 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
         dstManager.AddComponentData(entity, new ItemSettingAPCost() { Value = ApCost });
         dstManager.AddComponentData(entity, new StackableFlag() { Value = false });
         if (HasCharges)
+        {
             dstManager.AddComponentData(entity, new ItemCharges() { Value = ChargeCount });
+            dstManager.AddComponentData(entity, new ItemStatingCharges() { Value = ChargeCount });
+        }
         dstManager.AddComponent<FirstInstigator>(entity); // a enlever ?
         dstManager.AddComponentData(entity, new SpellInstigator() { Value = entity });
         dstManager.AddComponent<ItemTag>(entity);
