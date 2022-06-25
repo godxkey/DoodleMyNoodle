@@ -20,6 +20,17 @@ public struct RemainingLevelMobSpawnPoint : ISingletonBufferElementData, ICompar
     }
 }
 
+/// <summary>
+/// This is to simulate the enemies moving even when unspawned
+/// </summary>
+public struct LevelUnspawnedMobsOffsetPositionSingleton : ISingletonComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(LevelUnspawnedMobsOffsetPositionSingleton val) => val.Value;
+    public static implicit operator LevelUnspawnedMobsOffsetPositionSingleton(fix val) => new LevelUnspawnedMobsOffsetPositionSingleton() { Value = val };
+}
+
 public class SpawnMobsSystem : SimGameSystemBase
 {
     protected override void OnCreate()
@@ -32,23 +43,29 @@ public class SpawnMobsSystem : SimGameSystemBase
 
     protected override void OnUpdate()
     {
+        // move offset (simulating the mobs moving, even when unspawned)
+        var unspawnedMobsOffset = GetSingleton<LevelUnspawnedMobsOffsetPositionSingleton>();
+        unspawnedMobsOffset.Value += (Time.DeltaTime * SimulationGameConstants.UnspawnedMobsMoveSpeed);
+        SetSingleton(unspawnedMobsOffset);
+
         Entity playerGroupEntity = GetSingletonEntity<PlayerGroupDataTag>();
         FixTranslation playerGroupPosition = GetComponent<FixTranslation>(playerGroupEntity);
         DynamicBuffer<RemainingLevelMobSpawnPoint> mobSpawns = GetSingletonBuffer<RemainingLevelMobSpawnPoint>();
 
         using var _ = ListPool<RemainingLevelMobSpawnPoint>.Take(out var toSpawn);
-        fix spawnXThreshold = playerGroupPosition.Value.x + SimulationGameConstants.EnemySpawnDistanceFromPlayerGroup;
+        fix spawnXThreshold = playerGroupPosition.Value.x - unspawnedMobsOffset + SimulationGameConstants.EnemySpawnDistanceFromPlayerGroup;
         while (mobSpawns.Length > 0 && spawnXThreshold > mobSpawns[0].Position.x)
         {
             toSpawn.Add(mobSpawns[0]);
             mobSpawns.RemoveAt(0);
         }
 
+        // spawn mobs
         foreach (RemainingLevelMobSpawnPoint spawn in toSpawn)
         {
             var mobEntity = EntityManager.Instantiate(spawn.MobToSpawn);
 
-            SetComponent<FixTranslation>(mobEntity, spawn.Position);
+            SetComponent<FixTranslation>(mobEntity, spawn.Position + fix2(unspawnedMobsOffset, 0));
 
             if ((spawn.Flags & MobSpawmModifierFlags.Armored) != 0)
             {

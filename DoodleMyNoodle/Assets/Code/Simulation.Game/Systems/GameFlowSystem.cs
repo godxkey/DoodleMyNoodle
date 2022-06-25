@@ -30,6 +30,17 @@ public struct LevelToAddToPlaylist : IBufferElementData
     public Entity LevelDefinition;
 }
 
+/// <summary>
+/// Total amount of mobs that were in the latest started level (dead, alive and unspawned mobs included)
+/// </summary>
+public struct LevelMobCountSingleton : ISingletonComponentData
+{
+    public int Value;
+
+    public static implicit operator int(LevelMobCountSingleton val) => val.Value;
+    public static implicit operator LevelMobCountSingleton(int val) => new LevelMobCountSingleton() { Value = val };
+}
+
 public class GameFlowSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
@@ -48,7 +59,7 @@ public class GameFlowSystem : SimGameSystemBase
     private void AddLevelsToPlaylistIfNeeded()
     {
         var levelsToAddQuery = GetEntityQuery(typeof(LevelToAddToPlaylist));
-        if (levelsToAddQuery.IsEmpty) 
+        if (levelsToAddQuery.IsEmpty)
             return;
 
         var nextLevels = GetSingletonBuffer<NextLevelPlaylistEntry>();
@@ -108,17 +119,6 @@ public class GameFlowSystem : SimGameSystemBase
                     }
                 }
             }
-
-            //// Team reached their destination for this level = they win !
-            //if (EntityManager.TryGetComponent(playerGroup, out FixTranslation translation))
-            //{
-            //    if (TryGetSingleton(out GameOverDestinationToReachSingleton gameOverDestinationToReachSingleton))
-            //    {
-            //        if (translation.Value.x >= gameOverDestinationToReachSingleton.XPosition)
-            //        {
-            //        }
-            //    }
-            //}
         }
     }
 
@@ -189,6 +189,10 @@ public class GameFlowSystem : SimGameSystemBase
                 });
             }
             remainingLevelSpawns.AsNativeArray().Sort();
+            SetSingleton<LevelMobCountSingleton>(remainingLevelSpawns.Length);
+
+            // reset their offset (used to simulate them walking even when unspawned)
+            SetSingleton<LevelUnspawnedMobsOffsetPositionSingleton>(fix.Zero);
         }
     }
 }

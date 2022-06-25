@@ -62,6 +62,7 @@ public static class SimulationGameConstants
     public static readonly fix OutOfBoundsRightDistanceFromPlayerGroup = 15;
     public static readonly fix EnemySpawnDistanceFromPlayerGroup = 15;
     public static readonly fix DeadEntityDestroyDelay = 3;
+    public static readonly fix UnspawnedMobsMoveSpeed = -(fix)0.5; // this should ideally matcht the base move speed of regular mobs
 
     private static bool s_init = false;
 

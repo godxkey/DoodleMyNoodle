@@ -6,6 +6,7 @@ using System;
 
 public struct SingletonBuffersTag : IComponentData { }
 public interface ISingletonBufferElementData : IBufferElementData { }
+public interface ISingletonComponentData : IComponentData { }
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 [AlwaysUpdateSystem]
@@ -26,6 +27,10 @@ public class CreateRequestSingletonSystem : SimSystemBase
         foreach (var item in TypeManager.AllTypes)
         {
             if (typeof(ISingletonBufferElementData).IsAssignableFrom(item.Type) && item.Category == TypeManager.TypeCategory.BufferData)
+            {
+                types.Add(new ComponentType(item.Type));
+            }
+            if (typeof(ISingletonComponentData).IsAssignableFrom(item.Type) && item.Category == TypeManager.TypeCategory.ComponentData)
             {
                 types.Add(new ComponentType(item.Type));
             }
