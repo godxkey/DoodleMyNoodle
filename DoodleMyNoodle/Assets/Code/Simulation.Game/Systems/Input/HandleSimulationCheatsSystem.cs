@@ -80,6 +80,12 @@ public class SimInputCheatMultiplyMobHP : SimCheatInput
     public fix Multiplier;
 }
 
+[NetSerializable]
+public class SimInputCheatNextLevel : SimCheatInput
+{
+
+}
+
 public struct CheatsAllItemElement : IBufferElementData
 {
     public Entity ItemPrefab;
@@ -351,6 +357,13 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                         SetComponent(entity, maxHP);
                     }
                 }).Run();
+                break;
+            }
+
+            case SimInputCheatNextLevel nextLevel:
+            {
+                if (!HasSingleton<SingletonRequestNextLevel>())
+                    CreateSingleton<SingletonRequestNextLevel>();
                 break;
             }
         }

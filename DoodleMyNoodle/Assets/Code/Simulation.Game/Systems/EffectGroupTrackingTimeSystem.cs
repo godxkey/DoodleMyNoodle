@@ -4,10 +4,10 @@ public class EffectGroupTrackingTimeSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
-        DynamicBuffer<EffectGroupBufferSingleton> effectGroupBufferSingleton = GetSingletonBuffer<EffectGroupBufferSingleton>();
+        DynamicBuffer<SingletonElementEffectGroup> effectGroupBufferSingleton = GetSingletonBuffer<SingletonElementEffectGroup>();
         for (int i = effectGroupBufferSingleton.Length - 1; i >= 0; i--)
         {
-            EffectGroupBufferSingleton effectGroupBuffer = effectGroupBufferSingleton[i];
+            SingletonElementEffectGroup effectGroupBuffer = effectGroupBufferSingleton[i];
             if (Time.ElapsedTime >= effectGroupBuffer.TimeStamp + effectGroupBuffer.Delay)
             {
                 effectGroupBufferSingleton.RemoveAt(i);

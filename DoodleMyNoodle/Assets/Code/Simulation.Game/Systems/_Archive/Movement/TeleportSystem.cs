@@ -4,7 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngineX;
 
-public struct TeleportRequestSingletonBufferElement : ISingletonBufferElementData
+public struct SystemRequestTeleport : ISingletonBufferElementData
 {
     public Entity Entity;
     public fix2 Destination;
@@ -16,7 +16,7 @@ public class TeleportSystem : SimGameSystemBase
     protected override void OnUpdate()
     {
         // process requests
-        var requestBuffer = GetSingletonBuffer< TeleportRequestSingletonBufferElement>();
+        var requestBuffer = GetSingletonBuffer<SystemRequestTeleport>();
 
         if (requestBuffer.Length > 0)
         {
@@ -31,7 +31,7 @@ public class TeleportSystem : SimGameSystemBase
 
     }
 
-    private void Teleport(TeleportRequestSingletonBufferElement request)
+    private void Teleport(SystemRequestTeleport request)
     {
         if (!EntityManager.Exists(request.Entity))
         {
@@ -55,8 +55,8 @@ internal partial class CommonWrites
 {
     public static void RequestTeleport(ISimGameWorldReadWriteAccessor accessor, Entity entity, fix2 destination)
     {
-        var requests = accessor.GetSingletonBuffer<TeleportRequestSingletonBufferElement>();
-        requests.Add(new TeleportRequestSingletonBufferElement()
+        var requests = accessor.GetSingletonBuffer<SystemRequestTeleport>();
+        requests.Add(new SystemRequestTeleport()
         {
             Entity = entity,
             Destination = destination

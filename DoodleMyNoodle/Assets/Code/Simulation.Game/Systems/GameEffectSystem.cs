@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngineX;
 
-public struct AddGameEffectRequest : ISingletonBufferElementData
+public struct SystemRequestAddGameEffect : ISingletonBufferElementData
 {
     public Entity GameEffectPrefab;
     public Entity Target;
@@ -32,8 +32,8 @@ public class GameEffectSystem : SimGameSystemBase
     {
         UpdateDurations();
 
-        var addGameEffectRequests = GetSingletonBuffer<AddGameEffectRequest>();
-        NativeArray<AddGameEffectRequest> effectRequests = addGameEffectRequests.ToNativeArray(Allocator.Temp);
+        var addGameEffectRequests = GetSingletonBuffer<SystemRequestAddGameEffect>();
+        NativeArray<SystemRequestAddGameEffect> effectRequests = addGameEffectRequests.ToNativeArray(Allocator.Temp);
         addGameEffectRequests.Clear();
 
         ProcessAddRequests(effectRequests);
@@ -71,9 +71,9 @@ public class GameEffectSystem : SimGameSystemBase
         }
     }
 
-    private void ProcessAddRequests(NativeArray<AddGameEffectRequest> addRequests)
+    private void ProcessAddRequests(NativeArray<SystemRequestAddGameEffect> addRequests)
     {
-        foreach (AddGameEffectRequest addRequest in addRequests)
+        foreach (SystemRequestAddGameEffect addRequest in addRequests)
         {
             // check that target has a buffer for it. This will also check if the target has been destroyed
             if (!EntityManager.HasComponent<GameEffectBufferElement>(addRequest.Target))
@@ -148,8 +148,8 @@ public class RemoveFinishedGameEffectsSystem : SimGameSystemBase
 
 internal static partial class CommonWrites
 {
-    static public void AddGameEffect(ISimGameWorldReadWriteAccessor accessor, AddGameEffectRequest request)
+    static public void AddGameEffect(ISimGameWorldReadWriteAccessor accessor, SystemRequestAddGameEffect request)
     {
-        accessor.GetSingletonBuffer<AddGameEffectRequest>().Add(request);
+        accessor.GetSingletonBuffer<SystemRequestAddGameEffect>().Add(request);
     }
 }

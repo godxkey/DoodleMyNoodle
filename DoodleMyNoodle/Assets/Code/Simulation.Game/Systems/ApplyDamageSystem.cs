@@ -47,7 +47,7 @@ public struct HealthDeltaEventData
     public bool IsAutoAttack;
 }
 
-public struct HealthChangeRequestData : ISingletonBufferElementData
+public struct SystemRequestHealthChange : ISingletonBufferElementData
 {
     public fix Amount;
     public Entity Target;
@@ -114,7 +114,7 @@ public struct GameFunctionDamageReceivedProcessorArg
 {
     public ISimGameWorldReadWriteAccessor Accessor;
     public Entity EffectEntity;
-    public HealthChangeRequestData RequestData;
+    public SystemRequestHealthChange RequestData;
     public fix RemainingDamage;
 }
 
@@ -127,7 +127,7 @@ public struct GameFunctionDamageDealtProcessorArg
 {
     public ISimGameWorldReadWriteAccessor Accessor;
     public Entity EffectEntity;
-    public HealthChangeRequestData RequestData;
+    public SystemRequestHealthChange RequestData;
     public fix RemainingDamage;
 }
 
@@ -140,7 +140,7 @@ public struct GameFunctionOnDeathProcessorArg
 {
     public ISimGameWorldReadWriteAccessor Accessor;
     public Entity EffectEntity;
-    public HealthChangeRequestData RequestData;
+    public SystemRequestHealthChange RequestData;
 }
 
 [AlwaysUpdateSystem]
@@ -148,14 +148,14 @@ public struct GameFunctionOnDeathProcessorArg
 public class ApplyDamageSystem : SimGameSystemBase
 {
     private ExecuteGameActionSystem _gameActionSystem;
-    private NativeList<HealthChangeRequestData> _processingHealthChanges;
+    private NativeList<SystemRequestHealthChange> _processingHealthChanges;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
         _gameActionSystem = World.GetOrCreateSystem<ExecuteGameActionSystem>();
-        _processingHealthChanges = new NativeList<HealthChangeRequestData>(Allocator.Persistent);
+        _processingHealthChanges = new NativeList<SystemRequestHealthChange>(Allocator.Persistent);
     }
 
     protected override void OnDestroy()
@@ -166,17 +166,17 @@ public class ApplyDamageSystem : SimGameSystemBase
 
     protected override void OnUpdate()
     {
-        DynamicBuffer<HealthChangeRequestData> damageRequests = GetDamageRequestBuffer();
+        DynamicBuffer<SystemRequestHealthChange> damageRequests = GetDamageRequestBuffer();
         _processingHealthChanges.CopyFrom(damageRequests.AsNativeArray());
         damageRequests.Clear();
 
-        foreach (HealthChangeRequestData healthChangeData in _processingHealthChanges)
+        foreach (SystemRequestHealthChange healthChangeData in _processingHealthChanges)
         {
             ProcessHealthChange(healthChangeData);
         }
     }
 
-    private void ProcessHealthChange(HealthChangeRequestData request)
+    private void ProcessHealthChange(SystemRequestHealthChange request)
     {
         NativeList<(DamageReceivedProcessor dmgProcessor, Entity effectEntity)> dmgReceivedProcessors = new NativeList<(DamageReceivedProcessor, Entity)>(Allocator.Temp);
         NativeList<(DamageDealtProcessor dmgProcessor, Entity effectEntity)> dmgDealtProcessors = new NativeList<(DamageDealtProcessor, Entity)>(Allocator.Temp);
@@ -214,7 +214,7 @@ public class ApplyDamageSystem : SimGameSystemBase
         // prevents too many damage instance from the same source/group
         if (effectGroupID != 0)
         {
-            DynamicBuffer<EffectGroupBufferSingleton> effectGroupBufferSingleton = GetSingletonBuffer<EffectGroupBufferSingleton>();
+            DynamicBuffer<SingletonElementEffectGroup> effectGroupBufferSingleton = GetSingletonBuffer<SingletonElementEffectGroup>();
             for (int i = 0; i < effectGroupBufferSingleton.Length; i++)
             {
                 if (effectGroupBufferSingleton[i].ID == effectGroupID && effectGroupBufferSingleton[i].Entity == target)
@@ -225,7 +225,7 @@ public class ApplyDamageSystem : SimGameSystemBase
             }
 
             // hard coded cooldown for effect group 0.1 for now
-            effectGroupBufferSingleton.Add(new EffectGroupBufferSingleton() { ID = effectGroupID, Entity = target, TimeStamp = Time.ElapsedTime, Delay = SimulationGameConstants.SameEffectGroupDamageCooldown });
+            effectGroupBufferSingleton.Add(new SingletonElementEffectGroup() { ID = effectGroupID, Entity = target, TimeStamp = Time.ElapsedTime, Delay = SimulationGameConstants.SameEffectGroupDamageCooldown });
         }
 
         // If delta is negative (damage), check for invincible
@@ -453,14 +453,14 @@ public class ApplyDamageSystem : SimGameSystemBase
     //    }
     //}
 
-    public void RequestHealthChange(HealthChangeRequestData damageRequestData)
+    public void RequestHealthChange(SystemRequestHealthChange damageRequestData)
     {
         GetDamageRequestBuffer().Add(damageRequestData);
     }
 
-    private DynamicBuffer<HealthChangeRequestData> GetDamageRequestBuffer()
+    private DynamicBuffer<SystemRequestHealthChange> GetDamageRequestBuffer()
     {
-        return GetSingletonBuffer<HealthChangeRequestData>();
+        return GetSingletonBuffer<SystemRequestHealthChange>();
     }
 }
 
@@ -475,7 +475,7 @@ internal static partial class CommonWrites
 
         for (int i = 0; i < hits.Length; i++)
         {
-            var request = new HealthChangeRequestData()
+            var request = new SystemRequestHealthChange()
             {
                 IsAutoAttack = args.IsAutoAttack,
                 InstigatorSet = args.InstigatorSet,
@@ -507,7 +507,7 @@ internal static partial class CommonWrites
                 target2Instigator = instigatorPos.Value - targetPos.Value;
             }
 
-            var request = new HealthChangeRequestData()
+            var request = new SystemRequestHealthChange()
             {
                 IsAutoAttack = args.IsAutoAttack,
                 InstigatorSet = args.InstigatorSet,
@@ -535,7 +535,7 @@ internal static partial class CommonWrites
             target2Instigator = instigatorPos.Value - targetPos.Value;
         }
 
-        var request = new HealthChangeRequestData()
+        var request = new SystemRequestHealthChange()
         {
             IsAutoAttack = args.IsAutoAttack,
             InstigatorSet = args.InstigatorSet,
@@ -574,7 +574,7 @@ internal static partial class CommonWrites
         RequestDamage(accessor, (DamageRequestSettings)args, target);
     }
 
-    public static void RequestHealthChange(ISimGameWorldReadWriteAccessor accessor, HealthChangeRequestData healthChangeRequest)
+    public static void RequestHealthChange(ISimGameWorldReadWriteAccessor accessor, SystemRequestHealthChange healthChangeRequest)
     {
         accessor.GetExistingSystem<ApplyDamageSystem>().RequestHealthChange(healthChangeRequest);
     }

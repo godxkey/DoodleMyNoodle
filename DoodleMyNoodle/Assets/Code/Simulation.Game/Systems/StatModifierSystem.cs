@@ -7,7 +7,7 @@ using CCC.Fix2D;
 using System;
 using System.Collections.Generic;
 
-public struct AddStatModifierRequest : ISingletonBufferElementData
+public struct SystemRequestAddStatModifier : ISingletonBufferElementData
 {
     public Entity Target;
     public StatModifierType Type;
@@ -15,7 +15,7 @@ public struct AddStatModifierRequest : ISingletonBufferElementData
     public Entity Instigator;
 }
 
-public struct RemoveStatModifierRequest : ISingletonBufferElementData
+public struct SystemRequestRemoveStatModifier : ISingletonBufferElementData
 {
     public Entity Target;
     public StatModifierType Type;
@@ -30,11 +30,11 @@ public class StatModifierSystem : SimGameSystemBase
 
     protected override void OnUpdate()
     {
-        var addStatusEffectRequests = GetSingletonBuffer<AddStatModifierRequest>();
+        var addStatusEffectRequests = GetSingletonBuffer<SystemRequestAddStatModifier>();
         ProcessAddRequests(addStatusEffectRequests);
         addStatusEffectRequests.Clear();
 
-        var removeStatusEffectRequests = GetSingletonBuffer<RemoveStatModifierRequest>();
+        var removeStatusEffectRequests = GetSingletonBuffer<SystemRequestRemoveStatModifier>();
         ProcessRemoveRequests(removeStatusEffectRequests);
         removeStatusEffectRequests.Clear();
 
@@ -131,9 +131,9 @@ public class StatModifierSystem : SimGameSystemBase
         _entityStatsToUpdate.Clear();
     }
 
-    private void ProcessRemoveRequests(DynamicBuffer<RemoveStatModifierRequest> removeStatusEffectRequests)
+    private void ProcessRemoveRequests(DynamicBuffer<SystemRequestRemoveStatModifier> removeStatusEffectRequests)
     {
-        foreach (RemoveStatModifierRequest removeRequest in removeStatusEffectRequests)
+        foreach (SystemRequestRemoveStatModifier removeRequest in removeStatusEffectRequests)
         {
             if (!EntityManager.TryGetBuffer(removeRequest.Target, out DynamicBuffer<StatModifier> statModifiers))
                 continue;
@@ -166,9 +166,9 @@ public class StatModifierSystem : SimGameSystemBase
         }
     }
 
-    private void ProcessAddRequests(DynamicBuffer<AddStatModifierRequest> addStatusEffectRequests)
+    private void ProcessAddRequests(DynamicBuffer<SystemRequestAddStatModifier> addStatusEffectRequests)
     {
-        foreach (AddStatModifierRequest addRequest in addStatusEffectRequests)
+        foreach (SystemRequestAddStatModifier addRequest in addStatusEffectRequests)
         {
             StatModifierSetting setting = StatModifierSettings.Settings[addRequest.Type];
 
@@ -209,13 +209,13 @@ public class StatModifierSystem : SimGameSystemBase
 
 internal static partial class CommonWrites
 {
-    static public void AddStatusEffect(ISimGameWorldReadWriteAccessor accessor, AddStatModifierRequest request)
+    static public void AddStatusEffect(ISimGameWorldReadWriteAccessor accessor, SystemRequestAddStatModifier request)
     {
-        accessor.GetSingletonBuffer<AddStatModifierRequest>().Add(request);
+        accessor.GetSingletonBuffer<SystemRequestAddStatModifier>().Add(request);
     }
 
-    static public void RemoveStatusEffect(ISimGameWorldReadWriteAccessor accessor, RemoveStatModifierRequest request)
+    static public void RemoveStatusEffect(ISimGameWorldReadWriteAccessor accessor, SystemRequestRemoveStatModifier request)
     {
-        accessor.GetSingletonBuffer<RemoveStatModifierRequest>().Add(request);
+        accessor.GetSingletonBuffer<SystemRequestRemoveStatModifier>().Add(request);
     }
 }

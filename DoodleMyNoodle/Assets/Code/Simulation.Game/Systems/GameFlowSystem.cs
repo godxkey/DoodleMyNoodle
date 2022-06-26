@@ -20,9 +20,25 @@ public struct ReadyToPlay : IComponentData
 /// <summary>
 /// Identify the next level to play when the current one is finished/
 /// </summary>
-public struct NextLevelPlaylistEntry : ISingletonBufferElementData
+public struct SingletonElementNextLevelPlaylist : ISingletonBufferElementData
 {
     public Entity LevelDefinition;
+}
+
+public struct SingletonCurrentLevelDefinition : ISingletonComponentData
+{
+    public Entity Value;
+
+    public static implicit operator Entity(SingletonCurrentLevelDefinition val) => val.Value;
+    public static implicit operator SingletonCurrentLevelDefinition(Entity val) => new SingletonCurrentLevelDefinition() { Value = val };
+}
+
+public struct SingletonCurrentLevelStartTime : ISingletonComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(SingletonCurrentLevelStartTime val) => val.Value;
+    public static implicit operator SingletonCurrentLevelStartTime(fix val) => new SingletonCurrentLevelStartTime() { Value = val };
 }
 
 public struct LevelToAddToPlaylist : IBufferElementData
@@ -30,16 +46,7 @@ public struct LevelToAddToPlaylist : IBufferElementData
     public Entity LevelDefinition;
 }
 
-/// <summary>
-/// Total amount of mobs that were in the latest started level (dead, alive and unspawned mobs included)
-/// </summary>
-public struct LevelMobCountSingleton : ISingletonComponentData
-{
-    public int Value;
-
-    public static implicit operator int(LevelMobCountSingleton val) => val.Value;
-    public static implicit operator LevelMobCountSingleton(int val) => new LevelMobCountSingleton() { Value = val };
-}
+public struct SingletonRequestNextLevel : IComponentData { }
 
 public class GameFlowSystem : SimGameSystemBase
 {
@@ -47,12 +54,36 @@ public class GameFlowSystem : SimGameSystemBase
     {
         AddLevelsToPlaylistIfNeeded();
 
-        StartGameIfNeeded();
-
-        if (HasSingleton<GameStartedTag>())
+        if (!HasSingleton<GameStartedTag>())
         {
-            ChangeLevelOrWinIfNeeded();
-            GameOverIfPlayersDead();
+            if (CanStartGame())
+                CreateSingleton<GameStartedTag>();
+        }
+        else if (!HasSingleton<WinningTeam>())
+        {
+            if (HavePlayersLost())
+            {
+                CreateSingleton(new WinningTeam { Value = (int)DesignerFriendlyTeam.Baddies });
+                Log.Info($"[GameFlowSystem] Players lose!");
+            }
+            else if (ShouldChangeLevel())
+            {
+                // any remaining levels ?
+                var nextLevels = GetSingletonBuffer<SingletonElementNextLevelPlaylist>();
+                if (nextLevels.IsEmpty)
+                {
+                    CreateSingleton(new WinningTeam { Value = (int)DesignerFriendlyTeam.Player });
+                    Log.Info($"[GameFlowSystem] Players win!.");
+                }
+                else
+                {
+                    // start next level
+                    var levelToStart = nextLevels[0];
+                    nextLevels.RemoveAt(0);
+                    StartLevel(levelToStart.LevelDefinition);
+                    Log.Info($"[GameFlowSystem] Changing level to {EntityManager.GetNameSafe(levelToStart.LevelDefinition)}.");
+                }
+            }
         }
     }
 
@@ -62,48 +93,41 @@ public class GameFlowSystem : SimGameSystemBase
         if (levelsToAddQuery.IsEmpty)
             return;
 
-        var nextLevels = GetSingletonBuffer<NextLevelPlaylistEntry>();
+        var nextLevels = GetSingletonBuffer<SingletonElementNextLevelPlaylist>();
         Entities.ForEach((DynamicBuffer<LevelToAddToPlaylist> levelsToAdd) =>
         {
             foreach (var item in levelsToAdd)
             {
-                nextLevels.Add(new NextLevelPlaylistEntry() { LevelDefinition = item.LevelDefinition });
+                nextLevels.Add(new SingletonElementNextLevelPlaylist() { LevelDefinition = item.LevelDefinition });
             }
         }).Run();
 
         EntityManager.DestroyEntity(levelsToAddQuery);
     }
 
-    private void StartGameIfNeeded()
+    private bool CanStartGame()
     {
-        if (HasSingleton<GameStartedTag>())
-            return;
-
         bool everyoneIsReady = true;
         bool atLeastOnePlayerExists = false;
 
         // check if every player is ready
         Entities
             .ForEach((in Active active, in ReadyToPlay readyToPlay, in ControlledEntity pawn) =>
-        {
-            if (active)
             {
-                atLeastOnePlayerExists = true;
-
-                if (!readyToPlay && HasComponent<Controllable>(pawn))
+                if (active)
                 {
-                    everyoneIsReady = false; // if a team member is NOT ready
-                }
-            }
-        }).Run();
+                    atLeastOnePlayerExists = true;
 
-        if (atLeastOnePlayerExists && everyoneIsReady)
-        {
-            CreateSingleton<GameStartedTag>();
-        }
+                    if (!readyToPlay && HasComponent<Controllable>(pawn))
+                    {
+                        everyoneIsReady = false; // if a team member is NOT ready
+                    }
+                }
+            }).Run();
+        return everyoneIsReady && atLeastOnePlayerExists && HasSingleton<PlayerGroupDataTag>();
     }
 
-    private void GameOverIfPlayersDead()
+    private bool HavePlayersLost()
     {
         if (TryGetSingletonEntity<PlayerGroupDataTag>(out Entity playerGroup))
         {
@@ -112,44 +136,53 @@ public class GameFlowSystem : SimGameSystemBase
             {
                 if (health.Value <= 0)
                 {
-                    // Ennemy win !
-                    if (!HasSingleton<WinningTeam>())
-                    {
-                        CreateSingleton(new WinningTeam { Value = (int)DesignerFriendlyTeam.Baddies });
-                    }
+                    return true;
                 }
             }
         }
+        return false;
     }
 
-    private void ChangeLevelOrWinIfNeeded()
+    private bool ShouldChangeLevel()
     {
-        // any mobs alive?
-        var enemiesQuery = GetEntityQuery(ComponentType.Exclude<Prefab>(), typeof(MobEnemyTag));
-        if (!enemiesQuery.IsEmpty)
-            return;
+        Entity currentLevel = GetSingleton<SingletonCurrentLevelDefinition>();
 
-        // any remaining mobs to spawn ?
-        var remainingEnemyMobs = GetSingletonBuffer<RemainingLevelMobSpawnPoint>();
-        if (!remainingEnemyMobs.IsEmpty)
-            return;
-
-        // any remaining levels ?
-        var nextLevels = GetSingletonBuffer<NextLevelPlaylistEntry>();
-        if (nextLevels.IsEmpty)
+        if (HasComponent<LevelDefinitionDuration>(currentLevel))
         {
-            // Player wins !
-            if (!HasSingleton<WinningTeam>())
+            fix levelStartTime = GetSingleton<SingletonCurrentLevelStartTime>();
+            fix levelDuration = GetComponent<LevelDefinitionDuration>(currentLevel);
+            if (Time.ElapsedTime - levelStartTime > levelDuration)
             {
-                CreateSingleton(new WinningTeam { Value = (int)DesignerFriendlyTeam.Player });
+                Log.Info($"[GameFlowSystem] Should change level because duration exceeded.");
+                return true;
             }
-            return;
         }
 
-        // start next level!
-        var levelToStart = nextLevels[0];
-        nextLevels.RemoveAt(0);
-        StartLevel(levelToStart.LevelDefinition);
+        // If we're in a combat level, check that everyone is dead
+        if (currentLevel == Entity.Null || EntityManager.HasComponent<LevelDefinitionMobSpawn>(currentLevel))
+        {
+            // no mobs alive?
+            var enemiesQuery = GetEntityQuery(ComponentType.Exclude<Prefab>(), typeof(MobEnemyTag));
+            if (enemiesQuery.IsEmpty)
+            {
+                // no remaining mobs to spawn ?
+                var remainingEnemyMobs = GetSingletonBuffer<SingletonElementRemainingLevelMobSpawnPoint>();
+                if (remainingEnemyMobs.IsEmpty)
+                {
+                    Log.Info($"[GameFlowSystem] Should change level because all enemies dead.");
+                    return true;
+                }
+            }
+        }
+
+        if (HasSingleton<SingletonRequestNextLevel>())
+        {
+            DestroySingleton<SingletonRequestNextLevel>();
+            Log.Info($"[GameFlowSystem] Should change level because of cheat request.");
+            return true;
+        }
+
+        return false;
     }
 
     private void StartLevel(Entity levelDefinition)
@@ -157,12 +190,6 @@ public class GameFlowSystem : SimGameSystemBase
         if (!HasSingleton<PlayerGroupDataTag>())
         {
             Log.Error("No player group. Cannot start level.");
-            return;
-        }
-
-        if (!EntityManager.HasComponent<LevelDefinitionMobSpawn>(levelDefinition))
-        {
-            Log.Error($"LevelDefinition {EntityManager.GetNameSafe(levelDefinition)} has no {nameof(LevelDefinitionMobSpawn)} component. Cannot start level.");
             return;
         }
 
@@ -187,17 +214,22 @@ public class GameFlowSystem : SimGameSystemBase
                 charges.Value = startingCharges;
             }).Run();
         }
-
         // fbessette: should we remove game effects ? What about game effects that need to stay across levels like passives?
 
+        // destroy linguering mobs
+        EntityManager.DestroyEntity(GetEntityQuery(typeof(MobEnemyTag)));
+
+        // clear previous spawns
+        var remainingLevelSpawns = GetSingletonBuffer<SingletonElementRemainingLevelMobSpawnPoint>();
+        remainingLevelSpawns.Clear();
+
         // Set mob spawns
+        if (EntityManager.HasComponent<LevelDefinitionMobSpawn>(levelDefinition))
         {
-            var remainingLevelSpawns = GetSingletonBuffer<RemainingLevelMobSpawnPoint>();
             var levelDefinitonSpawns = GetBuffer<LevelDefinitionMobSpawn>(levelDefinition);
-            remainingLevelSpawns.Clear();
             foreach (var item in levelDefinitonSpawns)
             {
-                remainingLevelSpawns.Add(new RemainingLevelMobSpawnPoint()
+                remainingLevelSpawns.Add(new SingletonElementRemainingLevelMobSpawnPoint()
                 {
                     Flags = item.Flags,
                     MobToSpawn = item.MobToSpawn,
@@ -205,10 +237,12 @@ public class GameFlowSystem : SimGameSystemBase
                 });
             }
             remainingLevelSpawns.AsNativeArray().Sort();
-            SetSingleton<LevelMobCountSingleton>(remainingLevelSpawns.Length);
 
             // reset their offset (used to simulate them walking even when unspawned)
             SetSingleton<LevelUnspawnedMobsOffsetPositionSingleton>(fix.Zero);
         }
+
+        SetSingleton<SingletonCurrentLevelStartTime>(Time.ElapsedTime);
+        SetSingleton<SingletonCurrentLevelDefinition>(levelDefinition);
     }
 }

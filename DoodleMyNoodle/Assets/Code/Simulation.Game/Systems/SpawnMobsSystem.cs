@@ -8,13 +8,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngineX;
 
-public struct RemainingLevelMobSpawnPoint : ISingletonBufferElementData, IComparable<RemainingLevelMobSpawnPoint>
+public struct SingletonElementRemainingLevelMobSpawnPoint : ISingletonBufferElementData, IComparable<SingletonElementRemainingLevelMobSpawnPoint>
 {
     public Entity MobToSpawn;
     public MobSpawmModifierFlags Flags;
     public fix2 Position;
 
-    public int CompareTo(RemainingLevelMobSpawnPoint other)
+    public int CompareTo(SingletonElementRemainingLevelMobSpawnPoint other)
     {
         return Position.x.CompareTo(other.Position.x);
     }
@@ -37,7 +37,7 @@ public class SpawnMobsSystem : SimGameSystemBase
     {
         base.OnCreate();
 
-        RequireSingletonForUpdate<RemainingLevelMobSpawnPoint>();
+        RequireSingletonForUpdate<SingletonElementRemainingLevelMobSpawnPoint>();
         RequireSingletonForUpdate<PlayerGroupDataTag>();
     }
 
@@ -50,9 +50,9 @@ public class SpawnMobsSystem : SimGameSystemBase
 
         Entity playerGroupEntity = GetSingletonEntity<PlayerGroupDataTag>();
         FixTranslation playerGroupPosition = GetComponent<FixTranslation>(playerGroupEntity);
-        DynamicBuffer<RemainingLevelMobSpawnPoint> mobSpawns = GetSingletonBuffer<RemainingLevelMobSpawnPoint>();
+        DynamicBuffer<SingletonElementRemainingLevelMobSpawnPoint> mobSpawns = GetSingletonBuffer<SingletonElementRemainingLevelMobSpawnPoint>();
 
-        using var _ = ListPool<RemainingLevelMobSpawnPoint>.Take(out var toSpawn);
+        using var _ = ListPool<SingletonElementRemainingLevelMobSpawnPoint>.Take(out var toSpawn);
         fix spawnXThreshold = playerGroupPosition.Value.x - unspawnedMobsOffset + SimulationGameConstants.EnemySpawnDistanceFromPlayerGroup;
         while (mobSpawns.Length > 0 && spawnXThreshold > mobSpawns[0].Position.x)
         {
@@ -61,7 +61,7 @@ public class SpawnMobsSystem : SimGameSystemBase
         }
 
         // spawn mobs
-        foreach (RemainingLevelMobSpawnPoint spawn in toSpawn)
+        foreach (SingletonElementRemainingLevelMobSpawnPoint spawn in toSpawn)
         {
             var mobEntity = EntityManager.Instantiate(spawn.MobToSpawn);
 
@@ -69,7 +69,7 @@ public class SpawnMobsSystem : SimGameSystemBase
 
             if ((spawn.Flags & MobSpawmModifierFlags.Armored) != 0)
             {
-                CommonWrites.AddStatusEffect(Accessor, new AddStatModifierRequest()
+                CommonWrites.AddStatusEffect(Accessor, new SystemRequestAddStatModifier()
                 {
                     Instigator = Entity.Null,
                     StackAmount = 1,
@@ -80,7 +80,7 @@ public class SpawnMobsSystem : SimGameSystemBase
 
             if ((spawn.Flags & MobSpawmModifierFlags.Brutal) != 0)
             {
-                CommonWrites.AddStatusEffect(Accessor, new AddStatModifierRequest()
+                CommonWrites.AddStatusEffect(Accessor, new SystemRequestAddStatModifier()
                 {
                     Instigator = Entity.Null,
                     StackAmount = 1,
@@ -102,7 +102,7 @@ public class SpawnMobsSystem : SimGameSystemBase
 
             if ((spawn.Flags & MobSpawmModifierFlags.Fast) != 0)
             {
-                CommonWrites.AddStatusEffect(Accessor, new AddStatModifierRequest()
+                CommonWrites.AddStatusEffect(Accessor, new SystemRequestAddStatModifier()
                 {
                     Instigator = Entity.Null,
                     StackAmount = 1,

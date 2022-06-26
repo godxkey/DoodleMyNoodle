@@ -10,25 +10,29 @@ public class LevelProgressDisplay : GamePresentationBehaviour
 
     public override void PresentationUpdate()
     {
-        if (SimWorld.TryGetSingleton<LevelMobCountSingleton>(out var totalMobsInLevel))
+        if (SimWorld.TryGetSingleton<SingletonCurrentLevelDefinition>(out var currentLevel))
         {
-            // count the number of remaining enemies
-            int remainingMobs = SimWorld.Entities.WithAll<MobEnemyTag>().WithNone<DeadTag>().ToEntityQuery().CalculateEntityCount();
-
-            var mobSpawnSingleton = SimWorld.GetSingletonEntity<RemainingLevelMobSpawnPoint>();
-            if (mobSpawnSingleton != Entity.Null)
+            if (SimWorld.TryGetBufferReadOnly<LevelDefinitionMobSpawn>(currentLevel, out var levelSpawns))
             {
-                var remainingMobSpawnsBuffer = SimWorld.GetBufferReadOnly<RemainingLevelMobSpawnPoint>(mobSpawnSingleton);
-                remainingMobs += remainingMobSpawnsBuffer.Length;
-            }
+                int totalMobsInLevel = Mathf.Max(levelSpawns.Length, 1); // to avoid div by 0
 
-            // avoid division by 0
-            if (totalMobsInLevel.Value == 0)
+                // count the number of remaining enemies
+                int remainingMobs = 0;
+                var mobSpawnSingleton = SimWorld.GetSingletonEntity<SingletonElementRemainingLevelMobSpawnPoint>();
+                if (mobSpawnSingleton != Entity.Null)
+                {
+                    var remainingMobSpawnsBuffer = SimWorld.GetBufferReadOnly<SingletonElementRemainingLevelMobSpawnPoint>(mobSpawnSingleton);
+                    remainingMobs += remainingMobSpawnsBuffer.Length;
+                }
+
+                _slider.value = 1 - (remainingMobs / (float)totalMobsInLevel);
+            }
+            else if (SimWorld.TryGetComponent<LevelDefinitionDuration>(currentLevel, out var levelDuration))
             {
-                totalMobsInLevel.Value = 1;
-            }
+                var currentLevelStartTime = SimWorld.GetSingleton<SingletonCurrentLevelStartTime>();
 
-            _slider.value = 1 - (remainingMobs / (float)totalMobsInLevel.Value);
+                _slider.value = (float)((SimWorld.Time.ElapsedTime - currentLevelStartTime) / levelDuration);
+            }
         }
     }
 }

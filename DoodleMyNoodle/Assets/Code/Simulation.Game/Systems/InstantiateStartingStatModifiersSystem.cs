@@ -18,7 +18,7 @@ public class InstantiateStartingStatModifiersSystem : SimGameSystemBase
                 for (int i = 0; i < startingStatusEffect.Length; i++)
                 {
                     var statusEffect = startingStatusEffect[i];
-                    CommonWrites.AddStatusEffect(Accessor, new AddStatModifierRequest() { Target = entity, Instigator = entity, Type = statusEffect.Type, StackAmount = statusEffect.StackAmount });
+                    CommonWrites.AddStatusEffect(Accessor, new SystemRequestAddStatModifier() { Target = entity, Instigator = entity, Type = statusEffect.Type, StackAmount = statusEffect.StackAmount });
                 }
 
                 // Remove starting inventory buffer

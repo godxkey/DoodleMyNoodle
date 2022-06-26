@@ -67,9 +67,9 @@ public class GameEffectExecuteGameActionOnDamageDealt
     {
         if(arg.Accessor.TryGetComponent(arg.EffectEntity, out GameEffectOnDamageDealtToApply gameEffectOnDamageDealtToApply)) 
         {
-            var effectRequests = arg.Accessor.GetSingletonBuffer<AddGameEffectRequest>();
+            var effectRequests = arg.Accessor.GetSingletonBuffer<SystemRequestAddGameEffect>();
 
-            effectRequests.Add(new AddGameEffectRequest()
+            effectRequests.Add(new SystemRequestAddGameEffect()
             {
                 GameEffectPrefab = gameEffectOnDamageDealtToApply.GameEffectPrefab,
                 Target = arg.EffectEntity,
