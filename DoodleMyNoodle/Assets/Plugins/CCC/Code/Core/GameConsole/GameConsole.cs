@@ -6,6 +6,7 @@ using UnityEngineX;
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Linq;
+using System.Text;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -266,7 +267,7 @@ public class GameConsole
 
     private static void ProcessQueuedLogs()
     {
-        var strBuilder = StringBuilderPool.Take();
+        var strBuilder = new StringBuilder();
 
         while (s_queuedLogs.TryDequeue(out (int channelId, string condition, string stackTrace, LogType logType) result))
         {
@@ -275,8 +276,6 @@ public class GameConsole
             strBuilder.Append(result.condition);
             s_consoleUI.OutputLog(result.channelId, strBuilder.ToString(), result.stackTrace, result.logType);
         }
-
-        StringBuilderPool.Release(strBuilder);
     }
 
     private static void ExecuteCommand(string command, LineColor lineColor)

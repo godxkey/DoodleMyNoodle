@@ -257,7 +257,7 @@ public static class ChangeDetection
 
         public static void LogModifiedComponent(ChunkTrace chunk, ComponentType type)
         {
-            StringBuilder stringBuilder = StringBuilderPool.Take();
+            StringBuilder stringBuilder = new StringBuilder();
 
             stringBuilder.Append("modified component ");
             stringBuilder.Append(type);
@@ -265,56 +265,46 @@ public static class ChangeDetection
             ArchetypeToString(stringBuilder, chunk);
 
             LogChange(stringBuilder.ToString());
-
-            StringBuilderPool.Release(stringBuilder);
         }
 
         public static void LogDestroyedEntities(ChunkTrace chunk)
         {
-            StringBuilder stringBuilder = StringBuilderPool.Take();
+            StringBuilder stringBuilder = new StringBuilder();
 
             stringBuilder.Append("destroyed entity/entities of ");
             ArchetypeToString(stringBuilder, chunk);
 
             LogChange(stringBuilder.ToString());
-
-            StringBuilderPool.Release(stringBuilder);
         }
 
         public static void LogDestroyedArchetype(ChunkTrace chunk)
         {
-            StringBuilder stringBuilder = StringBuilderPool.Take();
+            StringBuilder stringBuilder = new StringBuilder();
 
             stringBuilder.Append("destroyed ");
             ArchetypeToString(stringBuilder, chunk);
 
             LogChange(stringBuilder.ToString());
-
-            StringBuilderPool.Release(stringBuilder);
         }
 
         public static void LogNewEntities(ChunkTrace chunk)
         {
-            StringBuilder stringBuilder = StringBuilderPool.Take();
+            StringBuilder stringBuilder = new StringBuilder();
 
             stringBuilder.Append("new entity/entities of ");
             ArchetypeToString(stringBuilder, chunk);
 
             LogChange(stringBuilder.ToString());
-
-            StringBuilderPool.Release(stringBuilder);
         }
 
         public static void LogNewArchetype(ChunkTrace chunk)
         {
-            StringBuilder stringBuilder = StringBuilderPool.Take();
+            StringBuilder stringBuilder = new StringBuilder();
 
             stringBuilder.Append("new ");
             ArchetypeToString(stringBuilder, chunk);
 
             LogChange(stringBuilder.ToString());
-
-            StringBuilderPool.Release(stringBuilder);
         }
 
         public static void LogChange(string s)

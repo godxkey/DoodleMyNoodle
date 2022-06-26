@@ -114,7 +114,7 @@ public class DefaultSmartScriptResolver : SmartScriptResolver
 
     protected string InsertAdditionalUsings(string scriptContent, string[] additionalUsings)
     {
-        StringBuilder stringBuilder = StringBuilderPool.Take();
+        StringBuilder stringBuilder = new StringBuilder();
 
         foreach (string additionalUsing in additionalUsings)
         {
@@ -125,8 +125,6 @@ public class DefaultSmartScriptResolver : SmartScriptResolver
         stringBuilder.AppendLine(scriptContent);
 
         string result = stringBuilder.ToString();
-
-        StringBuilderPool.Release(stringBuilder);
 
         return result;
     }
