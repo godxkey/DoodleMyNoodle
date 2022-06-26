@@ -3,8 +3,8 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-[DisallowMultipleComponent, RequireComponent(typeof(LevelDefinition))]
-public class LevelDefinitionShop : MonoBehaviour, IConvertGameObjectToEntity
+[DisallowMultipleComponent, RequireComponent(typeof(LevelDefinitionAuth))]
+public class LevelDefinitionAuthShop : MonoBehaviour, IConvertGameObjectToEntity
 {
     public float Duration = 30;
 

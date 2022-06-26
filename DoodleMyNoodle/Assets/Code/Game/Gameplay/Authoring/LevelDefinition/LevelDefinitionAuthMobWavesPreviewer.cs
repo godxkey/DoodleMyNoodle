@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class LevelDefinitionMobWavesPreviewer : MonoBehaviour
+public class LevelDefinitionAuthMobWavesPreviewer : MonoBehaviour
 {
-    public static LevelDefinitionMobWavesPreviewer Instance { get; private set; }
+    public static LevelDefinitionAuthMobWavesPreviewer Instance { get; private set; }
 
     [System.Serializable]
     public struct PrefabInstancePair
@@ -35,7 +35,7 @@ public class LevelDefinitionMobWavesPreviewer : MonoBehaviour
 
     public static void CreateInstance()
     {
-        var go = new GameObject("~ Level Definition Preview ~", typeof(LevelDefinitionMobWavesPreviewer));
+        var go = new GameObject("~ Level Definition Preview ~", typeof(LevelDefinitionAuthMobWavesPreviewer));
         go.hideFlags = HideFlags.DontSave;
     }
 
@@ -44,7 +44,7 @@ public class LevelDefinitionMobWavesPreviewer : MonoBehaviour
         DestroyImmediate(Instance.gameObject);
     }
 
-    public void DisplayLevel(LevelDefinitionMobWaves levelDefinition)
+    public void DisplayLevel(LevelDefinitionAuthMobWaves levelDefinition)
     {
         GlobalGameplaySettings globalSettings = GlobalGameplaySettings.GetInstance_EditorOnly();
         LevelMobWaveData levelData = levelDefinition.GenerateLevelData(globalSettings);
@@ -59,7 +59,7 @@ public class LevelDefinitionMobWavesPreviewer : MonoBehaviour
             {
                 var ghost = Instantiate(prefab, default, Quaternion.identity, transform);
                 ghost.hideFlags = HideFlags.DontSave;
-                ghost.AddComponent<LevelDefinitionPreviewMobGizmos>();
+                ghost.AddComponent<LevelDefinitionAuthPreviewMobGizmos>();
                 SpawnedGhosts.Insert(i, new PrefabInstancePair()
                 {
                     Prefab = prefab,
@@ -68,7 +68,7 @@ public class LevelDefinitionMobWavesPreviewer : MonoBehaviour
             }
 
             SpawnedGhosts[i].Instance.transform.position = levelData.MobSpawns[i].Position;
-            SpawnedGhosts[i].Instance.GetComponent<LevelDefinitionPreviewMobGizmos>().MobModifierFlags = levelData.MobSpawns[i].MobModifierFlags;
+            SpawnedGhosts[i].Instance.GetComponent<LevelDefinitionAuthPreviewMobGizmos>().MobModifierFlags = levelData.MobSpawns[i].MobModifierFlags;
         }
 
         // remove extra

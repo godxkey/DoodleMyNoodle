@@ -6,9 +6,9 @@ using UnityEngineX;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(SimAsset))]
-public class LevelPlaylistAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
+public class LevelPlaylistAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
-    public List<LevelDefinition> Levels = new List<LevelDefinition>();
+    public List<LevelDefinitionAuth> Levels = new List<LevelDefinitionAuth>();
 
     public virtual void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -16,16 +16,7 @@ public class LevelPlaylistAuth : MonoBehaviour, IConvertGameObjectToEntity, IDec
         foreach (var level in Levels)
         {
             if (level != null)
-                levelEntities.Add(new LevelToAddToPlaylist() { LevelDefinition = conversionSystem.GetPrimaryEntity(level) });
-        }
-    }
-
-    public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
-    {
-        foreach (var level in Levels)
-        {
-            if (level != null)
-                referencedPrefabs.Add(level.gameObject);
+                levelEntities.Add(new LevelToAddToPlaylist() { LevelId = level.GetComponent<SimAsset>().GetSimAssetId() });
         }
     }
 }

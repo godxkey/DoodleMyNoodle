@@ -33,6 +33,9 @@ public struct OfferGroupRerollableTag : IComponentData { }
 /// <summary>Identifies an offer</summary>
 public struct OfferTag : IComponentData { }
 
+/// <summary>(optional) If set on an offer, purchasing it will destroy the offer</summary>
+public struct OfferDestroyAfterPurchaseTag : IComponentData { }
+
 /// <summary>(optional) Price of an offer. If the component is not there, we consider the offer to be free</summary>
 public struct OfferPrice : IComponentData
 {
@@ -42,7 +45,7 @@ public struct OfferPrice : IComponentData
 /// <summary>(optional) The item given to the player when purchased</summary>
 public struct OfferItem : IComponentData
 {
-    public Entity Item;
+    public Entity ItemPrefab;
 }
 
 /// <summary>(optional) The XP given to the player when purchased</summary>
@@ -186,7 +189,7 @@ public class OfferSystem : SimGameSystemBase
                 ItemTransation itemTransation = new ItemTransation()
                 {
                     Destination = purchaseRequest.Pawn,
-                    Item = GetComponent<OfferItem>(purchaseRequest.Offer).Item,
+                    Item = GetComponent<OfferItem>(purchaseRequest.Offer).ItemPrefab,
                     Source = null,
                     Stacks = 1
                 };
@@ -220,6 +223,24 @@ public class OfferSystem : SimGameSystemBase
             if (HasComponent<OfferRerollTag>(purchaseRequest.Offer))
             {
                 // todo
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Destroy offer (if needed)
+        ////////////////////////////////////////////////////////////////////////////////////////
+        {
+            if (HasComponent<OfferDestroyAfterPurchaseTag>(purchaseRequest.Offer))
+            {
+                EntityManager.DestroyEntity(purchaseRequest.Offer);
+
+                // remove from group
+                var offerElements = EntityManager.GetBuffer<OfferGroupElement>(purchaseRequest.OfferGroup);
+                for (int i = offerElements.Length - 1; i >= 0; i--)
+                {
+                    if (!EntityManager.Exists(offerElements[i].Offer))
+                        offerElements.RemoveAt(i);
+                }
             }
         }
     }

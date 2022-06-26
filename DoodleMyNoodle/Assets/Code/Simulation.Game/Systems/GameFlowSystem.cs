@@ -43,13 +43,14 @@ public struct SingletonCurrentLevelStartTime : ISingletonComponentData
 
 public struct LevelToAddToPlaylist : IBufferElementData
 {
-    public Entity LevelDefinition;
+    public SimAssetId LevelId;
 }
 
 public struct SingletonRequestNextLevel : IComponentData { }
 
 public class GameFlowSystem : SimGameSystemBase
 {
+
     protected override void OnUpdate()
     {
         AddLevelsToPlaylistIfNeeded();
@@ -90,15 +91,27 @@ public class GameFlowSystem : SimGameSystemBase
     private void AddLevelsToPlaylistIfNeeded()
     {
         var levelsToAddQuery = GetEntityQuery(typeof(LevelToAddToPlaylist));
-        if (levelsToAddQuery.IsEmpty)
+        if (levelsToAddQuery.IsEmpty || !HasSingleton<GlobalLevelBankTag>())
             return;
 
         var nextLevels = GetSingletonBuffer<SingletonElementNextLevelPlaylist>();
+        var levelBank = GetBuffer<GlobalLevelBankEntry>(GetSingletonEntity<GlobalLevelBankTag>());
         Entities.ForEach((DynamicBuffer<LevelToAddToPlaylist> levelsToAdd) =>
         {
             foreach (var item in levelsToAdd)
             {
-                nextLevels.Add(new SingletonElementNextLevelPlaylist() { LevelDefinition = item.LevelDefinition });
+                Entity level = Entity.Null;
+                foreach (var lvl in levelBank)
+                {
+                    if (GetComponent<SimAssetId>(lvl.LevelDefinitionPrefab) == item.LevelId)
+                    {
+                        level = lvl.LevelDefinitionPrefab;
+                        break;
+                    }
+                }
+
+                if (level != Entity.Null)
+                    nextLevels.Add(new SingletonElementNextLevelPlaylist() { LevelDefinition = level });
             }
         }).Run();
 

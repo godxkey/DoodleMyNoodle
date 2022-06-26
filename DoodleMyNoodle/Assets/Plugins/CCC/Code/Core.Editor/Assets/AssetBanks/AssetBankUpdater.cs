@@ -5,7 +5,13 @@ using UnityEditorX;
 using UnityEngine;
 using UnityEngineX;
 
-public class AssetBankUpdater<TBank, TAsset, TStoredObject>
+public abstract class AssetBankUpdaterBase
+{
+    public abstract void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths);
+    public abstract void UpdateBankComplete();
+}
+
+public class AssetBankUpdater<TBank, TAsset, TStoredObject> : AssetBankUpdaterBase
     where TBank : ScriptableObject
     where TAsset : UnityEngine.Object
 {
@@ -34,7 +40,7 @@ public class AssetBankUpdater<TBank, TAsset, TStoredObject>
         _getStoredObjectsFromBankDelegate = getStoredObjectsFromBankDelegate;
     }
 
-    public void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+    public override void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
         if (AssetPostprocessorUtility.ExitImportLoop(importedAssets, _bankAssetPath, ref _importLoopCounter))
             return;
@@ -81,7 +87,7 @@ public class AssetBankUpdater<TBank, TAsset, TStoredObject>
         }
     }
 
-    public void UpdateBankComplete()
+    public override void UpdateBankComplete()
     {
         TBank bank = AssetDatabaseX.LoadOrCreateAsset(_bankAssetPath, () => ScriptableObject.CreateInstance<TBank>());
 

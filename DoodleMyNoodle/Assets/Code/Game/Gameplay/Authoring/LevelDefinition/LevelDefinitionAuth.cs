@@ -1,8 +1,9 @@
-﻿using Unity.Entities;
+﻿using Unity.Collections;
+using Unity.Entities;
 using UnityEngine;
 
-[DisallowMultipleComponent, RequireComponent(typeof(LevelDefinition))]
-public class LevelDefinition : MonoBehaviour, IConvertGameObjectToEntity
+[DisallowMultipleComponent, RequireComponent(typeof(SimAsset))]
+public class LevelDefinitionAuth : MonoBehaviour, IConvertGameObjectToEntity
 {
     public GlobalGameplaySettings GlobalGameplaySettings;
 

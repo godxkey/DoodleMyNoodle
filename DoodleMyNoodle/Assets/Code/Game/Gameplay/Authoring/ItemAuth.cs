@@ -12,12 +12,23 @@ using UnityEngine.Serialization;
 [DisallowMultipleComponent]
 public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
+    public enum ItemTier
+    {
+        Tier1,
+        Tier2,
+        Tier3,
+        Tier4,
+        Tier5,
+    }
+
     // SIMULATION
 
     // Game Action
     public GameActionAuth ActionPrefab;
 
     public int ApCost = 1;
+    public bool AvailableInShop = true;
+    public ItemTier Tier = ItemTier.Tier1;
 
     public bool HasCharges = true;
     public int ChargeCount = 10;

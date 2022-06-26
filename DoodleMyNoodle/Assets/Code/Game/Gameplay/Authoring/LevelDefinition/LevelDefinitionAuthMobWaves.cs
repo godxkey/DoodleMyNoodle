@@ -8,8 +8,8 @@ using UnityEngine;
 using UnityEngineX;
 using UnityEngineX.InspectorDisplay;
 
-[DisallowMultipleComponent, RequireComponent(typeof(LevelDefinition))]
-public class LevelDefinitionMobWaves : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
+[DisallowMultipleComponent, RequireComponent(typeof(LevelDefinitionAuth))]
+public class LevelDefinitionAuthMobWaves : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     public enum GroupDensity
     {
@@ -280,7 +280,7 @@ public class LevelDefinitionMobWaves : MonoBehaviour, IConvertGameObjectToEntity
     {
         if (_generatedLevelData == null)
         {
-            _generatedLevelData = GenerateLevelData(GetComponent<LevelDefinition>().GlobalGameplaySettings);
+            _generatedLevelData = GenerateLevelData(GetComponent<LevelDefinitionAuth>().GlobalGameplaySettings);
         }
 
         return _generatedLevelData;

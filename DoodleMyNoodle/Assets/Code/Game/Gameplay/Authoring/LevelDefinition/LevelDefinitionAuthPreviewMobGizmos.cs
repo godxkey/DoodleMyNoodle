@@ -1,7 +1,7 @@
 ﻿#if UNITY_EDITOR
 using UnityEngine;
 
-public class LevelDefinitionPreviewMobGizmos : MonoBehaviour
+public class LevelDefinitionAuthPreviewMobGizmos : MonoBehaviour
 {
     public MobSpawmModifierFlags MobModifierFlags;
 

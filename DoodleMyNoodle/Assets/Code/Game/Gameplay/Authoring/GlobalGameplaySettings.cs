@@ -14,6 +14,11 @@ public class GlobalGameplaySettings : ScriptableObject
     public GameObject MobSEChicken;
     public GameObject MobSEFrog;
 
+    [Header("Economy")]
+    public int ShopRerollPrice = 4;
+    //public int BaseGoldPerLevel = 5;
+    //public int MaxGoalInterest = 5;
+
 #if UNITY_EDITOR
     public static GlobalGameplaySettings GetInstance_EditorOnly()
     {

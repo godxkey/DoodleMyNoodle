@@ -1,20 +1,20 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(LevelDefinitionMobWaves.MobGroup))]
+[CustomPropertyDrawer(typeof(LevelDefinitionAuthMobWaves.MobGroup))]
 public class LevelDefinitionMobGroupDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.BeginProperty(position, label, property);
 
-        var propDensity = property.FindPropertyRelative(nameof(LevelDefinitionMobWaves.MobGroup.Density));
-        var propMob = property.FindPropertyRelative(nameof(LevelDefinitionMobWaves.MobGroup.Mob));
-        var propRange = property.FindPropertyRelative(nameof(LevelDefinitionMobWaves.MobGroup.Range));
+        var propDensity = property.FindPropertyRelative(nameof(LevelDefinitionAuthMobWaves.MobGroup.Density));
+        var propMob = property.FindPropertyRelative(nameof(LevelDefinitionAuthMobWaves.MobGroup.Mob));
+        var propRange = property.FindPropertyRelative(nameof(LevelDefinitionAuthMobWaves.MobGroup.Range));
 
         position.height = EditorGUIUtility.singleLineHeight;
         EditorGUI.BeginProperty(position, EditorGUIUtility.TrTempContent("Position"), propRange);
-        if (propDensity.enumValueIndex == (int)LevelDefinitionMobWaves.GroupDensity.Single)
+        if (propDensity.enumValueIndex == (int)LevelDefinitionAuthMobWaves.GroupDensity.Single)
         {
             propRange.vector2Value = Vector2.one * GUI.HorizontalSlider(position, propRange.vector2Value.x, 0, 1);
         }
@@ -44,9 +44,9 @@ public class LevelDefinitionMobGroupDrawer : PropertyDrawer
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        var density = property.FindPropertyRelative(nameof(LevelDefinitionMobWaves.MobGroup.Density));
-        var mob = property.FindPropertyRelative(nameof(LevelDefinitionMobWaves.MobGroup.Mob));
-        var range = property.FindPropertyRelative(nameof(LevelDefinitionMobWaves.MobGroup.Range));
+        var density = property.FindPropertyRelative(nameof(LevelDefinitionAuthMobWaves.MobGroup.Density));
+        var mob = property.FindPropertyRelative(nameof(LevelDefinitionAuthMobWaves.MobGroup.Mob));
+        var range = property.FindPropertyRelative(nameof(LevelDefinitionAuthMobWaves.MobGroup.Range));
         return EditorGUI.GetPropertyHeight(density) + EditorGUIUtility.standardVerticalSpacing
             + EditorGUI.GetPropertyHeight(mob) + EditorGUIUtility.standardVerticalSpacing
             + EditorGUI.GetPropertyHeight(range);

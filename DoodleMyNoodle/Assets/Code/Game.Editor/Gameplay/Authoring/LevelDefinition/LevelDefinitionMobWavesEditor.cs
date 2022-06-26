@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(LevelDefinitionMobWaves))]
+[CustomEditor(typeof(LevelDefinitionAuthMobWaves))]
 public class LevelDefinitionMobWavesEditor : Editor
 {
     protected override void OnHeaderGUI()
@@ -19,17 +19,17 @@ public class LevelDefinitionMobWavesEditor : Editor
 
     private void OnEnable()
     {
-        if (!Application.isPlaying && LevelDefinitionMobWavesPreviewer.Instance == null)
+        if (!Application.isPlaying && LevelDefinitionAuthMobWavesPreviewer.Instance == null)
         {
-            LevelDefinitionMobWavesPreviewer.CreateInstance();
-            LevelDefinitionMobWavesPreviewer.Instance.DisplayLevel(target as LevelDefinitionMobWaves);
+            LevelDefinitionAuthMobWavesPreviewer.CreateInstance();
+            LevelDefinitionAuthMobWavesPreviewer.Instance.DisplayLevel(target as LevelDefinitionAuthMobWaves);
         }
     }
 
     private void OnDisable()
     {
-        if (LevelDefinitionMobWavesPreviewer.Instance != null)
-            LevelDefinitionMobWavesPreviewer.DestroyInstance();
+        if (LevelDefinitionAuthMobWavesPreviewer.Instance != null)
+            LevelDefinitionAuthMobWavesPreviewer.DestroyInstance();
     }
 
     public override void OnInspectorGUI()
@@ -39,9 +39,9 @@ public class LevelDefinitionMobWavesEditor : Editor
 
         if (EditorGUI.EndChangeCheck() && !Application.isPlaying)
         {
-            if (LevelDefinitionMobWavesPreviewer.Instance == null)
-                LevelDefinitionMobWavesPreviewer.CreateInstance();
-            LevelDefinitionMobWavesPreviewer.Instance.DisplayLevel(target as LevelDefinitionMobWaves);
+            if (LevelDefinitionAuthMobWavesPreviewer.Instance == null)
+                LevelDefinitionAuthMobWavesPreviewer.CreateInstance();
+            LevelDefinitionAuthMobWavesPreviewer.Instance.DisplayLevel(target as LevelDefinitionAuthMobWaves);
         }
     }
 }

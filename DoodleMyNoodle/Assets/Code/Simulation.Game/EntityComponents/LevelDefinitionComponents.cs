@@ -2,6 +2,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using CCC.Fix2D;
 using System;
+using Unity.Collections;
 
 [Flags]
 public enum MobSpawmModifierFlags
@@ -11,6 +12,12 @@ public enum MobSpawmModifierFlags
     Brutal = 1 << 1,
     Fast = 1 << 2,
     Explosive = 1 << 3,
+}
+
+public struct GlobalLevelBankTag : IComponentData { }
+public struct GlobalLevelBankEntry : IBufferElementData
+{
+    public Entity LevelDefinitionPrefab;
 }
 
 public struct LevelDefinitionTag : IComponentData { }
