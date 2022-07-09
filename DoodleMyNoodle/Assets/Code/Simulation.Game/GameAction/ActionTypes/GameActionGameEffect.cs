@@ -37,13 +37,13 @@ public class GameActionGameEffect : GameAction<GameActionGameEffect.Settings>
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        var effectRequests = input.Accessor.GetSingletonBuffer<AddGameEffectRequest>();
+        var effectRequests = input.Accessor.GetSingletonBuffer<SystemRequestAddGameEffect>();
 
         for (int i = 0; i < input.Context.Targets.Length; i++)
         {
             var target = input.Context.Targets[i];
 
-            effectRequests.Add(new AddGameEffectRequest()
+            effectRequests.Add(new SystemRequestAddGameEffect()
             {
                 GameEffectPrefab = settings.GameEffect,
                 Target = target,

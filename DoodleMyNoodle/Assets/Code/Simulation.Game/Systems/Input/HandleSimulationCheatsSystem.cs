@@ -80,6 +80,12 @@ public class SimInputCheatMultiplyMobHP : SimCheatInput
     public fix Multiplier;
 }
 
+[NetSerializable]
+public class SimInputCheatNextLevel : SimCheatInput
+{
+
+}
+
 public struct CheatsAllItemElement : IBufferElementData
 {
     public Entity ItemPrefab;
@@ -340,7 +346,7 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
             {
                 var multiplier = multiplyMobHP.Multiplier;
                 Entities
-                    .WithNone<Controllable>()
+                    .WithAll<MobEnemyTag>()
                     .ForEach((Entity entity, ref Health hp) =>
                 {
                     hp.Value *= multiplier;
@@ -351,6 +357,13 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                         SetComponent(entity, maxHP);
                     }
                 }).Run();
+                break;
+            }
+
+            case SimInputCheatNextLevel nextLevel:
+            {
+                if (!HasSingleton<SingletonRequestNextLevel>())
+                    CreateSingleton<SingletonRequestNextLevel>();
                 break;
             }
         }

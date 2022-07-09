@@ -8,7 +8,7 @@ public class GameEffectStun
         {
             for (int i = 0; i < input.Context.Targets.Length; i++)
             {
-                CommonWrites.AddStatusEffect(input.Accessor, new AddStatModifierRequest()
+                CommonWrites.AddStatusEffect(input.Accessor, new SystemRequestAddStatModifier()
                 {
                     Instigator = input.Context.ActionInstigator,
                     StackAmount = 1,
@@ -29,7 +29,7 @@ public class GameEffectStun
         {
             for (int i = 0; i < input.Context.Targets.Length; i++)
             {
-                CommonWrites.RemoveStatusEffect(input.Accessor, new RemoveStatModifierRequest()
+                CommonWrites.RemoveStatusEffect(input.Accessor, new SystemRequestRemoveStatModifier()
                 {
                     Instigator = input.Context.ActionInstigator,
                     StackAmount = 1,

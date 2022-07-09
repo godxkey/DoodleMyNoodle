@@ -45,7 +45,7 @@ EditorBuildSettings:
     path: 
     guid: 01ea5267214d63a479a17157f03d0d1d
   - enabled: 0
-    path: Assets/Scenes/Levels/Scene Assets/Gym_Physics.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_Gym_Physics.unity
     guid: 22c6279033e4e434d8fd305a9fb702f8
   - enabled: 1
     path: 
@@ -57,16 +57,16 @@ EditorBuildSettings:
     path: Assets/Scenes/Game/Scene Assets/Game Systems (dynamic).unity
     guid: b9dc8cc8b12a9e74faa0ead59f7273b6
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Gym_Interactables.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_Gym_Interactables.unity
     guid: a3aaad04249432c4d8bcd2f7adb6efef
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Gym_Surveys.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_Gym_Surveys.unity
     guid: 21959199b973fbd42853114d789a70ac
   - enabled: 1
     path: 
     guid: de112d99d442a5342ba101a7fa9d56fa
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Gym_Fred.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_Gym_Fred.unity
     guid: 88424a4ab48a6b440a5b18e40e0bf10f
   - enabled: 1
     path: 
@@ -81,27 +81,30 @@ EditorBuildSettings:
     path: 
     guid: b4806dce33f859a449e42aa471e072af
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Easy.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Easy.unity
     guid: d827cac612b8a4a4e9c0a8663f80eda3
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Easy_Presentation.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Easy_Presentation.unity
     guid: 662c14a2f0f0d834998cd7b34b522100
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_EmptyLevel.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_EmptyLevel.unity
     guid: f809e74dcf90b6c4d8a06a0e02344794
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_EmptyLevel_Presentation.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_EmptyLevel_Presentation.unity
     guid: b9129e627c423e64f8efe8264d33170e
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Medium.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Medium.unity
     guid: c7d285f3a8a65da47be43e247c004568
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Medium_Presentation.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Medium_Presentation.unity
     guid: 9478ccbd32bf23440b28985a925252c2
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Hard.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Hard.unity
     guid: e3e26752fc210f64dad7b5f1a3a88e27
   - enabled: 1
-    path: Assets/Scenes/Levels/Scene Assets/Lvl_Prototype7_Hard_Presentation.unity
+    path: Assets/Scenes/Levels/Scene Assets/MAP_Prototype7_Hard_Presentation.unity
     guid: e412f4896245a6c41a69c79ded9e3fad
+  - enabled: 1
+    path: Assets/Scenes/Levels/Scene Assets/MAP_Proto8.unity
+    guid: 9103cc200b48dce479391a9810c0b8bb
   m_configObjects: {}

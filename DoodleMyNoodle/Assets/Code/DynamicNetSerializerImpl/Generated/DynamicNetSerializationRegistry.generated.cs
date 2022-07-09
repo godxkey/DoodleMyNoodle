@@ -170,7 +170,7 @@ public static class DynamicNetSerializationRegistry
         ,
         typeof(SimulationControl.SimTickData)
         ,
-        typeof(SyncedValueCurrentLevel)
+        typeof(SyncedValueCurrentMap)
         ,
         typeof(TestMessage)
         ,
@@ -671,9 +671,9 @@ public static class DynamicNetSerializationRegistry
             return StaticNetSerializer_SimulationControl_SimTickData.GetSerializedBitSize(ref castedObj);
         }
         ,
-        [typeof(SyncedValueCurrentLevel)] = (obj) =>
+        [typeof(SyncedValueCurrentMap)] = (obj) =>
         {
-            SyncedValueCurrentLevel castedObj = (SyncedValueCurrentLevel)obj;
+            SyncedValueCurrentMap castedObj = (SyncedValueCurrentMap)obj;
             return StaticNetSerializer_SyncedValueCurrentLevel.GetSerializedBitSize(ref castedObj);
         }
         ,
@@ -1208,9 +1208,9 @@ public static class DynamicNetSerializationRegistry
             StaticNetSerializer_SimulationControl_SimTickData.Serialize(ref castedObj, writer);
         }
         ,
-        [typeof(SyncedValueCurrentLevel)] = (obj, writer) =>
+        [typeof(SyncedValueCurrentMap)] = (obj, writer) =>
         {
-            SyncedValueCurrentLevel castedObj = (SyncedValueCurrentLevel)obj;
+            SyncedValueCurrentMap castedObj = (SyncedValueCurrentMap)obj;
             StaticNetSerializer_SyncedValueCurrentLevel.Serialize(ref castedObj, writer);
         }
         ,
@@ -1827,7 +1827,7 @@ public static class DynamicNetSerializationRegistry
         ,
         [80] = (reader) =>
         {
-            SyncedValueCurrentLevel obj = new SyncedValueCurrentLevel();
+            SyncedValueCurrentMap obj = new SyncedValueCurrentMap();
             StaticNetSerializer_SyncedValueCurrentLevel.Deserialize(ref obj, reader);
             return obj;
         }

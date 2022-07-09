@@ -8,7 +8,7 @@ public class ExplosionEventDisplaySystem : GamePresentationSystem<ExplosionEvent
 
     public override void PresentationPostSimulationTick()
     {
-        var explosions = Cache.SimWorld.GetSingletonBufferReadOnly<EventExplosion>();
+        var explosions = Cache.SimWorld.GetSingletonBufferReadOnly<SingletonEventElementExplosion>();
 
         for (int i = 0; i < explosions.Length; i++)
         {

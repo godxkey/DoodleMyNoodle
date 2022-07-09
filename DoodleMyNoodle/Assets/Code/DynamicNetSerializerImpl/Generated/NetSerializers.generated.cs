@@ -3159,19 +3159,19 @@ public static class StaticNetSerializer_SimulationControl_SimTickData
 }
 public static class StaticNetSerializer_SyncedValueCurrentLevel
 {
-    public static int GetSerializedBitSize(ref SyncedValueCurrentLevel obj)
+    public static int GetSerializedBitSize(ref SyncedValueCurrentMap obj)
     {
         int result = 0;
         result += StaticNetSerializer_System_String.GetSerializedBitSize(ref obj.Name);
         return result;
     }
 
-    public static void Serialize(ref SyncedValueCurrentLevel obj, BitStreamWriter writer)
+    public static void Serialize(ref SyncedValueCurrentMap obj, BitStreamWriter writer)
     {
         StaticNetSerializer_System_String.Serialize(ref obj.Name, writer);
     }
 
-    public static void Deserialize(ref SyncedValueCurrentLevel obj, BitStreamReader reader)
+    public static void Deserialize(ref SyncedValueCurrentMap obj, BitStreamReader reader)
     {
         StaticNetSerializer_System_String.Deserialize(ref obj.Name, reader);
     }

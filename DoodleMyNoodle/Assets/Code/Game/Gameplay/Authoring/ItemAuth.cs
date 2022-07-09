@@ -12,12 +12,23 @@ using UnityEngine.Serialization;
 [DisallowMultipleComponent]
 public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
+    public enum ItemTier
+    {
+        Tier1,
+        Tier2,
+        Tier3,
+        Tier4,
+        Tier5,
+    }
+
     // SIMULATION
 
     // Game Action
     public GameActionAuth ActionPrefab;
 
     public int ApCost = 1;
+    public bool AvailableInShop = true;
+    public ItemTier Tier = ItemTier.Tier1;
 
     public bool HasCharges = true;
     public int ChargeCount = 10;
@@ -47,7 +58,10 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
         dstManager.AddComponentData(entity, new ItemSettingAPCost() { Value = ApCost });
         dstManager.AddComponentData(entity, new StackableFlag() { Value = false });
         if (HasCharges)
+        {
             dstManager.AddComponentData(entity, new ItemCharges() { Value = ChargeCount });
+            dstManager.AddComponentData(entity, new ItemStatingCharges() { Value = ChargeCount });
+        }
         dstManager.AddComponent<FirstInstigator>(entity); // a enlever ?
         dstManager.AddComponentData(entity, new SpellInstigator() { Value = entity });
         dstManager.AddComponent<ItemTag>(entity);

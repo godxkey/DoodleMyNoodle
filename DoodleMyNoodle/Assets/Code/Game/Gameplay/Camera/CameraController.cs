@@ -62,4 +62,25 @@ public class CameraController : GamePresentationSystem<CameraController>
     {
         CamPosition = Cache.GroupPosition.ToUnityVec() + OffsetFromGroupPosition;
     }
+
+    [ConsoleVar]
+    private static float CameraOffsetX
+    {
+        get => Instance?.OffsetFromGroupPosition.x ?? 0;
+        set { if (Instance) Instance.OffsetFromGroupPosition.x = value; }
+    }
+
+    [ConsoleVar]
+    private static float CameraOffsetY
+    {
+        get => Instance?.OffsetFromGroupPosition.y ?? 0;
+        set { if (Instance) Instance.OffsetFromGroupPosition.y = value; }
+    }
+
+    [ConsoleVar]
+    private static float CameraWidth
+    {
+        get => Instance?.DesiredWidth ?? 0;
+        set { if (Instance) Instance.DesiredWidth = value; }
+    }
 }

@@ -8,7 +8,7 @@ using UnityEngineX;
 using Unity.Jobs;
 
 
-public struct MutedContactActionElement : ISingletonBufferElementData
+public struct SingletonElementMutedContactAction : ISingletonBufferElementData
 {
     public Entity Instigator;
     public Entity Target;
@@ -18,7 +18,7 @@ public struct MutedContactActionElement : ISingletonBufferElementData
 
 static class MutedContactActionElementExtensions
 {
-    public static bool IsMuted(this DynamicBuffer<MutedContactActionElement> buffer, Entity entity, Entity target, byte actionId)
+    public static bool IsMuted(this DynamicBuffer<SingletonElementMutedContactAction> buffer, Entity entity, Entity target, byte actionId)
     {
         for (int i = 0; i < buffer.Length; i++)
         {
@@ -59,7 +59,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
             Teams = GetComponentDataFromEntity<Team>(isReadOnly: true),
             FirstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true),
             Colliders = GetComponentDataFromEntity<PhysicsColliderBlob>(isReadOnly: true),
-            MutedActions = GetSingletonBuffer<MutedContactActionElement>(),
+            MutedActions = GetSingletonBuffer<SingletonElementMutedContactAction>(),
             Time = Time.ElapsedTime
         };
 
@@ -105,7 +105,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
         [ReadOnly] public PhysicsWorld World;
         [ReadOnly] public fix Time;
 
-        public DynamicBuffer<MutedContactActionElement> MutedActions;
+        public DynamicBuffer<SingletonElementMutedContactAction> MutedActions;
         public NativeList<GameActionRequest> OutActions;
 
         private struct EntityInfo
@@ -152,7 +152,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
 
                         if (actionOnContact.Data.SameTargetCooldown > 0)
                         {
-                            MutedActions.Add(new MutedContactActionElement()
+                            MutedActions.Add(new SingletonElementMutedContactAction()
                             {
                                 Instigator = entityA,
                                 ContactActionBufferId = actionOnContact.Data.Id,
@@ -190,7 +190,7 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
         var teams = GetComponentDataFromEntity<Team>(isReadOnly: true);
         var firstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true);
         var colliders = GetComponentDataFromEntity<PhysicsColliderBlob>(isReadOnly: true);
-        var mutedActions = GetSingletonBuffer<MutedContactActionElement>();
+        var mutedActions = GetSingletonBuffer<SingletonElementMutedContactAction>();
         var time = Time.ElapsedTime;
 
         Entities
@@ -238,7 +238,7 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
 
                             if (actionOnContact.Data.GeneralCooldown > 0)
                             {
-                                mutedActions.Add(new MutedContactActionElement()
+                                mutedActions.Add(new SingletonElementMutedContactAction()
                                 {
                                     Instigator = entity,
                                     ContactActionBufferId = actionOnContact.Data.Id,
@@ -249,7 +249,7 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
 
                             if (actionOnContact.Data.SameTargetCooldown > 0)
                             {
-                                mutedActions.Add(new MutedContactActionElement()
+                                mutedActions.Add(new SingletonElementMutedContactAction()
                                 {
                                     Instigator = entity,
                                     ContactActionBufferId = actionOnContact.Data.Id,
@@ -275,7 +275,7 @@ public class UpdateMutedContactActionSystem : SimGameSystemBase
     protected override void OnUpdate()
     {
         var time = Time.ElapsedTime;
-        var mutedActions = GetSingletonBuffer<MutedContactActionElement>();
+        var mutedActions = GetSingletonBuffer<SingletonElementMutedContactAction>();
         for (int i = mutedActions.Length - 1; i >= 0; i--)
         {
             if (time >= mutedActions[i].ExpirationTime)

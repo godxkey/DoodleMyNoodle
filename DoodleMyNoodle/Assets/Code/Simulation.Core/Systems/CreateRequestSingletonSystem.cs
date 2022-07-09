@@ -6,6 +6,7 @@ using System;
 
 public struct SingletonBuffersTag : IComponentData { }
 public interface ISingletonBufferElementData : IBufferElementData { }
+public interface ISingletonComponentData : IComponentData { }
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 [AlwaysUpdateSystem]
@@ -29,7 +30,13 @@ public class CreateRequestSingletonSystem : SimSystemBase
             {
                 types.Add(new ComponentType(item.Type));
             }
+            if (typeof(ISingletonComponentData).IsAssignableFrom(item.Type) && item.Category == TypeManager.TypeCategory.ComponentData)
+            {
+                types.Add(new ComponentType(item.Type));
+            }
         }
+
+        types.Sort((a, b) => a.GetManagedType().Name.CompareTo(b.GetManagedType().Name));
 
         _singletonArchetype = EntityManager.CreateArchetype(types.ToArray());
     }
@@ -39,7 +46,10 @@ public class CreateRequestSingletonSystem : SimSystemBase
         if (!HasSingleton<SingletonBuffersTag>())
         {
             // create singleton
-            EntityManager.CreateEntity(_singletonArchetype);
+            var entity = EntityManager.CreateEntity(_singletonArchetype);
+#if UNITY_EDITOR
+            EntityManager.SetName(entity, "Singleton Data");
+#endif
         }
         else if (_singletonArchetype.ChunkCount == 0)
         {

@@ -5,18 +5,18 @@ using UnityEngineX;
 
 public class GameStateInGameServer : GameStateInGameOnline
 {
-    public string LevelToPlay { get; private set; }
+    public string MapToPlay { get; private set; }
 
     public override void Enter(GameStateParam[] parameters)
     {
         base.Enter(parameters);
 
-        GameStateParamLevelName levelNameParam = parameters.Find<GameStateParamLevelName>();
+        GameStateParamMapName mapNameParam = parameters.Find<GameStateParamMapName>();
 
-        if (levelNameParam != null)
+        if (mapNameParam != null)
         {
             // do something?
-            LevelToPlay = levelNameParam.levelName;
+            MapToPlay = mapNameParam.MapName;
         }
     }
 }

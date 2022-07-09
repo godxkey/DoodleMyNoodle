@@ -38,7 +38,7 @@ public static class SimulationCheats
 
         var cache = GamePresentationCache.Instance;
 
-        s_globalGroupEnabled.Set(cache?.SimWorld != null && cache.SimWorld.HasSingleton<GridInfo>());
+        s_globalGroupEnabled.Set(cache?.SimWorld != null && cache.SimWorld.HasSingleton<GameStartedTag>());
         s_localPawnGroupEnabled.Set(s_globalGroupEnabled && cache.SimWorld.Exists(GamePresentationCache.Instance.LocalPawn));
         s_localPlayerGroupEnabled.Set(s_globalGroupEnabled && GamePresentationCache.Instance.LocalControllerExists);
 
@@ -248,6 +248,14 @@ public static class SimulationCheats
         PresentationHelpers.SubmitInput(new SimInputCheatMultiplyMobHP()
         {
             Multiplier = (fix)multiplier
+        });
+    }
+
+    [ConsoleCommand(Description = "Change the level to the next", EnableGroup = GLOBAL_GROUP)]
+    public static void CheatNextLevel()
+    {
+        PresentationHelpers.SubmitInput(new SimInputCheatNextLevel()
+        {
         });
     }
 }

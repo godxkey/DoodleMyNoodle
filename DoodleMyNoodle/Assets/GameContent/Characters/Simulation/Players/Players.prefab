@@ -68,10 +68,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveDirection: 0
-  MoveSpeed: 0.6
+  MoveSpeed: 0.5
   StopAtCertainDistance: 1
   DistanceFromFrontTargetMin: 0
   DistanceFromFrontTargetMax: 0.6
+  KeepWalkingAfterPeriodicAction: 0
 --- !u!114 &5890412712457652622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,7 +101,6 @@ MonoBehaviour:
   Proxy: {fileID: 0}
   MaxValue: 40
   StartAtMax: 1
-  DestroyOnDeath: 0
   RechargeRate: 0
   RechargeCooldown: 1
   StartValue: 10

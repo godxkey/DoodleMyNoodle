@@ -90,7 +90,7 @@ public class LaunchProfileElement : ToolsVisualElementBase
             _content_profileName.value = PlayerProfile.playerName;
 
         _content_tag_editor.style.visibility = Visible(IsMarkedAsEditor);
-        _content_tag_server.style.visibility = Visible(IsMarkedAsServer && EditorLaunchData.playOnline && !EditorLaunchData.playFromScratch);
+        _content_tag_server.style.visibility = Visible(IsMarkedAsServer && EditorLaunchData.PlayOnline && !EditorLaunchData.PlayFromScratch);
         _content_play.style.visibility = Visible(!MyEditorIsRunning && !MyStandaloneIsRunning);
         _content_stop.style.visibility = Visible(MyEditorIsRunning || MyStandaloneIsRunning);
 
@@ -160,7 +160,7 @@ public class LaunchProfileElement : ToolsVisualElementBase
 
     void LaunchEditor()
     {
-        EditorLaunchData.profileLocalId = PlayerProfile.localId;
+        EditorLaunchData.ProfileLocalId = PlayerProfile.localId;
         EditorApplication.isPlaying = true;
     }
 
@@ -231,15 +231,15 @@ public class LaunchProfileElement : ToolsVisualElementBase
         UpdateContent();
     }
 
-    QuickStartSettings.PlayMode GetPlayMode()
+    QuickStartSettings.EPlayMode GetPlayMode()
     {
-        if (EditorLaunchData.playOnline)
+        if (EditorLaunchData.PlayOnline)
         {
-            return IsMarkedAsServer ? QuickStartSettings.PlayMode.OnlineServer : QuickStartSettings.PlayMode.OnlineClient;
+            return IsMarkedAsServer ? QuickStartSettings.EPlayMode.OnlineServer : QuickStartSettings.EPlayMode.OnlineClient;
         }
         else
         {
-            return QuickStartSettings.PlayMode.Local;
+            return QuickStartSettings.EPlayMode.Local;
         }
     }
 
@@ -248,24 +248,24 @@ public class LaunchProfileElement : ToolsVisualElementBase
         StringBuilder finalArguments = new StringBuilder();
 
         bool headless = false;
-        if (!EditorLaunchData.playFromScratch)
+        if (!EditorLaunchData.PlayFromScratch)
         {
-            QuickStartSettings.PlayMode playmode = GetPlayMode();
-            headless = EditorLaunchData.serverIsHeadless && (playmode == QuickStartSettings.PlayMode.OnlineServer);
+            QuickStartSettings.EPlayMode playmode = GetPlayMode();
+            headless = EditorLaunchData.ServerIsHeadless && (playmode == QuickStartSettings.EPlayMode.OnlineServer);
 
             finalArguments.Append("-playmode ");
             finalArguments.Append((int)playmode);
             finalArguments.Append(' ');
 
-            string level = EditorLaunchData.level;
-            if (string.IsNullOrEmpty(level) == false)
+            string map = EditorLaunchData.Map;
+            if (string.IsNullOrEmpty(map) == false)
             {
-                finalArguments.Append("-level ");
-                finalArguments.Append(level);
+                finalArguments.Append("-map ");
+                finalArguments.Append(map);
                 finalArguments.Append(' ');
             }
 
-            string serverName = EditorLaunchData.serverName;
+            string serverName = EditorLaunchData.ServerName;
             if (string.IsNullOrEmpty(serverName) == false)
             {
                 finalArguments.Append("-servername ");
@@ -281,14 +281,14 @@ public class LaunchProfileElement : ToolsVisualElementBase
         {
             finalArguments.Append("-batchmode -nographics ");
         }
-        else if (EditorLaunchData.launchOverrideScreen)
+        else if (EditorLaunchData.LaunchOverrideScreen)
         {
-            finalArguments.Append($"-screen-fullscreen {(EditorLaunchData.launchFullscreen ? 1 : 0)} ");
-            finalArguments.Append($"-screen-height {EditorLaunchData.launchScreenHeight} ");
-            finalArguments.Append($"-screen-width {EditorLaunchData.launchScreenWidth} ");
+            finalArguments.Append($"-screen-fullscreen {(EditorLaunchData.LaunchFullscreen ? 1 : 0)} ");
+            finalArguments.Append($"-screen-height {EditorLaunchData.LaunchScreenHeight} ");
+            finalArguments.Append($"-screen-width {EditorLaunchData.LaunchScreenWidth} ");
         }
 
-        finalArguments.Append(EditorLaunchData.extraArguments);
+        finalArguments.Append(EditorLaunchData.ExtraArguments);
         finalArguments.Append(' ');
 
         return finalArguments.ToString();

@@ -17,7 +17,7 @@ public class UpdateSimPlayersSystem : ViewSystemBase
         if (PlayerRepertoireSystem.Instance == null)
             return;
 
-        // wait for level to be loaded before trying to spawn pawns, kinda hack ...
+        // wait for map to be loaded before trying to spawn pawns, kinda hack ...
         if (!SimWorldAccessor.HasSingleton<GridInfo>())
             return;
 

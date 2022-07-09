@@ -21,16 +21,6 @@ public static class SimulationGameConstants
     public static readonly fix DynamicChestTriggerRadius = (fix)2.5f;
     public static readonly fix2 Gravity = new fix2(0, (fix)(-7.45f)); // since player characters are about 0.9 units in size, this is the realistic gravity
     public static readonly fix InteractibleMaxDistanceManhattan = (fix)1.5;
-    public static readonly fix AIShootSpeedIfNoGravity = (fix)3f;
-    // unused since AIs are omniscient
-    //public static readonly fix AISightDistance = 8;
-    //public static readonly fix AISightDistanceSq = AISightDistance * AISightDistance;
-    public static readonly fix2 AIEyeOffset = new fix2(0, (fix)0.15f);
-    public static readonly fix AISearchForShootPositionMaxCost = (fix)10;
-    public static readonly fix AgentRepathCooldown = (fix)1; // repath every 1s
-    public static readonly fix AIPauseDurationAfterShoot = (fix)2;
-    public static readonly fix AIGrenadierShootDistanceRatio = (fix)0.6; // attemps to shoot at 60% of the distance to target (to account for bomb bounces)
-    public static readonly fix AIThinkGlobalCooldown = (fix)0.5;
     public static readonly fix CharacterRadius = (fix)0.45; // do NOT use this constant unless really necessary. It needs to be removed in the future
 
     public static readonly fix SameEffectGroupDamageCooldown = (fix)1; // do NOT use this constant unless really necessary. It needs to be removed in the future
@@ -58,6 +48,11 @@ public static class SimulationGameConstants
     public static readonly fix ImpulseThresholdDestroyingTile = 5;
 
     public static readonly fix FallDamageCooldown = (fix)0.6;
+    public static readonly fix OutOfBoundsLeftDistanceFromPlayerGroup = 5;
+    public static readonly fix OutOfBoundsRightDistanceFromPlayerGroup = 15;
+    public static readonly fix EnemySpawnDistanceFromPlayerGroup = 15;
+    public static readonly fix DeadEntityDestroyDelay = 3;
+    public static readonly fix UnspawnedMobsMoveSpeed = -(fix)0.5; // this should ideally matcht the base move speed of regular mobs
 
     private static bool s_init = false;
 

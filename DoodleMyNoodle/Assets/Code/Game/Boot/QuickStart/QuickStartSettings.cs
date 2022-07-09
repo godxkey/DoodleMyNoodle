@@ -1,10 +1,10 @@
 ﻿using System;
-
+using UnityEngine.Serialization;
 
 [Serializable]
 public struct QuickStartSettings
 {
-    public enum PlayMode
+    public enum EPlayMode
     {
         // do not change the values
         Local = 0,
@@ -12,13 +12,20 @@ public struct QuickStartSettings
         OnlineServer = 2,
     }
 
-    public int localProfileId;
-    public PlayMode playMode;
-    public string serverName;
-    public string level;
+    [FormerlySerializedAs("localProfileId")]
+    public int LocalProfileId;
+
+    [FormerlySerializedAs("playMode")]
+    public EPlayMode PlayMode;
+
+    [FormerlySerializedAs("serverName")]
+    public string ServerName;
+
+    [FormerlySerializedAs("level")]
+    public string Map;
 
     public override string ToString()
     {
-        return string.Format("Profile[{0}]  PlayMode[{1}]  ServerName[{2}]  Level[{3}]", localProfileId, playMode.ToString(), serverName, level);
+        return string.Format("Profile[{0}]  PlayMode[{1}]  ServerName[{2}]  Map[{3}]", LocalProfileId, PlayMode.ToString(), ServerName, Map);
     }
 }

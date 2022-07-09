@@ -100,10 +100,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveDirection: 1
-  MoveSpeed: 0.6
+  MoveSpeed: 0.5
   StopAtCertainDistance: 1
   DistanceFromFrontTargetMin: 0
   DistanceFromFrontTargetMax: 0.6
+  KeepWalkingAfterPeriodicAction: 0
 --- !u!114 &5635049573386359071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,7 +140,6 @@ MonoBehaviour:
   Proxy: {fileID: 0}
   MaxValue: 20
   StartAtMax: 1
-  DestroyOnDeath: 0
   RechargeRate: 0
   RechargeCooldown: 4
   StartValue: 10
@@ -235,4 +235,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 582fb2f80cfdd9046a362c54756d20c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnHeight: 0.5
+  SpawnHeight: 0.6

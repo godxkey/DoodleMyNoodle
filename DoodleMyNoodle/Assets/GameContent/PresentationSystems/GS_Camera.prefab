@@ -201,8 +201,8 @@ MonoBehaviour:
   _wallpaper: {fileID: 2508691285438419769}
   _wallpaperSize: {x: 17.778, y: 10}
   Cam: {fileID: 4685809662094148431}
-  DesiredWidth: 19
-  OffsetFromGroupPosition: {x: 5, y: 2}
+  DesiredWidth: 15
+  OffsetFromGroupPosition: {x: 4.5, y: 1.75}
 --- !u!1 &5449155864576093604
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ using Unity.Mathematics;
 using UnityEngineX;
 using static fixMath;
 
-public struct EventExplosion : ISingletonBufferElementData
+public struct SingletonEventElementExplosion : ISingletonBufferElementData
 {
     public fix2 Position;
     public fix Radius;
@@ -27,7 +27,7 @@ public class ApplyExplosionSystem : SimGameSystemBase
     private const int IMPULSE_MAX = 4;
     private const int IMPULSE_MIN = 2;
 
-    private List<EventExplosion> _newExplosionEvents = new List<EventExplosion>();
+    private List<SingletonEventElementExplosion> _newExplosionEvents = new List<SingletonEventElementExplosion>();
     private NativeList<Entity> _entitiesToDamage;
     private ApplyImpulseSystem _applyImpulseSystem;
 
@@ -48,7 +48,7 @@ public class ApplyExplosionSystem : SimGameSystemBase
     protected override void OnUpdate()
     {
         // Clear Damage Applied Events
-        GetSingletonBuffer<EventExplosion>().Clear();
+        GetSingletonBuffer<SingletonEventElementExplosion>().Clear();
 
         DynamicBuffer<SystemRequestExplosion> explosionRequestBuffer = GetSingletonBuffer<SystemRequestExplosion>();
 
@@ -99,11 +99,11 @@ public class ApplyExplosionSystem : SimGameSystemBase
                     }
                 }
 
-                _newExplosionEvents.Add(new EventExplosion() { Position = request.Position, Radius = request.Radius });
+                _newExplosionEvents.Add(new SingletonEventElementExplosion() { Position = request.Position, Radius = request.Radius });
             }
 
-            var explosionEvents = GetSingletonBuffer<EventExplosion>();
-            foreach (EventExplosion evnt in _newExplosionEvents)
+            var explosionEvents = GetSingletonBuffer<SingletonEventElementExplosion>();
+            foreach (SingletonEventElementExplosion evnt in _newExplosionEvents)
             {
                 explosionEvents.Add(evnt);
             }
