@@ -66,6 +66,14 @@ public class SurveyAngryBirds : SurveyBaseController
                 }
             }
         }
+        else
+        {
+            // by default origin entity is the character that triggered the survey
+            if (SimWorld.TryGetComponent(context.Instigator, out FirstInstigator firstInstigator))
+            {
+                _originEntity = firstInstigator.Value;
+            }
+        }
 
         Update(); // force first update to avoid visual issue on first frame. We should find a more general fix
 
@@ -172,6 +180,11 @@ public class SurveyAngryBirds : SurveyBaseController
 
     private void UpdateVisuals()
     {
+        if (SimWorld.TryGetComponent(_originEntity, out FixTranslation fixTranslation))
+        {
+            transform.position = fixTranslation.Value.ToUnityVec();
+        }
+
         // drag target
         if (_dragState == DragState.Idle)
         {

@@ -205,7 +205,7 @@ public static class PresentationHelpers
                     return 1;
 
                 if (!cache.SimWorld.TryGetComponent(entity, out PhysicsGravity grav))
-                    return 1;
+                    return 0;
 
                 return (float)grav.Scale;
             }
