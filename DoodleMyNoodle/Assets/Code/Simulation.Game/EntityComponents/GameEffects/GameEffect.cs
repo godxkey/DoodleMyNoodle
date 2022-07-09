@@ -17,6 +17,11 @@ public struct GameEffectInfo : IComponentData
     public InstigatorSet Instigator;
 }
 
+public struct GameEffectStartBufferElement : IBufferElementData
+{
+    public Entity EffectEntity;
+}
+
 public struct GameEffectBufferElement : IBufferElementData
 {
     public Entity EffectEntity;

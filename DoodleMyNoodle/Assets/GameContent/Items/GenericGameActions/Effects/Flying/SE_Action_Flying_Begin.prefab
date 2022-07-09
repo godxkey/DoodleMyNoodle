@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Archer_PiercingArrow
+  m_Name: SE_Action_Flying_Begin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 481d4e438fb20e143b83aaf18260d5c6
+  _guid: 67ffdd70e69367948ae2b9201ae93337
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,33 +63,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionThrow
+  Value: GameEffectFlying+Begin
   UseInstigatorAsTarget: 0
   ExecuteOnFirstInstigator: 0
   ExecuteOnLastInstigator: 0
   InstigatorAsTargetType: 0
-  GameActionSettings:
-  - id: 0
-  SfxOnUse: {fileID: 11400000, guid: 294d1b70193c2ba449c98eb807bacece, type: 2}
+  GameActionSettings: []
+  SfxOnUse: {fileID: 0}
   Animation: {fileID: 0}
   InstigatorVFX: {fileID: 0}
   TargetsVFX: {fileID: 0}
-  Surveys:
-  - {fileID: -7738127193957608722, guid: 28861c694a720084c8c37530fbe78486, type: 3}
+  Surveys: []
   references:
     version: 1
-    00000000:
-      type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
-      data:
-        SpeedMin:
-          RawValue: 0
-        SpeedMax:
-          RawValue: 42949672960
-        SpawnExtraDistance:
-          RawValue: 0
-        ProjectilePrefab: {fileID: 2385346486794747607, guid: 5d5326b184834f5498348e0dffa13269,
-          type: 3}
-        Quantity: 1
-        VolleyAngle: 0
-        ShootVector: {x: 9, y: 4}
-        SpawnOffset: {x: 0, y: 0}

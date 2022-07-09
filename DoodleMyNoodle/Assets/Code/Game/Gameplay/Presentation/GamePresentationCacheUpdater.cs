@@ -37,6 +37,8 @@ public class GamePresentationCache
     public fix PlayerAP;
     public fix PlayerMaxAP;
     public fix2 GroupPosition;
+    public fix2 WorldGravityFix;
+    public Vector2 WorldGravity;
     public ExternalSimGameWorldAccessor SimWorld;
 
     public bool LocalPawnExists => LocalPawn != Entity.Null;
@@ -137,6 +139,15 @@ public class GamePresentationCacheUpdater : ViewSystemBase
             Cache.GroupPosition = Cache.SimWorld.GetComponent<FixTranslation>(Cache.PlayerGroupEntity).Value;
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //      Gravity
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        if (Cache.SimWorld.TryGetSingleton(out PhysicsStepSettings physicsStepSettings))
+        {
+            Cache.WorldGravityFix = physicsStepSettings.GravityFix;
+            Cache.WorldGravity = Cache.WorldGravityFix.ToUnityVec();
+        }
 
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Pointer

@@ -181,6 +181,21 @@ public static class PresentationHelpers
             return false;
         }
 
+        public static float GetProjectileRadiusSetting(GamePresentationCache cache, GameAction.ExecutionContext useContext)
+        {
+            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigator, out ItemAction itemAction))
+            {
+                GameActionThrow throwAction = GetGameAction<GameActionThrow>(cache.SimWorld, itemAction.Value);
+
+                if (throwAction != null)
+                {
+                    return (float)throwAction.GetProjectileRadius(cache.SimWorld, itemAction.Value);
+                }
+            }
+
+            return 0.05f;
+        }
+
         public static float GetProjectileGravityScale(GamePresentationCache cache, GameAction.ExecutionContext useContext)
         {
             if (cache.SimWorld == null)
