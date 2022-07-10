@@ -1,12 +1,6 @@
-using SFB;
-using System;
-using System.IO;
-using TMPro;
 using Unity.Entities;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityEngineX;
 
 public class CharacterCreationScreen : GamePresentationSystem<CharacterCreationScreen>
 {

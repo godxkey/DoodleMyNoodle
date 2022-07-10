@@ -35,7 +35,7 @@ public class LaunchCommandsWindow : ToolsWindowBase
     protected override void Rebuild(VisualElement root)
     {
         _listView = root.Q<ListView>("invokablesContainer");
-        _listView.itemHeight = 18;
+        _listView.fixedItemHeight = 18;
         _listView.makeItem = () => new LaunchCommandElement();
         _listView.bindItem = (v, index) => Bind((LaunchCommandElement)v, index);
         _listView.itemsSource = _widgetDatas;
@@ -77,7 +77,7 @@ public class LaunchCommandsWindow : ToolsWindowBase
         widgetData.GameConsoleInvokable = invokable;
         widgetData.Active = true;
         _widgetDatas.Add(widgetData);
-        _listView.Refresh();
+        _listView.Rebuild();
 
         Save();
     }
@@ -94,7 +94,7 @@ public class LaunchCommandsWindow : ToolsWindowBase
     private void OnRemoveClicked(LaunchCommandElement obj)
     {
         _widgetDatas.Remove(obj.GetData());
-        _listView.Refresh();
+        _listView.Rebuild();
 
         Save();
     }

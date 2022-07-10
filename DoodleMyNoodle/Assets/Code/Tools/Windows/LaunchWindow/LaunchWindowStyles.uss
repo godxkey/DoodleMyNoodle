@@ -1,11 +1,10 @@
 :root {
-    margin-left: 5px;
-    margin-right: 5px;
-    margin-top: 5px;
+    padding-left: 4px;
+    padding-top: 4px;
 }
 
-.category{
-    margin-bottom: 20px;
+.space{
+    height:10px;
 }
 
 .buildButton{

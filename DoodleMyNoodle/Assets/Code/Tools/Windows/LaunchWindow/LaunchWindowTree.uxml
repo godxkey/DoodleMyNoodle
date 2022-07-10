@@ -19,6 +19,7 @@ xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
     </engine:VisualElement>
 
     <engine:Button name="refreshButton"/>
+    <engine:VisualElement class="space"/>
 
     <engine:VisualElement class="category">
       <engine:Label text="Launch" class="title"/>

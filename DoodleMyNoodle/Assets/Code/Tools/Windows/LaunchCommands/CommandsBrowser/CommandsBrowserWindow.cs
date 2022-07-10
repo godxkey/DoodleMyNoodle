@@ -120,7 +120,7 @@ public class CommandsBrowserWindow : ToolsWindowBase
 
         _listView = root.Q<ListView>("invokablesContainer");
         _listView.selectionType = SelectionType.None;
-        _listView.itemHeight = 18;
+        _listView.fixedItemHeight = 18;
         _listView.makeItem = CreateElement;
         _listView.bindItem = (v, i) => Bind((CommandVisualElement)v, i);
         _listView.itemsSource = _displayedInvokables;
@@ -141,7 +141,7 @@ public class CommandsBrowserWindow : ToolsWindowBase
             _searcher.GetSuggestions(s_invokables, txt, _displayedInvokables);
         }
 
-        _listView.Refresh();
+        _listView.Rebuild();
     }
 
     private VisualElement CreateElement()

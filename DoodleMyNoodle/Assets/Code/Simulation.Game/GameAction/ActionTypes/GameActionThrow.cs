@@ -268,10 +268,11 @@ internal partial class CommonWrites
             if (simulateSpawnFromInstigatorCenter)
             {
                 // Find how much the projectile will be affected by gravity
-                fix2 gravity = accessor.GetExistingSystem<PhysicsWorldSystem>().PhysicsWorld.StepSettings.GravityFix;
+                fix2 gravity = fix2.zero;
                 if (accessor.HasComponent<PhysicsGravity>(projectilePrefab))
                 {
-                    gravity *= accessor.GetComponent<PhysicsGravity>(projectilePrefab).ScaleFix;
+                    gravity = accessor.GetExistingSystem<PhysicsWorldSystem>().PhysicsWorld.StepSettings.GravityFix
+                        * accessor.GetComponent<PhysicsGravity>(projectilePrefab).ScaleFix;
                 }
 
                 // Calculate travel time to exit 'spawn-distance' zone
