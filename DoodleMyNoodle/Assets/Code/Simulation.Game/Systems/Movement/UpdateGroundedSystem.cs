@@ -6,6 +6,14 @@ using static Unity.Mathematics.math;
 using CCC.Fix2D;
 using System;
 
+public struct Flying : IComponentData
+{
+    public bool Value;
+
+    public static implicit operator bool(Flying val) => val.Value;
+    public static implicit operator Flying(bool val) => new Flying() { Value = val };
+}
+
 public struct Grounded : IComponentData
 {
     public bool Value;

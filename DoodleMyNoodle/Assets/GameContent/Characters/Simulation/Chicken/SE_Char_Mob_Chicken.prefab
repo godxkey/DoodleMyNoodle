@@ -83,6 +83,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2401102004981749674, guid: 33cce8540695adf4d9728cbe3d59c0a9,
+        type: 3}
+      propertyPath: KeepWalkingAfterPeriodicAction
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2678156252502307406, guid: 33cce8540695adf4d9728cbe3d59c0a9,
         type: 3}
       propertyPath: StartingItems.Array.size

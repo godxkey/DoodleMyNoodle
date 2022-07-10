@@ -31,6 +31,17 @@ public partial class UpdateCanMoveSystem : SimGameSystemBase
             }).Schedule();
 
         Entities
+            .ForEach((ref CanMove canMove, in Health hp, in Grounded grounded, in Flying flying) =>
+            {
+                canMove =
+                    // entities need to be alive to move
+                    hp.Value > 0
+
+                    // entities need to be grounded unless they're flying
+                    && (grounded || flying);
+            }).Schedule();
+
+        Entities
             .WithNone<Grounded>()
             .ForEach((ref CanMove canMove, in Health hp) =>
             {
