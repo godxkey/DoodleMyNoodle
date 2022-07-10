@@ -11,7 +11,7 @@ public struct ActionOnLifetime : IBufferElementData
 }
 
 [UpdateBefore(typeof(ExecuteGameActionSystem))]
-public class ExecuteActionOnLifetimeSystem : SimGameSystemBase
+public partial class ExecuteActionOnLifetimeSystem : SimGameSystemBase
 {
     private ExecuteGameActionSystem _gameActionSystem;
 

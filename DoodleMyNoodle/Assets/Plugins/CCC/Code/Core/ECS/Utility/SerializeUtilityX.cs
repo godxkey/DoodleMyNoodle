@@ -17,8 +17,8 @@ namespace UnityX.EntitiesX.SerializationX
             {
                 fixed (byte* dataPtr = bytes)
                 {
-                    using (MemoryBinaryReader reader = new MemoryBinaryReader(dataPtr))
-                    {
+                    using (MemoryBinaryReader reader = new MemoryBinaryReader(dataPtr, bytes.Length))
+                    { 
                         SerializeUtility.DeserializeWorld(em.BeginExclusiveEntityTransaction(), reader, unityObjects);
                         em.EndExclusiveEntityTransaction();
                     }

@@ -13,7 +13,7 @@ public class BindedViewEntityCommandBufferSystem : ViewEntityCommandBufferSystem
 
 [UpdateBefore(typeof(BindedViewEntityCommandBufferSystem))]
 [AlwaysUpdateSystem]
-public class MaintainBindedViewEntitiesSystem : ViewSystemBase
+public partial class MaintainBindedViewEntitiesSystem : ViewSystemBase
 {
     private EntityQuery _updatedSimEntitiesQ;
 
@@ -25,7 +25,7 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
 
     private BindedViewEntityCommandBufferSystem _ecb;
 
-    private NativeHashMap<Entity, Entity> _sim2ViewMap;
+    private NativeParallelHashMap<Entity, Entity> _sim2ViewMap;
 
     protected override void OnCreate()
     {
@@ -40,7 +40,7 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
             typeof(SimAssetId),
             typeof(BindedViewType_GameObject));
 
-        _sim2ViewMap = new NativeHashMap<Entity, Entity>(1024, Allocator.Persistent);
+        _sim2ViewMap = new NativeParallelHashMap<Entity, Entity>(1024, Allocator.Persistent);
     }
 
     protected override void OnDestroy()
@@ -92,7 +92,7 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
 
     private void UpdateSim2ViewMap()
     {
-        NativeHashMap<Entity, Entity> sim2ViewMap = _sim2ViewMap;
+        NativeParallelHashMap<Entity, Entity> sim2ViewMap = _sim2ViewMap;
         Job.WithCode(() =>
         {
             sim2ViewMap.Clear();
@@ -135,7 +135,7 @@ public class MaintainBindedViewEntitiesSystem : ViewSystemBase
         NativeArray<SimAssetId> simAssetIds = simEntityQuery.ToComponentDataArrayAsync<SimAssetId>(Allocator.TempJob, out JobHandle job2);
         EntityArchetype viewArchetypeTile = _viewArchetypeTile;
         EntityArchetype viewArchetypeGameObject = _viewArchetypeGameObject;
-        NativeHashMap<Entity, Entity> sim2ViewMap = _sim2ViewMap;
+        NativeParallelHashMap<Entity, Entity> sim2ViewMap = _sim2ViewMap;
         ComponentDataFromEntity<SimAssetId> viewSimAssetIds = GetComponentDataFromEntity<SimAssetId>(isReadOnly: true);
 
         var jobHandle = Job.WithCode(() =>

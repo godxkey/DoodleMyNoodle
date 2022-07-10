@@ -13,7 +13,7 @@ public abstract class SimComponentSystemGroup : ComponentSystemGroup, ISimSystem
 
 }
 
-public abstract class SimSystemBase : CCCSystemBase, ISimSystem
+public abstract partial class SimSystemBase : CCCSystemBase, ISimSystem
 {
     /// <summary>
     /// The current Time data for this system's world.

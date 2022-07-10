@@ -5,7 +5,7 @@ using static fixMath;
 using static Unity.Mathematics.math;
 using CCC.Fix2D;
 
-public class RegenResourceSystem : SimGameSystemBase
+public partial class RegenResourceSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
@@ -14,34 +14,34 @@ public class RegenResourceSystem : SimGameSystemBase
 
         Entities
             .WithNone<DeadTag>()
-            .ForEach((Entity entity, ref Health health, in HealthRechargeCooldown cooldown, in HealthRechargeRate rechargeRate, in HealthLastHitTime lastHitTime) =>
+            .ForEach((ref Health health, in HealthMax maxHealth, in HealthRechargeCooldown cooldown, in HealthRechargeRate rechargeRate, in HealthLastHitTime lastHitTime) =>
             {
                 fix elapsedTimeSinceLastHit = time - lastHitTime.Value;
                 if (elapsedTimeSinceLastHit > cooldown.Value && rechargeRate.Value > 0)
                 {
-                    health.Value = min(GetComponent<MaximumFix<Health>>(entity), health.Value + (rechargeRate * deltaTime));
+                    health.Value = min(maxHealth, health.Value + (rechargeRate * deltaTime));
                 }
             }).Schedule();
 
         Entities
             .WithNone<DeadTag>()
-            .ForEach((Entity entity, ref Shield shield, in ShieldRechargeCooldown cooldown, in ShieldRechargeRate rechargeRate, in ShieldLastHitTime lastHitTime) =>
+            .ForEach((ref Shield shield, in ShieldMax maxShield, in ShieldRechargeCooldown cooldown, in ShieldRechargeRate rechargeRate, in ShieldLastHitTime lastHitTime) =>
             {
                 fix elapsedTimeSinceLastHit = time - lastHitTime.Value;
                 if (elapsedTimeSinceLastHit > cooldown.Value && rechargeRate.Value > 0)
                 {
-                    shield.Value = min(GetComponent<MaximumFix<Shield>>(entity), shield.Value + (rechargeRate * deltaTime));
+                    shield.Value = min(maxShield, shield.Value + (rechargeRate * deltaTime));
                 }
             }).Schedule();
 
         Entities
             .WithNone<DeadTag>()
-            .ForEach((Entity entity, ref ActionPoints ap, in ActionPointsRechargeCooldown cooldown, in ActionPointsRechargeRate rechargeRate) =>
+            .ForEach((ref ActionPoints ap, in ActionPointsMax maxAP, in ActionPointsRechargeCooldown cooldown, in ActionPointsRechargeRate rechargeRate) =>
             {
                 fix elapsedTimeSinceLastHit = time - cooldown.LastTime;
                 if (elapsedTimeSinceLastHit > cooldown.Value && rechargeRate.Value > 0)
                 {
-                    ap.Value = min(GetComponent<MaximumFix<ActionPoints>>(entity), ap.Value + (rechargeRate * deltaTime));
+                    ap.Value = min(maxAP, ap.Value + (rechargeRate * deltaTime));
                 }
             }).Schedule();
     }

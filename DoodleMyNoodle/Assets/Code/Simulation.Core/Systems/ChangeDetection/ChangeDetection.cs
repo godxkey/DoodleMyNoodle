@@ -121,7 +121,7 @@ public static class ChangeDetection
                     chunkTrace.ComponentTraces.Add(new ComponentTrace()
                     {
                         ComponentType = componentType,
-                        Version = chunk.GetComponentVersion(componentType)
+                        Version = chunk.GetChangeVersion(componentType)
                     });
                 }
             }
@@ -227,7 +227,9 @@ public static class ChangeDetection
                     {
                         if (oldChunk.ComponentTraces[c].Version != newChunk.ComponentTraces[c].Version)
                         {
+#if !UNITY_EDITOR // DOTS Hierarchy window dirties the change version even when nothing is changed
                             LogModifiedComponent(oldChunk, oldChunk.ComponentTraces[c].ComponentType);
+#endif
                         }
                     }
 

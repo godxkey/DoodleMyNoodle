@@ -2,7 +2,7 @@
 using CCC.Fix2D;
 
 [UpdateBefore(typeof(DestroyDeadEntitiesSystem))]
-public class ExplodeOnDeathSystem : SimGameSystemBase
+public partial class ExplodeOnDeathSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

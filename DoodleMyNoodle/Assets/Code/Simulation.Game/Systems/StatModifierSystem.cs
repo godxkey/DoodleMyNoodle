@@ -24,7 +24,7 @@ public struct SystemRequestRemoveStatModifier : ISingletonBufferElementData
 }
 
 [AlwaysUpdateSystem]
-public class StatModifierSystem : SimGameSystemBase
+public partial class StatModifierSystem : SimGameSystemBase
 {
     List<Entity> _entityStatsToUpdate = new List<Entity>();
 
@@ -48,7 +48,7 @@ public class StatModifierSystem : SimGameSystemBase
             DynamicBuffer<StatModifier> statModifiers = GetBuffer<StatModifier>(entity);
 
             // MAXIMUM HEALTH STAT
-            if (EntityManager.TryGetComponent(entity, out BaseMaxHealth baseMaxHealth))
+            if (EntityManager.TryGetComponent(entity, out BaseHealthMax baseMaxHealth))
             {
                 fix newMaxHealth = baseMaxHealth.Value;
 
@@ -60,7 +60,7 @@ public class StatModifierSystem : SimGameSystemBase
                     }
                 }
 
-                SetComponent(entity, new MaximumFix<Health>() { Value = newMaxHealth });
+                SetComponent(entity, new HealthMax() { Value = newMaxHealth });
             }
 
             // SPEED STAT

@@ -10,7 +10,7 @@ public interface ISingletonComponentData : IComponentData { }
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 [AlwaysUpdateSystem]
-public class CreateRequestSingletonSystem : SimSystemBase
+public partial class CreateRequestSingletonSystem : SimSystemBase
 {
     public static ComponentType[] SystemRequestTypes;
 

@@ -13,7 +13,7 @@ public class LobbyPlayerInfoDisplay : GamePresentationBehaviour
 
     private Entity _currentPlayer;
 
-    public void UpdatePlayerInfoDisplay(FixedString64 playerName, FixedString64 characterName, Entity pawnReference)
+    public void UpdatePlayerInfoDisplay(FixedString64Bytes playerName, FixedString64Bytes characterName, Entity pawnReference)
     {
         _playerName.text = playerName.ToString();
         _characterName.text = characterName.ToString();

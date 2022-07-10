@@ -24,7 +24,7 @@ public partial class CommonReads
         int2 offset = gridPosition - gridRect.TileMin;
         int index = offset.x + (offset.y * gridRect.Width);
 
-        var allTiles = accessor.GetBufferReadOnly<GridTileReference>(accessor.GetSingletonEntity<GridInfo>());
+        var allTiles = accessor.GetBuffer<GridTileReference>(accessor.GetSingletonEntity<GridInfo>());
         return allTiles[index].Tile;
     }
 

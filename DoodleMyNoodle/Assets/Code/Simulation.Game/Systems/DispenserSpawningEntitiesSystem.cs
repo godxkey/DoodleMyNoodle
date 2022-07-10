@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class DispenserSpawningEntitiesSystem : SimGameSystemBase
+public partial class DispenserSpawningEntitiesSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

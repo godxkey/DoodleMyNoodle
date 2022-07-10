@@ -44,7 +44,7 @@ public partial class SimulationController
                         {
                             fixed (byte* dataPtr = data)
                             {
-                                using (MemoryBinaryReader reader = new MemoryBinaryReader(dataPtr))
+                                using (MemoryBinaryReader reader = new MemoryBinaryReader(dataPtr, data.Length))
                                 {
                                     try
                                     {

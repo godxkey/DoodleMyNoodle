@@ -32,7 +32,7 @@ static class MutedContactActionElementExtensions
 
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
 [UpdateAfter(typeof(StepPhysicsWorldSystem)), UpdateBefore(typeof(EndFramePhysicsSystem))]
-public class ExtractCollisionReactionsSystem : SimGameSystemBase
+public partial class ExtractCollisionReactionsSystem : SimGameSystemBase
 {
     private StepPhysicsWorldSystem _stepPhysicsWorldSystem;
     private PhysicsWorldSystem _physicsWorldSystem;
@@ -168,7 +168,7 @@ public class ExtractCollisionReactionsSystem : SimGameSystemBase
 }
 
 [UpdateInGroup(typeof(PostPhysicsSystemGroup))]
-public class ExtractOverlapReactionsSystem : SimGameSystemBase
+public partial class ExtractOverlapReactionsSystem : SimGameSystemBase
 {
     private PhysicsWorldSystem _physicsWorldSystem;
     private ExecuteGameActionSystem _gameActionSystem;
@@ -270,7 +270,7 @@ public class ExtractOverlapReactionsSystem : SimGameSystemBase
     }
 }
 
-public class UpdateMutedContactActionSystem : SimGameSystemBase
+public partial class UpdateMutedContactActionSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

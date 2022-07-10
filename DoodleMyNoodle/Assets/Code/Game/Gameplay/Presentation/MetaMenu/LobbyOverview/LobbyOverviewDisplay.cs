@@ -76,8 +76,8 @@ public class LobbyOverviewDisplay : GamePresentationSystem<LobbyOverviewDisplay>
 
     private void UpdatePlayerInfo(LobbyPlayerInfoDisplay display, (Entity player, Entity pawn) data)
     {
-        FixedString64 playerName = "N/A";
-        FixedString64 characterName = "N/A";
+        FixedString64Bytes playerName = "N/A";
+        FixedString64Bytes characterName = "N/A";
 
         if (SimWorld.TryGetComponent(data.player, out Name playerNameComponent))
         {

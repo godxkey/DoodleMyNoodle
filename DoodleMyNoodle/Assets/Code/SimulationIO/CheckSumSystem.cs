@@ -11,7 +11,7 @@ using UnityEngineX;
 
 [DisableAutoCreation]
 [UpdateBefore(typeof(ConstructSimulationTickSystem))]
-public class RequestChecksumSystem : SystemBase
+public partial class RequestChecksumSystem : SystemBase
 {
     private ConstructSimulationTickSystem _constructTickSystem;
     private uint _lastChecksumTick = 0;
@@ -37,7 +37,7 @@ public class RequestChecksumSystem : SystemBase
 
 [DisableAutoCreation]
 [UpdateAfter(typeof(TickSimulationSystem))]
-public class ChecksumSystem : SystemBase
+public partial class ChecksumSystem : SystemBase
 {
     private DirtyValue<uint> _simWorldReplaceVersion;
     private SimulationWorldSystem _simWorldSystem;

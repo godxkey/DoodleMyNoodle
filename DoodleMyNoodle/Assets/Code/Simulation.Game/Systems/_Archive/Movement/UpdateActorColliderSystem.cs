@@ -18,7 +18,7 @@ public struct ActorColliderRefs : IComponentData
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
 [UpdateAfter(typeof(UpdateNavAgentFootingSystem))]
-public class UpdateActorColliderSystem : SimGameSystemBase
+public partial class UpdateActorColliderSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

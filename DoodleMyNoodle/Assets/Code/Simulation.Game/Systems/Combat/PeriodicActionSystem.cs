@@ -62,7 +62,7 @@ public struct PeriodicAction : IComponentData
 }
 
 [UpdateBefore(typeof(ExecuteGameActionSystem))]
-public class UpdatePeriodicActionSystem : SimGameSystemBase
+public partial class UpdatePeriodicActionSystem : SimGameSystemBase
 {
     private ExecuteGameActionSystem _executeGameActionSystem;
 

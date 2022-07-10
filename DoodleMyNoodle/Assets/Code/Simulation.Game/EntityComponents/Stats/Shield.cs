@@ -1,16 +1,19 @@
 using Unity.Entities;
 
-[assembly: RegisterGenericComponentType(typeof(MaximumFix<Shield>))]
-[assembly: RegisterGenericComponentType(typeof(MinimumFix<Shield>))]
-
-public struct Shield : IComponentData, IStatFix
+public struct Shield : IComponentData
 {
     public fix Value;
 
-    fix IStatFix.Value { get => Value; set => Value = value; }
-
     public static implicit operator fix(Shield val) => val.Value;
     public static implicit operator Shield(fix val) => new Shield() { Value = val };
+}
+
+public struct ShieldMax : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(ShieldMax val) => val.Value;
+    public static implicit operator ShieldMax(fix val) => new ShieldMax() { Value = val };
 }
 
 public struct ShieldRechargeRate : IComponentData

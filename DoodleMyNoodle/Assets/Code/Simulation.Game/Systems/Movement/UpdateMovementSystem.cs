@@ -6,7 +6,7 @@ using static Unity.Mathematics.math;
 using CCC.Fix2D;
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class UpdateMovementSystem : SimGameSystemBase
+public partial class UpdateMovementSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

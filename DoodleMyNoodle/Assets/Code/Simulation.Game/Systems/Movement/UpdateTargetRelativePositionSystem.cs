@@ -20,7 +20,7 @@ public struct OffsetFromTarget : IComponentData
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
 [UpdateBefore(typeof(UpdateMovementSystem))]
-public class UpdateTargetRelativePositionSystem : SimGameSystemBase
+public partial class UpdateTargetRelativePositionSystem : SimGameSystemBase
 {
     private PhysicsWorldSystem _physicsWorldSystem;
 

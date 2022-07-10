@@ -13,7 +13,7 @@ public struct SystemRequestTransformTile : ISingletonBufferElementData
     public SimAssetId? ForcedNewSimAssetId; // leave null to let system pick sim asset id itself
 }
 
-public class UpdateGridSystem : SimGameSystemBase
+public partial class UpdateGridSystem : SimGameSystemBase
 {
     private BlobAssetReference<Collider> _fullTileCollider;
     private BlobAssetReference<Collider> _cornerTileCollider;

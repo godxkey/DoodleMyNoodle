@@ -11,7 +11,7 @@ public struct SystemRequestTeleport : ISingletonBufferElementData
 }
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
-public class TeleportSystem : SimGameSystemBase
+public partial class TeleportSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

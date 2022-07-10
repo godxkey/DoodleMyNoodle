@@ -6,7 +6,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using System;
 
-public class DestroyTileOnOverlapSystem : SimGameSystemBase
+public partial class DestroyTileOnOverlapSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {

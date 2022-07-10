@@ -3,9 +3,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
-// THIS CLASS CANNOT BE USED AT THE MOMENT (generic method crashes the editor in Entities 0.10.0)
-
-public abstract class CCCSystemBase : SystemBase
+public abstract partial class CCCSystemBase : SystemBase
 {
     public Entity CreateSingleton<T>()
         where T : struct, IComponentData

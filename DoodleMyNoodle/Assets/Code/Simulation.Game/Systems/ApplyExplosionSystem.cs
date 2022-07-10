@@ -22,7 +22,7 @@ public struct SystemRequestExplosion : ISingletonBufferElementData
     public bool DestroyTiles;
 }
 
-public class ApplyExplosionSystem : SimGameSystemBase
+public partial class ApplyExplosionSystem : SimGameSystemBase
 {
     private const int IMPULSE_MAX = 4;
     private const int IMPULSE_MIN = 2;

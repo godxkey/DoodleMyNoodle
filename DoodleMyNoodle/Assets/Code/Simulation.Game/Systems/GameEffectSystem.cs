@@ -17,7 +17,7 @@ public struct SystemRequestAddGameEffect : ISingletonBufferElementData
 
 [AlwaysUpdateSystem]
 [UpdateBefore(typeof(ExecuteGameActionSystem))]
-public class GameEffectSystem : SimGameSystemBase
+public partial class GameEffectSystem : SimGameSystemBase
 {
     private RemoveFinishedGameEffectsSystem _removeFinishedGameEffectsSystem;
 
@@ -121,7 +121,7 @@ public class GameEffectSystem : SimGameSystemBase
 
 [AlwaysUpdateSystem]
 [UpdateAfter(typeof(ExecuteGameActionSystem))]
-public class RemoveFinishedGameEffectsSystem : SimGameSystemBase
+public partial class RemoveFinishedGameEffectsSystem : SimGameSystemBase
 {
     public List<(Entity owner, Entity effect)> ToRemove = new List<(Entity owner, Entity effect)>();
 

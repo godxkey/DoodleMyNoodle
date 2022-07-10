@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using CCC.Fix2D;
 
 
-public class DestroyDeadEntitiesSystem : SimGameSystemBase
+public partial class DestroyDeadEntitiesSystem : SimGameSystemBase
 {
     private EndSimulationEntityCommandBufferSystem _ecbSystem;
 

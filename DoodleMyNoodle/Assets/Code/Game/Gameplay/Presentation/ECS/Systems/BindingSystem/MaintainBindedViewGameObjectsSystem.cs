@@ -9,7 +9,7 @@ public struct BindedGameObjectTag : ISystemStateComponentData
 }
 
 [UpdateAfter(typeof(BindedViewEntityCommandBufferSystem))]
-public class MaintainBindedViewGameObjectsSystem : ViewSystemBase
+public partial class MaintainBindedViewGameObjectsSystem : ViewSystemBase
 {
     protected override void OnUpdate()
     {

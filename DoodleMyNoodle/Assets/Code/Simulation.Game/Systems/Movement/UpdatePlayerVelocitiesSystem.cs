@@ -1,7 +1,7 @@
 ﻿using CCC.Fix2D;
 using Unity.Entities;
 
-public class UpdatePlayerVelocitiesSystem : SimGameSystemBase
+public partial class UpdatePlayerVelocitiesSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {

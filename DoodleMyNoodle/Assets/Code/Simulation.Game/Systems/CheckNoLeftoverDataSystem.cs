@@ -6,7 +6,7 @@ using UnityEngineX;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 [AlwaysUpdateSystem]
-public class CheckNoLeftoverDataSystem : SimGameSystemBase
+public partial class CheckNoLeftoverDataSystem : SimGameSystemBase
 {
     private SetSignalSystem _emitSignalSystem;
     private ExecutePawnControllerInputSystem _executeSys;
@@ -35,7 +35,7 @@ public class CheckNoLeftoverDataSystem : SimGameSystemBase
         _physicsWorldSystem.PhysicsWorldFullyUpdated = false;
     }
 
-    private void ScreamIfNotEmpty<T>(NativeList<T> list, string memberName, string needUpdateBefore) where T : struct
+    private void ScreamIfNotEmpty<T>(NativeList<T> list, string memberName, string needUpdateBefore) where T : unmanaged
     {
         if (list.Length > 0)
         {

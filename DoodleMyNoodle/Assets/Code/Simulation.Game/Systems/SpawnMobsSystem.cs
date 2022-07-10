@@ -31,7 +31,7 @@ public struct LevelUnspawnedMobsOffsetPositionSingleton : ISingletonComponentDat
     public static implicit operator LevelUnspawnedMobsOffsetPositionSingleton(fix val) => new LevelUnspawnedMobsOffsetPositionSingleton() { Value = val };
 }
 
-public class SpawnMobsSystem : SimGameSystemBase
+public partial class SpawnMobsSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {

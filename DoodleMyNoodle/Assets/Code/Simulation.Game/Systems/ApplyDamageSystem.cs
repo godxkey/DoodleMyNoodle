@@ -145,7 +145,7 @@ public struct GameFunctionOnDeathProcessorArg
 
 [AlwaysUpdateSystem]
 [UpdateBefore(typeof(ExecuteGameActionSystem))]
-public class ApplyDamageSystem : SimGameSystemBase
+public partial class ApplyDamageSystem : SimGameSystemBase
 {
     private ExecuteGameActionSystem _gameActionSystem;
     private NativeList<SystemRequestHealthChange> _processingHealthChanges;
@@ -301,7 +301,7 @@ public class ApplyDamageSystem : SimGameSystemBase
         // Shield
         if (remainingDelta != 0 && EntityManager.TryGetComponent(target, out Shield previousShield))
         {
-            Shield newShield = clamp(previousShield + remainingDelta, 0, GetComponent<MaximumFix<Shield>>(target).Value);
+            Shield newShield = clamp(previousShield + remainingDelta, 0, GetComponent<ShieldMax>(target).Value);
             shieldDelta = newShield.Value - previousShield.Value;
             SetComponent(target, newShield);
             remainingDelta -= shieldDelta;
@@ -315,7 +315,7 @@ public class ApplyDamageSystem : SimGameSystemBase
         // Health
         if (remainingDelta != 0 && EntityManager.TryGetComponent(target, out Health previousHP))
         {
-            fix maxHP = GetComponent<MaximumFix<Health>>(target).Value;
+            fix maxHP = GetComponent<HealthMax>(target).Value;
             Health newHP = clamp(previousHP + remainingDelta, 0, maxHP);
             hpDelta = newHP.Value - previousHP.Value;
             SetComponent(target, newHP);
@@ -333,7 +333,7 @@ public class ApplyDamageSystem : SimGameSystemBase
                 if (HasComponent<Health>(target))
                     SetComponent<Health>(target, maxHP);
                 if (HasComponent<Shield>(target))
-                    SetComponent<Shield>(target, GetComponent<MaximumFix<Shield>>(target).Value);
+                    SetComponent<Shield>(target, GetComponent<ShieldMax>(target).Value);
 
                 // decrement life points
                 SetComponent<LifePoints>(target, lifePoints.Value - 1);
@@ -425,7 +425,7 @@ public class ApplyDamageSystem : SimGameSystemBase
         }
     }
 
-    private void CollectEffectComponents<T>(Entity entity, NativeList<(T, Entity effectEntity)> processors) where T : struct, IComponentData
+    private void CollectEffectComponents<T>(Entity entity, NativeList<(T, Entity effectEntity)> processors) where T : unmanaged, IComponentData
     {
         if (EntityManager.TryGetBuffer(entity, out DynamicBuffer<GameEffectBufferElement> effects))
         {

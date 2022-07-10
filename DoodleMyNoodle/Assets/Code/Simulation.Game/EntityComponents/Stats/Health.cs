@@ -1,24 +1,27 @@
 ﻿using Unity.Entities;
 
-[assembly: RegisterGenericComponentType(typeof(MaximumFix<Health>))]
-[assembly: RegisterGenericComponentType(typeof(MinimumFix<Health>))]
-
-public struct BaseMaxHealth : IComponentData
+public struct BaseHealthMax : IComponentData
 {
     public fix Value;
 
-    public static implicit operator fix(BaseMaxHealth val) => val.Value;
-    public static implicit operator BaseMaxHealth(fix val) => new BaseMaxHealth() { Value = val };
+    public static implicit operator fix(BaseHealthMax val) => val.Value;
+    public static implicit operator BaseHealthMax(fix val) => new BaseHealthMax() { Value = val };
 }
 
-public struct Health : IComponentData, IStatFix
+public struct Health : IComponentData
 {
     public fix Value;
-
-    fix IStatFix.Value { get => Value; set => Value = value; }
 
     public static implicit operator fix(Health val) => val.Value;
     public static implicit operator Health(fix val) => new Health() { Value = val };
+}
+
+public struct HealthMax : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(HealthMax val) => val.Value;
+    public static implicit operator HealthMax(fix val) => new HealthMax() { Value = val };
 }
 
 public struct HealthProxy : IComponentData

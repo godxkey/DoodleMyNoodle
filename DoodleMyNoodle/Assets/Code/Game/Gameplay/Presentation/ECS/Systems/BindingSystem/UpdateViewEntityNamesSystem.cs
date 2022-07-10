@@ -4,7 +4,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngineX;
 
-public class UpdateViewEntityNamesSystem : ViewSystemBase
+public partial class UpdateViewEntityNamesSystem : ViewSystemBase
 {
 
     protected override void OnUpdate()

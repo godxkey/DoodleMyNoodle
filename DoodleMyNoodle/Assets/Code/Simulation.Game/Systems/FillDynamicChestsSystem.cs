@@ -9,7 +9,7 @@ using UnityEngineX;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class FillDynamicChestsSystem : SimGameSystemBase
+public partial class FillDynamicChestsSystem : SimGameSystemBase
 {
     private struct WorldContext
     {
@@ -93,11 +93,11 @@ public class FillDynamicChestsSystem : SimGameSystemBase
             fix totalHealthRatios = 0;
             int playerCount = 0;
             Entities.WithAll<PlayerTag>()
-                .ForEach((in ControlledEntity pawn, in Active active) =>
+                .ForEach((in ControlledEntity pawn, in Active active, in Health health, in HealthMax healthMax) =>
                 {
-                    if (active && HasComponent<Health>(pawn) && HasComponent<MaximumFix<Health>>(pawn))
+                    if (active)
                     {
-                        totalHealthRatios += (fix)GetComponent<Health>(pawn).Value / GetComponent<MaximumFix<Health>>(pawn).Value;
+                        totalHealthRatios += health.Value / healthMax.Value;
                         playerCount++;
                     }
                 }).Run();

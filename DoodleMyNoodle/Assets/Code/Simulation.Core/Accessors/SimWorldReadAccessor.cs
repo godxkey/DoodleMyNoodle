@@ -52,10 +52,10 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     //  Potential down sides:
     //      - This will cache ALL of our presentation-to-sim queries in one system, making the lookup potentially
     //      slower
+    /// <summary>
+    /// This can only be use outside of a System class. E.g. static helper class
+    /// </summary>
     public EntityQueryBuilder Entities => SomeSimSystem.QueryBuilder;
-    public ForEachLambdaJobDescriptionJCS EntitiesJob
-        => throw new System.NotImplementedException("EntitiesJob is not yet supported. Unity's codegen makes it difficult" +
-            " to implement. Use typical struct job declaration instead.");
 
     public int EntityCapacity => EntityManager.EntityCapacity;
 
@@ -124,8 +124,8 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
     public void GetAllUniqueSharedComponentData<T>(List<T> sharedComponentValues, List<int> sharedComponentIndices) where T : struct, ISharedComponentData
         => EntityManager.GetAllUniqueSharedComponentData<T>(sharedComponentValues, sharedComponentIndices);
 
-    public DynamicBuffer<T> GetBufferReadOnly<T>(Entity entity) where T : struct, IBufferElementData
-        => EntityManager.GetBufferReadOnly<T>(entity);
+    public DynamicBuffer<T> GetBuffer<T>(Entity entity) where T : struct, IBufferElementData
+        => EntityManager.GetBuffer<T>(entity, isReadOnly: true);
 
     public ArchetypeChunk GetChunk(Entity entity)
         => EntityManager.GetChunk(entity);
@@ -151,6 +151,6 @@ public class SimWorldReadAccessor : ISimWorldReadAccessor
 
     public DynamicBuffer<T> GetSingletonBufferReadOnly<T>() where T : struct, ISingletonBufferElementData
     {
-        return EntityManager.GetBufferReadOnly<T>(GetSingletonEntity<SingletonBuffersTag>());
+        return EntityManager.GetBuffer<T>(GetSingletonEntity<SingletonBuffersTag>(), isReadOnly: true);
     }
 }

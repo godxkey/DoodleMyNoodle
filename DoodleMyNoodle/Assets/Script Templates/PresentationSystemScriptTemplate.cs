@@ -15,7 +15,7 @@ $@"using System;
 using UnityEngine;
 using UnityEngineX;
 
-public class #SCRIPTNAME# : GamePresentationSystem<#SCRIPTNAME#>
+public partial class #SCRIPTNAME# : GamePresentationSystem<#SCRIPTNAME#>
 {{
     public override void PresentationUpdate()
     {{

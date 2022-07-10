@@ -7,7 +7,7 @@ using Unity.Entities;
 public struct Name : IComponentData
 {
     // MAXIMUM 30 CHARACTERS !!!
-    public FixedString64 Value;
+    public FixedString64Bytes Value;
 
     public override string ToString()
     {

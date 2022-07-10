@@ -76,7 +76,7 @@ public struct SystemRequestPurchaseOffer : ISingletonBufferElementData
 //    public static implicit operator SingletonElementOfferGroup(Entity val) => new SingletonElementOfferGroup() { OfferGroup = val };
 //}
 
-public class OfferSystem : SimGameSystemBase
+public partial class OfferSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

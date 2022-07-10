@@ -48,7 +48,7 @@ public struct LevelToAddToPlaylist : IBufferElementData
 
 public struct SingletonRequestNextLevel : IComponentData { }
 
-public class GameFlowSystem : SimGameSystemBase
+public partial class GameFlowSystem : SimGameSystemBase
 {
 
     protected override void OnUpdate()
@@ -216,7 +216,7 @@ public class GameFlowSystem : SimGameSystemBase
 
         // restore hp
         {
-            var maxHP = GetComponent<MaximumFix<Health>>(playerGroup);
+            var maxHP = GetComponent<HealthMax>(playerGroup);
             SetComponent<Health>(playerGroup, maxHP.Value);
         }
 

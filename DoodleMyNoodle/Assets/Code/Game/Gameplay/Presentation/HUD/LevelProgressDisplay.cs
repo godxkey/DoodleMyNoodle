@@ -21,7 +21,7 @@ public class LevelProgressDisplay : GamePresentationBehaviour
                 var mobSpawnSingleton = SimWorld.GetSingletonEntity<SingletonElementRemainingLevelMobSpawnPoint>();
                 if (mobSpawnSingleton != Entity.Null)
                 {
-                    var remainingMobSpawnsBuffer = SimWorld.GetBufferReadOnly<SingletonElementRemainingLevelMobSpawnPoint>(mobSpawnSingleton);
+                    var remainingMobSpawnsBuffer = SimWorld.GetBuffer<SingletonElementRemainingLevelMobSpawnPoint>(mobSpawnSingleton);
                     remainingMobs += remainingMobSpawnsBuffer.Length;
                 }
 

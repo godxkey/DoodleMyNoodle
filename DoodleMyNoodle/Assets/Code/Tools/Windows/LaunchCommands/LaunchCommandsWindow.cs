@@ -1,12 +1,9 @@
-using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using Unity.Serialization.Json;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using UnityEngine.UIElements;
-using UnityEngineX;
 
 public class LaunchCommandsWindow : ToolsWindowBase
 {
@@ -137,7 +134,7 @@ public class LaunchCommandsWindow : ToolsWindowBase
                 }
             }
         }
-        string json = JsonConvert.SerializeObject(new CommandSaveDataContainer() { CommandSaveDatas = saveData });
+        string json = JsonSerialization.ToJson(new CommandSaveDataContainer() { CommandSaveDatas = saveData });
         EditorPrefs.SetString("launch-commands-window", json);
         GameConsole.EditorPlayCommands = commandTexts.ToArray();
     }
@@ -148,7 +145,7 @@ public class LaunchCommandsWindow : ToolsWindowBase
         var allInvokables = GameConsole.Invokables.ToArray();
 
         string json = EditorPrefs.GetString("launch-commands-window", "");
-        var saveData = JsonConvert.DeserializeObject<CommandSaveDataContainer>(json).CommandSaveDatas;
+        var saveData = JsonSerialization.FromJson<CommandSaveDataContainer>(json).CommandSaveDatas;
         if (saveData == null)
             saveData = new CommandSaveData[0];
         foreach (var item in saveData)

@@ -35,7 +35,13 @@ public class GameActionAPChange : GameAction<GameActionAPChange.Settings>
         for (int i = 0; i < input.Context.Targets.Length; i++)
         {
             if (input.Accessor.HasComponent<ActionPoints>(input.Context.Targets[i]))
-                CommonWrites.ModifyStatFix<ActionPoints>(input.Accessor, input.Context.Targets[i], settings.ToGive);
+            {
+                var target = input.Context.Targets[i];
+                var maxAP = input.Accessor.GetComponent<ActionPointsMax>(target).Value;
+                var ap = input.Accessor.GetComponent<ActionPoints>(target).Value;
+                var newAP = fixMath.clamp(ap + settings.ToGive, 0, maxAP);
+                input.Accessor.SetComponent<ActionPoints>(target, newAP);
+            }
         }
 
         return true;

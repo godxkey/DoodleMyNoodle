@@ -43,7 +43,7 @@ public struct MovingPlatformSignalPosition : IBufferElementData
     public Entity ConditionalEmitter;
 }
 
-public class MovingPlatformSystem : SimGameSystemBase
+public partial class MovingPlatformSystem : SimGameSystemBase
 {
     private struct PathAccessor
     {

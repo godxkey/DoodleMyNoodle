@@ -1,7 +1,7 @@
 ﻿using Unity.Collections;
 using UnityEngineX;
 
-public struct FixLottery<T>
+public struct FixLottery<T> where T : unmanaged
 {
     private struct Wrapper
     {

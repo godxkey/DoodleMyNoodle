@@ -11,25 +11,25 @@ using CCC.Fix2D;
 using UnityEngine.Jobs;
 
 [UpdateAfter(typeof(MaintainBindedViewEntitiesSystem))]
-public class CopyTransformToViewSystem : ViewJobComponentSystem
+public partial class CopyTransformToViewSystem : ViewSystemBase
 {
-    protected override JobHandle OnUpdate(JobHandle jobHandle)
+    protected override void OnUpdate()
     {
         ////////////////////////////////////////////////////////////////////////////////////////
         //      Copy Rotation
         ////////////////////////////////////////////////////////////////////////////////////////
         ComponentDataFromEntity<FixRotation> simRotations = SimWorldAccessor.GetComponentDataFromEntity<FixRotation>();
 
-        var copyRotJobHandle = Entities
+        Entities
             .WithReadOnly(simRotations)
             .ForEach((ref Rotation rotation, in BindedSimEntity linkedSimEntity) =>
-        {
-            if (simRotations.HasComponent(linkedSimEntity))
             {
-                fix rot = simRotations[linkedSimEntity].Value;
-                rotation.Value = fixQuaternion.FromEuler(0, 0, rot).ToUnityQuat();
-            }
-        }).Schedule(jobHandle);
+                if (simRotations.HasComponent(linkedSimEntity))
+                {
+                    fix rot = simRotations[linkedSimEntity].Value;
+                    rotation.Value = fixQuaternion.FromEuler(0, 0, rot).ToUnityQuat();
+                }
+            }).ScheduleParallel();
 
 
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -37,25 +37,21 @@ public class CopyTransformToViewSystem : ViewJobComponentSystem
         ////////////////////////////////////////////////////////////////////////////////////////
         ComponentDataFromEntity<FixTranslation> simTranslations = SimWorldAccessor.GetComponentDataFromEntity<FixTranslation>();
 
-        var copyTrJobHandle = Entities
+        Entities
             .WithReadOnly(simTranslations)
             .ForEach((ref Translation translation, in BindedSimEntity linkedSimEntity) =>
-        {
-            if (simTranslations.HasComponent(linkedSimEntity))
             {
-                fix2 pos = simTranslations[linkedSimEntity].Value;
-                translation.Value = new float3((float)pos.x, (float)pos.y, 0);
-            }
-        }).Schedule(jobHandle);
-
-        return JobHandle.CombineDependencies(copyRotJobHandle, copyTrJobHandle);
+                if (simTranslations.HasComponent(linkedSimEntity))
+                {
+                    fix2 pos = simTranslations[linkedSimEntity].Value;
+                    translation.Value = new float3((float)pos.x, (float)pos.y, 0);
+                }
+            }).ScheduleParallel();
     }
 }
 
-
-
 [UpdateAfter(typeof(MaintainBindedViewGameObjectsSystem))]
-public class CopyTransformToViewGameObjectSystem : ViewSystemBase
+public partial class CopyTransformToViewGameObjectSystem : ViewSystemBase
 {
     [BurstCompile]
     struct CopyTransforms : IJobParallelForTransform

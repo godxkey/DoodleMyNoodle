@@ -1,6 +1,6 @@
 ﻿using Unity.Entities;
 
-public class EffectGroupTrackingTimeSystem : SimGameSystemBase
+public partial class EffectGroupTrackingTimeSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

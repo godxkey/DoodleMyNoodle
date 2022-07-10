@@ -4,7 +4,7 @@ using CCC.Fix2D;
 [UpdateInGroup(typeof(MovementSystemGroup))]
 [UpdateAfter(typeof(UpdateTargetRelativePositionSystem))]
 [UpdateBefore(typeof(UpdateMovementSystem))]
-public class UpdateMovementFromTarget : SimGameSystemBase
+public partial class UpdateMovementFromTarget : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

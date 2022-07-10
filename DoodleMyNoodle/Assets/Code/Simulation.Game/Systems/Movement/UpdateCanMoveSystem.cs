@@ -5,7 +5,7 @@ using static fixMath;
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
 [UpdateBefore(typeof(UpdateMovementSystem))]
-public class UpdateCanMoveSystem : SimGameSystemBase
+public partial class UpdateCanMoveSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

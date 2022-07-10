@@ -1,4 +1,5 @@
 ﻿using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngineX;
 
 public enum ItemUnavailablityReason
@@ -14,18 +15,14 @@ public struct ItemTag : IComponentData
 {
 }
 
-public struct ItemSettingAPCost : IComponentData, IStatInt
+public struct ItemSettingAPCost : IComponentData
 {
     public int Value;
-
-    int IStatInt.Value { get => Value; set => Value = value; }
 }
 
-public struct ItemTimeCooldownData : IComponentData, IStatFix
+public struct ItemTimeCooldownData : IComponentData
 {
     public fix Value;
-
-    fix IStatFix.Value { get => Value; set => Value = value; }
 }
 
 public struct ItemCooldownTimeCounter : IComponentData
@@ -146,7 +143,11 @@ internal partial class CommonWrites
         // reduce instigator AP
         if (accessor.TryGetComponent(item, out ItemSettingAPCost itemActionPointCost) && itemActionPointCost.Value != 0)
         {
-            CommonWrites.ModifyStatFix<ActionPoints>(accessor, actor, -itemActionPointCost.Value);
+            var apDelta = -itemActionPointCost.Value;
+            var maxAP = accessor.GetComponent<ActionPointsMax>(actor).Value;
+            var ap = accessor.GetComponent<ActionPoints>(actor).Value;
+            var newAP = fixMath.clamp(ap + apDelta, 0, maxAP);
+            accessor.SetComponent<ActionPoints>(actor, newAP);
         }
 
         // Cooldown

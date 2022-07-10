@@ -10,7 +10,7 @@ using UnityEngineX;
 using CCC.Fix2D;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public class CreateGridSystem : SimGameSystemBase
+public partial class CreateGridSystem : SimGameSystemBase
 {
     public EntityArchetype TileArchetype { get; private set; }
 
@@ -34,8 +34,8 @@ public class CreateGridSystem : SimGameSystemBase
         var gridInfo = GetSingleton<GridInfo>();
 
         Entity gridInfoEntity = GetSingletonEntity<GridInfo>();
-        NativeArray<StartingTileActorElement> startingTileActors = EntityManager.GetBufferReadOnly<StartingTileActorElement>(gridInfoEntity).ToNativeArray(Allocator.Temp);
-        NativeArray<StartingTileElement> startingTiles = EntityManager.GetBufferReadOnly<StartingTileElement>(gridInfoEntity).ToNativeArray(Allocator.Temp);
+        NativeArray<StartingTileActorElement> startingTileActors = EntityManager.GetBuffer<StartingTileActorElement>(gridInfoEntity, isReadOnly: true).ToNativeArray(Allocator.Temp);
+        NativeArray<StartingTileElement> startingTiles = EntityManager.GetBuffer<StartingTileElement>(gridInfoEntity, isReadOnly: true).ToNativeArray(Allocator.Temp);
 
         // Spawn Actors
         for (int i = 0; i < startingTileActors.Length; i++)

@@ -11,7 +11,7 @@ public class NameAuth : MonoBehaviour, IConvertGameObjectToEntity
     {
         dstManager.AddComponentData(entity, new Name()
         {
-            Value = new FixedString64(this.Value)
+            Value = new FixedString64Bytes(this.Value)
         });
     }
 }

@@ -5,7 +5,7 @@ using Unity.Collections;
 using Unity.Entities;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public class InstantiateStartingStatModifiersSystem : SimGameSystemBase
+public partial class InstantiateStartingStatModifiersSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

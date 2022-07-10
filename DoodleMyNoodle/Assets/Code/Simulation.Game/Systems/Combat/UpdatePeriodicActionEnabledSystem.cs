@@ -10,7 +10,7 @@ public struct PeriodicActionRange : IComponentData
 }
 
 [UpdateAfter(typeof(MovementSystemGroup))]
-public class UpdatePeriodicActionEnabledSystem : SimGameSystemBase
+public partial class UpdatePeriodicActionEnabledSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {

@@ -6,12 +6,12 @@ using Unity.Entities;
 using UnityEngineX;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-public class MasterOnlyAttribute : Attribute
+public class SimulationMasterOnlyAttribute : Attribute
 {
 
 }
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-public class ClientOnlyAttribute : Attribute
+public class SimulationClientOnlyAttribute : Attribute
 {
 
 }
@@ -28,7 +28,6 @@ public class ViewSystemGroup : ManualCreationComponentSystemGroup, IManualSystem
 
                     // get all ViewComponent systems
                     TypeUtility.GetTypesDerivedFrom(typeof(ViewSystemBase))
-            .Concat(TypeUtility.GetTypesDerivedFrom(typeof(ViewJobComponentSystem)))
             .Concat(TypeUtility.GetTypesDerivedFrom(typeof(ViewEntityCommandBufferSystem)))
 
             // exlude those with the DisableAutoCreate attribute
@@ -40,10 +39,10 @@ public class ViewSystemGroup : ManualCreationComponentSystemGroup, IManualSystem
                 if (Attribute.IsDefined(type, typeof(DisableAutoCreationAttribute), true))
                     return false;
 
-                if (!simControlGroup.IsClient && Attribute.IsDefined(type, typeof(ClientOnlyAttribute), true))
+                if (!simControlGroup.IsClient && Attribute.IsDefined(type, typeof(SimulationClientOnlyAttribute), true))
                     return false;
 
-                if (!simControlGroup.IsMaster && Attribute.IsDefined(type, typeof(MasterOnlyAttribute), true))
+                if (!simControlGroup.IsMaster && Attribute.IsDefined(type, typeof(SimulationMasterOnlyAttribute), true))
                     return false;
 
                 return true;

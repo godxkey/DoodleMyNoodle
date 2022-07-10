@@ -5,7 +5,7 @@
 //using static fixMath;
 //using static Unity.Mathematics.math;
 
-//public class DestroyOutOfBoundsEntities : SimGameSystemBase
+//public partial class DestroyOutOfBoundsEntities : SimGameSystemBase
 //{
 //    private List<Entity> _toDestroy = new List<Entity>();
 

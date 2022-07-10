@@ -157,7 +157,7 @@ public struct PresentationEventReader<T>
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 [AlwaysUpdateSystem]
-public class PresentationEventSystem : SimGameSystemBase
+public partial class PresentationEventSystem : SimGameSystemBase
 {
     public PresentationEventsWithReadAccess PresentationEventsInstance = new PresentationEventsWithReadAccess();
 

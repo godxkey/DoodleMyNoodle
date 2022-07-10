@@ -55,7 +55,7 @@ public class GamePresentationCache
 
 // should we change this to a component system ?
 [AlwaysUpdateSystem]
-public class GamePresentationCacheUpdater : ViewSystemBase
+public partial class GamePresentationCacheUpdater : ViewSystemBase
 {
     GamePresentationCache Cache => GamePresentationCache.Instance;
 
@@ -116,7 +116,7 @@ public class GamePresentationCacheUpdater : ViewSystemBase
             Cache.LocalPawnPositionFloat = Cache.LocalPawnPosition.ToUnityVec();
 
             Cache.PlayerAP = Cache.SimWorld.GetComponent<ActionPoints>(Cache.LocalPawn).Value;
-            Cache.PlayerMaxAP = Cache.SimWorld.GetComponent<MaximumFix<ActionPoints>>(Cache.LocalPawn).Value;
+            Cache.PlayerMaxAP = Cache.SimWorld.GetComponent<ActionPointsMax>(Cache.LocalPawn).Value;
         }
         else
         {
@@ -131,9 +131,9 @@ public class GamePresentationCacheUpdater : ViewSystemBase
             Cache.PlayerGroupEntity = Cache.SimWorld.GetSingletonEntity<PlayerGroupDataTag>();
             Cache.GroupLifePoints = Cache.SimWorld.GetComponent<LifePoints>(Cache.PlayerGroupEntity);
             Cache.GroupHealth = Cache.SimWorld.GetComponent<Health>(Cache.PlayerGroupEntity);
-            Cache.GroupMaxHealth = Cache.SimWorld.GetComponent<MaximumFix<Health>>(Cache.PlayerGroupEntity).Value;
+            Cache.GroupMaxHealth = Cache.SimWorld.GetComponent<HealthMax>(Cache.PlayerGroupEntity).Value;
             Cache.GroupShield = Cache.SimWorld.GetComponent<Shield>(Cache.PlayerGroupEntity);
-            Cache.GroupMaxShield = Cache.SimWorld.GetComponent<MaximumFix<Shield>>(Cache.PlayerGroupEntity).Value;
+            Cache.GroupMaxShield = Cache.SimWorld.GetComponent<ShieldMax>(Cache.PlayerGroupEntity).Value;
             Cache.GroupPosition = Cache.SimWorld.GetComponent<FixTranslation>(Cache.PlayerGroupEntity).Value;
         }
 

@@ -50,7 +50,7 @@ public struct MultiTimeValue
     //public static bool operator !=(TimeValue y, MultiTimeValue x) => x.GetValue(y.Type) != y;
 }
 
-public abstract class SimGameSystemBase : SimSystemBase
+public abstract partial class SimGameSystemBase : SimSystemBase
 {
     public new SimulationGameWorld World => (SimulationGameWorld)base.World;
     public PresentationEvents PresentationEvents => Accessor.PresentationEvents;

@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class UpdateItemCooldownSystem : SimGameSystemBase
+public partial class UpdateItemCooldownSystem : SimGameSystemBase
 {
     EntityQuery _entitiesWithCooldown;
 

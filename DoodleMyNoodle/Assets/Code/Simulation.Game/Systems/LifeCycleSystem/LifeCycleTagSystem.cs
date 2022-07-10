@@ -1,7 +1,7 @@
 ﻿using Unity.Entities;
 
 [UpdateInGroup(typeof(PresentationSystemGroup))] // update at the very end of the simulation
-public class LifeCycleTagSystem : SimGameSystemBase
+public partial class LifeCycleTagSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

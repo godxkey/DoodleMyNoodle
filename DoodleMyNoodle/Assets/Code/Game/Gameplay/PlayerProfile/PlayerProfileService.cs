@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using Unity.Serialization.Json;
 using UnityEngine;
 using UnityEngineX;
 
@@ -62,13 +61,12 @@ public class PlayerProfileService : MonoCoreService<PlayerProfileService>
     public static PlayerProfile LoadProfileFromDisk(string filePath)
     {
         StreamReader file = File.OpenText(filePath);
-        JsonSerializer serializer = new JsonSerializer();
-
+        
         PlayerProfile profile = null;
 
         try
         {
-            profile = (PlayerProfile)serializer.Deserialize(file, typeof(PlayerProfile));
+            profile = JsonSerialization.FromJson<PlayerProfile>(file.ReadToEnd());
 
         }
         catch { }
@@ -99,8 +97,7 @@ public class PlayerProfileService : MonoCoreService<PlayerProfileService>
         //// serialize JSON directly to a file
         using (StreamWriter file = File.CreateText(filePath))
         {
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.Serialize(file, playerProfile);
+            file.Write(JsonSerialization.ToJson(playerProfile));
         }
     }
 

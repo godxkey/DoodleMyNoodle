@@ -25,7 +25,7 @@ public struct RadialImpulseRequestData : IBufferElementData
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
 [UpdateBefore(typeof(UpdateCanMoveSystem))]
-public class ApplyImpulseSystem : SimGameSystemBase
+public partial class ApplyImpulseSystem : SimGameSystemBase
 {
     public void RequestImpulseRadial(RadialImpulseRequestData request)
     {

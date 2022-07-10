@@ -17,7 +17,7 @@ public class ShieldAuth : MonoBehaviour, IConvertGameObjectToEntity
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponentData<Shield>(entity, (fix)(StartAtMax ? MaxValue : StartValue));
-        dstManager.AddComponentData<MaximumFix<Shield>>(entity, (fix)MaxValue);
+        dstManager.AddComponentData<ShieldMax>(entity, (fix)MaxValue);
         dstManager.AddComponentData<ShieldRechargeRate>(entity, (fix)RechargeRate);
         dstManager.AddComponentData<ShieldRechargeCooldown>(entity, (fix)RechargeCooldown);
         dstManager.AddComponentData<ShieldLastHitTime>(entity, fix.MinValue);

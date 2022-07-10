@@ -104,7 +104,7 @@ public struct SingletonCheatPlayState : IComponentData
 
 [UpdateInGroup(typeof(InputSystemGroup))]
 [AlwaysUpdateSystem]
-public class HandleSimulationCheatsSystem : SimGameSystemBase
+public partial class HandleSimulationCheatsSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
@@ -347,15 +347,10 @@ public class HandleSimulationCheatsSystem : SimGameSystemBase
                 var multiplier = multiplyMobHP.Multiplier;
                 Entities
                     .WithAll<MobEnemyTag>()
-                    .ForEach((Entity entity, ref Health hp) =>
+                    .ForEach((Entity entity, ref Health hp, ref HealthMax hpMax) =>
                 {
                     hp.Value *= multiplier;
-                    if (HasComponent<MaximumFix<Health>>(entity))
-                    {
-                        var maxHP = GetComponent<MaximumFix<Health>>(entity);
-                        maxHP.Value *= multiplier;
-                        SetComponent(entity, maxHP);
-                    }
+                    hpMax.Value *= multiplier;
                 }).Run();
                 break;
             }

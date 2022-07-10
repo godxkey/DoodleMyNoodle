@@ -9,7 +9,7 @@ public struct VelocityChangeAfterLifeTime : IComponentData
     public bool Applied;
 }
 
-public class VelocityChangeAfterLifeTimeSystem : SimGameSystemBase
+public partial class VelocityChangeAfterLifeTimeSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

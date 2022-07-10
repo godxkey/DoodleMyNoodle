@@ -16,7 +16,7 @@ public struct Grounded : IComponentData
 
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
 [UpdateAfter(typeof(StepPhysicsWorldSystem)), UpdateBefore(typeof(EndFramePhysicsSystem))]
-public class UpdateGroundedSystem : SimGameSystemBase
+public partial class UpdateGroundedSystem : SimGameSystemBase
 {
     private StepPhysicsWorldSystem _stepPhysicsWorldSystem;
     private PhysicsWorldSystem _physicsWorldSystem;

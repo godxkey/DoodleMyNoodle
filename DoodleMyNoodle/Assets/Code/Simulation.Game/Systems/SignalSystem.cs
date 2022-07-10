@@ -9,7 +9,7 @@ using UnityEngine.Profiling;
 
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
 [UpdateAfter(typeof(StepPhysicsWorldSystem)), UpdateBefore(typeof(EndFramePhysicsSystem))]
-public class ExtractSignalEmitterOverlapsSystem : SimGameSystemBase
+public partial class ExtractSignalEmitterOverlapsSystem : SimGameSystemBase
 {
     private StepPhysicsWorldSystem _stepPhysicsWorldSystem;
     private PhysicsWorldSystem _physicsWorldSystem;
@@ -73,7 +73,7 @@ public class ExtractSignalEmitterOverlapsSystem : SimGameSystemBase
 }
 
 [UpdateInGroup(typeof(SignalSystemGroup))]
-public class ResetSignalSystems : SimGameSystemBase
+public partial class ResetSignalSystems : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
@@ -87,7 +87,7 @@ public class ResetSignalSystems : SimGameSystemBase
 [UpdateAfter(typeof(ResetSignalSystems))]
 [UpdateInGroup(typeof(SignalSystemGroup))]
 [AlwaysUpdateSystem]
-public class SetSignalSystem : SimGameSystemBase
+public partial class SetSignalSystem : SimGameSystemBase
 {
     public NativeList<Entity> EmitterClickRequests;
     public NativeList<JobHandle> HandlesToWaitFor;
@@ -270,7 +270,7 @@ public class SetSignalSystem : SimGameSystemBase
 
 [UpdateInGroup(typeof(SignalSystemGroup))]
 [UpdateAfter(typeof(SetSignalSystem))]
-public class RecordPreviousSignalsSystem : SimGameSystemBase
+public partial class RecordPreviousSignalsSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {

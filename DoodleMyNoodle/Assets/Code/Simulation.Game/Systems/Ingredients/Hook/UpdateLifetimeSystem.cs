@@ -17,7 +17,7 @@ public struct Lifetime : IComponentData
     public static implicit operator Lifetime(fix val) => new Lifetime() { Value = val };
 }
 
-public class UpdateLifetimeSystem : SimGameSystemBase
+public partial class UpdateLifetimeSystem : SimGameSystemBase
 {
     private EntityCommandBufferSystem _ecbSytem;
 

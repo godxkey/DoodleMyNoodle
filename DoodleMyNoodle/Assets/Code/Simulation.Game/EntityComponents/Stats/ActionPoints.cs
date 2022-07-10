@@ -1,16 +1,19 @@
 ﻿using Unity.Entities;
 
-[assembly: RegisterGenericComponentType(typeof(MaximumFix<ActionPoints>))]
-[assembly: RegisterGenericComponentType(typeof(MinimumFix<ActionPoints>))]
-
-public struct ActionPoints : IComponentData, IStatFix
+public struct ActionPoints : IComponentData
 {
     public fix Value;
 
-    fix IStatFix.Value { get => Value; set => Value = value; }
-
     public static implicit operator fix(ActionPoints val) => val.Value;
     public static implicit operator ActionPoints(fix val) => new ActionPoints() { Value = val };
+}
+
+public struct ActionPointsMax : IComponentData
+{
+    public fix Value;
+
+    public static implicit operator fix(ActionPointsMax val) => val.Value;
+    public static implicit operator ActionPointsMax(fix val) => new ActionPointsMax() { Value = val };
 }
 
 public struct ActionPointsRechargeRate : IComponentData

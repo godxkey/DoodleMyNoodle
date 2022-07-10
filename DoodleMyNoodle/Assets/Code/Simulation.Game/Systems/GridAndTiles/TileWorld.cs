@@ -102,7 +102,7 @@ public struct TileWorld
 
 [UpdateAfter(typeof(CreateGridSystem))]
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public class CreateTileWorldSystem : SimGameSystemBase
+public partial class CreateTileWorldSystem : SimGameSystemBase
 {
     private DirtyValue<uint> _gridInfoVersion;
     private NativeArray<GridTileReference> _tileReferencesBuffer;
@@ -138,7 +138,7 @@ public class CreateTileWorldSystem : SimGameSystemBase
     {
         var singleton = GetSingletonEntity<GridInfo>();
         
-        _gridInfoVersion.Set(EntityManager.GetChunk(singleton).GetComponentVersion(typeof(GridInfo)));
+        _gridInfoVersion.Set(EntityManager.GetChunk(singleton).GetChangeVersion(typeof(GridInfo)));
 
         if (_gridInfoVersion.ClearDirty())
         {
@@ -149,7 +149,7 @@ public class CreateTileWorldSystem : SimGameSystemBase
                 _tileReferencesBuffer.Dispose();
             }
 
-            _tileReferencesBuffer = EntityManager.GetBufferReadOnly<GridTileReference>(GetSingletonEntity<GridInfo>()).ToNativeArray(Allocator.Persistent);
+            _tileReferencesBuffer = EntityManager.GetBuffer<GridTileReference>(GetSingletonEntity<GridInfo>(), isReadOnly: true).ToNativeArray(Allocator.Persistent);
         }
     }
 }

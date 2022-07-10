@@ -1,13 +1,8 @@
 ﻿using Unity.Entities;
 
-[assembly: RegisterGenericComponentType(typeof(MaximumFix<Health>))]
-[assembly: RegisterGenericComponentType(typeof(MinimumFix<Health>))]
-
-public struct LifePoints : IComponentData, IStatInt
+public struct LifePoints : IComponentData
 {
     public int Value;
-
-    int IStatInt.Value { get => Value; set => Value = value; }
 
     public static implicit operator int(LifePoints val) => val.Value;
     public static implicit operator LifePoints(int val) => new LifePoints() { Value = val };

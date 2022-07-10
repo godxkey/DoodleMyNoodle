@@ -20,7 +20,7 @@ using static fixMath;
 using static Unity.Mathematics.math;
 using CCC.Fix2D;
 
-public class #SCRIPTNAME# : {typeof(SimGameSystemBase).GetPrettyName()}
+public partial class #SCRIPTNAME# : {typeof(SimGameSystemBase).GetPrettyName()}
 {{
     protected override void OnUpdate()
     {{

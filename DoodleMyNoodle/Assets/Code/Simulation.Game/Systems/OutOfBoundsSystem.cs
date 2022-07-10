@@ -5,7 +5,7 @@ using static fixMath;
 using static Unity.Mathematics.math;
 using CCC.Fix2D;
 
-public class OutOfBoundsSystem : SimGameSystemBase
+public partial class OutOfBoundsSystem : SimGameSystemBase
 {
     private EntityCommandBufferSystem _ecbSytem;
 

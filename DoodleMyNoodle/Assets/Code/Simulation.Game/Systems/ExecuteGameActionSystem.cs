@@ -33,7 +33,7 @@ public struct GameActionRequestManaged
 
 [UpdateAfter(typeof(InputSystemGroup))]
 [AlwaysUpdateSystem]
-public class ExecuteGameActionSystem : SimGameSystemBase
+public partial class ExecuteGameActionSystem : SimGameSystemBase
 {
     private List<NativeList<GameActionRequest>> _actionRequests = new List<NativeList<GameActionRequest>>();
     private List<GameActionRequestManaged> _actionRequestsManaged = new List<GameActionRequestManaged>();

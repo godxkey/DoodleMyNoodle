@@ -22,7 +22,7 @@ public struct GlobalItemBankPrefabElement : IBufferElementData
 public struct GlobalItemBankTag : IComponentData { }
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public class GlobalItemBankSystem : SimGameSystemBase
+public partial class GlobalItemBankSystem : SimGameSystemBase
 {
     protected override void OnCreate()
     {

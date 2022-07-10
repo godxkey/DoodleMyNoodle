@@ -56,7 +56,7 @@ public class GameActionExecuteMultiple : GameAction<GameActionExecuteMultiple.Se
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        var buffer = input.Accessor.GetBufferReadOnly<ActionsBufferElement>(input.Context.Action);
+        var buffer = input.Accessor.GetBuffer<ActionsBufferElement>(input.Context.Action);
         foreach (ActionsBufferElement gameAction in buffer)
         {
             CommonWrites.RequestExecuteGameAction(input.Accessor, input.Context.LastPhysicalInstigator, gameAction.ActionEntity, input.Context.Targets, input.Parameters);

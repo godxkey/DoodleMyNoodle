@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public class PullEntitiesSystem : SimGameSystemBase
+public partial class PullEntitiesSystem : SimGameSystemBase
 {
     private EntityCommandBufferSystem _ecbSytem;
 
