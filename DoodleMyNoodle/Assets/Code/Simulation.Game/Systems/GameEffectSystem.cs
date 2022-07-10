@@ -33,6 +33,24 @@ public partial class GameEffectSystem : SimGameSystemBase
         UpdateDurations();
 
         var addGameEffectRequests = GetSingletonBuffer<SystemRequestAddGameEffect>();
+
+        // Default Start Buffer element
+        Entities.ForEach((Entity entity, DynamicBuffer<GameEffectStartBufferElement> gameEffectStartBufferElements) =>
+        {
+            foreach (var gameEffectStartBufferElement in gameEffectStartBufferElements)
+            {
+                addGameEffectRequests.Add(new SystemRequestAddGameEffect()
+                {
+                    GameEffectPrefab = gameEffectStartBufferElement.EffectEntity,
+                    Target = entity,
+                    Instigator = new InstigatorSet() { FirstPhysicalInstigator = entity, LastInstigator = entity, LastPhysicalInstigator = entity, LastSpellInstigator = entity }
+                });
+            }
+
+            gameEffectStartBufferElements.Clear();
+
+        }).Run();
+
         NativeArray<SystemRequestAddGameEffect> effectRequests = addGameEffectRequests.ToNativeArray(Allocator.Temp);
         addGameEffectRequests.Clear();
 

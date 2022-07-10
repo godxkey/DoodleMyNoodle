@@ -80,8 +80,8 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
 
         // When 'originateFromCenter' is true, we simulate the projectile spawning at the center of the pawn.
         // We adjust the start position and the start velocity to where the projectile will exit the spawn-distance
-        bool originateFromCenter = input.Parameters != null && input.Parameters.TryGetParameter(1, out GameActionParameterBool.Data paramOriginateFromCenter, warnIfFailed: false)
-            && paramOriginateFromCenter.Value;
+        bool originateFromCenter = true;//input.Parameters != null && input.Parameters.TryGetParameter(1, out GameActionParameterBool.Data paramOriginateFromCenter, warnIfFailed: false)
+            //&& paramOriginateFromCenter.Value;
 
         FireProjectileSettings fireSettings = new FireProjectileSettings()
         {
@@ -106,8 +106,8 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
     {
         Settings settings = accessor.GetComponent<Settings>(actionPrefab);
 
-        return (direction * CommonReads.GetThrowSpawnDistance(accessor, settings.ProjectilePrefab, context.LastPhysicalInstigator, settings.SpawnExtraDistance)) 
-            + settings.SpawnOffset;
+        return fix2.zero;// (direction * CommonReads.GetThrowSpawnDistance(accessor, settings.ProjectilePrefab, context.LastPhysicalInstigator, settings.SpawnExtraDistance)) 
+            //+ settings.SpawnOffset;
     }
 
     // used by presentation
