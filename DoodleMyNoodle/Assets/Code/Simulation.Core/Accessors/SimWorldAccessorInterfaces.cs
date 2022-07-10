@@ -990,7 +990,7 @@ public interface ISimWorldReadAccessor
     /// <typeparam name="T">The type of the buffer's elements.</typeparam>
     /// <returns>The DynamicBuffer object for accessing the buffer contents.</returns>
     /// <exception cref="ArgumentException">Thrown if T is an unsupported type.</exception>
-    DynamicBuffer<T> GetBuffer<T>(Entity entity) where T : struct, IBufferElementData;
+    DynamicBuffer<T> GetBufferReadOnly<T>(Entity entity) where T : struct, IBufferElementData;
 
     /// <summary>
     /// Gets the chunk in which the specified entity is stored.

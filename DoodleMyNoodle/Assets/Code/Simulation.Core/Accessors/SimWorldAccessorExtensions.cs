@@ -46,7 +46,7 @@ public static class SimWorldAccessorExtensions
     {
         if (accessor.HasComponent<T>(entity))
         {
-            buffer = accessor.GetBuffer<T>(entity);
+            buffer = accessor.GetBufferReadOnly<T>(entity);
             return true;
         }
 
