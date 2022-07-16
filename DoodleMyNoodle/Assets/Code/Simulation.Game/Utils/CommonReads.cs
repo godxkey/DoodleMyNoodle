@@ -66,6 +66,7 @@ public static partial class CommonReads
         {
             accessor.Entities
                 .WithAll<MobEnemyTag>()
+                .WithNone<DeadTag>()
                 .ForEach((Entity entity, ref FixTranslation position, ref PhysicsGravity gravity) =>
                 {
                     if (gravity.ScaleFix == 0 && rangeX.Contains(position.Value.x))
@@ -85,6 +86,7 @@ public static partial class CommonReads
 
         accessor.Entities
             .WithAll<MobEnemyTag>()
+            .WithNone<DeadTag>()
             .ForEach((Entity entity, ref FixTranslation position) =>
             {
                 if (rangeX.Contains(position.Value.x))
