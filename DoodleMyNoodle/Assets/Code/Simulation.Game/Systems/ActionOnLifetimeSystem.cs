@@ -23,7 +23,7 @@ public partial class ExecuteActionOnLifetimeSystem : SimGameSystemBase
 
     protected override void OnUpdate()
     {
-        var gameActionRequets = _gameActionSystem.CreateRequestBuffer();
+        var gameActionRequests = _gameActionSystem.CreateRequestBuffer();
 
         Entities.ForEach((Entity instigator, DynamicBuffer<ActionOnLifetime> actionOnLifetimes, in Lifetime lifetime) =>
         {
@@ -32,7 +32,7 @@ public partial class ExecuteActionOnLifetimeSystem : SimGameSystemBase
                 var entry = actionOnLifetimes[i];
                 if (entry.Lifetime < lifetime)
                 {
-                    gameActionRequets.Add(new GameActionRequest()
+                    gameActionRequests.Add(new GameActionRequest()
                     {
                         ActionEntity = entry.Action,
                         Instigator = instigator,

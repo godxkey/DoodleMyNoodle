@@ -172,7 +172,7 @@ public struct FireProjectileSettings
     /// </summary>
     public fix2 SpawnOffset;
 
-    public static FireProjectileSettings Default => new FireProjectileSettings()
+    public static FireProjectileSettings Default => new ()
     {
         SimulateSpawnFromInstigatorCenter = false,
         InheritInstigatorVelocity = true,

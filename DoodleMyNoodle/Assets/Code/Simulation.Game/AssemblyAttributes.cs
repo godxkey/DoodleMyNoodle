@@ -1,5 +1,6 @@
-﻿using Unity.Entities;//
+﻿[assembly: Unity.Entities.DisableAutoCreation]
 
-[assembly: DisableAutoCreation]
-
-class WhyAreThereWarningsInTheConsoleAboutThisFileWhenIDontMakeThisClass { }
+partial class WhyAreThereWarningsInTheConsoleAboutThisFileWhenIDontMakeThisClass
+{
+    
+}
