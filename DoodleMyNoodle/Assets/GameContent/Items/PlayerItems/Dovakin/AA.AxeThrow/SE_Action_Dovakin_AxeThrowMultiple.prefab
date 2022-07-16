@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Dovakin_AxeThrow
+  m_Name: SE_Action_Dovakin_AxeThrowMultiple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -45,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 1b1b30dc5bf1176489d03b5b7c9a2944
+  _guid: 067cf97cf5a0edf4c8482c435c6bd825
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -63,33 +64,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: GameActionThrow
+  Value: GameActionExecuteMultiple
   UseInstigatorAsTarget: 0
   ExecuteOnFirstInstigator: 0
   ExecuteOnLastInstigator: 0
   InstigatorAsTargetType: 0
   GameActionSettings:
-  - id: 0
+  - rid: 262629723201601536
   SfxOnUse: {fileID: 0}
   Animation: {fileID: 0}
   InstigatorVFX: {fileID: 0}
   TargetsVFX: {fileID: 0}
-  Surveys:
-  - {fileID: 7192197591991983227, guid: 4a9670b303e62124b8760b00d6a2245e, type: 3}
+  Surveys: []
   references:
-    version: 1
-    00000000:
-      type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
+    version: 2
+    RefIds:
+    - rid: 262629723201601536
+      type: {class: GameActionExecuteMultiple/SettingsAuth, ns: , asm: Simulation.Game}
       data:
-        SpeedMin:
-          RawValue: 0
-        SpeedMax:
-          RawValue: 42949672960
-        SpawnExtraDistance:
-          RawValue: 0
-        ProjectilePrefab: {fileID: 2385346486794747607, guid: df4e16bd28231994c86f6bf77c410c65,
-          type: 3}
-        Quantity: 1
-        VolleyAngle: 0
-        ShootVector: {x: 5, y: 5}
-        SpawnOffset: {x: 0, y: 0}
+        GameActionPrefabs:
+        - {fileID: 2784291058542494111, guid: fde035c4cb16fbe46898be56854f1fa6, type: 3}
+        - {fileID: 2784291058542494111, guid: 1b1b30dc5bf1176489d03b5b7c9a2944, type: 3}
+        - {fileID: 2784291058542494111, guid: cf1d03e26f02f9b448ff890002525e1c, type: 3}
