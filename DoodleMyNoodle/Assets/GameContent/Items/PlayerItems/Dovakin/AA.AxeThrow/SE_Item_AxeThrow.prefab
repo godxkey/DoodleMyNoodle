@@ -29,6 +29,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -66,6 +67,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionPrefab: {fileID: 0}
   ApCost: 0
+  AvailableInShop: 1
+  Tier: 0
   HasCharges: 0
   ChargeCount: 10
   CooldownType: 2
@@ -73,8 +76,8 @@ MonoBehaviour:
   HideInInventory: 0
   Icon: {fileID: 21300000, guid: 9536487c4b8ae844d94e4e3d0b7379f7, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: "Lanc\xE9 de hache"
-  EffectDescription: Lance une hache, duh.
+  Name: "Lanc\xE9 de haches"
+  EffectDescription: Lance des haches, duh.
 --- !u!114 &-4532363482470906874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,8 +90,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 722e71c09a9b4fe4387330ab52d80215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActEvery: 1.3875
-  Action: {fileID: -4801357984810749253, guid: 1b1b30dc5bf1176489d03b5b7c9a2944, type: 3}
+  ActEvery: 2.5
+  Action: {fileID: -4801357984810749253, guid: 067cf97cf5a0edf4c8482c435c6bd825, type: 3}
   PrepareInAdvance: 0
   Limit: -1
   OnlyAtSpecificDistance: 0
