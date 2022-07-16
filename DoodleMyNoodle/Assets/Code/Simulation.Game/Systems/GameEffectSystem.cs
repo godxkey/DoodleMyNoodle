@@ -74,8 +74,9 @@ public partial class GameEffectSystem : SimGameSystemBase
 
         }).Run();
 
-        foreach (var effect in endingEffects)
+        for (int i = 0; i < endingEffects.Length; i++)
         {
+            var effect = endingEffects[i];
             var effectInfo = GetComponent<GameEffectInfo>(effect);
 
             if (EntityManager.TryGetComponent(effect, out GameEffectOnEndGameAction gameEffectOnEndGameAction))
