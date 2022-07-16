@@ -10,12 +10,14 @@ public class GameActionEnablePeriodicAction : GameAction<GameActionEnablePeriodi
     public class SettingsAuth : GameActionSettingAuthBase
     {
         public int UsageCount;
+        public float Duration = -1;
 
         public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
             dstManager.AddComponentData(entity, new Settings()
             {
                 UsageCount = UsageCount,
+                Duration = (fix)Duration,
             });
         }
     }
@@ -23,6 +25,7 @@ public class GameActionEnablePeriodicAction : GameAction<GameActionEnablePeriodi
     public struct Settings : IComponentData
     {
         public int UsageCount;
+        public fix Duration;
     }
 
     protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
@@ -35,6 +38,7 @@ public class GameActionEnablePeriodicAction : GameAction<GameActionEnablePeriodi
         if (input.Accessor.HasComponent<PeriodicActionEnabled>(input.Context.ActionInstigator))
         {
             input.Accessor.SetComponent<PeriodicActionEnabled>(input.Context.ActionInstigator, true);
+            input.Accessor.SetComponent<PeriodicActionTimer>(input.Context.ActionInstigator, settings.Duration);
             input.Accessor.SetComponent<RemainingPeriodicActionCount>(input.Context.ActionInstigator, settings.UsageCount);
         }
 

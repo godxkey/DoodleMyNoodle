@@ -20,6 +20,9 @@ public class PeriodicActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDe
     [Tooltip("Set to -1 for no limit")]
     public int Limit = -1;
 
+    [Tooltip("Set to -1 for no limit")]
+    public int Timer = -1;
+
     public bool OnlyAtSpecificDistance;
 
     [ShowIf(nameof(OnlyAtSpecificDistance))]
@@ -33,6 +36,7 @@ public class PeriodicActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDe
     {
         dstManager.AddComponentData(entity, new PeriodicActionRate() { Value = (fix)(1 / Mathf.Max(ActEvery, 0.0001f)), FirstInstigatorAttackSpeedAffectMe = FirstInstigatorAttackSpeedAffectMe });
         dstManager.AddComponentData<PeriodicActionProgress>(entity, (fix)(PrepareInAdvance ? 1 : 0));
+        dstManager.AddComponentData<PeriodicActionTimer>(entity, (fix)Timer);
         dstManager.AddComponentData<PeriodicActionEnabled>(entity, false);
         dstManager.AddComponentData<ProgressPeriodicActionInAdvance>(entity, PrepareInAdvance);
         dstManager.AddComponentData<RemainingPeriodicActionCount>(entity, Limit);
@@ -40,6 +44,8 @@ public class PeriodicActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDe
         dstManager.AddComponentData<PeriodicAction>(entity, Action != null ? conversionSystem.GetPrimaryEntity(Action.gameObject) : default);
         dstManager.AddComponentData<PeriodicActionRange>(entity, OnlyAtSpecificDistance ? new FixRange((fix)MinDistanceFromTarget, (fix)MaxDistanceFromTarget) : FixRange.Infinite);
     }
+
+    
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
