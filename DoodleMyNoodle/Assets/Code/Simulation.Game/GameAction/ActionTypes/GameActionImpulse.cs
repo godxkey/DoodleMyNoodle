@@ -1,4 +1,3 @@
-using static fixMath;
 using Unity.Entities;
 using System;
 using CCC.Fix2D;
@@ -49,6 +48,50 @@ public class GameActionRadialImpulse : GameAction<GameActionRadialImpulse.Settin
             }
         }
 
+        return true;
+    }
+}
+
+public class GameActionDirectImpulse : GameAction<GameActionDirectImpulse.Settings>
+{
+    [Serializable]
+    [GameActionSettingAuth(typeof(Settings))]
+    public class SettingsAuth : GameActionSettingAuthBase
+    {
+        public Vector2 Impulse;
+
+        public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        {
+            dstManager.AddComponentData(entity, new Settings()
+            {
+                Impulse = (fix2)Impulse,
+            });
+        }
+    }
+
+    public struct Settings : IComponentData
+    {
+        public fix2 Impulse;
+    }
+
+    protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
+    {
+        return null;
+    }
+
+    protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
+    {
+        var impulseRequests = input.Accessor.GetSingletonBuffer<SystemRequestImpulseDirect>();
+        var targets = input.Context.Targets;
+        for (int i = 0; i < targets.Length; i++)
+        {
+            impulseRequests.Add(new SystemRequestImpulseDirect()
+            {
+                IgnoreMass = true,
+                Strength = settings.Impulse,
+                Target = targets[i],
+            });
+        }
         return true;
     }
 }

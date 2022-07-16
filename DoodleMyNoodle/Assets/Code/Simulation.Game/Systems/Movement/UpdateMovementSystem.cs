@@ -17,7 +17,8 @@ public partial class UpdateMovementSystem : SimGameSystemBase
             if (!canMove)
                 return;
 
-            velocity.Linear.x = CalculateHorizontalVelocity(moveSpeed, offsetFromTarget, desiredDistance, deltaTime);
+            fix targetVelX = CalculateTargetHorizontalVelocity(moveSpeed, offsetFromTarget, desiredDistance, deltaTime);
+            velocity.Linear.x = fixMath.moveTowards(velocity.Linear.x, targetVelX, deltaTime * SimulationGameConstants.ActorAcceleration);
         }).Schedule();
 
 
@@ -28,11 +29,11 @@ public partial class UpdateMovementSystem : SimGameSystemBase
             if (!canMove)
                 return;
 
-            position.Value.x += CalculateHorizontalVelocity(moveSpeed, offsetFromTarget, desiredDistance, deltaTime) * deltaTime;
+            position.Value.x += CalculateTargetHorizontalVelocity(moveSpeed, offsetFromTarget, desiredDistance, deltaTime) * deltaTime;
         }).Schedule();
     }
 
-    private static fix CalculateHorizontalVelocity(in MoveSpeed moveSpeed, in OffsetFromTarget offsetFromTarget, in DesiredRangeFromTarget desiredDistance, in fix deltaTime)
+    private static fix CalculateTargetHorizontalVelocity(in MoveSpeed moveSpeed, in OffsetFromTarget offsetFromTarget, in DesiredRangeFromTarget desiredDistance, in fix deltaTime)
     {
         if (!desiredDistance.Value.IsValid)
         {

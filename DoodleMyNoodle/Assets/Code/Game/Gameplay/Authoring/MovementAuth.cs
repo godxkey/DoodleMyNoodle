@@ -40,6 +40,7 @@ public class MovementAuth : MonoBehaviour, IConvertGameObjectToEntity
             if (physicsBodyAuth.GravityScale != 0)
             {
                 dstManager.AddComponent<Grounded>(entity);
+                dstManager.AddComponent<ResetGroundedFlag>(entity);
                 if (!physicsBodyAuth.FireEvents)
                 {
                     Log.Error($"Entity {gameObject.name} should have PhysicsBodyAuth events enabled. Otherwise, 'Grounded' will not update correctly in game.");

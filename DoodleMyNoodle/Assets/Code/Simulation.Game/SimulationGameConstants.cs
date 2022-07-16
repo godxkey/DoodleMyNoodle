@@ -53,6 +53,9 @@ public static class SimulationGameConstants
     public static readonly fix EnemySpawnDistanceFromPlayerGroup = 15;
     public static readonly fix DeadEntityDestroyDelay = 3;
     public static readonly fix UnspawnedMobsMoveSpeed = -(fix)0.5; // this should ideally matcht the base move speed of regular mobs
+    public static readonly fix GroundedBackMaxSpeed = (fix)0.01; // the max velocity the ungrounded actor can have to be grounded again
+    public static readonly fix ActorAcceleration = (fix)7.5; // the acceleration of the actors to reach their desired MoveSpeed
+
 
     private static bool s_init = false;
 

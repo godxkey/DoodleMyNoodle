@@ -30,6 +30,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -110,6 +111,17 @@ MonoBehaviour:
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 1
+    GeneralCooldown: 0
+    ContactMode: 0
+    OverlapLayerMask:
+      serializedVersion: 2
+      m_Bits: 512
+    OverlapRadius: 0.5
+  - ActionPrefab: {fileID: -4801357984810749253, guid: e59940870f788b442bcd1eef589e3bd9,
+      type: 3}
+    TargetFilter: 2
+    SameTargetCooldown: 0
+    GeneralCooldown: 0
     ContactMode: 0
     OverlapLayerMask:
       serializedVersion: 2
@@ -119,6 +131,7 @@ MonoBehaviour:
       type: 3}
     TargetFilter: 2
     SameTargetCooldown: 0
+    GeneralCooldown: 0
     ContactMode: 0
     OverlapLayerMask:
       serializedVersion: 2

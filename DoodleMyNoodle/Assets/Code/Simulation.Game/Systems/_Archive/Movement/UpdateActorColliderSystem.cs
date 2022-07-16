@@ -17,50 +17,31 @@ public struct ActorColliderRefs : IComponentData
 }
 
 [UpdateInGroup(typeof(MovementSystemGroup))]
-[UpdateAfter(typeof(UpdateNavAgentFootingSystem))]
 public partial class UpdateActorColliderSystem : SimGameSystemBase
 {
     protected override void OnUpdate()
     {
         // depending on the actor state, update the collider
 
-        // with health + navagent
-        Entities
-            .WithChangeFilter<NavAgentFootingState, Health>()
-            .ForEach((ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in ActorColliderRefs colliderRefs, in Health health) =>
-            {
-                UpdateActorCollider(ref collider, footing, colliderRefs, alive: health > fix.Zero);
-            }).Run();
-
-        // with health only
-        Entities
-            .WithNone<NavAgentFootingState>()
-            .WithChangeFilter<Health>()
-            .ForEach((ref PhysicsColliderBlob collider, in Health health, in ActorColliderRefs colliderRefs) =>
-            {
-                UpdateActorCollider(ref collider, footing: NavAgentFooting.Ground, colliderRefs, alive: health > fix.Zero);
-            }).Run();
-
         // with health + grounded
         Entities
-            .WithNone<NavAgentFootingState>()
             .WithChangeFilter<Health, Grounded>()
             .ForEach((ref PhysicsColliderBlob collider, in Health health, in Grounded grounded, in ActorColliderRefs colliderRefs) =>
             {
-                UpdateActorCollider(ref collider, footing: grounded ? NavAgentFooting.Ground : NavAgentFooting.None, colliderRefs, alive: health > fix.Zero);
+                UpdateActorCollider(ref collider, grounded, colliderRefs, alive: health > fix.Zero);
             }).Run();
 
-        // with navagent only
+        // with grounded only
         Entities
             .WithNone<Health>()
-            .WithChangeFilter<NavAgentFootingState>()
-            .ForEach((ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in ActorColliderRefs colliderRefs) =>
+            .WithChangeFilter<Grounded>()
+            .ForEach((ref PhysicsColliderBlob collider, in Grounded grounded, in ActorColliderRefs colliderRefs) =>
             {
-                UpdateActorCollider(ref collider, footing, colliderRefs, alive: true);
+                UpdateActorCollider(ref collider, grounded, colliderRefs, alive: true);
             }).Run();
     }
 
-    private static void UpdateActorCollider(ref PhysicsColliderBlob collider, in NavAgentFootingState footing, in ActorColliderRefs colliderRefs, bool alive)
+    private static void UpdateActorCollider(ref PhysicsColliderBlob collider, bool grounded, in ActorColliderRefs colliderRefs, bool alive)
     {
         // When pawn is in the air, reduce friction so we don't break on walls
         if (!alive)
@@ -69,9 +50,9 @@ public partial class UpdateActorColliderSystem : SimGameSystemBase
         }
         else
         {
-            collider.Collider = footing.Value == NavAgentFooting.AirControl
-                ? colliderRefs.UngroundedCollider
-                : colliderRefs.GroundedCollider;
+            collider.Collider = grounded
+                ? colliderRefs.GroundedCollider
+                : colliderRefs.UngroundedCollider;
         }
     }
 }
