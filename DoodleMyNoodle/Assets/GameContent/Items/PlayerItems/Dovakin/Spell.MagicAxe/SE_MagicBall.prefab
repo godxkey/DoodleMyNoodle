@@ -11,10 +11,8 @@ GameObject:
   - component: {fileID: 462959840056812340}
   - component: {fileID: 8841453195666950856}
   - component: {fileID: -1943092824245740565}
-  - component: {fileID: 8618057839144830486}
-  - component: {fileID: 2302789254329102844}
-  m_Layer: 14
-  m_Name: SE_Actor_Dovakin_BigAxe
+  m_Layer: 10
+  m_Name: SE_MagicBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,6 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -47,8 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 79636a82bd8d4344baf45ddb438f80a2
-  _bindedViewPrefab: {fileID: 7824342658589397423, guid: c146748129fb4784b94df2b2b03ffa1e,
+  _guid: 83e1fb6e23de7ce4493add95c07e1e4c
+  _bindedViewPrefab: {fileID: 7824342658589397423, guid: 950227825e52b4d41921d7f2ab8791c3,
     type: 3}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -68,51 +67,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 2
   Shape: 0
-  Material: {fileID: 11400000, guid: fba26a34b4d66644b945e9bed14f9caa, type: 2}
-  IsTrigger: 0
+  Material: {fileID: 11400000, guid: f12656138a7b18546a992bf9c5083561, type: 2}
+  IsTrigger: 1
   LinearDrag: 0
   AngularDrag: 0.05
-  GravityScale: 1
-  FireEvents: 0
+  GravityScale: 0
+  FireEvents: 1
   FreezeRotation: 0
   BoxSize: {x: 1, y: 1}
   CircleRadius: 0.15
   BoxAndCircleOffset: {x: 0, y: 0}
   PolygonPoints: []
---- !u!114 &8618057839144830486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2385346486794747607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d7beb619b99e4741987516fb297d662, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Lifetime:
-    RawValue: 17179869184
---- !u!114 &2302789254329102844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2385346486794747607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2718cabf9b28f424785e0b09d963c40e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Actions:
-  - ActionPrefab: {fileID: -4801357984810749253, guid: a2a38699eabdcea439b6ceb19d88cf14,
-      type: 3}
-    TargetFilter: 2
-    SameTargetCooldown: 1
-    GeneralCooldown: 0
-    ContactMode: 1
-    OverlapLayerMask:
-      serializedVersion: 2
-      m_Bits: 512
-    OverlapRadius: 0.5

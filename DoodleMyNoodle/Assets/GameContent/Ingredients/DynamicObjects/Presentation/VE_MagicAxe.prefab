@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 6558217530615737832}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1375336766265012635}
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayer: -5
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9536487c4b8ae844d94e4e3d0b7379f7, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.16197933, g: 0.49892005, b: 0.9811321, a: 0.69411767}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 1375336766265012635}
   - component: {fileID: 697645371569830214}
   m_Layer: 0
-  m_Name: VE_Axe
+  m_Name: VE_MagicAxe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

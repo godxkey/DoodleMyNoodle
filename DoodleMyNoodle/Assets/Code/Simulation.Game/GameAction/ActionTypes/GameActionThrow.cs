@@ -240,7 +240,7 @@ internal partial class CommonWrites
     /// <param name="fireVelocity">The velocity of the projectile.</param>
     /// <param name="quantity">The quantity of projectiles to throw.</param>
     /// <param name="volleyAngle">The separation angle between each projectile thrown.</param>
-    public static void FireProjectile(
+    public static Entity FireProjectile(
         ISimGameWorldReadWriteAccessor accessor,
         InstigatorSet instigatorSet,
         Entity projectilePrefab,
@@ -250,7 +250,7 @@ internal partial class CommonWrites
         fix volleyAngle,
         NativeList<Entity> outSpawnedProjectiles = default)
     {
-        FireProjectileInternal(accessor, instigatorSet, projectilePrefab, fireVelocity, settings, quantity, volleyAngle, outSpawnedProjectiles);
+        return FireProjectileInternal(accessor, instigatorSet, projectilePrefab, fireVelocity, settings, quantity, volleyAngle, outSpawnedProjectiles);
     }
 
     private static Entity FireProjectileInternal(
