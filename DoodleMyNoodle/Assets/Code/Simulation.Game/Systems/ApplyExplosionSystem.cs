@@ -78,6 +78,8 @@ public partial class ApplyExplosionSystem : SimGameSystemBase
 
                     if (request.Damage > 0)
                     {
+                        var impulseRequests = GetSingletonBuffer<SystemRequestImpulseRadial>();
+
                         // request impulses for every hit
                         foreach (DistanceHit hit in hits)
                         {
@@ -85,8 +87,7 @@ public partial class ApplyExplosionSystem : SimGameSystemBase
                             {
                                 continue;
                             }
-
-                            _applyImpulseSystem.RequestImpulseRadial(new RadialImpulseRequestData()
+                            impulseRequests.Add(new SystemRequestImpulseRadial()
                             {
                                 StrengthMin = IMPULSE_MIN,
                                 StrengthMax = IMPULSE_MAX,

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &1918135887477772604
+--- !u!1001 &6195190501067267335
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -65,37 +65,7 @@ PrefabInstance:
     - target: {fileID: 2146766217261545027, guid: 875b14579b022304a98790cb6cb189ec,
         type: 3}
       propertyPath: m_Name
-      value: VE_Char_Player2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5269687598163220110, guid: 875b14579b022304a98790cb6cb189ec,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 100
+      value: VE_Char_Mob
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 875b14579b022304a98790cb6cb189ec, type: 3}
---- !u!1 &528133837996451711 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2146766217261545027, guid: 875b14579b022304a98790cb6cb189ec,
-    type: 3}
-  m_PrefabInstance: {fileID: 1918135887477772604}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &543908859280019486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 528133837996451711}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce7437b0c13b5f64eb2446ea111b8e54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _spriteRenderer: {fileID: 6034584486178867122}
---- !u!212 &6034584486178867122 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 5269687598163220110, guid: 875b14579b022304a98790cb6cb189ec,
-    type: 3}
-  m_PrefabInstance: {fileID: 1918135887477772604}
-  m_PrefabAsset: {fileID: 0}

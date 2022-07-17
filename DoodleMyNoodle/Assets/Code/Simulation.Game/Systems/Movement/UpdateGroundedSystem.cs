@@ -22,6 +22,14 @@ public struct Grounded : IComponentData
     public static implicit operator Grounded(bool val) => new Grounded() { Value = val };
 }
 
+public struct ResetGroundedFlag : IComponentData
+{
+    public bool Value;
+
+    public static implicit operator bool(ResetGroundedFlag val) => val.Value;
+    public static implicit operator ResetGroundedFlag(bool val) => new ResetGroundedFlag() { Value = val };
+}
+
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
 [UpdateAfter(typeof(StepPhysicsWorldSystem)), UpdateBefore(typeof(EndFramePhysicsSystem))]
 public partial class UpdateGroundedSystem : SimGameSystemBase
@@ -41,24 +49,34 @@ public partial class UpdateGroundedSystem : SimGameSystemBase
 
     protected override void OnUpdate()
     {
-        // reset grounded
-        Entities.ForEach((ref Grounded grounded) =>
+        // schedule reset grounded
+        Entities.ForEach((ref ResetGroundedFlag resetGrounded) =>
         {
-            grounded = false;
+            resetGrounded = true;
         }).Schedule();
 
         Dependency = new SetGroundedOnEntitiesThatCollideWithStatic()
         {
             Velocities = GetComponentDataFromEntity<PhysicsVelocity>(isReadOnly: true),
+            ResetGroundedFlag = GetComponentDataFromEntity<ResetGroundedFlag>(isReadOnly: false),
             Grounded = GetComponentDataFromEntity<Grounded>(isReadOnly: false),
         }.Schedule(_stepPhysicsWorldSystem.Simulation, ref _physicsWorldSystem.PhysicsWorld, Dependency);
 
         _endFramePhysicsSystem.HandlesToWaitFor.Add(Dependency);
+
+        Entities.ForEach((ref Grounded grounded, in ResetGroundedFlag resetGrounded) =>
+        {
+            if (resetGrounded)
+            {
+                grounded.Value = false;
+            }
+        }).Schedule();
     }
 
     struct SetGroundedOnEntitiesThatCollideWithStatic : ICollisionEventsJob
     {
         [ReadOnly] public ComponentDataFromEntity<PhysicsVelocity> Velocities;
+        public ComponentDataFromEntity<ResetGroundedFlag> ResetGroundedFlag;
         public ComponentDataFromEntity<Grounded> Grounded;
 
         public void Execute(CollisionEvent collisionEvent)
@@ -69,9 +87,17 @@ public partial class UpdateGroundedSystem : SimGameSystemBase
 
         private void ProcessPair(Entity entityA, Entity entityB)
         {
-            if (Grounded.HasComponent(entityA) && !Velocities.HasComponent(entityB))
+            if (// entityA has component
+                Grounded.HasComponent(entityA) && 
+
+                // entityB is static
+                !Velocities.HasComponent(entityB)/* && 
+                
+                // entityA was grounded last frame OR speed is low enough to get grip back on ground
+                (Grounded[entityA] || abs(Velocities[entityA].Linear.x) < (fix)0.01)*/)
             {
                 Grounded[entityA] = true;
+                ResetGroundedFlag[entityA] = false;
             }
         }
     }

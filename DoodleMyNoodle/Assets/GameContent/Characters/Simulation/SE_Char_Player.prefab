@@ -39,6 +39,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -57,7 +58,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConversionMode: 0
   _guid: cb83e6f1204539c46b9405c2d555310a
-  _bindedViewPrefab: {fileID: 5776912470226665749, guid: 9e7d403e2969f8141bb2c6fdfb99df62,
+  _bindedViewPrefab: {fileID: 528133837996451711, guid: bf718f0dc42320d489a6a03b76a02a92,
     type: 3}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
@@ -155,7 +156,6 @@ MonoBehaviour:
   Proxy: {fileID: 0}
   MaxValue: 10
   StartAtMax: 1
-  DestroyOnDeath: 0
   RechargeRate: 0
   RechargeCooldown: 4
   StartValue: 10
@@ -176,7 +176,7 @@ MonoBehaviour:
   StartGameAtMaxValue: 1
   RechargeRate: 1
   RechargeDelay: 1
-  StartValue: 15
+  StartValue: 1500000
 --- !u!114 &8682441413767755336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,6 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de2e26949e354f4496959ef22a3d991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GameEffects: []
 --- !u!114 &848201117538638438
 MonoBehaviour:
   m_ObjectHideFlags: 0

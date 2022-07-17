@@ -4,16 +4,15 @@ using Unity.Entities;
 using static fixMath;
 using static Unity.Mathematics.math;
 
-public struct ImpulseRequestSingletonTag : IComponentData { }
 
-public struct DirectImpulseRequestData : IBufferElementData
+public struct SystemRequestImpulseDirect : ISingletonBufferElementData
 {
     public Entity Target;
     public fix2 Strength;
     public bool IgnoreMass;
 }
 
-public struct RadialImpulseRequestData : IBufferElementData
+public struct SystemRequestImpulseRadial : ISingletonBufferElementData
 {
     public Entity Target;
     public fix StrengthMin;
@@ -27,27 +26,6 @@ public struct RadialImpulseRequestData : IBufferElementData
 [UpdateBefore(typeof(UpdateCanMoveSystem))]
 public partial class ApplyImpulseSystem : SimGameSystemBase
 {
-    public void RequestImpulseRadial(RadialImpulseRequestData request)
-    {
-        var buffer = GetBuffer<RadialImpulseRequestData>(GetRequestSingleton());
-        buffer.Add(request);
-    }
-
-    public void RequestImpulseDirect(DirectImpulseRequestData request)
-    {
-        var buffer = GetBuffer<DirectImpulseRequestData>(GetRequestSingleton());
-        buffer.Add(request);
-    }
-
-    private Entity GetRequestSingleton()
-    {
-        if (!HasSingleton<ImpulseRequestSingletonTag>())
-        {
-            return EntityManager.CreateEntity(typeof(ImpulseRequestSingletonTag), typeof(DirectImpulseRequestData), typeof(RadialImpulseRequestData));
-        }
-        return GetSingletonEntity<ImpulseRequestSingletonTag>();
-    }
-
     protected override void OnUpdate()
     {
         HandleRadialImpulseRequests();
@@ -56,13 +34,13 @@ public partial class ApplyImpulseSystem : SimGameSystemBase
 
     private void HandleRadialImpulseRequests()
     {
-        DynamicBuffer<RadialImpulseRequestData> radialImpulses = GetBuffer<RadialImpulseRequestData>(GetRequestSingleton());
+        DynamicBuffer<SystemRequestImpulseRadial> radialImpulses = GetSingletonBuffer<SystemRequestImpulseRadial>();
 
         if (radialImpulses.Length > 0)
         {
-            DynamicBuffer<DirectImpulseRequestData> directImpulseRequests = GetBuffer<DirectImpulseRequestData>(GetRequestSingleton());
+            DynamicBuffer<SystemRequestImpulseDirect> directImpulseRequests = GetSingletonBuffer<SystemRequestImpulseDirect>();
 
-            foreach (RadialImpulseRequestData request in radialImpulses)
+            foreach (SystemRequestImpulseRadial request in radialImpulses)
             {
                 if (!HasComponent<PhysicsColliderBlob>(request.Target))
                     continue;
@@ -84,7 +62,7 @@ public partial class ApplyImpulseSystem : SimGameSystemBase
 
                 fix2 direction = distance < fix.Epsilon ? new fix2(0, 1) : v / distance;
 
-                directImpulseRequests.Add(new DirectImpulseRequestData()
+                directImpulseRequests.Add(new SystemRequestImpulseDirect()
                 {
                     IgnoreMass = request.IgnoreMass,
                     Strength = impulseStrength * direction,
@@ -98,11 +76,11 @@ public partial class ApplyImpulseSystem : SimGameSystemBase
 
     private void HandleDirectImpulseRequests()
     {
-        DynamicBuffer<DirectImpulseRequestData> directImpulseRequests = GetBuffer<DirectImpulseRequestData>(GetRequestSingleton());
+        DynamicBuffer<SystemRequestImpulseDirect> directImpulseRequests = GetSingletonBuffer<SystemRequestImpulseDirect>();
 
         if (directImpulseRequests.Length > 0)
         {
-            foreach (DirectImpulseRequestData request in directImpulseRequests)
+            foreach (SystemRequestImpulseDirect request in directImpulseRequests)
             {
                 if (!HasComponent<PhysicsVelocity>(request.Target))
                     continue;
@@ -115,11 +93,6 @@ public partial class ApplyImpulseSystem : SimGameSystemBase
                 PhysicsVelocity vel = GetComponent<PhysicsVelocity>(request.Target);
                 vel.Linear += request.Strength * (request.IgnoreMass ? 1 : (fix)mass.InverseMass);
                 SetComponent(request.Target, vel);
-
-                if (HasComponent<NavAgentFootingState>(request.Target))
-                {
-                    SetComponent(request.Target, new NavAgentFootingState() { Value = NavAgentFooting.None });
-                }
 
                 if (HasComponent<Grounded>(request.Target))
                 {
@@ -136,7 +109,7 @@ internal static partial class CommonWrites
 {
     public static void RequestRadialImpulse(ISimGameWorldReadWriteAccessor accessor, Entity target, fix strengthMin, fix strengthMax, fix radius, fix2 position, bool ignoreMass = false)
     {
-        RadialImpulseRequestData request = new RadialImpulseRequestData()
+        SystemRequestImpulseRadial request = new SystemRequestImpulseRadial()
         {
             Target = target,
             Radius = radius,
@@ -146,18 +119,18 @@ internal static partial class CommonWrites
             StrengthMin = strengthMin,
         };
 
-        accessor.GetExistingSystem<ApplyImpulseSystem>().RequestImpulseRadial(request);
+        accessor.GetSingletonBuffer<SystemRequestImpulseRadial>().Add(request);
     }
 
     public static void RequestImpulse(ISimGameWorldReadWriteAccessor accessor, Entity target, fix2 strength, bool ignoreMass = false)
     {
-        DirectImpulseRequestData request = new DirectImpulseRequestData()
+        SystemRequestImpulseDirect request = new SystemRequestImpulseDirect()
         {
             Target = target,
             Strength = strength,
             IgnoreMass = ignoreMass,
         };
 
-        accessor.GetExistingSystem<ApplyImpulseSystem>().RequestImpulseDirect(request);
+        accessor.GetSingletonBuffer<SystemRequestImpulseDirect>().Add(request);
     }
 }

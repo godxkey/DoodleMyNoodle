@@ -8,7 +8,7 @@ using CCC.Fix2D;
 using System;
 using System.Collections.Generic;
 using UnityEngineX.InspectorDisplay;
-
+using CCC.InspectorDisplay;
 
 public class GameActionThrow : GameAction<GameActionThrow.Settings>
 {
@@ -21,6 +21,11 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         public fix SpawnExtraDistance = 0;
         public GameObject ProjectilePrefab;
         public int Quantity = 1;
+        public bool AimBot;
+        [ShowIf(nameof(AimBot))]
+        public bool AimBotPrioritizeFlying;
+        [ShowIf(nameof(AimBot))]
+        public float AimBotRangeMax = 12.5f;
         [Suffix("Degrees")]
         public float VolleyAngle = 0;
         [Header("Default Parameter")]
@@ -39,6 +44,9 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
                 VolleyAngle = radians((fix)VolleyAngle),
                 ShootVector = new fix2((fix)ShootVector.x, (fix)ShootVector.y),
                 SpawnOffset = (fix2)SpawnOffset,
+                AimBot = AimBot,
+                AimBotPrioritizeFlying = AimBotPrioritizeFlying,
+                AimBotRangeMax = (fix)AimBotRangeMax,
             });
         }
 
@@ -60,6 +68,9 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         public fix VolleyAngle; // in radian
         public fix2 ShootVector;
         public fix2 SpawnOffset;
+        public bool AimBot;
+        public bool AimBotPrioritizeFlying;
+        public fix AimBotRangeMax;
     }
 
     protected override ExecutionContract GetExecutionContract(ISimWorldReadAccessor accessor, ref Settings settings)
@@ -74,18 +85,41 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        fix2 shootVector = input.Parameters != null && input.Parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector)
-            ? paramVector.Vector
-            : settings.ShootVector;
+        fix2 shootVelocity = settings.ShootVector;
+        bool inheritInstigatorVelocity = true;
 
         // When 'originateFromCenter' is true, we simulate the projectile spawning at the center of the pawn.
         // We adjust the start position and the start velocity to where the projectile will exit the spawn-distance
         bool originateFromCenter = true;//input.Parameters != null && input.Parameters.TryGetParameter(1, out GameActionParameterBool.Data paramOriginateFromCenter, warnIfFailed: false)
-            //&& paramOriginateFromCenter.Value;
+                                        //&& paramOriginateFromCenter.Value;
+
+        if (input.Parameters != null && input.Parameters.TryGetParameter(0, out GameActionParameterVector.Data paramVector))
+        {
+            shootVelocity = paramVector.Vector;
+        }
+        else if (settings.AimBot)
+        {
+            // NB: This only supports players shooting at mobs for the moment. We could modify it so that mobs can aimbot shoot at players as well
+            fix2 instigatorPos = input.Accessor.GetComponent<FixTranslation>(input.Context.LastPhysicalInstigator);
+            FixRange targetRange = new FixRange(instigatorPos.x, instigatorPos.x + settings.AimBotRangeMax);
+
+            Entity closestEnemy = CommonReads.FindClosestEnemyInRange(input.Accessor, instigatorPos.x, targetRange, settings.AimBotPrioritizeFlying);
+            if (closestEnemy != Entity.Null)
+            {
+                inheritInstigatorVelocity = false;
+                originateFromCenter = true;
+                var targetPos = input.Accessor.GetComponent<FixTranslation>(closestEnemy).Value;
+                var gravity = input.Accessor.GetSingleton<PhysicsStepSettings>().GravityFix;
+                var targetRadius = CommonReads.GetActorRadius(input.Accessor, closestEnemy);
+                // aim a bit in front of the character to account for move speed (cheap fix instead of predicting end position)
+                targetPos.x -= targetRadius * (fix)0.8;
+                shootVelocity = Trajectory.SmallestLaunchVelocity(targetPos.x - instigatorPos.x, targetPos.y - instigatorPos.y, gravity);
+            }
+        }
 
         FireProjectileSettings fireSettings = new FireProjectileSettings()
         {
-            InheritInstigatorVelocity = true,
+            InheritInstigatorVelocity = inheritInstigatorVelocity,
             SimulateSpawnFromInstigatorCenter = originateFromCenter,
             SpawnOffset = settings.SpawnOffset,
         };
@@ -93,7 +127,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         CommonWrites.FireProjectile(input.Accessor,
                            input.Context.InstigatorSet,
                            settings.ProjectilePrefab,
-                           shootVector,
+                           shootVelocity,
                            fireSettings,
                            settings.Quantity,
                            settings.VolleyAngle);
@@ -107,7 +141,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         Settings settings = accessor.GetComponent<Settings>(actionPrefab);
 
         return fix2.zero;// (direction * CommonReads.GetThrowSpawnDistance(accessor, settings.ProjectilePrefab, context.LastPhysicalInstigator, settings.SpawnExtraDistance)) 
-            //+ settings.SpawnOffset;
+                         //+ settings.SpawnOffset;
     }
 
     // used by presentation
@@ -172,7 +206,7 @@ public struct FireProjectileSettings
     /// </summary>
     public fix2 SpawnOffset;
 
-    public static FireProjectileSettings Default => new FireProjectileSettings()
+    public static FireProjectileSettings Default => new()
     {
         SimulateSpawnFromInstigatorCenter = false,
         InheritInstigatorVelocity = true,

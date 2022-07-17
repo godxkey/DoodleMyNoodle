@@ -45,7 +45,7 @@ public class PlayerActionBarSlot : ItemSlot
         UnavailableTimerText.gameObject.SetActive(false);
         UnavailableSpriteObject.SetActive(false);
 
-        ShortcutDisplay.text = GetPrettyName(_info.InputShortcut);
+        ShortcutDisplay.text = _info.InputShortcut != KeyCode.None ? GetPrettyName(_info.InputShortcut) : "";
 
         UpdateCurrentItemSlot(gameActionAuth, null, null, GamePresentationCache.Instance.LocalPawn, stacks);
     }
@@ -92,6 +92,36 @@ public class PlayerActionBarSlot : ItemSlot
                 return "8";
             case KeyCode.Alpha9:
                 return "9";
+            case KeyCode.Q:
+                return "Q";
+            case KeyCode.W:
+                return "W";
+            case KeyCode.E:
+                return "E";
+            case KeyCode.R:
+                return "R";
+            case KeyCode.T:
+                return "T";
+            case KeyCode.A:
+                return "A";
+            case KeyCode.S:
+                return "S";
+            case KeyCode.D:
+                return "D";
+            case KeyCode.F:
+                return "F";
+            case KeyCode.G:
+                return "G";
+            case KeyCode.Z:
+                return "Z";
+            case KeyCode.X:
+                return "X";
+            case KeyCode.C:
+                return "C";
+            case KeyCode.V:
+                return "V";
+            case KeyCode.B:
+                return "B";
             case KeyCode.None:
                 return string.Empty;
             default:
