@@ -12,7 +12,7 @@ public class GymSurveyController : MonoBehaviour
 {
     private const string DROPDOWN_INDEX_SAVE_KEY = "gym-survey-index";
 
-    [SerializeField] private Vector2 _focusLocation;
+    [SerializeField] private Transform _focusLocation;
     [SerializeField] private TMP_Dropdown _surveyDropdown;
     [SerializeField] private Button _restartButton;
     
@@ -67,12 +67,12 @@ public class GymSurveyController : MonoBehaviour
 
         if (_requestedSurveyPrefab != null)
         {
-            StartNewSurvey(_requestedSurveyPrefab);
+            StartNewSurvey(KeyCode.R, _requestedSurveyPrefab);
             _requestedSurveyPrefab = null;
         }
     }
 
-    private void StartNewSurvey(SurveyBaseController surveyPrefab)
+    private void StartNewSurvey(KeyCode pressedKey, SurveyBaseController surveyPrefab)
     {
         if (SurveyManager.Instance.IsSurveyRunning)
         {
@@ -85,7 +85,7 @@ public class GymSurveyController : MonoBehaviour
 
             UIStateMachine.Instance.TransitionTo(UIStateType.ParameterSelection);
 
-            SurveyManager.Instance.BeginSurvey(_focusLocation, useContext, new List<GameAction.ParameterData>(), surveyPrefab.CreateDebugQuery(), surveyPrefab, this.OnSurveyComplete, this.OnSurveyCancel);
+            SurveyManager.Instance.BeginSurvey(pressedKey, _focusLocation, useContext, new List<GameAction.ParameterData>(), surveyPrefab.CreateDebugQuery(), surveyPrefab, this.OnSurveyComplete, this.OnSurveyCancel);
         }
     }
 

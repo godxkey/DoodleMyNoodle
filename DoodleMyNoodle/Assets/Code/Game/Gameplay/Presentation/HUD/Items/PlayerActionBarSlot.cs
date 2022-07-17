@@ -20,24 +20,27 @@ public class PlayerActionBarSlot : ItemSlot
     public GameObject UnavailableSpriteObject;
 
     private PlayerActionBarSlotInfo _info;
-    private int _currentItemIndex;
+    private int _itemIndex;
 
-    private System.Action<int> _onItemPrimaryActionUsed;
-    private System.Action<int> _onItemSecondaryActionUsed;
+    private System.Action<PlayerActionBarSlot> _onItemPrimaryActionUsed;
+    private System.Action<PlayerActionBarSlot> _onItemSecondaryActionUsed;
 
     private bool _actionBarSlotUnavailable = false;
+
+    public int ItemIndex => _itemIndex;
+    public PlayerActionBarSlotInfo SlotInfo => _info;
 
     public void UpdateCurrentInventorySlot(
         ItemAuth gameActionAuth,
         int itemIndex,
         PlayerActionBarSlotInfo slotInfo,
-        System.Action<int> onItemPrimaryActionUsed,
-        System.Action<int> onItemSecondaryActionUsed,
+        System.Action<PlayerActionBarSlot> onItemPrimaryActionUsed,
+        System.Action<PlayerActionBarSlot> onItemSecondaryActionUsed,
         int stacks = -1)
     {
         _actionBarSlotUnavailable = false;
 
-        _currentItemIndex = itemIndex;
+        _itemIndex = itemIndex;
         _info = slotInfo;
         _onItemPrimaryActionUsed = onItemPrimaryActionUsed;
         _onItemSecondaryActionUsed = onItemSecondaryActionUsed;
@@ -138,7 +141,7 @@ public class PlayerActionBarSlot : ItemSlot
 
         base.PrimaryUseItemSlot();
 
-        _onItemPrimaryActionUsed?.Invoke(_currentItemIndex);
+        _onItemPrimaryActionUsed?.Invoke(this);
     }
 
     public override void SecondaryUseItemSlot()
@@ -150,6 +153,6 @@ public class PlayerActionBarSlot : ItemSlot
 
         base.SecondaryUseItemSlot();
 
-        _onItemSecondaryActionUsed?.Invoke(_currentItemIndex);
+        _onItemSecondaryActionUsed?.Invoke(this);
     }
 }

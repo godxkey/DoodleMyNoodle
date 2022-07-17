@@ -14,6 +14,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         public Entity ActionPrefab;
         public bool IsItem;
         public int ItemIndex;
+        public KeyCode PressedKey;
     }
 
     private SurveyBlackboard _surveySMBlackboard = new SurveyBlackboard();
@@ -26,6 +27,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         _surveyStateMachine.Blackboard = _surveySMBlackboard;
         _surveySMBlackboard.Reset();
         _surveySMBlackboard.Cache = Cache;
+        _surveySMBlackboard.PressedKey = InputParameter.PressedKey;
 
         CursorOverlayService.Instance.ResetCursorToDefault();
 
@@ -129,6 +131,7 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         public GameActionAuth ActionAuth;
         public GamePresentationCache Cache;
         public GameAction.ExecutionContext UseContext;
+        public KeyCode PressedKey;
 
         // the description of parameters we must fill
         public GameAction.ParameterDescription[] ParametersDescriptions;
@@ -173,7 +176,8 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             SurveyBaseController surveyPrefab = Blackboard.ActionAuth.FindCustomSurveyPrefabForParameters(remainingParams);
             if (surveyPrefab != null)
             {
-                SurveyManager.Instance.BeginSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, Blackboard.ResultParameters, remainingParams, surveyPrefab, OnSurveyComplete, OnSurveyCancel);
+                var localPawnViewTransform = PresentationHelpers.FindBindedView(Blackboard.Cache.LocalPawn)?.transform;
+                SurveyManager.Instance.BeginSurvey(Blackboard.PressedKey, localPawnViewTransform, Blackboard.UseContext, Blackboard.ResultParameters, remainingParams, surveyPrefab, OnSurveyComplete, OnSurveyCancel);
             }
             else
             {

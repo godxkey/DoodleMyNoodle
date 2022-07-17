@@ -161,16 +161,18 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
         }
     }
 
-    private void OnIntentionToUsePrimaryActionOnItem(int ItemIndex)
+    private void OnIntentionToUsePrimaryActionOnItem(PlayerActionBarSlot slot)
     {
         if (!_interactible)
             return;
 
+        var itemIndex = slot.ItemIndex;
+
         if (SimWorld.TryGetBufferReadOnly(Cache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
-            if (inventory.Length > ItemIndex && ItemIndex > -1)
+            if (inventory.Length > itemIndex && itemIndex > -1)
             {
-                InventoryItemReference item = inventory[ItemIndex];
+                InventoryItemReference item = inventory[itemIndex];
 
                 if (SimWorld.Exists(item.ItemEntity))
                 {
@@ -180,10 +182,11 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
                     {
                         UIStateMachine.Instance.TransitionTo(UIStateType.ParameterSelection, new ParameterSelectionState.InputParam()
                         {
+                            PressedKey = Input.GetKeyDown(slot.SlotInfo.InputShortcut) ? slot.SlotInfo.InputShortcut : KeyCode.None,
                             ActionInstigator = itemEntity,
                             ActionPrefab = itemAction.Value,
                             IsItem = true,
-                            ItemIndex = ItemIndex
+                            ItemIndex = itemIndex
                         });
                     }
                 }
@@ -191,13 +194,14 @@ public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisp
         }
     }
 
-    private void OnIntentionToUseSecondaryActionOnItem(int ItemIndex)
+    private void OnIntentionToUseSecondaryActionOnItem(PlayerActionBarSlot slot)
     {
+        var itemIndex = slot.ItemIndex;
         if (SimWorld.TryGetBufferReadOnly(Cache.LocalPawn, out DynamicBuffer<InventoryItemReference> inventory))
         {
-            if (inventory.Length > ItemIndex && ItemIndex > -1)
+            if (inventory.Length > itemIndex && itemIndex > -1)
             {
-                int currentItemIndex = ItemIndex;
+                int currentItemIndex = itemIndex;
                 ItemContextMenuDisplaySystem.Instance.ActivateContextMenuDisplay((int? actionIndex) =>
                 {
                     if (actionIndex == 0)

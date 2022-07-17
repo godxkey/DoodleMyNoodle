@@ -47,18 +47,15 @@ public class SurveyAutoAim : SurveyBaseController
 
     private void Update()
     {
-        if (SimWorld.TryGetComponent(CurrentContext.UseContext.FirstPhysicalInstigator, out FixTranslation position))
-        {
-            _instigatorPosition = (Vector2)position.Value;
-        }
-
+        var transform = this.transform;
+        var position = transform.position;
         _trajectoryDisplay.Displayed = true;
         _trajectoryDisplay.GravityScale = PresentationHelpers.Surveys.GetProjectileGravityScale(Cache, CurrentContext.UseContext);
         _trajectoryDisplay.Length = _trajectoryLength;
-        _trajectoryDisplay.StartPoint = _instigatorPosition;
+        _trajectoryDisplay.StartPoint = position;
         _trajectoryDisplay.Radius = PresentationHelpers.Surveys.GetProjectileRadiusSetting(Cache, CurrentContext.UseContext);
 
-        _lastLaunchVector = fixMath.Trajectory.SmallestLaunchVelocity((fix)(Cache.PointerWorldPosition.x - _instigatorPosition.x), (fix)(Cache.PointerWorldPosition.y - _instigatorPosition.y), (fix)(_trajectoryDisplay.GravityScale * GamePresentationCache.Instance.WorldGravity.y));
+        _lastLaunchVector = fixMath.Trajectory.SmallestLaunchVelocity((fix)(Cache.PointerWorldPosition.x - position.x), (fix)(Cache.PointerWorldPosition.y - position.y), (fix)(_trajectoryDisplay.GravityScale * GamePresentationCache.Instance.WorldGravity.y));
         _trajectoryDisplay.Velocity = _lastLaunchVector.ToUnityVec();
 
         CursorOverlayService.Instance.SetCursorColor(_normalColor);
