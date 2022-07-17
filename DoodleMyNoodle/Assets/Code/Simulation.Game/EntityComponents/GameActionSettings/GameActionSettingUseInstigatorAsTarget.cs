@@ -8,7 +8,8 @@ public struct GameActionSettingUseInstigatorAsTarget : IComponentData
     {
         FirstPhysicalInstigator,
         LastPhysicalInstigator,
-        ActionInstigator
+        ActionInstigator,
+        LastSpellInstigator
     }
 
     public EType Type;

@@ -45,14 +45,6 @@ public struct PeriodicActionProgress : IComponentData
     public static implicit operator PeriodicActionProgress(fix val) => new PeriodicActionProgress() { Value = val };
 }
 
-public struct PeriodicActionTimer : IComponentData
-{
-    public fix Value;
-
-    public static implicit operator fix(PeriodicActionTimer val) => val.Value;
-    public static implicit operator PeriodicActionTimer(fix val) => new PeriodicActionTimer() { Value = val };
-}
-
 public struct PeriodicActionEnabled : IComponentData
 {
     public bool Value;
@@ -86,13 +78,10 @@ public partial class UpdatePeriodicActionSystem : SimGameSystemBase
         var actingEntities = _executeGameActionSystem.CreateRequestBuffer();
         fix deltaTime = Time.DeltaTime;
         Entities
-            .ForEach((Entity entity, ref PeriodicActionProgress progress, ref RemainingPeriodicActionCount remainingCount, ref PeriodicActionTimer timer,
+            .ForEach((Entity entity, ref PeriodicActionProgress progress, ref RemainingPeriodicActionCount remainingCount,
                 in PeriodicActionRate rate, in PeriodicActionEnabled progressEnabled, in ProgressPeriodicActionInAdvance progressInAdvance, in PeriodicAction action) =>
             {
-                bool canProgress = progressEnabled && (remainingCount > 0 || remainingCount == -1) && (timer > fix.Zero || timer <= (fix)(-1));
-
-                if (canProgress)
-                    timer -= deltaTime;
+                bool canProgress = progressEnabled && (remainingCount > 0 || remainingCount == -1);
 
                 // ATTACK SPEED
                 fix totalRate = rate;
