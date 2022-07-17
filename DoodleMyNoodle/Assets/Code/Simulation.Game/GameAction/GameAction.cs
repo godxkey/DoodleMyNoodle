@@ -65,6 +65,9 @@ public partial class CommonReads
                 case GameActionSettingUseInstigatorAsTarget.EType.ActionInstigator:
                     targets[0] = actionInstigator;
                     break;
+                case GameActionSettingUseInstigatorAsTarget.EType.LastSpellInstigator:
+                    targets[0] = spellInstigator;
+                    break;
             }
         }
 

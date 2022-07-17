@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2677628293349642642}
   - component: {fileID: -4801357984810749253}
   m_Layer: 0
-  m_Name: SE_Action_Dovakin_Berserk
+  m_Name: SE_Action_Dovakin_BerserkStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,7 +68,7 @@ MonoBehaviour:
   UseInstigatorAsTarget: 1
   ExecuteOnFirstInstigator: 0
   ExecuteOnLastInstigator: 0
-  InstigatorAsTargetType: 2
+  InstigatorAsTargetType: 3
   GameActionSettings:
   - rid: 0
   SfxOnUse: {fileID: 11400000, guid: b9201a8e17a143740bbb5622808326b6, type: 2}
@@ -83,4 +83,3 @@ MonoBehaviour:
       type: {class: GameActionEnablePeriodicAction/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         UsageCount: -1
-        Duration: 5

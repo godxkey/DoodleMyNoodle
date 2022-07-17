@@ -10,10 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8821241209944219005}
   - component: {fileID: 2677628293349642642}
-  - component: {fileID: 6323485160588907889}
-  - component: {fileID: 7122675427226815792}
+  - component: {fileID: -8396189944603225704}
   m_Layer: 0
-  m_Name: SE_Item_Dovakin_Berserk
+  m_Name: SE_Effect_Dovakin_Berserk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,13 +46,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
-  _guid: 61347dd06659f6343b25314fef2ba361
+  _guid: 03f06ce981892044c8f5f2c41cf6c05a
   _bindedViewPrefab: {fileID: 0}
   _bindedViewTile: {fileID: 0}
   _viewTechType: 0
   _hasTransform: 0
   _showGhost: 1
---- !u!114 &6323485160588907889
+--- !u!114 &-8396189944603225704
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -62,41 +61,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2784291058542494111}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbe074d6d0d63604b8ffe172f1a3b11c, type: 3}
+  m_Script: {fileID: 11500000, guid: 9fe241a4632d9d14bae3da965e474680, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActionPrefab: {fileID: -4801357984810749253, guid: ab4f5fbc86639fc4cb7aad464509a4c4,
+  Duration: 5
+  GameActionOnBegin: {fileID: 2784291058542494111, guid: e818cde09d1d99c4182f5dea6ec2d1f3,
     type: 3}
-  ApCost: 3
-  AvailableInShop: 1
-  Tier: 0
-  HasCharges: 1
-  ChargeCount: 1
-  CooldownType: 1
-  CooldownDuration: 0
-  HideInInventory: 0
-  Icon: {fileID: 21300000, guid: eb2e3d1635a28ce44b43ad326e9327ec, type: 3}
-  IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: Berserk
-  EffectDescription: "Vous \xEAtes enrag\xE9 et donner de multiple coup en cha\xEEne
-    tr\xE8s rapide devant le groupe"
---- !u!114 &7122675427226815792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2784291058542494111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 722e71c09a9b4fe4387330ab52d80215, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ActEvery: 0.25
-  Action: {fileID: -4801357984810749253, guid: 4f5818dcf260b424c80220e3e9ba789e, type: 3}
-  PrepareInAdvance: 0
-  Limit: 0
-  OnlyAtSpecificDistance: 0
-  MinDistanceFromTarget: -10
-  MaxDistanceFromTarget: 10
-  FirstInstigatorAttackSpeedAffectMe: 1
+  GameActionOnTick: {fileID: 0}
+  GameActionOnEnd: {fileID: 2784291058542494111, guid: 7f1db20724dc78941a8a752e82bb469b,
+    type: 3}
+  CharacterVFXPrefab: {fileID: 0}
