@@ -258,4 +258,12 @@ public static class SimulationCheats
         {
         });
     }
+
+    [ConsoleCommand(Description = "Set plenty of charges on all items.", EnableGroup = LOCAL_PAWN_GROUP)]
+    public static void CheatInfiniteCharges()
+    {
+        PresentationHelpers.SubmitInput(new SimInputCheatInfiniteCharges()
+        {
+        });
+    }
 }

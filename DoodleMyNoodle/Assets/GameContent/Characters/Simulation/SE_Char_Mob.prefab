@@ -120,8 +120,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActEvery: 1
   Action: {fileID: 0}
-  PrepareInAdvance: 0
+  PrepareInAdvance: 1
   Limit: 1
+  Timer: -1
   OnlyAtSpecificDistance: 1
   MinDistanceFromTarget: -10
   MaxDistanceFromTarget: 0.6

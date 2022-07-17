@@ -10,9 +10,10 @@ public static class RefreshGeneratedSource
         var generatedCodePath = Path.Combine(Application.dataPath, "../", "Temp/GeneratedCode");
         var resolvedPath = Path.GetFullPath(generatedCodePath);
         Debug.Log($"Removing: {resolvedPath}");
-        if (Directory.Exists(resolvedPath)) 
+        if (Directory.Exists(resolvedPath))
             Directory.Delete(resolvedPath, true);
 
         EditorUtility.RequestScriptReload();
+        UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
     }
 }

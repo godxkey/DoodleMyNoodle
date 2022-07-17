@@ -86,6 +86,12 @@ public class SimInputCheatNextLevel : SimCheatInput
 
 }
 
+[NetSerializable]
+public class SimInputCheatInfiniteCharges : SimCheatInput
+{
+
+}
+
 public struct CheatsAllItemElement : IBufferElementData
 {
     public Entity ItemPrefab;
@@ -359,6 +365,15 @@ public partial class HandleSimulationCheatsSystem : SimGameSystemBase
             {
                 if (!HasSingleton<SingletonRequestNextLevel>())
                     CreateSingleton<SingletonRequestNextLevel>();
+                break;
+            }
+
+            case SimInputCheatInfiniteCharges infiniteCharges:
+            {
+                Entities.ForEach((ref ItemCharges charges) =>
+                {
+                    charges.Value = 999;
+                }).Run();
                 break;
             }
         }
