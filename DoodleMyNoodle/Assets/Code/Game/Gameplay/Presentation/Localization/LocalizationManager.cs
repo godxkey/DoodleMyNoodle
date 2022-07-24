@@ -45,8 +45,8 @@ public class LocalizationManager : GameSystem<LocalizationManager>
         Save();
     }
 
-    public bool GetLocalizedText(string ID, out string ResultLocalizedText)
+    public bool GetLocalizedText(string id, out string result)
     {
-        return LocalizationSettings.GetLocalizedText(_currentlySelectedLanguage, ID, out ResultLocalizedText);
+        return LocalizationSettings.GetLocalizedText(_currentlySelectedLanguage, id, out result);
     }
 }

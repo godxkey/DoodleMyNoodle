@@ -25,6 +25,7 @@ public class GameActionAuthEditor : Editor
     private SerializedProperty _propInstigatorAsTargetType;
 
     private SerializedProperty _propSfxOnUse;
+    private SerializedProperty _propSfxOnPrepareUse;
     private SerializedProperty _propAnimation;
     private SerializedProperty _propSurveys;
     private SerializedProperty _propInstigatorVFX;
@@ -39,6 +40,7 @@ public class GameActionAuthEditor : Editor
         _propInstigatorAsTargetType = serializedObject.FindProperty(nameof(GameActionAuth.InstigatorAsTargetType));
 
         _propSfxOnUse = serializedObject.FindProperty(nameof(GameActionAuth.SfxOnUse));
+        _propSfxOnPrepareUse = serializedObject.FindProperty(nameof(GameActionAuth.SfxOnPrepareUse));
         _propAnimation = serializedObject.FindProperty(nameof(GameActionAuth.Animation));
         _propSurveys = serializedObject.FindProperty(nameof(GameActionAuth.Surveys));
 
@@ -111,6 +113,7 @@ public class GameActionAuthEditor : Editor
 
         DrawPrimaryTitle("Presentation");
 
+        EditorGUILayout.PropertyField(_propSfxOnPrepareUse);
         EditorGUILayout.PropertyField(_propSfxOnUse);
         EditorGUILayout.PropertyField(_propAnimation);
         EditorGUILayout.PropertyField(_propSurveys);

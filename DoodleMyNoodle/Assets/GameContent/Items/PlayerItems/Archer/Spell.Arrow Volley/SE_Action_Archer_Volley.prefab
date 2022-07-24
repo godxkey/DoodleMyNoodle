@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -69,15 +70,17 @@ MonoBehaviour:
   ExecuteOnLastInstigator: 0
   InstigatorAsTargetType: 0
   GameActionSettings:
-  - id: 0
+  - rid: 0
   SfxOnUse: {fileID: 11400000, guid: 1a4b5918f3673e4409e0c04b0824d5ee, type: 2}
   Animation: {fileID: 0}
   InstigatorVFX: {fileID: 0}
   TargetsVFX: {fileID: 0}
-  Surveys: []
+  Surveys:
+  - {fileID: -1556729350124813226, guid: 4f10c3b7e0288a04ba478913f51e8b70, type: 3}
   references:
-    version: 1
-    00000000:
+    version: 2
+    RefIds:
+    - rid: 0
       type: {class: GameActionThrow/SettingsAuth, ns: , asm: Simulation.Game}
       data:
         SpeedMin:
@@ -89,6 +92,9 @@ MonoBehaviour:
         ProjectilePrefab: {fileID: 2385346486794747607, guid: 448f0a9069ae51e4d9c2772ff6a5fbed,
           type: 3}
         Quantity: 4
+        AimBot: 0
+        AimBotPrioritizeFlying: 0
+        AimBotRangeMax: 12.5
         VolleyAngle: 15
         ShootVector: {x: 6, y: 7}
         SpawnOffset: {x: 0, y: 0}

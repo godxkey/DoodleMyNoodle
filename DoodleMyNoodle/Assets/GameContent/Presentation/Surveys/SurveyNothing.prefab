@@ -158,9 +158,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6075807751254421536}
-  - component: {fileID: 6075807751254421543}
+  - component: {fileID: -1556729350124813226}
   m_Layer: 0
-  m_Name: SurveyWorms
+  m_Name: SurveyNothing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -183,7 +183,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6075807751254421543
+--- !u!114 &-1556729350124813226
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -192,7 +192,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6075807751254421542}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8c23ccc1c49705409e90b61e268e8e0, type: 3}
+  m_Script: {fileID: 11500000, guid: 5f56d5a585322a14ba42ec4b5743e80d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _tooltip:
@@ -200,20 +200,6 @@ MonoBehaviour:
     _flags: 0
     _locID: 0
   DelayBeforeDestruction: 0
-  _rotator: {fileID: 6075807751254421536}
-  _arrowContainer: {fileID: 6075807749962798163}
-  _textTransform: {fileID: 6075807751334587645}
-  _preview: {fileID: 6075807750259459284}
-  _arrow: {fileID: 6075807749962798162}
-  _strengthVisualScale: 0.33333334
-  _growSpeed: 5
-  _trajectoryLength: 8
-  _yoyo: 1
-  _throwWhenReleaseKey: 1
-  _minMaxRadius: 0.07
-  _allowUserToPickAngle: 0
-  _lockAngleAfterPress: 1
-  _forcedAngle: 55
 --- !u!1 &6075807751334587644
 GameObject:
   m_ObjectHideFlags: 0

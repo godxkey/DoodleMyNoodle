@@ -10,20 +10,20 @@ public class LocalizationSettings : ScriptableObject
     public List<string> Languages = new List<string>();
     public List<LocalizationData> Localizations = new List<LocalizationData>();
 
-    public bool GetLocalizedText(string Language, string ID, out string ResultLocalizedText)
+    public bool GetLocalizedText(string language, string id, out string result)
     {
-        LocalizationData localizationData = FindData(ID);
+        LocalizationData localizationData = FindData(id);
         if (localizationData != null)
         {
-            if (!Languages.Contains(Language))
+            if (!Languages.Contains(language))
                 Debug.LogError("Language you are trying to access doesn't exist");
 
-            int index = Languages.IndexOf(Language);
+            int index = Languages.IndexOf(language);
             if (index >= 0)
             {
                 if (localizationData.Localization.Count > index)
                 {
-                    ResultLocalizedText = localizationData.Localization[index];
+                    result = localizationData.Localization[index];
                     return true;
                 }
                 else
@@ -37,7 +37,7 @@ public class LocalizationSettings : ScriptableObject
             }
         }
 
-        ResultLocalizedText = "N/A";
+        result = "N/A";
         return false;
     }
 
@@ -62,11 +62,11 @@ public class LocalizationSettings : ScriptableObject
 
     public LocalizationData FindData(string ID)
     {
-        foreach (LocalizationData Localization in Localizations)
+        foreach (LocalizationData locData in Localizations)
         {
-            if (Localization.ID == ID)
+            if (locData.ID == ID)
             {
-                return Localization;
+                return locData;
             }
         }
 

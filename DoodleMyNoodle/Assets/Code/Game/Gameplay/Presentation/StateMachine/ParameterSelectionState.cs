@@ -10,57 +10,96 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
 {
     public class InputParam
     {
-        public Entity ActionInstigator;
+        public Entity ItemEntity;
         public Entity ActionPrefab;
         public bool IsItem;
         public int ItemIndex;
         public KeyCode PressedKey;
+        public Action OnFinishOrCancelCallback;
     }
-
-    private SurveyBlackboard _surveySMBlackboard = new SurveyBlackboard();
-    private StateMachine _surveyStateMachine = new StateMachine();
+    public List<GameAction.ParameterData> ResultParameters = new List<GameAction.ParameterData>();
+    private bool _doneNextFrame;
 
     public override UIStateType Type => UIStateType.ParameterSelection;
 
     public override void OnEnter()
     {
-        _surveyStateMachine.Blackboard = _surveySMBlackboard;
-        _surveySMBlackboard.Reset();
-        _surveySMBlackboard.Cache = Cache;
-        _surveySMBlackboard.PressedKey = InputParameter.PressedKey;
-
         CursorOverlayService.Instance.ResetCursorToDefault();
 
-        if (InputParameter != null && InputParameter.ActionInstigator != Entity.Null && InputParameter.ActionPrefab != Entity.Null)
-        {
-            if (SimWorld.TryGetComponent(InputParameter.ActionPrefab, out SimAssetId objectSimAssetID))
-            {
-                _surveySMBlackboard.ActionAuth = PresentationHelpers.FindActionAuth(objectSimAssetID);
-            }
+        SurveyBaseController surveyPrefab = null;
+        GameActionAuth actionAuth = null;
+        GameAction.ExecutionContext useContext = default;
+        GameAction.ParameterDescription[] parametersDescriptions = null;
+        ResultParameters.Clear();
 
+        _doneNextFrame = true;
+        if (InputParameter != null && InputParameter.ItemEntity != Entity.Null && InputParameter.ActionPrefab != Entity.Null)
+        {
             // Init process of parameter selection
             GameActionId actionId = SimWorld.GetComponent<GameActionId>(InputParameter.ActionPrefab);
             GameAction objectGameAction = GameActionBank.GetAction(actionId);
 
-            _surveySMBlackboard.UseContext = CommonReads.GetActionContext(SimWorld, InputParameter.ActionInstigator, InputParameter.ActionPrefab);
+            useContext = CommonReads.GetActionContext(SimWorld, InputParameter.ItemEntity, InputParameter.ActionPrefab);
             var execContract = objectGameAction.GetExecutionContract(SimWorld, InputParameter.ActionPrefab);
-            _surveySMBlackboard.ParametersDescriptions = execContract?.ParameterTypes;
+            parametersDescriptions = execContract?.ParameterTypes;
+
+            if (SimWorld.TryGetComponent(InputParameter.ItemEntity, out SimAssetId itemSimAsset))
+            {
+                var itemAuth = PresentationHelpers.FindItemAuth(itemSimAsset);
+
+                if (itemAuth != null)
+                {
+                    CursorOverlayService.Instance.SetCursor(new CursorOverlayService.CursorSetting()
+                    {
+                        ClickedIcon = itemAuth.Icon,
+                        Icon = itemAuth.Icon,
+                        Type = CursorOverlayService.CursorType.Default,
+                        Scale = 3f
+                    });
+                }
+            }
+
+            if (SimWorld.TryGetComponent(InputParameter.ActionPrefab, out SimAssetId objectSimAssetID))
+            {
+                actionAuth = PresentationHelpers.FindActionAuth(objectSimAssetID);
+
+                if (actionAuth != null)
+                {
+                    surveyPrefab = actionAuth.Surveys.Count > 0 ? actionAuth.Surveys[0] : null;
+
+                    var localPawnViewTransform = PresentationHelpers.FindBindedView(Blackboard.Cache.LocalPawn)?.transform;
+                    SurveyManager.Instance.BeginSurvey(
+                        InputParameter.PressedKey,
+                        localPawnViewTransform,
+                        useContext,
+                        ResultParameters,
+                        parametersDescriptions,
+                        surveyPrefab,
+                        OnSurveyComplete,
+                        OnSurveyCancel);
+                    _doneNextFrame = false;
+                }
+            }
         }
 
-        if (_surveySMBlackboard.ActionAuth == null)
+        if (actionAuth == null)
         {
             Log.Warning($"No action auth found for item. Returning to UI state gameplay.");
             StateMachine.TransitionTo(UIStateType.Gameplay);
             return;
         }
+    }
 
-        if (_surveySMBlackboard.ParametersDescriptions == null)
-        {
-            FinishAndSendSimInput();
-            return;
-        }
+    private void OnSurveyCancel()
+    {
+        _doneNextFrame = true;
+    }
 
-        _surveyStateMachine.TransitionTo(new SurveyState());
+    private void OnSurveyComplete(List<GameAction.ParameterData> results)
+    {
+        // add param to results
+        ResultParameters.AddRange(results);
+        _doneNextFrame = true;
     }
 
     public override void OnUpdate()
@@ -71,45 +110,25 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
             return;
         }
 
-        if (!SimWorld.Exists(InputParameter.ActionInstigator)) // target item no longer exists, exit
+        if (!SimWorld.Exists(InputParameter.ItemEntity)) // target item no longer exists, exit
         {
             StateMachine.TransitionTo(UIStateType.Gameplay);
             return;
         }
 
-        // No currently running survey ? (or current survey done)
-        if (_surveyStateMachine.CurrentState == null || ((SurveyState)_surveyStateMachine.CurrentState).Done)
+        if (_doneNextFrame)
         {
-            bool isFinished = _surveySMBlackboard.ResultParameters.Count == _surveySMBlackboard.ParametersDescriptions.Length;
-            if (isFinished)
-            {
-                // all done! send input and exit
-                FinishAndSendSimInput();
-            }
-            else
-            {
-                // not done, begin next survey state ?
-                if (_surveySMBlackboard.ResultParameters.Count == 0)
-                {
-                    // no data found, cancel and go back to gameplay
-                    StateMachine.TransitionTo(UIStateType.Gameplay);
-                    return;
-                }
-                else
-                {
-                    // begin next survey state
-                    _surveyStateMachine.TransitionTo(new SurveyState());
-                }
-            }
-
+            FinishAndSendSimInput();
+            return;
         }
-
-        _surveyStateMachine.Update();
     }
 
     public override void OnExit(UIState newState)
     {
-        _surveyStateMachine.TransitionTo(null); // exit of current state
+        CursorOverlayService.Instance.ResetCursorToDefault();
+        InputParameter.OnFinishOrCancelCallback?.Invoke();
+        InputParameter.OnFinishOrCancelCallback = null;
+        SurveyManager.Instance.StopCurrentSurvey();
     }
 
     private void FinishAndSendSimInput()
@@ -117,105 +136,14 @@ public class ParameterSelectionState : UIState<ParameterSelectionState.InputPara
         // process completed, we have all info let's use the game action
         if (InputParameter.IsItem)
         {
-            _surveySMBlackboard.ResultParameters.RemoveNulls();
-            SimPlayerInputUseItem simInput = new SimPlayerInputUseItem(InputParameter.ItemIndex, _surveySMBlackboard.ResultParameters);
+            ResultParameters.RemoveNulls();
+            SimPlayerInputUseItem simInput = new SimPlayerInputUseItem(InputParameter.ItemIndex, ResultParameters);
             SimWorld.SubmitInput(simInput);
         }
 
         StateMachine.TransitionTo(UIStateType.Gameplay);
-    }
-
-
-    private class SurveyBlackboard
-    {
-        public GameActionAuth ActionAuth;
-        public GamePresentationCache Cache;
-        public GameAction.ExecutionContext UseContext;
-        public KeyCode PressedKey;
-
-        // the description of parameters we must fill
-        public GameAction.ParameterDescription[] ParametersDescriptions;
-
-        // the resulting param data
-        public List<GameAction.ParameterData> ResultParameters = new List<GameAction.ParameterData>();
-
-        public void Reset()
-        {
-            Cache = null;
-            ResultParameters.Clear();
-            ActionAuth = null;
-            UseContext = default;
-            ParametersDescriptions = default;
-        }
-    }
-
-    private class SurveyState : State<SurveyBlackboard>
-    {
-        public bool Done;
-
-        private bool _doneNextFrame = false;
-
-        public override void OnEnter()
-        {
-            Done = false;
-            _doneNextFrame = false;
-
-            HUDDisplay.Instance.ToggleVisibility(false);
-
-            // the parameter
-            int remainingParamCount = Blackboard.ParametersDescriptions.Length - Blackboard.ResultParameters.Count;
-
-            GameAction.ParameterDescription[] remainingParams = ArrayX.SubArray(Blackboard.ParametersDescriptions, Blackboard.ResultParameters.Count, remainingParamCount);
-
-            if (remainingParams.Length < 1)
-            {
-                OnSurveyCancel();
-                return;
-            }
-
-            SurveyBaseController surveyPrefab = Blackboard.ActionAuth.FindCustomSurveyPrefabForParameters(remainingParams);
-            if (surveyPrefab != null)
-            {
-                var localPawnViewTransform = PresentationHelpers.FindBindedView(Blackboard.Cache.LocalPawn)?.transform;
-                SurveyManager.Instance.BeginSurvey(Blackboard.PressedKey, localPawnViewTransform, Blackboard.UseContext, Blackboard.ResultParameters, remainingParams, surveyPrefab, OnSurveyComplete, OnSurveyCancel);
-            }
-            else
-            {
-                // default case
-                Blackboard.ResultParameters.Add(null);
-                _doneNextFrame = true;
-
-                //GameAction.ParameterDescription parameterToHandle = remainingParams[0];
-                //SurveyManager.Instance.BeginDefaultSurvey(Blackboard.Cache.LocalPawnPositionFloat, Blackboard.UseContext, Blackboard.ResultParameters, parameterToHandle, OnSurveyComplete, OnSurveyCancel);
-            }
-        }
-
-        private void OnSurveyCancel()
-        {
-            _doneNextFrame = true;
-        }
-
-        private void OnSurveyComplete(List<GameAction.ParameterData> results)
-        {
-            // add param to results
-            Blackboard.ResultParameters.AddRange(results);
-            _doneNextFrame = true;
-        }
-
-        public override void OnUpdate()
-        {
-            if (_doneNextFrame) // this is needed to make sure we don't start the next survey in the same frame as the previous
-            {
-                _doneNextFrame = false;
-                Done = true;
-            }
-        }
-
-        public override void OnExit(State nextState)
-        {
-            HUDDisplay.Instance.ToggleVisibility(true);
-            SurveyManager.Instance.StopCurrentSurvey();
-        }
+        InputParameter.OnFinishOrCancelCallback?.Invoke();
+        InputParameter.OnFinishOrCancelCallback = null;
     }
 }
 

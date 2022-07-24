@@ -15,6 +15,7 @@ public class SurveyManager : GameSystem<SurveyManager>
 
     [SerializeField] private Transform _surveyContainer;
     [SerializeField] private List<DefaultSurveyReference> _defaultSurveys;
+    [SerializeField] private SurveyBaseController _nothingSurvey;
 
     private SurveyBaseController _currentSurvey;
     private Transform _surveyTargetLocation;
@@ -30,6 +31,7 @@ public class SurveyManager : GameSystem<SurveyManager>
         System.Action<List<GameAction.ParameterData>> onCompleteCallback,
         System.Action onCancelCallback)
     {
+        surveyPrefab ??= _nothingSurvey;
         _surveyTargetLocation = surveyLocation;
         GameObject surveyInstance = Instantiate(surveyPrefab.gameObject, _surveyContainer);
         var surveyTransform = surveyInstance.transform;
