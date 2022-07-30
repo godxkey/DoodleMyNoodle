@@ -13,10 +13,10 @@
 	url = https://github.com/Unity-X/Unity.Mathematics-X.git
 [submodule "DoodleMyNoodle/Packages/com.ccc.fix2d"]
 	path = DoodleMyNoodle/Packages/com.ccc.fix2d
-	url = https://github.com/CCC-Development/Fix2D.git
+url=https://github.com/No-Deadlines/Fix2D.git
 [submodule "DoodleMyNoodle/Packages/com.ccc.upaint"]
 	path = DoodleMyNoodle/Packages/com.ccc.upaint
-	url = https://github.com/CCC-Development/UPaint.git
+url=https://github.com/No-Deadlines/UPaint.git
 [submodule "DoodleMyNoodle/Packages/com.unity-x.bookmarks"]
 	path = DoodleMyNoodle/Packages/com.unity-x.bookmarks
 	url = https://github.com/Unity-X/Bookmarks.git
