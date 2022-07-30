@@ -383,8 +383,10 @@ public partial class ApplyDamageSystem : SimGameSystemBase
                     Accessor = Accessor,
                     RequestData = request
                 };
-                foreach (var onDeathProcessor in onDeathProcessors)
+
+                for (int i = 0; i < onDeathProcessors.Length; i++)
                 {
+                    var onDeathProcessor = onDeathProcessors[i];
                     arg.EffectEntity = onDeathProcessor.effectEntity;
                     GameFunctions.Execute(onDeathProcessor.dmgProcessor.FunctionId, ref arg);
                 }
