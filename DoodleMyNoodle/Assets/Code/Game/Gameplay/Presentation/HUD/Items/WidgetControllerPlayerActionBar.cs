@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using UnityEngineX;
 using static Unity.Mathematics.math;
 
-public class PlayerActionBarDisplay : GamePresentationSystem<PlayerActionBarDisplay>
+public class WidgetControllerPlayerActionBar : GamePresentationSystem<WidgetControllerPlayerActionBar>
 {
     private class WidgetDataSlotData : IWidgetDataButton, IWidgetDataItem, IWidgetDataPlayerActionBarItem
     {

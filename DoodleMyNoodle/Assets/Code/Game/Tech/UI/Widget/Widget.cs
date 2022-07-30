@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Widget : MonoBehaviour
+public sealed class Widget : MonoBehaviour
 {
     private object _data;
     private List<IWidgetComponent> _widgetComponents = null;
