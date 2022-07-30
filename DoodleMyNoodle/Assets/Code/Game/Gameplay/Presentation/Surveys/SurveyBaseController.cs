@@ -10,6 +10,7 @@ public abstract class SurveyBaseController : MonoBehaviour
 {
     public struct Context
     {
+        public KeyCode PressedKey;
         public GameAction.ExecutionContext UseContext;
         public GameAction.ParameterDescription[] QueryParams;
         public List<GameAction.ParameterData> CurrentData;
@@ -53,7 +54,7 @@ public abstract class SurveyBaseController : MonoBehaviour
     [NonSerialized]
     private GameAction.ParameterDescriptionType[] _cachedExpectedQuery = null;
 
-    public void StartSurvey(System.Action<List<GameAction.ParameterData>> completeCallback, System.Action cancelCallback, GameAction.ExecutionContext useContext, List<GameAction.ParameterData> currentResultData, params GameAction.ParameterDescription[] parameters)
+    public void StartSurvey(KeyCode pressedKey, System.Action<List<GameAction.ParameterData>> completeCallback, System.Action cancelCallback, GameAction.ExecutionContext useContext, List<GameAction.ParameterData> currentResultData, params GameAction.ParameterDescription[] parameters)
     {
         Running = true;
 
@@ -63,7 +64,8 @@ public abstract class SurveyBaseController : MonoBehaviour
         {
             QueryParams = parameters,
             UseContext = useContext,
-            CurrentData = currentResultData
+            CurrentData = currentResultData,
+            PressedKey = pressedKey
         };
 
         CurrentContext = context;

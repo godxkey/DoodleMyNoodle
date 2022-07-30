@@ -254,20 +254,17 @@ public class CursorOverlayService : MonoCoreService<CursorOverlayService>
         SetCursor(_previousSetting);
     }
 
-    public void SetCursorType(CursorType cursorType, bool updateCurrentSetting = true)
+    public void SetCursorType(CursorType cursorType)
     {
         CursorSetting setting = FindSettingByType(cursorType);
-        SetCursor(setting, updateCurrentSetting);
+        SetCursor(setting);
     }
 
-    public void SetCursor(CursorSetting setting, bool updateCurrentSetting = true)
+    public void SetCursor(CursorSetting setting)
     {
         if (setting != null)
         {
-            if (updateCurrentSetting)
-            {
-                SetCurrentSetting(setting);
-            }
+            SetCurrentSetting(setting);
 
             _isColored = false;
             SetCursorIcon(setting.Icon, _currentSetting.Scale);

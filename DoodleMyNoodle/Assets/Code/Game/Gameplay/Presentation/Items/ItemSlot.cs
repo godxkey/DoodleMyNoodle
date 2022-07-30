@@ -12,7 +12,6 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
 
     public Image Background;
     public Image ItemIcon;
-    public Color HoverBackgroundColor = Color.white;
 
     [SerializeField] private TextMeshProUGUI _stackText;
 
@@ -34,7 +33,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         _init = true;
 
         _startBackgroundColor = Background.color;
-        _itemSlotButton.onClick.AddListener(ItemSlotClicked);
+        _itemSlotButton.onClick.AddListener(OnItemSlotClicked);
     }
 
     public override void PresentationUpdate()
@@ -155,7 +154,7 @@ public class ItemSlot : GamePresentationBehaviour, IPointerEnterHandler, IPointe
         }
     }
 
-    public void ItemSlotClicked()
+    private void OnItemSlotClicked()
     {
         PrimaryUseItemSlot();
     }

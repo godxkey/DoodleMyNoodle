@@ -7,36 +7,46 @@ using UnityEditor;
 #endif
 
 [Serializable]
-public struct TextData
+public struct TextData : IEquatable<TextData>
 {
     public static LogChannel LogChannel = Log.CreateChannel("Localization", activeByDefault: true);
 
     [SerializeField] private string _string;
-    [SerializeField] private bool _useLocID;
-    [SerializeField] private string _locID;
+    [SerializeField] private Flags _flags;
+    [SerializeField] private int _locID;
+
+    public enum Flags : byte
+    {
+        None = 0,
+        Unlocalized = 1 << 0,
+    }
 
     private List<(string tag, string replacement)> _tagReplacements;
 
-    public static TextData FromLocId(string locId, string failedLocText = null)
+    public static TextData Localized(int locId, string failedLocText = null)
     {
         return new TextData()
         {
             _locID = locId,
             _string = failedLocText,
-            _useLocID = true
+            _flags = Flags.None,
         };
     }
 
-    public static TextData FromRawString(string text)
+    public static TextData String(string text)
     {
         return new TextData()
         {
             _string = text,
-            _useLocID = false
+            _flags = Flags.Unlocalized,
         };
     }
 
-    public static TextData Empty => FromRawString(string.Empty);
+    public static TextData Value(int value) => String(value.ToString()); // todo: optimize this for no allocs)
+    public static TextData Value(float value) => String(value.ToString()); // todo: optimize this for no allocs)
+    public static TextData Value(DateTime value) => String(value.ToString()); // todo: optimize this for no allocs)
+    public static TextData Value(TimeSpan value) => String(value.ToString()); // todo: optimize this for no allocs)
+    public static TextData Empty => String(string.Empty);
     public static TextData Null => default;
 
     public void AddTagReplacement(string tag, string replacement)
@@ -50,15 +60,15 @@ public struct TextData
     public override string ToString()
     {
         string outputString;
-        if (_useLocID)
-        {
-            if (!LocalizationManager.Instance.GetLocalizedText(_locID, out outputString))
-            {
-                outputString = _string;
-                //Log.Info(LogChannel, $"No Localized Text Found for ID {_locID}, using failedLocText");
-            }
-        }
-        else
+        //if ((int)(_flags & Flags.Unlocalized) == 0) // localization currently unsupported
+        //{
+        //    if (!LocalizationManager.Instance.GetLocalizedText(_locID, out outputString))
+        //    {
+        //        outputString = _string;
+        //        //Log.Info(LogChannel, $"No Localized Text Found for ID {_locID}, using failedLocText");
+        //    }
+        //}
+        //else
         {
             outputString = _string;
         }
@@ -73,14 +83,33 @@ public struct TextData
 
         return outputString;
     }
+
+    public bool Equals(TextData other)
+    {
+        return _flags == other._flags
+            && _locID == other._locID
+            && _string == other._string
+            && _tagReplacements == other._tagReplacements;
+    }
 }
 
 #if UNITY_EDITOR
 [CustomPropertyDrawer(typeof(TextData))]
 public class TextDataDrawer : PropertyDrawer
 {
-    private string _lastID = "";
-    private string _lastPreview = "";
+    private struct Properties
+    {
+        public SerializedProperty LocID;
+        public SerializedProperty String;
+        public SerializedProperty Flags;
+
+        public Properties(SerializedProperty root)
+        {
+            LocID = root.FindPropertyRelative("_locID");
+            String = root.FindPropertyRelative("_string");
+            Flags = root.FindPropertyRelative("_flags");
+        }
+    }
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
@@ -89,6 +118,10 @@ public class TextDataDrawer : PropertyDrawer
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
+        Properties properties = new Properties(property);
+
+        int lastID = properties.LocID.intValue;
+
         EditorGUI.BeginProperty(position, label, property);
 
         var titlePos = new Rect(position.x, position.y, position.width, 16);
@@ -96,58 +129,35 @@ public class TextDataDrawer : PropertyDrawer
 
         EditorGUI.indentLevel++;
 
-        var locIDFieldPos = new Rect(position.x + 100, position.y + 20, position.width, 16);
-        var defaultStringFieldPos = new Rect(position.x + 100, position.y + 40, position.width, 16);
-        var previewLabelPos = new Rect(position.x + 100, position.y + 60, position.width, 16);
+        var locIDFieldPos = new Rect(position.x, position.y + 20, position.width, EditorGUIUtility.singleLineHeight);
+        var defaultStringFieldPos = new Rect(position.x, position.y + 40, position.width, EditorGUIUtility.singleLineHeight);
+        var previewLabelPos = new Rect(position.x, position.y + 60, position.width, EditorGUIUtility.singleLineHeight);
 
-        var locIDFieldLabelPos = new Rect(position.x, position.y + 20, position.width, 16);
-        var defaultStringFieldLabelPos = new Rect(position.x, position.y + 40, position.width, 16);
-        var previewDisplayPos = new Rect(position.x, position.y + 60, position.width, 16);
+        properties.Flags.enumValueFlag = (int)TextData.Flags.None;
 
-        property.FindPropertyRelative("_useLocID").boolValue = true;
-
-        position = EditorGUI.PrefixLabel(locIDFieldLabelPos, new GUIContent("Localization ID :"));
-        EditorGUI.PropertyField(locIDFieldPos, property.FindPropertyRelative("_locID"), GUIContent.none);
-
-        position = EditorGUI.PrefixLabel(defaultStringFieldLabelPos, new GUIContent("Default Text :"));
-        EditorGUI.PropertyField(defaultStringFieldPos, property.FindPropertyRelative("_string"), GUIContent.none);
-
-        position = EditorGUI.PrefixLabel(previewDisplayPos, new GUIContent("Preview :"));
-        string currentID = property.FindPropertyRelative("_locID").stringValue;
-        if (currentID != _lastID)
-        {
-            _lastPreview = GetPreviewText(property.FindPropertyRelative("_locID").stringValue);
-            EditorGUI.LabelField(previewLabelPos, _lastPreview);
-        }
-        else
-        {
-            string stringValue = property.FindPropertyRelative("_string").stringValue;
-            if (_lastPreview == "" || _lastID == "")
-            {
-                _lastPreview = stringValue;
-            }
-
-            EditorGUI.LabelField(previewLabelPos, _lastPreview);
-        }
-        _lastID = currentID;
+        EditorGUI.PropertyField(locIDFieldPos, properties.LocID, new GUIContent("Localization ID :"));
+        EditorGUI.PropertyField(defaultStringFieldPos, properties.String, new GUIContent("Default Text :"));
+        EditorGUI.LabelField(previewLabelPos, new GUIContent("Preview :"), new GUIContent(GetPreviewText(properties.LocID.intValue)));
 
         EditorGUI.indentLevel--;
 
         EditorGUI.EndProperty();
     }
 
-    private string GetPreviewText(string ID)
+    private string GetPreviewText(int ID)
     {
-        string[] settingsGUID = AssetDatabase.FindAssets(LocalizationManager.LOCALIZATION_SETTING_FILENAME, null);
-        if (settingsGUID.Length > 0)
-        {
-            string settingPath = AssetDatabase.GUIDToAssetPath(settingsGUID[0]);
-            LocalizationSettings localizationSettings = (LocalizationSettings)AssetDatabase.LoadAssetAtPath(settingPath, typeof(LocalizationSettings));
-            if (localizationSettings.GetLocalizedText("English", ID, out string resultLocalizedText))
-            {
-                return resultLocalizedText;
-            }
-        }
+        // unsupported for now
+
+        //string[] settingsGUID = AssetDatabase.FindAssets(LocalizationManager.LOCALIZATION_SETTING_FILENAME, null);
+        //if (settingsGUID.Length > 0)
+        //{
+        //    string settingPath = AssetDatabase.GUIDToAssetPath(settingsGUID[0]);
+        //    LocalizationSettings localizationSettings = (LocalizationSettings)AssetDatabase.LoadAssetAtPath(settingPath, typeof(LocalizationSettings));
+        //    if (localizationSettings.GetLocalizedText("English", "", out string resultLocalizedText))
+        //    {
+        //        return resultLocalizedText;
+        //    }
+        //}
 
         return "N/A";
     }

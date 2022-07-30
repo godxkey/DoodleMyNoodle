@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -61,3 +62,5 @@ MonoBehaviour:
       type: 3}
   - ParameterType: 5
     Survey: {fileID: 464387511881233265, guid: 21be3624a4af0eb4ab538d096e5947b8, type: 3}
+  _nothingSurvey: {fileID: -1556729350124813226, guid: 4f10c3b7e0288a04ba478913f51e8b70,
+    type: 3}

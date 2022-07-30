@@ -85,6 +85,7 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     // PRESENTATION
 
     // Description
+    public AudioPlayable SfxOnPrepareUse;
     public AudioPlayable SfxOnUse;
     public AnimationDefinition Animation;
 
@@ -92,57 +93,57 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     public VFXDefinition TargetsVFX;
 
     // Surveys
-    public List<SurveyBaseController> Surveys;
+    public List<SurveyBaseController> Surveys = new List<SurveyBaseController>();
 
-    public SurveyBaseController FindCustomSurveyPrefabForParameters(params GameAction.ParameterDescription[] parameters)
-    {
-        if (parameters.Length == 0)
-        {
-            return null;
-        }
+    //public SurveyBaseController FindCustomSurveyPrefabForParameters(params GameAction.ParameterDescription[] parameters)
+    //{
+    //    if (parameters.Length == 0)
+    //    {
+    //        return null;
+    //    }
 
-        // example: 3 parameters
-        // try find survey for all 3 params
-        // then try find survey for 2 params
-        // then try find survey for 1 params
-        // return null
+    //    // example: 3 parameters
+    //    // try find survey for all 3 params
+    //    // then try find survey for 2 params
+    //    // then try find survey for 1 params
+    //    // return null
 
-        SurveyBaseController result = null;
-        for (int i = parameters.Length; i > 0; i--)
-        {
-            result = TryFindCustomSurveyPrefabForParametersSubset(parameters, i);
-            if (result != null)
-                break;
-        }
+    //    SurveyBaseController result = null;
+    //    for (int i = parameters.Length; i > 0; i--)
+    //    {
+    //        result = TryFindCustomSurveyPrefabForParametersSubset(parameters, i);
+    //        if (result != null)
+    //            break;
+    //    }
 
-        return result;
-    }
+    //    return result;
+    //}
 
-    private SurveyBaseController TryFindCustomSurveyPrefabForParametersSubset(GameAction.ParameterDescription[] parameters, int paramCount)
-    {
-        foreach (SurveyBaseController survey in Surveys)
-        {
-            bool hasAllTypes = false;
+    //private SurveyBaseController TryFindCustomSurveyPrefabForParametersSubset(GameAction.ParameterDescription[] parameters, int paramCount)
+    //{
+    //    foreach (SurveyBaseController survey in Surveys)
+    //    {
+    //        bool hasAllTypes = false;
 
-            for (int i = 0; i < paramCount; i++)
-            {
-                if (Array.IndexOf(survey.ExpectedQuery, parameters[i].GetParameterDescriptionType()) != -1)
-                {
-                    hasAllTypes = true;
-                }
-                else
-                {
-                    hasAllTypes = false;
-                    break;
-                }
-            }
+    //        for (int i = 0; i < paramCount; i++)
+    //        {
+    //            if (Array.IndexOf(survey.ExpectedQuery, parameters[i].GetParameterDescriptionType()) != -1)
+    //            {
+    //                hasAllTypes = true;
+    //            }
+    //            else
+    //            {
+    //                hasAllTypes = false;
+    //                break;
+    //            }
+    //        }
 
-            if (hasAllTypes)
-            {
-                return survey;
-            }
-        }
+    //        if (hasAllTypes)
+    //        {
+    //            return survey;
+    //        }
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
 }
