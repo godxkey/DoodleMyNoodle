@@ -13,7 +13,7 @@ public class GlobalVFXHandler : GamePresentationSystem<GlobalVFXHandler>
     {
         foreach (var gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.LastPhysicalInstigator, out FixTranslation lastPhysicalInstigatorTranslation);
+            SimWorld.TryGetComponent(gameActionEvent.GameActionContext.ActionInstigatorActor, out FixTranslation lastPhysicalInstigatorTranslation);
 
             // ITEM USED VFX
             // only do the vfx if not an auto attack

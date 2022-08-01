@@ -11,16 +11,19 @@ public enum ItemUnavailablityReason
     NoChargesLeft,
 }
 
+public struct Owner : IComponentData
+{
+    public Entity Value;
+
+    public static implicit operator Entity(Owner val) => val.Value;
+    public static implicit operator Owner(Entity val) => new Owner() { Value = val };
+}
+
 public struct ItemTag : IComponentData
 {
 }
 
-public struct ItemSettingAPCost : IComponentData
-{
-    public int Value;
-}
-
-public struct ItemTimeCooldownData : IComponentData
+public struct SpellCooldown : IComponentData
 {
     public fix Value;
 }
@@ -33,12 +36,20 @@ public struct ItemCooldownTimeCounter : IComponentData
     public static implicit operator ItemCooldownTimeCounter(fix val) => new ItemCooldownTimeCounter() { Value = val };
 }
 
-public struct ItemAction : IComponentData
+public struct ItemSpell : IBufferElementData
 {
     public Entity Value;
 
-    public static implicit operator Entity(ItemAction val) => val.Value;
-    public static implicit operator ItemAction(Entity val) => new ItemAction() { Value = val };
+    public static implicit operator Entity(ItemSpell val) => val.Value;
+    public static implicit operator ItemSpell(Entity val) => new ItemSpell() { Value = val };
+}
+
+public struct ItemCurrentSpellIndex : IComponentData
+{
+    public int Value;
+
+    public static implicit operator int(ItemCurrentSpellIndex val) => val.Value;
+    public static implicit operator ItemCurrentSpellIndex(int val) => new ItemCurrentSpellIndex() { Value = val };
 }
 
 public struct ItemCharges : IComponentData
@@ -49,12 +60,12 @@ public struct ItemCharges : IComponentData
     public static implicit operator ItemCharges(int val) => new ItemCharges() { Value = val };
 }
 
-public struct ItemStatingCharges : IComponentData
+public struct ItemStartingCharges : IComponentData
 {
     public int Value;
 
-    public static implicit operator int(ItemStatingCharges val) => val.Value;
-    public static implicit operator ItemStatingCharges(int val) => new ItemStatingCharges() { Value = val };
+    public static implicit operator int(ItemStartingCharges val) => val.Value;
+    public static implicit operator ItemStartingCharges(int val) => new ItemStartingCharges() { Value = val };
 }
 
 public partial class CommonReads
@@ -72,35 +83,6 @@ public partial class CommonReads
             return false;
         }
 
-        int apCost = 0;
-        if (accessor.TryGetComponent(item, out ItemSettingAPCost apCostComponent))
-        {
-            apCost = apCostComponent.Value;
-        }
-
-        if (apCost > 0)
-        {
-            if (accessor.TryGetComponent(actor, out ActionPoints ap))
-            {
-                if (apCost > ap.Value)
-                {
-                    debugReason = ItemUnavailablityReason.NotEnoughtAP;
-                    return false;
-                }
-            }
-            else
-            {
-                debugReason = ItemUnavailablityReason.NotEnoughtAP;
-                return false;
-            }
-
-            if (ap <= (fix)0)
-            {
-                debugReason = ItemUnavailablityReason.NotEnoughtAP;
-                return false;
-            }
-        }
-
         // is in cooldown?
         if (accessor.TryGetComponent(item, out ItemCooldownTimeCounter timeCooldown) &&
             timeCooldown.Value > 0)
@@ -109,7 +91,7 @@ public partial class CommonReads
             return false;
         }
 
-        if (accessor.TryGetComponent(item, out ItemAction action) && action.Value == Entity.Null)
+        if (CommonReads.GetItemCurrentSpell(accessor, item) == Entity.Null)
         {
             debugReason = ItemUnavailablityReason.NoAction;
             return false;
@@ -117,6 +99,17 @@ public partial class CommonReads
 
         debugReason = ItemUnavailablityReason.None;
         return true;
+    }
+
+    public static Entity GetItemCurrentSpell(ISimWorldReadAccessor accessor, Entity item)
+    {
+        if (accessor.TryGetBufferReadOnly(item, out DynamicBuffer<ItemSpell> spells))
+        {
+            var spellIndex = accessor.GetComponent<ItemCurrentSpellIndex>(item);
+            if (spells.IsValidIndex(spellIndex))
+                return spells[spellIndex];
+        }
+        return Entity.Null;
     }
 }
 
@@ -130,9 +123,9 @@ internal partial class CommonWrites
             return false;
         }
 
-        accessor.TryGetComponent(item, out ItemAction itemAction);
+        Entity spell = CommonReads.GetItemCurrentSpell(accessor, item);
 
-        CommonWrites.RequestExecuteGameAction(accessor, item, itemAction, parameters);
+        CommonWrites.RequestExecuteGameAction(accessor, item, spell, parameters);
 
         // reduce consumable amount
         if (accessor.GetComponent<StackableFlag>(item))
@@ -140,20 +133,10 @@ internal partial class CommonWrites
             CommonWrites.DecrementItem(accessor, item, actor);
         }
 
-        // reduce instigator AP
-        if (accessor.TryGetComponent(item, out ItemSettingAPCost itemActionPointCost) && itemActionPointCost.Value != 0)
-        {
-            var apDelta = -itemActionPointCost.Value;
-            var maxAP = accessor.GetComponent<ActionPointsMax>(actor).Value;
-            var ap = accessor.GetComponent<ActionPoints>(actor).Value;
-            var newAP = fixMath.clamp(ap + apDelta, 0, maxAP);
-            accessor.SetComponent<ActionPoints>(actor, newAP);
-        }
-
         // Cooldown
-        if (accessor.TryGetComponent(item, out ItemTimeCooldownData itemTimeCooldownData))
+        if (accessor.TryGetComponent(spell, out SpellCooldown spellCooldown))
         {
-            accessor.SetOrAddComponent(item, new ItemCooldownTimeCounter() { Value = itemTimeCooldownData.Value });
+            accessor.SetOrAddComponent(item, new ItemCooldownTimeCounter() { Value = spellCooldown.Value });
         }
 
         // reduce charges

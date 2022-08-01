@@ -35,9 +35,16 @@ public static class PresentationHelpers
         return SimAssetBankInstance.GetLookup().GetSimAsset(simAssetId)?.gameObject;
     }
 
-    public static ItemAuth FindItemAuth(SimAssetId itemID)
+    public static GameObject FindSimAssetPrefab(Entity entity)
     {
-        GameObject itemPrefab = FindSimAssetPrefab(itemID);
+        if (GamePresentationCache.Instance.SimWorld.TryGetComponent(entity, out SimAssetId assetId))
+            return FindSimAssetPrefab(assetId);
+        return null;
+    }
+
+    public static ItemAuth FindItemAuth(SimAssetId assetID)
+    {
+        GameObject itemPrefab = FindSimAssetPrefab(assetID);
         if (itemPrefab != null)
         {
             return itemPrefab.GetComponent<ItemAuth>();
@@ -45,12 +52,22 @@ public static class PresentationHelpers
         return null;
     }
 
-    public static GameActionAuth FindActionAuth(SimAssetId itemID)
+    public static GameActionAuth FindActionAuth(SimAssetId assetID)
     {
-        GameObject itemPrefab = FindSimAssetPrefab(itemID);
+        GameObject itemPrefab = FindSimAssetPrefab(assetID);
         if (itemPrefab != null)
         {
             return itemPrefab.GetComponent<GameActionAuth>();
+        }
+        return null;
+    }
+
+    public static SpellAuth FindSpellAuth(SimAssetId assetID)
+    {
+        GameObject itemPrefab = FindSimAssetPrefab(assetID);
+        if (itemPrefab != null)
+        {
+            return itemPrefab.GetComponent<SpellAuth>();
         }
         return null;
     }
@@ -76,7 +93,7 @@ public static class PresentationHelpers
 
     public static void RequestFloatingText(Vector2 position, string text, Color color)
     {
-        FloatingTextSystem.Instance.RequestText(position, new Vector2(1,1), text, color);
+        FloatingTextSystem.Instance.RequestText(position, new Vector2(1, 1), text, color);
     }
 
     public static void ResizeGameObjectList(List<GameObject> gameObjectList, int count, GameObject prefab, Transform container, System.Action<GameObject> onCreate = null, System.Action<GameObject> onDestroy = null)
@@ -166,14 +183,16 @@ public static class PresentationHelpers
             spawnOffset = Vector2.zero;
             radius = 0.05f;
 
-            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigator, out ItemAction itemAction))
+            Entity itemAction = CommonReads.GetItemCurrentSpell(cache.SimWorld, useContext.ActionInstigator);
+
+            if (itemAction != Entity.Null)
             {
-                GameActionThrow throwAction = GetGameAction<GameActionThrow>(cache.SimWorld, itemAction.Value);
+                GameActionThrow throwAction = GetGameAction<GameActionThrow>(cache.SimWorld, itemAction);
 
                 if (throwAction != null)
                 {
-                    spawnOffset = (Vector2)throwAction.GetSpawnPosOffset(cache.SimWorld, useContext, itemAction.Value,(fix2)direction);
-                    radius = (float)throwAction.GetProjectileRadius(cache.SimWorld, itemAction.Value);
+                    spawnOffset = (Vector2)throwAction.GetSpawnPosOffset(cache.SimWorld, useContext, itemAction, (fix2)direction);
+                    radius = (float)throwAction.GetProjectileRadius(cache.SimWorld, itemAction);
                     return true;
                 }
             }
@@ -183,13 +202,14 @@ public static class PresentationHelpers
 
         public static float GetProjectileRadiusSetting(GamePresentationCache cache, GameAction.ExecutionContext useContext)
         {
-            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigator, out ItemAction itemAction))
+            Entity itemAction = CommonReads.GetItemCurrentSpell(cache.SimWorld, useContext.ActionInstigator);
+            if (itemAction != Entity.Null)
             {
-                GameActionThrow throwAction = GetGameAction<GameActionThrow>(cache.SimWorld, itemAction.Value);
+                GameActionThrow throwAction = GetGameAction<GameActionThrow>(cache.SimWorld, itemAction);
 
                 if (throwAction != null)
                 {
-                    return (float)throwAction.GetProjectileRadius(cache.SimWorld, itemAction.Value);
+                    return (float)throwAction.GetProjectileRadius(cache.SimWorld, itemAction);
                 }
             }
 
@@ -204,9 +224,10 @@ public static class PresentationHelpers
             if (!cache.SimWorld.Exists(useContext.ActionInstigator))
                 return 1;
 
-            if (cache.SimWorld.TryGetComponent(useContext.ActionInstigator, out ItemAction itemAction))
+            Entity itemAction = CommonReads.GetItemCurrentSpell(cache.SimWorld, useContext.ActionInstigator);
+            if (itemAction != Entity.Null)
             {
-                if (cache.SimWorld.TryGetComponent(itemAction.Value, out GameActionThrow.Settings throwSettings))
+                if (cache.SimWorld.TryGetComponent(itemAction, out GameActionThrow.Settings throwSettings))
                 {
                     return GetEntityGravScale(throwSettings.ProjectilePrefab);
                 }

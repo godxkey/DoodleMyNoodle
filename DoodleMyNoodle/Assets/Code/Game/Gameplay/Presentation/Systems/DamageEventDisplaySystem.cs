@@ -98,7 +98,7 @@ public class DamageEventDisplaySystem : GamePresentationSystem<DamageEventDispla
             }
             else
             {
-                if (eventData.InstigatorSet.FirstPhysicalInstigator == PlayerHelpers.GetLocalSimPawnEntity(SimWorld))
+                if (eventData.FirstInstigatorActor == PlayerHelpers.GetLocalSimPawnEntity(SimWorld))
                 {
                     numberSetting = eventData.IsAutoAttack ? SettingLocalAA : SettingLocalSpell;
                 }

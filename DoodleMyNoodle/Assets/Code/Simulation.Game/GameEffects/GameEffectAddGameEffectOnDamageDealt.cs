@@ -74,7 +74,7 @@ public class GameEffectAddGameEffectOnDamageDealt
             {
                 GameEffectPrefab = settings.GameEffectPrefab,
                 Target = arg.RequestData.Target,
-                Instigator = arg.RequestData.InstigatorSet
+                Instigator = arg.RequestData.Instigator
             });
         }
     };

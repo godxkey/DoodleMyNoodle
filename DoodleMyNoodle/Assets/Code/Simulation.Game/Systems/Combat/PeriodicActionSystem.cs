@@ -7,7 +7,7 @@ using UnityEngineX;
 public struct PeriodicActionRate : IComponentData
 {
     public fix Value;
-    public bool FirstInstigatorAttackSpeedAffectMe;
+    public bool ScaleWithOwnerAttackSpeed;
 
     public static implicit operator fix(PeriodicActionRate val) => val.Value;
     public static implicit operator PeriodicActionRate(fix val) => new PeriodicActionRate() { Value = val };
@@ -90,12 +90,12 @@ public partial class UpdatePeriodicActionSystem : SimGameSystemBase
                     totalRate *= GetComponent<AttackSpeed>(entity).Value;
                 }
 
-                if (rate.FirstInstigatorAttackSpeedAffectMe && HasComponent<FirstInstigator>(entity))
+                if (rate.ScaleWithOwnerAttackSpeed && HasComponent<Owner>(entity))
                 {
-                    var firstInstigator = GetComponent<FirstInstigator>(entity);
-                    if (HasComponent<AttackSpeed>(firstInstigator))
+                    var owner = GetComponent<Owner>(entity);
+                    if (HasComponent<AttackSpeed>(owner))
                     {
-                        totalRate *= GetComponent<AttackSpeed>(firstInstigator).Value;
+                        totalRate *= GetComponent<AttackSpeed>(owner).Value;
                     }
                 }
 

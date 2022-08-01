@@ -74,7 +74,7 @@ public abstract class SurveyBaseController : MonoBehaviour
         _cancelCallback = cancelCallback;
         _result.Clear();
 
-        ShowCostPreview();
+        //ShowCostPreview();
 
         _currentLoop = StartCoroutine(SurveyRoutine(context, _result, Complete, Cancel));
     }
@@ -97,7 +97,7 @@ public abstract class SurveyBaseController : MonoBehaviour
         Running = false;
 
         InfoTextDisplay.Instance.ForceHideText();
-        HideCostPreview();
+        //HideCostPreview();
 
         OnEndSurvey(completed);
 
@@ -124,22 +124,22 @@ public abstract class SurveyBaseController : MonoBehaviour
     protected abstract void OnEndSurvey(bool wasCompleted);
     public virtual GameAction.ParameterDescription[] CreateDebugQuery() => new GameAction.ParameterDescription[0] { };
 
-    private void ShowCostPreview()
-    {
-        if (SimWorld.TryGetComponent(CurrentContext.Instigator, out ActionPoints ap))
-        {
-            if (SimWorld.TryGetComponent(CurrentContext.ActionPrefab, out ItemSettingAPCost apCost))
-            {
-                HUDDisplay.Instance.APEnergyBarDisplay.ShowPrevewAPEnergyCost((float)ap.Value - apCost.Value);
-            } 
-        }
-    }
+    //private void ShowCostPreview()
+    //{
+    //    if (SimWorld.TryGetComponent(CurrentContext.Instigator, out ActionPoints ap))
+    //    {
+    //        if (SimWorld.TryGetComponent(CurrentContext.ActionPrefab, out ItemSettingAPCost apCost))
+    //        {
+    //            HUDDisplay.Instance.APEnergyBarDisplay.ShowPrevewAPEnergyCost((float)ap.Value - apCost.Value);
+    //        } 
+    //    }
+    //}
 
-    private void HideCostPreview()
-    {
-        if (SimWorld.HasComponent<ActionPoints>(CurrentContext.Instigator))
-        {
-            HUDDisplay.Instance.APEnergyBarDisplay.StopShowingPreview();
-        }
-    }
+    //private void HideCostPreview()
+    //{
+    //    if (SimWorld.HasComponent<ActionPoints>(CurrentContext.Instigator))
+    //    {
+    //        HUDDisplay.Instance.APEnergyBarDisplay.StopShowingPreview();
+    //    }
+    //}
 }

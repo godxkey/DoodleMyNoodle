@@ -12,7 +12,7 @@ public class UIStateMachineBlackboard
 
     // state instances
     public GameplayState GameplayState = new GameplayState();
-    public ParameterSelectionState ParameterSelectionState = new ParameterSelectionState();
+    public SpellCastingState ParameterSelectionState = new SpellCastingState();
     public BlockedGameplayState BlockedGameplayState = new BlockedGameplayState();
     public DrawingState DrawingState = new DrawingState();
 }
@@ -21,7 +21,7 @@ public enum UIStateType
 {
     Gameplay,
     BlockedGameplay,
-    ParameterSelection,
+    SpellCasting,
     Drawing,
 }
 

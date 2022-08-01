@@ -39,7 +39,7 @@ public partial class UpdatePeriodicActionEnabledSystem : SimGameSystemBase
             .WithReadOnly(offsetFromTargets)
             .WithAll<ItemTag>()
             .ForEach((ref PeriodicActionEnabled periodicEnabled,
-                      in FirstInstigator owner,
+                      in Owner owner,
                       in PeriodicActionRange range) =>
             {
                 bool ownerHPOk = !healths.TryGetComponent(owner, out var hp) || hp.Value > 0;

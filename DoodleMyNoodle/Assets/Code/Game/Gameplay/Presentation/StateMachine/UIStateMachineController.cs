@@ -65,7 +65,7 @@ public class UIStateMachine : StateMachine<UIStateMachine, UIState, UIStateMachi
                 TransitionTo(Blackboard.BlockedGameplayState, inputData);
                 break;
 
-            case UIStateType.ParameterSelection:
+            case UIStateType.SpellCasting:
                 TransitionTo(Blackboard.ParameterSelectionState, inputData);
                 break;
 

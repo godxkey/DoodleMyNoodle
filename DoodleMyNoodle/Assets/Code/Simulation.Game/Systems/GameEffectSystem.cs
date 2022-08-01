@@ -12,7 +12,7 @@ public struct SystemRequestAddGameEffect : ISingletonBufferElementData
 {
     public Entity GameEffectPrefab;
     public Entity Target;
-    public InstigatorSet Instigator;
+    public Entity Instigator;
 }
 
 [AlwaysUpdateSystem]
@@ -43,7 +43,7 @@ public partial class GameEffectSystem : SimGameSystemBase
                 {
                     GameEffectPrefab = gameEffectStartBufferElement.EffectEntity,
                     Target = entity,
-                    Instigator = new InstigatorSet() { FirstPhysicalInstigator = entity, LastInstigator = entity, LastPhysicalInstigator = entity, LastSpellInstigator = entity }
+                    Instigator = entity,
                 });
             }
 
@@ -77,16 +77,16 @@ public partial class GameEffectSystem : SimGameSystemBase
         for (int i = 0; i < endingEffects.Length; i++)
         {
             var effect = endingEffects[i];
-            var effectInfo = GetComponent<GameEffectInfo>(effect);
+            var effectOwner = GetComponent<Owner>(effect);
 
             if (EntityManager.TryGetComponent(effect, out GameEffectOnEndGameAction gameEffectOnEndGameAction))
             {
-                CommonWrites.RequestExecuteGameAction(Accessor, effect, gameEffectOnEndGameAction.Action, effectInfo.Owner);
+                CommonWrites.RequestExecuteGameAction(Accessor, effect, gameEffectOnEndGameAction.Action, effectOwner);
             }
 
-            _removeFinishedGameEffectsSystem.ToRemove.Add((effectInfo.Owner, effect));
+            _removeFinishedGameEffectsSystem.ToRemove.Add((effectOwner, effect));
 
-            CommonWrites.DestroyEndOfTick(Accessor, effect);
+            CommonWrites.DisableAndScheduleForDestruction(Accessor, effect);
         }
     }
 
@@ -107,18 +107,11 @@ public partial class GameEffectSystem : SimGameSystemBase
             // _________________________________________ Create Effect _________________________________________ //
             Entity newEffect = EntityManager.Instantiate(addRequest.GameEffectPrefab);
 
-            EntityManager.AddComponentData(newEffect, new GameEffectInfo()
-            {
-                Instigator = addRequest.Instigator,
-                Owner = addRequest.Target,
-            });
+            EntityManager.AddComponentData<FirstInstigator>(newEffect, CommonReads.GetFirstInstigator(Accessor, addRequest.Instigator));
 
             // FRED: Pas sur que ça devrait être la target. Me semble que l'instigateur devrait être la personne qui a mis l'effect. E.g. si j'met qq1 en feu et que 
             // ça fait du dots, ça devrait checker mon 'bonus-fire-damage' ?
-            EntityManager.AddComponentData(newEffect, new FirstInstigator() { Value = addRequest.Target });
-
-            // Tracking the spell that triggered this whole chain
-            EntityManager.AddComponentData(newEffect, new SpellInstigator() { Value = addRequest.Instigator.LastSpellInstigator });
+            EntityManager.AddComponentData(newEffect, new Owner() { Value = addRequest.Target });
 
             // _________________________________________ Add to owner _________________________________________ //
             DynamicBuffer<GameEffectBufferElement> effects = EntityManager.GetBuffer<GameEffectBufferElement>(addRequest.Target);

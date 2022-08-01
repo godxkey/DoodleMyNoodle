@@ -123,7 +123,7 @@ public partial class OnOverlapDamageOvertimeSystem : SimGameSystemBase
                         DamageRequestSettings damageRequest = new DamageRequestSettings()
                         {
                             DamageAmount = damage,
-                            InstigatorSet = CommonReads.GetInstigatorSetFromLastPhysicalInstigator(Accessor, instigator),
+                            Instigator = instigator,
                             IsAutoAttack = false,
                         };
                         CommonWrites.RequestDamage(Accessor, damageRequest, target);

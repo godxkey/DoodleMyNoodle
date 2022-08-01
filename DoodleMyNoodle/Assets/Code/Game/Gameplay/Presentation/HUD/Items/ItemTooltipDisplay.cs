@@ -87,7 +87,6 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
                 Entity itemEntity = FindItemFromAssetId(simAsset.GetSimAssetId(), itemOwner);
                 if (itemEntity != Entity.Null)
                 {
-                    _itemName.text = itemGameActionAuth.Name; // update title Text
                     UpdateTooltipDescription(itemEntity, itemGameActionAuth);
                     UpdateTooltipColors(Color.white);
                     _shouldBeDisplayed = true;
@@ -131,21 +130,27 @@ public class ItemTooltipDisplay : GamePresentationSystem<ItemTooltipDisplay>
         _descriptionData.Clear();
         if (item != Entity.Null)
         {
-            // General Description
-            _descriptionData.Add(new DescriptionData(itemAuth.EffectDescription, Color.white, true));
+            TextData description = itemAuth.Description;
+            float cooldown = 0;
 
-            if (itemAuth.ActionPrefab != null)
+            Entity itemSpell = CommonReads.GetItemCurrentSpell(SimWorld, item);
+            SpellAuth spellAuth = PresentationHelpers.FindSimAssetPrefab(itemSpell)?.GetComponent<SpellAuth>();
+
+            if (spellAuth != null)
             {
-                // AP Cost
-                _descriptionData.Add(new DescriptionData("Coût AP : " + itemAuth.ApCost, Color.white, true));
+                cooldown = spellAuth.Cooldown;
+                if (spellAuth.OverrideDescription)
+                    description = spellAuth.DescriptionOverride;
+            }
 
-                // Item Specific Settings
-                if (itemAuth.CooldownType == ItemAuth.CooldownMode.Seconds)
-                {
-                    _descriptionData.Add(new DescriptionData($"Cooldown (time) : {itemAuth.CooldownDuration}", Color.white, true));
-                }
+            _descriptionData.Add(new DescriptionData(description.ToString(), Color.white, true));
+            if (cooldown != 0)
+            {
+                _descriptionData.Add(new DescriptionData($"Cooldown (time) : {cooldown}", Color.white, true));
             }
         }
+
+        _itemName.text = itemAuth.Name.ToString();
 
         PresentationHelpers.UpdateGameObjectList(_descriptionElements, _descriptionData, _itemDescriptionPrefab, _itemDescriptionContainer,
             onUpdate: (element, data) => element.UpdateDescription(data.Desc, data.Color, data.AddBG));

@@ -7,7 +7,7 @@ public class GameEffectActionAfterXHitsReceived
 {
     public enum TargetType
     {
-        Victim,
+        HitVictim,
         HitInstigator
     }
 
@@ -17,7 +17,7 @@ public class GameEffectActionAfterXHitsReceived
         public int RequiredHits;
         public int HitCounter;
         public TargetType TargetType;
-        public Entity OnlyHitsFromInstigator;
+        public Entity OnlyHitsFromThisActor;
     }
 
     public class Begin : GameAction<Begin.Settings>
@@ -28,7 +28,7 @@ public class GameEffectActionAfterXHitsReceived
         {
             public int RequiredHits;
             public GameObject GameAction;
-            public TargetType TargetType = TargetType.Victim;
+            public TargetType TargetType = TargetType.HitVictim;
             public bool OnlyHitsFromEffectInstigator;
 
             public override void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -74,8 +74,8 @@ public class GameEffectActionAfterXHitsReceived
                 HitCounter = 0,
                 RequiredHits = settings.RequiredHits,
                 TargetType = settings.TargetType,
-                OnlyHitsFromInstigator = settings.OnlyHitsFromEffectInstigator 
-                    ? input.Accessor.GetComponent<GameEffectInfo>(input.Context.ActionInstigator).Instigator.FirstPhysicalInstigator 
+                OnlyHitsFromThisActor = settings.OnlyHitsFromEffectInstigator
+                    ? CommonReads.GetOwnerActor(input.Accessor, input.Accessor.GetComponent<FirstInstigator>(input.Context.ActionInstigator))
                     : Entity.Null,
             });
 
@@ -88,27 +88,31 @@ public class GameEffectActionAfterXHitsReceived
     {
         if (arg.Accessor.TryGetComponent(arg.EffectEntity, out EffectData data))
         {
-            if (data.OnlyHitsFromInstigator == Entity.Null || data.OnlyHitsFromInstigator == arg.RequestData.InstigatorSet.FirstPhysicalInstigator)
+            Entity firstInstigatorActor = CommonReads.GetFirstInstigatorActor(arg.Accessor, arg.RequestData.Instigator);
+
+            if (data.OnlyHitsFromThisActor != Entity.Null && data.OnlyHitsFromThisActor != firstInstigatorActor)
             {
-                data.HitCounter++;
+                return;
+            }
 
-                arg.Accessor.SetComponent(arg.EffectEntity, data);
+            data.HitCounter++;
 
-                if (data.HitCounter == data.RequiredHits)
+            arg.Accessor.SetComponent(arg.EffectEntity, data);
+
+            if (data.HitCounter == data.RequiredHits)
+            {
+                Entity target = Entity.Null;
+                switch (data.TargetType)
                 {
-                    Entity target = Entity.Null;
-                    switch (data.TargetType)
-                    {
-                        case TargetType.Victim:
-                            target = arg.RequestData.Target;
-                            break;
-                        case TargetType.HitInstigator:
-                            target = arg.RequestData.InstigatorSet.FirstPhysicalInstigator;
-                            break;
-                    }
-
-                    CommonWrites.RequestExecuteGameAction(arg.Accessor, arg.EffectEntity, data.GameActionPrefab, target);
+                    case TargetType.HitVictim:
+                        target = arg.RequestData.Target;
+                        break;
+                    case TargetType.HitInstigator:
+                        target = firstInstigatorActor;
+                        break;
                 }
+
+                CommonWrites.RequestExecuteGameAction(arg.Accessor, arg.EffectEntity, data.GameActionPrefab, target);
             }
 
         }

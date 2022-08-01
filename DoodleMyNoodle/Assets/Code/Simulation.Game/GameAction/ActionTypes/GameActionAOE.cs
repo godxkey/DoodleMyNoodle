@@ -95,9 +95,9 @@ public class GameActionAOE : GameAction<GameActionAOE.Settings>
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        fix2 lastInstigPos = input.Accessor.GetComponent<FixTranslation>(input.Context.LastPhysicalInstigator);
+        fix2 lastInstigPos = input.Accessor.GetComponent<FixTranslation>(input.ActionInstigatorActor);
         fix2 aoeCenter = lastInstigPos + settings.InstigatorOffset;
-        ActorFilterInfo instigatorFilterInfo = CommonReads.GetActorFilterInfo(input.Accessor, input.Context.FirstPhysicalInstigator);
+        ActorFilterInfo instigatorFilterInfo = CommonReads.GetActorFilterInfo(input.Accessor, input.ActionInstigatorActor);
 
         NativeList<Entity> newTargets = new NativeList<Entity>(Allocator.Temp);
 
@@ -129,7 +129,7 @@ public class GameActionAOE : GameAction<GameActionAOE.Settings>
         {
             gameActionSystem.ActionRequestsManaged.Add(new GameActionRequestManaged()
             {
-                Instigator = input.Context.LastPhysicalInstigator,
+                Instigator = input.Context.ActionInstigator,
                 ActionEntity = action,
                 Targets = newTargets
             });

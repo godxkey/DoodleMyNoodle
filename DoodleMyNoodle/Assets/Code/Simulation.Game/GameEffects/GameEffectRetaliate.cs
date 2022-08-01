@@ -100,7 +100,7 @@ public class GameEffectRetaliate
 
                 var fireSettings = FireProjectileSettings.Default;
                 fireSettings.SpawnOffset = settings.SpawnOffset;
-                Entity projectile = CommonWrites.FireProjectile(input.Accessor, input.Context.InstigatorSet, settings.ProjectilePrefab, settings.ThrowVelocity, fireSettings);
+                Entity projectile = CommonWrites.FireProjectile(input.Accessor, input.ActionInstigator, settings.ProjectilePrefab, settings.ThrowVelocity, fireSettings);
 
                 input.Accessor.AddComponentData<ShieldDamage>(projectile, totalDamage);
             }
@@ -124,12 +124,12 @@ public class GameEffectRetaliate
 
         public override bool Execute(in ExecInputs input, ref ExecOutput output)
         {
-            fix damage = input.Accessor.GetComponent<ShieldDamage>(input.Context.LastPhysicalInstigator);
+            fix damage = input.Accessor.GetComponent<ShieldDamage>(input.ActionInstigatorActor);
 
             DamageRequestSettings damageRequest = new DamageRequestSettings()
             {
                 DamageAmount = damage,
-                InstigatorSet = input.Context.InstigatorSet,
+                Instigator = input.ActionInstigator,
                 IsAutoAttack = false,
             };
 

@@ -36,9 +36,9 @@ public class GameActionExplosion : GameAction<GameActionExplosion.Settings>
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        if (input.Accessor.TryGetComponent(input.Context.LastPhysicalInstigator, out FixTranslation translation))
+        if (input.Accessor.TryGetComponent(input.ActionInstigatorActor, out FixTranslation translation))
         {
-            CommonWrites.RequestExplosion(input.Accessor, input.Context.LastPhysicalInstigator, translation.Value, settings.Radius, settings.Damage, false);
+            CommonWrites.RequestExplosion(input.Accessor, input.ActionInstigator, translation.Value, settings.Radius, settings.Damage, false);
         }
 
         return true;

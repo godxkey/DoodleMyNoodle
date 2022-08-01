@@ -125,7 +125,7 @@ public class TextDataDrawer : PropertyDrawer
         EditorGUI.BeginProperty(position, label, property);
 
         var titlePos = new Rect(position.x, position.y, position.width, 16);
-        EditorGUI.LabelField(titlePos, new GUIContent("Text Data"));
+        EditorGUI.LabelField(titlePos, label);
 
         EditorGUI.indentLevel++;
 

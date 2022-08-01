@@ -71,7 +71,7 @@ public class SurveyAngryBirds : SurveyBaseController
             // by default origin entity is the character that triggered the survey
             if (SimWorld.TryGetComponent(context.Instigator, out FirstInstigator firstInstigator))
             {
-                _originEntity = firstInstigator.Value;
+                _originEntity = firstInstigator;
             }
         }
 

@@ -100,7 +100,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         else if (settings.AimBot)
         {
             // NB: This only supports players shooting at mobs for the moment. We could modify it so that mobs can aimbot shoot at players as well
-            fix2 instigatorPos = input.Accessor.GetComponent<FixTranslation>(input.Context.LastPhysicalInstigator);
+            fix2 instigatorPos = input.Accessor.GetComponent<FixTranslation>(input.ActionInstigatorActor);
             FixRange targetRange = new FixRange(instigatorPos.x, instigatorPos.x + settings.AimBotRangeMax);
 
             Entity closestEnemy = CommonReads.FindClosestEnemyInRange(input.Accessor, instigatorPos.x, targetRange, settings.AimBotPrioritizeFlying);
@@ -125,7 +125,7 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         };
 
         CommonWrites.FireProjectile(input.Accessor,
-                           input.Context.InstigatorSet,
+                           input.ActionInstigator,
                            settings.ProjectilePrefab,
                            shootVelocity,
                            fireSettings,
@@ -152,29 +152,6 @@ public class GameActionThrow : GameAction<GameActionThrow.Settings>
         return CommonReads.GetActorRadius(accessor, settings.ProjectilePrefab);
     }
     #endregion
-}
-
-public struct InstigatorSet
-{
-    /// <summary>
-    /// Can be a character or a projectile. Never null.
-    /// </summary>
-    public Entity FirstPhysicalInstigator;
-
-    /// <summary>
-    /// Can be a character or a projectile. Never null.
-    /// </summary>
-    public Entity LastPhysicalInstigator;
-
-    /// <summary>
-    /// Can be an item/spell.
-    /// </summary>
-    public Entity LastSpellInstigator;
-
-    /// <summary>
-    /// Can be a character, a projectile, an item or an effect.
-    /// </summary>
-    public Entity LastInstigator;
 }
 
 public partial class CommonReads
@@ -224,12 +201,12 @@ internal partial class CommonWrites
     /// <param name="throwVelocity">The velocity of the projectile.</param>
     public static Entity FireProjectile(
         ISimGameWorldReadWriteAccessor accessor,
-        InstigatorSet instigatorSet,
+        Entity instigator,
         Entity projectilePrefab,
         fix2 throwVelocity,
         FireProjectileSettings settings)
     {
-        return FireProjectileInternal(accessor, instigatorSet, projectilePrefab, throwVelocity, settings, 1, 0, default);
+        return FireProjectileInternal(accessor, instigator, projectilePrefab, throwVelocity, settings, 1, 0, default);
     }
 
     /// <summary>
@@ -242,7 +219,7 @@ internal partial class CommonWrites
     /// <param name="volleyAngle">The separation angle between each projectile thrown.</param>
     public static Entity FireProjectile(
         ISimGameWorldReadWriteAccessor accessor,
-        InstigatorSet instigatorSet,
+        Entity instigator,
         Entity projectilePrefab,
         fix2 fireVelocity,
         FireProjectileSettings settings,
@@ -250,12 +227,12 @@ internal partial class CommonWrites
         fix volleyAngle,
         NativeList<Entity> outSpawnedProjectiles = default)
     {
-        return FireProjectileInternal(accessor, instigatorSet, projectilePrefab, fireVelocity, settings, quantity, volleyAngle, outSpawnedProjectiles);
+        return FireProjectileInternal(accessor, instigator, projectilePrefab, fireVelocity, settings, quantity, volleyAngle, outSpawnedProjectiles);
     }
 
     private static Entity FireProjectileInternal(
         ISimGameWorldReadWriteAccessor accessor,
-        InstigatorSet instigatorSet,
+        Entity instigator,
         Entity projectilePrefab,
         fix2 throwVelocity,
         FireProjectileSettings settings,
@@ -273,21 +250,23 @@ internal partial class CommonWrites
             volleyAngle = 0;
         }
 
+        Entity instigatorBody = CommonReads.GetOwnerActor(accessor, instigator);
         fix throwSpeed = length(throwVelocity);
         fix throwAngle = throwSpeed < (fix)0.01 ? 0 : angle2d(throwVelocity);
         fix throwAngleMin = throwAngle - (volleyAngle / 2);
         fix throwAngleIncrement = quantity == 1 ? 0 : volleyAngle / (quantity - 1);
-        fix2 instigatorPos = accessor.GetComponent<FixTranslation>(instigatorSet.LastPhysicalInstigator);
+        fix2 instigatorPos = accessor.GetComponent<FixTranslation>(instigatorBody);
         fix2 instigatorVel = fix2.zero;
-        if (inheritInstigatorVelocity && accessor.TryGetComponent(instigatorSet.LastPhysicalInstigator, out PhysicsVelocity instigatorPhysicsVelocity))
+        if (inheritInstigatorVelocity && accessor.TryGetComponent(instigatorBody, out PhysicsVelocity instigatorPhysicsVelocity))
         {
             instigatorVel = instigatorPhysicsVelocity.Linear;
         }
 
-        fix spawnDistance = CommonReads.GetThrowSpawnDistance(accessor, projectilePrefab, instigatorSet.LastPhysicalInstigator, spawnExtraDistance);
+        fix spawnDistance = CommonReads.GetThrowSpawnDistance(accessor, projectilePrefab, instigatorBody, spawnExtraDistance);
         uint projectileGroupID = quantity > 1 ? accessor.MakeUniquePersistentId().Value : 0;
 
         Entity lastProjectileInstance = Entity.Null;
+        Entity firstInstigator = CommonReads.GetFirstInstigator(accessor, instigator);
         for (int i = 0; i < quantity; i++)
         {
             // _________________________________________ Spawn Projectile _________________________________________ //
@@ -332,8 +311,7 @@ internal partial class CommonWrites
             // _________________________________________ Set Projectile Data _________________________________________ //
             accessor.SetOrAddComponent(projectileInstance, new PhysicsVelocity(itemThrowVelocity + instigatorVel));
             accessor.SetOrAddComponent(projectileInstance, new FixTranslation(spawnPos));
-            accessor.SetOrAddComponent(projectileInstance, new FirstInstigator() { Value = instigatorSet.FirstPhysicalInstigator });
-            accessor.SetOrAddComponent(projectileInstance, new SpellInstigator() { Value = instigatorSet.LastSpellInstigator });
+            accessor.SetOrAddComponent(projectileInstance, new FirstInstigator() { Value = firstInstigator });
 
             if (quantity > 1)
             {

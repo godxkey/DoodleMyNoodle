@@ -52,7 +52,7 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        fix2 spawnPosition = input.Accessor.GetComponent<FixTranslation>(input.Context.LastPhysicalInstigator) + settings.InstigatorOffset;
+        fix2 spawnPosition = input.Accessor.GetComponent<FixTranslation>(input.ActionInstigatorActor) + settings.InstigatorOffset;
 
         if (input.Parameters != null && input.Parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPos))
         {
@@ -68,8 +68,7 @@ public class GameActionSpawn : GameAction<GameActionSpawn.Settings>
         Entity instance = input.Accessor.Instantiate(settings.Prefab);
 
         input.Accessor.SetOrAddComponent(instance, new FixTranslation(spawnPosition));
-        input.Accessor.SetOrAddComponent(instance, new FirstInstigator() { Value = input.Context.FirstPhysicalInstigator });
-        input.Accessor.SetOrAddComponent(instance, new SpellInstigator() { Value = input.Context.InstigatorSet.LastSpellInstigator });
+        input.Accessor.SetOrAddComponent(instance, new FirstInstigator() { Value = CommonReads.GetFirstInstigator(input.Accessor, input.ActionInstigator) });
 
         return true;
     }

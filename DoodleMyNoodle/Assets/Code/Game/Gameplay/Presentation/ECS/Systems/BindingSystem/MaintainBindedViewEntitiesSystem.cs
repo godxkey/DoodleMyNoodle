@@ -66,7 +66,7 @@ public partial class MaintainBindedViewEntitiesSystem : ViewSystemBase
         {
             // update cached sim queries since world got replaced
             // NB: No need to dispose of these queries because the world gets disposed ...
-            _updatedSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<SimAssetId>());
+            _updatedSimEntitiesQ = SimWorldAccessor.CreateEntityQuery(ComponentType.ReadOnly<SimAssetId>(), ComponentType.Exclude<Disabled>());
             _updatedSimEntitiesQ.SetChangedVersionFilter(ComponentType.ReadOnly<SimAssetId>());
 
             // Destroy all view
@@ -113,12 +113,14 @@ public partial class MaintainBindedViewEntitiesSystem : ViewSystemBase
     {
         // Destroy view entities binded with non-existant sim entities
         var ecb = _ecb.CreateCommandBuffer();
-        var simEntities = SimWorldAccessor.GetComponentDataFromEntity<SimAssetId>();
+        var simEntityAssetIds = SimWorldAccessor.GetComponentDataFromEntity<SimAssetId>();
+        var simEntitiyDisables = SimWorldAccessor.GetComponentDataFromEntity<Disabled>();
         Entities
-            .WithReadOnly(simEntities)
+            .WithReadOnly(simEntityAssetIds)
+            .WithReadOnly(simEntitiyDisables)
             .ForEach((Entity viewEntity, in BindedSimEntity simEntity) =>
             {
-                if (!simEntities.HasComponent(simEntity))
+                if (!simEntityAssetIds.HasComponent(simEntity) || simEntitiyDisables.HasComponent(simEntity))
                 {
                     ecb.DestroyEntity(viewEntity);
                 }

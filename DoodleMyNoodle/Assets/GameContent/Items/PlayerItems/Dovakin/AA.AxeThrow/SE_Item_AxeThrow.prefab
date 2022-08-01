@@ -66,18 +66,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ActionPrefab: {fileID: 0}
-  ApCost: 0
+  SpellPrefabs: []
   AvailableInShop: 1
   Tier: 0
   HasCharges: 0
   ChargeCount: 10
-  CooldownType: 2
-  CooldownDuration: 1
-  HideInInventory: 0
   Icon: {fileID: 21300000, guid: 9536487c4b8ae844d94e4e3d0b7379f7, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: "Lanc\xE9 de haches"
-  EffectDescription: Lance des haches, duh.
+  Name:
+    _string: "Lanc\xE9 de Haches"
+    _flags: 0
+    _locID: 0
+  Description:
+    _string: Lance plein de tite haches ben coupante
+    _flags: 0
+    _locID: 0
+  HideInInventory: 0
 --- !u!114 &-4532363482470906874
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -66,36 +66,38 @@ public class GameActionMagicAxe : GameAction<GameActionMagicAxe.Settings>
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        FireProjectileSettings fireSettings = new FireProjectileSettings()
-        {
-            InheritInstigatorVelocity = true,
-            SimulateSpawnFromInstigatorCenter = true,
-            SpawnOffset = settings.SpawnOffset,
+        Entity actionInstigator = input.Context.ActionInstigator;
 
-        };
-
-        if (!input.Accessor.HasComponent<BeserkerMagicProjectile>(input.Context.ActionInstigator) || 
-            (input.Accessor.HasComponent<BeserkerMagicProjectile>(input.Context.ActionInstigator) && input.Accessor.GetComponent<BeserkerMagicProjectile>(input.Context.ActionInstigator) == Entity.Null))
+        if (!input.Accessor.TryGetComponent<BeserkerMagicProjectile>(actionInstigator, out var projectile) || projectile == Entity.Null)
         {
+            FireProjectileSettings fireSettings = new FireProjectileSettings()
+            {
+                InheritInstigatorVelocity = true,
+                SimulateSpawnFromInstigatorCenter = true,
+                SpawnOffset = settings.SpawnOffset,
+            };
+
             Entity magicProjectile = CommonWrites.FireProjectile(input.Accessor,
-                                                             input.Context.InstigatorSet,
+                                                             input.ActionInstigator,
                                                              settings.MagicBulletPrefab,
                                                              settings.ShootVector,
                                                              fireSettings);
 
-            input.Accessor.SetOrAddComponent(input.Context.ActionInstigator, new BeserkerMagicProjectile() { Projectile = magicProjectile });
+            input.Accessor.SetOrAddComponent<BeserkerMagicProjectile>(actionInstigator, magicProjectile);
         }
         else
         {
-            BeserkerMagicProjectile magicProjectileRef = input.Accessor.GetComponent<BeserkerMagicProjectile>(input.Context.ActionInstigator);
+            Entity spinningAxeInstance = input.Accessor.Instantiate(settings.AxePrefab);
 
-            Entity instance = input.Accessor.Instantiate(settings.AxePrefab);
-            input.Accessor.SetOrAddComponent(instance, new FixTranslation(input.Accessor.GetComponent<FixTranslation>(magicProjectileRef.Projectile)));
+            // set first instigator on axe
+            input.Accessor.SetOrAddComponent<FirstInstigator>(spinningAxeInstance, CommonReads.GetFirstInstigator(input.Accessor, input.ActionInstigator));
+            
+            // set position
+            input.Accessor.SetComponent(spinningAxeInstance, input.Accessor.GetComponent<FixTranslation>(projectile));
 
-            var endSimECMB = input.Accessor.GetExistingSystem<EndSimulationEntityCommandBufferSystem>();
-            endSimECMB.CreateCommandBuffer().DestroyEntity(input.Accessor.GetComponent<BeserkerMagicProjectile>(input.Context.ActionInstigator));
-
-            input.Accessor.SetComponent(input.Context.ActionInstigator, new BeserkerMagicProjectile() { Projectile = Entity.Null });
+            // destroy projectile
+            CommonWrites.DisableAndScheduleForDestruction(input.Accessor, projectile);
+            input.Accessor.SetComponent<BeserkerMagicProjectile>(actionInstigator, Entity.Null);
         }
 
         return true;

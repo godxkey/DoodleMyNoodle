@@ -72,7 +72,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
     {
         foreach (GameActionUsedEventData gameActionEvent in PresentationEvents.GameActionEvents.SinceLastPresUpdate)
         {
-            if (gameActionEvent.GameActionContext.LastPhysicalInstigator == SimEntity && gameActionEvent.GameActionContext.Action != Entity.Null)
+            if (gameActionEvent.GameActionContext.ActionInstigatorActor == SimEntity && gameActionEvent.GameActionContext.Action != Entity.Null)
             {
                 // GAME ACTION AUTH & ANIMATION TRIGGER
                 SimWorld.TryGetComponent(gameActionEvent.GameActionContext.Action, out SimAssetId actionAssetId);
@@ -80,7 +80,7 @@ public class CharacterAnimationHandler : BindedPresentationEntityComponent
 
                 if (actionPrefab == null)
                 {
-                    Log.Warning($"No action prefab found for sim asset id {actionAssetId.Value}. First instigator: {gameActionEvent.GameActionContext.FirstPhysicalInstigator}");
+                    Log.Warning($"No action prefab found for sim asset id {actionAssetId.Value}. Instigator: {gameActionEvent.GameActionContext.ActionInstigatorActor}");
                 }
 
                 if (actionPrefab != null && actionPrefab.TryGetComponent(out GameActionAuth gameActionAuth) && gameActionAuth.Animation != null)

@@ -21,63 +21,46 @@ public class ItemAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefer
         Tier5,
     }
 
-    // SIMULATION
-
-    // Game Action
-    public GameActionAuth ActionPrefab;
-
-    public int ApCost = 1;
+    [Header("Simulation")]
+    public List<SpellAuth> SpellPrefabs = new List<SpellAuth>();
     public bool AvailableInShop = true;
     public ItemTier Tier = ItemTier.Tier1;
-
     public bool HasCharges = true;
+    [ShowIf(nameof(HasCharges))]
     public int ChargeCount = 10;
 
-    public enum CooldownMode
-    {
-        NoCooldown,
-        Seconds,
-    }
-
-    public CooldownMode CooldownType = CooldownMode.NoCooldown;
-    public float CooldownDuration = 1;
-
+    [Header("Presentation")]
+    public Sprite Icon;
+    public Color IconTint = Color.white;
+    public TextData Name;
+    public TextData Description;
     public bool HideInInventory = false;
-
-    public bool HasCooldown => CooldownType != CooldownMode.NoCooldown;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData<ItemAction>(entity, ActionPrefab != null ? conversionSystem.GetPrimaryEntity(ActionPrefab.gameObject) : default);
-
-        if (CooldownType == CooldownMode.Seconds)
+        var spellBuffer = dstManager.AddBuffer<ItemSpell>(entity);
+        foreach (var spell in SpellPrefabs)
         {
-            dstManager.AddComponentData(entity, new ItemTimeCooldownData() { Value = (fix)CooldownDuration });
+            if (spell != null)
+                spellBuffer.Add(conversionSystem.GetPrimaryEntity(spell));
         }
-
-        dstManager.AddComponentData(entity, new ItemSettingAPCost() { Value = ApCost });
         dstManager.AddComponentData(entity, new StackableFlag() { Value = false });
         if (HasCharges)
         {
             dstManager.AddComponentData(entity, new ItemCharges() { Value = ChargeCount });
-            dstManager.AddComponentData(entity, new ItemStatingCharges() { Value = ChargeCount });
+            dstManager.AddComponentData(entity, new ItemStartingCharges() { Value = ChargeCount });
         }
-        dstManager.AddComponent<FirstInstigator>(entity); // a enlever ?
-        dstManager.AddComponentData(entity, new SpellInstigator() { Value = entity });
+        dstManager.AddComponent<Owner>(entity);
         dstManager.AddComponent<ItemTag>(entity);
+        dstManager.AddComponent<ItemCurrentSpellIndex>(entity);
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
-        if (ActionPrefab != null)
-            referencedPrefabs.Add(ActionPrefab.gameObject);
+        foreach (var spell in SpellPrefabs)
+        {
+            if (spell != null)
+                referencedPrefabs.Add(spell.gameObject);
+        }
     }
-
-    // PRESENTATION
-
-    // Description
-    public Sprite Icon;
-    public Color IconTint = Color.white;
-    public string Name;
-    public string EffectDescription;
 }

@@ -37,7 +37,7 @@ public class GameActionRadialImpulse : GameAction<GameActionRadialImpulse.Settin
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        if (input.Accessor.TryGetComponent(input.Context.LastPhysicalInstigator, out FixTranslation fixTranslation))
+        if (input.Accessor.TryGetComponent(input.ActionInstigatorActor, out FixTranslation fixTranslation))
         {
             fix2 radialImpulsePosition = fixTranslation.Value;
             for (int i = 0; i < input.Context.Targets.Length; i++)

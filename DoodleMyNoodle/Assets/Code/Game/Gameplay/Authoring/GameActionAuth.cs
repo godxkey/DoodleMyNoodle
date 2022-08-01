@@ -2,7 +2,6 @@
 using UnityEngine;
 using System.Linq;
 using System;
-using CCC.InspectorDisplay;
 using System.Collections.Generic;
 using UnityEngineX.InspectorDisplay;
 using UnityEngineX;
@@ -18,11 +17,8 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     // Game Action
     public string Value;
 
-    [FormerlySerializedAs("ExecuteOnSelf")]
     public bool UseInstigatorAsTarget = false;
-    public bool ExecuteOnFirstInstigator = false;
-    public bool ExecuteOnLastInstigator = false;
-    public GameActionSettingUseInstigatorAsTarget.EType InstigatorAsTargetType = GameActionSettingUseInstigatorAsTarget.EType.FirstPhysicalInstigator;
+    public GameActionSettingUseInstigatorAsTarget.EType InstigatorAsTargetType = GameActionSettingUseInstigatorAsTarget.EType.FirstInstigatorActor;
 
     [SerializeReference]
     [AlwaysExpand]
@@ -85,15 +81,11 @@ public class GameActionAuth : MonoBehaviour, IConvertGameObjectToEntity, IDeclar
     // PRESENTATION
 
     // Description
-    public AudioPlayable SfxOnPrepareUse;
     public AudioPlayable SfxOnUse;
     public AnimationDefinition Animation;
 
     public VFXDefinition InstigatorVFX;
     public VFXDefinition TargetsVFX;
-
-    // Surveys
-    public List<SurveyBaseController> Surveys = new List<SurveyBaseController>();
 
     //public SurveyBaseController FindCustomSurveyPrefabForParameters(params GameAction.ParameterDescription[] parameters)
     //{

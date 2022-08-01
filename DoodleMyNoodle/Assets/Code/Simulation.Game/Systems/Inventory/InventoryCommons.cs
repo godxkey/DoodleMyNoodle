@@ -311,8 +311,8 @@ internal partial class CommonWrites
                 // Instantiate item copy
                 var itemCopy = accessor.Instantiate(data.Item);
                 UpdateBuffersAfterStructuraleChange(ref data);
-
-                accessor.SetComponent(itemCopy, new FirstInstigator() { Value = data.Destination.Value });
+                
+                accessor.SetComponent(itemCopy, new Owner() { Value = data.Destination.Value });
 
                 destinationBuffer.Add(new InventoryItemReference() { ItemEntity = itemCopy, Stacks = 0 });
                 destinationIndex = destinationBuffer.Length - 1;

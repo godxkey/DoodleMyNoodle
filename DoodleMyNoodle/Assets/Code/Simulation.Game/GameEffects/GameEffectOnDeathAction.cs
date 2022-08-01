@@ -82,8 +82,11 @@ public class GameEffectOnDeathAction
                     CommonWrites.RequestExecuteGameAction(arg.Accessor, arg.EffectEntity, settings.OnDeathAction);
                     break;
                 case ETargetType.Killer:
-                    CommonWrites.RequestExecuteGameAction(arg.Accessor, arg.EffectEntity, settings.OnDeathAction, arg.RequestData.InstigatorSet.FirstPhysicalInstigator);
+                {
+                    Entity firstInstigatorActor = CommonReads.GetFirstInstigatorActor(arg.Accessor, arg.RequestData.Instigator);
+                    CommonWrites.RequestExecuteGameAction(arg.Accessor, arg.EffectEntity, settings.OnDeathAction, firstInstigatorActor);
                     break;
+                }
                 case ETargetType.Victim:
                     CommonWrites.RequestExecuteGameAction(arg.Accessor, arg.EffectEntity, settings.OnDeathAction, arg.RequestData.Target);
                     break;

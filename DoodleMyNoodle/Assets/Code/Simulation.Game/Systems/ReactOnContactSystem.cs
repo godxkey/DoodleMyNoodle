@@ -59,6 +59,7 @@ public partial class ExtractCollisionReactionsSystem : SimGameSystemBase
             Teams = GetComponentDataFromEntity<Team>(isReadOnly: true),
             FirstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true),
             Colliders = GetComponentDataFromEntity<PhysicsColliderBlob>(isReadOnly: true),
+            Owners = GetComponentDataFromEntity<Owner>(isReadOnly: true),
             MutedActions = GetSingletonBuffer<SingletonElementMutedContactAction>(),
             Time = Time.ElapsedTime
         };
@@ -102,6 +103,7 @@ public partial class ExtractCollisionReactionsSystem : SimGameSystemBase
         [ReadOnly] public ComponentDataFromEntity<Team> Teams;
         [ReadOnly] public ComponentDataFromEntity<FirstInstigator> FirstInstigators;
         [ReadOnly] public ComponentDataFromEntity<PhysicsColliderBlob> Colliders;
+        [ReadOnly] public ComponentDataFromEntity<Owner> Owners;
         [ReadOnly] public PhysicsWorld World;
         [ReadOnly] public fix Time;
 
@@ -131,8 +133,8 @@ public partial class ExtractCollisionReactionsSystem : SimGameSystemBase
             if (ActionOnContacts.HasComponent(entityA))
             {
                 DynamicBuffer<ActionOnColliderContact> actions = ActionOnContacts[entityA];
-                ActorFilterInfo entityAInfo = Helpers.GetActorFilterInfo(entityA, Teams, FirstInstigators, Colliders);
-                ActorFilterInfo entityBInfo = Helpers.GetActorFilterInfo(entityB, Teams, FirstInstigators, Colliders);
+                ActorFilterInfo entityAInfo = Helpers.GetActorFilterInfo(entityA, Teams, FirstInstigators, Colliders, Owners);
+                ActorFilterInfo entityBInfo = Helpers.GetActorFilterInfo(entityB, Teams, FirstInstigators, Colliders, Owners);
 
                 for (int i = 0; i < actions.Length; i++)
                 {
@@ -190,6 +192,7 @@ public partial class ExtractOverlapReactionsSystem : SimGameSystemBase
         var teams = GetComponentDataFromEntity<Team>(isReadOnly: true);
         var firstInstigators = GetComponentDataFromEntity<FirstInstigator>(isReadOnly: true);
         var colliders = GetComponentDataFromEntity<PhysicsColliderBlob>(isReadOnly: true);
+        var owners = GetComponentDataFromEntity<Owner>(isReadOnly: true);
         var mutedActions = GetSingletonBuffer<SingletonElementMutedContactAction>();
         var time = Time.ElapsedTime;
 
@@ -199,10 +202,11 @@ public partial class ExtractOverlapReactionsSystem : SimGameSystemBase
             .WithReadOnly(teams)
             .WithReadOnly(firstInstigators)
             .WithReadOnly(colliders)
+            .WithReadOnly(owners)
             .ForEach((Entity entity, DynamicBuffer<ActionOnOverlap> actionsOnOverlap, in FixTranslation position) =>
         {
             bool ignoreLocalEntity = physicsBodiesMap.Lookup.TryGetValue(entity, out int physicsBody);
-            ActorFilterInfo entityAInfo = Helpers.GetActorFilterInfo(entity, teams, firstInstigators, colliders);
+            ActorFilterInfo entityAInfo = Helpers.GetActorFilterInfo(entity, teams, firstInstigators, colliders, owners);
 
             for (int i = 0; i < actionsOnOverlap.Length; i++)
             {
@@ -225,7 +229,7 @@ public partial class ExtractOverlapReactionsSystem : SimGameSystemBase
                         if (mutedActions.IsMuted(entity, hit.Entity, actionOnContact.Data.Id))
                             continue;
 
-                        ActorFilterInfo entityBInfo = Helpers.GetActorFilterInfo(hit.Entity, teams, firstInstigators, colliders);
+                        ActorFilterInfo entityBInfo = Helpers.GetActorFilterInfo(hit.Entity, teams, firstInstigators, colliders, owners);
 
                         if (Helpers.ActorFilterMatches(entityAInfo, entityBInfo, actionOnContact.Data.ActionFilter))
                         {

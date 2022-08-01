@@ -19,31 +19,40 @@ public partial class CommonReads
         return GetActionContext(accessor, actionInstigator, actionEntity, targets);
     }
 
+    public static Entity GetOwnerActor(ISimWorldReadAccessor accessor, Entity actorItemOrEffect)
+    {
+        if (accessor.TryGetComponent(actorItemOrEffect, out Owner owner))
+        {
+            return owner.Value;
+        }
+        else
+        {
+            return actorItemOrEffect;
+        }
+    }
+
+    public static Entity GetFirstInstigatorActor(ISimWorldReadAccessor accessor, Entity actorItemOrEffect)
+        => GetOwnerActor(accessor, GetFirstInstigator(accessor, actorItemOrEffect));
+
+    public static Entity GetFirstInstigator(ISimWorldReadAccessor accessor, Entity actorItemOrEffect)
+    {
+        if (accessor.TryGetComponent(actorItemOrEffect, out FirstInstigator firstInstigator))
+        {
+            return firstInstigator.Value;
+        }
+        else if(accessor.TryGetComponent(actorItemOrEffect, out Owner owner) && accessor.TryGetComponent(owner, out FirstInstigator firstInstigator2))
+        {
+            return firstInstigator2.Value;
+        }
+        else
+        {
+            return actorItemOrEffect;
+        }
+    }
+
     public static GameAction.ExecutionContext GetActionContext(ISimWorldReadAccessor accessor, Entity actionInstigator, Entity actionEntity, NativeList<Entity> targets)
     {
-        Entity firstPhysicalInstigator = actionInstigator;
-        if (accessor.TryGetComponent(actionInstigator, out FirstInstigator firstInstigatorComponent))
-        {
-            firstPhysicalInstigator = firstInstigatorComponent.Value;
-        }
-
-        Entity lastPhysicalInstigator = firstPhysicalInstigator;
-        if (lastPhysicalInstigator != actionInstigator && accessor.HasComponent<FixTranslation>(actionInstigator))
-        {
-            lastPhysicalInstigator = actionInstigator;
-        }
-
-        Entity spellInstigator = actionInstigator;
-        // instigator has saved the spell from previous iteration
-        if (accessor.TryGetComponent(actionInstigator, out SpellInstigator spellInstigatorComponent))
-        {
-            spellInstigator = spellInstigatorComponent.Value;
-        }
-        // probably the spell itself
-        else if(accessor.TryGetComponent(actionEntity, out SpellInstigator spellFirstInstigatorComponent))
-        {
-            spellInstigator = spellFirstInstigatorComponent.Value;
-        }
+        Entity instigatorActor = GetOwnerActor(accessor, actionInstigator);
 
         // adjust target if action specifies so
         if (accessor.TryGetComponent(actionEntity, out GameActionSettingUseInstigatorAsTarget gameActionSettingOnSelf))
@@ -56,17 +65,17 @@ public partial class CommonReads
 
             switch (gameActionSettingOnSelf.Type)
             {
-                case GameActionSettingUseInstigatorAsTarget.EType.FirstPhysicalInstigator:
-                    targets[0] = firstPhysicalInstigator;
+                case GameActionSettingUseInstigatorAsTarget.EType.FirstInstigatorActor:
+                    targets[0] = GetFirstInstigatorActor(accessor, actionInstigator);
                     break;
-                case GameActionSettingUseInstigatorAsTarget.EType.LastPhysicalInstigator:
-                    targets[0] = lastPhysicalInstigator;
+                case GameActionSettingUseInstigatorAsTarget.EType.InstigatorActor:
+                    targets[0] = instigatorActor;
                     break;
-                case GameActionSettingUseInstigatorAsTarget.EType.ActionInstigator:
+                case GameActionSettingUseInstigatorAsTarget.EType.Instigator:
                     targets[0] = actionInstigator;
                     break;
-                case GameActionSettingUseInstigatorAsTarget.EType.LastSpellInstigator:
-                    targets[0] = spellInstigator;
+                case GameActionSettingUseInstigatorAsTarget.EType.FirstInstigator:
+                    targets[0] = GetFirstInstigator(accessor, actionInstigator);
                     break;
             }
         }
@@ -74,13 +83,8 @@ public partial class CommonReads
         GameAction.ExecutionContext useContext = new GameAction.ExecutionContext()
         {
             Action = actionEntity,
-            InstigatorSet = new InstigatorSet()
-            {
-                FirstPhysicalInstigator = firstPhysicalInstigator,
-                LastPhysicalInstigator = lastPhysicalInstigator,
-                LastSpellInstigator = spellInstigator, 
-                LastInstigator = actionInstigator,
-            },
+            ActionInstigator = actionInstigator,
+            ActionInstigatorActor = instigatorActor,
             Targets = targets,
         };
 
@@ -119,6 +123,7 @@ internal partial class CommonWrites
 public struct GameActionUsedEventData
 {
     public GameAction.ExecutionContext GameActionContext;
+    public Entity InstigatorActor;
     public GameAction.ResultData GameActionResult;
 }
 
@@ -213,23 +218,15 @@ public abstract class GameAction
         /// </summary>
         public Entity Action;
 
-        public InstigatorSet InstigatorSet;
+        /// <summary>
+        /// Item, effect or actor causing this action to be executed
+        /// </summary>
+        public Entity ActionInstigator;
 
         /// <summary>
-        /// Very first instigator in chain of action with a physical location component (FixTranslation). This is generally the pawn that used the first action. Should never be null.
-        /// (e.g. A pawn throws a poison arrow, and the arrow poisons a target. The arrow is the action instigator, but the pawn is the 'first instigator')
+        /// Actor causing or owner of the item/effect causing this action to be executed
         /// </summary>
-        public Entity FirstPhysicalInstigator => InstigatorSet.FirstPhysicalInstigator;
-
-        /// <summary>
-        /// The last actor with a physical location component (FixTranslation). Should never be null.
-        /// </summary>
-        public Entity LastPhysicalInstigator => InstigatorSet.LastPhysicalInstigator;
-
-        /// <summary>
-        /// The actor triggering the action, should never be null. This could be a pawn, an item, a projectile, an effect, etc.
-        /// </summary>
-        public Entity ActionInstigator => InstigatorSet.LastInstigator;
+        public Entity ActionInstigatorActor;
 
         /// <summary>
         /// All the target for the action execution, could be empty or uncreated
@@ -267,6 +264,23 @@ public abstract class GameAction
         public readonly ExecutionContext Context;
         public readonly UseParameters Parameters;
 
+        /// <summary>
+        /// Prefab that contains the action and its informations
+        /// </summary>
+        public Entity Action => Context.Action;
+        /// <summary>
+        /// Item, effect or actor causing this action to be executed
+        /// </summary>
+        public Entity ActionInstigator => Context.ActionInstigator;
+        /// <summary>
+        /// Actor causing or owner of the item/effect causing this action to be executed
+        /// </summary>
+        public Entity ActionInstigatorActor => Context.ActionInstigatorActor;
+        /// <summary>
+        /// All the target for the action execution, could be empty or uncreated
+        /// </summary>
+        public NativeList<Entity> Targets => Context.Targets;
+
         public ExecInputs(ISimGameWorldReadWriteAccessor accessor, ExecutionContext context, UseParameters parameters)
         {
             Accessor = accessor;
@@ -286,7 +300,7 @@ public abstract class GameAction
     [System.Diagnostics.Conditional("UNITY_X_LOG_INFO")]
     protected void LogActionInfo(ExecutionContext context, string message)
     {
-        Log.Info(LogChannel, $"{message} - {GetType().Name} - context(actionEntity: {context.ActionInstigator}, instigator: {context.FirstPhysicalInstigator})");
+        Log.Info(LogChannel, $"{message} - {GetType().Name} - context(actionEntity: {context.Action}, instigator: {context.ActionInstigator})");
     }
 }
 

@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -65,14 +66,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionPrefab: {fileID: -4801357984810749253, guid: 1af7e6349013b3d4b85ef5314f8dd799,
     type: 3}
-  ApCost: 8
+  SpellPrefabs:
+  - {fileID: 6207839701936391537, guid: 1af7e6349013b3d4b85ef5314f8dd799, type: 3}
+  AvailableInShop: 1
+  Tier: 0
   HasCharges: 1
   ChargeCount: 5
-  CooldownType: 1
-  CooldownDuration: 0
-  HideInInventory: 0
   Icon: {fileID: 21300000, guid: 541197b18e76b424996d060d64a689d6, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: Cri de Guerre
-  EffectDescription: "Augmente la vitesse d'attaque de toi et ton \xE9quipe de 150%
-    pendant 5s"
+  Name:
+    _string: 
+    _flags: 0
+    _locID: 0
+  Description:
+    _string: 
+    _flags: 0
+    _locID: 0
+  HideInInventory: 0

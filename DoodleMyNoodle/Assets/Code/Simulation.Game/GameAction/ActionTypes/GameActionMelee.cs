@@ -72,7 +72,7 @@ public class GameActionMelee : GameAction<GameActionMelee.Settings>
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        fix2 instigatorPos = input.Accessor.GetComponent<FixTranslation>(input.Context.LastPhysicalInstigator);
+        fix2 instigatorPos = input.Accessor.GetComponent<FixTranslation>(input.ActionInstigatorActor);
 
         fix2 position;
         if (input.Parameters != null && input.Parameters.TryGetParameter(0, out GameActionParameterPosition.Data paramPosition))
@@ -90,9 +90,9 @@ public class GameActionMelee : GameAction<GameActionMelee.Settings>
         // find all targets hit
         NativeList<Entity> hitTargets = new NativeList<Entity>(Allocator.Temp);
 
-        var instigatorFilterInfo = CommonReads.GetActorFilterInfo(input.Accessor, input.Context.ActionInstigator);
+        var instigatorFilterInfo = CommonReads.GetActorFilterInfo(input.Accessor, input.ActionInstigatorActor);
 
-        var rayHits = CommonReads.Physics.CastRay(input.Accessor, instigatorPos, attackPosition, ignoreEntity: input.Context.FirstPhysicalInstigator);
+        var rayHits = CommonReads.Physics.CastRay(input.Accessor, instigatorPos, attackPosition, ignoreEntity: input.ActionInstigatorActor);
         for (int i = 0; i < rayHits.Length; i++)
         {
             if (hitTargets.Length >= settings.MaxTargetHit)
@@ -125,7 +125,7 @@ public class GameActionMelee : GameAction<GameActionMelee.Settings>
         // Apply On Hit effect
         if (settings.OnHitActionEntity != Entity.Null && hitTargets.Length > 0)
         {
-            CommonWrites.RequestExecuteGameAction(input.Accessor, input.Context.LastPhysicalInstigator, settings.OnHitActionEntity, hitTargets, input.Parameters);
+            CommonWrites.RequestExecuteGameAction(input.Accessor, input.ActionInstigatorActor, settings.OnHitActionEntity, hitTargets, input.Parameters);
         }
 
         // Export action data used in event (animations use it)

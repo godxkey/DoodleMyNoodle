@@ -66,15 +66,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionPrefab: {fileID: -4801357984810749253, guid: 0e8fb02e70f902c47923da1b3bf58629,
     type: 3}
-  ApCost: 5
+  SpellPrefabs:
+  - {fileID: -8891067546461005409, guid: 0e8fb02e70f902c47923da1b3bf58629, type: 3}
   AvailableInShop: 1
   Tier: 0
   HasCharges: 1
   ChargeCount: 10
-  CooldownType: 1
-  CooldownDuration: 0.5
-  HideInInventory: 0
   Icon: {fileID: 21300000, guid: cbc6f4206d80121428019ce7cc2adc6e, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: Grosse Hache
-  EffectDescription: Lance une grosse hache qui rebondit
+  Name:
+    _string: 
+    _flags: 0
+    _locID: 0
+  Description:
+    _string: 
+    _flags: 0
+    _locID: 0
+  HideInInventory: 0

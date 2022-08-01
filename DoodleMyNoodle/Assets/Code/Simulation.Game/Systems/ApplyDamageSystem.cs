@@ -25,7 +25,7 @@ public struct HealthDeltaEventData
     /// Vector from the victim center to the instigation point
     /// </summary>
     public fix2 ImpactVector;
-    public InstigatorSet InstigatorSet;
+    public Entity FirstInstigatorActor;
     /// <summary>
     /// Value will be negative when the entity is damaged
     /// </summary>
@@ -51,7 +51,7 @@ public struct SystemRequestHealthChange : ISingletonBufferElementData
 {
     public fix Amount;
     public Entity Target;
-    public InstigatorSet InstigatorSet;
+    public Entity Instigator;
     public Entity ActionOnHealthChanged;
     public Entity ActionOnExtremeReached;
     public uint EffectGroupID;
@@ -63,7 +63,7 @@ public struct SystemRequestHealthChange : ISingletonBufferElementData
 public struct DamageRequestSettings
 {
     public fix DamageAmount;
-    public InstigatorSet InstigatorSet;
+    public Entity Instigator;
     public Entity ActionOnHealthChanged;
     public Entity ActionOnExtremeReached;
     public uint EffectGroupID;
@@ -74,7 +74,7 @@ public struct DamageRequestSettings
         return new HealRequestSettings()
         {
             HealAmount = -settings.DamageAmount,
-            InstigatorSet = settings.InstigatorSet,
+            Instigator = settings.Instigator,
             ActionOnHealthChanged = settings.ActionOnHealthChanged,
             ActionOnExtremeReached = settings.ActionOnExtremeReached,
             EffectGroupID = settings.EffectGroupID,
@@ -86,7 +86,7 @@ public struct DamageRequestSettings
         return new DamageRequestSettings()
         {
             DamageAmount = -settings.HealAmount,
-            InstigatorSet = settings.InstigatorSet,
+            Instigator = settings.Instigator,
             ActionOnHealthChanged = settings.ActionOnHealthChanged,
             ActionOnExtremeReached = settings.ActionOnExtremeReached,
             EffectGroupID = settings.EffectGroupID,
@@ -98,7 +98,7 @@ public struct DamageRequestSettings
 public struct HealRequestSettings
 {
     public fix HealAmount;
-    public InstigatorSet InstigatorSet;
+    public Entity Instigator;
     public Entity ActionOnHealthChanged;
     public Entity ActionOnExtremeReached;
     public uint EffectGroupID;
@@ -182,8 +182,8 @@ public partial class ApplyDamageSystem : SimGameSystemBase
         NativeList<(DamageDealtProcessor dmgProcessor, Entity effectEntity)> dmgDealtProcessors = new NativeList<(DamageDealtProcessor, Entity)>(Allocator.Temp);
 
         Entity target = request.Target;
-        Entity lastPhysicalInstigator = request.InstigatorSet.LastPhysicalInstigator;
-        Entity firstPhyisicalInstigator = request.InstigatorSet.FirstPhysicalInstigator;
+        Entity lastPhysicalInstigator = CommonReads.GetOwnerActor(Accessor, request.Instigator);
+        Entity firstPhyisicalInstigator = CommonReads.GetFirstInstigatorActor(Accessor, request.Instigator);
         fix amount = request.Amount;
         uint effectGroupID = request.EffectGroupID;
         Entity actionOnHealthChanged = request.ActionOnHealthChanged;
@@ -414,11 +414,7 @@ public partial class ApplyDamageSystem : SimGameSystemBase
                 OriginalVictim = request.Target,
                 VictimPosition = targetPosition.Value,
                 ImpactVector = request.Target2InstigationVector,
-                InstigatorSet = new InstigatorSet()
-                {
-                    FirstPhysicalInstigator = firstPhyisicalInstigator,
-                    LastPhysicalInstigator = lastPhysicalInstigator,
-                },
+                FirstInstigatorActor = firstPhyisicalInstigator,
                 TotalUncappedDelta = totalAmountUncapped,
                 HPDelta = hpDelta,
                 ShieldDelta = shieldDelta,
@@ -480,7 +476,7 @@ internal static partial class CommonWrites
             var request = new SystemRequestHealthChange()
             {
                 IsAutoAttack = args.IsAutoAttack,
-                InstigatorSet = args.InstigatorSet,
+                Instigator = args.Instigator,
                 Target2InstigationVector = (fix2)(-hits[i].Direction),
                 Amount = -args.DamageAmount,
                 Target = hits[i].Entity,
@@ -500,10 +496,12 @@ internal static partial class CommonWrites
     {
         var sys = accessor.GetExistingSystem<ApplyDamageSystem>();
 
+        Entity instigatorBody = CommonReads.GetOwnerActor(accessor, args.Instigator);
+
         for (int i = 0; i < targets.Length; i++)
         {
             fix2 target2Instigator = default;
-            if (accessor.TryGetComponent(args.InstigatorSet.LastPhysicalInstigator, out FixTranslation instigatorPos)
+            if (accessor.TryGetComponent(instigatorBody, out FixTranslation instigatorPos)
                 && accessor.TryGetComponent(targets[i], out FixTranslation targetPos))
             {
                 target2Instigator = instigatorPos.Value - targetPos.Value;
@@ -512,7 +510,7 @@ internal static partial class CommonWrites
             var request = new SystemRequestHealthChange()
             {
                 IsAutoAttack = args.IsAutoAttack,
-                InstigatorSet = args.InstigatorSet,
+                Instigator = args.Instigator,
                 Target2InstigationVector = target2Instigator,
                 Amount = -args.DamageAmount,
                 Target = targets[i],
@@ -530,8 +528,10 @@ internal static partial class CommonWrites
         DamageRequestSettings args,
         Entity target)
     {
+        Entity instigatorBody = CommonReads.GetOwnerActor(accessor, args.Instigator);
+
         fix2 target2Instigator = default;
-        if (accessor.TryGetComponent(args.InstigatorSet.LastPhysicalInstigator, out FixTranslation instigatorPos)
+        if (accessor.TryGetComponent(instigatorBody, out FixTranslation instigatorPos)
             && accessor.TryGetComponent(target, out FixTranslation targetPos))
         {
             target2Instigator = instigatorPos.Value - targetPos.Value;
@@ -540,7 +540,7 @@ internal static partial class CommonWrites
         var request = new SystemRequestHealthChange()
         {
             IsAutoAttack = args.IsAutoAttack,
-            InstigatorSet = args.InstigatorSet,
+            Instigator = args.Instigator,
             Target2InstigationVector = target2Instigator,
             Amount = -args.DamageAmount,
             Target = target,

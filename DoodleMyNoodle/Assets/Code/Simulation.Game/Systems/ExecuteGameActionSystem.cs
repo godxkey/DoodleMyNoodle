@@ -130,12 +130,6 @@ public partial class ExecuteGameActionSystem : SimGameSystemBase
             ResultData = new List<GameAction.ResultDataElement>()
         };
 
-        // forward Spell Instigator
-        if (EntityManager.TryGetComponent(actionInstigator, out SpellInstigator spellInstigator))
-        {
-            EntityManager.AddComponentData(actionEntity, new SpellInstigator() { Value = spellInstigator.Value });
-        }
-
 #if SAFETY
         try
         {
@@ -190,6 +184,7 @@ public partial class ExecuteGameActionSystem : SimGameSystemBase
 
         PresentationEvents.GameActionEvents.Push(new GameActionUsedEventData()
         {
+            InstigatorActor = input.ActionInstigatorActor,
             GameActionContext = persistentContext,
             GameActionResult = resultData
         });

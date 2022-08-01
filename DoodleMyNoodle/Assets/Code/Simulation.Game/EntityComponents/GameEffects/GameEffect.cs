@@ -3,18 +3,14 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
+public struct GameEffectTag : IComponentData { }
+
 public struct GameEffectRemainingDuration : IComponentData
 {
     public fix Value;
 
     public static implicit operator fix(GameEffectRemainingDuration val) => val.Value;
     public static implicit operator GameEffectRemainingDuration(fix val) => new GameEffectRemainingDuration() { Value = val };
-}
-
-public struct GameEffectInfo : IComponentData
-{
-    public Entity Owner;
-    public InstigatorSet Instigator;
 }
 
 public struct GameEffectStartBufferElement : IBufferElementData

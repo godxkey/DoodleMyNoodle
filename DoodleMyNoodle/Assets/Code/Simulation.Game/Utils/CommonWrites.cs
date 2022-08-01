@@ -5,8 +5,9 @@ using Unity.Entities;
 
 internal static partial class CommonWrites
 {
-    public static void DestroyEndOfTick(ISimGameWorldReadWriteAccessor accessor, Entity entity)
+    public static void DisableAndScheduleForDestruction(ISimGameWorldReadWriteAccessor accessor, Entity entity)
     {
-        accessor.GetExistingSystem<EndSimulationEntityCommandBufferSystem>().CreateCommandBuffer().DestroyEntity(entity);
+        accessor.AddComponents(entity, new ComponentTypes(typeof(Disabled), typeof(ScheduledDestroyTimestamp)));
+        accessor.SetComponent<ScheduledDestroyTimestamp>(entity, accessor.Time.ElapsedTime + SimulationGameConstants.DisabledEntityDestroyDelay);
     }
 }

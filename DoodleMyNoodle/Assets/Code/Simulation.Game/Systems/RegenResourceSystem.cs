@@ -33,16 +33,5 @@ public partial class RegenResourceSystem : SimGameSystemBase
                     shield.Value = min(maxShield, shield.Value + (rechargeRate * deltaTime));
                 }
             }).Schedule();
-
-        Entities
-            .WithNone<DeadTag>()
-            .ForEach((ref ActionPoints ap, in ActionPointsMax maxAP, in ActionPointsRechargeCooldown cooldown, in ActionPointsRechargeRate rechargeRate) =>
-            {
-                fix elapsedTimeSinceLastHit = time - cooldown.LastTime;
-                if (elapsedTimeSinceLastHit > cooldown.Value && rechargeRate.Value > 0)
-                {
-                    ap.Value = min(maxAP, ap.Value + (rechargeRate * deltaTime));
-                }
-            }).Schedule();
     }
 }

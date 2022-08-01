@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -65,13 +66,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionPrefab: {fileID: -4801357984810749253, guid: 45b6aeded1670fb4aadebfe147cafa76,
     type: 3}
-  ApCost: 3
+  SpellPrefabs:
+  - {fileID: 4397255591454157983, guid: 45b6aeded1670fb4aadebfe147cafa76, type: 3}
+  AvailableInShop: 1
+  Tier: 0
   HasCharges: 1
   ChargeCount: 4
-  CooldownType: 1
-  CooldownDuration: 12
-  HideInInventory: 0
   Icon: {fileID: 21300000, guid: 39cb0a8145a6cb242b665cc5ca767b33, type: 3}
   IconTint: {r: 1, g: 1, b: 1, a: 1}
-  Name: Bouclier
-  EffectDescription: "Donne une protection qui am\xE9liore les d\xE9gats"
+  Name:
+    _string: 
+    _flags: 0
+    _locID: 0
+  Description:
+    _string: 
+    _flags: 0
+    _locID: 0
+  HideInInventory: 0

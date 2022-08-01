@@ -15,7 +15,7 @@ public struct SingletonEventElementExplosion : ISingletonBufferElementData
 
 public struct SystemRequestExplosion : ISingletonBufferElementData
 {
-    public Entity LastInstigator;
+    public Entity Instigator;
     public fix2 Position;
     public fix Radius;
     public fix Damage;
@@ -70,7 +70,7 @@ public partial class ApplyExplosionSystem : SimGameSystemBase
                     DamageRequestSettings damageRequest = new DamageRequestSettings()
                     {
                         DamageAmount = request.Damage,
-                        InstigatorSet = CommonReads.GetInstigatorSetFromLastPhysicalInstigator(Accessor, request.LastInstigator),
+                        Instigator = request.Instigator,
                         IsAutoAttack = false,
                     };
 
@@ -151,7 +151,7 @@ internal static partial class CommonWrites
         {
             Damage = damage,
             Radius = radius,
-            LastInstigator = instigator,
+            Instigator = instigator,
             Position = position,
             DestroyTiles = destroyTiles
         };

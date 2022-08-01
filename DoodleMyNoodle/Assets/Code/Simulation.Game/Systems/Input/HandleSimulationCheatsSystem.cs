@@ -160,7 +160,7 @@ public partial class HandleSimulationCheatsSystem : SimGameSystemBase
                         DamageRequestSettings damageRequest = new DamageRequestSettings()
                         {
                             DamageAmount = damagePlayer.Damage,
-                            InstigatorSet = default,
+                            Instigator = default,
                             IsAutoAttack = false,
                         };
 
@@ -171,7 +171,7 @@ public partial class HandleSimulationCheatsSystem : SimGameSystemBase
                         HealRequestSettings healRequest = new HealRequestSettings()
                         {
                             HealAmount = -damagePlayer.Damage,
-                            InstigatorSet = default,
+                            Instigator = default,
                             IsAutoAttack = false,
                         };
                         CommonWrites.RequestHeal(Accessor, healRequest, pawn);

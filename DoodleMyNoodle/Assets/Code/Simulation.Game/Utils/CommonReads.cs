@@ -35,23 +35,6 @@ public static partial class CommonReads
         }
     }
 
-    public static InstigatorSet GetInstigatorSetFromLastPhysicalInstigator(ISimWorldReadAccessor accessor, Entity lastPhysicalInstigator)
-    {
-        InstigatorSet set = new InstigatorSet()
-        {
-            LastInstigator = lastPhysicalInstigator,
-            LastPhysicalInstigator = lastPhysicalInstigator,
-            FirstPhysicalInstigator = lastPhysicalInstigator,
-        };
-
-        if (accessor.TryGetComponent(lastPhysicalInstigator, out FirstInstigator firstInstigator))
-        {
-            set.FirstPhysicalInstigator = firstInstigator;
-        }
-
-        return set;
-    }
-
     public static fix2 GetPlayerGroupHeaderPosition(ISimWorldReadAccessor accessor)
     {
         return accessor.GetComponent<FixTranslation>(accessor.GetSingletonEntity<PlayerGroupDataTag>());

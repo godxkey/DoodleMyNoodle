@@ -43,11 +43,23 @@ public class GameActionStatModifier : GameAction<GameActionStatModifier.Settings
 
             if (settings.Remove)
             {
-                CommonWrites.RemoveStatusEffect(input.Accessor, new SystemRequestRemoveStatModifier() { Target = target, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+                CommonWrites.RemoveStatusEffect(input.Accessor, new SystemRequestRemoveStatModifier()
+                {
+                    Target = target,
+                    Type = settings.Type,
+                    StackAmount = settings.StackAmount,
+                    Instigator = input.ActionInstigator
+                });
             }
             else
             {
-                CommonWrites.AddStatusEffect(input.Accessor, new SystemRequestAddStatModifier() { Target = target, Type = settings.Type, StackAmount = settings.StackAmount, Instigator = input.Context.LastPhysicalInstigator });
+                CommonWrites.AddStatusEffect(input.Accessor, new SystemRequestAddStatModifier()
+                {
+                    Target = target,
+                    Type = settings.Type,
+                    StackAmount = settings.StackAmount,
+                    Instigator = input.ActionInstigator
+                });
             }
 
             if (input.Accessor.TryGetComponent(target, out FixTranslation targetTranslation))

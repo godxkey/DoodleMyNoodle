@@ -222,7 +222,7 @@ public partial class GameFlowSystem : SimGameSystemBase
 
         // restore item charges
         {
-            Entities.ForEach((ref ItemCharges charges, in ItemStatingCharges startingCharges) =>
+            Entities.ForEach((ref ItemCharges charges, in ItemStartingCharges startingCharges) =>
             {
                 charges.Value = startingCharges;
             }).Run();

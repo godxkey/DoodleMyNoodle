@@ -225,18 +225,14 @@ public class WidgetControllerPlayerActionBar : GamePresentationSystem<WidgetCont
                     {
                         Entity itemEntity = item.ItemEntity;
 
-                        if (SimWorld.TryGetComponent(itemEntity, out ItemAction itemAction))
+                        UIStateMachine.Instance.TransitionTo(UIStateType.SpellCasting, new SpellCastingState.InputParam()
                         {
-                            UIStateMachine.Instance.TransitionTo(UIStateType.ParameterSelection, new ParameterSelectionState.InputParam()
-                            {
-                                PressedKey = Input.GetKeyDown(slotData.KeyShortcut) ? slotData.KeyShortcut : KeyCode.None,
-                                ItemEntity = itemEntity,
-                                ActionPrefab = itemAction.Value,
-                                IsItem = true,
-                                ItemIndex = itemIndex,
-                                OnFinishOrCancelCallback = () => CompleteItemUse(slotWidget)
-                            });
-                        }
+                            PressedKey = Input.GetKeyDown(slotData.KeyShortcut) ? slotData.KeyShortcut : KeyCode.None,
+                            ItemEntity = itemEntity,
+                            IsItem = true,
+                            ItemIndex = itemIndex,
+                            OnFinishOrCancelCallback = () => CompleteItemUse(slotWidget)
+                        });
                     }
                 }
             }

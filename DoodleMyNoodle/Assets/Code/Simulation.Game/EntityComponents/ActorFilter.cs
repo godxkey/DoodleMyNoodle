@@ -30,7 +30,8 @@ public partial struct Helpers
         Entity entity,
         ComponentDataFromEntity<Team> Teams,
         ComponentDataFromEntity<FirstInstigator> FirstInstigators,
-        ComponentDataFromEntity<PhysicsColliderBlob> Colliders)
+        ComponentDataFromEntity<PhysicsColliderBlob> Colliders,
+        ComponentDataFromEntity<Owner> Owners)
     {
         ActorFilterInfo result = new ActorFilterInfo()
         {
@@ -45,7 +46,10 @@ public partial struct Helpers
         }
         else if (FirstInstigators.TryGetComponent(entity, out FirstInstigator firstInstigator))
         {
-            if (Teams.TryGetComponent(firstInstigator, out Team firstInstigatorTeam))
+            Entity firstInstigatorActor = firstInstigator;
+            if (Owners.TryGetComponent(firstInstigatorActor, out Owner owner))
+                firstInstigatorActor = owner.Value;
+            if (Teams.TryGetComponent(firstInstigatorActor, out Team firstInstigatorTeam))
             {
                 result.Team = firstInstigatorTeam;
             }
@@ -77,7 +81,11 @@ public partial class CommonReads
         }
         else if (accessor.TryGetComponent(entity, out FirstInstigator firstInstigator))
         {
-            if (accessor.TryGetComponent(firstInstigator, out Team firstInstigatorTeam))
+            Entity firstInstigatorActor = firstInstigator;
+            if (accessor.TryGetComponent(firstInstigatorActor, out Owner owner))
+                firstInstigatorActor = owner.Value;
+
+            if (accessor.TryGetComponent(firstInstigatorActor, out Team firstInstigatorTeam))
             {
                 result.Team = firstInstigatorTeam;
             }

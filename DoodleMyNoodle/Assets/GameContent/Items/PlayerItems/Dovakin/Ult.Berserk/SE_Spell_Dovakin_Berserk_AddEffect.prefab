@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2784291058542494111
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8821241209944219005}
+  - component: {fileID: 2677628293349642642}
+  - component: {fileID: -4801357984810749253}
+  - component: {fileID: -2465389776341950362}
+  m_Layer: 0
+  m_Name: SE_Spell_Dovakin_Berserk_AddEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8821241209944219005
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2677628293349642642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30117b659186caf43b53dd929dba2577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 0
+  _guid: ab4f5fbc86639fc4cb7aad464509a4c4
+  _bindedViewPrefab: {fileID: 0}
+  _bindedViewTile: {fileID: 0}
+  _viewTechType: 0
+  _hasTransform: 0
+  _showGhost: 1
+--- !u!114 &-4801357984810749253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344a5890c95df704fbff8588d3bcc81f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: GameActionGameEffect
+  UseInstigatorAsTarget: 1
+  ExecuteOnFirstInstigator: 1
+  ExecuteOnLastInstigator: 0
+  InstigatorAsTargetType: 0
+  GameActionSettings:
+  - rid: 0
+  SfxOnPrepareUse: {fileID: 0}
+  SfxOnUse: {fileID: 0}
+  Animation: {fileID: 0}
+  InstigatorVFX: {fileID: 0}
+  TargetsVFX: {fileID: 0}
+  Surveys: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 0
+      type: {class: GameActionGameEffect/SettingsAuth, ns: , asm: Simulation.Game}
+      data:
+        GameEffect: {fileID: 2784291058542494111, guid: 03f06ce981892044c8f5f2c41cf6c05a,
+          type: 3}
+--- !u!114 &-2465389776341950362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2784291058542494111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d73af161ba3f5c47ab59c43c6942940, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Cooldown: 0
+  OverrideDescription: 0
+  DescriptionOverride:
+    _string: 
+    _flags: 0
+    _locID: 0
+  OverrideIcon: 0
+  IconOverride: {fileID: 0}
+  BeginCastSFX: {fileID: 0}
+  CastSurvey: {fileID: 0}

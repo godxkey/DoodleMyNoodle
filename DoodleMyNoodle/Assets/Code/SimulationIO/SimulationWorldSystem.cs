@@ -62,6 +62,8 @@ namespace SimulationControl
             if (SimulationWorld.IsCreated)
                 SimulationWorld.Dispose();
 
+            EntityDebugProxy.FavorWorldInDebugging = null;
+
             SimWorldAccessor.SimWorld = null;
             SimWorldAccessor.EntityManager = default;
             SimWorldAccessor.SomeSimSystem = null;
@@ -116,6 +118,7 @@ namespace SimulationControl
                 SimulationWorld = null;
             }
 
+            EntityDebugProxy.FavorWorldInDebugging = newWorld;
             SimulationWorld = newWorld;
 
             newWorld.Owner = this;

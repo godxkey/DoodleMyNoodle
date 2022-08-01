@@ -65,7 +65,7 @@ public class GameEffectExecuteGameActionOnDamageDealt
     [RegisterGameFunction]
     public static readonly GameFunction<GameFunctionDamageDealtProcessorArg> DamageDealtProcessor = (ref GameFunctionDamageDealtProcessorArg arg) =>
     {
-        if(arg.Accessor.TryGetComponent(arg.EffectEntity, out GameEffectOnDamageDealtToApply gameEffectOnDamageDealtToApply)) 
+        if (arg.Accessor.TryGetComponent(arg.EffectEntity, out GameEffectOnDamageDealtToApply gameEffectOnDamageDealtToApply))
         {
             var effectRequests = arg.Accessor.GetSingletonBuffer<SystemRequestAddGameEffect>();
 
@@ -73,7 +73,7 @@ public class GameEffectExecuteGameActionOnDamageDealt
             {
                 GameEffectPrefab = gameEffectOnDamageDealtToApply.GameEffectPrefab,
                 Target = arg.EffectEntity,
-                Instigator = arg.RequestData.InstigatorSet
+                Instigator = arg.RequestData.Instigator
             });
         }
     };

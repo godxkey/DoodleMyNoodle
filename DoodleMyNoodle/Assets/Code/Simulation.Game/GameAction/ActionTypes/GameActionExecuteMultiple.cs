@@ -59,7 +59,7 @@ public class GameActionExecuteMultiple : GameAction<GameActionExecuteMultiple.Se
         var buffer = input.Accessor.GetBuffer<ActionsBufferElement>(input.Context.Action);
         foreach (ActionsBufferElement gameAction in buffer)
         {
-            CommonWrites.RequestExecuteGameAction(input.Accessor, input.Context.LastPhysicalInstigator, gameAction.ActionEntity, input.Context.Targets, input.Parameters);
+            CommonWrites.RequestExecuteGameAction(input.Accessor, input.ActionInstigator, gameAction.ActionEntity, input.Context.Targets, input.Parameters);
         }
 
         return true;

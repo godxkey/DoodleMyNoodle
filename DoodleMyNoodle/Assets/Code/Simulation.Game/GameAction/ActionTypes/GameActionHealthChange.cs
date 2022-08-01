@@ -60,7 +60,7 @@ public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings
         {
             HealRequestSettings healSettings = new HealRequestSettings()
             {
-                InstigatorSet = input.Context.InstigatorSet,
+                Instigator = input.ActionInstigator,
                 HealAmount = settings.Delta,
                 ActionOnHealthChanged = settings.OnHealthChangedActionEntity,
                 ActionOnExtremeReached = settings.OnExtremeReachedActionEntity,
@@ -73,7 +73,7 @@ public class GameActionHealthChange : GameAction<GameActionHealthChange.Settings
         {
             DamageRequestSettings damageSettings = new DamageRequestSettings()
             {
-                InstigatorSet = input.Context.InstigatorSet,
+                Instigator = input.ActionInstigator,
                 DamageAmount = -settings.Delta,
                 ActionOnHealthChanged = settings.OnHealthChangedActionEntity,
                 ActionOnExtremeReached = settings.OnExtremeReachedActionEntity,

@@ -43,27 +43,23 @@ public class GameActionRefillSpellCharge : GameAction<GameActionRefillSpellCharg
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        Entity FirstInstigator = input.Context.InstigatorSet.FirstPhysicalInstigator;
-        if (input.Accessor.TryGetComponent(input.Context.ActionInstigator, out GameEffectInfo gameEffectInfo))
-        {
-            FirstInstigator = gameEffectInfo.Instigator.FirstPhysicalInstigator;
-        }
-
-        int spellIndex = CommonReads.FindItemIndex(input.Accessor, FirstInstigator, input.Context.InstigatorSet.LastSpellInstigator);
+        Entity firstInstigator = CommonReads.GetFirstInstigator(input.Accessor, input.ActionInstigator);
+        Entity firstInstigatorPhysicalBody = CommonReads.GetOwnerActor(input.Accessor, firstInstigator);
+        int itemIndex = CommonReads.FindItemIndex(input.Accessor, firstInstigatorPhysicalBody, firstInstigator);
 
         if (settings.Self)
         {
-            Entity LastSpellEntity = input.Context.InstigatorSet.LastSpellInstigator;
-            if (input.Accessor.TryGetComponent(LastSpellEntity, out ItemCharges itemCharges))
+            Entity currentItem = input.ActionInstigator;
+            if (input.Accessor.TryGetComponent(currentItem, out ItemCharges itemCharges))
             {
                 itemCharges.Value += settings.NumberOfCharges;
-                input.Accessor.SetComponent(LastSpellEntity, itemCharges);
+                input.Accessor.SetComponent(currentItem, itemCharges);
             }
         }
 
         if (settings.AdjacentLeft)
         {
-            Entity leftItemEntity = CommonReads.FindItemByIndex(input.Accessor, FirstInstigator, spellIndex - 1);
+            Entity leftItemEntity = CommonReads.FindItemByIndex(input.Accessor, firstInstigatorPhysicalBody, itemIndex - 1);
             if (input.Accessor.TryGetComponent(leftItemEntity, out ItemCharges itemCharges))
             {
                 itemCharges.Value += settings.NumberOfCharges;
@@ -73,7 +69,7 @@ public class GameActionRefillSpellCharge : GameAction<GameActionRefillSpellCharg
 
         if (settings.AdjacentRight)
         {
-            Entity rightItemEntity = CommonReads.FindItemByIndex(input.Accessor, FirstInstigator, spellIndex + 1);
+            Entity rightItemEntity = CommonReads.FindItemByIndex(input.Accessor, firstInstigatorPhysicalBody, itemIndex + 1);
             if (input.Accessor.TryGetComponent(rightItemEntity, out ItemCharges itemCharges))
             {
                 itemCharges.Value += settings.NumberOfCharges;
@@ -83,7 +79,7 @@ public class GameActionRefillSpellCharge : GameAction<GameActionRefillSpellCharg
 
         if (settings.SpecificIndex >= 0)
         {
-            Entity specificIndexItemEntity = CommonReads.FindItemByIndex(input.Accessor, FirstInstigator, settings.SpecificIndex);
+            Entity specificIndexItemEntity = CommonReads.FindItemByIndex(input.Accessor, firstInstigatorPhysicalBody, settings.SpecificIndex);
             if (input.Accessor.TryGetComponent(specificIndexItemEntity, out ItemCharges itemCharges))
             {
                 itemCharges.Value += settings.NumberOfCharges;

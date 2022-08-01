@@ -35,7 +35,7 @@ public class GameActionJump : GameAction<GameActionJump.Settings>
 
     protected override bool Execute(in ExecInputs input, ref ExecOutput output, ref Settings settings)
     {
-        CommonWrites.RequestImpulse(input.Accessor, input.Context.FirstPhysicalInstigator, settings.Direction * settings.Force, true);
+        CommonWrites.RequestImpulse(input.Accessor, input.ActionInstigatorActor, settings.Direction * settings.Force, true);
 
         return true;
     }
